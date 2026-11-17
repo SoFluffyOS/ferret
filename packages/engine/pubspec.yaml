@@ -7,6 +7,7 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  async: ^2.13.1
   core:
     path: ../core
   cryptography: ^2.9.0
