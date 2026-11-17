@@ -1,0 +1,36 @@
+# FVM
+.fvm/
+
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+**/doc/api/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec_overrides.yaml.local
+*.iml
+.idea/
+.vscode/
+.zed/
+
+# Platform
+**/ios/Pods/
+**/macos/Pods/
+**/android/.gradle/
+**/android/local.properties
+**/android/app/debug/
+**/android/app/release/
+*.jks
+*.keystore
+key.properties
+
+# OS
+.DS_Store
+
+# Browser extension
+extensions/browser/node_modules/
+extensions/browser/dist/
+
+# Logs
+*.log

@@ -1,0 +1,14 @@
+name: ferret_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.14.0
+
+workspace:
+  - packages/core
+  - packages/protocol
+  - packages/transport
+  - packages/engine
+
+dev_dependencies:
+  lints: ^6.0.0
