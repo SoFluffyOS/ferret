@@ -44,8 +44,8 @@ class MulticastDiscovery implements Discovery {
     socket
       ..multicastLoopback = false
       ..broadcastEnabled = true
-      ..listen(_onEvent);
-    _joinGroup(socket);
+      ..listen(_onEvent, onError: _onSocketError);
+    await _joinGroup(socket);
     _socket = socket;
 
     _timer = .periodic(interval, (_) => unawaited(announceNow()));
@@ -59,7 +59,64 @@ class MulticastDiscovery implements Discovery {
       return;
     }
 
-    socket.send(encodeAnnounce(self.deepCopy()..reply = false), group, port);
+    final packet = encodeAnnounce(self.deepCopy()..reply = false);
+    final interfaces = await _interfaces();
+    for (final address in interfaces) {
+      _sendOn(socket, packet, address);
+    }
+
+    _send(socket, packet, InternetAddress('255.255.255.255'));
+  }
+
+  /// Sends on one interface, so multicast works without a default route
+  /// (macOS with a VPN, or several networks at once).
+  void _sendOn(
+    RawDatagramSocket socket,
+    List<int> packet,
+    InternetAddress interface,
+  ) {
+    try {
+      socket.setRawOption(
+        RawSocketOption(
+          RawSocketOption.levelIPv4,
+          RawSocketOption.IPv4MulticastInterface,
+          interface.rawAddress,
+        ),
+      );
+    } on Object {
+      return;
+    }
+
+    _send(socket, packet, group);
+  }
+
+  void _send(
+    RawDatagramSocket socket,
+    List<int> packet,
+    InternetAddress address,
+  ) {
+    try {
+      socket.send(packet, address, port);
+    } on SocketException catch (error) {
+      printDebug(
+        'Announce to ${address.address} failed: ${error.osError?.message}',
+      );
+    }
+  }
+
+  Future<List<InternetAddress>> _interfaces() async {
+    try {
+      final interfaces = await NetworkInterface.list(
+        type: InternetAddressType.IPv4,
+      );
+      return [
+        for (final interface in interfaces)
+          for (final address in interface.addresses)
+            if (!address.isLoopback && !address.isLinkLocal) address,
+      ];
+    } on Object {
+      return const [];
+    }
   }
 
   @override
@@ -82,12 +139,35 @@ class MulticastDiscovery implements Discovery {
     }
   }
 
-  void _joinGroup(RawDatagramSocket socket) {
+  Future<void> _joinGroup(RawDatagramSocket socket) async {
+    final interfaces = await NetworkInterface.list(
+      type: InternetAddressType.IPv4,
+    );
+    var joined = false;
+    for (final interface in interfaces) {
+      try {
+        socket.joinMulticast(group, interface);
+        joined = true;
+      } on SocketException {
+        continue;
+      }
+    }
+
+    if (joined) {
+      return;
+    }
+
     try {
       socket.joinMulticast(group);
     } on SocketException catch (error) {
       printWarning('Multicast discovery could not join $group', error);
     }
+  }
+
+  /// Dart reports failed datagram sends here rather than throwing, such as
+  /// "no route to host" on an interface without multicast.
+  void _onSocketError(Object error) {
+    printDebug('Discovery socket: $error');
   }
 
   void _onEvent(RawSocketEvent event) {
