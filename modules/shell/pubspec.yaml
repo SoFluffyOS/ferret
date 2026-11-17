@@ -1,0 +1,46 @@
+name: shell
+description: Ferret's app shell. Onboarding, devices, pairing and settings, hosting each feature's UI.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  core:
+    path: ../../packages/core
+  device_info_plus: ^13.3.0
+  engine:
+    path: ../../packages/engine
+  feature_kit:
+    path: ../../packages/feature_kit
+  ferret_menubar:
+    path: ../../packages/ferret_menubar
+  ferret_system:
+    path: ../../packages/ferret_system
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_secure_storage: ^11.2.0
+  intl: ^0.20.3
+  lucide_icons_flutter: ^4.0.3
+  path_provider: ^2.1.6
+  protocol:
+    path: ../../packages/protocol
+  provider: ^6.1.5+1
+  qr_flutter: ^4.1.0
+  sofluffy_ui:
+    path: ../../packages/sofluffy_ui
+  transport:
+    path: ../../packages/transport
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  generate: true
