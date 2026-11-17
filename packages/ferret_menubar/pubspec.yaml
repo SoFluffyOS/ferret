@@ -1,0 +1,25 @@
+name: ferret_menubar
+description: Runs a Flutter app from the macOS menubar in a detachable popover, with a menu, icon states and file drops.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  pigeon: ^29.0.1
+
+flutter:
+  plugin:
+    platforms:
+      macos:
+        pluginClass: FerretMenubarPlugin
