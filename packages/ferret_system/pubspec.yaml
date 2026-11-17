@@ -1,0 +1,26 @@
+name: ferret_system
+description: System hooks Ferret needs on each platform, such as the Android multicast lock.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  pigeon: ^29.0.1
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_system
+        pluginClass: FerretSystemPlugin
