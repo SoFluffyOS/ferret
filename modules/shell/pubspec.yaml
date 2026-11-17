@@ -22,6 +22,7 @@ dependencies:
     path: ../../packages/ferret_system
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^23.0.2
   flutter_localizations:
     sdk: flutter
   flutter_secure_storage: ^11.2.0

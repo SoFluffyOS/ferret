@@ -40,9 +40,13 @@ Future<void> runFerret({
   await engine.start();
 
   final host = EngineHost(engine);
+  final notifier = await SystemNotifier.create([
+    for (final feature in features) ...feature.noticeCategories,
+  ]);
   final featureContext = FeatureContext(
     engine: engine,
     navigatorKey: GlobalKey<NavigatorState>(),
+    notifier: notifier,
   );
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));

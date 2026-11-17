@@ -1,0 +1,102 @@
+import 'dart:typed_data';
+
+/// Where a notice belongs, so people can tune each kind in system settings
+/// instead of turning everything off.
+enum NoticeChannel {
+  /// Files being sent or received.
+  transfers,
+
+  /// Things another device sent here, such as mirrored notifications or calls.
+  incoming,
+
+  /// "Continue on this device" suggestions. Quiet by default.
+  suggestions,
+
+  /// Ringing a lost device. Loud, may override Do Not Disturb.
+  find,
+
+  /// A device can't connect and why.
+  problems,
+}
+
+/// A button on a notice. [isReply] asks for text, such as replying to a
+/// message.
+class NoticeAction {
+  const NoticeAction({
+    required this.id,
+    required this.label,
+    this.isReply = false,
+  });
+
+  final String id;
+  final String label;
+  final bool isReply;
+}
+
+/// A named set of actions notices can use, such as `message` with Reply and
+/// Dismiss. macOS and iOS need every set before the first notice, so features
+/// declare theirs in [FeatureUi.noticeCategories].
+class NoticeCategory {
+  const NoticeCategory({required this.id, required this.actions});
+
+  /// Unique across features; prefix it with the feature id, such as
+  /// `notifications.message`.
+  final String id;
+  final List<NoticeAction> actions;
+}
+
+/// A local system notification shown by a feature.
+class LocalNotice {
+  const LocalNotice({
+    required this.id,
+    required this.channel,
+    required this.title,
+    this.body = '',
+    this.category,
+    this.groupKey,
+    this.image,
+    this.silent = false,
+    this.progress,
+  });
+
+  /// Unique per notice; showing the same id again updates it.
+  final String id;
+  final NoticeChannel channel;
+  final String title;
+  final String body;
+
+  /// The [NoticeCategory] whose actions this notice shows, if any.
+  final String? category;
+
+  /// Notices with the same key are grouped, such as all from one device.
+  final String? groupKey;
+
+  /// A small PNG, such as the source app's icon.
+  final Uint8List? image;
+  final bool silent;
+
+  /// 0 to 1 for a progress bar, such as a file transfer.
+  final double? progress;
+}
+
+/// Someone tapped a notice or one of its actions.
+class NoticeResponse {
+  const NoticeResponse({required this.noticeId, this.actionId, this.replyText});
+
+  final String noticeId;
+
+  /// Null when the notice itself was tapped.
+  final String? actionId;
+  final String? replyText;
+}
+
+/// Shows local notifications for features. The app owns the one
+/// implementation, so features never fight over the notification plugin.
+abstract interface class LocalNotifier {
+  Future<void> show(LocalNotice notice);
+
+  Future<void> cancel(String id);
+
+  /// Taps and actions on notices, for features to handle by notice id.
+  Stream<NoticeResponse> get responses;
+}

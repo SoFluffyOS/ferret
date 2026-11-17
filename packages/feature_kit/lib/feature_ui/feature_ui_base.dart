@@ -1,5 +1,6 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
+import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
 
 /// The app side of a feature. The shell shows each feature's pieces in fixed
@@ -13,6 +14,9 @@ abstract class FeatureUi {
 
   /// The feature's own strings, added to the app's localizations.
   List<LocalizationsDelegate<Object>> get localizationsDelegates => const [];
+
+  /// The notice action sets this feature uses, registered at startup.
+  List<NoticeCategory> get noticeCategories => const [];
 
   /// Called once after the engine started, such as to ask for a permission
   /// or start a platform listener.
