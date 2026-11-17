@@ -5,10 +5,15 @@ environment:
   sdk: ^3.14.0
 
 workspace:
+  - apps/ferret
+  - modules/shell
   - packages/core
+  - packages/engine
+  - packages/feature_kit
+  - packages/ferret_menubar
+  - packages/ferret_system
   - packages/protocol
   - packages/transport
-  - packages/engine
 
 dev_dependencies:
   lints: ^6.0.0
