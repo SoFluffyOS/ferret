@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: notifications_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: notifications_localizations.dart
+output-class: NotificationsLocalizations
+nullable-getter: false

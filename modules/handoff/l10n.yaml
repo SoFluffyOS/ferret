@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: handoff_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: handoff_localizations.dart
+output-class: HandoffLocalizations
+nullable-getter: false

@@ -2,6 +2,10 @@
 # Generates Dart from proto/ into packages/protocol and rewrites its barrel.
 set -euo pipefail
 
+if [ -z "${FERRET_GEN_LOCKED:-}" ]; then
+  FERRET_GEN_LOCKED=1 exec "$(dirname "${BASH_SOURCE[0]}")/with_lock.sh" gen "${BASH_SOURCE[0]}" "$@"
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUF="${BUF:-$(command -v buf || echo "$HOME/.local/bin/buf")}"
 export PATH="$HOME/.pub-cache/bin:$PATH"

@@ -6,11 +6,21 @@ environment:
 
 workspace:
   - apps/ferret
+  - modules/clipboard
+  - modules/drop
+  - modules/handoff
+  - modules/media
+  - modules/notifications
   - modules/shell
   - packages/core
   - packages/engine
   - packages/feature_kit
+  - packages/ferret_clipboard
+  - packages/ferret_drop
+  - packages/ferret_handoff
+  - packages/ferret_media
   - packages/ferret_menubar
+  - packages/ferret_notifications
   - packages/ferret_system
   - packages/protocol
   - packages/transport

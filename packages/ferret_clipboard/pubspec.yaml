@@ -1,0 +1,35 @@
+name: ferret_clipboard
+description: Platform code for Ferret's clipboard feature, reusable on its own.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  pigeon: ^29.0.1
+
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_clipboard
+        pluginClass: FerretClipboardPlugin
+      ios:
+        pluginClass: FerretClipboardPlugin
+      linux:
+        pluginClass: FerretClipboardPlugin
+      macos:
+        pluginClass: FerretClipboardPlugin
+      windows:
+        pluginClass: FerretClipboardPluginCApi

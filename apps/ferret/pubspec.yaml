@@ -8,6 +8,16 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  media:
+    path: ../../modules/media
+  notifications:
+    path: ../../modules/notifications
+  drop:
+    path: ../../modules/drop
+  handoff:
+    path: ../../modules/handoff
+  clipboard:
+    path: ../../modules/clipboard
   flutter:
     sdk: flutter
   shell:
