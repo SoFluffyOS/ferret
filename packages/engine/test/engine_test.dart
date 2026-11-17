@@ -215,10 +215,13 @@ void main() {
     await first.channel.connection.close();
 
     await _until(
-      () => laptop.sessions.isNotEmpty && laptop.sessions.single != first,
+      () =>
+          laptop.sessions.length == 1 &&
+          laptop.sessions.single != first &&
+          phone.sessions.length == 1,
       timeout: const Duration(seconds: 10),
     );
-    expect(phone.sessions, hasLength(1));
+    expect(phone.sessions.single.isClosed, isFalse);
   });
 
   test(
