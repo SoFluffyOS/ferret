@@ -27,10 +27,12 @@ class Hello extends $pb.GeneratedMessage {
   factory Hello({
     $0.DeviceInfo? device,
     $core.Iterable<$0.FeatureSupport>? features,
+    $core.int? listenPort,
   }) {
     final result = Hello._();
     if (device != null) result.device = device;
     if (features != null) result.features.addAll(features);
+    if (listenPort != null) result.listenPort = listenPort;
     return result;
   }
 
@@ -51,6 +53,7 @@ class Hello extends $pb.GeneratedMessage {
         subBuilder: $0.DeviceInfo.$_createMessage)
     ..pPM<$0.FeatureSupport>(2, _omitFieldNames ? '' : 'features',
         subBuilder: $0.FeatureSupport.$_createMessage)
+    ..aI(3, _omitFieldNames ? '' : 'listenPort', fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -86,6 +89,16 @@ class Hello extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(2)
   $pb.PbList<$0.FeatureSupport> get features => $_getList(1);
+
+  /// TCP port this device accepts connections on, for reconnecting later.
+  @$pb.TagNumber(3)
+  $core.int get listenPort => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set listenPort($core.int value) => $_setUnsignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasListenPort() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearListenPort() => $_clearField(3);
 }
 
 /// Keeps a session alive and measures round trips (feature "session").

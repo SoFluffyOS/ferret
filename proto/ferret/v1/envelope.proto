@@ -16,6 +16,8 @@ message Envelope {
   bytes payload = 5;
   // Set on a reply that failed instead of a payload.
   Error error = 6;
+  // The sender waits for a reply (an envelope with reply_to = id).
+  bool expects_reply = 7;
 }
 
 message Error {

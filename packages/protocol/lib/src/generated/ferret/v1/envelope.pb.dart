@@ -31,6 +31,7 @@ class Envelope extends $pb.GeneratedMessage {
     $core.String? type,
     $core.List<$core.int>? payload,
     Error? error,
+    $core.bool? expectsReply,
   }) {
     final result = Envelope._();
     if (id != null) result.id = id;
@@ -39,6 +40,7 @@ class Envelope extends $pb.GeneratedMessage {
     if (type != null) result.type = type;
     if (payload != null) result.payload = payload;
     if (error != null) result.error = error;
+    if (expectsReply != null) result.expectsReply = expectsReply;
     return result;
   }
 
@@ -65,6 +67,7 @@ class Envelope extends $pb.GeneratedMessage {
         5, _omitFieldNames ? '' : 'payload', $pb.PbFieldType.OY)
     ..aOM<Error>(6, _omitFieldNames ? '' : 'error',
         subBuilder: Error.$_createMessage)
+    ..aOB(7, _omitFieldNames ? '' : 'expectsReply')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -147,6 +150,16 @@ class Envelope extends $pb.GeneratedMessage {
   void clearError() => $_clearField(6);
   @$pb.TagNumber(6)
   Error ensureError() => $_ensure(5);
+
+  /// The sender waits for a reply (an envelope with reply_to = id).
+  @$pb.TagNumber(7)
+  $core.bool get expectsReply => $_getBF(6);
+  @$pb.TagNumber(7)
+  set expectsReply($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasExpectsReply() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearExpectsReply() => $_clearField(7);
 }
 
 class Error extends $pb.GeneratedMessage {

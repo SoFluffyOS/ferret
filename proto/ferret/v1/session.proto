@@ -8,6 +8,8 @@ import "ferret/v1/device.proto";
 message Hello {
   DeviceInfo device = 1;
   repeated FeatureSupport features = 2;
+  // TCP port this device accepts connections on, for reconnecting later.
+  uint32 listen_port = 3;
 }
 
 // Keeps a session alive and measures round trips (feature "session").

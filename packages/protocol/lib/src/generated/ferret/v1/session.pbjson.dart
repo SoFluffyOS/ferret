@@ -52,13 +52,15 @@ const Hello$json = {
       '6': '.ferret.v1.FeatureSupport',
       '10': 'features'
     },
+    {'1': 'listen_port', '3': 3, '4': 1, '5': 13, '10': 'listenPort'},
   ],
 };
 
 /// Descriptor for `Hello`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List helloDescriptor = $convert.base64Decode(
     'CgVIZWxsbxItCgZkZXZpY2UYASABKAsyFS5mZXJyZXQudjEuRGV2aWNlSW5mb1IGZGV2aWNlEj'
-    'UKCGZlYXR1cmVzGAIgAygLMhkuZmVycmV0LnYxLkZlYXR1cmVTdXBwb3J0UghmZWF0dXJlcw==');
+    'UKCGZlYXR1cmVzGAIgAygLMhkuZmVycmV0LnYxLkZlYXR1cmVTdXBwb3J0UghmZWF0dXJlcxIf'
+    'CgtsaXN0ZW5fcG9ydBgDIAEoDVIKbGlzdGVuUG9ydA==');
 
 @$core.Deprecated('Use pingDescriptor instead')
 const Ping$json = {

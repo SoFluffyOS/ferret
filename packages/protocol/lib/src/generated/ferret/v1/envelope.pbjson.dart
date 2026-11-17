@@ -53,6 +53,7 @@ const Envelope$json = {
       '6': '.ferret.v1.Error',
       '10': 'error'
     },
+    {'1': 'expects_reply', '3': 7, '4': 1, '5': 8, '10': 'expectsReply'},
   ],
 };
 
@@ -60,7 +61,8 @@ const Envelope$json = {
 final $typed_data.Uint8List envelopeDescriptor = $convert.base64Decode(
     'CghFbnZlbG9wZRIOCgJpZBgBIAEoBFICaWQSGQoIcmVwbHlfdG8YAiABKARSB3JlcGx5VG8SGA'
     'oHZmVhdHVyZRgDIAEoCVIHZmVhdHVyZRISCgR0eXBlGAQgASgJUgR0eXBlEhgKB3BheWxvYWQY'
-    'BSABKAxSB3BheWxvYWQSJgoFZXJyb3IYBiABKAsyEC5mZXJyZXQudjEuRXJyb3JSBWVycm9y');
+    'BSABKAxSB3BheWxvYWQSJgoFZXJyb3IYBiABKAsyEC5mZXJyZXQudjEuRXJyb3JSBWVycm9yEi'
+    'MKDWV4cGVjdHNfcmVwbHkYByABKAhSDGV4cGVjdHNSZXBseQ==');
 
 @$core.Deprecated('Use errorDescriptor instead')
 const Error$json = {
