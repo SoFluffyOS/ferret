@@ -1,0 +1,5 @@
+version: v2
+plugins:
+  - local: protoc-gen-dart
+    out: ../packages/protocol/lib/src/generated
+    opt: []

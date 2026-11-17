@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package ferret.v1;
+
+// The operating system a device runs.
+enum Platform {
+  PLATFORM_UNSPECIFIED = 0;
+  PLATFORM_ANDROID = 1;
+  PLATFORM_IOS = 2;
+  PLATFORM_MACOS = 3;
+  PLATFORM_LINUX = 4;
+  PLATFORM_WINDOWS = 5;
+  PLATFORM_BROWSER = 6;
+  PLATFORM_CLI = 7;
+}
+
+// The kind of device, used for icons and for choosing where to suggest things.
+enum FormFactor {
+  FORM_FACTOR_UNSPECIFIED = 0;
+  FORM_FACTOR_PHONE = 1;
+  FORM_FACTOR_TABLET = 2;
+  FORM_FACTOR_LAPTOP = 3;
+  FORM_FACTOR_DESKTOP = 4;
+  FORM_FACTOR_SERVER = 5;
+}
+
+// What a device says about itself after the secure channel is up.
+message DeviceInfo {
+  // Stable id derived from the device's static public key (see spec/identity.md).
+  string id = 1;
+  string name = 2;
+  Platform platform = 3;
+  FormFactor form_factor = 4;
+  string model = 5;
+  string app_version = 6;
+  // Highest protocol version the device speaks.
+  uint32 protocol_version = 7;
+}
+
+// A feature a device offers, with the feature's own version.
+message FeatureSupport {
+  // Feature id, such as "handoff" or "clipboard".
+  string id = 1;
+  uint32 version = 2;
+  // Feature-specific flags, such as "send" and "receive".
+  repeated string flags = 3;
+}

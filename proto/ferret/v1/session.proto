@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package ferret.v1;
+
+import "ferret/v1/device.proto";
+
+// First envelope each side sends on a trusted session (feature "session").
+message Hello {
+  DeviceInfo device = 1;
+  repeated FeatureSupport features = 2;
+}
+
+// Keeps a session alive and measures round trips (feature "session").
+message Ping {
+  uint64 sent_at_ms = 1;
+}
+
+message Pong {
+  uint64 ping_sent_at_ms = 1;
+}
+
+// Says the user is active on this device right now, so others know where to
+// show suggestions (feature "session").
+message Presence {
+  bool user_active = 1;
+  bool screen_on = 2;
+  // Battery level 0-100, or -1 when unknown or plugged desktop.
+  int32 battery_percent = 3;
+  bool charging = 4;
+}
+
+// Sent before a side closes on purpose, so the other one doesn't reconnect.
+message Goodbye {
+  GoodbyeReason reason = 1;
+}
+
+enum GoodbyeReason {
+  GOODBYE_REASON_UNSPECIFIED = 0;
+  GOODBYE_REASON_SHUTDOWN = 1;
+  GOODBYE_REASON_UNPAIRED = 2;
+  GOODBYE_REASON_DUPLICATE = 3;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ferret.v1;
+
+import "ferret/v1/device.proto";
+
+// Sent over UDP multicast so devices on the same network find each other.
+// It carries no secrets: anyone on the network can read it.
+message Announce {
+  uint32 protocol_version = 1;
+  string device_id = 2;
+  string name = 3;
+  Platform platform = 4;
+  FormFactor form_factor = 5;
+  uint32 port = 6;
+  // True when this is an answer to someone else's announce, so it is not
+  // answered again.
+  bool reply = 7;
+}

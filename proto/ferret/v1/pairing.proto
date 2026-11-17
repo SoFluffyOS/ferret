@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package ferret.v1;
+
+import "ferret/v1/device.proto";
+
+// What a pairing QR code or link carries. Encoded as base64url in
+// ferret://pair?o=<offer>.
+message PairingOffer {
+  uint32 protocol_version = 1;
+  string device_id = 2;
+  string name = 3;
+  Platform platform = 4;
+  // Addresses the offering device listens on, such as "192.168.1.20".
+  repeated string hosts = 5;
+  uint32 port = 6;
+  // X25519 static public key, 32 bytes. The scanner checks the Noise
+  // handshake's remote static key against it.
+  bytes static_public_key = 7;
+  // One-time secret, 16 bytes, proving the scanner saw this offer.
+  bytes secret = 8;
+  uint64 expires_at_ms = 9;
+}
+
+// Sent by the device that wants to pair, first thing on a new channel
+// (feature "pairing").
+message PairingRequest {
+  DeviceInfo device = 1;
+  // HMAC-SHA256(offer secret, handshake hash) when pairing from an offer.
+  // Empty when pairing by comparing codes.
+  bytes proof = 2;
+}
+
+// The answer to a PairingRequest (feature "pairing").
+message PairingResponse {
+  PairingResult result = 1;
+  DeviceInfo device = 2;
+  // HMAC-SHA256(offer secret, handshake hash || "response") so the scanner
+  // knows the offerer still holds the secret.
+  bytes proof = 3;
+}
+
+enum PairingResult {
+  PAIRING_RESULT_UNSPECIFIED = 0;
+  PAIRING_RESULT_ACCEPTED = 1;
+  PAIRING_RESULT_REJECTED = 2;
+  PAIRING_RESULT_EXPIRED = 3;
+  PAIRING_RESULT_BAD_PROOF = 4;
+}
