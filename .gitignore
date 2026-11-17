@@ -34,3 +34,6 @@ extensions/browser/dist/
 
 # Logs
 *.log
+
+# Local notes and research, never committed
+temp/
