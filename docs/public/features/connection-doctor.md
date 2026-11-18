@@ -1,10 +1,12 @@
-# Connection Doctor
+# Fix connection
 
 When a paired device won't connect, Ferret tells you why. No guessing.
 
 ## How to open it
 
-Tap **Why?** next to a device that isn't connected.
+Tap **Why?** next to a device that isn't connected, or open the device and tap **Why isn't it connecting?**.
+
+The device you want to pair doesn't show up at all? **+** → **Check my network** runs the first two checks for this device alone. It's under **Settings → Advanced** too.
 
 ## What it checks
 
@@ -18,7 +20,7 @@ Each problem comes with a button that fixes it, or tells you exactly where to go
 
 ## Connect by address
 
-Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown in Settings on the other device, such as `192.168.1.20:47640`.
+Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.
 
 ## Report a problem
 

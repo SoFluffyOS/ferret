@@ -7,7 +7,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 - Your devices talk **directly to each other on your network**. Nothing goes through a server.
 - Every connection is **end-to-end encrypted** with the [Noise protocol](https://noiseprotocol.org) (`Noise_XX_25519_ChaChaPoly_SHA256`).
 - A device can only connect after you **paired** it, by comparing six digits or scanning a code. Strangers on the same Wi-Fi can't read or send anything.
-- Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one, and you can turn this off under **Settings → Your devices**.
+- Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one, and you can turn this off under **Settings → Advanced**.
 - To find each other, your devices announce their name and kind on your Wi-Fi. Nothing else, and never outside your network.
 - Each device has its own key, kept in the system keychain on phones and in a file only you can read on computers.
 

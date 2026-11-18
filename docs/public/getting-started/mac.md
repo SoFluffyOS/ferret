@@ -15,7 +15,7 @@ Why not the App Store? Apps there must run in Apple's sandbox, and a sandboxed a
 ## 🍎 First run
 
 1. Open Ferret. Its icon (⇆) appears in the menubar.
-2. Click it. Your other devices running Ferret show up under **Devices near you**: tap **Pair**. See [Pair your devices](pairing.md).
+2. Click it. Your other devices running Ferret show up under **Nearby**: tap **Pair**. See [Pair your devices](pairing.md).
 
 macOS asks two things the first time:
 
@@ -24,7 +24,7 @@ macOS asks two things the first time:
 
 ## 🖱️ Using it
 
-- **Click** the icon to open Ferret. **Right-click** for Pair, Settings and Quit.
+- **Click** the icon to open Ferret. **Right-click** for Add a Device, Settings and Quit.
 - **Drag** the popover away from the menubar to keep it open as a window.
 - **Drop files** on the icon (or the popover) to send them to your phone.
 

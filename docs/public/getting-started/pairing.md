@@ -4,14 +4,14 @@ Pairing is how your devices learn to trust each other. You do it **once**: pair 
 
 > TL;DR
 > 1. Open Ferret on both devices, on the same Wi-Fi.
-> 2. Under **Devices near you**, tap **Pair** next to the other device.
+> 2. Under **Nearby**, tap **Pair** next to the other device.
 > 3. Both screens show the same six digits. Tap **They match**, then **Pair** on the other device.
 
 No QR code to scan, no address to type.
 
-## 📡 Devices near you
+## 📡 Nearby
 
-Ferret looks for your other devices by itself. Open it on both, and each one shows the other under **Devices near you**, on the home screen and under **+** (Add a device).
+Ferret looks for your other devices by itself. Open it on both, and each one shows the other under **Nearby**, on the home screen and under **+** (Add a device).
 
 1. Tap **Pair** on the row of the device you want.
 2. Both screens now show the **same six digits**, like `482 913`.
@@ -36,36 +36,45 @@ You have a Mac and a tablet that already work together, and you get a new phone.
 
 Copy something on any of them and it reaches all the others.
 
-Removing works the same way. Open a device, tap **Forget this device**, and choose:
+Removing works the same way. Open a device, tap **Forget Pixel 7** at the bottom, and choose:
 
 - **Remove from all my devices**: every device forgets it.
-- **Forget here only**: just this one does.
+- **Forget on this Mac only**: just this one does.
 
-Prefer to pair each device by hand? Turn off **Settings → Your devices → Share pairings with my devices**. A device with the switch off neither passes its pairings on nor takes any in.
+The question opens right there on the page. Changed your mind? **Cancel**.
 
-## 🙈 Can't see your device?
+Prefer to pair each device by hand? Turn off **Settings → Advanced → Pair once for all my devices**. A device with the switch off neither passes its pairings on nor takes any in.
 
-Tap **Can't see your device?**. First check the two usual suspects:
+## 🙈 Don't see it?
+
+**Add a device** goes from the least effort to the most. Nearby devices first. Not listed? Check the two usual suspects:
 
 1. Ferret is open on the other device.
 2. Both are on the same Wi-Fi. Guest networks and some office networks keep devices apart.
 
-Still nothing? Use one of these.
+Not sure about your network? **Check my network** looks at this device's Wi-Fi and VPN and tells you what it found.
 
-### 📷 A QR code
+Still nothing? Two more rows wait below.
 
-1. On your computer, open **+**, then **Can't see your device?**. A QR code appears.
-2. On your phone, open **+**, **Can't see your device?**, then **Scan the code on your computer**.
+### 📷 Pair with a QR code
 
-Scanning is enough, there are no digits to compare: the code carries a one-time secret that only someone looking at your screen has. It works once and expires after 5 minutes. It also carries your computer's address, so it works on networks where devices can't find each other.
+1. On your computer, open **+**, then **Pair with a QR code**. The code appears.
+2. On your phone, open **+**, then **Pair with a QR code**. The camera opens: point it at the code.
 
-### 🔗 A link or an address
+Scanning is enough, there are no digits to compare: the code carries a one-time secret that only someone looking at your screen has. It works once and expires after 5 minutes. **New code** makes a fresh one. It also carries your computer's address, so it works on networks where devices can't find each other.
 
-Under **Other ways**, tap **Copy link** and open the link on the other device, or type the other device's address and compare the six digits.
+### 🔗 Other ways
+
+For networks that hide devices from each other:
+
+- **With a link**: tap **Copy link** and open the link on the other device, or paste the other device's link and tap **Pair with link**.
+- **With an address**: type the other device's address and tap **Pair with address**, then compare the six digits. The address is under **Settings → Advanced** on the other device.
+
+On a phone, **Show a QR code** is here too, for pairing two phones.
 
 ## 🍎 On a Mac: allow the local network
 
-The first time Ferret looks for devices, macOS asks whether it may find devices on your local network. Say **Allow**. Said no, or never saw the question? Ferret tells you so under **Devices near you** with an **Open Settings** button: turn Ferret on under **Privacy & Security → Local Network**.
+The first time Ferret looks for devices, macOS asks whether it may find devices on your local network. Say **Allow**. Said no, or never saw the question? Ferret tells you so under **Nearby** with an **Open Settings** button: turn Ferret on under **Privacy & Security → Local Network**.
 
 ## 💻 From the command line
 
@@ -81,4 +90,4 @@ The command line is its own device, named after your computer with **· Terminal
 
 ## Not connecting?
 
-Tap **Why?** next to the device. The [Connection Doctor](../features/connection-doctor.md) checks your network, VPN and the other device, then tells you what to fix.
+Tap **Why?** next to the device. [Fix connection](../features/connection-doctor.md) checks your network, VPN and the other device, then tells you what to fix.

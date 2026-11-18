@@ -14,21 +14,24 @@
 - 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second. Your music pauses while a call rings or goes on, and plays again after.
 - 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.
 - 📞 **Calls**: see who's calling on your computer, answer, decline, hang up or start a call from there.
-- 🔍 **Find my device**: ring a lost phone or computer from another device, even on silent, and stop it with one big **Found it**.
+- 🔍 **Find**: ring a lost phone or computer from another device, even on silent, and stop it with one big **Found it**.
 - 🔁 **LocalSend**: send files to devices running LocalSend, and receive from them with one tap for 10 minutes.
 - 🧩 **Browser extension**: send the tab you're on to your phone from Chrome, Edge, Brave or Firefox, and open pages from your phone right in the browser you're using.
 - 📡 **Quick Share**: Android phones can send files to Ferret on a computer with nothing installed. Make the computer visible for 10 minutes, compare the PIN, accept.
 - 🔓 **Power-ups (Android)**: a ladder in Settings shows what your phone lets Ferret do. With Shizuku or root, Ferret sends what you copy on its own, even in the background.
 - 📱 **iPhone on your PC**: your iPhone's notifications (with Clear, Answer and Decline) and media controls on Windows and Linux over Bluetooth, with nothing to install on the iPhone.
-- 🖱️ **Remote input**: use your phone as the touchpad and keyboard of your computer. The computer asks first, shows **Controlled by · Stop** while it happens, and keeps a history.
-- 🪞 **Screen mirroring**: see your Android phone's screen on your computer. Android asks you every time, the phone shows **Sharing screen · Stop** while it lasts, and both devices keep a history.
+- 🖱️ **Control**: use your phone as the touchpad and keyboard of your computer. The computer asks first, says who is in control next to **Stop control** while it happens, and keeps a history.
+- 🪞 **Screen**: see your Android phone's screen on your computer. Android asks you every time, the phone shows **Sharing screen · Stop** while it lasts, and both devices keep a history.
 - 🔌 **Mirror any Android phone (experimental)**: show and control a phone that has USB or wireless debugging on, with no Ferret on it. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.
 - 📲 **Mirror an iPhone or iPad (experimental)**: pick your computer under **Screen Mirroring** in Control Center and the screen shows up in Ferret. Nothing to install on the iPhone, and the computer asks you first.
-- 📷 **Scan to pair**: no device in sight? **Can't see your device?** shows a QR code to point your phone at.
+- 📷 **Pair with a QR code**: no device in sight? **Add a device** has the QR code one tap down, and a link or an address under **Other ways**.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
-- 🩺 **Connection Doctor**: when a device won't connect, Ferret tells you why in plain words and offers the fix.
+- 🩺 **Fix connection**: when a device won't connect, Ferret tells you why in plain words and offers the fix. **Check my network** does the same before you have paired anything.
+- 📱 **Device page**: everything that works with a device in one list, with what is off (and **How?** to turn it on) and what is broken (and **Fix**). What that device may do here sits right below.
+- ⚙️ **Settings on one screen**: ten rows, each showing its state (**Files · To Downloads**), each opening its own page. No endless scroll.
+- 💬 **Plain words everywhere**: every line names the device and says which side acts. "On Pixel 9: open Ferret."
 - ⏸️ **Pause** Ferret for an hour, until tomorrow, or until you resume.
 - 🗂️ **One folder for your data**: on computers Ferret keeps everything in `~/.sofluffy/ferret`. Delete it and nothing is left behind.
-- 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon.
+- 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon. The icon shows what's going on: a ring while a file moves, a check when it's done, a dot when someone waits for your answer, a slash while paused.
 - 💻 **`ferret` command line**: run it headless, pair, and list devices.
