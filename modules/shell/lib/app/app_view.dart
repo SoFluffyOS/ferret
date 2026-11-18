@@ -3,25 +3,56 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/ui.dart';
+import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The app in one view, with its own navigator. Every view shows the same
-/// running app: the providers and the [ShellScope] sit above them all.
-class AppView extends StatelessWidget {
+/// The app in one view, with its own navigator and its own place in the
+/// app. Every view shows the same running app: the providers and the
+/// [ShellScope] sit above them all.
+class AppView extends StatefulWidget {
   const AppView({super.key, required this.navigatorKey, this.menubar});
 
   final GlobalKey<NavigatorState> navigatorKey;
   final FerretMenubar? menubar;
 
   @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> {
+  late final WindowNavViewModel _nav;
+  late final WindowNavRegistry _registry;
+
+  @override
+  void initState() {
+    super.initState();
+    _nav = WindowNavViewModel(
+      host: context.read<EngineHost>(),
+      navigatorKey: widget.navigatorKey,
+      settings: ShellScope.read(context).featureContext.engine.settings,
+      pageFor: (destination) => DestinationPage(destination: destination),
+    );
+    _registry = context.read<WindowNavRegistry>()..add(_nav);
+  }
+
+  @override
+  void dispose() {
+    _registry.remove(_nav);
+    _nav.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final features = ShellScope.of(context).features;
 
     return WidgetsApp(
-      navigatorKey: navigatorKey,
+      navigatorKey: widget.navigatorKey,
       title: 'Ferret',
       color: const Color(0xFFE8833A),
       debugShowCheckedModeBanner: false,
@@ -35,11 +66,14 @@ class AppView extends StatelessWidget {
         settings: settings,
         pageBuilder: (context, _, _) => builder(context),
       ),
-      home: const HomePage(),
-      builder: (context, child) => _Themed(
-        navigatorKey: navigatorKey,
-        menubar: menubar,
-        child: child ?? const SizedBox.shrink(),
+      home: const WindowHomePage(),
+      builder: (context, child) => ChangeNotifierProvider.value(
+        value: _nav,
+        child: _Themed(
+          navigatorKey: widget.navigatorKey,
+          menubar: widget.menubar,
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }
@@ -79,7 +113,7 @@ class _Themed extends StatelessWidget {
               menubar: menubar,
               child: PairingPromptListener(
                 navigatorKey: navigatorKey,
-                child: child,
+                child: WindowShellFrame(child: child),
               ),
             ),
           ),

@@ -1190,4 +1190,18 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixOpenFirewall => 'Open Windows Firewall';
+
+  @override
+  String get sidebarHide => 'Hide sidebar';
+
+  @override
+  String get sidebarShow => 'Show sidebar';
+
+  @override
+  String get sectionOverview => 'Overview';
+
+  @override
+  String windowTitleSection(String device, String section) {
+    return '$device — $section';
+  }
 }

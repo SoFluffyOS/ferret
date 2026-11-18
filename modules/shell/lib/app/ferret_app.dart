@@ -21,6 +21,7 @@ class FerretApp extends StatelessWidget {
     required this.featureContext,
     this.menubar,
     this.views,
+    this.navigation,
   });
 
   final EngineHost host;
@@ -36,6 +37,10 @@ class FerretApp extends StatelessWidget {
 
   final AppViews? views;
 
+  /// Every view's navigation, when something outside the app (the menubar)
+  /// needs to go places too. Without, the app keeps its own.
+  final WindowNavRegistry? navigation;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -43,6 +48,10 @@ class FerretApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: host),
         ChangeNotifierProvider.value(value: pause),
         if (views case final views?) ChangeNotifierProvider.value(value: views),
+        Provider<WindowNavRegistry>(
+          create: (_) => navigation ?? WindowNavRegistry(featureContext),
+          lazy: false,
+        ),
       ],
       child: ShellScope(
         features: features,

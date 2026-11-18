@@ -1983,6 +1983,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Open Windows Firewall'**
   String get doctorFixOpenFirewall;
+
+  /// No description provided for @sidebarHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide sidebar'**
+  String get sidebarHide;
+
+  /// No description provided for @sidebarShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show sidebar'**
+  String get sidebarShow;
+
+  /// No description provided for @sectionOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get sectionOverview;
+
+  /// No description provided for @windowTitleSection.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} — {section}'**
+  String windowTitleSection(String device, String section);
 }
 
 class _ShellLocalizationsDelegate

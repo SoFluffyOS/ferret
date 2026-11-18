@@ -109,7 +109,11 @@ class DevicePage extends StatelessWidget {
     final navigator = Navigator.of(context);
 
     await engine.unpair(deviceId, everywhere: scope == .everywhere);
-    navigator.pop();
+    // In a window this page is the pane's first one, and the device list
+    // moves on to another device by itself.
+    if (navigator.canPop()) {
+      navigator.pop();
+    }
   }
 }
 
