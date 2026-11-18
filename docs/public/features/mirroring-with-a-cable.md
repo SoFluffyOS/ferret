@@ -74,7 +74,7 @@ The small helper that captures the screen on the phone is **scrcpy's server**. I
 
 Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it, and Ferret uses that one.
 
-No adb on this computer? Ferret says **Get Android's helper tool**, with a **Download** button. Click it and Ferret downloads Google's [platform tools](https://developer.android.com/tools/releases/platform-tools) from Google, about 16 MB, once. It checks the file against a fingerprint built into Ferret before it uses it. That is the only time this feature reaches the internet, and only when you click.
+No adb on this computer? Ferret says **Get Android's helper tool**, with a **Download** button. Click it and Ferret downloads Google's [platform tools](https://developer.android.com/tools/releases/platform-tools) from Google, about 16 MB, once. It checks the file against a fingerprint built into Ferret before it uses it, and keeps it in `~/.sofluffy/ferret/tools`. That is the only time this feature reaches the internet, and only when you click.
 
 Nothing about you or your phone is sent anywhere. The picture goes from the phone to your computer, over the cable or your own Wi-Fi.
 

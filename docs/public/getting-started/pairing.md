@@ -36,6 +36,8 @@ ferret pair "ferret://pair?o=..."
 ferret pair 192.168.1.20     # compare codes instead
 ```
 
+The command line is its own device, named after your computer with **· Terminal**. It keeps its key and pairings in `~/.sofluffy/ferret/cli`. Set `FERRET_HOME` to move Ferret's whole folder somewhere else.
+
 ## Not connecting?
 
 Tap **Why?** next to the device. The [Connection Doctor](../features/connection-doctor.md) checks your network, VPN and the other device, then tells you what to fix.

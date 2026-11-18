@@ -31,7 +31,7 @@ Turn the notifications off in **Settings → Messages** on your computer.
 
 Your computer keeps your recent conversations and texts, so they're still there when the phone is out of reach. Replying works again as soon as the phone is back.
 
-They're saved in Ferret's own folder on your computer and never leave your network. **Settings → Messages → Forget saved texts** deletes them.
+They're saved in Ferret's folder on your computer (`~/.sofluffy/ferret/features/messages`) and never leave your network. **Settings → Messages → Forget saved texts** deletes them.
 
 ## 🔑 Permissions on the phone
 

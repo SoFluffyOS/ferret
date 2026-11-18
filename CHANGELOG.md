@@ -27,5 +27,6 @@
 - ⚡ **Instant reconnect** after sleep or a network change.
 - 🩺 **Connection Doctor**: when a device won't connect, Ferret tells you why in plain words and offers the fix.
 - ⏸️ **Pause** Ferret for an hour, until tomorrow, or until you resume.
+- 🗂️ **One folder for your data**: on computers Ferret keeps everything in `~/.sofluffy/ferret`. Delete it and nothing is left behind.
 - 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon.
 - 💻 **`ferret` command line**: run it headless, pair, and list devices.
