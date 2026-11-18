@@ -912,6 +912,240 @@ Changes the source's settings. Expects a `MirrorSettings` reply.
 | `apps` | `repeated AppChoice` | 1 |  |
 | `skip_while_using` | `optional bool` | 2 | Left out to keep the current value. |
 
+## `ferret.remote_input.v1`
+
+### message `ControlRequest`
+
+Asks the computer for control. Expects a `ControlPending`, `ControlGrant` or `ControlDeny` reply. After `ControlPending`, the computer sends the `ControlGrant` or `ControlDeny` later, without expecting a reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `version` | `uint32` | 1 | The version of these messages the controller speaks. |
+
+### message `ControlPending`
+
+The computer is asking its owner. The answer follows as `ControlGrant` or `ControlDeny`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `timeout_seconds` | `uint32` | 1 | How long the computer waits for its owner before it denies with `DENY_REASON_TIMEOUT`. |
+
+### message `ControlGrant`
+
+The controller may send `InputBatch`es until either side sends `ControlStop`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `version` | `uint32` | 1 | The version of these messages the computer speaks. |
+| `always` | `bool` | 2 | The computer's owner allowed this device for good, not just this once. |
+
+### enum `DenyReason`
+
+Why a computer said no.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `DENY_REASON_UNSPECIFIED` | 0 |  |
+| `DENY_REASON_DENIED` | 1 | Its owner said no. |
+| `DENY_REASON_TIMEOUT` | 2 | Nobody answered on the computer in time. |
+| `DENY_REASON_BUSY` | 3 | Another device controls it, or asks to, right now. |
+| `DENY_REASON_NEEDS_PERMISSION` | 4 | The system permission to control input is missing, such as Accessibility on macOS. The computer shows its owner how to allow it. |
+| `DENY_REASON_UNSUPPORTED` | 5 | This computer has no way to inject input, such as Linux without uinput access, xdotool or ydotool. |
+| `DENY_REASON_TURNED_OFF` | 6 | Its owner turned remote input off. |
+| `DENY_REASON_VERSION` | 7 | The controller speaks a newer major version. |
+
+### message `ControlDeny`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `reason` | `DenyReason` | 1 |  |
+
+### enum `StopReason`
+
+Why control ended.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `STOP_REASON_UNSPECIFIED` | 0 |  |
+| `STOP_REASON_CONTROLLER_DONE` | 1 | The controller is done, such as when its touchpad page closed. |
+| `STOP_REASON_STOPPED_ON_HOST` | 2 | Someone on the computer pressed Stop. |
+| `STOP_REASON_IDLE` | 3 | Nothing happened for a long time. |
+| `STOP_REASON_REVOKED` | 4 | The computer's owner revoked this device, or turned remote input off. |
+| `STOP_REASON_NOT_CONTROLLING` | 5 | Input arrived from a device that has no control right now. |
+| `STOP_REASON_FAILED` | 6 | The computer can no longer inject input, such as when its owner turned Accessibility access off. |
+
+### message `ControlStop`
+
+Ends control. Either side sends it, without expecting a reply. The computer releases every button and key still held.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `reason` | `StopReason` | 1 |  |
+
+### enum `MouseButton`
+
+A pointer button.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `MOUSE_BUTTON_UNSPECIFIED` | 0 |  |
+| `MOUSE_BUTTON_LEFT` | 1 |  |
+| `MOUSE_BUTTON_RIGHT` | 2 |  |
+| `MOUSE_BUTTON_MIDDLE` | 3 |  |
+
+### enum `Key`
+
+A key, by what it is rather than by any platform's code. Text goes as `TextInput`; keys are for shortcuts and keys that type nothing.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `KEY_UNSPECIFIED` | 0 |  |
+| `KEY_ENTER` | 1 |  |
+| `KEY_BACKSPACE` | 2 |  |
+| `KEY_DELETE` | 3 |  |
+| `KEY_TAB` | 4 |  |
+| `KEY_ESCAPE` | 5 |  |
+| `KEY_SPACE` | 6 |  |
+| `KEY_ARROW_LEFT` | 7 |  |
+| `KEY_ARROW_RIGHT` | 8 |  |
+| `KEY_ARROW_UP` | 9 |  |
+| `KEY_ARROW_DOWN` | 10 |  |
+| `KEY_HOME` | 11 |  |
+| `KEY_END` | 12 |  |
+| `KEY_PAGE_UP` | 13 |  |
+| `KEY_PAGE_DOWN` | 14 |  |
+| `KEY_MEDIA_PLAY_PAUSE` | 20 |  |
+| `KEY_MEDIA_NEXT` | 21 |  |
+| `KEY_MEDIA_PREVIOUS` | 22 |  |
+| `KEY_VOLUME_UP` | 23 |  |
+| `KEY_VOLUME_DOWN` | 24 |  |
+| `KEY_VOLUME_MUTE` | 25 |  |
+| `KEY_F1` | 31 |  |
+| `KEY_F2` | 32 |  |
+| `KEY_F3` | 33 |  |
+| `KEY_F4` | 34 |  |
+| `KEY_F5` | 35 |  |
+| `KEY_F6` | 36 |  |
+| `KEY_F7` | 37 |  |
+| `KEY_F8` | 38 |  |
+| `KEY_F9` | 39 |  |
+| `KEY_F10` | 40 |  |
+| `KEY_F11` | 41 |  |
+| `KEY_F12` | 42 |  |
+| `KEY_A` | 65 | Letters and digits, for shortcuts such as Ctrl+C. |
+| `KEY_B` | 66 |  |
+| `KEY_C` | 67 |  |
+| `KEY_D` | 68 |  |
+| `KEY_E` | 69 |  |
+| `KEY_F` | 70 |  |
+| `KEY_G` | 71 |  |
+| `KEY_H` | 72 |  |
+| `KEY_I` | 73 |  |
+| `KEY_J` | 74 |  |
+| `KEY_K` | 75 |  |
+| `KEY_L` | 76 |  |
+| `KEY_M` | 77 |  |
+| `KEY_N` | 78 |  |
+| `KEY_O` | 79 |  |
+| `KEY_P` | 80 |  |
+| `KEY_Q` | 81 |  |
+| `KEY_R` | 82 |  |
+| `KEY_S` | 83 |  |
+| `KEY_T` | 84 |  |
+| `KEY_U` | 85 |  |
+| `KEY_V` | 86 |  |
+| `KEY_W` | 87 |  |
+| `KEY_X` | 88 |  |
+| `KEY_Y` | 89 |  |
+| `KEY_Z` | 90 |  |
+| `KEY_DIGIT_0` | 100 |  |
+| `KEY_DIGIT_1` | 101 |  |
+| `KEY_DIGIT_2` | 102 |  |
+| `KEY_DIGIT_3` | 103 |  |
+| `KEY_DIGIT_4` | 104 |  |
+| `KEY_DIGIT_5` | 105 |  |
+| `KEY_DIGIT_6` | 106 |  |
+| `KEY_DIGIT_7` | 107 |  |
+| `KEY_DIGIT_8` | 108 |  |
+| `KEY_DIGIT_9` | 109 |  |
+
+### enum `Modifier`
+
+A key held with another key. `MODIFIER_META` is Command on macOS, the Windows key on Windows and Super on Linux.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `MODIFIER_UNSPECIFIED` | 0 |  |
+| `MODIFIER_SHIFT` | 1 |  |
+| `MODIFIER_CONTROL` | 2 |  |
+| `MODIFIER_ALT` | 3 |  |
+| `MODIFIER_META` | 4 |  |
+
+### message `PointerMove`
+
+Moves the pointer by a distance in logical pixels of the computer's screen, after the controller applied its speed and acceleration.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `dx` | `sint32` | 1 |  |
+| `dy` | `sint32` | 2 |  |
+
+### message `ButtonEvent`
+
+Presses (`pressed`) or releases a pointer button. A click is a press and a release; a drag is a press, moves, then a release.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `button` | `MouseButton` | 1 |  |
+| `pressed` | `bool` | 2 |  |
+
+### message `Scroll`
+
+Scrolls by a distance in logical pixels. Positive `dy` scrolls toward the end of the page (down), positive `dx` to the right.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `dx` | `sint32` | 1 |  |
+| `dy` | `sint32` | 2 |  |
+
+### message `KeyEvent`
+
+Presses (`pressed`) or releases a key, with the modifiers held for it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `key` | `Key` | 1 |  |
+| `pressed` | `bool` | 2 |  |
+| `modifiers` | `repeated Modifier` | 3 |  |
+
+### message `TextInput`
+
+Types text as it is, whatever the computer's keyboard layout.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `text` | `string` | 1 |  |
+
+### message `InputEvent`
+
+One input action.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `move` | `PointerMove` | 1 |  |
+| `button` | `ButtonEvent` | 2 |  |
+| `scroll` | `Scroll` | 3 |  |
+| `key` | `KeyEvent` | 4 |  |
+| `text` | `TextInput` | 5 |  |
+
+### message `InputBatch`
+
+Input from the controller, in order, without expecting a reply. The controller sends at most about 60 a second and merges pointer moves in between, so a batch holds what happened since the last one.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `events` | `repeated InputEvent` | 1 |  |
+
 ## `ferret.v1`
 
 ### enum `Platform`

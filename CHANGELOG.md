@@ -16,6 +16,8 @@
 - 🧩 **Browser extension**: send the tab you're on to your phone from Chrome, Edge, Brave or Firefox, and open pages from your phone right in the browser you're using.
 - 📡 **Quick Share**: Android phones can send files to Ferret on a computer with nothing installed. Make the computer visible for 10 minutes, compare the PIN, accept.
 - 🔓 **Power-ups (Android)**: a ladder in Settings shows what your phone lets Ferret do. With Shizuku or root, Ferret sends what you copy on its own, even in the background.
+- 📱 **iPhone on your PC**: your iPhone's notifications (with Clear, Answer and Decline) and media controls on Windows and Linux over Bluetooth, with nothing to install on the iPhone.
+- 🖱️ **Remote input**: use your phone as the touchpad and keyboard of your computer. The computer asks first, shows **Controlled by · Stop** while it happens, and keeps a history.
 - 📷 **Scan to pair**: point your phone at the code on your computer.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
