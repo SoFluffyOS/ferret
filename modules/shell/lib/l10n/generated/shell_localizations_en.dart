@@ -546,4 +546,19 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get onboardFinish => 'Start using Ferret';
+
+  @override
+  String get settingsRename => 'Rename';
+
+  @override
+  String get settingsRenameTitle => 'Name this device';
+
+  @override
+  String settingsAddress(String address) {
+    return 'Address: $address';
+  }
+
+  @override
+  String get settingsAddressHint =>
+      'Type this on another device under Connect by address if it can\'t find this one.';
 }

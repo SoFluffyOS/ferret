@@ -1,4 +1,3 @@
-import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -30,28 +29,7 @@ class SettingsPage extends StatelessWidget {
       backLabel: l10n.back,
       children: [
         SectionTitle(l10n.settingsThisDevice),
-        SurfaceCard(
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(
-                engine.device.name,
-                style: typography.base1.copyWith(color: palette.text),
-              ),
-              Spacing.v4,
-              Text(
-                l10n.settingsDeviceId(
-                  DeviceIdentity.format(engine.identity.deviceId),
-                ),
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-              Text(
-                l10n.settingsPort(engine.port),
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-            ],
-          ),
-        ),
+        ThisDeviceCard(engine: engine),
         BackgroundSettings(settings: engine.settings),
         for (final (feature, section) in sections) ...[
           SectionTitle(feature.title(context)),

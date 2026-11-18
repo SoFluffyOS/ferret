@@ -999,6 +999,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Start using Ferret'**
   String get onboardFinish;
+
+  /// No description provided for @settingsRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get settingsRename;
+
+  /// No description provided for @settingsRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name this device'**
+  String get settingsRenameTitle;
+
+  /// No description provided for @settingsAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address: {address}'**
+  String settingsAddress(String address);
+
+  /// No description provided for @settingsAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type this on another device under Connect by address if it can\'t find this one.'**
+  String get settingsAddressHint;
 }
 
 class _ShellLocalizationsDelegate

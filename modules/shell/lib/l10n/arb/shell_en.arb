@@ -338,5 +338,16 @@
   "onboardTipTray": "Ferret lives in the tray, next to the clock.",
   "onboardTipAndroid": "Ferret keeps a quiet notification so it stays connected.",
   "onboardTipMore": "Turn on more (calls, texts, notifications) from the home screen.",
-  "onboardFinish": "Start using Ferret"
+  "onboardFinish": "Start using Ferret",
+  "settingsRename": "Rename",
+  "settingsRenameTitle": "Name this device",
+  "settingsAddress": "Address: {address}",
+  "@settingsAddress": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAddressHint": "Type this on another device under Connect by address if it can't find this one."
 }
