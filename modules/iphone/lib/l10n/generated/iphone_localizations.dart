@@ -99,6 +99,408 @@ abstract class IphoneLocalizations {
   /// In en, this message translates to:
   /// **'iPhone'**
   String get title;
+
+  /// No description provided for @nowPlayingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing on {device}'**
+  String nowPlayingOn(String device);
+
+  /// No description provided for @pausedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused on {device}'**
+  String pausedOn(String device);
+
+  /// No description provided for @play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// No description provided for @pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pause;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @volumeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume up'**
+  String get volumeUp;
+
+  /// No description provided for @volumeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume down'**
+  String get volumeDown;
+
+  /// No description provided for @commandFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The iPhone didn\'t answer. Is it still nearby?'**
+  String get commandFailed;
+
+  /// No description provided for @problemBluetoothOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth is off'**
+  String get problemBluetoothOffTitle;
+
+  /// No description provided for @problemBluetoothOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn Bluetooth on to get your iPhone\'s notifications and media here.'**
+  String get problemBluetoothOffBody;
+
+  /// No description provided for @problemUnauthorizedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret can\'t use Bluetooth'**
+  String get problemUnauthorizedTitle;
+
+  /// No description provided for @problemUnauthorizedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Bluetooth for Ferret in the system\'s privacy settings, then come back.'**
+  String get problemUnauthorizedBody;
+
+  /// No description provided for @problemNoDeviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your iPhone'**
+  String get problemNoDeviceTitle;
+
+  /// No description provided for @problemNoDeviceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair it with this computer, then choose it in Ferret.'**
+  String get problemNoDeviceBody;
+
+  /// No description provided for @problemNotSharedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t sharing with this computer'**
+  String problemNotSharedTitle(String device);
+
+  /// No description provided for @problemNotSharedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications. Not listed there? Pair it again.'**
+  String get problemNotSharedBody;
+
+  /// No description provided for @yourIphone.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone'**
+  String get yourIphone;
+
+  /// No description provided for @openBluetoothSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Bluetooth settings'**
+  String get openBluetoothSettings;
+
+  /// No description provided for @openFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the Bluetooth settings. Open them from your system settings.'**
+  String get openFailed;
+
+  /// No description provided for @setUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get setUp;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @settingsEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect an iPhone'**
+  String get settingsEnable;
+
+  /// No description provided for @settingsEnableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows its notifications and what it plays, over Bluetooth. Nothing to install on the iPhone.'**
+  String get settingsEnableBody;
+
+  /// No description provided for @worksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What works with an iPhone'**
+  String get worksTitle;
+
+  /// No description provided for @worksBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications as they arrive, with Clear, Answer and Decline. Play, pause, skip and volume for whatever the iPhone plays.'**
+  String get worksBody;
+
+  /// No description provided for @limitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get limitsTitle;
+
+  /// No description provided for @limitsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.'**
+  String get limitsBody;
+
+  /// No description provided for @macNote.
+  ///
+  /// In en, this message translates to:
+  /// **'On a Mac this is experimental: it only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone\'s notifications to itself.'**
+  String get macNote;
+
+  /// No description provided for @statusUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer has no Bluetooth LE, which the iPhone link needs.'**
+  String get statusUnsupported;
+
+  /// No description provided for @statusNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'This build of Ferret isn\'t allowed to use Bluetooth.'**
+  String get statusNotConfigured;
+
+  /// No description provided for @statusConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to {device}…'**
+  String statusConnecting(String device);
+
+  /// No description provided for @statusConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {device}'**
+  String statusConnected(String device);
+
+  /// No description provided for @statusOutOfReach.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is out of reach. Ferret reconnects when it\'s back.'**
+  String statusOutOfReach(String device);
+
+  /// No description provided for @statusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t talk to {device}. Trying again shortly.'**
+  String statusFailed(String device);
+
+  /// No description provided for @notificationsNotShared.
+  ///
+  /// In en, this message translates to:
+  /// **'The iPhone isn\'t sharing its notifications. On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications.'**
+  String get notificationsNotShared;
+
+  /// No description provided for @mediaNotShared.
+  ///
+  /// In en, this message translates to:
+  /// **'The iPhone isn\'t sharing what it plays with this computer.'**
+  String get mediaNotShared;
+
+  /// No description provided for @setupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair your iPhone'**
+  String get setupTitle;
+
+  /// No description provided for @setupStepUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock the iPhone and open Settings → Bluetooth. Keep that screen open.'**
+  String get setupStepUnlock;
+
+  /// No description provided for @setupStepPairWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'On this PC, open Bluetooth settings, choose Add device → Bluetooth and pick the iPhone. Confirm the code on both.'**
+  String get setupStepPairWindows;
+
+  /// No description provided for @setupStepPairMac.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the iPhone signed in and near this Mac with Bluetooth on, so macOS connects to it.'**
+  String get setupStepPairMac;
+
+  /// No description provided for @setupStepPairLinux.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer now shows up on the iPhone under Other Devices. Tap it there, and confirm the code on both.'**
+  String get setupStepPairLinux;
+
+  /// No description provided for @setupStepAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'When the iPhone asks, allow it to show notifications on this computer.'**
+  String get setupStepAllow;
+
+  /// No description provided for @setupStepChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the iPhone below.'**
+  String get setupStepChoose;
+
+  /// No description provided for @devicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired devices'**
+  String get devicesTitle;
+
+  /// No description provided for @devicesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired iPhone found yet.'**
+  String get devicesEmpty;
+
+  /// No description provided for @devicesRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Look again'**
+  String get devicesRefresh;
+
+  /// No description provided for @deviceUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get deviceUse;
+
+  /// No description provided for @deviceConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected now'**
+  String get deviceConnected;
+
+  /// No description provided for @deviceUnnamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed device'**
+  String get deviceUnnamed;
+
+  /// No description provided for @forget.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another iPhone'**
+  String get forget;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Show notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsNotificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New ones only. What was already on the iPhone stays there.'**
+  String get settingsNotificationsBody;
+
+  /// No description provided for @settingsMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media controls'**
+  String get settingsMedia;
+
+  /// No description provided for @settingsMediaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A card with what the iPhone plays, and its controls.'**
+  String get settingsMediaBody;
+
+  /// No description provided for @settingsHidePreviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide what notifications say'**
+  String get settingsHidePreviews;
+
+  /// No description provided for @settingsHidePreviewsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only which app it is, for when others can see your screen.'**
+  String get settingsHidePreviewsBody;
+
+  /// No description provided for @noticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{app}: {title}'**
+  String noticeTitle(String app, String title);
+
+  /// No description provided for @noticeHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'New notification'**
+  String get noticeHidden;
+
+  /// No description provided for @noticeFromIphone.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone'**
+  String get noticeFromIphone;
+
+  /// No description provided for @actionClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get actionClear;
+
+  /// No description provided for @actionAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get actionAnswer;
+
+  /// No description provided for @actionDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get actionDecline;
+
+  /// No description provided for @actionCallBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Call back'**
+  String get actionCallBack;
+
+  /// No description provided for @actionAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get actionAccept;
+
+  /// No description provided for @actionFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The iPhone didn\'t answer'**
+  String get actionFailedTitle;
+
+  /// No description provided for @actionFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn\'t reach your iPhone. Check that it\'s nearby and try again.'**
+  String get actionFailedBody;
 }
 
 class _IphoneLocalizationsDelegate

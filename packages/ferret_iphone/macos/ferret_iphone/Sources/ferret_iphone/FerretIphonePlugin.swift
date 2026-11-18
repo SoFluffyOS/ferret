@@ -1,13 +1,12 @@
 import Cocoa
 import FlutterMacOS
 
-public class FerretIphonePlugin: NSObject, FlutterPlugin, FerretIphonePluginApi {
-  public static func register(with registrar: FlutterPluginRegistrar) {
-    let instance = FerretIphonePlugin()
-    FerretIphonePluginApiSetup.setUp(binaryMessenger: registrar.messenger, api: instance)
-  }
+public class FerretIphonePlugin: NSObject, FlutterPlugin {
+  private static var central: AppleGattCentral?
 
-  public func getPlatformVersion() throws -> String {
-    return "macOS " + ProcessInfo.processInfo.operatingSystemVersionString
+  public static func register(with registrar: FlutterPluginRegistrar) {
+    let central = AppleGattCentral(messenger: registrar.messenger)
+    AppleGattHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: central)
+    FerretIphonePlugin.central = central
   }
 }

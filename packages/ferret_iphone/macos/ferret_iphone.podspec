@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'ferret_iphone'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'A Bluetooth LE client for an iPhone\'s ANCS and AMS services.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+Reads an iPhone's notifications and media over the Bluetooth LE services it offers bonded devices.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -24,7 +24,7 @@ A new Flutter plugin project.
 
   s.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.11'
+  s.platform = :osx, '12.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

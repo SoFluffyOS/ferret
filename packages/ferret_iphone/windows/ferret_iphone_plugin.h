@@ -1,28 +1,29 @@
 #ifndef FLUTTER_PLUGIN_FERRET_IPHONE_PLUGIN_H_
 #define FLUTTER_PLUGIN_FERRET_IPHONE_PLUGIN_H_
 
-#include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 
 #include <memory>
 
-#include "messages.g.h"
-
 namespace ferret_iphone {
 
-class FerretIphonePlugin : public flutter::Plugin, public FerretIphonePluginApi {
- public:
-  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
+class AppleGattClient;
 
-  FerretIphonePlugin();
+// Registers the iPhone GATT client (apple_gatt_client.h) with Flutter.
+class FerretIphonePlugin : public flutter::Plugin {
+ public:
+  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows* registrar);
+
+  explicit FerretIphonePlugin(flutter::BinaryMessenger* messenger);
 
   virtual ~FerretIphonePlugin();
 
-  // Disallow copy and assign.
   FerretIphonePlugin(const FerretIphonePlugin&) = delete;
   FerretIphonePlugin& operator=(const FerretIphonePlugin&) = delete;
 
-  ErrorOr<std::string> GetPlatformVersion() override;
+ private:
+  flutter::BinaryMessenger* messenger_;
+  std::shared_ptr<AppleGattClient> client_;
 };
 
 }  // namespace ferret_iphone
