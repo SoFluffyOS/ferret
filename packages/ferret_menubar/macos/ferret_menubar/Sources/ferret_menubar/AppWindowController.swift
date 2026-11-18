@@ -10,6 +10,7 @@ final class AppWindowController: NSObject, NSWindowDelegate {
     private let window: AppWindow
     private var viewController: FlutterViewController?
     private var dragView: DragDestinationView?
+    private var titleBarMonitor: Any?
     private lazy var canAddViews = MultiView.enable(on: engine)
 
     private static let defaultSize = NSSize(width: 1080, height: 720)
@@ -28,18 +29,60 @@ final class AppWindowController: NSObject, NSWindowDelegate {
         self.dock = dock
         window = AppWindow(
             contentRect: NSRect(origin: .zero, size: Self.defaultSize),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: true)
         super.init()
 
+        // The device list runs to the top edge under the traffic lights.
+        // The title stays set: VoiceOver and the Window menu read it.
         window.title = title
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
         window.isReleasedWhenClosed = false
         window.contentMinSize = Self.minimumSize
         window.tabbingMode = .disallowed
         window.center()
         window.setFrameAutosaveName("FerretWindow")
         window.delegate = self
+        titleBarMonitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
+            guard let self, self.handleTitleBarClick(event) else { return event }
+
+            return nil
+        }
+    }
+
+    deinit {
+        if let titleBarMonitor {
+            NSEvent.removeMonitor(titleBarMonitor)
+        }
+    }
+
+    /// The Flutter view runs under the title bar, so it would take the
+    /// clicks there. The band the traffic lights sit in still moves the
+    /// window, and a double click zooms or minimizes it as the person set
+    /// in System Settings. Flutter keeps that band free of controls.
+    private func handleTitleBarClick(_ event: NSEvent) -> Bool {
+        guard event.window === window, let frameView = window.contentView?.superview else { return false }
+
+        let titleBarHeight = window.frame.height - window.contentLayoutRect.height
+        let point = event.locationInWindow
+        guard point.y >= window.frame.height - titleBarHeight else { return false }
+
+        let hit = frameView.hitTest(frameView.convert(point, from: nil))
+        guard !(hit is NSButton) else { return false }
+
+        guard event.clickCount == 2 else {
+            window.performDrag(with: event)
+            return true
+        }
+
+        switch UserDefaults.standard.string(forKey: "AppleActionOnDoubleClick") {
+        case "Minimize": window.performMiniaturize(nil)
+        case "None": break
+        default: window.performZoom(nil)
+        }
+        return true
     }
 
     var isSupported: Bool { MultiView.isAvailable }

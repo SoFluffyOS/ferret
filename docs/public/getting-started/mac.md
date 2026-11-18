@@ -58,7 +58,9 @@ The window is not a big popover. It has room, so it uses it:
 - **Make it wide** (1200 points or more) and an **Activity** pane joins on the right: what is going on now, and the last things that happened with that device.
 - Lists and forms stop at a comfortable width and stay centred. Nothing stretches across a big screen.
 
-The window's title says where you are, such as **Pixel 9 — Messages**.
+The device list runs all the way to the top, with the traffic lights sitting on it, like Notes or Mail. Drag the top edge to move the window, and double-click it to zoom.
+
+The window's title says where you are, such as **Pixel 9 — Messages**. You see it in the **Window** menu and when you switch apps, and VoiceOver reads it.
 
 - **Resize** it like any window. It opens where you left it, at the size you left it, on the device and section you left it on.
 - **Close** it (⌘W or the red button) and only the window goes. Ferret keeps running in the menubar.

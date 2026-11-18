@@ -60,23 +60,28 @@ class WindowShellFrame extends StatelessWidget {
             },
             Expanded(
               child: PaneDropFrame(
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
-                      child: const AdaptiveContent(child: NeedsYouFrame()),
-                    ),
-                    // A route hides whatever was drawn before it from screen
-                    // readers, up to the nearest container: without this one
-                    // the pane's pages would take the device list with them.
-                    Expanded(
-                      child: Semantics(
-                        container: true,
-                        child: ClipRect(child: _TabsOnward(child: child)),
+                child: SafeArea(
+                  left: false,
+                  right: false,
+                  bottom: false,
+                  child: Column(
+                    crossAxisAlignment: .stretch,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
+                        child: const AdaptiveContent(child: NeedsYouFrame()),
                       ),
-                    ),
-                  ],
+                      // A route hides whatever was drawn before it from screen
+                      // readers, up to the nearest container: without this one
+                      // the pane's pages would take the device list with them.
+                      Expanded(
+                        child: Semantics(
+                          container: true,
+                          child: ClipRect(child: _TabsOnward(child: child)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

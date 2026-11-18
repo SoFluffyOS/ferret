@@ -107,19 +107,53 @@ class _Themed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onTitle = _windowTitle(context);
+
     return FerretTheme(
       child: ScreenSizeScope(
         child: FileDropZone(
           menubar: menubar,
           child: PairingPromptListener(
             navigatorKey: navigatorKey,
-            child: WindowShellFrame(
-              onTitle: _windowTitle(context),
-              child: child,
+            child: _UnderTitleBar(
+              isWindow: onTitle != null,
+              child: WindowShellFrame(onTitle: onTitle, child: child),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The Mac window draws under its see-through title bar. Its height counts
+/// as the view's top padding, so every `SafeArea` keeps clear of the
+/// traffic lights and the band stays free to move the window.
+class _UnderTitleBar extends StatelessWidget {
+  const _UnderTitleBar({required this.isWindow, required this.child});
+
+  final bool isWindow;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isWindow) {
+      return child;
+    }
+
+    final data = MediaQuery.of(context);
+    final padding = data.padding.copyWith(
+      top: WindowLayout.macTitleBarHeight,
+    );
+
+    return MediaQuery(
+      data: data.copyWith(
+        padding: padding,
+        viewPadding: data.viewPadding.copyWith(
+          top: WindowLayout.macTitleBarHeight,
+        ),
+      ),
+      child: child,
     );
   }
 }

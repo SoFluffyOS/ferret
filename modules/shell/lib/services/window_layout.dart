@@ -22,6 +22,10 @@ abstract final class WindowLayout {
   static bool showsActivityPane(BuildContext context) =>
       splits(context) && context.screenSize >= ScreenSize.larger;
 
+  /// The Mac window's title bar, which its content runs under: the device
+  /// list reaches the top edge, and the traffic lights sit over it.
+  static const double macTitleBarHeight = 28;
+
   /// How wide the device list is on a [screenSize] view.
   static double sidebarWidth(ScreenSize screenSize) => switch (screenSize) {
     .small || .normal => PaneWidths.narrowSidebar,
