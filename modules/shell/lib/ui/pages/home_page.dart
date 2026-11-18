@@ -22,6 +22,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
+    final hasDevices = context.select<EngineHost, bool>(
+      (host) => host.devices.isNotEmpty,
+    );
     final l10n = context.shellL10n;
     final palette = context.palette;
 
@@ -70,11 +73,12 @@ class HomePage extends StatelessWidget {
       children: [
         const PauseBanner(),
         const StayConnectedCard(),
-        for (final feature in scope.features)
-          FeatureCardSlot(
-            feature: feature,
-            featureContext: scope.featureContext,
-          ),
+        if (hasDevices)
+          for (final feature in scope.features)
+            FeatureCardSlot(
+              feature: feature,
+              featureContext: scope.featureContext,
+            ),
         DevicesFrame(
           onOpen: (status) => _openDevice(context, status),
           onPair: () => _openPairing(context),

@@ -117,6 +117,7 @@ class SystemNotifier implements LocalNotifier {
                       action.id,
                       action.label,
                       buttonTitle: action.label,
+                      placeholder: action.label,
                     ),
                     false => DarwinNotificationAction.plain(
                       action.id,
