@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
 import 'package:ferret_mirror_scrcpy/ferret_mirror_scrcpy.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,14 +56,80 @@ void main() {
     });
   });
 
-  group('ScrcpyRelease', () {
-    test('pins the server of its own version, from scrcpy\'s releases', () {
+  group('ScrcpyServerBundle', () {
+    final asset = File('assets/${ScrcpyRelease.serverFileName}');
+    late Directory directory;
+
+    Future<ByteData> loadAsset() async =>
+        ByteData.sublistView(await asset.readAsBytes());
+
+    setUp(() async {
+      directory = await Directory.systemTemp.createTemp('scrcpy_bundle');
+    });
+
+    tearDown(() => directory.delete(recursive: true));
+
+    test('ships the server scrcpy released, to the byte', () async {
+      final digest = sha256.convert(await asset.readAsBytes());
+
+      expect(digest.toString(), ScrcpyRelease.serverSha256);
       expect(
-        ScrcpyRelease.server.url,
-        'https://github.com/Genymobile/scrcpy/releases/download/'
-        'v${ScrcpyRelease.version}/scrcpy-server-v${ScrcpyRelease.version}',
+        ScrcpyRelease.serverAsset,
+        'packages/ferret_mirror_scrcpy/assets/scrcpy-server-v5.0.1',
       );
-      expect(ScrcpyRelease.server.sha256, matches(RegExp(r'^[0-9a-f]{64}$')));
+    });
+
+    test('ships scrcpy\'s licence and a notice next to it', () {
+      final licence = File('assets/scrcpy-LICENSE.txt').readAsStringSync();
+      final notice = File('assets/scrcpy-NOTICE.txt').readAsStringSync();
+
+      expect(licence, contains('Apache License'));
+      expect(notice, contains(ScrcpyRelease.serverSha256));
+      expect(notice, contains('not modified'));
+    });
+
+    test('writes the bundled server out once', () async {
+      var loads = 0;
+      final bundle = ScrcpyServerBundle(
+        directory: () async => directory,
+        load: () {
+          loads++;
+          return loadAsset();
+        },
+      );
+
+      final file = await bundle.ensure();
+      await bundle.ensure();
+
+      expect(file.path, endsWith(ScrcpyRelease.serverFileName));
+      expect(await file.length(), await asset.length());
+      expect(loads, 1);
+    });
+
+    test('replaces a file on disk that was changed', () async {
+      final bundle = ScrcpyServerBundle(
+        directory: () async => directory,
+        load: loadAsset,
+      );
+      final file = await bundle.ensure();
+      await file.writeAsString('tampered');
+
+      final again = await bundle.ensure();
+
+      expect(await again.length(), await asset.length());
+    });
+
+    test('refuses bundled bytes that are not the pinned ones', () async {
+      final bundle = ScrcpyServerBundle(
+        directory: () async => directory,
+        load: () async => ByteData(16),
+      );
+
+      await expectLater(
+        bundle.ensure(),
+        throwsA(isA<ScrcpyServerException>()),
+      );
+      expect(await directory.list().toList(), isEmpty);
     });
   });
 

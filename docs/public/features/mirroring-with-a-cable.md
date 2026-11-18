@@ -66,13 +66,13 @@ Debugging is a strong permission. Be sure about it.
 - Only allow computers that are yours.
 - Done? Turn **USB debugging** off again, or tap **Revoke USB debugging authorizations** in Developer options to forget every computer.
 
-## 📦 What Ferret downloads
+## 📦 Nothing is downloaded
 
-Ferret never talks to the internet on its own. This is the one place where it has to fetch something, and only when you use it: **scrcpy's server**, a small helper that captures the screen on the phone.
+Ferret never talks to the internet on its own, and it doesn't here.
 
-Ferret downloads it from [scrcpy's releases on GitHub](https://github.com/Genymobile/scrcpy/releases), checks its SHA-256, and copies it to the phone for as long as the picture runs. It deletes itself after.
+The small helper that captures the screen on the phone is **scrcpy's server**. It ships inside Ferret. Ferret checks it, copies it to the phone for as long as the picture runs, and it deletes itself after.
 
-It also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it, and Ferret finds it. If not, install [Google's platform-tools](https://developer.android.com/tools/releases/platform-tools).
+Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it, and Ferret finds it. If not, install [Google's platform-tools](https://developer.android.com/tools/releases/platform-tools).
 
 Nothing about you or your phone is sent anywhere. The picture goes from the phone to your computer, over the cable or your own Wi-Fi.
 
@@ -100,4 +100,4 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 
 ## 🙏 Thanks
 
-This works thanks to [scrcpy](https://github.com/Genymobile/scrcpy) by Genymobile, under the Apache License 2.0. Ferret runs its server as it is.
+This works thanks to [scrcpy](https://github.com/Genymobile/scrcpy) by Genymobile, under the Apache License 2.0. Ferret ships its server as it is.

@@ -18,17 +18,21 @@ import 'package:path_provider/path_provider.dart';
 class ScrcpyRoute implements MirrorRoute {
   ScrcpyRoute({
     Future<Directory> Function()? supportDirectory,
-    Future<AdbClient?> Function()? findAdb,
+    Future<AdbBridge?> Function()? findAdb,
+    AdbHostClient? hostAdb,
+    ScrcpyServerBundle? serverBundle,
     String? operatingSystem,
     this.pollInterval = const Duration(seconds: 2),
   }) : _supportDirectory = supportDirectory ?? _defaultSupportDirectory,
        _findAdbOverride = findAdb,
+       _hostAdb = hostAdb ?? AdbHostClient(),
        _operatingSystem = operatingSystem ?? Platform.operatingSystem {
     _installer = AdbInstaller(
       directory: _supportDirectory,
       operatingSystem: _operatingSystem,
     );
-    _serverCache = ScrcpyServerCache(directory: _supportDirectory);
+    _serverBundle =
+        serverBundle ?? ScrcpyServerBundle(directory: _supportDirectory);
     _changes = .broadcast(onListen: _startPolling, onCancel: _stopPolling);
   }
 
@@ -39,14 +43,15 @@ class ScrcpyRoute implements MirrorRoute {
   final Duration pollInterval;
 
   final Future<Directory> Function() _supportDirectory;
-  final Future<AdbClient?> Function()? _findAdbOverride;
+  final Future<AdbBridge?> Function()? _findAdbOverride;
+  final AdbHostClient _hostAdb;
   final String _operatingSystem;
   late final AdbInstaller _installer;
-  late final ScrcpyServerCache _serverCache;
+  late final ScrcpyServerBundle _serverBundle;
   late final StreamController<List<MirrorTarget>> _changes;
   final Set<ScrcpyFeed> _feeds = {};
 
-  AdbClient? _adb;
+  AdbClient? _program;
   Timer? _poll;
   List<MirrorTarget>? _lastTargets;
   bool _isPolling = false;
@@ -108,7 +113,7 @@ class ScrcpyRoute implements MirrorRoute {
     final feed = ScrcpyFeed(
       target: target,
       adb: adb,
-      serverCache: _serverCache,
+      serverBundle: _serverBundle,
       options: options,
     );
     _feeds.add(feed);
@@ -123,11 +128,15 @@ class ScrcpyRoute implements MirrorRoute {
     await _changes.close();
   }
 
-  /// Downloads Google's platform-tools for this computer into Ferret's own
-  /// folder, checked against a pinned SHA-256. For when [status] says
-  /// [RouteSetup.installTool]. Throws a `DownloadException` when it fails.
+  /// Downloads Android's platform-tools (adb) from Google into Ferret's
+  /// own folder, checked against a pinned SHA-256.
+  ///
+  /// This is the only thing in this package that reaches the internet.
+  /// Call it from a button the user pressed, whose text says it downloads
+  /// Android's platform tools from Google. Never call it on your own.
+  /// Throws a `DownloadException` when it fails.
   Future<void> installAdb() async {
-    _adb = AdbClient(await _installer.install());
+    _program = AdbClient(await _installer.install());
   }
 
   /// Every device adb sees, including the ones still to authorize, so the
@@ -164,7 +173,7 @@ class ScrcpyRoute implements MirrorRoute {
   }
 
   Future<AdbResult> _withAdb(
-    Future<AdbResult> Function(AdbClient adb) command,
+    Future<AdbResult> Function(AdbBridge adb) command,
   ) async {
     final adb = await _locateAdb();
     if (adb == null) {
@@ -178,13 +187,20 @@ class ScrcpyRoute implements MirrorRoute {
     }
   }
 
-  Future<AdbClient?> _locateAdb() async {
-    if (_adb case final known?) {
-      return known;
+  /// adb's server when one is running, which needs no program and works
+  /// inside a sandbox. The `adb` program otherwise: its first command
+  /// starts the server, so the next call finds it.
+  Future<AdbBridge?> _locateAdb() async {
+    if (_findAdbOverride case final findAdb?) {
+      return findAdb();
     }
 
-    if (_findAdbOverride case final findAdb?) {
-      return _adb = await findAdb();
+    if (await _hostAdb.isRunning()) {
+      return _hostAdb;
+    }
+
+    if (_program case final known?) {
+      return known;
     }
 
     final locator = AdbLocator(
@@ -196,10 +212,10 @@ class ScrcpyRoute implements MirrorRoute {
       return null;
     }
 
-    return _adb = AdbClient(executable);
+    return _program = AdbClient(executable);
   }
 
-  Future<List<AdbDevice>> _devicesOf(AdbClient adb) async {
+  Future<List<AdbDevice>> _devicesOf(AdbBridge adb) async {
     try {
       return await adb.devices();
     } on AdbException catch (error) {

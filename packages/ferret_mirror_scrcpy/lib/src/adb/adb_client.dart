@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:ferret_mirror_scrcpy/src/adb/adb_bridge.dart';
+import 'package:ferret_mirror_scrcpy/src/adb/adb_connection.dart';
 import 'package:ferret_mirror_scrcpy/src/adb/adb_device.dart';
 import 'package:ferret_mirror_scrcpy/src/adb/adb_exception.dart';
 import 'package:ferret_mirror_scrcpy/src/adb/adb_result.dart';
+import 'package:ferret_mirror_scrcpy/src/adb/adb_shell.dart';
 
-/// Talks to Android devices by running the `adb` program.
-class AdbClient {
+/// Talks to Android devices by running the `adb` program. Its first
+/// command starts adb's background server when none is running.
+class AdbClient implements AdbBridge {
   AdbClient(this.executable);
 
   static const Duration _commandTimeout = Duration(seconds: 20);
@@ -15,18 +20,106 @@ class AdbClient {
   /// The path of the adb program.
   final String executable;
 
-  /// Every device adb knows, whatever its state. Starts adb's own
-  /// background server when it isn't running.
+  final Map<String, int> _forwardedPorts = {};
+
+  @override
   Future<List<AdbDevice>> devices() async =>
       AdbDevice.parseList(await _run(['devices', '-l']));
 
-  Future<void> push(String serial, String localPath, String devicePath) async {
-    await _run(['-s', serial, 'push', localPath, devicePath]);
+  @override
+  Future<void> push(String serial, File file, String devicePath) async {
+    await _run(['-s', serial, 'push', file.path, devicePath]);
   }
 
-  /// Opens a port on this computer that leads to the abstract socket
-  /// [socketName] on the device, and returns the port adb picked.
-  Future<int> forward(String serial, String socketName) async {
+  @override
+  Future<String> shell(String serial, List<String> command) =>
+      _run(['-s', serial, 'shell', ...command]);
+
+  @override
+  Future<AdbShell> startShell(String serial, List<String> command) async {
+    final Process process;
+    try {
+      process = await Process.start(executable, [
+        '-s',
+        serial,
+        'shell',
+        ...command,
+      ]);
+    } on ProcessException catch (error) {
+      throw AdbException('Could not run adb: ${error.message}');
+    }
+
+    final lines = StreamController<String>();
+    var openStreams = 2;
+    void closeOne() {
+      openStreams--;
+      if (openStreams == 0) {
+        unawaited(lines.close());
+      }
+    }
+
+    for (final output in [process.stdout, process.stderr]) {
+      output
+          .transform(const Utf8Decoder(allowMalformed: true))
+          .transform(const LineSplitter())
+          .listen(lines.add, onError: (Object _) {}, onDone: closeOne);
+    }
+
+    return AdbShell(
+      lines: lines.stream,
+      done: process.exitCode.then<void>((_) {}),
+      kill: process.kill,
+    );
+  }
+
+  /// Through a port adb forwards to the device, opened on the first call.
+  /// Such a port takes connections even while nothing listens on the
+  /// device, and then closes them.
+  @override
+  Future<AdbConnection?> open(String serial, String socketName) async {
+    final key = '$serial $socketName';
+    final port = _forwardedPorts[key] ??= await _forward(serial, socketName);
+    try {
+      final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
+      return SocketAdbConnection(socket);
+    } on SocketException {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> release(String serial, String socketName) async {
+    final port = _forwardedPorts.remove('$serial $socketName');
+    if (port == null) {
+      return;
+    }
+
+    await _run(['-s', serial, 'forward', '--remove', 'tcp:$port']);
+  }
+
+  @override
+  Future<AdbResult> pair(String address, String code) async {
+    final output = await _runLenient(['pair', address, code]);
+    return AdbResult(
+      succeeded: output.contains('Successfully paired'),
+      message: output,
+    );
+  }
+
+  @override
+  Future<AdbResult> connect(String address) async {
+    final output = await _runLenient(['connect', address]);
+    final isConnected =
+        output.contains('connected to') && !output.contains('failed');
+    return AdbResult(succeeded: isConnected, message: output);
+  }
+
+  @override
+  Future<void> disconnect(String address) async {
+    await _runLenient(['disconnect', address]);
+  }
+
+  Future<int> _forward(String serial, String socketName) async {
     final output = await _run([
       '-s',
       serial,
@@ -40,43 +133,6 @@ class AdbClient {
     }
 
     return port;
-  }
-
-  Future<void> removeForward(String serial, int port) async {
-    await _run(['-s', serial, 'forward', '--remove', 'tcp:$port']);
-  }
-
-  /// Runs [command] on the device and returns what it printed.
-  Future<String> shell(String serial, List<String> command) =>
-      _run(['-s', serial, 'shell', ...command]);
-
-  /// Starts [command] on the device and leaves it running: it ends with
-  /// the returned process.
-  Future<Process> startShell(String serial, List<String> command) =>
-      Process.start(executable, ['-s', serial, 'shell', ...command]);
-
-  /// Pairs with a device showing "Pair device with pairing code" (Android
-  /// 11 and later). [address] is the `host:port` on that screen, which is
-  /// not the one to [connect] to.
-  Future<AdbResult> pair(String address, String code) async {
-    final output = await _runLenient(['pair', address, code]);
-    return AdbResult(
-      succeeded: output.contains('Successfully paired'),
-      message: output,
-    );
-  }
-
-  /// Connects to a device over the network, at the `host:port` on its
-  /// Wireless debugging screen.
-  Future<AdbResult> connect(String address) async {
-    final output = await _runLenient(['connect', address]);
-    final isConnected =
-        output.contains('connected to') && !output.contains('failed');
-    return AdbResult(succeeded: isConnected, message: output);
-  }
-
-  Future<void> disconnect(String address) async {
-    await _runLenient(['disconnect', address]);
   }
 
   Future<String> _run(List<String> arguments) async {

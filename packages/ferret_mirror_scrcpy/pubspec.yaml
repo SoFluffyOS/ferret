@@ -25,3 +25,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
+
+flutter:
+  assets:
+    # scrcpy's released server, unmodified (Apache-2.0), with its licence.
+    - assets/scrcpy-server-v5.0.1
+    - assets/scrcpy-LICENSE.txt
+    - assets/scrcpy-NOTICE.txt

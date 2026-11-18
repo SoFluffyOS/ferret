@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:ferret_mirror_scrcpy/src/adb/adb.dart';
-import 'package:ferret_mirror_scrcpy/src/download/download.dart';
 import 'package:ferret_mirror_scrcpy/src/protocol/protocol.dart';
 import 'package:ferret_mirror_scrcpy/src/route/scrcpy_control.dart';
 import 'package:ferret_mirror_scrcpy/src/route/scrcpy_sockets.dart';
@@ -21,12 +19,12 @@ import 'package:ferret_mirroring/ferret_mirroring.dart';
 class ScrcpyFeed implements MirrorFeed {
   ScrcpyFeed({
     required this.target,
-    required AdbClient adb,
-    required ScrcpyServerCache serverCache,
+    required AdbBridge adb,
+    required ScrcpyServerBundle serverBundle,
     required FeedOptions options,
     Random? random,
   }) : _adb = adb,
-       _serverCache = serverCache,
+       _serverBundle = serverBundle,
        _options = options,
        _serverOptions = .from(
          options,
@@ -42,8 +40,8 @@ class ScrcpyFeed implements MirrorFeed {
   @override
   final MirrorTarget target;
 
-  final AdbClient _adb;
-  final ScrcpyServerCache _serverCache;
+  final AdbBridge _adb;
+  final ScrcpyServerBundle _serverBundle;
   final FeedOptions _options;
   final ScrcpyServerOptions _serverOptions;
   final H264FeedAssembler _assembler;
@@ -51,8 +49,7 @@ class ScrcpyFeed implements MirrorFeed {
   final StreamController<FeedEvent> _events = .new();
   late final ScrcpyControl _control;
 
-  Process? _server;
-  int? _forwardedPort;
+  AdbShell? _server;
   ScrcpySockets? _sockets;
   StreamSubscription<Uint8List>? _videoSubscription;
   String _lastServerLine = '';
@@ -93,9 +90,9 @@ class ScrcpyFeed implements MirrorFeed {
     }
 
     try {
-      final serverFile = await _serverCache.ensure();
+      final serverFile = await _serverBundle.ensure();
       await _launch(serverFile);
-    } on DownloadException catch (error) {
+    } on ScrcpyServerException catch (error) {
       await _end(.failed, detail: error.message);
     } on AdbException catch (error) {
       await _end(.notConnected, detail: error.message);
@@ -106,7 +103,7 @@ class ScrcpyFeed implements MirrorFeed {
 
   Future<void> _launch(File serverFile) async {
     final serial = target.id;
-    await _adb.push(serial, serverFile.path, _serverOptions.devicePath);
+    await _adb.push(serial, serverFile, _serverOptions.devicePath);
     if (_ended) {
       return _removeServerFile();
     }
@@ -115,18 +112,12 @@ class ScrcpyFeed implements MirrorFeed {
     _server = server;
     _watch(server);
 
-    final port = await _adb.forward(serial, _serverOptions.socketName);
-    _forwardedPort = port;
-    if (_ended) {
-      return _cleanUp();
-    }
-
     final sockets = await ScrcpySockets.connect(
-      port,
+      () => _adb.open(serial, _serverOptions.socketName),
       shouldGiveUp: () => _ended,
     );
     if (_ended) {
-      await sockets?.close();
+      sockets?.close();
       return _cleanUp();
     }
 
@@ -143,32 +134,19 @@ class ScrcpyFeed implements MirrorFeed {
 
   /// Keeps the server's last words for a failure's detail, and ends the
   /// feed when the server ends first.
-  void _watch(Process server) {
-    void remember(String line) {
+  void _watch(AdbShell server) {
+    server.lines.listen((line) {
       if (line.trim().isNotEmpty) {
         _lastServerLine = line.trim();
       }
-    }
-
-    const decoder = Utf8Decoder(allowMalformed: true);
-    server.stdout
-        .transform(decoder)
-        .transform(const LineSplitter())
-        .listen(remember, onError: (Object _) {});
-    server.stderr
-        .transform(decoder)
-        .transform(const LineSplitter())
-        .listen(remember, onError: (Object _) {});
+    }, onError: (Object _) {});
     unawaited(
-      server.exitCode.then((exitCode) {
+      server.done.then((_) {
         final reason = switch (_sockets) {
           null => FeedEnd.failed,
           _ => FeedEnd.lostConnection,
         };
-        return _end(
-          reason,
-          detail: 'scrcpy ended ($exitCode): $_lastServerLine',
-        );
+        return _end(reason, detail: 'scrcpy ended: $_lastServerLine');
       }),
     );
   }
@@ -224,27 +202,19 @@ class ScrcpyFeed implements MirrorFeed {
   }
 
   /// Closing the sockets is what tells the server to end. It gets a moment
-  /// to do so and delete its own file, then the adb process is killed.
+  /// to do so and delete its own file, then it is cut off.
   Future<void> _cleanUp() async {
     await _videoSubscription?.cancel();
-    await _sockets?.close();
+    _sockets?.close();
 
     if (_server case final server?) {
       _server = null;
-      await server.exitCode.timeout(
-        _serverExitGrace,
-        onTimeout: () {
-          server.kill();
-          return server.exitCode;
-        },
-      );
+      await server.done.timeout(_serverExitGrace, onTimeout: server.kill);
     }
 
-    if (_forwardedPort case final port?) {
-      _forwardedPort = null;
-      await _quietly(() => _adb.removeForward(target.id, port));
-    }
-
+    await _quietly(
+      () => _adb.release(target.id, _serverOptions.socketName),
+    );
     await _removeServerFile();
   }
 

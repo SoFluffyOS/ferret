@@ -22,4 +22,7 @@ class ByteQueue {
 
     return Uint8List.sublistView(all, 0, count);
   }
+
+  /// Everything that arrived and wasn't read yet.
+  Uint8List takeAll() => _pending.takeBytes();
 }
