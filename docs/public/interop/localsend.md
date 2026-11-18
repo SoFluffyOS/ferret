@@ -3,7 +3,7 @@
 > **TL;DR**
 >
 > 1. **To send:** pick **Send files…** on the Drop card. Devices running LocalSend show up next to your own, labelled **LocalSend**.
-> 2. **To receive:** tap **On for 10 min** next to **Receive from LocalSend**.
+> 2. **To receive:** open **Receive from other apps** on the Drop card and tap **On for 10 min** next to **LocalSend**.
 > 3. Accept the offer when it shows up. The files land in your receive folder. That's it.
 
 Your friend has an iPhone and you don't want to install another app just to get three photos. Or your second laptop only runs [LocalSend](https://localsend.org).
@@ -37,7 +37,7 @@ Some people protect LocalSend with a PIN. The transfer stops with **Enter PIN**.
 
 Receiving is **off** until you turn it on. While it's off, Ferret doesn't listen for LocalSend at all.
 
-1. On the Drop card, tap **On for 10 min** next to **Receive from LocalSend**.
+1. On the Drop card, open **Receive from other apps** and tap **On for 10 min** next to **LocalSend**.
 2. The card shows the name the other device will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the other device, open LocalSend, pick the files and pick your device.
 4. Ferret shows the offer. Check it, then **Accept** or **Decline**.
@@ -47,7 +47,7 @@ After 10 minutes Ferret stops listening by itself. A transfer that is still runn
 ### From an iPhone
 
 1. Install **LocalSend** from the App Store and open it. Allow **Local Network** access when iOS asks. Without it the iPhone can't see anything.
-2. In Ferret, turn on **Receive from LocalSend**.
+2. In Ferret, turn on **LocalSend** under **Receive from other apps**.
 3. On the iPhone, tap **Send**, pick your photos or files, then tap your device under **Nearby devices**. Not listed? Tap the refresh button.
 4. Accept in Ferret.
 
