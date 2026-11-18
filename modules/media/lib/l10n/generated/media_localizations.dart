@@ -199,7 +199,7 @@ abstract class MediaLocalizations {
   /// No description provided for @deviceNotSharing.
   ///
   /// In en, this message translates to:
-  /// **'{device} stopped sharing its media. On {device}: turn on Share my media.'**
+  /// **'{device} stopped sharing its media. On {device}: Settings → Continue & media → Share my media.'**
   String deviceNotSharing(String device);
 
   /// No description provided for @commandUnsupported.
@@ -243,6 +243,84 @@ abstract class MediaLocalizations {
   /// In en, this message translates to:
   /// **'What plays on your other devices, with controls and Continue here.'**
   String get settingsShowRemoteBody;
+
+  /// No description provided for @summaryShowsAndShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows and shares what plays'**
+  String get summaryShowsAndShares;
+
+  /// No description provided for @summaryShows.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows what your devices play'**
+  String get summaryShows;
+
+  /// No description provided for @summaryShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Shares what plays here'**
+  String get summaryShares;
+
+  /// No description provided for @summaryOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get summaryOff;
+
+  /// No description provided for @healthUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a Ferret update on {name}'**
+  String healthUnsupported(String name);
+
+  /// No description provided for @healthShowsTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows what plays on {name}.'**
+  String healthShowsTheirs(String name);
+
+  /// No description provided for @healthNothingPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing playing on {name}, or it isn\'t sharing.'**
+  String healthNothingPlaying(String name);
+
+  /// No description provided for @healthSharesMine.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.'**
+  String healthSharesMine(String name, String here);
+
+  /// No description provided for @healthLostAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret can\'t see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  String healthLostAccess(String here);
+
+  /// No description provided for @healthOffHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  String healthOffHere(String here);
+
+  /// No description provided for @healthNotShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  String healthNotShared(String here);
+
+  /// No description provided for @healthShowHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Continue & media → Show media from other devices'**
+  String get healthShowHelp;
+
+  /// No description provided for @healthShareHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Continue & media → Share my media'**
+  String get healthShareHelp;
 
   /// No description provided for @accessAndroid.
   ///
@@ -303,6 +381,12 @@ abstract class MediaLocalizations {
   /// In en, this message translates to:
   /// **'Ferret sees players that support MPRIS, which most Linux players do.'**
   String get limitLinux;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
 }
 
 class _MediaLocalizationsDelegate

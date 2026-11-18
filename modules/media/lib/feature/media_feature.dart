@@ -33,6 +33,9 @@ class MediaFeature extends Feature {
   }
 
   static const featureId = 'media';
+
+  /// Flag in [FeatureSupport]: this device can share what it plays.
+  static const shareFlag = 'share';
   static const _commandTimeout = Duration(seconds: 8);
   static const _continueTimeout = Duration(seconds: 10);
 
@@ -64,7 +67,7 @@ class MediaFeature extends Feature {
 
   @override
   List<String> get flags => [
-    if (_backendFactory != null) 'share',
+    if (_backendFactory != null) shareFlag,
     'control',
   ];
 
@@ -82,6 +85,10 @@ class MediaFeature extends Feature {
 
   bool get shareEnabled =>
       host.settings.get<bool>(MediaSettings.share) ?? shareByDefault;
+
+  /// Whether the person turned sharing on themselves, rather than it being
+  /// on because that is where it starts.
+  bool get shareChosen => host.settings.get<bool>(MediaSettings.share) == true;
 
   bool get showRemote =>
       host.settings.get<bool>(MediaSettings.showRemote) ?? true;

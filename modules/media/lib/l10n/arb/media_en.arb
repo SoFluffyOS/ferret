@@ -69,7 +69,7 @@
       }
     }
   },
-  "deviceNotSharing": "{device} stopped sharing its media. On {device}: turn on Share my media.",
+  "deviceNotSharing": "{device} stopped sharing its media. On {device}: Settings → Continue & media → Share my media.",
   "@deviceNotSharing": {
     "placeholders": {
       "device": {
@@ -91,6 +91,40 @@
   "settingsShareBody": "Your other devices see what plays here and can control it.",
   "settingsShowRemote": "Show media from other devices",
   "settingsShowRemoteBody": "What plays on your other devices, with controls and Continue here.",
+  "summaryShowsAndShares": "Shows and shares what plays",
+  "summaryShows": "Shows what your devices play",
+  "summaryShares": "Shares what plays here",
+  "summaryOff": "Off",
+  "healthUnsupported": "Needs a Ferret update on {name}",
+  "@healthUnsupported": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthShowsTheirs": "Shows what plays on {name}.",
+  "@healthShowsTheirs": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthNothingPlaying": "Nothing playing on {name}, or it isn't sharing.",
+  "@healthNothingPlaying": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
+  "@healthSharesMine": {
+    "placeholders": {"name": {"type": "String"}, "here": {"type": "String"}}
+  },
+  "healthLostAccess": "Ferret can't see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "@healthLostAccess": {
+    "placeholders": {"here": {"type": "String"}}
+  },
+  "healthOffHere": "Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "@healthOffHere": {
+    "placeholders": {"here": {"type": "String"}}
+  },
+  "healthNotShared": "Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "@healthNotShared": {
+    "placeholders": {"here": {"type": "String"}}
+  },
+  "healthShowHelp": "Settings → Continue & media → Show media from other devices",
+  "healthShareHelp": "Settings → Continue & media → Share my media",
   "accessAndroid": "Ferret needs Notification access to see what plays on this phone. It only reads media controls here.",
   "accessMacos": "macOS asks once to let Ferret control Music and Spotify.",
   "accessDenied": "Ferret can't control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.",
@@ -100,5 +134,6 @@
   "limitMacos": "On a Mac, Ferret sees Music and Spotify. macOS doesn't let apps see other players.",
   "limitIos": "iPhone doesn't let apps see what other apps play. You can still see and control media on your other devices.",
   "limitWindows": "Ferret sees players that show in the Windows media controls. Volume stays on this PC.",
-  "limitLinux": "Ferret sees players that support MPRIS, which most Linux players do."
+  "limitLinux": "Ferret sees players that support MPRIS, which most Linux players do.",
+  "back": "Back"
 }

@@ -33,6 +33,7 @@ class MediaViewModel extends ChangeNotifier {
   bool _continuing = false;
   bool _askedAccess = false;
   bool _shareEnabled = false;
+  bool _shareChosen = false;
   bool _showRemote = true;
   bool _pauseOnCall = true;
   MediaAccess? _access;
@@ -54,6 +55,17 @@ class MediaViewModel extends ChangeNotifier {
   bool get canShare => _feature.canShare;
 
   MediaAccess? get access => _access;
+
+  /// Whether other devices see what plays here right now: sharing is on and
+  /// the platform lets Ferret see the players.
+  bool get isSharing =>
+      canShare &&
+      _shareEnabled &&
+      _access != .notGranted &&
+      _access != .unsupported;
+
+  /// The person turned sharing on, but Ferret may not see the players.
+  bool get lostAccess => canShare && _shareChosen && _access == .notGranted;
 
   /// Whether this session already asked for access, so a refusal shows the
   /// way to System Settings instead of asking again.
@@ -146,6 +158,16 @@ class MediaViewModel extends ChangeNotifier {
 
   Future<void> openAccessSettings() => _feature.openAccessSettings();
 
+  /// Gets access back the shortest way: macOS asks in place once, every
+  /// other time the system settings are where it is allowed.
+  Future<void> fixAccess() {
+    if (platform == .macos && !_askedAccess) {
+      return requestAccess();
+    }
+
+    return openAccessSettings();
+  }
+
   Future<void> refreshAccess() async {
     await _feature.refreshAccess();
     _refresh();
@@ -178,6 +200,7 @@ class MediaViewModel extends ChangeNotifier {
     _players = _feature.remotePlayers;
     _selected = PlayerSelector.select(_players, pick: _pick);
     _shareEnabled = _feature.shareEnabled;
+    _shareChosen = _feature.shareChosen;
     _showRemote = _feature.showRemote;
     _pauseOnCall = _feature.pauseOnCall;
     _access = _feature.localAccess;

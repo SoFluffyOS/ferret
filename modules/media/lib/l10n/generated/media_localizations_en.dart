@@ -77,7 +77,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
 
   @override
   String deviceNotSharing(String device) {
-    return '$device stopped sharing its media. On $device: turn on Share my media.';
+    return '$device stopped sharing its media. On $device: Settings → Continue & media → Share my media.';
   }
 
   @override
@@ -104,6 +104,100 @@ class MediaLocalizationsEn extends MediaLocalizations {
   @override
   String get settingsShowRemoteBody =>
       'What plays on your other devices, with controls and Continue here.';
+
+  @override
+  String get summaryShowsAndShares => 'Shows and shares what plays';
+
+  @override
+  String get summaryShows => 'Shows what your devices play';
+
+  @override
+  String get summaryShares => 'Shares what plays here';
+
+  @override
+  String get summaryOff => 'Off';
+
+  @override
+  String healthUnsupported(String name) {
+    return 'Needs a Ferret update on $name';
+  }
+
+  @override
+  String healthShowsTheirs(String name) {
+    return 'Shows what plays on $name.';
+  }
+
+  @override
+  String healthNothingPlaying(String name) {
+    return 'Nothing playing on $name, or it isn\'t sharing.';
+  }
+
+  @override
+  String healthSharesMine(String name, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macos': 'this Mac',
+        'android': 'this phone',
+        'ios': 'this iPhone',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$name sees what plays on $_temp0.';
+  }
+
+  @override
+  String healthLostAccess(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macos': 'this Mac',
+        'android': 'this phone',
+        'ios': 'this iPhone',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Ferret can\'t see what plays on $_temp0';
+  }
+
+  @override
+  String healthOffHere(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macos': 'this Mac',
+        'android': 'this phone',
+        'ios': 'this iPhone',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Off on $_temp0';
+  }
+
+  @override
+  String healthNotShared(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macos': 'this Mac',
+        'android': 'this phone',
+        'ios': 'this iPhone',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Not shared from $_temp0';
+  }
+
+  @override
+  String get healthShowHelp =>
+      'Settings → Continue & media → Show media from other devices';
+
+  @override
+  String get healthShareHelp => 'Settings → Continue & media → Share my media';
 
   @override
   String get accessAndroid =>
@@ -141,4 +235,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
   @override
   String get limitLinux =>
       'Ferret sees players that support MPRIS, which most Linux players do.';
+
+  @override
+  String get back => 'Back';
 }
