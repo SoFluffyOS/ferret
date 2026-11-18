@@ -96,16 +96,18 @@ final class MenubarController: NSObject, NSPopoverDelegate {
 
     private var mouseMonitor: Any?
 
-    /// AppKit hands mouse presses to the Flutter view inside a popover but
+    /// AppKit hands mouse presses and scrolls to the Flutter view inside a popover but
     /// never on to its view controller, which is where Flutter reads them
     /// (flutter/flutter#115015; Flutter works around it only before macOS
     /// 13.3.1, and it is back in later releases). Presses on the Flutter view,
     /// docked or detached, go to the controller here instead, and nowhere else.
     private func forwardMouseButtons() {
+        // Scroll and trackpad gestures (pan, pinch, rotate) are lost the same way.
         let types: NSEvent.EventTypeMask = [
             .leftMouseDown, .leftMouseUp, .leftMouseDragged,
             .rightMouseDown, .rightMouseUp, .rightMouseDragged,
             .otherMouseDown, .otherMouseUp, .otherMouseDragged,
+            .scrollWheel, .magnify, .rotate,
         ]
         mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: types) { [weak self] event in
             guard let controller = self?.popover.contentViewController,
@@ -127,6 +129,9 @@ final class MenubarController: NSObject, NSPopoverDelegate {
             case .otherMouseDown: controller.otherMouseDown(with: event)
             case .otherMouseUp: controller.otherMouseUp(with: event)
             case .otherMouseDragged: controller.otherMouseDragged(with: event)
+            case .scrollWheel: controller.scrollWheel(with: event)
+            case .magnify: controller.magnify(with: event)
+            case .rotate: controller.rotate(with: event)
             default: return event
             }
             return nil
