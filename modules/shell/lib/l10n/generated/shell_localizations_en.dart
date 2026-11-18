@@ -859,7 +859,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get joinedUndo => 'Undo';
 
   @override
-  String get joinedKeep => 'OK';
+  String get joinedKeep => 'Keep';
 
   @override
   String devicePairedThrough(String device) {

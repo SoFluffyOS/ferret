@@ -689,7 +689,7 @@
     }
   },
   "joinedUndo": "Undo",
-  "joinedKeep": "OK",
+  "joinedKeep": "Keep",
   "devicePairedThrough": "Paired through {device}",
   "@devicePairedThrough": {
     "placeholders": {

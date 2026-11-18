@@ -47,7 +47,11 @@ class _ConnectPageState extends State<ConnectPage> {
           onSubmitted: (_) => _connect(),
         ),
         Spacing.v12,
-        Button(variant: .primary, label: l10n.pairConnect, onPressed: _connect),
+        Button(
+          variant: .primary,
+          label: l10n.connectAction,
+          onPressed: _connect,
+        ),
       ],
     );
   }

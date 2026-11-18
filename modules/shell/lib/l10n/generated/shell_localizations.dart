@@ -1429,7 +1429,7 @@ abstract class ShellLocalizations {
   /// No description provided for @joinedKeep.
   ///
   /// In en, this message translates to:
-  /// **'OK'**
+  /// **'Keep'**
   String get joinedKeep;
 
   /// No description provided for @devicePairedThrough.
