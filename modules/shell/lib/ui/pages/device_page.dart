@@ -158,6 +158,7 @@ class _Connected extends StatelessWidget {
             children: [
               for (final (position, (_, action)) in ordered.indexed)
                 Button(
+                  mainAxisSize: .min,
                   variant: switch (position) {
                     0 => .primary,
                     _ => .ghost,

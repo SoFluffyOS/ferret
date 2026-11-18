@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Every feature that could be set up, in one compact card, instead of a
@@ -71,11 +72,7 @@ class _OfferRow extends StatelessWidget {
             ),
           ),
           Spacing.h12,
-          Button(
-            variant: .ghost,
-            label: offer.actionLabel,
-            onPressed: offer.onAction,
-          ),
+          RowActionButton(label: offer.actionLabel, onPressed: offer.onAction),
         ],
       ),
     );

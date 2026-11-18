@@ -78,6 +78,7 @@ class _Choosing extends StatelessWidget {
             ),
             if (held)
               Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.dropCancel,
                 onPressed: viewModel.cancel,
@@ -291,12 +292,14 @@ class _Sending extends StatelessWidget {
             mainAxisAlignment: .end,
             children: [
               Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.dropClose,
                 onPressed: viewModel.cancel,
               ),
               Spacing.h8,
               Button(
+                mainAxisSize: .min,
                 variant: .primary,
                 label: l10n.dropTryAgain,
                 onPressed: () => unawaited(viewModel.retry()),

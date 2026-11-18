@@ -187,7 +187,12 @@ class _Step extends StatelessWidget {
             ),
           ),
           Spacing.h12,
-          Button(variant: .secondary, label: fix, onPressed: onFix),
+          Button(
+            mainAxisSize: .min,
+            variant: .secondary,
+            label: fix,
+            onPressed: onFix,
+          ),
         ],
       ),
     );

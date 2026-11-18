@@ -42,7 +42,12 @@ class NearbyNotice extends StatelessWidget {
           ),
           if (actionLabel case final label?) ...[
             Spacing.v12,
-            Button(variant: .ghost, label: label, onPressed: onAction),
+            Button(
+              mainAxisSize: .min,
+              variant: .ghost,
+              label: label,
+              onPressed: onAction,
+            ),
           ],
         ],
       ),

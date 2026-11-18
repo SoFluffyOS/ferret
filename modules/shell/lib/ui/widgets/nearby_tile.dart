@@ -49,6 +49,7 @@ class NearbyTile extends StatelessWidget {
               peer: peer,
               trailing: switch (attempt) {
                 null => Button(
+                  mainAxisSize: .min,
                   variant: switch (isFirst) {
                     true => .primary,
                     false => .ghost,

@@ -103,12 +103,14 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
                   ),
                   Spacing.h12,
                   Button(
+                    mainAxisSize: .min,
                     variant: .ghost,
                     label: l10n.joinedUndo,
                     onPressed: () => _undo(joined),
                   ),
                   Spacing.h8,
                   Button(
+                    mainAxisSize: .min,
                     variant: .ghost,
                     label: l10n.joinedKeep,
                     onPressed: () => _keep(joined),

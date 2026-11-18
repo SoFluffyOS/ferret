@@ -58,6 +58,7 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
           ),
           Spacing.h12,
           Button(
+            mainAxisSize: .min,
             variant: .ghost,
             label: l10n.settingsRename,
             onPressed: _rename,
