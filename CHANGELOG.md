@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 👋 **First-run walkthrough**: what Ferret does, name this device, pair, and three tips for your platform. About a minute.
 - 🔑 **Pairing**: scan a QR code or compare a 6-digit code. No account, ever.
 - 🔄 **Handoff**: send a page or link to another device with **Continue on…** and it opens there. Your other devices quietly suggest the page you were on.
 - 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put.
