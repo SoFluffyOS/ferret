@@ -1,15 +1,33 @@
+import 'dart:async';
+
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:find/feature/find_feature.dart';
 import 'package:find/l10n/l10n.dart';
+import 'package:find/models/models.dart';
+import 'package:find/services/services.dart';
+import 'package:find/ui/frames/frames.dart';
+import 'package:find/ui/pages/pages.dart';
+import 'package:find/ui/ringing_overlay.dart';
+import 'package:find/view_models/view_models.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 
-/// The app side of Find my device.
+/// The app side of Find my device: "Ring" on each device, the home card
+/// while a ring is going, the ringing screen and notice with "Found it",
+/// Settings, and each device's ring health.
 class FindFeatureUi extends FeatureUi {
-  FindFeatureUi() : feature = FindFeature();
+  FindFeatureUi({FindFeature? feature})
+    : feature = feature ?? FindFeature(texts: _alertTexts);
 
   @override
   final FindFeature feature;
+
+  late final FindViewModel viewModel = FindViewModel(feature);
+  FindNotices? _notices;
+  RingingOverlay? _overlay;
+  AppLifecycleListener? _lifecycle;
 
   @override
   String get featureId => FindFeature.featureId;
@@ -20,8 +38,135 @@ class FindFeatureUi extends FeatureUi {
   ];
 
   @override
+  List<NoticeCategory> get noticeCategories =>
+      FindNotices.categories(platformFindL10n());
+
+  @override
   String title(BuildContext context) => context.findL10n.title;
 
   @override
   IconData get icon => LucideIcons.radar;
+
+  @override
+  Future<void> onAppStarted(FeatureContext context) async {
+    _notices = FindNotices(
+      feature: feature,
+      notifier: context.notifier,
+      l10n: platformFindL10n(),
+    )..start();
+    _overlay = RingingOverlay(
+      viewModel: viewModel,
+      navigatorKey: context.navigatorKey,
+    )..start();
+    _lifecycle = AppLifecycleListener(
+      onResume: () => unawaited(feature.refreshAbilities()),
+    );
+  }
+
+  @override
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
+    final session = device.session;
+    if (session == null) {
+      return null;
+    }
+
+    final deviceId = device.device.id;
+    final health = ringHealthOf(
+      supported: session.supports(featureId),
+      remote: this.feature.remoteInfo(deviceId),
+      lastRing: this.feature.outgoingFor(deviceId),
+    );
+    return _healthOf(health, device.device.name, platformFindL10n());
+  }
+
+  @override
+  Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
+      ChangeNotifierProvider.value(
+        value: viewModel,
+        child: const FindCardFrame(),
+      );
+
+  @override
+  List<FeatureAction> deviceActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final session = device.session;
+    if (session == null || !session.supports(featureId)) {
+      return const [];
+    }
+
+    return [
+      FeatureAction(
+        label: context.findL10n.ring,
+        icon: LucideIcons.bellRing,
+        onPressed: () => unawaited(_ring(feature, device)),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildSettings(BuildContext context, FeatureContext feature) =>
+      ChangeNotifierProvider(
+        create: (_) => FindSettingsViewModel(this.feature),
+        child: const FindSettingsFrame(),
+      );
+
+  /// Stops listening, for tests and hot restarts.
+  Future<void> dispose() async {
+    await _notices?.dispose();
+    _overlay?.dispose();
+    _lifecycle?.dispose();
+    viewModel.dispose();
+  }
+
+  /// One tap rings, and opens the ring's page so Stop and the outcome are
+  /// right there.
+  Future<void> _ring(FeatureContext context, DeviceStatus device) async {
+    final deviceId = device.device.id;
+    unawaited(viewModel.ring(deviceId));
+    await context.push<void>(
+      ChangeNotifierProvider.value(
+        value: viewModel,
+        child: OutgoingRingPage(
+          deviceId: deviceId,
+          deviceName: device.device.name,
+        ),
+      ),
+    );
+  }
+
+  FeatureHealth? _healthOf(
+    RingHealth health,
+    String name,
+    FindLocalizations l10n,
+  ) => switch (health) {
+    .unknown => null,
+    .loud => FeatureHealth(.ok, reason: l10n.healthLoud(name)),
+    .followsSilent => FeatureHealth(
+      .ok,
+      reason: l10n.healthFollowsSilent(name),
+    ),
+    .needsAppOpen => FeatureHealth(.ok, reason: l10n.healthNeedsAppOpen(name)),
+    .needsPermission => FeatureHealth(
+      .needsAttention,
+      reason: l10n.healthNeedsPermission(name),
+    ),
+    .notAnswering => FeatureHealth(
+      .failing,
+      reason: l10n.healthNotAnswering(name),
+    ),
+    .noSound => FeatureHealth(.failing, reason: l10n.healthNoSound(name)),
+    .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
+  };
+
+  static RingTexts _alertTexts(String requesterName) {
+    final l10n = platformFindL10n();
+    return RingTexts(
+      title: l10n.ringingTitle,
+      body: l10n.ringingBody(requesterName),
+      foundIt: l10n.foundIt,
+    );
+  }
 }

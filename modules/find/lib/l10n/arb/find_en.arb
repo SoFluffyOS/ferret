@@ -1,4 +1,212 @@
 {
   "@@locale": "en",
-  "title": "Find my device"
+  "title": "Find my device",
+  "ring": "Ring",
+  "@ring": {
+    "description": "Device action that makes another device ring."
+  },
+  "foundIt": "Found it",
+  "@foundIt": {
+    "description": "Stops the ring on the ringing device."
+  },
+  "stop": "Stop",
+  "ringAgain": "Ring again",
+  "dismiss": "Dismiss",
+  "done": "Done",
+  "ringingTitle": "Ferret is ringing",
+  "@ringingTitle": {
+    "description": "Title of the ringing notice and screen."
+  },
+  "ringingBody": "{name} is looking for this device.",
+  "@ringingBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ringingMuted": "This device is on silent, so it only vibrates.",
+  "ringingHere": "This device is ringing",
+  "findDevice": "Find {name}",
+  "@findDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingRequesting": "Asking {name} to ring…",
+  "@outgoingRequesting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingRinging": "Ringing {name}…",
+  "@outgoingRinging": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingRingingDetail": "It rings for up to 2 minutes, or until someone taps Found it.",
+  "outgoingRingingMuted": "{name} is on silent there, so it only vibrates. Turn on Ring on silent in Ferret on {name} to hear it.",
+  "@outgoingRingingMuted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingFound": "{name} was found.",
+  "@outgoingFound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingTimedOut": "{name} stopped ringing on its own.",
+  "@outgoingTimedOut": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingStoppedHere": "Stopped ringing {name}.",
+  "@outgoingStoppedHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingStoppedElsewhere": "{name} was stopped from another device.",
+  "@outgoingStoppedElsewhere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingNoSound": "{name} couldn't play a sound.",
+  "@outgoingNoSound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingNoSoundDetail": "Check that its sound works, then ring again.",
+  "outgoingUnreachable": "{name} didn't answer.",
+  "@outgoingUnreachable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingUnreachableDetail": "Make sure it's on and on the same Wi-Fi, then ring again.",
+  "outgoingNotSupported": "{name} can't ring yet.",
+  "@outgoingNotSupported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingNotSupportedDetail": "Update Ferret on {name}, then ring again.",
+  "@outgoingNotSupportedDetail": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingLostConnection": "Lost the connection to {name}.",
+  "@outgoingLostConnection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outgoingLostConnectionDetail": "It keeps ringing for up to 2 minutes, or until someone taps Found it there.",
+  "settingsRingOnSilent": "Ring on silent",
+  "settingsRingOnSilentAndroid": "Rings at full volume, even on silent or Do Not Disturb. The volume goes back after.",
+  "settingsRingOnSilentMac": "Turns the volume up and unmutes while ringing, then puts it back.",
+  "settingsFlashTorch": "Flash the torch",
+  "settingsFlashTorchBody": "Blinks the flashlight while ringing, so you spot it in the dark.",
+  "settingsDndOn": "Rings through Do Not Disturb.",
+  "settingsDndOff": "Do Not Disturb access is off",
+  "settingsDndHowTo": "Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow, find Ferret in the list and turn it on.",
+  "settingsDndStillOff": "Still off. Find Ferret in the list, turn it on, then come back.",
+  "settingsAllow": "Allow in Settings",
+  "settingsOpenFailed": "Couldn't open Settings. Open Settings, then Notifications, then Do Not Disturb access, and turn Ferret on.",
+  "settingsFullScreenOff": "The ringing screen can't show over the lock screen",
+  "settingsFullScreenHowTo": "You still hear it and get a notification. Allow full-screen notifications to see Found it right away.",
+  "settingsLimitIos": "iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.",
+  "settingsLimitDesktop": "Rings at the current volume. Keep the sound on to hear it.",
+  "settingsLimitNoPlayer": "No sound player found, so this computer can't ring. Install pw-play, paplay or aplay.",
+  "settingsTestRing": "Test ring",
+  "settingsTestRingBody": "Rings this device for 5 seconds.",
+  "healthLoud": "{name} rings even on silent.",
+  "@healthLoud": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthFollowsSilent": "{name} rings, but stays quiet on silent.",
+  "@healthFollowsSilent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNeedsAppOpen": "{name} rings only while Ferret is open on it.",
+  "@healthNeedsAppOpen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNeedsPermission": "{name} won't ring in Do Not Disturb. Open Ferret on {name} and allow Do Not Disturb access.",
+  "@healthNeedsPermission": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNotAnswering": "{name} didn't answer, so ringing it may not work right now.",
+  "@healthNotAnswering": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNoSound": "{name} couldn't play a sound last time.",
+  "@healthNoSound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthUnsupported": "Ferret on {name} can't ring. Update it there.",
+  "@healthUnsupported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

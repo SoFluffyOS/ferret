@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
   s.name             = 'ferret_find'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'Rings this device so someone can find it.'
   s.description      = <<-DESC
 A new Flutter plugin project.
                        DESC

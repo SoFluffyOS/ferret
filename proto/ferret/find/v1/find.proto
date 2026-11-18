@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package ferret.find.v1;
+
+// Asks the receiver to ring so someone can find it. Expects a `RingStatus`
+// reply. Asking a device that already rings restarts its countdown.
+message RingRequest {
+  // How long to ring before stopping on its own. 0 means the receiver's
+  // default; receivers cap long values.
+  uint32 duration_seconds = 1;
+  // Ring even when the receiver is on silent or Do Not Disturb, if its owner
+  // allowed that on the receiver.
+  bool override_silent = 2;
+}
+
+// Asks the receiver to stop ringing. Expects a `RingStatus` reply.
+message StopRingRequest {}
+
+// Whether a device rings.
+enum RingState {
+  RING_STATE_UNSPECIFIED = 0;
+  RING_STATE_RINGING = 1;
+  RING_STATE_STOPPED = 2;
+}
+
+// Why a ring stopped.
+enum StopReason {
+  STOP_REASON_UNSPECIFIED = 0;
+  // Someone tapped "Found it" or pressed a volume key on the ringing device.
+  STOP_REASON_FOUND = 1;
+  // The ring ran for its whole duration.
+  STOP_REASON_TIMEOUT = 2;
+  // A `StopRingRequest` arrived.
+  STOP_REASON_STOPPED_REMOTELY = 3;
+  // The device could not play a sound at all.
+  STOP_REASON_FAILED = 4;
+}
+
+// Where a ring stands. The reply to `RingRequest` and `StopRingRequest`, and
+// sent without expecting a reply to each device that asked for the ring when
+// it stops on the ringing device.
+message RingStatus {
+  RingState state = 1;
+  // Set when `state` is `RING_STATE_STOPPED`.
+  StopReason reason = 2;
+  // Milliseconds left until the ring stops on its own, while ringing.
+  uint32 remaining_ms = 3;
+  // It rings, but without sound, because it is on silent or Do Not Disturb
+  // and may not override that. It still vibrates and shows a notice.
+  bool muted = 4;
+}
+
+// Asks what the receiver can do when rung. Expects a `RingInfo` reply.
+message GetRingInfo {}
+
+// What the receiver can do when rung. The reply to `GetRingInfo`, and sent
+// without expecting a reply when it changes, such as after a permission was
+// granted.
+message RingInfo {
+  // It rings right now.
+  bool ringing = 1;
+  // It rings out loud even on silent or Do Not Disturb.
+  bool rings_when_silent = 2;
+  // It can only ring while Ferret is open on it, such as on iOS.
+  bool needs_app_open = 3;
+  // Its owner turned ringing on silent on, but the system permission for it
+  // is missing.
+  bool needs_permission = 4;
+}
