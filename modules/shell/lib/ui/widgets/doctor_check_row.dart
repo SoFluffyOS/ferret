@@ -1,6 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -18,29 +19,40 @@ class DoctorCheckRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final (icon, color) = switch (status) {
-      .running => (LucideIcons.loaderCircle, palette.mutedText),
-      .ok => (LucideIcons.circleCheck, palette.success),
-      .warning => (LucideIcons.triangleAlert, const Color(0xFFFF9F0A)),
-      .problem => (LucideIcons.circleX, palette.danger),
+    final l10n = context.shellL10n;
+    final (icon, color, spoken) = switch (status) {
+      .running => (
+        LucideIcons.loaderCircle,
+        palette.mutedText,
+        l10n.spokenChecking,
+      ),
+      .ok => (LucideIcons.circleCheck, palette.success, l10n.spokenOk),
+      .warning => (
+        LucideIcons.triangleAlert,
+        palette.warning,
+        l10n.spokenWarning,
+      ),
+      .problem => (LucideIcons.circleX, palette.danger, l10n.spokenProblem),
     };
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-      child: Row(
-        crossAxisAlignment: .start,
-        children: [
-          Icon(icon, size: Spacing.d18, color: color),
-          Spacing.h12,
-          Expanded(
-            child: Text(
-              message,
-              style: context.fluffyTheme.typography.body2.copyWith(
-                color: palette.text,
+      child: MergeSemantics(
+        child: Row(
+          crossAxisAlignment: .start,
+          children: [
+            Icon(icon, size: Spacing.d18, color: color, semanticLabel: spoken),
+            Spacing.h12,
+            Expanded(
+              child: Text(
+                message,
+                style: context.fluffyTheme.typography.body2.copyWith(
+                  color: palette.text,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

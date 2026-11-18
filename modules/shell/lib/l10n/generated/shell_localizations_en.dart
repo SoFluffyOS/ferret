@@ -35,6 +35,24 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceOffline => 'Not connected';
 
   @override
+  String get deviceNeedsAttention => 'Connected, needs attention';
+
+  @override
+  String get spokenOk => 'OK';
+
+  @override
+  String get spokenOff => 'Off';
+
+  @override
+  String get spokenWarning => 'Needs attention';
+
+  @override
+  String get spokenProblem => 'Problem';
+
+  @override
+  String get spokenChecking => 'Checking';
+
+  @override
   String get deviceConnectsWhenOpen => 'Connects when Ferret is open on it';
 
   @override

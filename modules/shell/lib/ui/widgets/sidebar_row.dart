@@ -48,12 +48,15 @@ class SidebarRow extends StatelessWidget {
       false => palette.text,
     };
 
+    // The line's text is its name; the tooltip only adds to it, so it
+    // must not become the label.
     return Semantics(
-      button: true,
       selected: isSelected,
       child: Tappable(
         onTap: onTap,
         tooltip: tooltip,
+        semanticLabel: '',
+        semanticButton: onTap != null,
         enableAnimation: false,
         enableHover: true,
         builder: (context, state) => Container(

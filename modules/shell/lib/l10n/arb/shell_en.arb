@@ -8,6 +8,15 @@
   "homePairDevice": "Add a device",
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
+  "deviceNeedsAttention": "Connected, needs attention",
+  "spokenOk": "OK",
+  "@spokenOk": {
+    "description": "What a screen reader says for a green check next to a line. The four after it name the other status icons."
+  },
+  "spokenOff": "Off",
+  "spokenWarning": "Needs attention",
+  "spokenProblem": "Problem",
+  "spokenChecking": "Checking",
   "deviceConnectsWhenOpen": "Connects when Ferret is open on it",
   "deviceLastSeen": "Last seen {time}",
   "@deviceLastSeen": {

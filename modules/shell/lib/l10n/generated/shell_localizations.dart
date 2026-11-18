@@ -142,6 +142,42 @@ abstract class ShellLocalizations {
   /// **'Not connected'**
   String get deviceOffline;
 
+  /// No description provided for @deviceNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected, needs attention'**
+  String get deviceNeedsAttention;
+
+  /// What a screen reader says for a green check next to a line. The four after it name the other status icons.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get spokenOk;
+
+  /// No description provided for @spokenOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get spokenOff;
+
+  /// No description provided for @spokenWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get spokenWarning;
+
+  /// No description provided for @spokenProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Problem'**
+  String get spokenProblem;
+
+  /// No description provided for @spokenChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking'**
+  String get spokenChecking;
+
   /// No description provided for @deviceConnectsWhenOpen.
   ///
   /// In en, this message translates to:

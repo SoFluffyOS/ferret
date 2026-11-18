@@ -65,7 +65,15 @@ class WindowShellFrame extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
                     child: const AdaptiveContent(child: NeedsYouFrame()),
                   ),
-                  Expanded(child: ClipRect(child: child)),
+                  // A route hides whatever was drawn before it from screen
+                  // readers, up to the nearest container: without this one
+                  // the pane's pages would take the device list with them.
+                  Expanded(
+                    child: Semantics(
+                      container: true,
+                      child: ClipRect(child: _TabsOnward(child: child)),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -92,6 +100,38 @@ class _Framed extends StatelessWidget {
 
     return WindowTitleFrame(onTitle: onTitle, child: child);
   }
+}
+
+/// Lets Tab leave the pane. The scope around a navigator sends Tab back to
+/// its first stop after the last one, which keeps the device list out of
+/// the keyboard's reach; here it goes on to what is around the pane.
+class _TabsOnward extends StatefulWidget {
+  const _TabsOnward({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_TabsOnward> createState() => _TabsOnwardState();
+}
+
+class _TabsOnwardState extends State<_TabsOnward> {
+  @override
+  void initState() {
+    super.initState();
+    final navigatorKey = context.read<WindowNavViewModel>().navigatorKey;
+    // The navigator's scope is built below this widget, in the same frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      navigatorKey
+              .currentState
+              ?.focusNode
+              .enclosingScope
+              ?.traversalEdgeBehavior =
+          TraversalEdgeBehavior.parentScope;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 /// A navigator around the whole window, above the pane's own. Dialogs go

@@ -1,6 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/sidebar_badge.dart';
 import 'package:shell/ui/widgets/sidebar_row.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -44,12 +45,21 @@ class SidebarDeviceRow extends StatelessWidget {
       (true, false) => palette.success,
     };
 
+    // What the dot's colour says, in words: for a screen reader, and for
+    // anyone who can't tell the colours apart, on hover.
+    final l10n = context.shellL10n;
+    final dotInWords = switch ((status.isConnected, needsAttention)) {
+      (false, _) => l10n.deviceOffline,
+      (true, true) => l10n.deviceNeedsAttention,
+      (true, false) => l10n.deviceConnected,
+    };
+
     return SidebarRow(
       label: device.name,
       icon: deviceIconFor(device.formFactor, device.platform),
       isSelected: isSelected,
       isDimmed: !status.isConnected,
-      tooltip: tooltip,
+      tooltip: tooltip ?? dotInWords,
       onTap: onTap,
       trailing: Row(
         mainAxisSize: .min,
