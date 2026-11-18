@@ -7,9 +7,11 @@ import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
 abstract interface class MirrorFeed {
   MirrorTarget get target;
 
-  /// In order: [FeedWaiting] while the other side asks its owner, then a
-  /// [FeedConfigured] before the first frame and on every size change,
-  /// [FeedFrame]s, and one [FeedEnded] last.
+  /// In order: [FeedWaiting] while the other side asks its owner, a
+  /// [FeedAccepted] when it said yes, then a [FeedConfigured] before the
+  /// first frame and on every size change, [FeedFrame]s, and one
+  /// [FeedEnded] last. [FeedSourceState] and [FeedStats] come in between,
+  /// from routes that know them.
   Stream<FeedEvent> get events;
 
   /// Mouse, keyboard and buttons on the other device, when the route has
@@ -35,6 +37,12 @@ class FeedWaiting extends FeedEvent {
   final Duration timeout;
 }
 
+/// The owner said yes: pictures follow. Routes that never ask skip it and
+/// start with [FeedConfigured].
+class FeedAccepted extends FeedEvent {
+  const FeedAccepted();
+}
+
 class FeedConfigured extends FeedEvent {
   const FeedConfigured(this.config);
 
@@ -42,9 +50,38 @@ class FeedConfigured extends FeedEvent {
 }
 
 class FeedFrame extends FeedEvent {
-  const FeedFrame(this.frame);
+  const FeedFrame(this.frame, {this.lost = 0});
 
   final MirrorFrame frame;
+
+  /// Frames the route knows went missing right before this one.
+  final int lost;
+}
+
+/// The other device's screen went off or came back on. While it is off,
+/// the picture stands still.
+class FeedSourceState extends FeedEvent {
+  const FeedSourceState({required this.screenOff});
+
+  final bool screenOff;
+}
+
+/// How the route is doing, as the other side last told it.
+class FeedStats extends FeedEvent {
+  const FeedStats({
+    this.roundTrip,
+    this.bitrateKbps = 0,
+    this.droppedFrames = 0,
+  });
+
+  /// There and back to the other device, when the route measured it.
+  final Duration? roundTrip;
+
+  /// What the other side's encoder aims for; 0 when it doesn't say.
+  final int bitrateKbps;
+
+  /// Frames the other side dropped since its last report.
+  final int droppedFrames;
 }
 
 class FeedEnded extends FeedEvent {
