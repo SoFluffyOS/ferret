@@ -12,12 +12,21 @@ class FerretPage extends StatelessWidget {
     required this.children,
     this.actions = const [],
     this.backLabel = 'Back',
+    this.status,
+    this.footer,
   });
 
   final String title;
   final List<Widget> children;
   final List<Widget> actions;
   final String backLabel;
+
+  /// One word next to the title when things aren't as usual, such as
+  /// "Paused".
+  final String? status;
+
+  /// Stays at the bottom while the body scrolls, such as a one-line hint.
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +64,22 @@ class FerretPage extends StatelessWidget {
                     ),
                   if (canPop) Spacing.h4,
                   Expanded(
-                    child: Text(
-                      title,
+                    child: Text.rich(
+                      TextSpan(
+                        text: title,
+                        children: [
+                          if (status case final status?)
+                            TextSpan(
+                              text: '  $status',
+                              style: typography.base2.copyWith(
+                                color: palette.mutedText,
+                              ),
+                            ),
+                        ],
+                      ),
                       style: typography.title2.copyWith(color: palette.text),
                       overflow: .ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                   ...actions,
@@ -76,6 +97,7 @@ class FerretPage extends StatelessWidget {
                 children: children,
               ),
             ),
+            ?footer,
           ],
         ),
       ),

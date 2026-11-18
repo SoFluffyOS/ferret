@@ -1,5 +1,9 @@
+export 'package:feature_kit/feature_ui/activity_item.dart';
+export 'package:feature_kit/feature_ui/device_permission.dart';
 export 'package:feature_kit/feature_ui/feature_context.dart';
 export 'package:feature_kit/feature_ui/feature_health.dart';
 export 'package:feature_kit/feature_ui/feature_offer.dart';
+export 'package:feature_kit/feature_ui/feature_settings.dart';
 export 'package:feature_kit/feature_ui/feature_ui_base.dart';
 export 'package:feature_kit/feature_ui/files_send_progress.dart';
+export 'package:feature_kit/feature_ui/settings_group.dart';
