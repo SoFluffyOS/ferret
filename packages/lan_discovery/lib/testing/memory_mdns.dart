@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:lan_discovery/lan_discovery.dart';
 
-/// A pretend network: what one link multicasts, every link on the mDNS port
+/// A pretend network for tests: what one link multicasts, every link on the mDNS port
 /// hears, as bytes that went through the codec.
 class MemoryMdnsNetwork {
   final List<MemoryMdnsLink> _links = [];

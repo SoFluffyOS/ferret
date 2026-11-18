@@ -56,7 +56,7 @@ class FerretEngine implements FeatureHost {
       settings: settings,
       device: device,
       features: features,
-      discovery: discovery ?? MulticastDiscovery(),
+      discovery: discovery ?? CombinedDiscovery.standard(),
       preferredPort: port,
     );
   }
@@ -146,6 +146,41 @@ class FerretEngine implements FeatureHost {
 
   Stream<List<DiscoveredPeer>> get nearbyChanges => _nearbyChanges.stream;
 
+  /// Whether the system keeps Ferret from looking for devices, such as when
+  /// the local network permission is off on macOS or iOS.
+  bool get isDiscoveryBlocked => switch (_discovery) {
+    ActiveDiscovery(:final isBlocked) => isBlocked,
+    _ => false,
+  };
+
+  /// Looks for nearby devices right now and waits a moment for the answers,
+  /// for when the user is watching the list.
+  Future<void> scanNearby() async {
+    if (!_running) {
+      return;
+    }
+
+    final discovery = _discovery;
+    try {
+      switch (discovery) {
+        case ActiveDiscovery():
+          await discovery.scan();
+        default:
+          await discovery.announceNow();
+      }
+    } on Object catch (error) {
+      printDebug('Looking for devices failed: $error');
+    }
+
+    _dropStaleNearby();
+    _nearbyChanges.add(nearby);
+  }
+
+  Stream<String> get _departures => switch (_discovery) {
+    ActiveDiscovery(:final departures) => departures,
+    _ => const Stream.empty(),
+  };
+
   Future<void> start() async {
     if (_running) {
       return;
@@ -157,6 +192,7 @@ class FerretEngine implements FeatureHost {
     _subscriptions
       ..add(server.listen(_onIncomingSocket))
       ..add(_discovery.peers.listen(_onPeer))
+      ..add(_departures.listen(_onDeparture))
       ..add(trustStore.changes.listen((_) => _emitDevices()));
 
     if (!_featuresStarted) {
@@ -513,6 +549,14 @@ class FerretEngine implements FeatureHost {
 
     _nearby[peer.deviceId] = (peer: peer, seen: DateTime.now());
     _dropStaleNearby();
+    _nearbyChanges.add(nearby);
+  }
+
+  void _onDeparture(String deviceId) {
+    if (_nearby.remove(deviceId) == null) {
+      return;
+    }
+
     _nearbyChanges.add(nearby);
   }
 

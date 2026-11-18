@@ -10,6 +10,8 @@ dependencies:
   core:
     path: ../core
   cryptography: ^2.9.0
+  lan_discovery:
+    path: ../lan_discovery
   meta: ^1.19.0
   protocol:
     path: ../protocol

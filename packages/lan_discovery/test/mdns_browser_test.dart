@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:lan_discovery/lan_discovery.dart';
+import 'package:lan_discovery/testing/testing.dart';
 import 'package:test/test.dart';
-
-import 'support/memory_mdns.dart';
 
 const _type = '_demo._tcp';
 

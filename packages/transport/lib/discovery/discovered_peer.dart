@@ -26,3 +26,17 @@ abstract interface class Discovery {
 
   Future<void> stop();
 }
+
+/// A [Discovery] that can also look on demand, says when a device left, and
+/// knows when the system keeps it from looking at all.
+abstract interface class ActiveDiscovery implements Discovery {
+  /// Asks the network who is there and waits a moment for the answers.
+  Future<void> scan();
+
+  /// The ids of devices that said goodbye or stopped answering.
+  Stream<String> get departures;
+
+  /// Whether the system refused everything sent last time, which is what a
+  /// missing local network permission looks like.
+  bool get isBlocked;
+}

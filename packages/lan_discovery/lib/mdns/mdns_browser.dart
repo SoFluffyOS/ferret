@@ -33,6 +33,7 @@ class MdnsBrowser {
   final Map<String, _Found> _found = {};
   final StreamController<MdnsInstance> _appeared = .broadcast();
   final StreamController<String> _left = .broadcast();
+  final StreamController<void> _scans = .broadcast();
   MdnsLink? _socket;
   StreamSubscription<MdnsPacket>? _packets;
   Timer? _rescan;
@@ -44,6 +45,10 @@ class MdnsBrowser {
 
   /// The labels of instances that left.
   Stream<String> get left => _left.stream;
+
+  /// Fires after each scan, asked for or on the timer, when [instances] is
+  /// as fresh as it gets.
+  Stream<void> get scans => _scans.stream;
 
   /// Every instance known right now.
   List<MdnsInstance> get instances => [
@@ -106,6 +111,9 @@ class MdnsBrowser {
     await _ask(_typeName, DnsType.ptr);
     await Future<void>.delayed(collectFor ~/ 2);
     _dropExpired();
+    if (_socket != null) {
+      _scans.add(null);
+    }
   }
 
   /// From the mDNS port everyone hears the answer. From any other port the

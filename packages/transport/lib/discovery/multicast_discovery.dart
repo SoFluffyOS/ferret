@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:core/core.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 import 'package:protocol/protocol.dart';
 import 'package:transport/discovery/discovered_peer.dart';
 
@@ -10,7 +11,7 @@ import 'package:transport/discovery/discovered_peer.dart';
 ///
 /// Each packet is `FRT` + a version byte + an `Announce`. Announces carry no
 /// secrets; trust comes from the Noise handshake that follows.
-class MulticastDiscovery implements Discovery {
+class MulticastDiscovery implements ActiveDiscovery {
   MulticastDiscovery({
     InternetAddress? group,
     this.port = defaultPort,
@@ -25,13 +26,33 @@ class MulticastDiscovery implements Discovery {
   final int port;
   final Duration interval;
 
+  static const _scanWait = Duration(seconds: 1);
+  static final _everyone = InternetAddress('255.255.255.255');
+
   final StreamController<DiscoveredPeer> _peers = .broadcast();
+  final StreamController<String> _departures = .broadcast();
+  final Set<String> _logged = {};
+  bool _blocked = false;
   RawDatagramSocket? _socket;
   Timer? _timer;
   Announce? _self;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
+
+  /// Announces don't expire one by one; the engine forgets quiet devices.
+  @override
+  Stream<String> get departures => _departures.stream;
+
+  @override
+  bool get isBlocked => _blocked;
+
+  /// An announce is also a question: everyone who hears it answers.
+  @override
+  Future<void> scan() async {
+    await announceNow();
+    await Future<void>.delayed(_scanWait);
+  }
 
   @override
   Future<void> start(Announce self) async {
@@ -60,62 +81,35 @@ class MulticastDiscovery implements Discovery {
     }
 
     final packet = encodeAnnounce(self.deepCopy()..reply = false);
-    final interfaces = await _interfaces();
-    for (final address in interfaces) {
-      _sendOn(socket, packet, address);
+    var sent = 0;
+    for (final address in await LocalInterfaces.addresses()) {
+      if (!LocalInterfaces.sendMulticastFrom(socket, address)) {
+        continue;
+      }
+
+      if (_send(socket, packet, group)) {
+        sent++;
+      }
     }
 
-    _send(socket, packet, InternetAddress('255.255.255.255'));
-  }
-
-  /// Sends on one interface, so multicast works without a default route
-  /// (macOS with a VPN, or several networks at once).
-  void _sendOn(
-    RawDatagramSocket socket,
-    List<int> packet,
-    InternetAddress interface,
-  ) {
-    try {
-      socket.setRawOption(
-        RawSocketOption(
-          RawSocketOption.levelIPv4,
-          RawSocketOption.IPv4MulticastInterface,
-          interface.rawAddress,
-        ),
-      );
-    } on Object {
-      return;
+    if (_send(socket, packet, _everyone)) {
+      sent++;
     }
 
-    _send(socket, packet, group);
+    _blocked = sent == 0;
   }
 
-  void _send(
+  /// A failed send returns 0 and reports the reason on the socket's stream.
+  bool _send(
     RawDatagramSocket socket,
     List<int> packet,
     InternetAddress address,
   ) {
     try {
-      socket.send(packet, address, port);
+      return socket.send(packet, address, port) > 0;
     } on SocketException catch (error) {
-      printDebug(
-        'Announce to ${address.address} failed: ${error.osError?.message}',
-      );
-    }
-  }
-
-  Future<List<InternetAddress>> _interfaces() async {
-    try {
-      final interfaces = await NetworkInterface.list(
-        type: InternetAddressType.IPv4,
-      );
-      return [
-        for (final interface in interfaces)
-          for (final address in interface.addresses)
-            if (!address.isLoopback && !address.isLinkLocal) address,
-      ];
-    } on Object {
-      return const [];
+      _logOnce('Announce failed: ${error.osError?.message}');
+      return false;
     }
   }
 
@@ -140,34 +134,31 @@ class MulticastDiscovery implements Discovery {
   }
 
   Future<void> _joinGroup(RawDatagramSocket socket) async {
-    final interfaces = await NetworkInterface.list(
-      type: InternetAddressType.IPv4,
-    );
-    var joined = false;
-    for (final interface in interfaces) {
-      try {
-        socket.joinMulticast(group, interface);
-        joined = true;
-      } on SocketException {
-        continue;
-      }
-    }
-
-    if (joined) {
-      return;
-    }
-
-    try {
-      socket.joinMulticast(group);
-    } on SocketException catch (error) {
-      printWarning('Multicast discovery could not join $group', error);
+    final joined = await LocalInterfaces.joinEverywhere(socket, group);
+    if (!joined) {
+      _logOnce('Multicast discovery could not join ${group.address}');
     }
   }
 
-  /// Dart reports failed datagram sends here rather than throwing, such as
-  /// "no route to host" on an interface without multicast.
+  /// Dart reports failed datagram sends here rather than throwing. The
+  /// address in the error is the one this socket is bound to, not where
+  /// the packet was going. "No route to host" on macOS and iOS means the
+  /// local network permission is off; it repeats on every announce, so it
+  /// is said once.
   void _onSocketError(Object error) {
-    printDebug('Discovery socket: $error');
+    final detail = switch (error) {
+      SocketException(:final osError?) => osError.message,
+      _ => '${error.runtimeType}',
+    };
+    _logOnce('Discovery can\'t send on this network: $detail');
+  }
+
+  void _logOnce(String message) {
+    if (!_logged.add(message)) {
+      return;
+    }
+
+    printDebug(message);
   }
 
   void _onEvent(RawSocketEvent event) {
