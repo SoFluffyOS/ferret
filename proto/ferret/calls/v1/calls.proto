@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package ferret.calls.v1;
+
+// Who started a call.
+enum CallDirection {
+  CALL_DIRECTION_UNSPECIFIED = 0;
+  // Someone is calling the phone.
+  CALL_DIRECTION_INCOMING = 1;
+  // The phone is calling someone.
+  CALL_DIRECTION_OUTGOING = 2;
+}
+
+// Where a call is in its life.
+enum CallState {
+  CALL_STATE_UNSPECIFIED = 0;
+  // An incoming call nobody answered yet.
+  CALL_STATE_RINGING = 1;
+  // An outgoing call. Phones that can't tell when the other side picks up
+  // stay in this state until the call ends.
+  CALL_STATE_DIALING = 2;
+  CALL_STATE_ACTIVE = 3;
+  CALL_STATE_HELD = 4;
+  // The call is over. The last update for its id.
+  CALL_STATE_ENDED = 5;
+}
+
+// How a call that rang ended, when the phone knows.
+enum CallOutcome {
+  CALL_OUTCOME_UNSPECIFIED = 0;
+  CALL_OUTCOME_ANSWERED = 1;
+  // It rang out, or the caller gave up.
+  CALL_OUTCOME_MISSED = 2;
+  // Someone declined it through Ferret.
+  CALL_OUTCOME_DECLINED = 3;
+}
+
+// One call on a phone.
+message Call {
+  // Random id chosen by the phone, the same in every update for this call.
+  string id = 1;
+  // The other side's number as the phone reports it. Empty when it is
+  // hidden or the phone may not read it.
+  string number = 2;
+  // The contact's name, empty when the number is not in the contacts.
+  string contact_name = 3;
+  // The contact's photo as a small JPEG, at most 96 pixels a side.
+  bytes photo_jpeg = 4;
+  CallDirection direction = 5;
+  CallState state = 6;
+  // When the call started ringing or dialing, in the phone's clock.
+  int64 started_at_ms = 7;
+  // When the call was picked up, in the phone's clock. Zero until then.
+  int64 connected_at_ms = 8;
+  // Set with CALL_STATE_ENDED.
+  CallOutcome outcome = 9;
+}
+
+// A call changed. Sent by the phone without expecting a reply, for every
+// change, and once for each ongoing call when a session opens. Calls that
+// already ended are never replayed.
+message CallUpdate {
+  Call call = 1;
+  // The phone's clock when it sent this, so receivers can show a call timer
+  // that does not depend on both clocks agreeing.
+  int64 sent_at_ms = 2;
+}
+
+// What a computer asks the phone to do with a call.
+enum CallAction {
+  CALL_ACTION_UNSPECIFIED = 0;
+  // Pick up the ringing call. Audio stays on the phone.
+  CALL_ACTION_ANSWER = 1;
+  // Decline the ringing call, or hang up the ongoing one.
+  CALL_ACTION_END = 2;
+  // Stop the ringtone without declining.
+  CALL_ACTION_SILENCE = 3;
+  // Call `number`.
+  CALL_ACTION_DIAL = 4;
+}
+
+// Request. The phone replies with CallCommandResult.
+message CallCommand {
+  CallAction action = 1;
+  // The call the command is for. The phone refuses a command for a call that
+  // is gone. Unused for CALL_ACTION_DIAL.
+  string call_id = 2;
+  // The number to call, for CALL_ACTION_DIAL.
+  string number = 3;
+}
+
+enum CallCommandStatus {
+  CALL_COMMAND_STATUS_UNSPECIFIED = 0;
+  CALL_COMMAND_STATUS_OK = 1;
+  // The call is gone, or nothing is ringing.
+  CALL_COMMAND_STATUS_NO_CALL = 2;
+  // Calls are turned off on the phone.
+  CALL_COMMAND_STATUS_DISABLED = 3;
+  // The phone's owner did not give Ferret the permission this needs.
+  CALL_COMMAND_STATUS_PERMISSION_MISSING = 4;
+  // This phone's system version can't do it.
+  CALL_COMMAND_STATUS_UNSUPPORTED = 5;
+  // The number is empty or has characters a phone can't dial.
+  CALL_COMMAND_STATUS_INVALID_NUMBER = 6;
+  CALL_COMMAND_STATUS_FAILED = 7;
+}
+
+message CallCommandResult {
+  CallCommandStatus status = 1;
+}
+
+// Request. The phone replies with CallsStatus.
+message GetCallsStatus {}
+
+// What the phone can do right now. Also sent on its own when it changes.
+message CallsStatus {
+  // The phone's owner turned calls on.
+  bool enabled = 1;
+  // The phone may watch its call state.
+  bool can_see_calls = 2;
+  // The phone may read who is calling.
+  bool can_see_numbers = 3;
+  // The phone may answer and end calls.
+  bool can_answer = 4;
+  // The phone may place calls.
+  bool can_dial = 5;
+  // The phone may read its call history.
+  bool can_read_log = 6;
+  // The phone may look numbers up in its contacts.
+  bool can_read_contacts = 7;
+}
+
+// What a past call was.
+enum CallLogType {
+  CALL_LOG_TYPE_UNSPECIFIED = 0;
+  CALL_LOG_TYPE_INCOMING = 1;
+  CALL_LOG_TYPE_OUTGOING = 2;
+  CALL_LOG_TYPE_MISSED = 3;
+  // The phone's owner declined it.
+  CALL_LOG_TYPE_REJECTED = 4;
+}
+
+// One past call.
+message CallLogEntry {
+  // The phone's own id for the entry.
+  string id = 1;
+  string number = 2;
+  // The contact's name, empty when unknown.
+  string name = 3;
+  CallLogType type = 4;
+  // When the call happened, in the phone's clock.
+  int64 date_ms = 5;
+  // How long the call lasted, zero when it was not picked up.
+  int64 duration_s = 6;
+}
+
+// Request. The phone replies with CallLog.
+message GetCallLog {
+  // The most entries to send back, newest first. Zero means 50; the phone
+  // never sends more than 200.
+  uint32 limit = 1;
+}
+
+message CallLog {
+  repeated CallLogEntry entries = 1;
+  // The phone may not read its call history, so `entries` is empty.
+  bool permission_missing = 2;
+  // Calls are turned off on the phone, so `entries` is empty.
+  bool disabled = 3;
+}

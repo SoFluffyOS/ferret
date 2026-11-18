@@ -1,0 +1,152 @@
+import 'dart:async';
+
+import 'package:calls/l10n/l10n.dart';
+import 'package:calls/models/models.dart';
+import 'package:calls/services/calls_control.dart';
+import 'package:feature_kit/feature_kit.dart';
+
+/// The notices of Calls on a computer: one with Answer and Decline while a
+/// phone rings, gone the moment it stops, and a quiet "Missed call" when
+/// nobody picked up.
+class CallNotices {
+  CallNotices({
+    required CallsControl control,
+    required LocalNotifier notifier,
+    required CallsLocalizations Function() strings,
+  }) : _control = control,
+       _notifier = notifier,
+       _strings = strings {
+    _calls = control.callEvents.listen(_onCall);
+    _responses = notifier.responses.listen(_onResponse);
+  }
+
+  static const incomingCategory = 'calls.incoming';
+  static const answerAction = 'answer';
+  static const declineAction = 'decline';
+
+  final CallsControl _control;
+  final LocalNotifier _notifier;
+  final CallsLocalizations Function() _strings;
+  final Map<String, RemoteCall> _ringing = {};
+  late final StreamSubscription<RemoteCall> _calls;
+  late final StreamSubscription<NoticeResponse> _responses;
+
+  static List<NoticeCategory> categories(CallsLocalizations l10n) => [
+    NoticeCategory(
+      id: incomingCategory,
+      actions: [
+        NoticeAction(id: answerAction, label: l10n.answer),
+        NoticeAction(id: declineAction, label: l10n.decline),
+      ],
+    ),
+  ];
+
+  static String ringingId(RemoteCall call) => 'calls.ring.${call.key}';
+
+  static String missedId(String deviceId) => 'calls.missed.$deviceId';
+
+  static String problemId(String deviceId) => 'calls.problem.$deviceId';
+
+  Future<void> dispose() async {
+    await _calls.cancel();
+    await _responses.cancel();
+  }
+
+  void _onCall(RemoteCall call) {
+    final noticeId = ringingId(call);
+    if (call.isRinging && call.isIncoming) {
+      _showRinging(noticeId, call);
+      return;
+    }
+
+    if (_ringing.remove(noticeId) == null) {
+      return;
+    }
+
+    unawaited(_notifier.cancel(noticeId));
+    if (call.isEnded && call.wasMissed) {
+      _showMissed(call);
+    }
+  }
+
+  void _showRinging(String noticeId, RemoteCall call) {
+    if (!_control.showIncoming) {
+      return;
+    }
+
+    final l10n = _strings();
+    // The name arrives a moment after the ring; the update must not ring the
+    // computer a second time.
+    final isUpdate = _ringing.containsKey(noticeId);
+    _ringing[noticeId] = call;
+
+    unawaited(
+      _notifier.show(
+        LocalNotice(
+          id: noticeId,
+          channel: .incoming,
+          title: l10n.callerOf(call.call),
+          body: l10n.noticeIncomingBody(call.deviceName),
+          category: incomingCategory,
+          groupKey: 'calls.${call.deviceId}',
+          silent: isUpdate,
+        ),
+      ),
+    );
+  }
+
+  void _showMissed(RemoteCall call) {
+    final l10n = _strings();
+
+    unawaited(
+      _notifier.show(
+        LocalNotice(
+          id: missedId(call.deviceId),
+          channel: .incoming,
+          title: l10n.noticeMissedTitle,
+          body: l10n.noticeMissedBody(
+            l10n.callerOf(call.call),
+            call.deviceName,
+          ),
+          groupKey: 'calls.${call.deviceId}',
+          silent: true,
+        ),
+      ),
+    );
+  }
+
+  void _onResponse(NoticeResponse response) {
+    final call = _ringing[response.noticeId];
+    if (call == null) {
+      return;
+    }
+
+    switch (response.actionId) {
+      case answerAction:
+        unawaited(_run(call, _control.answer));
+      case declineAction:
+        unawaited(_run(call, _control.end));
+    }
+  }
+
+  Future<void> _run(
+    RemoteCall call,
+    Future<CommandOutcome> Function(RemoteCall call) command,
+  ) async {
+    final outcome = await command(call);
+    if (outcome.isOk || outcome == .noCall) {
+      return;
+    }
+
+    final l10n = _strings();
+    await _notifier.show(
+      LocalNotice(
+        id: problemId(call.deviceId),
+        channel: .problems,
+        title: l10n.title,
+        body: l10n.outcomeText(outcome, call.deviceName),
+        silent: true,
+      ),
+    );
+  }
+}

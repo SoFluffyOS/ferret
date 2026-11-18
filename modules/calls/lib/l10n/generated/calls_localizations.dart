@@ -99,6 +99,444 @@ abstract class CallsLocalizations {
   /// In en, this message translates to:
   /// **'Calls'**
   String get title;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @unknownCaller.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown caller'**
+  String get unknownCaller;
+
+  /// No description provided for @incomingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call on {device}'**
+  String incomingOn(String device);
+
+  /// No description provided for @callingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling from {device}'**
+  String callingOn(String device);
+
+  /// No description provided for @onCallOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On a call on {device}'**
+  String onCallOn(String device);
+
+  /// No description provided for @onHoldOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On hold on {device}'**
+  String onHoldOn(String device);
+
+  /// No description provided for @answer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get answer;
+
+  /// No description provided for @decline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get decline;
+
+  /// No description provided for @hangUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Hang up'**
+  String get hangUp;
+
+  /// No description provided for @silence.
+  ///
+  /// In en, this message translates to:
+  /// **'Silence'**
+  String get silence;
+
+  /// No description provided for @silenced.
+  ///
+  /// In en, this message translates to:
+  /// **'Ringer silenced'**
+  String get silenced;
+
+  /// No description provided for @audioStays.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio stays on {device} for now. Talk on the phone or its headset.'**
+  String audioStays(String device);
+
+  /// No description provided for @outcomeNoCall.
+  ///
+  /// In en, this message translates to:
+  /// **'That call is already over.'**
+  String get outcomeNoCall;
+
+  /// No description provided for @outcomeDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls are off on {device}. Turn them on in Ferret on the phone.'**
+  String outcomeDisabled(String device);
+
+  /// No description provided for @outcomePermission.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} hasn\'t allowed this yet. On the phone, open Ferret, then Settings, then Calls.'**
+  String outcomePermission(String device);
+
+  /// No description provided for @outcomeUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}\'s Android version can\'t do this.'**
+  String outcomeUnsupported(String device);
+
+  /// No description provided for @outcomeInvalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'That doesn\'t look like a phone number.'**
+  String get outcomeInvalidNumber;
+
+  /// No description provided for @outcomeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t do that. Try it on the phone.'**
+  String outcomeFailed(String device);
+
+  /// No description provided for @outcomeUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer. Check that it\'s connected.'**
+  String outcomeUnreachable(String device);
+
+  /// No description provided for @noticeIncomingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call · {device}'**
+  String noticeIncomingBody(String device);
+
+  /// No description provided for @noticeMissedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed call'**
+  String get noticeMissedTitle;
+
+  /// No description provided for @noticeMissedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{caller} · {device}'**
+  String noticeMissedBody(String caller, String device);
+
+  /// No description provided for @callAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Call…'**
+  String get callAction;
+
+  /// No description provided for @dialerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Call from {device}'**
+  String dialerTitle(String device);
+
+  /// No description provided for @numberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get numberLabel;
+
+  /// No description provided for @numberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 555 0100'**
+  String get numberHint;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// No description provided for @callStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is calling. Audio stays on the phone for now.'**
+  String callStarted(String device);
+
+  /// No description provided for @recentCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent calls'**
+  String get recentCalls;
+
+  /// No description provided for @recentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent calls.'**
+  String get recentEmpty;
+
+  /// No description provided for @recentLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading recent calls…'**
+  String get recentLoading;
+
+  /// No description provided for @logUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer. Check that it\'s connected.'**
+  String logUnreachable(String device);
+
+  /// No description provided for @logPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} doesn\'t let Ferret read its recent calls. On the phone, open Ferret, then Settings, then Calls, and allow Call logs.'**
+  String logPermission(String device);
+
+  /// No description provided for @logDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls are off on {device}. Turn them on in Ferret on the phone.'**
+  String logDisabled(String device);
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @typeIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming'**
+  String get typeIncoming;
+
+  /// No description provided for @typeOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoing'**
+  String get typeOutgoing;
+
+  /// No description provided for @typeMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get typeMissed;
+
+  /// No description provided for @typeRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get typeRejected;
+
+  /// No description provided for @privateNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Private number'**
+  String get privateNumber;
+
+  /// No description provided for @explainer.
+  ///
+  /// In en, this message translates to:
+  /// **'See who\'s calling and answer from your computer.'**
+  String get explainer;
+
+  /// No description provided for @explainerDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Android will ask for Phone, Call logs and Contacts. Calls only go to your own paired devices. Audio stays on this phone for now.'**
+  String get explainerDetail;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get turnOn;
+
+  /// No description provided for @turnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get turnOff;
+
+  /// No description provided for @setUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get setUp;
+
+  /// No description provided for @fix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get fix;
+
+  /// No description provided for @phoneHomePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls are on, but Ferret can\'t see them yet.'**
+  String get phoneHomePaused;
+
+  /// No description provided for @permissionOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret can\'t see calls yet'**
+  String get permissionOff;
+
+  /// No description provided for @permissionStillOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Still off. Android won\'t ask again, so allow it in the app\'s settings.'**
+  String get permissionStillOff;
+
+  /// No description provided for @permissionHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Phone so Ferret can tell your computer when a call comes in.'**
+  String get permissionHowTo;
+
+  /// No description provided for @permissionHowToSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'In the app\'s settings, open Permissions, then Phone, then Allow. Do the same for Call logs and Contacts.'**
+  String get permissionHowToSettings;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @allowRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the rest'**
+  String get allowRest;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open app settings'**
+  String get openSettings;
+
+  /// No description provided for @openSettingsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Settings. Open Android Settings, then Apps, then Ferret, then Permissions.'**
+  String get openSettingsFailed;
+
+  /// No description provided for @ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Your computers see this phone\'s calls'**
+  String get ready;
+
+  /// No description provided for @capNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is calling, and recent calls'**
+  String get capNumbers;
+
+  /// No description provided for @capContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Names and photos'**
+  String get capContacts;
+
+  /// No description provided for @capAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer, decline and hang up'**
+  String get capAnswer;
+
+  /// No description provided for @capDial.
+  ///
+  /// In en, this message translates to:
+  /// **'Start calls from your computer'**
+  String get capDial;
+
+  /// No description provided for @audioOnPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Call audio stays on this phone for now.'**
+  String get audioOnPhone;
+
+  /// No description provided for @showIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Show incoming calls'**
+  String get showIncoming;
+
+  /// No description provided for @showIncomingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'A notification with Answer and Decline when your phone rings.'**
+  String get showIncomingDetail;
+
+  /// No description provided for @settingsAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Call audio stays on the phone for now. Ferret answers the call; you talk on the phone or its headset.'**
+  String get settingsAudio;
+
+  /// No description provided for @healthNoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer about calls.'**
+  String healthNoAnswer(String device);
+
+  /// No description provided for @healthOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls are off on {device}.'**
+  String healthOff(String device);
+
+  /// No description provided for @healthNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} needs the Phone permission to see calls.'**
+  String healthNeedsPermission(String device);
+
+  /// No description provided for @healthLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls show up, but {device} can\'t answer or hang up from here.'**
+  String healthLimited(String device);
+
+  /// No description provided for @healthOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls on {device} show up here.'**
+  String healthOk(String device);
+
+  /// No description provided for @healthLocalOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls are off on this phone.'**
+  String get healthLocalOff;
+
+  /// No description provided for @healthLocalNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone needs the Phone permission to see calls.'**
+  String get healthLocalNeedsPermission;
+
+  /// No description provided for @healthLocalPushFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The last call update didn\'t reach {device}.'**
+  String healthLocalPushFailed(String device);
+
+  /// No description provided for @healthLocalOk.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} sees this phone\'s calls.'**
+  String healthLocalOk(String device);
 }
 
 class _CallsLocalizationsDelegate

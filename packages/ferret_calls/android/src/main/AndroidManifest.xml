@@ -1,3 +1,19 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.sofluffy.ferret_calls">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- See that a call is ringing or going on. -->
+  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+  <!-- See who is calling, and list recent calls. -->
+  <uses-permission android:name="android.permission.READ_CALL_LOG" />
+  <!-- Show the caller's name and photo instead of a number. -->
+  <uses-permission android:name="android.permission.READ_CONTACTS" />
+  <!-- Answer, decline and hang up from another device. -->
+  <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+  <!-- Start a call from another device. -->
+  <uses-permission android:name="android.permission.CALL_PHONE" />
+
+  <!-- The permissions above imply a telephony requirement; tablets and
+       Wi-Fi only devices must still be able to install the app. -->
+  <uses-feature
+    android:name="android.hardware.telephony"
+    android:required="false" />
 </manifest>

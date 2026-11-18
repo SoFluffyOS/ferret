@@ -1,5 +1,5 @@
 name: ferret_calls
-description: Platform code for Ferret's calls feature, reusable on its own.
+description: Watches, answers, ends and places phone calls on Android, and reads the call history, for Ferret's calls feature. Reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -24,11 +24,3 @@ flutter:
       android:
         package: io.sofluffy.ferret_calls
         pluginClass: FerretCallsPlugin
-      ios:
-        pluginClass: FerretCallsPlugin
-      linux:
-        pluginClass: FerretCallsPlugin
-      macos:
-        pluginClass: FerretCallsPlugin
-      windows:
-        pluginClass: FerretCallsPluginCApi
