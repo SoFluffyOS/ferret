@@ -32,6 +32,7 @@ import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
 import 'support/phone_fakes.dart';
+import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
 
@@ -74,14 +75,14 @@ typedef ScreenScript = Future<void> Function(
   ScreenRig rig,
 );
 
-/// One screen: its file name, how to get there, and whether it runs before
-/// onboarding is done. [tall] screens are also saved at full length
+/// One screen: its file name and how to get there. [tall] screens are also saved at full length
 /// (`<name>_full_<mode>.png`) so nothing below the fold is missed.
 class Screen {
   const Screen(
     this.name,
     this.script, {
-    this.onboarded = true,
+    this.tipsDone = false,
+    this.sampleActivity = false,
     this.tall = false,
     this.phone = false,
     this.fullHeight = 2400,
@@ -89,7 +90,13 @@ class Screen {
 
   final String name;
   final ScreenScript script;
-  final bool onboarded;
+
+  /// Whether the one-time tips were already seen, so Home shows without
+  /// them.
+  final bool tipsDone;
+
+  /// Adds a feature that fills Activity with every kind of line.
+  final bool sampleActivity;
   final bool tall;
 
   /// Runs as an Android phone paired with a computer (see [phoneFeatures]).
@@ -102,41 +109,10 @@ class Screen {
 const _offlineId = 'a1b2c3d4e5f60718';
 
 final screens = <Screen>[
-  Screen('onboard_1_welcome', (tester, rig) async {}, onboarded: false),
-  Screen('onboard_2_name', (tester, rig) async {
-    await rig.tapText(tester, 'Get started');
-  }, onboarded: false),
-  Screen(
-    'onboard_3_pair',
-    (tester, rig) async {
-      await rig.tapText(tester, 'Get started');
-      await rig.tapText(tester, 'Continue');
-    },
-    onboarded: false,
-    tall: true,
-  ),
-  Screen(
-    'onboard_3b_more_ways',
-    (tester, rig) async {
-      await rig.tapText(tester, 'Get started');
-      await rig.tapText(tester, 'Continue');
-      await rig.tapText(tester, "Can't see your device?");
-    },
-    onboarded: false,
-    tall: true,
-  ),
-  Screen('onboard_4_ready_later', (tester, rig) async {
-    await rig.tapText(tester, 'Get started');
-    await rig.tapText(tester, 'Continue');
-    await rig.tapText(tester, 'Do this later');
-  }, onboarded: false),
-  Screen('onboard_4_ready_paired', (tester, rig) async {
-    await rig.tapText(tester, 'Get started');
-    await rig.tapText(tester, 'Continue');
-    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
-    await rig.settle(tester);
-  }, onboarded: false),
   Screen('home_empty', (tester, rig) async {}),
+  Screen('home_empty_waited', (tester, rig) async {
+    await tester.pump(const Duration(seconds: 11));
+  }),
   Screen('home_offline', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.settle(tester);
@@ -201,9 +177,11 @@ final screens = <Screen>[
     await rig.addNearby(tester, name: 'Pixel 9');
     await rig.open(tester, const PairPage());
   }),
-  Screen('pair_cant_see', (tester, rig) async {
-    await rig.open(tester, const PairPage());
-    await rig.tapText(tester, "Can't see your device?");
+  Screen('pair_qr', (tester, rig) async {
+    await rig.open(tester, const QrPairPage());
+  }),
+  Screen('pair_other_ways', (tester, rig) async {
+    await rig.open(tester, const OtherWaysPage());
   }, tall: true),
   Screen('device_connected', (tester, rig) async {
     final phoneId = await rig.pairConnectedPhone(
@@ -220,15 +198,72 @@ final screens = <Screen>[
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
   }),
+  Screen('device_details', (tester, rig) async {
+    await rig.addOfflinePhone(tester);
+    await rig.open(tester, const DevicePage(deviceId: _offlineId));
+    await rig.tapText(tester, 'Details');
+  }),
+  Screen('device_forget', (tester, rig) async {
+    await rig.addOfflinePhone(tester);
+    await rig.open(tester, const DevicePage(deviceId: _offlineId));
+    await rig.tapText(tester, 'Forget Pixel 9');
+  }),
   Screen(
-    'settings',
+    'phone_device_connected',
     (tester, rig) async {
-      await rig.addOfflinePhone(tester);
-      await rig.open(tester, const SettingsPage());
+      final computerId = await rig.pairConnectedComputer(
+        tester,
+        computerFeatures: appFeatures(),
+      );
+      if (computerId == null) {
+        return;
+      }
+
+      await rig.open(tester, DevicePage(deviceId: computerId));
     },
+    phone: true,
     tall: true,
-    fullHeight: 4400,
   ),
+  Screen('settings', (tester, rig) async {
+    await rig.addOfflinePhone(tester);
+    await rig.open(tester, const SettingsPage());
+  }),
+  Screen('settings_connected', (tester, rig) async {
+    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+    await rig.open(tester, const SettingsPage());
+  }),
+  Screen('phone_settings', (tester, rig) async {
+    await rig.pairConnectedComputer(tester, computerFeatures: appFeatures());
+    await rig.open(tester, const SettingsPage());
+  }, phone: true),
+  for (final group in SettingsGroup.values) ...[
+    Screen('settings_group_${group.name}', (tester, rig) async {
+      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+      await rig.open(tester, SettingsGroupPage(group: group));
+    }, tall: true),
+    Screen(
+      'phone_settings_group_${group.name}',
+      (tester, rig) async {
+        await rig.pairConnectedComputer(
+          tester,
+          computerFeatures: appFeatures(),
+        );
+        await rig.open(tester, SettingsGroupPage(group: group));
+      },
+      phone: true,
+      tall: true,
+    ),
+  ],
+  Screen('settings_advanced', (tester, rig) async {
+    await rig.open(tester, const AdvancedSettingsPage());
+  }),
+  Screen('settings_about', (tester, rig) async {
+    await rig.open(tester, const AboutPage());
+  }),
+  Screen('doctor_network', (tester, rig) async {
+    await rig.open(tester, const DoctorPage());
+    await rig.settle(tester, real: const Duration(seconds: 1));
+  }),
   Screen('doctor', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DoctorPage(deviceId: _offlineId));
@@ -237,11 +272,61 @@ final screens = <Screen>[
   Screen('connect', (tester, rig) async {
     await rig.open(tester, const ConnectPage());
   }),
-  Screen('pause_dialog', (tester, rig) async {
+  Screen('home_menu', (tester, rig) async {
+    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+    await rig.settle(tester);
+    await tester.tap(find.byIcon(LucideIcons.ellipsis));
+    await rig.settle(tester);
+  }, tipsDone: true),
+  Screen('home_paused', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.settle(tester);
-    await tester.tap(find.byIcon(LucideIcons.pause));
+    await tester.tap(find.byIcon(LucideIcons.ellipsis));
     await rig.settle(tester);
+    await rig.tapText(tester, 'Pause for 1 hour');
+  }),
+  Screen(
+    'home_activity',
+    (tester, rig) async {
+      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+      await rig.addOfflinePhone(tester, name: 'iPad');
+      await rig.settle(tester);
+    },
+    tall: true,
+    tipsDone: true,
+    sampleActivity: true,
+  ),
+  Screen(
+    'home_many_devices',
+    (tester, rig) async {
+      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+      await rig.pairConnectedPhone(
+        tester,
+        phoneFeatures: appFeatures(),
+        name: 'Galaxy Tab',
+      );
+      await rig.addOfflinePhone(tester, name: 'iPad');
+      await rig.addOfflinePhone(
+        tester,
+        name: 'ThinkPad',
+        id: 'b1b2c3d4e5f60718',
+      );
+      await rig.settle(tester);
+    },
+    tall: true,
+    tipsDone: true,
+  ),
+  Screen(
+    'activity',
+    (tester, rig) async {
+      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+      await rig.open(tester, const ActivityPage());
+    },
+    tipsDone: true,
+    sampleActivity: true,
+  ),
+  Screen('activity_empty', (tester, rig) async {
+    await rig.open(tester, const ActivityPage());
   }),
   Screen(
     'phone_turn_on_more',
@@ -337,11 +422,14 @@ Future<void> _run(
   final name = screen.name;
   final rig = await ScreenRig.create(
     tester,
-    features: switch (screen.phone) {
-      true => phoneFeatures(),
-      false => appFeatures(),
-    },
-    onboarded: screen.onboarded,
+    features: [
+      ...switch (screen.phone) {
+        true => phoneFeatures(),
+        false => appFeatures(),
+      },
+      if (screen.sampleActivity) SampleActivityFeatureUi(),
+    ],
+    tipsDone: screen.tipsDone,
     asPhone: screen.phone,
   );
   await rig.show(tester);

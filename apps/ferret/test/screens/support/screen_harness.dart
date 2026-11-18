@@ -59,7 +59,7 @@ class ScreenRig {
     WidgetTester tester, {
     required List<FeatureUi> features,
     String name = 'MacBook Air',
-    bool onboarded = true,
+    bool tipsDone = false,
     bool asPhone = false,
   }) async {
     final rig = await tester.runAsync(() async {
@@ -86,8 +86,9 @@ class ScreenRig {
         port: 0,
       );
       await engine.start();
-      if (onboarded) {
-        await engine.settings.set(OnboardingPage.doneKey, true);
+      if (tipsDone) {
+        await engine.settings.set(TipsFrame.copyDoneKey, true);
+        await engine.settings.set(TipsFrame.dragDoneKey, true);
       }
 
       final featureContext = FeatureContext(
@@ -121,12 +122,16 @@ class ScreenRig {
   }
 
   /// Adds an offline paired phone straight to the trust store.
-  Future<void> addOfflinePhone(WidgetTester tester, {String name = 'Pixel 9'}) {
+  Future<void> addOfflinePhone(
+    WidgetTester tester, {
+    String name = 'Pixel 9',
+    String id = 'a1b2c3d4e5f60718',
+  }) {
     return tester
         .runAsync(() async {
           await engine.trustStore.save(
             TrustedDevice(
-              id: 'a1b2c3d4e5f60718',
+              id: id,
               name: name,
               platform: .PLATFORM_ANDROID,
               formFactor: .FORM_FACTOR_PHONE,
@@ -435,6 +440,7 @@ class ScreenRig {
 
   Future<void> dispose(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox.shrink());
+    app.pause.dispose();
     await tester.runAsync(() async {
       for (final other in _others) {
         await other.stop();
