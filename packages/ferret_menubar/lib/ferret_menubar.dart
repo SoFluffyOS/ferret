@@ -3,3 +3,4 @@ library;
 
 export 'package:ferret_menubar/src/ferret_menubar.dart';
 export 'package:ferret_menubar/src/messages.g.dart' show MenubarMenuItem;
+export 'package:ferret_menubar/src/popover_drag.dart';

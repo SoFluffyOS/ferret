@@ -38,6 +38,22 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         controller.onFilesDropped = { paths in
             Task { @MainActor in try? await flutterApi?.onFilesDropped(paths: paths) }
         }
+        controller.onDragEntered = { point, count in
+            Task { @MainActor in
+                try? await flutterApi?.onDragEntered(x: point.x, y: point.y, fileCount: Int64(count))
+            }
+        }
+        controller.onDragUpdated = { point in
+            Task { @MainActor in try? await flutterApi?.onDragUpdated(x: point.x, y: point.y) }
+        }
+        controller.onDragExited = {
+            Task { @MainActor in try? await flutterApi?.onDragExited() }
+        }
+        controller.onDragPerformed = { paths, point in
+            Task { @MainActor in
+                try? await flutterApi?.onDragPerformed(paths: paths, x: point.x, y: point.y)
+            }
+        }
         self.controller = controller
     }
 
@@ -67,6 +83,14 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func setShowsInDock(shows: Bool) throws {
         Self.controller?.setShowsInDock(shows)
+    }
+
+    func setDropAllowed(allowed: Bool) throws {
+        Self.controller?.setDropAllowed(allowed)
+    }
+
+    func closeIfOpenedByDrag() throws {
+        Self.controller?.closeIfOpenedByDrag()
     }
 
     func setDetachable(detachable: Bool) throws {

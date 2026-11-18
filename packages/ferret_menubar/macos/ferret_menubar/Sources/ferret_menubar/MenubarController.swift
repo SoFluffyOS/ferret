@@ -6,12 +6,23 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     private let statusItem: NSStatusItem
     private let popover = NSPopover()
     private let iconView = StatusItemView()
+    private let dragView = DragDestinationView()
     private var menuItems: [MenubarMenuItem] = []
     private var detachable = true
+    private var openedByDrag = false
+    private var dragLeaveTimer: Timer?
+
+    /// How long the popover waits after a drag leaves it, since people
+    /// overshoot, before it closes (only when the drag opened it).
+    private let dragLeaveGrace: TimeInterval = 0.6
 
     var onMenuItemSelected: ((String) -> Void)?
     var onVisibilityChanged: ((Bool) -> Void)?
     var onFilesDropped: (([String]) -> Void)?
+    var onDragEntered: ((NSPoint, Int) -> Void)?
+    var onDragUpdated: ((NSPoint) -> Void)?
+    var onDragExited: (() -> Void)?
+    var onDragPerformed: (([String], NSPoint) -> Void)?
 
     init(contentViewController: NSViewController, size: NSSize) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -24,6 +35,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         popover.delegate = self
 
         setUpIconView()
+        setUpDragView(over: contentViewController.view)
         forwardMouseButtons()
         setIcon(symbolName: "arrow.left.arrow.right", tooltip: nil)
     }
@@ -65,6 +77,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     func showPopover() {
         guard let button = statusItem.button, !popover.isShown else { return }
 
+        openedByDrag = false
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
@@ -74,6 +87,24 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         guard popover.isShown else { return }
 
         popover.performClose(nil)
+    }
+
+    func setDropAllowed(_ allowed: Bool) {
+        dragView.dropAllowed = allowed
+    }
+
+    /// After a drop is sent: closes the popover if a drag opened it.
+    func closeIfOpenedByDrag() {
+        guard openedByDrag else { return }
+
+        hidePopover()
+    }
+
+    private func springOpen() {
+        guard !popover.isShown else { return }
+
+        showPopover()
+        openedByDrag = true
     }
 
     // MARK: - NSPopoverDelegate
@@ -88,6 +119,8 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     }
 
     func popoverDidClose(_ notification: Notification) {
+        openedByDrag = false
+        dragLeaveTimer?.invalidate()
         statusItem.button?.highlight(false)
         onVisibilityChanged?(false)
     }
@@ -138,6 +171,36 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         }
     }
 
+    // MARK: - Drags over the popover
+
+    /// The drag view rides along inside the Flutter view, so it follows it
+    /// into a detached window too.
+    private func setUpDragView(over view: NSView) {
+        dragView.frame = view.bounds
+        dragView.autoresizingMask = [.width, .height]
+        view.addSubview(dragView)
+
+        dragView.onEntered = { [weak self] point, count in
+            self?.dragLeaveTimer?.invalidate()
+            self?.onDragEntered?(point, count)
+        }
+        dragView.onUpdated = { [weak self] point in self?.onDragUpdated?(point) }
+        dragView.onExited = { [weak self] in
+            self?.onDragExited?()
+            self?.closeAfterDragLeft()
+        }
+        dragView.onPerformed = { [weak self] paths, point in self?.onDragPerformed?(paths, point) }
+    }
+
+    private func closeAfterDragLeft() {
+        guard openedByDrag else { return }
+
+        dragLeaveTimer?.invalidate()
+        dragLeaveTimer = Timer.scheduledTimer(withTimeInterval: dragLeaveGrace, repeats: false) { [weak self] _ in
+            self?.closeIfOpenedByDrag()
+        }
+    }
+
     // MARK: - Icon interactions
 
     private func setUpIconView() {
@@ -159,7 +222,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
 
         iconView.onClick = { [weak self] in self?.togglePopover() }
         iconView.onSecondaryClick = { [weak self] in self?.showMenu() }
-        iconView.onDragEntered = { [weak self] in self?.showPopover() }
+        iconView.onDragHeld = { [weak self] in self?.springOpen() }
         iconView.onFilesDropped = { [weak self] paths in self?.onFilesDropped?(paths) }
     }
 

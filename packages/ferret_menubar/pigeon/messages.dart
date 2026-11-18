@@ -44,6 +44,13 @@ abstract class MenubarHostApi {
 
   /// Lets people drag the popover off into its own window.
   void setDetachable(bool detachable);
+
+  /// Whether a drop where the pointer is now would be taken, so the cursor
+  /// shows a copy badge or refuses.
+  void setDropAllowed(bool allowed);
+
+  /// Closes the popover if a file drag sprang it open.
+  void closeIfOpenedByDrag();
 }
 
 @FlutterApi()
@@ -52,5 +59,18 @@ abstract class MenubarFlutterApi {
 
   void onPopoverVisibilityChanged(bool shown);
 
+  /// Files dropped on the menubar icon.
   void onFilesDropped(List<String> paths);
+
+  /// Files dragged into the popover, at [x], [y] in logical pixels from its
+  /// top left.
+  void onDragEntered(double x, double y, int fileCount);
+
+  void onDragUpdated(double x, double y);
+
+  /// The drag left the popover or was cancelled.
+  void onDragExited();
+
+  /// Files dropped on the popover at [x], [y].
+  void onDragPerformed(List<String> paths, double x, double y);
 }

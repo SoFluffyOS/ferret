@@ -293,6 +293,11 @@ protocol MenubarHostApi {
   func setShowsInDock(shows: Bool) throws
   /// Lets people drag the popover off into its own window.
   func setDetachable(detachable: Bool) throws
+  /// Whether a drop where the pointer is now would be taken, so the cursor
+  /// shows a copy badge or refuses.
+  func setDropAllowed(allowed: Bool) throws
+  /// Closes the popover if a file drag sprang it open.
+  func closeIfOpenedByDrag() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -421,6 +426,37 @@ class MenubarHostApiSetup {
     } else {
       setDetachableChannel.setMessageHandler(nil)
     }
+    /// Whether a drop where the pointer is now would be taken, so the cursor
+    /// shows a copy badge or refuses.
+    let setDropAllowedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDropAllowed\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setDropAllowedChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let allowedArg = args[0] as! Bool
+        do {
+          try api.setDropAllowed(allowed: allowedArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setDropAllowedChannel.setMessageHandler(nil)
+    }
+    /// Closes the popover if a file drag sprang it open.
+    let closeIfOpenedByDragChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeIfOpenedByDrag\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      closeIfOpenedByDragChannel.setMessageHandler { _, reply in
+        do {
+          try api.closeIfOpenedByDrag()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      closeIfOpenedByDragChannel.setMessageHandler(nil)
+    }
   }
 }
 
@@ -428,7 +464,16 @@ class MenubarHostApiSetup {
 protocol MenubarFlutterApiProtocol {
   @MainActor func onMenuItemSelected(id idArg: String) async throws
   @MainActor func onPopoverVisibilityChanged(shown shownArg: Bool) async throws
+  /// Files dropped on the menubar icon.
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws
+  /// Files dragged into the popover, at [x], [y] in logical pixels from its
+  /// top left.
+  @MainActor func onDragEntered(x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws
+  @MainActor func onDragUpdated(x xArg: Double, y yArg: Double) async throws
+  /// The drag left the popover or was cancelled.
+  @MainActor func onDragExited() async throws
+  /// Files dropped on the popover at [x], [y].
+  @MainActor func onDragPerformed(paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws
 }
 class MenubarFlutterApi: MenubarFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -480,11 +525,96 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
+  /// Files dropped on the menubar icon.
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onFilesDropped\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([pathsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Files dragged into the popover, at [x], [y] in logical pixels from its
+  /// top left.
+  @MainActor func onDragEntered(x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([xArg, yArg, fileCountArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onDragUpdated(x xArg: Double, y yArg: Double) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragUpdated\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([xArg, yArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The drag left the popover or was cancelled.
+  @MainActor func onDragExited() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragExited\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Files dropped on the popover at [x], [y].
+  @MainActor func onDragPerformed(paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragPerformed\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([pathsArg, xArg, yArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

@@ -4,8 +4,13 @@ import Cocoa
 final class StatusItemView: NSView {
     var onClick: (() -> Void)?
     var onSecondaryClick: (() -> Void)?
-    var onDragEntered: (() -> Void)?
+    /// A file drag rested on the icon for [springDelay].
+    var onDragHeld: (() -> Void)?
     var onFilesDropped: (([String]) -> Void)?
+
+    /// How long a drag rests on the icon before the popover springs open.
+    var springDelay: TimeInterval = 0.3
+    private var springTimer: Timer?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -33,11 +38,21 @@ final class StatusItemView: NSView {
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         guard fileURLs(from: sender).isEmpty == false else { return [] }
 
-        onDragEntered?()
+        springTimer?.invalidate()
+        springTimer = Timer.scheduledTimer(withTimeInterval: springDelay, repeats: false) { [weak self] _ in
+            self?.onDragHeld?()
+        }
         return .copy
     }
 
+    override func draggingExited(_ sender: NSDraggingInfo?) {
+        springTimer?.invalidate()
+        springTimer = nil
+    }
+
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        springTimer?.invalidate()
+        springTimer = nil
         let paths = fileURLs(from: sender).map(\.path)
         guard !paths.isEmpty else { return false }
 
