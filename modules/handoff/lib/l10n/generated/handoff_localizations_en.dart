@@ -133,6 +133,43 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
       'You can also share any link to “Continue on…”.';
 
   @override
+  String get summaryPassive => 'Offers the page you\'re on';
+
+  @override
+  String get summarySendsOnly => 'Only what you send';
+
+  @override
+  String get summaryBrowserOff => 'Off';
+
+  @override
+  String get summaryNoBrowser => 'No browser yet';
+
+  @override
+  String healthUnsupported(String name) {
+    return 'Needs a Ferret update on $name';
+  }
+
+  @override
+  String healthOpensRightAway(String name) {
+    return 'Links from $name open right away';
+  }
+
+  @override
+  String healthWaits(String name) {
+    return 'Links from $name wait in a notification';
+  }
+
+  @override
+  String healthLastSendFailed(String name) {
+    return '$name didn\'t get the last link you sent';
+  }
+
+  @override
+  String healthLastSendFailedHelp(String name) {
+    return 'On $name: open Ferret, then send the link again.';
+  }
+
+  @override
   String noticeTitle(String title) {
     return 'Continue “$title”';
   }
@@ -209,7 +246,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get browserBridgeFailed =>
-      'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running.';
+      'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running: quit it, then try again.';
 
   @override
   String get browserBridgeRetry => 'Try again';

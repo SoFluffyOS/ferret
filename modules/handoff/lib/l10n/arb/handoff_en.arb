@@ -79,6 +79,30 @@
   "settingsAssistantOff": "Ferret isn't your assistant yet",
   "settingsAssistantOpen": "Open assistant settings",
   "settingsShareHint": "You can also share any link to “Continue on…”.",
+  "summaryPassive": "Offers the page you're on",
+  "summarySendsOnly": "Only what you send",
+  "summaryBrowserOff": "Off",
+  "summaryNoBrowser": "No browser yet",
+  "healthUnsupported": "Needs a Ferret update on {name}",
+  "@healthUnsupported": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthOpensRightAway": "Links from {name} open right away",
+  "@healthOpensRightAway": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthWaits": "Links from {name} wait in a notification",
+  "@healthWaits": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthLastSendFailed": "{name} didn't get the last link you sent",
+  "@healthLastSendFailed": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthLastSendFailedHelp": "On {name}: open Ferret, then send the link again.",
+  "@healthLastSendFailedHelp": {
+    "placeholders": {"name": {"type": "String"}}
+  },
   "noticeTitle": "Continue “{title}”",
   "@noticeTitle": {
     "placeholders": {
@@ -153,7 +177,7 @@
   "settingsBrowserBridge": "Browser extension",
   "settingsBrowserBridgeBody": "Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.",
   "browserBridgeListening": "To add another browser, pair from the extension's settings page.",
-  "browserBridgeFailed": "Ferret couldn't start the browser connection. Another copy of Ferret may be running.",
+  "browserBridgeFailed": "Ferret couldn't start the browser connection. Another copy of Ferret may be running: quit it, then try again.",
   "browserBridgeRetry": "Try again",
   "browserClientsEmpty": "No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.",
   "browserClientConnected": "Connected",

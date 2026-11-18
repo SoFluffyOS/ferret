@@ -47,7 +47,12 @@ class BrowserSettingsFrame extends StatelessWidget {
             Spacing.v8,
             Text(
               l10n.browserBridgeFailed,
-              style: typography.caption1.copyWith(color: palette.danger),
+              style: typography.caption1.copyWith(
+                color: switch (clients.isEmpty) {
+                  true => palette.mutedText,
+                  false => palette.warning,
+                },
+              ),
             ),
             Spacing.v8,
             Align(

@@ -39,6 +39,7 @@ class HandoffFeature extends Feature {
   final DateTime Function() _now;
   final SuggestionBoard _board = .new();
   final Map<String, ContinueOutcome> _outcomes = {};
+  final Set<String> _failedSends = {};
   final StreamController<void> _changes = .broadcast();
   final StreamController<Suggestion> _arrivals = .broadcast();
   final StreamController<Suggestion> _removals = .broadcast();
@@ -157,6 +158,10 @@ class HandoffFeature extends Feature {
   Future<void> clearPublished([String activityId = '']) =>
       host.broadcast(featureId, ClearActivity(activityId: activityId));
 
+  /// Whether the last thing sent to [deviceId] while it was connected
+  /// didn't arrive or couldn't be opened there.
+  bool lastSendFailed(String deviceId) => _failedSends.contains(deviceId);
+
   /// Asks [deviceId] to continue [activity] now.
   Future<SendOutcome> sendTo(String deviceId, Activity activity) async {
     final session = host.sessionFor(deviceId);
@@ -164,6 +169,21 @@ class HandoffFeature extends Feature {
       return .unreachable;
     }
 
+    final outcome = await _sendTo(session, activity);
+    final failed = outcome == .failed || outcome == .unreachable;
+    final changed = switch (failed) {
+      true => _failedSends.add(deviceId),
+      false => _failedSends.remove(deviceId),
+    };
+    if (changed) {
+      _changes.add(null);
+    }
+
+    return outcome;
+  }
+
+  Future<SendOutcome> _sendTo(Session session, Activity activity) async {
+    final deviceId = session.remoteDeviceId;
     final stamped = _stamp(activity, explicitLifetime);
     final ContinueResult result;
     try {

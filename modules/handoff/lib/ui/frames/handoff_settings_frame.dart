@@ -1,14 +1,14 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
-import 'package:handoff/ui/frames/browser_settings_frame.dart';
 import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Handoff's settings: passive suggestions, automatic opening, and the
-/// platform extras (browser page on macOS, assistant on Android).
+/// Continue's settings: passive suggestions, automatic opening, and the
+/// platform extras (browser page on macOS, assistant on Android). The
+/// browser extension has its own part, [BrowserSettingsFrame].
 class HandoffSettingsFrame extends StatelessWidget {
   const HandoffSettingsFrame({super.key});
 
@@ -54,10 +54,6 @@ class HandoffSettingsFrame extends StatelessWidget {
             ],
           ),
         ),
-        if (viewModel.supportsBrowserBridge) ...[
-          Spacing.v8,
-          const BrowserSettingsFrame(),
-        ],
         if (viewModel.supportsAssistant) ...[
           Spacing.v8,
           const _AssistantSetup(),

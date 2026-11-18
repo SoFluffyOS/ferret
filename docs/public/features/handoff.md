@@ -17,7 +17,7 @@ This always works, on every device.
 
 - **Android:** share a link or some text, then pick **Continue on…** in the share sheet. Pick a device in the small list and you're done. A short message says "Sent to MacBook".
 - **Any device:** open a device in Ferret, then **Send a link…**. Paste a link or type some text.
-- **macOS:** turn on **Read the current browser page** in Settings, then use **Send current page** on a device.
+- **macOS:** turn on **Read the current browser page** in **Settings → Continue & media**, then use **Send current page** on a device.
 
 What happens on the other side:
 
@@ -43,7 +43,7 @@ Suggestions go away after 5 minutes, and a newer one from the same device replac
 
 Some apps don't have a share button for what you're looking at. Ferret can read the current screen when you ask, like the system assistant does:
 
-1. In Ferret, open **Settings → Handoff → Open assistant settings**.
+1. In Ferret, open **Settings → Continue & media**, then tap **Open assistant settings**.
 2. Pick **Ferret** as the **Digital assistant app**.
 3. On the same page, turn on **Use text from screen**.
 4. Now long-press Home (or swipe up from a bottom corner) on any screen. Ferret shows your devices. Tap one.

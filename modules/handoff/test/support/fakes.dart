@@ -70,8 +70,11 @@ class FakeHost implements FeatureHost {
   @override
   List<Session> get sessions => const [];
 
+  /// The devices tests connected, by id.
+  final Map<String, Session> connected = {};
+
   @override
-  Session? sessionFor(String deviceId) => null;
+  Session? sessionFor(String deviceId) => connected[deviceId];
 
   @override
   Stream<List<Session>> get sessionChanges => _sessionChanges.stream;

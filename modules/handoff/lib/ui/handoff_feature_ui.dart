@@ -10,6 +10,7 @@ import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/services/services.dart';
 import 'package:handoff/ui/dialogs/send_flows.dart';
 import 'package:handoff/ui/frames/frames.dart';
+import 'package:handoff/ui/handoff_health.dart';
 import 'package:handoff/ui/pages/device_picker_page.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -136,11 +137,74 @@ class HandoffFeatureUi extends FeatureUi {
   }
 
   @override
-  Widget? buildSettings(BuildContext context, FeatureContext feature) =>
-      ChangeNotifierProvider.value(
-        value: viewModelFor(feature),
-        child: const HandoffSettingsFrame(),
-      );
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
+    final session = device.session;
+    if (session == null) {
+      return null;
+    }
+
+    return continueHealthOf(
+      handoffL10nForSystem(),
+      session: session,
+      name: device.device.name,
+      lastSendFailed: this.feature.lastSendFailed(device.device.id),
+      opensAutomatically: this.feature.opensAutomatically,
+    );
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .continueAndMedia;
+
+  @override
+  Widget buildSettings(BuildContext context, FeatureContext feature) =>
+      _withViewModel(feature, const HandoffSettingsFrame());
+
+  /// Continue sits with media; the browser extension, where this device
+  /// can host it, sits with the other apps Ferret works with.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.handoffL10n;
+    final clients = browser.clients;
+    final hasBrowser = browser.isEnabled && clients.isNotEmpty;
+
+    return [
+      FeatureSettings(
+        group: settingsGroup,
+        title: l10n.title,
+        child: buildSettings(context, feature),
+        summary: continueSummaryOf(
+          l10n,
+          passiveEnabled: this.feature.passiveEnabled,
+        ),
+        isOn: this.feature.passiveEnabled,
+      ),
+      if (browser.isSupported)
+        FeatureSettings(
+          group: .otherApps,
+          title: l10n.settingsBrowserBridge,
+          child: _withViewModel(feature, const BrowserSettingsFrame()),
+          summary: browserSummaryOf(
+            l10n,
+            isEnabled: browser.isEnabled,
+            clients: clients,
+          ),
+          isOn: hasBrowser,
+          needsAttention: hasBrowser && browser.state.status == .failed,
+        ),
+    ];
+  }
+
+  /// The view model is made when the frame is first shown, not when the
+  /// shell only asks what the row says.
+  Widget _withViewModel(FeatureContext feature, Widget frame) => Builder(
+    builder: (_) => ChangeNotifierProvider.value(
+      value: viewModelFor(feature),
+      child: frame,
+    ),
+  );
 
   /// Stops listening, for tests and hot restarts.
   void dispose() {

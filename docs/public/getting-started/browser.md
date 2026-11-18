@@ -38,7 +38,7 @@ Firefox forgets temporary add-ons when it quits. That goes away once the extensi
 
 ## 🔑 Pair it with Ferret
 
-Ferret has to run on the same computer, with **Settings → Handoff → Browser extension** on (it is by default).
+Ferret has to run on the same computer, with **Settings → Other apps → Browser extension** on (it is by default).
 
 1. Open the extension's settings. It opens by itself right after you install it.
 2. Click **Pair with Ferret**. The extension shows a 6-digit code.
@@ -80,7 +80,7 @@ Pages your phone offers quietly show up as a number on the Ferret button. Click 
 
 | What you see | What to do |
 | --- | --- |
-| "Ferret isn't running on this computer" | Open Ferret. Check **Settings → Handoff → Browser extension** is on. |
+| "Ferret isn't running on this computer" | Open Ferret. Check **Settings → Other apps → Browser extension** is on. |
 | Ferret says "Ferret couldn't start the browser connection" | Another copy of Ferret may be running. Quit it, then click **Try again**. |
 | "Too many tries" | Wait a minute, then pair again. |
 | A device shows **Not connected** | Turn it on and keep it on the same network. See [Pairing](pairing.md). |

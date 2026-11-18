@@ -301,6 +301,60 @@ abstract class HandoffLocalizations {
   /// **'You can also share any link to “Continue on…”.'**
   String get settingsShareHint;
 
+  /// No description provided for @summaryPassive.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers the page you\'re on'**
+  String get summaryPassive;
+
+  /// No description provided for @summarySendsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only what you send'**
+  String get summarySendsOnly;
+
+  /// No description provided for @summaryBrowserOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get summaryBrowserOff;
+
+  /// No description provided for @summaryNoBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser yet'**
+  String get summaryNoBrowser;
+
+  /// No description provided for @healthUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a Ferret update on {name}'**
+  String healthUnsupported(String name);
+
+  /// No description provided for @healthOpensRightAway.
+  ///
+  /// In en, this message translates to:
+  /// **'Links from {name} open right away'**
+  String healthOpensRightAway(String name);
+
+  /// No description provided for @healthWaits.
+  ///
+  /// In en, this message translates to:
+  /// **'Links from {name} wait in a notification'**
+  String healthWaits(String name);
+
+  /// No description provided for @healthLastSendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t get the last link you sent'**
+  String healthLastSendFailed(String name);
+
+  /// No description provided for @healthLastSendFailedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: open Ferret, then send the link again.'**
+  String healthLastSendFailedHelp(String name);
+
   /// No description provided for @noticeTitle.
   ///
   /// In en, this message translates to:
@@ -412,7 +466,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @browserBridgeFailed.
   ///
   /// In en, this message translates to:
-  /// **'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running.'**
+  /// **'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running: quit it, then try again.'**
   String get browserBridgeFailed;
 
   /// No description provided for @browserBridgeRetry.
