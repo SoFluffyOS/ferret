@@ -32,7 +32,9 @@ class CliEnvironment {
     int port = FerretEngine.defaultPort,
   }) async {
     final settings = await JsonFileSettingsStore.open(directory);
-    final name = settings.get<String>('device.name') ?? await _computerName();
+    final name =
+        settings.get<String>('device.name') ??
+        '${await _computerName()} · Terminal';
 
     return FerretEngine.create(
       secrets: FileSecretStore(directory),
