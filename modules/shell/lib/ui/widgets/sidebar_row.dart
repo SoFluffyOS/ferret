@@ -43,9 +43,10 @@ class SidebarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final textColor = switch (isDimmed) {
-      true => palette.mutedText,
-      false => palette.text,
+    // The grey of a dimmed line is too faint on the selected line's fill.
+    final textColor = switch ((isDimmed, isSelected)) {
+      (true, false) => palette.mutedText,
+      _ => palette.text,
     };
 
     // The line's text is its name; the tooltip only adds to it, so it
