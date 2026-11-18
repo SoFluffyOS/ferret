@@ -145,7 +145,7 @@ class _Link extends StatelessWidget {
       .notShared => [
         NoticeBlock(
           title: l10n.problemNotSharedTitle(device),
-          body: l10n.problemNotSharedBody,
+          body: l10n.problemNotSharedBody(device),
           actionLabel: l10n.openBluetoothSettings,
           onAction: openBluetooth,
         ),
@@ -202,18 +202,25 @@ class _Shared extends StatelessWidget {
     final mediaNotShared = context.select<IphoneSettingsViewModel, bool>(
       (viewModel) => viewModel.mediaNotShared,
     );
+    final deviceName = context.select<IphoneSettingsViewModel, String>(
+      (viewModel) => viewModel.link.deviceName,
+    );
     final l10n = context.iphoneL10n;
+    final device = switch (deviceName.isEmpty) {
+      true => l10n.yourIphone,
+      false => deviceName,
+    };
 
     return Column(
       crossAxisAlignment: .stretch,
       children: [
         if (notificationsNotShared) ...[
           Spacing.v8,
-          NoticeBlock(title: l10n.notificationsNotShared),
+          NoticeBlock(title: l10n.notificationsNotShared(device)),
         ],
         if (mediaNotShared) ...[
           Spacing.v8,
-          NoticeBlock(title: l10n.mediaNotShared),
+          NoticeBlock(title: l10n.mediaNotShared(device)),
         ],
       ],
     );

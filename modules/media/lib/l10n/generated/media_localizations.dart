@@ -193,13 +193,13 @@ abstract class MediaLocalizations {
   /// No description provided for @deviceUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'{device} didn\'t answer. Check that Ferret is running there, then try again.'**
+  /// **'{device} didn\'t answer. On {device}: open Ferret, then try again.'**
   String deviceUnreachable(String device);
 
   /// No description provided for @deviceNotSharing.
   ///
   /// In en, this message translates to:
-  /// **'{device} stopped sharing its media. Turn on Share my media there.'**
+  /// **'{device} stopped sharing its media. On {device}: turn on Share my media.'**
   String deviceNotSharing(String device);
 
   /// No description provided for @commandUnsupported.
@@ -265,7 +265,7 @@ abstract class MediaLocalizations {
   /// No description provided for @accessAllow.
   ///
   /// In en, this message translates to:
-  /// **'Allow'**
+  /// **'Allow access'**
   String get accessAllow;
 
   /// No description provided for @accessOpenSettings.

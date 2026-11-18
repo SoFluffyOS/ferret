@@ -151,8 +151,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @commandFailed.
   ///
   /// In en, this message translates to:
-  /// **'The iPhone didn\'t answer. Is it still nearby?'**
-  String get commandFailed;
+  /// **'{device} didn\'t answer. Keep it near this computer, then try again.'**
+  String commandFailed(String device);
 
   /// No description provided for @problemBluetoothOffTitle.
   ///
@@ -163,7 +163,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemBluetoothOffBody.
   ///
   /// In en, this message translates to:
-  /// **'Turn Bluetooth on to get your iPhone\'s notifications and media here.'**
+  /// **'Turn on Bluetooth on this computer to get your iPhone\'s notifications and media here.'**
   String get problemBluetoothOffBody;
 
   /// No description provided for @problemUnauthorizedTitle.
@@ -175,7 +175,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemUnauthorizedBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow Bluetooth for Ferret in the system\'s privacy settings, then come back.'**
+  /// **'Allow Bluetooth for Ferret in this computer\'s privacy settings, then try again.'**
   String get problemUnauthorizedBody;
 
   /// No description provided for @problemNoDeviceTitle.
@@ -199,8 +199,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemNotSharedBody.
   ///
   /// In en, this message translates to:
-  /// **'On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications. Not listed there? Pair it again.'**
-  String get problemNotSharedBody;
+  /// **'On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.'**
+  String problemNotSharedBody(String device);
 
   /// No description provided for @yourIphone.
   ///
@@ -319,14 +319,14 @@ abstract class IphoneLocalizations {
   /// No description provided for @notificationsNotShared.
   ///
   /// In en, this message translates to:
-  /// **'The iPhone isn\'t sharing its notifications. On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications.'**
-  String get notificationsNotShared;
+  /// **'{device} isn\'t sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.'**
+  String notificationsNotShared(String device);
 
   /// No description provided for @mediaNotShared.
   ///
   /// In en, this message translates to:
-  /// **'The iPhone isn\'t sharing what it plays with this computer.'**
-  String get mediaNotShared;
+  /// **'{device} isn\'t sharing what it plays with this computer.'**
+  String mediaNotShared(String device);
 
   /// No description provided for @setupTitle.
   ///
@@ -337,7 +337,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @setupStepUnlock.
   ///
   /// In en, this message translates to:
-  /// **'Unlock the iPhone and open Settings → Bluetooth. Keep that screen open.'**
+  /// **'On the iPhone: unlock it and open Settings → Bluetooth. Keep that screen open.'**
   String get setupStepUnlock;
 
   /// No description provided for @setupStepPairWindows.
@@ -397,7 +397,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @deviceConnected.
   ///
   /// In en, this message translates to:
-  /// **'Connected now'**
+  /// **'Connected'**
   String get deviceConnected;
 
   /// No description provided for @deviceUnnamed.
@@ -499,14 +499,14 @@ abstract class IphoneLocalizations {
   /// No description provided for @actionFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'The iPhone didn\'t answer'**
-  String get actionFailedTitle;
+  /// **'{device} didn\'t answer'**
+  String actionFailedTitle(String device);
 
   /// No description provided for @actionFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'That didn\'t reach your iPhone. Check that it\'s nearby and try again.'**
-  String get actionFailedBody;
+  /// **'That didn\'t reach {device}. Keep it near this computer, then try again.'**
+  String actionFailedBody(String device);
 }
 
 class _IphoneLocalizationsDelegate

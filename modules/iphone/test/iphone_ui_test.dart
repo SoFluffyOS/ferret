@@ -179,7 +179,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.text("The iPhone didn't answer. Is it still nearby?"),
+        find.textContaining("didn't answer. Keep it near this computer"),
         findsOneWidget,
       );
 
@@ -306,7 +306,7 @@ void main() {
       expect(find.text('Pair your iPhone'), findsOneWidget);
       expect(find.textContaining('Add device'), findsOneWidget);
       expect(find.text('Zoé’s iPhone'), findsOneWidget);
-      expect(find.text('Connected now'), findsOneWidget);
+      expect(find.text('Connected'), findsOneWidget);
 
       await tester.tap(find.text('Use'));
       await tester.pumpAndSettle();

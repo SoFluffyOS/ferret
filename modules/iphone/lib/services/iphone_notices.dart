@@ -176,12 +176,17 @@ class IphoneNotices {
       return;
     }
 
+    final deviceName = feature.link.deviceName;
+    final device = switch (deviceName.isEmpty) {
+      true => l10n.noticeFromIphone,
+      false => deviceName,
+    };
     await notifier.show(
       LocalNotice(
         id: failedNoticeId,
         channel: .problems,
-        title: l10n.actionFailedTitle,
-        body: l10n.actionFailedBody,
+        title: l10n.actionFailedTitle(device),
+        body: l10n.actionFailedBody(device),
       ),
     );
   }

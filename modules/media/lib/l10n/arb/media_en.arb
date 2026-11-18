@@ -61,7 +61,7 @@
       }
     }
   },
-  "deviceUnreachable": "{device} didn't answer. Check that Ferret is running there, then try again.",
+  "deviceUnreachable": "{device} didn't answer. On {device}: open Ferret, then try again.",
   "@deviceUnreachable": {
     "placeholders": {
       "device": {
@@ -69,7 +69,7 @@
       }
     }
   },
-  "deviceNotSharing": "{device} stopped sharing its media. Turn on Share my media there.",
+  "deviceNotSharing": "{device} stopped sharing its media. On {device}: turn on Share my media.",
   "@deviceNotSharing": {
     "placeholders": {
       "device": {
@@ -94,7 +94,7 @@
   "accessAndroid": "Ferret needs Notification access to see what plays on this phone. It only reads media controls here.",
   "accessMacos": "macOS asks once to let Ferret control Music and Spotify.",
   "accessDenied": "Ferret can't control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.",
-  "accessAllow": "Allow",
+  "accessAllow": "Allow access",
   "accessOpenSettings": "Open settings",
   "accessCheckAgain": "Check again",
   "limitMacos": "On a Mac, Ferret sees Music and Spotify. macOS doesn't let apps see other players.",

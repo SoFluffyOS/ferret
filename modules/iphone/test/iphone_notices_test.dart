@@ -242,7 +242,7 @@ void main() {
 
     final problem = notifier.shown[IphoneNotices.failedNoticeId];
     expect(problem?.channel.name, 'problems');
-    expect(problem?.title, "The iPhone didn't answer");
+    expect(problem?.title, endsWith("didn't answer"));
     expect(notifier.shown.containsKey('iphone.n.1'), isTrue);
   });
 }

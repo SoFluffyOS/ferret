@@ -72,12 +72,12 @@ class MediaLocalizationsEn extends MediaLocalizations {
 
   @override
   String deviceUnreachable(String device) {
-    return '$device didn\'t answer. Check that Ferret is running there, then try again.';
+    return '$device didn\'t answer. On $device: open Ferret, then try again.';
   }
 
   @override
   String deviceNotSharing(String device) {
-    return '$device stopped sharing its media. Turn on Share my media there.';
+    return '$device stopped sharing its media. On $device: turn on Share my media.';
   }
 
   @override
@@ -118,7 +118,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
       'Ferret can\'t control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.';
 
   @override
-  String get accessAllow => 'Allow';
+  String get accessAllow => 'Allow access';
 
   @override
   String get accessOpenSettings => 'Open settings';

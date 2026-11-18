@@ -59,7 +59,7 @@ class LinkProblemCard extends StatelessWidget {
       .notShared => (
         LucideIcons.smartphone,
         l10n.problemNotSharedTitle(device),
-        l10n.problemNotSharedBody,
+        l10n.problemNotSharedBody(device),
         [setUp, tryAgain],
       ),
       _ => (

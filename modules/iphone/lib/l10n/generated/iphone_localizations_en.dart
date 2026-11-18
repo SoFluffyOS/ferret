@@ -41,21 +41,23 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get volumeDown => 'Volume down';
 
   @override
-  String get commandFailed => 'The iPhone didn\'t answer. Is it still nearby?';
+  String commandFailed(String device) {
+    return '$device didn\'t answer. Keep it near this computer, then try again.';
+  }
 
   @override
   String get problemBluetoothOffTitle => 'Bluetooth is off';
 
   @override
   String get problemBluetoothOffBody =>
-      'Turn Bluetooth on to get your iPhone\'s notifications and media here.';
+      'Turn on Bluetooth on this computer to get your iPhone\'s notifications and media here.';
 
   @override
   String get problemUnauthorizedTitle => 'Ferret can\'t use Bluetooth';
 
   @override
   String get problemUnauthorizedBody =>
-      'Allow Bluetooth for Ferret in the system\'s privacy settings, then come back.';
+      'Allow Bluetooth for Ferret in this computer\'s privacy settings, then try again.';
 
   @override
   String get problemNoDeviceTitle => 'Pick your iPhone';
@@ -70,8 +72,9 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String get problemNotSharedBody =>
-      'On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications. Not listed there? Pair it again.';
+  String problemNotSharedBody(String device) {
+    return 'On $device: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.';
+  }
 
   @override
   String get yourIphone => 'iPhone';
@@ -146,19 +149,21 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String get notificationsNotShared =>
-      'The iPhone isn\'t sharing its notifications. On the iPhone, open Settings → Bluetooth, tap ⓘ next to this computer and turn on Share System Notifications.';
+  String notificationsNotShared(String device) {
+    return '$device isn\'t sharing its notifications. On $device: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.';
+  }
 
   @override
-  String get mediaNotShared =>
-      'The iPhone isn\'t sharing what it plays with this computer.';
+  String mediaNotShared(String device) {
+    return '$device isn\'t sharing what it plays with this computer.';
+  }
 
   @override
   String get setupTitle => 'Pair your iPhone';
 
   @override
   String get setupStepUnlock =>
-      'Unlock the iPhone and open Settings → Bluetooth. Keep that screen open.';
+      'On the iPhone: unlock it and open Settings → Bluetooth. Keep that screen open.';
 
   @override
   String get setupStepPairWindows =>
@@ -192,7 +197,7 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get deviceUse => 'Use';
 
   @override
-  String get deviceConnected => 'Connected now';
+  String get deviceConnected => 'Connected';
 
   @override
   String get deviceUnnamed => 'Unnamed device';
@@ -248,9 +253,12 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get actionAccept => 'Accept';
 
   @override
-  String get actionFailedTitle => 'The iPhone didn\'t answer';
+  String actionFailedTitle(String device) {
+    return '$device didn\'t answer';
+  }
 
   @override
-  String get actionFailedBody =>
-      'That didn\'t reach your iPhone. Check that it\'s nearby and try again.';
+  String actionFailedBody(String device) {
+    return 'That didn\'t reach $device. Keep it near this computer, then try again.';
+  }
 }
