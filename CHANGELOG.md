@@ -6,6 +6,10 @@
 - 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
 - 🪟 **A window on the Mac**: **Open Ferret window** gives you Ferret in a normal window, next to the menubar popover. Same app, live in both. Close the window and Ferret stays in the menubar.
 - 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications** and **Files** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.
+- 🧭 **An Overview you can read**: the few things you do most with a device, then **More**. With room, what works sits next to what the device may do. **Settings** keeps its list and opens the row you pick beside it.
+- 🖱️ **Right-click**: a device in the list for its actions, **Fix Connection…** and **Forget This Device…**; a line in Activity for what that line offers.
+- 📴 **Offline, not empty**: a phone that drops off keeps its sections with what they showed last, under a line that says since when. A section whose feature is off is dimmed.
+- ↗️ **The popover hands over**: on the Mac, a device, Settings, texts and notifications open the window right where you need to be. So does a notification you click.
 - ⌨️ **Keys and a real menu bar**: ⌘1 to ⌘6 for a device's sections, ⌘N to add a device, ⌘O to send files, ⌘, for Settings, ⌃⌘S for the device list. Ctrl on Windows and Linux.
 - 🏠 **Devices are the home screen**: each device has **Send files**, **Send clipboard** and **Ring** on its row, and **Fix** when it isn't connected.
 - 🧾 **Activity**: what just happened, in one short list. A copy that synced, a file that arrived, a call, a song playing, each with the one thing to do about it.

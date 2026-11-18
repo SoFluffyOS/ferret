@@ -30,6 +30,7 @@ macOS asks two things the first time:
 - **Your devices** come first, each with what you can do right on its row: **Send files**, **Send clipboard**, **Ring**. A device that isn't connected shows **Fix** instead.
 - **Activity** under them is what just happened: a copy that synced, a file that arrived, a song playing on your phone. **See all** opens the full list.
 - **+** adds a device. **•••** holds **Pause syncing** (for an hour, until tomorrow, or until you resume), **Open Ferret window**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
+- **Things that need room open the window**: click a device, **Settings**, a phone's texts or its notifications, and the window opens right there. The popover steps aside. A notification you click does the same.
 - **Drag** the popover away from the menubar to keep it open as a window.
 - **Drop files** on the icon (or the popover) to send them to your phone.
 
@@ -48,6 +49,10 @@ The window is not a big popover. It has room, so it uses it:
 
 - **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
 - **The page** you picked fills the rest. Anything you open from it (Fix connection, a settings page) opens right there, with a back arrow. The list never moves.
+- **Overview** shows the device, the few things you do most (**Send files**, **Show screen**, **Send clipboard**, **Ring**) and **More** for the rest. With room, what works with the device sits on the left and what it may do on your Mac on the right.
+- **Right-click** a device for the same actions, **Fix Connection…** and **Forget This Device…**. Right-click a line in Activity for what that line offers.
+- **A device that goes offline keeps its sections.** You still read what was there, under one line that says since when, with **Fix connection**. A section whose feature is off is dimmed, and says how to turn it on.
+- **Settings** keeps its list on the left and opens the row you pick next to it.
 - **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
 - **Make it wide** (1200 points or more) and an **Activity** pane joins on the right: what is going on now, and the last things that happened with that device.
 - Lists and forms stop at a comfortable width and stay centred. Nothing stretches across a big screen.

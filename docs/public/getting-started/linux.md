@@ -12,6 +12,10 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 - **The page** you picked fills the rest. Anything you open from it opens right there, with a back arrow.
 - **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
 - **Tile it** or make it small: under 600 wide the list folds away and Ferret is one column, the same as on your phone. Nothing is lost, only stacked.
+- **Overview** shows the device, the few things you do most and **More** for the rest. With room, what works with the device sits on the left and what it may do on your computer on the right.
+- **Right-click** a device for the same actions, **Fix Connection…** and **Forget This Device…**. Right-click a line in Activity for what that line offers.
+- **A device that goes offline keeps its sections**, under one line that says since when, with **Fix connection**. A section whose feature is off is dimmed.
+- **Settings** keeps its list on the left and opens the row you pick next to it.
 - Lists and forms stop at a comfortable width and stay centred, however big the window gets.
 
 Nothing paired yet? There is no list to show, so the window is one column that looks for your other devices. See [Pair your devices](pairing.md).
