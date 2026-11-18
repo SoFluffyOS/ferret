@@ -111,6 +111,7 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
               false => l10n.pairShowCode,
             },
             mainAxisSize: .min,
+            titleExpand: .shrink,
             onPressed: widget.onPairWithCode,
           ),
           Spacing.v24,
