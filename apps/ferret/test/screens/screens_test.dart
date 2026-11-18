@@ -416,7 +416,7 @@ void main() {
 Future<void> _run(
   WidgetTester tester,
   Screen screen,
-  ScreenSize size,
+  CaptureSize size,
   Brightness brightness,
 ) async {
   final name = screen.name;
@@ -438,12 +438,12 @@ Future<void> _run(
   await rig.capture(tester, name, size, brightness);
 
   if (screen.tall && size == phone) {
-    setScreen(tester, ScreenSize('full', 390, screen.fullHeight), brightness);
+    setScreen(tester, CaptureSize('full', 390, screen.fullHeight), brightness);
     await rig.settle(tester);
     await rig.capture(
       tester,
       name,
-      ScreenSize('full', 390, screen.fullHeight),
+      CaptureSize('full', 390, screen.fullHeight),
       brightness,
     );
   }

@@ -20,16 +20,16 @@ import 'package:transport/transport.dart';
 import 'screen_fonts.dart';
 
 /// A screen size the harness captures.
-class ScreenSize {
-  const ScreenSize(this.name, this.width, this.height);
+class CaptureSize {
+  const CaptureSize(this.name, this.width, this.height);
 
   final String name;
   final double width;
   final double height;
 }
 
-const phone = ScreenSize('phone', 390, 844);
-const popover = ScreenSize('popover', 380, 560);
+const phone = CaptureSize('phone', 390, 844);
+const popover = CaptureSize('popover', 380, 560);
 const sizes = [phone, popover];
 
 /// Pixel ratio of the saved PNGs.
@@ -397,7 +397,7 @@ class ScreenRig {
   Future<void> capture(
     WidgetTester tester,
     String name,
-    ScreenSize size,
+    CaptureSize size,
     Brightness brightness,
   ) async {
     final mode = switch (brightness) {
@@ -469,7 +469,7 @@ void mockPlugins(WidgetTester tester) {
 }
 
 /// Sizes the test window and sets light or dark mode.
-void setScreen(WidgetTester tester, ScreenSize size, Brightness brightness) {
+void setScreen(WidgetTester tester, CaptureSize size, Brightness brightness) {
   tester.view
     ..devicePixelRatio = 1
     ..physicalSize = Size(size.width, size.height);
