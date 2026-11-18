@@ -74,7 +74,8 @@ class NearbyViewModel extends ChangeNotifier {
   bool _disposed = false;
 
   /// Unpaired devices found on the network, by name. The one being paired
-  /// stays listed even after it stops announcing.
+  /// comes first, where its code is in view, and stays listed even after it
+  /// stops announcing.
   List<DiscoveredPeer> get peers {
     final found = _engine.nearby
       ..sort(
@@ -83,12 +84,15 @@ class NearbyViewModel extends ChangeNotifier {
         ),
       );
     final attempt = _attempt;
-    if (attempt == null ||
-        found.any((peer) => peer.deviceId == attempt.peer.deviceId)) {
+    if (attempt == null) {
       return found;
     }
 
-    return [attempt.peer, ...found];
+    return [
+      attempt.peer,
+      for (final peer in found)
+        if (peer.deviceId != attempt.peer.deviceId) peer,
+    ];
   }
 
   NearbyAttempt? get attempt => _attempt;
