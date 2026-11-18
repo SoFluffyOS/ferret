@@ -17,6 +17,7 @@ import 'package:drop/drop.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:find/find.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
@@ -106,6 +107,16 @@ final windowScreens = <WindowScreen>[
       await _pairPhone(tester, rig);
       await rig.tapText(tester, section);
     }),
+  WindowScreen('section_offline', (tester, rig) async {
+    await _pairPhone(tester, rig);
+    await rig.tapText(tester, 'Files');
+    await rig.disconnectOthers(tester);
+  }),
+  WindowScreen('device_menu', (tester, rig) async {
+    await _pairPhone(tester, rig);
+    await tester.tap(find.text('Pixel 9').first, buttons: kSecondaryButton);
+    await rig.settle(tester);
+  }),
   WindowScreen('activity', (tester, rig) async {
     await _pairPhone(tester, rig);
     await rig.tapText(tester, 'Activity');

@@ -461,6 +461,17 @@ class ScreenRig {
     });
   }
 
+  /// Takes every paired device offline, as when the phone leaves the Wi-Fi.
+  Future<void> disconnectOthers(WidgetTester tester) async {
+    await tester.runAsync(() async {
+      for (final other in _others) {
+        await other.stop();
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await settle(tester);
+  }
+
   Future<void> dispose(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox.shrink());
     app.pause.dispose();

@@ -371,6 +371,10 @@ class DropFeatureUi extends FeatureUi {
     ];
   }
 
+  /// The devices that took files since Ferret started, so their Files
+  /// section stays while one of them is offline.
+  final Set<String> _tookFiles = {};
+
   /// Files with one device: for a device that takes them, and for one
   /// that still has transfers listed here.
   @override
@@ -384,7 +388,11 @@ class DropFeatureUi extends FeatureUi {
     final hasTransfers = _dropViewModel.transfers.any(
       (transfer) => transfer.deviceId == deviceId,
     );
-    if (!takesFiles && !hasTransfers) {
+    if (takesFiles) {
+      _tookFiles.add(deviceId);
+    }
+
+    if (!_tookFiles.contains(deviceId) && !hasTransfers) {
       return const [];
     }
 
