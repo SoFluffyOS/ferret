@@ -82,8 +82,9 @@ class MirrorToolbarFrame extends StatelessWidget {
       },
       items: [
         if (canPress) ...const [.back, .home, .recents, .rotate],
-        if (canText) .keyboard,
         if (viewOnly) .viewOnly,
+        .screenshot,
+        if (canText) .keyboard,
         .quality,
         if (canFullScreen) .fullScreen,
         if (hasMore) .more,
@@ -95,6 +96,7 @@ class MirrorToolbarFrame extends StatelessWidget {
         .home => viewModel.press(.home),
         .recents => viewModel.press(.recents),
         .rotate => viewModel.press(.rotate),
+        .screenshot => unawaited(viewModel.screenshot()),
         .keyboard => viewModel.openTextField(),
         .fullScreen => unawaited(viewModel.setFullScreen(!isFullScreen)),
         .stop => onStop(),
@@ -174,7 +176,7 @@ class _ViewOnlyPanel extends StatelessWidget {
           child: Text(
             label,
             style: context.fluffyTheme.typography.base2.copyWith(
-              color: context.palette.accent,
+              color: context.palette.link,
             ),
           ),
         ),

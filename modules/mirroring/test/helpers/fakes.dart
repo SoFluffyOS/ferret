@@ -102,6 +102,20 @@ class FakeDecoder implements MirrorDecoder {
   Completer<void>? configureGate;
   bool disposed = false;
 
+  /// Where pictures were saved, and whether saving works.
+  final List<String> saved = [];
+  bool canSave = true;
+
+  @override
+  Future<bool> savePicture(String path) async {
+    if (!canSave || _picture.value == null) {
+      return false;
+    }
+
+    saved.add(path);
+    return true;
+  }
+
   void show(MirrorFrame frame) {
     final config = configs.last;
     _picture.value = TexturePicture(

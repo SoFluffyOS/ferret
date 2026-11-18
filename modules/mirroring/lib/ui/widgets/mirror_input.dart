@@ -60,10 +60,15 @@ class _MirrorInputState extends State<MirrorInput> {
   @override
   Widget build(BuildContext context) {
     if (widget.abilities.isEmpty) {
-      return Listener(
-        behavior: .opaque,
-        onPointerDown: (_) => widget.onViewOnlyTap?.call(),
-        child: widget.child,
+      return Focus(
+        focusNode: widget.focusNode,
+        autofocus: true,
+        onKeyEvent: _onKey,
+        child: Listener(
+          behavior: .opaque,
+          onPointerDown: (_) => widget.onViewOnlyTap?.call(),
+          child: widget.child,
+        ),
       );
     }
 

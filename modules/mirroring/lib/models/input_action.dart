@@ -49,6 +49,11 @@ class OpenTextField extends InputAction {
   const OpenTextField();
 }
 
+/// Saves a picture of the screen being shown.
+class TakeScreenshot extends InputAction {
+  const TakeScreenshot();
+}
+
 /// Taken, with nothing to send: the other half of a press that already
 /// did its work.
 class NoInput extends InputAction {

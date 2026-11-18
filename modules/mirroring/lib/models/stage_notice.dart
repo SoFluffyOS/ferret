@@ -14,4 +14,10 @@ enum StageNotice {
 
   /// A click on a picture that can only be looked at.
   viewOnly,
+
+  /// A picture of the screen was saved to a file.
+  screenshotSaved,
+
+  /// The picture of the screen couldn't be saved.
+  screenshotFailed,
 }

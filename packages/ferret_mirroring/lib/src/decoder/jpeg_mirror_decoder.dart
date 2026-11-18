@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:ferret_mirroring/src/decoder/mirror_decoder.dart';
@@ -55,6 +56,31 @@ class JpegMirrorDecoder implements MirrorDecoder {
     }
 
     unawaited(_decode(frame));
+  }
+
+  @override
+  Future<bool> savePicture(String path) async {
+    final shown = _picture.value;
+    if (shown is! ImagePicture) {
+      return false;
+    }
+
+    // A copy of its own, because the next frame disposes the one shown.
+    final image = shown.image.clone();
+    try {
+      final png = await image.toByteData(format: .png);
+      if (png == null) {
+        return false;
+      }
+
+      final file = await File(path).create(recursive: true);
+      await file.writeAsBytes(png.buffer.asUint8List(), flush: true);
+      return true;
+    } on Object {
+      return false;
+    } finally {
+      image.dispose();
+    }
   }
 
   @override

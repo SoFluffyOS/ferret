@@ -934,6 +934,29 @@ class MirrorDecoderHostApi {
     );
   }
 
+  /// Saves the picture that is on the texture right now as a PNG file at
+  /// [path], making its folder when it isn't there. False when there is no
+  /// picture yet or the file couldn't be written.
+  Future<bool> savePicture(String path) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.savePicture$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[path],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
   /// Whether the window showing Flutter can go full screen.
   Future<bool> canFullScreen() async {
     final pigeonVar_channelName =

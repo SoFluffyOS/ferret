@@ -59,6 +59,7 @@ void main() {
   late DateTime now;
   late String clipboard;
   late int closed;
+  late List<String> revealed;
 
   FerretRoute ferret() {
     final route = feature.routes?.ferret;
@@ -119,6 +120,7 @@ void main() {
     now = DateTime(2026, 11, 18, 21, 10);
     clipboard = '';
     closed = 0;
+    revealed = [];
     feature = MirroringFeature(
       decoder: () => decoder,
       codecs: const [.h264, .jpeg],
@@ -133,6 +135,11 @@ void main() {
       feature,
       window: window,
       readClipboard: () async => clipboard,
+      screenshots: ScreenshotStore(
+        downloads: '/Users/me/Downloads',
+        run: (executable, arguments) async =>
+            revealed.add('$executable ${arguments.join(' ')}'),
+      ),
       systemMirrors: systemMirrors,
       clock: () => now,
     );
@@ -1026,6 +1033,44 @@ void main() {
         tester.getRect(find.byType(MirrorToolbar)).left,
         greaterThanOrEqualTo(tester.getRect(find.byType(Texture)).right),
       );
+    });
+
+    testWidgets('Screenshot saves the picture as it is and says where, '
+        'with a way to see it in its folder', (tester) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      await pumpStage(tester);
+
+      await tester.tap(tool(LucideIcons.camera));
+      await tester.pump();
+      await tester.pump();
+
+      expect(decoder.saved, [
+        '/Users/me/Downloads/Ferret/Pixel 2026-11-18 at 21.10.00.png',
+      ]);
+      expect(find.text('Saved to Downloads › Ferret'), findsOneWidget);
+
+      await tester.tap(find.text('Show in folder'));
+      await tester.pump();
+
+      expect(revealed.single, contains('/Users/me/Downloads/Ferret'));
+      expect(find.text('Saved to Downloads › Ferret'), findsNothing);
+    });
+
+    testWidgets('a screenshot that couldn\'t be saved says so', (
+      tester,
+    ) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      await pumpStage(tester);
+      decoder.canSave = false;
+
+      await tester.tap(tool(LucideIcons.camera));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text("The screenshot couldn't be saved."), findsOneWidget);
+      expect(find.text('Show in folder'), findsNothing);
     });
 
     testWidgets('full screen only where the window can', (tester) async {

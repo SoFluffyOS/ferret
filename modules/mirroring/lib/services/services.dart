@@ -8,4 +8,5 @@ export 'package:mirroring/services/mirror_protocol.dart';
 export 'package:mirroring/services/mirror_routes.dart';
 export 'package:mirroring/services/mirror_source.dart';
 export 'package:mirroring/services/mirror_viewer.dart';
+export 'package:mirroring/services/screenshot_store.dart';
 export 'package:mirroring/services/viewer_stats_sink.dart';

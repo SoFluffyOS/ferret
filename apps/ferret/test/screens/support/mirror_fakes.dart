@@ -158,6 +158,9 @@ class StillDecoder implements MirrorDecoder {
   }
 
   @override
+  Future<bool> savePicture(String path) async => true;
+
+  @override
   Future<void> dispose() async {}
 }
 

@@ -32,6 +32,12 @@ class FakeDecoderApi implements MirrorDecoderHostApi {
   Future<void> dispose() async => calls.add('dispose');
 
   @override
+  Future<bool> savePicture(String path) async {
+    calls.add('savePicture $path');
+    return true;
+  }
+
+  @override
   Future<bool> canFullScreen() async => true;
 
   @override
@@ -73,6 +79,16 @@ void main() {
     await decoder.configure(h264(width: 2400, height: 1080));
 
     expect(api.calls, ['create', 'configure 3 2', 'configure 3 2']);
+  });
+
+  test('saving the picture reads it back from the texture, and there is '
+      'nothing to save before a stream is set up', () async {
+    expect(await decoder.savePicture('/tmp/early.png'), isFalse);
+
+    await decoder.configure(h264());
+
+    expect(await decoder.savePicture('/tmp/pixel.png'), isTrue);
+    expect(api.calls.last, 'savePicture /tmp/pixel.png');
   });
 
   test('the picture is the texture once a frame was decoded, at the decoded '

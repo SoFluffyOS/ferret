@@ -192,6 +192,12 @@ abstract class MirrorDecoderHostApi {
 
   void dispose();
 
+  /// Saves the picture that is on the texture right now as a PNG file at
+  /// [path], making its folder when it isn't there. False when there is no
+  /// picture yet or the file couldn't be written.
+  @async
+  bool savePicture(String path);
+
   /// Whether the window showing Flutter can go full screen.
   bool canFullScreen();
 

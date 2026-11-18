@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mirroring/l10n/l10n.dart';
 import 'package:mirroring/models/models.dart';
@@ -320,6 +321,15 @@ class _NoticeFrame extends StatelessWidget {
         () => unawaited(viewModel.controlWithCable(deviceId)),
       ),
       .viewOnly => (l10n.viewOnlyBody(deviceName), null, null),
+      .screenshotSaved => (
+        l10n.screenshotSaved(viewModel.screenshotFolder),
+        switch (defaultTargetPlatform) {
+          .macOS => l10n.showInFinder,
+          _ => l10n.showInFolder,
+        },
+        () => unawaited(viewModel.revealScreenshot()),
+      ),
+      .screenshotFailed => (l10n.screenshotFailed, null, null),
     };
 
     return StageNoticeBar(

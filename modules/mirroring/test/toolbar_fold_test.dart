@@ -55,6 +55,26 @@ void main() {
     ]);
   });
 
+  test('a toolbar that is wide enough but still too full folds one thing '
+      'at a time, Screenshot first', () {
+    const items = <ToolbarItem>[
+      .viewOnly,
+      .screenshot,
+      .quality,
+      .fullScreen,
+      .more,
+      .stop,
+    ];
+    double measure(List<ToolbarItem> shown) => shown.length * 80;
+
+    final roomy = ToolbarFold.of(items, 480, measure: measure);
+    final full = ToolbarFold.of(items, 400, measure: measure);
+
+    expect(roomy.folded, isEmpty);
+    expect(full.folded, const <ToolbarItem>[.screenshot]);
+    expect(full.shown, contains(ToolbarItem.fullScreen));
+  });
+
   test('the edges belong to the wider layout', () {
     expect(ToolbarFold.of(control, 360).folded, isEmpty);
     expect(ToolbarFold.of(control, 280).shown, contains(ToolbarItem.quality));

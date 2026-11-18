@@ -89,6 +89,11 @@ class MirrorViewer {
   /// The picture to draw, or null before the first frame.
   ValueListenable<MirrorPicture?> get picture => _picture;
 
+  /// Saves the picture shown right now as a PNG file at [path]. False
+  /// when nothing is shown or the file couldn't be written.
+  Future<bool> savePicture(String path) async =>
+      await _player?.savePicture(path) ?? false;
+
   /// Mouse, keyboard and buttons on the device being shown, when its route
   /// has them. Null means view only.
   MirrorControl? get control {

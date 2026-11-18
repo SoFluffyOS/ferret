@@ -33,6 +33,31 @@ void main() {
     await decoder.dispose();
   });
 
+  test('the picture shown is saved as a PNG, in a folder made for it, and '
+      'there is nothing to save before the first one', () async {
+    final jpeg = File('test/fixtures/red_4x2.jpg').readAsBytesSync();
+    final folder = Directory.systemTemp.createTempSync('ferret_picture');
+    addTearDown(() => folder.deleteSync(recursive: true));
+    final path = '${folder.path}/Ferret/pixel.png';
+    final decoder = JpegMirrorDecoder();
+    final decoded = decoder.decoded.first;
+
+    expect(await decoder.savePicture(path), isFalse);
+
+    decoder.decode(MirrorFrame(data: jpeg, ptsUs: 1, keyframe: true));
+    await decoded;
+
+    expect(await decoder.savePicture(path), isTrue);
+    final saved = File(path).readAsBytesSync();
+    expect(saved.sublist(1, 4), 'PNG'.codeUnits);
+    final codec = await ui.instantiateImageCodec(saved);
+    final image = (await codec.getNextFrame()).image;
+    expect((image.width, image.height), (4, 2));
+    image.dispose();
+    codec.dispose();
+    await decoder.dispose();
+  });
+
   test('only takes JPEG streams', () async {
     final decoder = JpegMirrorDecoder();
 

@@ -44,5 +44,9 @@ abstract interface class MirrorDecoder {
 
   void decode(MirrorFrame frame);
 
+  /// Saves the picture shown right now as a PNG file at [path]. False
+  /// when there is none yet or the file couldn't be written.
+  Future<bool> savePicture(String path);
+
   Future<void> dispose();
 }

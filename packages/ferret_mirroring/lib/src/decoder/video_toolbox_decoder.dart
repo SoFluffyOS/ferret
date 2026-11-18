@@ -79,6 +79,23 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
   }
 
   @override
+  Future<bool> savePicture(String path) async {
+    if (_codec == .jpeg) {
+      return _jpeg.savePicture(path);
+    }
+
+    if (_disposed || _textureId == null) {
+      return false;
+    }
+
+    try {
+      return await _api.savePicture(path);
+    } on Object {
+      return false;
+    }
+  }
+
+  @override
   Future<void> dispose() async {
     if (_disposed) {
       return;

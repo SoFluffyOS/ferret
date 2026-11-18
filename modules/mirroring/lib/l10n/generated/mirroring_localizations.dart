@@ -955,6 +955,36 @@ abstract class MirroringLocalizations {
   /// **'Keyboard'**
   String get buttonKeyboard;
 
+  /// No description provided for @buttonScreenshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot'**
+  String get buttonScreenshot;
+
+  /// No description provided for @screenshotSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to {folder}'**
+  String screenshotSaved(String folder);
+
+  /// No description provided for @screenshotFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The screenshot couldn\'t be saved.'**
+  String get screenshotFailed;
+
+  /// No description provided for @showInFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get showInFinder;
+
+  /// No description provided for @showInFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in folder'**
+  String get showInFolder;
+
   /// No description provided for @buttonNotifications.
   ///
   /// In en, this message translates to:

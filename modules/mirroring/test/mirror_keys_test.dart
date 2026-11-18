@@ -216,11 +216,28 @@ void main() {
 
     test('with another modifier too, the shortcut is this computer\'s', () {
       final action = act(
-        down(.keyS, .keyS),
+        down(.keyA, .keyA),
         modifiers: const {.meta, .shift},
       );
 
       expect(action, isNull);
+    });
+
+    test('with Shift, S takes a screenshot, even of a device that is view '
+        'only', () {
+      final pressed = act(
+        down(.keyS, .keyS),
+        modifiers: const {.meta, .shift},
+        abilities: const {},
+      );
+      final released = act(
+        up(.keyS, .keyS),
+        modifiers: const {.meta, .shift},
+        abilities: const {},
+      );
+
+      expect(pressed, isA<TakeScreenshot>());
+      expect(released, isA<NoInput>());
     });
 
     test('is Control on a computer that isn\'t a Mac', () {

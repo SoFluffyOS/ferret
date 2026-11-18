@@ -15,6 +15,7 @@ class ViewerViewModel extends ChangeNotifier {
     this.feature, {
     MirrorWindow? window,
     Future<String?> Function()? readClipboard,
+    ScreenshotStore? screenshots,
     bool? systemMirrors,
     DateTime Function()? clock,
     this.setupInterval = const Duration(seconds: 2),
@@ -23,6 +24,7 @@ class ViewerViewModel extends ChangeNotifier {
     this.cableHintAfter = const Duration(seconds: 20),
   }) : _window = window ?? MirrorWindow.current(),
        _readClipboard = readClipboard ?? _systemClipboard,
+       _screenshots = screenshots ?? ScreenshotStore(),
        _systemMirrors = systemMirrors ?? defaultTargetPlatform == .macOS,
        _clock = clock ?? DateTime.now {
     _subscriptions.add(feature.changes.listen((_) => _onChange()));
@@ -44,6 +46,7 @@ class ViewerViewModel extends ChangeNotifier {
 
   final MirrorWindow _window;
   final Future<String?> Function() _readClipboard;
+  final ScreenshotStore _screenshots;
 
   /// This computer's system already shows an iPhone's screen, as a Mac
   /// does, so Ferret's own receiver is second choice.
@@ -91,6 +94,7 @@ class ViewerViewModel extends ChangeNotifier {
   bool _viewOnlyTold = false;
   bool _basicTold = false;
   bool _textFieldOpen = false;
+  String? _screenshotPath;
 
   MirrorViewer? get _viewer => feature.viewer;
 
@@ -195,6 +199,9 @@ class ViewerViewModel extends ChangeNotifier {
 
   /// The line over the picture right now.
   StageNotice? get notice => _notice;
+
+  /// The folder screenshots go to, as people read it.
+  String get screenshotFolder => _screenshots.folderLabel;
 
   /// The device waiting for a yes before it replaces the one on screen.
   PendingShow? get pendingShow => _pendingShow;
@@ -385,6 +392,8 @@ class ViewerViewModel extends ChangeNotifier {
         control?.press(button);
       case OpenTextField():
         openTextField();
+      case TakeScreenshot():
+        unawaited(screenshot());
       case NoInput():
         return;
     }
@@ -400,6 +409,42 @@ class ViewerViewModel extends ChangeNotifier {
     }
 
     _viewer?.control?.setClipboard(text, paste: true);
+  }
+
+  /// Saves the picture as it is right now to a file, and says where it
+  /// went.
+  Future<void> screenshot() async {
+    final viewer = _viewer;
+    final session = current;
+    if (viewer == null || session == null || picture == null) {
+      return;
+    }
+
+    final path = _screenshots.pathFor(session.deviceName, _clock());
+    final saved = await viewer.savePicture(path);
+    if (!saved) {
+      _screenshotPath = null;
+      _showNotice(.screenshotFailed);
+      return;
+    }
+
+    _screenshotPath = path;
+    _showNotice(.screenshotSaved);
+  }
+
+  /// Shows the last screenshot in its folder.
+  Future<void> revealScreenshot() async {
+    final path = _screenshotPath;
+    if (path == null) {
+      return;
+    }
+
+    dismissNotice();
+    try {
+      await _screenshots.reveal(path);
+    } on Object catch (error) {
+      printWarning('Showing the screenshot in its folder failed', error);
+    }
   }
 
   void openTextField() {

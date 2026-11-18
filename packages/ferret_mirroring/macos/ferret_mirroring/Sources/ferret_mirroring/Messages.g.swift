@@ -831,6 +831,10 @@ protocol MirrorDecoderHostApi {
   /// [MirrorDecoderFlutterApi].
   func decode(data: FlutterStandardTypedData, ptsUs: Int64, keyframe: Bool) throws
   func dispose() throws
+  /// Saves the picture that is on the texture right now as a PNG file at
+  /// [path], making its folder when it isn't there. False when there is no
+  /// picture yet or the file couldn't be written.
+  func savePicture(path: String) async throws -> Bool
   /// Whether the window showing Flutter can go full screen.
   func canFullScreen() throws -> Bool
   func isFullScreen() throws -> Bool
@@ -906,6 +910,26 @@ class MirrorDecoderHostApiSetup {
       }
     } else {
       disposeChannel.setMessageHandler(nil)
+    }
+    /// Saves the picture that is on the texture right now as a PNG file at
+    /// [path], making its folder when it isn't there. False when there is no
+    /// picture yet or the file couldn't be written.
+    let savePictureChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.savePicture\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      savePictureChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let pathArg = args[0] as! String
+        Task { @MainActor in
+          do {
+            let result = try await api.savePicture(path: pathArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      savePictureChannel.setMessageHandler(nil)
     }
     /// Whether the window showing Flutter can go full screen.
     let canFullScreenChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.canFullScreen\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)

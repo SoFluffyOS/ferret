@@ -119,6 +119,15 @@ abstract final class MirrorKeys {
   ) {
     final key = event.logicalKey;
     final plain = modifiers.length == 1;
+    final withShift =
+        modifiers.length == 2 && modifiers.contains(KeyModifier.shift);
+    if (withShift && key == LogicalKeyboardKey.keyS) {
+      return switch (event) {
+        KeyDownEvent() => const TakeScreenshot(),
+        _ => const NoInput(),
+      };
+    }
+
     if (_kept.contains(key) || !plain) {
       return null;
     }

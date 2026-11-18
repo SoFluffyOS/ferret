@@ -4,7 +4,8 @@ import FlutterMacOS
 import sofluffy_texture
 
 /// Shows a mirrored phone screen: H.264 decoded with VideoToolbox into a
-/// Flutter texture, and full screen for the window Flutter is in.
+/// Flutter texture, the picture on it saved to a file, and full screen
+/// for the window Flutter is in.
 public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostApi {
   private let registrar: FlutterPluginRegistrar
   private let flutterApi: MirrorDecoderFlutterApi
@@ -65,6 +66,21 @@ public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostAp
     decoder = nil
     sft_texture_dispose(texture)
     texture = nil
+  }
+
+  func savePicture(path: String) async throws -> Bool {
+    guard let picture = decoder?.picture() else {
+      return false
+    }
+
+    // Reading the pixels back and packing them takes a moment: not on the
+    // thread that draws.
+    return await withCheckedContinuation { continuation in
+      DispatchQueue.global(qos: .userInitiated).async {
+        let saved = PictureFile.writePNG(picture, to: URL(fileURLWithPath: path))
+        continuation.resume(returning: saved)
+      }
+    }
   }
 
   func canFullScreen() throws -> Bool {

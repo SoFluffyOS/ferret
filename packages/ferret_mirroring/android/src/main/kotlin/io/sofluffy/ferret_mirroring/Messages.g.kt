@@ -878,6 +878,12 @@ interface MirrorDecoderHostApi {
    */
   fun decode(data: ByteArray, ptsUs: Long, keyframe: Boolean)
   fun dispose()
+  /**
+   * Saves the picture that is on the texture right now as a PNG file at
+   * [path], making its folder when it isn't there. False when there is no
+   * picture yet or the file couldn't be written.
+   */
+  suspend fun savePicture(path: String): Boolean
   /** Whether the window showing Flutter can go full screen. */
   fun canFullScreen(): Boolean
   fun isFullScreen(): Boolean
@@ -957,6 +963,25 @@ interface MirrorDecoderHostApi {
               MessagesPigeonUtils.wrapError(exception)
             }
             reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.savePicture$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val pathArg = args[0] as String
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.savePicture(pathArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
           }
         } else {
           channel.setMessageHandler(null)

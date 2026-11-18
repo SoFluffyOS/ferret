@@ -636,6 +636,18 @@
   "plugInBody": "You can click and type on it too.",
   "buttonRotate": "Rotate",
   "buttonKeyboard": "Keyboard",
+  "buttonScreenshot": "Screenshot",
+  "screenshotSaved": "Saved to {folder}",
+  "@screenshotSaved": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "screenshotFailed": "The screenshot couldn't be saved.",
+  "showInFinder": "Show in Finder",
+  "showInFolder": "Show in folder",
   "buttonNotifications": "Notifications panel",
   "buttonVolumeUp": "Volume up",
   "buttonVolumeDown": "Volume down",

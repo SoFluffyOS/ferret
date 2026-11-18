@@ -4,6 +4,9 @@ enum ToolbarItem {
   home,
   recents,
   rotate,
+
+  /// Saves the picture as it is now to a file.
+  screenshot,
   keyboard,
 
   /// Takes the place of every control on a device that is view only.
@@ -33,6 +36,7 @@ class ToolbarFold {
 
   static const _firstToFold = {
     ToolbarItem.rotate,
+    ToolbarItem.screenshot,
     ToolbarItem.keyboard,
     ToolbarItem.fullScreen,
   };
@@ -46,24 +50,54 @@ class ToolbarFold {
     ToolbarItem.stop,
   };
 
+  /// What goes behind More one at a time, first to last, when a toolbar
+  /// that is wide enough still has more than fits: names in a long
+  /// language, or large text.
+  static const _foldOrder = <ToolbarItem>[
+    .screenshot,
+    .keyboard,
+    .rotate,
+    .fullScreen,
+  ];
+
   /// Folds [items] for a toolbar [width] wide. It goes by the toolbar's
   /// own room, not the window's: the same toolbar sits in a phone-shaped
-  /// window, a pane and a page.
-  factory ToolbarFold.of(List<ToolbarItem> items, double width) {
-    final folds = switch (width) {
-      < tightBelow => (ToolbarItem item) => !_alwaysShown.contains(item),
-      < foldBelow => _firstToFold.contains,
-      _ => (ToolbarItem item) => false,
+  /// window, a pane and a page. [measure] says how wide a toolbar with
+  /// these items really is; with it, a toolbar never shows more than fits.
+  factory ToolbarFold.of(
+    List<ToolbarItem> items,
+    double width, {
+    double Function(List<ToolbarItem> shown)? measure,
+  }) {
+    final byWidth = switch (width) {
+      < tightBelow => {
+        for (final item in items)
+          if (!_alwaysShown.contains(item)) item,
+      },
+      < foldBelow => _firstToFold,
+      _ => const <ToolbarItem>{},
     };
+    final folded = {...byWidth};
+    for (final next in _foldOrder) {
+      final shown = [
+        for (final item in items)
+          if (!folded.contains(item)) item,
+      ];
+      if (measure == null || measure(shown) <= width) {
+        break;
+      }
+
+      folded.add(next);
+    }
 
     return ToolbarFold(
       shown: [
         for (final item in items)
-          if (!folds(item)) item,
+          if (!folded.contains(item)) item,
       ],
       folded: [
         for (final item in items)
-          if (folds(item)) item,
+          if (folded.contains(item)) item,
       ],
     );
   }

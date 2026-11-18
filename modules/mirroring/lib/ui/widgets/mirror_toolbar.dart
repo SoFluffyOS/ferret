@@ -107,9 +107,49 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     }
 
     return LayoutBuilder(
-      builder: (context, constraints) =>
-          _pill(context, ToolbarFold.of(widget.items, constraints.maxWidth)),
+      builder: (context, constraints) => _pill(
+        context,
+        ToolbarFold.of(
+          widget.items,
+          constraints.maxWidth,
+          measure: (shown) => _widthOf(context, shown),
+        ),
+      ),
     );
+  }
+
+  /// How wide the pill is with [shown] in it: its buttons, the names two
+  /// of them carry, and the lines between its groups.
+  double _widthOf(BuildContext context, List<ToolbarItem> shown) {
+    final l10n = context.mirroringL10n;
+    final style = context.fluffyTheme.typography.base2;
+    final scaler = MediaQuery.textScalerOf(context);
+    double named(String name) {
+      final painter = TextPainter(
+        text: TextSpan(text: name, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout();
+      final width = painter.width;
+      painter.dispose();
+      return Spacing.d28 + Spacing.d4 + width + Spacing.d8;
+    }
+
+    var width = Spacing.d6 * 2;
+    for (final (index, item) in shown.indexed) {
+      if (index > 0 && item.startsGroup) {
+        width += Spacing.d4 * 2 + Spacing.d1;
+      }
+
+      width += switch (item) {
+        .viewOnly => named(l10n.viewOnly),
+        .stop => named(l10n.stop),
+        _ => Spacing.d28,
+      };
+    }
+
+    return width;
   }
 
   Widget _pill(BuildContext context, ToolbarFold fold) {
@@ -304,6 +344,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     .home => LucideIcons.circle,
     .recents => LucideIcons.square,
     .rotate => LucideIcons.rotateCw,
+    .screenshot => LucideIcons.camera,
     .keyboard => LucideIcons.keyboard,
     .fullScreen => switch (widget.isFullScreen) {
       true => LucideIcons.minimize,
@@ -332,6 +373,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
         .home => l10n.buttonHome,
         .recents => l10n.buttonRecents,
         .rotate => l10n.buttonRotate,
+        .screenshot => l10n.buttonScreenshot,
         .keyboard => l10n.buttonKeyboard,
         .fullScreen => switch (widget.isFullScreen) {
           true => l10n.exitFullScreen,
@@ -351,6 +393,10 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       .home => '${l10n.keyMiddleClick}, ${_modifier}1',
       .recents => '${_modifier}2',
       .rotate => '${_modifier}R',
+      .screenshot => switch (defaultTargetPlatform) {
+        .macOS || .iOS => '⇧⌘S',
+        _ => 'Ctrl+Shift+S',
+      },
       .keyboard => '${_modifier}K',
       _ => null,
     };

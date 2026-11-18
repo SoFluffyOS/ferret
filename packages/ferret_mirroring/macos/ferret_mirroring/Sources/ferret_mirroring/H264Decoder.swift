@@ -16,6 +16,7 @@ final class H264Decoder {
   private var session: VTDecompressionSession?
   private var needsKeyframe = true
   private var invalidated = false
+  private var shown: CVPixelBuffer?
 
   /// Pictures go to `texture`, which must outlive the decoder: call
   /// `invalidate` before disposing it. `onPicture` gets the size and
@@ -77,7 +78,13 @@ final class H264Decoder {
       invalidated = true
       closeSession()
       format = nil
+      shown = nil
     }
+  }
+
+  /// The picture on the texture right now, or nil before the first one.
+  func picture() -> CVPixelBuffer? {
+    queue.sync { shown }
   }
 
   private func openSession(for format: CMVideoFormatDescription) -> OSStatus {
@@ -155,6 +162,7 @@ final class H264Decoder {
     // The texture keeps the buffer until the next picture is on screen,
     // then VideoToolbox's pool has it back.
     sft_texture_present_pixel_buffer(texture, picture)
+    shown = picture
     onPicture(CVPixelBufferGetWidth(picture), CVPixelBufferGetHeight(picture), ptsUs)
   }
 

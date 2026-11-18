@@ -118,6 +118,15 @@ class FeedPlayer {
     _decode(frame);
   }
 
+  /// Saves the picture shown right now as a PNG file at [path].
+  Future<bool> savePicture(String path) async {
+    if (_closed) {
+      return false;
+    }
+
+    return _decoder.savePicture(path);
+  }
+
   /// Pictures shown and frames dropped since the last call.
   ({int shown, int dropped}) takeWindow() {
     final window = (shown: _shownInWindow, dropped: _droppedInWindow);

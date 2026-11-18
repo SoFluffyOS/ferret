@@ -600,6 +600,23 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get buttonKeyboard => 'Keyboard';
 
   @override
+  String get buttonScreenshot => 'Screenshot';
+
+  @override
+  String screenshotSaved(String folder) {
+    return 'Saved to $folder';
+  }
+
+  @override
+  String get screenshotFailed => 'The screenshot couldn\'t be saved.';
+
+  @override
+  String get showInFinder => 'Show in Finder';
+
+  @override
+  String get showInFolder => 'Show in folder';
+
+  @override
   String get buttonNotifications => 'Notifications panel';
 
   @override
