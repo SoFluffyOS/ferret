@@ -28,6 +28,8 @@ macOS asks two things the first time:
 - **Drag** the popover away from the menubar to keep it open as a window.
 - **Drop files** on the icon (or the popover) to send them to your phone.
 
+The icon tells you what Ferret is doing. Plain means a device is connected. Dimmed means none is, which is fine. A ring fills while a file moves, then a check shows for a moment. A dot means someone is waiting for your answer: a device that wants to pair, or a file from someone else. A slash means Ferret is paused. Rest the pointer on the icon to read it in words.
+
 ## 🔐 Optional permissions
 
 These are asked only when you turn the matching feature on:
