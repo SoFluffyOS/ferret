@@ -1,0 +1,4 @@
+// The App Group the app and its Share extension both reach. iOS groups
+// start with "group." and are registered by automatic signing. Keep it the
+// same as in Runner.entitlements and Share/Share.entitlements.
+FERRET_SHARE_GROUP = group.io.sofluffy.ferret
