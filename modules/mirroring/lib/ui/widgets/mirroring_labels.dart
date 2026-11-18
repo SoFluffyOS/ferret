@@ -54,7 +54,7 @@ extension MirroringLabels on MirroringLocalizations {
     .stoppedOnPhone => endStoppedOnPhoneTitle(device),
     .systemEnded => endSystemEndedTitle(device),
     .lostConnection => endLostConnectionTitle(device),
-    .failed => endFailedTitle,
+    .failed || .needsSetup => endFailedTitle,
     .decoderFailed => endDecoderFailedTitle,
   };
 
@@ -74,8 +74,44 @@ extension MirroringLabels on MirroringLocalizations {
     .stoppedOnPhone => endStoppedOnPhoneBody,
     .systemEnded => endSystemEndedBody,
     .lostConnection => endLostConnectionBody,
-    .failed => endFailedBody(device),
+    .failed || .needsSetup => endFailedBody(device),
     .decoderFailed => endDecoderFailedBody,
+  };
+
+  /// The step a route still needs, as a headline anyone understands.
+  String setupTitle(RouteSetup step) => switch (step) {
+    .installTool => setupInstallToolTitle,
+    .enableDebugging => setupEnableDebuggingTitle,
+    .authorizeComputer => setupAuthorizeTitle,
+    .grantPermission => setupPermissionTitle,
+  };
+
+  /// How to do that step. The route's own [detail], such as a path, goes
+  /// on a line after it.
+  String setupBody(RouteSetup step, {String? detail}) {
+    final howTo = switch (step) {
+      .installTool => setupInstallToolBody,
+      .enableDebugging => setupEnableDebuggingBody,
+      .authorizeComputer => setupAuthorizeBody,
+      .grantPermission => setupPermissionBody,
+    };
+    if (detail == null || detail.isEmpty) {
+      return howTo;
+    }
+
+    return '$howTo\n$detail';
+  }
+
+  String buttonName(DeviceButton button) => switch (button) {
+    .home => buttonHome,
+    .recents => buttonRecents,
+    _ => buttonBack,
+  };
+
+  /// How a device another route found is connected.
+  String targetLine(MirrorTarget target) => switch (target.wireless) {
+    true => targetWireless,
+    false => targetCable,
   };
 
   String codecName(MirrorCodec codec) => switch (codec) {

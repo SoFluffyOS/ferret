@@ -6,6 +6,12 @@ abstract final class MirrorProtocol {
   /// The version of the messages this build speaks.
   static const version = 1;
 
+  /// Flag in a device's feature support: it can show its screen.
+  static const shareFlag = 'share';
+
+  /// Flag in a device's feature support: it can show another's screen.
+  static const viewFlag = 'view';
+
   /// The source never sends a bigger picture than this.
   static const maxLongSide = 1920;
   static const maxShortSide = 1080;

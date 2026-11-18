@@ -8,6 +8,7 @@ class MirroringSettings {
   static const enabledKey = 'mirroring.enabled';
   static const historyKey = 'mirroring.history';
   static const actualSizeKey = 'mirroring.actual_size';
+  static const moreWaysKey = 'mirroring.more_ways';
 
   /// How many past times of mirroring the history keeps.
   static const historyLength = 20;
@@ -27,6 +28,13 @@ class MirroringSettings {
   /// The mirror page shows one phone pixel per screen pixel instead of
   /// fitting the picture to the window.
   bool get actualSize => _store.get<bool>(actualSizeKey) ?? false;
+
+  /// This computer also shows screens that arrive another way than
+  /// Ferret's own connection, such as over a cable. Off until asked for:
+  /// those ways are experimental, and some listen on the network.
+  bool get moreWays => _store.get<bool>(moreWaysKey) ?? false;
+
+  Future<void> setMoreWays(bool value) => _store.set(moreWaysKey, value);
 
   Future<void> setEnabled(bool value) => _store.set(enabledKey, value);
 

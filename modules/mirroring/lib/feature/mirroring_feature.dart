@@ -17,6 +17,8 @@ class MirroringFeature extends Feature {
     ScreenCapture Function()? capture,
     MirrorDecoder Function()? decoder,
     List<MirrorCodec>? codecs,
+    List<MirrorRoute> routes = const [],
+    List<MirrorReceiver> receivers = const [],
     bool? canShare,
     bool? canView,
     ConsentTexts Function(String deviceName)? texts,
@@ -27,6 +29,8 @@ class MirroringFeature extends Feature {
   }) : _createCapture = capture ?? ScreenCapture.current,
        _createDecoder = decoder ?? MirrorDecoder.current,
        _codecs = codecs,
+       _extraRoutes = routes,
+       _receivers = receivers,
        canShare = canShare ?? ScreenCapture.isSupportedPlatform,
        canView =
            canView ??
@@ -42,10 +46,10 @@ class MirroringFeature extends Feature {
   static const featureId = 'mirroring';
 
   /// Flag in [FeatureSupport]: this device can show its screen.
-  static const shareFlag = 'share';
+  static const shareFlag = MirrorProtocol.shareFlag;
 
   /// Flag in [FeatureSupport]: this device can show another's screen.
-  static const viewFlag = 'view';
+  static const viewFlag = MirrorProtocol.viewFlag;
 
   /// This device's screen can be captured: Android phones and tablets.
   final bool canShare;
@@ -64,12 +68,15 @@ class MirroringFeature extends Feature {
   final ScreenCapture Function() _createCapture;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec>? _codecs;
+  final List<MirrorRoute> _extraRoutes;
+  final List<MirrorReceiver> _receivers;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final List<StreamSubscription<void>> _subscriptions = [];
 
   MirrorSource? _source;
   MirrorViewer? _viewer;
+  MirrorRoutes? _routes;
 
   @override
   String get id => featureId;
@@ -85,14 +92,17 @@ class MirroringFeature extends Feature {
   /// The computer's side, or null on phones.
   MirrorViewer? get viewer => _viewer;
 
+  /// Every way a screen can arrive here, or null on phones: Ferret's own
+  /// route, and the routes and receivers the app plugged in.
+  MirrorRoutes? get routes => _routes;
+
   /// Fires when anything the cards, health or settings show may have
   /// changed. The status line's numbers come from the viewer instead.
   Stream<void> get changes => _changes.stream;
 
   /// Whether [session]'s device can show its screen here.
   bool canViewDevice(Session session) =>
-      canView &&
-      (session.remoteFeature(featureId)?.flags.contains(shareFlag) ?? false);
+      canView && (_routes?.ferret.canShow(session) ?? false);
 
   @override
   Future<void> onStart() async {
@@ -112,18 +122,33 @@ class MirroringFeature extends Feature {
     }
 
     if (canView) {
+      final routes = MirrorRoutes(
+        ferret: FerretRoute(
+          host: host,
+          featureId: featureId,
+          clock: _clock,
+          requestTimeout: requestTimeout,
+        ),
+        settings: settings,
+        receiverName: () => host.localDevice.name,
+        routes: _extraRoutes,
+        receivers: _receivers,
+      );
       final viewer = MirrorViewer(
-        host: host,
-        featureId: featureId,
+        routes: routes,
         createDecoder: _createDecoder,
         codecs: _codecs ?? MirrorDecoder.platformCodecs,
         settings: settings,
         clock: _clock,
-        requestTimeout: requestTimeout,
         firstPictureTimeout: firstPictureTimeout,
       );
+      _routes = routes;
       _viewer = viewer;
-      _subscriptions.add(viewer.changes.listen((_) => _emit()));
+      _subscriptions
+        ..add(viewer.changes.listen((_) => _emit()))
+        ..add(routes.changes.listen((_) => _emit()))
+        ..add(routes.incoming.listen((feed) => unawaited(viewer.show(feed))));
+      routes.start();
     }
 
     _subscriptions.add(settings.changes.listen((_) => _emit()));
@@ -138,13 +163,14 @@ class MirroringFeature extends Feature {
     _subscriptions.clear();
     await _source?.dispose();
     await _viewer?.dispose();
+    await _routes?.dispose();
   }
 
   @override
   void onSessionClosed(Session session) {
     final deviceId = session.remoteDeviceId;
     unawaited(_source?.onSessionClosed(deviceId));
-    unawaited(_viewer?.onSessionClosed(deviceId));
+    _routes?.ferret.onSessionClosed(deviceId);
   }
 
   @override
@@ -153,7 +179,7 @@ class MirroringFeature extends Feature {
     Envelope envelope,
   ) async {
     if (payloadOf(envelope, Frame.new) case final frame?) {
-      _viewer?.onFrame(session, frame);
+      _routes?.ferret.onFrame(session, frame);
       return null;
     }
 
@@ -167,13 +193,13 @@ class MirroringFeature extends Feature {
     }
 
     if (payloadOf(envelope, StreamConfig.new) case final config?) {
-      await _viewer?.onConfig(session, config);
+      _routes?.ferret.onConfig(session, config);
       return null;
     }
 
     if (payloadOf(envelope, Stats.new) case final stats?) {
       await _source?.onStats(session, stats);
-      _viewer?.onStats(session, stats);
+      _routes?.ferret.onStats(session, stats);
       return null;
     }
 
@@ -183,23 +209,23 @@ class MirroringFeature extends Feature {
     }
 
     if (payloadOf(envelope, SourceState.new) case final state?) {
-      _viewer?.onSourceState(session, state);
+      _routes?.ferret.onSourceState(session, state);
       return null;
     }
 
     if (payloadOf(envelope, Stop.new) case final stop?) {
       await _source?.onStop(session);
-      await _viewer?.onStop(session, stop);
+      _routes?.ferret.onStop(session, stop);
       return null;
     }
 
     if (payloadOf(envelope, StartAccept.new) case final accept?) {
-      _viewer?.onAccept(session, accept);
+      _routes?.ferret.onAccept(session, accept);
       return null;
     }
 
     if (payloadOf(envelope, StartDeny.new) case final deny?) {
-      await _viewer?.onDeny(session, deny);
+      _routes?.ferret.onDeny(session, deny);
     }
 
     return null;

@@ -66,6 +66,49 @@ enum ViewEnd {
 
   /// This computer couldn't decode the stream.
   decoderFailed,
+
+  /// The way to this device needs a step from its owner first: see
+  /// [ViewSession.setup].
+  needsSetup;
+
+  /// How a feed's own ending reads on the mirror page.
+  static ViewEnd ofFeed(FeedEnd end) => switch (end) {
+    .stoppedHere => .stoppedHere,
+    .stoppedThere => .stoppedOnPhone,
+    .denied => .denied,
+    .timedOut => .timedOut,
+    .busy => .busy,
+    .unsupported => .unsupported,
+    .turnedOff => .turnedOff,
+    .cannotAsk => .cannotAsk,
+    .version => .version,
+    .noCodec => .noCodec,
+    .notConnected => .notConnected,
+    .noAnswer => .noAnswer,
+    .systemEnded => .systemEnded,
+    .lostConnection => .lostConnection,
+    .failed => .failed,
+  };
+
+  /// The same ending in a route's words. What only this computer knows
+  /// about, such as its decoder, is a plain failure there.
+  FeedEnd get feedEnd => switch (this) {
+    .stoppedHere => .stoppedHere,
+    .stoppedOnPhone => .stoppedThere,
+    .denied => .denied,
+    .timedOut => .timedOut,
+    .busy => .busy,
+    .unsupported => .unsupported,
+    .turnedOff => .turnedOff,
+    .cannotAsk => .cannotAsk,
+    .version => .version,
+    .noCodec => .noCodec,
+    .notConnected => .notConnected,
+    .noAnswer => .noAnswer,
+    .systemEnded => .systemEnded,
+    .lostConnection => .lostConnection,
+    .failed || .decoderFailed || .needsSetup => .failed,
+  };
 }
 
 /// The numbers on the mirror page's status line.
@@ -94,22 +137,35 @@ class ViewStats {
 /// One attempt to show a phone's screen, as the mirror page follows it.
 class ViewSession {
   const ViewSession({
-    required this.deviceId,
-    required this.deviceName,
+    required this.target,
     required this.phase,
     this.end,
+    this.setup,
+    this.setupDetail,
     this.startedAt,
     this.config,
     this.screenOff = false,
     this.stats = const ViewStats(),
   });
 
-  final String deviceId;
-  final String deviceName;
+  /// What the mirror page and the history know [target] by: its Ferret
+  /// device id when it has one, so a phone reached another way is still
+  /// the same phone.
+  static String deviceIdOf(MirrorTarget target) =>
+      target.ferretDeviceId ?? '${target.routeId}:${target.id}';
+
+  /// The device being shown, and the route it comes through.
+  final MirrorTarget target;
   final ViewPhase phase;
 
   /// Set once [phase] is [ViewPhase.ended].
   final ViewEnd? end;
+
+  /// What the route still needs, when [end] is [ViewEnd.needsSetup].
+  final RouteSetup? setup;
+
+  /// Something the route said to show next to [setup], such as a path.
+  final String? setupDetail;
 
   /// When the phone's owner said yes.
   final DateTime? startedAt;
@@ -121,6 +177,10 @@ class ViewSession {
   final bool screenOff;
   final ViewStats stats;
 
+  String get deviceId => deviceIdOf(target);
+
+  String get deviceName => target.name;
+
   /// The phone was asked and hasn't said no or stopped.
   bool get isLive => phase != .ended;
 
@@ -130,15 +190,18 @@ class ViewSession {
   ViewSession copyWith({
     ViewPhase? phase,
     ViewEnd? end,
+    RouteSetup? setup,
+    String? setupDetail,
     DateTime? startedAt,
     MirrorStreamConfig? config,
     bool? screenOff,
     ViewStats? stats,
   }) => ViewSession(
-    deviceId: deviceId,
-    deviceName: deviceName,
+    target: target,
     phase: phase ?? this.phase,
     end: end ?? this.end,
+    setup: setup ?? this.setup,
+    setupDetail: setupDetail ?? this.setupDetail,
     startedAt: startedAt ?? this.startedAt,
     config: config ?? this.config,
     screenOff: screenOff ?? this.screenOff,

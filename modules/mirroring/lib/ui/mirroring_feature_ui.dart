@@ -18,9 +18,17 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// phone: the "Sharing screen with MacBook · Stop" card (next to Android's
 /// own ongoing notice), the audit line, and Settings with the history.
 class MirroringFeatureUi extends FeatureUi {
-  MirroringFeatureUi({MirroringFeature? feature, MirrorWindow? window})
-    : feature = feature ?? MirroringFeature(),
-      _window = window {
+  /// [routes] and [receivers] are more ways a screen can arrive here,
+  /// next to Ferret's own. They go to the feature this creates; a
+  /// [feature] passed in brings its own.
+  MirroringFeatureUi({
+    MirroringFeature? feature,
+    MirrorWindow? window,
+    List<MirrorRoute> routes = const [],
+    List<MirrorReceiver> receivers = const [],
+  }) : feature =
+           feature ?? MirroringFeature(routes: routes, receivers: receivers),
+       _window = window {
     this.feature.texts = _noticeTexts;
   }
 

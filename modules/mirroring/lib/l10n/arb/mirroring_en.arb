@@ -378,5 +378,35 @@
         "type": "String"
       }
     }
+  },
+  "experimental": "Experimental",
+  "moreWaysTitle": "More ways to show a screen",
+  "moreWaysBody": "Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.",
+  "moreWaysOffer": "Experimental: show a phone plugged in with a cable, or a screen another device sends here.",
+  "turnOn": "Turn on",
+  "targetsTitle": "Screens you can show",
+  "targetsSubtitle": "Found by the experimental ways. No Ferret needed on the other device.",
+  "targetCable": "Plugged in with a cable",
+  "targetWireless": "On your network",
+  "show": "Show",
+  "checkAgain": "Check again",
+  "setupInstallToolTitle": "This computer needs a small helper first",
+  "setupInstallToolBody": "How to: install Android's platform tools (they include adb) on this computer, then try again.",
+  "setupEnableDebuggingTitle": "The phone needs one setting turned on",
+  "setupEnableDebuggingBody": "How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.",
+  "setupAuthorizeTitle": "Allow this computer on the phone",
+  "setupAuthorizeBody": "How to: look at the phone and tap Allow on the question it shows, then try again.",
+  "setupPermissionTitle": "Ferret needs your OK on this computer",
+  "setupPermissionBody": "How to: allow Ferret under Local Network in this computer's privacy settings, then try again.",
+  "buttonBack": "Back",
+  "buttonHome": "Home",
+  "buttonRecents": "Recent apps",
+  "controlHint": "Click, scroll and type here to use {device}.",
+  "@controlHint": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -379,4 +379,84 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String healthCannotAsk(String device) {
     return '$device couldn\'t show the question. Open Ferret on it.';
   }
+
+  @override
+  String get experimental => 'Experimental';
+
+  @override
+  String get moreWaysTitle => 'More ways to show a screen';
+
+  @override
+  String get moreWaysBody =>
+      'Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.';
+
+  @override
+  String get moreWaysOffer =>
+      'Experimental: show a phone plugged in with a cable, or a screen another device sends here.';
+
+  @override
+  String get turnOn => 'Turn on';
+
+  @override
+  String get targetsTitle => 'Screens you can show';
+
+  @override
+  String get targetsSubtitle =>
+      'Found by the experimental ways. No Ferret needed on the other device.';
+
+  @override
+  String get targetCable => 'Plugged in with a cable';
+
+  @override
+  String get targetWireless => 'On your network';
+
+  @override
+  String get show => 'Show';
+
+  @override
+  String get checkAgain => 'Check again';
+
+  @override
+  String get setupInstallToolTitle =>
+      'This computer needs a small helper first';
+
+  @override
+  String get setupInstallToolBody =>
+      'How to: install Android\'s platform tools (they include adb) on this computer, then try again.';
+
+  @override
+  String get setupEnableDebuggingTitle =>
+      'The phone needs one setting turned on';
+
+  @override
+  String get setupEnableDebuggingBody =>
+      'How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.';
+
+  @override
+  String get setupAuthorizeTitle => 'Allow this computer on the phone';
+
+  @override
+  String get setupAuthorizeBody =>
+      'How to: look at the phone and tap Allow on the question it shows, then try again.';
+
+  @override
+  String get setupPermissionTitle => 'Ferret needs your OK on this computer';
+
+  @override
+  String get setupPermissionBody =>
+      'How to: allow Ferret under Local Network in this computer\'s privacy settings, then try again.';
+
+  @override
+  String get buttonBack => 'Back';
+
+  @override
+  String get buttonHome => 'Home';
+
+  @override
+  String get buttonRecents => 'Recent apps';
+
+  @override
+  String controlHint(String device) {
+    return 'Click, scroll and type here to use $device.';
+  }
 }

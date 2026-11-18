@@ -630,6 +630,144 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'{device} couldn\'t show the question. Open Ferret on it.'**
   String healthCannotAsk(String device);
+
+  /// No description provided for @experimental.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental'**
+  String get experimental;
+
+  /// No description provided for @moreWaysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'More ways to show a screen'**
+  String get moreWaysTitle;
+
+  /// No description provided for @moreWaysBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.'**
+  String get moreWaysBody;
+
+  /// No description provided for @moreWaysOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental: show a phone plugged in with a cable, or a screen another device sends here.'**
+  String get moreWaysOffer;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get turnOn;
+
+  /// No description provided for @targetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screens you can show'**
+  String get targetsTitle;
+
+  /// No description provided for @targetsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Found by the experimental ways. No Ferret needed on the other device.'**
+  String get targetsSubtitle;
+
+  /// No description provided for @targetCable.
+  ///
+  /// In en, this message translates to:
+  /// **'Plugged in with a cable'**
+  String get targetCable;
+
+  /// No description provided for @targetWireless.
+  ///
+  /// In en, this message translates to:
+  /// **'On your network'**
+  String get targetWireless;
+
+  /// No description provided for @show.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get show;
+
+  /// No description provided for @checkAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get checkAgain;
+
+  /// No description provided for @setupInstallToolTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer needs a small helper first'**
+  String get setupInstallToolTitle;
+
+  /// No description provided for @setupInstallToolBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How to: install Android\'s platform tools (they include adb) on this computer, then try again.'**
+  String get setupInstallToolBody;
+
+  /// No description provided for @setupEnableDebuggingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone needs one setting turned on'**
+  String get setupEnableDebuggingTitle;
+
+  /// No description provided for @setupEnableDebuggingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.'**
+  String get setupEnableDebuggingBody;
+
+  /// No description provided for @setupAuthorizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow this computer on the phone'**
+  String get setupAuthorizeTitle;
+
+  /// No description provided for @setupAuthorizeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How to: look at the phone and tap Allow on the question it shows, then try again.'**
+  String get setupAuthorizeBody;
+
+  /// No description provided for @setupPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret needs your OK on this computer'**
+  String get setupPermissionTitle;
+
+  /// No description provided for @setupPermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How to: allow Ferret under Local Network in this computer\'s privacy settings, then try again.'**
+  String get setupPermissionBody;
+
+  /// No description provided for @buttonBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get buttonBack;
+
+  /// No description provided for @buttonHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get buttonHome;
+
+  /// No description provided for @buttonRecents.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent apps'**
+  String get buttonRecents;
+
+  /// No description provided for @controlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click, scroll and type here to use {device}.'**
+  String controlHint(String device);
 }
 
 class _MirroringLocalizationsDelegate

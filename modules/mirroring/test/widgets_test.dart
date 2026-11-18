@@ -118,14 +118,14 @@ void main() {
   }
 
   Future<void> stream(WidgetTester tester, {Codec codec = .CODEC_H264}) async {
-    final viewer = feature.viewer;
-    if (viewer == null) {
+    final route = feature.routes?.ferret;
+    if (route == null) {
       fail('The computer should be able to view');
     }
 
     await ui.viewerViewModel.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: codec));
-    await viewer.onConfig(
+    route.onAccept(pixel, StartAccept(version: 1, codec: codec));
+    route.onConfig(
       pixel,
       StreamConfig(
         configId: 1,
@@ -136,7 +136,7 @@ void main() {
         pps: [0x68],
       ),
     );
-    viewer.onFrame(
+    route.onFrame(
       pixel,
       Frame(configId: 1, sequence: Int64(0), keyframe: true, data: [1]),
     );
@@ -194,7 +194,7 @@ void main() {
     ) async {
       await startComputer(tester);
       await ui.viewerViewModel.start('pixel');
-      feature.viewer?.onAccept(
+      feature.routes?.ferret.onAccept(
         pixel,
         StartAccept(version: 1, codec: .CODEC_H264),
       );
@@ -217,7 +217,7 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       final sent = pixel.sentOf<Stats>().single;
       now = now.add(const Duration(milliseconds: 30));
-      feature.viewer?.onStats(
+      feature.routes?.ferret.onStats(
         pixel,
         Stats(echoSentAtMs: sent.sentAtMs, bitrateKbps: 5200),
       );
@@ -300,7 +300,7 @@ void main() {
       await stream(tester);
       await pumpPage(tester);
 
-      feature.viewer?.onSourceState(pixel, SourceState(screenOff: true));
+      feature.routes?.ferret.onSourceState(pixel, SourceState(screenOff: true));
       await tester.pump();
       await tester.pump();
 
@@ -313,7 +313,7 @@ void main() {
     ) async {
       await startComputer(tester);
       await ui.viewerViewModel.start('pixel');
-      await feature.viewer?.onDeny(
+      feature.routes?.ferret.onDeny(
         pixel,
         StartDeny(reason: .DENY_REASON_DENIED),
       );
@@ -342,7 +342,7 @@ void main() {
         await stream(tester);
         await pumpPage(tester);
 
-        await feature.viewer?.onStop(pixel, Stop(reason: reason));
+        feature.routes?.ferret.onStop(pixel, Stop(reason: reason));
         await tester.pump();
         await tester.pump();
 
@@ -358,7 +358,7 @@ void main() {
       await pumpPage(tester);
 
       host.sessions = [];
-      await feature.viewer?.onSessionClosed('pixel');
+      feature.routes?.ferret.onSessionClosed('pixel');
       await tester.pump();
       await tester.pump();
 
@@ -370,7 +370,7 @@ void main() {
     ) async {
       await startComputer(tester);
       await ui.viewerViewModel.start('pixel');
-      await feature.viewer?.onDeny(
+      feature.routes?.ferret.onDeny(
         pixel,
         StartDeny(reason: .DENY_REASON_TIMEOUT),
       );
@@ -735,14 +735,14 @@ void main() {
       );
       expect(changes, greaterThan(0));
 
-      await feature.viewer?.onStop(pixel, Stop(reason: .STOP_REASON_FAILED));
+      feature.routes?.ferret.onStop(pixel, Stop(reason: .STOP_REASON_FAILED));
       expect(
         ui.healthFor(context, status(pixel))?.state,
         FeatureHealthState.failing,
       );
 
       await ui.viewerViewModel.start('pixel');
-      await feature.viewer?.onDeny(
+      feature.routes?.ferret.onDeny(
         pixel,
         StartDeny(reason: .DENY_REASON_TURNED_OFF),
       );

@@ -1,46 +1,39 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:engine/engine.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mirroring/models/models.dart';
-import 'package:mirroring/services/mirror_protocol.dart';
-import 'package:protobuf/protobuf.dart';
-import 'package:protocol/mirroring.dart';
-import 'package:protocol/protocol.dart';
+import 'package:mirroring/services/feed_player.dart';
+import 'package:mirroring/services/mirror_routes.dart';
+import 'package:mirroring/services/viewer_stats_sink.dart';
 
-/// The computer's side of screen mirroring: asks a phone for its screen,
-/// waits for its owner, decodes what arrives, and keeps the numbers for
-/// the status line. One phone at a time.
+/// The computer's side of screen mirroring: opens a feed through the
+/// route that reaches a device, follows it from the question on the other
+/// side to the last picture, and keeps the numbers for the status line.
+/// It only knows feeds, never how they travel. One screen at a time.
 class MirrorViewer {
   MirrorViewer({
-    required FeatureHost host,
-    required String featureId,
+    required MirrorRoutes routes,
     required MirrorDecoder Function() createDecoder,
     required List<MirrorCodec> codecs,
     required MirroringSettings settings,
     DateTime Function()? clock,
-    this.requestTimeout = const Duration(seconds: 10),
     this.consentMargin = const Duration(seconds: 5),
     this.firstPictureTimeout = const Duration(seconds: 10),
     this.statsInterval = const Duration(seconds: 1),
     this.maxDecoding = 12,
-  }) : _host = host,
-       _featureId = featureId,
+  }) : _routes = routes,
        _createDecoder = createDecoder,
        _codecs = codecs,
        _settings = settings,
        _clock = clock ?? DateTime.now;
 
-  /// How long the phone has to answer the request itself.
-  final Duration requestTimeout;
-
-  /// Added to the phone's own consent timeout before giving up on it.
+  /// Added to the other side's own consent timeout before giving up on it.
   final Duration consentMargin;
 
-  /// How long after the owner's yes a first picture may take.
+  /// How long a first picture may take once the feed is open, and again
+  /// after the owner's yes.
   final Duration firstPictureTimeout;
 
   final Duration statsInterval;
@@ -49,13 +42,7 @@ class MirrorViewer {
   /// dropped, up to the next keyframe.
   final int maxDecoding;
 
-  /// Frames kept while the decoder is being set up for a new config.
-  static const _maxHeldFrames = 120;
-  static const _keyframeRequestGap = Duration(milliseconds: 500);
-  static const _strayNoticeGap = Duration(seconds: 1);
-
-  final FeatureHost _host;
-  final String _featureId;
+  final MirrorRoutes _routes;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec> _codecs;
   final MirroringSettings _settings;
@@ -63,28 +50,18 @@ class MirrorViewer {
   final StreamController<void> _changes = .broadcast();
   final StreamController<void> _statsChanges = .broadcast();
   final ValueNotifier<MirrorPicture?> _picture = .new(null);
-  final List<StreamSubscription<Object?>> _decoderSubscriptions = [];
-  final Map<int, DateTime> _decodingSince = {};
-  final List<Frame> _held = [];
-  final Map<String, DateTime> _strayNoticeAt = {};
   final Map<String, ViewEnd> _lastEnds = {};
 
   ViewSession? _current;
   MirrorRecord? _lastRecord;
-  MirrorDecoder? _decoder;
+  MirrorFeed? _feed;
+  StreamSubscription<FeedEvent>? _feedEvents;
+  FeedPlayer? _player;
   Timer? _waitTimer;
   Timer? _statsTimer;
-  int? _configId;
-  bool _configuring = false;
-  bool _needsKeyframe = true;
-  Int64? _lastSequence;
-  DateTime? _keyframeAskedAt;
-  int _shownInWindow = 0;
-  int _droppedInWindow = 0;
-  int _decodeMs = 0;
   int _attempt = 0;
 
-  /// The phone being asked or shown, or the last attempt and how it ended.
+  /// The device being asked or shown, or the last attempt and how it ended.
   ViewSession? get current => _current;
 
   /// The most recent time a screen was shown here since the app started,
@@ -93,6 +70,17 @@ class MirrorViewer {
 
   /// The picture to draw, or null before the first frame.
   ValueListenable<MirrorPicture?> get picture => _picture;
+
+  /// Mouse, keyboard and buttons on the device being shown, when its route
+  /// has them. Null means view only.
+  MirrorControl? get control {
+    final current = _current;
+    if (current == null || !current.isMirroring) {
+      return null;
+    }
+
+    return _feed?.control;
+  }
 
   /// How the last attempt with [deviceId] ended, for its health. Null when
   /// it never was asked, or shows its screen right now.
@@ -104,12 +92,17 @@ class MirrorViewer {
   /// Fires about every second while pictures show, with new numbers.
   Stream<void> get statsChanges => _statsChanges.stream;
 
-  /// Asks [deviceId] for its screen. A live attempt with the same device is
-  /// kept; one with another device is stopped first.
-  Future<void> start(String deviceId) async {
+  /// Asks the paired device [deviceId] for its screen, over Ferret's own
+  /// route.
+  Future<void> start(String deviceId) =>
+      startTarget(_routes.ferret.targetFor(deviceId));
+
+  /// Shows [target] through its route. A live attempt with the same device
+  /// is kept; one with another device is stopped first.
+  Future<void> startTarget(MirrorTarget target) async {
     final current = _current;
     if (current != null && current.isLive) {
-      if (current.deviceId == deviceId) {
+      if (current.deviceId == ViewSession.deviceIdOf(target)) {
         return;
       }
 
@@ -117,62 +110,68 @@ class MirrorViewer {
     }
 
     final attempt = ++_attempt;
-    final session = _host.sessionFor(deviceId);
-    final name = _nameOf(deviceId, session);
-    if (session == null) {
+    final route = _routes.routeFor(target);
+    if (route == null) {
+      _set(ViewSession(target: target, phase: .ended, end: .notConnected));
+      return;
+    }
+
+    _set(ViewSession(target: target, phase: .requesting));
+    final status = await _routes.statusOf(route);
+    if (!_isAsking(attempt)) {
+      return;
+    }
+
+    if (status case RouteNeedsSetup(:final step, :final detail)) {
       _set(
         ViewSession(
-          deviceId: deviceId,
-          deviceName: name,
+          target: target,
           phase: .ended,
-          end: .notConnected,
+          end: .needsSetup,
+          setup: step,
+          setupDetail: detail,
         ),
       );
       return;
     }
 
-    _set(ViewSession(deviceId: deviceId, deviceName: name, phase: .requesting));
-    final Envelope reply;
+    if (status is RouteUnsupported) {
+      await _finish(.unsupported);
+      return;
+    }
+
+    final MirrorFeed feed;
     try {
-      reply = await session.request(
-        _featureId,
-        StartRequest(
-          version: MirrorProtocol.version,
-          codecs: _codecs.map(MirrorProtocol.toProto),
-          maxWidth: MirrorProtocol.maxLongSide,
-          maxHeight: MirrorProtocol.maxLongSide,
-          maxFps: MirrorProtocol.maxFps,
-        ),
-        timeout: requestTimeout,
+      feed = await route.open(
+        target,
+        FeedOptions(codecs: _codecs, control: true),
       );
-    } on SessionClosedException {
-      await _endAttempt(attempt, .lostConnection);
-      return;
     } on Object catch (error) {
-      printWarning('Asking $deviceId for its screen failed', error);
-      await _endAttempt(attempt, .noAnswer);
+      printWarning('Opening a screen through ${route.id} failed', error);
+      await _endAttempt(attempt, .failed);
       return;
     }
 
-    if (attempt != _attempt || _current?.phase != .requesting) {
+    if (!_isAsking(attempt)) {
+      await _stopFeed(feed);
       return;
     }
 
-    if (payloadOf(reply, StartPending.new) case final pending?) {
-      _waitTimer = Timer(
-        Duration(seconds: pending.timeoutSeconds) + consentMargin,
-        () => unawaited(_giveUp(attempt, .timedOut)),
-      );
-      _set(_current?.copyWith(phase: .waitingForPhone));
-      return;
-    }
+    _attach(feed, attempt);
 
-    if (payloadOf(reply, StartDeny.new) case final deny?) {
-      await _finish(_endOfDeny(deny.reason));
-      return;
-    }
+    // A feed that already knows its first answer hands it over in the next
+    // microtask: whoever awaits this sees where the attempt stands.
+    await Future<void>.microtask(() {});
+  }
 
-    await _finish(.noAnswer);
+  /// Shows a feed the other device started itself, in place of anything
+  /// shown now.
+  Future<void> show(MirrorFeed feed) async {
+    await stop();
+
+    final attempt = ++_attempt;
+    _set(ViewSession(target: feed.target, phase: .requesting));
+    _attach(feed, attempt);
   }
 
   /// Stop or Back on this computer.
@@ -182,7 +181,7 @@ class MirrorViewer {
       return;
     }
 
-    await _finish(.stoppedHere, notify: .STOP_REASON_VIEWER_DONE);
+    await _finish(.stoppedHere);
   }
 
   /// Forgets an attempt that is over, so its message goes away.
@@ -207,12 +206,77 @@ class MirrorViewer {
     _emit();
   }
 
-  void onAccept(Session session, StartAccept accept) {
+  Future<void> dispose() async {
+    await stop();
+    _waitTimer?.cancel();
+    _statsTimer?.cancel();
+    await _closePlayer();
+    _picture.dispose();
+    await _changes.close();
+    await _statsChanges.close();
+  }
+
+  bool _isAsking(int attempt) =>
+      attempt == _attempt && _current?.phase == .requesting;
+
+  void _attach(MirrorFeed feed, int attempt) {
+    _feed = feed;
+    _waitTimer = Timer(
+      firstPictureTimeout,
+      () => unawaited(_endAttempt(attempt, .noAnswer)),
+    );
+    _feedEvents = feed.events.listen(
+      (event) => _onEvent(feed, event),
+      onError: (Object error) {
+        printWarning('A mirrored screen stopped arriving', error);
+        _onEvent(feed, const FeedEnded(.failed));
+      },
+    );
+  }
+
+  void _onEvent(MirrorFeed feed, FeedEvent event) {
+    if (!identical(feed, _feed)) {
+      return;
+    }
+
+    switch (event) {
+      case FeedWaiting(:final timeout):
+        _onWaiting(timeout);
+      case FeedAccepted():
+        _begin();
+      case FeedConfigured(:final config):
+        _begin();
+        unawaited(_configure(config));
+      case FeedFrame(:final frame, :final lost):
+        _player?.add(frame, lost: lost);
+      case FeedSourceState(:final screenOff):
+        _onSourceState(screenOff);
+      case FeedStats():
+        _onStats(event);
+      case FeedEnded(:final reason):
+        unawaited(_finish(.ofFeed(reason)));
+    }
+  }
+
+  void _onWaiting(Duration timeout) {
     final current = _current;
-    if (current == null ||
-        current.phase != .waitingForPhone ||
-        current.deviceId != session.remoteDeviceId) {
-      _answerStray(session);
+    if (current == null || current.phase != .requesting) {
+      return;
+    }
+
+    final attempt = _attempt;
+    _waitTimer?.cancel();
+    _waitTimer = Timer(
+      timeout + consentMargin,
+      () => unawaited(_endAttempt(attempt, .timedOut)),
+    );
+    _set(current.copyWith(phase: .waitingForPhone));
+  }
+
+  /// The other side said yes, or never had to: pictures are on their way.
+  void _begin() {
+    final current = _current;
+    if (current == null || !current.isLive || current.isMirroring) {
       return;
     }
 
@@ -220,122 +284,53 @@ class MirrorViewer {
     _waitTimer?.cancel();
     _waitTimer = Timer(
       firstPictureTimeout,
-      () => unawaited(_giveUp(attempt, .noAnswer)),
+      () => unawaited(_endAttempt(attempt, .noAnswer)),
     );
-    _resetStream();
-    _openDecoder();
+    _openPlayer();
     _lastEnds.remove(current.deviceId);
     _statsTimer = .periodic(statsInterval, (_) => _onStatsTick());
     _set(current.copyWith(phase: .starting, startedAt: _clock()));
   }
 
-  Future<void> onDeny(Session session, StartDeny deny) async {
+  Future<void> _configure(MirrorStreamConfig config) async {
+    final player = _player;
+    if (player == null) {
+      return;
+    }
+
+    final result = await player.configure(config);
+    if (!identical(_player, player) || result == .superseded) {
+      return;
+    }
+
+    if (result == .failed) {
+      await _finish(.decoderFailed);
+      return;
+    }
+
+    _set(_current?.copyWith(config: config));
+  }
+
+  void _onSourceState(bool screenOff) {
     final current = _current;
-    if (current == null ||
-        current.phase != .waitingForPhone ||
-        current.deviceId != session.remoteDeviceId) {
+    if (current == null || !current.isMirroring) {
       return;
     }
 
-    await _finish(_endOfDeny(deny.reason));
+    _set(current.copyWith(screenOff: screenOff));
   }
 
-  Future<void> onConfig(Session session, StreamConfig config) async {
+  /// The other side's numbers: the round trip and its bitrate.
+  void _onStats(FeedStats stats) {
     final current = _current;
-    final decoder = _decoder;
-    final codec = MirrorProtocol.fromProto(config.codec);
-    if (!_isMirroring(session) || current == null || decoder == null) {
+    if (current == null || !current.isMirroring) {
       return;
     }
 
-    if (codec == null) {
-      await _finish(.decoderFailed, notify: .STOP_REASON_VIEWER_DONE);
-      return;
-    }
-
-    final streamConfig = MirrorStreamConfig(
-      codec: codec,
-      width: config.width,
-      height: config.height,
-      rotation: config.rotation,
-      fps: config.fps,
-      sps: Uint8List.fromList(config.sps),
-      pps: Uint8List.fromList(config.pps),
-    );
-    _configId = config.configId;
-    _configuring = true;
-    _needsKeyframe = true;
-    _held.clear();
-    _decodingSince.clear();
-    try {
-      await decoder.configure(streamConfig);
-    } on Object catch (error) {
-      printWarning('This computer cannot decode the mirrored screen', error);
-      if (identical(_decoder, decoder)) {
-        await _finish(.decoderFailed, notify: .STOP_REASON_VIEWER_DONE);
-      }
-
-      return;
-    }
-
-    if (!identical(_decoder, decoder) || _configId != config.configId) {
-      return;
-    }
-
-    _configuring = false;
-    _set(_current?.copyWith(config: streamConfig));
-    final held = List.of(_held);
-    _held.clear();
-    for (final frame in held) {
-      _decode(decoder, frame);
-    }
-  }
-
-  void onFrame(Session session, Frame frame) {
-    final decoder = _decoder;
-    if (!_isMirroring(session) || decoder == null) {
-      _answerStray(session);
-      return;
-    }
-
-    if (frame.configId != _configId) {
-      return;
-    }
-
-    _countGap(frame.sequence);
-    if (_configuring) {
-      if (_held.length < _maxHeldFrames) {
-        _held.add(frame);
-      }
-
-      return;
-    }
-
-    _decode(decoder, frame);
-  }
-
-  void onSourceState(Session session, SourceState state) {
-    if (!_isMirroring(session)) {
-      return;
-    }
-
-    _set(_current?.copyWith(screenOff: state.screenOff));
-  }
-
-  /// The phone's answer to this side's stats: the round trip and its
-  /// bitrate.
-  void onStats(Session session, Stats stats) {
-    final current = _current;
-    if (!_isMirroring(session) || current == null) {
-      return;
-    }
-
-    final now = _clock().millisecondsSinceEpoch;
-    final roundTripMs = now - stats.echoSentAtMs.toInt();
-    final latencyMs = switch (stats.echoSentAtMs.toInt() > 0 &&
-        roundTripMs >= 0) {
-      true => roundTripMs ~/ 2 + _decodeMs,
-      false => current.stats.latencyMs,
+    final latencyMs = switch (stats.roundTrip) {
+      final roundTrip? =>
+        roundTrip.inMilliseconds ~/ 2 + (_player?.decodeMs ?? 0),
+      null => current.stats.latencyMs,
     };
     _current = current.copyWith(
       stats: ViewStats(
@@ -348,125 +343,34 @@ class MirrorViewer {
     _emitStats();
   }
 
-  Future<void> onStop(Session session, Stop stop) async {
-    final current = _current;
-    if (current == null ||
-        !current.isLive ||
-        current.deviceId != session.remoteDeviceId) {
-      return;
-    }
-
-    await _finish(switch (stop.reason) {
-      .STOP_REASON_STOPPED_ON_SOURCE => .stoppedOnPhone,
-      .STOP_REASON_SYSTEM_ENDED => .systemEnded,
-      .STOP_REASON_TURNED_OFF => .turnedOff,
-      .STOP_REASON_NOT_MIRRORING => .lostConnection,
-      _ => .failed,
-    });
-  }
-
-  Future<void> onSessionClosed(String deviceId) async {
-    final current = _current;
-    if (current == null || !current.isLive || current.deviceId != deviceId) {
-      return;
-    }
-
-    await _finish(.lostConnection);
-  }
-
-  Future<void> dispose() async {
-    await stop();
-    _waitTimer?.cancel();
-    _statsTimer?.cancel();
-    await _closeDecoder();
-    _picture.dispose();
-    await _changes.close();
-    await _statsChanges.close();
-  }
-
-  bool _isMirroring(Session session) {
-    final current = _current;
-    return current != null &&
-        current.isMirroring &&
-        current.deviceId == session.remoteDeviceId;
-  }
-
-  void _decode(MirrorDecoder decoder, Frame frame) {
-    if (_needsKeyframe && !frame.keyframe) {
-      _droppedInWindow++;
-      return;
-    }
-
-    if (_decodingSince.length >= maxDecoding) {
-      _droppedInWindow++;
-      _decodingSince.clear();
-      _loseKeyframe();
-      return;
-    }
-
-    _needsKeyframe = false;
-    final ptsUs = frame.ptsUs.toInt();
-    _decodingSince[ptsUs] = _clock();
-    decoder.decode(
-      MirrorFrame(
-        data: Uint8List.fromList(frame.data),
-        ptsUs: ptsUs,
-        keyframe: frame.keyframe,
-      ),
+  void _openPlayer() {
+    final feed = _feed;
+    final player = FeedPlayer(
+      decoder: _createDecoder(),
+      clock: _clock,
+      maxDecoding: maxDecoding,
+      onShown: _onShown,
+      onKeyframeNeeded: () => unawaited(_requestKeyframe(feed)),
     );
+    _player = player;
+    player.picture.addListener(_onPicture);
   }
 
-  void _countGap(Int64 sequence) {
-    final last = _lastSequence;
-    _lastSequence = sequence;
-    if (last == null || sequence <= last + 1) {
+  Future<void> _closePlayer() async {
+    final player = _player;
+    _player = null;
+    if (player == null) {
       return;
     }
 
-    _droppedInWindow += (sequence - last - 1).toInt();
-  }
-
-  void _openDecoder() {
-    final decoder = _createDecoder();
-    _decoder = decoder;
-    decoder.picture.addListener(_onPicture);
-    _decoderSubscriptions
-      ..add(decoder.decoded.listen(_onDecoded))
-      ..add(decoder.errors.listen((_) => _loseKeyframe()));
-  }
-
-  Future<void> _closeDecoder() async {
-    final decoder = _decoder;
-    final subscriptions = List.of(_decoderSubscriptions);
-    _decoder = null;
-    _decoderSubscriptions.clear();
-    if (decoder == null) {
-      return;
-    }
-
-    decoder.picture.removeListener(_onPicture);
+    player.picture.removeListener(_onPicture);
     _picture.value = null;
-    for (final subscription in subscriptions) {
-      unawaited(subscription.cancel());
-    }
-
-    try {
-      await decoder.dispose();
-    } on Object catch (error) {
-      printWarning('Closing the mirror decoder failed', error);
-    }
+    await player.close();
   }
 
-  void _onPicture() => _picture.value = _decoder?.picture.value;
+  void _onPicture() => _picture.value = _player?.picture.value;
 
-  void _onDecoded(DecodedFrame frame) {
-    _shownInWindow++;
-    final since = _decodingSince.remove(frame.ptsUs);
-    _decodingSince.removeWhere((ptsUs, _) => ptsUs < frame.ptsUs);
-    if (since != null) {
-      _decodeMs = _clock().difference(since).inMilliseconds;
-    }
-
+  void _onShown() {
     final current = _current;
     if (current == null || current.phase != .starting) {
       return;
@@ -477,60 +381,42 @@ class MirrorViewer {
     _set(current.copyWith(phase: .streaming));
   }
 
-  /// A frame was lost: nothing decodes until the phone sends a keyframe.
-  void _loseKeyframe() {
-    _needsKeyframe = true;
-    _decodingSince.clear();
-    final current = _current;
-    final now = _clock();
-    final askedAt = _keyframeAskedAt;
-    if (current == null ||
-        !current.isMirroring ||
-        (askedAt != null && now.difference(askedAt) < _keyframeRequestGap)) {
+  Future<void> _requestKeyframe(MirrorFeed? feed) async {
+    if (feed == null || !identical(feed, _feed)) {
       return;
     }
 
-    _keyframeAskedAt = now;
-    unawaited(_send(current.deviceId, KeyframeRequest()));
+    try {
+      await feed.requestKeyframe();
+    } on Object catch (error) {
+      printWarning('Asking for a keyframe failed', error);
+    }
   }
 
   void _onStatsTick() {
     final current = _current;
-    if (current == null || !current.isMirroring) {
+    final player = _player;
+    if (current == null || !current.isMirroring || player == null) {
       return;
     }
 
-    final shown = _shownInWindow;
-    final dropped = _droppedInWindow;
-    _shownInWindow = 0;
-    _droppedInWindow = 0;
+    final window = player.takeWindow();
     _current = current.copyWith(
       stats: ViewStats(
-        fps: shown,
+        fps: window.shown,
         latencyMs: current.stats.latencyMs,
         bitrateKbps: current.stats.bitrateKbps,
-        droppedFrames: dropped,
+        droppedFrames: window.dropped,
       ),
     );
     _emitStats();
-    unawaited(
-      _send(
-        current.deviceId,
-        Stats(
-          sentAtMs: Int64(_clock().millisecondsSinceEpoch),
-          fps: shown,
-          droppedFrames: dropped,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _giveUp(int attempt, ViewEnd end) async {
-    if (attempt != _attempt) {
-      return;
+    if (_feed case final ViewerStatsSink sink) {
+      sink.reportStats(
+        sentAt: _clock(),
+        fps: window.shown,
+        droppedFrames: window.dropped,
+      );
     }
-
-    await _finish(end, notify: .STOP_REASON_VIEWER_DONE);
   }
 
   Future<void> _endAttempt(int attempt, ViewEnd end) async {
@@ -541,14 +427,19 @@ class MirrorViewer {
     await _finish(end);
   }
 
-  /// Ends the current attempt: the picture goes away, the phone is told
-  /// when it should stop, and a session that showed anything is recorded.
-  Future<void> _finish(ViewEnd end, {StopReason? notify}) async {
+  /// Ends the current attempt: the picture goes away, the feed is told to
+  /// stop (one that ended by itself has nothing left to do), and a session
+  /// that showed anything is recorded.
+  Future<void> _finish(ViewEnd end) async {
     final current = _current;
     if (current == null || !current.isLive) {
       return;
     }
 
+    final feed = _feed;
+    final feedEvents = _feedEvents;
+    _feed = null;
+    _feedEvents = null;
     _waitTimer?.cancel();
     _waitTimer = null;
     _statsTimer?.cancel();
@@ -561,17 +452,25 @@ class MirrorViewer {
     }
 
     _emit();
-    if (notify != null) {
-      await _send(current.deviceId, Stop(reason: notify));
+    unawaited(feedEvents?.cancel());
+    if (feed != null) {
+      await _stopFeed(feed);
     }
 
-    await _closeDecoder();
-    _resetStream();
+    await _closePlayer();
     if (record != null) {
       await _settings.addRecord(record);
     }
 
     _emit();
+  }
+
+  Future<void> _stopFeed(MirrorFeed feed) async {
+    try {
+      await feed.stop();
+    } on Object catch (error) {
+      printWarning('Stopping a mirrored screen failed', error);
+    }
   }
 
   MirrorRecord? _recordOf(ViewSession session, ViewEnd end) {
@@ -596,63 +495,6 @@ class MirrorViewer {
       },
     );
   }
-
-  void _resetStream() {
-    _configId = null;
-    _configuring = false;
-    _needsKeyframe = true;
-    _lastSequence = null;
-    _keyframeAskedAt = null;
-    _shownInWindow = 0;
-    _droppedInWindow = 0;
-    _decodeMs = 0;
-    _held.clear();
-    _decodingSince.clear();
-  }
-
-  ViewEnd _endOfDeny(DenyReason reason) => switch (reason) {
-    .DENY_REASON_DENIED => .denied,
-    .DENY_REASON_TIMEOUT => .timedOut,
-    .DENY_REASON_BUSY => .busy,
-    .DENY_REASON_UNSUPPORTED => .unsupported,
-    .DENY_REASON_TURNED_OFF => .turnedOff,
-    .DENY_REASON_VERSION => .version,
-    .DENY_REASON_NO_CODEC => .noCodec,
-    .DENY_REASON_CANNOT_ASK => .cannotAsk,
-    _ => .failed,
-  };
-
-  /// Frames from a phone this computer isn't watching: tells it to stop,
-  /// at most once a second.
-  void _answerStray(Session session) {
-    final deviceId = session.remoteDeviceId;
-    final now = _clock();
-    final last = _strayNoticeAt[deviceId];
-    if (last != null && now.difference(last) < _strayNoticeGap) {
-      return;
-    }
-
-    _strayNoticeAt[deviceId] = now;
-    unawaited(_send(deviceId, Stop(reason: .STOP_REASON_NOT_MIRRORING)));
-  }
-
-  Future<void> _send(String deviceId, GeneratedMessage message) async {
-    final session = _host.sessionFor(deviceId);
-    if (session == null) {
-      return;
-    }
-
-    try {
-      await session.send(_featureId, message);
-    } on Object catch (error) {
-      printWarning('Mirroring message to $deviceId failed', error);
-    }
-  }
-
-  String _nameOf(String deviceId, Session? session) =>
-      session?.remoteDevice?.name ??
-      _host.trustStore[deviceId]?.name ??
-      deviceId;
 
   void _set(ViewSession? session) {
     if (session == null) {

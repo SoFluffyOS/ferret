@@ -14,6 +14,8 @@ void main() {
   late FakeHost host;
   late FakeSession pixel;
   late FakeDecoder decoder;
+  late FerretRoute route;
+  late MirrorRoutes routes;
   late MirrorViewer viewer;
   late DateTime now;
   late int decodersMade;
@@ -52,9 +54,18 @@ void main() {
     decodersMade = 0;
     disposedInTest = false;
     now = DateTime(2026, 11, 18, 21, 10);
-    viewer = MirrorViewer(
+    route = FerretRoute(
       host: host,
       featureId: MirroringFeature.featureId,
+      clock: () => now,
+    );
+    routes = MirrorRoutes(
+      ferret: route,
+      settings: MirroringSettings(host.settings),
+      receiverName: () => 'MacBook',
+    );
+    viewer = MirrorViewer(
+      routes: routes,
       createDecoder: () {
         decodersMade++;
         return decoder;
@@ -68,9 +79,10 @@ void main() {
   /// Request, consent on the phone, config and a first keyframe.
   Future<void> stream() async {
     await viewer.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
-    await viewer.onConfig(pixel, config());
-    viewer.onFrame(pixel, frame(0, keyframe: true));
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onConfig(pixel, config());
+    await settle();
+    route.onFrame(pixel, frame(0, keyframe: true));
     await settle();
   }
 
@@ -97,16 +109,17 @@ void main() {
     expect(viewer.current?.phase, ViewPhase.waitingForPhone);
     expect(decodersMade, 0, reason: 'no decoder before the yes');
 
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     expect(viewer.current?.phase, ViewPhase.starting);
     expect(viewer.current?.startedAt, now);
 
-    await viewer.onConfig(pixel, config());
+    route.onConfig(pixel, config());
+    await settle();
     expect(decoder.configs.single.width, 1080);
     expect(decoder.configs.single.sps, [0x67]);
     expect(viewer.current?.config?.codec, MirrorCodec.h264);
 
-    viewer.onFrame(pixel, frame(0, keyframe: true));
+    route.onFrame(pixel, frame(0, keyframe: true));
     await settle();
     expect(viewer.current?.phase, ViewPhase.streaming);
     expect(viewer.picture.value?.width, 1080);
@@ -127,7 +140,8 @@ void main() {
     test('the phone saying ${reason.name} ends as ${end.name}', () async {
       await viewer.start('pixel');
 
-      await viewer.onDeny(pixel, StartDeny(reason: reason));
+      route.onDeny(pixel, StartDeny(reason: reason));
+      await settle();
 
       expect(viewer.current?.phase, ViewPhase.ended);
       expect(viewer.current?.end, end);
@@ -162,7 +176,8 @@ void main() {
     await stream();
     now = now.add(const Duration(minutes: 12));
 
-    await viewer.onStop(pixel, Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE));
+    route.onStop(pixel, Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE));
+    await settle();
 
     expect(viewer.current?.end, ViewEnd.stoppedOnPhone);
     expect(viewer.picture.value, isNull);
@@ -176,7 +191,8 @@ void main() {
   test('the phone locking is told apart from Stop', () async {
     await stream();
 
-    await viewer.onStop(pixel, Stop(reason: .STOP_REASON_SYSTEM_ENDED));
+    route.onStop(pixel, Stop(reason: .STOP_REASON_SYSTEM_ENDED));
+    await settle();
 
     expect(viewer.current?.end, ViewEnd.systemEnded);
   });
@@ -196,7 +212,7 @@ void main() {
     expect(history.single.end, MirrorEnd.viewerDone);
     expect(history.single.deviceName, 'Pixel');
 
-    viewer.onFrame(pixel, frame(5, keyframe: true));
+    route.onFrame(pixel, frame(5, keyframe: true));
     expect(decoder.frames, hasLength(1), reason: 'late frames are ignored');
   });
 
@@ -211,7 +227,7 @@ void main() {
     );
     expect(viewer.lastRecord, isNull);
 
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     expect(viewer.current?.phase, ViewPhase.ended, reason: 'a late yes');
     expect(decodersMade, 0);
   });
@@ -220,7 +236,8 @@ void main() {
     await stream();
     host.sessions = [];
 
-    await viewer.onSessionClosed('pixel');
+    route.onSessionClosed('pixel');
+    await settle();
 
     expect(viewer.current?.end, ViewEnd.lostConnection);
     expect(viewer.lastRecord?.end, MirrorEnd.lostConnection);
@@ -241,7 +258,7 @@ void main() {
 
       viewer.start('pixel');
       async.flushMicrotasks();
-      viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+      route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
       async.elapse(const Duration(seconds: 11));
       expect(viewer.current?.end, ViewEnd.noAnswer);
       disposeIn(async);
@@ -252,26 +269,27 @@ void main() {
     final gate = Completer<void>();
     decoder.configureGate = gate;
     await viewer.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
-    final configuring = viewer.onConfig(pixel, config());
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onConfig(pixel, config());
 
-    viewer
+    route
       ..onFrame(pixel, frame(0, keyframe: true))
       ..onFrame(pixel, frame(1));
     expect(decoder.frames, isEmpty);
 
     gate.complete();
-    await configuring;
+    await settle();
     expect(decoder.frames.map((frame) => frame.ptsUs), [0, 1000]);
   });
 
   test('frames of another config, and before a keyframe, are '
       'dropped', () async {
     await viewer.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
-    await viewer.onConfig(pixel, config());
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onConfig(pixel, config());
+    await settle();
 
-    viewer
+    route
       ..onFrame(pixel, frame(0))
       ..onFrame(pixel, frame(1, keyframe: true, configId: 9))
       ..onFrame(pixel, frame(2, keyframe: true))
@@ -284,7 +302,7 @@ void main() {
     await stream();
 
     decoder.fail();
-    viewer.onFrame(pixel, frame(1));
+    route.onFrame(pixel, frame(1));
     await settle();
     expect(pixel.sentOf<KeyframeRequest>(), hasLength(1));
     expect(decoder.frames, hasLength(1));
@@ -293,7 +311,7 @@ void main() {
     await settle();
     expect(pixel.sentOf<KeyframeRequest>(), hasLength(1), reason: 'not twice');
 
-    viewer.onFrame(pixel, frame(2, keyframe: true));
+    route.onFrame(pixel, frame(2, keyframe: true));
     expect(decoder.frames, hasLength(2));
   });
 
@@ -301,12 +319,13 @@ void main() {
     await viewer.dispose();
     await create(withDecoder: FakeDecoder(autoShow: false));
     await viewer.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
-    await viewer.onConfig(pixel, config());
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onConfig(pixel, config());
+    await settle();
 
-    viewer.onFrame(pixel, frame(0, keyframe: true));
+    route.onFrame(pixel, frame(0, keyframe: true));
     for (var sequence = 1; sequence <= 20; sequence++) {
-      viewer.onFrame(pixel, frame(sequence));
+      route.onFrame(pixel, frame(sequence));
     }
 
     await settle();
@@ -317,11 +336,12 @@ void main() {
   test('a rotation reconfigures the decoder', () async {
     await stream();
 
-    await viewer.onConfig(
+    route.onConfig(
       pixel,
       StreamConfig(configId: 2, codec: .CODEC_H264, width: 2400, height: 1080),
     );
-    viewer
+    await settle();
+    route
       ..onFrame(pixel, frame(1))
       ..onFrame(pixel, frame(2, keyframe: true, configId: 2));
     await settle();
@@ -337,9 +357,10 @@ void main() {
     await viewer.dispose();
     await create(withDecoder: FakeDecoder(failConfigure: true));
     await viewer.start('pixel');
-    viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
 
-    await viewer.onConfig(pixel, config());
+    route.onConfig(pixel, config());
+    await settle();
 
     expect(viewer.current?.end, ViewEnd.decoderFailed);
     expect(
@@ -351,16 +372,16 @@ void main() {
   test('the screen going off and on is shown', () async {
     await stream();
 
-    viewer.onSourceState(pixel, SourceState(screenOff: true));
+    route.onSourceState(pixel, SourceState(screenOff: true));
     expect(viewer.current?.screenOff, isTrue);
 
-    viewer.onSourceState(pixel, SourceState());
+    route.onSourceState(pixel, SourceState());
     expect(viewer.current?.screenOff, isFalse);
   });
 
   test('frames from a phone nobody watches are answered with Stop, once a '
       'second', () async {
-    viewer
+    route
       ..onFrame(pixel, frame(0, keyframe: true))
       ..onFrame(pixel, frame(1));
     await settle();
@@ -380,11 +401,11 @@ void main() {
       viewer.statsChanges.listen((_) => ticks.add(viewer.current?.stats));
       viewer.start('pixel');
       async.flushMicrotasks();
-      viewer.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
-      viewer.onConfig(pixel, config());
+      route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+      route.onConfig(pixel, config());
       async.flushMicrotasks();
 
-      viewer
+      route
         ..onFrame(pixel, frame(0, keyframe: true))
         ..onFrame(pixel, frame(1))
         ..onFrame(pixel, frame(5, keyframe: true));
@@ -398,7 +419,7 @@ void main() {
       expect(ticks.last?.fps, 3);
 
       now = now.add(const Duration(milliseconds: 40));
-      viewer.onStats(
+      route.onStats(
         pixel,
         Stats(echoSentAtMs: sent.sentAtMs, bitrateKbps: 5200),
       );
@@ -435,7 +456,8 @@ void main() {
     viewer.dismiss();
     expect(viewer.current, isNotNull);
 
-    await viewer.onDeny(pixel, StartDeny(reason: .DENY_REASON_DENIED));
+    route.onDeny(pixel, StartDeny(reason: .DENY_REASON_DENIED));
+    await settle();
     viewer.dismiss();
     expect(viewer.current, isNull);
     expect(viewer.lastEndFor('pixel'), ViewEnd.denied);
