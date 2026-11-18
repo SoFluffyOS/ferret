@@ -12,7 +12,7 @@ Guidance for Claude Code and other agents working in this repository. Follow [CO
 scripts/get.sh                 # pub get for the whole workspace
 scripts/gen.sh                 # proto/ -> packages/protocol (buf lint + generate + barrels)
 scripts/check.sh [path]        # format, analyze, test (one package or all)
-scripts/docs.sh serve|build|check
+scripts/docs.sh serve|check|reference|build   # docs site; reference regenerates the protocol page from proto/
 
 cd apps/ferret && flutter run -d macos     # or an emulator: never the user's own phone
 cd apps/ferret_cli && dart run bin/ferret.dart --help
@@ -26,7 +26,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 |---|---|
 | `apps/ferret/` | The Flutter app for every platform: `main.dart`, wiring, platform folders. Entry point only |
 | `apps/ferret_cli/` | `ferret` command line and headless daemon (pure Dart) |
-| `apps/ferret_docs/` | Docs site (Jaspr). Reads `docs/public` in place; holds layout and components only |
+| `apps/ferret_docs/` | Docs site (Jaspr, pinned to its own Flutter in `.fvmrc`). Reads `docs/public` in place, builds the sidebar from its folders; holds layout, components and the docs tools only |
 | `modules/<feature>/` | One feature each: its `Feature` (engine side) and its UI. Features never import each other |
 | `modules/shell/` | App shell: onboarding, devices, pairing, settings, tier detection; hosts feature UIs |
 | `packages/core/` | Injector, logging, settings, secret storage (pure Dart) |

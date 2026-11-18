@@ -1,0 +1,25 @@
+/// The entrypoint for the **client** environment.
+///
+/// The [main] method will only be executed on the client when loading the page.
+/// To run code on the server during pre-rendering, check the `main.server.dart` file.
+library;
+
+import 'package:ferret_docs/main.client.options.dart';
+import 'package:jaspr/client.dart';
+
+void main() {
+  // Initializes the client environment with the generated default options.
+  Jaspr.initializeApp(
+    options: defaultClientOptions,
+  );
+
+  // Starts the app.
+  //
+  // [ClientApp] automatically loads and renders all components annotated with @client.
+  //
+  // You can wrap this with additional [InheritedComponent]s to share state across multiple
+  // @client components if needed.
+  runApp(
+    const ClientApp(),
+  );
+}
