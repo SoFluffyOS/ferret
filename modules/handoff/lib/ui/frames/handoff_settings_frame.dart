@@ -1,6 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
+import 'package:handoff/ui/frames/browser_settings_frame.dart';
 import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,10 @@ class HandoffSettingsFrame extends StatelessWidget {
             ],
           ),
         ),
+        if (viewModel.supportsBrowserBridge) ...[
+          Spacing.v8,
+          const BrowserSettingsFrame(),
+        ],
         if (viewModel.supportsAssistant) ...[
           Spacing.v8,
           const _AssistantSetup(),

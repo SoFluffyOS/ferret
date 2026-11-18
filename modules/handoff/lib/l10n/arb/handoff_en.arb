@@ -5,8 +5,12 @@
   "continueFrom": "Continue “{title}” from {device}",
   "@continueFrom": {
     "placeholders": {
-      "title": {"type": "String"},
-      "device": {"type": "String"}
+      "title": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
     }
   },
   "open": "Open",
@@ -19,7 +23,9 @@
   "sendLinkTitle": "Send to {device}",
   "@sendLinkTitle": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "sendLinkLabel": "Link or text",
@@ -29,25 +35,33 @@
   "sendOpened": "Opened on {device}",
   "@sendOpened": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "sendSuggested": "Waiting on {device}: tap the notification there to open it",
   "@sendSuggested": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "sendFailed": "{device} couldn't open it. It may need an app that isn't installed there.",
   "@sendFailed": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "sendUnreachable": "Couldn't reach {device}. Check that it's on and on the same network.",
   "@sendUnreachable": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "currentPageNone": "No browser page found. Open a page in Safari or a Chromium browser, then try again.",
@@ -68,36 +82,91 @@
   "noticeTitle": "Continue “{title}”",
   "@noticeTitle": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "noticeFrom": "From {device}",
   "@noticeFrom": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "noticeTextCopied": "Copied text from {device}",
   "@noticeTextCopied": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "noticeSent": "Sent to {device}",
   "@noticeSent": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "noticeNotSent": "Couldn't send to {device}",
   "@noticeNotSent": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": {
+        "type": "String"
+      }
     }
   },
   "noticeNotSentBody": "Check that it's on and on the same network, then share it again.",
   "noticeNothingToSend": "There was nothing to continue in what you shared.",
   "pickDeviceTitle": "Continue on",
   "pickDeviceEmpty": "No device is connected right now. Turn on your other device and keep it on the same network.",
-  "back": "Back"
+  "back": "Back",
+  "browserPairTitle": "Allow {browser} to use Ferret?",
+  "@browserPairTitle": {
+    "placeholders": {
+      "browser": {
+        "type": "String"
+      }
+    }
+  },
+  "browserPairBody": "Check that your browser shows {code}. It can then send tabs to your devices and open the pages they send here.",
+  "@browserPairBody": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "browserPairAllow": "Allow",
+  "browserPairDeny": "Deny",
+  "noticeBrowserPairBody": "Code {code}. Open Ferret to allow it.",
+  "@noticeBrowserPairBody": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBrowserBridge": "Browser extension",
+  "settingsBrowserBridgeBody": "Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.",
+  "browserBridgeListening": "Ready. Pair from the extension's settings page.",
+  "browserBridgeFailed": "Couldn't start: ports {first} to {last} are used by another app. Quit that app, then try again.",
+  "@browserBridgeFailed": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "browserBridgeRetry": "Try again",
+  "browserClientsEmpty": "No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.",
+  "browserClientConnected": "Connected",
+  "browserClientOffline": "Not connected",
+  "browserClientRemove": "Remove"
 }

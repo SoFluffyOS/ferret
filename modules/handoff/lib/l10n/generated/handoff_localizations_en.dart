@@ -174,4 +174,57 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String browserPairTitle(String browser) {
+    return 'Allow $browser to use Ferret?';
+  }
+
+  @override
+  String browserPairBody(String code) {
+    return 'Check that your browser shows $code. It can then send tabs to your devices and open the pages they send here.';
+  }
+
+  @override
+  String get browserPairAllow => 'Allow';
+
+  @override
+  String get browserPairDeny => 'Deny';
+
+  @override
+  String noticeBrowserPairBody(String code) {
+    return 'Code $code. Open Ferret to allow it.';
+  }
+
+  @override
+  String get settingsBrowserBridge => 'Browser extension';
+
+  @override
+  String get settingsBrowserBridgeBody =>
+      'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.';
+
+  @override
+  String get browserBridgeListening =>
+      'Ready. Pair from the extension\'s settings page.';
+
+  @override
+  String browserBridgeFailed(String first, String last) {
+    return 'Couldn\'t start: ports $first to $last are used by another app. Quit that app, then try again.';
+  }
+
+  @override
+  String get browserBridgeRetry => 'Try again';
+
+  @override
+  String get browserClientsEmpty =>
+      'No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.';
+
+  @override
+  String get browserClientConnected => 'Connected';
+
+  @override
+  String get browserClientOffline => 'Not connected';
+
+  @override
+  String get browserClientRemove => 'Remove';
 }

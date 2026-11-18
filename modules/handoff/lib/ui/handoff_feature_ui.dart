@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' as io;
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -17,22 +18,42 @@ import 'package:provider/provider.dart';
 /// The app side of Handoff: the "Continue" home card, "Send a link…" on
 /// each device, its settings, and the platform hooks.
 class HandoffFeatureUi extends FeatureUi {
-  factory HandoffFeatureUi({FerretHandoff? handoff, ActivityOpener? opener}) {
+  /// [browserBridge] says whether to host the browser extension's bridge;
+  /// it defaults to desktops.
+  factory HandoffFeatureUi({
+    FerretHandoff? handoff,
+    ActivityOpener? opener,
+    bool? browserBridge,
+    BrowserBridgeServer? browserServer,
+  }) {
     final platform = handoff ?? FerretHandoff();
-    return HandoffFeatureUi._(
-      platform,
-      HandoffFeature(
-        opener: opener ?? PlatformActivityOpener(handoff: platform),
-      ),
+    final recent = RecentPublishes();
+    final firstOpener = BrowserFirstOpener(
+      fallback: opener ?? PlatformActivityOpener(handoff: platform),
     );
+    final feature = HandoffFeature(opener: firstOpener);
+    final browser = BrowserBridge(
+      feature: feature,
+      isSupported: browserBridge ?? _isDesktop(),
+      server: browserServer,
+      recentPublishes: recent,
+    );
+    firstOpener.browser = browser;
+    return HandoffFeatureUi._(platform, feature, browser, recent);
   }
 
-  HandoffFeatureUi._(this._handoff, this.feature);
+  HandoffFeatureUi._(this._handoff, this.feature, this.browser, this._recent);
 
   @override
   final HandoffFeature feature;
+
+  /// The local bridge the browser extension talks to.
+  final BrowserBridge browser;
   final FerretHandoff _handoff;
-  late final FeatureChanges _changes = FeatureChanges(feature.changes);
+  final RecentPublishes _recent;
+  late final FeatureChanges _changes = FeatureChanges(
+    _merge([feature.changes, browser.changes]),
+  );
   HandoffViewModel? _viewModel;
   AppLifecycleListener? _lifecycle;
 
@@ -58,6 +79,7 @@ class HandoffFeatureUi extends FeatureUi {
   Future<void> onAppStarted(FeatureContext context) async {
     final viewModel = viewModelFor(context);
     await viewModel.bridge.start();
+    await browser.start();
     if (!viewModel.supportsAssistant) {
       return;
     }
@@ -71,16 +93,17 @@ class HandoffFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _changes;
 
-  /// Only while another device offers something to continue here.
+  /// Only while another device offers something to continue here, or a
+  /// browser waits to be allowed.
   @override
   bool hasHomeCard(FeatureContext feature) =>
-      this.feature.suggestions.isNotEmpty;
+      this.feature.suggestions.isNotEmpty || browser.pairRequests.isNotEmpty;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: viewModelFor(feature),
-        child: const ContinueCardFrame(),
+        child: const HandoffHomeFrame(),
       );
 
   @override
@@ -121,6 +144,7 @@ class HandoffFeatureUi extends FeatureUi {
 
   /// Stops listening, for tests and hot restarts.
   void dispose() {
+    unawaited(browser.stop());
     _lifecycle?.dispose();
     _viewModel?.dispose();
     _changes.dispose();
@@ -139,13 +163,32 @@ class HandoffFeatureUi extends FeatureUi {
       handoff: _handoff,
       pickDevice: (devices) =>
           context.push<String>(DevicePickerPage(devices: devices)),
+      recentPublishes: _recent,
+      browser: browser,
+      reveal: context.reveal,
     );
     final viewModel = HandoffViewModel(
       feature: feature,
       bridge: bridge,
       handoff: _handoff,
+      browser: browser,
     );
     _viewModel = viewModel;
     return viewModel;
   }
+
+  static bool _isDesktop() =>
+      io.Platform.isMacOS || io.Platform.isLinux || io.Platform.isWindows;
+
+  static Stream<void> _merge(List<Stream<void>> sources) =>
+      Stream<void>.multi((controller) {
+        final subscriptions = [
+          for (final source in sources) source.listen(controller.add),
+        ];
+        controller.onCancel = () async {
+          for (final subscription in subscriptions) {
+            await subscription.cancel();
+          }
+        };
+      }, isBroadcast: true);
 }

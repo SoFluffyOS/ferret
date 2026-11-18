@@ -360,6 +360,90 @@ abstract class HandoffLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// No description provided for @browserPairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow {browser} to use Ferret?'**
+  String browserPairTitle(String browser);
+
+  /// No description provided for @browserPairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that your browser shows {code}. It can then send tabs to your devices and open the pages they send here.'**
+  String browserPairBody(String code);
+
+  /// No description provided for @browserPairAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get browserPairAllow;
+
+  /// No description provided for @browserPairDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get browserPairDeny;
+
+  /// No description provided for @noticeBrowserPairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Code {code}. Open Ferret to allow it.'**
+  String noticeBrowserPairBody(String code);
+
+  /// No description provided for @settingsBrowserBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser extension'**
+  String get settingsBrowserBridge;
+
+  /// No description provided for @settingsBrowserBridgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.'**
+  String get settingsBrowserBridgeBody;
+
+  /// No description provided for @browserBridgeListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready. Pair from the extension\'s settings page.'**
+  String get browserBridgeListening;
+
+  /// No description provided for @browserBridgeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start: ports {first} to {last} are used by another app. Quit that app, then try again.'**
+  String browserBridgeFailed(String first, String last);
+
+  /// No description provided for @browserBridgeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get browserBridgeRetry;
+
+  /// No description provided for @browserClientsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.'**
+  String get browserClientsEmpty;
+
+  /// No description provided for @browserClientConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get browserClientConnected;
+
+  /// No description provided for @browserClientOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get browserClientOffline;
+
+  /// No description provided for @browserClientRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get browserClientRemove;
 }
 
 class _HandoffLocalizationsDelegate

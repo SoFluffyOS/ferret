@@ -1,3 +1,6 @@
+export 'package:handoff/models/browser_bridge_state.dart';
+export 'package:handoff/models/browser_client.dart';
+export 'package:handoff/models/browser_pair_request.dart';
 export 'package:handoff/models/current_page_result.dart';
 export 'package:handoff/models/handoff_peer.dart';
 export 'package:handoff/models/open_result.dart';

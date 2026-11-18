@@ -9,7 +9,9 @@ import 'package:handoff/feature/handoff_feature.dart';
 import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
 import 'package:handoff/services/activity_factory.dart';
+import 'package:handoff/services/browser/browser.dart';
 import 'package:handoff/services/handoff_settings.dart';
+import 'package:handoff/services/recent_publishes.dart';
 import 'package:protocol/handoff.dart';
 
 /// Picks the device to continue on when the share sheet didn't say.
@@ -27,13 +29,19 @@ class HandoffBridge {
     HandoffLocalizations Function()? strings,
     Future<void> Function(Duration timeout)? untilForeground,
     this.connectTimeout = const Duration(seconds: 20),
-  }) : _strings = strings ?? handoffL10nForSystem,
+    RecentPublishes? recentPublishes,
+    this.browser,
+    Future<void> Function()? reveal,
+  }) : _reveal = reveal ?? _noReveal,
+       _recent = recentPublishes ?? RecentPublishes(),
+       _strings = strings ?? handoffL10nForSystem,
        _untilForeground = untilForeground ?? _untilResumed;
 
   static const continueCategory = 'handoff.continue';
   static const openAction = 'open';
   static const dismissAction = 'dismiss';
   static const _noticePrefix = 'handoff.';
+  static const _pairNoticePrefix = 'handoff.browser_pair.';
 
   final HandoffFeature feature;
   final FeatureHost engine;
@@ -41,9 +49,14 @@ class HandoffBridge {
   final FerretHandoff handoff;
   final DevicePicker pickDevice;
   final Duration connectTimeout;
+
+  /// The browser extension bridge, whose pair requests get a notice.
+  final BrowserBridge? browser;
+  final Future<void> Function() _reveal;
+  final Set<String> _pairNotices = {};
   final HandoffLocalizations Function() _strings;
   final Future<void> Function(Duration timeout) _untilForeground;
-  ({String url, DateTime at})? _lastPublished;
+  final RecentPublishes _recent;
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final Map<String, Suggestion> _noticed = {};
 
@@ -73,6 +86,12 @@ class HandoffBridge {
       ..add(engine.sessionChanges.listen((_) => unawaited(_syncDevices())))
       ..add(engine.trustStore.changes.listen((_) => unawaited(_syncDevices())))
       ..add(handoff.browserDeactivated.listen(_onBrowserLeft));
+
+    if (browser case final browser?) {
+      _subscriptions
+        ..add(browser.pairRequested.listen(_showPairRequest))
+        ..add(browser.changes.listen((_) => unawaited(_withdrawPairNotices())));
+    }
 
     handoff.listen(onShared);
     await _syncDevices();
@@ -203,6 +222,11 @@ class HandoffBridge {
   }
 
   Future<void> _onResponse(NoticeResponse response) async {
+    if (response.noticeId.startsWith(_pairNoticePrefix)) {
+      await _reveal();
+      return;
+    }
+
     if (!response.noticeId.startsWith(_noticePrefix)) {
       return;
     }
@@ -232,6 +256,35 @@ class HandoffBridge {
       );
     }
   }
+
+  /// A browser asked to pair: the user is at their browser right now, so
+  /// Ferret comes forward with the prompt, and a notice says why.
+  Future<void> _showPairRequest(BrowserPairRequest request) async {
+    final strings = _strings();
+    final id = '$_pairNoticePrefix${request.id}';
+    _pairNotices.add(id);
+    await _notify(
+      id: id,
+      channel: .incoming,
+      title: strings.browserPairTitle(request.browser),
+      body: strings.noticeBrowserPairBody(request.spacedCode),
+    );
+    await _reveal();
+  }
+
+  Future<void> _withdrawPairNotices() async {
+    final pending = {
+      for (final request in browser?.pairRequests ?? const [])
+        '$_pairNoticePrefix${request.id}',
+    };
+    final answered = _pairNotices.difference(pending);
+    for (final id in answered) {
+      _pairNotices.remove(id);
+      await notifier.cancel(id);
+    }
+  }
+
+  static Future<void> _noReveal() async {}
 
   Future<void> _syncDevices() async {
     final connected = {
@@ -283,24 +336,15 @@ class HandoffBridge {
 
     try {
       final tab = await handoff.currentBrowserTab();
-      if (tab == null || _publishedRecently(tab.url)) {
+      if (tab == null || _recent.isRecent(tab.url, feature.passiveLifetime)) {
         return;
       }
 
-      _lastPublished = (url: tab.url, at: DateTime.now());
+      _recent.mark(tab.url);
       await feature.publish(ActivityFactory.fromBrowserTab(tab));
     } on Object catch (error) {
       printDebug('Handoff skipped the browser page (${error.runtimeType})');
     }
-  }
-
-  bool _publishedRecently(String url) {
-    final last = _lastPublished;
-    if (last == null || last.url != url) {
-      return false;
-    }
-
-    return DateTime.now().difference(last.at) < feature.passiveLifetime;
   }
 
   static Future<void> _untilResumed(Duration timeout) async {

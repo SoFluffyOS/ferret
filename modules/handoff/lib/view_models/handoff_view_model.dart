@@ -14,9 +14,11 @@ class HandoffViewModel extends ChangeNotifier {
     required this.feature,
     required this.bridge,
     required this.handoff,
+    this.browser,
   }) {
     _subscriptions
       ..add(feature.changes.listen((_) => _refresh()))
+      ..add(browser?.changes.listen((_) => _refresh()) ?? _noChanges())
       ..add(
         feature.host.settings.changes
             .where((key) => key.startsWith('${HandoffFeature.featureId}.'))
@@ -28,6 +30,9 @@ class HandoffViewModel extends ChangeNotifier {
   final HandoffFeature feature;
   final HandoffBridge bridge;
   final FerretHandoff handoff;
+
+  /// The local bridge for the browser extension, on desktops.
+  final BrowserBridge? browser;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   List<Suggestion> suggestions = const [];
@@ -35,12 +40,20 @@ class HandoffViewModel extends ChangeNotifier {
   bool opensAutomatically = HandoffSettings.openAutomaticallyDefault;
   bool browserTabEnabled = HandoffSettings.browserTabDefault;
 
+  List<BrowserPairRequest> pairRequests = const [];
+  List<BrowserClient> browserClients = const [];
+  Set<String> connectedBrowserIds = const {};
+  BrowserBridgeState browserBridgeState = BrowserBridgeState.off;
+  bool browserBridgeEnabled = HandoffSettings.browserBridgeDefault;
+
   /// Null until asked, and on platforms without an assistant.
   bool? assistantEnabled;
 
   bool get supportsAssistant => handoff.supportsAssistant;
 
   bool get supportsBrowserTab => handoff.supportsBrowserTab;
+
+  bool get supportsBrowserBridge => browser?.isSupported ?? false;
 
   bool get canSendCurrentPage => supportsBrowserTab && browserTabEnabled;
 
@@ -122,13 +135,35 @@ class HandoffViewModel extends ChangeNotifier {
 
   Future<void> openAssistantSettings() => handoff.openAssistantSettings();
 
+  Future<void> answerPair(BrowserPairRequest request, {required bool allow}) =>
+      browser?.answerPair(request.id, allow: allow) ?? Future.value();
+
+  Future<void> removeBrowser(BrowserClient client) =>
+      browser?.removeClient(client.id) ?? Future.value();
+
+  Future<void> setBrowserBridgeEnabled(bool enabled) =>
+      browser?.setEnabled(enabled) ?? Future.value();
+
+  Future<void> retryBrowserBridge() => browser?.refresh() ?? Future.value();
+
   void _refresh() {
     suggestions = feature.suggestions;
     passiveEnabled = feature.passiveEnabled;
     opensAutomatically = feature.opensAutomatically;
     browserTabEnabled = bridge.browserTabEnabled;
+    if (browser case final browser?) {
+      pairRequests = browser.pairRequests;
+      browserClients = browser.clients;
+      connectedBrowserIds = browser.connectedClientIds;
+      browserBridgeState = browser.state;
+      browserBridgeEnabled = browser.isEnabled;
+    }
+
     notifyListeners();
   }
+
+  static StreamSubscription<void> _noChanges() =>
+      const Stream<void>.empty().listen(null);
 
   @override
   void dispose() {

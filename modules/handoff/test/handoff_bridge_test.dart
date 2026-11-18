@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
 import 'package:handoff/l10n/l10n.dart';
 
+import 'support/browser_fakes.dart';
 import 'support/fakes.dart';
 
 void main() {
@@ -151,4 +152,57 @@ void main() {
     expect(setup.api.pending, isEmpty);
     expect(setup.notifier.shown.single.title, "Couldn't send to gone");
   });
+
+  test(
+    'a browser asking to pair brings Ferret forward with a notice',
+    () async {
+      final host = await FakeHost.create();
+      final feature = await startedFeature(host: host);
+      final browser = BrowserBridge(
+        feature: feature,
+        isSupported: true,
+        server: IdleServer(),
+      );
+      await browser.start();
+      addTearDown(browser.stop);
+      final notifier = FakeNotifier();
+      var reveals = 0;
+      final bridge = HandoffBridge(
+        feature: feature,
+        engine: host,
+        notifier: notifier,
+        handoff: FerretHandoff(
+          api: FakeHandoffApi(),
+          isAndroid: false,
+          isMacOS: false,
+        ),
+        pickDevice: (_) async => null,
+        strings: () => lookupHandoffLocalizations(const .new('en')),
+        browser: browser,
+        reveal: () async => reveals++,
+      );
+      await bridge.start();
+      addTearDown(bridge.dispose);
+
+      final channel = FakeChannel(origin: firefoxOrigin);
+      browser.attach(channel);
+      channel
+        ..say({'type': 'hello', 'v': 1, 'browser': 'Firefox'})
+        ..say({'type': 'pair', 'code': '123456'});
+      await pumpEventQueue();
+
+      final notice = notifier.shown.single;
+      expect(notice.title, 'Allow Firefox to use Ferret?');
+      expect(notice.body, 'Code 123 456. Open Ferret to allow it.');
+      expect(reveals, 1);
+
+      notifier.respond(NoticeResponse(noticeId: notice.id));
+      await pumpEventQueue();
+      expect(reveals, 2);
+
+      await browser.answerPair(browser.pairRequests.single.id, allow: true);
+      await pumpEventQueue();
+      expect(notifier.cancelled, [notice.id]);
+    },
+  );
 }

@@ -1,0 +1,93 @@
+:root {
+  --bg: #fbf8f4;
+  --surface: #f1ece5;
+  --text: #2b2420;
+  --muted: #74685f;
+  --accent: #d9822b;
+  --accent-text: #ffffff;
+  --danger: #b5412f;
+  --success: #3f7d4f;
+  color-scheme: light dark;
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1916;
+    --surface: #2a2420;
+    --text: #f2ebe4;
+    --muted: #a99c91;
+    --accent: #e8954a;
+    --accent-text: #1d1916;
+    --danger: #e0715f;
+    --success: #7cbf8b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2 { margin: 0; font-weight: 600; }
+h1 { font-size: 16px; }
+h2 { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 16px 0 6px; }
+p { margin: 6px 0; }
+
+.muted { color: var(--muted); font-size: 13px; }
+.danger { color: var(--danger); }
+.success { color: var(--success); }
+[hidden] { display: none !important; }
+
+.card {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+button {
+  font: inherit;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+button.secondary { background: var(--surface); color: var(--text); }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.list { display: flex; flex-direction: column; gap: 4px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  color: var(--text);
+  padding: 9px 12px;
+}
+.row .text { flex: 1; min-width: 0; }
+.row .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .sub { color: var(--muted); font-size: 12px; }
+
+.code {
+  font: 600 28px/1.2 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: .08em;
+  margin: 8px 0;
+}
+
+label.toggle {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 0;
+}
+label.toggle input { margin-top: 3px; accent-color: var(--accent); }
+label.toggle .sub { color: var(--muted); font-size: 13px; }

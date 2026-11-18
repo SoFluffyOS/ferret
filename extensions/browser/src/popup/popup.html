@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ferret</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { width: 320px; padding: 14px; }
+    header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    header img { width: 20px; height: 20px; }
+    #result { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icons/icon-32.png" alt="">
+    <h1>Ferret</h1>
+  </header>
+
+  <section id="connecting" hidden>
+    <p class="muted">Looking for Ferret…</p>
+  </section>
+
+  <section id="not-running" hidden class="card">
+    <p><strong>Ferret isn't running on this computer.</strong></p>
+    <p class="muted">Open the Ferret app, then try again.</p>
+    <p class="muted danger" id="limited" hidden>Too many tries. Wait a minute, then try again.</p>
+    <button id="retry">Try again</button>
+  </section>
+
+  <section id="not-paired" hidden class="card">
+    <p><strong>This browser isn't paired yet.</strong></p>
+    <p class="muted">Pair once, and you can send tabs to your devices.</p>
+    <button id="pair">Pair with Ferret</button>
+  </section>
+
+  <section id="paired" hidden>
+    <h2>Send this tab to</h2>
+    <div class="list" id="devices"></div>
+    <p class="muted" id="no-devices" hidden>No device paired with Ferret yet. Pair your phone in the Ferret app first.</p>
+    <p class="muted" id="result" role="status" aria-live="polite"></p>
+
+    <div id="suggestions-section" hidden>
+      <h2>From your devices</h2>
+      <div class="list" id="suggestions"></div>
+    </div>
+  </section>
+
+  <p><button class="secondary" id="settings">Settings</button></p>
+  <script src="popup.js"></script>
+</body>
+</html>
