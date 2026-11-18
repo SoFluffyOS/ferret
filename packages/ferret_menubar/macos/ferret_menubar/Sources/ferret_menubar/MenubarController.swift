@@ -24,6 +24,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         popover.delegate = self
 
         setUpIconView()
+        forwardMouseButtons()
         setIcon(symbolName: "arrow.left.arrow.right", tooltip: nil)
     }
 
@@ -89,6 +90,47 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     func popoverDidClose(_ notification: Notification) {
         statusItem.button?.highlight(false)
         onVisibilityChanged?(false)
+    }
+
+    // MARK: - Mouse buttons
+
+    private var mouseMonitor: Any?
+
+    /// AppKit hands mouse presses to the Flutter view inside a popover but
+    /// never on to its view controller, which is where Flutter reads them
+    /// (flutter/flutter#115015; Flutter works around it only before macOS
+    /// 13.3.1, and it is back in later releases). Presses on the Flutter view,
+    /// docked or detached, go to the controller here instead, and nowhere else.
+    private func forwardMouseButtons() {
+        let types: NSEvent.EventTypeMask = [
+            .leftMouseDown, .leftMouseUp, .leftMouseDragged,
+            .rightMouseDown, .rightMouseUp, .rightMouseDragged,
+            .otherMouseDown, .otherMouseUp, .otherMouseDragged,
+        ]
+        mouseMonitor = NSEvent.addLocalMonitorForEvents(matching: types) { [weak self] event in
+            guard let controller = self?.popover.contentViewController,
+                  controller.isViewLoaded,
+                  case let view = controller.view,
+                  let window = view.window,
+                  event.window === window,
+                  let hit = window.contentView?.superview?.hitTest(event.locationInWindow) ?? window.contentView?.hitTest(event.locationInWindow),
+                  hit.isDescendant(of: view)
+            else { return event }
+
+            switch event.type {
+            case .leftMouseDown: controller.mouseDown(with: event)
+            case .leftMouseUp: controller.mouseUp(with: event)
+            case .leftMouseDragged: controller.mouseDragged(with: event)
+            case .rightMouseDown: controller.rightMouseDown(with: event)
+            case .rightMouseUp: controller.rightMouseUp(with: event)
+            case .rightMouseDragged: controller.rightMouseDragged(with: event)
+            case .otherMouseDown: controller.otherMouseDown(with: event)
+            case .otherMouseUp: controller.otherMouseUp(with: event)
+            case .otherMouseDragged: controller.otherMouseDragged(with: event)
+            default: return event
+            }
+            return nil
+        }
     }
 
     // MARK: - Icon interactions
