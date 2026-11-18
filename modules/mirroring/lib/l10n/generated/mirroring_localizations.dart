@@ -100,7 +100,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Screen mirroring'**
+  /// **'Screen'**
   String get title;
 
   /// No description provided for @showScreen.
@@ -202,7 +202,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @waitingBody.
   ///
   /// In en, this message translates to:
-  /// **'Android asks whether to share the screen. Tap Start on {device}. If the phone shows nothing, open the notice from Ferret there.'**
+  /// **'On {device}: Android asks whether to share the screen. Tap Start. If {device} shows nothing, open the notice from Ferret.'**
   String waitingBody(String device);
 
   /// No description provided for @startingTitle.
@@ -226,8 +226,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @screenOffBody.
   ///
   /// In en, this message translates to:
-  /// **'Wake the phone to see it again.'**
-  String get screenOffBody;
+  /// **'Wake {device} to see it again.'**
+  String screenOffBody(String device);
 
   /// No description provided for @endDeniedTitle.
   ///
@@ -238,8 +238,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endDeniedBody.
   ///
   /// In en, this message translates to:
-  /// **'Someone tapped Cancel on the phone\'s prompt. You can ask again in half a minute.'**
-  String get endDeniedBody;
+  /// **'Someone tapped Cancel on {device}. You can ask again in half a minute.'**
+  String endDeniedBody(String device);
 
   /// No description provided for @endTimedOutTitle.
   ///
@@ -250,8 +250,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endTimedOutBody.
   ///
   /// In en, this message translates to:
-  /// **'The question stays on the phone for a minute. Wake the phone, then try again.'**
-  String get endTimedOutBody;
+  /// **'The question stays on {device} for a minute. Wake {device}, then try again.'**
+  String endTimedOutBody(String device);
 
   /// No description provided for @endBusyTitle.
   ///
@@ -274,20 +274,20 @@ abstract class MirroringLocalizations {
   /// No description provided for @endUnsupportedBody.
   ///
   /// In en, this message translates to:
-  /// **'Screen mirroring needs an Android phone with Ferret.'**
+  /// **'Showing a screen needs an Android phone with Ferret.'**
   String get endUnsupportedBody;
 
   /// No description provided for @endTurnedOffTitle.
   ///
   /// In en, this message translates to:
-  /// **'Screen mirroring is off on {device}'**
+  /// **'Screen sharing is off on {device}'**
   String endTurnedOffTitle(String device);
 
   /// No description provided for @endTurnedOffBody.
   ///
   /// In en, this message translates to:
-  /// **'Turn it on in Ferret on the phone: Settings, then Screen mirroring.'**
-  String get endTurnedOffBody;
+  /// **'On {device}: open Ferret\'s settings, then Screen, and turn it on.'**
+  String endTurnedOffBody(String device);
 
   /// No description provided for @endCannotAskTitle.
   ///
@@ -298,8 +298,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endCannotAskBody.
   ///
   /// In en, this message translates to:
-  /// **'Open Ferret on the phone, or allow its notifications, then try again.'**
-  String get endCannotAskBody;
+  /// **'On {device}: open Ferret, or allow its notifications. Then try again.'**
+  String endCannotAskBody(String device);
 
   /// No description provided for @endVersionTitle.
   ///
@@ -310,8 +310,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endVersionBody.
   ///
   /// In en, this message translates to:
-  /// **'Update Ferret on the phone, then try again.'**
-  String get endVersionBody;
+  /// **'Update Ferret on {device}, then try again.'**
+  String endVersionBody(String device);
 
   /// No description provided for @endNoCodecTitle.
   ///
@@ -322,8 +322,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNoCodecBody.
   ///
   /// In en, this message translates to:
-  /// **'Update Ferret on both devices, then try again.'**
-  String get endNoCodecBody;
+  /// **'Update Ferret on {device} and on this computer, then try again.'**
+  String endNoCodecBody(String device);
 
   /// No description provided for @endNotConnectedTitle.
   ///
@@ -334,8 +334,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNotConnectedBody.
   ///
   /// In en, this message translates to:
-  /// **'Open Ferret on the phone and check both devices are on the same Wi-Fi.'**
-  String get endNotConnectedBody;
+  /// **'On {device}: open Ferret. Check that {device} and this computer are on the same Wi-Fi.'**
+  String endNotConnectedBody(String device);
 
   /// No description provided for @endNoAnswerTitle.
   ///
@@ -346,13 +346,13 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNoAnswerBody.
   ///
   /// In en, this message translates to:
-  /// **'Check that Ferret is running on the phone, then try again.'**
-  String get endNoAnswerBody;
+  /// **'On {device}: open Ferret. Then try again.'**
+  String endNoAnswerBody(String device);
 
   /// No description provided for @endStoppedHereTitle.
   ///
   /// In en, this message translates to:
-  /// **'You stopped mirroring'**
+  /// **'Stopped on this computer'**
   String get endStoppedHereTitle;
 
   /// No description provided for @endStoppedHereBody.
@@ -370,8 +370,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endStoppedOnPhoneBody.
   ///
   /// In en, this message translates to:
-  /// **'Someone tapped Stop on the phone.'**
-  String get endStoppedOnPhoneBody;
+  /// **'Someone tapped Stop on {device}.'**
+  String endStoppedOnPhoneBody(String device);
 
   /// No description provided for @endSystemEndedTitle.
   ///
@@ -382,8 +382,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endSystemEndedBody.
   ///
   /// In en, this message translates to:
-  /// **'Android ends screen sharing when the phone locks, or when its owner stops it from the status bar.'**
-  String get endSystemEndedBody;
+  /// **'Android ends screen sharing when {device} locks, or when someone stops it from the status bar.'**
+  String endSystemEndedBody(String device);
 
   /// No description provided for @endLostConnectionTitle.
   ///
@@ -394,19 +394,19 @@ abstract class MirroringLocalizations {
   /// No description provided for @endLostConnectionBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret reconnects on its own. Try again once the phone is back.'**
-  String get endLostConnectionBody;
+  /// **'Ferret reconnects on its own. Try again once {device} is back.'**
+  String endLostConnectionBody(String device);
 
   /// No description provided for @endFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Mirroring stopped working'**
+  /// **'The picture stopped'**
   String get endFailedTitle;
 
   /// No description provided for @endFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'Capturing the screen failed on {device}. Try again.'**
+  /// **'{device} couldn\'t capture its screen. Try again.'**
   String endFailedBody(String device);
 
   /// No description provided for @endDecoderFailedTitle.
@@ -418,8 +418,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endDecoderFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'Decoding the video failed here. Try again.'**
-  String get endDecoderFailedBody;
+  /// **'The video from {device} didn\'t play here. Try again.'**
+  String endDecoderFailedBody(String device);
 
   /// No description provided for @statusPicture.
   ///
@@ -472,8 +472,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @viewingWaitingBody.
   ///
   /// In en, this message translates to:
-  /// **'Answer the prompt on the phone.'**
-  String get viewingWaitingBody;
+  /// **'On {device}: answer Android\'s prompt.'**
+  String viewingWaitingBody(String device);
 
   /// No description provided for @sinceTime.
   ///
@@ -508,7 +508,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @auditShared.
   ///
   /// In en, this message translates to:
-  /// **'{device} viewed your screen for {duration} at {time}'**
+  /// **'{device} saw this phone\'s screen for {duration} at {time}'**
   String auditShared(String device, String duration, String time);
 
   /// No description provided for @auditViewed.
@@ -616,7 +616,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @healthTurnedOff.
   ///
   /// In en, this message translates to:
-  /// **'Screen mirroring is off on {device}'**
+  /// **'Off on {device}'**
   String healthTurnedOff(String device);
 
   /// No description provided for @healthUnsupported.
@@ -628,8 +628,20 @@ abstract class MirroringLocalizations {
   /// No description provided for @healthCannotAsk.
   ///
   /// In en, this message translates to:
-  /// **'{device} couldn\'t show the question. Open Ferret on it.'**
+  /// **'{device} couldn\'t show the question'**
   String healthCannotAsk(String device);
+
+  /// No description provided for @healthFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t capture its screen'**
+  String healthFailed(String device);
+
+  /// No description provided for @healthDecoderFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer couldn\'t show the picture'**
+  String get healthDecoderFailed;
 
   /// No description provided for @experimental.
   ///
@@ -670,7 +682,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @targetsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Found by the experimental ways. No Ferret needed on the other device.'**
+  /// **'Found by the experimental ways. They don\'t need Ferret.'**
   String get targetsSubtitle;
 
   /// No description provided for @targetCable.
@@ -688,7 +700,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @show.
   ///
   /// In en, this message translates to:
-  /// **'Show'**
+  /// **'Show screen'**
   String get show;
 
   /// No description provided for @checkAgain.
@@ -760,7 +772,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupEnableDebuggingBody.
   ///
   /// In en, this message translates to:
-  /// **'How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.'**
+  /// **'On the phone: open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.'**
   String get setupEnableDebuggingBody;
 
   /// No description provided for @setupAuthorizeTitle.
@@ -772,7 +784,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupAuthorizeBody.
   ///
   /// In en, this message translates to:
-  /// **'How to: look at the phone and tap Allow on the question it shows, then try again.'**
+  /// **'On the phone: tap Allow on the question it shows. Then try again.'**
   String get setupAuthorizeBody;
 
   /// No description provided for @setupPermissionTitle.

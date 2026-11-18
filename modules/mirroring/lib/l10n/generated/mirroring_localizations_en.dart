@@ -10,7 +10,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   MirroringLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Screen mirroring';
+  String get title => 'Screen';
 
   @override
   String get showScreen => 'Show screen';
@@ -66,7 +66,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String waitingBody(String device) {
-    return 'Android asks whether to share the screen. Tap Start on $device. If the phone shows nothing, open the notice from Ferret there.';
+    return 'On $device: Android asks whether to share the screen. Tap Start. If $device shows nothing, open the notice from Ferret.';
   }
 
   @override
@@ -83,7 +83,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get screenOffBody => 'Wake the phone to see it again.';
+  String screenOffBody(String device) {
+    return 'Wake $device to see it again.';
+  }
 
   @override
   String endDeniedTitle(String device) {
@@ -91,8 +93,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endDeniedBody =>
-      'Someone tapped Cancel on the phone\'s prompt. You can ask again in half a minute.';
+  String endDeniedBody(String device) {
+    return 'Someone tapped Cancel on $device. You can ask again in half a minute.';
+  }
 
   @override
   String endTimedOutTitle(String device) {
@@ -100,8 +103,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endTimedOutBody =>
-      'The question stays on the phone for a minute. Wake the phone, then try again.';
+  String endTimedOutBody(String device) {
+    return 'The question stays on $device for a minute. Wake $device, then try again.';
+  }
 
   @override
   String endBusyTitle(String device) {
@@ -119,16 +123,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get endUnsupportedBody =>
-      'Screen mirroring needs an Android phone with Ferret.';
+      'Showing a screen needs an Android phone with Ferret.';
 
   @override
   String endTurnedOffTitle(String device) {
-    return 'Screen mirroring is off on $device';
+    return 'Screen sharing is off on $device';
   }
 
   @override
-  String get endTurnedOffBody =>
-      'Turn it on in Ferret on the phone: Settings, then Screen mirroring.';
+  String endTurnedOffBody(String device) {
+    return 'On $device: open Ferret\'s settings, then Screen, and turn it on.';
+  }
 
   @override
   String endCannotAskTitle(String device) {
@@ -136,8 +141,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endCannotAskBody =>
-      'Open Ferret on the phone, or allow its notifications, then try again.';
+  String endCannotAskBody(String device) {
+    return 'On $device: open Ferret, or allow its notifications. Then try again.';
+  }
 
   @override
   String endVersionTitle(String device) {
@@ -145,7 +151,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endVersionBody => 'Update Ferret on the phone, then try again.';
+  String endVersionBody(String device) {
+    return 'Update Ferret on $device, then try again.';
+  }
 
   @override
   String endNoCodecTitle(String device) {
@@ -153,7 +161,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endNoCodecBody => 'Update Ferret on both devices, then try again.';
+  String endNoCodecBody(String device) {
+    return 'Update Ferret on $device and on this computer, then try again.';
+  }
 
   @override
   String endNotConnectedTitle(String device) {
@@ -161,8 +171,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endNotConnectedBody =>
-      'Open Ferret on the phone and check both devices are on the same Wi-Fi.';
+  String endNotConnectedBody(String device) {
+    return 'On $device: open Ferret. Check that $device and this computer are on the same Wi-Fi.';
+  }
 
   @override
   String endNoAnswerTitle(String device) {
@@ -170,11 +181,12 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endNoAnswerBody =>
-      'Check that Ferret is running on the phone, then try again.';
+  String endNoAnswerBody(String device) {
+    return 'On $device: open Ferret. Then try again.';
+  }
 
   @override
-  String get endStoppedHereTitle => 'You stopped mirroring';
+  String get endStoppedHereTitle => 'Stopped on this computer';
 
   @override
   String endStoppedHereBody(String device) {
@@ -187,7 +199,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endStoppedOnPhoneBody => 'Someone tapped Stop on the phone.';
+  String endStoppedOnPhoneBody(String device) {
+    return 'Someone tapped Stop on $device.';
+  }
 
   @override
   String endSystemEndedTitle(String device) {
@@ -195,8 +209,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endSystemEndedBody =>
-      'Android ends screen sharing when the phone locks, or when its owner stops it from the status bar.';
+  String endSystemEndedBody(String device) {
+    return 'Android ends screen sharing when $device locks, or when someone stops it from the status bar.';
+  }
 
   @override
   String endLostConnectionTitle(String device) {
@@ -204,15 +219,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get endLostConnectionBody =>
-      'Ferret reconnects on its own. Try again once the phone is back.';
+  String endLostConnectionBody(String device) {
+    return 'Ferret reconnects on its own. Try again once $device is back.';
+  }
 
   @override
-  String get endFailedTitle => 'Mirroring stopped working';
+  String get endFailedTitle => 'The picture stopped';
 
   @override
   String endFailedBody(String device) {
-    return 'Capturing the screen failed on $device. Try again.';
+    return '$device couldn\'t capture its screen. Try again.';
   }
 
   @override
@@ -220,8 +236,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'This computer couldn\'t show the picture';
 
   @override
-  String get endDecoderFailedBody =>
-      'Decoding the video failed here. Try again.';
+  String endDecoderFailedBody(String device) {
+    return 'The video from $device didn\'t play here. Try again.';
+  }
 
   @override
   String statusPicture(String codec, int width, int height, int fps) {
@@ -260,7 +277,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get viewingWaitingBody => 'Answer the prompt on the phone.';
+  String viewingWaitingBody(String device) {
+    return 'On $device: answer Android\'s prompt.';
+  }
 
   @override
   String sinceTime(String time) {
@@ -288,7 +307,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String auditShared(String device, String duration, String time) {
-    return '$device viewed your screen for $duration at $time';
+    return '$device saw this phone\'s screen for $duration at $time';
   }
 
   @override
@@ -367,7 +386,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String healthTurnedOff(String device) {
-    return 'Screen mirroring is off on $device';
+    return 'Off on $device';
   }
 
   @override
@@ -377,8 +396,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String healthCannotAsk(String device) {
-    return '$device couldn\'t show the question. Open Ferret on it.';
+    return '$device couldn\'t show the question';
   }
+
+  @override
+  String healthFailed(String device) {
+    return '$device couldn\'t capture its screen';
+  }
+
+  @override
+  String get healthDecoderFailed => 'This computer couldn\'t show the picture';
 
   @override
   String get experimental => 'Experimental';
@@ -402,7 +429,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get targetsSubtitle =>
-      'Found by the experimental ways. No Ferret needed on the other device.';
+      'Found by the experimental ways. They don\'t need Ferret.';
 
   @override
   String get targetCable => 'Plugged in with a cable';
@@ -411,7 +438,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get targetWireless => 'On your network';
 
   @override
-  String get show => 'Show';
+  String get show => 'Show screen';
 
   @override
   String get checkAgain => 'Check again';
@@ -454,14 +481,14 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get setupEnableDebuggingBody =>
-      'How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.';
+      'On the phone: open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.';
 
   @override
   String get setupAuthorizeTitle => 'Allow this computer on the phone';
 
   @override
   String get setupAuthorizeBody =>
-      'How to: look at the phone and tap Allow on the question it shows, then try again.';
+      'On the phone: tap Allow on the question it shows. Then try again.';
 
   @override
   String get setupPermissionTitle => 'Ferret needs your OK on this computer';

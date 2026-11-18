@@ -170,7 +170,7 @@ class _Picture extends StatelessWidget {
               padding: EdgeInsets.all(Spacing.d12),
               child: SurfaceCard(
                 child: Text(
-                  '${l10n.screenOffTitle(deviceName)}\n${l10n.screenOffBody}',
+                  '${l10n.screenOffTitle(deviceName)}\n${l10n.screenOffBody(deviceName)}',
                   textAlign: .center,
                   style: context.fluffyTheme.typography.caption1.copyWith(
                     color: context.palette.text,

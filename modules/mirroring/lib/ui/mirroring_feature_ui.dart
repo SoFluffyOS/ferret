@@ -152,10 +152,10 @@ class MirroringFeatureUi extends FeatureUi {
         .needsAttention,
         reason: l10n.healthCannotAsk(name),
       ),
-      .failed => FeatureHealth(.failing, reason: l10n.endFailedBody(name)),
+      .failed => FeatureHealth(.failing, reason: l10n.healthFailed(name)),
       .decoderFailed => FeatureHealth(
         .failing,
-        reason: l10n.endDecoderFailedBody,
+        reason: l10n.healthDecoderFailed,
       ),
       _ => null,
     };

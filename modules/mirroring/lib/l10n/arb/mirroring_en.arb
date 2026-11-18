@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "title": "Screen mirroring",
+  "title": "Screen",
   "showScreen": "Show screen",
   "stop": "Stop",
   "cancel": "Cancel",
@@ -31,7 +31,7 @@
       }
     }
   },
-  "waitingBody": "Android asks whether to share the screen. Tap Start on {device}. If the phone shows nothing, open the notice from Ferret there.",
+  "waitingBody": "On {device}: Android asks whether to share the screen. Tap Start. If {device} shows nothing, open the notice from Ferret.",
   "@waitingBody": {
     "placeholders": {
       "device": {
@@ -56,7 +56,14 @@
       }
     }
   },
-  "screenOffBody": "Wake the phone to see it again.",
+  "screenOffBody": "Wake {device} to see it again.",
+  "@screenOffBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endDeniedTitle": "{device} said no",
   "@endDeniedTitle": {
     "placeholders": {
@@ -65,7 +72,14 @@
       }
     }
   },
-  "endDeniedBody": "Someone tapped Cancel on the phone's prompt. You can ask again in half a minute.",
+  "endDeniedBody": "Someone tapped Cancel on {device}. You can ask again in half a minute.",
+  "@endDeniedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endTimedOutTitle": "Nobody answered on {device}",
   "@endTimedOutTitle": {
     "placeholders": {
@@ -74,7 +88,14 @@
       }
     }
   },
-  "endTimedOutBody": "The question stays on the phone for a minute. Wake the phone, then try again.",
+  "endTimedOutBody": "The question stays on {device} for a minute. Wake {device}, then try again.",
+  "@endTimedOutBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endBusyTitle": "{device} is already sharing its screen",
   "@endBusyTitle": {
     "placeholders": {
@@ -92,8 +113,8 @@
       }
     }
   },
-  "endUnsupportedBody": "Screen mirroring needs an Android phone with Ferret.",
-  "endTurnedOffTitle": "Screen mirroring is off on {device}",
+  "endUnsupportedBody": "Showing a screen needs an Android phone with Ferret.",
+  "endTurnedOffTitle": "Screen sharing is off on {device}",
   "@endTurnedOffTitle": {
     "placeholders": {
       "device": {
@@ -101,7 +122,14 @@
       }
     }
   },
-  "endTurnedOffBody": "Turn it on in Ferret on the phone: Settings, then Screen mirroring.",
+  "endTurnedOffBody": "On {device}: open Ferret's settings, then Screen, and turn it on.",
+  "@endTurnedOffBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endCannotAskTitle": "{device} couldn't show the question",
   "@endCannotAskTitle": {
     "placeholders": {
@@ -110,7 +138,14 @@
       }
     }
   },
-  "endCannotAskBody": "Open Ferret on the phone, or allow its notifications, then try again.",
+  "endCannotAskBody": "On {device}: open Ferret, or allow its notifications. Then try again.",
+  "@endCannotAskBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endVersionTitle": "{device} needs a newer Ferret",
   "@endVersionTitle": {
     "placeholders": {
@@ -119,7 +154,14 @@
       }
     }
   },
-  "endVersionBody": "Update Ferret on the phone, then try again.",
+  "endVersionBody": "Update Ferret on {device}, then try again.",
+  "@endVersionBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endNoCodecTitle": "{device} can't send a picture this computer can show",
   "@endNoCodecTitle": {
     "placeholders": {
@@ -128,7 +170,14 @@
       }
     }
   },
-  "endNoCodecBody": "Update Ferret on both devices, then try again.",
+  "endNoCodecBody": "Update Ferret on {device} and on this computer, then try again.",
+  "@endNoCodecBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endNotConnectedTitle": "{device} isn't connected",
   "@endNotConnectedTitle": {
     "placeholders": {
@@ -137,7 +186,14 @@
       }
     }
   },
-  "endNotConnectedBody": "Open Ferret on the phone and check both devices are on the same Wi-Fi.",
+  "endNotConnectedBody": "On {device}: open Ferret. Check that {device} and this computer are on the same Wi-Fi.",
+  "@endNotConnectedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endNoAnswerTitle": "{device} didn't answer",
   "@endNoAnswerTitle": {
     "placeholders": {
@@ -146,8 +202,15 @@
       }
     }
   },
-  "endNoAnswerBody": "Check that Ferret is running on the phone, then try again.",
-  "endStoppedHereTitle": "You stopped mirroring",
+  "endNoAnswerBody": "On {device}: open Ferret. Then try again.",
+  "@endNoAnswerBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endStoppedHereTitle": "Stopped on this computer",
   "endStoppedHereBody": "{device} no longer shares its screen.",
   "@endStoppedHereBody": {
     "placeholders": {
@@ -164,7 +227,14 @@
       }
     }
   },
-  "endStoppedOnPhoneBody": "Someone tapped Stop on the phone.",
+  "endStoppedOnPhoneBody": "Someone tapped Stop on {device}.",
+  "@endStoppedOnPhoneBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endSystemEndedTitle": "{device} stopped sharing",
   "@endSystemEndedTitle": {
     "placeholders": {
@@ -173,7 +243,14 @@
       }
     }
   },
-  "endSystemEndedBody": "Android ends screen sharing when the phone locks, or when its owner stops it from the status bar.",
+  "endSystemEndedBody": "Android ends screen sharing when {device} locks, or when someone stops it from the status bar.",
+  "@endSystemEndedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "endLostConnectionTitle": "Lost the connection to {device}",
   "@endLostConnectionTitle": {
     "placeholders": {
@@ -182,9 +259,16 @@
       }
     }
   },
-  "endLostConnectionBody": "Ferret reconnects on its own. Try again once the phone is back.",
-  "endFailedTitle": "Mirroring stopped working",
-  "endFailedBody": "Capturing the screen failed on {device}. Try again.",
+  "endLostConnectionBody": "Ferret reconnects on its own. Try again once {device} is back.",
+  "@endLostConnectionBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endFailedTitle": "The picture stopped",
+  "endFailedBody": "{device} couldn't capture its screen. Try again.",
   "@endFailedBody": {
     "placeholders": {
       "device": {
@@ -193,7 +277,14 @@
     }
   },
   "endDecoderFailedTitle": "This computer couldn't show the picture",
-  "endDecoderFailedBody": "Decoding the video failed here. Try again.",
+  "endDecoderFailedBody": "The video from {device} didn't play here. Try again.",
+  "@endDecoderFailedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusPicture": "{codec} · {width}×{height} · {fps} fps",
   "@statusPicture": {
     "placeholders": {
@@ -253,7 +344,14 @@
       }
     }
   },
-  "viewingWaitingBody": "Answer the prompt on the phone.",
+  "viewingWaitingBody": "On {device}: answer Android's prompt.",
+  "@viewingWaitingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "sinceTime": "Since {time}",
   "@sinceTime": {
     "placeholders": {
@@ -287,7 +385,7 @@
     }
   },
   "askingBody": "Answer Android's prompt. If you don't see it, tap the notice from Ferret.",
-  "auditShared": "{device} viewed your screen for {duration} at {time}",
+  "auditShared": "{device} saw this phone's screen for {duration} at {time}",
   "@auditShared": {
     "placeholders": {
       "device": {
@@ -355,7 +453,7 @@
   "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",
   "clearHistory": "Clear history",
   "healthViewing": "Showing its screen here",
-  "healthTurnedOff": "Screen mirroring is off on {device}",
+  "healthTurnedOff": "Off on {device}",
   "@healthTurnedOff": {
     "placeholders": {
       "device": {
@@ -371,7 +469,7 @@
       }
     }
   },
-  "healthCannotAsk": "{device} couldn't show the question. Open Ferret on it.",
+  "healthCannotAsk": "{device} couldn't show the question",
   "@healthCannotAsk": {
     "placeholders": {
       "device": {
@@ -379,16 +477,25 @@
       }
     }
   },
+  "healthFailed": "{device} couldn't capture its screen",
+  "@healthFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthDecoderFailed": "This computer couldn't show the picture",
   "experimental": "Experimental",
   "moreWaysTitle": "More ways to show a screen",
   "moreWaysBody": "Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.",
   "moreWaysOffer": "Experimental: show a phone plugged in with a cable, or a screen another device sends here.",
   "turnOn": "Turn on",
   "targetsTitle": "Screens you can show",
-  "targetsSubtitle": "Found by the experimental ways. No Ferret needed on the other device.",
+  "targetsSubtitle": "Found by the experimental ways. They don't need Ferret.",
   "targetCable": "Plugged in with a cable",
   "targetWireless": "On your network",
-  "show": "Show",
+  "show": "Show screen",
   "checkAgain": "Check again",
   "setupInstallToolTitle": "This computer needs a small helper first",
   "setupInstallToolBody": "How to: install Android's platform tools (they include adb) on this computer, then try again.",
@@ -400,9 +507,9 @@
   "setupStartToolTitle": "Start Android's helper tool",
   "setupStartToolBody": "Ferret isn't allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal, then check again.",
   "setupEnableDebuggingTitle": "The phone needs one setting turned on",
-  "setupEnableDebuggingBody": "How to: on the phone, open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.",
+  "setupEnableDebuggingBody": "On the phone: open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.",
   "setupAuthorizeTitle": "Allow this computer on the phone",
-  "setupAuthorizeBody": "How to: look at the phone and tap Allow on the question it shows, then try again.",
+  "setupAuthorizeBody": "On the phone: tap Allow on the question it shows. Then try again.",
   "setupPermissionTitle": "Ferret needs your OK on this computer",
   "setupPermissionBody": "How to: allow Ferret under Local Network in this computer's privacy settings, then try again.",
   "buttonBack": "Back",

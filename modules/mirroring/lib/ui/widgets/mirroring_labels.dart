@@ -5,7 +5,7 @@ import 'package:mirroring/models/models.dart';
 
 /// Words for where mirroring stands, on either side.
 extension MirroringLabels on MirroringLocalizations {
-  /// "MacBook viewed your screen for 12 min at 21:10", or "You viewed
+  /// "MacBook saw this phone's screen for 12 min at 21:10", or "You viewed
   /// Pixel's screen for 12 min at 21:10" on the computer.
   String audit(MirrorRecord record) {
     final length = duration(record.duration);
@@ -60,22 +60,22 @@ extension MirroringLabels on MirroringLocalizations {
 
   /// What to do about it.
   String endBody(ViewEnd end, String device) => switch (end) {
-    .denied => endDeniedBody,
-    .timedOut => endTimedOutBody,
+    .denied => endDeniedBody(device),
+    .timedOut => endTimedOutBody(device),
     .busy => endBusyBody,
     .unsupported => endUnsupportedBody,
-    .turnedOff => endTurnedOffBody,
-    .cannotAsk => endCannotAskBody,
-    .version => endVersionBody,
-    .noCodec => endNoCodecBody,
-    .notConnected => endNotConnectedBody,
-    .noAnswer => endNoAnswerBody,
+    .turnedOff => endTurnedOffBody(device),
+    .cannotAsk => endCannotAskBody(device),
+    .version => endVersionBody(device),
+    .noCodec => endNoCodecBody(device),
+    .notConnected => endNotConnectedBody(device),
+    .noAnswer => endNoAnswerBody(device),
     .stoppedHere => endStoppedHereBody(device),
-    .stoppedOnPhone => endStoppedOnPhoneBody,
-    .systemEnded => endSystemEndedBody,
-    .lostConnection => endLostConnectionBody,
+    .stoppedOnPhone => endStoppedOnPhoneBody(device),
+    .systemEnded => endSystemEndedBody(device),
+    .lostConnection => endLostConnectionBody(device),
     .failed || .needsSetup => endFailedBody(device),
-    .decoderFailed => endDecoderFailedBody,
+    .decoderFailed => endDecoderFailedBody(device),
   };
 
   /// The step a route still needs, as a headline anyone understands.

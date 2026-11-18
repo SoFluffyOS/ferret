@@ -146,7 +146,7 @@ void main() {
       final context = tester.element(find.byType(SwitchToggle));
 
       final offer = ui.offerFor(context, featureContext());
-      expect(offer?.title, 'Screen mirroring');
+      expect(offer?.title, 'Screen');
       expect(offer?.description, startsWith('Experimental'));
       expect(ui.hasHomeCard(featureContext()), isFalse);
 
@@ -283,7 +283,7 @@ void main() {
       expect(find.text('Galaxy'), findsOneWidget);
       expect(find.text('Plugged in with a cable'), findsOneWidget);
 
-      await tester.tap(find.text('Show'));
+      await tester.tap(find.text('Show screen'));
       expect(shown.single, galaxy);
     });
 

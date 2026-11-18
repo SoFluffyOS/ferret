@@ -1,4 +1,4 @@
-# Screen mirroring
+# Screen
 
 > **TL;DR**
 >
@@ -20,7 +20,7 @@ With Ferret, the phone's screen shows up on your computer. Over your own Wi-Fi, 
 
 Rotate the phone and the picture follows. Screen off? The page says so, and the picture comes back when you wake the phone.
 
-Mirroring over Ferret is view only. To type or click from afar, see [Remote input](remote-input.md).
+Mirroring over Ferret is view only. To type or click from afar, see [Control](remote-input.md).
 
 ## 🧪 More ways to show a screen
 
@@ -28,10 +28,10 @@ Not every screen has Ferret behind it. A spare phone on your desk, an iPhone, a 
 
 Ferret can show those too. This part is **experimental** and off until you ask for it:
 
-1. On the computer, open **Settings → Screen mirroring**.
+1. On the computer, open **Settings → Screen**.
 2. Turn on **More ways to show a screen**.
 
-That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show**.
+That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show screen**.
 
 Some devices start it themselves, like an iPhone from Control Center. Those have their own switch right below, such as **Show iPhone and iPad screens here**. It starts off on a Mac, which can already do this by itself.
 
@@ -52,7 +52,7 @@ Nobody sees your screen without you knowing.
 
 - **Every time**, Android asks you with its own prompt. Ferret never remembers a yes. There is no "Always".
 - **While it happens**, a notice you can't swipe away says "Sharing screen with MacBook" with **Stop**. The home card says it too, and Android shows its own icon in the status bar.
-- **Afterwards**, both devices keep a line such as "MacBook viewed your screen for 12 min at 21:10". The last 20 are in **Settings → Screen mirroring → History**.
+- **Afterwards**, both devices keep a line such as "MacBook saw this phone's screen for 12 min at 21:10". The last 20 are in **Settings → Screen → History**.
 - Don't want it at all? Turn off **Let my computers ask to see this screen** on the phone.
 
 Phone in your pocket when the computer asks? Ferret posts a notice: "MacBook wants to see this screen". Tap it to get the prompt. The question stays for a minute.
@@ -70,7 +70,7 @@ The mirror page always says why, with **Try again**:
 | Pixel said no | Someone tapped Cancel on the prompt. Ask again in half a minute |
 | Nobody answered on Pixel | Wake the phone, then try again |
 | Pixel couldn't show the question | Open Ferret on the phone, or allow its notifications |
-| Screen mirroring is off on Pixel | Turn it on in Ferret's settings on the phone |
+| Screen sharing is off on Pixel | On Pixel: open Ferret's settings, then Screen, and turn it on |
 | Pixel stopped sharing | Android ends sharing when the phone locks (Android 15 and later) or when you stop it from the status bar |
 | Lost the connection to Pixel | Ferret reconnects on its own. Try again after |
 

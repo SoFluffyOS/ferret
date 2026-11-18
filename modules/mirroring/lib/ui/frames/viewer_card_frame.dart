@@ -44,7 +44,7 @@ class ViewerCardFrame extends StatelessWidget {
         ),
         null => (
           l10n.viewingWaitingTitle(current.deviceName),
-          l10n.viewingWaitingBody,
+          l10n.viewingWaitingBody(current.deviceName),
         ),
       };
 

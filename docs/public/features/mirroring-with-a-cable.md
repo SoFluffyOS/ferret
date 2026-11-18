@@ -4,13 +4,13 @@
 >
 > 1. On the phone, turn on **USB debugging** (or **Wireless debugging**).
 > 2. Plug it into your computer and tap **Allow** on the phone.
-> 3. In Ferret on the computer, pick the phone under **Screens you can show** and click **Show**.
+> 3. In Ferret on the computer, pick the phone under **Screens you can show** and click **Show screen**.
 
 [Screen mirroring](mirroring.md) needs Ferret on both devices. But sometimes the phone isn't yours to set up, or it is a spare one, or a test phone on your desk.
 
 Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way you can click and type on the phone too.
 
-> 🧪 This is experimental. Turn on **More ways to show a screen** in **Settings → Screen mirroring** on your computer first. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
+> 🧪 This is experimental. Turn on **More ways to show a screen** in **Settings → Screen** on your computer first. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
 
 ## 🔑 Turn on debugging on the phone
 
@@ -27,7 +27,7 @@ On some phones the names differ a little. Search the phone's settings for "Build
 
 1. Plug the phone into the computer.
 2. The phone asks **Allow USB debugging?**. Tap **Allow**. Tick **Always allow from this computer** so it won't ask again.
-3. The phone shows up in Ferret under **Screens you can show**. Click **Show**.
+3. The phone shows up in Ferret under **Screens you can show**. Click **Show screen**.
 
 That's it.
 

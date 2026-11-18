@@ -179,14 +179,14 @@ void main() {
       await pumpPage(tester);
 
       expect(find.text('Answer on Pixel'), findsOneWidget);
-      expect(find.textContaining('Tap Start on Pixel'), findsOneWidget);
+      expect(find.textContaining('On Pixel: Android asks'), findsOneWidget);
 
       await tester.tap(find.text('Cancel'));
       await tester.pump();
       await tester.pump();
 
       expect(pixel.sentOf<Stop>(), hasLength(1));
-      expect(find.text('You stopped mirroring'), findsOneWidget);
+      expect(find.text('Stopped on this computer'), findsOneWidget);
     });
 
     testWidgets('after the yes: waits for the first picture in words', (
@@ -232,7 +232,7 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(find.byType(Texture), findsNothing);
-      expect(find.text('You stopped mirroring'), findsOneWidget);
+      expect(find.text('Stopped on this computer'), findsOneWidget);
       expect(
         pixel.sentOf<Stop>().single.reason,
         StopReason.STOP_REASON_VIEWER_DONE,
@@ -333,7 +333,7 @@ void main() {
     for (final (reason, title) in [
       (StopReason.STOP_REASON_STOPPED_ON_SOURCE, 'Stopped on Pixel'),
       (StopReason.STOP_REASON_SYSTEM_ENDED, 'Pixel stopped sharing'),
-      (StopReason.STOP_REASON_FAILED, 'Mirroring stopped working'),
+      (StopReason.STOP_REASON_FAILED, 'The picture stopped'),
     ]) {
       testWidgets('the phone ending with ${reason.name} says "$title"', (
         tester,
@@ -468,7 +468,7 @@ void main() {
       await pumpCard(tester, []);
 
       expect(find.text('Waiting for Pixel'), findsOneWidget);
-      expect(find.text('Answer the prompt on the phone.'), findsOneWidget);
+      expect(find.text("On Pixel: answer Android's prompt."), findsOneWidget);
     });
   });
 
@@ -529,7 +529,7 @@ void main() {
         StopReason.STOP_REASON_STOPPED_ON_SOURCE,
       );
       expect(
-        find.text('MacBook viewed your screen for 12 min at 21:10'),
+        find.text("MacBook saw this phone's screen for 12 min at 21:10"),
         findsOneWidget,
       );
 
@@ -556,15 +556,15 @@ void main() {
 
       expect(
         l10n.audit(record(const Duration(seconds: 40))),
-        'MacBook viewed your screen for 40 s at 21:10',
+        "MacBook saw this phone's screen for 40 s at 21:10",
       );
       expect(
         l10n.audit(record(const Duration(minutes: 1))),
-        'MacBook viewed your screen for 1 min at 21:10',
+        "MacBook saw this phone's screen for 1 min at 21:10",
       );
       expect(
         l10n.audit(record(const Duration(minutes: 75))),
-        'MacBook viewed your screen for 1 h 15 min at 21:10',
+        "MacBook saw this phone's screen for 1 h 15 min at 21:10",
       );
     });
   });
@@ -596,14 +596,14 @@ void main() {
         ),
       );
 
-      expect(ui.title(buildContext), 'Screen mirroring');
+      expect(ui.title(buildContext), 'Screen');
       expect(
         find.text('Let my computers ask to see this screen'),
         findsOneWidget,
       );
       expect(find.textContaining('needs root'), findsOneWidget);
       expect(
-        find.text('MacBook viewed your screen for 3 min at 21:10'),
+        find.text("MacBook saw this phone's screen for 3 min at 21:10"),
         findsOneWidget,
       );
 
@@ -748,7 +748,7 @@ void main() {
       );
       final health = ui.healthFor(context, status(pixel));
       expect(health?.state, FeatureHealthState.off);
-      expect(health?.reason, 'Screen mirroring is off on Pixel');
+      expect(health?.reason, 'Off on Pixel');
     });
 
     testWidgets('a phone offers no "Show screen"', (tester) async {
