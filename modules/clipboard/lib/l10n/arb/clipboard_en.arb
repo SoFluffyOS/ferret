@@ -1,4 +1,82 @@
 {
   "@@locale": "en",
-  "title": "Clipboard"
+  "title": "Clipboard",
+  "cardEmpty": "Copy something here and paste it on your other devices.",
+  "cardEmptyManual": "Copy something, then tap Send clipboard to paste it on your other devices.",
+  "statusWithTime": "{status} · {time}",
+  "@statusWithTime": {
+    "placeholders": {
+      "status": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "copiedFrom": "Copied from {device}",
+  "@copiedFrom": {
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "waitingToCopyFrom": "From {device}, not on your clipboard yet",
+  "@waitingToCopyFrom": {
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "sentTo": "Sent to {devices}",
+  "@sentTo": {
+    "placeholders": {"devices": {"type": "String"}}
+  },
+  "sentNowhere": "Copied here, no device connected",
+  "skippedSensitive": "Not synced: marked as private",
+  "skippedImagesOff": "Not synced: images are off",
+  "skippedTooLarge": "Not synced: too large",
+  "writeFailed": "From {device}, but Ferret couldn't put it on the clipboard",
+  "@writeFailed": {
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "timeJustNow": "just now",
+  "timeMinutes": "{count} min ago",
+  "@timeMinutes": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "timeHours": "{count} h ago",
+  "@timeHours": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "timeDays": "{count, plural, =1{yesterday} other{{count} days ago}}",
+  "@timeDays": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "imageLabel": "Image",
+  "privateCleared": "Private item, cleared from memory",
+  "privateHidden": "Private item",
+  "copy": "Copy",
+  "copied": "Copied",
+  "sendClipboard": "Send clipboard",
+  "limitAndroid": "Android doesn't let apps read your clipboard in the background. Copy, then tap Send clipboard here, in the Ferret notification or in the Quick Settings tile.",
+  "limitIos": "iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.",
+  "resultSent": "Sent.",
+  "resultNothingToSend": "The clipboard is empty, or holds something other than text or an image.",
+  "resultDuplicate": "Already sent.",
+  "resultSensitive": "Not sent: the app you copied from marked it as private. Turn on Private items below to send these.",
+  "resultImagesOff": "Not sent: images are off. Turn on Images below to send them.",
+  "resultTooLarge": "Not sent: it's bigger than the size limit.",
+  "resultNoDevices": "No device is connected. Open Ferret on your other device and keep it on the same network.",
+  "resultFailed": "Couldn't reach your devices. Check they're on the same network, then try again.",
+  "settingsAutoSend": "Send automatically",
+  "settingsAutoSendBody": "Send what you copy here to your connected devices.",
+  "settingsAutoSendBodyManual": "Your phone only allows this for copies made inside Ferret. Use Send clipboard for the rest.",
+  "settingsAutoReceive": "Receive automatically",
+  "settingsAutoReceiveBody": "Put what your devices send straight on this clipboard. When off, use Copy on the card.",
+  "settingsImages": "Images",
+  "settingsImagesBody": "Sync copied images up to {megabytes} MB.",
+  "@settingsImagesBody": {
+    "placeholders": {"megabytes": {"type": "int"}}
+  },
+  "settingsSensitive": "Private items",
+  "settingsSensitiveBody": "Sync items that password managers mark as private. They leave memory after {minutes} min.",
+  "@settingsSensitiveBody": {
+    "placeholders": {"minutes": {"type": "int"}}
+  },
+  "settingsHistory": "{count, plural, =0{History is empty. It stays in memory, never on disk.} =1{1 item in history, in memory only.} other{{count} items in history, in memory only.}}",
+  "@settingsHistory": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "settingsClearHistory": "Clear history"
 }

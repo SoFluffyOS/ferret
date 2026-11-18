@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package ferret.clipboard.v1;
+
+// What a clip holds, so receivers can preview it without parsing.
+enum ClipKind {
+  CLIP_KIND_UNSPECIFIED = 0;
+  CLIP_KIND_TEXT = 1;
+  CLIP_KIND_IMAGE = 2;
+  // Text that is a single http or https link.
+  CLIP_KIND_URL = 3;
+}
+
+// One thing someone copied.
+message ClipItem {
+  // Random id chosen by the source device, used to drop duplicates.
+  string id = 1;
+  ClipKind kind = 2;
+  // Set for CLIP_KIND_TEXT and CLIP_KIND_URL.
+  string text = 3;
+  // Encoded image bytes, set for CLIP_KIND_IMAGE.
+  bytes image = 4;
+  // Media type of `image`, such as "image/png".
+  string image_mime = 5;
+  // When it was copied, in the source device's clock.
+  int64 created_at_ms = 6;
+  // Device id of the device it was copied on.
+  string source_device_id = 7;
+  // The source app marked it as private, such as a password manager.
+  // Receivers keep it out of history and clipboard managers.
+  bool sensitive = 8;
+  // SHA-256 of the content (kind, text or image bytes), so devices can drop
+  // echoes of what they wrote themselves.
+  bytes content_hash = 9;
+}
+
+// Puts `item` on the receiver's clipboard. Sent without expecting a reply.
+message ClipPush {
+  ClipItem item = 1;
+  // How long the item stays useful after `created_at_ms`. Receivers drop
+  // sensitive items from memory once it passes.
+  int64 expires_in_ms = 2;
+}

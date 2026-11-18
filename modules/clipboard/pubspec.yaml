@@ -11,12 +11,16 @@ environment:
 dependencies:
   core:
     path: ../../packages/core
+  crypto: ^3.0.6
   engine:
     path: ../../packages/engine
   feature_kit:
     path: ../../packages/feature_kit
   ferret_clipboard:
     path: ../../packages/ferret_clipboard
+  ferret_system:
+    path: ../../packages/ferret_system
+  fixnum: ^1.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -34,6 +38,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
+  transport:
+    path: ../../packages/transport
 
 flutter:
   generate: true
