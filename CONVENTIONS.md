@@ -23,6 +23,8 @@
 - **State**: `ChangeNotifier` view models with Provider. Business logic lives in view models and services, not widgets.
 - **UI types**: `ui/frames/` (smart, read view models with `context.select`, never `context.watch`), `ui/pages/`, `ui/widgets/` (dumb), `ui/dialogs/`. Use `ChangeNotifierProvider.value` + `context.select` instead of `ListenableBuilder`.
 - **Imports**: `flutter/widgets.dart`; `material.dart` only where a Material widget is truly needed.
+- **Buttons**: one `.primary` per screen or card for the real next step; other actions `.ghost`. Avoid `.secondary` (a heavy black pill in light mode).
+- **Text sizes**: body text `body2` (17) or `base1`/`base2`; never `body1` (24 pt, bigger than titles).
 - **Rows ending in actions**: exactly one `Expanded`, holding all the text that may shrink.
 
 ## Features

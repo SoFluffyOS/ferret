@@ -88,7 +88,7 @@ class _DoctorPageState extends State<DoctorPage> {
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
             child: Button(
-              variant: .secondary,
+              variant: .ghost,
               label: _fixLabel(l10n, fix),
               onPressed: () => _apply(fix),
             ),

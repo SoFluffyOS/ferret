@@ -60,7 +60,7 @@ class DevicePage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
             child: Button(
-              variant: .secondary,
+              variant: .ghost,
               label: action.label,
               icon: Icon(action.icon, size: Spacing.d16),
               onPressed: action.onPressed,

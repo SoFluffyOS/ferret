@@ -179,7 +179,7 @@ class _OfferCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Button(
-                  variant: .secondary,
+                  variant: .ghost,
                   label: l10n.pairCopyLink,
                   onPressed: () =>
                       Clipboard.setData(ClipboardData(text: offer.qrText)),
@@ -188,7 +188,7 @@ class _OfferCard extends StatelessWidget {
               Spacing.h12,
               Expanded(
                 child: Button(
-                  variant: .secondary,
+                  variant: .ghost,
                   label: l10n.pairNewCode,
                   onPressed: () =>
                       context.read<PairingViewModel>().createOffer(),
