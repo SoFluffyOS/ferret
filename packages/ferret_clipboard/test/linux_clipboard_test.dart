@@ -98,6 +98,49 @@ void main() {
 
     expect(changes, 1);
   });
+
+  test('on Wayland, a read asks wl-paste first, so a copy made in the '
+      'background is not missed', () async {
+    final clipboard = LinuxClipboard(
+      environment: const {'WAYLAND_DISPLAY': 'wayland-0'},
+      run: _commands({'wl-paste --no-newline --type text': _ok('fresh')}),
+      readText: () async => 'stale',
+    );
+
+    expect((await clipboard.read())?.text, 'fresh');
+  });
+
+  test('where wl-paste --watch exits at once, as on GNOME, copies are only '
+      'noticed while focused', () async {
+    final clipboard = LinuxClipboard(
+      environment: const {'WAYLAND_DISPLAY': 'wayland-0'},
+      run: _commands({}),
+      start: (_, _) => Process.start('true', const []),
+      readText: () async => '',
+      pollInterval: const Duration(seconds: 5),
+    );
+
+    expect(clipboard.access, ClipboardAccess.always);
+    await clipboard.startWatching();
+    await clipboard.stopWatching();
+
+    expect(clipboard.access, ClipboardAccess.whileFocused);
+    expect(clipboard.access.watchesOtherApps, isFalse);
+  });
+
+  test('on X11 the clipboard is always watched', () async {
+    final clipboard = LinuxClipboard(
+      environment: const {'DISPLAY': ':0'},
+      run: _commands({}),
+      readText: () async => '',
+      pollInterval: const Duration(seconds: 5),
+    );
+
+    await clipboard.startWatching();
+    await clipboard.stopWatching();
+
+    expect(clipboard.access, ClipboardAccess.always);
+  });
 }
 
 RunCommand _commands(Map<String, ProcessResult> results) =>

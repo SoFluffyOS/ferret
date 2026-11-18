@@ -94,6 +94,21 @@ void main() {
     expect(part.needsAttention, isFalse);
   });
 
+  testWidgets('a Wayland desktop that only tells the focused window says '
+      'why, and that copies go out while Ferret is in front', (tester) async {
+    await start(tester, access: .whileFocused);
+
+    final part = await section(tester);
+    await tester.pumpWidget(testApp(SingleChildScrollView(child: part.child)));
+
+    expect(find.textContaining('GNOME has no way around that'), findsOneWidget);
+    expect(
+      find.textContaining("copies go out while Ferret's window is in front"),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Android'), findsNothing);
+  });
+
   testWidgets('receiving off leaves only sending', (tester) async {
     await start(tester, settings: {ClipboardSettings.autoReceiveKey: false});
 

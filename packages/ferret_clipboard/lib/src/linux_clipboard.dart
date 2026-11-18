@@ -22,6 +22,13 @@ typedef StartCommand = Future<Process> Function(
 /// The Linux clipboard. Text goes through Flutter's GTK clipboard; images
 /// and private-item hints need `wl-clipboard` on Wayland or `xclip` on X11,
 /// and are skipped when those aren't installed.
+///
+/// Wayland only tells the focused window about a new copy. `wl-paste
+/// --watch` gets around that where the compositor allows it (KDE Plasma,
+/// wlroots); elsewhere, such as GNOME, [access] turns to
+/// [ClipboardAccess.whileFocused] once watching starts, and a read asks
+/// `wl-paste` first so a copy made while Ferret was in the background isn't
+/// missed when someone sends it by hand.
 class LinuxClipboard implements ClipboardPlatform {
   LinuxClipboard({
     Map<String, String>? environment,
@@ -58,9 +65,10 @@ class LinuxClipboard implements ClipboardPlatform {
   String? _lastSignature;
   bool _toolMissing = false;
   bool _polling = false;
+  ClipboardAccess _access = .always;
 
   @override
-  ClipboardAccess get access => .always;
+  ClipboardAccess get access => _access;
 
   @override
   Stream<void> get changes => _changes.stream;
@@ -73,7 +81,7 @@ class LinuxClipboard implements ClipboardPlatform {
     final sensitive =
         types.contains(passwordHintType) || types.contains(_concealedType);
 
-    final text = await _readText();
+    final text = await _readFreshText();
     if (text != null && text.isNotEmpty) {
       return ClipboardContent.text(text, sensitive: sensitive);
     }
@@ -117,6 +125,10 @@ class LinuxClipboard implements ClipboardPlatform {
       return;
     }
 
+    if (_isWayland) {
+      _access = .whileFocused;
+    }
+
     _lastSignature = await _signature();
     _poll = .periodic(pollInterval, (_) => unawaited(_checkSignature()));
   }
@@ -153,6 +165,24 @@ class LinuxClipboard implements ClipboardPlatform {
         .listen((_) => _changes.add(null));
     unawaited(process.stderr.drain<void>());
     return true;
+  }
+
+  /// GTK's copy of the clipboard can be stale while the window is in the
+  /// background on Wayland; `wl-paste` asks the compositor itself.
+  Future<String?> _readFreshText() async {
+    if (!_isWayland) {
+      return _readText();
+    }
+
+    final pasted = await _runText((
+      'wl-paste',
+      ['--no-newline', '--type', 'text'],
+    ));
+    if (pasted != null && pasted.isNotEmpty) {
+      return pasted;
+    }
+
+    return _readText();
   }
 
   Future<void> _checkSignature() async {

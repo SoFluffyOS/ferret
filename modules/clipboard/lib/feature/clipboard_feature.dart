@@ -305,6 +305,7 @@ class ClipboardFeature extends Feature {
       return;
     }
 
+    final accessBefore = clipboard.access;
     _clipboardChanges = clipboard.changes.listen(
       (_) => unawaited(_onLocalChange()),
     );
@@ -312,6 +313,10 @@ class ClipboardFeature extends Feature {
       await clipboard.startWatching();
     } on Object catch (error) {
       printWarning('Could not watch the clipboard', error);
+    }
+
+    if (clipboard.access != accessBefore) {
+      _changes.add(null);
     }
   }
 

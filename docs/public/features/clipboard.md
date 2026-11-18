@@ -65,10 +65,20 @@ Each device page also has **Send clipboard**, to send to just that device. Under
 |---|---|---|---|
 | macOS | ✅ | ✅ | Concealed and transient types, set by most password managers |
 | Windows | ✅ | ✅ | Items kept out of Windows clipboard history |
-| Linux | ✅ | ✅ | KeePassXC and KDE password hint |
+| Linux, X11 | ✅ | ✅ | KeePassXC and KDE password hint |
+| Linux, Wayland | ✅ on KDE Plasma and Sway with `wl-clipboard`. On GNOME, while Ferret's window is in front | ✅ | KeePassXC and KDE password hint |
 | Android | Tap **Send clipboard**, or on its own with Shizuku or root | ✅ | Items marked sensitive (Android 13+) |
 | iOS | Tap **Send clipboard** | While open | Concealed type |
 
 On Linux, images need `wl-clipboard` (Wayland) or `xclip` (X11). Text works without them.
+
+### 🐧 Wayland, honestly
+
+Wayland only tells the window in front that you copied something. That's a privacy rule, not a bug.
+
+- **KDE Plasma, Sway, Hyprland**: install `wl-clipboard` and Ferret watches by itself, like on X11.
+- **GNOME**: there is no way around it. Ferret sends what you copied once its window is in front again. Or pick **Send clipboard** on a device, in the tray, or press **Ctrl+Shift+V** in the window.
+
+**Settings → Clipboard** says which one you're on.
 
 Nothing you copy is logged, and nothing leaves your network.

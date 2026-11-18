@@ -60,15 +60,17 @@ class ClipboardSettingsFrame extends StatelessWidget {
               title: l10n.settingsWhyManual,
               body: switch (access) {
                 .onRequest => l10n.settingsWhyManualIos,
+                .whileFocused => l10n.settingsWhyManualWayland,
                 _ => l10n.settingsWhyManualAndroid,
               },
               showLock: false,
             ),
           SettingSwitchRow(
             title: l10n.settingsAutoSend,
-            body: switch (needsManualSend) {
-              true => l10n.settingsAutoSendBodyManual,
-              false => l10n.settingsAutoSendBody,
+            body: switch ((needsManualSend, access)) {
+              (true, .whileFocused) => l10n.settingsAutoSendBodyWayland,
+              (true, _) => l10n.settingsAutoSendBodyManual,
+              (false, _) => l10n.settingsAutoSendBody,
             },
             value: autoSend,
             onChanged: viewModel.setAutoSend,

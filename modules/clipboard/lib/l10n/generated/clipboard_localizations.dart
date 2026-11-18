@@ -408,6 +408,18 @@ abstract class ClipboardLocalizations {
   /// In en, this message translates to:
   /// **'Clear history'**
   String get settingsClearHistory;
+
+  /// No description provided for @settingsWhyManualWayland.
+  ///
+  /// In en, this message translates to:
+  /// **'On Wayland, only the window in front hears about a new copy. GNOME has no way around that, so Ferret sends what you copied once its window is in front again, or when you pick Send clipboard on a device or in the tray. On KDE Plasma and Sway, install wl-clipboard and Ferret watches by itself.'**
+  String get settingsWhyManualWayland;
+
+  /// No description provided for @settingsAutoSendBodyWayland.
+  ///
+  /// In en, this message translates to:
+  /// **'On this desktop, copies go out while Ferret\'s window is in front. Use Send clipboard for the rest.'**
+  String get settingsAutoSendBodyWayland;
 }
 
 class _ClipboardLocalizationsDelegate

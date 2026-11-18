@@ -8,7 +8,12 @@ enum ClipboardAccess {
   foreground,
 
   /// Every read may ask the user first, so read only when they ask (iOS).
-  onRequest;
+  onRequest,
+
+  /// Reads work, but copies made in other apps are only noticed while the
+  /// app's window has focus: Wayland desktops that don't let apps watch the
+  /// clipboard, such as GNOME, or any of them without `wl-clipboard`.
+  whileFocused;
 
   /// Whether copies made in other apps can be noticed and read on their own.
   bool get watchesOtherApps => this == always;

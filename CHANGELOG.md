@@ -54,3 +54,4 @@
 - 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon. The icon shows what's going on: a ring while a file moves, a check when it's done, a dot when someone waits for your answer, a slash while paused.
 - 💻 **`ferret` command line**: run it headless, pair, and list devices.
 - 🧱 **Linux firewalls**: Fix connection notices when ufw or firewalld is on, and copies the one line that lets Ferret through.
+- 🐧 **Wayland, honestly**: on GNOME, Settings → Clipboard says copies go out while Ferret's window is in front. On KDE Plasma and Sway, `wl-clipboard` lets it watch by itself.
