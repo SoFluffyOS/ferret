@@ -568,7 +568,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get scanBody =>
-      'Point your camera at the code Ferret shows on your computer.';
+      'On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.';
 
   @override
   String get scanButton => 'Scan the code on your computer';

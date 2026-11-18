@@ -20,11 +20,11 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get explainerDetail =>
-      'Ferret reads SMS and MMS on this phone and sends them only to your paired computers, over your own network. Contacts give conversations names and photos.';
+      'Ferret reads the texts on this phone and shows them only on your own computers. Nothing leaves your network. Contacts give conversations names and photos.';
 
   @override
   String get rcsNote =>
-      'RCS chats live inside Google Messages, and no other app can read them. They still reach your computer as notifications, and you can answer them there.';
+      'Chats in Google Messages (RCS, the ones with typing dots) can\'t be read by other apps. They still reach your computer as notifications, and you can answer them there.';
 
   @override
   String get turnOn => 'Turn on';

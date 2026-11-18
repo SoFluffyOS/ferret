@@ -54,7 +54,7 @@ void main() {
     );
     expect(find.text('Turn on'), findsOneWidget);
     expect(
-      find.textContaining('RCS chats live inside Google Messages'),
+      find.textContaining('Chats in Google Messages'),
       findsOneWidget,
     );
   });

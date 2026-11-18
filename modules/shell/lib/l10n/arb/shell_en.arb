@@ -424,7 +424,7 @@
   "dropClose": "Close",
   "dropCancel": "Cancel",
   "scanTitle": "Scan the code",
-  "scanBody": "Point your camera at the code Ferret shows on your computer.",
+  "scanBody": "On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.",
   "scanButton": "Scan the code on your computer",
   "scanSection": "Scan",
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",

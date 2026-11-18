@@ -973,7 +973,7 @@ abstract class ShellLocalizations {
   /// No description provided for @scanBody.
   ///
   /// In en, this message translates to:
-  /// **'Point your camera at the code Ferret shows on your computer.'**
+  /// **'On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.'**
   String get scanBody;
 
   /// No description provided for @scanButton.

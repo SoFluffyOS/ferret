@@ -4,8 +4,8 @@
   "back": "Back",
 
   "explainer": "Read and reply to your texts from your computer.",
-  "explainerDetail": "Ferret reads SMS and MMS on this phone and sends them only to your paired computers, over your own network. Contacts give conversations names and photos.",
-  "rcsNote": "RCS chats live inside Google Messages, and no other app can read them. They still reach your computer as notifications, and you can answer them there.",
+  "explainerDetail": "Ferret reads the texts on this phone and shows them only on your own computers. Nothing leaves your network. Contacts give conversations names and photos.",
+  "rcsNote": "Chats in Google Messages (RCS, the ones with typing dots) can't be read by other apps. They still reach your computer as notifications, and you can answer them there.",
   "turnOn": "Turn on",
   "turnOff": "Turn off",
   "noTelephony": "This device can't send or receive texts, so there is nothing to share.",
