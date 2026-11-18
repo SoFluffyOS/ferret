@@ -85,6 +85,7 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
       },
       child: Focus(
         autofocus: true,
+        skipTraversal: true,
         child: Semantics(
           scopesRoute: true,
           namesRoute: true,

@@ -144,7 +144,7 @@ class _PairPageState extends State<PairPage> {
                     child: Text(
                       l10n.settingsRename,
                       style: typography.caption1.copyWith(
-                        color: palette.accent,
+                        color: palette.link,
                       ),
                     ),
                   ),

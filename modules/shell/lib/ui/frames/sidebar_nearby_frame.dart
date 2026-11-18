@@ -71,7 +71,7 @@ class _Nearby extends StatelessWidget {
 
     final l10n = context.shellL10n;
     final pairStyle = context.fluffyTheme.typography.caption1.copyWith(
-      color: context.palette.accent,
+      color: context.palette.link,
     );
 
     return Column(

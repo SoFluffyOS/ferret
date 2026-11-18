@@ -33,7 +33,7 @@ class FooterHint extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              maxLines: 1,
+              maxLines: 2,
               overflow: .ellipsis,
               style: style.copyWith(color: palette.mutedText),
             ),

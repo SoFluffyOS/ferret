@@ -108,7 +108,7 @@ class _SeeAll extends StatelessWidget {
       child: Text(
         context.shellL10n.activitySeeAll,
         style: context.fluffyTheme.typography.caption1.copyWith(
-          color: context.palette.accent,
+          color: context.palette.link,
         ),
       ),
     );

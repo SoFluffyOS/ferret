@@ -49,7 +49,7 @@ class TipRow extends StatelessWidget {
               tooltip: dismissLabel,
               onTap: onDismiss,
               child: Padding(
-                padding: EdgeInsets.all(Spacing.d4),
+                padding: EdgeInsets.all(Spacing.d6),
                 child: Icon(
                   LucideIcons.x,
                   size: Spacing.d14,

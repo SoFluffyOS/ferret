@@ -229,7 +229,7 @@ class _TextAction extends StatelessWidget {
         child: Text(
           action.label,
           style: context.fluffyTheme.typography.caption1.copyWith(
-            color: context.palette.accent,
+            color: context.palette.link,
           ),
         ),
       ),

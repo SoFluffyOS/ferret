@@ -92,7 +92,7 @@ class _Placeholder extends StatelessWidget {
           final initials => Text(
             initials,
             style: context.fluffyTheme.typography.caption1.copyWith(
-              color: palette.accent,
+              color: palette.link,
               fontSize: dimension * 0.4,
               fontWeight: .w600,
             ),

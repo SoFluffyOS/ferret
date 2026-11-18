@@ -74,9 +74,17 @@ class TransferTile extends StatelessWidget {
                     style: typography.base1.copyWith(color: palette.text),
                   ),
                   Spacing.vertical(Spacing.d2),
-                  Text(
-                    status,
-                    style: typography.caption1.copyWith(color: statusColor),
+                  // Spoken when it changes: asking, done, failed. Not while
+                  // it counts megabytes, which would never stop talking.
+                  Semantics(
+                    liveRegion: switch (transfer.status) {
+                      .transferring || .verifying => false,
+                      _ => true,
+                    },
+                    child: Text(
+                      status,
+                      style: typography.caption1.copyWith(color: statusColor),
+                    ),
                   ),
                   if (speed case final line?)
                     Text(
@@ -100,7 +108,7 @@ class TransferTile extends StatelessWidget {
                 tooltip: dismissLabel,
                 onTap: dismiss,
                 child: Padding(
-                  padding: EdgeInsets.all(Spacing.d2),
+                  padding: EdgeInsets.all(Spacing.d6),
                   child: Icon(
                     LucideIcons.x,
                     size: Spacing.d14,
