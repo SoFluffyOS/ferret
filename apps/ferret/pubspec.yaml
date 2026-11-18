@@ -8,6 +8,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  mirroring:
+    path: ../../modules/mirroring
   remote_input:
     path: ../../modules/remote_input
   iphone:

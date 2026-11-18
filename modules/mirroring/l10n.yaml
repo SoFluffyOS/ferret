@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: mirroring_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: mirroring_localizations.dart
+output-class: MirroringLocalizations
+nullable-getter: false

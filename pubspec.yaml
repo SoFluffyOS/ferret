@@ -15,6 +15,7 @@ workspace:
   - modules/iphone
   - modules/media
   - modules/messages
+  - modules/mirroring
   - modules/notifications
   - modules/power
   - modules/remote_input
@@ -31,6 +32,7 @@ workspace:
   - packages/ferret_media
   - packages/ferret_menubar
   - packages/ferret_messages
+  - packages/ferret_mirroring
   - packages/ferret_notifications
   - packages/ferret_power
   - packages/ferret_remote_input

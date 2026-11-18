@@ -14,6 +14,7 @@ import ferret_handoff
 import ferret_iphone
 import ferret_media
 import ferret_menubar
+import ferret_mirroring
 import ferret_remote_input
 import ferret_system
 import file_selector_macos
@@ -31,6 +32,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FerretIphonePlugin.register(with: registry.registrar(forPlugin: "FerretIphonePlugin"))
   FerretMediaPlugin.register(with: registry.registrar(forPlugin: "FerretMediaPlugin"))
   FerretMenubarPlugin.register(with: registry.registrar(forPlugin: "FerretMenubarPlugin"))
+  FerretMirroringPlugin.register(with: registry.registrar(forPlugin: "FerretMirroringPlugin"))
   FerretRemoteInputPlugin.register(with: registry.registrar(forPlugin: "FerretRemoteInputPlugin"))
   FerretSystemPlugin.register(with: registry.registrar(forPlugin: "FerretSystemPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))

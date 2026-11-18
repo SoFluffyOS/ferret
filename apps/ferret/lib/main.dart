@@ -7,6 +7,7 @@ import 'package:handoff/handoff.dart';
 import 'package:iphone/iphone.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
+import 'package:mirroring/mirroring.dart';
 import 'package:notifications/notifications.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
@@ -22,6 +23,7 @@ Future<void> main() => runFerret(
     IphoneFeatureUi(),
     MediaFeatureUi(),
     MessagesFeatureUi(),
+    MirroringFeatureUi(),
     NotificationsFeatureUi(),
     PowerFeatureUi(),
     RemoteInputFeatureUi(),
