@@ -364,6 +364,10 @@ void main() {
       await press(LogicalKeyboardKey.comma);
       expect(find.byType(SettingsPage), findsOneWidget);
 
+      await press(LogicalKeyboardKey.digit2);
+      expect(find.text('Texts of Pixel 9'), findsOneWidget);
+
+      await press(LogicalKeyboardKey.comma);
       await press(LogicalKeyboardKey.keyB);
       expect(find.byType(SidebarFrame), findsNothing);
       expect(find.byType(SettingsPage), findsOneWidget);

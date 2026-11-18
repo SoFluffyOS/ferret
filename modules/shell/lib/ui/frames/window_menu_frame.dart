@@ -45,8 +45,15 @@ class WindowMenuFrame extends StatelessWidget {
         _ => null,
       },
     );
+    // On Activity and Settings the digits lead back to the first device,
+    // so they always go somewhere.
+    final sectionsDevice =
+        device ??
+        context.select<EngineHost, DeviceStatus?>(
+          (host) => host.devices.firstOrNull,
+        );
     final scope = ShellScope.of(context);
-    final sections = switch (device) {
+    final sections = switch (sectionsDevice) {
       final DeviceStatus device => [
         (FeatureSection.overviewId, context.shellL10n.sectionOverview),
         for (final section in DeviceSections.of(
@@ -78,12 +85,15 @@ class WindowMenuFrame extends StatelessWidget {
       },
     };
     void selectSection(int index) {
-      if (device == null || index >= sections.length) {
+      if (sectionsDevice == null || index >= sections.length) {
         return;
       }
 
       nav.select(
-        DeviceDestination(device.device.id, sectionId: sections[index].$1),
+        DeviceDestination(
+          sectionsDevice.device.id,
+          sectionId: sections[index].$1,
+        ),
       );
     }
 
