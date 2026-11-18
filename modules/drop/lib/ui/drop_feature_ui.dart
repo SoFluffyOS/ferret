@@ -7,6 +7,7 @@ import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
 import 'package:drop/ui/dialogs/dialogs.dart';
+import 'package:drop/ui/drop_activity.dart';
 import 'package:drop/ui/drop_health.dart';
 import 'package:drop/ui/frames/frames.dart';
 import 'package:drop/view_models/view_models.dart';
@@ -206,15 +207,44 @@ class DropFeatureUi extends FeatureUi {
     FeatureContext feature,
     DeviceStatus device,
   ) {
+  /// Only while something waits for the person: an offer to answer, a PIN
+  /// to enter, or phones without Ferret being let in. Transfers themselves
+  /// are lines in Activity.
+  @override
+  bool hasHomeCard(FeatureContext feature) =>
+      _dropViewModel.needingAnswer.isNotEmpty || _dropViewModel.isOpenToOthers;
+
     final session = device.session;
     if (session == null || !session.supports(DropFeature.featureId)) {
       return const [];
     }
 
+          needsYouOnly: true,
     return [
       FeatureAction(
         label: context.dropL10n.sendFiles,
         icon: LucideIcons.upload,
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
+      dropActivity(context.dropL10n, _dropViewModel);
+
+  /// Letting phones without Ferret send here is one tap away, without a
+  /// card that stays.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (!_dropViewModel.canOpenToOthers) {
+      return null;
+    }
+
+    final l10n = context.dropL10n;
+    return FeatureOffer(
+      title: l10n.otherApps,
+      description: l10n.offerOtherPhonesBody,
+      actionLabel: l10n.offerOtherPhonesAction,
+      onAction: () => unawaited(_dropViewModel.openToOthers()),
+    );
+  }
+
         onPressed: () => unawaited(
           _dropViewModel.pickAndSend(device.device.id),
         ),
@@ -289,6 +319,7 @@ class DropFeatureUi extends FeatureUi {
 
     final total = transfers.fold(
       0.0,
+        homeOrder: 10,
       (sum, transfer) => sum + transfer.progress,
     );
     return FilesSending(total / transfers.length);
