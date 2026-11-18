@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:drop/drop.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -52,9 +53,51 @@ void main() {
     expect(notifier.shown.first.progress, isNotNull);
     expect(notifier.shown.first.channel, NoticeChannel.transfers);
     final done = notifier.shown.last;
-    expect(done.title, 'Received from Pixel');
+    expect(done.title, 'photo.jpg from Pixel');
+    expect(done.body, 'Saved');
     expect(done.category, DropNotices.filesCategory);
     expect(done.silent, isFalse);
+  });
+
+  test('a received file says the folder it is in', () async {
+    final withFolder = DropNotices(
+      feature: link.laptop.feature,
+      notifier: notifier,
+      l10n: lookupDropLocalizations(const Locale('en')),
+      onOpen: (transfer) async {},
+      onReveal: (transfer) async {},
+      onCopy: (text) async {},
+      folderLabel: () => 'Downloads › Ferret',
+    )..start();
+    addTearDown(withFolder.dispose);
+    await notices.dispose();
+
+    put(sampleTransfer(status: .done, bytesDone: 4 * 1024 * 1024));
+    await pumpEventQueue();
+
+    expect(notifier.shown.single.body, 'Saved to Downloads › Ferret');
+  });
+
+  test('a received file offers Open and Show in Finder on a Mac', () {
+    final l10n = lookupDropLocalizations(const Locale('en'));
+    debugDefaultTargetPlatformOverride = .macOS;
+    final onMac = DropNotices.categories(l10n);
+    debugDefaultTargetPlatformOverride = .linux;
+    final onLinux = DropNotices.categories(l10n);
+    debugDefaultTargetPlatformOverride = null;
+
+    List<String> labelsOf(List<NoticeCategory> categories) => [
+      for (final action
+          in categories
+              .firstWhere(
+                (category) => category.id == DropNotices.filesCategory,
+              )
+              .actions)
+        action.label,
+    ];
+
+    expect(labelsOf(onMac), ['Open', 'Show in Finder']);
+    expect(labelsOf(onLinux), ['Open', 'Show in folder']);
   });
 
   test('received text offers Copy, and tapping Copy copies it', () async {

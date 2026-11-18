@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:drop/l10n/generated/drop_localizations.dart';
 import 'package:drop/models/models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:interop_localsend/interop_localsend.dart' show Fingerprints;
 import 'package:intl/intl.dart';
 
@@ -70,6 +71,38 @@ class TransferTexts {
       },
     };
   }
+
+  /// How far a transfer under way is, without the device its line already
+  /// names: "26 MB of 42 MB · 1 min left", the time once the speed is
+  /// known. Waiting and checking say so in a few words.
+  String progress(Transfer transfer) {
+    return switch (transfer.status) {
+      .waiting => switch (transfer.isOutgoing) {
+        true => l10n.activityWaiting,
+        false => status(transfer),
+      },
+      .transferring => switch (transfer.eta) {
+        final left? => l10n.activityProgressEta(
+          size(transfer.bytesDone),
+          size(transfer.totalBytes),
+          eta(left),
+        ),
+        _ => l10n.activityProgress(
+          size(transfer.bytesDone),
+          size(transfer.totalBytes),
+        ),
+      },
+      _ => status(transfer),
+    };
+  }
+
+  /// "Show in Finder" on a Mac, where people know Finder by name, "Show in
+  /// folder" elsewhere.
+  String revealLabel({TargetPlatform? platform}) =>
+      switch (platform ?? defaultTargetPlatform) {
+        .macOS => l10n.actionRevealFinder,
+        _ => l10n.actionReveal,
+      };
 
   /// Speed and time left while bytes move, or null.
   String? speed(Transfer transfer) {

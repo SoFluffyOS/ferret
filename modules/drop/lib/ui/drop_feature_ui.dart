@@ -17,6 +17,7 @@ import 'package:ferret_drop/ferret_drop.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The app side of Drop: transfers in Activity, "Send files" on each device,
 /// files dropped on the window or menubar icon, shares from other apps and
@@ -136,6 +137,7 @@ class DropFeatureUi extends FeatureUi {
       onOpen: viewModel.open,
       onReveal: viewModel.reveal,
       onCopy: viewModel.copyText,
+      folderLabel: () => viewModel.receiveFolderLabel,
     )..start();
     _notices = notices;
     _shares = _plugin.shares.listen(
@@ -207,12 +209,12 @@ class DropFeatureUi extends FeatureUi {
     unawaited(context.reveal());
   }
 
-  /// Only while something waits for the person: an offer to answer, a PIN
-  /// to enter, or phones without Ferret being let in. Transfers themselves
-  /// are lines in Activity.
+  /// Only while a send waits for a PIN, or phones without Ferret are being
+  /// let in. Offers to answer sit under Needs you and transfers in
+  /// Activity, both from [activity].
   @override
   bool hasHomeCard(FeatureContext feature) =>
-      _dropViewModel.needingAnswer.isNotEmpty || _dropViewModel.isOpenToOthers;
+      _dropViewModel.needingPin.isNotEmpty || _dropViewModel.isOpenToOthers;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
@@ -226,7 +228,45 @@ class DropFeatureUi extends FeatureUi {
 
   @override
   List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
-      dropActivity(context.dropL10n, _dropViewModel);
+      dropActivity(
+        context.dropL10n,
+        _dropViewModel,
+        onOfferDetails: (transfer) =>
+            unawaited(_showOfferDetails(context, transfer)),
+      );
+
+  /// Who is sending, what and how much, and for a device that isn't paired
+  /// its fingerprint or the PIN to compare, then Accept or Decline.
+  Future<void> _showOfferDetails(
+    BuildContext context,
+    Transfer transfer,
+  ) async {
+    final l10n = context.dropL10n;
+    final texts = TransferTexts(l10n);
+    final answer = await ConfirmDialog.show(
+      context,
+      title: l10n.activityOffer(transfer.deviceName),
+      message: [
+        texts.title(transfer),
+        ...texts.offerDetails(transfer),
+      ].join('\n'),
+      negativeText: l10n.actionDecline,
+      positiveText: l10n.actionAccept,
+    );
+    final stillWaiting = feature.registry[transfer.id]?.needsAnswer ?? false;
+    if (!stillWaiting) {
+      return;
+    }
+
+    switch (answer) {
+      case .positive:
+        _dropViewModel.accept(transfer);
+      case .negative:
+        _dropViewModel.decline(transfer);
+      case .dismiss:
+        return;
+    }
+  }
 
   /// Letting phones without Ferret send here is one tap away, without a
   /// card that stays.

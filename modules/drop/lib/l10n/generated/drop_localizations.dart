@@ -160,6 +160,42 @@ abstract class DropLocalizations {
   /// **'Sent'**
   String get activitySent;
 
+  /// No description provided for @activityProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String activityProgress(String done, String total);
+
+  /// No description provided for @activityProgressEta.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} · {eta} left'**
+  String activityProgressEta(String done, String total, String eta);
+
+  /// No description provided for @activityWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for an answer…'**
+  String get activityWaiting;
+
+  /// No description provided for @activityOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} wants to send'**
+  String activityOffer(String device);
+
+  /// No description provided for @activityOfferSize.
+  ///
+  /// In en, this message translates to:
+  /// **'{what} · {size}'**
+  String activityOfferSize(String what, String size);
+
+  /// No description provided for @actionRevealFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get actionRevealFinder;
+
   /// No description provided for @offerOtherPhonesBody.
   ///
   /// In en, this message translates to:

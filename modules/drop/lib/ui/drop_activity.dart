@@ -8,17 +8,23 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Drop's lines in Activity: each transfer, pinned with its progress while
-/// bytes move, then where it went. Offers that wait for an answer stay on
-/// the card, where Accept and Decline are.
+/// bytes move, then where it went, with Open and Show in Finder. Files a
+/// device offers and waits on, such as a phone without Ferret, sit under
+/// Needs you with their size, Decline and Accept. A send waiting for a
+/// PIN stays on the card, where the PIN is typed. [onOfferDetails] shows
+/// all there is to know about an offer before answering it.
 List<ActivityItem> dropActivity(
   DropLocalizations l10n,
-  DropViewModel viewModel,
-) {
+  DropViewModel viewModel, {
+  ValueChanged<Transfer>? onOfferDetails,
+}) {
   final texts = TransferTexts(l10n);
 
   return [
     for (final transfer in viewModel.transfers)
-      if (!transfer.needsAnswer && !viewModel.needsPin(transfer))
+      if (transfer.needsAnswer && transfer.status.isActive)
+        _offer(l10n, texts, viewModel, transfer, onOfferDetails)
+      else if (!transfer.needsAnswer && !viewModel.needsPin(transfer))
         ActivityItem(
           id: 'drop.${transfer.id}',
           icon: _icon(transfer),
@@ -31,9 +37,56 @@ List<ActivityItem> dropActivity(
             .transferring || .verifying => transfer.progress,
             _ => null,
           },
-          actions: _actions(l10n, viewModel, transfer),
+          actions: _actions(l10n, texts, viewModel, transfer),
         ),
   ];
+}
+
+/// "Ana's Pixel wants to send" · "2 files · 6 MB", and the PIN to compare
+/// for Quick Share.
+ActivityItem _offer(
+  DropLocalizations l10n,
+  TransferTexts texts,
+  DropViewModel viewModel,
+  Transfer transfer,
+  ValueChanged<Transfer>? onDetails,
+) {
+  final what = switch (transfer.isText) {
+    true => l10n.activityText,
+    false => l10n.activityOfferSize(
+      texts.title(transfer),
+      texts.size(transfer.totalBytes),
+    ),
+  };
+
+  return ActivityItem(
+    id: 'drop.${transfer.id}',
+    icon: LucideIcons.arrowDown,
+    tone: .accent,
+    title: l10n.activityOffer(transfer.deviceName),
+    detail: [
+      what,
+      if (transfer.quickShare case final origin?) l10n.noticePin(origin.pin),
+    ].join(' · '),
+    at: transfer.startedAt,
+    pinned: true,
+    needsYou: true,
+    onTap: switch (onDetails) {
+      final onDetails? => () => onDetails(transfer),
+      null => null,
+    },
+    actions: [
+      ActivityAction(
+        label: l10n.actionDecline,
+        onPressed: () => viewModel.decline(transfer),
+      ),
+      ActivityAction(
+        label: l10n.actionAccept,
+        primary: true,
+        onPressed: () => viewModel.accept(transfer),
+      ),
+    ],
+  );
 }
 
 IconData _icon(Transfer transfer) => switch (transfer.status) {
@@ -73,6 +126,10 @@ String _detail(
   DropViewModel viewModel,
   Transfer transfer,
 ) {
+  if (transfer.status.isActive) {
+    return texts.progress(transfer);
+  }
+
   if (transfer.status != .done) {
     return texts.status(transfer);
   }
@@ -95,6 +152,7 @@ String _detail(
 
 List<ActivityAction> _actions(
   DropLocalizations l10n,
+  TransferTexts texts,
   DropViewModel viewModel,
   Transfer transfer,
 ) {
@@ -114,15 +172,14 @@ List<ActivityAction> _actions(
         onPressed: () => unawaited(viewModel.copy(transfer)),
       ),
     ],
-    (.done, false, false) when transfer.files.length == 1 => [
-      ActivityAction(
-        label: l10n.actionOpen,
-        onPressed: () => unawaited(viewModel.open(transfer)),
-      ),
-    ],
     (.done, false, false) => [
+      if (transfer.files.length == 1)
+        ActivityAction(
+          label: l10n.actionOpen,
+          onPressed: () => unawaited(viewModel.open(transfer)),
+        ),
       ActivityAction(
-        label: l10n.actionReveal,
+        label: texts.revealLabel(),
         onPressed: () => unawaited(viewModel.reveal(transfer)),
       ),
     ],

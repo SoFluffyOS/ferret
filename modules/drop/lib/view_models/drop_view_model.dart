@@ -72,6 +72,13 @@ class DropViewModel extends ChangeNotifier {
       if (transfer.needsAnswer || needsPin(transfer)) transfer,
   ];
 
+  /// Sends waiting for a PIN, newest first. Offers to answer are lines
+  /// under Needs you; a PIN is typed on the card.
+  List<Transfer> get needingPin => [
+    for (final transfer in _transfers)
+      if (needsPin(transfer)) transfer,
+  ];
+
   /// Whether a phone without Ferret may send here right now, or tried to
   /// be allowed and couldn't.
   bool get isOpenToOthers =>

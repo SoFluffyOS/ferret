@@ -15,6 +15,7 @@ class DropNotices {
     required this.onOpen,
     required this.onReveal,
     required this.onCopy,
+    this.folderLabel,
     this.progressInterval = const Duration(seconds: 1),
   });
 
@@ -40,6 +41,10 @@ class DropNotices {
   final Future<void> Function(Transfer transfer) onOpen;
   final Future<void> Function(Transfer transfer) onReveal;
   final Future<void> Function(String text) onCopy;
+
+  /// Where received files land, as people know the folder, for "Saved to
+  /// Downloads › Ferret". Null or empty says just "Saved".
+  final String Function()? folderLabel;
   final Duration progressInterval;
 
   final Map<String, DateTime> _shown = {};
@@ -55,7 +60,10 @@ class DropNotices {
       id: filesCategory,
       actions: [
         NoticeAction(id: openAction, label: l10n.actionOpen),
-        NoticeAction(id: revealAction, label: l10n.actionReveal),
+        NoticeAction(
+          id: revealAction,
+          label: TransferTexts(l10n).revealLabel(),
+        ),
       ],
     ),
     NoticeCategory(
@@ -214,11 +222,15 @@ class DropNotices {
       );
     }
 
+    final folder = folderLabel?.call() ?? '';
     return LocalNotice(
       id: id,
       channel: .transfers,
-      title: l10n.noticeReceived(device),
-      body: texts.title(transfer),
+      title: l10n.activityFrom(texts.title(transfer), device),
+      body: switch (folder) {
+        '' => l10n.activitySaved,
+        final folder => l10n.activitySavedTo(folder),
+      },
       category: filesCategory,
       groupKey: transfer.deviceId,
     );

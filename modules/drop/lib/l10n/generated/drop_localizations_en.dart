@@ -49,6 +49,32 @@ class DropLocalizationsEn extends DropLocalizations {
   String get activitySent => 'Sent';
 
   @override
+  String activityProgress(String done, String total) {
+    return '$done of $total';
+  }
+
+  @override
+  String activityProgressEta(String done, String total, String eta) {
+    return '$done of $total · $eta left';
+  }
+
+  @override
+  String get activityWaiting => 'Waiting for an answer…';
+
+  @override
+  String activityOffer(String device) {
+    return '$device wants to send';
+  }
+
+  @override
+  String activityOfferSize(String what, String size) {
+    return '$what · $size';
+  }
+
+  @override
+  String get actionRevealFinder => 'Show in Finder';
+
+  @override
   String get offerOtherPhonesBody =>
       'Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.';
 

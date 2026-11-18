@@ -16,7 +16,7 @@ Every Android phone already has **Quick Share** (it used to be called Nearby Sha
 2. A card shows the name the phone will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the phone, open the photo or file, tap **Share**, then **Quick Share**.
 4. Your computer shows up under the nearby devices. Tap it.
-5. The phone shows a 4-digit **PIN**. Ferret comes to the front with the offer and the same PIN.
+5. The phone shows a 4-digit **PIN**. Ferret comes to the front with the offer under **Needs you** and the same PIN.
 6. Same PIN on both? Tap **Accept**. You see progress, speed and time left, like any other drop.
 
 Different PIN, or an offer you don't expect? Tap **Decline**. Nothing is saved.
@@ -25,7 +25,7 @@ You can **Cancel** at any time, also in the middle of a file. What already arriv
 
 ### Text and links
 
-Share a link or a piece of text the same way. It shows up on the Files card with a **Copy** button. The text stays hidden until you accept it.
+Share a link or a piece of text the same way. Once you accept it, its line in **Activity** has a **Copy** button. The text stays hidden until you accept it.
 
 ### Where the files go
 

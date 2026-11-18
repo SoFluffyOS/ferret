@@ -22,9 +22,9 @@ class DropHomeFrame extends StatelessWidget {
     this.needsYouOnly = false,
   });
 
-  /// Shows only what waits for the person: offers to answer, a PIN to
-  /// enter, and who may send here right now. Home uses it; everything else
-  /// is a line in Activity.
+  /// Shows only what waits for the person here: a PIN to enter, and who
+  /// may send here right now. Home uses it; offers to answer and
+  /// everything else are lines from Drop's activity.
   final bool needsYouOnly;
 
   /// Picks files and a device, then sends.
@@ -37,7 +37,7 @@ class DropHomeFrame extends StatelessWidget {
     final viewModel = context.read<DropViewModel>();
     final transfers = context.select<DropViewModel, List<Transfer>>(
       (model) => switch (needsYouOnly) {
-        true => model.needingAnswer,
+        true => model.needingPin,
         false => model.transfers,
       },
     );

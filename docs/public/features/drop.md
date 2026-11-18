@@ -20,13 +20,15 @@ With Ferret, files and text go straight from one of your devices to another, ove
 
 After the drop, the tile shows the progress, then **Sent to Pixel 9**. If something went wrong, it says why and offers **Try again**.
 
-The Files card on the home screen shows each transfer while it runs: progress, speed and time left. You can **Cancel** at any time.
+Each transfer sits at the top of **Activity** while it runs, with how far it is and the time left: **26 MB of 42 MB · 1 min left**. You can **Cancel** at any time.
 
 ## 📥 Receive files
 
 Files from your paired devices are accepted on their own. No prompt to click.
 
-When a transfer finishes, you get one quiet notice with **Open** and **Show in folder**.
+When a transfer finishes, you get one quiet notice, such as **IMG_2041.jpg from Pixel 9**, with **Open** and **Show in Finder** (**Show in folder** on Windows, Linux and Android). Its line in **Activity** has the same buttons.
+
+Files from a phone that isn't paired (LocalSend or Quick Share) wait under **Needs you** at the top of the home screen: **Ana's Pixel wants to send** · **2 files · 6 MB**, with **Decline** and **Accept**. Tap the line to see everything about the offer first.
 
 Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Try again** sends it again.
 
@@ -59,7 +61,7 @@ Each device's page lists **Files** under **What works**: where files arrive, or 
 
 | Platform | Send | Receive into | Notes |
 |---|---|---|---|
-| macOS | Drop on the window or menubar icon, **Share → Ferret** in Finder, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** opens Finder |
+| macOS | Drop on the window or menubar icon, **Share → Ferret** in Finder, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in Finder** |
 | Windows | Drop on the window, or **Send files…** | `Downloads\Ferret`, or a folder you pick | **Show in folder** opens Explorer |
 | Linux | Drop on the window, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** uses your file manager |
 | Android 10+ | **Send with Ferret** from any app, or **Send files…** | `Download/Ferret`, visible in the Files app | **Show in folder** opens Downloads |

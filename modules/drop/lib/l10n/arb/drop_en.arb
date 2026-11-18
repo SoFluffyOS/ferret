@@ -20,6 +20,24 @@
   },
   "activitySaved": "Saved",
   "activitySent": "Sent",
+  "activityProgress": "{done} of {total}",
+  "@activityProgress": {
+    "placeholders": {"done": {"type": "String"}, "total": {"type": "String"}}
+  },
+  "activityProgressEta": "{done} of {total} · {eta} left",
+  "@activityProgressEta": {
+    "placeholders": {"done": {"type": "String"}, "total": {"type": "String"}, "eta": {"type": "String"}}
+  },
+  "activityWaiting": "Waiting for an answer…",
+  "activityOffer": "{device} wants to send",
+  "@activityOffer": {
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "activityOfferSize": "{what} · {size}",
+  "@activityOfferSize": {
+    "placeholders": {"what": {"type": "String"}, "size": {"type": "String"}}
+  },
+  "actionRevealFinder": "Show in Finder",
   "offerOtherPhonesBody": "Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.",
   "offerOtherPhonesAction": "Turn on",
   "clearFinished": "Clear finished",

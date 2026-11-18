@@ -36,6 +36,7 @@ void main() {
           title: item.title,
           detail: item.detail,
           pinned: item.pinned,
+          needsYou: item.needsYou,
           progress: item.progress,
           actions: [for (final action in item.actions) action.label],
         ),
@@ -48,7 +49,21 @@ void main() {
     expect(rows.single.title, 'photo.jpg from Pixel');
     expect(rows.single.pinned, isTrue);
     expect(rows.single.progress, 0.25);
+    expect(rows.single.detail, '1 MB of 4 MB');
     expect(rows.single.actions, ['Cancel']);
+  });
+
+  test('a running send says only how far it is, and the time left', () async {
+    final rows = await rowsAfter(
+      sampleTransfer(
+        direction: .outgoing,
+        bytesDone: 1024 * 1024,
+        bytesPerSecond: 1024 * 1024,
+      ),
+    );
+
+    expect(rows.single.title, 'photo.jpg to Pixel');
+    expect(rows.single.detail, '1 MB of 4 MB · 3 s left');
   });
 
   test('a received file says where it was saved and offers Open', () async {
@@ -60,7 +75,22 @@ void main() {
     expect(rows.single.title, 'photo.jpg from Pixel');
     expect(rows.single.detail, startsWith('Saved'));
     expect(rows.single.pinned, isFalse);
-    expect(rows.single.actions, ['Open']);
+    expect(rows.single.actions, ['Open', TransferTexts(l10n).revealLabel()]);
+  });
+
+  test('several received files offer only Show in folder', () async {
+    final rows = await rowsAfter(
+      sampleTransfer(
+        status: .done,
+        files: const [
+          TransferFile(name: 'a.jpg', size: 1, location: '/tmp/a.jpg'),
+          TransferFile(name: 'b.jpg', size: 1, location: '/tmp/b.jpg'),
+        ],
+      ),
+    );
+
+    expect(rows.single.title, '2 files from Pixel');
+    expect(rows.single.actions, [TransferTexts(l10n).revealLabel()]);
   });
 
   test('a received text offers Copy', () async {
@@ -86,13 +116,52 @@ void main() {
     expect(rows.single.detail, contains('It went offline'));
   });
 
-  test('an offer waiting for an answer stays on the card', () async {
+  test('an offer waits under Needs you with its size, Decline and '
+      'Accept', () async {
     final rows = await rowsAfter(
       sampleTransfer(status: .waiting, needsAnswer: true),
     );
 
-    expect(rows, isEmpty);
-    expect(viewModel.needingAnswer.single.id, 't1');
+    expect(rows.single.title, 'Pixel wants to send');
+    expect(rows.single.detail, 'photo.jpg · 4 MB');
+    expect(rows.single.needsYou, isTrue);
+    expect(rows.single.actions, ['Decline', 'Accept']);
+    expect(viewModel.needingPin, isEmpty);
+  });
+
+  test("Accept is the offer's one filled button", () async {
+    link.laptop.feature.registry.put(
+      sampleTransfer(status: .waiting, needsAnswer: true),
+    );
+    await Future<void>.delayed(Duration.zero);
+    final line = dropActivity(l10n, viewModel).single;
+
+    expect(line.actions.last.primary, isTrue);
+    expect(line.actions.first.primary, isFalse);
+  });
+
+  test('tapping an offer asks for its details', () async {
+    final asked = <String>[];
+    link.laptop.feature.registry.put(
+      sampleTransfer(status: .waiting, needsAnswer: true),
+    );
+    await Future<void>.delayed(Duration.zero);
+
+    dropActivity(
+      l10n,
+      viewModel,
+      onOfferDetails: (transfer) => asked.add(transfer.id),
+    ).single.onTap?.call();
+
+    expect(asked, ['t1']);
+  });
+
+  test('the Mac says Show in Finder, other systems Show in folder', () {
+    final texts = TransferTexts(l10n);
+
+    expect(texts.revealLabel(platform: .macOS), 'Show in Finder');
+    expect(texts.revealLabel(platform: .windows), 'Show in folder');
+    expect(texts.revealLabel(platform: .android), 'Show in folder');
   });
 }
 
@@ -100,6 +169,7 @@ typedef ActivityItemView = ({
   String title,
   String? detail,
   bool pinned,
+  bool needsYou,
   double? progress,
   List<String> actions,
 });

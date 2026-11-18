@@ -40,7 +40,7 @@ Receiving is **off** until you turn it on. While it's off, Ferret doesn't listen
 1. On the home screen, under **Do more**, tap **Turn on** next to **Let other phones send you files**.
 2. A card shows the name the other device will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the other device, open LocalSend, pick the files and pick your device.
-4. Ferret shows the offer. Check it, then **Accept** or **Decline**.
+4. Ferret shows the offer under **Needs you**, with its size. Tap it to check who sent it, then **Accept** or **Decline**.
 
 After 10 minutes Ferret stops listening by itself. A transfer that is still running gets to finish first. **Stop** ends it right away.
 
