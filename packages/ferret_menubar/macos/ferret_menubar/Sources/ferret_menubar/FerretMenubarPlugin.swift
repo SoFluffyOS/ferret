@@ -5,9 +5,13 @@ import FlutterMacOS
 /// `FlutterEngine` yourself (so Dart starts before the popover first opens),
 /// register plugins on it, then call `FerretMenubarPlugin.install` with a
 /// controller for that engine. Set `LSUIElement` in Info.plist so the app
-/// starts without a Dock icon.
+/// starts without a Dock icon. The same engine also draws the desktop window
+/// (`openWindow`), so the popover and the window are one running app.
 public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static var controller: MenubarController?
+    private static var windowController: AppWindowController?
+    private static var popoverViewId: Int64 = 0
+    private static let dock = DockPresence()
     private static var flutterApi: MenubarFlutterApi?
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -38,23 +42,61 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         controller.onFilesDropped = { paths in
             Task { @MainActor in try? await flutterApi?.onFilesDropped(paths: paths) }
         }
-        controller.onDragEntered = { point, count in
-            Task { @MainActor in
-                try? await flutterApi?.onDragEntered(x: point.x, y: point.y, fileCount: Int64(count))
-            }
-        }
-        controller.onDragUpdated = { point in
-            Task { @MainActor in try? await flutterApi?.onDragUpdated(x: point.x, y: point.y) }
-        }
-        controller.onDragExited = {
-            Task { @MainActor in try? await flutterApi?.onDragExited() }
-        }
-        controller.onDragPerformed = { paths, point in
-            Task { @MainActor in
-                try? await flutterApi?.onDragPerformed(paths: paths, x: point.x, y: point.y)
-            }
-        }
+        let popoverViewId = flutterViewController.viewIdentifier
+        controller.onDragEntered = { point, count in dragEntered(popoverViewId, point, count) }
+        controller.onDragUpdated = { point in dragUpdated(popoverViewId, point) }
+        controller.onDragExited = { dragExited(popoverViewId) }
+        controller.onDragPerformed = { paths, point in dragPerformed(popoverViewId, paths, point) }
+        self.popoverViewId = popoverViewId
         self.controller = controller
+
+        let windowController = AppWindowController(
+            engine: flutterViewController.engine, dock: dock, title: window.title)
+        windowController.onOpened = { viewId in
+            Task { @MainActor in try? await flutterApi?.onWindowOpened(viewId: viewId) }
+        }
+        windowController.onFocusChanged = { focused in
+            Task { @MainActor in try? await flutterApi?.onWindowFocusChanged(focused: focused) }
+        }
+        windowController.onClosed = { viewId in
+            Task { @MainActor in try? await flutterApi?.onWindowClosed(viewId: viewId) }
+        }
+        windowController.onDragEntered = dragEntered
+        windowController.onDragUpdated = dragUpdated
+        windowController.onDragExited = dragExited
+        windowController.onDragPerformed = dragPerformed
+        self.windowController = windowController
+    }
+
+    /// Opens the desktop window, or brings it to the front: for the Dock
+    /// icon, from `applicationShouldHandleReopen`. False when there is none.
+    @discardableResult
+    public static func openWindow() -> Bool {
+        windowController?.open() != nil
+    }
+
+    private static func dragEntered(_ viewId: Int64, _ point: NSPoint, _ count: Int) {
+        Task { @MainActor in
+            try? await flutterApi?.onDragEntered(
+                viewId: viewId, x: point.x, y: point.y, fileCount: Int64(count))
+        }
+    }
+
+    private static func dragUpdated(_ viewId: Int64, _ point: NSPoint) {
+        Task { @MainActor in
+            try? await flutterApi?.onDragUpdated(viewId: viewId, x: point.x, y: point.y)
+        }
+    }
+
+    private static func dragExited(_ viewId: Int64) {
+        Task { @MainActor in try? await flutterApi?.onDragExited(viewId: viewId) }
+    }
+
+    private static func dragPerformed(_ viewId: Int64, _ paths: [String], _ point: NSPoint) {
+        Task { @MainActor in
+            try? await flutterApi?.onDragPerformed(
+                viewId: viewId, paths: paths, x: point.x, y: point.y)
+        }
     }
 
     func setIconState(state: MenubarIconState, progress: Double, tooltip: String) throws {
@@ -81,12 +123,42 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         Self.controller?.setMenu(items)
     }
 
-    func setShowsInDock(shows: Bool) throws {
-        Self.controller?.setShowsInDock(shows)
+    func setDockMode(mode: MenubarDockMode) throws {
+        Self.dock.mode = mode
     }
 
-    func setDropAllowed(allowed: Bool) throws {
-        Self.controller?.setDropAllowed(allowed)
+    func isWindowSupported() throws -> Bool {
+        Self.windowController?.isSupported ?? false
+    }
+
+    func openWindow() throws -> Int64 {
+        guard let viewId = Self.windowController?.open() else {
+            throw PigeonError(
+                code: "window-unsupported",
+                message: "This Flutter can't draw a second view.",
+                details: nil)
+        }
+
+        return viewId
+    }
+
+    func closeWindow() throws {
+        Self.windowController?.close()
+    }
+
+    func isWindowOpen() throws -> Bool {
+        Self.windowController?.isOpen ?? false
+    }
+
+    func setDropAllowed(viewId: Int64, allowed: Bool) throws {
+        if viewId == Self.popoverViewId {
+            Self.controller?.setDropAllowed(allowed)
+            return
+        }
+
+        guard viewId == Self.windowController?.viewId else { return }
+
+        Self.windowController?.setDropAllowed(allowed)
     }
 
     func closeIfOpenedByDrag() throws {

@@ -126,6 +126,14 @@ enum MenubarIconState {
   paused;
 }
 
+/// When the app shows in the Dock and the app switcher.
+enum MenubarDockMode {
+  /// Only while the desktop window is open.
+  whenWindowOpen,
+  /// All the time, like a regular app.
+  always;
+}
+
 class MenubarMenuItem {
   MenubarMenuItem({
     required this.id,
@@ -202,8 +210,11 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is MenubarIconState) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    }    else if (value is MenubarMenuItem) {
+    }    else if (value is MenubarDockMode) {
       buffer.putUint8(130);
+      writeValue(buffer, value.index);
+    }    else if (value is MenubarMenuItem) {
+      buffer.putUint8(131);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -217,6 +228,9 @@ class _PigeonCodec extends StandardMessageCodec {
         final value = readValue(buffer) as int?;
         return value == null ? null : MenubarIconState.values[value];
       case 130:
+        final value = readValue(buffer) as int?;
+        return value == null ? null : MenubarDockMode.values[value];
+      case 131:
         return MenubarMenuItem.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -348,15 +362,15 @@ class MenubarHostApi {
     ;
   }
 
-  /// Shows the app in the Dock and the app switcher, or hides it.
-  Future<void> setShowsInDock(bool shows) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setShowsInDock$pigeonVar_messageChannelSuffix';
+  /// When the app shows in the Dock and the app switcher.
+  Future<void> setDockMode(MenubarDockMode mode) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDockMode$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[shows]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[mode]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
         pigeonVar_replyList,
@@ -364,6 +378,83 @@ class MenubarHostApi {
         isNullValid: true,
     )
     ;
+  }
+
+  /// Whether this Flutter can draw a second view, which the desktop window
+  /// needs. False leaves the app in its popover only.
+  Future<bool> isWindowSupported() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowSupported$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Opens the desktop window next to the popover, or brings it to the
+  /// front when it is open already. Returns the id of its Flutter view.
+  Future<int> openWindow() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as int;
+  }
+
+  /// Closes the desktop window and removes its Flutter view. The app keeps
+  /// running in the menubar.
+  Future<void> closeWindow() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<bool> isWindowOpen() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowOpen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
   }
 
   /// Lets people drag the popover off into its own window.
@@ -384,16 +475,16 @@ class MenubarHostApi {
     ;
   }
 
-  /// Whether a drop where the pointer is now would be taken, so the cursor
-  /// shows a copy badge or refuses.
-  Future<void> setDropAllowed(bool allowed) async {
+  /// Whether a drop where the pointer is now, over the view [viewId], would
+  /// be taken, so the cursor shows a copy badge or refuses.
+  Future<void> setDropAllowed(int viewId, bool allowed) async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDropAllowed$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[allowed]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[viewId, allowed]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
         pigeonVar_replyList,
@@ -432,17 +523,27 @@ abstract class MenubarFlutterApi {
   /// Files dropped on the menubar icon.
   void onFilesDropped(List<String> paths);
 
-  /// Files dragged into the popover, at [x], [y] in logical pixels from its
-  /// top left.
-  void onDragEntered(double x, double y, int fileCount);
+  /// Files dragged into the view [viewId] (the popover's or the window's),
+  /// at [x], [y] in logical pixels from its top left.
+  void onDragEntered(int viewId, double x, double y, int fileCount);
 
-  void onDragUpdated(double x, double y);
+  void onDragUpdated(int viewId, double x, double y);
 
-  /// The drag left the popover or was cancelled.
-  void onDragExited();
+  /// The drag left the view or was cancelled.
+  void onDragExited(int viewId);
 
-  /// Files dropped on the popover at [x], [y].
-  void onDragPerformed(List<String> paths, double x, double y);
+  /// Files dropped on the view at [x], [y].
+  void onDragPerformed(int viewId, List<String> paths, double x, double y);
+
+  /// The desktop window opened, drawing the Flutter view [viewId].
+  void onWindowOpened(int viewId);
+
+  /// The desktop window became the one that takes the keyboard, or stopped
+  /// being it.
+  void onWindowFocusChanged(bool focused);
+
+  /// The desktop window closed and its Flutter view [viewId] is gone.
+  void onWindowClosed(int viewId);
 
   static void setUp(MenubarFlutterApi? api, {
     BinaryMessenger? binaryMessenger, 
@@ -522,11 +623,12 @@ abstract class MenubarFlutterApi {
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           final List<Object?> args = message! as List<Object?>;
-          final double arg_x = args[0]! as double;
-          final double arg_y = args[1]! as double;
-          final int arg_fileCount = args[2]! as int;
+          final int arg_viewId = args[0]! as int;
+          final double arg_x = args[1]! as double;
+          final double arg_y = args[2]! as double;
+          final int arg_fileCount = args[3]! as int;
           try {
-            api.onDragEntered(arg_x, arg_y, arg_fileCount);
+            api.onDragEntered(arg_viewId, arg_x, arg_y, arg_fileCount);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -545,10 +647,11 @@ abstract class MenubarFlutterApi {
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           final List<Object?> args = message! as List<Object?>;
-          final double arg_x = args[0]! as double;
-          final double arg_y = args[1]! as double;
+          final int arg_viewId = args[0]! as int;
+          final double arg_x = args[1]! as double;
+          final double arg_y = args[2]! as double;
           try {
-            api.onDragUpdated(arg_x, arg_y);
+            api.onDragUpdated(arg_viewId, arg_x, arg_y);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -566,8 +669,10 @@ abstract class MenubarFlutterApi {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_viewId = args[0]! as int;
           try {
-            api.onDragExited();
+            api.onDragExited(arg_viewId);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -586,11 +691,75 @@ abstract class MenubarFlutterApi {
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           final List<Object?> args = message! as List<Object?>;
-          final List<String> arg_paths = (args[0]! as List<Object?>).cast<String>();
-          final double arg_x = args[1]! as double;
-          final double arg_y = args[2]! as double;
+          final int arg_viewId = args[0]! as int;
+          final List<String> arg_paths = (args[1]! as List<Object?>).cast<String>();
+          final double arg_x = args[2]! as double;
+          final double arg_y = args[3]! as double;
           try {
-            api.onDragPerformed(arg_paths, arg_x, arg_y);
+            api.onDragPerformed(arg_viewId, arg_paths, arg_x, arg_y);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowOpened$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_viewId = args[0]! as int;
+          try {
+            api.onWindowOpened(arg_viewId);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowFocusChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final bool arg_focused = args[0]! as bool;
+          try {
+            api.onWindowFocusChanged(arg_focused);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowClosed$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_viewId = args[0]! as int;
+          try {
+            api.onWindowClosed(arg_viewId);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

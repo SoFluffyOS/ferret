@@ -72,10 +72,6 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         self.detachable = detachable
     }
 
-    func setShowsInDock(_ shows: Bool) {
-        NSApp.setActivationPolicy(shows ? .regular : .accessory)
-    }
-
     func togglePopover() {
         if popover.isShown {
             hidePopover()

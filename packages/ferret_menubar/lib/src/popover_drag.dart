@@ -1,34 +1,38 @@
 import 'dart:ui';
 
-/// Something that happened while files were dragged over the popover.
-/// Positions are logical pixels from the popover's top left.
+/// Something that happened while files were dragged over one of the app's
+/// views: the popover's or the desktop window's. Positions are logical
+/// pixels from that view's top left.
 sealed class PopoverDrag {
-  const PopoverDrag();
+  const PopoverDrag(this.viewId);
+
+  /// The Flutter view the drag is over.
+  final int viewId;
 }
 
-/// Files came into the popover.
+/// Files came into the view.
 final class PopoverDragEntered extends PopoverDrag {
-  const PopoverDragEntered(this.position, this.fileCount);
+  const PopoverDragEntered(super.viewId, this.position, this.fileCount);
 
   final Offset position;
   final int fileCount;
 }
 
-/// The pointer moved while dragging files over the popover.
+/// The pointer moved while dragging files over the view.
 final class PopoverDragMoved extends PopoverDrag {
-  const PopoverDragMoved(this.position);
+  const PopoverDragMoved(super.viewId, this.position);
 
   final Offset position;
 }
 
-/// The drag left the popover or was cancelled.
+/// The drag left the view or was cancelled.
 final class PopoverDragExited extends PopoverDrag {
-  const PopoverDragExited();
+  const PopoverDragExited(super.viewId);
 }
 
-/// The files were dropped on the popover at [position].
+/// The files were dropped on the view at [position].
 final class PopoverDragDropped extends PopoverDrag {
-  const PopoverDragDropped(this.paths, this.position);
+  const PopoverDragDropped(super.viewId, this.paths, this.position);
 
   final List<String> paths;
   final Offset position;

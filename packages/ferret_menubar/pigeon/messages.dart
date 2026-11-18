@@ -48,6 +48,15 @@ enum MenubarIconState {
   paused,
 }
 
+/// When the app shows in the Dock and the app switcher.
+enum MenubarDockMode {
+  /// Only while the desktop window is open.
+  whenWindowOpen,
+
+  /// All the time, like a regular app.
+  always,
+}
+
 @HostApi()
 abstract class MenubarHostApi {
   /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
@@ -66,15 +75,29 @@ abstract class MenubarHostApi {
   /// The menu a right-click (or Control-click) on the icon opens.
   void setMenu(List<MenubarMenuItem> items);
 
-  /// Shows the app in the Dock and the app switcher, or hides it.
-  void setShowsInDock(bool shows);
+  /// When the app shows in the Dock and the app switcher.
+  void setDockMode(MenubarDockMode mode);
+
+  /// Whether this Flutter can draw a second view, which the desktop window
+  /// needs. False leaves the app in its popover only.
+  bool isWindowSupported();
+
+  /// Opens the desktop window next to the popover, or brings it to the
+  /// front when it is open already. Returns the id of its Flutter view.
+  int openWindow();
+
+  /// Closes the desktop window and removes its Flutter view. The app keeps
+  /// running in the menubar.
+  void closeWindow();
+
+  bool isWindowOpen();
 
   /// Lets people drag the popover off into its own window.
   void setDetachable(bool detachable);
 
-  /// Whether a drop where the pointer is now would be taken, so the cursor
-  /// shows a copy badge or refuses.
-  void setDropAllowed(bool allowed);
+  /// Whether a drop where the pointer is now, over the view [viewId], would
+  /// be taken, so the cursor shows a copy badge or refuses.
+  void setDropAllowed(int viewId, bool allowed);
 
   /// Closes the popover if a file drag sprang it open.
   void closeIfOpenedByDrag();
@@ -89,15 +112,25 @@ abstract class MenubarFlutterApi {
   /// Files dropped on the menubar icon.
   void onFilesDropped(List<String> paths);
 
-  /// Files dragged into the popover, at [x], [y] in logical pixels from its
-  /// top left.
-  void onDragEntered(double x, double y, int fileCount);
+  /// Files dragged into the view [viewId] (the popover's or the window's),
+  /// at [x], [y] in logical pixels from its top left.
+  void onDragEntered(int viewId, double x, double y, int fileCount);
 
-  void onDragUpdated(double x, double y);
+  void onDragUpdated(int viewId, double x, double y);
 
-  /// The drag left the popover or was cancelled.
-  void onDragExited();
+  /// The drag left the view or was cancelled.
+  void onDragExited(int viewId);
 
-  /// Files dropped on the popover at [x], [y].
-  void onDragPerformed(List<String> paths, double x, double y);
+  /// Files dropped on the view at [x], [y].
+  void onDragPerformed(int viewId, List<String> paths, double x, double y);
+
+  /// The desktop window opened, drawing the Flutter view [viewId].
+  void onWindowOpened(int viewId);
+
+  /// The desktop window became the one that takes the keyboard, or stopped
+  /// being it.
+  void onWindowFocusChanged(bool focused);
+
+  /// The desktop window closed and its Flutter view [viewId] is gone.
+  void onWindowClosed(int viewId);
 }

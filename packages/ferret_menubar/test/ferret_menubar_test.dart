@@ -46,10 +46,10 @@ void main() {
     final subscription = menubar.drags.listen(drags.add);
 
     menubar
-      ..onDragEntered(10, 20, 3)
-      ..onDragUpdated(12, 24)
-      ..onDragPerformed(['/tmp/a.txt'], 12, 24)
-      ..onDragExited();
+      ..onDragEntered(7, 10, 20, 3)
+      ..onDragUpdated(7, 12, 24)
+      ..onDragPerformed(7, ['/tmp/a.txt'], 12, 24)
+      ..onDragExited(7);
     await pumpEventQueue();
 
     expect(drags, hasLength(4));

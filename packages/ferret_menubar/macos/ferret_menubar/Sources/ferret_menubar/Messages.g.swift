@@ -207,6 +207,14 @@ enum MenubarIconState: Int, CaseIterable {
   case paused = 6
 }
 
+/// When the app shows in the Dock and the app switcher.
+enum MenubarDockMode: Int, CaseIterable {
+  /// Only while the desktop window is open.
+  case whenWindowOpen = 0
+  /// All the time, like a regular app.
+  case always = 1
+}
+
 /// Generated class from Pigeon that represents data sent in messages.
 struct MenubarMenuItem: Hashable, CustomStringConvertible {
   var id: String
@@ -272,6 +280,12 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       }
       return nil
     case 130:
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return MenubarDockMode(rawValue: enumResultAsInt)
+      }
+      return nil
+    case 131:
       return MenubarMenuItem.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -284,8 +298,11 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     if let value = value as? MenubarIconState {
       super.writeByte(129)
       super.writeValue(value.rawValue)
-    } else if let value = value as? MenubarMenuItem {
+    } else if let value = value as? MenubarDockMode {
       super.writeByte(130)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? MenubarMenuItem {
+      super.writeByte(131)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -319,13 +336,23 @@ protocol MenubarHostApi {
   func isPopoverShown() throws -> Bool
   /// The menu a right-click (or Control-click) on the icon opens.
   func setMenu(items: [MenubarMenuItem]) throws
-  /// Shows the app in the Dock and the app switcher, or hides it.
-  func setShowsInDock(shows: Bool) throws
+  /// When the app shows in the Dock and the app switcher.
+  func setDockMode(mode: MenubarDockMode) throws
+  /// Whether this Flutter can draw a second view, which the desktop window
+  /// needs. False leaves the app in its popover only.
+  func isWindowSupported() throws -> Bool
+  /// Opens the desktop window next to the popover, or brings it to the
+  /// front when it is open already. Returns the id of its Flutter view.
+  func openWindow() throws -> Int64
+  /// Closes the desktop window and removes its Flutter view. The app keeps
+  /// running in the menubar.
+  func closeWindow() throws
+  func isWindowOpen() throws -> Bool
   /// Lets people drag the popover off into its own window.
   func setDetachable(detachable: Bool) throws
-  /// Whether a drop where the pointer is now would be taken, so the cursor
-  /// shows a copy badge or refuses.
-  func setDropAllowed(allowed: Bool) throws
+  /// Whether a drop where the pointer is now, over the view [viewId], would
+  /// be taken, so the cursor shows a copy badge or refuses.
+  func setDropAllowed(viewId: Int64, allowed: Bool) throws
   /// Closes the popover if a file drag sprang it open.
   func closeIfOpenedByDrag() throws
 }
@@ -427,21 +454,79 @@ class MenubarHostApiSetup {
     } else {
       setMenuChannel.setMessageHandler(nil)
     }
-    /// Shows the app in the Dock and the app switcher, or hides it.
-    let setShowsInDockChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setShowsInDock\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    /// When the app shows in the Dock and the app switcher.
+    let setDockModeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDockMode\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
-      setShowsInDockChannel.setMessageHandler { message, reply in
+      setDockModeChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let showsArg = args[0] as! Bool
+        let modeArg = args[0] as! MenubarDockMode
         do {
-          try api.setShowsInDock(shows: showsArg)
+          try api.setDockMode(mode: modeArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      setShowsInDockChannel.setMessageHandler(nil)
+      setDockModeChannel.setMessageHandler(nil)
+    }
+    /// Whether this Flutter can draw a second view, which the desktop window
+    /// needs. False leaves the app in its popover only.
+    let isWindowSupportedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowSupported\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isWindowSupportedChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isWindowSupported()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isWindowSupportedChannel.setMessageHandler(nil)
+    }
+    /// Opens the desktop window next to the popover, or brings it to the
+    /// front when it is open already. Returns the id of its Flutter view.
+    let openWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      openWindowChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.openWindow()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      openWindowChannel.setMessageHandler(nil)
+    }
+    /// Closes the desktop window and removes its Flutter view. The app keeps
+    /// running in the menubar.
+    let closeWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      closeWindowChannel.setMessageHandler { _, reply in
+        do {
+          try api.closeWindow()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      closeWindowChannel.setMessageHandler(nil)
+    }
+    let isWindowOpenChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowOpen\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isWindowOpenChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isWindowOpen()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isWindowOpenChannel.setMessageHandler(nil)
     }
     /// Lets people drag the popover off into its own window.
     let setDetachableChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
@@ -459,15 +544,16 @@ class MenubarHostApiSetup {
     } else {
       setDetachableChannel.setMessageHandler(nil)
     }
-    /// Whether a drop where the pointer is now would be taken, so the cursor
-    /// shows a copy badge or refuses.
+    /// Whether a drop where the pointer is now, over the view [viewId], would
+    /// be taken, so the cursor shows a copy badge or refuses.
     let setDropAllowedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDropAllowed\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       setDropAllowedChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let allowedArg = args[0] as! Bool
+        let viewIdArg = args[0] as! Int64
+        let allowedArg = args[1] as! Bool
         do {
-          try api.setDropAllowed(allowed: allowedArg)
+          try api.setDropAllowed(viewId: viewIdArg, allowed: allowedArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
@@ -499,14 +585,21 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onPopoverVisibilityChanged(shown shownArg: Bool) async throws
   /// Files dropped on the menubar icon.
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws
-  /// Files dragged into the popover, at [x], [y] in logical pixels from its
-  /// top left.
-  @MainActor func onDragEntered(x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws
-  @MainActor func onDragUpdated(x xArg: Double, y yArg: Double) async throws
-  /// The drag left the popover or was cancelled.
-  @MainActor func onDragExited() async throws
-  /// Files dropped on the popover at [x], [y].
-  @MainActor func onDragPerformed(paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws
+  /// Files dragged into the view [viewId] (the popover's or the window's),
+  /// at [x], [y] in logical pixels from its top left.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws
+  @MainActor func onDragUpdated(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double) async throws
+  /// The drag left the view or was cancelled.
+  @MainActor func onDragExited(viewId viewIdArg: Int64) async throws
+  /// Files dropped on the view at [x], [y].
+  @MainActor func onDragPerformed(viewId viewIdArg: Int64, paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws
+  /// The desktop window opened, drawing the Flutter view [viewId].
+  @MainActor func onWindowOpened(viewId viewIdArg: Int64) async throws
+  /// The desktop window became the one that takes the keyboard, or stopped
+  /// being it.
+  @MainActor func onWindowFocusChanged(focused focusedArg: Bool) async throws
+  /// The desktop window closed and its Flutter view [viewId] is gone.
+  @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws
 }
 class MenubarFlutterApi: MenubarFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -579,13 +672,13 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
-  /// Files dragged into the popover, at [x], [y] in logical pixels from its
-  /// top left.
-  @MainActor func onDragEntered(x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws {
+  /// Files dragged into the view [viewId] (the popover's or the window's),
+  /// at [x], [y] in logical pixels from its top left.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage([xArg, yArg, fileCountArg] as [Any?]) { response in
+      channel.sendMessage([viewIdArg, xArg, yArg, fileCountArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return
@@ -601,11 +694,11 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
-  @MainActor func onDragUpdated(x xArg: Double, y yArg: Double) async throws {
+  @MainActor func onDragUpdated(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragUpdated\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage([xArg, yArg] as [Any?]) { response in
+      channel.sendMessage([viewIdArg, xArg, yArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return
@@ -621,12 +714,12 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
-  /// The drag left the popover or was cancelled.
-  @MainActor func onDragExited() async throws {
+  /// The drag left the view or was cancelled.
+  @MainActor func onDragExited(viewId viewIdArg: Int64) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragExited\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage(nil) { response in
+      channel.sendMessage([viewIdArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return
@@ -642,12 +735,76 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
-  /// Files dropped on the popover at [x], [y].
-  @MainActor func onDragPerformed(paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws {
+  /// Files dropped on the view at [x], [y].
+  @MainActor func onDragPerformed(viewId viewIdArg: Int64, paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragPerformed\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage([pathsArg, xArg, yArg] as [Any?]) { response in
+      channel.sendMessage([viewIdArg, pathsArg, xArg, yArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The desktop window opened, drawing the Flutter view [viewId].
+  @MainActor func onWindowOpened(viewId viewIdArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowOpened\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([viewIdArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The desktop window became the one that takes the keyboard, or stopped
+  /// being it.
+  @MainActor func onWindowFocusChanged(focused focusedArg: Bool) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowFocusChanged\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([focusedArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The desktop window closed and its Flutter view [viewId] is gone.
+  @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowClosed\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([viewIdArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return
