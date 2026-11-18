@@ -10,7 +10,7 @@ class FindLocalizationsEn extends FindLocalizations {
   FindLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Find my device';
+  String get title => 'Find';
 
   @override
   String get ring => 'Ring';
@@ -65,7 +65,7 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String outgoingRingingMuted(String name) {
-    return '$name is on silent there, so it only vibrates. Turn on Ring on silent in Ferret on $name to hear it.';
+    return '$name is on silent, so it only vibrates. On $name: turn on Ring on silent in Ferret.';
   }
 
   @override
@@ -94,8 +94,9 @@ class FindLocalizationsEn extends FindLocalizations {
   }
 
   @override
-  String get outgoingNoSoundDetail =>
-      'Check that its sound works, then ring again.';
+  String outgoingNoSoundDetail(String name) {
+    return 'On $name: check that the sound works. Then ring again.';
+  }
 
   @override
   String outgoingUnreachable(String name) {
@@ -103,8 +104,9 @@ class FindLocalizationsEn extends FindLocalizations {
   }
 
   @override
-  String get outgoingUnreachableDetail =>
-      'Make sure it\'s on and on the same Wi-Fi, then ring again.';
+  String outgoingUnreachableDetail(String name) {
+    return 'Make sure $name is on and on the same Wi-Fi, then ring again.';
+  }
 
   @override
   String outgoingNotSupported(String name) {
@@ -122,8 +124,9 @@ class FindLocalizationsEn extends FindLocalizations {
   }
 
   @override
-  String get outgoingLostConnectionDetail =>
-      'It keeps ringing for up to 2 minutes, or until someone taps Found it there.';
+  String outgoingLostConnectionDetail(String name) {
+    return '$name keeps ringing for up to 2 minutes, or until someone taps Found it there.';
+  }
 
   @override
   String get settingsRingOnSilent => 'Ring on silent';
@@ -151,7 +154,7 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String get settingsDndHowTo =>
-      'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow, find Ferret in the list and turn it on.';
+      'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.';
 
   @override
   String get settingsDndStillOff =>
@@ -174,7 +177,7 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String get settingsLimitIos =>
-      'iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.';
+      'This iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.';
 
   @override
   String get settingsLimitDesktop =>
@@ -192,36 +195,36 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String healthLoud(String name) {
-    return '$name rings even on silent.';
+    return 'Rings, even on silent';
   }
 
   @override
   String healthFollowsSilent(String name) {
-    return '$name rings, but stays quiet on silent.';
+    return 'Rings, quiet on silent';
   }
 
   @override
   String healthNeedsAppOpen(String name) {
-    return '$name rings only while Ferret is open on it.';
+    return 'Rings only while Ferret is open on $name';
   }
 
   @override
   String healthNeedsPermission(String name) {
-    return '$name won\'t ring in Do Not Disturb. Open Ferret on $name and allow Do Not Disturb access.';
+    return 'Do Not Disturb keeps $name quiet';
   }
 
   @override
   String healthNotAnswering(String name) {
-    return '$name didn\'t answer, so ringing it may not work right now.';
+    return '$name didn\'t answer the last ring';
   }
 
   @override
   String healthNoSound(String name) {
-    return '$name couldn\'t play a sound last time.';
+    return '$name couldn\'t play a sound last time';
   }
 
   @override
   String healthUnsupported(String name) {
-    return 'Ferret on $name can\'t ring. Update it there.';
+    return 'Needs a Ferret update on $name';
   }
 }

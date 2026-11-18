@@ -1,4 +1,4 @@
-# Find my device
+# Find
 
 > **TL;DR**
 >
@@ -27,11 +27,11 @@ Ferret rings on the alarm volume, at full volume, and puts your volume back afte
 
 **Do Not Disturb** needs your permission:
 
-1. Go to **Settings → Find my device** in Ferret.
+1. Go to **Settings → Find** in Ferret.
 2. Tap **Allow in Settings**.
 3. Find Ferret in the list and turn it on. Come back to Ferret.
 
-Ferret checks again when you come back. Your other devices show it too: a "Needs attention" chip on Pixel means it won't ring through Do Not Disturb yet.
+Ferret checks again when you come back. Your other devices show it too: Pixel's page says "Do Not Disturb keeps Pixel quiet" until you allow it.
 
 On Android 14 and later, also allow **full-screen notifications** when Ferret asks. That puts the ringing screen with **Found it** over the lock screen.
 
@@ -42,7 +42,7 @@ On Android 14 and later, also allow **full-screen notifications** when Ferret as
 
 ## ⚙️ Settings
 
-In **Settings → Find my device**:
+In **Settings → Find**:
 
 - **Ring on silent**: full volume, even on silent or Do Not Disturb. On by default. Turn it off and a silent phone only vibrates.
 - **Flash the torch**: blink the flashlight while ringing, to spot it in the dark. Phones with a torch only.

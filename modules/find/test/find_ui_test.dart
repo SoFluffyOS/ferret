@@ -137,7 +137,9 @@ void main() {
 
       expect(find.text("Pixel didn't answer."), findsOneWidget);
       expect(
-        find.text("Make sure it's on and on the same Wi-Fi, then ring again."),
+        find.text(
+          'Make sure Pixel is on and on the same Wi-Fi, then ring again.',
+        ),
         findsOneWidget,
       );
       expect(find.text('Ring again'), findsOneWidget);

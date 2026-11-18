@@ -26,10 +26,10 @@ extension FindLabels on FindLocalizations {
   String? outgoingDetail(OutgoingRing ring) => switch (ring.phase) {
     .ringing when ring.muted => outgoingRingingMuted(ring.deviceName),
     .ringing => outgoingRingingDetail,
-    .noSound => outgoingNoSoundDetail,
-    .unreachable => outgoingUnreachableDetail,
+    .noSound => outgoingNoSoundDetail(ring.deviceName),
+    .unreachable => outgoingUnreachableDetail(ring.deviceName),
     .notSupported => outgoingNotSupportedDetail(ring.deviceName),
-    .lostConnection => outgoingLostConnectionDetail,
+    .lostConnection => outgoingLostConnectionDetail(ring.deviceName),
     _ => null,
   };
 }

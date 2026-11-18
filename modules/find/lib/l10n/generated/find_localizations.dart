@@ -97,7 +97,7 @@ abstract class FindLocalizations {
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Find my device'**
+  /// **'Find'**
   String get title;
 
   /// Device action that makes another device ring.
@@ -187,7 +187,7 @@ abstract class FindLocalizations {
   /// No description provided for @outgoingRingingMuted.
   ///
   /// In en, this message translates to:
-  /// **'{name} is on silent there, so it only vibrates. Turn on Ring on silent in Ferret on {name} to hear it.'**
+  /// **'{name} is on silent, so it only vibrates. On {name}: turn on Ring on silent in Ferret.'**
   String outgoingRingingMuted(String name);
 
   /// No description provided for @outgoingFound.
@@ -223,8 +223,8 @@ abstract class FindLocalizations {
   /// No description provided for @outgoingNoSoundDetail.
   ///
   /// In en, this message translates to:
-  /// **'Check that its sound works, then ring again.'**
-  String get outgoingNoSoundDetail;
+  /// **'On {name}: check that the sound works. Then ring again.'**
+  String outgoingNoSoundDetail(String name);
 
   /// No description provided for @outgoingUnreachable.
   ///
@@ -235,8 +235,8 @@ abstract class FindLocalizations {
   /// No description provided for @outgoingUnreachableDetail.
   ///
   /// In en, this message translates to:
-  /// **'Make sure it\'s on and on the same Wi-Fi, then ring again.'**
-  String get outgoingUnreachableDetail;
+  /// **'Make sure {name} is on and on the same Wi-Fi, then ring again.'**
+  String outgoingUnreachableDetail(String name);
 
   /// No description provided for @outgoingNotSupported.
   ///
@@ -259,8 +259,8 @@ abstract class FindLocalizations {
   /// No description provided for @outgoingLostConnectionDetail.
   ///
   /// In en, this message translates to:
-  /// **'It keeps ringing for up to 2 minutes, or until someone taps Found it there.'**
-  String get outgoingLostConnectionDetail;
+  /// **'{name} keeps ringing for up to 2 minutes, or until someone taps Found it there.'**
+  String outgoingLostConnectionDetail(String name);
 
   /// No description provided for @settingsRingOnSilent.
   ///
@@ -307,7 +307,7 @@ abstract class FindLocalizations {
   /// No description provided for @settingsDndHowTo.
   ///
   /// In en, this message translates to:
-  /// **'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow, find Ferret in the list and turn it on.'**
+  /// **'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.'**
   String get settingsDndHowTo;
 
   /// No description provided for @settingsDndStillOff.
@@ -343,7 +343,7 @@ abstract class FindLocalizations {
   /// No description provided for @settingsLimitIos.
   ///
   /// In en, this message translates to:
-  /// **'iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.'**
+  /// **'This iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.'**
   String get settingsLimitIos;
 
   /// No description provided for @settingsLimitDesktop.
@@ -373,43 +373,43 @@ abstract class FindLocalizations {
   /// No description provided for @healthLoud.
   ///
   /// In en, this message translates to:
-  /// **'{name} rings even on silent.'**
+  /// **'Rings, even on silent'**
   String healthLoud(String name);
 
   /// No description provided for @healthFollowsSilent.
   ///
   /// In en, this message translates to:
-  /// **'{name} rings, but stays quiet on silent.'**
+  /// **'Rings, quiet on silent'**
   String healthFollowsSilent(String name);
 
   /// No description provided for @healthNeedsAppOpen.
   ///
   /// In en, this message translates to:
-  /// **'{name} rings only while Ferret is open on it.'**
+  /// **'Rings only while Ferret is open on {name}'**
   String healthNeedsAppOpen(String name);
 
   /// No description provided for @healthNeedsPermission.
   ///
   /// In en, this message translates to:
-  /// **'{name} won\'t ring in Do Not Disturb. Open Ferret on {name} and allow Do Not Disturb access.'**
+  /// **'Do Not Disturb keeps {name} quiet'**
   String healthNeedsPermission(String name);
 
   /// No description provided for @healthNotAnswering.
   ///
   /// In en, this message translates to:
-  /// **'{name} didn\'t answer, so ringing it may not work right now.'**
+  /// **'{name} didn\'t answer the last ring'**
   String healthNotAnswering(String name);
 
   /// No description provided for @healthNoSound.
   ///
   /// In en, this message translates to:
-  /// **'{name} couldn\'t play a sound last time.'**
+  /// **'{name} couldn\'t play a sound last time'**
   String healthNoSound(String name);
 
   /// No description provided for @healthUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'Ferret on {name} can\'t ring. Update it there.'**
+  /// **'Needs a Ferret update on {name}'**
   String healthUnsupported(String name);
 }
 
