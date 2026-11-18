@@ -73,6 +73,9 @@ class MenubarBinding {
       MenubarMenuItem(id: _quit, title: l10n.menuQuit, keyEquivalent: 'q'),
     ]);
     await _updateIcon();
+    await _menubar.setGlobalShortcut(
+      GlobalShortcut.read(featureContext.engine.settings),
+    );
 
     _subscriptions.add(_menubar.menuSelections.listen(_onMenu));
     _listened

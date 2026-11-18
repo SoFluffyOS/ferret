@@ -10,6 +10,7 @@ export 'package:shell/ui/frames/drop_targets_frame.dart';
 export 'package:shell/ui/frames/feature_card_slot.dart';
 export 'package:shell/ui/frames/feature_changes_listener.dart';
 export 'package:shell/ui/frames/file_drop_zone.dart';
+export 'package:shell/ui/frames/global_shortcut_settings.dart';
 export 'package:shell/ui/frames/home_footer.dart';
 export 'package:shell/ui/frames/home_menu.dart';
 export 'package:shell/ui/frames/joined_notices_frame.dart';

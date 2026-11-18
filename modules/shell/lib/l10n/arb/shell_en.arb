@@ -850,6 +850,14 @@
   "settingsCopy": "Copy",
   "settingsCheckNetwork": "Check my network",
   "settingsNothingHere": "Nothing to set here yet. Pair a device first.",
+  "settingsShortcutTitle": "Open Ferret from anywhere",
+  "settingsShortcutBody": "Press these keys in any app to open or close Ferret's menu.",
+  "settingsShortcutOff": "Off",
+  "settingsShortcutChange": "Change",
+  "settingsShortcutTurnOff": "Turn off",
+  "settingsShortcutTurnOn": "Turn on",
+  "settingsShortcutRecording": "Press the new keys. Esc cancels.",
+  "settingsShortcutTaken": "macOS didn't take these keys. Try others.",
   "deviceMay": "{device} may",
   "@deviceMay": {
     "placeholders": {

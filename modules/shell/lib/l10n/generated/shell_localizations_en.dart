@@ -1065,6 +1065,32 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Nothing to set here yet. Pair a device first.';
 
   @override
+  String get settingsShortcutTitle => 'Open Ferret from anywhere';
+
+  @override
+  String get settingsShortcutBody =>
+      'Press these keys in any app to open or close Ferret\'s menu.';
+
+  @override
+  String get settingsShortcutOff => 'Off';
+
+  @override
+  String get settingsShortcutChange => 'Change';
+
+  @override
+  String get settingsShortcutTurnOff => 'Turn off';
+
+  @override
+  String get settingsShortcutTurnOn => 'Turn on';
+
+  @override
+  String get settingsShortcutRecording => 'Press the new keys. Esc cancels.';
+
+  @override
+  String get settingsShortcutTaken =>
+      'macOS didn\'t take these keys. Try others.';
+
+  @override
   String deviceMay(String device) {
     return '$device may';
   }

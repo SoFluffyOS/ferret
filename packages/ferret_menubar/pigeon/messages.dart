@@ -23,6 +23,28 @@ class MenubarMenuItem {
   String? keyEquivalent;
 }
 
+/// A key with its modifiers, pressed anywhere on the Mac.
+class MenubarShortcut {
+  MenubarShortcut({
+    required this.keyCode,
+    required this.label,
+    this.command = false,
+    this.control = false,
+    this.option = false,
+    this.shift = false,
+  });
+
+  /// The Mac's virtual key code (`kVK_*`), the same on every layout.
+  int keyCode;
+
+  /// How it reads, such as "⌃⌥Space".
+  String label;
+  bool command;
+  bool control;
+  bool option;
+  bool shift;
+}
+
 /// What the menubar icon says, one at a time.
 enum MenubarIconState {
   /// At least one device is connected: the plain glyph.
@@ -121,6 +143,18 @@ abstract class MenubarHostApi {
 
   /// Closes the popover if a file drag sprang it open.
   void closeIfOpenedByDrag();
+
+  /// Opens or closes the popover with [shortcut] from any app, or stops
+  /// doing so when it is null. False when the Mac refused it.
+  bool setGlobalShortcut(MenubarShortcut? shortcut);
+
+  /// The next key with a modifier pressed in the app, for a new global
+  /// shortcut; null when Esc was pressed or it was cancelled. The global
+  /// shortcut rests meanwhile, so pressing it records it.
+  @async
+  MenubarShortcut? recordShortcut();
+
+  void cancelRecording();
 }
 
 @FlutterApi()

@@ -270,6 +270,70 @@ struct MenubarMenuItem: Hashable, CustomStringConvertible {
   }
 }
 
+/// A key with its modifiers, pressed anywhere on the Mac.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarShortcut: Hashable, CustomStringConvertible {
+  /// The Mac's virtual key code (`kVK_*`), the same on every layout.
+  var keyCode: Int64
+  /// How it reads, such as "⌃⌥Space".
+  var label: String
+  var command: Bool
+  var control: Bool
+  var option: Bool
+  var shift: Bool
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarShortcut? {
+    let keyCode = pigeonVar_list[0] as! Int64
+    let label = pigeonVar_list[1] as! String
+    let command = pigeonVar_list[2] as! Bool
+    let control = pigeonVar_list[3] as! Bool
+    let option = pigeonVar_list[4] as! Bool
+    let shift = pigeonVar_list[5] as! Bool
+
+    return MenubarShortcut(
+      keyCode: keyCode,
+      label: label,
+      command: command,
+      control: control,
+      option: option,
+      shift: shift
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      keyCode,
+      label,
+      command,
+      control,
+      option,
+      shift,
+    ]
+  }
+  static func == (lhs: MenubarShortcut, rhs: MenubarShortcut) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.keyCode, rhs.keyCode) && MessagesPigeonInternal.deepEquals(lhs.label, rhs.label) && MessagesPigeonInternal.deepEquals(lhs.command, rhs.command) && MessagesPigeonInternal.deepEquals(lhs.control, rhs.control) && MessagesPigeonInternal.deepEquals(lhs.option, rhs.option) && MessagesPigeonInternal.deepEquals(lhs.shift, rhs.shift)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarShortcut")
+    MessagesPigeonInternal.deepHash(value: keyCode, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: label, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: command, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: control, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: option, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: shift, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarShortcut(keyCode: \(String(describing: keyCode)), label: \(String(describing: label)), command: \(String(describing: command)), control: \(String(describing: control)), option: \(String(describing: option)), shift: \(String(describing: shift)))"
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -287,6 +351,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       return nil
     case 131:
       return MenubarMenuItem.fromList(self.readValue() as! [Any?])
+    case 132:
+      return MenubarShortcut.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -303,6 +369,9 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
       super.writeValue(value.rawValue)
     } else if let value = value as? MenubarMenuItem {
       super.writeByte(131)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarShortcut {
+      super.writeByte(132)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -323,6 +392,7 @@ private class MessagesPigeonCodecReaderWriter: FlutterStandardReaderWriter {
 class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
   static let shared = MessagesPigeonCodec(readerWriter: MessagesPigeonCodecReaderWriter())
 }
+
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol MenubarHostApi {
@@ -370,6 +440,14 @@ protocol MenubarHostApi {
   func setDropAllowed(viewId: Int64, allowed: Bool) throws
   /// Closes the popover if a file drag sprang it open.
   func closeIfOpenedByDrag() throws
+  /// Opens or closes the popover with [shortcut] from any app, or stops
+  /// doing so when it is null. False when the Mac refused it.
+  func setGlobalShortcut(shortcut: MenubarShortcut?) throws -> Bool
+  /// The next key with a modifier pressed in the app, for a new global
+  /// shortcut; null when Esc was pressed or it was cancelled. The global
+  /// shortcut rests meanwhile, so pressing it records it.
+  func recordShortcut() async throws -> MenubarShortcut?
+  func cancelRecording() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -675,6 +753,54 @@ class MenubarHostApiSetup {
       }
     } else {
       closeIfOpenedByDragChannel.setMessageHandler(nil)
+    }
+    /// Opens or closes the popover with [shortcut] from any app, or stops
+    /// doing so when it is null. False when the Mac refused it.
+    let setGlobalShortcutChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setGlobalShortcut\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setGlobalShortcutChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let shortcutArg: MenubarShortcut? = nilOrValue(args[0])
+        do {
+          let result = try api.setGlobalShortcut(shortcut: shortcutArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setGlobalShortcutChannel.setMessageHandler(nil)
+    }
+    /// The next key with a modifier pressed in the app, for a new global
+    /// shortcut; null when Esc was pressed or it was cancelled. The global
+    /// shortcut rests meanwhile, so pressing it records it.
+    let recordShortcutChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.recordShortcut\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      recordShortcutChannel.setMessageHandler { _, reply in
+        Task { @MainActor in
+          do {
+            let result = try await api.recordShortcut()
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      recordShortcutChannel.setMessageHandler(nil)
+    }
+    let cancelRecordingChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.cancelRecording\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      cancelRecordingChannel.setMessageHandler { _, reply in
+        do {
+          try api.cancelRecording()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      cancelRecordingChannel.setMessageHandler(nil)
     }
   }
 }

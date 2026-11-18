@@ -14,6 +14,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static var popoverViewId: Int64 = 0
     private static let dock = DockPresence()
     private static var flutterApi: MenubarFlutterApi?
+    private static let hotKey = GlobalHotKey()
+    private static let recorder = ShortcutRecorder()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = FerretMenubarPlugin()
@@ -74,6 +76,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
             Task { @MainActor in try? await flutterApi?.onPictureWindowClosed(viewId: viewId) }
         }
         self.pictureController = pictureController
+
+        hotKey.onPressed = { [weak controller] in controller?.togglePopover() }
     }
 
     /// Opens the desktop window, or brings it to the front: for the Dock
@@ -202,6 +206,26 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func closeIfOpenedByDrag() throws {
         Self.controller?.closeIfOpenedByDrag()
+    }
+
+    func setGlobalShortcut(shortcut: MenubarShortcut?) throws -> Bool {
+        Self.hotKey.register(shortcut)
+    }
+
+    func recordShortcut() async throws -> MenubarShortcut? {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                Self.hotKey.pause()
+                Self.recorder.record { shortcut in
+                    Self.hotKey.resume()
+                    continuation.resume(returning: shortcut)
+                }
+            }
+        }
+    }
+
+    func cancelRecording() throws {
+        Self.recorder.cancel()
     }
 
     func setDetachable(detachable: Bool) throws {

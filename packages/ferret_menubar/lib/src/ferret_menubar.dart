@@ -148,6 +148,31 @@ class FerretMenubar implements MenubarFlutterApi {
   /// Closes the popover if a file drag over the icon sprang it open.
   Future<void> closeIfOpenedByDrag() => _call(_api.closeIfOpenedByDrag);
 
+  /// Opens or closes the popover with [shortcut] from any app, or stops
+  /// doing so when it is null. It is a Carbon hot key: it hears only its
+  /// own keys, so macOS asks for no Accessibility access. False when the
+  /// Mac refused it, or where there is no menubar.
+  Future<bool> setGlobalShortcut(MenubarShortcut? shortcut) async {
+    if (!isSupported) {
+      return false;
+    }
+
+    return _api.setGlobalShortcut(shortcut);
+  }
+
+  /// The next key with a modifier (⌘, ⌃ or ⌥; F-keys alone) pressed in
+  /// the app, for a new global shortcut. Null when Esc was pressed, it was
+  /// [cancelRecording]-ed, or where there is no menubar.
+  Future<MenubarShortcut?> recordShortcut() async {
+    if (!isSupported) {
+      return null;
+    }
+
+    return _api.recordShortcut();
+  }
+
+  Future<void> cancelRecording() => _call(_api.cancelRecording);
+
   Future<void> _call(Future<void> Function() call) async {
     if (!isSupported) {
       return;

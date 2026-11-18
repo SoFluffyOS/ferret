@@ -215,6 +215,85 @@ class MenubarMenuItem {
   }
 }
 
+/// A key with its modifiers, pressed anywhere on the Mac.
+class MenubarShortcut {
+  MenubarShortcut({
+    required this.keyCode,
+    required this.label,
+    this.command = false,
+    this.control = false,
+    this.option = false,
+    this.shift = false,
+  });
+
+  /// The Mac's virtual key code (`kVK_*`), the same on every layout.
+  int keyCode;
+
+  /// How it reads, such as "⌃⌥Space".
+  String label;
+
+  bool command;
+
+  bool control;
+
+  bool option;
+
+  bool shift;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      keyCode,
+      label,
+      command,
+      control,
+      option,
+      shift,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static MenubarShortcut decode(Object result) {
+    result as List<Object?>;
+    return MenubarShortcut(
+      keyCode: result[0]! as int,
+      label: result[1]! as String,
+      command: result[2]! as bool,
+      control: result[3]! as bool,
+      option: result[4]! as bool,
+      shift: result[5]! as bool,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarShortcut || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(keyCode, other.keyCode) &&
+        _deepEquals(label, other.label) &&
+        _deepEquals(command, other.command) &&
+        _deepEquals(control, other.control) &&
+        _deepEquals(option, other.option) &&
+        _deepEquals(shift, other.shift);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarShortcut(keyCode: $keyCode, label: $label, command: $command, control: $control, option: $option, shift: $shift)';
+  }
+}
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -230,6 +309,9 @@ class _PigeonCodec extends StandardMessageCodec {
       writeValue(buffer, value.index);
     } else if (value is MenubarMenuItem) {
       buffer.putUint8(131);
+      writeValue(buffer, value.encode());
+    } else if (value is MenubarShortcut) {
+      buffer.putUint8(132);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -247,6 +329,8 @@ class _PigeonCodec extends StandardMessageCodec {
         return value == null ? null : MenubarDockMode.values[value];
       case 131:
         return MenubarMenuItem.decode(readValue(buffer)!);
+      case 132:
+        return MenubarShortcut.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -636,6 +720,66 @@ class MenubarHostApi {
   Future<void> closeIfOpenedByDrag() async {
     final pigeonVar_channelName =
         'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeIfOpenedByDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
+  /// Opens or closes the popover with [shortcut] from any app, or stops
+  /// doing so when it is null. False when the Mac refused it.
+  Future<bool> setGlobalShortcut(MenubarShortcut? shortcut) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setGlobalShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[shortcut],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// The next key with a modifier pressed in the app, for a new global
+  /// shortcut; null when Esc was pressed or it was cancelled. The global
+  /// shortcut rests meanwhile, so pressing it records it.
+  Future<MenubarShortcut?> recordShortcut() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.recordShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+    return pigeonVar_replyValue as MenubarShortcut?;
+  }
+
+  Future<void> cancelRecording() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.cancelRecording$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,

@@ -1774,6 +1774,54 @@ abstract class ShellLocalizations {
   /// **'Nothing to set here yet. Pair a device first.'**
   String get settingsNothingHere;
 
+  /// No description provided for @settingsShortcutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret from anywhere'**
+  String get settingsShortcutTitle;
+
+  /// No description provided for @settingsShortcutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Press these keys in any app to open or close Ferret\'s menu.'**
+  String get settingsShortcutBody;
+
+  /// No description provided for @settingsShortcutOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsShortcutOff;
+
+  /// No description provided for @settingsShortcutChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get settingsShortcutChange;
+
+  /// No description provided for @settingsShortcutTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get settingsShortcutTurnOff;
+
+  /// No description provided for @settingsShortcutTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get settingsShortcutTurnOn;
+
+  /// No description provided for @settingsShortcutRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Press the new keys. Esc cancels.'**
+  String get settingsShortcutRecording;
+
+  /// No description provided for @settingsShortcutTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS didn\'t take these keys. Try others.'**
+  String get settingsShortcutTaken;
+
   /// No description provided for @deviceMay.
   ///
   /// In en, this message translates to:
