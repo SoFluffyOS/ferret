@@ -4,7 +4,9 @@
 
 ### Added
 - 👋 **First-run walkthrough**: what Ferret does, name this device, pair, and three tips for your platform. About a minute.
-- 🔑 **Pairing**: scan a QR code or compare a 6-digit code. No account, ever.
+- 🔑 **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. No QR code to scan, no account, ever.
+- 📡 **Devices near you**: Ferret finds your other devices on the Wi-Fi by itself and lists them on the home screen, kept up to date while you look.
+- 👨‍👩‍👧 **Pair once, join them all**: a device you pair with one of your devices joins all of them. Copy on one, paste on any. **Forget** removes it from all of them, or only here.
 - 🔄 **Handoff**: send a page or link to another device with **Continue on…** and it opens there. Your other devices quietly suggest the page you were on.
 - 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put.
 - 📦 **Drop**: drag files onto Ferret and drop them on the device you want, or on **All my devices**, or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
@@ -22,7 +24,7 @@
 - 🪞 **Screen mirroring**: see your Android phone's screen on your computer. Android asks you every time, the phone shows **Sharing screen · Stop** while it lasts, and both devices keep a history.
 - 🔌 **Mirror any Android phone (experimental)**: show and control a phone that has USB or wireless debugging on, with no Ferret on it. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.
 - 📲 **Mirror an iPhone or iPad (experimental)**: pick your computer under **Screen Mirroring** in Control Center and the screen shows up in Ferret. Nothing to install on the iPhone, and the computer asks you first.
-- 📷 **Scan to pair**: point your phone at the code on your computer.
+- 📷 **Scan to pair**: no device in sight? **Can't see your device?** shows a QR code to point your phone at.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
 - 🩺 **Connection Doctor**: when a device won't connect, Ferret tells you why in plain words and offers the fix.

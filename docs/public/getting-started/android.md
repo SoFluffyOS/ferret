@@ -13,7 +13,7 @@ Ferret runs a small background service, shows one quiet notification while it do
 
 ## 📦 Install
 
-Install the Ferret APK on your phone and open it. Pair it with your computer from the **Pair** screen (scan the QR code, or compare the 6-digit code).
+Install the Ferret APK on your phone and open it. Open Ferret on your computer too, on the same Wi-Fi: it shows up under **Devices near you**. Tap **Pair** and check that both screens show the same six digits. See [Pair your devices](pairing.md).
 
 That's it. Ferret now keeps running when you close the app.
 

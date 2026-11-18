@@ -1409,6 +1409,32 @@ Sent by the device that wants to pair, first thing on a new channel (feature "pa
 |---|---|---|---|
 | `device` | `DeviceInfo` | 1 |  |
 | `proof` | `bytes` | 2 | HMAC-SHA256(offer secret, handshake hash) when pairing from an offer. Empty when pairing by comparing codes. |
+| `commitment` | `bytes` | 3 | SHA-256 of the requester's nonce, when pairing by comparing codes. It fixes the nonce before the answerer picks its own, so neither side can steer the six digits (see PairingChallenge). |
+| `also_devices` | `repeated string` | 4 | Names of the requester's other devices, which the answerer will be connected to as well (see Introduce). Shown on the answerer's prompt. |
+
+### message `PairingChallenge`
+
+Pairing by comparing codes, step 2: the answerer's 16-byte nonce, sent once it holds the requester's commitment (feature "pairing").
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `nonce` | `bytes` | 1 |  |
+
+### message `PairingReveal`
+
+Pairing by comparing codes, step 3: the requester's 16-byte nonce, which must hash to its commitment (feature "pairing"). Both sides then show HMAC-SHA256(handshake hash, "ferret-compare" || requester nonce || answerer nonce) as six digits.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `nonce` | `bytes` | 1 |  |
+
+### message `PairingConfirm`
+
+Pairing by comparing codes: what the requester's user said after seeing the six digits (feature "pairing"). The answerer trusts the requester only after its own user agreed and this arrived with accepted = true.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `accepted` | `bool` | 1 |  |
 
 ### message `PairingResponse`
 
@@ -1429,6 +1455,40 @@ The answer to a PairingRequest (feature "pairing").
 | `PAIRING_RESULT_REJECTED` | 2 |  |
 | `PAIRING_RESULT_EXPIRED` | 3 |  |
 | `PAIRING_RESULT_BAD_PROOF` | 4 |  |
+| `PAIRING_RESULT_TIMED_OUT` | 5 | Nobody answered the prompt in time. |
+
+### message `Introduce`
+
+Tells a paired device about the sender's other paired devices, so one pairing joins them all (feature "pairing", on a trusted session only). The session's Noise handshake proves who sends it; a device accepts it only from a device it already trusts, and only while its user lets pairings be shared. Devices that don't know the message ignore it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `devices` | `repeated IntroducedDevice` | 1 |  |
+| `forgotten` | `repeated ForgottenDevice` | 2 | Devices the user removed from all their devices. |
+
+### message `IntroducedDevice`
+
+One device the sender trusts.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 | Must be the id derived from static_public_key, or the entry is dropped. |
+| `name` | `string` | 2 |  |
+| `platform` | `Platform` | 3 |  |
+| `form_factor` | `FormFactor` | 4 |  |
+| `static_public_key` | `bytes` | 5 | X25519 static public key, 32 bytes. The receiver trusts exactly this key. |
+| `host` | `string` | 6 | Where the sender last reached the device, to connect without waiting for discovery. May be empty. |
+| `port` | `uint32` | 7 |  |
+| `paired_at_ms` | `uint64` | 8 | When the user paired the device, passed along unchanged. An entry older than the receiver's record of forgetting the device is dropped. |
+
+### message `ForgottenDevice`
+
+A device to stop trusting, with when the user removed it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 |  |
+| `forgotten_at_ms` | `uint64` | 2 |  |
 
 ### message `Hello`
 

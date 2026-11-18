@@ -15,7 +15,7 @@ Why not the App Store? Apps there must run in Apple's sandbox, and a sandboxed a
 ## 🍎 First run
 
 1. Open Ferret. Its icon (⇆) appears in the menubar.
-2. Click it, then **Pair a device**. See [Pair your devices](pairing.md).
+2. Click it. Your other devices running Ferret show up under **Devices near you**: tap **Pair**. See [Pair your devices](pairing.md).
 
 macOS asks two things the first time:
 
