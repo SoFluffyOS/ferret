@@ -112,7 +112,7 @@ void main() {
 
       expect(lines.single.pinned, isTrue);
       expect(lines.single.title, startsWith('Alex is calling '));
-      expect(lines.single.actions, hasLength(2));
+      expect(lines.single.actions, hasLength(3));
     });
 
     testWidgets('the phone has no lines', (tester) async {

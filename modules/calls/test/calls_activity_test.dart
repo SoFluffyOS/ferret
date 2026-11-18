@@ -1,4 +1,5 @@
 import 'package:calls/calls.dart';
+import 'package:calls/ui/widgets/widgets.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +25,8 @@ void main() {
     expect(activity(), isEmpty);
   });
 
-  test('a ringing call is pinned, names the phone and offers Answer', () {
+  test('a ringing call is pinned, names the phone and offers Answer and '
+      'Silence', () {
     final startedAt = DateTime(2026, 11, 18, 21, 10);
     control.emit(remoteCall(startedAt: startedAt));
 
@@ -36,8 +38,26 @@ void main() {
     expect(line.pinned, isTrue);
     expect(line.at, startedAt);
     expect(line.tone, FeatureTone.normal);
+    expect(line.actions.map((action) => action.label), [
+      'Answer',
+      'Decline',
+      'Silence',
+    ]);
+    expect(line.actions.map((action) => action.primary), [true, false, false]);
+    expect(line.trailing, isNull);
+    expect(line.leading, isA<CallerAvatar>());
+  });
+
+  test('Silence quiets the phone and then says so', () async {
+    control.emit(remoteCall());
+
+    activity().single.actions.last.onPressed();
+    await settle();
+    final line = activity().single;
+
+    expect(control.silencedCalls, ['call-1']);
+    expect(line.detail, '+15550100 · Ringer silenced');
     expect(line.actions.map((action) => action.label), ['Answer', 'Decline']);
-    expect(line.actions.map((action) => action.primary), [true, false]);
   });
 
   test('a caller without a name shows the number once', () {
@@ -60,7 +80,7 @@ void main() {
 
     activity().single.actions.first.onPressed();
     await settle();
-    activity().single.actions.last.onPressed();
+    activity().single.actions[1].onPressed();
     await settle();
 
     expect(control.answered, ['call-1']);
@@ -79,7 +99,16 @@ void main() {
     expect(line.pinned, isTrue);
     expect(line.actions.single.label, 'Hang up');
     expect(line.actions.single.primary, isFalse);
+    expect(line.trailing, isNotNull);
     expect(control.endedCalls, ['call-1']);
+  });
+
+  test('initials stand in for a missing photo', () {
+    expect(CallerAvatar.initialsOf('Ana Bell'), 'AB');
+    expect(CallerAvatar.initialsOf('alex'), 'A');
+    expect(CallerAvatar.initialsOf('Ana Maria de la Cruz'), 'AC');
+    expect(CallerAvatar.initialsOf('+1 555 0100'), '');
+    expect(CallerAvatar.initialsOf(''), '');
   });
 
   test('an outgoing call and a held one say so', () {

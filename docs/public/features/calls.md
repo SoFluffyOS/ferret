@@ -18,7 +18,7 @@ With Ferret, your computer shows who's calling the moment your phone rings. Answ
 
 The notification goes away the moment the call is answered or ends, wherever that happened. Nobody picked up? You get one quiet **Missed call** instead.
 
-In Ferret the call sits at the top of **Activity**: **Answer** and **Decline** while it rings, **Hang up** during the call.
+In Ferret the call sits at the top of **Activity**, with the caller's photo or initials: **Answer**, **Decline** and **Silence** while it rings, a running timer and **Hang up** during the call.
 
 ## 🔊 Audio stays on the phone, for now
 
