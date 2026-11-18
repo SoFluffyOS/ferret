@@ -59,6 +59,8 @@ class SidebarRow extends StatelessWidget {
         semanticButton: onTap != null,
         enableAnimation: false,
         enableHover: true,
+        // The line draws its own ring, inside its rounded fill.
+        enableFocusBorder: false,
         builder: (context, state) => Container(
           // At least a line high, and taller when text is set large:
           // a fixed height would cut the letters.
