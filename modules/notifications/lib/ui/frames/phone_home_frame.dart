@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The home card on the phone, only while mirroring is on but notification
-/// access is off. Turning mirroring on is offered in "Turn on more".
+/// access is off. Turning mirroring on is offered in "Do more".
 class PhoneHomeFrame extends StatelessWidget {
   const PhoneHomeFrame({super.key, required this.onSetUp});
 

@@ -14,11 +14,11 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get explainer =>
-      'Shows your phone\'s notifications on your computer. You pick which apps.';
+      'Shows this phone\'s notifications on your computer. You pick which apps.';
 
   @override
   String get offerDescription =>
-      'See your phone\'s notifications on your computer.';
+      'See this phone\'s notifications on your computer.';
 
   @override
   String get explainerDetail =>
@@ -148,22 +148,41 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   }
 
   @override
-  String get phoneMirroringOff =>
-      'Mirroring is off. Turn it on in Ferret on the phone.';
+  String healthApps(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps',
+      one: '1 app',
+      zero: 'No apps picked',
+    );
+    return '$_temp0';
+  }
 
   @override
-  String get phoneAccessOff =>
-      'Notification access is off. Open Ferret on the phone to fix it.';
+  String phoneMirroringOff(String device) {
+    return 'Off on $device';
+  }
+
+  @override
+  String get phoneAccessOff => 'Android turned off Ferret\'s access';
 
   @override
   String get phoneChecking => 'Checking…';
 
   @override
-  String get phoneUnreachable => 'Couldn\'t reach notifications on this phone.';
+  String phoneUnreachable(String device) {
+    return '$device didn\'t answer';
+  }
 
   @override
   String get homeEmpty =>
       'No notifications yet. New ones from your phone show up here.';
+
+  @override
+  String homeEmptyFrom(String device) {
+    return 'No notifications yet. New ones from $device show up here.';
+  }
 
   @override
   String get clearAll => 'Clear all';
@@ -204,7 +223,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String replyFailedBody(String device) {
-    return '$device is offline or the notification is gone. Reply on the phone.';
+    return '$device is offline or the notification is gone. Reply on $device.';
   }
 
   @override
@@ -215,7 +234,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get phoneHomePaused =>
-      'Notification access is off, so nothing is mirrored.';
+      'Notification access is off on this phone, so your computer gets no notifications.';
 
   @override
   String homeTurnOn(String device) {
@@ -229,12 +248,12 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String homeAccessOff(String device) {
-    return 'Notification access is off on $device. Open Ferret on $device to fix it.';
+    return 'Android turned off Ferret\'s access on $device. On $device: open Ferret and tap Fix.';
   }
 
   @override
   String homeUnreachable(String device) {
-    return 'Couldn\'t reach notifications on $device.';
+    return '$device didn\'t answer. On $device: open Ferret.';
   }
 
   @override
@@ -244,12 +263,12 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String howBody(String device) {
-    return 'On $device, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.';
+    return 'On $device: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.';
   }
 
   @override
   String get how => 'How?';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'Got it';
 }

@@ -16,9 +16,15 @@ class PhoneStatusLine extends StatelessWidget {
     final (text, tone) = switch (phone.state) {
       .offline => (l10n.homeOffline(phone.name), StatusTone.neutral),
       .off => (l10n.homeTurnOn(phone.name), StatusTone.neutral),
-      .unreachable => (l10n.phoneUnreachable, StatusTone.warning),
+      .unreachable => (
+        l10n.homeUnreachable(phone.name),
+        StatusTone.warning,
+      ),
       .checking => (l10n.phoneChecking, StatusTone.neutral),
-      .accessOff => (l10n.phoneAccessOff, StatusTone.warning),
+      .accessOff => (
+        l10n.homeAccessOff(phone.name),
+        StatusTone.warning,
+      ),
       .mirroring => (
         l10n.phoneMirroring(phone.settings?.allowedPackages.length ?? 0),
         StatusTone.good,

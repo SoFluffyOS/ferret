@@ -138,7 +138,7 @@ void main() {
 
       final health = ui.healthFor(context, laptop.devices.single);
       expect(health?.state, FeatureHealthState.ok);
-      expect(health?.reason, startsWith('Mirroring'));
+      expect(health?.reason, matches(RegExp(r'^\d+ apps?$')));
       expect(emptyInbox, isFalse);
       expect(ui.hasHomeCard(context), isTrue);
       expect(changes, greaterThan(0));
@@ -161,6 +161,7 @@ void main() {
 
       final health = ui.healthFor(context, laptop.devices.single);
       expect(health?.state, FeatureHealthState.off);
+      expect(health?.reason, startsWith('Off on '));
       expect(
         ui.healthFor(context, DeviceStatus(laptop.devices.single.device, null)),
         isNull,

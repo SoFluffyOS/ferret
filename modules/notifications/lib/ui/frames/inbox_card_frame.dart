@@ -76,7 +76,8 @@ class InboxCardFrame extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.bell,
       title: l10n.title,
-      subtitle: soleProblem ?? _emptyLine(context, byDevice, troubled.length),
+      subtitle:
+          soleProblem ?? _emptyLine(context, byDevice, troubled.length, phones),
       children: [
         for (final (index, group) in groups.indexed) ...[
           if (index > 0) Spacing.v8,
@@ -116,12 +117,18 @@ class InboxCardFrame extends StatelessWidget {
     BuildContext context,
     Map<String, List<MirroredNotification>> byDevice,
     int troubledCount,
+    List<PhoneStatus> phones,
   ) {
     if (byDevice.isNotEmpty || troubledCount > 0) {
       return null;
     }
 
-    return context.notificationsL10n.homeEmpty;
+    final l10n = context.notificationsL10n;
+
+    return switch (phones) {
+      [final phone] => l10n.homeEmptyFrom(phone.name),
+      _ => l10n.homeEmpty,
+    };
   }
 
   Future<void> _explain(BuildContext context, String phoneName) async {

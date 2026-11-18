@@ -159,7 +159,10 @@ class NotificationsFeatureUi extends FeatureUi {
     final l10n = platformNotificationsL10n();
     final deviceId = device.device.id;
     if (this.feature.isUnreachable(deviceId)) {
-      return FeatureHealth(.failing, reason: l10n.phoneUnreachable);
+      return FeatureHealth(
+        .failing,
+        reason: l10n.phoneUnreachable(device.device.name),
+      );
     }
 
     final settings = this.feature.senderSettings[deviceId];
@@ -168,7 +171,10 @@ class NotificationsFeatureUi extends FeatureUi {
     }
 
     if (!settings.enabled) {
-      return FeatureHealth(.off, reason: l10n.phoneMirroringOff);
+      return FeatureHealth(
+        .off,
+        reason: l10n.phoneMirroringOff(device.device.name),
+      );
     }
 
     if (!settings.accessGranted) {
@@ -177,7 +183,7 @@ class NotificationsFeatureUi extends FeatureUi {
 
     return FeatureHealth(
       .ok,
-      reason: l10n.phoneMirroring(settings.allowedPackages.length),
+      reason: l10n.healthApps(settings.allowedPackages.length),
     );
   }
 

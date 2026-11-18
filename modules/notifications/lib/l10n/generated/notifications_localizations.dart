@@ -106,13 +106,13 @@ abstract class NotificationsLocalizations {
   /// No description provided for @explainer.
   ///
   /// In en, this message translates to:
-  /// **'Shows your phone\'s notifications on your computer. You pick which apps.'**
+  /// **'Shows this phone\'s notifications on your computer. You pick which apps.'**
   String get explainer;
 
   /// No description provided for @offerDescription.
   ///
   /// In en, this message translates to:
-  /// **'See your phone\'s notifications on your computer.'**
+  /// **'See this phone\'s notifications on your computer.'**
   String get offerDescription;
 
   /// No description provided for @explainerDetail.
@@ -307,16 +307,22 @@ abstract class NotificationsLocalizations {
   /// **'Mirroring {count, plural, =0{no apps} =1{1 app} other{{count} apps}}'**
   String phoneMirroring(int count);
 
-  /// No description provided for @phoneMirroringOff.
+  /// Device page, next to Notifications, while a phone mirrors here.
   ///
   /// In en, this message translates to:
-  /// **'Mirroring is off. Turn it on in Ferret on the phone.'**
-  String get phoneMirroringOff;
+  /// **'{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}'**
+  String healthApps(int count);
 
-  /// No description provided for @phoneAccessOff.
+  /// Device page, next to Notifications.
   ///
   /// In en, this message translates to:
-  /// **'Notification access is off. Open Ferret on the phone to fix it.'**
+  /// **'Off on {device}'**
+  String phoneMirroringOff(String device);
+
+  /// Device page, next to Notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Android turned off Ferret\'s access'**
   String get phoneAccessOff;
 
   /// No description provided for @phoneChecking.
@@ -325,17 +331,23 @@ abstract class NotificationsLocalizations {
   /// **'Checking…'**
   String get phoneChecking;
 
-  /// No description provided for @phoneUnreachable.
+  /// Device page, next to Notifications.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach notifications on this phone.'**
-  String get phoneUnreachable;
+  /// **'{device} didn\'t answer'**
+  String phoneUnreachable(String device);
 
   /// No description provided for @homeEmpty.
   ///
   /// In en, this message translates to:
   /// **'No notifications yet. New ones from your phone show up here.'**
   String get homeEmpty;
+
+  /// No description provided for @homeEmptyFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet. New ones from {device} show up here.'**
+  String homeEmptyFrom(String device);
 
   /// No description provided for @clearAll.
   ///
@@ -382,7 +394,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @replyFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'{device} is offline or the notification is gone. Reply on the phone.'**
+  /// **'{device} is offline or the notification is gone. Reply on {device}.'**
   String replyFailedBody(String device);
 
   /// No description provided for @setUp.
@@ -400,7 +412,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @phoneHomePaused.
   ///
   /// In en, this message translates to:
-  /// **'Notification access is off, so nothing is mirrored.'**
+  /// **'Notification access is off on this phone, so your computer gets no notifications.'**
   String get phoneHomePaused;
 
   /// No description provided for @homeTurnOn.
@@ -418,13 +430,13 @@ abstract class NotificationsLocalizations {
   /// No description provided for @homeAccessOff.
   ///
   /// In en, this message translates to:
-  /// **'Notification access is off on {device}. Open Ferret on {device} to fix it.'**
+  /// **'Android turned off Ferret\'s access on {device}. On {device}: open Ferret and tap Fix.'**
   String homeAccessOff(String device);
 
   /// No description provided for @homeUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach notifications on {device}.'**
+  /// **'{device} didn\'t answer. On {device}: open Ferret.'**
   String homeUnreachable(String device);
 
   /// No description provided for @howTitle.
@@ -436,7 +448,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @howBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.'**
+  /// **'On {device}: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.'**
   String howBody(String device);
 
   /// No description provided for @how.
@@ -448,7 +460,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @ok.
   ///
   /// In en, this message translates to:
-  /// **'OK'**
+  /// **'Got it'**
   String get ok;
 }
 

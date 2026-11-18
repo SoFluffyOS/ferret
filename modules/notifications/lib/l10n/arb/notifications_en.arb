@@ -1,8 +1,8 @@
 {
   "@@locale": "en",
   "title": "Notifications",
-  "explainer": "Shows your phone's notifications on your computer. You pick which apps.",
-  "offerDescription": "See your phone's notifications on your computer.",
+  "explainer": "Shows this phone's notifications on your computer. You pick which apps.",
+  "offerDescription": "See this phone's notifications on your computer.",
   "explainerDetail": "Only new notifications from the apps you pick. Nothing leaves your network.",
   "turnOn": "Turn on",
   "turnOff": "Turn off mirroring",
@@ -63,11 +63,47 @@
       }
     }
   },
-  "phoneMirroringOff": "Mirroring is off. Turn it on in Ferret on the phone.",
-  "phoneAccessOff": "Notification access is off. Open Ferret on the phone to fix it.",
+  "healthApps": "{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}",
+  "@healthApps": {
+    "description": "Device page, next to Notifications, while a phone mirrors here.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneMirroringOff": "Off on {device}",
+  "@phoneMirroringOff": {
+    "description": "Device page, next to Notifications.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneAccessOff": "Android turned off Ferret's access",
+  "@phoneAccessOff": {
+    "description": "Device page, next to Notifications."
+  },
   "phoneChecking": "Checking…",
-  "phoneUnreachable": "Couldn't reach notifications on this phone.",
+  "phoneUnreachable": "{device} didn't answer",
+  "@phoneUnreachable": {
+    "description": "Device page, next to Notifications.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "homeEmpty": "No notifications yet. New ones from your phone show up here.",
+  "homeEmptyFrom": "No notifications yet. New ones from {device} show up here.",
+  "@homeEmptyFrom": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "clearAll": "Clear all",
   "reply": "Reply",
   "dismiss": "Dismiss",
@@ -92,7 +128,7 @@
     }
   },
   "replyFailedTitle": "Reply not sent",
-  "replyFailedBody": "{device} is offline or the notification is gone. Reply on the phone.",
+  "replyFailedBody": "{device} is offline or the notification is gone. Reply on {device}.",
   "@replyFailedBody": {
     "placeholders": {
       "device": {
@@ -102,7 +138,7 @@
   },
   "setUp": "Set up",
   "fix": "Fix",
-  "phoneHomePaused": "Notification access is off, so nothing is mirrored.",
+  "phoneHomePaused": "Notification access is off on this phone, so your computer gets no notifications.",
   "homeTurnOn": "Turn on Notifications on {device} to see its notifications here.",
   "@homeTurnOn": {
     "placeholders": {
@@ -119,7 +155,7 @@
       }
     }
   },
-  "homeAccessOff": "Notification access is off on {device}. Open Ferret on {device} to fix it.",
+  "homeAccessOff": "Android turned off Ferret's access on {device}. On {device}: open Ferret and tap Fix.",
   "@homeAccessOff": {
     "placeholders": {
       "device": {
@@ -127,7 +163,7 @@
       }
     }
   },
-  "homeUnreachable": "Couldn't reach notifications on {device}.",
+  "homeUnreachable": "{device} didn't answer. On {device}: open Ferret.",
   "@homeUnreachable": {
     "placeholders": {
       "device": {
@@ -143,7 +179,7 @@
       }
     }
   },
-  "howBody": "On {device}, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.",
+  "howBody": "On {device}: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.",
   "@howBody": {
     "placeholders": {
       "device": {
@@ -152,5 +188,5 @@
     }
   },
   "how": "How?",
-  "ok": "OK"
+  "ok": "Got it"
 }

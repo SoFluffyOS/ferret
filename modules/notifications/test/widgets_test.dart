@@ -49,7 +49,7 @@ void main() {
 
       expect(
         find.text(
-          "Shows your phone's notifications on your computer. "
+          "Shows this phone's notifications on your computer. "
           'You pick which apps.',
         ),
         findsOneWidget,
@@ -148,7 +148,7 @@ void main() {
       expect(offer?.title, 'Notifications');
       expect(
         offer?.description,
-        "See your phone's notifications on your computer.",
+        "See this phone's notifications on your computer.",
       );
       expect(offer?.actionLabel, 'Set up');
       expect(ui.hasHomeCard(context), isFalse);
@@ -163,7 +163,10 @@ void main() {
       expect(offer, isNull);
       expect(ui.hasHomeCard(context), isTrue);
       expect(
-        find.text('Notification access is off, so nothing is mirrored.'),
+        find.text(
+          'Notification access is off on this phone, so your computer gets '
+          'no notifications.',
+        ),
         findsOneWidget,
       );
       expect(find.text('Fix'), findsOneWidget);
@@ -261,7 +264,10 @@ void main() {
         await tester.tap(find.text('How?'));
         await tester.pumpAndSettle();
 
-        expect(find.textContaining('tap Turn on more'), findsOneWidget);
+        expect(
+          find.textContaining('Ferret → Do more → Notifications'),
+          findsOneWidget,
+        );
       },
     );
 

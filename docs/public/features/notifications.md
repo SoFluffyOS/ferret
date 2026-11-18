@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Notifications in **Turn on more** on Ferret's home screen (or open **Settings → Notifications**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Notifications in **Do more** on Ferret's home screen (or open **Settings → Notifications**), then **Turn on**.
 > 2. Turn on Ferret on the Notification access screen, then come back.
 > 3. New messages show up on your computer. Reply or dismiss them there.
 
