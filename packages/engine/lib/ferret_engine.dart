@@ -24,11 +24,12 @@ class FerretEngine implements FeatureHost {
     required this.identity,
     required this.trustStore,
     required this.settings,
-    required this.device,
+    required LocalDevice device,
     required List<Feature> features,
     required Discovery discovery,
     required this.preferredPort,
-  }) : _features = {for (final feature in features) feature.id: feature},
+  }) : _device = device,
+       _features = {for (final feature in features) feature.id: feature},
        _discovery = discovery;
 
   static const defaultPort = 47640;
@@ -69,7 +70,10 @@ class FerretEngine implements FeatureHost {
   @override
   final SettingsStore settings;
 
-  final LocalDevice device;
+  LocalDevice _device;
+
+  /// What this device tells others about itself.
+  LocalDevice get device => _device;
   final int preferredPort;
 
   final Map<String, Feature> _features;
@@ -362,9 +366,27 @@ class FerretEngine implements FeatureHost {
     _emitDevices();
   }
 
-  /// Renames this device for others; they see it on the next connection.
+  /// Renames this device. Nearby devices see it right away; paired ones on
+  /// their next connection.
   Future<void> rename(String name) async {
-    await settings.set('device.name', name);
+    final trimmed = name.trim();
+    if (trimmed.isEmpty || trimmed == _device.name) {
+      return;
+    }
+
+    _device = LocalDevice(
+      name: trimmed,
+      platform: _device.platform,
+      formFactor: _device.formFactor,
+      model: _device.model,
+      appVersion: _device.appVersion,
+    );
+    await settings.set('device.name', trimmed);
+    if (_running) {
+      await _discovery.start(_announce());
+    }
+
+    _emitDevices();
   }
 
   Future<void> _reconnectWhileAsked(Duration probeTimeout) async {

@@ -249,6 +249,16 @@ void main() {
     },
   );
 
+  test('renaming takes effect right away and is saved', () async {
+    final laptop = await startEngine('Laptop');
+
+    await laptop.rename('  Desk Mac  ');
+
+    expect(laptop.device.name, 'Desk Mac');
+    expect(laptop.localDevice.name, 'Desk Mac');
+    expect(laptop.settings.get<String>('device.name'), 'Desk Mac');
+  });
+
   test('device ids are 16 base32 characters', () async {
     final identity = await DeviceIdentity.generate();
 
