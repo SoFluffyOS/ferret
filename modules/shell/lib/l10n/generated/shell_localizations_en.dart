@@ -199,6 +199,22 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get menuOpen => 'Open Ferret';
 
   @override
+  String get menuOpenWindow => 'Open Ferret Window';
+
+  @override
+  String get homeOpenWindow => 'Open Ferret window';
+
+  @override
+  String get settingsDock => 'Dock';
+
+  @override
+  String get settingsAlwaysInDock => 'Always show in the Dock';
+
+  @override
+  String get settingsAlwaysInDockBody =>
+      'When off, Ferret is in the Dock only while its window is open.';
+
+  @override
   String get menuPair => 'Add a Device…';
 
   @override

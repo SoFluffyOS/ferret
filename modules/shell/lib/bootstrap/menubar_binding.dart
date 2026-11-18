@@ -10,20 +10,24 @@ import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/pages.dart';
 
 /// Connects the macOS menubar icon to the app: its menu and its icon state.
-/// Files dragged onto it are the app's `FileDropZone`'s.
+/// Files dragged onto it are the app's `FileDropZone`'s. Start [views]
+/// first, so the menu knows whether there is a desktop window to offer.
 class MenubarBinding {
   MenubarBinding({
     required this.host,
     required this.pause,
     required this.features,
     required this.featureContext,
-  });
+    required this.views,
+    required FerretMenubar menubar,
+  }) : _menubar = menubar;
 
   final EngineHost host;
   final PauseController pause;
   final List<FeatureUi> features;
   final FeatureContext featureContext;
-  final FerretMenubar _menubar = FerretMenubar();
+  final AppViews views;
+  final FerretMenubar _menubar;
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final List<Listenable> _listened = [];
   late final ShellLocalizations _l10n = lookupShellLocalizations(
@@ -38,6 +42,7 @@ class MenubarBinding {
   static const firstLaunchDoneKey = 'onboarding.done';
 
   static const _open = 'open';
+  static const _window = 'window';
   static const _pair = 'pair';
   static const _settings = 'settings';
   static const _quit = 'quit';
@@ -50,6 +55,8 @@ class MenubarBinding {
     final l10n = _l10n;
     await _menubar.setMenu([
       MenubarMenuItem(id: _open, title: l10n.menuOpen),
+      if (views.canOpenWindow)
+        MenubarMenuItem(id: _window, title: l10n.menuOpenWindow),
       MenubarMenuItem(id: _pair, title: l10n.menuPair),
       MenubarMenuItem(
         id: _settings,
@@ -90,9 +97,6 @@ class MenubarBinding {
     true => _menubar,
     false => null,
   };
-
-  /// Opens the popover, such as when this Mac starts ringing.
-  Future<void> reveal() => _menubar.show();
 
   Future<void> dispose() async {
     for (final listenable in _listened) {
@@ -140,11 +144,13 @@ class MenubarBinding {
     switch (id) {
       case _open:
         await _menubar.show();
+      case _window:
+        await views.openWindow();
       case _pair:
-        await _menubar.show();
+        await views.reveal();
         await featureContext.push<void>(const PairPage());
       case _settings:
-        await _menubar.show();
+        await views.reveal();
         await featureContext.push<void>(const SettingsPage());
       case _quit:
         await SystemNavigator.pop();

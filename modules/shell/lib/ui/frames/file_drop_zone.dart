@@ -13,9 +13,10 @@ import 'package:shell/ui/frames/drop_targets_frame.dart';
 import 'package:shell/view_models/view_models.dart';
 
 /// On computers: files dragged from the system over the window (or the
-/// macOS popover and menubar icon, through [menubar]) turn the window into
-/// one drop tile per device, then show how sending goes. The view must sit
-/// at the window's top left, since drag positions are window coordinates.
+/// macOS popover, desktop window and menubar icon, through [menubar]) turn
+/// the view they are over into one drop tile per device, then show how
+/// sending goes. The zone must sit at its view's top left, since drag
+/// positions are view coordinates.
 class FileDropZone extends StatefulWidget {
   const FileDropZone({super.key, required this.child, this.menubar});
 
@@ -31,10 +32,16 @@ class FileDropZone extends StatefulWidget {
 class _FileDropZoneState extends State<FileDropZone> {
   late final OsDropViewModel _viewModel;
   final List<StreamSubscription<Object?>> _subscriptions = [];
+  int? _viewId;
 
   /// desktop_drop finds no window on macOS, where the popover's drags come
   /// through [FileDropZone.menubar] instead.
   bool get _usesDesktopDrop => Platform.isWindows || Platform.isLinux;
+
+  /// The menubar icon's drops are the popover's, which is the main view.
+  bool get _isMainView =>
+      _viewId ==
+      WidgetsBinding.instance.platformDispatcher.implicitView?.viewId;
 
   @override
   void initState() {
@@ -51,8 +58,8 @@ class _FileDropZoneState extends State<FileDropZone> {
           ),
       ],
       send: _dispatch,
-      onAllowedChanged: (allowed) =>
-          unawaited(menubar?.setDropAllowed(allowed)),
+      finder: RenderTreeDropTargetFinder(viewId: () => _viewId),
+      onAllowedChanged: _onAllowedChanged,
       onFinished: () => unawaited(menubar?.closeIfOpenedByDrag()),
       onFailed: () => unawaited(menubar?.show()),
     );
@@ -61,6 +68,12 @@ class _FileDropZoneState extends State<FileDropZone> {
         ..add(menubar.drags.listen(_onPopoverDrag))
         ..add(menubar.drops.listen(_onIconDrop));
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _viewId = View.of(context).viewId;
   }
 
   @override
@@ -101,7 +114,21 @@ class _FileDropZoneState extends State<FileDropZone> {
     );
   }
 
+  void _onAllowedChanged(bool allowed) {
+    final viewId = _viewId;
+    if (viewId == null) {
+      return;
+    }
+
+    unawaited(widget.menubar?.setDropAllowed(viewId, allowed: allowed));
+  }
+
+  /// Each view has its own zone, and a drag belongs to the one it is over.
   void _onPopoverDrag(PopoverDrag drag) {
+    if (drag.viewId != _viewId) {
+      return;
+    }
+
     switch (drag) {
       case PopoverDragEntered(:final position, :final fileCount):
         _viewModel.enter(position, fileCount: fileCount);
@@ -117,6 +144,10 @@ class _FileDropZoneState extends State<FileDropZone> {
   /// Dropped on the icon before the popover opened: one device connected
   /// gets them; otherwise the popover opens on the tiles to pick one.
   Future<void> _onIconDrop(List<String> paths) async {
+    if (!_isMainView) {
+      return;
+    }
+
     final connected = context
         .read<EngineHost>()
         .devices

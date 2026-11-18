@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -53,33 +54,55 @@ Future<void> runFerret({
   final notifier = await SystemNotifier.create([
     for (final feature in features) ...feature.noticeCategories,
   ]);
-  late final MenubarBinding menubar;
+  final ferretMenubar = FerretMenubar();
+  final views = AppViews(menubar: ferretMenubar, settings: settings);
   final featureContext = FeatureContext(
     engine: engine,
-    navigatorKey: GlobalKey<NavigatorState>(),
+    navigatorKey: switch (ferretMenubar.isSupported) {
+      true => views.navigatorKey,
+      false => views.mainNavigatorKey,
+    },
     notifier: notifier,
-    onReveal: () => menubar.reveal(),
+    onReveal: views.reveal,
   );
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
   }
 
-  menubar = MenubarBinding(
+  await views.start();
+  final menubar = MenubarBinding(
     host: host,
     pause: pause,
     features: features,
     featureContext: featureContext,
+    views: views,
+    menubar: ferretMenubar,
   );
   await menubar.start();
 
-  runApp(
+  _run(
     FerretApp(
       host: host,
       pause: pause,
       features: features,
       featureContext: featureContext,
       menubar: menubar.menubar,
+      views: switch (ferretMenubar.isSupported) {
+        true => views,
+        false => null,
+      },
     ),
   );
   onStarted?.call(engine);
+}
+
+/// With several views the app places each one itself; with one, Flutter
+/// puts the app in it.
+void _run(FerretApp app) {
+  if (app.views == null) {
+    runApp(app);
+    return;
+  }
+
+  runWidget(app);
 }

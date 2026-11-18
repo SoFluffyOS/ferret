@@ -9,7 +9,8 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Home's "more" menu: pause for a while (or resume), Settings, and Quit.
+/// Home's "more" menu: pause for a while (or resume), the desktop window on
+/// a Mac, Settings, and Quit.
 /// A menu, so nothing has to float over the popover to pause.
 class HomeMenu extends StatelessWidget {
   const HomeMenu({super.key, required this.onSettings});
@@ -22,6 +23,9 @@ class HomeMenu extends StatelessWidget {
       (controller) => controller.isPaused,
     );
     final pause = context.read<PauseController>();
+    final canOpenWindow = context.select<AppViews?, bool>(
+      (views) => views?.canOpenWindow ?? false,
+    );
     final l10n = context.shellL10n;
     final canQuit = defaultTargetPlatform != .iOS;
 
@@ -52,10 +56,17 @@ class HomeMenu extends StatelessWidget {
             onSelected: () => unawaited(pause.pause()),
           ),
         ],
+        if (canOpenWindow)
+          MenuEntry(
+            label: l10n.homeOpenWindow,
+            icon: LucideIcons.appWindow,
+            startsGroup: true,
+            onSelected: () => unawaited(context.read<AppViews>().openWindow()),
+          ),
         MenuEntry(
           label: l10n.settingsTitle,
           icon: LucideIcons.settings,
-          startsGroup: true,
+          startsGroup: !canOpenWindow,
           onSelected: onSettings,
         ),
         if (canQuit)

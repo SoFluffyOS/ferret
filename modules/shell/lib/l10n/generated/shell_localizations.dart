@@ -418,6 +418,36 @@ abstract class ShellLocalizations {
   /// **'Open Ferret'**
   String get menuOpen;
 
+  /// No description provided for @menuOpenWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret Window'**
+  String get menuOpenWindow;
+
+  /// No description provided for @homeOpenWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret window'**
+  String get homeOpenWindow;
+
+  /// No description provided for @settingsDock.
+  ///
+  /// In en, this message translates to:
+  /// **'Dock'**
+  String get settingsDock;
+
+  /// No description provided for @settingsAlwaysInDock.
+  ///
+  /// In en, this message translates to:
+  /// **'Always show in the Dock'**
+  String get settingsAlwaysInDock;
+
+  /// No description provided for @settingsAlwaysInDockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, Ferret is in the Dock only while its window is open.'**
+  String get settingsAlwaysInDockBody;
+
   /// No description provided for @menuPair.
   ///
   /// In en, this message translates to:

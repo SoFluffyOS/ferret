@@ -33,6 +33,7 @@ class SettingsPage extends StatelessWidget {
           builder: (context) => _GroupRows(local: engine.device),
         ),
         BackgroundSettings(settings: engine.settings),
+        const DockSettings(),
         Spacing.v8,
         SurfaceCard(
           padding: EdgeInsets.symmetric(
