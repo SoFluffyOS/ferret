@@ -24,7 +24,7 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get rcsNote =>
-      'RCS chats live inside Google Messages, and no other app can read them. Notification mirroring covers them: allow Google Messages in Notifications to see and answer them on your computer.';
+      'RCS chats live inside Google Messages, and no other app can read them. They still reach your computer as notifications, and you can answer them there.';
 
   @override
   String get turnOn => 'Turn on';
@@ -295,7 +295,7 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get rcsComputerNote =>
-      'RCS chats don\'t show here. Mirror Google Messages\' notifications to answer them.';
+      'RCS chats don\'t show here. They arrive with your phone\'s notifications, where you can answer them.';
 
   @override
   String get replyAction => 'Reply';

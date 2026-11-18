@@ -171,11 +171,13 @@ class _AppList extends StatelessWidget {
           children: [
             Button(
               variant: .ghost,
+              mainAxisSize: .min,
               label: l10n.selectAll,
               onPressed: () => viewModel.setAllShown(true),
             ),
             Button(
               variant: .ghost,
+              mainAxisSize: .min,
               label: l10n.selectNone,
               onPressed: () => viewModel.setAllShown(false),
             ),
