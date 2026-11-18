@@ -1,6 +1,6 @@
 # Ferret on your Mac
 
-Ferret lives in your menubar. No Dock icon, no window in the way.
+Ferret lives in your menubar. No Dock icon, no window in the way. Want a real window? It has one too.
 
 ## 📦 Installing on a Mac
 
@@ -26,14 +26,29 @@ macOS asks two things the first time:
 
 ## 🖱️ Using it
 
-- **Click** the icon to open Ferret. **Right-click** for Add a Device, Settings and Quit.
+- **Click** the icon to open Ferret. **Right-click** for Open Ferret Window, Add a Device, Settings and Quit.
 - **Your devices** come first, each with what you can do right on its row: **Send files**, **Send clipboard**, **Ring**. A device that isn't connected shows **Fix** instead.
 - **Activity** under them is what just happened: a copy that synced, a file that arrived, a song playing on your phone. **See all** opens the full list.
-- **+** adds a device. **•••** holds **Pause**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
+- **+** adds a device. **•••** holds **Pause**, **Open Ferret window**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
 - **Drag** the popover away from the menubar to keep it open as a window.
 - **Drop files** on the icon (or the popover) to send them to your phone.
 
 The icon tells you what Ferret is doing. Plain means a device is connected. Dimmed means none is, which is fine. A ring fills while a file moves, then a check shows for a moment. A dot means someone is waiting for your answer: a device that wants to pair, or a file from someone else. A slash means Ferret is paused. Rest the pointer on the icon to read it in words.
+
+## 🪟 The window
+
+The popover is small on purpose. For a longer look, open Ferret in a normal window.
+
+1. Click **•••** in the popover, or right-click the icon.
+2. Pick **Open Ferret window**.
+
+That's it. The window and the popover are the SAME Ferret: pause in one and the other shows it right away. Each keeps its own place, so you can read Settings in the window while the popover stays on your devices.
+
+- **Resize** it like any window. It opens where you left it, at the size you left it.
+- **Close** it (⌘W or the red button) and only the window goes. Ferret keeps running in the menubar.
+- **The Dock** shows Ferret while the window is open, and a click on its Dock icon brings the window back to the front. Close the window and the Dock icon leaves with it.
+
+Want Ferret in the Dock all the time? Turn on **Settings → Always show in the Dock**. Then a click on the Dock icon opens the window.
 
 ## 🔐 Optional permissions
 
