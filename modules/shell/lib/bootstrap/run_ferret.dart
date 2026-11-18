@@ -66,6 +66,8 @@ Future<void> runFerret({
 
   menubar = MenubarBinding(
     host: host,
+    pause: pause,
+    features: features,
     featureContext: featureContext,
   );
   await menubar.start();

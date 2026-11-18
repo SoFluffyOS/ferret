@@ -436,6 +436,78 @@ abstract class ShellLocalizations {
   /// **'Quit Ferret'**
   String get menuQuit;
 
+  /// No description provided for @menubarTipConnectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Connected to {device}'**
+  String menubarTipConnectedTo(String device);
+
+  /// No description provided for @menubarTipConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · {count} devices connected'**
+  String menubarTipConnected(int count);
+
+  /// No description provided for @menubarTipAlone.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · No device connected'**
+  String get menubarTipAlone;
+
+  /// No description provided for @menubarTipSendingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Sending to {device}'**
+  String menubarTipSendingTo(String device);
+
+  /// No description provided for @menubarTipReceivingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Receiving from {device}'**
+  String menubarTipReceivingFrom(String device);
+
+  /// No description provided for @menubarTipSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Sending'**
+  String get menubarTipSending;
+
+  /// No description provided for @menubarTipReceiving.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Receiving'**
+  String get menubarTipReceiving;
+
+  /// No description provided for @menubarTipDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Done'**
+  String get menubarTipDone;
+
+  /// No description provided for @menubarTipPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · {device} wants to pair'**
+  String menubarTipPair(String device);
+
+  /// No description provided for @menubarTipRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · {device} wants to send you something'**
+  String menubarTipRequest(String device);
+
+  /// No description provided for @menubarTipWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · {count, plural, =1{1 request is waiting for you} other{{count} requests are waiting for you}}'**
+  String menubarTipWaiting(int count);
+
+  /// No description provided for @menubarTipPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret · Paused'**
+  String get menubarTipPaused;
+
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:

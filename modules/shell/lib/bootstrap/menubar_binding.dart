@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
@@ -13,13 +14,28 @@ import 'package:shell/ui/pages/pages.dart';
 class MenubarBinding {
   MenubarBinding({
     required this.host,
+    required this.pause,
+    required this.features,
     required this.featureContext,
   });
 
   final EngineHost host;
+  final PauseController pause;
+  final List<FeatureUi> features;
   final FeatureContext featureContext;
   final FerretMenubar _menubar = FerretMenubar();
   final List<StreamSubscription<Object?>> _subscriptions = [];
+  final List<Listenable> _listened = [];
+  late final ShellLocalizations _l10n = lookupShellLocalizations(
+    _supportedLocale(),
+  );
+  late final MenubarIconResolver _resolver = MenubarIconResolver(
+    onHoldEnded: _onChanged,
+  );
+  (MenubarIconState, int, String)? _shown;
+
+  /// Settings key that says the first launch already happened.
+  static const firstLaunchDoneKey = 'onboarding.done';
 
   static const _open = 'open';
   static const _pair = 'pair';
@@ -31,7 +47,7 @@ class MenubarBinding {
       return;
     }
 
-    final l10n = lookupShellLocalizations(_supportedLocale());
+    final l10n = _l10n;
     await _menubar.setMenu([
       MenubarMenuItem(id: _open, title: l10n.menuOpen),
       MenubarMenuItem(id: _pair, title: l10n.menuPair),
@@ -46,7 +62,27 @@ class MenubarBinding {
     await _updateIcon();
 
     _subscriptions.add(_menubar.menuSelections.listen(_onMenu));
-    host.addListener(_onHostChanged);
+    _listened
+      ..add(host)
+      ..add(pause)
+      ..addAll([for (final feature in features) ?feature.uiChanges]);
+    for (final listenable in _listened) {
+      listenable.addListener(_onChanged);
+    }
+
+    await _showOnFirstLaunch();
+  }
+
+  /// The first launch opens the popover by itself, once, so nobody has to
+  /// be told where Ferret lives.
+  Future<void> _showOnFirstLaunch() async {
+    final settings = featureContext.engine.settings;
+    if (settings.get<bool>(firstLaunchDoneKey) ?? false) {
+      return;
+    }
+
+    await settings.set(firstLaunchDoneKey, true);
+    await _menubar.show();
   }
 
   /// The menubar, for the app's drop targets; null where there is none.
@@ -59,21 +95,46 @@ class MenubarBinding {
   Future<void> reveal() => _menubar.show();
 
   Future<void> dispose() async {
-    host.removeListener(_onHostChanged);
+    for (final listenable in _listened) {
+      listenable.removeListener(_onChanged);
+    }
+    _listened.clear();
+    _resolver.dispose();
     for (final subscription in _subscriptions) {
       await subscription.cancel();
     }
   }
 
-  void _onHostChanged() => unawaited(_updateIcon());
+  void _onChanged() => unawaited(_updateIcon());
 
+  /// Features fire for many reasons and transfers report often, so the Mac
+  /// hears only when what the icon shows really changed, a whole percent
+  /// at a time.
   Future<void> _updateIcon() async {
-    final state = switch (host.connectedCount) {
-      0 => MenubarIconState.alone,
-      _ => MenubarIconState.normal,
-    };
-    await _menubar.setIconState(state);
+    final inputs = _readInputs();
+    final state = _resolver.resolve(inputs);
+    final progress = inputs.progress ?? 0;
+    final tooltip = MenubarTooltips(_l10n).of(state, inputs);
+    final shown = (state, (progress * 100).round(), tooltip);
+    if (shown == _shown) {
+      return;
+    }
+
+    _shown = shown;
+    await _menubar.setIconState(state, progress: progress, tooltip: tooltip);
   }
+
+  MenubarIconInputs _readInputs() => .gather(
+    connectedNames: [
+      for (final status in host.devices)
+        if (status.isConnected) status.device.name,
+    ],
+    isPaused: pause.isPaused,
+    pairingName: host.pendingPrompt?.device.name,
+    busy: [
+      for (final feature in features) ?feature.busyState(featureContext),
+    ],
+  );
 
   Future<void> _onMenu(String id) async {
     switch (id) {

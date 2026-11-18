@@ -120,6 +120,67 @@
   "menuPair": "Pair a Device…",
   "menuSettings": "Settings…",
   "menuQuit": "Quit Ferret",
+  "menubarTipConnectedTo": "Ferret · Connected to {device}",
+  "@menubarTipConnectedTo": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipConnected": "Ferret · {count} devices connected",
+  "@menubarTipConnected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menubarTipAlone": "Ferret · No device connected",
+  "menubarTipSendingTo": "Ferret · Sending to {device}",
+  "@menubarTipSendingTo": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipReceivingFrom": "Ferret · Receiving from {device}",
+  "@menubarTipReceivingFrom": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipSending": "Ferret · Sending",
+  "menubarTipReceiving": "Ferret · Receiving",
+  "menubarTipDone": "Ferret · Done",
+  "menubarTipPair": "Ferret · {device} wants to pair",
+  "@menubarTipPair": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipRequest": "Ferret · {device} wants to send you something",
+  "@menubarTipRequest": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipWaiting": "Ferret · {count, plural, =1{1 request is waiting for you} other{{count} requests are waiting for you}}",
+  "@menubarTipWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menubarTipPaused": "Ferret · Paused",
   "welcomeTitle": "Your devices, working together",
   "welcomeBody": "Pair your phone and computer to pass pages, media, files and your clipboard between them.",
   "welcomePrivacy": "No account. No cloud. Stays on your network.",

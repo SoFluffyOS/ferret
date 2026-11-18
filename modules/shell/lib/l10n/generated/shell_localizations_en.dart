@@ -205,6 +205,62 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get menuQuit => 'Quit Ferret';
 
   @override
+  String menubarTipConnectedTo(String device) {
+    return 'Ferret · Connected to $device';
+  }
+
+  @override
+  String menubarTipConnected(int count) {
+    return 'Ferret · $count devices connected';
+  }
+
+  @override
+  String get menubarTipAlone => 'Ferret · No device connected';
+
+  @override
+  String menubarTipSendingTo(String device) {
+    return 'Ferret · Sending to $device';
+  }
+
+  @override
+  String menubarTipReceivingFrom(String device) {
+    return 'Ferret · Receiving from $device';
+  }
+
+  @override
+  String get menubarTipSending => 'Ferret · Sending';
+
+  @override
+  String get menubarTipReceiving => 'Ferret · Receiving';
+
+  @override
+  String get menubarTipDone => 'Ferret · Done';
+
+  @override
+  String menubarTipPair(String device) {
+    return 'Ferret · $device wants to pair';
+  }
+
+  @override
+  String menubarTipRequest(String device) {
+    return 'Ferret · $device wants to send you something';
+  }
+
+  @override
+  String menubarTipWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count requests are waiting for you',
+      one: '1 request is waiting for you',
+    );
+    return 'Ferret · $_temp0';
+  }
+
+  @override
+  String get menubarTipPaused => 'Ferret · Paused';
+
+  @override
   String get welcomeTitle => 'Your devices, working together';
 
   @override
