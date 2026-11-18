@@ -286,7 +286,10 @@ class FerretEngine implements FeatureHost {
   Stream<Presence> get localPresenceChanges => _presenceChanges.stream;
 
   /// Announces again, such as after the network changed.
-  Future<void> refresh() => _discovery.announceNow();
+  Future<void> refresh() {
+    _ownAddresses = null;
+    return _discovery.announceNow();
+  }
 
   /// Reconnects right away, for when this device woke from sleep or its
   /// network changed: closes sessions that stopped answering, restarts
@@ -294,6 +297,7 @@ class FerretEngine implements FeatureHost {
   /// isn't connected at its last known address. Calls made while one runs
   /// are merged into a single extra run.
   Future<void> reconnectNow({Duration probeTimeout = _probeTimeout}) {
+    _ownAddresses = null;
     if (!_running) {
       return Future.value();
     }
@@ -620,6 +624,25 @@ class FerretEngine implements FeatureHost {
   }
 
   void _onPeer(DiscoveredPeer peer) {
+    unawaited(_onPeerFrom(peer));
+  }
+
+  Set<String>? _ownAddresses;
+
+  Future<void> _onPeerFrom(DiscoveredPeer peer) async {
+    // A virtual machine behind this computer's NAT (an Android emulator)
+    // announces through this computer's own address. Dialing that reaches
+    // this device itself, never the announcer.
+    if (peer.port == port && peer.deviceId != identity.deviceId) {
+      final own = _ownAddresses ??= {
+        '127.0.0.1',
+        ...await _localAddresses(),
+      };
+      if (own.contains(peer.host)) {
+        return;
+      }
+    }
+
     if (trustStore.isTrusted(peer.deviceId)) {
       if (!_sessions.containsKey(peer.deviceId)) {
         unawaited(_dial(peer.host, peer.port, expectedDeviceId: peer.deviceId));

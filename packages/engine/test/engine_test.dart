@@ -195,6 +195,39 @@ void main() {
     expect(((await outcome) as PairingFailed).reason, PairingFailure.cancelled);
   });
 
+  test(
+    'a device announcing through this computer and port is not listed',
+    () async {
+      final laptop = await startEngine('Laptop');
+      final discovery = bus.members.last;
+      final emulator = await DeviceIdentity.generate();
+      final terminal = await DeviceIdentity.generate();
+
+      DiscoveredPeer announce(DeviceIdentity device, String name, int port) =>
+          DiscoveredPeer(
+            announce: Announce(
+              deviceId: device.deviceId,
+              name: name,
+              port: port,
+            ),
+            host: '127.0.0.1',
+          );
+
+      discovery._peers
+        ..add(announce(emulator, 'Emulator', laptop.port))
+        ..add(announce(terminal, 'Terminal', laptop.port + 1));
+
+      await _until(() => laptop.nearby.isNotEmpty);
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(
+        [for (final peer in laptop.nearby) peer.announce.name],
+        [
+          'Terminal',
+        ],
+      );
+    },
+  );
+
   test('a device other than the one found nearby is refused', () async {
     final laptop = await startEngine('Laptop');
     final phone = await startEngine('Phone');
