@@ -1,6 +1,7 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:shell/ui/pages/device_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/qr_pair_page.dart';
+import 'package:shell/ui/pages/scan_page.dart';
 import 'package:shell/ui/pages/settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -79,7 +81,7 @@ class HomePage extends StatelessWidget {
         if (!hasDevices)
           NearbyFrame(
             key: _nearbyKey,
-            onPairWithCode: () => _pairWithCode(context),
+            onPairWithCode: () => unawaited(_pairWithCode(context)),
             onCantSee: () => _push(context, const DoctorPage()),
           ),
         DevicesFrame(
@@ -100,14 +102,25 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// A computer shows its code; a phone scans one, from Add a device.
-  void _pairWithCode(BuildContext context) {
-    if (Platform.isAndroid || Platform.isIOS) {
-      _push(context, const PairPage());
+  /// A computer shows its code. A phone opens the camera straight away and
+  /// pairs on Add a device once it has read a code.
+  Future<void> _pairWithCode(BuildContext context) async {
+    final isPhone = switch (defaultTargetPlatform) {
+      .android || .iOS => true,
+      _ => false,
+    };
+    if (!isPhone) {
+      _push(context, const QrPairPage());
       return;
     }
 
-    _push(context, const QrPairPage());
+    final navigator = Navigator.of(context);
+    final link = await navigator.push(ferretRoute<String>(const ScanPage()));
+    if (link == null) {
+      return;
+    }
+
+    unawaited(navigator.push(ferretRoute<void>(PairPage(link: link))));
   }
 
   void _push(BuildContext context, Widget page) {

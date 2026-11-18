@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
@@ -22,7 +22,11 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// button; what to check when it isn't listed; then a QR code, and the
 /// other ways (a link, an address) one level down.
 class PairPage extends StatefulWidget {
-  const PairPage({super.key});
+  const PairPage({super.key, this.link});
+
+  /// A pairing link read from a QR code before this page opened. Pairing
+  /// with it starts right away.
+  final String? link;
 
   @override
   State<PairPage> createState() => _PairPageState();
@@ -32,6 +36,14 @@ class _PairPageState extends State<PairPage> {
   late final PairingViewModel _viewModel = PairingViewModel(
     ShellScope.read(context).featureContext.engine,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.link case final link?) {
+      _viewModel.pairWithLink(link);
+    }
+  }
 
   @override
   void dispose() {
@@ -125,7 +137,11 @@ class _PairPageState extends State<PairPage> {
 
   /// A phone scans the computer's code; anything else shows its own.
   Future<void> _pairWithQr() async {
-    if (!Platform.isAndroid && !Platform.isIOS) {
+    final isPhone = switch (defaultTargetPlatform) {
+      .android || .iOS => true,
+      _ => false,
+    };
+    if (!isPhone) {
       _open(const QrPairPage());
       return;
     }
