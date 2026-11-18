@@ -164,10 +164,13 @@ class _Actions extends StatelessWidget {
       },
       false => const <String>{},
     };
-    final actions = DeviceActionOrder.of([
-      for (final feature in scope.features)
-        ...feature.deviceActions(context, featureContext, status),
-    ], listedSections: listed);
+    final actions = DeviceActionUsage(featureContext.engine.settings).arrange(
+      status.device.id,
+      DeviceActionOrder.of([
+        for (final feature in scope.features)
+          ...feature.deviceActions(context, featureContext, status),
+      ], listedSections: listed),
+    );
     if (actions.isEmpty) {
       return const SizedBox.shrink();
     }

@@ -306,12 +306,15 @@ class _DeviceGroup extends StatelessWidget {
     final nav = context.read<WindowNavViewModel>();
     final deviceId = status.device.id;
     final actions = switch (status.isConnected) {
-      true => DeviceActionOrder.of(
-        [
-          for (final feature in scope.features)
-            ...feature.deviceActions(context, scope.featureContext, status),
-        ],
-        listedSections: {for (final section in sections) section.id},
+      true => DeviceActionUsage(scope.featureContext.engine.settings).arrange(
+        deviceId,
+        DeviceActionOrder.of(
+          [
+            for (final feature in scope.features)
+              ...feature.deviceActions(context, scope.featureContext, status),
+          ],
+          listedSections: {for (final section in sections) section.id},
+        ),
       ),
       false => const <FeatureAction>[],
     };

@@ -276,6 +276,7 @@ class MessagesFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'messages.open',
         label: context.messagesL10n.title,
         icon: LucideIcons.messageSquare,
         onPressed: () => _openMessages(feature, deviceId),

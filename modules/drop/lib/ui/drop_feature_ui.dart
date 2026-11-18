@@ -372,6 +372,7 @@ class DropFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'drop.send_files',
         label: context.dropL10n.sendFiles,
         icon: LucideIcons.upload,
         homeOrder: 10,

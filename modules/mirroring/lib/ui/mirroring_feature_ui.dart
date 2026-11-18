@@ -277,6 +277,7 @@ class MirroringFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'mirroring.show_screen',
         label: context.mirroringL10n.showScreen,
         icon: LucideIcons.screenShare,
         homeOrder: _homeOrder,

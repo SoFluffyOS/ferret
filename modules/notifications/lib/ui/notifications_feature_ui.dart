@@ -250,6 +250,7 @@ class NotificationsFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'notifications.choose_apps',
         label: context.notificationsL10n.actionChooseApps,
         icon: LucideIcons.bell,
         onPressed: () =>

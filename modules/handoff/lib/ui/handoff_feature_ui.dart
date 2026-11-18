@@ -135,6 +135,7 @@ class HandoffFeatureUi extends FeatureUi {
     final viewModel = viewModelFor(feature);
     return [
       FeatureAction(
+        id: 'handoff.send_link',
         label: l10n.actionSendLink,
         icon: LucideIcons.link,
         onPressed: () =>
@@ -142,6 +143,7 @@ class HandoffFeatureUi extends FeatureUi {
       ),
       if (viewModel.canSendCurrentPage)
         FeatureAction(
+          id: 'handoff.send_current_page',
           label: l10n.actionSendCurrentPage,
           icon: LucideIcons.globe,
           onPressed: () =>

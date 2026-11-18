@@ -95,7 +95,8 @@ class _DevicesFrameState extends State<DevicesFrame> {
       ).primaryItem !=
       null;
 
-  /// The actions features marked for Home, in their order.
+  /// The actions features marked for Home, in their order, with the one
+  /// used most with this device first once it is a habit.
   List<FeatureAction> _actionsFor(
     BuildContext context,
     ShellScope scope,
@@ -115,9 +116,12 @@ class _DevicesFrameState extends State<DevicesFrame> {
           if (action.homeOrder case final order?) (order, action),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
 
-    return [
-      for (final (_, action) in ordered.take(DevicesFrame.actionsShown)) action,
-    ];
+    final usage = DeviceActionUsage(scope.featureContext.engine.settings);
+    final arranged = usage.arrange(status.device.id, [
+      for (final (_, action) in ordered) action,
+    ]);
+
+    return arranged.take(DevicesFrame.actionsShown).toList();
   }
 
   /// The first feature that is on and not working with this device.

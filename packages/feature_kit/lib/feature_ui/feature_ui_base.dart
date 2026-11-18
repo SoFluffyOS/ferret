@@ -156,9 +156,16 @@ class FeatureAction {
     required this.label,
     required this.icon,
     required this.onPressed,
+    this.id,
     this.homeOrder,
     this.sectionId,
   });
+
+  /// Stays the same across languages and launches, prefixed with the
+  /// feature id, such as `clipboard.send`. The shell counts uses by it to
+  /// move a device's favourite action first, and finds well-known ones by
+  /// it, such as the clipboard's for ⌘V on a device row. Null opts out.
+  final String? id;
 
   /// A verb and its object, such as "Send files".
   final String label;

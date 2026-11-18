@@ -101,6 +101,7 @@ class ClipboardFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'clipboard.send',
         label: context.clipboardL10n.sendClipboard,
         icon: LucideIcons.clipboardCopy,
         homeOrder: 20,

@@ -201,6 +201,7 @@ class CallsFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'calls.call',
         label: context.callsL10n.callAction,
         icon: LucideIcons.phoneOutgoing,
         onPressed: () =>

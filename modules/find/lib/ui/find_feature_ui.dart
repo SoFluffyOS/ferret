@@ -120,6 +120,7 @@ class FindFeatureUi extends FeatureUi {
 
     return [
       FeatureAction(
+        id: 'find.ring',
         label: context.findL10n.ring,
         icon: LucideIcons.bellRing,
         homeOrder: 30,
