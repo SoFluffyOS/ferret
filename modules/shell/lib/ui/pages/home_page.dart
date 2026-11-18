@@ -72,6 +72,12 @@ class HomePage extends StatelessWidget {
       ],
       children: [
         const PauseBanner(),
+        DevicesFrame(
+          onOpen: (status) => _openDevice(context, status),
+          onPair: () => _openPairing(context),
+          onWhy: (status) =>
+              _push(context, DoctorPage(deviceId: status.device.id)),
+        ),
         if (hasDevices) const StayConnectedCard(),
         if (hasDevices)
           for (final feature in scope.features)
@@ -79,12 +85,7 @@ class HomePage extends StatelessWidget {
               feature: feature,
               featureContext: scope.featureContext,
             ),
-        DevicesFrame(
-          onOpen: (status) => _openDevice(context, status),
-          onPair: () => _openPairing(context),
-          onWhy: (status) =>
-              _push(context, DoctorPage(deviceId: status.device.id)),
-        ),
+        if (hasDevices) const OffersCard(),
         NearbyFrame(onPair: (peer) => _pairNearby(context, peer)),
       ],
     );

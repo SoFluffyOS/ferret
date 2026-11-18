@@ -801,6 +801,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.'**
   String get scanNotFerret;
+
+  /// No description provided for @offersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on more'**
+  String get offersTitle;
+
+  /// No description provided for @offersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one asks only for what it needs.'**
+  String get offersSubtitle;
 }
 
 class _ShellLocalizationsDelegate

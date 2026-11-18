@@ -4,6 +4,7 @@ export 'package:shell/ui/frames/feature_card_slot.dart';
 export 'package:shell/ui/frames/feature_changes_listener.dart';
 export 'package:shell/ui/frames/file_drop_zone.dart';
 export 'package:shell/ui/frames/nearby_frame.dart';
+export 'package:shell/ui/frames/offers_card.dart';
 export 'package:shell/ui/frames/pairing_prompt_listener.dart';
 export 'package:shell/ui/frames/pause_banner.dart';
 export 'package:shell/ui/frames/stay_connected_card.dart';

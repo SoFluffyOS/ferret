@@ -430,4 +430,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get scanNotFerret =>
       'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.';
+
+  @override
+  String get offersTitle => 'Turn on more';
+
+  @override
+  String get offersSubtitle => 'Each one asks only for what it needs.';
 }

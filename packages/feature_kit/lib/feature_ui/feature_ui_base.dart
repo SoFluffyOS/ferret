@@ -1,6 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
 import 'package:feature_kit/feature_ui/feature_health.dart';
+import 'package:feature_kit/feature_ui/feature_offer.dart';
 import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -39,6 +40,11 @@ abstract class FeatureUi {
   /// Whether the home card has anything to show right now. The shell leaves
   /// no gap for a feature that says no.
   bool hasHomeCard(FeatureContext feature) => true;
+
+  /// What setting this feature up would give the user, or null when it is
+  /// already on or can't be on here. Offers replace setup-only home cards:
+  /// return false from [hasHomeCard] while you make an offer.
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) => null;
 
   /// A card on the home screen (the menubar popover on macOS), or null.
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) => null;
