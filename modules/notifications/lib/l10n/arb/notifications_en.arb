@@ -188,5 +188,43 @@
     }
   },
   "how": "How?",
-  "ok": "Got it"
+  "ok": "Got it",
+  "settingsNeedsAccess": "Needs access",
+  "@settingsNeedsAccess": {
+    "description": "Settings row value on the phone: Notifications are on but Android doesn't let Ferret read them."
+  },
+  "settingsNeedsAccessOn": "Needs access on {device}",
+  "@settingsNeedsAccessOn": {
+    "description": "Settings row value on a computer.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPerPhone": "To pick apps or stop showing a phone's notifications here, open the phone from Home.",
+  "permissionShow": "Show its notifications here",
+  "@permissionShow": {
+    "description": "Switch on a phone's page, under \"<phone> may\"."
+  },
+  "permissionHold": "Hold them back while it's in use",
+  "@permissionHold": {
+    "description": "Switch on a phone's page, under \"<phone> may\", after \"Show its notifications here\"."
+  },
+  "actionChooseApps": "Pick notification apps",
+  "healthHiddenHere": "Turned off here",
+  "@healthHiddenHere": {
+    "description": "Device page, next to Notifications, when this computer doesn't show that phone's notifications."
+  },
+  "healthHiddenHelp": "Turn on \"Show its notifications here\" below.",
+  "healthAccessHelp": "On {device}: open Ferret and tap Fix.",
+  "@healthAccessHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthOffThisPhone": "Off on this phone",
+  "healthOffThisPhoneHelp": "On this phone: Settings → To your computer → Notifications."
 }

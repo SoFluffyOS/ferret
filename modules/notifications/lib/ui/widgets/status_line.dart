@@ -18,7 +18,7 @@ class StatusLine extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final color = switch (tone) {
       .good => palette.success,
-      .warning => palette.danger,
+      .warning => palette.warning,
       .neutral => palette.mutedText,
     };
 

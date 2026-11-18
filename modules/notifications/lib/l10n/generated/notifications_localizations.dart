@@ -462,6 +462,74 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get ok;
+
+  /// Settings row value on the phone: Notifications are on but Android doesn't let Ferret read them.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access'**
+  String get settingsNeedsAccess;
+
+  /// Settings row value on a computer.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access on {device}'**
+  String settingsNeedsAccessOn(String device);
+
+  /// No description provided for @settingsPerPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'To pick apps or stop showing a phone\'s notifications here, open the phone from Home.'**
+  String get settingsPerPhone;
+
+  /// Switch on a phone's page, under "<phone> may".
+  ///
+  /// In en, this message translates to:
+  /// **'Show its notifications here'**
+  String get permissionShow;
+
+  /// Switch on a phone's page, under "<phone> may", after "Show its notifications here".
+  ///
+  /// In en, this message translates to:
+  /// **'Hold them back while it\'s in use'**
+  String get permissionHold;
+
+  /// No description provided for @actionChooseApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick notification apps'**
+  String get actionChooseApps;
+
+  /// Device page, next to Notifications, when this computer doesn't show that phone's notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Turned off here'**
+  String get healthHiddenHere;
+
+  /// No description provided for @healthHiddenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on \"Show its notifications here\" below.'**
+  String get healthHiddenHelp;
+
+  /// No description provided for @healthAccessHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret and tap Fix.'**
+  String healthAccessHelp(String device);
+
+  /// No description provided for @healthOffThisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this phone'**
+  String get healthOffThisPhone;
+
+  /// No description provided for @healthOffThisPhoneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On this phone: Settings → To your computer → Notifications.'**
+  String get healthOffThisPhoneHelp;
+
+
 }
 
 class _NotificationsLocalizationsDelegate

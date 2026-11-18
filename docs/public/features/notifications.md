@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Notifications in **Do more** on Ferret's home screen (or open **Settings → Notifications**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Notifications in **Do more** on Ferret's home screen (or open **Settings → To your computer**), then **Turn on**.
 > 2. Turn on Ferret on the Notification access screen, then come back.
 > 3. New messages show up on your computer. Reply or dismiss them there.
 
@@ -31,13 +31,17 @@ The Notifications card on the home screen shows the last few from each phone. **
 
 Messaging apps are picked for you: WhatsApp, Signal, Telegram, Messages, Messenger, Discord, Slack, Element and more. Everything else stays off.
 
-Change it in **Settings → Notifications → Choose apps**, on the phone or on your computer (your computer asks the phone for its app list).
+Change it on the phone in **Settings → To your computer → Choose apps**. Or on your computer: open the phone from Home and click **Pick notification apps** (your computer asks the phone for its app list).
 
 ## 🙈 Not while you're using the phone
 
 If your phone's screen is on and unlocked, you already see the notification there. So by default Ferret doesn't mirror it.
 
-Turn **Pause while I'm using the phone** off if you want them on your computer anyway.
+Turn **Pause while I'm using the phone** off if you want them on your computer anyway. On your computer, the same switch is on the phone's page: **Hold them back while it's in use**.
+
+## 🔕 Not from this phone
+
+Don't want one phone's notifications on one computer? On that computer, open the phone from Home and turn off **Show its notifications here**. Your other computers keep getting them.
 
 ## 🔑 "Android blocked this setting"
 

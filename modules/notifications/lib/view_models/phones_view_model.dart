@@ -4,7 +4,6 @@ import 'package:engine/engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:notifications/feature/notifications_feature.dart';
 import 'package:notifications/view_models/phone_status.dart';
-import 'package:protocol/notifications.dart';
 
 /// A paired Android phone, by id and name.
 typedef PairedPhone = ({String deviceId, String name});
@@ -69,17 +68,6 @@ class PhonesViewModel extends ChangeNotifier {
   }
 
   Future<void> retry(String deviceId) => _feature.fetchSettings(deviceId);
-
-  Future<void> setSkipWhileUsing(String deviceId, bool value) async {
-    try {
-      await _feature.updateSettings(
-        deviceId,
-        UpdateMirrorSettings(skipWhileUsing: value),
-      );
-    } on Object {
-      await _feature.fetchSettings(deviceId);
-    }
-  }
 
   @override
   void dispose() {

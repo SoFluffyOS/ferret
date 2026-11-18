@@ -271,4 +271,44 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get ok => 'Got it';
+
+  @override
+  String get settingsNeedsAccess => 'Needs access';
+
+  @override
+  String settingsNeedsAccessOn(String device) {
+    return 'Needs access on $device';
+  }
+
+  @override
+  String get settingsPerPhone =>
+      'To pick apps or stop showing a phone\'s notifications here, open the phone from Home.';
+
+  @override
+  String get permissionShow => 'Show its notifications here';
+
+  @override
+  String get permissionHold => 'Hold them back while it\'s in use';
+
+  @override
+  String get actionChooseApps => 'Pick notification apps';
+
+  @override
+  String get healthHiddenHere => 'Turned off here';
+
+  @override
+  String get healthHiddenHelp =>
+      'Turn on \"Show its notifications here\" below.';
+
+  @override
+  String healthAccessHelp(String device) {
+    return 'On $device: open Ferret and tap Fix.';
+  }
+
+  @override
+  String get healthOffThisPhone => 'Off on this phone';
+
+  @override
+  String get healthOffThisPhoneHelp =>
+      'On this phone: Settings → To your computer → Notifications.';
 }

@@ -6,12 +6,10 @@ import 'package:notifications/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Mirroring settings on a computer: each connected phone's status, its
-/// "pause while using" switch and its app picker.
+/// Notifications in a computer's Settings: how each paired phone is doing,
+/// and where its own choices are.
 class PhonesSettingsFrame extends StatelessWidget {
-  const PhonesSettingsFrame({super.key, required this.onChooseApps});
-
-  final ValueChanged<PhoneStatus> onChooseApps;
+  const PhonesSettingsFrame({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +35,21 @@ class PhonesSettingsFrame extends StatelessWidget {
         for (final phone in phones)
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
-            child: _PhoneCard(
-              phone: phone,
-              onChooseApps: () => onChooseApps(phone),
-            ),
+            child: _PhoneCard(phone: phone),
           ),
+        Text(
+          l10n.settingsPerPhone,
+          style: typography.caption1.copyWith(color: palette.mutedText),
+        ),
       ],
     );
   }
 }
 
 class _PhoneCard extends StatelessWidget {
-  const _PhoneCard({required this.phone, required this.onChooseApps});
+  const _PhoneCard({required this.phone});
 
   final PhoneStatus phone;
-  final VoidCallback onChooseApps;
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +57,6 @@ class _PhoneCard extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
-    final settings = phone.settings;
-
     return SurfaceCard(
       child: Column(
         crossAxisAlignment: .stretch,
@@ -77,22 +73,6 @@ class _PhoneCard extends StatelessWidget {
               variant: .ghost,
               label: l10n.tryAgain,
               onPressed: () => viewModel.retry(phone.deviceId),
-            ),
-          ],
-          if (settings != null && settings.enabled) ...[
-            Spacing.v12,
-            ToggleRow(
-              title: l10n.skipWhileUsing,
-              detail: l10n.skipWhileUsingDetail,
-              value: settings.skipWhileUsing,
-              onChanged: (value) =>
-                  viewModel.setSkipWhileUsing(phone.deviceId, value),
-            ),
-            Spacing.v12,
-            Button(
-              variant: .ghost,
-              label: l10n.chooseApps,
-              onPressed: onChooseApps,
             ),
           ],
         ],

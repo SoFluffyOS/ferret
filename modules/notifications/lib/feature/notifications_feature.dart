@@ -48,6 +48,11 @@ class NotificationsFeature extends Feature implements MirrorControl {
 
   late final MirrorPreferences preferences = MirrorPreferences(host.settings);
 
+  /// What this computer remembers about its phones.
+  late final ReceiverPreferences receiverPreferences = ReceiverPreferences(
+    host.settings,
+  );
+
   @override
   String get id => featureId;
 
@@ -134,7 +139,10 @@ class NotificationsFeature extends Feature implements MirrorControl {
     final deviceId = session.remoteDeviceId;
 
     if (payloadOf(envelope, NotificationPosted.new) case final posted?) {
-      _onMirrorPosted(deviceId, posted.notification);
+      if (receiverPreferences.showsFrom(deviceId)) {
+        _onMirrorPosted(deviceId, posted.notification);
+      }
+
       return null;
     }
 
@@ -144,6 +152,10 @@ class NotificationsFeature extends Feature implements MirrorControl {
     }
 
     if (payloadOf(envelope, CatchUp.new) case final catchUp?) {
+      if (!receiverPreferences.showsFrom(deviceId)) {
+        return null;
+      }
+
       _emit(
         MirrorCaughtUp(
           deviceId,
@@ -470,6 +482,7 @@ class NotificationsFeature extends Feature implements MirrorControl {
   void _onSenderSettings(String deviceId, MirrorSettings settings) {
     _senderSettings[deviceId] = settings;
     _unreachableSenders.remove(deviceId);
+    unawaited(receiverPreferences.setMirroring(deviceId, settings.enabled));
     _emit(MirrorSettingsChanged(deviceId, settings));
   }
 

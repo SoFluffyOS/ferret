@@ -143,42 +143,61 @@ class NotificationsFeatureUi extends FeatureUi {
   }
 
   /// On a computer, whether a phone mirrors here: off, access missing, or
-  /// not answering.
+  /// not answering. On the phone, whether it sends to that computer.
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
     final session = device.session;
-    if (this.feature.isSource || session == null) {
+    if (session == null) {
       return null;
     }
 
     final flags = session.remoteFeature(featureId)?.flags ?? const <String>[];
+    if (this.feature.isSource) {
+      return _phoneHealth(flags);
+    }
+
     if (!flags.contains(NotificationsFeature.sendFlag)) {
       return null;
     }
 
     final l10n = platformNotificationsL10n();
     final deviceId = device.device.id;
+    final name = device.device.name;
+    if (!this.feature.receiverPreferences.showsFrom(deviceId)) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthHiddenHere,
+        help: l10n.healthHiddenHelp,
+      );
+    }
+
     if (this.feature.isUnreachable(deviceId)) {
       return FeatureHealth(
         .failing,
-        reason: l10n.phoneUnreachable(device.device.name),
+        reason: l10n.phoneUnreachable(name),
+        onFix: () => unawaited(this.feature.fetchSettings(deviceId)),
       );
     }
 
     final settings = this.feature.senderSettings[deviceId];
     if (settings == null) {
-      return null;
+      return FeatureHealth(.off, reason: l10n.phoneChecking);
     }
 
     if (!settings.enabled) {
       return FeatureHealth(
         .off,
-        reason: l10n.phoneMirroringOff(device.device.name),
+        reason: l10n.phoneMirroringOff(name),
+        help: l10n.howBody(name),
       );
     }
 
     if (!settings.accessGranted) {
-      return FeatureHealth(.needsAttention, reason: l10n.phoneAccessOff);
+      return FeatureHealth(
+        .needsAttention,
+        reason: l10n.phoneAccessOff,
+        help: l10n.healthAccessHelp(name),
+      );
     }
 
     return FeatureHealth(
@@ -186,6 +205,102 @@ class NotificationsFeatureUi extends FeatureUi {
       reason: l10n.healthApps(settings.allowedPackages.length),
     );
   }
+
+  /// On a computer, for a phone that mirrors here: its app picker, on the
+  /// phone's page only.
+  @override
+  List<FeatureAction> deviceActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final deviceId = device.device.id;
+    final settings = this.feature.senderSettings[deviceId];
+    if (this.feature.isSource ||
+        settings == null ||
+        !settings.enabled ||
+        !this.feature.receiverPreferences.showsFrom(deviceId)) {
+      return const [];
+    }
+
+    return [
+      FeatureAction(
+        label: context.notificationsL10n.actionChooseApps,
+        icon: LucideIcons.bell,
+        onPressed: () =>
+            _openRemotePicker(feature, deviceId, device.device.name),
+      ),
+    ];
+  }
+
+  /// On a computer, for a phone that offers its notifications: whether they
+  /// show here, and whether the phone holds them back while it is in use.
+  @override
+  List<DevicePermission> devicePermissions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final flags =
+        device.session?.remoteFeature(featureId)?.flags ?? const <String>[];
+    if (this.feature.isSource ||
+        !flags.contains(NotificationsFeature.sendFlag)) {
+      return const [];
+    }
+
+    final l10n = context.notificationsL10n;
+    final deviceId = device.device.id;
+    final shows = this.feature.receiverPreferences.showsFrom(deviceId);
+    final settings = this.feature.senderSettings[deviceId];
+
+    return [
+      DevicePermission(
+        label: l10n.permissionShow,
+        value: shows,
+        onChanged: (value) => unawaited(_setShowsFrom(deviceId, value)),
+      ),
+      if (settings != null && settings.enabled && shows)
+        DevicePermission(
+          label: l10n.permissionHold,
+          detail: l10n.skipWhileUsingDetail,
+          value: settings.skipWhileUsing,
+          onChanged: (value) => unawaited(_setSkipWhileUsing(deviceId, value)),
+        ),
+    ];
+  }
+
+  /// On the phone and on a computer with an Android phone paired, under
+  /// "To your computer" and "From your phone".
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final child = _settings(feature);
+    if (child == null) {
+      return const [];
+    }
+
+    final l10n = context.notificationsL10n;
+    final state = switch (this.feature.isSource) {
+      true => _phoneSettingsState(l10n),
+      false => _computerSettingsState(l10n, feature),
+    };
+
+    return [
+      FeatureSettings(
+        group: .phone,
+        title: l10n.title,
+        child: child,
+        summary: state.summary,
+        isOn: state.isOn,
+        needsAttention: state.needsAttention,
+      ),
+    ];
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .phone;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
@@ -207,6 +322,125 @@ class NotificationsFeatureUi extends FeatureUi {
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) =>
       _settings(feature);
+
+  /// How this phone's mirroring is doing, for a computer that shows it.
+  FeatureHealth? _phoneHealth(List<String> flags) {
+    final setup = _phoneSetup;
+    if (setup == null || !flags.contains(NotificationsFeature.receiveFlag)) {
+      return null;
+    }
+
+    final l10n = platformNotificationsL10n();
+    if (!setup.checked) {
+      return FeatureHealth(.off, reason: l10n.phoneChecking);
+    }
+
+    return switch (setup.stage) {
+      .off => FeatureHealth(
+        .off,
+        reason: l10n.healthOffThisPhone,
+        help: l10n.healthOffThisPhoneHelp,
+      ),
+      .needsAccess => FeatureHealth(
+        .needsAttention,
+        reason: l10n.phoneAccessOff,
+        onFix: () => unawaited(setup.openAccessSettings()),
+      ),
+      .ready => FeatureHealth(
+        .ok,
+        reason: l10n.healthApps(setup.allowedAppCount),
+      ),
+    };
+  }
+
+  _SettingsState _phoneSettingsState(NotificationsLocalizations l10n) {
+    final setup = _phoneSetup;
+    if (setup == null) {
+      return const (summary: '', isOn: false, needsAttention: false);
+    }
+
+    return switch (setup.stage) {
+      .off => const (summary: '', isOn: false, needsAttention: false),
+      .needsAccess => (
+        summary: l10n.settingsNeedsAccess,
+        isOn: true,
+        needsAttention: setup.checked,
+      ),
+      .ready => (
+        summary: l10n.healthApps(setup.allowedAppCount),
+        isOn: true,
+        needsAttention: false,
+      ),
+    };
+  }
+
+  /// The phone that needs the person comes first, then one that mirrors,
+  /// then one that did the last time it was here.
+  _SettingsState _computerSettingsState(
+    NotificationsLocalizations l10n,
+    FeatureContext featureContext,
+  ) {
+    final preferences = feature.receiverPreferences;
+    final phones = [
+      for (final phone in _pairedPhones(featureContext))
+        if (preferences.showsFrom(phone.deviceId)) phone,
+    ];
+
+    for (final phone in phones) {
+      final settings = feature.senderSettings[phone.deviceId];
+      if (settings != null && settings.enabled && !settings.accessGranted) {
+        return (
+          summary: l10n.settingsNeedsAccessOn(phone.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+
+      if (feature.isUnreachable(phone.deviceId) &&
+          preferences.wasMirroring(phone.deviceId)) {
+        return (
+          summary: l10n.phoneUnreachable(phone.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+    }
+
+    for (final phone in phones) {
+      final settings = feature.senderSettings[phone.deviceId];
+      if (settings != null && settings.enabled) {
+        return (
+          summary: l10n.healthApps(settings.allowedPackages.length),
+          isOn: true,
+          needsAttention: false,
+        );
+      }
+    }
+
+    return (
+      summary: '',
+      isOn: phones.any((phone) => preferences.wasMirroring(phone.deviceId)),
+      needsAttention: false,
+    );
+  }
+
+  Future<void> _setShowsFrom(String deviceId, bool value) async {
+    await feature.receiverPreferences.setShowsFrom(deviceId, value);
+    _devicesChanged.add(null);
+  }
+
+  /// The phone keeps the setting; when it can't be reached, ask again so
+  /// the switch shows what the phone really has.
+  Future<void> _setSkipWhileUsing(String deviceId, bool value) async {
+    try {
+      await feature.updateSettings(
+        deviceId,
+        UpdateMirrorSettings(skipWhileUsing: value),
+      );
+    } on Object {
+      await feature.fetchSettings(deviceId);
+    }
+  }
 
   Widget? _homeCard(FeatureContext featureContext) {
     if (access case final phoneAccess? when feature.isSource) {
@@ -257,9 +491,7 @@ class NotificationsFeatureUi extends FeatureUi {
 
     return ChangeNotifierProvider(
       create: (_) => _phonesViewModel(featureContext),
-      child: PhonesSettingsFrame(
-        onChooseApps: (phone) => _openRemotePicker(featureContext, phone),
-      ),
+      child: const PhonesSettingsFrame(),
     );
   }
 
@@ -341,19 +573,25 @@ class NotificationsFeatureUi extends FeatureUi {
     ),
   );
 
-  void _openRemotePicker(FeatureContext featureContext, PhoneStatus phone) =>
-      unawaited(
-        featureContext.push<void>(
-          AppPickerPage(
-            deviceName: phone.name,
-            load: () => feature.fetchApps(phone.deviceId),
-            save: (package, allowed) => feature.updateSettings(
-              phone.deviceId,
-              UpdateMirrorSettings(
-                apps: [AppChoice(package: package, allowed: allowed)],
-              ),
-            ),
+  void _openRemotePicker(
+    FeatureContext featureContext,
+    String deviceId,
+    String deviceName,
+  ) => unawaited(
+    featureContext.push<void>(
+      AppPickerPage(
+        deviceName: deviceName,
+        load: () => feature.fetchApps(deviceId),
+        save: (package, allowed) => feature.updateSettings(
+          deviceId,
+          UpdateMirrorSettings(
+            apps: [AppChoice(package: package, allowed: allowed)],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
+
+/// What the Settings row says about notifications.
+typedef _SettingsState = ({String summary, bool isOn, bool needsAttention});
