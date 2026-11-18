@@ -169,7 +169,7 @@ class _PausedLine extends StatelessWidget {
             onTap: () => unawaited(context.read<PauseController>().resume()),
             child: Text(
               l10n.resume,
-              style: typography.base2.copyWith(color: palette.accent),
+              style: typography.base2.copyWith(color: palette.link),
             ),
           ),
         ],

@@ -176,7 +176,7 @@ class ActivityRow extends StatelessWidget {
 
   Color _toneColor(FerretPalette palette) => switch (item.tone) {
     .normal || .muted => palette.mutedText,
-    .accent => palette.accent,
+    .accent => palette.link,
     .success => palette.success,
     .warning => palette.warning,
     .danger => palette.danger,

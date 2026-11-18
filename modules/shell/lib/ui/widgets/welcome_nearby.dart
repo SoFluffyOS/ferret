@@ -36,7 +36,7 @@ class WelcomeNearby extends StatelessWidget {
             onTap: onPairWithCode,
             child: Text(
               l10n.pairShowCode,
-              style: typography.base2.copyWith(color: palette.accent),
+              style: typography.base2.copyWith(color: palette.link),
             ),
           ),
           Spacing.v24,

@@ -108,7 +108,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
                       children: [
                         Text(
                           l10n.brandsToggle,
-                          style: caption.copyWith(color: palette.accent),
+                          style: caption.copyWith(color: palette.link),
                         ),
                         Icon(
                           switch (_showsBrands) {

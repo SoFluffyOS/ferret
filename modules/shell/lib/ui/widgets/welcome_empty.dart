@@ -99,7 +99,7 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
               onTap: widget.onCantSee,
               child: Text(
                 l10n.emptyCantSee,
-                style: typography.caption1.copyWith(color: palette.accent),
+                style: typography.caption1.copyWith(color: palette.link),
               ),
             ),
           },

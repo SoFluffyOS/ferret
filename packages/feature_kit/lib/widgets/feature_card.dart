@@ -110,7 +110,7 @@ class FeatureCard extends StatelessWidget {
   Color _color(FerretPalette palette, FeatureTone tone) => switch (tone) {
     .normal => palette.text,
     .muted => palette.mutedText,
-    .accent => palette.accent,
+    .accent => palette.link,
     .success => palette.success,
     .warning => palette.warning,
     .danger => palette.danger,

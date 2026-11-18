@@ -36,11 +36,30 @@ class FerretPalette {
 
   Color get accent => _theme.colors.primary;
 
-  Color get success => const Color(0xFF34C759);
+  /// [accent] as text or a thin icon: links, "new" markers. On dark the
+  /// accent itself is too dim to read, so this is a lighter blue there.
+  Color get link => switch (_dark) {
+    true => const Color(0xFF4C9AFF),
+    false => _theme.colors.primary,
+  };
 
-  Color get warning => const Color(0xFFFF9F0A);
+  // The three below are text as often as dots, so on light they are the
+  // darker shades that keep 4.5:1 against [surface]. The bright ones only
+  // pass on dark.
+  Color get success => switch (_dark) {
+    true => const Color(0xFF34C759),
+    false => const Color(0xFF1F7A36),
+  };
 
-  Color get danger => const Color(0xFFFF453A);
+  Color get warning => switch (_dark) {
+    true => const Color(0xFFFF9F0A),
+    false => const Color(0xFFB25000),
+  };
+
+  Color get danger => switch (_dark) {
+    true => const Color(0xFFFF453A),
+    false => const Color(0xFFD70015),
+  };
 }
 
 extension FerretPaletteContext on BuildContext {

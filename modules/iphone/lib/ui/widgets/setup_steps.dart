@@ -27,7 +27,7 @@ class SetupSteps extends StatelessWidget {
                 width: Spacing.d18,
                 child: Text(
                   '${index + 1}.',
-                  style: typography.body2.copyWith(color: palette.accent),
+                  style: typography.body2.copyWith(color: palette.link),
                 ),
               ),
               Expanded(

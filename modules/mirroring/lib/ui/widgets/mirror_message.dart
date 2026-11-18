@@ -47,7 +47,7 @@ class MirrorMessage extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final iconColor = switch (tone) {
-      .accent => palette.accent,
+      .accent => palette.link,
       .danger => palette.danger,
       .warning => palette.warning,
       .success => palette.success,

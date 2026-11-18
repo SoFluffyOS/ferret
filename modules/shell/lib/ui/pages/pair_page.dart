@@ -96,7 +96,7 @@ class _PairPageState extends State<PairPage> {
                   onTap: () => _open(const DoctorPage()),
                   child: Text(
                     l10n.settingsCheckNetwork,
-                    style: typography.caption1.copyWith(color: palette.accent),
+                    style: typography.caption1.copyWith(color: palette.link),
                   ),
                 ),
               ),

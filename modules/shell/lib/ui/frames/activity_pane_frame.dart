@@ -154,7 +154,7 @@ class _Pane extends StatelessWidget {
                   onTap: onSeeAll,
                   child: Text(
                     l10n.activitySeeAll,
-                    style: typography.caption1.copyWith(color: palette.accent),
+                    style: typography.caption1.copyWith(color: palette.link),
                   ),
                 ),
                 false => null,

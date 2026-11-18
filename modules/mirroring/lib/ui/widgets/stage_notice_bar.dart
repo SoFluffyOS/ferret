@@ -62,7 +62,7 @@ class StageNoticeBar extends StatelessWidget {
                   padding: EdgeInsets.all(Spacing.d4),
                   child: Text(
                     label,
-                    style: typography.caption1.copyWith(color: palette.accent),
+                    style: typography.caption1.copyWith(color: palette.link),
                   ),
                 ),
               ),

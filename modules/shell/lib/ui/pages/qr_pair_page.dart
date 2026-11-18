@@ -105,7 +105,7 @@ class _QrCard extends StatelessWidget {
               padding: EdgeInsets.all(Spacing.d8),
               child: Text(
                 l10n.pairNewCode,
-                style: typography.base2.copyWith(color: palette.accent),
+                style: typography.base2.copyWith(color: palette.link),
               ),
             ),
           ),

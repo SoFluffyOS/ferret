@@ -83,7 +83,7 @@ class _HealthRowState extends State<HealthRow> {
                 ),
                 child: Text(
                   label,
-                  style: typography.base2.copyWith(color: palette.accent),
+                  style: typography.base2.copyWith(color: palette.link),
                 ),
               ),
             ),

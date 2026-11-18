@@ -22,7 +22,7 @@ class NoticeText extends StatelessWidget {
             .warning => palette.warning,
             .danger => palette.danger,
             .success => palette.success,
-            .accent => palette.accent,
+            .accent => palette.link,
             .normal => palette.text,
             .muted => palette.mutedText,
           },

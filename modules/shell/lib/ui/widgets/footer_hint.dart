@@ -45,7 +45,7 @@ class FooterHint extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
                 child: Text(
                   label,
-                  style: style.copyWith(color: palette.accent),
+                  style: style.copyWith(color: palette.link),
                 ),
               ),
             ),
