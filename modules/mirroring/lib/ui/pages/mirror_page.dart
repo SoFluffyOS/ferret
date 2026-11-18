@@ -20,10 +20,12 @@ class MirrorPage extends StatefulWidget {
     super.key,
     required this.deviceId,
     required this.deviceName,
+    this.clock,
   });
 
   final String deviceId;
   final String deviceName;
+  final DateTime Function()? clock;
 
   @override
   State<MirrorPage> createState() => _MirrorPageState();
@@ -140,6 +142,7 @@ class _MirrorPageState extends State<MirrorPage> {
                 deviceId: widget.deviceId,
                 deviceName: widget.deviceName,
                 onClose: _close,
+                clock: widget.clock,
               ),
             ),
           ],

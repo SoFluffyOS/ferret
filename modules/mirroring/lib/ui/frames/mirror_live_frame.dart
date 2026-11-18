@@ -66,16 +66,27 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
       builder: (context, constraints) {
         final beside = !isSmall && constraints.maxWidth > constraints.maxHeight;
         if (beside) {
-          return Row(
-            children: [
-              Expanded(child: _picture(context, textFieldOpen)),
-              Padding(
-                padding: EdgeInsets.all(Spacing.d12),
-                child: Center(
-                  child: SingleChildScrollView(child: _toolbar(.vertical)),
+          final toolbar = _toolbar(.vertical);
+          final aspect = widget.picture.width / widget.picture.height;
+          final height = constraints.maxHeight - Spacing.d12;
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: Spacing.d12),
+            child: Row(
+              mainAxisAlignment: .center,
+              children: [
+                Flexible(
+                  child: SizedBox(
+                    width: height * aspect,
+                    child: _picture(context, textFieldOpen),
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Spacing.d16),
+                  child: Center(child: SingleChildScrollView(child: toolbar)),
+                ),
+              ],
+            ),
           );
         }
 
@@ -273,8 +284,8 @@ class _NoticeFrame extends StatelessWidget {
     final notice = context.select<ViewerViewModel, StageNotice?>(
       (viewModel) => viewModel.notice,
     );
-    final isFast = context.select<ViewerViewModel, bool>(
-      (viewModel) => viewModel.preset == .fast,
+    final canGoFaster = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.presetRestarts && viewModel.preset != .fast,
     );
     final cableOffers = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.cableOffers(deviceId),
@@ -289,12 +300,12 @@ class _NoticeFrame extends StatelessWidget {
       .viaCable => (l10n.noticeViaCable, null, null),
       .cableNoAsk => (l10n.noticeCableNoAsk(deviceName), null, null),
       .basicPicture => (l10n.basicPicture, null, null),
-      .slow when isFast => (l10n.noticeSlowHelp(deviceName), null, null),
-      .slow => (
+      .slow when canGoFaster => (
         l10n.noticeSlow(deviceName),
         l10n.useFast,
         () => unawaited(viewModel.setPreset(.fast)),
       ),
+      .slow => (l10n.noticeSlowHelp(deviceName), null, null),
       .viewOnly when cableOffers => (
         l10n.viewOnlyToast,
         l10n.controlWithCable,

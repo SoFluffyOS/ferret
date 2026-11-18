@@ -108,19 +108,23 @@ class AirplayGuideFrame extends StatelessWidget {
       actions: [cancel],
       children: [
         Spacing.v8,
-        for (final (index, line) in [
-          l10n.airplayStep1,
-          l10n.airplayStep2,
-          l10n.airplayStep3(computerName),
-        ].indexed)
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.d2),
-            child: Text(
-              '${index + 1}. $line',
-              textAlign: .center,
-              style: typography.base2.copyWith(color: palette.text),
-            ),
-          ),
+        Column(
+          crossAxisAlignment: .start,
+          children: [
+            for (final (index, line) in [
+              l10n.airplayStep1,
+              l10n.airplayStep2,
+              l10n.airplayStep3(computerName),
+            ].indexed)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: Spacing.d2),
+                child: Text(
+                  '${index + 1}. $line',
+                  style: typography.base2.copyWith(color: palette.text),
+                ),
+              ),
+          ],
+        ),
         Spacing.v12,
         if (armedUntil != null)
           Countdown(
