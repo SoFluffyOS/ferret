@@ -436,4 +436,114 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get offersSubtitle => 'Each one asks only for what it needs.';
+
+  @override
+  String get onboardWelcomeTitle => 'Your devices, working together';
+
+  @override
+  String get onboardWelcomeBody =>
+      'Ferret passes what you\'re doing between your phone and your computer.';
+
+  @override
+  String get onboardPointContinue =>
+      'Continue a page or song on another device';
+
+  @override
+  String get onboardPointClipboard => 'Copy on one, paste on the other';
+
+  @override
+  String get onboardPointFiles => 'Send files and photos in a second';
+
+  @override
+  String get onboardPointPhone =>
+      'See your phone\'s calls, texts and notifications';
+
+  @override
+  String get onboardStart => 'Get started';
+
+  @override
+  String onboardStep(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get onboardNameTitle => 'Name this device';
+
+  @override
+  String get onboardNameBody => 'Your other devices will show it by this name.';
+
+  @override
+  String get onboardNameLabel => 'Device name';
+
+  @override
+  String get onboardContinue => 'Continue';
+
+  @override
+  String get onboardPairTitle => 'Pair your other device';
+
+  @override
+  String get onboardPairBodyComputer =>
+      'Install Ferret on your phone, open it, and tap Scan the code on your computer.';
+
+  @override
+  String get onboardPairBodyPhone =>
+      'Open Ferret on your computer, click Pair a device, then scan the code it shows.';
+
+  @override
+  String get onboardPairWaiting => 'Waiting for your other device…';
+
+  @override
+  String onboardPairDone(String device) {
+    return 'Paired with $device';
+  }
+
+  @override
+  String get onboardShowMyCode => 'Show my code instead';
+
+  @override
+  String get onboardMoreWays => 'More ways to pair';
+
+  @override
+  String get onboardLater => 'Do this later';
+
+  @override
+  String get onboardReadyTitle => 'You\'re all set';
+
+  @override
+  String onboardReadyBodyPaired(String device) {
+    return '$device and this device are connected.';
+  }
+
+  @override
+  String get onboardReadyBodyLater =>
+      'Pair a device any time with the + button.';
+
+  @override
+  String get onboardTipCopy =>
+      'Copy something here, then paste it on your other device.';
+
+  @override
+  String get onboardTipDropComputer => 'Drop files on Ferret to send them.';
+
+  @override
+  String get onboardTipSharePhone =>
+      'Use Share → Send with Ferret to send files and links.';
+
+  @override
+  String get onboardTipMenubar =>
+      'Ferret lives in the menubar. Click ⇆ at the top of the screen.';
+
+  @override
+  String get onboardTipTray => 'Ferret lives in the tray, next to the clock.';
+
+  @override
+  String get onboardTipAndroid =>
+      'Ferret keeps a quiet notification so it stays connected.';
+
+  @override
+  String get onboardTipMore =>
+      'Turn on more (calls, texts, notifications) from the home screen.';
+
+  @override
+  String get onboardFinish => 'Start using Ferret';
 }

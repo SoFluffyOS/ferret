@@ -813,6 +813,192 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Each one asks only for what it needs.'**
   String get offersSubtitle;
+
+  /// No description provided for @onboardWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices, working together'**
+  String get onboardWelcomeTitle;
+
+  /// No description provided for @onboardWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret passes what you\'re doing between your phone and your computer.'**
+  String get onboardWelcomeBody;
+
+  /// No description provided for @onboardPointContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue a page or song on another device'**
+  String get onboardPointContinue;
+
+  /// No description provided for @onboardPointClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy on one, paste on the other'**
+  String get onboardPointClipboard;
+
+  /// No description provided for @onboardPointFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Send files and photos in a second'**
+  String get onboardPointFiles;
+
+  /// No description provided for @onboardPointPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'See your phone\'s calls, texts and notifications'**
+  String get onboardPointPhone;
+
+  /// No description provided for @onboardStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardStart;
+
+  /// No description provided for @onboardStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String onboardStep(int step, int total);
+
+  /// No description provided for @onboardNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name this device'**
+  String get onboardNameTitle;
+
+  /// No description provided for @onboardNameBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other devices will show it by this name.'**
+  String get onboardNameBody;
+
+  /// No description provided for @onboardNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name'**
+  String get onboardNameLabel;
+
+  /// No description provided for @onboardContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardContinue;
+
+  /// No description provided for @onboardPairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair your other device'**
+  String get onboardPairTitle;
+
+  /// No description provided for @onboardPairBodyComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Ferret on your phone, open it, and tap Scan the code on your computer.'**
+  String get onboardPairBodyComputer;
+
+  /// No description provided for @onboardPairBodyPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret on your computer, click Pair a device, then scan the code it shows.'**
+  String get onboardPairBodyPhone;
+
+  /// No description provided for @onboardPairWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your other device…'**
+  String get onboardPairWaiting;
+
+  /// No description provided for @onboardPairDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired with {device}'**
+  String onboardPairDone(String device);
+
+  /// No description provided for @onboardShowMyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my code instead'**
+  String get onboardShowMyCode;
+
+  /// No description provided for @onboardMoreWays.
+  ///
+  /// In en, this message translates to:
+  /// **'More ways to pair'**
+  String get onboardMoreWays;
+
+  /// No description provided for @onboardLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Do this later'**
+  String get onboardLater;
+
+  /// No description provided for @onboardReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set'**
+  String get onboardReadyTitle;
+
+  /// No description provided for @onboardReadyBodyPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} and this device are connected.'**
+  String onboardReadyBodyPaired(String device);
+
+  /// No description provided for @onboardReadyBodyLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair a device any time with the + button.'**
+  String get onboardReadyBodyLater;
+
+  /// No description provided for @onboardTipCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy something here, then paste it on your other device.'**
+  String get onboardTipCopy;
+
+  /// No description provided for @onboardTipDropComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files on Ferret to send them.'**
+  String get onboardTipDropComputer;
+
+  /// No description provided for @onboardTipSharePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Share → Send with Ferret to send files and links.'**
+  String get onboardTipSharePhone;
+
+  /// No description provided for @onboardTipMenubar.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret lives in the menubar. Click ⇆ at the top of the screen.'**
+  String get onboardTipMenubar;
+
+  /// No description provided for @onboardTipTray.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret lives in the tray, next to the clock.'**
+  String get onboardTipTray;
+
+  /// No description provided for @onboardTipAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret keeps a quiet notification so it stays connected.'**
+  String get onboardTipAndroid;
+
+  /// No description provided for @onboardTipMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on more (calls, texts, notifications) from the home screen.'**
+  String get onboardTipMore;
+
+  /// No description provided for @onboardFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Start using Ferret'**
+  String get onboardFinish;
 }
 
 class _ShellLocalizationsDelegate

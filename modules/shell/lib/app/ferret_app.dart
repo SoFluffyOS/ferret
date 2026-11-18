@@ -52,7 +52,7 @@ class FerretApp extends StatelessWidget {
             settings: settings,
             pageBuilder: (context, _, _) => builder(context),
           ),
-          home: const HomePage(),
+          home: const StartPage(),
           builder: (context, child) => _Themed(
             navigatorKey: featureContext.navigatorKey,
             child: child ?? const SizedBox.shrink(),

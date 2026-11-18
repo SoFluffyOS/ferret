@@ -283,5 +283,60 @@
   "scanSection": "Scan",
   "scanNotFerret": "That's not a Ferret code. Open Ferret on your computer and choose Pair a device.",
   "offersTitle": "Turn on more",
-  "offersSubtitle": "Each one asks only for what it needs."
+  "offersSubtitle": "Each one asks only for what it needs.",
+  "onboardWelcomeTitle": "Your devices, working together",
+  "onboardWelcomeBody": "Ferret passes what you're doing between your phone and your computer.",
+  "onboardPointContinue": "Continue a page or song on another device",
+  "onboardPointClipboard": "Copy on one, paste on the other",
+  "onboardPointFiles": "Send files and photos in a second",
+  "onboardPointPhone": "See your phone's calls, texts and notifications",
+  "onboardStart": "Get started",
+  "onboardStep": "Step {step} of {total}",
+  "@onboardStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardNameTitle": "Name this device",
+  "onboardNameBody": "Your other devices will show it by this name.",
+  "onboardNameLabel": "Device name",
+  "onboardContinue": "Continue",
+  "onboardPairTitle": "Pair your other device",
+  "onboardPairBodyComputer": "Install Ferret on your phone, open it, and tap Scan the code on your computer.",
+  "onboardPairBodyPhone": "Open Ferret on your computer, click Pair a device, then scan the code it shows.",
+  "onboardPairWaiting": "Waiting for your other device…",
+  "onboardPairDone": "Paired with {device}",
+  "@onboardPairDone": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardShowMyCode": "Show my code instead",
+  "onboardMoreWays": "More ways to pair",
+  "onboardLater": "Do this later",
+  "onboardReadyTitle": "You're all set",
+  "onboardReadyBodyPaired": "{device} and this device are connected.",
+  "@onboardReadyBodyPaired": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardReadyBodyLater": "Pair a device any time with the + button.",
+  "onboardTipCopy": "Copy something here, then paste it on your other device.",
+  "onboardTipDropComputer": "Drop files on Ferret to send them.",
+  "onboardTipSharePhone": "Use Share → Send with Ferret to send files and links.",
+  "onboardTipMenubar": "Ferret lives in the menubar. Click ⇆ at the top of the screen.",
+  "onboardTipTray": "Ferret lives in the tray, next to the clock.",
+  "onboardTipAndroid": "Ferret keeps a quiet notification so it stays connected.",
+  "onboardTipMore": "Turn on more (calls, texts, notifications) from the home screen.",
+  "onboardFinish": "Start using Ferret"
 }

@@ -5,3 +5,4 @@ export 'package:shell/ui/pages/home_page.dart';
 export 'package:shell/ui/pages/pair_page.dart';
 export 'package:shell/ui/pages/scan_page.dart';
 export 'package:shell/ui/pages/settings_page.dart';
+export 'package:shell/ui/pages/start_page.dart';
