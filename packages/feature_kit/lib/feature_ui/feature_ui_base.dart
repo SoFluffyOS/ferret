@@ -4,6 +4,7 @@ import 'package:feature_kit/feature_ui/device_permission.dart';
 import 'package:feature_kit/feature_ui/feature_busy.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
 import 'package:feature_kit/feature_ui/feature_health.dart';
+import 'package:feature_kit/feature_ui/feature_nearby_row.dart';
 import 'package:feature_kit/feature_ui/feature_offer.dart';
 import 'package:feature_kit/feature_ui/feature_section.dart';
 import 'package:feature_kit/feature_ui/feature_settings.dart';
@@ -91,6 +92,14 @@ abstract class FeatureUi {
     BuildContext context,
     FeatureContext feature,
     DeviceStatus device,
+  ) => const [];
+
+  /// What is near this device that isn't paired and that this feature can
+  /// still act on, such as a phone on a cable. The shell lists them under
+  /// Nearby and asks again whenever [uiChanges] fires.
+  List<FeatureNearbyRow> nearbyRows(
+    BuildContext context,
+    FeatureContext feature,
   ) => const [];
 
   /// The feature's section in Settings, or null.
