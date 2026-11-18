@@ -30,6 +30,9 @@ class CallsFeatureUi extends FeatureUi {
   /// Uses [feature], such as one with a fake phone in tests.
   CallsFeatureUi.withFeature(this.feature);
 
+  /// The id of the section a phone's dialer shows in.
+  static const sectionId = 'calls';
+
   @override
   final CallsFeature feature;
 
@@ -199,14 +202,35 @@ class CallsFeatureUi extends FeatureUi {
       FeatureAction(
         label: context.callsL10n.callAction,
         icon: LucideIcons.phoneOutgoing,
-        onPressed: () => unawaited(
-          feature.push<void>(
-            DialerPage(
-              control: this.feature,
-              deviceId: device.device.id,
-              deviceName: device.device.name,
-            ),
-          ),
+        onPressed: () =>
+            unawaited(feature.openSection(device.device.id, sectionId)),
+      ),
+    ];
+  }
+
+  /// On a computer, the dialer and recent calls of a phone that can call.
+  @override
+  List<FeatureSection> deviceSections(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final session = device.session;
+    final flags = session?.remoteFeature(featureId)?.flags ?? const <String>[];
+    if (this.feature.isPhone || !flags.contains(CallsFeature.phoneFlag)) {
+      return const [];
+    }
+
+    return [
+      FeatureSection(
+        id: sectionId,
+        title: title(context),
+        icon: icon,
+        order: 20,
+        builder: (_) => DialerPage(
+          control: this.feature,
+          deviceId: device.device.id,
+          deviceName: device.device.name,
         ),
       ),
     ];

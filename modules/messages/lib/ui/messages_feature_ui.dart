@@ -41,12 +41,22 @@ class MessagesFeatureUi extends FeatureUi {
 
   MessagesFeatureUi.withFeature(this.feature);
 
+  /// The id of the section a phone's texts show in.
+  static const sectionId = 'messages';
+
   @override
   final MessagesFeature feature;
 
   IncomingNotices? _notices;
   CardViewModel? _card;
   FeatureChanges? _changes;
+  Listenable? _uiChanges;
+
+  /// The conversation the Messages section opens on, by phone, and a tick
+  /// per request so asking for another one opens it in a section that is
+  /// already showing.
+  final Map<String, int> _wantedThreads = {};
+  final ValueNotifier<int> _threadRequests = ValueNotifier(0);
 
   @override
   String get featureId => MessagesFeature.featureId;
@@ -93,12 +103,13 @@ class MessagesFeatureUi extends FeatureUi {
   }
 
   @override
-  Listenable get uiChanges => _changes ??= FeatureChanges(
-    switch (feature.sourceService) {
+  Listenable get uiChanges => _uiChanges ??= Listenable.merge([
+    _changes ??= FeatureChanges(switch (feature.sourceService) {
       final SourceService service => service.changes,
       null => feature.library.events,
-    },
-  );
+    }),
+    _threadRequests,
+  ]);
 
   /// Only on the phone, while Messages are on but SMS access is missing. A
   /// computer shows unread texts in [activity] and opens them from the
@@ -272,6 +283,49 @@ class MessagesFeatureUi extends FeatureUi {
     ];
   }
 
+  /// On a computer, a phone's texts: for a phone that is connected, and
+  /// for one whose texts are saved here.
+  @override
+  List<FeatureSection> deviceSections(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    if (this.feature.isSource) {
+      return const [];
+    }
+
+    final deviceId = device.device.id;
+    final isPhone = switch (device.session) {
+      final Session session => MessagesFeature.isPhone(session),
+      null => false,
+    };
+    final library = this.feature.library;
+    if (!isPhone && !library.hasHistory(deviceId)) {
+      return const [];
+    }
+
+    return [
+      FeatureSection(
+        id: sectionId,
+        title: context.messagesL10n.title,
+        icon: icon,
+        order: 10,
+        badge: library.unreadTotal(deviceId),
+        fillsPane: true,
+        builder: (_) => MessagesPage(
+          key: ValueKey((deviceId, _threadRequests.value)),
+          library: library,
+          deviceId: deviceId,
+          phoneName: device.device.name,
+          initialThreadId: _wantedThreads.remove(deviceId),
+          onThreadOpened: (openedThreadId) =>
+              unawaited(_notices?.clear(deviceId, openedThreadId)),
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) {
     if (this.feature.sourceService case final service?) {
@@ -403,6 +457,7 @@ class MessagesFeatureUi extends FeatureUi {
     _notices = null;
     _card?.dispose();
     _changes?.dispose();
+    _threadRequests.dispose();
   }
 
   /// The computer's home card, made once so the shell can ask whether it
@@ -439,18 +494,12 @@ class MessagesFeatureUi extends FeatureUi {
     String deviceId, {
     int? threadId,
   }) {
-    unawaited(
-      context.push<void>(
-        MessagesPage(
-          library: feature.library,
-          deviceId: deviceId,
-          phoneName: _nameOf(context, deviceId),
-          initialThreadId: threadId,
-          onThreadOpened: (openedThreadId) =>
-              unawaited(_notices?.clear(deviceId, openedThreadId)),
-        ),
-      ),
-    );
+    if (threadId != null) {
+      _wantedThreads[deviceId] = threadId;
+      _threadRequests.value++;
+    }
+
+    unawaited(context.openSection(deviceId, sectionId));
   }
 
   static String _nameOf(FeatureContext context, String deviceId) =>

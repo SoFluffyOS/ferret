@@ -35,6 +35,9 @@ class NotificationsFeatureUi extends FeatureUi {
   /// Uses [feature], and [access] for the phone's setup flow.
   NotificationsFeatureUi.withFeature(this.feature, {this.access});
 
+  /// The id of the section a phone's notifications show in.
+  static const sectionId = 'notifications';
+
   @override
   final NotificationsFeature feature;
 
@@ -251,6 +254,39 @@ class NotificationsFeatureUi extends FeatureUi {
         icon: LucideIcons.bell,
         onPressed: () =>
             _openRemotePicker(feature, deviceId, device.device.name),
+      ),
+    ];
+  }
+
+  /// On a computer, what a phone's apps said: for a phone that offers its
+  /// notifications, and for one that still has some waiting here.
+  @override
+  List<FeatureSection> deviceSections(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    if (this.feature.isSource) {
+      return const [];
+    }
+
+    final flags =
+        device.session?.remoteFeature(featureId)?.flags ?? const <String>[];
+    final inbox = _inboxFor(feature);
+    final waiting = inbox.byDevice[device.device.id]?.length ?? 0;
+    if (!flags.contains(NotificationsFeature.sendFlag) && waiting == 0) {
+      return const [];
+    }
+
+    return [
+      FeatureSection(
+        id: sectionId,
+        title: title(context),
+        icon: icon,
+        order: 30,
+        badge: waiting,
+        builder: (_) =>
+            InboxPage(inbox: inbox, phones: () => _phonesViewModel(feature)),
       ),
     ];
   }
@@ -485,14 +521,18 @@ class NotificationsFeatureUi extends FeatureUi {
     return null;
   }
 
-  void _openInbox(FeatureContext featureContext) => unawaited(
-    featureContext.push<void>(
-      InboxPage(
-        inbox: _inboxFor(featureContext),
-        phones: () => _phonesViewModel(featureContext),
-      ),
-    ),
-  );
+  /// Opens the list under the first phone that has something waiting.
+  void _openInbox(FeatureContext featureContext) {
+    final waiting = _inboxFor(featureContext).byDevice.entries.where(
+      (entry) => entry.value.isNotEmpty,
+    );
+    final deviceId = waiting.firstOrNull?.key;
+    if (deviceId == null) {
+      return;
+    }
+
+    unawaited(featureContext.openSection(deviceId, sectionId));
+  }
 
   Widget? _settings(FeatureContext featureContext) {
     if (access case final phoneAccess? when feature.isSource) {

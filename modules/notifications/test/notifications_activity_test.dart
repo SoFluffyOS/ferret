@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -209,6 +210,25 @@ void main() {
       expect(ui.hasHomeCard(featureContext), isFalse);
       expect(ui.buildHomeCard(context, featureContext), isNull);
       expect(item.title, '4 notifications from phone');
+
+      // The shell's part: the section a feature asks for is pushed.
+      featureContext.onOpenSection = (deviceId, sectionId) async {
+        final device = DeviceStatus(
+          TrustedDevice(
+            id: deviceId,
+            name: 'phone',
+            platform: .PLATFORM_ANDROID,
+            formFactor: .FORM_FACTOR_PHONE,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime(2026, 11, 1),
+          ),
+          null,
+        );
+        final section = ui
+            .deviceSections(context, featureContext, device)
+            .singleWhere((section) => section.id == sectionId);
+        await featureContext.push<void>(Builder(builder: section.builder));
+      };
 
       item.onTap?.call();
       await tester.pumpAndSettle();
