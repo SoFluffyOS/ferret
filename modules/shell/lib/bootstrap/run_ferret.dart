@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
+import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/services/services.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
@@ -40,6 +41,10 @@ Future<void> runFerret({
   await engine.start();
 
   final host = EngineHost(engine);
+  final pause = PauseController(engine);
+  final system = SystemBinding(engine: engine, host: host, pause: pause);
+  await system.start();
+
   final notifier = await SystemNotifier.create([
     for (final feature in features) ...feature.noticeCategories,
   ]);

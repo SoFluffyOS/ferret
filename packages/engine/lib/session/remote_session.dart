@@ -45,6 +45,7 @@ class Session {
 
   final StreamController<Envelope> _incoming = .broadcast(sync: true);
   final Map<int, Completer<Envelope>> _pending = {};
+  final Set<Completer<void>> _listeners = {};
   final Completer<void> _closed = .new();
   late final StreamSubscription<List<int>> _subscription;
   late final Timer _keepAliveTimer;
@@ -174,6 +175,30 @@ class Session {
   Future<void> sendPresence(Presence presence) =>
       send(sessionFeature, presence);
 
+  /// Whether the other device still answers: sends a ping and waits up to
+  /// [timeout] for anything to arrive. After sleep or a network change a
+  /// dead connection can look open until the idle timeout, so probe instead.
+  Future<bool> checkAlive({
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    if (isClosed) {
+      return false;
+    }
+
+    final heard = Completer<void>();
+    _listeners.add(heard);
+    try {
+      final now = Int64(DateTime.now().millisecondsSinceEpoch);
+      await send(sessionFeature, Ping(sentAtMs: now)).timeout(timeout);
+      await heard.future.timeout(timeout);
+      return true;
+    } on Object {
+      return false;
+    } finally {
+      _listeners.remove(heard);
+    }
+  }
+
   /// Says goodbye with [reason], then closes.
   Future<void> close([GoodbyeReason reason = .GOODBYE_REASON_SHUTDOWN]) async {
     if (isClosed) {
@@ -207,6 +232,11 @@ class Session {
 
   void _onMessage(List<int> bytes) {
     _lastReceived = DateTime.now();
+    for (final listener in _listeners) {
+      if (!listener.isCompleted) {
+        listener.complete();
+      }
+    }
 
     final Envelope envelope;
     try {
@@ -302,6 +332,12 @@ class Session {
     }
 
     _pending.clear();
+    for (final listener in _listeners) {
+      if (!listener.isCompleted) {
+        listener.completeError(const SessionClosedException());
+      }
+    }
+
     await _subscription.cancel();
     await channel.close();
     await _incoming.close();

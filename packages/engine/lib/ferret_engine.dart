@@ -37,6 +37,7 @@ class FerretEngine implements FeatureHost {
   static const _comparisonTimeout = Duration(minutes: 2);
   static const _helloTimeout = Duration(seconds: 15);
   static const _nearbyLifetime = Duration(minutes: 2);
+  static const _probeTimeout = Duration(seconds: 3);
 
   static Future<FerretEngine> create({
     required SecretStore secrets,
@@ -88,6 +89,8 @@ class FerretEngine implements FeatureHost {
   Presence _presence = Presence(batteryPercent: -1);
   int _pendingHandshakes = 0;
   bool _running = false;
+  Future<void>? _reconnecting;
+  bool _reconnectAgain = false;
 
   /// The TCP port this device listens on, once started.
   int get port => _server?.port ?? preferredPort;
@@ -195,6 +198,26 @@ class FerretEngine implements FeatureHost {
 
   /// Announces again, such as after the network changed.
   Future<void> refresh() => _discovery.announceNow();
+
+  /// Reconnects right away, for when this device woke from sleep or its
+  /// network changed: closes sessions that stopped answering, restarts
+  /// discovery on the current interfaces, and dials every paired device that
+  /// isn't connected at its last known address. Calls made while one runs
+  /// are merged into a single extra run.
+  Future<void> reconnectNow({Duration probeTimeout = _probeTimeout}) {
+    if (!_running) {
+      return Future.value();
+    }
+
+    if (_reconnecting case final running?) {
+      _reconnectAgain = true;
+      return running;
+    }
+
+    final run = _reconnectWhileAsked(probeTimeout);
+    _reconnecting = run;
+    return run;
+  }
 
   /// Connects to a device by address, for networks without multicast.
   Future<void> connect(String host, int port) => _dial(host, port);
@@ -318,6 +341,76 @@ class FerretEngine implements FeatureHost {
   /// Renames this device for others; they see it on the next connection.
   Future<void> rename(String name) async {
     await settings.set('device.name', name);
+  }
+
+  Future<void> _reconnectWhileAsked(Duration probeTimeout) async {
+    try {
+      do {
+        _reconnectAgain = false;
+        await _reconnectOnce(probeTimeout);
+      } while (_reconnectAgain && _running);
+    } finally {
+      _reconnecting = null;
+    }
+  }
+
+  Future<void> _reconnectOnce(Duration probeTimeout) async {
+    await _closeUnresponsive(probeTimeout);
+    if (!_running) {
+      return;
+    }
+
+    await _restartDiscovery();
+
+    final dials = <Future<void>>[];
+    for (final trusted in trustStore.devices) {
+      if (_sessions[trusted.id] case final session? when !session.isClosed) {
+        continue;
+      }
+
+      if ((trusted.lastHost, trusted.lastPort) case (
+        final host?,
+        final port?,
+      )) {
+        dials.add(_dial(host, port, expectedDeviceId: trusted.id));
+      }
+    }
+
+    await Future.wait(dials);
+  }
+
+  Future<void> _closeUnresponsive(Duration probeTimeout) async {
+    final open = [..._ready.values];
+    final answers = await Future.wait([
+      for (final session in open) session.checkAlive(timeout: probeTimeout),
+    ]);
+
+    for (final (index, session) in open.indexed) {
+      if (answers[index]) {
+        continue;
+      }
+
+      printLog('${session.remoteDeviceId} stopped answering; reconnecting');
+      await session.close();
+    }
+  }
+
+  /// Rebinding picks up interfaces that appeared since discovery started,
+  /// such as a new Wi-Fi network, so its multicast group is joined there too.
+  Future<void> _restartDiscovery() async {
+    try {
+      await _discovery.stop();
+      if (!_running) {
+        return;
+      }
+
+      await _discovery.start(_announce());
+      if (!_running) {
+        await _discovery.stop();
+      }
+    } on Object catch (error) {
+      printWarning('Discovery did not restart', error);
+    }
   }
 
   Future<ServerSocket> _bind() async {

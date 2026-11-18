@@ -11,8 +11,11 @@ import ferret_drop
 import ferret_handoff
 import ferret_media
 import ferret_menubar
-import ferret_notifications
+import ferret_system
+import file_selector_macos
+import flutter_local_notifications
 import flutter_secure_storage_darwin
+import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
@@ -21,6 +24,9 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FerretHandoffPlugin.register(with: registry.registrar(forPlugin: "FerretHandoffPlugin"))
   FerretMediaPlugin.register(with: registry.registrar(forPlugin: "FerretMediaPlugin"))
   FerretMenubarPlugin.register(with: registry.registrar(forPlugin: "FerretMenubarPlugin"))
-  FerretNotificationsPlugin.register(with: registry.registrar(forPlugin: "FerretNotificationsPlugin"))
+  FerretSystemPlugin.register(with: registry.registrar(forPlugin: "FerretSystemPlugin"))
+  FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
+  FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))
   FlutterSecureStorageDarwinPlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStorageDarwinPlugin"))
+  UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
 }

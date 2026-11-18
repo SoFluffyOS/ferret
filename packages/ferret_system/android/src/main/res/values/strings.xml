@@ -1,0 +1,26 @@
+<resources>
+    <string name="ferret_system_channel_name">Stay connected</string>
+    <string name="ferret_system_channel_description">Keeps Ferret connected to your devices. You can hide this notification here and Ferret keeps running.</string>
+    <string name="ferret_system_waiting_title">Waiting for your devices</string>
+    <string name="ferret_system_waiting_text">Ferret connects as soon as one is on the same network.</string>
+    <string name="ferret_system_connected_one">Connected to %1$s</string>
+    <plurals name="ferret_system_connected_many">
+        <item quantity="one">Connected to %1$s and %2$d more</item>
+        <item quantity="other">Connected to %1$s and %2$d more</item>
+    </plurals>
+    <string name="ferret_system_connected_text">Copy something, then tap Send clipboard.</string>
+    <string name="ferret_system_paused_title">Ferret is paused</string>
+    <string name="ferret_system_paused_until">Back at %1$s</string>
+    <string name="ferret_system_paused_until_resumed">Until you resume</string>
+    <string name="ferret_system_action_send_clipboard">Send clipboard</string>
+    <string name="ferret_system_action_pause">Pause 1 h</string>
+    <string name="ferret_system_action_resume">Resume</string>
+    <string name="ferret_system_tile_label">Ferret</string>
+    <string name="ferret_system_tile_not_connected">Not connected</string>
+    <string name="ferret_system_tile_paused">Paused</string>
+    <plurals name="ferret_system_tile_devices">
+        <item quantity="one">%d device</item>
+        <item quantity="other">%d devices</item>
+    </plurals>
+    <string name="ferret_system_clipboard_empty">Your clipboard is empty</string>
+</resources>

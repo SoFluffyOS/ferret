@@ -1,5 +1,5 @@
 name: ferret_system
-description: System hooks Ferret needs on each platform, such as the Android multicast lock.
+description: System hooks Ferret needs on each platform. The Android foreground service, Quick Settings tile and battery settings, and network and wake events for reconnecting.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -23,4 +23,6 @@ flutter:
     platforms:
       android:
         package: io.sofluffy.ferret_system
+        pluginClass: FerretSystemPlugin
+      macos:
         pluginClass: FerretSystemPlugin
