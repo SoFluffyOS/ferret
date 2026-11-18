@@ -24,10 +24,6 @@ class HomePage extends StatelessWidget {
     final scope = ShellScope.of(context);
     final l10n = context.shellL10n;
     final palette = context.palette;
-    final cards = [
-      for (final feature in scope.features)
-        ?feature.buildHomeCard(context, scope.featureContext),
-    ];
 
     return FerretPage(
       title: l10n.appName,
@@ -74,10 +70,10 @@ class HomePage extends StatelessWidget {
       children: [
         const PauseBanner(),
         const StayConnectedCard(),
-        for (final card in cards)
-          Padding(
-            padding: EdgeInsets.only(bottom: Spacing.d8),
-            child: card,
+        for (final feature in scope.features)
+          FeatureCardSlot(
+            feature: feature,
+            featureContext: scope.featureContext,
           ),
         DevicesFrame(
           onOpen: (status) => _openDevice(context, status),

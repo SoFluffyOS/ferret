@@ -1,5 +1,7 @@
 export 'package:shell/ui/frames/background_settings.dart';
 export 'package:shell/ui/frames/devices_frame.dart';
+export 'package:shell/ui/frames/feature_card_slot.dart';
+export 'package:shell/ui/frames/feature_changes_listener.dart';
 export 'package:shell/ui/frames/file_drop_zone.dart';
 export 'package:shell/ui/frames/nearby_frame.dart';
 export 'package:shell/ui/frames/pairing_prompt_listener.dart';

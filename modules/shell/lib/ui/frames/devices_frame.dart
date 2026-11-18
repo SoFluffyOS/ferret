@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 
 /// The paired devices, connected ones first, each with its features' health.
@@ -35,20 +36,23 @@ class DevicesFrame extends StatelessWidget {
       children: [
         SectionTitle(context.shellL10n.homeYourDevices),
         for (final status in devices)
-          DeviceTile(
-            status: status,
-            chips: [
-              for (final feature in scope.features)
-                if (feature.healthFor(scope.featureContext, status)
-                    case final health?)
-                  FeatureChip(
-                    icon: feature.icon,
-                    label: feature.title(context),
-                    health: health,
-                  ),
-            ],
-            onTap: () => onOpen(status),
-            onWhy: () => onWhy(status),
+          FeatureChangesListener(
+            features: scope.features,
+            builder: (context) => DeviceTile(
+              status: status,
+              chips: [
+                for (final feature in scope.features)
+                  if (feature.healthFor(scope.featureContext, status)
+                      case final health?)
+                    FeatureChip(
+                      icon: feature.icon,
+                      label: feature.title(context),
+                      health: health,
+                    ),
+              ],
+              onTap: () => onOpen(status),
+              onWhy: () => onWhy(status),
+            ),
           ),
       ],
     );

@@ -6,6 +6,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
@@ -19,6 +20,7 @@ Future<void> runFerret({
   String appVersion = '',
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
 
   final supportDirectory = await getApplicationSupportDirectory();
   final settings = await JsonFileSettingsStore.open(supportDirectory.path);
@@ -49,16 +51,18 @@ Future<void> runFerret({
   final notifier = await SystemNotifier.create([
     for (final feature in features) ...feature.noticeCategories,
   ]);
+  late final MenubarBinding menubar;
   final featureContext = FeatureContext(
     engine: engine,
     navigatorKey: GlobalKey<NavigatorState>(),
     notifier: notifier,
+    onReveal: () => menubar.reveal(),
   );
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
   }
 
-  final menubar = MenubarBinding(
+  menubar = MenubarBinding(
     host: host,
     features: features,
     featureContext: featureContext,

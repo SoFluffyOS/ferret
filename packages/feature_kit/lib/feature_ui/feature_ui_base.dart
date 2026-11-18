@@ -32,6 +32,14 @@ abstract class FeatureUi {
   /// Report real health (the last round trip), never just "connected".
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) => null;
 
+  /// Fires when this feature's home card or health may have changed, so the
+  /// shell rebuilds them right away.
+  Listenable? get uiChanges => null;
+
+  /// Whether the home card has anything to show right now. The shell leaves
+  /// no gap for a feature that says no.
+  bool hasHomeCard(FeatureContext feature) => true;
+
   /// A card on the home screen (the menubar popover on macOS), or null.
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) => null;
 

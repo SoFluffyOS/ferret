@@ -53,6 +53,9 @@ class MenubarBinding {
     host.addListener(_onHostChanged);
   }
 
+  /// Opens the popover, such as when this Mac starts ringing.
+  Future<void> reveal() => _menubar.show();
+
   Future<void> dispose() async {
     host.removeListener(_onHostChanged);
     for (final subscription in _subscriptions) {
