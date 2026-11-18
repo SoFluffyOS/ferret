@@ -10,7 +10,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
   HandoffLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Handoff';
+  String get title => 'Continue';
 
   @override
   String get cardTitle => 'Continue';
@@ -66,7 +66,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String sendSuggested(String device) {
-    return 'Waiting on $device: tap the notification there to open it';
+    return 'On $device: tap the notification to open it.';
   }
 
   @override
@@ -76,7 +76,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String sendUnreachable(String device) {
-    return 'Couldn\'t reach $device. Check that it\'s on and on the same network.';
+    return 'Couldn\'t reach $device. Check that it\'s on and on the same Wi-Fi.';
   }
 
   @override
@@ -159,7 +159,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get noticeNotSentBody =>
-      'Check that it\'s on and on the same network, then share it again.';
+      'Check that it\'s on and on the same Wi-Fi, then share it again.';
 
   @override
   String get noticeNothingToSend =>
@@ -170,7 +170,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get pickDeviceEmpty =>
-      'No device is connected right now. Turn on your other device and keep it on the same network.';
+      'No device is connected right now. Open Ferret on your other device, on the same Wi-Fi.';
 
   @override
   String get back => 'Back';
@@ -189,7 +189,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
   String get browserPairAllow => 'Allow';
 
   @override
-  String get browserPairDeny => 'Deny';
+  String get browserPairDeny => 'Don\'t allow';
 
   @override
   String noticeBrowserPairBody(String code) {
@@ -205,7 +205,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get browserBridgeListening =>
-      'Ready. Pair from the extension\'s settings page.';
+      'To add another browser, pair from the extension\'s settings page.';
 
   @override
   String get browserBridgeFailed =>

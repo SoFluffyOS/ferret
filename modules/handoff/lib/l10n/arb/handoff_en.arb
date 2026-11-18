@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "title": "Handoff",
+  "title": "Continue",
   "cardTitle": "Continue",
   "continueFrom": "Continue “{title}” from {device}",
   "@continueFrom": {
@@ -40,7 +40,7 @@
       }
     }
   },
-  "sendSuggested": "Waiting on {device}: tap the notification there to open it",
+  "sendSuggested": "On {device}: tap the notification to open it.",
   "@sendSuggested": {
     "placeholders": {
       "device": {
@@ -56,7 +56,7 @@
       }
     }
   },
-  "sendUnreachable": "Couldn't reach {device}. Check that it's on and on the same network.",
+  "sendUnreachable": "Couldn't reach {device}. Check that it's on and on the same Wi-Fi.",
   "@sendUnreachable": {
     "placeholders": {
       "device": {
@@ -119,10 +119,10 @@
       }
     }
   },
-  "noticeNotSentBody": "Check that it's on and on the same network, then share it again.",
+  "noticeNotSentBody": "Check that it's on and on the same Wi-Fi, then share it again.",
   "noticeNothingToSend": "There was nothing to continue in what you shared.",
   "pickDeviceTitle": "Continue on",
-  "pickDeviceEmpty": "No device is connected right now. Turn on your other device and keep it on the same network.",
+  "pickDeviceEmpty": "No device is connected right now. Open Ferret on your other device, on the same Wi-Fi.",
   "back": "Back",
   "browserPairTitle": "Allow {browser} to use Ferret?",
   "@browserPairTitle": {
@@ -141,7 +141,7 @@
     }
   },
   "browserPairAllow": "Allow",
-  "browserPairDeny": "Deny",
+  "browserPairDeny": "Don't allow",
   "noticeBrowserPairBody": "Code {code}. Open Ferret to allow it.",
   "@noticeBrowserPairBody": {
     "placeholders": {
@@ -152,7 +152,7 @@
   },
   "settingsBrowserBridge": "Browser extension",
   "settingsBrowserBridgeBody": "Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.",
-  "browserBridgeListening": "Ready. Pair from the extension's settings page.",
+  "browserBridgeListening": "To add another browser, pair from the extension's settings page.",
   "browserBridgeFailed": "Ferret couldn't start the browser connection. Another copy of Ferret may be running.",
   "browserBridgeRetry": "Try again",
   "browserClientsEmpty": "No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.",

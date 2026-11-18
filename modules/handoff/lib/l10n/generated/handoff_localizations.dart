@@ -100,7 +100,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Handoff'**
+  /// **'Continue'**
   String get title;
 
   /// No description provided for @cardTitle.
@@ -196,7 +196,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @sendSuggested.
   ///
   /// In en, this message translates to:
-  /// **'Waiting on {device}: tap the notification there to open it'**
+  /// **'On {device}: tap the notification to open it.'**
   String sendSuggested(String device);
 
   /// No description provided for @sendFailed.
@@ -208,7 +208,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @sendUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach {device}. Check that it\'s on and on the same network.'**
+  /// **'Couldn\'t reach {device}. Check that it\'s on and on the same Wi-Fi.'**
   String sendUnreachable(String device);
 
   /// No description provided for @currentPageNone.
@@ -334,7 +334,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @noticeNotSentBody.
   ///
   /// In en, this message translates to:
-  /// **'Check that it\'s on and on the same network, then share it again.'**
+  /// **'Check that it\'s on and on the same Wi-Fi, then share it again.'**
   String get noticeNotSentBody;
 
   /// No description provided for @noticeNothingToSend.
@@ -352,7 +352,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @pickDeviceEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No device is connected right now. Turn on your other device and keep it on the same network.'**
+  /// **'No device is connected right now. Open Ferret on your other device, on the same Wi-Fi.'**
   String get pickDeviceEmpty;
 
   /// No description provided for @back.
@@ -382,7 +382,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @browserPairDeny.
   ///
   /// In en, this message translates to:
-  /// **'Deny'**
+  /// **'Don\'t allow'**
   String get browserPairDeny;
 
   /// No description provided for @noticeBrowserPairBody.
@@ -406,7 +406,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @browserBridgeListening.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Pair from the extension\'s settings page.'**
+  /// **'To add another browser, pair from the extension\'s settings page.'**
   String get browserBridgeListening;
 
   /// No description provided for @browserBridgeFailed.
