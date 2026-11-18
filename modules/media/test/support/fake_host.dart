@@ -8,6 +8,12 @@ import 'package:protocol/protocol.dart';
 /// A host with settings and no connected devices, for UI tests.
 class FakeHost implements FeatureHost {
   @override
+  Presence get localPresence => Presence(batteryPercent: -1);
+
+  @override
+  Stream<Presence> get localPresenceChanges => const Stream.empty();
+
+  @override
   final SettingsStore settings = MemorySettingsStore();
 
   @override

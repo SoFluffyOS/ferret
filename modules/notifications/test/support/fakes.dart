@@ -126,6 +126,12 @@ class FakeMirrorControl implements MirrorControl {
 
 /// A [FeatureHost] with only settings, for a feature with no sessions.
 class SettingsOnlyHost implements FeatureHost {
+  @override
+  Presence get localPresence => Presence(batteryPercent: -1);
+
+  @override
+  Stream<Presence> get localPresenceChanges => const Stream.empty();
+
   SettingsOnlyHost([MemorySettingsStore? settings])
     : settings = settings ?? MemorySettingsStore();
 

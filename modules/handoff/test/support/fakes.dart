@@ -37,6 +37,12 @@ class TestClock {
 
 /// A [FeatureHost] with no sessions, for testing a feature on its own.
 class FakeHost implements FeatureHost {
+  @override
+  Presence get localPresence => Presence(batteryPercent: -1);
+
+  @override
+  Stream<Presence> get localPresenceChanges => const Stream.empty();
+
   FakeHost._(this.trustStore, this.settings);
 
   static Future<FakeHost> create([Map<String, Object?>? settings]) async =>

@@ -87,6 +87,8 @@ class FerretEngine implements FeatureHost {
 
   ServerSocket? _server;
   Presence _presence = Presence(batteryPercent: -1);
+  final StreamController<Presence> _presenceChanges = .broadcast();
+  bool _featuresStarted = false;
   int _pendingHandshakes = 0;
   bool _running = false;
   Future<void>? _reconnecting;
@@ -146,14 +148,18 @@ class FerretEngine implements FeatureHost {
     }
 
     _running = true;
-    _server = await _bind();
+    final server = await _bind();
+    _server = server;
     _subscriptions
-      ..add(_server!.listen(_onIncomingSocket))
+      ..add(server.listen(_onIncomingSocket))
       ..add(_discovery.peers.listen(_onPeer))
       ..add(trustStore.changes.listen((_) => _emitDevices()));
 
-    for (final feature in _features.values) {
-      await feature.start(this);
+    if (!_featuresStarted) {
+      _featuresStarted = true;
+      for (final feature in _features.values) {
+        await feature.start(this);
+      }
     }
 
     await _discovery.start(_announce());
@@ -171,6 +177,8 @@ class FerretEngine implements FeatureHost {
     }
   }
 
+  /// Stops listening, discovery and every session, such as for a pause.
+  /// Features keep their state; [start] picks up again.
   Future<void> stop() async {
     if (!_running) {
       return;
@@ -190,11 +198,26 @@ class FerretEngine implements FeatureHost {
     for (final session in open) {
       await session.close();
     }
+  }
+
+  /// Stops networking and every feature, for when the app quits. Unlike
+  /// [stop] (a pause), the engine can't start again afterwards.
+  Future<void> shutdown() async {
+    await stop();
+    if (!_featuresStarted) {
+      return;
+    }
 
     for (final feature in _features.values) {
       await feature.stop();
     }
   }
+
+  @override
+  Presence get localPresence => _presence;
+
+  @override
+  Stream<Presence> get localPresenceChanges => _presenceChanges.stream;
 
   /// Announces again, such as after the network changed.
   Future<void> refresh() => _discovery.announceNow();
@@ -243,6 +266,7 @@ class FerretEngine implements FeatureHost {
   /// Tells paired devices whether someone is using this one right now.
   Future<void> updatePresence(Presence presence) async {
     _presence = presence;
+    _presenceChanges.add(presence);
     for (final session in sessions) {
       try {
         await session.sendPresence(presence);

@@ -27,6 +27,12 @@ abstract interface class FeatureHost {
 
   /// Sends [message] to every connected device that offers [featureId].
   Future<void> broadcast(String featureId, GeneratedMessage message);
+
+  /// Whether someone is using this device right now, as the app last
+  /// reported it. Other devices see it as `Session.remotePresence`.
+  Presence get localPresence;
+
+  Stream<Presence> get localPresenceChanges;
 }
 
 /// One capability of Ferret, such as handoff or clipboard sync. Features own
