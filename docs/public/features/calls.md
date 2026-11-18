@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Calls in **Turn on more** on Ferret's home screen (or open **Settings → Calls**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Calls in **Do more** on Ferret's home screen (or open **Settings → Calls**), then **Turn on**.
 > 2. Allow Phone, Call logs and Contacts when Android asks.
 > 3. Your phone rings, your computer shows who it is. **Answer** or **Decline** right there.
 

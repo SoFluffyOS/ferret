@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The home card on the phone, only while calls are on but the Phone
-/// permission is missing. Turning calls on is offered in "Turn on more".
+/// permission is missing. Turning calls on is offered in "Do more".
 class PhoneHomeFrame extends StatelessWidget {
   const PhoneHomeFrame({super.key, required this.onSetUp});
 

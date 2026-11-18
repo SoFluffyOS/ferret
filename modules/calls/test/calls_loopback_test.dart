@@ -157,9 +157,9 @@ void main() {
     final onThePhone = healthOf(phone, onPhone);
 
     expect(onComputer?.state, FeatureHealthState.ok);
-    expect(onComputer?.reason, 'Calls on Pixel show up here.');
+    expect(onComputer?.reason, 'Answer and decline');
     expect(onThePhone?.state, FeatureHealthState.ok);
-    expect(onThePhone?.reason, "MacBook sees this phone's calls.");
+    expect(onThePhone?.reason, "MacBook sees this phone's calls");
   });
 
   test('health says when calls are off on the phone', () async {
@@ -170,7 +170,7 @@ void main() {
     final log = await onLaptop.fetchCallLog(phone.identity.deviceId);
 
     expect(onComputer?.state, FeatureHealthState.off);
-    expect(onComputer?.reason, 'Calls are off on Pixel.');
+    expect(onComputer?.reason, 'Off on Pixel');
     expect(onThePhone?.state, FeatureHealthState.off);
     expect(log.problem, CallLogProblem.disabled);
   });
@@ -185,7 +185,7 @@ void main() {
     expect(onComputer?.state, FeatureHealthState.needsAttention);
     expect(
       onComputer?.reason,
-      'Pixel needs the Phone permission to see calls.',
+      "Android turned off Ferret's access",
     );
     expect(onThePhone?.state, FeatureHealthState.needsAttention);
   });

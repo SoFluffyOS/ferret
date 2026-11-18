@@ -169,7 +169,7 @@ abstract class CallsLocalizations {
   /// No description provided for @audioStays.
   ///
   /// In en, this message translates to:
-  /// **'Audio stays on {device} for now. Talk on the phone or its headset.'**
+  /// **'Audio stays on {device} for now. Talk on {device} or its headset.'**
   String audioStays(String device);
 
   /// No description provided for @outcomeNoCall.
@@ -181,13 +181,13 @@ abstract class CallsLocalizations {
   /// No description provided for @outcomeDisabled.
   ///
   /// In en, this message translates to:
-  /// **'Calls are off on {device}. Turn them on in Ferret on the phone.'**
+  /// **'Calls are off on {device}. On {device}: Ferret → Do more → Calls.'**
   String outcomeDisabled(String device);
 
   /// No description provided for @outcomePermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} hasn\'t allowed this yet. On the phone, open Ferret, then Settings, then Calls.'**
+  /// **'{device} hasn\'t allowed this yet. On {device}: Ferret → Settings → Calls.'**
   String outcomePermission(String device);
 
   /// No description provided for @outcomeUnsupported.
@@ -205,7 +205,7 @@ abstract class CallsLocalizations {
   /// No description provided for @outcomeFailed.
   ///
   /// In en, this message translates to:
-  /// **'{device} couldn\'t do that. Try it on the phone.'**
+  /// **'{device} couldn\'t do that. Try it on {device}.'**
   String outcomeFailed(String device);
 
   /// No description provided for @outcomeUnreachable.
@@ -265,7 +265,7 @@ abstract class CallsLocalizations {
   /// No description provided for @callStarted.
   ///
   /// In en, this message translates to:
-  /// **'{device} is calling. Audio stays on the phone for now.'**
+  /// **'{device} is calling. Audio stays on {device} for now.'**
   String callStarted(String device);
 
   /// No description provided for @recentCalls.
@@ -295,13 +295,13 @@ abstract class CallsLocalizations {
   /// No description provided for @logPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} doesn\'t let Ferret read its recent calls. On the phone, open Ferret, then Settings, then Calls, and allow Call logs.'**
+  /// **'{device} doesn\'t let Ferret read its recent calls. On {device}: Ferret → Settings → Calls, then allow Call logs.'**
   String logPermission(String device);
 
   /// No description provided for @logDisabled.
   ///
   /// In en, this message translates to:
-  /// **'Calls are off on {device}. Turn them on in Ferret on the phone.'**
+  /// **'Calls are off on {device}. On {device}: Ferret → Do more → Calls.'**
   String logDisabled(String device);
 
   /// No description provided for @retry.
@@ -379,7 +379,7 @@ abstract class CallsLocalizations {
   /// No description provided for @phoneHomePaused.
   ///
   /// In en, this message translates to:
-  /// **'Calls are on, but Ferret can\'t see them yet.'**
+  /// **'Calls are on, but Ferret can\'t see this phone\'s calls yet.'**
   String get phoneHomePaused;
 
   /// No description provided for @permissionOff.
@@ -409,7 +409,7 @@ abstract class CallsLocalizations {
   /// No description provided for @allow.
   ///
   /// In en, this message translates to:
-  /// **'Allow'**
+  /// **'Allow access'**
   String get allow;
 
   /// No description provided for @allowRest.
@@ -487,55 +487,55 @@ abstract class CallsLocalizations {
   /// No description provided for @healthNoAnswer.
   ///
   /// In en, this message translates to:
-  /// **'{device} didn\'t answer about calls.'**
+  /// **'{device} didn\'t answer'**
   String healthNoAnswer(String device);
 
   /// No description provided for @healthOff.
   ///
   /// In en, this message translates to:
-  /// **'Calls are off on {device}.'**
+  /// **'Off on {device}'**
   String healthOff(String device);
 
   /// No description provided for @healthNeedsPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} needs the Phone permission to see calls.'**
-  String healthNeedsPermission(String device);
+  /// **'Android turned off Ferret\'s access'**
+  String get healthNeedsPermission;
 
   /// No description provided for @healthLimited.
   ///
   /// In en, this message translates to:
-  /// **'Calls show up, but {device} can\'t answer or hang up from here.'**
+  /// **'Shows calls. Answer on {device}'**
   String healthLimited(String device);
 
   /// No description provided for @healthOk.
   ///
   /// In en, this message translates to:
-  /// **'Calls on {device} show up here.'**
-  String healthOk(String device);
+  /// **'Answer and decline'**
+  String get healthOk;
 
   /// No description provided for @healthLocalOff.
   ///
   /// In en, this message translates to:
-  /// **'Calls are off on this phone.'**
+  /// **'Off on this phone'**
   String get healthLocalOff;
 
   /// No description provided for @healthLocalNeedsPermission.
   ///
   /// In en, this message translates to:
-  /// **'This phone needs the Phone permission to see calls.'**
+  /// **'Android turned off Ferret\'s access'**
   String get healthLocalNeedsPermission;
 
   /// No description provided for @healthLocalPushFailed.
   ///
   /// In en, this message translates to:
-  /// **'The last call update didn\'t reach {device}.'**
+  /// **'The last call didn\'t reach {device}'**
   String healthLocalPushFailed(String device);
 
   /// No description provided for @healthLocalOk.
   ///
   /// In en, this message translates to:
-  /// **'{device} sees this phone\'s calls.'**
+  /// **'{device} sees this phone\'s calls'**
   String healthLocalOk(String device);
 }
 

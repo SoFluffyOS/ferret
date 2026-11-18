@@ -213,7 +213,7 @@ class CallsFeatureUi extends FeatureUi {
     if (!status.canSeeCalls) {
       return FeatureHealth(
         .needsAttention,
-        reason: l10n.healthNeedsPermission(name),
+        reason: l10n.healthNeedsPermission,
       );
     }
 
@@ -221,7 +221,7 @@ class CallsFeatureUi extends FeatureUi {
       return FeatureHealth(.ok, reason: l10n.healthLimited(name));
     }
 
-    return FeatureHealth(.ok, reason: l10n.healthOk(name));
+    return FeatureHealth(.ok, reason: l10n.healthOk);
   }
 
   /// On the phone, about a computer: whether calls are shared at all, and

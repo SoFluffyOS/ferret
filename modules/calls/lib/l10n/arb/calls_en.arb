@@ -40,7 +40,7 @@
   "hangUp": "Hang up",
   "silence": "Silence",
   "silenced": "Ringer silenced",
-  "audioStays": "Audio stays on {device} for now. Talk on the phone or its headset.",
+  "audioStays": "Audio stays on {device} for now. Talk on {device} or its headset.",
   "@audioStays": {
     "placeholders": {
       "device": {
@@ -49,7 +49,7 @@
     }
   },
   "outcomeNoCall": "That call is already over.",
-  "outcomeDisabled": "Calls are off on {device}. Turn them on in Ferret on the phone.",
+  "outcomeDisabled": "Calls are off on {device}. On {device}: Ferret → Do more → Calls.",
   "@outcomeDisabled": {
     "placeholders": {
       "device": {
@@ -57,7 +57,7 @@
       }
     }
   },
-  "outcomePermission": "{device} hasn't allowed this yet. On the phone, open Ferret, then Settings, then Calls.",
+  "outcomePermission": "{device} hasn't allowed this yet. On {device}: Ferret → Settings → Calls.",
   "@outcomePermission": {
     "placeholders": {
       "device": {
@@ -74,7 +74,7 @@
     }
   },
   "outcomeInvalidNumber": "That doesn't look like a phone number.",
-  "outcomeFailed": "{device} couldn't do that. Try it on the phone.",
+  "outcomeFailed": "{device} couldn't do that. Try it on {device}.",
   "@outcomeFailed": {
     "placeholders": {
       "device": {
@@ -122,7 +122,7 @@
   "numberLabel": "Phone number",
   "numberHint": "+1 555 0100",
   "call": "Call",
-  "callStarted": "{device} is calling. Audio stays on the phone for now.",
+  "callStarted": "{device} is calling. Audio stays on {device} for now.",
   "@callStarted": {
     "placeholders": {
       "device": {
@@ -141,7 +141,7 @@
       }
     }
   },
-  "logPermission": "{device} doesn't let Ferret read its recent calls. On the phone, open Ferret, then Settings, then Calls, and allow Call logs.",
+  "logPermission": "{device} doesn't let Ferret read its recent calls. On {device}: Ferret → Settings → Calls, then allow Call logs.",
   "@logPermission": {
     "placeholders": {
       "device": {
@@ -149,7 +149,7 @@
       }
     }
   },
-  "logDisabled": "Calls are off on {device}. Turn them on in Ferret on the phone.",
+  "logDisabled": "Calls are off on {device}. On {device}: Ferret → Do more → Calls.",
   "@logDisabled": {
     "placeholders": {
       "device": {
@@ -169,12 +169,12 @@
   "turnOff": "Turn off",
   "setUp": "Set up",
   "fix": "Fix",
-  "phoneHomePaused": "Calls are on, but Ferret can't see them yet.",
+  "phoneHomePaused": "Calls are on, but Ferret can't see this phone's calls yet.",
   "permissionOff": "Ferret can't see calls yet",
   "permissionStillOff": "Still off. Android won't ask again, so allow it in the app's settings.",
   "permissionHowTo": "Allow Phone so Ferret can tell your computer when a call comes in.",
   "permissionHowToSettings": "In the app's settings, open Permissions, then Phone, then Allow. Do the same for Call logs and Contacts.",
-  "allow": "Allow",
+  "allow": "Allow access",
   "allowRest": "Allow the rest",
   "openSettings": "Open app settings",
   "openSettingsFailed": "Couldn't open Settings. Open Android Settings, then Apps, then Ferret, then Permissions.",
@@ -187,7 +187,7 @@
   "showIncoming": "Show incoming calls",
   "showIncomingDetail": "A notification with Answer and Decline when your phone rings.",
   "settingsAudio": "Call audio stays on the phone for now. Ferret answers the call; you talk on the phone or its headset.",
-  "healthNoAnswer": "{device} didn't answer about calls.",
+  "healthNoAnswer": "{device} didn't answer",
   "@healthNoAnswer": {
     "placeholders": {
       "device": {
@@ -195,7 +195,7 @@
       }
     }
   },
-  "healthOff": "Calls are off on {device}.",
+  "healthOff": "Off on {device}",
   "@healthOff": {
     "placeholders": {
       "device": {
@@ -203,15 +203,8 @@
       }
     }
   },
-  "healthNeedsPermission": "{device} needs the Phone permission to see calls.",
-  "@healthNeedsPermission": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "healthLimited": "Calls show up, but {device} can't answer or hang up from here.",
+  "healthNeedsPermission": "Android turned off Ferret's access",
+  "healthLimited": "Shows calls. Answer on {device}",
   "@healthLimited": {
     "placeholders": {
       "device": {
@@ -219,17 +212,10 @@
       }
     }
   },
-  "healthOk": "Calls on {device} show up here.",
-  "@healthOk": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "healthLocalOff": "Calls are off on this phone.",
-  "healthLocalNeedsPermission": "This phone needs the Phone permission to see calls.",
-  "healthLocalPushFailed": "The last call update didn't reach {device}.",
+  "healthOk": "Answer and decline",
+  "healthLocalOff": "Off on this phone",
+  "healthLocalNeedsPermission": "Android turned off Ferret's access",
+  "healthLocalPushFailed": "The last call didn't reach {device}",
   "@healthLocalPushFailed": {
     "placeholders": {
       "device": {
@@ -237,7 +223,7 @@
       }
     }
   },
-  "healthLocalOk": "{device} sees this phone's calls.",
+  "healthLocalOk": "{device} sees this phone's calls",
   "@healthLocalOk": {
     "placeholders": {
       "device": {

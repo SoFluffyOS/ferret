@@ -60,7 +60,7 @@ void main() {
       expect(find.byType(CallTimer), findsNothing);
       expect(
         find.text(
-          'Audio stays on Pixel for now. Talk on the phone or its headset.',
+          'Audio stays on Pixel for now. Talk on Pixel or its headset.',
         ),
         findsOneWidget,
       );
@@ -223,7 +223,7 @@ void main() {
 
       expect(control.dialed, [('phone', '+15550100')]);
       expect(
-        find.text('Pixel is calling. Audio stays on the phone for now.'),
+        find.text('Pixel is calling. Audio stays on Pixel for now.'),
         findsOneWidget,
       );
     });
@@ -358,7 +358,7 @@ void main() {
       expect(find.text("Ferret can't see calls yet"), findsOneWidget);
 
       phone.afterRequest = allPermissions();
-      await tester.tap(find.text('Allow'));
+      await tester.tap(find.text('Allow access'));
       await tester.pumpAndSettle();
 
       expect(phone.requested, 2);
@@ -440,7 +440,7 @@ void main() {
       await feature.settings.setEnabled(true);
       await tester.pumpAndSettle();
       expect(
-        find.text("Calls are on, but Ferret can't see them yet."),
+        find.text("Calls are on, but Ferret can't see this phone's calls yet."),
         findsOneWidget,
       );
       await tester.tap(find.text('Fix'));

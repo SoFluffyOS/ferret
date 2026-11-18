@@ -55,7 +55,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String audioStays(String device) {
-    return 'Audio stays on $device for now. Talk on the phone or its headset.';
+    return 'Audio stays on $device for now. Talk on $device or its headset.';
   }
 
   @override
@@ -63,12 +63,12 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String outcomeDisabled(String device) {
-    return 'Calls are off on $device. Turn them on in Ferret on the phone.';
+    return 'Calls are off on $device. On $device: Ferret → Do more → Calls.';
   }
 
   @override
   String outcomePermission(String device) {
-    return '$device hasn\'t allowed this yet. On the phone, open Ferret, then Settings, then Calls.';
+    return '$device hasn\'t allowed this yet. On $device: Ferret → Settings → Calls.';
   }
 
   @override
@@ -81,7 +81,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String outcomeFailed(String device) {
-    return '$device couldn\'t do that. Try it on the phone.';
+    return '$device couldn\'t do that. Try it on $device.';
   }
 
   @override
@@ -121,7 +121,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String callStarted(String device) {
-    return '$device is calling. Audio stays on the phone for now.';
+    return '$device is calling. Audio stays on $device for now.';
   }
 
   @override
@@ -140,12 +140,12 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String logPermission(String device) {
-    return '$device doesn\'t let Ferret read its recent calls. On the phone, open Ferret, then Settings, then Calls, and allow Call logs.';
+    return '$device doesn\'t let Ferret read its recent calls. On $device: Ferret → Settings → Calls, then allow Call logs.';
   }
 
   @override
   String logDisabled(String device) {
-    return 'Calls are off on $device. Turn them on in Ferret on the phone.';
+    return 'Calls are off on $device. On $device: Ferret → Do more → Calls.';
   }
 
   @override
@@ -186,7 +186,8 @@ class CallsLocalizationsEn extends CallsLocalizations {
   String get fix => 'Fix';
 
   @override
-  String get phoneHomePaused => 'Calls are on, but Ferret can\'t see them yet.';
+  String get phoneHomePaused =>
+      'Calls are on, but Ferret can\'t see this phone\'s calls yet.';
 
   @override
   String get permissionOff => 'Ferret can\'t see calls yet';
@@ -204,7 +205,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
       'In the app\'s settings, open Permissions, then Phone, then Allow. Do the same for Call logs and Contacts.';
 
   @override
-  String get allow => 'Allow';
+  String get allow => 'Allow access';
 
   @override
   String get allowRest => 'Allow the rest';
@@ -247,43 +248,39 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String healthNoAnswer(String device) {
-    return '$device didn\'t answer about calls.';
+    return '$device didn\'t answer';
   }
 
   @override
   String healthOff(String device) {
-    return 'Calls are off on $device.';
+    return 'Off on $device';
   }
 
   @override
-  String healthNeedsPermission(String device) {
-    return '$device needs the Phone permission to see calls.';
-  }
+  String get healthNeedsPermission => 'Android turned off Ferret\'s access';
 
   @override
   String healthLimited(String device) {
-    return 'Calls show up, but $device can\'t answer or hang up from here.';
+    return 'Shows calls. Answer on $device';
   }
 
   @override
-  String healthOk(String device) {
-    return 'Calls on $device show up here.';
-  }
+  String get healthOk => 'Answer and decline';
 
   @override
-  String get healthLocalOff => 'Calls are off on this phone.';
+  String get healthLocalOff => 'Off on this phone';
 
   @override
   String get healthLocalNeedsPermission =>
-      'This phone needs the Phone permission to see calls.';
+      'Android turned off Ferret\'s access';
 
   @override
   String healthLocalPushFailed(String device) {
-    return 'The last call update didn\'t reach $device.';
+    return 'The last call didn\'t reach $device';
   }
 
   @override
   String healthLocalOk(String device) {
-    return '$device sees this phone\'s calls.';
+    return '$device sees this phone\'s calls';
   }
 }
