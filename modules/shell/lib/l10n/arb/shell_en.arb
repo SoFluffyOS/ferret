@@ -228,9 +228,9 @@
   "pausedUntilResume": "Until you resume",
   "resume": "Resume",
   "pause": "Pause",
-  "pauseOneHour": "Pause for 1 hour",
-  "pauseUntilTomorrow": "Pause until tomorrow",
-  "pauseUntilResume": "Pause until I resume",
+  "pauseOneHour": "Pause syncing for 1 hour",
+  "pauseUntilTomorrow": "Pause syncing until tomorrow",
+  "pauseUntilResume": "Pause syncing until I resume",
   "doctorTitle": "Fix connection",
   "doctorIntro": "Checking why {device} isn't connected.",
   "@doctorIntro": {

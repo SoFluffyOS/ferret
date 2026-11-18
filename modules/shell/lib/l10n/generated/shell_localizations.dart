@@ -625,19 +625,19 @@ abstract class ShellLocalizations {
   /// No description provided for @pauseOneHour.
   ///
   /// In en, this message translates to:
-  /// **'Pause for 1 hour'**
+  /// **'Pause syncing for 1 hour'**
   String get pauseOneHour;
 
   /// No description provided for @pauseUntilTomorrow.
   ///
   /// In en, this message translates to:
-  /// **'Pause until tomorrow'**
+  /// **'Pause syncing until tomorrow'**
   String get pauseUntilTomorrow;
 
   /// No description provided for @pauseUntilResume.
   ///
   /// In en, this message translates to:
-  /// **'Pause until I resume'**
+  /// **'Pause syncing until I resume'**
   String get pauseUntilResume;
 
   /// No description provided for @doctorTitle.

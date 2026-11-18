@@ -29,7 +29,7 @@ macOS asks two things the first time:
 - **Click** the icon to open Ferret. **Right-click** for Open Ferret Window, Add a Device, Settings and Quit.
 - **Your devices** come first, each with what you can do right on its row: **Send files**, **Send clipboard**, **Ring**. A device that isn't connected shows **Fix** instead.
 - **Activity** under them is what just happened: a copy that synced, a file that arrived, a song playing on your phone. **See all** opens the full list.
-- **+** adds a device. **•••** holds **Pause**, **Open Ferret window**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
+- **+** adds a device. **•••** holds **Pause syncing** (for an hour, until tomorrow, or until you resume), **Open Ferret window**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
 - **Drag** the popover away from the menubar to keep it open as a window.
 - **Drop files** on the icon (or the popover) to send them to your phone.
 

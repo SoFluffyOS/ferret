@@ -331,13 +331,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pause => 'Pause';
 
   @override
-  String get pauseOneHour => 'Pause for 1 hour';
+  String get pauseOneHour => 'Pause syncing for 1 hour';
 
   @override
-  String get pauseUntilTomorrow => 'Pause until tomorrow';
+  String get pauseUntilTomorrow => 'Pause syncing until tomorrow';
 
   @override
-  String get pauseUntilResume => 'Pause until I resume';
+  String get pauseUntilResume => 'Pause syncing until I resume';
 
   @override
   String get doctorTitle => 'Fix connection';

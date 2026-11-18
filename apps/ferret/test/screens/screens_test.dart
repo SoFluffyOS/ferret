@@ -283,7 +283,7 @@ final screens = <Screen>[
     await rig.settle(tester);
     await tester.tap(find.byIcon(LucideIcons.ellipsis));
     await rig.settle(tester);
-    await rig.tapText(tester, 'Pause for 1 hour');
+    await rig.tapText(tester, 'Pause syncing for 1 hour');
   }),
   Screen(
     'home_activity',
