@@ -8,7 +8,8 @@ Future<void> main(List<String> arguments) async {
   Log.minimum = .warning;
 
   try {
-    exitCode = await buildRunner(CliEnvironment()).run(arguments) ?? 0;
+    final environment = await CliEnvironment.forThisUser();
+    exitCode = await buildRunner(environment).run(arguments) ?? 0;
   } on UsageException catch (error) {
     stderr.writeln(error);
     exitCode = 64;

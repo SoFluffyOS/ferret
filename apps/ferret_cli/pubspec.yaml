@@ -16,7 +16,6 @@ dependencies:
     path: ../../packages/core
   engine:
     path: ../../packages/engine
-  path: ^1.9.1
   protocol:
     path: ../../packages/protocol
   transport:

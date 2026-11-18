@@ -1,14 +1,26 @@
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_cli/ferret_cli.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('keeps its files in a cli folder of Ferret\'s home', () async {
+    final environment = await CliEnvironment.forThisUser(
+      environment: const {'FERRET_HOME': '/tmp/ferret_home'},
+    );
+
+    expect(
+      environment.paths.root,
+      FerretPaths('/tmp/ferret_home').nested('cli').root,
+    );
+  });
+
   test('a fresh install has an identity and no devices', () async {
     final directory = await Directory.systemTemp.createTemp('ferret_cli');
     addTearDown(() => directory.delete(recursive: true));
-    final environment = CliEnvironment(directory: directory.path);
+    final environment = CliEnvironment(FerretPaths(directory.path));
 
     final (identity, trust) = await environment.openStores();
     final (again, _) = await environment.openStores();
@@ -23,14 +35,14 @@ void main() {
     addTearDown(() => offering.delete(recursive: true));
     addTearDown(() => scanning.delete(recursive: true));
 
-    final shower = await CliEnvironment(directory: offering.path)
+    final shower = await CliEnvironment(FerretPaths(offering.path))
         .createEngine(port: 0);
     await shower.start();
     addTearDown(shower.stop);
     final offer = await shower.createPairingOffer();
     final link = offer.qrText;
 
-    final exit = await buildRunner(CliEnvironment(directory: scanning.path))
+    final exit = await buildRunner(CliEnvironment(FerretPaths(scanning.path)))
         .run(['pair', _localLink(link)]);
 
     expect(exit, 0);
