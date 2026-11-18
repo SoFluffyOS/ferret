@@ -1,4 +1,6 @@
 import 'package:core/core.dart';
+import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:notifications/notifications.dart';
@@ -8,6 +10,11 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'support/fakes.dart';
 import 'support/test_app.dart';
+
+class _NoContext implements FeatureContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   group('phone setup', () {
@@ -99,6 +106,84 @@ void main() {
       expect(find.text('Notification access is on'), findsOneWidget);
       expect(find.text("Pause while I'm using the phone"), findsOneWidget);
       expect(find.text('Choose apps · 1 app picked'), findsOneWidget);
+    });
+  });
+
+  group('phone home card and offer', () {
+    late FakeNotificationSource source;
+    late NotificationsFeature feature;
+    late MemorySettingsStore settings;
+    late NotificationsFeatureUi ui;
+    final context = _NoContext();
+
+    setUp(() async {
+      source = FakeNotificationSource()..accessGranted = false;
+      feature = NotificationsFeature(source: source);
+      settings = MemorySettingsStore();
+      await feature.start(SettingsOnlyHost(settings));
+      ui = NotificationsFeatureUi.withFeature(feature, access: source);
+    });
+
+    tearDown(() => ui.dispose());
+
+    Future<FeatureOffer?> pumpUi(WidgetTester tester) async {
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (buildContext) =>
+                ui.buildHomeCard(buildContext, context) ?? const SizedBox(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return ui.offerFor(tester.element(find.byType(ListView)), context);
+    }
+
+    testWidgets('offers mirroring while it is off, with no card', (
+      tester,
+    ) async {
+      final offer = await pumpUi(tester);
+
+      expect(offer?.title, 'Notifications');
+      expect(
+        offer?.description,
+        "See your phone's notifications on your computer.",
+      );
+      expect(offer?.actionLabel, 'Set up');
+      expect(ui.hasHomeCard(context), isFalse);
+      expect(find.text('Notifications'), findsNothing);
+    });
+
+    testWidgets('on without access, the card asks for a fix', (tester) async {
+      await settings.set(MirrorPreferences.enabledKey, true);
+
+      final offer = await pumpUi(tester);
+
+      expect(offer, isNull);
+      expect(ui.hasHomeCard(context), isTrue);
+      expect(
+        find.text('Notification access is off, so nothing is mirrored.'),
+        findsOneWidget,
+      );
+      expect(find.text('Fix'), findsOneWidget);
+    });
+
+    testWidgets('once it works, neither an offer nor a card', (tester) async {
+      source.accessGranted = true;
+      await pumpUi(tester);
+      var changes = 0;
+      ui.uiChanges?.addListener(() => changes++);
+
+      await settings.set(MirrorPreferences.enabledKey, true);
+      await tester.pumpAndSettle();
+
+      expect(
+        ui.offerFor(tester.element(find.byType(ListView)), context),
+        isNull,
+      );
+      expect(ui.hasHomeCard(context), isFalse);
+      expect(changes, greaterThan(0));
     });
   });
 

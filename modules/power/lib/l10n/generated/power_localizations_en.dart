@@ -233,11 +233,11 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get cardStartShizuku =>
-      'Shizuku is installed. Start it and Ferret can send your clipboard in the background.';
+      'Start Shizuku and Ferret sends what you copy on its own.';
 
   @override
   String get cardAllowShizuku =>
-      'Shizuku is running. Allow Ferret to use it and your clipboard can go out in the background.';
+      'Allow Shizuku and Ferret sends what you copy on its own.';
 
   @override
   String get cardShizukuStopped =>
@@ -249,7 +249,7 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get cardUseRoot =>
-      'This phone is rooted. Ferret can use root to send your clipboard in the background.';
+      'Use root and Ferret sends what you copy on its own.';
 
   @override
   String get cardRootLost =>
@@ -257,9 +257,6 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get cardSetUp => 'Set up';
-
-  @override
-  String get cardNotNow => 'Not now';
 
   @override
   String get cardAskAgain => 'Ask again';

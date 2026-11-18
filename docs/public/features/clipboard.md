@@ -31,7 +31,7 @@ So on Android:
 
 Going the other way needs nothing: what you copy on your computer lands on your phone's clipboard on its own.
 
-Want it automatic anyway? With [Shizuku or root](../android-modes/shizuku.md), turn on **Send automatically in the background** and Ferret sends what you copy on its own (text only).
+Want it automatic anyway? With [Shizuku or root](../android-modes/shizuku.md), tap **Turn on** next to Clipboard in **Turn on more** on the home screen (or the **Send automatically in the background** switch in Settings) and Ferret sends what you copy on its own (text only).
 
 ## 🍎 On iPhone and iPad
 

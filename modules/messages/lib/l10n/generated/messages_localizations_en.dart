@@ -73,13 +73,14 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
       'Sending is off, so replies from your computer won\'t go out.';
 
   @override
-  String get phoneCardOff => 'Read and reply to texts from your computer';
+  String get offerDescription => 'Read and reply to texts from your computer.';
 
   @override
-  String get phoneCardNeedsAccess => 'Needs SMS access';
+  String get phoneCardNeedsAccess =>
+      'Messages are on, but Ferret can\'t read your texts yet.';
 
   @override
-  String get phoneCardOn => 'Shared with your computers';
+  String get fix => 'Fix';
 
   @override
   String get setUp => 'Set up';

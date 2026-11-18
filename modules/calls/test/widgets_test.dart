@@ -427,15 +427,15 @@ void main() {
       expect(find.text('Turn on'), findsOneWidget);
     });
 
-    testWidgets('the home card invites, warns, then gets out of the way', (
+    testWidgets('the home card only warns, then gets out of the way', (
       tester,
     ) async {
       var opened = 0;
       await start();
       await pumpSetup(tester, PhoneHomeFrame(onSetUp: () => opened++));
 
-      await tester.tap(find.text('Set up'));
-      expect(opened, 1);
+      expect(find.text('Calls'), findsNothing);
+      expect(find.text('Set up'), findsNothing);
 
       await feature.settings.setEnabled(true);
       await tester.pumpAndSettle();
@@ -443,7 +443,8 @@ void main() {
         find.text("Calls are on, but Ferret can't see them yet."),
         findsOneWidget,
       );
-      expect(find.text('Fix'), findsOneWidget);
+      await tester.tap(find.text('Fix'));
+      expect(opened, 1);
 
       phone.granted = allPermissions();
       await feature.refreshPermissions();

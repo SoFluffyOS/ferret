@@ -2,6 +2,7 @@
   "@@locale": "en",
   "title": "Notifications",
   "explainer": "Shows your phone's notifications on your computer. You pick which apps.",
+  "offerDescription": "See your phone's notifications on your computer.",
   "explainerDetail": "Only new notifications from the apps you pick. Nothing leaves your network.",
   "turnOn": "Turn on",
   "turnOff": "Turn off mirroring",
@@ -101,13 +102,5 @@
   },
   "setUp": "Set up",
   "fix": "Fix",
-  "phoneHomeOn": "Showing notifications from {count, plural, =0{no apps} =1{1 app} other{{count} apps}} on your computers.",
-  "@phoneHomeOn": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "phoneHomePaused": "Notification access is off, so nothing is mirrored."
 }

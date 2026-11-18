@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The app side of Power-ups: the Settings section with the way to the
-/// ladder, and on Android a home card while a step can be taken.
+/// ladder, and on Android an offer while one can be turned on, or a home
+/// card when one stopped working.
 class PowerFeatureUi extends FeatureUi {
   PowerFeatureUi({PowerFeature? feature, Future<bool> Function(Uri)? openLink})
     : feature = feature ?? PowerFeature(),
@@ -62,7 +63,25 @@ class PowerFeatureUi extends FeatureUi {
   Listenable get uiChanges => viewModel;
 
   @override
-  bool hasHomeCard(FeatureContext feature) => viewModel.prompt != null;
+  bool hasHomeCard(FeatureContext feature) =>
+      viewModel.prompt?.isProblem ?? false;
+
+  /// Shizuku or root is there and could be used.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    final prompt = viewModel.prompt;
+    if (prompt == null || prompt.isProblem) {
+      return null;
+    }
+
+    final l10n = context.powerL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.promptText(prompt),
+      actionLabel: l10n.cardSetUp,
+      onAction: () => _openPage(feature),
+    );
+  }
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>

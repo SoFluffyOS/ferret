@@ -69,13 +69,12 @@
   "rootPromptHint": "Your root manager will ask you to confirm.",
   "rootOn": "Root is on.",
   "stopUsingRoot": "Stop using root",
-  "cardStartShizuku": "Shizuku is installed. Start it and Ferret can send your clipboard in the background.",
-  "cardAllowShizuku": "Shizuku is running. Allow Ferret to use it and your clipboard can go out in the background.",
+  "cardStartShizuku": "Start Shizuku and Ferret sends what you copy on its own.",
+  "cardAllowShizuku": "Allow Shizuku and Ferret sends what you copy on its own.",
   "cardShizukuStopped": "Shizuku stopped, so background clipboard is paused. It stops whenever the phone restarts. Start it again.",
   "cardShizukuRevoked": "Shizuku no longer allows Ferret, so background clipboard is paused.",
-  "cardUseRoot": "This phone is rooted. Ferret can use root to send your clipboard in the background.",
+  "cardUseRoot": "Use root and Ferret sends what you copy on its own.",
   "cardRootLost": "Root access was taken away, so background clipboard is paused.",
   "cardSetUp": "Set up",
-  "cardNotNow": "Not now",
   "cardAskAgain": "Ask again"
 }

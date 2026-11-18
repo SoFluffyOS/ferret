@@ -109,6 +109,12 @@ abstract class NotificationsLocalizations {
   /// **'Shows your phone\'s notifications on your computer. You pick which apps.'**
   String get explainer;
 
+  /// No description provided for @offerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'See your phone\'s notifications on your computer.'**
+  String get offerDescription;
+
   /// No description provided for @explainerDetail.
   ///
   /// In en, this message translates to:
@@ -390,12 +396,6 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Fix'**
   String get fix;
-
-  /// No description provided for @phoneHomeOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing notifications from {count, plural, =0{no apps} =1{1 app} other{{count} apps}} on your computers.'**
-  String phoneHomeOn(int count);
 
   /// No description provided for @phoneHomePaused.
   ///

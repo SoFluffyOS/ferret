@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_power/ferret_power.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -274,70 +275,94 @@ void main() {
     });
   });
 
-  group('the home card', () {
+  group('the home card and the offer', () {
     Widget card() => framed(PowerCardFrame(onOpen: () => opened++));
 
-    testWidgets('offers to allow Shizuku and goes away once it is on', (
+    Future<(PowerFeatureUi, FeatureOffer?)> offerOf(WidgetTester tester) async {
+      final ui = PowerFeatureUi(feature: harness.feature);
+      addTearDown(ui.viewModel.dispose);
+      await tester.runAsync(settle);
+      await tester.pumpWidget(card());
+      return (
+        ui,
+        ui.offerFor(tester.element(find.byType(PowerCardFrame)), _NoContext()),
+      );
+    }
+
+    testWidgets('a phone with Shizuku gets an offer, not a card', (
       tester,
     ) async {
       await start(
         tester,
         status: const PowerStatus(supported: true, shizuku: .notAuthorized),
       );
-      await tester.pumpWidget(card());
 
-      expect(find.text('Power-ups'), findsOneWidget);
-      expect(find.textContaining('Shizuku is running.'), findsOneWidget);
-      await tapAndSettle(tester, 'Allow');
+      final (ui, offer) = await offerOf(tester);
 
-      expect(harness.viewModel.prompt, isNull);
+      expect(offer?.title, 'Power-ups');
+      expect(
+        offer?.description,
+        'Allow Shizuku and Ferret sends what you copy on its own.',
+      );
+      expect(offer?.actionLabel, 'Set up');
+      expect(ui.hasHomeCard(_NoContext()), isFalse);
       expect(find.text('Power-ups'), findsNothing);
     });
 
-    testWidgets('"Not now" puts it away for good', (tester) async {
+    testWidgets('a rooted phone is offered root', (tester) async {
       await start(
         tester,
-        status: const PowerStatus(supported: true, shizuku: .notRunning),
+        status: const PowerStatus(supported: true, root: .found),
       );
-      await tester.pumpWidget(card());
 
-      await tapAndSettle(tester, 'Not now');
+      final (_, offer) = await offerOf(tester);
 
-      expect(harness.feature.settings.cardDismissed, isTrue);
-      expect(find.text('Power-ups'), findsNothing);
+      expect(
+        offer?.description,
+        'Use root and Ferret sends what you copy on its own.',
+      );
+      expect(harness.phone.rootRequests, 0);
     });
 
-    testWidgets('a stopped Shizuku says why and how to fix it', (tester) async {
+    testWidgets('a plain phone gets neither', (tester) async {
+      await start(tester);
+
+      final (ui, offer) = await offerOf(tester);
+
+      expect(offer, isNull);
+      expect(ui.hasHomeCard(_NoContext()), isFalse);
+    });
+
+    testWidgets('a stopped Shizuku is a card, not an offer', (tester) async {
       await start(
         tester,
         status: const PowerStatus(supported: true, shizuku: .notRunning),
-        settings: {
-          PowerSettings.shizukuEnabledKey: true,
-          PowerSettings.cardDismissedKey: true,
-        },
+        settings: {PowerSettings.shizukuEnabledKey: true},
       );
-      await tester.pumpWidget(card());
 
+      final (ui, offer) = await offerOf(tester);
+
+      expect(offer, isNull);
+      expect(ui.hasHomeCard(_NoContext()), isTrue);
       expect(find.textContaining('Shizuku stopped'), findsOneWidget);
-      expect(find.text('Not now'), findsNothing);
       await tapAndSettle(tester, 'Open Shizuku');
 
       expect(harness.phone.opened, ['shizuku']);
     });
 
-    testWidgets('root is set up on the page, never from the card', (
-      tester,
-    ) async {
+    testWidgets('lost root asks again or stops using it', (tester) async {
       await start(
         tester,
-        status: const PowerStatus(supported: true, root: .found),
+        settings: {PowerSettings.rootEnabledKey: true},
       );
       await tester.pumpWidget(card());
 
-      await tester.tap(find.text('Set up'));
+      expect(find.textContaining('Root access was taken away'), findsOneWidget);
+      expect(find.text('Ask again'), findsOneWidget);
+      await tapAndSettle(tester, 'Stop using root');
 
-      expect(opened, 1);
-      expect(harness.phone.rootRequests, 0);
+      expect(harness.feature.settings.rootEnabled, isFalse);
+      expect(find.text('Power-ups'), findsNothing);
     });
   });
 
@@ -374,4 +399,9 @@ void main() {
       expect(opened, 1);
     });
   });
+}
+
+class _NoContext implements FeatureContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

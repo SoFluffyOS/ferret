@@ -17,6 +17,10 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
       'Shows your phone\'s notifications on your computer. You pick which apps.';
 
   @override
+  String get offerDescription =>
+      'See your phone\'s notifications on your computer.';
+
+  @override
   String get explainerDetail =>
       'Only new notifications from the apps you pick. Nothing leaves your network.';
 
@@ -208,18 +212,6 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get fix => 'Fix';
-
-  @override
-  String phoneHomeOn(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count apps',
-      one: '1 app',
-      zero: 'no apps',
-    );
-    return 'Showing notifications from $_temp0 on your computers.';
-  }
 
   @override
   String get phoneHomePaused =>

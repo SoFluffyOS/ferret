@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:clipboard/ui/frames/frames.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_clipboard/ferret_clipboard.dart';
 import 'package:ferret_power/ferret_power.dart';
 import 'package:ferret_power/testing.dart';
@@ -11,7 +12,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'helpers/fakes.dart';
 import 'helpers/test_app.dart';
 
+class _NoContext implements FeatureContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
+  final context = _NoContext();
   const shizukuReady = PowerStatus(supported: true, shizuku: .ready);
   const shizukuStopped = PowerStatus(supported: true, shizuku: .notRunning);
   const backgroundOn = {ClipboardSettings.backgroundSendKey: true};
@@ -254,30 +261,46 @@ void main() {
       ),
     );
 
-    testWidgets('without a power-up, the limit points to Power-ups', (
+    FeatureOffer? offerOf(WidgetTester tester, ClipboardFeatureUi ui) =>
+        ui.offerFor(tester.element(find.byType(ClipboardCardFrame)), context);
+
+    testWidgets('without a power-up, the card is short and offers nothing', (
       tester,
     ) async {
       await startUi(tester, shizukuEnabled: false);
+      final ui = ClipboardFeatureUi(feature: feature);
+      addTearDown(ui.viewModel.dispose);
 
       await tester.pumpWidget(card());
 
       expect(
-        find.textContaining('Set up Shizuku or root under Power-ups'),
+        find.text('Copy something, then tap Send clipboard.'),
         findsOneWidget,
       );
-      expect(find.text('Send in the background'), findsNothing);
+      expect(find.textContaining('Power-ups'), findsNothing);
       expect(find.text('Send clipboard'), findsOneWidget);
+      expect(offerOf(tester, ui), isNull);
     });
 
-    testWidgets('with a power-up, one tap turns background sending on', (
+    testWidgets('with a power-up, the offer turns background sending on', (
       tester,
     ) async {
       await startUi(tester);
+      final ui = ClipboardFeatureUi(feature: feature);
+      addTearDown(ui.viewModel.dispose);
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
       await tester.pumpWidget(card());
 
-      expect(find.textContaining('Your power-up is on'), findsOneWidget);
+      final offer = offerOf(tester, ui);
+      expect(offer?.title, 'Clipboard');
+      expect(
+        offer?.description,
+        'Send what you copy on its own, even in the background.',
+      );
+      expect(ui.hasHomeCard(context), isTrue);
       await tester.runAsync(() async {
-        await tester.tap(find.text('Send in the background'));
+        offer?.onAction();
         await settle();
         await settle();
       });
@@ -285,10 +308,25 @@ void main() {
 
       expect(feature.settings.backgroundSend, isTrue);
       expect(phone.watchedTier, PowerTier.shizuku);
-      expect(find.textContaining("Android doesn't let apps"), findsNothing);
+      expect(offerOf(tester, ui), isNull);
+      expect(changes, greaterThan(0));
       expect(find.text('Send clipboard'), findsNothing);
       expect(
         find.text('Copy something here and paste it on your other devices.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('settings explain why Send clipboard is needed', (
+      tester,
+    ) async {
+      await startUi(tester, shizukuEnabled: false);
+
+      await tester.pumpWidget(settingsSection());
+
+      expect(find.text('Why Send clipboard?'), findsOneWidget);
+      expect(
+        find.textContaining("Android doesn't let apps read your clipboard"),
         findsOneWidget,
       );
     });
@@ -300,7 +338,7 @@ void main() {
 
       expect(find.text('Send automatically in the background'), findsOneWidget);
       expect(
-        find.textContaining('Android only allows this with Shizuku or root.'),
+        find.text('Needs Shizuku or root. Set one up under Power-ups.'),
         findsOneWidget,
       );
       expect(find.byType(SwitchToggle), findsNWidgets(4));

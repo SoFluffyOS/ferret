@@ -4,12 +4,18 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A setting that can't be switched yet: its title, a lock, and the line
-/// that says what it needs.
+/// that says what it needs. Without [showLock], a plain explanation.
 class SettingInfoRow extends StatelessWidget {
-  const SettingInfoRow({super.key, required this.title, required this.body});
+  const SettingInfoRow({
+    super.key,
+    required this.title,
+    required this.body,
+    this.showLock = true,
+  });
 
   final String title;
   final String body;
+  final bool showLock;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +44,10 @@ class SettingInfoRow extends StatelessWidget {
               ],
             ),
           ),
-          Spacing.h12,
-          Icon(LucideIcons.lock, size: Spacing.d16, color: palette.mutedText),
+          if (showLock) ...[
+            Spacing.h12,
+            Icon(LucideIcons.lock, size: Spacing.d16, color: palette.mutedText),
+          ],
         ],
       ),
     );

@@ -154,6 +154,112 @@ void main() {
     });
   });
 
+  group('on the phone', () {
+    late MessagesFeature phone;
+    late MessagesFeatureUi phoneUi;
+
+    Future<void> startPhone(
+      WidgetTester tester, {
+      required bool enabled,
+      FakeSmsSource? sms,
+    }) async {
+      await tester.runAsync(() async {
+        phone = MessagesFeature(source: sms ?? FakeSmsSource());
+        await phone.start(FakeHost({MessagesSettings.enabledKey: enabled}));
+      });
+      phoneUi = MessagesFeatureUi.withFeature(phone);
+      await tester.pumpWidget(testApp(const SizedBox()));
+      await tester.pumpAndSettle();
+      addTearDown(() => tester.runAsync(phone.stop));
+    }
+
+    FeatureOffer? offer(WidgetTester tester) => phoneUi.offerFor(
+      tester.element(find.byType(ListView)),
+      context,
+    );
+
+    testWidgets('offers Messages while they are off, with no card', (
+      tester,
+    ) async {
+      await startPhone(tester, enabled: false);
+
+      expect(offer(tester)?.title, 'Messages');
+      expect(
+        offer(tester)?.description,
+        'Read and reply to texts from your computer.',
+      );
+      expect(offer(tester)?.actionLabel, 'Set up');
+      expect(phoneUi.hasHomeCard(context), isFalse);
+    });
+
+    testWidgets('once on and working, neither an offer nor a card', (
+      tester,
+    ) async {
+      await startPhone(tester, enabled: false);
+      var changes = 0;
+      phoneUi.uiChanges.addListener(() => changes++);
+
+      await tester.runAsync(() async {
+        await phone.settings.setEnabled(true);
+        await Future<void>.delayed(Duration.zero);
+      });
+
+      expect(offer(tester), isNull);
+      expect(phoneUi.hasHomeCard(context), isFalse);
+      expect(changes, greaterThan(0));
+    });
+
+    testWidgets('on without SMS access, the card asks for a fix', (
+      tester,
+    ) async {
+      await startPhone(
+        tester,
+        enabled: true,
+        sms: FakeSmsSource(canRead: false),
+      );
+
+      expect(offer(tester), isNull);
+      expect(phoneUi.hasHomeCard(context), isTrue);
+    });
+
+    testWidgets('a phone that cannot text offers nothing', (tester) async {
+      await startPhone(
+        tester,
+        enabled: false,
+        sms: FakeSmsSource(hasTelephony: false),
+      );
+
+      expect(offer(tester), isNull);
+      expect(phoneUi.hasHomeCard(context), isFalse);
+    });
+
+    testWidgets('the card says what is wrong and offers Fix', (tester) async {
+      final sms = FakeSmsSource(canRead: false);
+      await startPhone(tester, enabled: true, sms: sms);
+      final service = phone.sourceService;
+      if (service == null) {
+        fail('a phone has a source service');
+      }
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider(
+            create: (_) => PhoneSetupViewModel(service),
+            child: PhoneCardFrame(onSetUp: () {}),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text("Messages are on, but Ferret can't read your texts yet."),
+        findsOneWidget,
+      );
+      expect(find.text('Fix'), findsOneWidget);
+    });
+  });
+
   testWidgets('the home card shows unread texts per phone', (tester) async {
     await tester.runAsync(devices.connect);
 

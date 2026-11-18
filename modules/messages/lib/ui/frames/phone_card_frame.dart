@@ -6,7 +6,8 @@ import 'package:messages/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The phone's home card: whether its texts are shared, with Set up.
+/// The phone's home card, only while Messages are on but SMS access is
+/// missing. Turning Messages on is offered in the shell's "Turn on more".
 class PhoneCardFrame extends StatelessWidget {
   const PhoneCardFrame({super.key, required this.onSetUp});
 
@@ -17,7 +18,7 @@ class PhoneCardFrame extends StatelessWidget {
     final stage = context.select<PhoneSetupViewModel, SetupStage>(
       (viewModel) => viewModel.stage,
     );
-    if (stage == .unsupported) {
+    if (stage != .needsAccess) {
       return const SizedBox.shrink();
     }
 
@@ -26,20 +27,10 @@ class PhoneCardFrame extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.messageSquare,
       title: l10n.title,
-      subtitle: switch (stage) {
-        .ready => l10n.phoneCardOn,
-        .needsAccess => l10n.phoneCardNeedsAccess,
-        _ => l10n.phoneCardOff,
-      },
-      subtitleTone: switch (stage) {
-        .needsAccess => FeatureTone.danger,
-        _ => FeatureTone.muted,
-      },
+      subtitle: l10n.phoneCardNeedsAccess,
+      subtitleTone: FeatureTone.danger,
       onTap: onSetUp,
-      actions: [
-        if (stage != .ready)
-          Button(variant: .primary, label: l10n.setUp, onPressed: onSetUp),
-      ],
+      actions: [Button(variant: .primary, label: l10n.fix, onPressed: onSetUp)],
     );
   }
 }

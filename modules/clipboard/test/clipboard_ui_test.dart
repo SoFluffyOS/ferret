@@ -119,14 +119,20 @@ void main() {
     expect(find.text('Copy'), findsNothing);
   });
 
-  testWidgets('Android explains the limit and sends on tap', (tester) async {
+  testWidgets('Android keeps the card to one line and sends on tap', (
+    tester,
+  ) async {
     await start(tester, access: .foreground);
     clipboard.content = const .text('copied in another app');
     await tester.pumpWidget(card());
 
     expect(
-      find.textContaining("Android doesn't let apps read your clipboard"),
+      find.text('Copy something, then tap Send clipboard.'),
       findsOneWidget,
+    );
+    expect(
+      find.textContaining("Android doesn't let apps read your clipboard"),
+      findsNothing,
     );
 
     await tester.runAsync(() async {
@@ -157,6 +163,20 @@ void main() {
     expect(find.textContaining('No device is connected.'), findsOneWidget);
   });
 
+  testWidgets('iPhone settings say why Send clipboard is needed', (
+    tester,
+  ) async {
+    await start(tester, access: .onRequest);
+
+    await tester.pumpWidget(settings());
+
+    expect(find.text('Why Send clipboard?'), findsOneWidget);
+    expect(
+      find.textContaining('iPhone only lets apps read your clipboard'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('settings flip their keys and clear history', (tester) async {
     await start(tester);
     await tester.runAsync(
@@ -166,6 +186,7 @@ void main() {
 
     expect(find.text('1 item in history, in memory only.'), findsOneWidget);
     expect(find.text('Sync copied images up to 10 MB.'), findsOneWidget);
+    expect(find.text('Why Send clipboard?'), findsNothing);
 
     await tester.runAsync(() async {
       await tester.tap(find.byType(SwitchToggle).at(3));

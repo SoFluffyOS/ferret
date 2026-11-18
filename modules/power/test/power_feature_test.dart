@@ -46,7 +46,8 @@ void main() {
     await tester.runAsync(settle);
 
     expect(ui.viewModel.status.shizuku, ShizukuStatus.ready);
-    expect(ui.hasHomeCard(_NoContext()), isTrue);
+    expect(ui.viewModel.prompt, PowerPrompt.allowShizuku);
+    expect(ui.hasHomeCard(_NoContext()), isFalse);
   });
 
   test('a fresh install uses nothing, whatever the phone offers', () async {

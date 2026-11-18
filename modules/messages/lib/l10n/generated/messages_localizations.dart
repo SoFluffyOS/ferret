@@ -205,23 +205,23 @@ abstract class MessagesLocalizations {
   /// **'Sending is off, so replies from your computer won\'t go out.'**
   String get sendOff;
 
-  /// No description provided for @phoneCardOff.
+  /// No description provided for @offerDescription.
   ///
   /// In en, this message translates to:
-  /// **'Read and reply to texts from your computer'**
-  String get phoneCardOff;
+  /// **'Read and reply to texts from your computer.'**
+  String get offerDescription;
 
   /// No description provided for @phoneCardNeedsAccess.
   ///
   /// In en, this message translates to:
-  /// **'Needs SMS access'**
+  /// **'Messages are on, but Ferret can\'t read your texts yet.'**
   String get phoneCardNeedsAccess;
 
-  /// No description provided for @phoneCardOn.
+  /// No description provided for @fix.
   ///
   /// In en, this message translates to:
-  /// **'Shared with your computers'**
-  String get phoneCardOn;
+  /// **'Fix'**
+  String get fix;
 
   /// No description provided for @setUp.
   ///

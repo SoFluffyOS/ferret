@@ -17,8 +17,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
       'Copy something here and paste it on your other devices.';
 
   @override
-  String get cardEmptyManual =>
-      'Copy something, then tap Send clipboard to paste it on your other devices.';
+  String get cardEmptyManual => 'Copy something, then tap Send clipboard.';
 
   @override
   String statusWithTime(String status, String time) {
@@ -100,19 +99,11 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   String get sendClipboard => 'Send clipboard';
 
   @override
-  String get limitAndroid =>
-      'Android doesn\'t let apps read your clipboard in the background. Copy, then tap Send clipboard here, in the Ferret notification or in the Quick Settings tile. Want it sent on its own? Set up Shizuku or root under Power-ups in Settings.';
+  String get offerBackgroundSend =>
+      'Send what you copy on its own, even in the background.';
 
   @override
-  String get limitAndroidPowerReady =>
-      'Your power-up is on, so Ferret can send what you copy on its own, even in the background. Turn it on here.';
-
-  @override
-  String get sendInBackground => 'Send in the background';
-
-  @override
-  String get limitIos =>
-      'iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.';
+  String get offerTurnOn => 'Turn on';
 
   @override
   String get resultSent => 'Sent.';
@@ -162,8 +153,19 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
       'Send text you copy in any app, also while Ferret is closed. Uses your power-up (Shizuku or root). Images still need Send clipboard.';
 
   @override
+  String get settingsWhyManual => 'Why Send clipboard?';
+
+  @override
+  String get settingsWhyManualAndroid =>
+      'Android doesn\'t let apps read your clipboard in the background. Copy, then tap Send clipboard in Ferret, in its notification or in the Quick Settings tile.';
+
+  @override
+  String get settingsWhyManualIos =>
+      'iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.';
+
+  @override
   String get settingsBackgroundSendLocked =>
-      'Android only allows this with Shizuku or root. Set one up under Power-ups, then come back here.';
+      'Needs Shizuku or root. Set one up under Power-ups.';
 
   @override
   String get settingsAutoReceive => 'Receive automatically';

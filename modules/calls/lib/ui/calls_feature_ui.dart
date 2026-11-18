@@ -75,7 +75,7 @@ class CallsFeatureUi extends FeatureUi {
   Listenable get uiChanges => _changes;
 
   /// On a computer, only while a call rings or goes on; on the phone, only
-  /// while calls still need setting up.
+  /// while calls are on but Android hides them from Ferret.
   @override
   bool hasHomeCard(FeatureContext feature) {
     if (!this.feature.isPhone) {
@@ -84,8 +84,23 @@ class CallsFeatureUi extends FeatureUi {
 
     final permissions = this.feature.permissions;
     final canSeeCalls = permissions?.phoneState ?? false;
-    return !this.feature.settings.enabled ||
-        (permissions != null && !canSeeCalls);
+    return this.feature.settings.enabled && permissions != null && !canSeeCalls;
+  }
+
+  /// On the phone, while calls are off.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (!this.feature.isPhone || this.feature.settings.enabled) {
+      return null;
+    }
+
+    final l10n = context.callsL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.explainer,
+      actionLabel: l10n.setUp,
+      onAction: () => _openSetup(feature),
+    );
   }
 
   @override
@@ -108,11 +123,7 @@ class CallsFeatureUi extends FeatureUi {
     if (this.feature.isPhone) {
       return ChangeNotifierProvider(
         create: (_) => PhoneSetupViewModel(this.feature),
-        child: PhoneHomeFrame(
-          onSetUp: () => unawaited(
-            feature.push<void>(PhoneSetupPage(feature: this.feature)),
-          ),
-        ),
+        child: PhoneHomeFrame(onSetUp: () => _openSetup(feature)),
       );
     }
 
@@ -172,6 +183,9 @@ class CallsFeatureUi extends FeatureUi {
     _activeCalls?.dispose();
     _changes.dispose();
   }
+
+  void _openSetup(FeatureContext context) =>
+      unawaited(context.push<void>(PhoneSetupPage(feature: feature)));
 
   /// On a computer, about a phone: what the phone last said it can do, or
   /// that it did not answer.

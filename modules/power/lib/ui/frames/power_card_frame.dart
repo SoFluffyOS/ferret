@@ -7,8 +7,8 @@ import 'package:power/view_models/power_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The home card. It is there only while a step can be taken: a power-up to
-/// turn on, or one that stopped and needs a hand.
+/// The home card, only while a power-up that was on stopped working and
+/// needs a hand. Turning one on is offered in "Turn on more".
 class PowerCardFrame extends StatelessWidget {
   const PowerCardFrame({super.key, required this.onOpen});
 
@@ -29,7 +29,7 @@ class PowerCardFrame extends StatelessWidget {
     final viewModel = context.read<PowerViewModel>();
     final l10n = context.powerL10n;
 
-    if (prompt == null) {
+    if (prompt == null || !prompt.isProblem) {
       return const SizedBox.shrink();
     }
 
@@ -40,10 +40,7 @@ class PowerCardFrame extends StatelessWidget {
         final PowerNotice notice => l10n.noticeText(notice),
         null => l10n.promptText(prompt),
       },
-      iconTone: switch (prompt.isProblem) {
-        true => .warning,
-        false => .accent,
-      },
+      iconTone: .warning,
       subtitleTone: switch (notice) {
         null => .muted,
         _ => .danger,
@@ -53,31 +50,27 @@ class PowerCardFrame extends StatelessWidget {
         Button(
           variant: .primary,
           label: switch (prompt) {
-            .startShizuku || .shizukuStopped => l10n.stepStartButton,
-            .allowShizuku || .shizukuRevoked => l10n.stepAllowButton,
-            .useRoot => l10n.cardSetUp,
             .rootLost => l10n.cardAskAgain,
+            .shizukuRevoked => l10n.stepAllowButton,
+            _ => l10n.stepStartButton,
           },
           enable: !isBusy,
           onPressed: switch (prompt) {
-            .startShizuku || .shizukuStopped => viewModel.openShizuku,
-            .allowShizuku || .shizukuRevoked => viewModel.allowShizuku,
-            .useRoot => onOpen,
             .rootLost => viewModel.useRoot,
+            .shizukuRevoked => viewModel.allowShizuku,
+            _ => viewModel.openShizuku,
           },
         ),
         Button(
           variant: .ghost,
           label: switch (prompt) {
-            .shizukuStopped || .shizukuRevoked => l10n.stopUsingShizuku,
             .rootLost => l10n.stopUsingRoot,
-            _ => l10n.cardNotNow,
+            _ => l10n.stopUsingShizuku,
           },
           enable: !isBusy,
           onPressed: switch (prompt) {
-            .shizukuStopped || .shizukuRevoked => viewModel.stopUsingShizuku,
             .rootLost => viewModel.stopUsingRoot,
-            _ => viewModel.dismissCard,
+            _ => viewModel.stopUsingShizuku,
           },
         ),
       ],

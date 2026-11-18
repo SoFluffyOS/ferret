@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, open **Settings → Messages** in Ferret and tap **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Messages in **Turn on more** on Ferret's home screen (or open **Settings → Messages**), then **Turn on**.
 > 2. Allow **SMS** and **Contacts** when Android asks.
 > 3. On your computer, open **Messages** from your phone's card. Read, scroll back, reply.
 

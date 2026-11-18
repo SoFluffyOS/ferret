@@ -7,8 +7,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The home card on the phone: an invitation to set calls up, or a fix when
-/// the permission is missing. Once calls work it shows nothing.
+/// The home card on the phone, only while calls are on but the Phone
+/// permission is missing. Turning calls on is offered in "Turn on more".
 class PhoneHomeFrame extends StatelessWidget {
   const PhoneHomeFrame({super.key, required this.onSetUp});
 
@@ -22,34 +22,19 @@ class PhoneHomeFrame extends StatelessWidget {
     final checked = context.select<PhoneSetupViewModel, bool>(
       (viewModel) => viewModel.checked,
     );
-    final l10n = context.callsL10n;
-
-    if (stage == .ready || (stage == .needsPermission && !checked)) {
+    if (stage != .needsPermission || !checked) {
       return const SizedBox.shrink();
     }
 
-    final isOff = stage == .off;
+    final l10n = context.callsL10n;
 
     return FeatureCard(
       icon: LucideIcons.phone,
       title: l10n.title,
-      subtitle: switch (isOff) {
-        true => l10n.explainer,
-        false => null,
-      },
       onTap: onSetUp,
-      children: [
-        if (!isOff) StatusLine(text: l10n.phoneHomePaused, tone: .warning),
-      ],
+      children: [StatusLine(text: l10n.phoneHomePaused, tone: .warning)],
       actions: [
-        Button(
-          variant: .secondary,
-          label: switch (isOff) {
-            true => l10n.setUp,
-            false => l10n.fix,
-          },
-          onPressed: onSetUp,
-        ),
+        Button(variant: .secondary, label: l10n.fix, onPressed: onSetUp),
       ],
     );
   }

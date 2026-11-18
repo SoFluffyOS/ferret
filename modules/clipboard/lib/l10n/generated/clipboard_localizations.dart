@@ -112,7 +112,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @cardEmptyManual.
   ///
   /// In en, this message translates to:
-  /// **'Copy something, then tap Send clipboard to paste it on your other devices.'**
+  /// **'Copy something, then tap Send clipboard.'**
   String get cardEmptyManual;
 
   /// No description provided for @statusWithTime.
@@ -229,29 +229,17 @@ abstract class ClipboardLocalizations {
   /// **'Send clipboard'**
   String get sendClipboard;
 
-  /// No description provided for @limitAndroid.
+  /// No description provided for @offerBackgroundSend.
   ///
   /// In en, this message translates to:
-  /// **'Android doesn\'t let apps read your clipboard in the background. Copy, then tap Send clipboard here, in the Ferret notification or in the Quick Settings tile. Want it sent on its own? Set up Shizuku or root under Power-ups in Settings.'**
-  String get limitAndroid;
+  /// **'Send what you copy on its own, even in the background.'**
+  String get offerBackgroundSend;
 
-  /// No description provided for @limitAndroidPowerReady.
+  /// No description provided for @offerTurnOn.
   ///
   /// In en, this message translates to:
-  /// **'Your power-up is on, so Ferret can send what you copy on its own, even in the background. Turn it on here.'**
-  String get limitAndroidPowerReady;
-
-  /// No description provided for @sendInBackground.
-  ///
-  /// In en, this message translates to:
-  /// **'Send in the background'**
-  String get sendInBackground;
-
-  /// No description provided for @limitIos.
-  ///
-  /// In en, this message translates to:
-  /// **'iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.'**
-  String get limitIos;
+  /// **'Turn on'**
+  String get offerTurnOn;
 
   /// No description provided for @resultSent.
   ///
@@ -331,10 +319,28 @@ abstract class ClipboardLocalizations {
   /// **'Send text you copy in any app, also while Ferret is closed. Uses your power-up (Shizuku or root). Images still need Send clipboard.'**
   String get settingsBackgroundSendBody;
 
+  /// No description provided for @settingsWhyManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Why Send clipboard?'**
+  String get settingsWhyManual;
+
+  /// No description provided for @settingsWhyManualAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Android doesn\'t let apps read your clipboard in the background. Copy, then tap Send clipboard in Ferret, in its notification or in the Quick Settings tile.'**
+  String get settingsWhyManualAndroid;
+
+  /// No description provided for @settingsWhyManualIos.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.'**
+  String get settingsWhyManualIos;
+
   /// No description provided for @settingsBackgroundSendLocked.
   ///
   /// In en, this message translates to:
-  /// **'Android only allows this with Shizuku or root. Set one up under Power-ups, then come back here.'**
+  /// **'Needs Shizuku or root. Set one up under Power-ups.'**
   String get settingsBackgroundSendLocked;
 
   /// No description provided for @settingsAutoReceive.

@@ -40,6 +40,8 @@ class NotificationsFeatureUi extends FeatureUi {
   final NotificationAccess? access;
 
   InboxViewModel? _inbox;
+  MirrorSetupViewModel? _setup;
+  AppLifecycleListener? _lifecycle;
   FeatureChanges? _mirrorChanges;
   Listenable? _uiChanges;
 
@@ -63,18 +65,31 @@ class NotificationsFeatureUi extends FeatureUi {
   @override
   IconData get icon => LucideIcons.bell;
 
+  /// Access can be taken away in Android Settings, so the phone reads it
+  /// again every time the user comes back.
   @override
   Future<void> onAppStarted(FeatureContext context) async {
     if (!feature.isSource) {
       _inboxFor(context);
+      return;
     }
+
+    final setup = _phoneSetup;
+    if (setup == null) {
+      return;
+    }
+
+    _lifecycle ??= AppLifecycleListener(
+      onResume: () => unawaited(setup.refresh()),
+    );
   }
 
-  /// On a computer: the inbox and what each phone says about mirroring.
+  /// On the phone: where setup stands. On a computer: the inbox and what
+  /// each phone says about mirroring.
   @override
   Listenable? get uiChanges {
     if (feature.isSource) {
-      return null;
+      return _phoneSetup;
     }
 
     if (_uiChanges case final changes?) {
@@ -88,15 +103,38 @@ class NotificationsFeatureUi extends FeatureUi {
     return changes;
   }
 
-  /// On a computer, only once an Android phone is paired or a notification
-  /// is waiting.
+  /// On the phone, only while mirroring is on but access is off. On a
+  /// computer, only once an Android phone is paired or a notification is
+  /// waiting.
   @override
   bool hasHomeCard(FeatureContext feature) {
     if (this.feature.isSource) {
-      return true;
+      final setup = _phoneSetup;
+      return setup != null && setup.checked && setup.stage == .needsAccess;
     }
 
     return _hasPhone(feature) || !_inboxFor(feature).isEmpty;
+  }
+
+  /// On the phone, while mirroring is off.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (_phoneSetup?.stage != .off) {
+      return null;
+    }
+
+    final phoneAccess = access;
+    if (phoneAccess == null) {
+      return null;
+    }
+
+    final l10n = context.notificationsL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.offerDescription,
+      actionLabel: l10n.setUp,
+      onAction: () => _openSetup(feature, phoneAccess),
+    );
   }
 
   /// On a computer, whether a phone mirrors here: off, access missing, or
@@ -144,6 +182,8 @@ class NotificationsFeatureUi extends FeatureUi {
 
   /// Stops listening, for tests and hot restarts.
   void dispose() {
+    _lifecycle?.dispose();
+    _setup?.dispose();
     _mirrorChanges?.dispose();
     _inbox?.dispose();
   }
@@ -154,19 +194,15 @@ class NotificationsFeatureUi extends FeatureUi {
 
   Widget? _homeCard(FeatureContext featureContext) {
     if (access case final phoneAccess? when feature.isSource) {
-      return ChangeNotifierProvider(
-        create: (_) =>
-            MirrorSetupViewModel(feature: feature, access: phoneAccess),
+      final setup = _phoneSetup;
+      if (setup == null) {
+        return null;
+      }
+
+      return ChangeNotifierProvider.value(
+        value: setup,
         child: PhoneHomeFrame(
-          onSetUp: () => unawaited(
-            featureContext.push<void>(
-              PhoneSetupPage(
-                feature: feature,
-                access: phoneAccess,
-                onChooseApps: () => _openLocalPicker(featureContext),
-              ),
-            ),
-          ),
+          onSetUp: () => _openSetup(featureContext, phoneAccess),
         ),
       );
     }
@@ -212,6 +248,30 @@ class NotificationsFeatureUi extends FeatureUi {
       ),
     );
   }
+
+  /// The phone's setup state, made once so the shell can ask about it.
+  MirrorSetupViewModel? get _phoneSetup {
+    final phoneAccess = access;
+    if (!feature.isSource || phoneAccess == null) {
+      return null;
+    }
+
+    return _setup ??= MirrorSetupViewModel(
+      feature: feature,
+      access: phoneAccess,
+    );
+  }
+
+  void _openSetup(FeatureContext featureContext, NotificationAccess access) =>
+      unawaited(
+        featureContext.push<void>(
+          PhoneSetupPage(
+            feature: feature,
+            access: access,
+            onChooseApps: () => _openLocalPicker(featureContext),
+          ),
+        ),
+      );
 
   bool _hasPhone(FeatureContext featureContext) =>
       featureContext.engine.trustStore.devices.any(

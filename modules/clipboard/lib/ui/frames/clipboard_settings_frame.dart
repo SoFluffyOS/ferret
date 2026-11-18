@@ -55,6 +55,15 @@ class ClipboardSettingsFrame extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
+          if (needsManualSend)
+            SettingInfoRow(
+              title: l10n.settingsWhyManual,
+              body: switch (access) {
+                .onRequest => l10n.settingsWhyManualIos,
+                _ => l10n.settingsWhyManualAndroid,
+              },
+              showLock: false,
+            ),
           SettingSwitchRow(
             title: l10n.settingsAutoSend,
             body: switch (needsManualSend) {

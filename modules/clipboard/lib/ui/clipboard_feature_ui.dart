@@ -58,6 +58,23 @@ class ClipboardFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => viewModel;
 
+  /// A power-up already lets this phone send in the background; only the
+  /// switch is left.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (!viewModel.offersBackgroundSend) {
+      return null;
+    }
+
+    final l10n = context.clipboardL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.offerBackgroundSend,
+      actionLabel: l10n.offerTurnOn,
+      onAction: () => unawaited(viewModel.setBackgroundSend(true)),
+    );
+  }
+
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(

@@ -95,15 +95,35 @@ class MessagesFeatureUi extends FeatureUi {
     },
   );
 
-  /// On the phone, only when it can text at all; on a computer, only once a
-  /// paired phone shared its texts.
+  /// On the phone, only while Messages are on but SMS access is missing;
+  /// on a computer, only once a paired phone shared its texts.
   @override
   bool hasHomeCard(FeatureContext feature) {
     if (this.feature.sourceService case final service?) {
-      return service.access.hasTelephony;
+      final access = service.access;
+      return access.hasTelephony && service.settings.enabled && !access.canRead;
     }
 
     return _cardFor(feature).phones.isNotEmpty;
+  }
+
+  /// On a phone that can text, while Messages are off.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    final service = this.feature.sourceService;
+    if (service == null ||
+        !service.access.hasTelephony ||
+        service.settings.enabled) {
+      return null;
+    }
+
+    final l10n = context.messagesL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.offerDescription,
+      actionLabel: l10n.setUp,
+      onAction: () => _openSetup(feature, service),
+    );
   }
 
   @override
@@ -137,10 +157,7 @@ class MessagesFeatureUi extends FeatureUi {
     if (this.feature.sourceService case final service?) {
       return ChangeNotifierProvider(
         create: (_) => PhoneSetupViewModel(service),
-        child: PhoneCardFrame(
-          onSetUp: () =>
-              unawaited(feature.push<void>(PhoneSetupPage(service: service))),
-        ),
+        child: PhoneCardFrame(onSetUp: () => _openSetup(feature, service)),
       );
     }
 
@@ -222,6 +239,9 @@ class MessagesFeatureUi extends FeatureUi {
     _card = card;
     return card;
   }
+
+  void _openSetup(FeatureContext context, SourceService service) =>
+      unawaited(context.push<void>(PhoneSetupPage(service: service)));
 
   Future<void> _openFromNotice(
     FeatureContext context,

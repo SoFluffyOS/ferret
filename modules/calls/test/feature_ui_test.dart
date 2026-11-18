@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/calls.dart';
 
 import 'support/fakes.dart';
+import 'support/test_app.dart';
 
 class _FakeEngine implements FerretEngine {
   @override
@@ -90,15 +91,18 @@ void main() {
       await feature.stop();
     });
 
-    test('has a card only while calls need setting up', () async {
+    test('has no card while off or once calls work', () async {
       await start(enabled: false);
       final whileOff = ui.hasHomeCard(context);
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
 
       await host.settings.set(CallsSettings.enabledKey, true);
       await settle();
 
-      expect(whileOff, isTrue);
+      expect(whileOff, isFalse);
       expect(ui.hasHomeCard(context), isFalse);
+      expect(changes, greaterThan(0));
     });
 
     test('shows the card when the phone permission is missing', () async {
@@ -119,6 +123,52 @@ void main() {
 
       expect(feature.pushFailedTo('laptop'), isTrue);
       expect(changes, greaterThan(0));
+    });
+  });
+
+  group('the offer', () {
+    late FakeHost host;
+    late CallsFeature feature;
+
+    Future<FeatureOffer?> offerOn(
+      WidgetTester tester, {
+      required bool enabled,
+      bool isPhone = true,
+    }) async {
+      await tester.runAsync(() async {
+        host = FakeHost(settings: {CallsSettings.enabledKey: enabled});
+        feature = switch (isPhone) {
+          true => CallsFeature(phone: FakePhone()),
+          false => CallsFeature(),
+        };
+        await feature.start(host);
+        await settle();
+      });
+      addTearDown(() => tester.runAsync(feature.stop));
+      await tester.pumpWidget(testApp(const SizedBox()));
+      await tester.pumpAndSettle();
+
+      final ui = CallsFeatureUi.withFeature(feature);
+      return ui.offerFor(tester.element(find.byType(ListView)), context);
+    }
+
+    testWidgets('a phone with calls off offers them', (tester) async {
+      final offer = await offerOn(tester, enabled: false);
+
+      expect(offer?.title, 'Calls');
+      expect(
+        offer?.description,
+        "See who's calling and answer from your computer.",
+      );
+      expect(offer?.actionLabel, 'Set up');
+    });
+
+    testWidgets('no offer once calls are on', (tester) async {
+      expect(await offerOn(tester, enabled: true), isNull);
+    });
+
+    testWidgets('no offer on a computer', (tester) async {
+      expect(await offerOn(tester, enabled: false, isPhone: false), isNull);
     });
   });
 }

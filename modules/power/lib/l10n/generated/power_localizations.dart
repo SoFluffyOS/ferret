@@ -493,13 +493,13 @@ abstract class PowerLocalizations {
   /// No description provided for @cardStartShizuku.
   ///
   /// In en, this message translates to:
-  /// **'Shizuku is installed. Start it and Ferret can send your clipboard in the background.'**
+  /// **'Start Shizuku and Ferret sends what you copy on its own.'**
   String get cardStartShizuku;
 
   /// No description provided for @cardAllowShizuku.
   ///
   /// In en, this message translates to:
-  /// **'Shizuku is running. Allow Ferret to use it and your clipboard can go out in the background.'**
+  /// **'Allow Shizuku and Ferret sends what you copy on its own.'**
   String get cardAllowShizuku;
 
   /// No description provided for @cardShizukuStopped.
@@ -517,7 +517,7 @@ abstract class PowerLocalizations {
   /// No description provided for @cardUseRoot.
   ///
   /// In en, this message translates to:
-  /// **'This phone is rooted. Ferret can use root to send your clipboard in the background.'**
+  /// **'Use root and Ferret sends what you copy on its own.'**
   String get cardUseRoot;
 
   /// No description provided for @cardRootLost.
@@ -531,12 +531,6 @@ abstract class PowerLocalizations {
   /// In en, this message translates to:
   /// **'Set up'**
   String get cardSetUp;
-
-  /// No description provided for @cardNotNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Not now'**
-  String get cardNotNow;
 
   /// No description provided for @cardAskAgain.
   ///
