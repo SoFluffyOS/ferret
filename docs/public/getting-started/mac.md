@@ -46,7 +46,7 @@ That's it. The window and the popover are the SAME Ferret: pause in one and the 
 
 The window is not a big popover. It has room, so it uses it:
 
-- **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls** and **Notifications**. The line you picked stays highlighted.
+- **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
 - **The page** you picked fills the rest. Anything you open from it (Fix connection, a settings page) opens right there, with a back arrow. The list never moves.
 - **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
 - **Make it wide** (1200 points or more) and an **Activity** pane joins on the right: what is going on now, and the last things that happened with that device.

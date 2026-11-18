@@ -8,7 +8,7 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 
 ## 🪟 The window
 
-- **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls** and **Notifications**. The line you picked stays highlighted.
+- **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
 - **The page** you picked fills the rest. Anything you open from it opens right there, with a back arrow.
 - **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
 - **Snap it** to half the screen, or make it small: under 600 wide the list folds away and Ferret is one column, the same as on your phone. Nothing is lost, only stacked.
