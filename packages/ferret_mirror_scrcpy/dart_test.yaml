@@ -1,0 +1,6 @@
+tags:
+  # Needs adb and a running emulator, so `scripts/check.sh` skips it. Run it
+  # by hand: fvm flutter test --run-skipped --tags emulator
+  emulator:
+    skip: Needs a running Android emulator
+    timeout: 3x
