@@ -15,26 +15,12 @@ class PairingPromptDialog extends StatefulWidget {
   final PairingPrompt prompt;
 
   static Future<void> show(BuildContext context, PairingPrompt prompt) async {
-    final navigator = Navigator.of(context);
-    var open = true;
-
-    // The request can end without an answer here: it times out, or the
-    // other device gives up. Close the dialog so the next one can show.
-    unawaited(
-      prompt.decision.then((_) {
-        if (open) {
-          navigator.pop();
-        }
-      }),
-    );
-
     final accepted = await showGeneralDialog<bool>(
       context: context,
       barrierDismissible: false,
       barrierColor: const Color(0x99000000),
       pageBuilder: (_, _, _) => PairingPromptDialog(prompt: prompt),
     );
-    open = false;
 
     switch (accepted) {
       case true:
@@ -55,6 +41,24 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
   void initState() {
     super.initState();
     _ticker = .periodic(const Duration(seconds: 1), (_) => setState(() {}));
+    // The request can end without an answer here: it times out, or the
+    // other device gives up. Take this dialog away, and only this one, once
+    // the navigator is free.
+    unawaited(widget.prompt.decision.then((_) => _closeSelf()));
+  }
+
+  void _closeSelf() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final route = ModalRoute.of(context);
+      if (route != null && route.isActive) {
+        Navigator.of(context).removeRoute(route);
+      }
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
   }
 
   @override
