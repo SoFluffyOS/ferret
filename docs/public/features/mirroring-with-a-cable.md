@@ -1,16 +1,29 @@
-# Mirror a phone without Ferret on it
+# Show a phone with a cable
 
 > **TL;DR**
 >
-> 1. On the phone, turn on **USB debugging** (or **Wireless debugging**).
-> 2. Plug it into your computer and tap **Allow** on the phone.
-> 3. In Ferret on the computer, pick the phone under **Screens you can show** and click **Show screen**.
+> 1. Click **Show screen** on the phone in Ferret, then **How**.
+> 2. Follow the three steps on the phone. Each one ticks itself.
+> 3. The picture starts by itself. That's it.
 
-[Screen mirroring](mirroring.md) needs Ferret on both devices. But sometimes the phone isn't yours to set up, or it is a spare one, or a test phone on your desk.
+[Screen](mirroring.md) over Wi-Fi needs Ferret on both devices, and you can only look. But sometimes the phone is a spare one, or a test phone on your desk. Or you want to click and type on it.
 
-Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way you can click and type on the phone too.
+Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way the mouse and the keyboard work on the phone too.
 
-> 🧪 This is experimental. On your computer, click **Turn on** next to Screen in **Do more** on Ferret's home screen first. Already paired an Android phone? The switch, **More ways to show a screen**, is in **Settings → From your phone** too. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
+> 🧪 This is experimental. It was tested on a Mac with an Android emulator, not yet on Windows and Linux.
+
+## ✅ The steps tick themselves
+
+You don't set this up in Settings. The steps show up where you need them:
+
+- **Show screen** on a paired phone that isn't connected, then **How**.
+- Or the **View only** chip on a picture, then **How**.
+
+Ferret shows a checklist: plug the phone in, turn on USB debugging, tap Allow. It looks at the phone every two seconds and ticks each step as it happens. When the last one ticks, the picture starts. There is no "Try again" to press.
+
+Opening the checklist also turns on **Look for phones on a cable** in **Settings → From your phone**, under **Screen**. Turn it off there when you're done with cables.
+
+A phone that isn't paired with Ferret shows up on the home screen under **Phones on a cable**, with **Show screen**.
 
 ## 🔑 Turn on debugging on the phone
 
@@ -27,9 +40,7 @@ On some phones the names differ a little. Search the phone's settings for "Build
 
 1. Plug the phone into the computer.
 2. The phone asks **Allow USB debugging?**. Tap **Allow**. Tick **Always allow from this computer** so it won't ask again.
-3. The phone shows up in Ferret under **Screens you can show**. Click **Show screen**.
-
-That's it.
+3. The picture starts. That's it.
 
 Nothing shows up? Try another cable. Many cables only charge.
 
@@ -48,21 +59,31 @@ Android 11 and later can do the same over Wi-Fi. Both devices must be on the sam
    adb connect 192.168.1.20:41567
    ```
 
-The phone now shows up in Ferret like a plugged-in one, marked **On your network**.
+The phone now shows up in Ferret like a plugged-in one, marked **Wi-Fi debugging**.
 
 Pairing is once per computer. The second address changes every time wireless debugging is turned on again, so `adb connect` is for each time.
 
 ## 🖱️ Control the phone
 
-Click, drag and scroll on the picture like on a touch screen. Type on your keyboard. The buttons under the picture are **Back**, **Home** and **Recent apps**.
+Click, drag and scroll on the picture like on a touch screen. Right-click is Back, middle-click is Home, two fingers on a trackpad scroll. Type on your keyboard, `⌘V` pastes.
 
-Accents and emoji don't go through the keyboard. Copy the text on the computer and paste it instead.
+The toolbar has **Back**, **Home**, **Recents**, **Rotate** and **Keyboard**. Volume, Power and the notifications panel are behind **•••**. The whole list is in [Screen](mirroring.md).
+
+Accents and emoji just work. Ferret passes them through the phone's clipboard.
+
+## 🔀 Paired AND plugged in
+
+A phone with Ferret on it that is also plugged in still goes over Wi-Fi first. That way the phone asks you, like always.
+
+Want to click and type? Click **View only → Control with the cable**. Ferret switches over, and says once that a cable doesn't ask each time.
+
+When Ferret can't reach the phone at all, it uses the cable by itself and tells you: "Showing over the cable instead."
 
 ## 🔐 What you are allowing
 
 Debugging is a strong permission. Be sure about it.
 
-- A computer you allowed can see and control the phone **without asking again**. There is no prompt each time, unlike [Screen mirroring](mirroring.md) with Ferret on the phone.
+- A computer you allowed can see and control the phone **without asking again**. There is no prompt each time, unlike [Screen](mirroring.md) with Ferret on the phone.
 - Only allow computers that are yours.
 - Done? Turn **USB debugging** off again, or tap **Revoke USB debugging authorizations** in Developer options to forget every computer.
 
@@ -82,10 +103,12 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 
 | Ferret says | What to do |
 |---|---|
-| Get Android's helper tool | adb isn't on this computer. Click **Download**, or install the platform tools yourself, then **Check again** |
-| Start Android's helper tool | adb is here but Ferret can't start it. Open Android Studio, or run `adb start-server` in Terminal, then **Check again** |
-| The phone needs one setting turned on | Turn on USB debugging, as above |
-| Allow this computer on the phone | Unlock the phone and tap **Allow**. No question on the phone? Unplug it and plug it in again |
+| Get Android's helper tool | adb isn't on this computer. Click **Download**, or install the platform tools yourself. The checklist moves on by itself |
+| Start Android's helper tool | adb is here but Ferret can't start it. Open Android Studio, or run `adb start-server` in Terminal |
+| Turn on USB debugging stays unticked | Follow the steps under it. Samsung and Xiaomi name things differently: open **Samsung, Xiaomi, others** |
+| Many cables only charge | Nothing showed up for 20 seconds. Try another cable |
+| Clicks do nothing on a Xiaomi | Also turn on **USB debugging (Security settings)** |
+| Tap Allow on the phone | Unlock the phone and tap **Allow**. No question on the phone? Unplug it and plug it in again |
 
 ## 🧭 Limits
 
@@ -99,7 +122,7 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 - **Android 5 and later** for the picture. Wireless debugging needs Android 11.
 - **No sound.** Only the picture is sent.
 - **Protected screens stay black**: banking apps, password fields, DRM video.
-- The picture quality is set when it starts. It doesn't adapt to a slow Wi-Fi while running.
+- The picture quality is set when it starts. Pick **Fast** behind the three bars and Ferret restarts the picture with it.
 
 ## 🙏 Thanks
 

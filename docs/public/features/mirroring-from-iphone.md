@@ -2,24 +2,25 @@
 
 > **TL;DR**
 >
-> 1. On your computer, click **Turn on** next to Screen in **Do more** on Ferret's home screen.
+> 1. On your computer, click **Show screen** on the iPhone in Ferret.
 > 2. On the iPhone, open **Control Center → Screen Mirroring** and pick your computer.
-> 3. Say yes on the computer. That's it.
+> 3. Click **Show** on the computer. That's it.
 
-[Screen mirroring](mirroring.md) is for Android phones, with Ferret on both devices. An iPhone can't do that.
+[Screen](mirroring.md) over Ferret is for Android phones. An iPhone can't share its screen that way.
 
 But an iPhone already knows how to send its screen: **AirPlay**. So Ferret on your computer answers like an AirPlay screen would. Nothing to install on the iPhone. An iPad works the same way.
 
 > 🧪 This is experimental, and we mean it. It was built and tested without a real iPhone at hand. It may not work with yours yet. Tell us how it goes.
 
-## 🔑 Turn it on
+## 🔑 Listening for two minutes
 
 Ferret doesn't listen for iPhones until you ask.
 
-1. On the computer, find **Screen** in **Do more** on Ferret's home screen.
-2. Click **Turn on**.
+Click **Show screen** on a paired iPhone or iPad. Ferret shows the three steps, with the name to look for, and listens for two minutes. A clock counts them down.
 
-Your computer now shows up on iPhones on the same Wi-Fi, under its Ferret name. Turn off **More ways to show a screen** in **Settings → From your phone** and it is gone from their lists.
+Nobody picked your computer? It stops listening, and says so with **Listen again**.
+
+Want it to listen all the time? Turn on **Show iPhone and iPad screens here** in **Settings → From your phone**, under **Screen**. Then an iPhone can start by itself, and Ferret asks you with a line under **Needs you** and a notification: **Show** or **Don't allow**.
 
 ## 📱 Start from the iPhone
 
@@ -27,7 +28,9 @@ Your computer now shows up on iPhones on the same Wi-Fi, under its Ferret name. 
 2. Tap **Screen Mirroring** (the two rectangles).
 3. Pick your computer.
 
-Ferret asks you on the computer first. Say yes, and the iPhone's screen appears.
+Ferret asks you on the computer first, on the same page: "Simon's iPhone is connecting", with **Show** and **Not mine**. Click **Show** and the iPhone's screen appears, right there.
+
+It is view only, with no sound.
 
 Rotate the iPhone and the picture follows. Lock it and the picture stands still until you unlock.
 
@@ -37,7 +40,7 @@ To stop, tap **Stop Mirroring** on the iPhone, or **Stop** in Ferret.
 
 AirPlay on its own lets anyone on your Wi-Fi put a picture on a screen. Ferret doesn't.
 
-- **Off until you turn it on.** No switch, no listening.
+- **Off until you ask.** No **Show screen**, no switch: no listening.
 - **It asks every time.** Nothing is shown before you say yes on the computer. No answer in 30 seconds counts as a no.
 - **Your network only.** Devices from outside are turned away.
 - The name you see is the one the iPhone gives itself. Not sure whose it is? Say no.
@@ -48,7 +51,7 @@ The picture goes from the iPhone to your computer over your own Wi-Fi. Nothing g
 
 You don't need this on a Mac. macOS has its own **AirPlay Receiver** in **System Settings → General → AirDrop & Handoff**, and it does more than ours.
 
-So on a Mac, Ferret leaves this off unless you turn it on.
+So on a Mac, **Show screen** on an iPhone says "Macs already do this" first. Click **Use Ferret anyway** if you want ours.
 
 ## ⚠️ It can stop working
 
@@ -60,7 +63,7 @@ An iOS update can change that handshake. If it does, iPhones will stop connectin
 
 | What you see | What to do |
 |---|---|
-| The computer isn't in the iPhone's list | Same Wi-Fi on both? Is **More ways to show a screen** on? A guest network often hides devices from each other |
+| The computer isn't in the iPhone's list | Same Wi-Fi on both? Is Ferret still listening (the clock on the page)? A guest network often hides devices from each other |
 | It is in the list, but connecting fails | Did you say yes on the computer? If you did, your iOS version may not work yet |
 | A firewall asks about Ferret | Allow it on private networks. The iPhone has to reach the computer |
 
