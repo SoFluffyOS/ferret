@@ -1,6 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/activity_item.dart';
 import 'package:feature_kit/feature_ui/device_permission.dart';
+import 'package:feature_kit/feature_ui/feature_busy.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
 import 'package:feature_kit/feature_ui/feature_health.dart';
 import 'package:feature_kit/feature_ui/feature_offer.dart';
@@ -43,6 +44,11 @@ abstract class FeatureUi {
   /// Fires when this feature's home card or health may have changed, so the
   /// shell rebuilds them right away.
   Listenable? get uiChanges => null;
+
+  /// What this feature is in the middle of right now: a transfer under
+  /// way, requests waiting for the person. Null when it never has any.
+  /// The shell asks again whenever [uiChanges] fires.
+  FeatureBusy? busyState(FeatureContext feature) => null;
 
   /// Whether the home card has anything to show right now. The shell leaves
   /// no gap for a feature that says no.

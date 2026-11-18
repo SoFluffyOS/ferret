@@ -5,6 +5,7 @@ import 'package:drop/feature/drop_feature.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_drop/ferret_drop.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
@@ -26,6 +27,7 @@ class DropViewModel extends ChangeNotifier {
        _pickFolder = pickFolder ?? getDirectoryPath,
        _describeFolder = describeFolder {
     _transfers = feature.transfers;
+    _runningIds = _idsOfRunning(_transfers);
     _targets = _readTargets();
     _subscriptions
       ..add(feature.changes.listen(_onTransfers))
@@ -51,6 +53,8 @@ class DropViewModel extends ChangeNotifier {
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   List<Transfer> _transfers = const [];
+  Set<String> _runningIds = const {};
+  int _finishedCount = 0;
   List<DropTarget> _targets = const [];
   List<DropTarget> _localSendTargets = const [];
   LocalSendReceiveState _receiveState = const LocalSendReceiveState();
@@ -63,6 +67,28 @@ class DropViewModel extends ChangeNotifier {
 
   bool get hasFinished =>
       _transfers.any((transfer) => !transfer.status.isActive);
+
+  /// What Drop is in the middle of: transfers under way, offers waiting
+  /// for an answer, and how many transfers went through so far.
+  FeatureBusy get busy {
+    final running = [
+      for (final transfer in _transfers)
+        if (transfer.status.isActive && !transfer.needsAnswer) transfer,
+    ];
+    final waiting = [
+      for (final transfer in _transfers)
+        if (transfer.status.isActive && transfer.needsAnswer) transfer,
+    ];
+
+    return FeatureBusy(
+      progress: _progressOf(running),
+      peerName: _sharedName(running),
+      isSending: running.firstOrNull?.isOutgoing ?? true,
+      waitingCount: waiting.length,
+      waitingName: _sharedName(waiting),
+      finishedCount: _finishedCount,
+    );
+  }
 
   /// Connected paired devices that can receive drops.
   List<DropTarget> get targets => _targets;
@@ -275,8 +301,47 @@ class DropViewModel extends ChangeNotifier {
   }
 
   void _onTransfers(List<Transfer> transfers) {
+    for (final transfer in transfers) {
+      final wasRunning = _runningIds.contains(transfer.id);
+      if (wasRunning && transfer.status == .done) {
+        _finishedCount++;
+      }
+    }
+
+    _runningIds = _idsOfRunning(transfers);
     _transfers = transfers;
     notifyListeners();
+  }
+
+  Set<String> _idsOfRunning(List<Transfer> transfers) => {
+    for (final transfer in transfers)
+      if (transfer.status.isActive) transfer.id,
+  };
+
+  /// Bytes done over bytes to move, across [running]; null when none run.
+  double? _progressOf(List<Transfer> running) {
+    if (running.isEmpty) {
+      return null;
+    }
+
+    final total = running.fold(0, (sum, transfer) => sum + transfer.totalBytes);
+    if (total <= 0) {
+      return 0;
+    }
+
+    final done = running.fold(0, (sum, transfer) => sum + transfer.bytesDone);
+    return (done / total).clamp(0, 1).toDouble();
+  }
+
+  /// The one device [transfers] are with, or empty when they are with
+  /// several.
+  String _sharedName(List<Transfer> transfers) {
+    final names = {for (final transfer in transfers) transfer.deviceName};
+    if (names.length != 1) {
+      return '';
+    }
+
+    return names.first;
   }
 
   void _onSessions() {

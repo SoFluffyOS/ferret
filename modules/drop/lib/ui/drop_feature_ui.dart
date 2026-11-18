@@ -71,6 +71,9 @@ class DropFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _dropViewModel;
 
+  @override
+  FeatureBusy busyState(FeatureContext feature) => _dropViewModel.busy;
+
   /// Drop's health with [device], from its session and the last transfer.
   FeatureHealth? healthOf(DeviceStatus device) {
     final session = device.session;
