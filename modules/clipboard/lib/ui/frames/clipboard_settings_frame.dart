@@ -83,7 +83,10 @@ class ClipboardSettingsFrame extends StatelessWidget {
           if (access == .foreground && !canSendInBackground)
             SettingInfoRow(
               title: l10n.settingsBackgroundSend,
-              body: l10n.settingsBackgroundSendLocked,
+              body: switch (backgroundSend) {
+                true => l10n.settingsBackgroundSendLost,
+                false => l10n.settingsBackgroundSendLocked,
+              },
             ),
           SettingSwitchRow(
             title: l10n.settingsAutoReceive,

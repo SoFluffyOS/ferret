@@ -324,7 +324,7 @@ void main() {
 
       expect(find.text('Send automatically in the background'), findsOneWidget);
       expect(
-        find.text('Needs Shizuku or root. Set one up under Power-ups.'),
+        find.text('Needs Shizuku or root. Set one up in Settings → Control.'),
         findsOneWidget,
       );
       expect(find.byType(SwitchToggle), findsNWidgets(4));

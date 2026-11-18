@@ -84,11 +84,11 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get resultSensitive =>
-      'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.';
+      'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings → Clipboard to send these.';
 
   @override
   String get resultImagesOff =>
-      'Not sent: images are off. Turn on Images in Settings to send them.';
+      'Not sent: images are off. Turn on Images in Settings → Clipboard to send them.';
 
   @override
   String get resultTooLarge => 'Not sent: it\'s bigger than the size limit.';
@@ -100,6 +100,40 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   @override
   String get resultFailed =>
       'Couldn\'t reach your devices. Check they\'re on the same Wi-Fi, then try again.';
+
+  @override
+  String get summarySyncs => 'Syncs by itself';
+
+  @override
+  String get summarySends => 'Sends by itself';
+
+  @override
+  String get summaryByHand => 'Send by hand';
+
+  @override
+  String get healthSyncs => 'Syncs by itself';
+
+  @override
+  String get healthByHand => 'Send by hand';
+
+  @override
+  String healthOnlyHereSends(String name) {
+    return 'Sends by itself. $name sends by hand.';
+  }
+
+  @override
+  String healthOnlyTheySend(String name) {
+    return '$name sends by itself. Send by hand from here.';
+  }
+
+  @override
+  String healthUnsupported(String name) {
+    return 'Needs a Ferret update on $name';
+  }
+
+  @override
+  String get settingsBackgroundSendLost =>
+      'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.';
 
   @override
   String get settingsAutoSend => 'Send automatically';
@@ -132,7 +166,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsBackgroundSendLocked =>
-      'Needs Shizuku or root. Set one up under Power-ups.';
+      'Needs Shizuku or root. Set one up in Settings → Control.';
 
   @override
   String get settingsAutoReceive => 'Receive automatically';

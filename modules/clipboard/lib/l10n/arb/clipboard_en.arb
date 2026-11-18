@@ -33,11 +33,29 @@
   "resultSent": "Sent.",
   "resultNothingToSend": "The clipboard is empty, or holds something other than text or an image.",
   "resultDuplicate": "Already sent.",
-  "resultSensitive": "Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.",
-  "resultImagesOff": "Not sent: images are off. Turn on Images in Settings to send them.",
+  "resultSensitive": "Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings → Clipboard to send these.",
+  "resultImagesOff": "Not sent: images are off. Turn on Images in Settings → Clipboard to send them.",
   "resultTooLarge": "Not sent: it's bigger than the size limit.",
   "resultNoDevices": "No device is connected. Open Ferret on your other device, on the same Wi-Fi.",
   "resultFailed": "Couldn't reach your devices. Check they're on the same Wi-Fi, then try again.",
+  "summarySyncs": "Syncs by itself",
+  "summarySends": "Sends by itself",
+  "summaryByHand": "Send by hand",
+  "healthSyncs": "Syncs by itself",
+  "healthByHand": "Send by hand",
+  "healthOnlyHereSends": "Sends by itself. {name} sends by hand.",
+  "@healthOnlyHereSends": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthOnlyTheySend": "{name} sends by itself. Send by hand from here.",
+  "@healthOnlyTheySend": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "healthUnsupported": "Needs a Ferret update on {name}",
+  "@healthUnsupported": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "settingsBackgroundSendLost": "Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.",
   "settingsAutoSend": "Send automatically",
   "settingsAutoSendBody": "Send what you copy here to your connected devices.",
   "settingsAutoSendBodyManual": "This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.",
@@ -46,7 +64,7 @@
   "settingsWhyManual": "Why Send clipboard?",
   "settingsWhyManualAndroid": "Android doesn't let apps read your clipboard in the background. Copy, then tap Send clipboard in Ferret, in its notification or in the Quick Settings tile.",
   "settingsWhyManualIos": "iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.",
-  "settingsBackgroundSendLocked": "Needs Shizuku or root. Set one up under Power-ups.",
+  "settingsBackgroundSendLocked": "Needs Shizuku or root. Set one up in Settings → Control.",
   "settingsAutoReceive": "Receive automatically",
   "settingsAutoReceiveBody": "Put what your devices send straight on this clipboard. When off, tap Copy next to what arrived.",
   "settingsImages": "Images",

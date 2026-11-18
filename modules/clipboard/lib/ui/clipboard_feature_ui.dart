@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:clipboard/feature/clipboard_feature.dart';
 import 'package:clipboard/l10n/l10n.dart';
 import 'package:clipboard/ui/clip_activity.dart';
+import 'package:clipboard/ui/clipboard_health.dart';
 import 'package:clipboard/ui/frames/frames.dart';
 import 'package:clipboard/ui/widgets/widgets.dart';
 import 'package:clipboard/view_models/clipboard_view_model.dart';
@@ -108,11 +109,52 @@ class ClipboardFeatureUi extends FeatureUi {
   }
 
   @override
-  Widget? buildSettings(BuildContext context, FeatureContext feature) =>
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
+    final session = device.session;
+    if (session == null) {
+      return null;
+    }
+
+    return clipboardHealthOf(
+      _localizations(),
+      session: session,
+      name: device.device.name,
+      sendsOnItsOwn: viewModel.sendsOnItsOwn,
+    );
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .clipboard;
+
+  @override
+  Widget buildSettings(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: viewModel,
         child: const ClipboardSettingsFrame(),
       );
+
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.clipboardL10n;
+
+    return [
+      FeatureSettings(
+        group: settingsGroup,
+        title: l10n.title,
+        child: buildSettings(context, feature),
+        summary: clipboardSummaryOf(
+          l10n,
+          sendsOnItsOwn: viewModel.sendsOnItsOwn,
+          autoReceive: viewModel.autoReceive,
+        ),
+        isOn: viewModel.sendsOnItsOwn || viewModel.autoReceive,
+        needsAttention: viewModel.lostBackgroundSend,
+      ),
+    ];
+  }
 
   /// The tile has no screen to show a result on, so the outcome goes to a
   /// quiet notice instead.

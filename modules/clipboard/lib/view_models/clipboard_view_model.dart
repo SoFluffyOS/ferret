@@ -34,6 +34,16 @@ class ClipboardViewModel extends ChangeNotifier {
   bool get needsManualSend =>
       !access.watchesOtherApps && !feature.sendsInBackground;
 
+  /// Copies made on this device go to the others without a tap.
+  bool get sendsOnItsOwn => autoSend && !needsManualSend;
+
+  /// Background sending is on, but the power-up it needs is gone.
+  bool get lostBackgroundSend =>
+      access == .foreground &&
+      autoSend &&
+      backgroundSend &&
+      !canSendInBackground;
+
   /// An Android power-up is on, so background sending can be offered.
   bool get canSendInBackground => feature.canSendInBackground;
 

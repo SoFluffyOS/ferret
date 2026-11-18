@@ -226,13 +226,13 @@ abstract class ClipboardLocalizations {
   /// No description provided for @resultSensitive.
   ///
   /// In en, this message translates to:
-  /// **'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.'**
+  /// **'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings → Clipboard to send these.'**
   String get resultSensitive;
 
   /// No description provided for @resultImagesOff.
   ///
   /// In en, this message translates to:
-  /// **'Not sent: images are off. Turn on Images in Settings to send them.'**
+  /// **'Not sent: images are off. Turn on Images in Settings → Clipboard to send them.'**
   String get resultImagesOff;
 
   /// No description provided for @resultTooLarge.
@@ -252,6 +252,60 @@ abstract class ClipboardLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t reach your devices. Check they\'re on the same Wi-Fi, then try again.'**
   String get resultFailed;
+
+  /// No description provided for @summarySyncs.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncs by itself'**
+  String get summarySyncs;
+
+  /// No description provided for @summarySends.
+  ///
+  /// In en, this message translates to:
+  /// **'Sends by itself'**
+  String get summarySends;
+
+  /// No description provided for @summaryByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Send by hand'**
+  String get summaryByHand;
+
+  /// No description provided for @healthSyncs.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncs by itself'**
+  String get healthSyncs;
+
+  /// No description provided for @healthByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Send by hand'**
+  String get healthByHand;
+
+  /// No description provided for @healthOnlyHereSends.
+  ///
+  /// In en, this message translates to:
+  /// **'Sends by itself. {name} sends by hand.'**
+  String healthOnlyHereSends(String name);
+
+  /// No description provided for @healthOnlyTheySend.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} sends by itself. Send by hand from here.'**
+  String healthOnlyTheySend(String name);
+
+  /// No description provided for @healthUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a Ferret update on {name}'**
+  String healthUnsupported(String name);
+
+  /// No description provided for @settingsBackgroundSendLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.'**
+  String get settingsBackgroundSendLost;
 
   /// No description provided for @settingsAutoSend.
   ///
@@ -304,7 +358,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsBackgroundSendLocked.
   ///
   /// In en, this message translates to:
-  /// **'Needs Shizuku or root. Set one up under Power-ups.'**
+  /// **'Needs Shizuku or root. Set one up in Settings → Control.'**
   String get settingsBackgroundSendLocked;
 
   /// No description provided for @settingsAutoReceive.
