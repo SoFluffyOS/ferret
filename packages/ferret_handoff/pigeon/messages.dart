@@ -7,7 +7,10 @@ import 'package:pigeon/pigeon.dart';
     kotlinOut:
         'android/src/main/kotlin/io/sofluffy/ferret_handoff/Messages.g.kt',
     kotlinOptions: KotlinOptions(package: 'io.sofluffy.ferret_handoff'),
-    swiftOut: 'macos/ferret_handoff/Sources/ferret_handoff/Messages.g.swift',
+    swiftOut: [
+      'ios/ferret_handoff/Sources/ferret_handoff/Messages.g.swift',
+      'macos/ferret_handoff/Sources/ferret_handoff/Messages.g.swift',
+    ],
   ),
 )
 /// Where a shared item came from.

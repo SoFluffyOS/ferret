@@ -7,20 +7,27 @@ import 'package:flutter/services.dart';
 /// Answers a shared item: true once it was sent to the chosen device.
 typedef SharedItemHandler = Future<bool> Function(SharedItem item);
 
-/// Handoff's platform side: the Android share target and assistant, opening
-/// links in a given app, and the macOS browser page.
+/// Handoff's platform side: the Android share target and assistant, the iOS
+/// Share extension's links, opening links in a given app, and the macOS
+/// browser page.
 ///
 /// Calls on platforms that don't have a feature return a neutral answer
 /// instead of throwing, so callers don't check the platform themselves.
 class FerretHandoff implements HandoffEventsApi {
-  FerretHandoff({HandoffHostApi? api, bool? isAndroid, bool? isMacOS})
-    : _api = api ?? HandoffHostApi(),
-      _isAndroid = isAndroid ?? Platform.isAndroid,
-      _isMacOS = isMacOS ?? Platform.isMacOS;
+  FerretHandoff({
+    HandoffHostApi? api,
+    bool? isAndroid,
+    bool? isMacOS,
+    bool? isIOS,
+  }) : _api = api ?? HandoffHostApi(),
+       _isAndroid = isAndroid ?? Platform.isAndroid,
+       _isMacOS = isMacOS ?? Platform.isMacOS,
+       _isIOS = isIOS ?? Platform.isIOS;
 
   final HandoffHostApi _api;
   final bool _isAndroid;
   final bool _isMacOS;
+  final bool _isIOS;
   final StreamController<String> _browserDeactivated = .broadcast();
   SharedItemHandler? _onShared;
   bool _listening = false;
@@ -38,7 +45,7 @@ class FerretHandoff implements HandoffEventsApi {
   /// Starts taking items from the share sheet and the assistant.
   void listen(SharedItemHandler onShared) {
     _onShared = onShared;
-    if (_listening || !(_isAndroid || _isMacOS)) {
+    if (_listening || !(_isAndroid || _isMacOS || _isIOS)) {
       return;
     }
 
@@ -54,8 +61,10 @@ class FerretHandoff implements HandoffEventsApi {
     await _api.setDevices(devices);
   }
 
+  /// Items shared before Ferret listened: from the Android share sheet, or
+  /// left by the iOS Share extension while Ferret wasn't on screen.
   Future<List<SharedItem>> takePending() async {
-    if (!_isAndroid) {
+    if (!(_isAndroid || _isIOS)) {
       return const [];
     }
 

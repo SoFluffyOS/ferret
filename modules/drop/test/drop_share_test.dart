@@ -251,6 +251,23 @@ void main() {
       expect(notifier.problems, isEmpty);
     });
 
+    test('a share that woke Ferret long after it started waits too', () async {
+      link.drop();
+      await start(connectGrace: const Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 3));
+
+      plugin.incoming.add(
+        SharedItems(paths: [source.path], deviceId: 'phone-id'),
+      );
+      await pumpEventQueue();
+      expect(sentTo(), isEmpty);
+      link.connect();
+      await until(() => sentTo().isNotEmpty);
+
+      expect(sentTo(), ['phone-id']);
+      expect(notifier.problems, isEmpty);
+    });
+
     test('files Ferret was started with go to the one device', () async {
       await start(filesToSend: [source.path]);
       await until(() => sentTo().isNotEmpty);

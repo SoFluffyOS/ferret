@@ -24,5 +24,7 @@ flutter:
       android:
         package: io.sofluffy.ferret_handoff
         pluginClass: FerretHandoffPlugin
+      ios:
+        pluginClass: FerretHandoffPlugin
       macos:
         pluginClass: FerretHandoffPlugin

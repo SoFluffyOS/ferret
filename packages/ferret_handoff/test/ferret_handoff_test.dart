@@ -45,6 +45,28 @@ void main() {
     expect(received?.text, 'hi');
   });
 
+  test('iOS takes what the Share extension left, and nothing else', () async {
+    final left = SharedItem(
+      origin: .shareSheet,
+      createdAtMs: 1,
+      targetDeviceId: 'mac',
+      text: 'https://example.org',
+    );
+    final handoff = FerretHandoff(
+      api: _PendingApi([left]),
+      isAndroid: false,
+      isMacOS: false,
+      isIOS: true,
+    );
+
+    final pending = await handoff.takePending();
+
+    expect(pending.single.targetDeviceId, 'mac');
+    expect(pending.single.text, 'https://example.org');
+    expect(await handoff.openInApp('https://example.org', 'app'), isFalse);
+    expect(await handoff.isAssistantEnabled(), isFalse);
+  });
+
   test('browser deactivation is a stream', () async {
     final handoff = FerretHandoff(
       api: _ThrowingApi(),
@@ -63,4 +85,13 @@ class _ThrowingApi implements HandoffHostApi {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       throw StateError('No platform call expected');
+}
+
+class _PendingApi extends _ThrowingApi {
+  _PendingApi(this.pending);
+
+  final List<SharedItem> pending;
+
+  @override
+  Future<List<SharedItem>> takePending() async => pending;
 }

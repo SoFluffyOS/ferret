@@ -30,9 +30,8 @@ class DropFeatureUi extends FeatureUi {
 
   /// [filesToSend] are the files this run was started with (`ferret send`),
   /// sent once the app is up. [handoff] takes the files of later runs. A
-  /// share that arrives within
-  /// [connectGrace] of starting waits that long for a device to connect,
-  /// since the share may be what started Ferret.
+  /// share waits up to [connectGrace] for a device to connect, since the
+  /// share may be what started or woke Ferret.
   DropFeatureUi({
     FerretDrop? plugin,
     DropFeature? feature,
@@ -67,7 +66,7 @@ class DropFeatureUi extends FeatureUi {
   final FerretDrop _plugin;
   final List<String> _filesToSend;
   final Duration _connectGrace;
-  final Stopwatch _sinceStart = Stopwatch();
+  final Stopwatch _sinceAwake = Stopwatch();
   final SendHandoff? _handoff;
   DropViewModel? _viewModel;
   DropNotices? _notices;
@@ -150,7 +149,7 @@ class DropFeatureUi extends FeatureUi {
     _offers = feature.updates.listen(
       (transfer) => _revealQuickShareOffer(context, transfer),
     );
-    _sinceStart.start();
+    _sinceAwake.start();
     viewModel.addListener(_publishShareTargets);
     _publishShareTargets();
     await _takeSendCommands(context);
@@ -510,6 +509,9 @@ class DropFeatureUi extends FeatureUi {
   }
 
   Future<void> _onShared(FeatureContext context, SharedItems items) async {
+    // On iOS a share is picked up as Ferret comes back to the front, when
+    // iOS had cut its connections in the background.
+    _sinceAwake.reset();
     final pickedInSheet =
         items.deviceId != null || (items.everyDevice ?? false);
     if (items.paths.isNotEmpty) {
@@ -572,14 +574,15 @@ class DropFeatureUi extends FeatureUi {
     }
   }
 
-  /// Right after starting, devices are still connecting: waits for
-  /// [deviceId] (or any device) until [_connectGrace] after the start.
+  /// Right after starting, or after a share sheet brought Ferret back, devices
+  /// are still connecting: waits for [deviceId] (or any device) until
+  /// [_connectGrace] after that moment.
   Future<void> _untilConnected(String? deviceId) async {
     final viewModel = _dropViewModel;
     bool isConnected() => viewModel.targets.any(
       (target) => deviceId == null || target.deviceId == deviceId,
     );
-    final left = _connectGrace - _sinceStart.elapsed;
+    final left = _connectGrace - _sinceAwake.elapsed;
     if (isConnected() || left <= Duration.zero) {
       return;
     }
