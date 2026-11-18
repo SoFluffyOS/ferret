@@ -9,10 +9,14 @@ import 'package:protocol/calls.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The dialer for one phone: a number field, a Call button, and the phone's
-/// recent calls to pick a number from.
+/// The dialer for one phone: its call going on, a number field, a Call
+/// button, and the phone's recent calls to pick a number from. With room,
+/// the recent calls sit next to the dialer.
 class DialerFrame extends StatefulWidget {
-  const DialerFrame({super.key});
+  const DialerFrame({super.key, this.ongoing});
+
+  /// The phone's ringing or ongoing calls, above the dialer.
+  final Widget? ongoing;
 
   @override
   State<DialerFrame> createState() => _DialerFrameState();
@@ -47,9 +51,10 @@ class _DialerFrameState extends State<DialerFrame> {
     final l10n = context.callsL10n;
     final invalidNumber = outcome == CommandOutcome.invalidNumber;
 
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
+    return TwoColumns(
+      leading: [
+        ?widget.ongoing,
+        SectionTitle(l10n.dialSection),
         SurfaceCard(
           child: Column(
             crossAxisAlignment: .stretch,
@@ -86,6 +91,8 @@ class _DialerFrameState extends State<DialerFrame> {
             ],
           ),
         ),
+      ],
+      trailing: [
         SectionTitle(l10n.recentCalls),
         _RecentCalls(onPick: _pick),
       ],

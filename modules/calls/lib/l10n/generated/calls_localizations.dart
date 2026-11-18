@@ -292,6 +292,12 @@ abstract class CallsLocalizations {
   /// **'{device} is calling. Audio stays on {device} for now.'**
   String callStarted(String device);
 
+  /// Heading above the number field and Call button on a phone's Calls page
+  ///
+  /// In en, this message translates to:
+  /// **'New call'**
+  String get dialSection;
+
   /// No description provided for @recentCalls.
   ///
   /// In en, this message translates to:

@@ -15,6 +15,7 @@ class DialerPage extends StatelessWidget {
     required this.deviceId,
     required this.deviceName,
     this.lastLoaded,
+    this.activeCalls,
   });
 
   final CallsControl control;
@@ -23,6 +24,9 @@ class DialerPage extends StatelessWidget {
 
   /// See [DialerViewModel].
   final Map<String, List<CallLogEntry>>? lastLoaded;
+
+  /// The calls going on, to show this phone's next to the dialer.
+  final ActiveCallsViewModel? activeCalls;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,15 @@ class DialerPage extends StatelessWidget {
             deviceName: deviceName,
             lastLoaded: lastLoaded,
           ),
-          child: const DialerFrame(),
+          child: DialerFrame(
+            ongoing: switch (activeCalls) {
+              final activeCalls? => ChangeNotifierProvider.value(
+                value: activeCalls,
+                child: CallCardFrame(deviceId: deviceId),
+              ),
+              null => null,
+            },
+          ),
         ),
       ],
     );

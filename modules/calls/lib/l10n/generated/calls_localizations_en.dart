@@ -145,6 +145,9 @@ class CallsLocalizationsEn extends CallsLocalizations {
   }
 
   @override
+  String get dialSection => 'New call';
+
+  @override
   String get recentCalls => 'Recent calls';
 
   @override

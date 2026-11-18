@@ -166,6 +166,10 @@
       }
     }
   },
+  "dialSection": "New call",
+  "@dialSection": {
+    "description": "Heading above the number field and Call button on a phone's Calls page"
+  },
   "recentCalls": "Recent calls",
   "recentEmpty": "No recent calls.",
   "recentLoading": "Loading recent calls…",

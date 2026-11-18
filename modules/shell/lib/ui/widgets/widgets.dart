@@ -25,7 +25,6 @@ export 'package:shell/ui/widgets/sidebar_device_row.dart';
 export 'package:shell/ui/widgets/sidebar_row.dart';
 export 'package:shell/ui/widgets/switch_row.dart';
 export 'package:shell/ui/widgets/tip_row.dart';
-export 'package:shell/ui/widgets/two_columns.dart';
 export 'package:shell/ui/widgets/welcome_empty.dart';
 export 'package:shell/ui/widgets/welcome_intro.dart';
 export 'package:shell/ui/widgets/welcome_nearby.dart';

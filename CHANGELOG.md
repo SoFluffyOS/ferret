@@ -7,6 +7,7 @@
 - 🪟 **A window on the Mac**: **Open Ferret window** gives you Ferret in a normal window, next to the menubar popover. Same app, live in both. Close the window and Ferret stays in the menubar.
 - 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications**, **Files** and **Screen** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.
 - 🧭 **An Overview you can read**: the few things you do most with a device, then **More**. With room, what works sits next to what the device may do. **Settings** keeps its list and opens the row you pick beside it.
+- 📞 **Calls side by side**: in the window, a phone's **Calls** shows the dialer and its call going on next to **Recent calls**.
 - 🖱️ **Right-click**: a device in the list for its actions, **Fix Connection…** and **Forget This Device…**; a line in Activity for what that line offers.
 - 📴 **Offline, not empty**: a phone that drops off keeps its sections with what they showed last, under a line that says since when. A section whose feature is off is dimmed.
 - ↗️ **The popover hands over**: on the Mac, a device, Settings, texts and notifications open the window right where you need to be. So does a notification you click.

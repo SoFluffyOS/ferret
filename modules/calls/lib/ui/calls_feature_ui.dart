@@ -244,6 +244,7 @@ class CallsFeatureUi extends FeatureUi {
           deviceId: deviceId,
           deviceName: device.device.name,
           lastLoaded: _recentCalls,
+          activeCalls: _activeCalls,
         ),
       ),
     ];

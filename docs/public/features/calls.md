@@ -28,10 +28,11 @@ Sending the call's audio to your computer is planned. It's not in this version, 
 
 ## ☎️ Call from your computer
 
-Open your phone in Ferret on the computer and pick **Call…**.
+Open your phone in Ferret on the computer and pick **Call…**. In the window, it's the phone's **Calls** section.
 
 - Type a number and hit **Call**. Spaces, dashes and brackets are fine.
 - Or pick one from **Recent calls**: the last 50 calls from your phone, with missed ones marked.
+- In a wide window, **Recent calls** sit right next to the dialer, and a call that rings or goes on shows above it with **Answer** or **Hang up**.
 
 Your phone starts the call with its default SIM. Easy, right?
 

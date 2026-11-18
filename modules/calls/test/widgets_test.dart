@@ -274,6 +274,56 @@ void main() {
       expect(control.logRequests, 2);
     });
 
+    testWidgets('with room, recent calls sit next to the dialer', (
+      tester,
+    ) async {
+      tester.view
+        ..devicePixelRatio = 1
+        ..physicalSize = const Size(800, 900);
+      addTearDown(tester.view.reset);
+      await pumpDialer(tester);
+
+      expect(tester.getTopLeft(find.text('Alex')).dx, greaterThan(400));
+      expect(tester.getTopRight(find.text('Call')).dx, lessThan(400));
+
+      tester.view.physicalSize = const Size(400, 900);
+      await tester.pumpAndSettle();
+
+      final narrowCall = tester.getTopLeft(find.text('Call'));
+      final narrowRecent = tester.getTopLeft(find.text('Alex'));
+      expect(narrowRecent.dy, greaterThan(narrowCall.dy));
+    });
+
+    testWidgets("the phone's own call shows above its dialer", (tester) async {
+      final activeCalls = ActiveCallsViewModel(control);
+      addTearDown(activeCalls.dispose);
+      control
+        ..emit(remoteCall(name: 'Sam'))
+        ..emit(remoteCall(id: 'other', deviceId: 'tablet', name: 'Kim'));
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider(
+            create: (_) => DialerViewModel(
+              control: control,
+              deviceId: 'phone',
+              deviceName: 'Pixel',
+            ),
+            child: DialerFrame(
+              ongoing: ChangeNotifierProvider.value(
+                value: activeCalls,
+                child: const CallCardFrame(deviceId: 'phone'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sam'), findsOneWidget);
+      expect(find.text('Kim'), findsNothing);
+      expect(find.text('Answer'), findsOneWidget);
+    });
+
     testWidgets('says when there are no recent calls', (tester) async {
       control.log = const CallLogResult([]);
       await pumpDialer(tester);

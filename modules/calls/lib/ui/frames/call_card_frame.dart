@@ -11,12 +11,18 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// The home card on a computer: one card per call that is ringing or going
 /// on on a connected phone, and nothing otherwise.
 class CallCardFrame extends StatelessWidget {
-  const CallCardFrame({super.key});
+  const CallCardFrame({super.key, this.deviceId});
+
+  /// Only the calls of this phone, as on its Calls section.
+  final String? deviceId;
 
   @override
   Widget build(BuildContext context) {
     final calls = context.select<ActiveCallsViewModel, List<RemoteCall>>(
-      (viewModel) => viewModel.calls,
+      (viewModel) => [
+        for (final call in viewModel.calls)
+          if (deviceId == null || call.deviceId == deviceId) call,
+      ],
     );
     if (calls.isEmpty) {
       return const SizedBox.shrink();

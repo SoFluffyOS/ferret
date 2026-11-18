@@ -1,4 +1,4 @@
-import 'package:feature_kit/feature_kit.dart';
+import 'package:feature_kit/layout/pane_widths.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
