@@ -11,9 +11,9 @@ import 'package:remote_input/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// This computer's remote input settings: on or off, what it needs on this
-/// platform with a fix button, devices allowed for good with Revoke, and
-/// the history of who controlled it. Access is checked again when the app
-/// comes back from system settings.
+/// platform with a way forward, and the history of who controlled it. Which
+/// device may control it without asking is on that device's page. Access is
+/// checked again when the app comes back from system settings.
 class HostSettingsFrame extends StatefulWidget {
   const HostSettingsFrame({super.key});
 
@@ -66,7 +66,13 @@ class _HostSettingsFrameState extends State<HostSettingsFrame> {
             Spacing.v8,
             _Status(status: status),
           ],
-          const _Allowed(),
+          Spacing.v12,
+          Text(
+            l10n.settingsPerDevice,
+            style: context.fluffyTheme.typography.caption1.copyWith(
+              color: context.palette.mutedText,
+            ),
+          ),
           const _History(),
         ],
       ),
@@ -81,6 +87,9 @@ class _Status extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lostAccess = context.select<HostViewModel, bool>(
+      (viewModel) => viewModel.lostAccess,
+    );
     final l10n = context.remoteInputL10n;
     final viewModel = context.read<HostViewModel>();
     if (status.isReady) {
@@ -102,50 +111,7 @@ class _Status extends StatelessWidget {
       body: l10n.statusFix(status),
       actionLabel: actionLabel,
       onAction: () => unawaited(action()),
-    );
-  }
-}
-
-class _Allowed extends StatelessWidget {
-  const _Allowed();
-
-  @override
-  Widget build(BuildContext context) {
-    final allowed = context.select<HostViewModel, List<AllowedDevice>>(
-      (viewModel) => viewModel.allowedDevices,
-    );
-    final viewModel = context.read<HostViewModel>();
-    final l10n = context.remoteInputL10n;
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        SectionTitle(l10n.settingsAllowedTitle),
-        if (allowed.isEmpty)
-          Text(
-            l10n.settingsAllowedEmpty,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-        for (final device in allowed)
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  device.name,
-                  style: typography.body2.copyWith(color: palette.text),
-                  overflow: .ellipsis,
-                ),
-              ),
-              Button(
-                variant: .ghost,
-                label: l10n.revoke,
-                onPressed: () => unawaited(viewModel.revoke(device.id)),
-              ),
-            ],
-          ),
-      ],
+      isProblem: lostAccess,
     );
   }
 }

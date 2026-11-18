@@ -72,6 +72,7 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     InjectorStatus(state: .needsPermission) => statusNeedsPermissionBody,
     InjectorStatus(reason: .noLinuxBackend) => statusNoLinuxBackendBody,
     InjectorStatus(reason: .ydotoolNotRunning) => statusYdotoolNotRunningBody,
+    InjectorStatus(state: .unavailable) => statusFailedBody,
     _ => null,
   };
 

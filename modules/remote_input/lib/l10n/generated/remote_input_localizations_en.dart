@@ -168,21 +168,57 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'Start the ydotoold service, then check again.';
 
   @override
-  String get statusFailed =>
-      'Ferret couldn\'t check whether it may control this computer.';
+  String get statusFailed => 'Not checked yet';
+
+  @override
+  String get statusFailedBody =>
+      'Ferret doesn\'t know yet whether it may control this computer. Check again.';
 
   @override
   String get checkAgain => 'Check again';
 
   @override
-  String get settingsAllowedTitle => 'Always allowed';
+  String get settingsPerDevice =>
+      'To let one phone control this computer without asking, open the phone from Home.';
 
   @override
-  String get settingsAllowedEmpty =>
-      'No device yet. Pick Always allow when a phone asks.';
+  String get settingsHostTitle => 'Pointer and keyboard';
 
   @override
-  String get revoke => 'Revoke';
+  String get settingsTouchpadTitle => 'Touchpad';
+
+  @override
+  String get summaryOn => 'On';
+
+  @override
+  String get summaryOff => 'Off';
+
+  @override
+  String get summaryNeedsAccess => 'Needs access';
+
+  @override
+  String get summaryUnavailable => 'Not available yet';
+
+  @override
+  String permissionAlways(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Control $_temp0 without asking';
+  }
+
+  @override
+  String get permissionAlwaysDetail =>
+      'You still see it the whole time, with Stop control.';
+
+  @override
+  String get permissionAlwaysOff =>
+      'Control is off. Turn it on in Settings → Control.';
 
   @override
   String get settingsHistoryTitle => 'History';
@@ -323,12 +359,12 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String deniedUnsupported(String device) {
-    return '$device can\'t be controlled yet. On $device: open Ferret\'s settings to see why.';
+    return '$device can\'t be controlled yet. On $device: open Ferret → Settings → Control to see why.';
   }
 
   @override
   String deniedTurnedOff(String device) {
-    return 'Control is off on $device. On $device: turn it on in Ferret\'s settings.';
+    return 'Control is off on $device. On $device: open Ferret → Settings → Control and turn it on.';
   }
 
   @override
@@ -377,6 +413,136 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String get openTouchpad => 'Open touchpad';
+
+  @override
+  String healthAsksFirst(String device) {
+    return 'Asks on $device first';
+  }
+
+  @override
+  String healthAlways(String device) {
+    return 'Allowed on $device without asking';
+  }
+
+  @override
+  String healthControlling(String device) {
+    return 'Controlling $device now';
+  }
+
+  @override
+  String healthNeedsPermissionHelp(String device) {
+    return 'On $device: open Ferret → Settings → Control and click Allow access.';
+  }
+
+  @override
+  String healthUnsupportedHelp(String device) {
+    return 'On $device: open Ferret → Settings → Control to see what it needs.';
+  }
+
+  @override
+  String healthTurnedOffHelp(String device) {
+    return 'On $device: open Ferret → Settings → Control and turn on Let my phones control this computer.';
+  }
+
+  @override
+  String healthVersion(String device) {
+    return 'Needs a Ferret update on $device';
+  }
+
+  @override
+  String healthVersionHelp(String device) {
+    return 'On $device: update Ferret.';
+  }
+
+  @override
+  String healthNotAnswering(String device) {
+    return '$device didn\'t answer last time';
+  }
+
+  @override
+  String healthNotAnsweringHelp(String device) {
+    return 'On $device: open Ferret.';
+  }
+
+  @override
+  String healthHostAsks(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Asks before it controls $_temp0';
+  }
+
+  @override
+  String healthHostAlways(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'May control $_temp0 without asking';
+  }
+
+  @override
+  String healthHostControlling(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Controlling $_temp0 now';
+  }
+
+  @override
+  String healthHostOff(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Off on $_temp0';
+  }
+
+  @override
+  String get healthHostOffHelp =>
+      'Open Settings → Control and turn on Let my phones control this computer.';
+
+  @override
+  String healthHostNeedsAccess(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Needs Accessibility access on $_temp0';
+  }
+
+  @override
+  String get healthHostNeedsAccessHelp =>
+      'Open Settings → Control and click Allow access.';
+
+  @override
+  String get healthHostUnavailable => 'Can\'t be controlled yet';
+
+  @override
+  String get healthHostUnavailableHelp =>
+      'Open Settings → Control to see what it needs.';
 
   @override
   String healthNeedsPermission(String device) {

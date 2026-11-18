@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/protocol.dart' show Platform;
@@ -97,29 +98,25 @@ class RemoteInputFeatureUi extends FeatureUi {
     );
   }
 
+  /// On a phone: whether this phone can be [device]'s touchpad, from how
+  /// the last try went. On a computer: whether [device] may control it.
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
     final session = device.session;
-    if (session == null || !this.feature.canControlDevice(session)) {
+    if (session == null) {
       return null;
     }
 
-    final name = device.device.name;
     final l10n = platformRemoteInputL10n();
-    final last = this.feature.client?.lastFor(device.device.id);
-    if (last == null || last.phase != .denied) {
-      return null;
+    if (this.feature.canControlDevice(session)) {
+      return _touchpadHealth(l10n, device.device);
     }
 
-    return switch (last.denial) {
-      .needsPermission => FeatureHealth(
-        .needsAttention,
-        reason: l10n.healthNeedsPermission(name),
-      ),
-      .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
-      .turnedOff => FeatureHealth(.off, reason: l10n.healthTurnedOff(name)),
-      _ => null,
-    };
+    if (hostViewModel.isAvailable && _isController(session)) {
+      return _hostHealth(l10n, device.device.id);
+    }
+
+    return null;
   }
 
   @override
@@ -145,16 +142,8 @@ class RemoteInputFeatureUi extends FeatureUi {
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) {
     final sections = [
-      if (hostViewModel.isAvailable)
-        ChangeNotifierProvider.value(
-          value: hostViewModel,
-          child: const HostSettingsFrame(),
-        ),
-      if (this.feature.canControl)
-        ChangeNotifierProvider.value(
-          value: touchpadViewModel,
-          child: const ControllerSettingsFrame(),
-        ),
+      if (hostViewModel.isAvailable) _hostSettings(),
+      if (this.feature.canControl) _touchpadSettings(),
     ];
     if (sections.isEmpty) {
       return null;
@@ -169,6 +158,64 @@ class RemoteInputFeatureUi extends FeatureUi {
         ],
       ],
     );
+  }
+
+  /// A computer gets "Pointer and keyboard" (being controlled), a phone
+  /// gets "Touchpad". Neither is called Control, which is the page's name.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.remoteInputL10n;
+
+    return [
+      if (hostViewModel.isAvailable)
+        FeatureSettings(
+          group: .control,
+          title: l10n.settingsHostTitle,
+          child: _hostSettings(),
+          summary: _hostSummary(l10n),
+          isOn: hostViewModel.enabled && _hostIsReady,
+          needsAttention: hostViewModel.lostAccess,
+        ),
+      if (this.feature.canControl)
+        FeatureSettings(
+          group: .control,
+          title: l10n.settingsTouchpadTitle,
+          child: _touchpadSettings(),
+        ),
+    ];
+  }
+
+  /// On a computer, whether [device] may control it without asking. Shown
+  /// for phones, and for any device that was allowed before.
+  @override
+  List<DevicePermission> devicePermissions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final deviceId = device.device.id;
+    final settings = this.feature.settings;
+    final allowed = settings.isAlwaysAllowed(deviceId);
+    final applies = allowed || _isController(device.session);
+    if (!hostViewModel.isAvailable || !applies) {
+      return const [];
+    }
+
+    final l10n = context.remoteInputL10n;
+    return [
+      DevicePermission(
+        label: l10n.permissionAlways(_thisComputer.name),
+        detail: switch (settings.enabled) {
+          true => l10n.permissionAlwaysDetail,
+          false => l10n.permissionAlwaysOff,
+        },
+        value: allowed,
+        onChanged: (value) => unawaited(_setAlwaysAllowed(deviceId, value)),
+      ),
+    ];
   }
 
   /// Stops listening, for tests and hot restarts.
@@ -212,6 +259,142 @@ class RemoteInputFeatureUi extends FeatureUi {
         ),
       ),
     );
+  }
+
+  Widget _hostSettings() => ChangeNotifierProvider.value(
+    value: hostViewModel,
+    child: const HostSettingsFrame(),
+  );
+
+  Widget _touchpadSettings() => ChangeNotifierProvider.value(
+    value: touchpadViewModel,
+    child: const ControllerSettingsFrame(),
+  );
+
+  bool get _hostIsReady => hostViewModel.status?.isReady ?? false;
+
+  HostKind get _thisComputer => switch (defaultTargetPlatform) {
+    .macOS => .mac,
+    .windows => .windows,
+    _ => .linux,
+  };
+
+  /// Whether [session]'s device offers itself as a touchpad.
+  bool _isController(Session? session) =>
+      session
+          ?.remoteFeature(featureId)
+          ?.flags
+          .contains(RemoteInputFeature.controllerFlag) ??
+      false;
+
+  String _hostSummary(RemoteInputLocalizations l10n) {
+    if (!hostViewModel.enabled) {
+      return l10n.summaryOff;
+    }
+
+    return switch (hostViewModel.status?.state) {
+      .ready => l10n.summaryOn,
+      .needsPermission => l10n.summaryNeedsAccess,
+      _ => l10n.summaryUnavailable,
+    };
+  }
+
+  /// Turning it off also ends that device's control, if it has it.
+  Future<void> _setAlwaysAllowed(String deviceId, bool allowed) async {
+    if (allowed) {
+      await feature.settings.allow(deviceId);
+      return;
+    }
+
+    await hostViewModel.revoke(deviceId);
+  }
+
+  FeatureHealth _touchpadHealth(
+    RemoteInputLocalizations l10n,
+    TrustedDevice device,
+  ) {
+    final name = device.name;
+    final last = feature.client?.lastFor(device.id);
+
+    return switch (last) {
+      OutgoingControl(phase: .active) => FeatureHealth(
+        .ok,
+        reason: l10n.healthControlling(name),
+      ),
+      OutgoingControl(phase: .denied, denial: .needsPermission) =>
+        FeatureHealth(
+          .needsAttention,
+          reason: l10n.healthNeedsPermission(name),
+          help: l10n.healthNeedsPermissionHelp(name),
+        ),
+      OutgoingControl(phase: .denied, denial: .unsupported) => FeatureHealth(
+        .off,
+        reason: l10n.healthUnsupported(name),
+        help: l10n.healthUnsupportedHelp(name),
+      ),
+      OutgoingControl(phase: .denied, denial: .turnedOff) => FeatureHealth(
+        .off,
+        reason: l10n.healthTurnedOff(name),
+        help: l10n.healthTurnedOffHelp(name),
+      ),
+      OutgoingControl(phase: .denied, denial: .version) => FeatureHealth(
+        .off,
+        reason: l10n.healthVersion(name),
+        help: l10n.healthVersionHelp(name),
+      ),
+      OutgoingControl(phase: .unreachable) => FeatureHealth(
+        .failing,
+        reason: l10n.healthNotAnswering(name),
+        help: l10n.healthNotAnsweringHelp(name),
+      ),
+      OutgoingControl(always: true) => FeatureHealth(
+        .ok,
+        reason: l10n.healthAlways(name),
+      ),
+      _ => FeatureHealth(.ok, reason: l10n.healthAsksFirst(name)),
+    };
+  }
+
+  FeatureHealth _hostHealth(RemoteInputLocalizations l10n, String deviceId) {
+    final host = _thisComputer.name;
+    if (!hostViewModel.enabled) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthHostOff(host),
+        help: l10n.healthHostOffHelp,
+      );
+    }
+
+    final state = hostViewModel.status?.state;
+    if (state == .needsPermission) {
+      return FeatureHealth(
+        switch (hostViewModel.lostAccess) {
+          true => .needsAttention,
+          false => .off,
+        },
+        reason: l10n.healthHostNeedsAccess(host),
+        help: l10n.healthHostNeedsAccessHelp,
+        onFix: () => unawaited(hostViewModel.requestAccess()),
+      );
+    }
+
+    if (state != .ready) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthHostUnavailable,
+        help: l10n.healthHostUnavailableHelp,
+      );
+    }
+
+    if (hostViewModel.active?.deviceId == deviceId) {
+      return FeatureHealth(.ok, reason: l10n.healthHostControlling(host));
+    }
+
+    if (feature.settings.isAlwaysAllowed(deviceId)) {
+      return FeatureHealth(.ok, reason: l10n.healthHostAlways(host));
+    }
+
+    return FeatureHealth(.ok, reason: l10n.healthHostAsks(host));
   }
 
   HostKind _hostKindOf(Platform platform) => switch (platform) {

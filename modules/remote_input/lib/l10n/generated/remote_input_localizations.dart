@@ -304,8 +304,14 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @statusFailed.
   ///
   /// In en, this message translates to:
-  /// **'Ferret couldn\'t check whether it may control this computer.'**
+  /// **'Not checked yet'**
   String get statusFailed;
+
+  /// No description provided for @statusFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret doesn\'t know yet whether it may control this computer. Check again.'**
+  String get statusFailedBody;
 
   /// No description provided for @checkAgain.
   ///
@@ -313,23 +319,65 @@ abstract class RemoteInputLocalizations {
   /// **'Check again'**
   String get checkAgain;
 
-  /// No description provided for @settingsAllowedTitle.
+  /// No description provided for @settingsPerDevice.
   ///
   /// In en, this message translates to:
-  /// **'Always allowed'**
-  String get settingsAllowedTitle;
+  /// **'To let one phone control this computer without asking, open the phone from Home.'**
+  String get settingsPerDevice;
 
-  /// No description provided for @settingsAllowedEmpty.
+  /// No description provided for @settingsHostTitle.
   ///
   /// In en, this message translates to:
-  /// **'No device yet. Pick Always allow when a phone asks.'**
-  String get settingsAllowedEmpty;
+  /// **'Pointer and keyboard'**
+  String get settingsHostTitle;
 
-  /// No description provided for @revoke.
+  /// No description provided for @settingsTouchpadTitle.
   ///
   /// In en, this message translates to:
-  /// **'Revoke'**
-  String get revoke;
+  /// **'Touchpad'**
+  String get settingsTouchpadTitle;
+
+  /// No description provided for @summaryOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get summaryOn;
+
+  /// No description provided for @summaryOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get summaryOff;
+
+  /// No description provided for @summaryNeedsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access'**
+  String get summaryNeedsAccess;
+
+  /// No description provided for @summaryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available yet'**
+  String get summaryUnavailable;
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Control {host, select, mac{this Mac} windows{this PC} other{this computer}} without asking'**
+  String permissionAlways(String host);
+
+  /// No description provided for @permissionAlwaysDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'You still see it the whole time, with Stop control.'**
+  String get permissionAlwaysDetail;
+
+  /// No description provided for @permissionAlwaysOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Control is off. Turn it on in Settings → Control.'**
+  String get permissionAlwaysOff;
 
   /// No description provided for @settingsHistoryTitle.
   ///
@@ -574,13 +622,13 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @deniedUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t be controlled yet. On {device}: open Ferret\'s settings to see why.'**
+  /// **'{device} can\'t be controlled yet. On {device}: open Ferret → Settings → Control to see why.'**
   String deniedUnsupported(String device);
 
   /// No description provided for @deniedTurnedOff.
   ///
   /// In en, this message translates to:
-  /// **'Control is off on {device}. On {device}: turn it on in Ferret\'s settings.'**
+  /// **'Control is off on {device}. On {device}: open Ferret → Settings → Control and turn it on.'**
   String deniedTurnedOff(String device);
 
   /// No description provided for @deniedVersion.
@@ -648,6 +696,120 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Open touchpad'**
   String get openTouchpad;
+
+  /// No description provided for @healthAsksFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks on {device} first'**
+  String healthAsksFirst(String device);
+
+  /// No description provided for @healthAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed on {device} without asking'**
+  String healthAlways(String device);
+
+  /// No description provided for @healthControlling.
+  ///
+  /// In en, this message translates to:
+  /// **'Controlling {device} now'**
+  String healthControlling(String device);
+
+  /// No description provided for @healthNeedsPermissionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret → Settings → Control and click Allow access.'**
+  String healthNeedsPermissionHelp(String device);
+
+  /// No description provided for @healthUnsupportedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret → Settings → Control to see what it needs.'**
+  String healthUnsupportedHelp(String device);
+
+  /// No description provided for @healthTurnedOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret → Settings → Control and turn on Let my phones control this computer.'**
+  String healthTurnedOffHelp(String device);
+
+  /// No description provided for @healthVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a Ferret update on {device}'**
+  String healthVersion(String device);
+
+  /// No description provided for @healthVersionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: update Ferret.'**
+  String healthVersionHelp(String device);
+
+  /// No description provided for @healthNotAnswering.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer last time'**
+  String healthNotAnswering(String device);
+
+  /// No description provided for @healthNotAnsweringHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret.'**
+  String healthNotAnsweringHelp(String device);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks before it controls {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  String healthHostAsks(String host);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'May control {host, select, mac{this Mac} windows{this PC} other{this computer}} without asking'**
+  String healthHostAlways(String host);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Controlling {host, select, mac{this Mac} windows{this PC} other{this computer}} now'**
+  String healthHostControlling(String host);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  String healthHostOff(String host);
+
+  /// No description provided for @healthHostOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings → Control and turn on Let my phones control this computer.'**
+  String get healthHostOffHelp;
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Accessibility access on {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  String healthHostNeedsAccess(String host);
+
+  /// No description provided for @healthHostNeedsAccessHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings → Control and click Allow access.'**
+  String get healthHostNeedsAccessHelp;
+
+  /// No description provided for @healthHostUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t be controlled yet'**
+  String get healthHostUnavailable;
+
+  /// No description provided for @healthHostUnavailableHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings → Control to see what it needs.'**
+  String get healthHostUnavailableHelp;
 
   /// No description provided for @healthNeedsPermission.
   ///

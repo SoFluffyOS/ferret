@@ -62,6 +62,12 @@ class ControlHost {
   /// Whether input can be injected, as last checked.
   InjectorStatus get status => _status;
 
+  /// Being controlled is on and worked before, and input can't be injected
+  /// now, such as after the system access was taken away. False when it
+  /// was simply never set up.
+  bool get lostAccess =>
+      _settings.enabled && _settings.hadAccess && !_status.isReady;
+
   /// A device waiting for the owner's answer.
   ConsentRequest? get pending => _pending;
 
@@ -95,6 +101,7 @@ class ControlHost {
       _permissionAsk = null;
     }
 
+    _rememberAccess();
     if (_status != previous || (asked && _permissionAsk == null)) {
       _emit();
     }
@@ -114,6 +121,7 @@ class ControlHost {
       printWarning('Could not ask for remote input access', error);
     }
 
+    _rememberAccess();
     _emit();
     return _status;
   }
@@ -306,6 +314,14 @@ class ControlHost {
     }
 
     _emit();
+  }
+
+  void _rememberAccess() {
+    if (!_status.isReady || _settings.hadAccess) {
+      return;
+    }
+
+    unawaited(_settings.setHadAccess(true));
   }
 
   void dismissRecord() {

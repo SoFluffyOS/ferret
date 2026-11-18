@@ -19,7 +19,8 @@ class NoticeBlock extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
-  /// A problem shows a warning icon; a limit shows an info icon.
+  /// A problem shows a warning icon; a limit, or something that was never
+  /// set up, shows an info icon.
   final bool isProblem;
 
   @override
@@ -27,7 +28,7 @@ class NoticeBlock extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final (icon, color) = switch (isProblem) {
-      true => (LucideIcons.triangleAlert, palette.danger),
+      true => (LucideIcons.triangleAlert, palette.warning),
       false => (LucideIcons.info, palette.mutedText),
     };
 

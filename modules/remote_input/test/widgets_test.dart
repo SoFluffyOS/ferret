@@ -1,6 +1,7 @@
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/remote_input.dart' hide Key;
 import 'package:provider/provider.dart';
@@ -164,7 +165,8 @@ void main() {
   });
 
   group('settings', () {
-    testWidgets('lists allowed devices with Revoke, and the history', (
+    testWidgets('keeps the history, and points to the device for who is '
+        'always allowed', (
       tester,
     ) async {
       await tester.runAsync(startFeature);
@@ -183,16 +185,52 @@ void main() {
       );
 
       expect(find.text('On. Uses Accessibility access.'), findsOneWidget);
-      expect(find.text('pixel'), findsOneWidget);
       expect(
         find.textContaining('Pixel controlled this computer'),
         findsOneWidget,
       );
+      expect(find.text('Revoke'), findsNothing);
+      expect(find.textContaining('open the phone from Home'), findsOneWidget);
+    });
 
-      await tester.tap(find.text('Revoke'));
-      await tester.runAsync(settle);
-      await tester.pump();
-      expect(feature.settings.allowedDevices, isEmpty);
+    testWidgets('a check that could not run is a quiet state with a way '
+        'forward', (tester) async {
+      await tester.runAsync(
+        () => startFeature(status: const .unavailable(.failed)),
+      );
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider(
+            create: (_) => HostViewModel(feature),
+            child: const HostSettingsFrame(),
+          ),
+        ),
+      );
+
+      expect(find.text('Not checked yet'), findsOneWidget);
+      expect(find.text('Check again'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.triangleAlert), findsNothing);
+      expect(find.byIcon(LucideIcons.info), findsOneWidget);
+    });
+
+    testWidgets('access that was taken away shows as a warning', (
+      tester,
+    ) async {
+      await tester.runAsync(startFeature);
+      injector.statusNow = const .needsPermission(.quartz);
+      await tester.runAsync(() async => feature.controlHost?.refreshStatus());
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider(
+            create: (_) => HostViewModel(feature),
+            child: const HostSettingsFrame(),
+          ),
+        ),
+      );
+
+      expect(find.text('Accessibility access is off'), findsOneWidget);
+      expect(find.text('Allow access'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.triangleAlert), findsOneWidget);
     });
 
     testWidgets('Linux without a way to inject says what to install', (

@@ -11,6 +11,10 @@ class RemoteInputSettings {
   static const touchpadSpeedKey = 'remote_input.touchpad_speed';
   static const naturalScrollKey = 'remote_input.natural_scroll';
 
+  /// Set once this computer could be controlled, so access that went away
+  /// later reads as lost and access never given as not set up.
+  static const hadAccessKey = 'remote_input.had_access';
+
   /// How many past times of being controlled the history keeps.
   static const historyLength = 20;
 
@@ -28,6 +32,8 @@ class RemoteInputSettings {
     for (final id in _store.get<List<Object?>>(allowedDevicesKey) ?? const [])
       if (id case final String deviceId) deviceId,
   ];
+
+  bool get hadAccess => _store.get<bool>(hadAccessKey) ?? false;
 
   bool isAlwaysAllowed(String deviceId) => allowedDevices.contains(deviceId);
 
@@ -47,6 +53,8 @@ class RemoteInputSettings {
   bool get naturalScroll => _store.get<bool>(naturalScrollKey) ?? true;
 
   Future<void> setEnabled(bool value) => _store.set(enabledKey, value);
+
+  Future<void> setHadAccess(bool value) => _store.set(hadAccessKey, value);
 
   Future<void> allow(String deviceId) async {
     final allowed = allowedDevices;

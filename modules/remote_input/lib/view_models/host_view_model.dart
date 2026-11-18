@@ -35,6 +35,9 @@ class HostViewModel extends ChangeNotifier {
 
   bool get enabled => feature.settings.enabled;
 
+  /// Access this computer had is gone, as opposed to never set up.
+  bool get lostAccess => _host?.lostAccess ?? false;
+
   List<ControlRecord> get history => feature.settings.history;
 
   List<AllowedDevice> get allowedDevices => [
