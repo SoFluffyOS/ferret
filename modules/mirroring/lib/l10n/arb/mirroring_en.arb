@@ -2,6 +2,22 @@
   "@@locale": "en",
   "title": "Screen",
   "showScreen": "Show screen",
+  "launcherTitle": "See {device}'s screen on this computer",
+  "@launcherTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "launcherBody": "{device} asks you every time, unless it is on a cable you allowed.",
+  "@launcherBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "stop": "Stop",
   "cancel": "Cancel",
   "tryAgain": "Try again",

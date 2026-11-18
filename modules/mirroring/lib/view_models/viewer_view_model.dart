@@ -467,8 +467,19 @@ class ViewerViewModel extends ChangeNotifier {
     await setFullScreen(false);
   }
 
-  /// The stage for [deviceId] is on screen.
-  void openStage(String deviceId) => _stageDeviceId = deviceId;
+  /// The device whose stage is on screen.
+  String? get stageDeviceId => _stageDeviceId;
+
+  /// The stage for [deviceId] is on screen. A stage says so while it is
+  /// being built, so listeners hear it right after.
+  void openStage(String deviceId) {
+    if (_stageDeviceId == deviceId) {
+      return;
+    }
+
+    _stageDeviceId = deviceId;
+    scheduleMicrotask(_notify);
+  }
 
   /// The stage for [deviceId] closed: sharing stops with it, and what it
   /// was in the middle of is let go. A stage another one took over from
@@ -485,6 +496,7 @@ class ViewerViewModel extends ChangeNotifier {
     _closeCableGuide();
     await _closeAirplayGuide();
     dismissNotice();
+    _notify();
     if (sessionFor(deviceId) == null) {
       return;
     }

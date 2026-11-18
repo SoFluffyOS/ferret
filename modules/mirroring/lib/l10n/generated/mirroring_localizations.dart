@@ -109,6 +109,18 @@ abstract class MirroringLocalizations {
   /// **'Show screen'**
   String get showScreen;
 
+  /// No description provided for @launcherTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See {device}\'s screen on this computer'**
+  String launcherTitle(String device);
+
+  /// No description provided for @launcherBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} asks you every time, unless it is on a cable you allowed.'**
+  String launcherBody(String device);
+
   /// No description provided for @stop.
   ///
   /// In en, this message translates to:

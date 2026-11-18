@@ -16,6 +16,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get showScreen => 'Show screen';
 
   @override
+  String launcherTitle(String device) {
+    return 'See $device\'s screen on this computer';
+  }
+
+  @override
+  String launcherBody(String device) {
+    return '$device asks you every time, unless it is on a cable you allowed.';
+  }
+
+  @override
   String get stop => 'Stop';
 
   @override

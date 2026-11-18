@@ -12,9 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Hosts the mirror stage where it has no window of its own: the device's
-/// name and the way its screen arrives on top, the stage underneath.
-/// Leaving the page stops sharing, so Back asks first while a screen is
-/// shown. Nothing shares from a page that is closed.
+/// name and the way its screen arrives on top, the stage underneath. In a
+/// window's pane the stage is all there is, because the window is named
+/// after it already. Leaving the page stops sharing, so Back asks first
+/// while a screen is shown. Nothing shares from a page that is closed.
 class MirrorPage extends StatefulWidget {
   const MirrorPage({
     super.key,
@@ -47,7 +48,17 @@ class _MirrorPageState extends State<MirrorPage> {
     super.dispose();
   }
 
-  void _close() => unawaited(Navigator.of(context).maybePop());
+  /// Goes back where the page was pushed. In a pane there is nowhere to
+  /// go back to: the stage lets go, and the section shows its launcher.
+  void _close() {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      unawaited(navigator.maybePop());
+      return;
+    }
+
+    unawaited(_viewModel.leaveStage(widget.deviceId));
+  }
 
   Future<void> _back() async {
     final isLive = _viewModel.sessionFor(widget.deviceId)?.isMirroring ?? false;
@@ -85,6 +96,7 @@ class _MirrorPageState extends State<MirrorPage> {
     final l10n = context.mirroringL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+    final hasBar = !isFullScreen && Navigator.of(context).canPop();
 
     return ColoredBox(
       color: palette.background,
@@ -92,7 +104,7 @@ class _MirrorPageState extends State<MirrorPage> {
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
-            if (!isFullScreen)
+            if (hasBar)
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   Spacing.d12,

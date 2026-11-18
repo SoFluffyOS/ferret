@@ -455,6 +455,56 @@ void main() {
       );
     });
 
+    testWidgets('Screen is a section of the phone: the launcher first, the '
+        'stage once Show screen opened the section', (tester) async {
+      await startComputer(tester);
+      final opened = <(String, String)>[];
+      final context = featureContext(devices: [status(pixel)])
+        ..onOpenSection = (deviceId, sectionId) async {
+          opened.add((deviceId, sectionId));
+        };
+      late List<FeatureSection> sections;
+      late List<FeatureAction> actions;
+      await tester.pumpWidget(
+        testApp(
+          scroll: false,
+          Builder(
+            builder: (buildContext) {
+              sections = ui.deviceSections(
+                buildContext,
+                context,
+                status(pixel),
+              );
+              actions = ui.deviceActions(buildContext, context, status(pixel));
+              return sections.single.builder(buildContext);
+            },
+          ),
+        ),
+      );
+
+      final section = sections.single;
+      expect(section.id, 'screen');
+      expect(section.title, 'Screen');
+      expect(section.order, 50);
+      expect(section.fillsPane, isTrue);
+      expect(find.text("See Pixel's screen on this computer"), findsOneWidget);
+      expect(find.byType(MirrorPage), findsNothing);
+
+      actions.single.onPressed?.call();
+      await tester.pump();
+      await tester.pump();
+
+      expect(opened, [('pixel', 'screen')]);
+      expect(find.byType(MirrorPage), findsOneWidget);
+      expect(find.text("See Pixel's screen on this computer"), findsNothing);
+
+      await ui.viewerViewModel.leaveStage('pixel');
+      await tester.pump();
+
+      expect(find.byType(MirrorPage), findsNothing);
+      expect(find.text('Show screen'), findsOneWidget);
+    });
+
     testWidgets('a phone offers no "Show screen"', (tester) async {
       await startPhone(tester);
       late List<FeatureAction> actions;

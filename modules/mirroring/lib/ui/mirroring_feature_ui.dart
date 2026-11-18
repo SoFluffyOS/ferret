@@ -41,6 +41,9 @@ class MirroringFeatureUi extends FeatureUi {
 
   final MirrorWindow? _window;
 
+  /// The id of a device's Screen section.
+  static const sectionId = 'screen';
+
   static const _requestCategory = 'mirroring.request';
   static const _requestNotice = 'mirroring.request';
   static const _showAction = 'mirroring.show';
@@ -251,13 +254,7 @@ class MirroringFeatureUi extends FeatureUi {
     FeatureContext feature,
     DeviceStatus device,
   ) {
-    final session = device.session;
-    final trusted = device.device;
-    final shares = session != null && this.feature.canViewDevice(session);
-    final viaAirplay =
-        trusted.platform == .PLATFORM_IOS && viewerViewModel.hasReceivers;
-    final isAndroid = trusted.platform == .PLATFORM_ANDROID;
-    if (!viewerViewModel.isAvailable || !(shares || isAndroid || viaAirplay)) {
+    if (!_canShow(device)) {
       return const [];
     }
 
@@ -266,8 +263,39 @@ class MirroringFeatureUi extends FeatureUi {
         label: context.mirroringL10n.showScreen,
         icon: LucideIcons.screenShare,
         homeOrder: _homeOrder,
-        onPressed: () => unawaited(
-          _openMirror(feature, trusted.id, trusted.name, viaAirplay),
+        onPressed: () => unawaited(_openMirror(feature, device.device)),
+      ),
+    ];
+  }
+
+  /// Screen is a section of every device that gets "Show screen": the
+  /// launcher, then the stage. Where the stage has no window of its own,
+  /// it fills the pane.
+  @override
+  List<FeatureSection> deviceSections(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    if (!_canShow(device)) {
+      return const [];
+    }
+
+    final trusted = device.device;
+    return [
+      FeatureSection(
+        id: sectionId,
+        title: title(context),
+        icon: icon,
+        order: 50,
+        fillsPane: true,
+        builder: (_) => ChangeNotifierProvider.value(
+          value: viewerViewModel,
+          child: ScreenSectionPage(
+            deviceId: trusted.id,
+            deviceName: trusted.name,
+            onShow: () => unawaited(_openMirror(feature, trusted)),
+          ),
         ),
       ),
     ];
@@ -355,6 +383,20 @@ class MirroringFeatureUi extends FeatureUi {
       ),
     ];
   }
+
+  /// Whether [device] gets "Show screen" on this computer.
+  bool _canShow(DeviceStatus device) {
+    final session = device.session;
+    final platform = device.device.platform;
+    final shares = session != null && feature.canViewDevice(session);
+
+    return viewerViewModel.isAvailable &&
+        (shares || platform == .PLATFORM_ANDROID || _viaAirplay(device.device));
+  }
+
+  /// An iPhone or iPad shows its screen by picking this computer itself.
+  bool _viaAirplay(TrustedDevice device) =>
+      device.platform == .PLATFORM_IOS && viewerViewModel.hasReceivers;
 
   Widget _shareSettings() => ChangeNotifierProvider.value(
     value: shareViewModel,
@@ -486,19 +528,16 @@ class MirroringFeatureUi extends FeatureUi {
     unawaited(context.reveal());
   }
 
-  Future<void> _openMirror(
-    FeatureContext context,
-    String deviceId,
-    String deviceName,
-    bool viaAirplay,
-  ) async {
-    final opened = _pushPage(context, deviceId, deviceName);
-    if (viaAirplay) {
-      unawaited(viewerViewModel.openAirplayGuide(deviceId));
+  /// Opens the stage for a paired device and starts the best way there
+  /// is to show it.
+  Future<void> _openMirror(FeatureContext context, TrustedDevice device) async {
+    final opened = _openStage(context, device.id, device.name);
+    if (_viaAirplay(device)) {
+      unawaited(viewerViewModel.openAirplayGuide(device.id));
     }
 
-    if (!viaAirplay) {
-      unawaited(viewerViewModel.show(deviceId, deviceName));
+    if (!_viaAirplay(device)) {
+      unawaited(viewerViewModel.show(device.id, device.name));
     }
 
     await opened;
@@ -574,7 +613,28 @@ class MirroringFeatureUi extends FeatureUi {
   }
 
   Future<void> _openPage(FeatureContext context, MirrorTarget target) =>
-      _pushPage(context, ViewSession.deviceIdOf(target), target.name);
+      _openStage(context, ViewSession.deviceIdOf(target), target.name);
+
+  /// Puts the stage for a device in front of the person. A paired device
+  /// has its Screen section: pushed on a small view, selected next to the
+  /// device list in a window. A phone that isn't paired has no section, so
+  /// its stage is a page of its own.
+  Future<void> _openStage(
+    FeatureContext context,
+    String deviceId,
+    String deviceName,
+  ) async {
+    final isPaired = context.engine.devices.any(
+      (status) => status.device.id == deviceId,
+    );
+    if (!isPaired) {
+      await _pushPage(context, deviceId, deviceName);
+      return;
+    }
+
+    viewerViewModel.openStage(deviceId);
+    await context.openSection(deviceId, sectionId);
+  }
 
   /// Opens the mirror page for a device, in place of the one that is
   /// open for another. The same device's page just stays.
