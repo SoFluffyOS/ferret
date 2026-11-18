@@ -103,6 +103,70 @@ void main() {
     });
   });
 
+  test('a two-finger flick keeps scrolling the computer, slowing down', () {
+    run((async) {
+      gestures
+        ..down(1, const Offset(0, 300), ms(0))
+        ..down(2, const Offset(40, 300), ms(0));
+      for (var step = 1; step <= 5; step++) {
+        gestures
+          ..moveTo(1, Offset(0, 300 - step * 30.0), ms(step * 16))
+          ..moveTo(2, Offset(40, 300 - step * 30.0), ms(step * 16));
+      }
+      gestures
+        ..up(1, ms(85))
+        ..up(2, ms(85));
+      final atLift = sink.scrolledY;
+
+      expect(gestures.isGliding, isTrue);
+      async.elapse(ms(100));
+      final afterFirstGlide = sink.scrolledY;
+      expect(afterFirstGlide, lessThan(atLift));
+
+      async.elapse(ms(3000));
+      expect(gestures.isGliding, isFalse);
+      final glide = atLift - sink.scrolledY;
+      expect(glide, greaterThan(afterFirstGlide - sink.scrolledY));
+    });
+  });
+
+  test('fingers that rest before lifting do not glide', () {
+    run((async) {
+      gestures
+        ..down(1, const Offset(0, 300), ms(0))
+        ..down(2, const Offset(40, 300), ms(0))
+        ..moveTo(1, const Offset(0, 200), ms(16))
+        ..moveTo(2, const Offset(40, 200), ms(16))
+        ..up(1, ms(400))
+        ..up(2, ms(400));
+
+      expect(gestures.isGliding, isFalse);
+    });
+  });
+
+  test('a touch stops the glide at once', () {
+    run((async) {
+      gestures
+        ..down(1, const Offset(0, 300), ms(0))
+        ..down(2, const Offset(40, 300), ms(0))
+        ..moveTo(1, const Offset(0, 250), ms(16))
+        ..moveTo(2, const Offset(40, 250), ms(16))
+        ..moveTo(1, const Offset(0, 200), ms(32))
+        ..moveTo(2, const Offset(40, 200), ms(32))
+        ..up(1, ms(40))
+        ..up(2, ms(40));
+      expect(gestures.isGliding, isTrue);
+
+      gestures.down(3, const Offset(10, 10), ms(60));
+      final stoppedAt = sink.scrolledY;
+      async.elapse(ms(500));
+
+      expect(gestures.isGliding, isFalse);
+      expect(sink.scrolledY, stoppedAt);
+      gestures.up(3, ms(600));
+    });
+  });
+
   test('a two-finger tap is a right click', () {
     run((_) {
       gestures

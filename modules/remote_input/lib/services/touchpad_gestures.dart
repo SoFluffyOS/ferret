@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:ferret_remote_input/ferret_remote_input.dart';
+import 'package:remote_input/services/scroll_momentum.dart';
 
 /// Where [TouchpadGestures] sends what the fingers meant.
 abstract interface class TouchpadSink {
@@ -20,7 +21,8 @@ abstract interface class TouchpadSink {
 
 /// Reads touches on the touchpad the way a laptop touchpad does: one finger
 /// moves, a tap clicks, two fingers scroll, a two-finger tap or a long press
-/// right-clicks, and tap-then-slide drags.
+/// right-clicks, and tap-then-slide drags. A two-finger flick keeps
+/// scrolling the computer for a moment after the fingers lift.
 class TouchpadGestures {
   TouchpadGestures(
     this._sink, {
@@ -28,7 +30,9 @@ class TouchpadGestures {
     this.tapTimeout = const Duration(milliseconds: 250),
     this.dragWindow = const Duration(milliseconds: 300),
     this.slop = 8,
-  });
+  }) {
+    _momentum = ScrollMomentum(_sink.scroll);
+  }
 
   final Duration longPress;
 
@@ -42,6 +46,7 @@ class TouchpadGestures {
   final double slop;
 
   final TouchpadSink _sink;
+  late final ScrollMomentum _momentum;
   final Map<int, Offset> _fingers = {};
   final Map<int, Duration> _lastMoveAt = {};
 
@@ -56,7 +61,10 @@ class TouchpadGestures {
 
   bool get isDragging => _dragging;
 
+  bool get isGliding => _momentum.isGliding;
+
   void down(int pointer, Offset position, Duration time) {
+    _momentum.stop();
     if (_fingers.isEmpty) {
       _start(time);
     }
@@ -94,6 +102,7 @@ class TouchpadGestures {
 
     if (_fingers.length == 2) {
       final share = delta / _fingers.length.toDouble();
+      _momentum.track(share, time);
       _sink.scroll(share.dx, share.dy);
     }
   }
@@ -104,6 +113,10 @@ class TouchpadGestures {
     }
 
     _lastMoveAt.remove(pointer);
+    if (_fingers.length == 1 && _maxFingers == 2) {
+      _momentum.release(time);
+    }
+
     if (_fingers.isNotEmpty) {
       return;
     }
@@ -113,6 +126,7 @@ class TouchpadGestures {
 
   /// The system took the touch away, such as for a notification shade.
   void cancel(int pointer) {
+    _momentum.stop();
     _fingers.remove(pointer);
     _lastMoveAt.remove(pointer);
     if (_fingers.isNotEmpty) {
@@ -129,6 +143,7 @@ class TouchpadGestures {
   }
 
   void dispose() {
+    _momentum.stop();
     _cancelLongPress();
     if (_dragging) {
       _dragging = false;

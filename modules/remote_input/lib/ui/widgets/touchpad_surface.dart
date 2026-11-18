@@ -1,21 +1,21 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:remote_input/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The touchpad: a filled panel that reads raw touches, so several fingers
-/// work at once, and hands them to [TouchpadGestures].
+/// work at once, and hands them to [TouchpadGestures]. It fills the space
+/// its parent gives it.
+///
+/// It claims every touch that starts on it, so a scrolling parent, a
+/// swipe-back or the iOS bounce never move the page under the finger. A
+/// touch also puts the on-screen keyboard away.
 class TouchpadSurface extends StatefulWidget {
-  const TouchpadSurface({
-    super.key,
-    required this.sink,
-    required this.hint,
-    required this.height,
-  });
+  const TouchpadSurface({super.key, required this.sink, required this.hint});
 
   final TouchpadSink sink;
   final String hint;
-  final double height;
 
   @override
   State<TouchpadSurface> createState() => _TouchpadSurfaceState();
@@ -44,19 +44,28 @@ class _TouchpadSurfaceState extends State<TouchpadSurface> {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Listener(
+    return RawGestureDetector(
       behavior: .opaque,
-      onPointerDown: (event) =>
-          _gestures.down(event.pointer, event.localPosition, event.timeStamp),
-      onPointerMove: (event) => _gestures.moveTo(
-        event.pointer,
-        event.localPosition,
-        event.timeStamp,
-      ),
-      onPointerUp: (event) => _gestures.up(event.pointer, event.timeStamp),
-      onPointerCancel: (event) => _gestures.cancel(event.pointer),
-      child: SizedBox(
-        height: widget.height,
+      gestures: {
+        EagerGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<EagerGestureRecognizer>(
+              EagerGestureRecognizer.new,
+              (_) {},
+            ),
+      },
+      child: Listener(
+        behavior: .opaque,
+        onPointerDown: (event) {
+          FocusManager.instance.primaryFocus?.unfocus();
+          _gestures.down(event.pointer, event.localPosition, event.timeStamp);
+        },
+        onPointerMove: (event) => _gestures.moveTo(
+          event.pointer,
+          event.localPosition,
+          event.timeStamp,
+        ),
+        onPointerUp: (event) => _gestures.up(event.pointer, event.timeStamp),
+        onPointerCancel: (event) => _gestures.cancel(event.pointer),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: palette.surface,

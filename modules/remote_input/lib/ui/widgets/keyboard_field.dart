@@ -13,9 +13,14 @@ class KeyboardField extends StatefulWidget {
     required this.hint,
     required this.onChanged,
     required this.onEnter,
+    this.focusNode,
   });
 
   final String hint;
+
+  /// Focus it to show the on-screen keyboard, unfocus it to hide it.
+  final FocusNode? focusNode;
+
   final ValueChanged<TextChange> onChanged;
   final VoidCallback onEnter;
 
@@ -44,6 +49,7 @@ class _KeyboardFieldState extends State<KeyboardField> {
   @override
   Widget build(BuildContext context) => InputText(
     controller: _controller,
+    focusNode: widget.focusNode,
     hintText: widget.hint,
     keyboardType: TextInputType.text,
     textInputAction: TextInputAction.send,

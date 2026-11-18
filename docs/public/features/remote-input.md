@@ -15,16 +15,20 @@ With Ferret, your phone becomes the computer's touchpad and keyboard. Over your 
 - **One finger** moves the pointer. A quick flick goes further.
 - **Tap** to click. Tap twice for a double click.
 - **Hold** to right-click. A **two-finger tap** works too.
-- **Two fingers** scroll.
+- **Two fingers** scroll. Flick them and the page on the computer glides on for a moment, like on a laptop.
 - **Tap, then slide** to drag. Or hold **Left click** under the pad and move with another finger.
+
+The page itself never scrolls or bounces under your fingers, and the iPhone's swipe back is off while you're in control. **Stop control** or Back leaves.
 
 ## ⌨️ The keyboard
 
-Type in the field and the text appears on the computer, in any language. Backspace and Enter work as you'd expect.
+Tap **Keyboard** and type: the text appears on the computer, in any language. Backspace and Enter work as you'd expect.
+
+Done typing? Tap **Hide keyboard**, or just touch the pad. While the keyboard is up, the pad shrinks to stay above it.
 
 Under it: Esc, Tab, the arrows, Backspace and Enter. Then **Ctrl**, **Alt**, **Shift** and **Cmd** (Win or Super on Windows and Linux). Tap one, then a letter: that's a shortcut, such as Cmd then C to copy.
 
-The last row has the media keys: previous, play or pause, next, and the volume.
+Next to them sit the media keys: previous, play or pause, next, and the volume. A row that doesn't fit slides sideways.
 
 ## 🔐 You stay in charge
 

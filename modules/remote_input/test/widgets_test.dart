@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/widgets.dart';
@@ -355,6 +357,86 @@ void main() {
         ],
         ['hi'],
       );
+    });
+
+    testWidgets('Keyboard shows the keyboard; Hide keyboard or a touch on '
+        'the pad puts it away', (tester) async {
+      await openPage(tester);
+      bool keyboardFocused() => tester
+          .widget<EditableText>(find.byType(EditableText))
+          .focusNode
+          .hasFocus;
+
+      await tester.tap(find.text('Keyboard'));
+      await tester.pump();
+      expect(keyboardFocused(), isTrue);
+      expect(find.text('Hide keyboard'), findsOneWidget);
+
+      await tester.tap(find.text('Hide keyboard'));
+      await tester.pump();
+      expect(keyboardFocused(), isFalse);
+
+      await tester.tap(find.text('Keyboard'));
+      await tester.pump();
+      await tester.tap(find.byType(TouchpadSurface));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(keyboardFocused(), isFalse);
+      expect(find.text('Keyboard'), findsOneWidget);
+    });
+
+    testWidgets('the pad shrinks above the keyboard instead of hiding '
+        'under it', (tester) async {
+      await openPage(tester);
+      final fullHeight = tester.getSize(find.byType(TouchpadSurface)).height;
+
+      tester.view.viewInsets = const FakeViewPadding(bottom: 600);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pump();
+
+      final pad = tester.getRect(find.byType(TouchpadSurface));
+      expect(pad.height, lessThan(fullHeight - 150));
+      expect(
+        tester.getBottomLeft(find.text('Esc')).dy,
+        lessThanOrEqualTo(
+          tester.view.physicalSize.height / tester.view.devicePixelRatio - 200,
+        ),
+      );
+    });
+
+    testWidgets('in control, a pop gesture cannot take the page, but Back '
+        'still leaves', (tester) async {
+      final navigatorKey = GlobalKey<NavigatorState>();
+      await tester.runAsync(() => startFeature(computer: false));
+      pixel.answer = (_) => ControlGrant(version: 1);
+      final viewModel = TouchpadViewModel(feature);
+      await tester.runAsync(() => viewModel.start('pixel'));
+      await tester.pumpWidget(
+        testApp(const SizedBox.shrink(), navigatorKey: navigatorKey),
+      );
+      unawaited(
+        navigatorKey.currentState?.push(
+          PageRouteBuilder<void>(
+            pageBuilder: (_, _, _) => ChangeNotifierProvider.value(
+              value: viewModel,
+              child: const TouchpadPage(
+                deviceId: 'pixel',
+                deviceName: 'Pixel',
+                hostKind: .mac,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final route = ModalRoute.of(
+        tester.element(find.byType(TouchpadSurface)),
+      );
+      expect(route?.popDisposition, RoutePopDisposition.doNotPop);
+
+      await tester.tap(find.byIcon(LucideIcons.chevronLeft));
+      await tester.pumpAndSettle();
+      expect(find.byType(TouchpadSurface), findsNothing);
     });
 
     testWidgets('a no says why, with Try again', (tester) async {

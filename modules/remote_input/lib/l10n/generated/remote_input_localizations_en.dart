@@ -275,6 +275,12 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get keyboardHint => 'Type here';
 
   @override
+  String get showKeyboard => 'Keyboard';
+
+  @override
+  String get hideKeyboard => 'Hide keyboard';
+
+  @override
   String get keyEscape => 'Esc';
 
   @override

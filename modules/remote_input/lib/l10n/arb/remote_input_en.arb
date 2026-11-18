@@ -175,6 +175,8 @@
   "leftButton": "Left click",
   "rightButton": "Right click",
   "keyboardHint": "Type here",
+  "showKeyboard": "Keyboard",
+  "hideKeyboard": "Hide keyboard",
   "keyEscape": "Esc",
   "keyTab": "Tab",
   "keyEnter": "Enter",

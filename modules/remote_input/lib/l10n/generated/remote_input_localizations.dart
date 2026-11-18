@@ -469,6 +469,18 @@ abstract class RemoteInputLocalizations {
   /// **'Type here'**
   String get keyboardHint;
 
+  /// No description provided for @showKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard'**
+  String get showKeyboard;
+
+  /// No description provided for @hideKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide keyboard'**
+  String get hideKeyboard;
+
   /// No description provided for @keyEscape.
   ///
   /// In en, this message translates to:
