@@ -6,10 +6,12 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/login_settings.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Android only: keep running in the background, and start with the phone.
+/// Android: keep running in the background, and start with the phone.
+/// Windows and Linux: start at login ([LoginSettings]).
 class BackgroundSettings extends StatefulWidget {
   const BackgroundSettings({super.key, required this.settings});
 
@@ -35,7 +37,7 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
   @override
   Widget build(BuildContext context) {
     if (!FerretSystem().isAndroid) {
-      return const SizedBox.shrink();
+      return LoginSettings(settings: widget.settings);
     }
 
     final l10n = context.shellL10n;

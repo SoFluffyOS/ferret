@@ -59,3 +59,4 @@
 - 🧱 **Linux firewalls**: Fix connection notices when ufw or firewalld is on, and copies the one line that lets Ferret through.
 - 🐧 **Wayland, honestly**: on GNOME, Settings → Clipboard says copies go out while Ferret's window is in front. On KDE Plasma and Sway, `wl-clipboard` lets it watch by itself.
 - 🧷 **A tray icon on Windows and Linux**: Open Ferret, Send clipboard, Pause and Quit. Closing the window keeps Ferret in the tray where there is one, and the window comes back at the size (and on X11 and Windows, the place) you left it.
+- 🚀 **Start at login on Windows and Linux**: one switch in Settings. Ferret starts in the tray (XDG autostart on Linux, the Background portal in a Flatpak, the Run key on Windows).

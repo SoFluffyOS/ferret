@@ -30,6 +30,14 @@ Ferret puts an icon in your panel's tray. Click it to show or hide the window. I
 - KDE Plasma, Xfce, Cinnamon, MATE, Budgie and waybar show the icon as they are.
 - The window opens at the size you left it. On X11 it also opens where you left it. On Wayland the compositor decides where windows go, so only the size is kept.
 
+## 🚀 Start at login
+
+**Settings → Start Ferret when I log in.** Ferret then starts with your desktop, straight into the tray, so your devices connect before you need them. No tray? It opens its window instead.
+
+It's a normal XDG autostart entry, `~/.config/autostart/io.sofluffy.ferret.desktop`, which GNOME, KDE Plasma, Xfce and the rest all read. Turn the switch off and the file is gone. Inside a Flatpak, Ferret asks the desktop through the Background portal instead.
+
+Prefer a systemd user service, or a line in your tiling WM's config? Run `ferret --hidden`. That's all autostart does.
+
 The icon speaks StatusNotifierItem over D-Bus. Nothing to install, and inside a Flatpak it only needs to talk to `org.kde.StatusNotifierWatcher`.
 
 ## ⌨️ Keys

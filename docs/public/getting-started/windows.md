@@ -29,6 +29,10 @@ Ferret puts an icon in the notification area, next to the clock. Click it to sho
 - Windows may tuck the icon under the **^** arrow. Drag it next to the clock to keep it in sight.
 - The window opens where you left it, at the size you left it, maximized or not.
 
+## 🚀 Start with Windows
+
+**Settings → Start Ferret when I log in.** Ferret then starts with Windows, straight into the tray, so your devices connect before you need them. It's one line in your user's **Run** key, and turning the switch off removes it. You can also see it under **Task Manager → Startup apps**.
+
 ## ⌨️ Keys
 
 | Keys | Does |

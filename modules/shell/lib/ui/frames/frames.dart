@@ -13,6 +13,7 @@ export 'package:shell/ui/frames/file_drop_zone.dart';
 export 'package:shell/ui/frames/home_footer.dart';
 export 'package:shell/ui/frames/home_menu.dart';
 export 'package:shell/ui/frames/joined_notices_frame.dart';
+export 'package:shell/ui/frames/login_settings.dart';
 export 'package:shell/ui/frames/nearby_frame.dart';
 export 'package:shell/ui/frames/needs_you_frame.dart';
 export 'package:shell/ui/frames/offers_card.dart';

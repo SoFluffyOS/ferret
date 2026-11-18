@@ -1064,5 +1064,7 @@
   "doctorFixCopyFirewallCommand": "Copy the command",
   "traySendClipboard": "Send clipboard to my devices",
   "trayStillRunningTitle": "Ferret is still running",
-  "trayStillRunningBody": "Find it in the tray, next to the clock. Quit from its menu."
+  "trayStillRunningBody": "Find it in the tray, next to the clock. Quit from its menu.",
+  "settingsStartAtLogin": "Start Ferret when I log in",
+  "settingsStartAtLoginBody": "It starts in the tray, so your devices connect before you need them."
 }

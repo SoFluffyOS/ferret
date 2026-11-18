@@ -1353,4 +1353,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get trayStillRunningBody =>
       'Find it in the tray, next to the clock. Quit from its menu.';
+
+  @override
+  String get settingsStartAtLogin => 'Start Ferret when I log in';
+
+  @override
+  String get settingsStartAtLoginBody =>
+      'It starts in the tray, so your devices connect before you need them.';
 }

@@ -2259,6 +2259,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Find it in the tray, next to the clock. Quit from its menu.'**
   String get trayStillRunningBody;
+
+  /// No description provided for @settingsStartAtLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Ferret when I log in'**
+  String get settingsStartAtLogin;
+
+  /// No description provided for @settingsStartAtLoginBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It starts in the tray, so your devices connect before you need them.'**
+  String get settingsStartAtLoginBody;
 }
 
 class _ShellLocalizationsDelegate
