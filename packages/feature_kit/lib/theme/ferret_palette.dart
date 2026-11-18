@@ -28,7 +28,11 @@ class FerretPalette {
     false => _theme.colors.neutral7,
   };
 
-  Color get mutedText => _theme.colors.neutral4;
+  /// Secondary text, at least 4.5:1 against [surface] in both modes.
+  Color get mutedText => switch (_dark) {
+    true => _theme.colors.neutral4,
+    false => const Color(0xFF6C6C70),
+  };
 
   Color get accent => _theme.colors.primary;
 

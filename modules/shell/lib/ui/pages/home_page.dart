@@ -72,7 +72,7 @@ class HomePage extends StatelessWidget {
       ],
       children: [
         const PauseBanner(),
-        const StayConnectedCard(),
+        if (hasDevices) const StayConnectedCard(),
         if (hasDevices)
           for (final feature in scope.features)
             FeatureCardSlot(
