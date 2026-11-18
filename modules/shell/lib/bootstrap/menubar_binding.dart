@@ -6,6 +6,7 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/pages.dart';
 
@@ -19,6 +20,7 @@ class MenubarBinding {
     required this.features,
     required this.featureContext,
     required this.views,
+    required this.navigation,
     required FerretMenubar menubar,
   }) : _menubar = menubar;
 
@@ -27,6 +29,10 @@ class MenubarBinding {
   final List<FeatureUi> features;
   final FeatureContext featureContext;
   final AppViews views;
+
+  /// Where the view in front is, so Settings is selected in a window and
+  /// pushed in the popover.
+  final WindowNavRegistry navigation;
   final FerretMenubar _menubar;
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final List<Listenable> _listened = [];
@@ -151,7 +157,7 @@ class MenubarBinding {
         await featureContext.push<void>(const PairPage());
       case _settings:
         await views.reveal();
-        await featureContext.push<void>(const SettingsPage());
+        navigation.open(const SettingsDestination());
       case _quit:
         await SystemNavigator.pop();
     }

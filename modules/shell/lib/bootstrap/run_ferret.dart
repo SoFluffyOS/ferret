@@ -65,6 +65,7 @@ Future<void> runFerret({
     notifier: notifier,
     onReveal: views.reveal,
   );
+  final navigation = WindowNavRegistry(featureContext);
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
   }
@@ -76,6 +77,7 @@ Future<void> runFerret({
     features: features,
     featureContext: featureContext,
     views: views,
+    navigation: navigation,
     menubar: ferretMenubar,
   );
   await menubar.start();
@@ -87,6 +89,7 @@ Future<void> runFerret({
       features: features,
       featureContext: featureContext,
       menubar: menubar.menubar,
+      navigation: navigation,
       views: switch (ferretMenubar.isSupported) {
         true => views,
         false => null,

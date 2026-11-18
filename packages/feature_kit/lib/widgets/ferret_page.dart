@@ -40,6 +40,9 @@ class FerretPage extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final canPop = Navigator.of(context).canPop();
     final screenSize = context.screenSize;
+    // A first page that names itself in its body, such as a device in a
+    // window's pane, has nothing to put in a title bar.
+    final hasBar = canPop || title.isNotEmpty || actions.isNotEmpty;
 
     return ColoredBox(
       color: palette.background,
@@ -47,52 +50,58 @@ class FerretPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Spacing.d12,
-                Spacing.d12,
-                Spacing.d12,
-                Spacing.d4,
-              ),
-              child: Row(
-                children: [
-                  if (canPop)
-                    Tappable(
-                      tooltip: backLabel,
-                      onTap: () => Navigator.of(context).maybePop(),
-                      child: Padding(
-                        padding: EdgeInsets.all(Spacing.d4),
-                        child: Icon(
-                          LucideIcons.chevronLeft,
-                          size: Spacing.d20,
-                          color: palette.text,
+            if (hasBar)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Spacing.d12,
+                  Spacing.d12,
+                  Spacing.d12,
+                  Spacing.d4,
+                ),
+                child: AdaptiveContent(
+                  width: width,
+                  child: Row(
+                    children: [
+                      if (canPop)
+                        Tappable(
+                          tooltip: backLabel,
+                          onTap: () => Navigator.of(context).maybePop(),
+                          child: Padding(
+                            padding: EdgeInsets.all(Spacing.d4),
+                            child: Icon(
+                              LucideIcons.chevronLeft,
+                              size: Spacing.d20,
+                              color: palette.text,
+                            ),
+                          ),
+                        ),
+                      if (canPop) Spacing.h4,
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: title,
+                            children: [
+                              if (status case final status?)
+                                TextSpan(
+                                  text: '  $status',
+                                  style: typography.base2.copyWith(
+                                    color: palette.mutedText,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          style: typography.title2.copyWith(
+                            color: palette.text,
+                          ),
+                          overflow: .ellipsis,
+                          maxLines: 1,
                         ),
                       ),
-                    ),
-                  if (canPop) Spacing.h4,
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        text: title,
-                        children: [
-                          if (status case final status?)
-                            TextSpan(
-                              text: '  $status',
-                              style: typography.base2.copyWith(
-                                color: palette.mutedText,
-                              ),
-                            ),
-                        ],
-                      ),
-                      style: typography.title2.copyWith(color: palette.text),
-                      overflow: .ellipsis,
-                      maxLines: 1,
-                    ),
+                      ...actions,
+                    ],
                   ),
-                  ...actions,
-                ],
+                ),
               ),
-            ),
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -105,7 +114,10 @@ class FerretPage extends StatelessWidget {
                   return ListView(
                     padding: EdgeInsets.fromLTRB(
                       Spacing.d12 + margin,
-                      Spacing.d4,
+                      switch (hasBar) {
+                        true => Spacing.d4,
+                        false => Spacing.d24,
+                      },
                       Spacing.d12 + margin,
                       Spacing.d24,
                     ),
