@@ -53,7 +53,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairShowCodeBody =>
-      'Scan this code with Ferret on your other device, or open the link there.';
+      'On your phone, open Ferret and tap Scan the code on your computer.';
 
   @override
   String get pairCopyLink => 'Copy link';
@@ -73,16 +73,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairLinkLabel => 'Pairing link';
 
   @override
-  String get pairLinkHint => 'ferret://pair?o=…';
+  String get pairLinkHint => 'Paste a ferret://pair link';
 
   @override
   String get pairLinkInvalid => 'That isn\'t a Ferret pairing link.';
 
   @override
-  String get pairAddressLabel => 'Or connect to an address';
+  String get pairAddressLabel => 'Address of the other device';
 
   @override
-  String get pairAddressHint => '192.168.1.20:47640';
+  String get pairAddressHint => 'e.g. 192.168.1.20:47640';
 
   @override
   String get pairConnect => 'Connect';
@@ -309,7 +309,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorReachableProblem(String device) {
-    return '$device isn\'t answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.';
+    return '$device isn\'t answering.';
   }
 
   @override
@@ -561,4 +561,48 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get settingsAddressHint =>
       'Type this on another device under Connect by address if it can\'t find this one.';
+
+  @override
+  String get deviceWhyLong => 'Why isn\'t it connecting?';
+
+  @override
+  String deviceWhatWorks(String device) {
+    return 'What works with $device';
+  }
+
+  @override
+  String get deviceDetails => 'Details';
+
+  @override
+  String get deviceForget => 'Forget this device';
+
+  @override
+  String deviceForgetConfirmTitle(String device) {
+    return 'Forget $device?';
+  }
+
+  @override
+  String get deviceForgetConfirmBody =>
+      'Both devices forget each other. You can pair them again any time.';
+
+  @override
+  String get chipOff => 'Off';
+
+  @override
+  String get doctorTryAgainPrimary => 'Try again';
+
+  @override
+  String doctorNotAnsweringSteps(String device) {
+    return 'Try this:\n1. Open Ferret on $device.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
+  }
+
+  @override
+  String get pauseTitle => 'Pause Ferret?';
+
+  @override
+  String get pauseBody =>
+      'Your devices won\'t connect or sync until you resume.';
+
+  @override
+  String get settingsConnectByHand => 'Connect by hand';
 }

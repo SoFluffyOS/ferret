@@ -90,7 +90,7 @@ class ConnectionDoctor {
         const DoctorCheck(
           kind: .reachable,
           status: .problem,
-          fixes: [.connectByAddress, .pairAgain],
+          fixes: [.connectByAddress],
         ),
       );
       yield [...checks];

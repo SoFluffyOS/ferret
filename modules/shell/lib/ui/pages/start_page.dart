@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
-import 'package:shell/services/services.dart';
 import 'package:shell/ui/onboarding/onboarding_page.dart';
 import 'package:shell/ui/pages/home_page.dart';
 
@@ -14,20 +12,23 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
-  bool? _onboarded;
+  late bool _onboarded;
+
+  @override
+  void initState() {
+    super.initState();
+    final scope = ShellScope.read(context);
+    final engine = scope.featureContext.engine;
+    final alreadyDone =
+        engine.settings.get<bool>(OnboardingPage.doneKey) ?? false;
+
+    // Decided once: pairing during onboarding must still reach the last step.
+    _onboarded = alreadyDone || engine.trustStore.devices.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final engine = ShellScope.of(context).featureContext.engine;
-    final hasDevices = context.select<EngineHost, bool>(
-      (host) => host.devices.isNotEmpty,
-    );
-    final onboarded =
-        _onboarded ??
-        (hasDevices ||
-            (engine.settings.get<bool>(OnboardingPage.doneKey) ?? false));
-
-    if (onboarded) {
+    if (_onboarded) {
       return const HomePage();
     }
 

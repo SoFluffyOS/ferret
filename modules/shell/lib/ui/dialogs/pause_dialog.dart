@@ -32,13 +32,27 @@ class PauseDialog extends StatelessWidget {
 
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: Spacing.d280),
+        constraints: BoxConstraints(maxWidth: Spacing.d320),
         child: SurfaceCard(
           padding: EdgeInsets.all(Spacing.d16),
           child: Column(
             mainAxisSize: .min,
             crossAxisAlignment: .stretch,
             children: [
+              Text(
+                l10n.pauseTitle,
+                style: context.fluffyTheme.typography.title3.copyWith(
+                  color: context.palette.text,
+                ),
+              ),
+              Spacing.v6,
+              Text(
+                l10n.pauseBody,
+                style: context.fluffyTheme.typography.body2.copyWith(
+                  color: context.palette.mutedText,
+                ),
+              ),
+              Spacing.v16,
               for (final (label, duration) in options)
                 Padding(
                   padding: EdgeInsets.only(bottom: Spacing.d8),

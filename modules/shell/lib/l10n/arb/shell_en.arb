@@ -20,7 +20,7 @@
   "pairTitle": "Pair a device",
   "pairShowCode": "Show code",
   "pairEnterCode": "Use a link",
-  "pairShowCodeBody": "Scan this code with Ferret on your other device, or open the link there.",
+  "pairShowCodeBody": "On your phone, open Ferret and tap Scan the code on your computer.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Link copied",
   "pairExpiresIn": "Expires in {minutes} min",
@@ -33,10 +33,10 @@
   },
   "pairNewCode": "New code",
   "pairLinkLabel": "Pairing link",
-  "pairLinkHint": "ferret://pair?o=…",
+  "pairLinkHint": "Paste a ferret://pair link",
   "pairLinkInvalid": "That isn't a Ferret pairing link.",
-  "pairAddressLabel": "Or connect to an address",
-  "pairAddressHint": "192.168.1.20:47640",
+  "pairAddressLabel": "Address of the other device",
+  "pairAddressHint": "e.g. 192.168.1.20:47640",
   "pairConnect": "Connect",
   "pairCompareTitle": "Compare the codes",
   "pairCompareBody": "Make sure {device} shows the same code, then confirm there.",
@@ -220,7 +220,7 @@
       }
     }
   },
-  "doctorReachableProblem": "{device} isn't answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.",
+  "doctorReachableProblem": "{device} isn't answering.",
   "@doctorReachableProblem": {
     "placeholders": {
       "device": {
@@ -349,5 +349,38 @@
       }
     }
   },
-  "settingsAddressHint": "Type this on another device under Connect by address if it can't find this one."
+  "settingsAddressHint": "Type this on another device under Connect by address if it can't find this one.",
+  "deviceWhyLong": "Why isn't it connecting?",
+  "deviceWhatWorks": "What works with {device}",
+  "@deviceWhatWorks": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceDetails": "Details",
+  "deviceForget": "Forget this device",
+  "deviceForgetConfirmTitle": "Forget {device}?",
+  "@deviceForgetConfirmTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceForgetConfirmBody": "Both devices forget each other. You can pair them again any time.",
+  "chipOff": "Off",
+  "doctorTryAgainPrimary": "Try again",
+  "doctorNotAnsweringSteps": "Try this:\n1. Open Ferret on {device}.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
+  "@doctorNotAnsweringSteps": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "pauseTitle": "Pause Ferret?",
+  "pauseBody": "Your devices won't connect or sync until you resume.",
+  "settingsConnectByHand": "Connect by hand"
 }

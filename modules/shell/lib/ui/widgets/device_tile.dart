@@ -77,7 +77,7 @@ class DeviceTile extends StatelessWidget {
                   ),
                   if (status.isConnected && chips.isNotEmpty) ...[
                     Spacing.v6,
-                    Row(children: chips),
+                    Wrap(children: chips),
                   ],
                 ],
               ),

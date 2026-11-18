@@ -63,6 +63,8 @@ class FerretApp extends StatelessWidget {
   }
 }
 
+const _ferretBlue = Color(0xFF0A66D6);
+
 class _Themed extends StatelessWidget {
   const _Themed({required this.navigatorKey, required this.child});
 
@@ -72,14 +74,19 @@ class _Themed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = MediaQuery.platformBrightnessOf(context);
-    final theme = FluffyThemeData.fallback(brightness: brightness)
-        .copyWith(platform: defaultTargetPlatform);
+    final fallback = FluffyThemeData.fallback(brightness: brightness);
+    // A deeper blue than the default, so primary buttons get white labels
+    // at more than 4.5:1 contrast.
+    final theme = fallback.copyWith(
+      platform: defaultTargetPlatform,
+      colors: fallback.colors.copyWith(primary: _ferretBlue),
+    );
 
     return FluffyTheme(
       data: theme,
       child: Builder(
         builder: (context) => DefaultTextStyle(
-          style: theme.typography.body1.copyWith(color: context.palette.text),
+          style: theme.typography.base1.copyWith(color: context.palette.text),
           child: FileDropZone(
             child: PairingPromptListener(
               navigatorKey: navigatorKey,

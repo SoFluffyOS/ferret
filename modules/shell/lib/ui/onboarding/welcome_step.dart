@@ -46,7 +46,7 @@ class WelcomeStep extends StatelessWidget {
                   Expanded(
                     child: Text(
                       text,
-                      style: typography.body1.copyWith(color: palette.text),
+                      style: typography.base1.copyWith(color: palette.text),
                     ),
                   ),
                 ],

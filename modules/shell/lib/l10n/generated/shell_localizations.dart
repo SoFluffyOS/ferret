@@ -175,7 +175,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairShowCodeBody.
   ///
   /// In en, this message translates to:
-  /// **'Scan this code with Ferret on your other device, or open the link there.'**
+  /// **'On your phone, open Ferret and tap Scan the code on your computer.'**
   String get pairShowCodeBody;
 
   /// No description provided for @pairCopyLink.
@@ -211,7 +211,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairLinkHint.
   ///
   /// In en, this message translates to:
-  /// **'ferret://pair?o=…'**
+  /// **'Paste a ferret://pair link'**
   String get pairLinkHint;
 
   /// No description provided for @pairLinkInvalid.
@@ -223,13 +223,13 @@ abstract class ShellLocalizations {
   /// No description provided for @pairAddressLabel.
   ///
   /// In en, this message translates to:
-  /// **'Or connect to an address'**
+  /// **'Address of the other device'**
   String get pairAddressLabel;
 
   /// No description provided for @pairAddressHint.
   ///
   /// In en, this message translates to:
-  /// **'192.168.1.20:47640'**
+  /// **'e.g. 192.168.1.20:47640'**
   String get pairAddressHint;
 
   /// No description provided for @pairConnect.
@@ -601,7 +601,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorReachableProblem.
   ///
   /// In en, this message translates to:
-  /// **'{device} isn\'t answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.'**
+  /// **'{device} isn\'t answering.'**
   String doctorReachableProblem(String device);
 
   /// No description provided for @doctorAcceptedRunning.
@@ -1023,6 +1023,78 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Type this on another device under Connect by address if it can\'t find this one.'**
   String get settingsAddressHint;
+
+  /// No description provided for @deviceWhyLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Why isn\'t it connecting?'**
+  String get deviceWhyLong;
+
+  /// No description provided for @deviceWhatWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'What works with {device}'**
+  String deviceWhatWorks(String device);
+
+  /// No description provided for @deviceDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get deviceDetails;
+
+  /// No description provided for @deviceForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget this device'**
+  String get deviceForget;
+
+  /// No description provided for @deviceForgetConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget {device}?'**
+  String deviceForgetConfirmTitle(String device);
+
+  /// No description provided for @deviceForgetConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Both devices forget each other. You can pair them again any time.'**
+  String get deviceForgetConfirmBody;
+
+  /// No description provided for @chipOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get chipOff;
+
+  /// No description provided for @doctorTryAgainPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get doctorTryAgainPrimary;
+
+  /// No description provided for @doctorNotAnsweringSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Try this:\n1. Open Ferret on {device}.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
+  String doctorNotAnsweringSteps(String device);
+
+  /// No description provided for @pauseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Ferret?'**
+  String get pauseTitle;
+
+  /// No description provided for @pauseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices won\'t connect or sync until you resume.'**
+  String get pauseBody;
+
+  /// No description provided for @settingsConnectByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect by hand'**
+  String get settingsConnectByHand;
 }
 
 class _ShellLocalizationsDelegate

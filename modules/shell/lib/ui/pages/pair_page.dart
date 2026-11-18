@@ -71,33 +71,31 @@ class _PairPageState extends State<PairPage> {
           SectionTitle(l10n.pairShowCode),
           const _OfferCard(),
           SectionTitle(l10n.pairEnterCode),
-          SurfaceCard(
-            child: Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                InputText(
-                  controller: _link,
-                  label: l10n.pairLinkLabel,
-                  hintText: l10n.pairLinkHint,
-                  errorText: _linkError,
-                  onSubmitted: (_) => _pairWithLink(),
-                ),
-                Spacing.v12,
-                InputText(
-                  controller: _address,
-                  label: l10n.pairAddressLabel,
-                  hintText: l10n.pairAddressHint,
-                  keyboardType: .url,
-                  onSubmitted: (_) => _pairWithAddress(),
-                ),
-                Spacing.v12,
-                Button(
-                  variant: .primary,
-                  label: l10n.pairConnect,
-                  onPressed: _connect,
-                ),
-              ],
-            ),
+          Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              InputText(
+                controller: _link,
+                label: l10n.pairLinkLabel,
+                hintText: l10n.pairLinkHint,
+                errorText: _linkError,
+                onSubmitted: (_) => _pairWithLink(),
+              ),
+              Spacing.v12,
+              InputText(
+                controller: _address,
+                label: l10n.pairAddressLabel,
+                hintText: l10n.pairAddressHint,
+                keyboardType: .url,
+                onSubmitted: (_) => _pairWithAddress(),
+              ),
+              Spacing.v12,
+              Button(
+                variant: .primary,
+                label: l10n.pairConnect,
+                onPressed: _connect,
+              ),
+            ],
           ),
         ],
       ),
@@ -190,7 +188,7 @@ class _OfferCard extends StatelessWidget {
               Spacing.h12,
               Expanded(
                 child: Button(
-                  variant: .ghost,
+                  variant: .secondary,
                   label: l10n.pairNewCode,
                   onPressed: () =>
                       context.read<PairingViewModel>().createOffer(),

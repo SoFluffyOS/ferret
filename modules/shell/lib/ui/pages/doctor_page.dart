@@ -69,7 +69,7 @@ class _DoctorPageState extends State<DoctorPage> {
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
-              for (final check in _checks)
+              for (final check in _checks.where((check) => check.kind != .port))
                 DoctorCheckRow(
                   status: check.status,
                   message: _describe(l10n, check, name),
@@ -78,7 +78,13 @@ class _DoctorPageState extends State<DoctorPage> {
           ),
         ),
         Spacing.v16,
-        for (final fix in fixes)
+        Button(
+          variant: .primary,
+          label: l10n.doctorTryAgainPrimary,
+          onPressed: _run,
+        ),
+        Spacing.v8,
+        for (final fix in fixes.where((fix) => fix != .tryAgain))
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
             child: Button(
@@ -121,22 +127,26 @@ class _DoctorPageState extends State<DoctorPage> {
     .copyDiagnostics => l10n.doctorFixCopy,
   };
 
-  String _describe(ShellLocalizations l10n, DoctorCheck check, String device) =>
-      switch ((check.kind, check.status)) {
-        (.network, .problem) => l10n.doctorNetworkProblem,
-        (.network, _) => l10n.doctorNetworkOk,
-        (.vpn, _) => l10n.doctorVpn(check.detail),
-        (.port, _) => l10n.doctorPort(check.detail),
-        (.sameNetwork, .ok) => l10n.doctorSameNetworkOk,
-        (.sameNetwork, _) => l10n.doctorSameNetworkWarning(
-          device,
-          check.detail,
-        ),
-        (.reachable, .running) => l10n.doctorReachableRunning(device),
-        (.reachable, .ok) => l10n.doctorReachableOk(device),
-        (.reachable, _) => l10n.doctorReachableProblem(device),
-        (.accepted, .running) => l10n.doctorAcceptedRunning,
-        (.accepted, .ok) => l10n.doctorAcceptedOk,
-        (.accepted, _) => l10n.doctorAcceptedProblem(device),
-      };
+  String _describe(
+    ShellLocalizations l10n,
+    DoctorCheck check,
+    String device,
+  ) => switch ((check.kind, check.status)) {
+    (.network, .problem) => l10n.doctorNetworkProblem,
+    (.network, _) => l10n.doctorNetworkOk,
+    (.vpn, _) => l10n.doctorVpn(check.detail),
+    (.port, _) => l10n.doctorPort(check.detail),
+    (.sameNetwork, .ok) => l10n.doctorSameNetworkOk,
+    (.sameNetwork, _) => l10n.doctorSameNetworkWarning(
+      device,
+      check.detail,
+    ),
+    (.reachable, .running) => l10n.doctorReachableRunning(device),
+    (.reachable, .ok) => l10n.doctorReachableOk(device),
+    (.reachable, _) =>
+      '${l10n.doctorReachableProblem(device)}\n\n${l10n.doctorNotAnsweringSteps(device)}',
+    (.accepted, .running) => l10n.doctorAcceptedRunning,
+    (.accepted, .ok) => l10n.doctorAcceptedOk,
+    (.accepted, _) => l10n.doctorAcceptedProblem(device),
+  };
 }

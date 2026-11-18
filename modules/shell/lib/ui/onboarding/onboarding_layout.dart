@@ -59,7 +59,7 @@ class OnboardingLayout extends StatelessWidget {
               Spacing.v8,
               Text(
                 body,
-                style: typography.body1.copyWith(color: palette.mutedText),
+                style: typography.body2.copyWith(color: palette.mutedText),
               ),
               Spacing.vertical(Spacing.d20),
               Expanded(child: SingleChildScrollView(child: child)),
