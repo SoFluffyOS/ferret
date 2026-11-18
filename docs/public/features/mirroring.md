@@ -20,7 +20,27 @@ With Ferret, the phone's screen shows up on your computer. Over your own Wi-Fi, 
 
 Rotate the phone and the picture follows. Screen off? The page says so, and the picture comes back when you wake the phone.
 
-Mirroring is view only. To type or click from afar, see [Remote input](remote-input.md).
+Mirroring over Ferret is view only. To type or click from afar, see [Remote input](remote-input.md).
+
+## 🧪 More ways to show a screen
+
+Not every screen has Ferret behind it. A spare phone on your desk, an iPhone, a test device.
+
+Ferret can show those too. This part is **experimental** and off until you ask for it:
+
+1. On the computer, open **Settings → Screen mirroring**.
+2. Turn on **More ways to show a screen**.
+
+That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show**. A screen another device sends by itself opens right away.
+
+- [Mirror a phone without Ferret on it](mirroring-with-a-cable.md): any Android phone, over a cable or Wi-Fi.
+- [Show an iPhone's screen](mirroring-from-iphone.md): from Control Center, nothing to install.
+
+A phone you paired shows once. When Ferret's own connection can show it, that is the one used.
+
+Something missing? Settings and the mirror page say what, in plain words with a "How to", and **Check again** once you did it.
+
+Some of these ways let you use the phone from the computer: click, scroll and type on the picture, and press **Back**, **Home** and **Recent apps** under it. No buttons there means view only.
 
 ## 🔐 You stay in charge
 

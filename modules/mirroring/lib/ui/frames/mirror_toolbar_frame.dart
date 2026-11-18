@@ -75,20 +75,24 @@ class MirrorToolbarFrame extends StatelessWidget {
               overflow: .ellipsis,
             ),
           ),
-          if (isMirroring)
+          if (isMirroring) ...[
+            Spacing.h8,
             Button(
               variant: .ghost,
               label: sizeLabel,
               tooltip: sizeTooltip,
               onPressed: () => unawaited(viewModel.setActualSize(!actualSize)),
             ),
-          if (isMirroring && canFullScreen)
+          ],
+          if (isMirroring && canFullScreen) ...[
+            Spacing.h4,
             Button(
               variant: .ghost,
               label: fullScreenLabel,
               onPressed: () =>
                   unawaited(viewModel.setFullScreen(!isFullScreen)),
             ),
+          ],
           if (isLive) ...[
             Spacing.h4,
             Button(
