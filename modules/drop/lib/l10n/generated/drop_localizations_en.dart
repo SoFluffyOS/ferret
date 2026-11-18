@@ -22,7 +22,38 @@ class DropLocalizationsEn extends DropLocalizations {
   String get otherApps => 'Let other phones send you files';
 
   @override
-  String get sendFiles => 'Send files…';
+  String get sendFiles => 'Send files';
+
+  @override
+  String activityFrom(String what, String device) {
+    return '$what from $device';
+  }
+
+  @override
+  String activityTo(String what, String device) {
+    return '$what to $device';
+  }
+
+  @override
+  String get activityText => 'Text';
+
+  @override
+  String activitySavedTo(String folder) {
+    return 'Saved to $folder';
+  }
+
+  @override
+  String get activitySaved => 'Saved';
+
+  @override
+  String get activitySent => 'Sent';
+
+  @override
+  String get offerOtherPhonesBody =>
+      'Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.';
+
+  @override
+  String get offerOtherPhonesAction => 'Turn on';
 
   @override
   String get clearFinished => 'Clear finished';

@@ -4,7 +4,24 @@
   "cardEmpty": "Drop files here to send them to your devices.",
   "cardEmptyPhone": "Send photos and files to your other devices.",
   "otherApps": "Let other phones send you files",
-  "sendFiles": "Send files…",
+  "sendFiles": "Send files",
+  "activityFrom": "{what} from {device}",
+  "@activityFrom": {
+    "placeholders": {"what": {"type": "String"}, "device": {"type": "String"}}
+  },
+  "activityTo": "{what} to {device}",
+  "@activityTo": {
+    "placeholders": {"what": {"type": "String"}, "device": {"type": "String"}}
+  },
+  "activityText": "Text",
+  "activitySavedTo": "Saved to {folder}",
+  "@activitySavedTo": {
+    "placeholders": {"folder": {"type": "String"}}
+  },
+  "activitySaved": "Saved",
+  "activitySent": "Sent",
+  "offerOtherPhonesBody": "Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.",
+  "offerOtherPhonesAction": "Turn on",
   "clearFinished": "Clear finished",
   "transferFiles": "{count, plural, =1{{name}} other{{count} files}}",
   "@transferFiles": {

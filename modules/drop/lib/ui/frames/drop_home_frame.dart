@@ -16,7 +16,16 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// and, folded under "Receive from other apps", the switches that let
 /// LocalSend devices and Quick Share on phones send here for a while.
 class DropHomeFrame extends StatelessWidget {
-  const DropHomeFrame({super.key, required this.onSendFiles});
+  const DropHomeFrame({
+    super.key,
+    required this.onSendFiles,
+    this.needsYouOnly = false,
+  });
+
+  /// Shows only what waits for the person: offers to answer, a PIN to
+  /// enter, and who may send here right now. Home uses it; everything else
+  /// is a line in Activity.
+  final bool needsYouOnly;
 
   /// Picks files and a device, then sends.
   final VoidCallback onSendFiles;
@@ -27,7 +36,10 @@ class DropHomeFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.read<DropViewModel>();
     final transfers = context.select<DropViewModel, List<Transfer>>(
-      (model) => model.transfers,
+      (model) => switch (needsYouOnly) {
+        true => model.needingAnswer,
+        false => model.transfers,
+      },
     );
     final canSend = context.select<DropViewModel, bool>(
       (model) => model.canSend,
@@ -59,11 +71,11 @@ class DropHomeFrame extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.send,
       title: l10n.title,
-      subtitle: switch (transfers.isEmpty) {
+      subtitle: switch (transfers.isEmpty && !needsYouOnly) {
         true => _emptyLine(l10n),
         false => null,
       },
-      trailing: switch (hasFinished) {
+      trailing: switch (hasFinished && !needsYouOnly) {
         true => Button(
           variant: .ghost,
           label: l10n.clearFinished,
@@ -136,7 +148,7 @@ class DropHomeFrame extends StatelessWidget {
         ],
       ],
       actions: [
-        if (canSend)
+        if (canSend && !needsYouOnly)
           Button(
             variant: .ghost,
             label: l10n.sendFiles,

@@ -138,7 +138,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('LocalSend'), findsNothing);
-    expect(find.text('Send files…'), findsOneWidget);
+    expect(find.text('Send files'), findsOneWidget);
   });
 
   testWidgets('the row counts down, and shows a problem with a way out', (

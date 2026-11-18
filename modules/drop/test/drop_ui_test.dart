@@ -63,7 +63,7 @@ void main() {
         _ => 'Drop files here to send them to your devices.',
       };
       expect(find.text(hint), findsOneWidget);
-      await tester.tap(find.text('Send files…'));
+      await tester.tap(find.text('Send files'));
       expect(picked, isTrue);
     },
     variant: const TargetPlatformVariant({.macOS, .android}),

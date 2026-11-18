@@ -65,6 +65,39 @@ class DropViewModel extends ChangeNotifier {
   /// Newest first.
   List<Transfer> get transfers => _transfers;
 
+  /// Offers waiting for an answer here and sends waiting for a PIN, newest
+  /// first: the transfers that can't go on without the person.
+  List<Transfer> get needingAnswer => [
+    for (final transfer in _transfers)
+      if (transfer.needsAnswer || needsPin(transfer)) transfer,
+  ];
+
+  /// Whether a phone without Ferret may send here right now, or tried to
+  /// be allowed and couldn't.
+  bool get isOpenToOthers =>
+      _receiveState.isStarting ||
+      _receiveState.isOn ||
+      _receiveState.problem != null ||
+      _quickShareState.isStarting ||
+      _quickShareState.isOn ||
+      _quickShareState.problem != null;
+
+  /// Whether phones without Ferret could be let in, and aren't yet.
+  bool get canOpenToOthers =>
+      (localSendEnabled || quickShareEnabled) && !isOpenToOthers;
+
+  /// Lets phones without Ferret find this device for a while, each way
+  /// that is turned on.
+  Future<void> openToOthers() async {
+    if (quickShareEnabled) {
+      await receiveFromQuickShare();
+    }
+
+    if (localSendEnabled) {
+      await receiveFromLocalSend();
+    }
+  }
+
   bool get hasFinished =>
       _transfers.any((transfer) => !transfer.status.isActive);
 

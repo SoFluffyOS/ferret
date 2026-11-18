@@ -121,8 +121,56 @@ abstract class DropLocalizations {
   /// No description provided for @sendFiles.
   ///
   /// In en, this message translates to:
-  /// **'Send files…'**
+  /// **'Send files'**
   String get sendFiles;
+
+  /// No description provided for @activityFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'{what} from {device}'**
+  String activityFrom(String what, String device);
+
+  /// No description provided for @activityTo.
+  ///
+  /// In en, this message translates to:
+  /// **'{what} to {device}'**
+  String activityTo(String what, String device);
+
+  /// No description provided for @activityText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get activityText;
+
+  /// No description provided for @activitySavedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to {folder}'**
+  String activitySavedTo(String folder);
+
+  /// No description provided for @activitySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get activitySaved;
+
+  /// No description provided for @activitySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get activitySent;
+
+  /// No description provided for @offerOtherPhonesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.'**
+  String get offerOtherPhonesBody;
+
+  /// No description provided for @offerOtherPhonesAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get offerOtherPhonesAction;
 
   /// No description provided for @clearFinished.
   ///
