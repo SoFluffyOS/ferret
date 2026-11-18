@@ -11,12 +11,16 @@ class NearbyNotice extends StatelessWidget {
     this.title,
     this.actionLabel,
     this.onAction,
+    this.isPrimary = false,
   });
 
   final String? title;
   final String body;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Whether the action is the screen's one primary button.
+  final bool isPrimary;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,10 @@ class NearbyNotice extends StatelessWidget {
             Spacing.v12,
             Button(
               mainAxisSize: .min,
-              variant: .ghost,
+              variant: switch (isPrimary) {
+                true => .primary,
+                false => .ghost,
+              },
               label: label,
               onPressed: onAction,
             ),

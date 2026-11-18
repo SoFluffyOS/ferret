@@ -8,7 +8,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One paired device on Home: its name, the one thing that is true about its
 /// connection, and what to do with it right there. Connected, that is up
-/// to three actions; offline, a way to fix it.
+/// to three actions; offline, a way to fix it. An iPhone that isn't
+/// connected says it connects while Ferret is open on it: iOS stops Ferret
+/// in the background, and "Last seen" would read like a fault.
 class DeviceTile extends StatelessWidget {
   const DeviceTile({
     super.key,
@@ -146,6 +148,10 @@ class DeviceTile extends StatelessWidget {
         final feature? => l10n.deviceAttention(feature),
         null => l10n.deviceConnected,
       };
+    }
+
+    if (status.device.platform == .PLATFORM_IOS) {
+      return l10n.deviceConnectsWhenOpen;
     }
 
     final lastSeen = status.device.lastSeen;

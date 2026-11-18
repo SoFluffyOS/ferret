@@ -57,6 +57,7 @@ class _PairPageState extends State<PairPage> {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
+    final isIphone = defaultTargetPlatform == .iOS;
 
     return ChangeNotifierProvider.value(
       value: _viewModel,
@@ -69,39 +70,60 @@ class _PairPageState extends State<PairPage> {
           children: [
             const PairingStatusCard(),
             const NearbyFrame(),
-            SectionTitle(
-              l10n.addDontSee,
-              trailing: Tappable(
-                onTap: () => _open(const DoctorPage()),
-                child: Text(
-                  l10n.settingsCheckNetwork,
-                  style: typography.caption1.copyWith(color: palette.accent),
+            if (isIphone) ...[
+              NearbyNotice(
+                body: l10n.pairIphoneBody,
+                actionLabel: l10n.scanButton,
+                onAction: () => unawaited(_pairWithQr()),
+                isPrimary: true,
+              ),
+              Spacing.v16,
+              SurfaceCard(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Spacing.d8,
+                  vertical: Spacing.d4,
+                ),
+                child: NavRow(
+                  title: l10n.pairEnterCode,
+                  onTap: () => _open(const OtherWaysPage()),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
-              child: Text(
-                l10n.pairCantSeeSteps,
-                style: typography.base2.copyWith(color: palette.mutedText),
-              ),
-            ),
-            Spacing.v16,
-            SurfaceCard(
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.d8,
-                vertical: Spacing.d4,
-              ),
-              child: Column(
-                children: [
-                  NavRow(title: l10n.pairShowCode, onTap: _pairWithQr),
-                  NavRow(
-                    title: l10n.pairEnterCode,
-                    onTap: () => _open(const OtherWaysPage()),
+            ],
+            if (!isIphone) ...[
+              SectionTitle(
+                l10n.addDontSee,
+                trailing: Tappable(
+                  onTap: () => _open(const DoctorPage()),
+                  child: Text(
+                    l10n.settingsCheckNetwork,
+                    style: typography.caption1.copyWith(color: palette.accent),
                   ),
-                ],
+                ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+                child: Text(
+                  l10n.pairCantSeeSteps,
+                  style: typography.base2.copyWith(color: palette.mutedText),
+                ),
+              ),
+              Spacing.v16,
+              SurfaceCard(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Spacing.d8,
+                  vertical: Spacing.d4,
+                ),
+                child: Column(
+                  children: [
+                    NavRow(title: l10n.pairShowCode, onTap: _pairWithQr),
+                    NavRow(
+                      title: l10n.pairEnterCode,
+                      onTap: () => _open(const OtherWaysPage()),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             Spacing.v16,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Spacing.d4),

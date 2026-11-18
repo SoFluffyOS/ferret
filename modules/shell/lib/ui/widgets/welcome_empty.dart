@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
@@ -10,6 +11,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// Home before anything is paired and with nobody in sight. It is the
 /// welcome: what Ferret is for, the one thing to do now, whether it is
 /// still looking, and the privacy promise.
+///
+/// An iPhone can't look for devices on the network, so there it says so
+/// plainly: scan the code on the computer.
 class WelcomeEmpty extends StatefulWidget {
   const WelcomeEmpty({
     super.key,
@@ -53,6 +57,7 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
+    final isIphone = defaultTargetPlatform == .iOS;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -76,12 +81,16 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
           ),
           Spacing.v8,
           Text(
-            l10n.emptyBody,
+            switch (isIphone) {
+              true => l10n.emptyBodyIphone,
+              false => l10n.emptyBody,
+            },
             textAlign: .center,
             style: typography.base1.copyWith(color: palette.mutedText),
           ),
           Spacing.v16,
           switch (_isLooking) {
+            _ when isIphone => const SizedBox.shrink(),
             true => Text(
               l10n.nearbyLooking,
               style: typography.caption1.copyWith(color: palette.mutedText),
@@ -97,7 +106,10 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
           Spacing.vertical(Spacing.d20),
           Button(
             variant: .primary,
-            label: l10n.pairShowCode,
+            label: switch (isIphone) {
+              true => l10n.scanButton,
+              false => l10n.pairShowCode,
+            },
             mainAxisSize: .min,
             onPressed: widget.onPairWithCode,
           ),

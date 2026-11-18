@@ -25,6 +25,7 @@
 - 📡 **Quick Share**: Android phones can send files to Ferret on a computer with nothing installed. Make the computer visible for 10 minutes, compare the PIN, accept.
 - 🔓 **Power-ups (Android)**: a ladder in Settings shows what your phone lets Ferret do. With Shizuku or root, Ferret sends what you copy on its own, even in the background.
 - 📱 **iPhone on your PC**: your iPhone's notifications (with Clear, Answer and Decline) and media controls on Windows and Linux over Bluetooth, with nothing to install on the iPhone.
+- 🍎 **Ferret on iPhone**: pair by scanning your computer's code, straight from the home screen, and swipe from the edge to go back. iOS pauses apps you leave, so Ferret says **Keep Ferret open to sync**, and your computer shows a paused iPhone as **Connects when Ferret is open on it**, not as broken.
 - 🖱️ **Control**: use your phone as the touchpad and keyboard of your computer. Two-finger scrolling glides on, and **Keyboard** shows or hides the keys. The computer asks first, says who is in control next to **Stop control** while it happens, and keeps a history.
 - 🪞 **Screen**: see your Android phone's screen on your computer. Android asks you every time, the phone shows **Sharing screen · Stop** while it lasts, and both devices keep a history.
 - 🔌 **Mirror any Android phone (experimental)**: show and control a phone that has USB or wireless debugging on, with no Ferret on it. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.

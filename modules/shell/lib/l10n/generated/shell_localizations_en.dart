@@ -35,6 +35,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceOffline => 'Not connected';
 
   @override
+  String get deviceConnectsWhenOpen => 'Connects when Ferret is open on it';
+
+  @override
   String deviceLastSeen(String time) {
     return 'Last seen $time';
   }
@@ -50,6 +53,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairEnterCode => 'Other ways';
+
+  @override
+  String get pairIphoneBody =>
+      'An iPhone can\'t look for devices on the network by itself. On your computer, open Ferret and click +. Then scan the code it shows.';
 
   @override
   String get pairShowCodeBody =>
@@ -107,6 +114,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get pairFailedUnreachable =>
       'Couldn\'t reach that device. Put both on the same Wi-Fi, then try again.';
+
+  @override
+  String get pairFailedUnreachableIphone =>
+      'Couldn\'t reach that computer. Check that both are on the same Wi-Fi, and that Ferret may use the local network in Settings.';
 
   @override
   String get pairFailedRejected => 'Your other device said not now.';
@@ -1097,7 +1108,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get emptyBody =>
-      'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.';
+      'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.';
+
+  @override
+  String get emptyBodyIphone =>
+      'Install Ferret on your computer too, and open it. Then scan the code it shows.';
 
   @override
   String get emptyCantSee => 'Can\'t see it?';
@@ -1151,6 +1166,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get footerDrag => 'Drag files onto a device to send';
+
+  @override
+  String get footerKeepOpen =>
+      'Keep Ferret open to sync. iOS pauses it otherwise.';
 
   @override
   String get footerNobody =>

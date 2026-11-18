@@ -6,7 +6,8 @@ import 'package:shell/services/services.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 
 /// Home's last line, which changes with what is true: paused and until
-/// when, nobody to send to, or that files can be dragged onto a device.
+/// when, nobody to send to, that files can be dragged onto a device, or
+/// on an iPhone that Ferret only syncs while it is open.
 /// It sits at the bottom so the device list never jumps.
 class HomeFooter extends StatelessWidget {
   const HomeFooter({super.key});
@@ -44,6 +45,10 @@ class HomeFooter extends StatelessWidget {
 
     if (!hasConnected) {
       return FooterHint(text: l10n.footerNobody);
+    }
+
+    if (defaultTargetPlatform == .iOS) {
+      return FooterHint(text: l10n.footerKeepOpen);
     }
 
     final dragsFiles = switch (defaultTargetPlatform) {

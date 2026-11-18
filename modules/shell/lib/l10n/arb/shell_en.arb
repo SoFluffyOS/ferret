@@ -8,6 +8,7 @@
   "homePairDevice": "Add a device",
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
+  "deviceConnectsWhenOpen": "Connects when Ferret is open on it",
   "deviceLastSeen": "Last seen {time}",
   "@deviceLastSeen": {
     "placeholders": {
@@ -20,6 +21,7 @@
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
   "pairEnterCode": "Other ways",
+  "pairIphoneBody": "An iPhone can't look for devices on the network by itself. On your computer, open Ferret and click +. Then scan the code it shows.",
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Copied",
@@ -57,6 +59,7 @@
     }
   },
   "pairFailedUnreachable": "Couldn't reach that device. Put both on the same Wi-Fi, then try again.",
+  "pairFailedUnreachableIphone": "Couldn't reach that computer. Check that both are on the same Wi-Fi, and that Ferret may use the local network in Settings.",
   "pairFailedRejected": "Your other device said not now.",
   "pairFailedExpired": "That code expired.",
   "pairFailedBadProof": "The codes didn't match, so nothing was paired. Try once more, close to the other device.",
@@ -867,7 +870,8 @@
     }
   },
   "devicesShow": "Show",
-  "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.",
+  "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
+  "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
   "emptyCantSee": "Can't see it?",
   "emptyGetFerretPhone": "Get Ferret for your phone",
   "emptyGetFerretComputer": "Get Ferret for your computer",
@@ -904,6 +908,7 @@
     }
   },
   "footerDrag": "Drag files onto a device to send",
+  "footerKeepOpen": "Keep Ferret open to sync. iOS pauses it otherwise.",
   "footerNobody": "Your devices are offline. Open Ferret on one to reach it.",
   "footerPausedUntil": "Paused until {time}",
   "@footerPausedUntil": {

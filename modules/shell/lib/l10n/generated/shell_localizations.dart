@@ -142,6 +142,12 @@ abstract class ShellLocalizations {
   /// **'Not connected'**
   String get deviceOffline;
 
+  /// No description provided for @deviceConnectsWhenOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Connects when Ferret is open on it'**
+  String get deviceConnectsWhenOpen;
+
   /// No description provided for @deviceLastSeen.
   ///
   /// In en, this message translates to:
@@ -171,6 +177,12 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Other ways'**
   String get pairEnterCode;
+
+  /// No description provided for @pairIphoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'An iPhone can\'t look for devices on the network by itself. On your computer, open Ferret and click +. Then scan the code it shows.'**
+  String get pairIphoneBody;
 
   /// No description provided for @pairShowCodeBody.
   ///
@@ -267,6 +279,12 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t reach that device. Put both on the same Wi-Fi, then try again.'**
   String get pairFailedUnreachable;
+
+  /// No description provided for @pairFailedUnreachableIphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach that computer. Check that both are on the same Wi-Fi, and that Ferret may use the local network in Settings.'**
+  String get pairFailedUnreachableIphone;
 
   /// No description provided for @pairFailedRejected.
   ///
@@ -1831,8 +1849,14 @@ abstract class ShellLocalizations {
   /// No description provided for @emptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.'**
+  /// **'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.'**
   String get emptyBody;
+
+  /// No description provided for @emptyBodyIphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Ferret on your computer too, and open it. Then scan the code it shows.'**
+  String get emptyBodyIphone;
 
   /// No description provided for @emptyCantSee.
   ///
@@ -1923,6 +1947,12 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Drag files onto a device to send'**
   String get footerDrag;
+
+  /// No description provided for @footerKeepOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Ferret open to sync. iOS pauses it otherwise.'**
+  String get footerKeepOpen;
 
   /// No description provided for @footerNobody.
   ///

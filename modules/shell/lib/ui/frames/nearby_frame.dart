@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
@@ -106,8 +107,16 @@ class _Nearby extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    // An iPhone never finds anyone without Apple's multicast entitlement,
+    // so "Looking…" or "allow Local Network" would mislead: it pairs by
+    // scanning the computer's code.
+    final isIphone = defaultTargetPlatform == .iOS;
     final onPairWithCode = this.onPairWithCode;
-    if (peers.isEmpty && !isBlocked && onPairWithCode != null) {
+    if (peers.isEmpty && isIphone && onPairWithCode == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (peers.isEmpty && (!isBlocked || isIphone) && onPairWithCode != null) {
       return WelcomeEmpty(
         onPairWithCode: onPairWithCode,
         onCantSee: onCantSee ?? onPairWithCode,

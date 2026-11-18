@@ -117,6 +117,10 @@ final screens = <Screen>[
     await rig.addOfflinePhone(tester);
     await rig.settle(tester);
   }),
+  Screen('home_offline_iphone', (tester, rig) async {
+    await rig.addOfflinePhone(tester, name: 'iPhone', platform: .PLATFORM_IOS);
+    await rig.settle(tester);
+  }),
   Screen('home_connected', (tester, rig) async {
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);

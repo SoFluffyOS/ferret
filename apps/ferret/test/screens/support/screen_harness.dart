@@ -126,6 +126,7 @@ class ScreenRig {
     WidgetTester tester, {
     String name = 'Pixel 9',
     String id = 'a1b2c3d4e5f60718',
+    Platform platform = .PLATFORM_ANDROID,
   }) {
     return tester
         .runAsync(() async {
@@ -133,7 +134,7 @@ class ScreenRig {
             TrustedDevice(
               id: id,
               name: name,
-              platform: .PLATFORM_ANDROID,
+              platform: platform,
               formFactor: .FORM_FACTOR_PHONE,
               publicKey: Uint8List(32),
               pairedAt: DateTime.now().subtract(const Duration(days: 2)),

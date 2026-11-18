@@ -52,6 +52,8 @@ Prefer to pair each device by hand? Turn off **Settings → Advanced → Pair on
 1. Ferret is open on the other device.
 2. Both are on the same Wi-Fi. Guest networks and some office networks keep devices apart.
 
+An iPhone never shows up here: it can't look for devices by itself. Pair it with a QR code. See [Ferret on iPhone](iphone.md).
+
 Not sure about your network? **Check my network** looks at this device's Wi-Fi and VPN and tells you what it found.
 
 Still nothing? Two more rows wait below.
@@ -59,7 +61,9 @@ Still nothing? Two more rows wait below.
 ### 📷 Pair with a QR code
 
 1. On your computer, open **+**, then **Pair with a QR code**. The code appears.
-2. On your phone, open **+**, then **Pair with a QR code**. The camera opens: point it at the code.
+2. On your phone, open **+**, then **Pair with a QR code** (on an iPhone: **Scan the code on your computer**). The camera opens: point it at the code.
+
+Nothing paired yet on the phone? The button on its home screen opens the camera straight away.
 
 Scanning is enough, there are no digits to compare: the code carries a one-time secret that only someone looking at your screen has. It works once and expires after 5 minutes. **New code** makes a fresh one. It also carries your computer's address, so it works on networks where devices can't find each other.
 
