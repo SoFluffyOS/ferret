@@ -777,6 +777,144 @@ New or changed messages and their conversations, pushed by the source without a 
 | `messages` | `repeated Message` | 1 |  |
 | `conversations` | `repeated Conversation` | 2 |  |
 
+## `ferret.mirroring.v1`
+
+### enum `Codec`
+
+How the pictures are encoded.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CODEC_UNSPECIFIED` | 0 |  |
+| `CODEC_H264` | 1 | H.264 video. `Frame.data` is one access unit in Annex-B form. |
+| `CODEC_JPEG` | 2 | A JPEG picture per frame, for viewers without a video decoder. Fewer frames per second and a smaller picture. |
+
+### message `StartRequest`
+
+Asks the source to show its screen. Expects a `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept` or `StartDeny` later, without expecting a reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `version` | `uint32` | 1 | The version of these messages the viewer speaks. |
+| `codecs` | `repeated Codec` | 2 | What the viewer can decode, best first. |
+| `max_width` | `uint32` | 3 | The largest picture the viewer wants, in pixels. 0 leaves it to the source, which never sends more than 1920 on the long side. |
+| `max_height` | `uint32` | 4 |  |
+| `max_fps` | `uint32` | 5 | 0 leaves it to the source. |
+
+### message `StartPending`
+
+The source is asking its owner. The answer follows as `StartAccept` or `StartDeny`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `timeout_seconds` | `uint32` | 1 | How long the source waits for its owner before it denies with `DENY_REASON_TIMEOUT`. |
+
+### message `StartAccept`
+
+The owner said yes. A `StreamConfig` and `Frame`s follow until either side sends `Stop`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `version` | `uint32` | 1 | The version of these messages the source speaks. |
+| `codec` | `Codec` | 2 | The codec the source picked from `StartRequest.codecs`. |
+
+### enum `DenyReason`
+
+Why a source said no.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `DENY_REASON_UNSPECIFIED` | 0 |  |
+| `DENY_REASON_DENIED` | 1 | Its owner said no on the system prompt. |
+| `DENY_REASON_TIMEOUT` | 2 | Nobody answered on the source in time. |
+| `DENY_REASON_BUSY` | 3 | It already shares its screen, or is asking its owner, for another device. |
+| `DENY_REASON_UNSUPPORTED` | 4 | This device can't capture its screen. |
+| `DENY_REASON_TURNED_OFF` | 5 | Its owner turned screen mirroring off. |
+| `DENY_REASON_VERSION` | 6 | The viewer speaks a newer version. |
+| `DENY_REASON_NO_CODEC` | 7 | The source can't encode any of `StartRequest.codecs`. |
+| `DENY_REASON_CANNOT_ASK` | 8 | The source couldn't show the question, such as when its app is in the background and may not post notices. |
+| `DENY_REASON_FAILED` | 9 | Capturing or encoding failed to start. |
+
+### message `StartDeny`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `reason` | `DenyReason` | 1 |  |
+
+### message `StreamConfig`
+
+How to decode the frames that follow. The source sends it before the first frame, and again with a new `config_id` when the picture changes, such as when the phone is rotated.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `config_id` | `uint32` | 1 | Goes up by one with every new config in a mirroring session. |
+| `codec` | `Codec` | 2 |  |
+| `width` | `uint32` | 3 | Size of the picture in pixels, as it should be shown. |
+| `height` | `uint32` | 4 |  |
+| `rotation` | `uint32` | 5 | How the source's screen is rotated, in degrees clockwise: 0, 90, 180 or 270. The picture is already upright; this is for information. |
+| `fps` | `uint32` | 6 | The most frames per second the source sends. |
+| `sps` | `bytes` | 7 | H.264 only: the sequence and picture parameter sets, each one NAL unit without a start code. |
+| `pps` | `bytes` | 8 |  |
+
+### message `Frame`
+
+One picture. Sent without expecting a reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `config_id` | `uint32` | 1 | The `StreamConfig` this frame belongs to. A viewer drops frames of a config it hasn't seen. |
+| `sequence` | `uint64` | 2 | Goes up by one with every frame the source produced, including those it dropped, so a gap tells the viewer how many were dropped. |
+| `pts_us` | `int64` | 3 | When the picture was captured, in microseconds on the source's own clock. Only differences mean something. |
+| `keyframe` | `bool` | 4 | The frame decodes on its own. After a gap, a viewer waits for one. |
+| `data` | `bytes` | 5 | H.264: one access unit in Annex-B form. JPEG: the picture. |
+
+### message `KeyframeRequest`
+
+The viewer lost its place, such as after a decoding error, and asks for a frame that decodes on its own. Sent without expecting a reply.
+
+
+### enum `KeyframeRequest.StopReason`
+
+Why mirroring ended.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `STOP_REASON_UNSPECIFIED` | 0 |  |
+| `STOP_REASON_VIEWER_DONE` | 1 | The viewer is done, such as when its mirror page closed, or it gave up waiting for the answer. |
+| `STOP_REASON_STOPPED_ON_SOURCE` | 2 | Someone on the source pressed Stop. |
+| `STOP_REASON_SYSTEM_ENDED` | 3 | The source's system ended the capture, such as when the phone was locked. |
+| `STOP_REASON_TURNED_OFF` | 4 | The source's owner turned screen mirroring off. |
+| `STOP_REASON_FAILED` | 5 | Capturing or encoding stopped working. |
+| `STOP_REASON_NOT_MIRRORING` | 6 | A frame or request arrived for a mirroring session that isn't running. |
+
+### message `KeyframeRequest.Stop`
+
+Ends mirroring. Either side sends it, without expecting a reply. The source stops capturing at once.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `reason` | `StopReason` | 1 |  |
+
+### message `KeyframeRequest.SourceState`
+
+Something about the source's screen changed while it is shared.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `screen_off` | `bool` | 1 | The screen is off: no new frames until it is on again. |
+
+### message `KeyframeRequest.Stats`
+
+How the stream is doing. The viewer sends one about every second; the source answers each with its own, and uses them to pick the bitrate.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `sent_at_ms` | `int64` | 1 | When this was sent, in milliseconds on the sender's own clock. |
+| `echo_sent_at_ms` | `int64` | 2 | Source only: `sent_at_ms` of the viewer's `Stats` this answers, so the viewer can measure the round trip. |
+| `fps` | `uint32` | 3 | Viewer: frames shown in the last second. Source: frames sent. |
+| `dropped_frames` | `uint32` | 4 | Frames dropped in the last second: by the source because the connection backed up, or by the viewer because decoding fell behind. |
+| `bitrate_kbps` | `uint32` | 5 | Source only: what the encoder aims for right now, in kilobits per second. 0 for JPEG. |
+
 ## `ferret.notifications.v1`
 
 ### message `NotificationAction`
