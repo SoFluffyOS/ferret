@@ -75,11 +75,11 @@ void main() {
       expect(localSend.group, SettingsGroup.otherApps);
       expect(localSend.title, 'LocalSend');
       expect(localSend.summary, 'Receives when you allow it');
-      expect(localSend.isOn, isFalse);
+      expect(localSend.isOn, isTrue);
       expect(localSend.needsAttention, isFalse);
       expect(quickShare.group, SettingsGroup.otherApps);
       expect(quickShare.title, 'Quick Share');
-      expect(quickShare.isOn, isFalse);
+      expect(quickShare.isOn, isTrue);
       expect(quickShare.needsAttention, isFalse);
     });
 
@@ -99,6 +99,7 @@ void main() {
       expect(localSend.summary, 'Off');
       expect(localSend.isOn, isFalse);
       expect(quickShare.summary, 'Off');
+      expect(quickShare.isOn, isFalse);
     });
 
     testWidgets('each part shows only its own switches', (tester) async {

@@ -178,7 +178,7 @@ class DropFeatureUi extends FeatureUi {
           receiveAlways: viewModel.receiveAlways,
           state: receiving,
         ),
-        isOn: localSend && receiving.isOn,
+        isOn: localSend,
         needsAttention:
             localSend && viewModel.receiveAlways && receiving.problem != null,
       ),
@@ -192,7 +192,7 @@ class DropFeatureUi extends FeatureUi {
             isEnabled: viewModel.quickShareEnabled,
             state: viewModel.quickShareState,
           ),
-          isOn: viewModel.quickShareEnabled && viewModel.quickShareState.isOn,
+          isOn: viewModel.quickShareEnabled,
         ),
     ];
   }
