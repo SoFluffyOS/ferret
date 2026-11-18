@@ -26,6 +26,8 @@ dependencies:
     path: ../../modules/find
   calls:
     path: ../../modules/calls
+  core:
+    path: ../../packages/core
   messages:
     path: ../../modules/messages
   media:
@@ -46,8 +48,6 @@ dependencies:
     path: ../../modules/shell
 
 dev_dependencies:
-  core:
-    path: ../../packages/core
   ferret_notifications:
     path: ../../packages/ferret_notifications
   lucide_icons_flutter: ^4.0.3

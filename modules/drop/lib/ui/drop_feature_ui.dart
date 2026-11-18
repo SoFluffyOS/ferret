@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:core/core.dart';
 import 'package:drop/feature/drop_feature.dart';
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';

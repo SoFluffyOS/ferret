@@ -88,6 +88,8 @@ ferret offer                 # shows a link
 ferret pair "ferret://pair?o=..."
 ferret pair 192.168.1.20     # compare codes instead
 ferret unpair "Pixel 7" --everywhere
+ferret devices --json        # for scripts
+ferret send report.pdf       # hands files to the running Ferret app
 ```
 
 The command line is its own device, named after your computer with **· Terminal**. It keeps its key and pairings in `~/.sofluffy/ferret/cli`. Set `FERRET_HOME` to move Ferret's whole folder somewhere else.

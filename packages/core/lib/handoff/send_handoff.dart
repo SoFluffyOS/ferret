@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:core/core.dart';
+import 'package:core/logging/logging.dart';
 import 'package:path/path.dart' as p;
 
 /// Passes `ferret send <file>…` on to the Ferret that is already running,
-/// so a file manager's "Send with Ferret" never starts a second one.
+/// so a file manager's "Send with Ferret" never starts a second one. The
+/// app listens; the app's own later runs and the `ferret` command line hand
+/// over.
 ///
 /// The running app listens on this computer only (loopback) and writes the
 /// port and a one-time secret to a file in its own folder. Only someone who

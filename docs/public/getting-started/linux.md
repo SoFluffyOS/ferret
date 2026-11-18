@@ -62,3 +62,19 @@ There is no menu bar. The **•••** at the top of the device list holds the 
 ## 🧱 If your phone doesn't show up
 
 A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. See [Fix connection](../features/connection-doctor.md).
+
+## 💻 The terminal
+
+```sh
+ferret send ~/Pictures/photo.jpg   # hands it to the Ferret app, which sends it
+ferret devices --json              # paired devices, for scripts and jq
+ferret daemon                      # Ferret without a window, until Ctrl-C
+ferret --help                      # everything else
+```
+
+`ferret send` needs the app running. It exits with `69` when it isn't, `66` when a file is missing, `64` on wrong usage and `0` when the app took the files. That makes it easy to bind to a key in your window manager.
+
+Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, received-file history, `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
+
+Not there yet: `ferret clip` to send text from a pipe, a Flatpak, an AppImage and a `.deb`.
+

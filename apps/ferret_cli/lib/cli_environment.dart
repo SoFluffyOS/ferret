@@ -7,11 +7,26 @@ import 'package:protocol/protocol.dart';
 /// Where the CLI keeps its identity, pairings and settings, and how it starts
 /// an engine.
 class CliEnvironment {
-  CliEnvironment(this.paths);
+  CliEnvironment(
+    this.paths, {
+    String? appRoot,
+    StringSink? out,
+    StringSink? err,
+  }) : appRoot = appRoot ?? io.Directory(paths.root).parent.path,
+       out = out ?? io.stdout,
+       err = err ?? io.stderr;
 
   /// The CLI's own folders: `~/.sofluffy/ferret/cli`, so its identity stays
   /// apart from the app's on the same computer.
   final FerretPaths paths;
+
+  /// The app's folder, `~/.sofluffy/ferret`, where a running app says how
+  /// to hand it files.
+  final String appRoot;
+
+  /// Where results go, and where problems go.
+  final StringSink out;
+  final StringSink err;
 
   static const String folderName = 'cli';
 
@@ -21,7 +36,7 @@ class CliEnvironment {
     Map<String, String>? environment,
   }) async {
     final paths = await FerretPaths.resolve(environment: environment);
-    return CliEnvironment(paths.nested(folderName));
+    return CliEnvironment(paths.nested(folderName), appRoot: paths.root);
   }
 
   Future<FerretEngine> createEngine({

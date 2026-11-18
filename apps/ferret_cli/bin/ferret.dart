@@ -12,6 +12,6 @@ Future<void> main(List<String> arguments) async {
     exitCode = await buildRunner(environment).run(arguments) ?? 0;
   } on UsageException catch (error) {
     stderr.writeln(error);
-    exitCode = 64;
+    exitCode = ExitCodes.usage;
   }
 }

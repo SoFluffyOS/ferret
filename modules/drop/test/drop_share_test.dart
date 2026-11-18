@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:drop/drop.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
