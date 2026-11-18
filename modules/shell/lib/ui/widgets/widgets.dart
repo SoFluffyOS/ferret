@@ -15,6 +15,7 @@ export 'package:shell/ui/widgets/nav_row.dart';
 export 'package:shell/ui/widgets/nearby_feature_tile.dart';
 export 'package:shell/ui/widgets/nearby_notice.dart';
 export 'package:shell/ui/widgets/nearby_tile.dart';
+export 'package:shell/ui/widgets/offline_line.dart';
 export 'package:shell/ui/widgets/privacy_line.dart';
 export 'package:shell/ui/widgets/qr_code_view.dart';
 export 'package:shell/ui/widgets/row_action_button.dart';

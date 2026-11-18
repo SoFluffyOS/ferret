@@ -124,6 +124,15 @@ class AppViews extends ChangeNotifier with WidgetsBindingObserver {
     _follow(viewId);
   }
 
+  /// Opens the window for something that needs its room, and puts the
+  /// popover away: the person asked for one place, not two.
+  Future<void> moveToWindow() async {
+    await openWindow();
+    if (_isPopoverShown) {
+      await _menubar.hide();
+    }
+  }
+
   Future<void> closeWindow() => _menubar.closeWindow();
 
   /// Brings Ferret in front of the person: the window when it is open,

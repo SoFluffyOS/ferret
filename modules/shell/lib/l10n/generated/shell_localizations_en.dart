@@ -1286,4 +1286,20 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get menuHideActivityPane => 'Hide Activity Pane';
+
+  @override
+  String get menuForgetDevice => 'Forget This Device…';
+
+  @override
+  String get activityOpen => 'Open';
+
+  @override
+  String sectionOffline(String device, String time) {
+    return '$device is offline. Last updated $time.';
+  }
+
+  @override
+  String sectionOfflineNoTime(String device) {
+    return '$device is offline. This is what was here last.';
+  }
 }

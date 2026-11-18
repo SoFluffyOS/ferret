@@ -128,6 +128,22 @@ class WindowNavViewModel extends ChangeNotifier {
     _push(_pageFor(destination));
   }
 
+  /// Starts a view that just opened at [destination], before it has drawn
+  /// anything: its selection, or a page over the welcome while nothing is
+  /// paired and there is no list to select in.
+  void land(WindowDestination destination) {
+    if (_host.devices.isNotEmpty) {
+      _selection = destination;
+      unawaited(_settings?.set(selectionKey, destination.stored));
+      notifyListeners();
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _push(_pageFor(destination)),
+    );
+  }
+
   /// Opens [page] over the selection, alone: such as Add a device.
   void show(Widget page) {
     navigatorKey.currentState?.popUntil((route) => route.isFirst);

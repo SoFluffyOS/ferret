@@ -2151,6 +2151,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Hide Activity Pane'**
   String get menuHideActivityPane;
+
+  /// No description provided for @menuForgetDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget This Device…'**
+  String get menuForgetDevice;
+
+  /// No description provided for @activityOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get activityOpen;
+
+  /// Above a device's section while the device is offline: what shows is what was loaded last. time is a clock time today, or a date and a time.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is offline. Last updated {time}.'**
+  String sectionOffline(String device, String time);
+
+  /// No description provided for @sectionOfflineNoTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is offline. This is what was here last.'**
+  String sectionOfflineNoTime(String device);
 }
 
 class _ShellLocalizationsDelegate

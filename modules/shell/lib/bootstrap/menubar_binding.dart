@@ -156,7 +156,9 @@ class MenubarBinding {
         await views.reveal();
         await featureContext.push<void>(const PairPage());
       case _settings:
-        await views.reveal();
+        if (!views.canOpenWindow) {
+          await views.reveal();
+        }
         navigation.open(const SettingsDestination());
       case _quit:
         await SystemNavigator.pop();

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -475,6 +476,46 @@ void main() {
 
       expect(find.byType(SettingsSplitFrame), findsNothing);
       expect(find.byType(NavRow), findsWidgets);
+    });
+
+    testWidgets('a right-click on a device offers its fix and forgetting it', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+      await tester.tap(find.widgetWithText(SidebarRow, 'Texts'));
+      await tester.pump();
+
+      await tester.tap(
+        find.widgetWithText(SidebarDeviceRow, 'Pixel 9'),
+        buttons: kSecondaryButton,
+      );
+      await tester.pump();
+
+      expect(find.text('Fix Connection…'), findsOneWidget);
+
+      await tester.tap(find.text('Forget This Device…'));
+      await tester.pump();
+
+      expect(find.byType(DevicePage), findsOneWidget);
+      expect(find.text('Forget This Device…'), findsNothing);
+    });
+
+    testWidgets('an offline device keeps its section, under a line that says '
+        'so', (tester) async {
+      await start(tester, const Size(1000, 720));
+
+      await tester.tap(find.widgetWithText(SidebarRow, 'Texts'));
+      await tester.pump();
+
+      expect(find.text('Texts of Pixel 9'), findsOneWidget);
+      expect(find.byType(OfflineLine), findsOneWidget);
+      expect(find.textContaining('Pixel 9 is offline.'), findsOneWidget);
+
+      await tester.tap(find.text('Fix connection'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(DoctorPage), findsOneWidget);
     });
 
     testWidgets('a section that is gone falls back to the Overview', (

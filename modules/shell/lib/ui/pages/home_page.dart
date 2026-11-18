@@ -7,15 +7,14 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/activity_page.dart';
-import 'package:shell/ui/pages/device_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/qr_pair_page.dart';
 import 'package:shell/ui/pages/scan_page.dart';
-import 'package:shell/ui/pages/settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Home is your devices: what needs you, the devices with their actions,
@@ -62,7 +61,11 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        HomeMenu(onSettings: () => _push(context, const SettingsPage())),
+        HomeMenu(
+          onSettings: () => context.read<WindowNavRegistry>().open(
+            const SettingsDestination(),
+          ),
+        ),
       ],
       footer: const HomeFooter(),
       width: switch (hasDevices) {
@@ -85,8 +88,9 @@ class HomePage extends StatelessWidget {
             onCantSee: () => _push(context, const DoctorPage()),
           ),
         DevicesFrame(
-          onOpen: (status) =>
-              _push(context, DevicePage(deviceId: status.device.id)),
+          onOpen: (status) => context.read<WindowNavRegistry>().open(
+            DeviceDestination(status.device.id),
+          ),
           onFix: (status) =>
               _push(context, DoctorPage(deviceId: status.device.id)),
         ),

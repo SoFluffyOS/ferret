@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -169,6 +170,44 @@ void main() {
     expect(find.text('2 min'), findsOneWidget);
     await tester.tap(find.text('Copy'));
     expect(copied, 1);
+  });
+
+  testWidgets('a right-click on an activity line offers what the line does', (
+    tester,
+  ) async {
+    final done = <String>[];
+    final now = DateTime(2026, 11, 18, 12);
+
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: now,
+          item: ActivityItem(
+            id: 'page',
+            icon: LucideIcons.globe,
+            title: 'Continue from Pixel',
+            at: now,
+            actions: [
+              ActivityAction(label: 'Open here', onPressed: () {}),
+            ],
+            onDismiss: () => done.add('dismiss'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(
+      find.text('Continue from Pixel'),
+      buttons: kSecondaryButton,
+    );
+    await tester.pump();
+
+    expect(find.text('Open here'), findsNWidgets(2));
+
+    await tester.tap(find.text('Dismiss'));
+    await tester.pump();
+
+    expect(done, ['dismiss']);
   });
 
   testWidgets('a pinned line shows its controls instead of a time', (

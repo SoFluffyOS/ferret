@@ -11,6 +11,7 @@ import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/sidebar_nearby_frame.dart';
+import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
@@ -218,15 +219,18 @@ class _DeviceGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SidebarDeviceRow(
-          status: status,
-          isSelected: isOpen && sections.isEmpty,
-          needsAttention: _needsAttention(scope),
-          badge: switch (isOpen) {
-            true => 0,
-            false => waiting,
-          },
-          onTap: () => onSelect(DeviceDestination(deviceId)),
+        ContextMenuRegion(
+          entries: _menu(context, scope, sections),
+          child: SidebarDeviceRow(
+            status: status,
+            isSelected: isOpen && sections.isEmpty,
+            needsAttention: _needsAttention(scope),
+            badge: switch (isOpen) {
+              true => 0,
+              false => waiting,
+            },
+            onTap: () => onSelect(DeviceDestination(deviceId)),
+          ),
         ),
         if (isOpen && sections.isNotEmpty) ...[
           SidebarRow(
@@ -254,6 +258,49 @@ class _DeviceGroup extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  /// A right-click on the device: what its Overview offers, without
+  /// opening it first.
+  List<MenuEntry> _menu(
+    BuildContext context,
+    ShellScope scope,
+    List<FeatureSection> sections,
+  ) {
+    final l10n = context.shellL10n;
+    final nav = context.read<WindowNavViewModel>();
+    final deviceId = status.device.id;
+    final actions = switch (status.isConnected) {
+      true => DeviceActionOrder.of(
+        [
+          for (final feature in scope.features)
+            ...feature.deviceActions(context, scope.featureContext, status),
+        ],
+        listedSections: {for (final section in sections) section.id},
+      ),
+      false => const <FeatureAction>[],
+    };
+
+    return [
+      for (final action in actions)
+        if (action.onPressed case final onPressed?)
+          MenuEntry(
+            label: action.label,
+            icon: action.icon,
+            onSelected: onPressed,
+          ),
+      MenuEntry(
+        label: l10n.menuFixConnection,
+        icon: LucideIcons.wrench,
+        startsGroup: actions.isNotEmpty,
+        onSelected: () => nav.show(DoctorPage(deviceId: deviceId)),
+      ),
+      MenuEntry(
+        label: l10n.menuForgetDevice,
+        icon: LucideIcons.trash2,
+        onSelected: () => onSelect(DeviceDestination(deviceId)),
+      ),
+    ];
   }
 
   /// Whether a feature that is on isn't working with this device.

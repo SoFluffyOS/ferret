@@ -147,13 +147,33 @@ class ActivityRow extends StatelessWidget {
       ),
     );
 
-    final onTap = item.onTap;
-    if (onTap == null) {
-      return row;
-    }
-
-    return Tappable(onTap: onTap, child: row);
+    return ContextMenuRegion(
+      entries: _menu(context.shellL10n),
+      child: switch (item.onTap) {
+        final onTap? => Tappable(onTap: onTap, child: row),
+        null => row,
+      },
+    );
   }
+
+  /// A right-click on the line: everything the line itself offers.
+  List<MenuEntry> _menu(ShellLocalizations l10n) => [
+    if (item.onTap case final onTap?)
+      MenuEntry(label: l10n.activityOpen, onSelected: onTap),
+    for (final action in item.actions)
+      MenuEntry(
+        label: action.label,
+        icon: action.icon,
+        onSelected: action.onPressed,
+      ),
+    if (item.onDismiss case final onDismiss?)
+      MenuEntry(
+        label: l10n.activityDismiss,
+        icon: LucideIcons.x,
+        startsGroup: item.onTap != null || item.actions.isNotEmpty,
+        onSelected: onDismiss,
+      ),
+  ];
 
   /// Two actions fit next to the detail; a third moves them all to a line
   /// of their own.

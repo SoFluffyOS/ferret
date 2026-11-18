@@ -65,7 +65,7 @@ Future<void> runFerret({
     notifier: notifier,
     onReveal: views.reveal,
   );
-  final navigation = WindowNavRegistry(featureContext);
+  final navigation = WindowNavRegistry(featureContext, views: views);
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
   }

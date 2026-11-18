@@ -994,5 +994,27 @@
     }
   },
   "menuShowActivityPane": "Show Activity Pane",
-  "menuHideActivityPane": "Hide Activity Pane"
+  "menuHideActivityPane": "Hide Activity Pane",
+  "menuForgetDevice": "Forget This Device…",
+  "activityOpen": "Open",
+  "sectionOffline": "{device} is offline. Last updated {time}.",
+  "@sectionOffline": {
+    "description": "Above a device's section while the device is offline: what shows is what was loaded last. time is a clock time today, or a date and a time.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionOfflineNoTime": "{device} is offline. This is what was here last.",
+  "@sectionOfflineNoTime": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }
