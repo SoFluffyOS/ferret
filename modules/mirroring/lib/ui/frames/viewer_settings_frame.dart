@@ -31,6 +31,10 @@ class ViewerSettingsFrame extends StatelessWidget {
     final notices = context.select<ViewerViewModel, List<RouteNotice>>(
       (viewModel) => viewModel.notices,
     );
+    final downloads = context
+        .select<ViewerViewModel, Map<String, ToolDownload>>(
+          (viewModel) => viewModel.downloads,
+        );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
 
@@ -64,10 +68,21 @@ class ViewerSettingsFrame extends StatelessWidget {
               ),
             ),
           for (final notice in notices)
-            RouteNoticeRow(
-              title: l10n.setupTitle(notice.step),
-              body: l10n.setupBody(notice.step, detail: notice.detail),
-            ),
+            switch (notice.help) {
+              .download => _downloadRow(
+                context,
+                notice,
+                downloads[notice.routeId] ?? .idle,
+              ),
+              .startTool => RouteNoticeRow(
+                title: l10n.setupStartToolTitle,
+                body: l10n.setupStartToolBody,
+              ),
+              .none => RouteNoticeRow(
+                title: l10n.setupTitle(notice.step),
+                body: l10n.setupBody(notice.step, detail: notice.detail),
+              ),
+            },
           if (notices.isNotEmpty)
             Align(
               alignment: .centerLeft,
@@ -82,6 +97,39 @@ class ViewerSettingsFrame extends StatelessWidget {
             onClear: () => unawaited(viewModel.clearHistory()),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Offers to fetch the tool, only ever on the owner's click: the words
+  /// say what is downloaded and from where.
+  Widget _downloadRow(
+    BuildContext context,
+    RouteNotice notice,
+    ToolDownload download,
+  ) {
+    final l10n = context.mirroringL10n;
+    final viewModel = context.read<ViewerViewModel>();
+
+    return RouteNoticeRow(
+      title: l10n.setupDownloadToolTitle,
+      body: l10n.setupDownloadToolBody,
+      error: switch (download) {
+        .failed => l10n.setupDownloadFailed,
+        _ => null,
+      },
+      action: Align(
+        alignment: .centerLeft,
+        child: Button(
+          variant: .primary,
+          enable: download != .downloading,
+          label: switch (download) {
+            .downloading => l10n.downloading,
+            .failed => l10n.tryAgain,
+            .idle => l10n.download,
+          },
+          onPressed: () => unawaited(viewModel.downloadTool(notice.routeId)),
+        ),
       ),
     );
   }

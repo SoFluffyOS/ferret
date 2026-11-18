@@ -160,7 +160,7 @@ class MirrorRoutes {
     }
 
     for (final route in _routes) {
-      _note(route.id, await _statusOf(route.id, route.status));
+      _note(route.id, await _statusOf(route.id, route.status), route: route);
     }
 
     for (final receiver in _receivers) {
@@ -168,6 +168,19 @@ class MirrorRoutes {
     }
 
     _emit();
+  }
+
+  /// Downloads the tool the route [routeId] is missing, then asks every
+  /// route again. Only for a button the owner pressed. Throws when the
+  /// download fails.
+  Future<void> installTool(String routeId) async {
+    for (final route in _routes) {
+      if (route.id == routeId && route is ToolInstaller) {
+        await route.installTool();
+      }
+    }
+
+    await refresh();
   }
 
   /// Where [route] stands, or unsupported when it can't even say.
@@ -312,17 +325,34 @@ class MirrorRoutes {
     return allowed;
   }
 
-  void _note(String routeId, RouteStatus status) {
+  void _note(String routeId, RouteStatus status, {MirrorRoute? route}) {
     if (status case RouteNeedsSetup(:final step, :final detail)) {
       _notices[routeId] = RouteNotice(
         routeId: routeId,
         step: step,
         detail: detail,
+        help: _helpFor(route, step, detail),
       );
       return;
     }
 
     _notices.remove(routeId);
+  }
+
+  SetupHelp _helpFor(MirrorRoute? route, RouteSetup step, String? detail) {
+    if (step != .installTool || route is! ToolInstaller) {
+      return .none;
+    }
+
+    if (detail == route.toolNotStartedDetail) {
+      return .startTool;
+    }
+
+    if (route.canInstallTool) {
+      return .download;
+    }
+
+    return .none;
   }
 
   Future<RouteStatus> _statusOf(

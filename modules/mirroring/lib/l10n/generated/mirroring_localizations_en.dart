@@ -425,6 +425,30 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'How to: install Android\'s platform tools (they include adb) on this computer, then try again.';
 
   @override
+  String get setupDownloadToolTitle => 'Get Android\'s helper tool';
+
+  @override
+  String get setupDownloadToolBody =>
+      'Ferret downloads Android\'s platform tools from Google, about 16 MB, once.';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get downloading => 'Downloading…';
+
+  @override
+  String get setupDownloadFailed =>
+      'The download didn\'t finish. Check this computer\'s internet connection and try again.';
+
+  @override
+  String get setupStartToolTitle => 'Start Android\'s helper tool';
+
+  @override
+  String get setupStartToolBody =>
+      'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal, then check again.';
+
+  @override
   String get setupEnableDebuggingTitle =>
       'The phone needs one setting turned on';
 

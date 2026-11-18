@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mirroring/feature/mirroring_feature.dart';
@@ -25,6 +26,7 @@ class ViewerViewModel extends ChangeNotifier {
   List<MirrorTarget>? _targets;
   List<RouteNotice>? _notices;
   List<ReceiverSwitch>? _receivers;
+  Map<String, ToolDownload> _downloads = const {};
   bool _canFullScreen = false;
   bool _isFullScreen = false;
   bool _disposed = false;
@@ -68,6 +70,27 @@ class ViewerViewModel extends ChangeNotifier {
   /// What the other ways still need before they work on this computer.
   List<RouteNotice> get notices =>
       _notices ??= feature.routes?.notices ?? const [];
+
+  /// How each route's tool download goes, by route id. A route that isn't
+  /// listed is [ToolDownload.idle].
+  Map<String, ToolDownload> get downloads => _downloads;
+
+  /// Downloads the tool the route [routeId] is missing. Only from the
+  /// button whose words say what is downloaded and from where.
+  Future<void> downloadTool(String routeId) async {
+    if (_downloads[routeId] == .downloading) {
+      return;
+    }
+
+    _setDownload(routeId, .downloading);
+    try {
+      await feature.routes?.installTool(routeId);
+      _setDownload(routeId, .idle);
+    } on Object catch (error) {
+      printWarning('Downloading the tool for $routeId failed', error);
+      _setDownload(routeId, .failed);
+    }
+  }
 
   /// The receivers to switch on or off, while the other ways are on.
   List<ReceiverSwitch> get receivers => _receivers ??= switch (moreWays) {
@@ -185,6 +208,11 @@ class ViewerViewModel extends ChangeNotifier {
   }
 
   Set<ControlAbility> get _abilities => _viewer?.control?.abilities ?? const {};
+
+  void _setDownload(String routeId, ToolDownload state) {
+    _downloads = {..._downloads, routeId: state};
+    _notify();
+  }
 
   bool _isPaired(MirrorTarget target) {
     final deviceId = target.ferretDeviceId;

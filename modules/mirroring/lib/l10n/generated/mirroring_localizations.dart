@@ -709,6 +709,48 @@ abstract class MirroringLocalizations {
   /// **'How to: install Android\'s platform tools (they include adb) on this computer, then try again.'**
   String get setupInstallToolBody;
 
+  /// No description provided for @setupDownloadToolTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Android\'s helper tool'**
+  String get setupDownloadToolTitle;
+
+  /// No description provided for @setupDownloadToolBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret downloads Android\'s platform tools from Google, about 16 MB, once.'**
+  String get setupDownloadToolBody;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get downloading;
+
+  /// No description provided for @setupDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The download didn\'t finish. Check this computer\'s internet connection and try again.'**
+  String get setupDownloadFailed;
+
+  /// No description provided for @setupStartToolTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Android\'s helper tool'**
+  String get setupStartToolTitle;
+
+  /// No description provided for @setupStartToolBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal, then check again.'**
+  String get setupStartToolBody;
+
   /// No description provided for @setupEnableDebuggingTitle.
   ///
   /// In en, this message translates to:

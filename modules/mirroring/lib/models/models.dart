@@ -6,5 +6,7 @@ export 'package:mirroring/models/mirror_role.dart';
 export 'package:mirroring/models/mirroring_settings.dart';
 export 'package:mirroring/models/receiver_switch.dart';
 export 'package:mirroring/models/route_notice.dart';
+export 'package:mirroring/models/setup_help.dart';
 export 'package:mirroring/models/share_request.dart';
+export 'package:mirroring/models/tool_download.dart';
 export 'package:mirroring/models/view_session.dart';

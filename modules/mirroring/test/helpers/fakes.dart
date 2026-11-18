@@ -495,3 +495,35 @@ class FakeReceiver implements MirrorReceiver {
   @override
   Future<void> dispose() async => disposed = true;
 }
+
+/// A route that can download the tool it misses, like adb's. The test
+/// says whether it may, and whether the download works.
+class FakeToolRoute extends FakeRoute implements ToolInstaller {
+  FakeToolRoute(super.id, {super.control});
+
+  static const String notStarted = 'start it yourself';
+
+  @override
+  bool canInstallTool = true;
+
+  @override
+  String get toolNotStartedDetail => notStarted;
+
+  Completer<void>? download;
+  bool failDownload = false;
+  int installs = 0;
+
+  @override
+  Future<void> installTool() async {
+    installs++;
+    if (failDownload) {
+      throw StateError('offline');
+    }
+
+    if (download case final pending?) {
+      await pending.future;
+    }
+
+    statusNow = const RouteReady();
+  }
+}

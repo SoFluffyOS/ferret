@@ -107,6 +107,70 @@ void main() {
     expect(receiver.isListening, isTrue);
   });
 
+  group('a way that can fetch its own tool', () {
+    late FakeToolRoute adb;
+
+    Future<void> createWithTool(RouteStatus status) async {
+      host = await FakeHost.create(
+        settings: {MirroringSettings.moreWaysKey: true},
+      );
+      adb = FakeToolRoute('adb')..statusNow = status;
+      cable = FakeRoute('cable');
+      receiver = FakeReceiver('cast');
+      settings = MirroringSettings(host.settings);
+      routes = MirrorRoutes(
+        ferret: FerretRoute(host: host, featureId: MirroringFeature.featureId),
+        settings: settings,
+        receiverName: () => 'MacBook',
+        routes: [adb, cable],
+        receivers: [receiver],
+      )..start();
+      await settle();
+    }
+
+    test('offers the download, and nothing is fetched until asked', () async {
+      await createWithTool(const RouteNeedsSetup(.installTool, detail: 'adb'));
+
+      expect(routes.notices.single.help, SetupHelp.download);
+      expect(adb.installs, 0);
+
+      await routes.installTool('adb');
+
+      expect(adb.installs, 1);
+      expect(routes.notices, isEmpty);
+    });
+
+    test(
+      'a tool only the owner can start is never offered as a download',
+      () async {
+        await createWithTool(
+          const RouteNeedsSetup(.installTool, detail: FakeToolRoute.notStarted),
+        );
+
+        expect(routes.notices.single.help, SetupHelp.startTool);
+      },
+    );
+
+    test('no download where it wouldn\'t help', () async {
+      host = await FakeHost.create(
+        settings: {MirroringSettings.moreWaysKey: true},
+      );
+      adb = FakeToolRoute('adb')
+        ..canInstallTool = false
+        ..statusNow = const RouteNeedsSetup(.installTool, detail: 'adb');
+      settings = MirroringSettings(host.settings);
+      routes = MirrorRoutes(
+        ferret: FerretRoute(host: host, featureId: MirroringFeature.featureId),
+        settings: settings,
+        receiverName: () => 'MacBook',
+        routes: [adb],
+      )..start();
+      await settle();
+
+      expect(routes.notices.single.help, SetupHelp.none);
+    });
+  });
+
   test('a screen a device sends here itself is passed on', () async {
     await create();
     final incoming = <MirrorFeed>[];

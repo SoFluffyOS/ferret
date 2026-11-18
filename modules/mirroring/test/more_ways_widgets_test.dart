@@ -50,6 +50,7 @@ void main() {
     WidgetTester tester, {
     bool moreWays = true,
     bool plugged = true,
+    bool fetchesTool = false,
     Set<ControlAbility>? abilities,
   }) async {
     final created = await tester.runAsync(
@@ -66,7 +67,10 @@ void main() {
       final abilities? => FakeControl(abilities: abilities),
       null => FakeControl(),
     };
-    cable = FakeRoute('cable', control: control);
+    cable = switch (fetchesTool) {
+      true => FakeToolRoute('cable', control: control),
+      false => FakeRoute('cable', control: control),
+    };
     receiver = FakeReceiver('cast');
     galaxy = cable.target('a1', 'Galaxy');
     cable.found = [galaxy];
@@ -200,6 +204,65 @@ void main() {
         findsNothing,
       );
       expect(find.text('Check again'), findsNothing);
+    });
+  });
+
+  group('a way that can fetch its tool', () {
+    Future<FakeToolRoute> settingsMissing(
+      WidgetTester tester,
+      String detail,
+    ) async {
+      await startComputer(tester, moreWays: false, fetchesTool: true);
+      final adb = cable as FakeToolRoute;
+      adb.statusNow = RouteNeedsSetup(.installTool, detail: detail);
+      await MirroringSettings(host.settings).setMoreWays(true);
+      await tester.pump();
+      await pumpSettings(tester);
+      await tester.pump();
+      return adb;
+    }
+
+    testWidgets('says it downloads from Google, and fetches only on the '
+        'owner\'s click', (tester) async {
+      final adb = await settingsMissing(tester, 'adb');
+      adb.download = Completer<void>();
+
+      expect(find.text("Get Android's helper tool"), findsOneWidget);
+      expect(find.textContaining('from Google'), findsOneWidget);
+      expect(adb.installs, 0);
+
+      await tester.tap(find.text('Download'));
+      await tester.pump();
+
+      expect(adb.installs, 1);
+      expect(find.text('Downloading…'), findsOneWidget);
+
+      adb.download?.complete();
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text("Get Android's helper tool"), findsNothing);
+    });
+
+    testWidgets('a failed download says so, with Try again', (tester) async {
+      final adb = await settingsMissing(tester, 'adb');
+      adb.failDownload = true;
+
+      await tester.tap(find.text('Download'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.textContaining("didn't finish"), findsOneWidget);
+      expect(find.text('Try again'), findsOneWidget);
+    });
+
+    testWidgets('a tool only the owner can start gets start words, no '
+        'download', (tester) async {
+      await settingsMissing(tester, FakeToolRoute.notStarted);
+
+      expect(find.text("Start Android's helper tool"), findsOneWidget);
+      expect(find.textContaining('adb start-server'), findsOneWidget);
+      expect(find.text('Download'), findsNothing);
     });
   });
 
