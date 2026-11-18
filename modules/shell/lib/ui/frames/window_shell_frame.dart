@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/activity_pane_frame.dart';
+import 'package:shell/ui/frames/needs_you_frame.dart';
 import 'package:shell/ui/frames/sidebar_frame.dart';
 import 'package:shell/ui/frames/window_menu_frame.dart';
 import 'package:shell/ui/frames/window_title_frame.dart';
@@ -56,7 +57,18 @@ class WindowShellFrame extends StatelessWidget {
                 child: const SidebarFrame(),
               ),
             },
-            Expanded(child: ClipRect(child: child)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: .stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
+                    child: const AdaptiveContent(child: NeedsYouFrame()),
+                  ),
+                  Expanded(child: ClipRect(child: child)),
+                ],
+              ),
+            ),
             const ActivityPaneFrame(),
           ],
         ),

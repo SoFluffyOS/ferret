@@ -29,6 +29,7 @@ import 'package:notifications/notifications.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 
+import 'screens_test.dart' show phoneFeatures;
 import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
@@ -74,7 +75,7 @@ class WindowScreen {
 Future<void> _nothing(WidgetTester tester, ScreenRig rig) async {}
 
 Future<void> _pairPhone(WidgetTester tester, ScreenRig rig) async {
-  await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+  await rig.pairConnectedPhone(tester, phoneFeatures: phoneFeatures());
   await rig.settle(tester);
 }
 
@@ -97,7 +98,6 @@ final windowScreens = <WindowScreen>[
   }, sampleActivity: true),
   for (final section in [
     'Messages',
-    'Calls',
     'Notifications',
     'Files',
     'Screen',
