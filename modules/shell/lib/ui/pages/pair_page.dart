@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/pages/scan_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -62,6 +64,10 @@ class _PairPageState extends State<PairPage> {
         backLabel: l10n.back,
         children: [
           const _PairingStatus(),
+          if (_canScan) ...[
+            SectionTitle(l10n.scanSection),
+            Button(variant: .primary, label: l10n.scanButton, onPressed: _scan),
+          ],
           SectionTitle(l10n.pairShowCode),
           const _OfferCard(),
           SectionTitle(l10n.pairEnterCode),
@@ -96,6 +102,19 @@ class _PairPageState extends State<PairPage> {
         ],
       ),
     );
+  }
+
+  bool get _canScan => Platform.isAndroid || Platform.isIOS;
+
+  Future<void> _scan() async {
+    final link = await Navigator.of(context).push<String>(
+      PageRouteBuilder<String>(pageBuilder: (_, _, _) => const ScanPage()),
+    );
+    if (link == null) {
+      return;
+    }
+
+    _viewModel.pairWithLink(link);
   }
 
   void _connect() {

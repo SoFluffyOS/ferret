@@ -771,6 +771,36 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Drop to send'**
   String get dropHere;
+
+  /// No description provided for @scanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code'**
+  String get scanTitle;
+
+  /// No description provided for @scanBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at the code Ferret shows on your computer.'**
+  String get scanBody;
+
+  /// No description provided for @scanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code on your computer'**
+  String get scanButton;
+
+  /// No description provided for @scanSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get scanSection;
+
+  /// No description provided for @scanNotFerret.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.'**
+  String get scanNotFerret;
 }
 
 class _ShellLocalizationsDelegate

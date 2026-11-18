@@ -32,6 +32,8 @@
 	<array>
 		<string>_ferret._tcp</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Ferret uses the camera only to scan the pairing code on your other device.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Ferret finds and talks to your own devices on this network.</string>
 	<key>UIApplicationSceneManifest</key>

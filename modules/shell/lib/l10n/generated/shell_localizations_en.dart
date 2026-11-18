@@ -413,4 +413,21 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get dropHere => 'Drop to send';
+
+  @override
+  String get scanTitle => 'Scan the code';
+
+  @override
+  String get scanBody =>
+      'Point your camera at the code Ferret shows on your computer.';
+
+  @override
+  String get scanButton => 'Scan the code on your computer';
+
+  @override
+  String get scanSection => 'Scan';
+
+  @override
+  String get scanNotFerret =>
+      'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.';
 }
