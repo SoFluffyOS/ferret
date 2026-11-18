@@ -665,6 +665,10 @@ class CallsFeature extends Feature implements CallsControl {
     required bool answered,
     CallsStatus? status,
   }) {
+    if (status != null) {
+      unawaited(settings.setSharing(deviceId, status.enabled));
+    }
+
     final link = _links[deviceId] ?? const PhoneLink();
     _links[deviceId] = switch (answered) {
       true => link.answered(_clock(), status: status),

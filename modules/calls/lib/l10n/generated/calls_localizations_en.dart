@@ -47,6 +47,10 @@ class CallsLocalizationsEn extends CallsLocalizations {
   @override
   String get hangUp => 'Hang up';
 
+
+
+
+
   @override
   String get silence => 'Silence';
 
@@ -68,7 +72,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String outcomePermission(String device) {
-    return '$device hasn\'t allowed this yet. On $device: Ferret → Settings → Calls.';
+    return '$device hasn\'t allowed this yet. On $device: Ferret → Settings → To your computer, then allow it under Calls.';
   }
 
   @override
@@ -140,7 +144,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String logPermission(String device) {
-    return '$device doesn\'t let Ferret read its recent calls. On $device: Ferret → Settings → Calls, then allow Call logs.';
+    return '$device doesn\'t let Ferret read its recent calls. On $device: Ferret → Settings → To your computer, then allow Call logs under Calls.';
   }
 
   @override
@@ -266,6 +270,36 @@ class CallsLocalizationsEn extends CallsLocalizations {
 
   @override
   String get healthOk => 'Answer and decline';
+
+  @override
+  String get healthChecking => 'Checking…';
+
+  @override
+  String healthOffHelp(String device) {
+    return 'On $device: Ferret → Do more → Calls.';
+  }
+
+  @override
+  String healthNeedsPermissionHelp(String device) {
+    return 'On $device: open Ferret and tap Fix.';
+  }
+
+  @override
+  String get healthLocalOffHelp =>
+      'On this phone: Settings → To your computer → Calls.';
+
+  @override
+  String healthLocalPushFailedHelp(String device) {
+    return 'On $device: open Ferret. The next call shows there.';
+  }
+
+  @override
+  String get settingsNeedsAccess => 'Needs access';
+
+  @override
+  String settingsNeedsAccessOn(String device) {
+    return 'Needs access on $device';
+  }
 
   @override
   String get healthLocalOff => 'Off on this phone';

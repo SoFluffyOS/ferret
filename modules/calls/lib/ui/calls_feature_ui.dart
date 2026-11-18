@@ -12,10 +12,11 @@ import 'package:ferret_calls/ferret_calls.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:protocol/protocol.dart' as proto;
 import 'package:provider/provider.dart';
 
 /// The app side of Calls: setup on the phone; on computers the incoming call
-/// notice, the home card while a call rings or goes on, and "Call…".
+/// notice, the Activity line while a call rings or goes on, and "Call…".
 class CallsFeatureUi extends FeatureUi {
   factory CallsFeatureUi() {
     if (!FerretCalls.isSupported) {
@@ -112,11 +113,43 @@ class CallsFeatureUi extends FeatureUi {
 
     final flags = session.remoteFeature(featureId)?.flags ?? const <String>[];
     if (this.feature.isPhone) {
-      return _phoneHealth(device, flags);
+      return _phoneHealth(feature, device, flags);
     }
 
     return _computerHealth(device, flags);
   }
+
+  /// On the phone, and on a computer once an Android phone is paired, under
+  /// "To your computer" and "From your phone".
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.callsL10n;
+    final state = switch (this.feature.isPhone) {
+      true => _phoneSettingsState(l10n),
+      false => _computerSettingsState(l10n, feature),
+    };
+    final child = buildSettings(context, feature);
+    if (state == null || child == null) {
+      return const [];
+    }
+
+    return [
+      FeatureSettings(
+        group: .phone,
+        title: l10n.title,
+        child: child,
+        summary: state.summary,
+        isOn: state.isOn,
+        needsAttention: state.needsAttention,
+      ),
+    ];
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .phone;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -194,26 +227,36 @@ class CallsFeatureUi extends FeatureUi {
       return null;
     }
 
-    final link = feature.linkOf(device.device.id);
+    final l10n = platformCallsL10n();
+    final deviceId = device.device.id;
+    final link = feature.linkOf(deviceId);
     if (link == null) {
-      return null;
+      return FeatureHealth(.off, reason: l10n.healthChecking);
     }
 
-    final l10n = platformCallsL10n();
     final name = device.device.name;
     final status = link.status;
     if (link.failed || status == null) {
-      return FeatureHealth(.failing, reason: l10n.healthNoAnswer(name));
+      return FeatureHealth(
+        .failing,
+        reason: l10n.healthNoAnswer(name),
+        onFix: () => unawaited(feature.refreshStatus(deviceId)),
+      );
     }
 
     if (!status.enabled) {
-      return FeatureHealth(.off, reason: l10n.healthOff(name));
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthOff(name),
+        help: l10n.healthOffHelp(name),
+      );
     }
 
     if (!status.canSeeCalls) {
       return FeatureHealth(
         .needsAttention,
         reason: l10n.healthNeedsPermission,
+        help: l10n.healthNeedsPermissionHelp(name),
       );
     }
 
@@ -226,7 +269,11 @@ class CallsFeatureUi extends FeatureUi {
 
   /// On the phone, about a computer: whether calls are shared at all, and
   /// whether the last update reached it.
-  FeatureHealth? _phoneHealth(DeviceStatus device, List<String> flags) {
+  FeatureHealth? _phoneHealth(
+    FeatureContext context,
+    DeviceStatus device,
+    List<String> flags,
+  ) {
     if (!flags.contains(CallsFeature.viewFlag)) {
       return null;
     }
@@ -234,20 +281,95 @@ class CallsFeatureUi extends FeatureUi {
     final l10n = platformCallsL10n();
     final name = device.device.name;
     if (!feature.settings.enabled) {
-      return FeatureHealth(.off, reason: l10n.healthLocalOff);
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthLocalOff,
+        help: l10n.healthLocalOffHelp,
+      );
     }
 
     if (!feature.isMonitoring) {
       return FeatureHealth(
         .needsAttention,
         reason: l10n.healthLocalNeedsPermission,
+        onFix: () => _openSetup(context),
       );
     }
 
     if (feature.pushFailedTo(device.device.id)) {
-      return FeatureHealth(.failing, reason: l10n.healthLocalPushFailed(name));
+      return FeatureHealth(
+        .failing,
+        reason: l10n.healthLocalPushFailed(name),
+        help: l10n.healthLocalPushFailedHelp(name),
+      );
     }
 
     return FeatureHealth(.ok, reason: l10n.healthLocalOk(name));
   }
+
+  _SettingsState _phoneSettingsState(CallsLocalizations l10n) {
+    final permissions = feature.permissions;
+    if (!feature.settings.enabled) {
+      return (summary: '', isOn: false, needsAttention: false);
+    }
+
+    if (permissions != null && !permissions.phoneState) {
+      return (
+        summary: l10n.settingsNeedsAccess,
+        isOn: true,
+        needsAttention: true,
+      );
+    }
+
+    return (summary: '', isOn: true, needsAttention: false);
+  }
+
+  /// Null until an Android phone is paired: before that there is nothing
+  /// to set. The phone that needs the person speaks first.
+  _SettingsState? _computerSettingsState(
+    CallsLocalizations l10n,
+    FeatureContext context,
+  ) {
+    final settings = feature.settings;
+    final phones = [
+      for (final device in context.engine.trustStore.devices)
+        if (device.platform == proto.Platform.PLATFORM_ANDROID) device,
+    ];
+    if (phones.isEmpty) {
+      return null;
+    }
+
+    for (final device in phones) {
+      final link = feature.linkOf(device.id);
+      final status = link?.status;
+      if (link == null) {
+        continue;
+      }
+
+      if (link.failed && settings.wasSharing(device.id)) {
+        return (
+          summary: l10n.healthNoAnswer(device.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+
+      if (status != null && status.enabled && !status.canSeeCalls) {
+        return (
+          summary: l10n.settingsNeedsAccessOn(device.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+    }
+
+    return (
+      summary: '',
+      isOn: phones.any((device) => settings.wasSharing(device.id)),
+      needsAttention: false,
+    );
+  }
 }
+
+/// What the Settings row says about Calls.
+typedef _SettingsState = ({String summary, bool isOn, bool needsAttention});

@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Calls in **Do more** on Ferret's home screen (or open **Settings → Calls**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Calls in **Do more** on Ferret's home screen (or open **Settings → To your computer**), then **Turn on**.
 > 2. Allow Phone, Call logs and Contacts when Android asks.
 > 3. Your phone rings, your computer shows who it is. **Answer** or **Decline** right there.
 
@@ -45,7 +45,7 @@ Ferret asks only when you tap **Turn on**, and tells you what each one is for.
 | Call logs | The caller's number, and recent calls |
 | Contacts | A name and a photo instead of a number |
 
-Said no to one? Calls still work with what you allowed. **Settings → Calls** on the phone shows what's on and what's missing, with one button to allow the rest. If Android stopped asking, the button opens the app's settings page instead.
+Said no to one? Calls still work with what you allowed. **Settings → To your computer** on the phone shows, under Calls, what's on and what's missing, with one button to allow the rest. If Android stopped asking, the button opens the app's settings page instead.
 
 ## 🧭 Limits per platform
 

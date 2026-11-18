@@ -154,6 +154,10 @@ abstract class CallsLocalizations {
   /// **'Hang up'**
   String get hangUp;
 
+
+
+
+
   /// No description provided for @silence.
   ///
   /// In en, this message translates to:
@@ -187,7 +191,7 @@ abstract class CallsLocalizations {
   /// No description provided for @outcomePermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} hasn\'t allowed this yet. On {device}: Ferret → Settings → Calls.'**
+  /// **'{device} hasn\'t allowed this yet. On {device}: Ferret → Settings → To your computer, then allow it under Calls.'**
   String outcomePermission(String device);
 
   /// No description provided for @outcomeUnsupported.
@@ -295,7 +299,7 @@ abstract class CallsLocalizations {
   /// No description provided for @logPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} doesn\'t let Ferret read its recent calls. On {device}: Ferret → Settings → Calls, then allow Call logs.'**
+  /// **'{device} doesn\'t let Ferret read its recent calls. On {device}: Ferret → Settings → To your computer, then allow Call logs under Calls.'**
   String logPermission(String device);
 
   /// No description provided for @logDisabled.
@@ -513,6 +517,48 @@ abstract class CallsLocalizations {
   /// In en, this message translates to:
   /// **'Answer and decline'**
   String get healthOk;
+
+  /// No description provided for @healthChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get healthChecking;
+
+  /// No description provided for @healthOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: Ferret → Do more → Calls.'**
+  String healthOffHelp(String device);
+
+  /// No description provided for @healthNeedsPermissionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret and tap Fix.'**
+  String healthNeedsPermissionHelp(String device);
+
+  /// No description provided for @healthLocalOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On this phone: Settings → To your computer → Calls.'**
+  String get healthLocalOffHelp;
+
+  /// No description provided for @healthLocalPushFailedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret. The next call shows there.'**
+  String healthLocalPushFailedHelp(String device);
+
+  /// Settings row value on the phone: Calls are on but Android hides them from Ferret.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access'**
+  String get settingsNeedsAccess;
+
+  /// Settings row value on a computer.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access on {device}'**
+  String settingsNeedsAccessOn(String device);
 
   /// No description provided for @healthLocalOff.
   ///

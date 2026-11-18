@@ -57,7 +57,7 @@
       }
     }
   },
-  "outcomePermission": "{device} hasn't allowed this yet. On {device}: Ferret → Settings → Calls.",
+  "outcomePermission": "{device} hasn't allowed this yet. On {device}: Ferret → Settings → To your computer, then allow it under Calls.",
   "@outcomePermission": {
     "placeholders": {
       "device": {
@@ -141,7 +141,7 @@
       }
     }
   },
-  "logPermission": "{device} doesn't let Ferret read its recent calls. On {device}: Ferret → Settings → Calls, then allow Call logs.",
+  "logPermission": "{device} doesn't let Ferret read its recent calls. On {device}: Ferret → Settings → To your computer, then allow Call logs under Calls.",
   "@logPermission": {
     "placeholders": {
       "device": {
@@ -213,6 +213,45 @@
     }
   },
   "healthOk": "Answer and decline",
+  "healthChecking": "Checking…",
+  "healthOffHelp": "On {device}: Ferret → Do more → Calls.",
+  "@healthOffHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNeedsPermissionHelp": "On {device}: open Ferret and tap Fix.",
+  "@healthNeedsPermissionHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthLocalOffHelp": "On this phone: Settings → To your computer → Calls.",
+  "healthLocalPushFailedHelp": "On {device}: open Ferret. The next call shows there.",
+  "@healthLocalPushFailedHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsNeedsAccess": "Needs access",
+  "@settingsNeedsAccess": {
+    "description": "Settings row value on the phone: Calls are on but Android hides them from Ferret."
+  },
+  "settingsNeedsAccessOn": "Needs access on {device}",
+  "@settingsNeedsAccessOn": {
+    "description": "Settings row value on a computer.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "healthLocalOff": "Off on this phone",
   "healthLocalNeedsPermission": "Android turned off Ferret's access",
   "healthLocalPushFailed": "The last call didn't reach {device}",
