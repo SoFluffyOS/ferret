@@ -81,7 +81,7 @@ Pages your phone offers quietly show up as a number on the Ferret button. Click 
 | What you see | What to do |
 | --- | --- |
 | "Ferret isn't running on this computer" | Open Ferret. Check **Settings → Handoff → Browser extension** is on. |
-| Ferret says "Couldn't start: ports 47650 to 47654 are used by another app" | Quit the app using them, then click **Try again**. |
+| Ferret says "Ferret couldn't start the browser connection" | Another copy of Ferret may be running. Quit it, then click **Try again**. |
 | "Too many tries" | Wait a minute, then pair again. |
 | A device shows **Not connected** | Turn it on and keep it on the same network. See [Pairing](pairing.md). |
 

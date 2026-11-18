@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On the computer, tap **Visible for 10 min** next to **Receive from Quick Share** on the Drop card.
+> 1. On the computer, open **Receive from other apps** on the Drop card and tap **Visible for 10 min** next to **Quick Share**.
 > 2. On the Android phone, pick **Share → Quick Share → your computer**.
 > 3. Check that both screens show the same **PIN**, then **Accept**. The files land in your receive folder. That's it.
 
@@ -12,7 +12,7 @@ Every Android phone already has **Quick Share** (it used to be called Nearby Sha
 
 ## 📥 Send from an Android phone to your computer
 
-1. In Ferret on the computer, open the Drop card and tap **Visible for 10 min** next to **Receive from Quick Share**.
+1. In Ferret on the computer, open **Receive from other apps** on the Drop card and tap **Visible for 10 min** next to **Quick Share**.
 2. The card shows the name the phone will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the phone, open the photo or file, tap **Share**, then **Quick Share**.
 4. Your computer shows up under the nearby devices. Tap it.

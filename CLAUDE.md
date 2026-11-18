@@ -12,6 +12,7 @@ Guidance for Claude Code and other agents working in this repository. Follow [CO
 scripts/get.sh                 # pub get for the whole workspace
 scripts/gen.sh                 # proto/ -> packages/protocol (buf lint + generate + barrels)
 scripts/check.sh [path]        # format, analyze, test (one package or all)
+cd apps/ferret && fvm flutter test test/screens   # renders every main screen to temp/screens (light/dark, phone/popover) for review
 scripts/docs.sh serve|check|reference|build   # docs site; reference regenerates the protocol page from proto/
 
 cd apps/ferret && flutter run -d macos     # or an emulator: never the user's own phone

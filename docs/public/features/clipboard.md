@@ -43,7 +43,7 @@ Receiving works while Ferret is open.
 
 Password managers mark what they copy as private. Ferret skips those items by default.
 
-If you turn on **Private items**, they are sent marked as private, blurred on the card, kept out of clipboard history on the other device, and dropped from Ferret's memory after 2 minutes.
+If you turn on **Include passwords**, they are sent marked as private, blurred on the card, kept out of clipboard history on the other device, and dropped from Ferret's memory after 2 minutes.
 
 ## ⚙️ Settings
 
@@ -52,7 +52,7 @@ In **Settings → Clipboard**:
 - **Send automatically**: send what you copy here. On by default.
 - **Receive automatically**: put what arrives straight on this clipboard. Turn it off and use **Copy** on the card instead.
 - **Images**: sync copied images up to 10 MB.
-- **Private items**: sync items marked as private. Off by default.
+- **Include passwords**: sync items that password managers mark as private. Off by default.
 - **Clear history**: Ferret keeps the last 20 items in memory, never on disk.
 
 Each device page also has **Send clipboard**, to send to just that device.
