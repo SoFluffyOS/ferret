@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'ferret_handoff'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = "Platform code for Ferret's handoff feature."
   s.description      = <<-DESC
-A new Flutter plugin project.
+Opens links in a given app and reads the current browser page for Ferret's handoff feature.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -24,7 +24,7 @@ A new Flutter plugin project.
 
   s.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.11'
+  s.platform = :osx, '12.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

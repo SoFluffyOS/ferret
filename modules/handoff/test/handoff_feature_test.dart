@@ -1,11 +1,236 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
+import 'package:protocol/handoff.dart';
+
+import 'support/fakes.dart';
 
 void main() {
   test('the feature and its UI share one id', () {
-    final ui = HandoffFeatureUi();
+    final ui = HandoffFeatureUi(opener: FakeOpener());
 
     expect(ui.featureId, HandoffFeature.featureId);
     expect(ui.feature.id, HandoffFeature.featureId);
+  });
+
+  group('passive', () {
+    test('a published activity becomes a suggestion that expires', () async {
+      final clock = TestClock();
+      final feature = await startedFeature(clock: clock);
+      addTearDown(feature.stop);
+
+      await feature.receivePublished(pixel, webActivity('a'));
+
+      expect(feature.suggestions.single.id, 'a');
+      expect(feature.suggestions.single.isExplicit, isFalse);
+      clock.advance(const Duration(minutes: 4, seconds: 59));
+      expect(feature.suggestions, hasLength(1));
+      clock.advance(const Duration(seconds: 2));
+      expect(feature.suggestions, isEmpty);
+    });
+
+    test('a newer activity from the same device replaces the old', () async {
+      final feature = await startedFeature(clock: TestClock());
+      addTearDown(feature.stop);
+      final removed = <String>[];
+      feature.removals.listen((suggestion) => removed.add(suggestion.id));
+
+      await feature.receivePublished(pixel, webActivity('old'));
+      await feature.receivePublished(tablet, webActivity('other'));
+      await feature.receivePublished(pixel, webActivity('new'));
+      await pumpEventQueue();
+
+      expect(feature.suggestions.map((item) => item.id), ['new', 'other']);
+      expect(removed, ['old']);
+    });
+
+    test(
+      'a short lifetime from the sender is kept, a long one capped',
+      () async {
+        final clock = TestClock();
+        final feature = await startedFeature(clock: clock);
+        addTearDown(feature.stop);
+        final short = webActivity('short')
+          ..createdAtMs = Int64(1000)
+          ..expiresAtMs = Int64(61000);
+        final long = webActivity('long')
+          ..createdAtMs = Int64(1000)
+          ..expiresAtMs = Int64(1000 + const Duration(hours: 2).inMilliseconds);
+
+        await feature.receivePublished(pixel, short);
+        await feature.receivePublished(tablet, long);
+
+        final byId = {for (final item in feature.suggestions) item.id: item};
+        expect(
+          byId['short']?.expiresAt,
+          clock.now.add(const Duration(minutes: 1)),
+        );
+        expect(
+          byId['long']?.expiresAt,
+          clock.now.add(const Duration(minutes: 5)),
+        );
+      },
+    );
+
+    test('turning passive off ignores and clears passive ones', () async {
+      final feature = await startedFeature(clock: TestClock());
+      addTearDown(feature.stop);
+      await feature.receivePublished(pixel, webActivity('a'));
+      await feature.receiveContinue(tablet, webActivity('kept'));
+
+      await feature.setPassiveEnabled(false);
+      await feature.receivePublished(pixel, webActivity('b'));
+
+      expect(feature.suggestions.map((item) => item.id), ['kept']);
+    });
+
+    test('publishing while passive is off sends nothing', () async {
+      final host = await FakeHost.create({HandoffSettings.passive: false});
+      final feature = await startedFeature(host: host);
+
+      expect(await feature.publish(webActivity('a')), 0);
+    });
+
+    test('a clear from the sender withdraws its suggestions', () async {
+      final feature = await startedFeature(clock: TestClock());
+      addTearDown(feature.stop);
+      await feature.receivePublished(pixel, webActivity('a'));
+      await feature.receivePublished(tablet, webActivity('b'));
+
+      feature.receiveClear(pixel, '');
+
+      expect(feature.suggestions.single.id, 'b');
+    });
+
+    test('activities with nothing to open are ignored', () async {
+      final feature = await startedFeature(clock: TestClock());
+      addTearDown(feature.stop);
+
+      await feature.receivePublished(pixel, Activity(id: 'empty'));
+      await feature.receivePublished(pixel, Activity(uri: 'https://x.org'));
+
+      expect(feature.suggestions, isEmpty);
+    });
+  });
+
+  group('explicit', () {
+    test('opens right away by default, without a suggestion', () async {
+      final opener = FakeOpener();
+      final feature = await startedFeature(opener: opener, clock: TestClock());
+      addTearDown(feature.stop);
+      final arrivals = <Suggestion>[];
+      feature.arrivals.listen(arrivals.add);
+
+      final outcome = await feature.receiveContinue(pixel, webActivity('a'));
+
+      expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_OPENED);
+      expect(opener.opened.single.id, 'a');
+      expect(feature.suggestions, isEmpty);
+      expect(arrivals, isEmpty);
+      expect(feature.timeline.single.direction, TimelineDirection.received);
+    });
+
+    test('with automatic opening off it waits as a suggestion', () async {
+      final host = await FakeHost.create({
+        HandoffSettings.openAutomatically: false,
+      });
+      final opener = FakeOpener();
+      final feature = await startedFeature(
+        host: host,
+        opener: opener,
+        clock: TestClock(),
+      );
+      addTearDown(feature.stop);
+      final arrivals = <Suggestion>[];
+      feature.arrivals.listen(arrivals.add);
+
+      final outcome = await feature.receiveContinue(pixel, webActivity('a'));
+      await pumpEventQueue();
+
+      expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_SUGGESTED);
+      expect(opener.opened, isEmpty);
+      expect(feature.suggestions.single.isExplicit, isTrue);
+      expect(arrivals.single.id, 'a');
+    });
+
+    test('an activity the opener defers becomes a suggestion', () async {
+      final feature = await startedFeature(
+        opener: FakeOpener(.deferred),
+        clock: TestClock(),
+      );
+      addTearDown(feature.stop);
+
+      final outcome = await feature.receiveContinue(pixel, webActivity('a'));
+
+      expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_SUGGESTED);
+      expect(feature.suggestions.single.id, 'a');
+    });
+
+    test('an activity that can not open is reported as failed', () async {
+      final feature = await startedFeature(
+        opener: FakeOpener(.failed),
+        clock: TestClock(),
+      );
+      addTearDown(feature.stop);
+
+      final outcome = await feature.receiveContinue(pixel, webActivity('a'));
+
+      expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_FAILED);
+      expect(feature.suggestions, isEmpty);
+    });
+
+    test('the same send twice opens once', () async {
+      final opener = FakeOpener();
+      final feature = await startedFeature(opener: opener, clock: TestClock());
+      addTearDown(feature.stop);
+
+      await feature.receiveContinue(pixel, webActivity('a'));
+      final second = await feature.receiveContinue(pixel, webActivity('a'));
+
+      expect(second, ContinueOutcome.CONTINUE_OUTCOME_OPENED);
+      expect(opener.opened, hasLength(1));
+    });
+
+    test(
+      'explicit suggestions outlive passive ones and are not replaced',
+      () async {
+        final clock = TestClock();
+        final feature = await startedFeature(
+          opener: FakeOpener(.deferred),
+          clock: clock,
+        );
+        addTearDown(feature.stop);
+
+        await feature.receiveContinue(pixel, webActivity('sent'));
+        await feature.receivePublished(pixel, webActivity('passive'));
+        clock.advance(const Duration(minutes: 10));
+
+        expect(feature.suggestions.single.id, 'sent');
+      },
+    );
+
+    test('opening a suggestion removes it; dismissing too', () async {
+      final opener = FakeOpener(.deferred);
+      final feature = await startedFeature(opener: opener, clock: TestClock());
+      addTearDown(feature.stop);
+      await feature.receiveContinue(pixel, webActivity('a'));
+      await feature.receivePublished(tablet, webActivity('b'));
+
+      opener.result = .opened;
+      final suggestion = feature.suggestions.firstWhere((s) => s.id == 'a');
+      expect(await feature.open(suggestion), OpenResult.opened);
+      feature.dismiss('b');
+
+      expect(feature.suggestions, isEmpty);
+    });
+
+    test('sending to a device that is not connected is unreachable', () async {
+      final feature = await startedFeature();
+
+      expect(
+        await feature.sendTo('nobody', webActivity('a')),
+        SendOutcome.unreachable,
+      );
+    });
   });
 }

@@ -17,6 +17,7 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_handoff:
     path: ../../packages/ferret_handoff
+  fixnum: ^1.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -29,11 +30,14 @@ dependencies:
   provider: ^6.1.5+1
   sofluffy_ui:
     path: ../../packages/sofluffy_ui
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
+  transport:
+    path: ../../packages/transport
 
 flutter:
   generate: true

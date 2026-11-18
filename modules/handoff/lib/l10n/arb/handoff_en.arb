@@ -1,4 +1,103 @@
 {
   "@@locale": "en",
-  "title": "Handoff"
+  "title": "Handoff",
+  "cardTitle": "Continue",
+  "continueFrom": "Continue “{title}” from {device}",
+  "@continueFrom": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "device": {"type": "String"}
+    }
+  },
+  "open": "Open",
+  "dismiss": "Dismiss",
+  "cancel": "Cancel",
+  "openFailed": "This device can't open that. It may need an app that isn't installed here.",
+  "openDeferred": "Open Ferret to continue it.",
+  "actionSendLink": "Send a link…",
+  "actionSendCurrentPage": "Send current page",
+  "sendLinkTitle": "Send to {device}",
+  "@sendLinkTitle": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "sendLinkLabel": "Link or text",
+  "sendLinkHint": "https://…",
+  "send": "Send",
+  "sendEmpty": "Nothing to send. Paste a link or some text.",
+  "sendOpened": "Opened on {device}",
+  "@sendOpened": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "sendSuggested": "Waiting on {device}: tap the notification there to open it",
+  "@sendSuggested": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "sendFailed": "{device} couldn't open it. It may need an app that isn't installed there.",
+  "@sendFailed": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "sendUnreachable": "Couldn't reach {device}. Check that it's on and on the same network.",
+  "@sendUnreachable": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "currentPageNone": "No browser page found. Open a page in Safari or a Chromium browser, then try again.",
+  "currentPageDenied": "macOS blocked Ferret from reading your browser. Allow it in System Settings, Privacy & Security, Automation.",
+  "currentPageFailed": "Couldn't read the browser page. Try again, or send the link with “Send a link…”.",
+  "settingsPassive": "Suggest what I'm doing",
+  "settingsPassiveBody": "Your other devices quietly offer to continue the page you're on. Suggestions go away after 5 minutes.",
+  "settingsOpenAutomatically": "Open sent links right away",
+  "settingsOpenAutomaticallyBody": "When off, things sent here wait in a notification until you open them.",
+  "settingsBrowserTab": "Read the current browser page",
+  "settingsBrowserTabBody": "Adds “Send current page”, and suggests the page you leave. macOS asks once per browser.",
+  "settingsAssistantTitle": "Continue from any app",
+  "settingsAssistantBody": "Make Ferret your digital assistant, then long-press Home (or swipe up from a bottom corner) on any screen to send it to another device. Turn on “Use text from screen” on the same settings page.",
+  "settingsAssistantOn": "Ferret is your assistant",
+  "settingsAssistantOff": "Ferret isn't your assistant yet",
+  "settingsAssistantOpen": "Open assistant settings",
+  "settingsShareHint": "You can also share any link to “Continue on…”.",
+  "noticeTitle": "Continue “{title}”",
+  "@noticeTitle": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "noticeFrom": "From {device}",
+  "@noticeFrom": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "noticeTextCopied": "Copied text from {device}",
+  "@noticeTextCopied": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "noticeSent": "Sent to {device}",
+  "@noticeSent": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "noticeNotSent": "Couldn't send to {device}",
+  "@noticeNotSent": {
+    "placeholders": {
+      "device": {"type": "String"}
+    }
+  },
+  "noticeNotSentBody": "Check that it's on and on the same network, then share it again.",
+  "noticeNothingToSend": "There was nothing to continue in what you shared.",
+  "pickDeviceTitle": "Continue on",
+  "pickDeviceEmpty": "No device is connected right now. Turn on your other device and keep it on the same network.",
+  "back": "Back"
 }

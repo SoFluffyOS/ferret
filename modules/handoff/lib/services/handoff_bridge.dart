@@ -1,0 +1,360 @@
+import 'dart:async';
+
+import 'package:core/core.dart';
+import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_handoff/ferret_handoff.dart';
+import 'package:flutter/widgets.dart';
+import 'package:handoff/feature/handoff_feature.dart';
+import 'package:handoff/l10n/l10n.dart';
+import 'package:handoff/models/models.dart';
+import 'package:handoff/services/activity_factory.dart';
+import 'package:handoff/services/handoff_settings.dart';
+import 'package:protocol/handoff.dart';
+
+/// Picks the device to continue on when the share sheet didn't say.
+typedef DevicePicker = Future<String?> Function(List<HandoffPeer> devices);
+
+/// Connects Handoff to the rest of this device: notices for things that
+/// arrive, the Android share target and assistant, and the macOS browser.
+class HandoffBridge {
+  HandoffBridge({
+    required this.feature,
+    required this.engine,
+    required this.notifier,
+    required this.handoff,
+    required this.pickDevice,
+    HandoffLocalizations Function()? strings,
+    Future<void> Function(Duration timeout)? untilForeground,
+    this.connectTimeout = const Duration(seconds: 20),
+  }) : _strings = strings ?? handoffL10nForSystem,
+       _untilForeground = untilForeground ?? _untilResumed;
+
+  static const continueCategory = 'handoff.continue';
+  static const openAction = 'open';
+  static const dismissAction = 'dismiss';
+  static const _noticePrefix = 'handoff.';
+
+  final HandoffFeature feature;
+  final FeatureHost engine;
+  final LocalNotifier notifier;
+  final FerretHandoff handoff;
+  final DevicePicker pickDevice;
+  final Duration connectTimeout;
+  final HandoffLocalizations Function() _strings;
+  final Future<void> Function(Duration timeout) _untilForeground;
+  ({String url, DateTime at})? _lastPublished;
+  final List<StreamSubscription<Object?>> _subscriptions = [];
+  final Map<String, Suggestion> _noticed = {};
+
+  /// The notice action set, registered before the first notice.
+  static List<NoticeCategory> categories(HandoffLocalizations strings) => [
+    NoticeCategory(
+      id: continueCategory,
+      actions: [
+        NoticeAction(id: openAction, label: strings.open),
+        NoticeAction(id: dismissAction, label: strings.dismiss),
+      ],
+    ),
+  ];
+
+  static String noticeIdFor(String activityId) => '$_noticePrefix$activityId';
+
+  bool get browserTabEnabled =>
+      engine.settings.get<bool>(HandoffSettings.browserTab) ??
+      HandoffSettings.browserTabDefault;
+
+  Future<void> start() async {
+    _subscriptions
+      ..add(feature.arrivals.listen(_showArrival))
+      ..add(feature.removals.listen(_withdrawNotice))
+      ..add(feature.autoOpened.listen(_confirmOpened))
+      ..add(notifier.responses.listen(_onResponse))
+      ..add(engine.sessionChanges.listen((_) => unawaited(_syncDevices())))
+      ..add(engine.trustStore.changes.listen((_) => unawaited(_syncDevices())))
+      ..add(handoff.browserDeactivated.listen(_onBrowserLeft));
+
+    handoff.listen(onShared);
+    await _syncDevices();
+    await refreshBrowserWatch();
+
+    for (final item in await handoff.takePending()) {
+      unawaited(onShared(item));
+    }
+  }
+
+  Future<void> dispose() async {
+    for (final subscription in _subscriptions) {
+      await subscription.cancel();
+    }
+
+    _subscriptions.clear();
+  }
+
+  Future<void> setBrowserTabEnabled(bool enabled) async {
+    await engine.settings.set(HandoffSettings.browserTab, enabled);
+    await refreshBrowserWatch();
+  }
+
+  /// Sends [activity] to [deviceId], waiting a little for the device to
+  /// connect, such as right after Ferret started from the share sheet.
+  Future<SendOutcome> sendWhenConnected(
+    String deviceId,
+    Activity activity,
+  ) async {
+    if (engine.sessionFor(deviceId) == null) {
+      await engine.sessionChanges
+          .firstWhere((_) => engine.sessionFor(deviceId) != null)
+          .timeout(connectTimeout, onTimeout: () => const <Session>[]);
+    }
+
+    return feature.sendTo(deviceId, activity);
+  }
+
+  /// Something came from the share sheet or the assistant. Answers true
+  /// once it reached the other device.
+  Future<bool> onShared(SharedItem item) async {
+    final strings = _strings();
+    final activity = ActivityFactory.fromShared(item);
+    if (activity == null) {
+      await _notify(
+        id: '${_noticePrefix}share',
+        channel: .problems,
+        title: strings.noticeNothingToSend,
+      );
+      return false;
+    }
+
+    final deviceId = item.targetDeviceId ?? await _chooseDevice();
+    if (deviceId == null) {
+      return false;
+    }
+
+    final outcome = await sendWhenConnected(deviceId, activity);
+    final name = _nameOf(deviceId);
+    final sent = outcome == .opened || outcome == .suggested;
+    if (!sent) {
+      await _notify(
+        id: '${_noticePrefix}share',
+        channel: .problems,
+        title: strings.noticeNotSent(name),
+        body: strings.noticeNotSentBody,
+      );
+      return false;
+    }
+
+    if (item.targetDeviceId == null) {
+      await _notify(
+        id: '${_noticePrefix}share',
+        channel: .suggestions,
+        title: strings.noticeSent(name),
+        silent: true,
+      );
+    }
+
+    return true;
+  }
+
+  Future<String?> _chooseDevice() async {
+    final connected = [
+      for (final session in engine.sessions)
+        if (session.supports(HandoffFeature.featureId))
+          HandoffPeer.fromInfo(session.remoteDeviceId, session.remoteDevice),
+    ];
+    if (connected.length == 1) {
+      return connected.single.id;
+    }
+
+    return pickDevice(connected);
+  }
+
+  Future<void> _showArrival(Suggestion suggestion) async {
+    final strings = _strings();
+    _noticed[suggestion.id] = suggestion;
+    await _notify(
+      id: noticeIdFor(suggestion.id),
+      channel: .suggestions,
+      title: strings.noticeTitle(suggestion.activity.title),
+      body: strings.noticeFrom(suggestion.from.name),
+      category: continueCategory,
+      groupKey: '$_noticePrefix${suggestion.from.id}',
+    );
+  }
+
+  Future<void> _confirmOpened(TimelineEntry entry) async {
+    if (entry.activity.kind != .ACTIVITY_KIND_TEXT) {
+      return;
+    }
+
+    await _notify(
+      id: noticeIdFor(entry.activity.id),
+      channel: .suggestions,
+      title: _strings().noticeTextCopied(entry.peer.name),
+      silent: true,
+    );
+  }
+
+  Future<void> _withdrawNotice(Suggestion suggestion) async {
+    if (_noticed.remove(suggestion.id) == null) {
+      return;
+    }
+
+    await notifier.cancel(noticeIdFor(suggestion.id));
+  }
+
+  Future<void> _onResponse(NoticeResponse response) async {
+    if (!response.noticeId.startsWith(_noticePrefix)) {
+      return;
+    }
+
+    final activityId = response.noticeId.substring(_noticePrefix.length);
+    final suggestion = _noticed[activityId];
+    if (suggestion == null) {
+      return;
+    }
+
+    if (response.actionId == dismissAction) {
+      feature.dismiss(activityId);
+      return;
+    }
+
+    var result = await feature.open(suggestion);
+    if (result == .deferred) {
+      await _untilForeground(const Duration(seconds: 5));
+      result = await feature.open(suggestion);
+    }
+
+    if (result == .failed) {
+      await _notify(
+        id: noticeIdFor(activityId),
+        channel: .problems,
+        title: _strings().openFailed,
+      );
+    }
+  }
+
+  Future<void> _syncDevices() async {
+    final connected = {
+      for (final session in engine.sessions) session.remoteDeviceId,
+    };
+    final devices = [...engine.trustStore.devices]
+      ..sort((first, second) {
+        final firstRank = switch (connected.contains(first.id)) {
+          true => 0,
+          false => 1,
+        };
+        final secondRank = switch (connected.contains(second.id)) {
+          true => 0,
+          false => 1,
+        };
+        return firstRank.compareTo(secondRank);
+      });
+
+    try {
+      await handoff.setDevices([
+        for (final device in devices)
+          HandoffDevice(id: device.id, name: device.name),
+      ]);
+    } on Object catch (error) {
+      printWarning('Handoff could not share the device list', error);
+    }
+  }
+
+  /// Watches the browser only while both the browser page and passive
+  /// suggestions are on.
+  Future<void> refreshBrowserWatch() async {
+    if (!handoff.supportsBrowserTab) {
+      return;
+    }
+
+    try {
+      await handoff.setBrowserWatch(
+        browserTabEnabled && feature.passiveEnabled,
+      );
+    } on Object catch (error) {
+      printWarning('Handoff could not watch the browser', error);
+    }
+  }
+
+  Future<void> _onBrowserLeft(String bundleId) async {
+    if (!browserTabEnabled || !feature.passiveEnabled) {
+      return;
+    }
+
+    try {
+      final tab = await handoff.currentBrowserTab();
+      if (tab == null || _publishedRecently(tab.url)) {
+        return;
+      }
+
+      _lastPublished = (url: tab.url, at: DateTime.now());
+      await feature.publish(ActivityFactory.fromBrowserTab(tab));
+    } on Object catch (error) {
+      printDebug('Handoff skipped the browser page (${error.runtimeType})');
+    }
+  }
+
+  bool _publishedRecently(String url) {
+    final last = _lastPublished;
+    if (last == null || last.url != url) {
+      return false;
+    }
+
+    return DateTime.now().difference(last.at) < feature.passiveLifetime;
+  }
+
+  static Future<void> _untilResumed(Duration timeout) async {
+    if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+      return;
+    }
+
+    final resumed = Completer<void>();
+    final listener = AppLifecycleListener(onResume: resumed.complete);
+    try {
+      await resumed.future.timeout(timeout, onTimeout: () {});
+    } finally {
+      listener.dispose();
+    }
+  }
+
+  String _nameOf(String deviceId) {
+    final session = engine.sessionFor(deviceId);
+    if (session?.remoteDevice?.name case final name? when name.isNotEmpty) {
+      return name;
+    }
+
+    for (final device in engine.trustStore.devices) {
+      if (device.id == deviceId) {
+        return device.name;
+      }
+    }
+
+    return deviceId;
+  }
+
+  Future<void> _notify({
+    required String id,
+    required NoticeChannel channel,
+    required String title,
+    String body = '',
+    String? category,
+    String? groupKey,
+    bool silent = false,
+  }) async {
+    try {
+      await notifier.show(
+        LocalNotice(
+          id: id,
+          channel: channel,
+          title: title,
+          body: body,
+          category: category,
+          groupKey: groupKey,
+          silent: silent,
+        ),
+      );
+    } on Object catch (error) {
+      printWarning('Handoff could not show a notice', error);
+    }
+  }
+}

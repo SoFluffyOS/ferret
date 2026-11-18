@@ -1,3 +1,52 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.sofluffy.ferret_handoff">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- "Continue on…" in the share sheet, for text and links. -->
+        <activity
+            android:name="io.sofluffy.ferret_handoff.ContinueShareActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/ferret_handoff_share_label"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <!-- Lets Ferret be picked as the default digital assistant, so it can
+             read what is on screen (AssistContent) when the user asks. -->
+        <service
+            android:name="io.sofluffy.ferret_handoff.FerretAssistService"
+            android:exported="true"
+            android:label="@string/ferret_handoff_assistant_label"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <meta-data
+                android:name="android.voice_interaction"
+                android:resource="@xml/ferret_handoff_assist" />
+            <intent-filter>
+                <action android:name="android.service.voice.VoiceInteractionService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="io.sofluffy.ferret_handoff.FerretAssistSessionService"
+            android:exported="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION" />
+
+        <!-- Android only lists an assistant that names a speech service.
+             Ferret doesn't do speech; this one answers every request with an
+             error. -->
+        <service
+            android:name="io.sofluffy.ferret_handoff.FerretRecognitionService"
+            android:exported="true"
+            android:label="@string/ferret_handoff_assistant_label">
+            <intent-filter>
+                <action android:name="android.speech.RecognitionService" />
+            </intent-filter>
+        </service>
+    </application>
 </manifest>

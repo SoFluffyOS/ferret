@@ -102,6 +102,264 @@ abstract class HandoffLocalizations {
   /// In en, this message translates to:
   /// **'Handoff'**
   String get title;
+
+  /// No description provided for @cardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get cardTitle;
+
+  /// No description provided for @continueFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue “{title}” from {device}'**
+  String continueFrom(String title, String device);
+
+  /// No description provided for @open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get open;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @openFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This device can\'t open that. It may need an app that isn\'t installed here.'**
+  String get openFailed;
+
+  /// No description provided for @openDeferred.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret to continue it.'**
+  String get openDeferred;
+
+  /// No description provided for @actionSendLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a link…'**
+  String get actionSendLink;
+
+  /// No description provided for @actionSendCurrentPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send current page'**
+  String get actionSendCurrentPage;
+
+  /// No description provided for @sendLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to {device}'**
+  String sendLinkTitle(String device);
+
+  /// No description provided for @sendLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Link or text'**
+  String get sendLinkLabel;
+
+  /// No description provided for @sendLinkHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://…'**
+  String get sendLinkHint;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @sendEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to send. Paste a link or some text.'**
+  String get sendEmpty;
+
+  /// No description provided for @sendOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened on {device}'**
+  String sendOpened(String device);
+
+  /// No description provided for @sendSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting on {device}: tap the notification there to open it'**
+  String sendSuggested(String device);
+
+  /// No description provided for @sendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t open it. It may need an app that isn\'t installed there.'**
+  String sendFailed(String device);
+
+  /// No description provided for @sendUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach {device}. Check that it\'s on and on the same network.'**
+  String sendUnreachable(String device);
+
+  /// No description provided for @currentPageNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser page found. Open a page in Safari or a Chromium browser, then try again.'**
+  String get currentPageNone;
+
+  /// No description provided for @currentPageDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS blocked Ferret from reading your browser. Allow it in System Settings, Privacy & Security, Automation.'**
+  String get currentPageDenied;
+
+  /// No description provided for @currentPageFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read the browser page. Try again, or send the link with “Send a link…”.'**
+  String get currentPageFailed;
+
+  /// No description provided for @settingsPassive.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest what I\'m doing'**
+  String get settingsPassive;
+
+  /// No description provided for @settingsPassiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other devices quietly offer to continue the page you\'re on. Suggestions go away after 5 minutes.'**
+  String get settingsPassiveBody;
+
+  /// No description provided for @settingsOpenAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Open sent links right away'**
+  String get settingsOpenAutomatically;
+
+  /// No description provided for @settingsOpenAutomaticallyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, things sent here wait in a notification until you open them.'**
+  String get settingsOpenAutomaticallyBody;
+
+  /// No description provided for @settingsBrowserTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the current browser page'**
+  String get settingsBrowserTab;
+
+  /// No description provided for @settingsBrowserTabBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds “Send current page”, and suggests the page you leave. macOS asks once per browser.'**
+  String get settingsBrowserTabBody;
+
+  /// No description provided for @settingsAssistantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue from any app'**
+  String get settingsAssistantTitle;
+
+  /// No description provided for @settingsAssistantBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Make Ferret your digital assistant, then long-press Home (or swipe up from a bottom corner) on any screen to send it to another device. Turn on “Use text from screen” on the same settings page.'**
+  String get settingsAssistantBody;
+
+  /// No description provided for @settingsAssistantOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is your assistant'**
+  String get settingsAssistantOn;
+
+  /// No description provided for @settingsAssistantOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret isn\'t your assistant yet'**
+  String get settingsAssistantOff;
+
+  /// No description provided for @settingsAssistantOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open assistant settings'**
+  String get settingsAssistantOpen;
+
+  /// No description provided for @settingsShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also share any link to “Continue on…”.'**
+  String get settingsShareHint;
+
+  /// No description provided for @noticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue “{title}”'**
+  String noticeTitle(String title);
+
+  /// No description provided for @noticeFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {device}'**
+  String noticeFrom(String device);
+
+  /// No description provided for @noticeTextCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied text from {device}'**
+  String noticeTextCopied(String device);
+
+  /// No description provided for @noticeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {device}'**
+  String noticeSent(String device);
+
+  /// No description provided for @noticeNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send to {device}'**
+  String noticeNotSent(String device);
+
+  /// No description provided for @noticeNotSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that it\'s on and on the same network, then share it again.'**
+  String get noticeNotSentBody;
+
+  /// No description provided for @noticeNothingToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'There was nothing to continue in what you shared.'**
+  String get noticeNothingToSend;
+
+  /// No description provided for @pickDeviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue on'**
+  String get pickDeviceTitle;
+
+  /// No description provided for @pickDeviceEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No device is connected right now. Turn on your other device and keep it on the same network.'**
+  String get pickDeviceEmpty;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
 }
 
 class _HandoffLocalizationsDelegate

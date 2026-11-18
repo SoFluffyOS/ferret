@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package ferret.handoff.v1;
+
+// What an activity is, which decides how the receiving device opens it.
+enum ActivityKind {
+  ACTIVITY_KIND_UNSPECIFIED = 0;
+  // A web page: `uri` is http(s).
+  ACTIVITY_KIND_WEB = 1;
+  // Something inside an app: `deep_link` and `apps`, with `fallback_web_uri`
+  // for devices that don't have the app.
+  ACTIVITY_KIND_APP = 2;
+  // A place: `uri` is a geo: URI (RFC 5870).
+  ACTIVITY_KIND_GEO = 3;
+  // Plain text in `text`, such as a note or an address.
+  ACTIVITY_KIND_TEXT = 4;
+}
+
+// The app that can continue an activity, per platform. Empty when unknown.
+message AppIdentifiers {
+  // Android package name, such as "org.wikipedia".
+  string android_package = 1;
+  // Bundle id on macOS and iOS, such as "com.apple.Safari".
+  string apple_bundle_id = 2;
+  // Desktop entry id on Linux, such as "org.gnome.Maps.desktop".
+  string linux_desktop_id = 3;
+  // AppUserModelID on Windows.
+  string windows_app_id = 4;
+}
+
+// Something the user is doing that another device can continue. Shaped like
+// Android's HandoffActivityData: the activity itself, plus a web URI to fall
+// back to when the app isn't there.
+message Activity {
+  // Unique per activity, chosen by the source device.
+  string id = 1;
+  ActivityKind kind = 2;
+  // Short, human title, such as the page title.
+  string title = 3;
+  // The main URI: http(s), geo: or mailto:.
+  string uri = 4;
+  // A URI only the app understands, opened in the app named by `apps`.
+  string deep_link = 5;
+  AppIdentifiers apps = 6;
+  // Opened when no app can take `deep_link`.
+  string fallback_web_uri = 7;
+  // The text of an ACTIVITY_KIND_TEXT activity.
+  string text = 8;
+  // Opaque state for apps that opted in, such as scroll position. Ferret
+  // never reads it; it is handed to the app as is.
+  bytes state = 9;
+  // What `state` holds, such as "application/ld+json" for AssistContent
+  // structured data, or a reverse-DNS name chosen by the app.
+  string state_type = 10;
+  uint64 created_at_ms = 11;
+  // After this time the activity is stale and is not suggested any more.
+  uint64 expires_at_ms = 12;
+  // Device id of the device the activity comes from.
+  string source_device_id = 13;
+  // Name of the app it comes from, such as "Firefox", for display only.
+  string source_app_name = 14;
+}
+
+// Passive: "this is what I'm doing now". Receivers keep it as a quiet
+// suggestion that expires and is replaced by the next one from the same
+// device. Sent without expecting a reply.
+message PublishActivity {
+  Activity activity = 1;
+}
+
+// Explicit: "continue this on your side now". Sent as a request; the receiver
+// answers with ContinueResult.
+message ContinueActivity {
+  Activity activity = 1;
+}
+
+// What the receiver did with a ContinueActivity.
+enum ContinueOutcome {
+  CONTINUE_OUTCOME_UNSPECIFIED = 0;
+  // Opened right away.
+  CONTINUE_OUTCOME_OPENED = 1;
+  // Kept as a suggestion with a notice, because the user turned automatic
+  // opening off.
+  CONTINUE_OUTCOME_SUGGESTED = 2;
+  // Could not open it, such as a URI scheme it doesn't accept.
+  CONTINUE_OUTCOME_FAILED = 3;
+}
+
+message ContinueResult {
+  ContinueOutcome outcome = 1;
+}
+
+// Withdraws suggestions from the sender, such as when the page was closed.
+message ClearActivity {
+  // The activity to withdraw, or empty for every one from the sender.
+  string activity_id = 1;
+}
