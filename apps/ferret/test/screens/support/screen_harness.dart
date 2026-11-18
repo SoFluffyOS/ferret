@@ -19,18 +19,37 @@ import 'package:transport/transport.dart';
 
 import 'screen_fonts.dart';
 
-/// A screen size the harness captures.
+/// A screen size the harness captures, and the platform it renders as:
+/// sofluffy_ui sizes buttons, text and scrolling by platform, so a phone
+/// render on the macOS target would not match a real phone.
 class CaptureSize {
-  const CaptureSize(this.name, this.width, this.height);
+  const CaptureSize(
+    this.name,
+    this.width,
+    this.height, {
+    this.platform = .macOS,
+    this.darkToo = true,
+  });
 
   final String name;
   final double width;
   final double height;
+  final TargetPlatform platform;
+
+  /// Whether it is also captured in dark mode.
+  final bool darkToo;
 }
 
-const phone = CaptureSize('phone', 390, 844);
+const phone = CaptureSize('phone', 390, 844, platform: .android);
+const iphone = CaptureSize(
+  'iphone',
+  390,
+  844,
+  platform: .iOS,
+  darkToo: false,
+);
 const popover = CaptureSize('popover', 380, 560);
-const sizes = [phone, popover];
+const sizes = [phone, iphone, popover];
 
 /// Pixel ratio of the saved PNGs.
 const capturePixelRatio = 2.0;
@@ -425,6 +444,9 @@ class ScreenRig {
     tester.binding.rootPipelineOwner
       ..flushCompositingBits()
       ..flushPaint();
+    for (final labels in overflowingRows(boundary)) {
+      capturedOverflows.add('${name}_${size.name}_$mode: $labels');
+    }
 
     await tester.runAsync(() async {
       final image = await boundary.toImage(pixelRatio: capturePixelRatio);
@@ -467,6 +489,40 @@ void mockPlugins(WidgetTester tester) {
       null,
     );
   });
+}
+
+/// Rows and columns that overflow in the captures, with the real font.
+/// Overflow errors raised before [applyScreenFont] measure the test font,
+/// whose glyphs are wider, so the harness checks again at capture time.
+final capturedOverflows = <String>[];
+
+/// The text inside each flex under [root] that overflows right now.
+List<String> overflowingRows(RenderObject root) {
+  final found = <String>[];
+  void visit(RenderObject node) {
+    if (node is RenderFlex && node.toStringShort().contains('OVERFLOWING')) {
+      found.add('"${_labelsUnder(node).join(' / ')}"');
+    }
+
+    node.visitChildren(visit);
+  }
+
+  visit(root);
+  return found;
+}
+
+List<String> _labelsUnder(RenderObject root) {
+  final labels = <String>[];
+  void visit(RenderObject node) {
+    if (node is RenderParagraph) {
+      labels.add(node.text.toPlainText());
+    }
+
+    node.visitChildren(visit);
+  }
+
+  visit(root);
+  return labels;
 }
 
 /// Sizes the test window and sets light or dark mode.

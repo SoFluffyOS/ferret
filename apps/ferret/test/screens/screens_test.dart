@@ -363,19 +363,17 @@ final screens = <Screen>[
   ),
 ];
 
-/// Layout overflows seen while capturing, written to
-/// `temp/screens/overflows.txt` instead of failing the run: with real fonts
-/// they are findings, not harness bugs.
-final _overflows = <String>[];
-
+// Layout overflows seen in the captures (see capturedOverflows) are written
+// to `temp/screens/overflows.txt` instead of failing the run: with real fonts
+// they are findings, not harness bugs.
 void main() {
   setUpAll(loadScreenFonts);
   tearDownAll(() async {
     await screensDirectory.create(recursive: true);
     await File('${screensDirectory.path}/overflows.txt').writeAsString(
-      switch (_overflows.isEmpty) {
+      switch (capturedOverflows.isEmpty) {
         true => 'No overflows.\n',
-        false => '${_overflows.toSet().join('\n')}\n',
+        false => '${capturedOverflows.toSet().join('\n')}\n',
       },
     );
   });
@@ -383,22 +381,21 @@ void main() {
   for (final screen in screens) {
     for (final size in sizes) {
       for (final brightness in Brightness.values) {
+        if (brightness == .dark && !size.darkToo) {
+          continue;
+        }
+
         testWidgets('${screen.name} ${size.name} ${brightness.name}', (
           tester,
         ) async {
           setScreen(tester, size, brightness);
           mockPlugins(tester);
           debugDisableShadows = false;
-          debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+          debugDefaultTargetPlatformOverride = size.platform;
           final reportError = FlutterError.onError;
           FlutterError.onError = (details) {
             final message = details.exceptionAsString();
             if (message.contains('overflowed')) {
-              final widget = details.informationCollector?.call().firstOrNull;
-              _overflows.add(
-                '${screen.name} ${size.name} ${brightness.name}: '
-                '${message.split('\n').first} ($widget)',
-              );
               return;
             }
 
@@ -442,14 +439,15 @@ Future<void> _run(
   await rig.capture(tester, name, size, brightness);
 
   if (screen.tall && size == phone) {
-    setScreen(tester, CaptureSize('full', 390, screen.fullHeight), brightness);
-    await rig.settle(tester);
-    await rig.capture(
-      tester,
-      name,
-      CaptureSize('full', 390, screen.fullHeight),
-      brightness,
+    final full = CaptureSize(
+      'full',
+      size.width,
+      screen.fullHeight,
+      platform: size.platform,
     );
+    setScreen(tester, full, brightness);
+    await rig.settle(tester);
+    await rig.capture(tester, name, full, brightness);
   }
 
   await rig.dispose(tester);
