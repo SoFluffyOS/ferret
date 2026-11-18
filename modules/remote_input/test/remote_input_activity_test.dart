@@ -72,7 +72,7 @@ void main() {
     expect(line.title, 'Pixel is controlling this Mac');
     expect(line.pinned, isTrue);
     expect(line.at, feature.controlHost?.active?.startedAt);
-    expect(line.actions.single.label, l10n.stop);
+    expect(line.actions.single.label, 'Stop');
     expect(viewModel.hasCard, isFalse);
   });
 
@@ -104,6 +104,17 @@ void main() {
     expect(line.at, feature.controlHost?.lastRecord?.endedAt);
     expect(line.actions, isEmpty);
     expect(viewModel.hasCard, isFalse);
+  });
+
+  test('the line that it happened can be dismissed', () async {
+    await control();
+    activity().single.actions.single.onPressed();
+    await settle();
+
+    activity().single.onDismiss?.call();
+
+    expect(activity(), isEmpty);
+    expect(feature.controlHost?.lastRecord, isNull);
   });
 
   testWidgets('the feature UI words it for the platform it runs on', (

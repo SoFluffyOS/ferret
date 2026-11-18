@@ -64,6 +64,9 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
+  String get activityStop => 'Stop';
+
+  @override
   String activityControlled(String device, String host) {
     String _temp0 = intl.Intl.selectLogic(
       host,

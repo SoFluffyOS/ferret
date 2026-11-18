@@ -169,6 +169,12 @@ abstract class RemoteInputLocalizations {
   /// **'{device} is controlling {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
   String activityControlling(String device, String host);
 
+  /// Button on the Activity row while a device controls this computer; the row already says what is controlled.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get activityStop;
+
   /// Activity row once a device stopped controlling this computer. host is mac, windows or linux.
   ///
   /// In en, this message translates to:

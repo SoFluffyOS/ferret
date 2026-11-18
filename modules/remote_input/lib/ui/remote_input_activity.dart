@@ -8,7 +8,8 @@ import 'package:remote_input/view_models/view_models.dart';
 
 /// Remote input's lines in Activity on a computer: a pinned "Pixel is
 /// controlling this Mac" with Stop for as long as it lasts, then one line
-/// saying that it did and for how long. [thisComputer] picks the word for
+/// saying that it did and for how long, with a ✕ to tidy it away.
+/// [thisComputer] picks the word for
 /// this device: this Mac, this PC or this computer.
 List<ActivityItem> remoteInputActivity(
   RemoteInputLocalizations l10n,
@@ -20,7 +21,7 @@ List<ActivityItem> remoteInputActivity(
     return [_controlling(l10n, viewModel, active, thisComputer)];
   }
 
-  return [?_controlled(l10n, viewModel.lastRecord, thisComputer)];
+  return [?_controlled(l10n, viewModel, thisComputer)];
 }
 
 ActivityItem _controlling(
@@ -37,7 +38,7 @@ ActivityItem _controlling(
   tone: .warning,
   actions: [
     ActivityAction(
-      label: l10n.stop,
+      label: l10n.activityStop,
       onPressed: () => unawaited(viewModel.stop()),
     ),
   ],
@@ -45,9 +46,10 @@ ActivityItem _controlling(
 
 ActivityItem? _controlled(
   RemoteInputLocalizations l10n,
-  ControlRecord? record,
+  HostViewModel viewModel,
   HostKind thisComputer,
 ) {
+  final record = viewModel.lastRecord;
   if (record == null) {
     return null;
   }
@@ -59,5 +61,6 @@ ActivityItem? _controlled(
     detail: l10n.activityControlledFor(record.duration.inMinutes),
     at: record.endedAt,
     tone: .muted,
+    onDismiss: viewModel.dismissRecord,
   );
 }

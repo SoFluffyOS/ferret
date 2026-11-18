@@ -35,8 +35,8 @@ Next to them sit the media keys: previous, play or pause, next, and the volume. 
 Nobody takes over your computer without you knowing.
 
 - **The first time** a phone asks, the computer asks you: "Let Pixel control this computer?" with **Always allow**, **Allow once** and **Don't allow**. It shows up as a notice, on top of Ferret, and on the home card.
-- **While it happens**, a notice and the top line of **Activity** say "Pixel is controlling this Mac" with **Stop control**. It cuts the phone off right away and lets go of any held key.
-- **Afterwards**, you see a line such as "Pixel controlled this computer for 4 min at 21:10". The last 20 are in **Settings → Control**, under **History**.
+- **While it happens**, a notice says "Pixel is controlling this Mac" with **Stop control**, and so does the top line of **Activity**, with **Stop**. Either cuts the phone off right away and lets go of any held key.
+- **Afterwards**, **Activity** keeps a line such as "Pixel controlled this Mac · For 4 min" until you dismiss it with **✕**. The last 20 are in **Settings → Control**, under **History**.
 - Changed your mind about Always allow? On the computer, open the phone in Ferret and turn off **Control this Mac without asking**. The same switch turns it on without waiting for the phone to ask.
 - Don't want it at all? Turn off **Let my phones control this computer** in **Settings → Control**.
 
