@@ -10,10 +10,10 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   RemoteInputLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Remote input';
+  String get title => 'Control';
 
   @override
-  String get useAsTouchpad => 'Use as touchpad';
+  String get useAsTouchpad => 'Control';
 
   @override
   String get back => 'Back';
@@ -32,14 +32,14 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get allowOnce => 'Allow once';
 
   @override
-  String get allowAlways => 'Always';
+  String get allowAlways => 'Always allow';
 
   @override
   String get dontAllow => 'Don\'t allow';
 
   @override
   String controlledBy(String device) {
-    return 'Controlled by $device';
+    return '$device is controlling this computer';
   }
 
   @override
@@ -48,10 +48,48 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String get stop => 'Stop';
+  String get stop => 'Stop control';
 
   @override
-  String get activeNoticeBody => 'Tap Stop to take back control.';
+  String activityControlling(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device is controlling $_temp0';
+  }
+
+  @override
+  String activityControlled(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device controlled $_temp0';
+  }
+
+  @override
+  String activityControlledFor(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'For $minutes min',
+      one: 'For 1 min',
+      zero: 'For less than a minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activeNoticeBody => 'Tap Stop control to take this computer back.';
 
   @override
   String permissionTitle(String device) {
@@ -89,21 +127,20 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'A phone becomes its touchpad and keyboard. Each phone asks you first.';
 
   @override
-  String get statusReadyQuartz => 'Ready. Uses Accessibility access.';
+  String get statusReadyQuartz => 'On. Uses Accessibility access.';
 
   @override
   String get statusReadySendInput =>
-      'Ready. Apps running as administrator can\'t be controlled.';
+      'On. Apps running as administrator can\'t be controlled.';
 
   @override
-  String get statusReadyUinput => 'Ready. Uses a virtual input device.';
+  String get statusReadyUinput => 'On. Uses a virtual input device.';
 
   @override
-  String get statusReadyXdotool =>
-      'Ready. Uses xdotool, which works on X11 only.';
+  String get statusReadyXdotool => 'On. Uses xdotool, which works on X11 only.';
 
   @override
-  String get statusReadyYdotool => 'Ready. Uses ydotool.';
+  String get statusReadyYdotool => 'On. Uses ydotool.';
 
   @override
   String get statusNeedsPermission => 'Accessibility access is off';
@@ -142,7 +179,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String get settingsAllowedEmpty =>
-      'No device yet. Pick Always when a phone asks.';
+      'No device yet. Pick Always allow when a phone asks.';
 
   @override
   String get revoke => 'Revoke';
@@ -182,7 +219,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String waitingBody(String device) {
-    return 'Click Allow on $device. Pick Always and it won\'t ask again.';
+    return 'On $device: click Allow once. Pick Always allow and it won\'t ask again.';
   }
 
   @override
@@ -281,22 +318,22 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String deniedNeedsPermission(String device) {
-    return '$device needs Accessibility access first. Open Ferret on $device to allow it.';
+    return '$device needs Accessibility access first. On $device: open Ferret and allow it.';
   }
 
   @override
   String deniedUnsupported(String device) {
-    return '$device can\'t be controlled yet. Open Ferret\'s settings on $device to see why.';
+    return '$device can\'t be controlled yet. On $device: open Ferret\'s settings to see why.';
   }
 
   @override
   String deniedTurnedOff(String device) {
-    return 'Remote input is off on $device. Turn it on in Ferret\'s settings there.';
+    return 'Control is off on $device. On $device: turn it on in Ferret\'s settings.';
   }
 
   @override
   String deniedVersion(String device) {
-    return '$device runs an older Ferret. Update it, then try again.';
+    return '$device runs an older Ferret. Update Ferret on $device, then try again.';
   }
 
   @override
@@ -309,12 +346,12 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String stoppedRevoked(String device) {
-    return '$device turned remote input off for this phone.';
+    return '$device no longer lets this phone control it.';
   }
 
   @override
   String stoppedFailed(String device) {
-    return '$device can\'t inject input anymore. Check Accessibility access there.';
+    return '$device can\'t move the pointer or type anymore. On $device: check Accessibility access.';
   }
 
   @override
@@ -324,7 +361,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String unreachable(String device) {
-    return '$device didn\'t answer. Is Ferret open on it?';
+    return '$device didn\'t answer. On $device: open Ferret.';
   }
 
   @override
@@ -336,14 +373,14 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String get controllingBody => 'Your phone is its touchpad.';
+  String get controllingBody => 'This phone is its touchpad.';
 
   @override
   String get openTouchpad => 'Open touchpad';
 
   @override
   String healthNeedsPermission(String device) {
-    return '$device needs Accessibility access for remote input';
+    return 'Needs Accessibility access on $device';
   }
 
   @override
@@ -353,6 +390,6 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String healthTurnedOff(String device) {
-    return 'Remote input is off on $device';
+    return 'Off on $device';
   }
 }

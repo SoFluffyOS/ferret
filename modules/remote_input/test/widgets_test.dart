@@ -33,7 +33,7 @@ void main() {
 
   group('consent dialog', () {
     for (final (label, choice) in [
-      ('Always', ConsentChoice.always),
+      ('Always allow', ConsentChoice.always),
       ('Allow once', ConsentChoice.allowOnce),
       ("Don't allow", ConsentChoice.deny),
     ]) {
@@ -115,7 +115,7 @@ void main() {
       await tester.pump();
 
       expect(feature.controlHost?.active?.deviceName, 'Pixel');
-      expect(find.text('Controlled by Pixel'), findsOneWidget);
+      expect(find.text('Pixel is controlling this computer'), findsOneWidget);
       await tester.runAsync(feature.stop);
     });
 
@@ -127,7 +127,7 @@ void main() {
       });
       await tester.pumpWidget(testApp(card()));
 
-      await tester.tap(find.text('Stop'));
+      await tester.tap(find.text('Stop control'));
       await tester.runAsync(settle);
       await tester.pump();
 
@@ -182,7 +182,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Ready. Uses Accessibility access.'), findsOneWidget);
+      expect(find.text('On. Uses Accessibility access.'), findsOneWidget);
       expect(find.text('pixel'), findsOneWidget);
       expect(
         find.textContaining('Pixel controlled this computer'),
@@ -318,7 +318,7 @@ void main() {
 
       expect(
         find.text(
-          'Pixel needs Accessibility access first. Open Ferret on Pixel to '
+          'Pixel needs Accessibility access first. On Pixel: open Ferret and '
           'allow it.',
         ),
         findsOneWidget,

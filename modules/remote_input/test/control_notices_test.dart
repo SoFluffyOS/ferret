@@ -75,7 +75,7 @@ void main() {
       ControlNotices.categories(
         lookupRemoteInputLocalizations(const Locale('en')),
       ).first.actions.map((action) => action.label),
-      ['Always', 'Allow once', "Don't allow"],
+      ['Always allow', 'Allow once', "Don't allow"],
     );
   });
 
@@ -90,7 +90,7 @@ void main() {
     expect(notifier.shown.keys, [ControlNotices.activeNotice]);
     expect(
       notifier.shown[ControlNotices.activeNotice]?.title,
-      'Controlled by Pixel',
+      'Pixel is controlling this computer',
     );
   });
 

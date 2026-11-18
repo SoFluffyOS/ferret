@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
-  "title": "Remote input",
-  "useAsTouchpad": "Use as touchpad",
+  "title": "Control",
+  "useAsTouchpad": "Control",
   "back": "Back",
   "consentTitle": "Let {device} control this computer?",
   "@consentTitle": {
@@ -20,9 +20,9 @@
     }
   },
   "allowOnce": "Allow once",
-  "allowAlways": "Always",
+  "allowAlways": "Always allow",
   "dontAllow": "Don't allow",
-  "controlledBy": "Controlled by {device}",
+  "controlledBy": "{device} is controlling this computer",
   "@controlledBy": {
     "placeholders": {
       "device": {
@@ -38,8 +38,40 @@
       }
     }
   },
-  "stop": "Stop",
-  "activeNoticeBody": "Tap Stop to take back control.",
+  "stop": "Stop control",
+  "activityControlling": "{device} is controlling {host, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@activityControlling": {
+    "description": "Activity row while a device controls this computer. host is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "activityControlled": "{device} controlled {host, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@activityControlled": {
+    "description": "Activity row once a device stopped controlling this computer. host is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "activityControlledFor": "{minutes, plural, =0{For less than a minute} =1{For 1 min} other{For {minutes} min}}",
+  "@activityControlledFor": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "activeNoticeBody": "Tap Stop control to take this computer back.",
   "permissionTitle": "{device} can't control this computer yet",
   "@permissionTitle": {
     "placeholders": {
@@ -74,11 +106,11 @@
   },
   "settingsEnabled": "Let my phones control this computer",
   "settingsEnabledBody": "A phone becomes its touchpad and keyboard. Each phone asks you first.",
-  "statusReadyQuartz": "Ready. Uses Accessibility access.",
-  "statusReadySendInput": "Ready. Apps running as administrator can't be controlled.",
-  "statusReadyUinput": "Ready. Uses a virtual input device.",
-  "statusReadyXdotool": "Ready. Uses xdotool, which works on X11 only.",
-  "statusReadyYdotool": "Ready. Uses ydotool.",
+  "statusReadyQuartz": "On. Uses Accessibility access.",
+  "statusReadySendInput": "On. Apps running as administrator can't be controlled.",
+  "statusReadyUinput": "On. Uses a virtual input device.",
+  "statusReadyXdotool": "On. Uses xdotool, which works on X11 only.",
+  "statusReadyYdotool": "On. Uses ydotool.",
   "statusNeedsPermission": "Accessibility access is off",
   "statusNeedsPermissionBody": "macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back.",
   "allowAccess": "Allow access",
@@ -89,7 +121,7 @@
   "statusFailed": "Ferret couldn't check whether it may control this computer.",
   "checkAgain": "Check again",
   "settingsAllowedTitle": "Always allowed",
-  "settingsAllowedEmpty": "No device yet. Pick Always when a phone asks.",
+  "settingsAllowedEmpty": "No device yet. Pick Always allow when a phone asks.",
   "revoke": "Revoke",
   "settingsHistoryTitle": "History",
   "settingsHistoryEmpty": "No device controlled this computer yet.",
@@ -114,7 +146,7 @@
       }
     }
   },
-  "waitingBody": "Click Allow on {device}. Pick Always and it won't ask again.",
+  "waitingBody": "On {device}: click Allow once. Pick Always allow and it won't ask again.",
   "@waitingBody": {
     "placeholders": {
       "device": {
@@ -172,7 +204,7 @@
       }
     }
   },
-  "deniedNeedsPermission": "{device} needs Accessibility access first. Open Ferret on {device} to allow it.",
+  "deniedNeedsPermission": "{device} needs Accessibility access first. On {device}: open Ferret and allow it.",
   "@deniedNeedsPermission": {
     "placeholders": {
       "device": {
@@ -180,7 +212,7 @@
       }
     }
   },
-  "deniedUnsupported": "{device} can't be controlled yet. Open Ferret's settings on {device} to see why.",
+  "deniedUnsupported": "{device} can't be controlled yet. On {device}: open Ferret's settings to see why.",
   "@deniedUnsupported": {
     "placeholders": {
       "device": {
@@ -188,7 +220,7 @@
       }
     }
   },
-  "deniedTurnedOff": "Remote input is off on {device}. Turn it on in Ferret's settings there.",
+  "deniedTurnedOff": "Control is off on {device}. On {device}: turn it on in Ferret's settings.",
   "@deniedTurnedOff": {
     "placeholders": {
       "device": {
@@ -196,7 +228,7 @@
       }
     }
   },
-  "deniedVersion": "{device} runs an older Ferret. Update it, then try again.",
+  "deniedVersion": "{device} runs an older Ferret. Update Ferret on {device}, then try again.",
   "@deniedVersion": {
     "placeholders": {
       "device": {
@@ -213,7 +245,7 @@
     }
   },
   "stoppedIdle": "Stopped after a long time without input.",
-  "stoppedRevoked": "{device} turned remote input off for this phone.",
+  "stoppedRevoked": "{device} no longer lets this phone control it.",
   "@stoppedRevoked": {
     "placeholders": {
       "device": {
@@ -221,7 +253,7 @@
       }
     }
   },
-  "stoppedFailed": "{device} can't inject input anymore. Check Accessibility access there.",
+  "stoppedFailed": "{device} can't move the pointer or type anymore. On {device}: check Accessibility access.",
   "@stoppedFailed": {
     "placeholders": {
       "device": {
@@ -237,7 +269,7 @@
       }
     }
   },
-  "unreachable": "{device} didn't answer. Is Ferret open on it?",
+  "unreachable": "{device} didn't answer. On {device}: open Ferret.",
   "@unreachable": {
     "placeholders": {
       "device": {
@@ -254,9 +286,9 @@
       }
     }
   },
-  "controllingBody": "Your phone is its touchpad.",
+  "controllingBody": "This phone is its touchpad.",
   "openTouchpad": "Open touchpad",
-  "healthNeedsPermission": "{device} needs Accessibility access for remote input",
+  "healthNeedsPermission": "Needs Accessibility access on {device}",
   "@healthNeedsPermission": {
     "placeholders": {
       "device": {
@@ -272,7 +304,7 @@
       }
     }
   },
-  "healthTurnedOff": "Remote input is off on {device}",
+  "healthTurnedOff": "Off on {device}",
   "@healthTurnedOff": {
     "placeholders": {
       "device": {

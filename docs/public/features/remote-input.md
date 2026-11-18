@@ -1,10 +1,10 @@
-# Remote input
+# Control
 
 > **TL;DR**
 >
 > 1. On your phone, open your computer in Ferret.
-> 2. Tap **Use as touchpad**.
-> 3. Click **Always** or **Allow once** on the computer. That's it.
+> 2. Tap **Control**.
+> 3. Click **Always allow** or **Allow once** on the computer. That's it.
 
 You're on the couch. The laptop is across the room, playing a movie. You want to pause it, or click "Next episode".
 
@@ -30,10 +30,10 @@ The last row has the media keys: previous, play or pause, next, and the volume.
 
 Nobody takes over your computer without you knowing.
 
-- **The first time** a phone asks, the computer asks you: "Let Pixel control this computer?" with **Always**, **Allow once** and **Don't allow**. It shows up as a notice, on top of Ferret, and on the home card.
-- **While it happens**, a notice and the home card say "Controlled by Pixel" with **Stop**. Stop cuts the phone off right away and lets go of any held key.
-- **Afterwards**, you see a line such as "Pixel controlled this computer for 4 min at 21:10". The last 20 are in **Settings → Remote input → History**.
-- Changed your mind about Always? **Settings → Remote input → Always allowed → Revoke**.
+- **The first time** a phone asks, the computer asks you: "Let Pixel control this computer?" with **Always allow**, **Allow once** and **Don't allow**. It shows up as a notice, on top of Ferret, and on the home card.
+- **While it happens**, a notice and the home card say "Pixel is controlling this computer" with **Stop control**. It cuts the phone off right away and lets go of any held key.
+- **Afterwards**, you see a line such as "Pixel controlled this computer for 4 min at 21:10". The last 20 are in **Settings → Control → History**.
+- Changed your mind about Always allow? **Settings → Control → Always allowed → Revoke**.
 - Don't want it at all? Turn off **Let my phones control this computer**.
 
 Control also ends on its own after 10 minutes without any input, or when the phone leaves the touchpad page.
@@ -44,7 +44,7 @@ Only devices you paired can even ask.
 
 macOS asks before any app may move the pointer or type. Ferret asks the first time it needs it:
 
-1. Click **Allow access** in **Settings → Remote input** (or **Open Settings** on the card).
+1. Click **Allow access** in **Settings → Control** (or **Open Settings** on the card).
 2. Turn on **Ferret** in **Privacy & Security → Accessibility**.
 3. Come back to Ferret. It checks again on its own.
 
@@ -58,7 +58,7 @@ Ferret picks the best way it finds:
 2. **ydotool** on Wayland (1.0 or later, with the `ydotoold` service running).
 3. **xdotool** on X11.
 
-None of them? **Settings → Remote input** says what to install, with **Check again**.
+None of them? **Settings → Control** says what to install, with **Check again**.
 
 With uinput, text types through a US keyboard layout. Ferret hands anything else, such as accents, to xdotool or ydotool when one is installed.
 

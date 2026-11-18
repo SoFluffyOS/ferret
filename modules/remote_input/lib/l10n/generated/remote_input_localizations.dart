@@ -100,13 +100,13 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Remote input'**
+  /// **'Control'**
   String get title;
 
   /// No description provided for @useAsTouchpad.
   ///
   /// In en, this message translates to:
-  /// **'Use as touchpad'**
+  /// **'Control'**
   String get useAsTouchpad;
 
   /// No description provided for @back.
@@ -136,7 +136,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @allowAlways.
   ///
   /// In en, this message translates to:
-  /// **'Always'**
+  /// **'Always allow'**
   String get allowAlways;
 
   /// No description provided for @dontAllow.
@@ -148,7 +148,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @controlledBy.
   ///
   /// In en, this message translates to:
-  /// **'Controlled by {device}'**
+  /// **'{device} is controlling this computer'**
   String controlledBy(String device);
 
   /// No description provided for @controlledSince.
@@ -160,13 +160,31 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @stop.
   ///
   /// In en, this message translates to:
-  /// **'Stop'**
+  /// **'Stop control'**
   String get stop;
+
+  /// Activity row while a device controls this computer. host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is controlling {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  String activityControlling(String device, String host);
+
+  /// Activity row once a device stopped controlling this computer. host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} controlled {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  String activityControlled(String device, String host);
+
+  /// No description provided for @activityControlledFor.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =0{For less than a minute} =1{For 1 min} other{For {minutes} min}}'**
+  String activityControlledFor(int minutes);
 
   /// No description provided for @activeNoticeBody.
   ///
   /// In en, this message translates to:
-  /// **'Tap Stop to take back control.'**
+  /// **'Tap Stop control to take this computer back.'**
   String get activeNoticeBody;
 
   /// No description provided for @permissionTitle.
@@ -214,31 +232,31 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @statusReadyQuartz.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Uses Accessibility access.'**
+  /// **'On. Uses Accessibility access.'**
   String get statusReadyQuartz;
 
   /// No description provided for @statusReadySendInput.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Apps running as administrator can\'t be controlled.'**
+  /// **'On. Apps running as administrator can\'t be controlled.'**
   String get statusReadySendInput;
 
   /// No description provided for @statusReadyUinput.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Uses a virtual input device.'**
+  /// **'On. Uses a virtual input device.'**
   String get statusReadyUinput;
 
   /// No description provided for @statusReadyXdotool.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Uses xdotool, which works on X11 only.'**
+  /// **'On. Uses xdotool, which works on X11 only.'**
   String get statusReadyXdotool;
 
   /// No description provided for @statusReadyYdotool.
   ///
   /// In en, this message translates to:
-  /// **'Ready. Uses ydotool.'**
+  /// **'On. Uses ydotool.'**
   String get statusReadyYdotool;
 
   /// No description provided for @statusNeedsPermission.
@@ -304,7 +322,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsAllowedEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No device yet. Pick Always when a phone asks.'**
+  /// **'No device yet. Pick Always allow when a phone asks.'**
   String get settingsAllowedEmpty;
 
   /// No description provided for @revoke.
@@ -370,7 +388,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @waitingBody.
   ///
   /// In en, this message translates to:
-  /// **'Click Allow on {device}. Pick Always and it won\'t ask again.'**
+  /// **'On {device}: click Allow once. Pick Always allow and it won\'t ask again.'**
   String waitingBody(String device);
 
   /// No description provided for @cancel.
@@ -550,25 +568,25 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @deniedNeedsPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} needs Accessibility access first. Open Ferret on {device} to allow it.'**
+  /// **'{device} needs Accessibility access first. On {device}: open Ferret and allow it.'**
   String deniedNeedsPermission(String device);
 
   /// No description provided for @deniedUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t be controlled yet. Open Ferret\'s settings on {device} to see why.'**
+  /// **'{device} can\'t be controlled yet. On {device}: open Ferret\'s settings to see why.'**
   String deniedUnsupported(String device);
 
   /// No description provided for @deniedTurnedOff.
   ///
   /// In en, this message translates to:
-  /// **'Remote input is off on {device}. Turn it on in Ferret\'s settings there.'**
+  /// **'Control is off on {device}. On {device}: turn it on in Ferret\'s settings.'**
   String deniedTurnedOff(String device);
 
   /// No description provided for @deniedVersion.
   ///
   /// In en, this message translates to:
-  /// **'{device} runs an older Ferret. Update it, then try again.'**
+  /// **'{device} runs an older Ferret. Update Ferret on {device}, then try again.'**
   String deniedVersion(String device);
 
   /// No description provided for @stoppedOnHost.
@@ -586,13 +604,13 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @stoppedRevoked.
   ///
   /// In en, this message translates to:
-  /// **'{device} turned remote input off for this phone.'**
+  /// **'{device} no longer lets this phone control it.'**
   String stoppedRevoked(String device);
 
   /// No description provided for @stoppedFailed.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t inject input anymore. Check Accessibility access there.'**
+  /// **'{device} can\'t move the pointer or type anymore. On {device}: check Accessibility access.'**
   String stoppedFailed(String device);
 
   /// No description provided for @lostConnection.
@@ -604,7 +622,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @unreachable.
   ///
   /// In en, this message translates to:
-  /// **'{device} didn\'t answer. Is Ferret open on it?'**
+  /// **'{device} didn\'t answer. On {device}: open Ferret.'**
   String unreachable(String device);
 
   /// No description provided for @tryAgain.
@@ -622,7 +640,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @controllingBody.
   ///
   /// In en, this message translates to:
-  /// **'Your phone is its touchpad.'**
+  /// **'This phone is its touchpad.'**
   String get controllingBody;
 
   /// No description provided for @openTouchpad.
@@ -634,7 +652,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthNeedsPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} needs Accessibility access for remote input'**
+  /// **'Needs Accessibility access on {device}'**
   String healthNeedsPermission(String device);
 
   /// No description provided for @healthUnsupported.
@@ -646,7 +664,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthTurnedOff.
   ///
   /// In en, this message translates to:
-  /// **'Remote input is off on {device}'**
+  /// **'Off on {device}'**
   String healthTurnedOff(String device);
 }
 
