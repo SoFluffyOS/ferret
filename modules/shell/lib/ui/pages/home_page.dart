@@ -63,6 +63,10 @@ class HomePage extends StatelessWidget {
         HomeMenu(onSettings: () => _push(context, const SettingsPage())),
       ],
       footer: const HomeFooter(),
+      width: switch (hasDevices) {
+        true => .page,
+        false => .narrow,
+      },
       children: [
         const NeedsYouFrame(),
         const JoinedNoticesFrame(),

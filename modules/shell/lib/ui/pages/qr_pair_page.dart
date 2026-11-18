@@ -49,6 +49,7 @@ class _QrPairPageState extends State<QrPairPage> {
         child: FerretPage(
           title: l10n.pairShowCode,
           backLabel: l10n.back,
+          width: .narrow,
           children: const [PairingStatusCard(), _QrCard()],
         ),
       ),

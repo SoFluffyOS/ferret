@@ -31,6 +31,7 @@ class _ConnectPageState extends State<ConnectPage> {
     return FerretPage(
       title: l10n.connectTitle,
       backLabel: l10n.back,
+      width: .narrow,
       children: [
         Text(
           l10n.connectBody,

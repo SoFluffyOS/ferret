@@ -61,6 +61,7 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
         child: FerretPage(
           title: l10n.pairEnterCode,
           backLabel: l10n.back,
+          width: .narrow,
           children: [
             const PairingStatusCard(),
             SectionTitle(l10n.otherLinkTitle),

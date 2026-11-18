@@ -53,6 +53,7 @@ class _PairPageState extends State<PairPage> {
         child: FerretPage(
           title: l10n.pairTitle,
           backLabel: l10n.back,
+          width: .narrow,
           children: [
             const PairingStatusCard(),
             const NearbyFrame(),

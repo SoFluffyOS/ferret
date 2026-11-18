@@ -101,15 +101,17 @@ class WindowMenuFrame extends StatelessWidget {
       return keyed;
     }
 
-    return PlatformMenuBar(
-      menus: _menus(
-        context,
-        commands: commands,
-        sections: sections,
-        onSection: selectSection,
-        isSidebarHidden: isSidebarHidden,
+    return _MenuKeeper(
+      child: PlatformMenuBar(
+        menus: _menus(
+          context,
+          commands: commands,
+          sections: sections,
+          onSection: selectSection,
+          isSidebarHidden: isSidebarHidden,
+        ),
+        child: keyed,
       ),
-      child: keyed,
     );
   }
 
@@ -267,4 +269,71 @@ class WindowMenuFrame extends StatelessWidget {
       ),
     ];
   }
+}
+
+/// Leaves the app its own menu when the window closes. The menu bar goes
+/// with the window's widgets, and with Ferret kept in the Dock that would
+/// leave no Quit and no Settings behind the Apple menu.
+class _MenuKeeper extends StatefulWidget {
+  const _MenuKeeper({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_MenuKeeper> createState() => _MenuKeeperState();
+}
+
+class _MenuKeeperState extends State<_MenuKeeper> {
+  late ShellLocalizations _l10n;
+  late final WindowNavRegistry _registry = context.read<WindowNavRegistry>();
+  late final AppViews? _views = context.read<AppViews?>();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _l10n = context.shellL10n;
+  }
+
+  /// Runs after the window's menu bar cleared itself: children go first.
+  @override
+  void dispose() {
+    WidgetsBinding.instance.platformMenuDelegate.setMenus([
+      PlatformMenu(
+        label: _l10n.appName,
+        menus: [
+          const PlatformMenuItemGroup(
+            members: [PlatformProvidedMenuItem(type: .about)],
+          ),
+          PlatformMenuItemGroup(
+            members: [
+              PlatformMenuItem(
+                label: _l10n.menuSettings,
+                shortcut: WindowShortcuts.activatorOf(.openSettings, .macOS),
+                onSelected: () => unawaited(_openSettings()),
+              ),
+            ],
+          ),
+          const PlatformMenuItemGroup(
+            members: [
+              PlatformProvidedMenuItem(type: .hide),
+              PlatformProvidedMenuItem(type: .hideOtherApplications),
+              PlatformProvidedMenuItem(type: .showAllApplications),
+            ],
+          ),
+          const PlatformMenuItemGroup(
+            members: [PlatformProvidedMenuItem(type: .quit)],
+          ),
+        ],
+      ),
+    ]);
+    super.dispose();
+  }
+
+  Future<void> _openSettings() async {
+    await _views?.reveal();
+    _registry.open(const SettingsDestination());
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
