@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:notifications/feature/notifications_feature.dart';
 import 'package:notifications/l10n/l10n.dart';
+import 'package:notifications/models/models.dart';
 import 'package:notifications/services/services.dart';
 import 'package:notifications/ui/frames/frames.dart';
 import 'package:notifications/ui/notifications_activity.dart';
@@ -220,7 +221,10 @@ class NotificationsFeatureUi extends FeatureUi {
 
     return FeatureHealth(
       .ok,
-      reason: l10n.healthApps(settings.allowedPackages.length),
+      reason: l10n.appsSummary(
+        settings.effectiveFilter,
+        settings.namedAppCount,
+      ),
     );
   }
 
@@ -366,7 +370,7 @@ class NotificationsFeatureUi extends FeatureUi {
       ),
       .ready => FeatureHealth(
         .ok,
-        reason: l10n.healthApps(setup.allowedAppCount),
+        reason: l10n.appsSummary(setup.appFilter, setup.namedAppCount),
       ),
     };
   }
@@ -385,7 +389,7 @@ class NotificationsFeatureUi extends FeatureUi {
         needsAttention: setup.checked,
       ),
       .ready => (
-        summary: l10n.healthApps(setup.allowedAppCount),
+        summary: l10n.appsSummary(setup.appFilter, setup.namedAppCount),
         isOn: true,
         needsAttention: false,
       ),
@@ -428,7 +432,10 @@ class NotificationsFeatureUi extends FeatureUi {
       final settings = feature.senderSettings[phone.deviceId];
       if (settings != null && settings.enabled) {
         return (
-          summary: l10n.healthApps(settings.allowedPackages.length),
+          summary: l10n.appsSummary(
+            settings.effectiveFilter,
+            settings.namedAppCount,
+          ),
           isOn: true,
           needsAttention: false,
         );
@@ -576,12 +583,11 @@ class NotificationsFeatureUi extends FeatureUi {
     featureContext.push<void>(
       AppPickerPage(
         deviceName: platformNotificationsL10n().thisPhone,
-        load: feature.localApps,
-        save: (package, allowed) => feature.applySettings(
-          UpdateMirrorSettings(
-            apps: [AppChoice(package: package, allowed: allowed)],
-          ),
+        load: () async => (
+          settings: await feature.localSettings(),
+          apps: await feature.localApps(),
         ),
+        update: feature.applySettings,
       ),
     ),
   );
@@ -594,16 +600,20 @@ class NotificationsFeatureUi extends FeatureUi {
     featureContext.push<void>(
       AppPickerPage(
         deviceName: deviceName,
-        load: () => feature.fetchApps(deviceId),
-        save: (package, allowed) => feature.updateSettings(
-          deviceId,
-          UpdateMirrorSettings(
-            apps: [AppChoice(package: package, allowed: allowed)],
-          ),
-        ),
+        load: () => _remoteApps(deviceId),
+        update: (update) => feature.updateSettings(deviceId, update),
       ),
     ),
   );
+
+  Future<AppList> _remoteApps(String deviceId) async {
+    final settings = await feature.fetchSettings(deviceId);
+    if (settings == null) {
+      throw const SessionClosedException();
+    }
+
+    return (settings: settings, apps: await feature.fetchApps(deviceId));
+  }
 }
 
 /// What the Settings row says about notifications.

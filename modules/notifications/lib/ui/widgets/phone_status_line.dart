@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:notifications/l10n/l10n.dart';
+import 'package:notifications/models/models.dart';
 import 'package:notifications/ui/widgets/status_line.dart';
 import 'package:notifications/view_models/view_models.dart';
 
@@ -26,11 +27,19 @@ class PhoneStatusLine extends StatelessWidget {
         StatusTone.warning,
       ),
       .mirroring => (
-        l10n.phoneMirroring(phone.settings?.allowedPackages.length ?? 0),
+        l10n.phoneMirroring(_apps(l10n)),
         StatusTone.good,
       ),
     };
 
     return StatusLine(text: text, tone: tone);
   }
+
+  String _apps(NotificationsLocalizations l10n) => switch (phone.settings) {
+    final settings? => l10n.appsSummary(
+      settings.effectiveFilter,
+      settings.namedAppCount,
+    ),
+    null => l10n.appsAll,
+  };
 }

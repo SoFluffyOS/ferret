@@ -270,6 +270,8 @@ data class PlatformNotification (
   val isOngoing: Boolean,
   val isForegroundService: Boolean,
   val isGroupSummary: Boolean,
+  /** A media player's controls, such as a paused song. */
+  val isMedia: Boolean,
   /**
    * The channel importance (`NotificationManager.IMPORTANCE_*`), or -1000
    * when unknown.
@@ -291,9 +293,10 @@ data class PlatformNotification (
       val isOngoing = pigeonVar_list[8] as Boolean
       val isForegroundService = pigeonVar_list[9] as Boolean
       val isGroupSummary = pigeonVar_list[10] as Boolean
-      val importance = pigeonVar_list[11] as Long
-      val actions = pigeonVar_list[12] as List<PlatformNotificationAction>
-      return PlatformNotification(key, packageName, appName, title, text, postedAtMs, appIcon, isConversation, isOngoing, isForegroundService, isGroupSummary, importance, actions)
+      val isMedia = pigeonVar_list[11] as Boolean
+      val importance = pigeonVar_list[12] as Long
+      val actions = pigeonVar_list[13] as List<PlatformNotificationAction>
+      return PlatformNotification(key, packageName, appName, title, text, postedAtMs, appIcon, isConversation, isOngoing, isForegroundService, isGroupSummary, isMedia, importance, actions)
     }
   }
   fun toList(): List<Any?> {
@@ -309,6 +312,7 @@ data class PlatformNotification (
       isOngoing,
       isForegroundService,
       isGroupSummary,
+      isMedia,
       importance,
       actions,
     )
@@ -321,7 +325,7 @@ data class PlatformNotification (
       return true
     }
     val other = other as PlatformNotification
-    return MessagesPigeonUtils.deepEquals(this.key, other.key) && MessagesPigeonUtils.deepEquals(this.packageName, other.packageName) && MessagesPigeonUtils.deepEquals(this.appName, other.appName) && MessagesPigeonUtils.deepEquals(this.title, other.title) && MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.postedAtMs, other.postedAtMs) && MessagesPigeonUtils.deepEquals(this.appIcon, other.appIcon) && MessagesPigeonUtils.deepEquals(this.isConversation, other.isConversation) && MessagesPigeonUtils.deepEquals(this.isOngoing, other.isOngoing) && MessagesPigeonUtils.deepEquals(this.isForegroundService, other.isForegroundService) && MessagesPigeonUtils.deepEquals(this.isGroupSummary, other.isGroupSummary) && MessagesPigeonUtils.deepEquals(this.importance, other.importance) && MessagesPigeonUtils.deepEquals(this.actions, other.actions)
+    return MessagesPigeonUtils.deepEquals(this.key, other.key) && MessagesPigeonUtils.deepEquals(this.packageName, other.packageName) && MessagesPigeonUtils.deepEquals(this.appName, other.appName) && MessagesPigeonUtils.deepEquals(this.title, other.title) && MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.postedAtMs, other.postedAtMs) && MessagesPigeonUtils.deepEquals(this.appIcon, other.appIcon) && MessagesPigeonUtils.deepEquals(this.isConversation, other.isConversation) && MessagesPigeonUtils.deepEquals(this.isOngoing, other.isOngoing) && MessagesPigeonUtils.deepEquals(this.isForegroundService, other.isForegroundService) && MessagesPigeonUtils.deepEquals(this.isGroupSummary, other.isGroupSummary) && MessagesPigeonUtils.deepEquals(this.isMedia, other.isMedia) && MessagesPigeonUtils.deepEquals(this.importance, other.importance) && MessagesPigeonUtils.deepEquals(this.actions, other.actions)
   }
 
   override fun hashCode(): Int {
@@ -337,12 +341,13 @@ data class PlatformNotification (
     result = 31 * result + MessagesPigeonUtils.deepHash(this.isOngoing)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.isForegroundService)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.isGroupSummary)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.isMedia)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.importance)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.actions)
     return result
   }
   override fun toString(): String {
-    return "PlatformNotification(key=$key, packageName=$packageName, appName=$appName, title=$title, text=$text, postedAtMs=$postedAtMs, appIcon=${appIcon?.contentToString()}, isConversation=$isConversation, isOngoing=$isOngoing, isForegroundService=$isForegroundService, isGroupSummary=$isGroupSummary, importance=$importance, actions=$actions)"
+    return "PlatformNotification(key=$key, packageName=$packageName, appName=$appName, title=$title, text=$text, postedAtMs=$postedAtMs, appIcon=${appIcon?.contentToString()}, isConversation=$isConversation, isOngoing=$isOngoing, isForegroundService=$isForegroundService, isGroupSummary=$isGroupSummary, isMedia=$isMedia, importance=$importance, actions=$actions)"
   }
 }
 
@@ -354,7 +359,12 @@ data class PlatformNotification (
 data class PlatformApp (
   val packageName: String,
   val name: String,
-  val icon: ByteArray? = null
+  val icon: ByteArray? = null,
+  /**
+   * When the app's newest notification still showing was posted, or null
+   * when it has none.
+   */
+  val lastPostedMs: Long? = null
 )
  {
   companion object {
@@ -362,7 +372,8 @@ data class PlatformApp (
       val packageName = pigeonVar_list[0] as String
       val name = pigeonVar_list[1] as String
       val icon = pigeonVar_list[2] as ByteArray?
-      return PlatformApp(packageName, name, icon)
+      val lastPostedMs = pigeonVar_list[3] as Long?
+      return PlatformApp(packageName, name, icon, lastPostedMs)
     }
   }
   fun toList(): List<Any?> {
@@ -370,6 +381,7 @@ data class PlatformApp (
       packageName,
       name,
       icon,
+      lastPostedMs,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -380,7 +392,7 @@ data class PlatformApp (
       return true
     }
     val other = other as PlatformApp
-    return MessagesPigeonUtils.deepEquals(this.packageName, other.packageName) && MessagesPigeonUtils.deepEquals(this.name, other.name) && MessagesPigeonUtils.deepEquals(this.icon, other.icon)
+    return MessagesPigeonUtils.deepEquals(this.packageName, other.packageName) && MessagesPigeonUtils.deepEquals(this.name, other.name) && MessagesPigeonUtils.deepEquals(this.icon, other.icon) && MessagesPigeonUtils.deepEquals(this.lastPostedMs, other.lastPostedMs)
   }
 
   override fun hashCode(): Int {
@@ -388,10 +400,11 @@ data class PlatformApp (
     result = 31 * result + MessagesPigeonUtils.deepHash(this.packageName)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.name)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.icon)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.lastPostedMs)
     return result
   }
   override fun toString(): String {
-    return "PlatformApp(packageName=$packageName, name=$name, icon=${icon?.contentToString()})"
+    return "PlatformApp(packageName=$packageName, name=$name, icon=${icon?.contentToString()}, lastPostedMs=$lastPostedMs)"
   }
 }
 private open class MessagesPigeonCodec : StandardMessageCodec() {

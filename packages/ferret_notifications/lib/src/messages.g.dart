@@ -179,6 +179,7 @@ class PlatformNotification {
     required this.isOngoing,
     required this.isForegroundService,
     required this.isGroupSummary,
+    required this.isMedia,
     required this.importance,
     required this.actions,
   });
@@ -206,6 +207,9 @@ class PlatformNotification {
 
   bool isGroupSummary;
 
+  /// A media player's controls, such as a paused song.
+  bool isMedia;
+
   /// The channel importance (`NotificationManager.IMPORTANCE_*`), or -1000
   /// when unknown.
   int importance;
@@ -225,6 +229,7 @@ class PlatformNotification {
       isOngoing,
       isForegroundService,
       isGroupSummary,
+      isMedia,
       importance,
       actions,
     ];
@@ -247,8 +252,9 @@ class PlatformNotification {
       isOngoing: result[8]! as bool,
       isForegroundService: result[9]! as bool,
       isGroupSummary: result[10]! as bool,
-      importance: result[11]! as int,
-      actions: (result[12]! as List<Object?>).cast<PlatformNotificationAction>(),
+      isMedia: result[11]! as bool,
+      importance: result[12]! as int,
+      actions: (result[13]! as List<Object?>).cast<PlatformNotificationAction>(),
     );
   }
 
@@ -261,7 +267,7 @@ class PlatformNotification {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(key, other.key) && _deepEquals(packageName, other.packageName) && _deepEquals(appName, other.appName) && _deepEquals(title, other.title) && _deepEquals(text, other.text) && _deepEquals(postedAtMs, other.postedAtMs) && _deepEquals(appIcon, other.appIcon) && _deepEquals(isConversation, other.isConversation) && _deepEquals(isOngoing, other.isOngoing) && _deepEquals(isForegroundService, other.isForegroundService) && _deepEquals(isGroupSummary, other.isGroupSummary) && _deepEquals(importance, other.importance) && _deepEquals(actions, other.actions);
+    return _deepEquals(key, other.key) && _deepEquals(packageName, other.packageName) && _deepEquals(appName, other.appName) && _deepEquals(title, other.title) && _deepEquals(text, other.text) && _deepEquals(postedAtMs, other.postedAtMs) && _deepEquals(appIcon, other.appIcon) && _deepEquals(isConversation, other.isConversation) && _deepEquals(isOngoing, other.isOngoing) && _deepEquals(isForegroundService, other.isForegroundService) && _deepEquals(isGroupSummary, other.isGroupSummary) && _deepEquals(isMedia, other.isMedia) && _deepEquals(importance, other.importance) && _deepEquals(actions, other.actions);
   }
 
   @override
@@ -270,7 +276,7 @@ class PlatformNotification {
 
   @override
   String toString() {
-    return 'PlatformNotification(key: $key, packageName: $packageName, appName: $appName, title: $title, text: $text, postedAtMs: $postedAtMs, appIcon: $appIcon, isConversation: $isConversation, isOngoing: $isOngoing, isForegroundService: $isForegroundService, isGroupSummary: $isGroupSummary, importance: $importance, actions: $actions)';
+    return 'PlatformNotification(key: $key, packageName: $packageName, appName: $appName, title: $title, text: $text, postedAtMs: $postedAtMs, appIcon: $appIcon, isConversation: $isConversation, isOngoing: $isOngoing, isForegroundService: $isForegroundService, isGroupSummary: $isGroupSummary, isMedia: $isMedia, importance: $importance, actions: $actions)';
   }
 }
 
@@ -280,6 +286,7 @@ class PlatformApp {
     required this.packageName,
     required this.name,
     this.icon,
+    this.lastPostedMs,
   });
 
   String packageName;
@@ -288,11 +295,16 @@ class PlatformApp {
 
   Uint8List? icon;
 
+  /// When the app's newest notification still showing was posted, or null
+  /// when it has none.
+  int? lastPostedMs;
+
   List<Object?> _toList() {
     return <Object?>[
       packageName,
       name,
       icon,
+      lastPostedMs,
     ];
   }
 
@@ -305,6 +317,7 @@ class PlatformApp {
       packageName: result[0]! as String,
       name: result[1]! as String,
       icon: result[2] as Uint8List?,
+      lastPostedMs: result[3] as int?,
     );
   }
 
@@ -317,7 +330,7 @@ class PlatformApp {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(packageName, other.packageName) && _deepEquals(name, other.name) && _deepEquals(icon, other.icon);
+    return _deepEquals(packageName, other.packageName) && _deepEquals(name, other.name) && _deepEquals(icon, other.icon) && _deepEquals(lastPostedMs, other.lastPostedMs);
   }
 
   @override
@@ -326,7 +339,7 @@ class PlatformApp {
 
   @override
   String toString() {
-    return 'PlatformApp(packageName: $packageName, name: $name, icon: $icon)';
+    return 'PlatformApp(packageName: $packageName, name: $name, icon: $icon, lastPostedMs: $lastPostedMs)';
   }
 }
 

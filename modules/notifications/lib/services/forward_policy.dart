@@ -31,8 +31,8 @@ abstract final class ForwardPolicy {
     return .forward;
   }
 
-  /// Ongoing work, foreground services, quiet notifications, group summaries
-  /// and empty ones never leave the phone.
+  /// Ongoing work, foreground services, media controls, quiet
+  /// notifications, group summaries and empty ones never leave the phone.
   static bool isNoise(PlatformNotification notification) {
     final importance = notification.importance;
     final isQuiet =
@@ -42,6 +42,7 @@ abstract final class ForwardPolicy {
 
     return notification.isOngoing ||
         notification.isForegroundService ||
+        notification.isMedia ||
         notification.isGroupSummary ||
         isQuiet ||
         isEmpty;

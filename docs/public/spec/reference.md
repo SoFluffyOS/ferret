@@ -993,6 +993,17 @@ Dismisses the notification with `key` on the source. Sent without expecting a re
 |---|---|---|---|
 | `key` | `string` | 1 |  |
 
+### enum `AppFilter`
+
+Which apps the source mirrors.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `APP_FILTER_UNSPECIFIED` | 0 | Sent by sources that predate the filter: they mirror `allowed_packages` only, as `APP_FILTER_ONLY`. |
+| `APP_FILTER_ALL` | 1 | Every app. |
+| `APP_FILTER_ALL_EXCEPT` | 2 | Every app except `excluded_packages`. |
+| `APP_FILTER_ONLY` | 3 | Only `allowed_packages`. |
+
 ### message `MirrorSettings`
 
 How the source mirrors notifications.
@@ -1002,7 +1013,9 @@ How the source mirrors notifications.
 | `enabled` | `bool` | 1 | The person turned mirroring on. |
 | `access_granted` | `bool` | 2 | The platform lets the source read notifications. |
 | `skip_while_using` | `bool` | 3 | Mirroring pauses while the source is in use (screen on and unlocked). |
-| `allowed_packages` | `repeated string` | 4 | Apps whose notifications are mirrored. |
+| `allowed_packages` | `repeated string` | 4 | The apps picked for `APP_FILTER_ONLY`. Kept while another filter is active, so switching back restores them. |
+| `app_filter` | `AppFilter` | 5 | Which apps are mirrored. |
+| `excluded_packages` | `repeated string` | 6 | The apps muted for `APP_FILTER_ALL_EXCEPT`. Kept while another filter is active. |
 
 ### message `MirrorSettingsRequest`
 
@@ -1018,8 +1031,9 @@ An app the person can pick in the app list.
 | `package` | `string` | 1 |  |
 | `name` | `string` | 2 |  |
 | `icon_png` | `bytes` | 3 | A small PNG of the app's icon. |
-| `allowed` | `bool` | 4 |  |
-| `is_messaging` | `bool` | 5 | A messaging app, picked by default. |
+| `allowed` | `bool` | 4 | Its notifications are mirrored under the current filter. |
+| `is_messaging` | `bool` | 5 | A messaging app, such as Signal or WhatsApp. |
+| `last_posted_ms` | `int64` | 6 | When the app last posted a notification the source saw, in the source device's clock. 0 when unknown. |
 
 ### message `MirrorSettingsRequest.AppListRequest`
 
@@ -1034,7 +1048,7 @@ Asks the source for its apps. Expects an `AppListResponse` reply.
 
 ### message `MirrorSettingsRequest.AppListRequest.AppChoice`
 
-Turns one app on or off.
+Turns one app on or off: under `APP_FILTER_ALL_EXCEPT` it changes `excluded_packages`, under `APP_FILTER_ONLY` `allowed_packages`. Turning an app off under `APP_FILTER_ALL` switches to `APP_FILTER_ALL_EXCEPT`.
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -1049,6 +1063,7 @@ Changes the source's settings. Expects a `MirrorSettings` reply.
 |---|---|---|---|
 | `apps` | `repeated AppChoice` | 1 |  |
 | `skip_while_using` | `optional bool` | 2 | Left out to keep the current value. |
+| `app_filter` | `optional AppFilter` | 3 | Applied before `apps`. Left out to keep the current filter. |
 
 ## `ferret.remote_input.v1`
 

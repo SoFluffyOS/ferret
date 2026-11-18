@@ -2,25 +2,35 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:notifications/models/models.dart';
 import 'package:protocol/notifications.dart';
 
 /// Where the app picker stands.
 enum AppPickerState { loading, failed, ready }
 
-/// Picks which apps mirror, on this phone or on a connected one.
+/// A phone's app filter and its apps, as the picker loads them.
+typedef AppList = ({MirrorSettings settings, List<AppEntry> apps});
+
+/// One app in the picker and whether its notifications come through.
+typedef PickerApp = ({AppEntry app, bool forwards});
+
+/// Chooses which apps mirror, on this phone or on a connected one: all of
+/// them, all but a few, or only a few.
 class AppPickerViewModel extends ChangeNotifier {
   AppPickerViewModel({
-    required Future<List<AppEntry>> Function() load,
-    required Future<void> Function(String package, bool allowed) save,
+    required Future<AppList> Function() load,
+    required Future<MirrorSettings> Function(UpdateMirrorSettings update)
+    update,
   }) : _load = load,
-       _save = save {
+       _update = update {
     unawaited(reload());
   }
 
-  final Future<List<AppEntry>> Function() _load;
-  final Future<void> Function(String package, bool allowed) _save;
+  final Future<AppList> Function() _load;
+  final Future<MirrorSettings> Function(UpdateMirrorSettings update) _update;
 
   AppPickerState _state = .loading;
+  MirrorSettings _settings = MirrorSettings(appFilter: .APP_FILTER_ALL);
   List<AppEntry> _apps = const [];
   String _query = '';
   bool _saveFailed = false;
@@ -30,32 +40,25 @@ class AppPickerViewModel extends ChangeNotifier {
 
   String get query => _query;
 
+  AppFilter get filter => _settings.effectiveFilter;
+
   /// The last change could not be saved and was undone.
   bool get saveFailed => _saveFailed;
 
-  /// Messaging apps matching the search.
-  List<AppEntry> get messagingApps => [
+  /// Apps matching the search, the ones that posted most recently first.
+  List<PickerApp> get apps => [
     for (final app in _apps)
-      if (app.isMessaging && _matches(app)) app,
+      if (_matches(app)) (app: app, forwards: _settings.forwards(app.package)),
   ];
-
-  /// Other apps matching the search, picked ones first.
-  List<AppEntry> get otherApps {
-    final others = [
-      for (final app in _apps)
-        if (!app.isMessaging && _matches(app)) app,
-    ];
-    final picked = others.where((app) => app.allowed);
-    final rest = others.where((app) => !app.allowed);
-    return [...picked, ...rest];
-  }
 
   Future<void> reload() async {
     _state = .loading;
     _notify();
 
     try {
-      _apps = await _load();
+      final (:settings, :apps) = await _load();
+      _settings = settings;
+      _apps = [...apps]..sort(_byRecentActivity);
       _state = .ready;
     } on Object catch (error) {
       printWarning('Loading the app list failed', error);
@@ -70,18 +73,35 @@ class AppPickerViewModel extends ChangeNotifier {
     _notify();
   }
 
-  Future<void> setAllowed(String package, bool allowed) async {
-    _saveFailed = false;
-    _replace(package, allowed);
-
-    try {
-      await _save(package, allowed);
-    } on Object catch (error) {
-      printWarning('Saving an app choice failed', error);
-      _replace(package, !allowed);
-      _saveFailed = true;
-      _notify();
+  Future<void> setFilter(AppFilter filter) async {
+    if (filter == this.filter) {
+      return;
     }
+
+    await _apply(UpdateMirrorSettings(appFilter: filter));
+  }
+
+  Future<void> setAllowed(String package, bool allowed) => _apply(
+    UpdateMirrorSettings(
+      apps: [AppChoice(package: package, allowed: allowed)],
+    ),
+  );
+
+  /// Turns every app matching the search on or off.
+  Future<void> setAllShown(bool allowed) async {
+    final shown = apps;
+    if (shown.isEmpty) {
+      return;
+    }
+
+    await _apply(
+      UpdateMirrorSettings(
+        apps: [
+          for (final (:app, forwards: _) in shown)
+            AppChoice(package: app.package, allowed: allowed),
+        ],
+      ),
+    );
   }
 
   @override
@@ -90,14 +110,20 @@ class AppPickerViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  void _replace(String package, bool allowed) {
-    _apps = [
-      for (final app in _apps)
-        switch (app.package == package) {
-          true => app.deepCopy()..allowed = allowed,
-          false => app,
-        },
-    ];
+  Future<void> _apply(UpdateMirrorSettings update) async {
+    final previous = _settings;
+    _saveFailed = false;
+    _settings = previous.withUpdate(update);
+    _notify();
+
+    try {
+      _settings = await _update(update);
+    } on Object catch (error) {
+      printWarning('Saving the app choice failed', error);
+      _settings = previous;
+      _saveFailed = true;
+    }
+
     _notify();
   }
 
@@ -110,5 +136,21 @@ class AppPickerViewModel extends ChangeNotifier {
     if (!_disposed) {
       notifyListeners();
     }
+  }
+
+  static int _byRecentActivity(AppEntry first, AppEntry second) {
+    final byRecent = second.lastPostedMs.compareTo(first.lastPostedMs);
+    if (byRecent != 0) {
+      return byRecent;
+    }
+
+    if (first.isMessaging != second.isMessaging) {
+      return switch (first.isMessaging) {
+        true => -1,
+        false => 1,
+      };
+    }
+
+    return first.name.toLowerCase().compareTo(second.name.toLowerCase());
   }
 }

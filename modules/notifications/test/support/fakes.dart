@@ -192,6 +192,7 @@ PlatformNotification phoneNotification({
   bool isOngoing = false,
   bool isForegroundService = false,
   bool isGroupSummary = false,
+  bool isMedia = false,
   int importance = 4,
   bool replyable = true,
 }) => PlatformNotification(
@@ -206,6 +207,7 @@ PlatformNotification phoneNotification({
   isOngoing: isOngoing,
   isForegroundService: isForegroundService,
   isGroupSummary: isGroupSummary,
+  isMedia: isMedia,
   importance: importance,
   actions: [
     if (replyable)

@@ -1,5 +1,5 @@
-/// Messaging apps, which mirroring picks by default. Everything else stays
-/// off until the person picks it.
+/// Messaging apps. They come first in the app list when nothing else tells
+/// them apart, and mark which saved picks were the old defaults.
 abstract final class MessagingApps {
   static const packages = {
     'ch.threema.app',

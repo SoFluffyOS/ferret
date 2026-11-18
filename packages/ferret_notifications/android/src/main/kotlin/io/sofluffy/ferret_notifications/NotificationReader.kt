@@ -50,6 +50,8 @@ internal object NotificationReader {
             isOngoing = sbn.isOngoing,
             isForegroundService = notification.flags and Notification.FLAG_FOREGROUND_SERVICE != 0,
             isGroupSummary = notification.flags and Notification.FLAG_GROUP_SUMMARY != 0,
+            isMedia = extras.containsKey(Notification.EXTRA_MEDIA_SESSION) ||
+                notification.category == Notification.CATEGORY_TRANSPORT,
             importance = ranking.importance.toLong(),
             actions = actionsOf(notification),
         )

@@ -40,6 +40,7 @@ class PlatformNotification {
     required this.isOngoing,
     required this.isForegroundService,
     required this.isGroupSummary,
+    required this.isMedia,
     required this.importance,
     required this.actions,
   });
@@ -58,6 +59,9 @@ class PlatformNotification {
   bool isForegroundService;
   bool isGroupSummary;
 
+  /// A media player's controls, such as a paused song.
+  bool isMedia;
+
   /// The channel importance (`NotificationManager.IMPORTANCE_*`), or -1000
   /// when unknown.
   int importance;
@@ -66,11 +70,20 @@ class PlatformNotification {
 
 /// An app a person can pick for mirroring.
 class PlatformApp {
-  PlatformApp({required this.packageName, required this.name, this.icon});
+  PlatformApp({
+    required this.packageName,
+    required this.name,
+    this.icon,
+    this.lastPostedMs,
+  });
 
   String packageName;
   String name;
   Uint8List? icon;
+
+  /// When the app's newest notification still showing was posted, or null
+  /// when it has none.
+  int? lastPostedMs;
 }
 
 @HostApi()

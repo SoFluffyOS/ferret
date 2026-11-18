@@ -1,9 +1,9 @@
 {
   "@@locale": "en",
   "title": "Notifications",
-  "explainer": "Shows this phone's notifications on your computer. You pick which apps.",
+  "explainer": "Shows this phone's notifications on your computer. Every app comes through, and you can mute the ones you don't want.",
   "offerDescription": "See this phone's notifications on your computer.",
-  "explainerDetail": "Only new notifications from the apps you pick. Nothing leaves your network.",
+  "explainerDetail": "Only new notifications. Nothing leaves your network.",
   "turnOn": "Turn on",
   "turnOff": "Turn off mirroring",
   "accessOn": "Notification access is on",
@@ -21,18 +21,42 @@
   "skipWhileUsing": "Pause while I'm using the phone",
   "skipWhileUsingDetail": "When the screen is on and unlocked, you already see them there.",
   "chooseApps": "Choose apps",
-  "appCount": "{count, plural, =0{No apps picked} =1{1 app picked} other{{count} apps picked}}",
-  "@appCount": {
+  "appsAll": "All apps",
+  "@appsAll": {
+    "description": "Which apps a phone mirrors: every app. Shown on the device page, in Settings and on the Choose apps button."
+  },
+  "appsAllExcept": "{count, plural, =0{All apps} =1{All apps except 1} other{All apps except {count}}}",
+  "@appsAllExcept": {
+    "description": "Which apps a phone mirrors: every app but the muted ones.",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "appPickerTitle": "Apps to mirror",
+  "appsOnly": "{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}",
+  "@appsOnly": {
+    "description": "Which apps a phone mirrors: only the picked ones.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "filterAll": "All apps",
+  "filterAllDetail": "Every app's notifications come to your computer.",
+  "filterAllExcept": "All apps except…",
+  "filterAllExceptDetail": "Mute a few noisy apps.",
+  "filterOnly": "Only these apps…",
+  "filterOnlyDetail": "Pick the few apps you want.",
+  "filterBuiltIn": "Ferret's own notifications, music controls and silent or ongoing ones always stay on the phone.",
+  "appPickerMuteHint": "Switch off the apps you don't want on your computer.",
+  "appPickerOnlyHint": "Switch on the apps you want on your computer.",
+  "appPickerApps": "Apps, most recent first",
+  "selectAll": "Select all",
+  "selectNone": "Select none",
+  "appPickerTitle": "Choose apps",
   "appPickerSearch": "Search apps",
-  "appPickerMessaging": "Messaging apps",
-  "appPickerOther": "Other apps",
   "appPickerLoading": "Getting the apps…",
   "appPickerEmpty": "No apps match.",
   "appPickerFailed": "Couldn't get the apps from {device}. Make sure it's connected.",
@@ -55,20 +79,12 @@
   "tryAgain": "Try again",
   "back": "Back",
   "noPhone": "Connect your Android phone to see its notifications here.",
-  "phoneMirroring": "Mirroring {count, plural, =0{no apps} =1{1 app} other{{count} apps}}",
+  "phoneMirroring": "On · {apps}",
   "@phoneMirroring": {
+    "description": "Status of a phone that mirrors here; apps is appsAll, appsAllExcept or appsOnly.",
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "healthApps": "{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}",
-  "@healthApps": {
-    "description": "Device page, next to Notifications, while a phone mirrors here.",
-    "placeholders": {
-      "count": {
-        "type": "int"
+      "apps": {
+        "type": "String"
       }
     }
   },
@@ -179,7 +195,7 @@
       }
     }
   },
-  "howBody": "On {device}: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.",
+  "howBody": "On {device}: Ferret → Do more → Notifications. Ferret asks for notification access, then every app's notifications show here.",
   "@howBody": {
     "placeholders": {
       "device": {
@@ -202,7 +218,7 @@
       }
     }
   },
-  "settingsPerPhone": "To pick apps or stop showing a phone's notifications here, open the phone from Home.",
+  "settingsPerPhone": "Every app comes through unless you change it. To mute apps or stop showing a phone here, open the phone from Home.",
   "permissionShow": "Show its notifications here",
   "@permissionShow": {
     "description": "Switch on a phone's page, under \"<phone> may\"."
@@ -211,7 +227,7 @@
   "@permissionHold": {
     "description": "Switch on a phone's page, under \"<phone> may\", after \"Show its notifications here\"."
   },
-  "actionChooseApps": "Pick notification apps",
+  "actionChooseApps": "Choose notification apps",
   "healthHiddenHere": "Turned off here",
   "@healthHiddenHere": {
     "description": "Device page, next to Notifications, when this computer doesn't show that phone's notifications."

@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:notifications/feature/notifications_feature.dart';
 import 'package:notifications/services/services.dart';
+import 'package:protocol/notifications.dart';
 
 /// Where the phone is in turning mirroring on.
 enum SetupStage {
@@ -72,7 +73,14 @@ class MirrorSetupViewModel extends ChangeNotifier {
 
   bool get skipWhileUsing => _preferences.skipWhileUsing;
 
-  int get allowedAppCount => _preferences.effectiveAllowedApps.length;
+  AppFilter get appFilter => _preferences.appFilter;
+
+  /// How many apps the filter names: muted ones or picked ones.
+  int get namedAppCount => switch (appFilter) {
+    .APP_FILTER_ALL_EXCEPT => _preferences.excludedApps.length,
+    .APP_FILTER_ONLY => _preferences.allowedApps.length,
+    _ => 0,
+  };
 
   /// Re-reads notification access, such as when the app comes back to the
   /// front.
@@ -95,12 +103,6 @@ class MirrorSetupViewModel extends ChangeNotifier {
   /// is still off.
   Future<void> turnOn() async {
     await _preferences.setEnabled(true);
-    try {
-      await _feature.pickDefaultApps();
-    } on Object catch (error) {
-      printWarning('Picking the default apps failed', error);
-    }
-
     await refresh();
 
     if (!_accessGranted) {

@@ -10,11 +10,16 @@ void main() {
         MemorySettingsStore({MirrorPreferences.enabledKey: true, ...?values}),
       );
 
-  test('a message from a messaging app is mirrored by default', () {
-    expect(
-      ForwardPolicy.decide(phoneNotification(), preferences()),
-      ForwardDecision.forward,
-    );
+  test('every app is mirrored by default', () {
+    for (final packageName in [signal, game]) {
+      expect(
+        ForwardPolicy.decide(
+          phoneNotification(packageName: packageName),
+          preferences(),
+        ),
+        ForwardDecision.forward,
+      );
+    }
   });
 
   test('nothing is mirrored until mirroring is turned on', () {
@@ -27,37 +32,42 @@ void main() {
     );
   });
 
-  test('other apps stay off until picked', () {
-    final notification = phoneNotification(packageName: game);
+  test('a muted app stays on the phone', () {
+    final muted = preferences({
+      MirrorPreferences.appFilterKey: 'all_except',
+      MirrorPreferences.excludedAppsKey: [game],
+    });
 
     expect(
-      ForwardPolicy.decide(notification, preferences()),
+      ForwardPolicy.decide(phoneNotification(packageName: game), muted),
       ForwardDecision.appNotAllowed,
     );
     expect(
-      ForwardPolicy.decide(
-        notification,
-        preferences({
-          MirrorPreferences.allowedAppsKey: [game],
-        }),
-      ),
+      ForwardPolicy.decide(phoneNotification(), muted),
       ForwardDecision.forward,
     );
   });
 
-  test('an explicit list replaces the messaging defaults', () {
+  test('only these apps leaves the others on the phone', () {
+    final only = preferences({
+      MirrorPreferences.appFilterKey: 'only',
+      MirrorPreferences.allowedAppsKey: [game],
+    });
+
     expect(
-      ForwardPolicy.decide(
-        phoneNotification(),
-        preferences({MirrorPreferences.allowedAppsKey: <String>[]}),
-      ),
+      ForwardPolicy.decide(phoneNotification(), only),
       ForwardDecision.appNotAllowed,
+    );
+    expect(
+      ForwardPolicy.decide(phoneNotification(packageName: game), only),
+      ForwardDecision.forward,
     );
   });
 
   test('noise never leaves the phone', () {
     final noisy = [
       phoneNotification(isOngoing: true),
+      phoneNotification(isMedia: true),
       phoneNotification(isForegroundService: true),
       phoneNotification(isGroupSummary: true),
       phoneNotification(importance: 2),

@@ -4,11 +4,11 @@
 >
 > 1. On your Android phone, tap **Set up** next to Notifications in **Do more** on Ferret's home screen (or open **Settings → To your computer**), then **Turn on**.
 > 2. Turn on Ferret on the Notification access screen, then come back.
-> 3. New messages show up on your computer. Reply or dismiss them there.
+> 3. That's it. Every app's new notifications show up on your computer. Reply or dismiss them there.
 
 Your phone buzzes in your bag while you work. You pick it up, unlock it, and it was a message you could have answered from your keyboard.
 
-With Ferret, your phone's notifications show up on your computer. Only new ones, only from the apps you pick, and never the same one twice.
+With Ferret, your phone's notifications show up on your computer. ALL your apps, only new notifications, and never the same one twice.
 
 ## 🔔 How it works
 
@@ -24,14 +24,24 @@ The Notifications card on the home screen shows the last few from each phone. **
 
 - Only notifications posted **after** your phone connects are sent. Nothing that was already on your phone is replayed.
 - The same notification is sent once. An app that re-posts it with the same text doesn't ping you again.
-- Ongoing ones (music, navigation, downloads), silent ones and group summaries stay on the phone.
+- Ongoing ones (navigation, downloads), music controls, silent ones and group summaries stay on the phone. So do Ferret's own.
 - Your computer was asleep? When it reconnects you get **one** summary, "6 notifications while away, from Signal, WhatsApp", not six popups.
 
-## 📱 Pick your apps
+## 📱 All apps, or just some
 
-Messaging apps are picked for you: WhatsApp, Signal, Telegram, Messages, Messenger, Discord, Slack, Element and more. Everything else stays off.
+Every app comes through by default. Nothing to pick.
 
-Change it on the phone in **Settings → To your computer → Choose apps**. Or on your computer: open the phone from Home and click **Pick notification apps** (your computer asks the phone for its app list).
+Too much? Open **Choose apps** and pick one of three:
+
+- **All apps**: the default.
+- **All apps except…**: switch off the few noisy ones. New apps you install come through.
+- **Only these apps…**: switch on just the ones you want.
+
+The list has a search box and **Select all** / **Select none**, and the apps that sent you something lately come first.
+
+Find **Choose apps** on the phone in **Settings → To your computer → Notifications**. Or on your computer: open the phone from Home and click **Choose notification apps**.
+
+Picked apps one by one in an earlier version? Ferret keeps your list as **Only these apps…**. Switch to **All apps** in one tap.
 
 ## 🙈 Not while you're using the phone
 

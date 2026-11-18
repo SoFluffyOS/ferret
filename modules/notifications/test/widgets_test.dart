@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -49,8 +50,8 @@ void main() {
 
       expect(
         find.text(
-          "Shows this phone's notifications on your computer. "
-          'You pick which apps.',
+          "Shows this phone's notifications on your computer. Every app "
+          "comes through, and you can mute the ones you don't want.",
         ),
         findsOneWidget,
       );
@@ -67,7 +68,7 @@ void main() {
 
         expect(source.openedAccessSettings, 1);
         expect(feature.preferences.enabled, isTrue);
-        expect(feature.preferences.allowedApps, {signal});
+        expect(feature.preferences.appFilter, AppFilter.APP_FILTER_ALL);
         expect(find.text('Notification access is off'), findsOneWidget);
 
         tester.binding.handleAppLifecycleStateChanged(.inactive);
@@ -100,12 +101,22 @@ void main() {
     ) async {
       source.accessGranted = true;
       await settings.set(MirrorPreferences.enabledKey, true);
-      await settings.set(MirrorPreferences.allowedAppsKey, [signal]);
       await pumpSetup(tester);
 
       expect(find.text('Notification access is on'), findsOneWidget);
       expect(find.text("Pause while I'm using the phone"), findsOneWidget);
-      expect(find.text('Choose apps · 1 app picked'), findsOneWidget);
+      expect(find.text('Choose apps · All apps'), findsOneWidget);
+    });
+
+    testWidgets('picks saved before filters still read as only these', (
+      tester,
+    ) async {
+      source.accessGranted = true;
+      await settings.set(MirrorPreferences.enabledKey, true);
+      await settings.set(MirrorPreferences.allowedAppsKey, [signal, game]);
+      await pumpSetup(tester);
+
+      expect(find.text('Choose apps · 2 apps'), findsOneWidget);
     });
   });
 
@@ -306,41 +317,98 @@ void main() {
   });
 
   group('app picker', () {
-    testWidgets('lists messaging apps first and saves a choice', (
-      tester,
+    AppEntry entry(String package, String name, {int lastPostedMs = 0}) =>
+        AppEntry(
+          package: package,
+          name: name,
+          lastPostedMs: Int64(lastPostedMs),
+          isMessaging: package == signal,
+        );
+
+    Future<List<UpdateMirrorSettings>> pumpPicker(
+      WidgetTester tester,
+      MirrorSettings settings,
     ) async {
-      final saved = <(String, bool)>[];
+      final updates = <UpdateMirrorSettings>[];
+      var current = settings;
       await tester.pumpWidget(
         testApp(
           scroll: false,
           AppPickerPage(
             deviceName: 'Pixel',
-            load: () async => [
-              AppEntry(package: game, name: 'Game'),
-              AppEntry(
-                package: signal,
-                name: 'Signal',
-                allowed: true,
-                isMessaging: true,
-              ),
-            ],
-            save: (package, allowed) async => saved.add((package, allowed)),
+            load: () async => (
+              settings: current,
+              apps: [
+                entry(signal, 'Signal'),
+                entry(game, 'Game', lastPostedMs: 2000),
+                entry('com.bank', 'Bank', lastPostedMs: 1000),
+              ],
+            ),
+            update: (update) async {
+              updates.add(update);
+              current = current.withUpdate(update);
+              return current;
+            },
           ),
         ),
       );
       await tester.pumpAndSettle();
+      return updates;
+    }
 
-      expect(find.text('MESSAGING APPS'), findsOneWidget);
-      expect(find.text('OTHER APPS'), findsOneWidget);
-      expect(
-        tester.getTopLeft(find.text('Signal')).dy,
-        lessThan(tester.getTopLeft(find.text('Game')).dy),
+    testWidgets('leads with all apps and hides the list', (tester) async {
+      await pumpPicker(tester, MirrorSettings(appFilter: .APP_FILTER_ALL));
+
+      expect(find.text('All apps'), findsOneWidget);
+      expect(find.text('All apps except…'), findsOneWidget);
+      expect(find.text('Only these apps…'), findsOneWidget);
+      expect(find.text('Game'), findsNothing);
+    });
+
+    testWidgets('muting an app lists apps by recent activity', (tester) async {
+      final updates = await pumpPicker(
+        tester,
+        MirrorSettings(appFilter: .APP_FILTER_ALL),
       );
 
-      await tester.tap(find.byType(SwitchToggle).last);
+      await tester.tap(find.text('All apps except…'));
       await tester.pumpAndSettle();
 
-      expect(saved, [(game, true)]);
+      expect(updates.single.appFilter, AppFilter.APP_FILTER_ALL_EXCEPT);
+      final gameTop = tester.getTopLeft(find.text('Game')).dy;
+      final bankTop = tester.getTopLeft(find.text('Bank')).dy;
+      final signalTop = tester.getTopLeft(find.text('Signal')).dy;
+      expect(gameTop, lessThan(bankTop));
+      expect(bankTop, lessThan(signalTop));
+
+      await tester.tap(find.byType(SwitchToggle).first);
+      await tester.pumpAndSettle();
+
+      expect(updates.last.apps.single.package, game);
+      expect(updates.last.apps.single.allowed, isFalse);
+    });
+
+    testWidgets('select none, then search and select all', (tester) async {
+      final updates = await pumpPicker(
+        tester,
+        MirrorSettings(appFilter: .APP_FILTER_ONLY, allowedPackages: [signal]),
+      );
+
+      await tester.tap(find.text('Select none'));
+      await tester.pumpAndSettle();
+      expect(updates.last.apps.map((choice) => choice.allowed), [
+        false,
+        false,
+        false,
+      ]);
+
+      await tester.enterText(find.byType(EditableText), 'ban');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select all'));
+      await tester.pumpAndSettle();
+
+      expect(updates.last.apps.single.package, 'com.bank');
+      expect(updates.last.apps.single.allowed, isTrue);
     });
 
     testWidgets('explains a failed load with a retry', (tester) async {
@@ -354,7 +422,7 @@ void main() {
               attempts++;
               throw StateError('offline');
             },
-            save: (_, _) async {},
+            update: (_) async => MirrorSettings(),
           ),
         ),
       );

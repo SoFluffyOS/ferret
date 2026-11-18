@@ -106,7 +106,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @explainer.
   ///
   /// In en, this message translates to:
-  /// **'Shows this phone\'s notifications on your computer. You pick which apps.'**
+  /// **'Shows this phone\'s notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.'**
   String get explainer;
 
   /// No description provided for @offerDescription.
@@ -118,7 +118,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @explainerDetail.
   ///
   /// In en, this message translates to:
-  /// **'Only new notifications from the apps you pick. Nothing leaves your network.'**
+  /// **'Only new notifications. Nothing leaves your network.'**
   String get explainerDetail;
 
   /// No description provided for @turnOn.
@@ -223,16 +223,100 @@ abstract class NotificationsLocalizations {
   /// **'Choose apps'**
   String get chooseApps;
 
-  /// No description provided for @appCount.
+  /// Which apps a phone mirrors: every app. Shown on the device page, in Settings and on the Choose apps button.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0{No apps picked} =1{1 app picked} other{{count} apps picked}}'**
-  String appCount(int count);
+  /// **'All apps'**
+  String get appsAll;
+
+  /// Which apps a phone mirrors: every app but the muted ones.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All apps} =1{All apps except 1} other{All apps except {count}}}'**
+  String appsAllExcept(int count);
+
+  /// Which apps a phone mirrors: only the picked ones.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}'**
+  String appsOnly(int count);
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All apps'**
+  String get filterAll;
+
+  /// No description provided for @filterAllDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Every app\'s notifications come to your computer.'**
+  String get filterAllDetail;
+
+  /// No description provided for @filterAllExcept.
+  ///
+  /// In en, this message translates to:
+  /// **'All apps except…'**
+  String get filterAllExcept;
+
+  /// No description provided for @filterAllExceptDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute a few noisy apps.'**
+  String get filterAllExceptDetail;
+
+  /// No description provided for @filterOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these apps…'**
+  String get filterOnly;
+
+  /// No description provided for @filterOnlyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the few apps you want.'**
+  String get filterOnlyDetail;
+
+  /// No description provided for @filterBuiltIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret\'s own notifications, music controls and silent or ongoing ones always stay on the phone.'**
+  String get filterBuiltIn;
+
+  /// No description provided for @appPickerMuteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch off the apps you don\'t want on your computer.'**
+  String get appPickerMuteHint;
+
+  /// No description provided for @appPickerOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch on the apps you want on your computer.'**
+  String get appPickerOnlyHint;
+
+  /// No description provided for @appPickerApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps, most recent first'**
+  String get appPickerApps;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAll;
+
+  /// No description provided for @selectNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Select none'**
+  String get selectNone;
 
   /// No description provided for @appPickerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Apps to mirror'**
+  /// **'Choose apps'**
   String get appPickerTitle;
 
   /// No description provided for @appPickerSearch.
@@ -240,18 +324,6 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Search apps'**
   String get appPickerSearch;
-
-  /// No description provided for @appPickerMessaging.
-  ///
-  /// In en, this message translates to:
-  /// **'Messaging apps'**
-  String get appPickerMessaging;
-
-  /// No description provided for @appPickerOther.
-  ///
-  /// In en, this message translates to:
-  /// **'Other apps'**
-  String get appPickerOther;
 
   /// No description provided for @appPickerLoading.
   ///
@@ -301,17 +373,11 @@ abstract class NotificationsLocalizations {
   /// **'Connect your Android phone to see its notifications here.'**
   String get noPhone;
 
-  /// No description provided for @phoneMirroring.
+  /// Status of a phone that mirrors here; apps is appsAll, appsAllExcept or appsOnly.
   ///
   /// In en, this message translates to:
-  /// **'Mirroring {count, plural, =0{no apps} =1{1 app} other{{count} apps}}'**
-  String phoneMirroring(int count);
-
-  /// Device page, next to Notifications, while a phone mirrors here.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{No apps picked} =1{1 app} other{{count} apps}}'**
-  String healthApps(int count);
+  /// **'On · {apps}'**
+  String phoneMirroring(String apps);
 
   /// Device page, next to Notifications.
   ///
@@ -448,7 +514,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @howBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.'**
+  /// **'On {device}: Ferret → Do more → Notifications. Ferret asks for notification access, then every app\'s notifications show here.'**
   String howBody(String device);
 
   /// No description provided for @how.
@@ -478,7 +544,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @settingsPerPhone.
   ///
   /// In en, this message translates to:
-  /// **'To pick apps or stop showing a phone\'s notifications here, open the phone from Home.'**
+  /// **'Every app comes through unless you change it. To mute apps or stop showing a phone here, open the phone from Home.'**
   String get settingsPerPhone;
 
   /// Switch on a phone's page, under "<phone> may".
@@ -496,7 +562,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @actionChooseApps.
   ///
   /// In en, this message translates to:
-  /// **'Pick notification apps'**
+  /// **'Choose notification apps'**
   String get actionChooseApps;
 
   /// Device page, next to Notifications, when this computer doesn't show that phone's notifications.

@@ -73,6 +73,19 @@ message DismissNotification {
   string key = 1;
 }
 
+// Which apps the source mirrors.
+enum AppFilter {
+  // Sent by sources that predate the filter: they mirror `allowed_packages`
+  // only, as `APP_FILTER_ONLY`.
+  APP_FILTER_UNSPECIFIED = 0;
+  // Every app.
+  APP_FILTER_ALL = 1;
+  // Every app except `excluded_packages`.
+  APP_FILTER_ALL_EXCEPT = 2;
+  // Only `allowed_packages`.
+  APP_FILTER_ONLY = 3;
+}
+
 // How the source mirrors notifications.
 message MirrorSettings {
   // The person turned mirroring on.
@@ -81,8 +94,14 @@ message MirrorSettings {
   bool access_granted = 2;
   // Mirroring pauses while the source is in use (screen on and unlocked).
   bool skip_while_using = 3;
-  // Apps whose notifications are mirrored.
+  // The apps picked for `APP_FILTER_ONLY`. Kept while another filter is
+  // active, so switching back restores them.
   repeated string allowed_packages = 4;
+  // Which apps are mirrored.
+  AppFilter app_filter = 5;
+  // The apps muted for `APP_FILTER_ALL_EXCEPT`. Kept while another filter is
+  // active.
+  repeated string excluded_packages = 6;
 }
 
 // Asks the source for its `MirrorSettings`. Expects a `MirrorSettings` reply.
@@ -94,9 +113,13 @@ message AppEntry {
   string name = 2;
   // A small PNG of the app's icon.
   bytes icon_png = 3;
+  // Its notifications are mirrored under the current filter.
   bool allowed = 4;
-  // A messaging app, picked by default.
+  // A messaging app, such as Signal or WhatsApp.
   bool is_messaging = 5;
+  // When the app last posted a notification the source saw, in the source
+  // device's clock. 0 when unknown.
+  int64 last_posted_ms = 6;
 }
 
 // Asks the source for its apps. Expects an `AppListResponse` reply.
@@ -106,7 +129,9 @@ message AppListResponse {
   repeated AppEntry apps = 1;
 }
 
-// Turns one app on or off.
+// Turns one app on or off: under `APP_FILTER_ALL_EXCEPT` it changes
+// `excluded_packages`, under `APP_FILTER_ONLY` `allowed_packages`. Turning an
+// app off under `APP_FILTER_ALL` switches to `APP_FILTER_ALL_EXCEPT`.
 message AppChoice {
   string package = 1;
   bool allowed = 2;
@@ -117,4 +142,6 @@ message UpdateMirrorSettings {
   repeated AppChoice apps = 1;
   // Left out to keep the current value.
   optional bool skip_while_using = 2;
+  // Applied before `apps`. Left out to keep the current filter.
+  optional AppFilter app_filter = 3;
 }

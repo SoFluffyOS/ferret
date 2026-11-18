@@ -4,22 +4,22 @@ import 'package:notifications/view_models/view_models.dart';
 import 'package:protocol/notifications.dart';
 import 'package:provider/provider.dart';
 
-/// Picks the apps whose notifications mirror, on [deviceName].
+/// Chooses which apps' notifications mirror from [deviceName].
 class AppPickerPage extends StatelessWidget {
   const AppPickerPage({
     super.key,
     required this.deviceName,
     required this.load,
-    required this.save,
+    required this.update,
   });
 
   final String deviceName;
-  final Future<List<AppEntry>> Function() load;
-  final Future<void> Function(String package, bool allowed) save;
+  final Future<AppList> Function() load;
+  final Future<MirrorSettings> Function(UpdateMirrorSettings update) update;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) => AppPickerViewModel(load: load, save: save),
+    create: (_) => AppPickerViewModel(load: load, update: update),
     child: AppPickerFrame(deviceName: deviceName),
   );
 }

@@ -5,10 +5,11 @@ enum ForwardDecision {
   /// Mirroring is off on this device.
   disabled,
 
-  /// Ongoing, a foreground service, quiet, a group summary or empty.
+  /// Ongoing, a foreground service, media controls, quiet, a group summary
+  /// or empty.
   noise,
 
-  /// The person didn't pick the app.
+  /// The person muted the app, or picked only other apps.
   appNotAllowed,
 
   /// The person is using the phone right now and sees it there.

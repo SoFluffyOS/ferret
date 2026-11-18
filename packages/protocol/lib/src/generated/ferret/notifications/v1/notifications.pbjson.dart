@@ -15,6 +15,22 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use appFilterDescriptor instead')
+const AppFilter$json = {
+  '1': 'AppFilter',
+  '2': [
+    {'1': 'APP_FILTER_UNSPECIFIED', '2': 0},
+    {'1': 'APP_FILTER_ALL', '2': 1},
+    {'1': 'APP_FILTER_ALL_EXCEPT', '2': 2},
+    {'1': 'APP_FILTER_ONLY', '2': 3},
+  ],
+};
+
+/// Descriptor for `AppFilter`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List appFilterDescriptor = $convert.base64Decode(
+    'CglBcHBGaWx0ZXISGgoWQVBQX0ZJTFRFUl9VTlNQRUNJRklFRBAAEhIKDkFQUF9GSUxURVJfQU'
+    'xMEAESGQoVQVBQX0ZJTFRFUl9BTExfRVhDRVBUEAISEwoPQVBQX0ZJTFRFUl9PTkxZEAM=');
+
 @$core.Deprecated('Use notificationActionDescriptor instead')
 const NotificationAction$json = {
   '1': 'NotificationAction',
@@ -157,6 +173,21 @@ const MirrorSettings$json = {
     {'1': 'access_granted', '3': 2, '4': 1, '5': 8, '10': 'accessGranted'},
     {'1': 'skip_while_using', '3': 3, '4': 1, '5': 8, '10': 'skipWhileUsing'},
     {'1': 'allowed_packages', '3': 4, '4': 3, '5': 9, '10': 'allowedPackages'},
+    {
+      '1': 'app_filter',
+      '3': 5,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.notifications.v1.AppFilter',
+      '10': 'appFilter'
+    },
+    {
+      '1': 'excluded_packages',
+      '3': 6,
+      '4': 3,
+      '5': 9,
+      '10': 'excludedPackages'
+    },
   ],
 };
 
@@ -164,8 +195,10 @@ const MirrorSettings$json = {
 final $typed_data.Uint8List mirrorSettingsDescriptor = $convert.base64Decode(
     'Cg5NaXJyb3JTZXR0aW5ncxIYCgdlbmFibGVkGAEgASgIUgdlbmFibGVkEiUKDmFjY2Vzc19ncm'
     'FudGVkGAIgASgIUg1hY2Nlc3NHcmFudGVkEigKEHNraXBfd2hpbGVfdXNpbmcYAyABKAhSDnNr'
-    'aXBXaGlsZVVzaW5nEikKEGFsbG93ZWRfcGFja2FnZXMYBCADKAlSD2FsbG93ZWRQYWNrYWdlcw'
-    '==');
+    'aXBXaGlsZVVzaW5nEikKEGFsbG93ZWRfcGFja2FnZXMYBCADKAlSD2FsbG93ZWRQYWNrYWdlcx'
+    'JBCgphcHBfZmlsdGVyGAUgASgOMiIuZmVycmV0Lm5vdGlmaWNhdGlvbnMudjEuQXBwRmlsdGVy'
+    'UglhcHBGaWx0ZXISKwoRZXhjbHVkZWRfcGFja2FnZXMYBiADKAlSEGV4Y2x1ZGVkUGFja2FnZX'
+    'M=');
 
 @$core.Deprecated('Use mirrorSettingsRequestDescriptor instead')
 const MirrorSettingsRequest$json = {
@@ -185,6 +218,7 @@ const AppEntry$json = {
     {'1': 'icon_png', '3': 3, '4': 1, '5': 12, '10': 'iconPng'},
     {'1': 'allowed', '3': 4, '4': 1, '5': 8, '10': 'allowed'},
     {'1': 'is_messaging', '3': 5, '4': 1, '5': 8, '10': 'isMessaging'},
+    {'1': 'last_posted_ms', '3': 6, '4': 1, '5': 3, '10': 'lastPostedMs'},
   ],
 };
 
@@ -192,7 +226,8 @@ const AppEntry$json = {
 final $typed_data.Uint8List appEntryDescriptor = $convert.base64Decode(
     'CghBcHBFbnRyeRIYCgdwYWNrYWdlGAEgASgJUgdwYWNrYWdlEhIKBG5hbWUYAiABKAlSBG5hbW'
     'USGQoIaWNvbl9wbmcYAyABKAxSB2ljb25QbmcSGAoHYWxsb3dlZBgEIAEoCFIHYWxsb3dlZBIh'
-    'Cgxpc19tZXNzYWdpbmcYBSABKAhSC2lzTWVzc2FnaW5n');
+    'Cgxpc19tZXNzYWdpbmcYBSABKAhSC2lzTWVzc2FnaW5nEiQKDmxhc3RfcG9zdGVkX21zGAYgAS'
+    'gDUgxsYXN0UG9zdGVkTXM=');
 
 @$core.Deprecated('Use appListRequestDescriptor instead')
 const AppListRequest$json = {
@@ -258,9 +293,20 @@ const UpdateMirrorSettings$json = {
       '10': 'skipWhileUsing',
       '17': true
     },
+    {
+      '1': 'app_filter',
+      '3': 3,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.notifications.v1.AppFilter',
+      '9': 1,
+      '10': 'appFilter',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_skip_while_using'},
+    {'1': '_app_filter'},
   ],
 };
 
@@ -268,4 +314,6 @@ const UpdateMirrorSettings$json = {
 final $typed_data.Uint8List updateMirrorSettingsDescriptor = $convert.base64Decode(
     'ChRVcGRhdGVNaXJyb3JTZXR0aW5ncxI2CgRhcHBzGAEgAygLMiIuZmVycmV0Lm5vdGlmaWNhdG'
     'lvbnMudjEuQXBwQ2hvaWNlUgRhcHBzEi0KEHNraXBfd2hpbGVfdXNpbmcYAiABKAhIAFIOc2tp'
-    'cFdoaWxlVXNpbmeIAQFCEwoRX3NraXBfd2hpbGVfdXNpbmc=');
+    'cFdoaWxlVXNpbmeIAQESRgoKYXBwX2ZpbHRlchgDIAEoDjIiLmZlcnJldC5ub3RpZmljYXRpb2'
+    '5zLnYxLkFwcEZpbHRlckgBUglhcHBGaWx0ZXKIAQFCEwoRX3NraXBfd2hpbGVfdXNpbmdCDQoL'
+    'X2FwcF9maWx0ZXI=');

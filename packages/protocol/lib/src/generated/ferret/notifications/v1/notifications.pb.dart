@@ -15,7 +15,11 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import 'notifications.pbenum.dart';
+
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
+
+export 'notifications.pbenum.dart';
 
 /// A button on a notification, such as "Reply" or "Mark as read".
 class NotificationAction extends $pb.GeneratedMessage {
@@ -669,12 +673,17 @@ class MirrorSettings extends $pb.GeneratedMessage {
     $core.bool? accessGranted,
     $core.bool? skipWhileUsing,
     $core.Iterable<$core.String>? allowedPackages,
+    AppFilter? appFilter,
+    $core.Iterable<$core.String>? excludedPackages,
   }) {
     final result = MirrorSettings._();
     if (enabled != null) result.enabled = enabled;
     if (accessGranted != null) result.accessGranted = accessGranted;
     if (skipWhileUsing != null) result.skipWhileUsing = skipWhileUsing;
     if (allowedPackages != null) result.allowedPackages.addAll(allowedPackages);
+    if (appFilter != null) result.appFilter = appFilter;
+    if (excludedPackages != null)
+      result.excludedPackages.addAll(excludedPackages);
     return result;
   }
 
@@ -696,6 +705,9 @@ class MirrorSettings extends $pb.GeneratedMessage {
     ..aOB(2, _omitFieldNames ? '' : 'accessGranted')
     ..aOB(3, _omitFieldNames ? '' : 'skipWhileUsing')
     ..pPS(4, _omitFieldNames ? '' : 'allowedPackages')
+    ..aE<AppFilter>(5, _omitFieldNames ? '' : 'appFilter',
+        enumValues: AppFilter.values)
+    ..pPS(6, _omitFieldNames ? '' : 'excludedPackages')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -750,9 +762,25 @@ class MirrorSettings extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearSkipWhileUsing() => $_clearField(3);
 
-  /// Apps whose notifications are mirrored.
+  /// The apps picked for `APP_FILTER_ONLY`. Kept while another filter is
+  /// active, so switching back restores them.
   @$pb.TagNumber(4)
   $pb.PbList<$core.String> get allowedPackages => $_getList(3);
+
+  /// Which apps are mirrored.
+  @$pb.TagNumber(5)
+  AppFilter get appFilter => $_getN(4);
+  @$pb.TagNumber(5)
+  set appFilter(AppFilter value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasAppFilter() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearAppFilter() => $_clearField(5);
+
+  /// The apps muted for `APP_FILTER_ALL_EXCEPT`. Kept while another filter is
+  /// active.
+  @$pb.TagNumber(6)
+  $pb.PbList<$core.String> get excludedPackages => $_getList(5);
 }
 
 /// Asks the source for its `MirrorSettings`. Expects a `MirrorSettings` reply.
@@ -808,6 +836,7 @@ class AppEntry extends $pb.GeneratedMessage {
     $core.List<$core.int>? iconPng,
     $core.bool? allowed,
     $core.bool? isMessaging,
+    $fixnum.Int64? lastPostedMs,
   }) {
     final result = AppEntry._();
     if (package != null) result.package = package;
@@ -815,6 +844,7 @@ class AppEntry extends $pb.GeneratedMessage {
     if (iconPng != null) result.iconPng = iconPng;
     if (allowed != null) result.allowed = allowed;
     if (isMessaging != null) result.isMessaging = isMessaging;
+    if (lastPostedMs != null) result.lastPostedMs = lastPostedMs;
     return result;
   }
 
@@ -838,6 +868,7 @@ class AppEntry extends $pb.GeneratedMessage {
         3, _omitFieldNames ? '' : 'iconPng', $pb.PbFieldType.OY)
     ..aOB(4, _omitFieldNames ? '' : 'allowed')
     ..aOB(5, _omitFieldNames ? '' : 'isMessaging')
+    ..aInt64(6, _omitFieldNames ? '' : 'lastPostedMs')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -888,6 +919,7 @@ class AppEntry extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearIconPng() => $_clearField(3);
 
+  /// Its notifications are mirrored under the current filter.
   @$pb.TagNumber(4)
   $core.bool get allowed => $_getBF(3);
   @$pb.TagNumber(4)
@@ -897,7 +929,7 @@ class AppEntry extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   void clearAllowed() => $_clearField(4);
 
-  /// A messaging app, picked by default.
+  /// A messaging app, such as Signal or WhatsApp.
   @$pb.TagNumber(5)
   $core.bool get isMessaging => $_getBF(4);
   @$pb.TagNumber(5)
@@ -906,6 +938,17 @@ class AppEntry extends $pb.GeneratedMessage {
   $core.bool hasIsMessaging() => $_has(4);
   @$pb.TagNumber(5)
   void clearIsMessaging() => $_clearField(5);
+
+  /// When the app last posted a notification the source saw, in the source
+  /// device's clock. 0 when unknown.
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get lastPostedMs => $_getI64(5);
+  @$pb.TagNumber(6)
+  set lastPostedMs($fixnum.Int64 value) => $_setInt64(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLastPostedMs() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLastPostedMs() => $_clearField(6);
 }
 
 /// Asks the source for its apps. Expects an `AppListResponse` reply.
@@ -1004,7 +1047,9 @@ class AppListResponse extends $pb.GeneratedMessage {
   $pb.PbList<AppEntry> get apps => $_getList(0);
 }
 
-/// Turns one app on or off.
+/// Turns one app on or off: under `APP_FILTER_ALL_EXCEPT` it changes
+/// `excluded_packages`, under `APP_FILTER_ONLY` `allowed_packages`. Turning an
+/// app off under `APP_FILTER_ALL` switches to `APP_FILTER_ALL_EXCEPT`.
 class AppChoice extends $pb.GeneratedMessage {
   factory AppChoice({
     $core.String? package,
@@ -1078,10 +1123,12 @@ class UpdateMirrorSettings extends $pb.GeneratedMessage {
   factory UpdateMirrorSettings({
     $core.Iterable<AppChoice>? apps,
     $core.bool? skipWhileUsing,
+    AppFilter? appFilter,
   }) {
     final result = UpdateMirrorSettings._();
     if (apps != null) result.apps.addAll(apps);
     if (skipWhileUsing != null) result.skipWhileUsing = skipWhileUsing;
+    if (appFilter != null) result.appFilter = appFilter;
     return result;
   }
 
@@ -1102,6 +1149,8 @@ class UpdateMirrorSettings extends $pb.GeneratedMessage {
     ..pPM<AppChoice>(1, _omitFieldNames ? '' : 'apps',
         subBuilder: AppChoice.$_createMessage)
     ..aOB(2, _omitFieldNames ? '' : 'skipWhileUsing')
+    ..aE<AppFilter>(3, _omitFieldNames ? '' : 'appFilter',
+        enumValues: AppFilter.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1139,6 +1188,16 @@ class UpdateMirrorSettings extends $pb.GeneratedMessage {
   $core.bool hasSkipWhileUsing() => $_has(1);
   @$pb.TagNumber(2)
   void clearSkipWhileUsing() => $_clearField(2);
+
+  /// Applied before `apps`. Left out to keep the current filter.
+  @$pb.TagNumber(3)
+  AppFilter get appFilter => $_getN(2);
+  @$pb.TagNumber(3)
+  set appFilter(AppFilter value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAppFilter() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAppFilter() => $_clearField(3);
 }
 
 const $core.bool _omitFieldNames =

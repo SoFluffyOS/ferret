@@ -66,15 +66,14 @@ void main() {
       expect(part.needsAttention, isTrue);
     });
 
-    testWidgets('working, it says how many apps', (tester) async {
+    testWidgets('working, it says which apps', (tester) async {
       source.accessGranted = true;
       await settings.set(MirrorPreferences.enabledKey, true);
-      await settings.set(MirrorPreferences.allowedAppsKey, [signal]);
 
       final part = await section(tester);
 
       expect(part.isOn, isTrue);
-      expect(part.summary, '1 app');
+      expect(part.summary, 'All apps');
       expect(part.needsAttention, isFalse);
     });
   });
@@ -297,7 +296,7 @@ void main() {
         laptopUi
             .deviceActions(context, laptopContext, device)
             .map((action) => action.label),
-        ['Pick notification apps'],
+        ['Choose notification apps'],
       );
 
       await tester.runAsync(() async {

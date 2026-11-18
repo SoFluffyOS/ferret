@@ -39,6 +39,7 @@ class NotificationsFeature extends Feature implements MirrorControl {
   final Map<String, MirrorSettings> _senderSettings = {};
   final Set<String> _unreachableSenders = {};
   final Map<String, Uint8List> _icons = {};
+  final Map<String, int> _lastPostedByApp = {};
   final StreamController<MirrorEvent> _mirrorEvents = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
@@ -87,6 +88,7 @@ class NotificationsFeature extends Feature implements MirrorControl {
   @override
   Future<void> onStart() async {
     if (source case final notificationSource?) {
+      unawaited(_migrateAppFilter(notificationSource));
       _subscriptions
         ..add(notificationSource.events.listen(_onSourceEvent))
         ..add(
@@ -272,11 +274,14 @@ class NotificationsFeature extends Feature implements MirrorControl {
       enabled: preferences.enabled,
       accessGranted: accessGranted,
       skipWhileUsing: preferences.skipWhileUsing,
-      allowedPackages: preferences.effectiveAllowedApps.toList()..sort(),
+      appFilter: preferences.appFilter,
+      allowedPackages: preferences.allowedApps.toList()..sort(),
+      excludedPackages: preferences.excludedApps.toList()..sort(),
     );
   }
 
-  /// This phone's apps, with whether each is picked.
+  /// This phone's apps, with whether each comes through and when it last
+  /// posted.
   Future<List<AppEntry>> localApps() async {
     final notificationSource = source;
     if (notificationSource == null) {
@@ -292,27 +297,17 @@ class NotificationsFeature extends Feature implements MirrorControl {
           iconPng: app.icon,
           allowed: preferences.isAllowed(app.packageName),
           isMessaging: MessagingApps.contains(app.packageName),
+          lastPostedMs: Int64(_lastPosted(app)),
         ),
     ];
   }
 
-  /// Saves the installed messaging apps as the picked apps, the first time
-  /// mirroring is turned on, so counts and lists show real apps.
-  Future<void> pickDefaultApps() async {
-    final notificationSource = source;
-    if (notificationSource == null || preferences.allowedApps != null) {
-      return;
-    }
-
-    final apps = await notificationSource.listApps();
-    await preferences.setAllowedApps({
-      for (final app in apps)
-        if (MessagingApps.contains(app.packageName)) app.packageName,
-    });
-  }
-
   /// Applies [update] to this phone's settings.
   Future<MirrorSettings> applySettings(UpdateMirrorSettings update) async {
+    if (update.hasAppFilter()) {
+      await preferences.setAppFilter(update.appFilter);
+    }
+
     await preferences.setAllowed({
       for (final choice in update.apps) choice.package: choice.allowed,
     });
@@ -394,6 +389,7 @@ class NotificationsFeature extends Feature implements MirrorControl {
   Future<void> _handleSourceEvent(NotificationEvent event) async {
     switch (event) {
       case NotificationPostedEvent(:final notification):
+        _lastPostedByApp[notification.packageName] = notification.postedAtMs;
         await _onPosted(notification);
       case NotificationRemovedEvent(:final key):
         _onRemoved(key);
@@ -544,6 +540,31 @@ class NotificationsFeature extends Feature implements MirrorControl {
     }
 
     return item;
+  }
+
+  int _lastPosted(PlatformApp app) {
+    final seen = _lastPostedByApp[app.packageName] ?? 0;
+    final showing = app.lastPostedMs ?? 0;
+    return switch (seen > showing) {
+      true => seen,
+      false => showing,
+    };
+  }
+
+  Future<void> _migrateAppFilter(NotificationSource notificationSource) async {
+    if (!preferences.needsMigration) {
+      return;
+    }
+
+    try {
+      final apps = await notificationSource.listApps();
+      await preferences.migrate({
+        for (final app in apps)
+          if (MessagingApps.contains(app.packageName)) app.packageName,
+      });
+    } on Object catch (error) {
+      printWarning('Reading the apps for the app filter failed', error);
+    }
   }
 
   Session _requireSession(String deviceId) {

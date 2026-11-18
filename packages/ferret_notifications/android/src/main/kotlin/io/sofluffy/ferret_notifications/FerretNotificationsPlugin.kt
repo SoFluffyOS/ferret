@@ -138,6 +138,12 @@ class FerretNotificationsPlugin :
             val packageManager = context.packageManager
             val launcher = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
 
+            val lastPosted = FerretNotificationListener.connected
+                ?.let { listener -> runCatching { listener.activeNotifications }.getOrNull() }
+                .orEmpty()
+                .groupBy { it.packageName }
+                .mapValues { (_, posted) -> posted.maxOf { it.postTime } }
+
             @Suppress("DEPRECATION")
             val activities = packageManager.queryIntentActivities(launcher, 0)
             activities
@@ -149,6 +155,7 @@ class FerretNotificationsPlugin :
                         packageName = packageName,
                         name = NotificationReader.appName(packageManager, packageName),
                         icon = AppIcons.pickerIcon(context, packageName),
+                        lastPostedMs = lastPosted[packageName],
                     )
                 }
                 .sortedBy { it.name.lowercase() }

@@ -137,7 +137,7 @@ void main() {
 
       final health = ui.healthFor(context, laptop.devices.single);
       expect(health?.state, FeatureHealthState.ok);
-      expect(health?.reason, matches(RegExp(r'^\d+ apps?$')));
+      expect(health?.reason, 'All apps');
       expect(ui.hasHomeCard(context), isFalse);
       expect(changes, greaterThan(0));
     });
@@ -184,14 +184,21 @@ void main() {
       expect(posted().last.appIcon, isNotNull);
     });
 
-    test('noise and apps that were not picked stay on the phone', () async {
+    test('noise and muted apps stay on the phone', () async {
       await connect();
+      await phoneFeature.applySettings(
+        UpdateMirrorSettings(
+          appFilter: .APP_FILTER_ALL_EXCEPT,
+          apps: [AppChoice(package: game)],
+        ),
+      );
 
       source
         ..post(phoneNotification(key: 'game', packageName: game))
         ..post(phoneNotification(key: 'ongoing', isOngoing: true))
         ..post(phoneNotification(key: 'quiet', importance: 2))
         ..post(phoneNotification(key: 'summary', isGroupSummary: true))
+        ..post(phoneNotification(key: 'media', isMedia: true))
         ..post(phoneNotification(key: 'chat'));
 
       await until(() => posted().isNotEmpty);
@@ -238,6 +245,9 @@ void main() {
 
     test('dismissing on the phone removes it on the laptop', () async {
       await connect();
+      await phoneFeature.applySettings(
+        UpdateMirrorSettings(apps: [AppChoice(package: game)]),
+      );
       source
         ..post(phoneNotification())
         ..post(phoneNotification(key: 'never-sent', packageName: game));
@@ -306,12 +316,14 @@ void main() {
         [for (final app in apps) (app.package, app.allowed)],
         [
           (signal, true),
-          (game, false),
+          (game, true),
         ],
       );
       expect(apps.first.isMessaging, isTrue);
       expect(settings.skipWhileUsing, isFalse);
-      expect(settings.allowedPackages, isNot(contains(signal)));
+      expect(settings.appFilter, AppFilter.APP_FILTER_ALL_EXCEPT);
+      expect(settings.excludedPackages, [signal]);
+      expect(phoneFeature.preferences.isAllowed(signal), isFalse);
       expect(phoneFeature.preferences.skipWhileUsing, isFalse);
     });
 

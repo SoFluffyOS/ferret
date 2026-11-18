@@ -6,9 +6,17 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One app in the picker, with its switch.
 class AppRow extends StatelessWidget {
-  const AppRow({super.key, required this.app, required this.onChanged});
+  const AppRow({
+    super.key,
+    required this.app,
+    required this.value,
+    required this.onChanged,
+  });
 
   final AppEntry app;
+
+  /// Whether the app's notifications come through.
+  final bool value;
   final ValueChanged<bool> onChanged;
 
   @override
@@ -30,7 +38,7 @@ class AppRow extends StatelessWidget {
             ),
           ),
           Spacing.h12,
-          SwitchToggle(value: app.allowed, onChanged: onChanged),
+          SwitchToggle(value: value, onChanged: onChanged),
         ],
       ),
     );

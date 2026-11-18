@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:notifications/l10n/l10n.dart';
 import 'package:notifications/ui/widgets/widgets.dart';
 import 'package:notifications/view_models/view_models.dart';
+import 'package:protocol/notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -157,8 +158,11 @@ class _Ready extends StatelessWidget {
     final skipWhileUsing = context.select<MirrorSetupViewModel, bool>(
       (viewModel) => viewModel.skipWhileUsing,
     );
+    final appFilter = context.select<MirrorSetupViewModel, AppFilter>(
+      (viewModel) => viewModel.appFilter,
+    );
     final appCount = context.select<MirrorSetupViewModel, int>(
-      (viewModel) => viewModel.allowedAppCount,
+      (viewModel) => viewModel.namedAppCount,
     );
     final viewModel = context.read<MirrorSetupViewModel>();
     final l10n = context.notificationsL10n;
@@ -178,7 +182,8 @@ class _Ready extends StatelessWidget {
           Spacing.v12,
           Button(
             variant: .ghost,
-            label: '${l10n.chooseApps} · ${l10n.appCount(appCount)}',
+            label:
+                '${l10n.chooseApps} · ${l10n.appsSummary(appFilter, appCount)}',
             onPressed: onChooseApps,
           ),
           Spacing.v8,

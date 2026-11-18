@@ -14,7 +14,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get explainer =>
-      'Shows this phone\'s notifications on your computer. You pick which apps.';
+      'Shows this phone\'s notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.';
 
   @override
   String get offerDescription =>
@@ -22,7 +22,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get explainerDetail =>
-      'Only new notifications from the apps you pick. Nothing leaves your network.';
+      'Only new notifications. Nothing leaves your network.';
 
   @override
   String get turnOn => 'Turn on';
@@ -83,28 +83,77 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get chooseApps => 'Choose apps';
 
   @override
-  String appCount(int count) {
+  String get appsAll => 'All apps';
+
+  @override
+  String appsAllExcept(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps picked',
-      one: '1 app picked',
+      other: 'All apps except $count',
+      one: 'All apps except 1',
+      zero: 'All apps',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String appsOnly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps',
+      one: '1 app',
       zero: 'No apps picked',
     );
     return '$_temp0';
   }
 
   @override
-  String get appPickerTitle => 'Apps to mirror';
+  String get filterAll => 'All apps';
+
+  @override
+  String get filterAllDetail =>
+      'Every app\'s notifications come to your computer.';
+
+  @override
+  String get filterAllExcept => 'All apps except…';
+
+  @override
+  String get filterAllExceptDetail => 'Mute a few noisy apps.';
+
+  @override
+  String get filterOnly => 'Only these apps…';
+
+  @override
+  String get filterOnlyDetail => 'Pick the few apps you want.';
+
+  @override
+  String get filterBuiltIn =>
+      'Ferret\'s own notifications, music controls and silent or ongoing ones always stay on the phone.';
+
+  @override
+  String get appPickerMuteHint =>
+      'Switch off the apps you don\'t want on your computer.';
+
+  @override
+  String get appPickerOnlyHint =>
+      'Switch on the apps you want on your computer.';
+
+  @override
+  String get appPickerApps => 'Apps, most recent first';
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get selectNone => 'Select none';
+
+  @override
+  String get appPickerTitle => 'Choose apps';
 
   @override
   String get appPickerSearch => 'Search apps';
-
-  @override
-  String get appPickerMessaging => 'Messaging apps';
-
-  @override
-  String get appPickerOther => 'Other apps';
 
   @override
   String get appPickerLoading => 'Getting the apps…';
@@ -136,27 +185,8 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
       'Connect your Android phone to see its notifications here.';
 
   @override
-  String phoneMirroring(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count apps',
-      one: '1 app',
-      zero: 'no apps',
-    );
-    return 'Mirroring $_temp0';
-  }
-
-  @override
-  String healthApps(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count apps',
-      one: '1 app',
-      zero: 'No apps picked',
-    );
-    return '$_temp0';
+  String phoneMirroring(String apps) {
+    return 'On · $apps';
   }
 
   @override
@@ -263,7 +293,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String howBody(String device) {
-    return 'On $device: Ferret → Do more → Notifications. Ferret asks for notification access and lets you pick the apps.';
+    return 'On $device: Ferret → Do more → Notifications. Ferret asks for notification access, then every app\'s notifications show here.';
   }
 
   @override
@@ -282,7 +312,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get settingsPerPhone =>
-      'To pick apps or stop showing a phone\'s notifications here, open the phone from Home.';
+      'Every app comes through unless you change it. To mute apps or stop showing a phone here, open the phone from Home.';
 
   @override
   String get permissionShow => 'Show its notifications here';
@@ -291,7 +321,7 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get permissionHold => 'Hold them back while it\'s in use';
 
   @override
-  String get actionChooseApps => 'Pick notification apps';
+  String get actionChooseApps => 'Choose notification apps';
 
   @override
   String get healthHiddenHere => 'Turned off here';
