@@ -10,12 +10,15 @@ import 'package:mirroring/l10n/l10n.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/ui/frames/frames.dart';
 import 'package:mirroring/ui/pages/pages.dart';
+import 'package:mirroring/ui/widgets/widgets.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The app side of Screen mirroring. On a computer: "Show screen" on each
-/// Android phone, the mirror page, and a card while a phone is shown. On a
+/// The app side of Screen. On a computer: "Show screen" on every phone
+/// and tablet, the mirror stage that tells the whole story from the first
+/// question to the ending, a pinned Activity line while a screen is
+/// shown, and a card for phones on a cable that aren't paired. On a
 /// phone: the "Sharing screen with MacBook · Stop" card (next to Android's
 /// own ongoing notice), the audit line, and Settings with the history.
 class MirroringFeatureUi extends FeatureUi {
@@ -38,6 +41,15 @@ class MirroringFeatureUi extends FeatureUi {
 
   final MirrorWindow? _window;
 
+  static const _requestCategory = 'mirroring.request';
+  static const _requestNotice = 'mirroring.request';
+  static const _showAction = 'mirroring.show';
+  static const _denyAction = 'mirroring.deny';
+
+  /// Where "Show screen" sits among a device's first actions: right
+  /// after Send files.
+  static const _homeOrder = 15;
+
   late final ViewerViewModel viewerViewModel = ViewerViewModel(
     feature,
     window: _window,
@@ -47,7 +59,13 @@ class MirroringFeatureUi extends FeatureUi {
   StreamSubscription<void>? _revealOnAsk;
   StreamSubscription<MirrorFeed>? _openOnIncoming;
   StreamSubscription<void>? _askOnRequest;
+  StreamSubscription<NoticeResponse>? _noticeResponses;
   final Set<IncomingRequest> _asked = {};
+
+  /// The mirror page that is open, so a second one takes its place
+  /// instead of piling up on it.
+  Route<void>? _page;
+  String? _pageDeviceId;
 
   /// When the request the app was last brought to the front for was made.
   DateTime? _revealedFor;
@@ -61,6 +79,20 @@ class MirroringFeatureUi extends FeatureUi {
   ];
 
   @override
+  List<NoticeCategory> get noticeCategories {
+    final l10n = platformMirroringL10n();
+    return [
+      NoticeCategory(
+        id: _requestCategory,
+        actions: [
+          NoticeAction(id: _showAction, label: l10n.allow),
+          NoticeAction(id: _denyAction, label: l10n.dontAllow),
+        ],
+      ),
+    ];
+  }
+
+  @override
   String title(BuildContext context) => context.mirroringL10n.title;
 
   @override
@@ -72,6 +104,9 @@ class MirroringFeatureUi extends FeatureUi {
       (feed) => unawaited(_openIncoming(context, feed.target)),
     );
     _askOnRequest = feature.changes.listen((_) => _askWhenRequested(context));
+    _noticeResponses = context.notifier.responses
+        .where((response) => response.noticeId == _requestNotice)
+        .listen(_onNoticeResponse);
     if (feature.source == null) {
       return;
     }
@@ -82,26 +117,11 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _changes;
 
-  /// Only while a screen is asked for or shown, or just was.
+  /// A phone's card while its screen is asked for or shared, or just
+  /// was; a computer's only for phones on a cable that aren't paired.
   @override
   bool hasHomeCard(FeatureContext feature) =>
-      viewerViewModel.hasCard || shareViewModel.hasCard;
-
-  /// The other ways to show a screen stay off until asked for.
-  @override
-  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
-    if (!viewerViewModel.hasMoreWays || viewerViewModel.moreWays) {
-      return null;
-    }
-
-    final l10n = context.mirroringL10n;
-    return FeatureOffer(
-      title: l10n.title,
-      description: l10n.moreWaysOffer,
-      actionLabel: l10n.turnOn,
-      onAction: () => unawaited(viewerViewModel.setMoreWays(true)),
-    );
-  }
+      shareViewModel.hasCard || viewerViewModel.hasCard;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -119,10 +139,86 @@ class MirroringFeatureUi extends FeatureUi {
     return ChangeNotifierProvider.value(
       value: viewerViewModel,
       child: ViewerCardFrame(
-        onOpen: (session) => unawaited(_openPage(feature, session.target)),
         onShow: (target) => unawaited(_showTarget(feature, target)),
       ),
     );
+  }
+
+  /// A device that asks to show its screen needs the person; the screen
+  /// being shown stays pinned with Stop; the last one shown leaves a line.
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
+    final l10n = context.mirroringL10n;
+    final current = viewerViewModel.current;
+    final record = viewerViewModel.lastRecord;
+    final asksOnStage = viewerViewModel.airplayGuideFor != null;
+
+    return [
+      if (!asksOnStage)
+        for (final request in viewerViewModel.requests)
+          ActivityItem(
+            id: 'mirroring.request.${request.askedAt.millisecondsSinceEpoch}',
+            icon: LucideIcons.screenShare,
+            title: l10n.allowTitle(request.deviceName),
+            needsYou: true,
+            tone: .accent,
+            trailing: Countdown(
+              until: request.deadline,
+              builder: (context, left) => Text(
+                Countdown.clockText(left),
+                style: context.fluffyTheme.typography.caption1.copyWith(
+                  color: context.palette.mutedText,
+                ),
+              ),
+            ),
+            actions: [
+              ActivityAction(
+                label: l10n.allow,
+                primary: true,
+                onPressed: () => viewerViewModel.answer(request, allow: true),
+              ),
+              ActivityAction(
+                label: l10n.dontAllow,
+                onPressed: () => viewerViewModel.answer(request, allow: false),
+              ),
+            ],
+          ),
+      if (current != null && current.isLive)
+        ActivityItem(
+          id: 'mirroring.live',
+          icon: LucideIcons.screenShare,
+          title: switch (current.startedAt) {
+            null => l10n.viewingAsking(current.deviceName),
+            _ => l10n.viewingTitle(current.deviceName),
+          },
+          detail: switch (current.startedAt) {
+            final startedAt? => l10n.viewingDetail(
+              l10n.time(startedAt),
+              l10n.wayName(current.way),
+            ),
+            null => null,
+          },
+          at: current.startedAt,
+          pinned: true,
+          tone: .accent,
+          onTap: () => unawaited(_openPage(feature, current.target)),
+          actions: [
+            ActivityAction(
+              label: l10n.stop,
+              onPressed: () => unawaited(viewerViewModel.stop()),
+            ),
+          ],
+        ),
+      if (record != null && !(current?.isLive ?? false))
+        ActivityItem(
+          id: 'mirroring.record.${record.startedAt.millisecondsSinceEpoch}',
+          icon: LucideIcons.screenShare,
+          title: l10n.audit(record),
+          at: record.endedAt,
+          tone: .muted,
+          onDismiss: viewerViewModel.dismissRecord,
+        ),
+    ];
   }
 
   /// On a computer: whether [device] can show its screen here, from how
@@ -146,6 +242,9 @@ class MirroringFeatureUi extends FeatureUi {
     return null;
   }
 
+  /// "Show screen" on every Android phone and tablet, connected or not:
+  /// the stage says what to do when it isn't. On an iPhone or iPad too,
+  /// where this computer can listen for it.
   @override
   List<FeatureAction> deviceActions(
     BuildContext context,
@@ -153,29 +252,23 @@ class MirroringFeatureUi extends FeatureUi {
     DeviceStatus device,
   ) {
     final session = device.session;
-    final label = context.mirroringL10n.showScreen;
-    if (session != null && this.feature.canViewDevice(session)) {
-      return [
-        FeatureAction(
-          label: label,
-          icon: LucideIcons.screenShare,
-          onPressed: () => unawaited(
-            _openMirror(feature, device.device.id, device.device.name),
-          ),
-        ),
-      ];
-    }
-
-    final target = viewerViewModel.targetForDevice(device.device.id);
-    if (target == null) {
+    final trusted = device.device;
+    final shares = session != null && this.feature.canViewDevice(session);
+    final viaAirplay =
+        trusted.platform == .PLATFORM_IOS && viewerViewModel.hasReceivers;
+    final isAndroid = trusted.platform == .PLATFORM_ANDROID;
+    if (!viewerViewModel.isAvailable || !(shares || isAndroid || viaAirplay)) {
       return const [];
     }
 
     return [
       FeatureAction(
-        label: label,
+        label: context.mirroringL10n.showScreen,
         icon: LucideIcons.screenShare,
-        onPressed: () => unawaited(_showTarget(feature, target)),
+        homeOrder: _homeOrder,
+        onPressed: () => unawaited(
+          _openMirror(feature, trusted.id, trusted.name, viaAirplay),
+        ),
       ),
     ];
   }
@@ -184,8 +277,7 @@ class MirroringFeatureUi extends FeatureUi {
   Widget? buildSettings(BuildContext context, FeatureContext feature) {
     final sections = [
       if (shareViewModel.isAvailable) _shareSettings(),
-      if (viewerViewModel.isAvailable && _hasViewerSettings(feature))
-        _viewerSettings(),
+      if (viewerViewModel.isAvailable && _hasViewerSettings) _viewerSettings(),
     ];
     if (sections.isEmpty) {
       return null;
@@ -222,13 +314,13 @@ class MirroringFeatureUi extends FeatureUi {
           summary: _shareSummary(l10n),
           isOn: shareViewModel.enabled && shareViewModel.canCapture,
         ),
-      if (viewerViewModel.isAvailable && _hasViewerSettings(feature))
+      if (viewerViewModel.isAvailable && _hasViewerSettings)
         FeatureSettings(
           group: .phone,
           title: title,
           child: _viewerSettings(),
-          summary: switch (viewerViewModel.moreWays) {
-            true => l10n.summaryMoreWays,
+          summary: switch (viewerViewModel.lookForCable) {
+            true => l10n.summaryCable,
             false => '',
           },
         ),
@@ -274,15 +366,12 @@ class MirroringFeatureUi extends FeatureUi {
     child: const ViewerSettingsFrame(),
   );
 
-  /// A computer's part only helps once an Android phone is paired, to keep
-  /// showing what it mirrored before, or once the other ways are on. Until
-  /// then the other ways are an offer, not a setting.
-  bool _hasViewerSettings(FeatureContext featureContext) =>
-      viewerViewModel.moreWays ||
-      viewerViewModel.history.isNotEmpty ||
-      featureContext.engine.devices.any(
-        (status) => status.device.platform == .PLATFORM_ANDROID,
-      );
+  /// A computer's part is there once it has a switch to show (the cable,
+  /// a receiver) or a history to keep.
+  bool get _hasViewerSettings =>
+      viewerViewModel.hasCable ||
+      viewerViewModel.hasReceivers ||
+      viewerViewModel.history.isNotEmpty;
 
   /// Whether [session]'s device can show another's screen.
   bool _isViewer(Session? session) =>
@@ -379,6 +468,7 @@ class MirroringFeatureUi extends FeatureUi {
     await _revealOnAsk?.cancel();
     await _openOnIncoming?.cancel();
     await _askOnRequest?.cancel();
+    await _noticeResponses?.cancel();
     _changes.dispose();
     viewerViewModel.dispose();
     shareViewModel.dispose();
@@ -400,73 +490,128 @@ class MirroringFeatureUi extends FeatureUi {
     FeatureContext context,
     String deviceId,
     String deviceName,
+    bool viaAirplay,
   ) async {
-    unawaited(viewerViewModel.start(deviceId));
-    await _pushPage(context, deviceId, deviceName);
+    final opened = _pushPage(context, deviceId, deviceName);
+    if (viaAirplay) {
+      unawaited(viewerViewModel.openAirplayGuide(deviceId));
+    }
+
+    if (!viaAirplay) {
+      unawaited(viewerViewModel.show(deviceId, deviceName));
+    }
+
+    await opened;
   }
 
   Future<void> _showTarget(FeatureContext context, MirrorTarget target) async {
-    unawaited(viewerViewModel.startTarget(target));
-    await _openPage(context, target);
+    final opened = _openPage(context, target);
+    unawaited(viewerViewModel.showTarget(target));
+    await opened;
   }
 
   /// A device started showing its screen here by itself: the viewer
-  /// already plays it, so the page only has to come up.
+  /// already plays it, so the page only has to come up. One that was
+  /// asked for from its own page shows there.
   Future<void> _openIncoming(
     FeatureContext context,
     MirrorTarget target,
   ) async {
     unawaited(viewerViewModel.refreshWindow());
+    if (viewerViewModel.airplayGuideFor != null) {
+      return;
+    }
+
     unawaited(context.reveal());
     await _openPage(context, target);
   }
 
-  /// Puts each device's question in front of the owner once, wherever
-  /// they are in the app.
+  /// Puts each device's question in front of the owner once: as a line
+  /// that needs them and a notice, or on the stage that asked for it.
   void _askWhenRequested(FeatureContext context) {
     final requests = feature.routes?.requests ?? const <IncomingRequest>[];
+    final hadAny = _asked.isNotEmpty;
     _asked.retainAll(requests);
+    if (hadAny && _asked.isEmpty) {
+      unawaited(context.notifier.cancel(_requestNotice));
+    }
+
     for (final request in requests) {
       if (_asked.add(request)) {
-        unawaited(_ask(context, request));
+        _ask(context, request);
       }
     }
   }
 
-  Future<void> _ask(FeatureContext context, IncomingRequest request) async {
+  void _ask(FeatureContext context, IncomingRequest request) {
+    unawaited(context.reveal());
+    if (viewerViewModel.airplayGuideFor != null) {
+      return;
+    }
+
+    final l10n = platformMirroringL10n();
+    unawaited(
+      context.notifier.show(
+        LocalNotice(
+          id: _requestNotice,
+          channel: .incoming,
+          title: l10n.allowTitle(request.deviceName),
+          body: l10n.allowNoticeBody,
+          category: _requestCategory,
+        ),
+      ),
+    );
+  }
+
+  void _onNoticeResponse(NoticeResponse response) {
+    final request = viewerViewModel.requests.firstOrNull;
+    final actionId = response.actionId;
+    if (request == null || actionId == null) {
+      return;
+    }
+
+    viewerViewModel.answer(request, allow: actionId == _showAction);
+  }
+
+  Future<void> _openPage(FeatureContext context, MirrorTarget target) =>
+      _pushPage(context, ViewSession.deviceIdOf(target), target.name);
+
+  /// Opens the mirror page for a device, in place of the one that is
+  /// open for another. The same device's page just stays.
+  Future<void> _pushPage(
+    FeatureContext context,
+    String deviceId,
+    String deviceName,
+  ) async {
     final navigator = context.navigatorKey.currentState;
+    final open = _page;
     if (navigator == null) {
+      return;
+    }
+
+    if (open != null && open.isActive && _pageDeviceId == deviceId) {
       return;
     }
 
     final route = PageRouteBuilder<void>(
       pageBuilder: (_, _, _) => ChangeNotifierProvider.value(
         value: viewerViewModel,
-        child: AllowPage(request: request),
-      ),
-    );
-    unawaited(context.reveal());
-    unawaited(navigator.push(route));
-    await request.answer;
-    if (route.isActive) {
-      navigator.removeRoute(route);
-    }
-  }
-
-  Future<void> _openPage(FeatureContext context, MirrorTarget target) =>
-      _pushPage(context, ViewSession.deviceIdOf(target), target.name);
-
-  Future<void> _pushPage(
-    FeatureContext context,
-    String deviceId,
-    String deviceName,
-  ) async {
-    await context.push<void>(
-      ChangeNotifierProvider.value(
-        value: viewerViewModel,
         child: MirrorPage(deviceId: deviceId, deviceName: deviceName),
       ),
     );
+    _page = route;
+    _pageDeviceId = deviceId;
+    viewerViewModel.openStage(deviceId);
+    final pushed = navigator.push(route);
+    if (open != null && open.isActive) {
+      navigator.removeRoute(open);
+    }
+
+    await pushed;
+    if (identical(_page, route)) {
+      _page = null;
+      _pageDeviceId = null;
+    }
   }
 
   ConsentTexts _noticeTexts(String deviceName) {

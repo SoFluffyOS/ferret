@@ -25,6 +25,7 @@ class MirrorSource {
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.denyCooldown = const Duration(seconds: 30),
+    this.reconnectGrace = const Duration(seconds: 20),
   }) : _host = host,
        _featureId = featureId,
        _capture = capture,
@@ -38,6 +39,11 @@ class MirrorSource {
   /// After a no, the same device is turned away this long, so it can't
   /// flood the owner with prompts.
   final Duration denyCooldown;
+
+  /// How long the capture is kept after the computer's connection
+  /// dropped, so the picture picks up again without a new prompt: it is
+  /// still the capture the owner said yes to.
+  final Duration reconnectGrace;
 
   final FeatureHost _host;
   final String _featureId;
@@ -55,6 +61,8 @@ class MirrorSource {
   MirrorRecord? _lastRecord;
   FrameSender? _sender;
   BitrateController? _bitrate;
+  MirrorStreamConfig? _lastConfig;
+  Timer? _graceTimer;
   int _configId = 0;
 
   /// What this phone can capture with, as checked at start.
@@ -101,7 +109,13 @@ class MirrorSource {
       return StartDeny(reason: .DENY_REASON_UNSUPPORTED);
     }
 
-    if (_active != null || _pending != null) {
+    final active = _active;
+    if (active != null && active.deviceId == deviceId && active.reconnecting) {
+      unawaited(_resume(active));
+      return StartPending();
+    }
+
+    if (active != null || _pending != null) {
       return _answerWhileBusy(deviceId);
     }
 
@@ -183,9 +197,18 @@ class MirrorSource {
       await _dropPending();
     }
 
-    if (_active?.deviceId == deviceId) {
-      await _end(.lostConnection);
+    final active = _active;
+    if (active == null || active.deviceId != deviceId) {
+      return;
     }
+
+    _active = active.copyWith(reconnecting: true);
+    _graceTimer?.cancel();
+    _graceTimer = Timer(
+      reconnectGrace,
+      () => unawaited(_end(.lostConnection)),
+    );
+    _emit();
   }
 
   /// Stop on this phone: the computer's picture goes away at once.
@@ -403,7 +426,38 @@ class MirrorSource {
     }
   }
 
+  /// The computer is back while its capture still runs: pictures go on,
+  /// starting from a fresh config and keyframe. No prompt: it is the same
+  /// capture the owner said yes to.
+  Future<void> _resume(ActiveShare active) async {
+    _graceTimer?.cancel();
+    _graceTimer = null;
+    final resumed = active.copyWith(reconnecting: false);
+    _active = resumed;
+    _emit();
+
+    // The answer to the request itself has to leave first.
+    await Future<void>.delayed(Duration.zero);
+    if (!identical(_active, resumed)) {
+      return;
+    }
+
+    await _send(
+      resumed.deviceId,
+      StartAccept(
+        version: MirrorProtocol.version,
+        codec: MirrorProtocol.toProto(resumed.codec),
+      ),
+    );
+    if (_lastConfig case final config?) {
+      _onConfig(resumed, config);
+    }
+
+    await _capture.requestKeyframe();
+  }
+
   void _onConfig(ActiveShare active, MirrorStreamConfig config) {
+    _lastConfig = config;
     _configId++;
     _sender?.startConfig(_configId);
     unawaited(
@@ -439,9 +493,12 @@ class MirrorSource {
       return;
     }
 
+    _graceTimer?.cancel();
+    _graceTimer = null;
     _active = null;
     _sender = null;
     _bitrate = null;
+    _lastConfig = null;
     final record = MirrorRecord(
       deviceId: active.deviceId,
       deviceName: active.deviceName,

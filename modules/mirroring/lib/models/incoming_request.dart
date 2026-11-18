@@ -7,6 +7,7 @@ class IncomingRequest {
     required this.receiverId,
     required this.deviceName,
     required this.askedAt,
+    required this.deadline,
   });
 
   final String receiverId;
@@ -14,6 +15,9 @@ class IncomingRequest {
   /// What the device calls itself. Nothing proves it.
   final String deviceName;
   final DateTime askedAt;
+
+  /// When the question runs out and counts as a no.
+  final DateTime deadline;
 
   final Completer<bool> _answer = .new();
 

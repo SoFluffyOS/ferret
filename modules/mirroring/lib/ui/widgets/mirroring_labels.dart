@@ -78,30 +78,6 @@ extension MirroringLabels on MirroringLocalizations {
     .decoderFailed => endDecoderFailedBody(device),
   };
 
-  /// The step a route still needs, as a headline anyone understands.
-  String setupTitle(RouteSetup step) => switch (step) {
-    .installTool => setupInstallToolTitle,
-    .enableDebugging => setupEnableDebuggingTitle,
-    .authorizeComputer => setupAuthorizeTitle,
-    .grantPermission => setupPermissionTitle,
-  };
-
-  /// How to do that step. The route's own [detail], such as a path, goes
-  /// on a line after it.
-  String setupBody(RouteSetup step, {String? detail}) {
-    final howTo = switch (step) {
-      .installTool => setupInstallToolBody,
-      .enableDebugging => setupEnableDebuggingBody,
-      .authorizeComputer => setupAuthorizeBody,
-      .grantPermission => setupPermissionBody,
-    };
-    if (detail == null || detail.isEmpty) {
-      return howTo;
-    }
-
-    return '$howTo\n$detail';
-  }
-
   /// What a receiver's switch says. Receivers this build doesn't know by
   /// name get the general words.
   String receiverTitle(String receiverId) => switch (receiverId) {
@@ -115,15 +91,45 @@ extension MirroringLabels on MirroringLocalizations {
   };
 
   String buttonName(DeviceButton button) => switch (button) {
+    .back => buttonBack,
     .home => buttonHome,
     .recents => buttonRecents,
-    _ => buttonBack,
+    .rotate => buttonRotate,
+    .notifications => buttonNotifications,
+    .volumeUp => buttonVolumeUp,
+    .volumeDown => buttonVolumeDown,
+    .power => buttonPower,
   };
 
-  /// How a device another route found is connected.
+  /// How a phone on a cable is connected.
   String targetLine(MirrorTarget target) => switch (target.wireless) {
     true => targetWireless,
     false => targetCable,
+  };
+
+  /// The way a screen arrives, in the words people use for it.
+  String wayName(MirrorWay way) => switch (way) {
+    .wifi => wayWifi,
+    .cable => wayCable,
+    .airplay => wayAirplay,
+  };
+
+  String qualityName(ViewQuality quality) => switch (quality) {
+    .good => qualityGood,
+    .slow => qualitySlow,
+    .poor => qualityPoor,
+  };
+
+  String presetName(QualityPreset preset) => switch (preset) {
+    .auto => presetAuto,
+    .sharp => presetSharp,
+    .fast => presetFast,
+  };
+
+  String presetBody(QualityPreset preset) => switch (preset) {
+    .auto => presetAutoBody,
+    .sharp => presetSharpBody,
+    .fast => presetFastBody,
   };
 
   String codecName(MirrorCodec codec) => switch (codec) {
@@ -131,7 +137,8 @@ extension MirroringLabels on MirroringLocalizations {
     .jpeg => codecJpeg,
   };
 
-  /// "H.264 · 1080×2400 · 58 fps · 24 ms · 5.2 Mbps", with what is known.
+  /// "H.264 · 1080×2400 · 58 fps · 24 ms · 5.2 Mbps", with what is known:
+  /// the numbers behind the quality mark, for those who ask.
   String statusLine(MirrorStreamConfig config, ViewStats stats) => [
     statusPicture(
       codecName(config.codec),

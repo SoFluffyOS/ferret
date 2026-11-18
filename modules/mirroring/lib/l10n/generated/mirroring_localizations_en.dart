@@ -31,21 +31,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get dismiss => 'Dismiss';
 
   @override
-  String get open => 'Open';
-
-  @override
-  String get fit => 'Fit';
-
-  @override
-  String get actualSize => '1:1';
-
-  @override
-  String get fitTooltip => 'Fit the picture to the window';
-
-  @override
-  String get actualSizeTooltip => 'One phone pixel per screen pixel';
-
-  @override
   String get fullScreen => 'Full screen';
 
   @override
@@ -57,16 +42,13 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get requestingBody => 'This takes a moment.';
-
-  @override
   String waitingTitle(String device) {
     return 'Answer on $device';
   }
 
   @override
   String waitingBody(String device) {
-    return 'On $device: Android asks whether to share the screen. Tap Start. If $device shows nothing, open the notice from Ferret.';
+    return 'On $device, choose to share the entire screen, then Start.';
   }
 
   @override
@@ -94,7 +76,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endDeniedBody(String device) {
-    return 'Someone tapped Cancel on $device. You can ask again in half a minute.';
+    return 'Someone tapped Cancel on $device.';
   }
 
   @override
@@ -104,7 +86,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endTimedOutBody(String device) {
-    return 'The question stays on $device for a minute. Wake $device, then try again.';
+    return 'The question stays on $device for a minute. Wake $device, then ask again.';
   }
 
   @override
@@ -142,7 +124,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endCannotAskBody(String device) {
-    return 'On $device: open Ferret, or allow its notifications. Then try again.';
+    return 'On $device: open Ferret, or allow its notifications. Then ask again.';
   }
 
   @override
@@ -172,7 +154,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endNotConnectedBody(String device) {
-    return 'On $device: open Ferret. Check that $device and this computer are on the same Wi-Fi.';
+    return 'On $device: open Ferret. Same Wi-Fi as this computer?';
   }
 
   @override
@@ -183,14 +165,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   @override
   String endNoAnswerBody(String device) {
     return 'On $device: open Ferret. Then try again.';
-  }
-
-  @override
-  String get endStoppedHereTitle => 'Stopped on this computer';
-
-  @override
-  String endStoppedHereBody(String device) {
-    return '$device no longer shares its screen.';
   }
 
   @override
@@ -210,7 +184,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endSystemEndedBody(String device) {
-    return 'Android ends screen sharing when $device locks, or when someone stops it from the status bar.';
+    return 'Android stops sharing when $device locks, or when someone stops it from the status bar. Unlock $device, then show it again.';
   }
 
   @override
@@ -220,7 +194,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endLostConnectionBody(String device) {
-    return 'Ferret reconnects on its own. Try again once $device is back.';
+    return 'Check that $device is on, and on the same Wi-Fi as this computer.';
   }
 
   @override
@@ -228,7 +202,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endFailedBody(String device) {
-    return '$device couldn\'t capture its screen. Try again.';
+    return '$device couldn\'t capture its screen.';
   }
 
   @override
@@ -237,7 +211,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endDecoderFailedBody(String device) {
-    return 'The video from $device didn\'t play here. Try again.';
+    return 'The video from $device didn\'t play here.';
   }
 
   @override
@@ -269,21 +243,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   @override
   String viewingTitle(String device) {
     return 'Showing $device\'s screen';
-  }
-
-  @override
-  String viewingWaitingTitle(String device) {
-    return 'Waiting for $device';
-  }
-
-  @override
-  String viewingWaitingBody(String device) {
-    return 'On $device: answer Android\'s prompt.';
-  }
-
-  @override
-  String sinceTime(String time) {
-    return 'Since $time';
   }
 
   @override
@@ -365,14 +324,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get settingsUnsupported => 'This phone can\'t capture its screen';
 
   @override
-  String get settingsScreenOffNote =>
-      'Turning the phone\'s screen off while it is mirrored needs root, so Ferret doesn\'t offer it.';
-
-  @override
-  String get settingsViewerHint =>
-      'Open a connected Android phone and choose Show screen. The phone asks its owner every time.';
-
-  @override
   String get settingsHistoryTitle => 'History';
 
   @override
@@ -393,9 +344,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get summaryCantCapture => 'Can\'t capture';
-
-  @override
-  String get summaryMoreWays => 'More ways on';
 
   @override
   String get permissionAsk => 'Ask to see this phone\'s screen';
@@ -465,45 +413,20 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get experimental => 'Experimental';
 
   @override
-  String get moreWaysTitle => 'More ways to show a screen';
+  String get targetsTitle => 'Phones on a cable';
 
   @override
-  String get moreWaysBody =>
-      'Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.';
+  String get targetCable => 'Cable';
 
   @override
-  String get moreWaysOffer =>
-      'Experimental: show a phone plugged in with a cable, or a screen another device sends here.';
-
-  @override
-  String get turnOn => 'Turn on';
-
-  @override
-  String get targetsTitle => 'Screens you can show';
-
-  @override
-  String get targetsSubtitle =>
-      'Found by the experimental ways. They don\'t need Ferret.';
-
-  @override
-  String get targetCable => 'Plugged in with a cable';
-
-  @override
-  String get targetWireless => 'On your network';
+  String get targetWireless => 'Wi-Fi debugging';
 
   @override
   String get show => 'Show screen';
 
   @override
-  String get checkAgain => 'Check again';
-
-  @override
-  String get setupInstallToolTitle =>
-      'This computer needs a small helper first';
-
-  @override
   String get setupInstallToolBody =>
-      'How to: install Android\'s platform tools (they include adb) on this computer, then try again.';
+      'Install Android\'s platform tools (they include adb) on this computer. This page moves on by itself.';
 
   @override
   String get setupDownloadToolTitle => 'Get Android\'s helper tool';
@@ -527,29 +450,14 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get setupStartToolBody =>
-      'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal, then check again.';
-
-  @override
-  String get setupEnableDebuggingTitle =>
-      'The phone needs one setting turned on';
-
-  @override
-  String get setupEnableDebuggingBody =>
-      'On the phone: open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.';
-
-  @override
-  String get setupAuthorizeTitle => 'Allow this computer on the phone';
-
-  @override
-  String get setupAuthorizeBody =>
-      'On the phone: tap Allow on the question it shows. Then try again.';
+      'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.';
 
   @override
   String get setupPermissionTitle => 'Ferret needs your OK on this computer';
 
   @override
   String get setupPermissionBody =>
-      'How to: allow Ferret under Local Network in this computer\'s privacy settings, then try again.';
+      'Allow Ferret under Local Network in this computer\'s privacy settings.';
 
   @override
   String get buttonBack => 'Back';
@@ -558,7 +466,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get buttonHome => 'Home';
 
   @override
-  String get buttonRecents => 'Recent apps';
+  String get buttonRecents => 'Recents';
 
   @override
   String get receiverAirplayTitle => 'Show iPhone and iPad screens here';
@@ -579,12 +487,396 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get allowBody =>
-      'Say yes only if this is your device. The name is what the device calls itself, and anyone on your network can ask.';
-
-  @override
-  String get allow => 'Allow';
+  String get allow => 'Show';
 
   @override
   String get dontAllow => 'Don\'t allow';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get showAgain => 'Show again';
+
+  @override
+  String get askAgain => 'Ask again';
+
+  @override
+  String askAgainIn(String time) {
+    return 'You can ask again in $time.';
+  }
+
+  @override
+  String get how => 'How';
+
+  @override
+  String get why => 'Why?';
+
+  @override
+  String get wake => 'Wake';
+
+  @override
+  String get notMine => 'Not mine';
+
+  @override
+  String get showIt => 'Show';
+
+  @override
+  String startingCableTitle(String device) {
+    return 'Showing $device…';
+  }
+
+  @override
+  String waitingNothing(String device) {
+    return 'Nothing on $device? Open the notice from Ferret.';
+  }
+
+  @override
+  String get waitingWhy =>
+      'Android asks every time. Ferret can\'t skip it, and wouldn\'t.';
+
+  @override
+  String timeLeft(String time) {
+    return '$time left';
+  }
+
+  @override
+  String reconnectingTitle(String device) {
+    return 'Reconnecting to $device…';
+  }
+
+  @override
+  String lostTitle(String device) {
+    return 'Lost $device';
+  }
+
+  @override
+  String lostBody(String device) {
+    return 'This picks up again when $device is back.';
+  }
+
+  @override
+  String lostCableBody(String device) {
+    return 'Plug $device back in. The picture picks up by itself.';
+  }
+
+  @override
+  String notConnectedWaits(String device) {
+    return 'This starts by itself when $device connects.';
+  }
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String plugInTitle(String device) {
+    return 'Plug $device into this computer';
+  }
+
+  @override
+  String get plugInBody => 'You can click and type on it too.';
+
+  @override
+  String get buttonRotate => 'Rotate';
+
+  @override
+  String get buttonKeyboard => 'Keyboard';
+
+  @override
+  String get buttonNotifications => 'Notifications panel';
+
+  @override
+  String get buttonVolumeUp => 'Volume up';
+
+  @override
+  String get buttonVolumeDown => 'Volume down';
+
+  @override
+  String get buttonPower => 'Power';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String tooltipWithKey(String name, String key) {
+    return '$name ($key)';
+  }
+
+  @override
+  String get keyRightClick => 'right-click';
+
+  @override
+  String get keyMiddleClick => 'middle-click';
+
+  @override
+  String get viewOnly => 'View only';
+
+  @override
+  String viewOnlyBody(String device) {
+    return '$device shares its picture, not its controls. To click and type, plug it in.';
+  }
+
+  @override
+  String get viewOnlyAirplayBody =>
+      'An iPhone or iPad shares its picture, not its controls.';
+
+  @override
+  String get controlWithCable => 'Control with the cable';
+
+  @override
+  String get viewOnlyToast => 'View only.';
+
+  @override
+  String get keepToolbar => 'Keep toolbar visible';
+
+  @override
+  String get qualityGood => 'Good';
+
+  @override
+  String get qualitySlow => 'Slow';
+
+  @override
+  String get qualityPoor => 'Poor';
+
+  @override
+  String get pictureTitle => 'Picture';
+
+  @override
+  String get presetAuto => 'Auto';
+
+  @override
+  String get presetAutoBody => 'Ferret adapts';
+
+  @override
+  String get presetSharp => 'Sharp';
+
+  @override
+  String get presetSharpBody => 'Full size';
+
+  @override
+  String get presetFast => 'Fast';
+
+  @override
+  String get presetFastBody => 'Smaller, smooth';
+
+  @override
+  String get presetRestarts => 'Changing it restarts the picture.';
+
+  @override
+  String presetNextTime(String device) {
+    return '$device has to say yes again for a change, so it applies next time.';
+  }
+
+  @override
+  String get presetAirplay => 'The iPhone picks the quality.';
+
+  @override
+  String get basicPicture =>
+      'Basic picture on this computer for now (about 10 a second).';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get wayWifi => 'Wi-Fi';
+
+  @override
+  String get wayCable => 'Cable';
+
+  @override
+  String get wayAirplay => 'AirPlay';
+
+  @override
+  String get noticeViaCable => 'Showing over the cable instead.';
+
+  @override
+  String noticeCableNoAsk(String device) {
+    return 'Over a cable, $device doesn\'t ask each time. Only do this with your own phone.';
+  }
+
+  @override
+  String noticeSlow(String device) {
+    return 'Slow connection to $device.';
+  }
+
+  @override
+  String noticeSlowHelp(String device) {
+    return 'Slow connection to $device. Move closer to the Wi-Fi, or plug it in.';
+  }
+
+  @override
+  String get useFast => 'Use Fast';
+
+  @override
+  String get textFieldHint => 'Type or paste, then press Enter';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String replaceTitle(String current, String next) {
+    return 'Stop showing $current and show $next?';
+  }
+
+  @override
+  String replaceConfirm(String device) {
+    return 'Show $device';
+  }
+
+  @override
+  String leaveTitle(String device) {
+    return 'Stop showing $device?';
+  }
+
+  @override
+  String get leaveBody => 'Leaving this page stops sharing on both devices.';
+
+  @override
+  String get keepShowing => 'Keep showing';
+
+  @override
+  String setupTitle(String device) {
+    return 'Show $device with a cable';
+  }
+
+  @override
+  String get setupSubtitle => 'No app needed on the phone.';
+
+  @override
+  String get stepPlug => 'Plug the phone into this computer';
+
+  @override
+  String get stepDebugging => 'Turn on USB debugging';
+
+  @override
+  String get stepDebuggingOn => 'On the phone:';
+
+  @override
+  String get stepDebugging1 => 'Settings → About phone';
+
+  @override
+  String get stepDebugging2 => 'Tap Build number 7 times';
+
+  @override
+  String get stepDebugging3 =>
+      'Settings → System → Developer options → USB debugging';
+
+  @override
+  String get brandsToggle => 'Samsung, Xiaomi, others';
+
+  @override
+  String get brandsBody =>
+      'Samsung: Build number is under About phone → Software information.\nXiaomi: tap the OS version instead of Build number, and also turn on USB debugging (Security settings), or clicks won\'t work.\nAny other phone: search its Settings for Build number.';
+
+  @override
+  String get stepAllow => 'Tap Allow on the phone';
+
+  @override
+  String stepAllowNamed(String device) {
+    return 'On $device: tap Allow. Tick Always allow from this computer.';
+  }
+
+  @override
+  String get setupWaiting => 'Waiting for the phone…';
+
+  @override
+  String get setupCables => 'Many cables only charge. Try another one.';
+
+  @override
+  String get setupPrivacy =>
+      'Once allowed, this computer can see and control the phone without asking. Only do this with your own phone.';
+
+  @override
+  String get setupUnsupported =>
+      'This computer can\'t show a phone over a cable.';
+
+  @override
+  String airplayOn(String device) {
+    return 'On $device:';
+  }
+
+  @override
+  String get airplayStep1 =>
+      'Open Control Center (swipe down from the top right)';
+
+  @override
+  String get airplayStep2 => 'Tap Screen Mirroring';
+
+  @override
+  String airplayStep3(String computer) {
+    return 'Pick “$computer”';
+  }
+
+  @override
+  String get airplayListening => 'Listening…';
+
+  @override
+  String get airplayNote =>
+      'View only. No sound. Experimental: an iOS update can break it.';
+
+  @override
+  String get airplayMacTitle => 'Macs already do this';
+
+  @override
+  String airplayMacBody(String device) {
+    return 'On $device, pick this Mac under Screen Mirroring, or use iPhone Mirroring.';
+  }
+
+  @override
+  String get useFerretAnyway => 'Use Ferret anyway';
+
+  @override
+  String airplayConnecting(String device) {
+    return '$device is connecting';
+  }
+
+  @override
+  String get airplayConnectingBody =>
+      'The name is what the device calls itself. Say yes only if it is yours.';
+
+  @override
+  String get airplayTimedOutTitle => 'Nobody picked this computer';
+
+  @override
+  String get airplayTimedOutBody =>
+      'Ferret listened for two minutes, then stopped.';
+
+  @override
+  String get listenAgain => 'Listen again';
+
+  @override
+  String viewingDetail(String time, String way) {
+    return 'Since $time · $way';
+  }
+
+  @override
+  String viewingAsking(String device) {
+    return 'Asking $device…';
+  }
+
+  @override
+  String get lookForCableTitle => 'Look for phones on a cable';
+
+  @override
+  String get lookForCableBody =>
+      'Shows any Android phone plugged in with USB debugging on.';
+
+  @override
+  String get summaryCable => 'Looks for a cable';
+
+  @override
+  String sharingReconnecting(String device) {
+    return '$device dropped off. Waiting a moment for it to come back.';
+  }
+
+  @override
+  String get endStoppedHereTitle => 'Stopped';
+
+  @override
+  String endStoppedHereBody(String device) {
+    return '$device no longer shares its screen.';
+  }
+
+  @override
+  String get allowNoticeBody => 'Say yes only if it is yours.';
 }

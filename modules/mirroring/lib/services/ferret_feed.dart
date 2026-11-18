@@ -56,9 +56,11 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
     _events.add(FeedWaiting(timeout));
   }
 
-  /// False for a yes nobody waits for any more.
+  /// False for a yes nobody waits for any more. A phone that kept its
+  /// capture through a dropped connection says yes at once, sometimes
+  /// before its answer to the request is read.
   bool onAccept() {
-    if (_state != .waiting) {
+    if (_state != .waiting && _state != .requesting) {
       return false;
     }
 

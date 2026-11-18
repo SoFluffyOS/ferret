@@ -274,8 +274,18 @@ class FakeHost implements FeatureHost {
   DeviceInfo get localDevice =>
       DeviceInfo(id: identity.deviceId, name: 'This device');
 
+  final StreamController<List<Session>> _sessionChanges = .broadcast(
+    sync: true,
+  );
+
   @override
   List<Session> sessions = [];
+
+  /// Connects or drops devices, and tells whoever follows the sessions.
+  void setSessions(List<Session> now) {
+    sessions = now;
+    _sessionChanges.add(now);
+  }
 
   @override
   Session? sessionFor(String deviceId) {
@@ -289,7 +299,7 @@ class FakeHost implements FeatureHost {
   }
 
   @override
-  Stream<List<Session>> get sessionChanges => const .empty();
+  Stream<List<Session>> get sessionChanges => _sessionChanges.stream;
 
   @override
   Future<void> broadcast(String featureId, GeneratedMessage message) async {}
@@ -341,6 +351,8 @@ class FakeControl implements MirrorControl {
   final List<MirrorPointer> pointers = [];
   final List<MirrorKey> keys = [];
   final List<DeviceButton> pressed = [];
+  final List<String> typed = [];
+  final List<String> pasted = [];
 
   @override
   void pointer(MirrorPointer event) => pointers.add(event);
@@ -352,10 +364,10 @@ class FakeControl implements MirrorControl {
   void press(DeviceButton button) => pressed.add(button);
 
   @override
-  void text(String text) {}
+  void text(String text) => typed.add(text);
 
   @override
-  void setClipboard(String text, {bool paste = false}) {}
+  void setClipboard(String text, {bool paste = false}) => pasted.add(text);
 }
 
 /// A feed the test drives by hand.

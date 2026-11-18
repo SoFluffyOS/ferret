@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -349,15 +350,81 @@ void main() {
     expect(capture.stops, 1, reason: 'the armed service is let go');
   });
 
-  test('a lost connection ends sharing and is recorded', () async {
-    await share();
-    host.sessions = [];
+  group('a dropped connection', () {
+    test('keeps the capture for 20 seconds, then ends sharing and records '
+        'it', () {
+      fakeAsync((async) {
+        create();
+        async.flushMicrotasks();
+        share();
+        async.flushMicrotasks();
+        host.sessions = [];
 
-    await source.onSessionClosed('mac');
+        source.onSessionClosed('mac');
+        async.flushMicrotasks();
+        expect(source.active?.reconnecting, isTrue);
+        expect(capture.stops, 0, reason: 'the owner already said yes to it');
 
-    expect(source.active, isNull);
-    expect(capture.stops, 1);
-    expect(source.lastRecord?.end, MirrorEnd.lostConnection);
+        async.elapse(const Duration(seconds: 19));
+        expect(source.active, isNotNull);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(source.active, isNull);
+        expect(capture.stops, 1);
+        expect(source.lastRecord?.end, MirrorEnd.lostConnection);
+      });
+    });
+
+    test('the same computer coming back in time goes on without a new '
+        'prompt, from a fresh config and keyframe', () async {
+      await share();
+      capture.emit(
+        const CaptureConfigured(
+          MirrorStreamConfig(codec: .h264, width: 1080, height: 2400),
+        ),
+      );
+      await settle();
+      host.sessions = [];
+      await source.onSessionClosed('mac');
+      final keyframesBefore = capture.keyframeRequests;
+
+      host.sessions = [mac];
+      final reply = await source.onRequest(mac, request());
+      await settle();
+
+      expect((reply as StartPending).timeoutSeconds, 0);
+      expect(capture.asked, hasLength(1), reason: 'no second prompt');
+      expect(source.active?.reconnecting, isFalse);
+      expect(mac.sentOf<StartAccept>(), hasLength(2));
+      expect(mac.sentOf<StreamConfig>().last.configId, 2);
+      expect(capture.keyframeRequests, greaterThan(keyframesBefore));
+      expect(capture.stops, 0);
+    });
+
+    test(
+      'another computer is still told the phone is busy meanwhile',
+      () async {
+        await share();
+        host.sessions = [];
+        await source.onSessionClosed('mac');
+        final other = FakeSession('imac', name: 'iMac', flags: const ['view']);
+
+        final reply = await source.onRequest(other, request());
+
+        expect((reply as StartDeny).reason, DenyReason.DENY_REASON_BUSY);
+      },
+    );
+
+    test('Stop on the phone ends it at once, also while it waits', () async {
+      await share();
+      host.sessions = [];
+      await source.onSessionClosed('mac');
+
+      await source.stop();
+
+      expect(source.active, isNull);
+      expect(source.lastRecord?.end, MirrorEnd.stoppedOnPhone);
+    });
   });
 
   test('a capture that fails to start tells the computer', () async {

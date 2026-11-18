@@ -5,31 +5,45 @@ import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/ferret_route.dart';
 
-/// Every way a screen can arrive on this computer. Ferret's own route is
-/// always there. The others, and the receivers other devices start
-/// themselves, only run while "More ways" is on in settings.
+/// Every way a screen can arrive on this computer, and which one to use
+/// for a device. Ferret's own route is always there. The cable routes run
+/// while "Look for phones on a cable" is on; each receiver listens while
+/// its switch is on, or for a moment after its owner asked for it.
 class MirrorRoutes {
   MirrorRoutes({
     required this.ferret,
     required MirroringSettings settings,
     required String Function() receiverName,
+    Map<String, String> Function()? pairedPhones,
     List<MirrorRoute> routes = const [],
     List<MirrorReceiver> receivers = const [],
     DateTime Function()? clock,
     this.askTimeout = const Duration(seconds: 30),
+    this.armTime = const Duration(minutes: 2),
   }) : _settings = settings,
        _clock = clock ?? DateTime.now,
        _receiverName = receiverName,
+       _pairedPhones = pairedPhones ?? _noPhones,
        _routes = routes,
        _receivers = receivers;
 
   final FerretRoute ferret;
 
+  /// Whether a device that started by itself is on screen right now. Its
+  /// receiver keeps listening until that is over, whatever else says stop.
+  bool Function() isShowingIncoming = _never;
+
   /// How long a device's question waits for its answer before it is a no.
   final Duration askTimeout;
 
+  /// How long the receivers listen after [armReceivers].
+  final Duration armTime;
+
   final MirroringSettings _settings;
   final String Function() _receiverName;
+
+  /// The paired Android devices a cable could also reach, name by id.
+  final Map<String, String> Function() _pairedPhones;
   final DateTime Function() _clock;
   final List<IncomingRequest> _requests = [];
   final List<MirrorRoute> _routes;
@@ -37,70 +51,115 @@ class MirrorRoutes {
   final StreamController<void> _changes = .broadcast();
   final StreamController<MirrorFeed> _incoming = .broadcast();
   final Map<String, List<MirrorTarget>> _targets = {};
-  final Map<String, RouteNotice> _notices = {};
   final List<StreamSubscription<Object?>> _listening = [];
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
-  List<MirrorTarget> _ferretTargets = const [];
+  Timer? _armTimer;
+  DateTime? _armedUntil;
   bool _running = false;
+  bool _started = false;
   bool _disposed = false;
 
-  /// Whether the app plugged in anything besides Ferret's own route.
-  bool get hasMoreWays => _routes.isNotEmpty || _receivers.isNotEmpty;
+  /// The app plugged in a way to show a phone on a cable.
+  bool get hasCable => _routes.isNotEmpty;
 
-  /// The other ways are turned on, and there are some.
-  bool get moreWaysOn => hasMoreWays && _settings.moreWays;
+  /// The cable routes look for phones right now.
+  bool get cableOn => hasCable && _settings.lookForCable;
 
-  /// Fires when [targets] or [notices] change.
+  bool get hasReceivers => _receivers.isNotEmpty;
+
+  /// Fires when [targets], [requests], who is connected or what listens
+  /// changes.
   Stream<void> get changes => _changes.stream;
 
   /// A device started showing its screen here, through a receiver.
   Stream<MirrorFeed> get incoming => _incoming.stream;
 
-  /// The devices the other routes can show right now. A phone two routes
-  /// reach shows once, and one Ferret itself can show isn't listed at all:
-  /// its own route is the one used.
-  List<MirrorTarget> get targets {
-    final seen = {for (final target in _ferretTargets) target.ferretDeviceId};
-    final merged = <MirrorTarget>[];
-    for (final route in _routes) {
-      for (final target in _targets[route.id] ?? const <MirrorTarget>[]) {
-        final deviceId = target.ferretDeviceId;
-        if (deviceId != null && !seen.add(deviceId)) {
-          continue;
-        }
+  /// The phones a cable reaches that aren't paired with Ferret. A paired
+  /// one is found through [cableTargetFor] instead.
+  List<MirrorTarget> get targets => [
+    for (final target in _cableTargets)
+      if (_pairedIdOf(target) == null) target,
+  ];
 
-        merged.add(target);
+  /// The cable's way to the paired device [deviceId]: a phone it found
+  /// that says it is that device, or the only one with its name. With
+  /// [orOnlyOne], the single phone on a cable counts too, for an owner
+  /// who just followed the steps to plug that device in.
+  MirrorTarget? cableTargetFor(String deviceId, {bool orOnlyOne = false}) {
+    for (final target in _cableTargets) {
+      if (_pairedIdOf(target) == deviceId) {
+        return _claim(target, deviceId);
       }
     }
 
-    return merged;
-  }
-
-  /// Another way to the paired device [deviceId], when Ferret's own route
-  /// can't show it.
-  MirrorTarget? targetForDevice(String deviceId) {
-    for (final target in targets) {
-      if (target.ferretDeviceId == deviceId) {
-        return target;
-      }
+    final unpaired = targets;
+    if (!orOnlyOne || unpaired.length != 1) {
+      return null;
     }
 
-    return null;
+    return _claim(unpaired.single, deviceId);
   }
 
-  /// The receivers the app plugged in, and whether each listens once the
-  /// other ways are on.
+  /// The way to show the paired device [deviceId] right now. Ferret
+  /// first, because the phone's owner is asked there. The cable when
+  /// Ferret can't reach the phone, or when [preferControl] says the
+  /// person asked to click and type.
+  MirrorTarget bestTargetFor(String deviceId, {bool preferControl = false}) {
+    final cable = cableTargetFor(deviceId);
+    if (cable != null && (preferControl || !ferret.isConnected(deviceId))) {
+      return cable;
+    }
+
+    return ferret.targetFor(deviceId);
+  }
+
+  /// Whether [target]'s route sees the device right now.
+  bool isReachable(MirrorTarget target) {
+    if (target.routeId == ferret.id) {
+      return ferret.isConnected(target.id);
+    }
+
+    return _cableTargets.contains(target);
+  }
+
+  /// The receivers the app plugged in, and whether each listens.
   List<ReceiverSwitch> get receivers => [
     for (final receiver in _receivers)
       ReceiverSwitch(receiverId: receiver.id, on: _isOn(receiver)),
   ];
+
+  /// Until when the receivers listen because their owner asked to show a
+  /// device, whatever their switches say. Null when nobody asked.
+  DateTime? get armedUntil => _armedUntil;
 
   /// The devices asking to show their screen here right now.
   List<IncomingRequest> get requests => List.of(_requests);
 
   Future<void> setReceiverOn(String receiverId, bool value) =>
       _settings.setReceiverOn(receiverId, value);
+
+  /// Makes every receiver listen for [armTime], for an owner who is about
+  /// to pick this computer on their device.
+  Future<void> armReceivers() async {
+    _armedUntil = _clock().add(armTime);
+    _armTimer?.cancel();
+    _armTimer = Timer(armTime, () => unawaited(disarmReceivers()));
+    await _listenAll();
+    _emit();
+  }
+
+  Future<void> disarmReceivers() async {
+    if (_armedUntil == null) {
+      return;
+    }
+
+    _armTimer?.cancel();
+    _armTimer = null;
+    _armedUntil = null;
+    await _listenAll();
+    _emit();
+  }
 
   /// The owner's answer to [request].
   void answer(IncomingRequest request, {required bool allow}) {
@@ -109,9 +168,6 @@ class MirrorRoutes {
       _emit();
     }
   }
-
-  /// What the other ways still need before they work here.
-  List<RouteNotice> get notices => List.of(_notices.values);
 
   MirrorRoute? routeFor(MirrorTarget target) {
     if (target.routeId == ferret.id) {
@@ -131,56 +187,63 @@ class MirrorRoutes {
     return null;
   }
 
-  /// Starts following Ferret's own targets and the setting.
+  /// Starts following who is connected and the settings.
   void start() {
+    _started = true;
     _subscriptions
-      ..add(
-        ferret.targets.listen((targets) {
-          _ferretTargets = targets;
-          _emit();
-        }),
-      )
+      ..add(ferret.targets.listen((_) => _emit()))
       ..add(
         _settings.changes
             .where(
               (key) =>
-                  key == MirroringSettings.moreWaysKey ||
+                  key == MirroringSettings.lookForCableKey ||
                   key.startsWith(MirroringSettings.receiverKeyPrefix),
             )
             .listen((_) => unawaited(_apply())),
       );
+    for (final receiver in _receivers) {
+      _subscriptions.add(
+        receiver.incoming.listen((feed) {
+          if (!_incoming.isClosed) {
+            _incoming.add(feed);
+          }
+        }),
+      );
+    }
+
     unawaited(_apply());
   }
 
-  /// Asks every route again where it stands, such as after the owner did
-  /// a setup step.
-  Future<void> refresh() async {
-    if (!_running) {
-      return;
-    }
-
+  /// Where showing a phone over a cable stands, asked fresh. Null where
+  /// no cable route can work on this computer.
+  Future<CableSetup?> cableSetup() async {
+    CableSetup? missing;
     for (final route in _routes) {
-      _note(route.id, await _statusOf(route.id, route.status), route: route);
-    }
+      final status = await statusOf(route);
+      if (status is RouteReady) {
+        return .ready;
+      }
 
-    for (final receiver in _receivers) {
-      await _listen(receiver);
-    }
-
-    _emit();
-  }
-
-  /// Downloads the tool the route [routeId] is missing, then asks every
-  /// route again. Only for a button the owner pressed. Throws when the
-  /// download fails.
-  Future<void> installTool(String routeId) async {
-    for (final route in _routes) {
-      if (route.id == routeId && route is ToolInstaller) {
-        await route.installTool();
+      if (status case RouteNeedsSetup(:final step, :final detail)) {
+        missing ??= CableSetup(
+          step: step,
+          detail: detail,
+          help: _helpFor(route, step, detail),
+        );
       }
     }
 
-    await refresh();
+    return missing;
+  }
+
+  /// Downloads the tool the cable routes are missing. Only for a button
+  /// the owner pressed. Throws when the download fails.
+  Future<void> installTool() async {
+    for (final route in _routes) {
+      if (route is ToolInstaller && route.canInstallTool) {
+        await route.installTool();
+      }
+    }
   }
 
   /// Where [route] stands, or unsupported when it can't even say.
@@ -189,6 +252,7 @@ class MirrorRoutes {
 
   Future<void> dispose() async {
     _disposed = true;
+    _armTimer?.cancel();
     for (final request in List.of(_requests)) {
       request.complete(false);
     }
@@ -211,20 +275,96 @@ class MirrorRoutes {
     await _incoming.close();
   }
 
+  /// Looks again at which receivers should listen, such as after a device
+  /// that started by itself is done.
+  Future<void> refreshReceivers() => _listenAll();
+
+  static Map<String, String> _noPhones() => const {};
+
+  static bool _never() => false;
+
+  /// Everything the cable routes found. A phone two routes reach shows
+  /// once.
+  List<MirrorTarget> get _cableTargets {
+    final seen = <String>{};
+    final merged = <MirrorTarget>[];
+    for (final route in _routes) {
+      for (final target in _targets[route.id] ?? const <MirrorTarget>[]) {
+        final deviceId = target.ferretDeviceId;
+        if (deviceId != null && !seen.add(deviceId)) {
+          continue;
+        }
+
+        merged.add(target);
+      }
+    }
+
+    return merged;
+  }
+
+  /// The paired device [target] is: the one it names, or the only paired
+  /// phone called the same when no other phone on a cable is.
+  String? _pairedIdOf(MirrorTarget target) {
+    final phones = _pairedPhones();
+    final deviceId = target.ferretDeviceId;
+    if (deviceId != null) {
+      return switch (phones.containsKey(deviceId)) {
+        true => deviceId,
+        false => null,
+      };
+    }
+
+    final name = _plain(target.name);
+    final sameName = [
+      for (final MapEntry(:key, :value) in phones.entries)
+        if (_plain(value) == name) key,
+    ];
+    final twins = [
+      for (final other in _cableTargets)
+        if (other.ferretDeviceId == null && _plain(other.name) == name) other,
+    ];
+    if (sameName.length != 1 || twins.length != 1) {
+      return null;
+    }
+
+    return sameName.single;
+  }
+
+  String _plain(String name) => name.trim().toLowerCase();
+
+  /// [target] as the paired device [deviceId], under the name it is
+  /// known by here.
+  MirrorTarget _claim(MirrorTarget target, String deviceId) => MirrorTarget(
+    routeId: target.routeId,
+    id: target.id,
+    name: _pairedPhones()[deviceId] ?? target.name,
+    ferretDeviceId: deviceId,
+    wireless: target.wireless,
+  );
+
   Future<void> _apply() async {
-    final wanted = moreWaysOn;
     if (_disposed) {
       return;
     }
 
-    if (wanted == _running) {
-      await refresh();
-      return;
+    final wanted = cableOn;
+    if (wanted != _running) {
+      _running = wanted;
+      _followRoutes(wanted);
     }
 
-    _running = wanted;
-    if (!wanted) {
-      await _pause();
+    await _listenAll();
+    _emit();
+  }
+
+  void _followRoutes(bool follow) {
+    if (!follow) {
+      for (final subscription in _listening) {
+        unawaited(subscription.cancel());
+      }
+
+      _listening.clear();
+      _targets.clear();
       return;
     }
 
@@ -240,54 +380,44 @@ class MirrorRoutes {
         ),
       );
     }
-
-    for (final receiver in _receivers) {
-      _listening.add(
-        receiver.incoming.listen((feed) {
-          if (!_incoming.isClosed) {
-            _incoming.add(feed);
-          }
-        }),
-      );
-    }
-
-    await refresh();
   }
 
-  Future<void> _pause() async {
-    for (final subscription in _listening) {
-      unawaited(subscription.cancel());
+  Future<void> _listenAll() async {
+    if (!_started || _disposed) {
+      return;
     }
 
-    _listening.clear();
-    _targets.clear();
-    _notices.clear();
+    for (final receiver in _receivers) {
+      await _listen(receiver);
+    }
+
+    if (_receivers.any((receiver) => receiver.isListening)) {
+      return;
+    }
+
     for (final request in List.of(_requests)) {
       answer(request, allow: false);
     }
-
-    for (final receiver in _receivers) {
-      await _guard(receiver.id, receiver.stop);
-    }
-
-    _emit();
   }
 
-  /// Starts [receiver] once it is switched on and nothing is missing for
-  /// it, and stops one that was switched off.
+  /// Starts [receiver] once it should listen and nothing is missing for
+  /// it, and stops one that shouldn't any more.
   Future<void> _listen(MirrorReceiver receiver) async {
-    if (!_isOn(receiver)) {
-      _notices.remove(receiver.id);
-      if (receiver.isListening) {
+    final wanted = _isOn(receiver) || _armedUntil != null;
+    if (!wanted) {
+      if (receiver.isListening && !isShowingIncoming()) {
         await _guard(receiver.id, receiver.stop);
       }
 
       return;
     }
 
+    if (receiver.isListening) {
+      return;
+    }
+
     final status = await _statusOf(receiver.id, receiver.status);
-    _note(receiver.id, status);
-    if (status is! RouteReady || receiver.isListening || !_running) {
+    if (status is! RouteReady || _disposed) {
       return;
     }
 
@@ -308,14 +438,16 @@ class MirrorRoutes {
   /// Puts a device's question in front of the owner. No answer within
   /// [askTimeout] is a no.
   Future<bool> _ask(String receiverId, String deviceName) async {
-    if (!_running || _disposed) {
+    if (_disposed) {
       return false;
     }
 
+    final askedAt = _clock();
     final request = IncomingRequest(
       receiverId: receiverId,
       deviceName: deviceName,
-      askedAt: _clock(),
+      askedAt: askedAt,
+      deadline: askedAt.add(askTimeout),
     );
     _requests.add(request);
     _emit();
@@ -325,21 +457,7 @@ class MirrorRoutes {
     return allowed;
   }
 
-  void _note(String routeId, RouteStatus status, {MirrorRoute? route}) {
-    if (status case RouteNeedsSetup(:final step, :final detail)) {
-      _notices[routeId] = RouteNotice(
-        routeId: routeId,
-        step: step,
-        detail: detail,
-        help: _helpFor(route, step, detail),
-      );
-      return;
-    }
-
-    _notices.remove(routeId);
-  }
-
-  SetupHelp _helpFor(MirrorRoute? route, RouteSetup step, String? detail) {
+  SetupHelp _helpFor(MirrorRoute route, RouteSetup step, String? detail) {
     if (step != .installTool || route is! ToolInstaller) {
       return .none;
     }

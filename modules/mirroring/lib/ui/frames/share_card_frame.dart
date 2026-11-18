@@ -11,7 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The phone's card: a computer asking, "Sharing screen with MacBook" with
-/// Stop while it lasts, and the audit line once it is over.
+/// Stop while it lasts (also while that computer dropped off for a
+/// moment), and the audit line once it is over.
 class ShareCardFrame extends StatelessWidget {
   const ShareCardFrame({super.key});
 
@@ -34,7 +35,10 @@ class ShareCardFrame extends StatelessWidget {
         icon: LucideIcons.screenShare,
         iconTone: .warning,
         title: l10n.sharingTitle(active.deviceName),
-        subtitle: l10n.sharingBody(l10n.time(active.startedAt)),
+        subtitle: switch (active.reconnecting) {
+          true => l10n.sharingReconnecting(active.deviceName),
+          false => l10n.sharingBody(l10n.time(active.startedAt)),
+        },
         actions: [
           Button(
             variant: .primary,

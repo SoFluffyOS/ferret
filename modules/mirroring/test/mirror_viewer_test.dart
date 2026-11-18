@@ -78,7 +78,7 @@ void main() {
 
   /// Request, consent on the phone, config and a first keyframe.
   Future<void> stream() async {
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     route.onConfig(pixel, config());
     await settle();
@@ -102,7 +102,7 @@ void main() {
   }
 
   test('request, consent, streaming: the phases in order', () async {
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     final request = pixel.requests.single as StartRequest;
     expect(request.version, 1);
     expect(request.codecs, [Codec.CODEC_H264, Codec.CODEC_JPEG]);
@@ -138,7 +138,7 @@ void main() {
     (DenyReason.DENY_REASON_FAILED, ViewEnd.failed),
   ]) {
     test('the phone saying ${reason.name} ends as ${end.name}', () async {
-      await viewer.start('pixel');
+      await viewer.show('pixel');
 
       route.onDeny(pixel, StartDeny(reason: reason));
       await settle();
@@ -157,17 +157,17 @@ void main() {
       answer: (_) => StartDeny(reason: .DENY_REASON_TURNED_OFF),
     );
 
-    await viewer.start('pixel');
+    await viewer.show('pixel');
 
     expect(viewer.current?.end, ViewEnd.turnedOff);
   });
 
   test('a phone that doesn\'t answer, or isn\'t there, says so', () async {
     pixel.answer = null;
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     expect(viewer.current?.end, ViewEnd.noAnswer);
 
-    await viewer.start('gone');
+    await viewer.show('gone');
     expect(viewer.current?.end, ViewEnd.notConnected);
     expect(viewer.current?.deviceId, 'gone');
   });
@@ -217,7 +217,7 @@ void main() {
   });
 
   test('giving up while the phone asks takes the question back', () async {
-    await viewer.start('pixel');
+    await viewer.show('pixel');
 
     await viewer.stop();
 
@@ -232,16 +232,129 @@ void main() {
     expect(decodersMade, 0);
   });
 
-  test('a lost connection ends it', () async {
-    await stream();
-    host.sessions = [];
+  group('a dropped connection', () {
+    test('keeps the last picture and says it is reconnecting', () async {
+      await stream();
+      host.setSessions([]);
 
-    route.onSessionClosed('pixel');
-    await settle();
+      route.onSessionClosed('pixel');
+      await settle();
 
-    expect(viewer.current?.end, ViewEnd.lostConnection);
-    expect(viewer.lastRecord?.end, MirrorEnd.lostConnection);
-    expect(decoder.disposed, isTrue);
+      expect(viewer.current?.phase, ViewPhase.reconnecting);
+      expect(viewer.current?.lost, isFalse);
+      expect(viewer.current?.isLive, isTrue);
+      expect(viewer.picture.value, isNotNull);
+      expect(viewer.control, isNull);
+      expect(decoder.disposed, isFalse);
+      expect(viewer.lastRecord, isNull, reason: 'it is not over');
+    });
+
+    test('the phone coming back in time goes on with the same picture and '
+        'no new prompt', () async {
+      await routes.dispose();
+      await viewer.dispose();
+      await create(answer: (_) => StartPending());
+      routes.start();
+      await stream();
+      host.setSessions([]);
+      route.onSessionClosed('pixel');
+      await settle();
+
+      host.setSessions([pixel]);
+      await settle();
+      expect(pixel.requests, hasLength(2), reason: 'asked again by itself');
+      expect(viewer.current?.phase, ViewPhase.reconnecting);
+
+      route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+      route.onConfig(pixel, config(id: 2));
+      await settle();
+      route.onFrame(pixel, frame(1, keyframe: true, configId: 2));
+      await settle();
+
+      expect(viewer.current?.phase, ViewPhase.streaming);
+      expect(viewer.current?.startedAt, now, reason: 'one session, not two');
+      expect(decodersMade, 1);
+      expect(decoder.configs, hasLength(2));
+    });
+
+    test('after 20 seconds the picture goes and it says the phone is '
+        'lost, but keeps waiting for it', () {
+      fakeAsync((async) {
+        create();
+        async.flushMicrotasks();
+        routes.start();
+        stream();
+        async.flushMicrotasks();
+        host.setSessions([]);
+        route.onSessionClosed('pixel');
+        async.flushMicrotasks();
+
+        async.elapse(const Duration(seconds: 21));
+
+        expect(viewer.current?.phase, ViewPhase.reconnecting);
+        expect(viewer.current?.lost, isTrue);
+        expect(viewer.picture.value, isNull);
+        expect(decoder.disposed, isTrue);
+
+        host.setSessions([pixel]);
+        async.flushMicrotasks();
+        expect(pixel.requests, hasLength(2));
+        expect(
+          viewer.current?.phase,
+          ViewPhase.waitingForPhone,
+          reason: 'the phone let go of its capture, so its owner is asked',
+        );
+        expect(viewer.current?.lost, isFalse);
+        disposeIn(async);
+      });
+    });
+
+    test('it asks again once: a phone that drops before any picture ends '
+        'it for good', () async {
+      routes.start();
+      await stream();
+      host.setSessions([]);
+      route.onSessionClosed('pixel');
+      await settle();
+      host.setSessions([pixel]);
+      await settle();
+      expect(pixel.requests, hasLength(2));
+
+      host.setSessions([]);
+      route.onSessionClosed('pixel');
+      await settle();
+
+      expect(viewer.current?.phase, ViewPhase.ended);
+      expect(viewer.current?.end, ViewEnd.lostConnection);
+      expect(viewer.lastRecord?.end, MirrorEnd.lostConnection);
+
+      host.setSessions([pixel]);
+      await settle();
+      expect(pixel.requests, hasLength(2), reason: 'not a third time');
+    });
+
+    test('Stop while it reconnects ends it here', () async {
+      await stream();
+      host.setSessions([]);
+      route.onSessionClosed('pixel');
+      await settle();
+
+      await viewer.stop();
+
+      expect(viewer.current?.end, ViewEnd.stoppedHere);
+      expect(viewer.lastRecord?.end, MirrorEnd.viewerDone);
+      expect(decoder.disposed, isTrue);
+    });
+
+    test('a connection lost before any picture just ends it', () async {
+      await viewer.show('pixel');
+      host.setSessions([]);
+
+      route.onSessionClosed('pixel');
+      await settle();
+
+      expect(viewer.current?.end, ViewEnd.lostConnection);
+    });
   });
 
   test('nobody answering on the phone, or no picture after the yes, times '
@@ -249,14 +362,14 @@ void main() {
     fakeAsync((async) {
       create();
       async.flushMicrotasks();
-      viewer.start('pixel');
+      viewer.show('pixel');
       async.flushMicrotasks();
 
       async.elapse(const Duration(seconds: 66));
       expect(viewer.current?.end, ViewEnd.timedOut);
       expect(pixel.sentOf<Stop>(), hasLength(1));
 
-      viewer.start('pixel');
+      viewer.show('pixel');
       async.flushMicrotasks();
       route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
       async.elapse(const Duration(seconds: 11));
@@ -268,7 +381,7 @@ void main() {
   test('frames wait while the decoder is set up, then play in order', () async {
     final gate = Completer<void>();
     decoder.configureGate = gate;
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     route.onConfig(pixel, config());
 
@@ -284,7 +397,7 @@ void main() {
 
   test('frames of another config, and before a keyframe, are '
       'dropped', () async {
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     route.onConfig(pixel, config());
     await settle();
@@ -318,7 +431,7 @@ void main() {
   test('a decoder that falls behind drops to the next keyframe', () async {
     await viewer.dispose();
     await create(withDecoder: FakeDecoder(autoShow: false));
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
     route.onConfig(pixel, config());
     await settle();
@@ -356,7 +469,7 @@ void main() {
       'phone', () async {
     await viewer.dispose();
     await create(withDecoder: FakeDecoder(failConfigure: true));
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
 
     route.onConfig(pixel, config());
@@ -399,7 +512,7 @@ void main() {
       async.flushMicrotasks();
       final ticks = <ViewStats?>[];
       viewer.statsChanges.listen((_) => ticks.add(viewer.current?.stats));
-      viewer.start('pixel');
+      viewer.show('pixel');
       async.flushMicrotasks();
       route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
       route.onConfig(pixel, config());
@@ -441,18 +554,18 @@ void main() {
     host.sessions = [pixel, tablet];
     await stream();
 
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     expect(pixel.requests, hasLength(1));
     expect(viewer.current?.phase, ViewPhase.streaming);
 
-    await viewer.start('tablet');
+    await viewer.show('tablet');
     expect(pixel.sentOf<Stop>(), hasLength(1));
     expect(viewer.current?.deviceName, 'Tablet');
     expect(viewer.current?.phase, ViewPhase.waitingForPhone);
   });
 
   test('an attempt that is over can be dismissed; a live one can\'t', () async {
-    await viewer.start('pixel');
+    await viewer.show('pixel');
     viewer.dismiss();
     expect(viewer.current, isNotNull);
 

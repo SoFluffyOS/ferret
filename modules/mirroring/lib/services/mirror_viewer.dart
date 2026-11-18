@@ -8,10 +8,11 @@ import 'package:mirroring/services/feed_player.dart';
 import 'package:mirroring/services/mirror_routes.dart';
 import 'package:mirroring/services/viewer_stats_sink.dart';
 
-/// The computer's side of screen mirroring: opens a feed through the
-/// route that reaches a device, follows it from the question on the other
-/// side to the last picture, and keeps the numbers for the status line.
-/// It only knows feeds, never how they travel. One screen at a time.
+/// The computer's side of screen mirroring: picks the way to a device,
+/// opens a feed through it, follows it from the question on the other
+/// side to the last picture, picks it up again after a dropped
+/// connection, and keeps the numbers behind the quality mark. It only
+/// knows feeds, never how they travel. One screen at a time.
 class MirrorViewer {
   MirrorViewer({
     required MirrorRoutes routes,
@@ -23,6 +24,7 @@ class MirrorViewer {
     this.firstPictureTimeout = const Duration(seconds: 10),
     this.statsInterval = const Duration(seconds: 1),
     this.maxDecoding = 12,
+    this.reconnectGrace = const Duration(seconds: 20),
   }) : _routes = routes,
        _createDecoder = createDecoder,
        _codecs = codecs,
@@ -42,6 +44,15 @@ class MirrorViewer {
   /// dropped, up to the next keyframe.
   final int maxDecoding;
 
+  /// How long the last picture stays after the connection dropped. The
+  /// phone keeps its capture as long, so coming back in time needs no new
+  /// prompt.
+  final Duration reconnectGrace;
+
+  /// How long a phone turns the same computer away after its owner said
+  /// no, so "Ask again" waits as long.
+  static const denyCooldown = Duration(seconds: 30);
+
   final MirrorRoutes _routes;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec> _codecs;
@@ -57,9 +68,16 @@ class MirrorViewer {
   MirrorFeed? _feed;
   StreamSubscription<FeedEvent>? _feedEvents;
   FeedPlayer? _player;
+  StreamSubscription<void>? _reachable;
   Timer? _waitTimer;
   Timer? _statsTimer;
+  Timer? _graceTimer;
   int _attempt = 0;
+
+  /// The feed came through a route this computer can open again, not
+  /// from a device that started it itself.
+  bool _reopenable = false;
+  bool _resuming = false;
 
   /// The device being asked or shown, or the last attempt and how it ended.
   ViewSession? get current => _current;
@@ -82,6 +100,9 @@ class MirrorViewer {
     return _feed?.control;
   }
 
+  /// A device that started by itself is asked or shown right now.
+  bool get isShowingIncoming => (_current?.isLive ?? false) && !_reopenable;
+
   /// How the last attempt with [deviceId] ended, for its health. Null when
   /// it never was asked, or shows its screen right now.
   ViewEnd? lastEndFor(String deviceId) => _lastEnds[deviceId];
@@ -92,86 +113,63 @@ class MirrorViewer {
   /// Fires about every second while pictures show, with new numbers.
   Stream<void> get statsChanges => _statsChanges.stream;
 
-  /// Asks the paired device [deviceId] for its screen, over Ferret's own
-  /// route.
-  Future<void> start(String deviceId) =>
-      startTarget(_routes.ferret.targetFor(deviceId));
+  /// Shows the paired device [deviceId] the best way there is right now:
+  /// Ferret, where its owner is asked, else the cable. [preferControl]
+  /// takes the cable when it is there, to click and type.
+  Future<void> show(String deviceId, {bool preferControl = false}) =>
+      startTarget(
+        _routes.bestTargetFor(deviceId, preferControl: preferControl),
+      );
 
   /// Shows [target] through its route. A live attempt with the same device
-  /// is kept; one with another device is stopped first.
+  /// the same way is kept; anything else is stopped first.
   Future<void> startTarget(MirrorTarget target) async {
     final current = _current;
     if (current != null && current.isLive) {
-      if (current.deviceId == ViewSession.deviceIdOf(target)) {
+      if (current.target == target) {
         return;
       }
 
       await stop();
     }
 
-    final attempt = ++_attempt;
-    final route = _routes.routeFor(target);
-    if (route == null) {
-      _set(ViewSession(target: target, phase: .ended, end: .notConnected));
-      return;
-    }
-
-    _set(ViewSession(target: target, phase: .requesting));
-    final status = await _routes.statusOf(route);
-    if (!_isAsking(attempt)) {
-      return;
-    }
-
-    if (status case RouteNeedsSetup(:final step, :final detail)) {
-      _set(
-        ViewSession(
-          target: target,
-          phase: .ended,
-          end: .needsSetup,
-          setup: step,
-          setupDetail: detail,
-        ),
-      );
-      return;
-    }
-
-    if (status is RouteUnsupported) {
-      await _finish(.unsupported);
-      return;
-    }
-
-    final MirrorFeed feed;
-    try {
-      feed = await route.open(
-        target,
-        FeedOptions(codecs: _codecs, control: true),
-      );
-    } on Object catch (error) {
-      printWarning('Opening a screen through ${route.id} failed', error);
-      await _endAttempt(attempt, .failed);
-      return;
-    }
-
-    if (!_isAsking(attempt)) {
-      await _stopFeed(feed);
-      return;
-    }
-
-    _attach(feed, attempt);
-
-    // A feed that already knows its first answer hands it over in the next
-    // microtask: whoever awaits this sees where the attempt stands.
-    await Future<void>.microtask(() {});
+    await _open(target);
   }
 
   /// Shows a feed the other device started itself, in place of anything
   /// shown now.
-  Future<void> show(MirrorFeed feed) async {
+  Future<void> showIncoming(MirrorFeed feed) async {
     await stop();
 
     final attempt = ++_attempt;
+    _reopenable = false;
     _set(ViewSession(target: feed.target, phase: .requesting));
     _attach(feed, attempt);
+  }
+
+  /// Opens the picture again with the settings as they are now, keeping
+  /// the last one on screen meanwhile. Only for a way that doesn't ask
+  /// the device's owner: over Ferret a change waits for the next time.
+  Future<void> restart() async {
+    final current = _current;
+    final feed = _feed;
+    final asks = current?.target.routeId == _routes.ferret.id;
+    if (current == null ||
+        feed == null ||
+        !current.isMirroring ||
+        !_reopenable ||
+        asks) {
+      return;
+    }
+
+    _detach();
+    await _stopFeed(feed);
+    if (!identical(_current, current)) {
+      return;
+    }
+
+    _set(current.copyWith(phase: .starting));
+    await _reopen(current.target);
   }
 
   /// Stop or Back on this computer.
@@ -210,10 +208,108 @@ class MirrorViewer {
     await stop();
     _waitTimer?.cancel();
     _statsTimer?.cancel();
+    _stopLooking();
     await _closePlayer();
     _picture.dispose();
     await _changes.close();
     await _statsChanges.close();
+  }
+
+  Future<void> _open(MirrorTarget target, {bool viaFallback = false}) async {
+    final attempt = ++_attempt;
+    final route = _routes.routeFor(target);
+    _reopenable = true;
+    if (route == null) {
+      _set(
+        ViewSession(
+          target: target,
+          phase: .ended,
+          end: .notConnected,
+          endedAt: _clock(),
+        ),
+      );
+      return;
+    }
+
+    _set(
+      ViewSession(
+        target: target,
+        phase: .requesting,
+        viaFallback: viaFallback,
+      ),
+    );
+    final status = await _routes.statusOf(route);
+    if (!_isAsking(attempt)) {
+      return;
+    }
+
+    if (status case RouteNeedsSetup(:final step, :final detail)) {
+      _set(
+        ViewSession(
+          target: target,
+          phase: .ended,
+          end: .needsSetup,
+          setup: step,
+          setupDetail: detail,
+          endedAt: _clock(),
+        ),
+      );
+      return;
+    }
+
+    if (status is RouteUnsupported) {
+      await _finish(.unsupported);
+      return;
+    }
+
+    final MirrorFeed feed;
+    try {
+      feed = await route.open(target, _settings.quality.options(_codecs));
+    } on Object catch (error) {
+      printWarning('Opening a screen through ${route.id} failed', error);
+      await _endAttempt(attempt, .failed);
+      return;
+    }
+
+    if (!_isAsking(attempt)) {
+      await _stopFeed(feed);
+      return;
+    }
+
+    _attach(feed, attempt);
+
+    // A feed that already knows its first answer hands it over in the next
+    // microtask: whoever awaits this sees where the attempt stands.
+    await Future<void>.microtask(() {});
+  }
+
+  /// Opens [target] again for the session that is already on screen: after
+  /// a dropped connection, or to apply new settings.
+  Future<void> _reopen(MirrorTarget target) async {
+    final attempt = ++_attempt;
+    final route = _routes.routeFor(target);
+    if (route == null) {
+      await _finish(.lostConnection);
+      return;
+    }
+
+    final MirrorFeed feed;
+    try {
+      feed = await route.open(target, _settings.quality.options(_codecs));
+    } on Object catch (error) {
+      printWarning('Opening a screen through ${route.id} failed', error);
+      await _endAttempt(attempt, .lostConnection);
+      return;
+    }
+
+    final current = _current;
+    if (attempt != _attempt || current == null || !current.isLive) {
+      await _stopFeed(feed);
+      return;
+    }
+
+    _stopLooking();
+    _attach(feed, attempt);
   }
 
   bool _isAsking(int attempt) =>
@@ -259,8 +355,16 @@ class MirrorViewer {
   }
 
   void _onWaiting(Duration timeout) {
+    // No time to answer means nobody is asked: the phone kept its capture
+    // and says yes by itself.
+    if (timeout == Duration.zero) {
+      return;
+    }
+
     final current = _current;
-    if (current == null || current.phase != .requesting) {
+    final asked =
+        current?.phase == .requesting || current?.phase == .reconnecting;
+    if (current == null || !asked) {
       return;
     }
 
@@ -270,7 +374,14 @@ class MirrorViewer {
       timeout + consentMargin,
       () => unawaited(_endAttempt(attempt, .timedOut)),
     );
-    _set(current.copyWith(phase: .waitingForPhone));
+    unawaited(_closePlayer());
+    _set(
+      current.copyWith(
+        phase: .waitingForPhone,
+        waitingUntil: _clock().add(timeout),
+        lost: false,
+      ),
+    );
   }
 
   /// The other side said yes, or never had to: pictures are on their way.
@@ -286,10 +397,19 @@ class MirrorViewer {
       firstPictureTimeout,
       () => unawaited(_endAttempt(attempt, .noAnswer)),
     );
-    _openPlayer();
+    if (_player == null) {
+      _openPlayer();
+    }
+
     _lastEnds.remove(current.deviceId);
-    _statsTimer = .periodic(statsInterval, (_) => _onStatsTick());
-    _set(current.copyWith(phase: .starting, startedAt: _clock()));
+    _statsTimer ??= .periodic(statsInterval, (_) => _onStatsTick());
+    _set(
+      current.copyWith(
+        phase: .starting,
+        startedAt: current.startedAt ?? _clock(),
+        lost: false,
+      ),
+    );
   }
 
   Future<void> _configure(MirrorStreamConfig config) async {
@@ -344,13 +464,12 @@ class MirrorViewer {
   }
 
   void _openPlayer() {
-    final feed = _feed;
     final player = FeedPlayer(
       decoder: _createDecoder(),
       clock: _clock,
       maxDecoding: maxDecoding,
       onShown: _onShown,
-      onKeyframeNeeded: () => unawaited(_requestKeyframe(feed)),
+      onKeyframeNeeded: () => unawaited(_requestKeyframe(_feed)),
     );
     _player = player;
     player.picture.addListener(_onPicture);
@@ -427,24 +546,37 @@ class MirrorViewer {
     await _finish(end);
   }
 
-  /// Ends the current attempt: the picture goes away, the feed is told to
-  /// stop (one that ended by itself has nothing left to do), and a session
-  /// that showed anything is recorded.
+  /// Ends the current attempt, unless there is a way to go on: over the
+  /// cable when Ferret never reached the phone, or by waiting for a
+  /// device whose connection dropped. Otherwise the picture goes away, the
+  /// feed is told to stop (one that ended by itself has nothing left to
+  /// do), and a session that showed anything is recorded.
   Future<void> _finish(ViewEnd end) async {
     final current = _current;
     if (current == null || !current.isLive) {
       return;
     }
 
-    final feed = _feed;
-    final feedEvents = _feedEvents;
-    _feed = null;
-    _feedEvents = null;
-    _waitTimer?.cancel();
-    _waitTimer = null;
+    if (_fallbackFor(current, end) case final cable?) {
+      final feed = _detach();
+      if (feed != null) {
+        await _stopFeed(feed);
+      }
+
+      await _open(cable, viaFallback: true);
+      return;
+    }
+
+    if (end == .lostConnection && current.isMirroring && _reopenable) {
+      _reconnect(current);
+      return;
+    }
+
+    final feed = _detach();
+    _stopLooking();
     _statsTimer?.cancel();
     _statsTimer = null;
-    _current = current.copyWith(phase: .ended, end: end);
+    _current = current.copyWith(phase: .ended, end: end, endedAt: _clock());
     _lastEnds[current.deviceId] = end;
     final record = _recordOf(current, end);
     if (record != null) {
@@ -452,7 +584,6 @@ class MirrorViewer {
     }
 
     _emit();
-    unawaited(feedEvents?.cancel());
     if (feed != null) {
       await _stopFeed(feed);
     }
@@ -462,7 +593,81 @@ class MirrorViewer {
       await _settings.addRecord(record);
     }
 
+    if (!_reopenable) {
+      await _routes.refreshReceivers();
+    }
+
     _emit();
+  }
+
+  /// The cable's way to the phone of [session], when Ferret couldn't
+  /// reach or ask it. Never after its owner answered, and never twice.
+  MirrorTarget? _fallbackFor(ViewSession session, ViewEnd end) {
+    final overFerret = session.target.routeId == _routes.ferret.id;
+    if (!overFerret || session.startedAt != null || !end.mayFallBack) {
+      return null;
+    }
+
+    final cable = _routes.cableTargetFor(session.deviceId);
+    if (cable == null || _routes.routeFor(cable) == null) {
+      return null;
+    }
+
+    return cable;
+  }
+
+  /// The connection dropped while pictures showed: the last one stays,
+  /// and the device is asked again once, as soon as it is back.
+  void _reconnect(ViewSession session) {
+    _detach();
+    _resuming = false;
+    _current = session.copyWith(phase: .reconnecting, screenOff: false);
+    _emit();
+    _graceTimer = Timer(reconnectGrace, _onGraceOver);
+    _reachable = _routes.changes.listen((_) => _resume());
+    _resume();
+  }
+
+  void _onGraceOver() {
+    final current = _current;
+    if (current == null || current.phase != .reconnecting) {
+      return;
+    }
+
+    unawaited(_closePlayer());
+    _set(current.copyWith(lost: true));
+  }
+
+  void _resume() {
+    final current = _current;
+    final waits = current != null && current.phase == .reconnecting;
+    if (current == null ||
+        !waits ||
+        _resuming ||
+        !_routes.isReachable(current.target)) {
+      return;
+    }
+
+    _resuming = true;
+    unawaited(_reopen(current.target));
+  }
+
+  void _stopLooking() {
+    _graceTimer?.cancel();
+    _graceTimer = null;
+    unawaited(_reachable?.cancel());
+    _reachable = null;
+  }
+
+  /// Lets go of the feed without telling it anything, and hands it back.
+  MirrorFeed? _detach() {
+    final feed = _feed;
+    unawaited(_feedEvents?.cancel());
+    _feed = null;
+    _feedEvents = null;
+    _waitTimer?.cancel();
+    _waitTimer = null;
+    return feed;
   }
 
   Future<void> _stopFeed(MirrorFeed feed) async {

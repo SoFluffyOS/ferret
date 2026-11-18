@@ -1,4 +1,6 @@
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:mirroring/models/mirror_way.dart';
+import 'package:mirroring/models/view_quality.dart';
 
 /// Where the computer stands with one phone's screen.
 enum ViewPhase {
@@ -13,6 +15,10 @@ enum ViewPhase {
 
   /// Pictures are showing.
   streaming,
+
+  /// The connection dropped while pictures showed. The last one stays
+  /// while the device is looked for; see [ViewSession.lost].
+  reconnecting,
 
   /// Over, or it never started: see [ViewSession.end].
   ended,
@@ -70,6 +76,18 @@ enum ViewEnd {
   /// The way to this device needs a step from its owner first: see
   /// [ViewSession.setup].
   needsSetup;
+
+  /// The phone couldn't be reached or asked over Ferret, so another way
+  /// to it may be tried. A no from its owner is never one of these.
+  bool get mayFallBack => switch (this) {
+    .notConnected ||
+    .noAnswer ||
+    .cannotAsk ||
+    .version ||
+    .unsupported ||
+    .noCodec => true,
+    _ => false,
+  };
 
   /// How a feed's own ending reads on the mirror page.
   static ViewEnd ofFeed(FeedEnd end) => switch (end) {
@@ -132,6 +150,12 @@ class ViewStats {
 
   /// Frames dropped in the last second, on either side.
   final int droppedFrames;
+
+  ViewQuality get quality => .of(
+    shownFrames: fps,
+    droppedFrames: droppedFrames,
+    latencyMs: latencyMs,
+  );
 }
 
 /// One attempt to show a phone's screen, as the mirror page follows it.
@@ -143,8 +167,12 @@ class ViewSession {
     this.setup,
     this.setupDetail,
     this.startedAt,
+    this.endedAt,
+    this.waitingUntil,
     this.config,
     this.screenOff = false,
+    this.lost = false,
+    this.viaFallback = false,
     this.stats = const ViewStats(),
   });
 
@@ -170,16 +198,31 @@ class ViewSession {
   /// When the phone's owner said yes.
   final DateTime? startedAt;
 
+  /// When the attempt ended.
+  final DateTime? endedAt;
+
+  /// When the question on the phone runs out, while its owner is asked.
+  final DateTime? waitingUntil;
+
   /// The stream being shown.
   final MirrorStreamConfig? config;
 
   /// The phone's screen is off: the picture stands still.
   final bool screenOff;
+
+  /// While [ViewPhase.reconnecting]: the device stayed away longer than
+  /// it keeps its capture, so coming back means asking again.
+  final bool lost;
+
+  /// Ferret couldn't reach the phone, so this goes over the cable instead.
+  final bool viaFallback;
   final ViewStats stats;
 
   String get deviceId => deviceIdOf(target);
 
   String get deviceName => target.name;
+
+  MirrorWay get way => .of(target);
 
   /// The phone was asked and hasn't said no or stopped.
   bool get isLive => phase != .ended;
@@ -193,8 +236,12 @@ class ViewSession {
     RouteSetup? setup,
     String? setupDetail,
     DateTime? startedAt,
+    DateTime? endedAt,
+    DateTime? waitingUntil,
     MirrorStreamConfig? config,
     bool? screenOff,
+    bool? lost,
+    bool? viaFallback,
     ViewStats? stats,
   }) => ViewSession(
     target: target,
@@ -203,8 +250,12 @@ class ViewSession {
     setup: setup ?? this.setup,
     setupDetail: setupDetail ?? this.setupDetail,
     startedAt: startedAt ?? this.startedAt,
+    endedAt: endedAt ?? this.endedAt,
+    waitingUntil: waitingUntil ?? this.waitingUntil,
     config: config ?? this.config,
     screenOff: screenOff ?? this.screenOff,
+    lost: lost ?? this.lost,
+    viaFallback: viaFallback ?? this.viaFallback,
     stats: stats ?? this.stats,
   );
 }

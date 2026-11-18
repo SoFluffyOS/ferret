@@ -60,6 +60,12 @@ class FerretRoute implements MirrorRoute {
     wireless: true,
   );
 
+  /// Whether [deviceId] is connected and offers its screen right now.
+  bool isConnected(String deviceId) {
+    final session = _host.sessionFor(deviceId);
+    return session != null && canShow(session);
+  }
+
   /// Whether [session]'s device offers its screen.
   bool canShow(Session session) =>
       session

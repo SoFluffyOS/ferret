@@ -1,7 +1,12 @@
-export 'package:mirroring/ui/frames/mirror_controls_frame.dart';
-export 'package:mirroring/ui/frames/mirror_status_frame.dart';
+export 'package:mirroring/ui/frames/airplay_guide_frame.dart';
+export 'package:mirroring/ui/frames/mirror_ended_frame.dart';
+export 'package:mirroring/ui/frames/mirror_live_frame.dart';
+export 'package:mirroring/ui/frames/mirror_setup_frame.dart';
+export 'package:mirroring/ui/frames/mirror_stage_frame.dart';
+export 'package:mirroring/ui/frames/mirror_text_field_frame.dart';
 export 'package:mirroring/ui/frames/mirror_toolbar_frame.dart';
-export 'package:mirroring/ui/frames/mirror_view_frame.dart';
+export 'package:mirroring/ui/frames/mirror_waiting_frame.dart';
+export 'package:mirroring/ui/frames/quality_panel_frame.dart';
 export 'package:mirroring/ui/frames/share_card_frame.dart';
 export 'package:mirroring/ui/frames/share_settings_frame.dart';
 export 'package:mirroring/ui/frames/viewer_card_frame.dart';

@@ -103,7 +103,7 @@ void main() {
     expect(macFeature.canViewDevice(mac.sessions.single), isTrue);
     expect(phoneFeature.canViewDevice(phone.sessions.single), isFalse);
 
-    await viewer.start(phoneId);
+    await viewer.show(phoneId);
     expect(viewer.current?.phase, ViewPhase.waitingForPhone);
     await until(() => capture.asked.isNotEmpty);
     expect(capture.asked.single.askTitle, 'MacBook wants to see this screen');
@@ -196,7 +196,7 @@ void main() {
       fail('The computer should be able to view');
     }
 
-    await viewer.start(phoneId);
+    await viewer.show(phoneId);
     await until(() => capture.asked.isNotEmpty);
     capture.answer(.granted);
     await until(() => capture.started.isNotEmpty);
@@ -233,7 +233,8 @@ void main() {
     image.dispose();
   });
 
-  test('a dropped connection ends both sides', () async {
+  test('a dropped connection: the phone keeps its capture for a moment, and '
+      'the computer waits for the phone', () async {
     final capture = FakeCapture();
     final phoneFeature = MirroringFeature(
       capture: () => capture,
@@ -250,7 +251,7 @@ void main() {
     final mac = await startEngine('MacBook', macFeature);
     final phone = await startEngine('Pixel', phoneFeature);
     final phoneId = await pair(mac, phone);
-    await macFeature.viewer?.start(phoneId);
+    await macFeature.viewer?.show(phoneId);
     await until(() => capture.asked.isNotEmpty);
     capture.answer(.granted);
     await until(() => macFeature.viewer?.current?.phase == .starting);
@@ -258,8 +259,9 @@ void main() {
     await phone.stop();
     engines.remove(phone);
 
-    await until(() => macFeature.viewer?.current?.phase == .ended);
-    expect(macFeature.viewer?.current?.end, ViewEnd.lostConnection);
-    expect(capture.stops, greaterThanOrEqualTo(1));
+    await until(() => macFeature.viewer?.current?.phase == .reconnecting);
+    expect(macFeature.viewer?.current?.isLive, isTrue);
+    await until(() => phoneFeature.source?.active?.reconnecting ?? false);
+    expect(capture.stops, 0);
   });
 }

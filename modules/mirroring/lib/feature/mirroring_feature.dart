@@ -97,7 +97,7 @@ class MirroringFeature extends Feature {
   MirrorRoutes? get routes => _routes;
 
   /// Fires when anything the cards, health or settings show may have
-  /// changed. The status line's numbers come from the viewer instead.
+  /// changed. The picture's numbers come from the viewer instead.
   Stream<void> get changes => _changes.stream;
 
   /// Whether [session]'s device can show its screen here.
@@ -131,6 +131,7 @@ class MirroringFeature extends Feature {
         ),
         settings: settings,
         receiverName: () => host.localDevice.name,
+        pairedPhones: _pairedPhones,
         clock: _clock,
         routes: _extraRoutes,
         receivers: _receivers,
@@ -143,12 +144,17 @@ class MirroringFeature extends Feature {
         clock: _clock,
         firstPictureTimeout: firstPictureTimeout,
       );
+      routes.isShowingIncoming = () => viewer.isShowingIncoming;
       _routes = routes;
       _viewer = viewer;
       _subscriptions
         ..add(viewer.changes.listen((_) => _emit()))
         ..add(routes.changes.listen((_) => _emit()))
-        ..add(routes.incoming.listen((feed) => unawaited(viewer.show(feed))));
+        ..add(
+          routes.incoming.listen(
+            (feed) => unawaited(viewer.showIncoming(feed)),
+          ),
+        );
       routes.start();
     }
 
@@ -231,6 +237,12 @@ class MirroringFeature extends Feature {
 
     return null;
   }
+
+  /// The paired Android devices, which a cable may reach too.
+  Map<String, String> _pairedPhones() => {
+    for (final device in host.trustStore.devices)
+      if (device.platform == .PLATFORM_ANDROID) device.id: device.name,
+  };
 
   static ConsentTexts _plainTexts(String deviceName) => ConsentTexts(
     askTitle: '$deviceName wants to see this screen',

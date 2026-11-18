@@ -164,7 +164,7 @@ void main() {
     await viewer.startTarget(galaxy);
     final first = cable.feeds.single..play();
     await settle();
-    routes.incoming.listen(viewer.show);
+    routes.incoming.listen(viewer.showIncoming);
     final iphone = FakeFeed(
       const MirrorTarget(routeId: 'cast', id: 'i1', name: 'iPhone'),
     );

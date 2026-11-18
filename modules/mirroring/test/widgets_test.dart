@@ -107,26 +107,13 @@ void main() {
     await feature.start(host);
   }
 
-  Future<void> pumpPage(WidgetTester tester) async {
-    await tester.pumpWidget(
-      testApp(
-        ChangeNotifierProvider.value(
-          value: ui.viewerViewModel,
-          child: const MirrorPage(deviceId: 'pixel', deviceName: 'Pixel'),
-        ),
-        scroll: false,
-      ),
-    );
-    await tester.pump();
-  }
-
   Future<void> stream(WidgetTester tester, {Codec codec = .CODEC_H264}) async {
     final route = feature.routes?.ferret;
     if (route == null) {
       fail('The computer should be able to view');
     }
 
-    await ui.viewerViewModel.start('pixel');
+    await ui.viewerViewModel.show('pixel', 'Pixel');
     route.onAccept(pixel, StartAccept(version: 1, codec: codec));
     route.onConfig(
       pixel,
@@ -156,237 +143,6 @@ void main() {
     onReveal: onReveal,
   );
 
-  group('mirror page', () {
-    testWidgets('asking: says so while the request is on its way', (
-      tester,
-    ) async {
-      final reply = Completer<GeneratedMessage>();
-      await startComputer(tester, answer: (_) => reply.future);
-      unawaited(ui.viewerViewModel.start('pixel'));
-      await pumpPage(tester);
-
-      expect(find.text('Asking Pixel…'), findsOneWidget);
-      expect(find.text('Stop'), findsOneWidget);
-      expect(find.text('1:1'), findsNothing);
-
-      reply.complete(StartDeny(reason: .DENY_REASON_BUSY));
-      await tester.pump();
-      await tester.pump();
-      expect(find.text('Pixel is already sharing its screen'), findsOneWidget);
-    });
-
-    testWidgets('waiting: points at the phone, and Cancel takes the question '
-        'back', (tester) async {
-      await startComputer(tester);
-      await ui.viewerViewModel.start('pixel');
-      await pumpPage(tester);
-
-      expect(find.text('Answer on Pixel'), findsOneWidget);
-      expect(find.textContaining('On Pixel: Android asks'), findsOneWidget);
-
-      await tester.tap(find.text('Cancel'));
-      await tester.pump();
-      await tester.pump();
-
-      expect(pixel.sentOf<Stop>(), hasLength(1));
-      expect(find.text('Stopped on this computer'), findsOneWidget);
-    });
-
-    testWidgets('after the yes: waits for the first picture in words', (
-      tester,
-    ) async {
-      await startComputer(tester);
-      await ui.viewerViewModel.start('pixel');
-      feature.routes?.ferret.onAccept(
-        pixel,
-        StartAccept(version: 1, codec: .CODEC_H264),
-      );
-      await pumpPage(tester);
-
-      expect(find.text('Pixel said yes'), findsOneWidget);
-      expect(find.text('Waiting for the first picture…'), findsOneWidget);
-    });
-
-    testWidgets('streaming: the texture, a status line with fps, latency and '
-        'bitrate, and Stop', (tester) async {
-      await startComputer(tester);
-      await stream(tester);
-      await pumpPage(tester);
-
-      final texture = tester.widget<Texture>(find.byType(Texture));
-      expect(texture.textureId, 7);
-      expect(find.text('H.264 · 1080×2400 · 0 fps'), findsOneWidget);
-
-      await tester.pump(const Duration(seconds: 1));
-      final sent = pixel.sentOf<Stats>().single;
-      now = now.add(const Duration(milliseconds: 30));
-      feature.routes?.ferret.onStats(
-        pixel,
-        Stats(echoSentAtMs: sent.sentAtMs, bitrateKbps: 5200),
-      );
-      await tester.pump();
-      await tester.pump();
-      expect(
-        find.text('H.264 · 1080×2400 · 1 fps · 15 ms · 5.2 Mbps'),
-        findsOneWidget,
-      );
-
-      await tester.tap(find.text('Stop'));
-      await tester.pump();
-      await tester.pump();
-      expect(find.byType(Texture), findsNothing);
-      expect(find.text('Stopped on this computer'), findsOneWidget);
-      expect(
-        pixel.sentOf<Stop>().single.reason,
-        StopReason.STOP_REASON_VIEWER_DONE,
-      );
-    });
-
-    testWidgets('Fit and 1:1 switch the picture between the window and its '
-        'real size', (tester) async {
-      await startComputer(tester);
-      await stream(tester);
-      await pumpPage(tester);
-
-      expect(find.byType(AspectRatio), findsOneWidget);
-
-      await tester.tap(find.text('1:1'));
-      await tester.pump();
-      await tester.pump();
-
-      expect(find.text('Fit'), findsOneWidget);
-      expect(find.byType(AspectRatio), findsNothing);
-      final pixelRatio = tester.view.devicePixelRatio;
-      expect(
-        tester.getSize(find.byType(Texture)),
-        Size(1080 / pixelRatio, 2400 / pixelRatio),
-      );
-      expect(MirroringSettings(host.settings).actualSize, isTrue);
-    });
-
-    testWidgets('full screen shows only where the window can, and leaving '
-        'the page exits it', (tester) async {
-      await startComputer(tester);
-      await stream(tester);
-      await pumpPage(tester);
-
-      await tester.tap(find.text('Full screen'));
-      await tester.pump();
-      expect(window.fullScreen, isTrue);
-      expect(find.text('Exit full screen'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump();
-      expect(window.fullScreen, isFalse);
-      expect(
-        feature.viewer?.current?.isMirroring,
-        isTrue,
-        reason: 'Back keeps mirroring',
-      );
-    });
-
-    testWidgets('no full screen button in a window that can\'t', (
-      tester,
-    ) async {
-      await startComputer(tester, canFullScreen: false);
-      await stream(tester);
-      await pumpPage(tester);
-
-      expect(find.text('1:1'), findsOneWidget);
-      expect(find.text('Full screen'), findsNothing);
-    });
-
-    testWidgets('the screen going off is said over the picture', (
-      tester,
-    ) async {
-      await startComputer(tester);
-      await stream(tester);
-      await pumpPage(tester);
-
-      feature.routes?.ferret.onSourceState(pixel, SourceState(screenOff: true));
-      await tester.pump();
-      await tester.pump();
-
-      expect(find.textContaining("Pixel's screen is off"), findsOneWidget);
-      expect(find.byType(Texture), findsOneWidget);
-    });
-
-    testWidgets('a no explains itself, and Try again asks again', (
-      tester,
-    ) async {
-      await startComputer(tester);
-      await ui.viewerViewModel.start('pixel');
-      feature.routes?.ferret.onDeny(
-        pixel,
-        StartDeny(reason: .DENY_REASON_DENIED),
-      );
-      await pumpPage(tester);
-
-      expect(find.text('Pixel said no'), findsOneWidget);
-      expect(find.text('Stop'), findsNothing);
-
-      await tester.tap(find.text('Try again'));
-      await tester.pump();
-      await tester.pump();
-
-      expect(pixel.requests, hasLength(2));
-      expect(find.text('Answer on Pixel'), findsOneWidget);
-    });
-
-    for (final (reason, title) in [
-      (StopReason.STOP_REASON_STOPPED_ON_SOURCE, 'Stopped on Pixel'),
-      (StopReason.STOP_REASON_SYSTEM_ENDED, 'Pixel stopped sharing'),
-      (StopReason.STOP_REASON_FAILED, 'The picture stopped'),
-    ]) {
-      testWidgets('the phone ending with ${reason.name} says "$title"', (
-        tester,
-      ) async {
-        await startComputer(tester);
-        await stream(tester);
-        await pumpPage(tester);
-
-        feature.routes?.ferret.onStop(pixel, Stop(reason: reason));
-        await tester.pump();
-        await tester.pump();
-
-        expect(find.text(title), findsOneWidget);
-        expect(find.text('Try again'), findsOneWidget);
-        expect(find.byType(Texture), findsNothing);
-      });
-    }
-
-    testWidgets('a lost connection says so', (tester) async {
-      await startComputer(tester);
-      await stream(tester);
-      await pumpPage(tester);
-
-      host.sessions = [];
-      feature.routes?.ferret.onSessionClosed('pixel');
-      await tester.pump();
-      await tester.pump();
-
-      expect(find.text('Lost the connection to Pixel'), findsOneWidget);
-    });
-
-    testWidgets('closing the page forgets an attempt that is over', (
-      tester,
-    ) async {
-      await startComputer(tester);
-      await ui.viewerViewModel.start('pixel');
-      feature.routes?.ferret.onDeny(
-        pixel,
-        StartDeny(reason: .DENY_REASON_TIMEOUT),
-      );
-      await pumpPage(tester);
-      expect(find.text('Nobody answered on Pixel'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump();
-
-      expect(feature.viewer?.current, isNull);
-    });
-  });
-
   group('JPEG fallback picture', () {
     testWidgets('an image picture is drawn with RawImage', (tester) async {
       final image = await tester.runAsync(
@@ -404,7 +160,6 @@ void main() {
               height: 200,
               child: MirrorSurface(
                 picture: ImagePicture(image),
-                actualSize: false,
               ),
             ),
           ),
@@ -415,63 +170,6 @@ void main() {
       expect(tester.getSize(find.byType(RawImage)), const Size(200, 100));
       await tester.pumpWidget(const SizedBox.shrink());
       image.dispose();
-    });
-  });
-
-  group('computer card', () {
-    Future<void> pumpCard(WidgetTester tester, List<ViewSession> opened) =>
-        tester.pumpWidget(
-          testApp(
-            ChangeNotifierProvider.value(
-              value: ui.viewerViewModel,
-              child: ViewerCardFrame(onOpen: opened.add),
-            ),
-          ),
-        );
-
-    testWidgets('while a phone is shown: who, since when, Open and Stop; '
-        'then the audit line', (tester) async {
-      await startComputer(tester);
-      final context = featureContext();
-      expect(ui.hasHomeCard(context), isFalse);
-
-      await stream(tester);
-      final opened = <ViewSession>[];
-      await pumpCard(tester, opened);
-
-      expect(ui.hasHomeCard(context), isTrue);
-      expect(find.text("Showing Pixel's screen"), findsOneWidget);
-      expect(find.text('Since 21:10'), findsOneWidget);
-
-      await tester.tap(find.text('Open'));
-      expect(opened.single.deviceId, 'pixel');
-
-      now = now.add(const Duration(minutes: 12));
-      await tester.tap(find.text('Stop'));
-      await tester.pump();
-      await tester.pump();
-
-      expect(
-        find.text("You viewed Pixel's screen for 12 min at 21:10"),
-        findsOneWidget,
-      );
-      expect(ui.hasHomeCard(context), isTrue);
-
-      await tester.tap(find.byIcon(LucideIcons.x));
-      await tester.pump();
-      await tester.pump();
-      expect(ui.hasHomeCard(context), isFalse);
-    });
-
-    testWidgets('while the phone asks: waiting, with Stop to give up', (
-      tester,
-    ) async {
-      await startComputer(tester);
-      await ui.viewerViewModel.start('pixel');
-      await pumpCard(tester, []);
-
-      expect(find.text('Waiting for Pixel'), findsOneWidget);
-      expect(find.text("On Pixel: answer Android's prompt."), findsOneWidget);
     });
   });
 
@@ -573,8 +271,9 @@ void main() {
   });
 
   group('settings', () {
-    testWidgets('the phone can turn mirroring off, sees the root note and '
-        'its history', (tester) async {
+    testWidgets('the phone can turn mirroring off and sees its history', (
+      tester,
+    ) async {
       await startPhone(tester);
       await MirroringSettings(host.settings).addRecord(
         MirrorRecord(
@@ -604,7 +303,7 @@ void main() {
         find.text('Let my computers ask to see this screen'),
         findsOneWidget,
       );
-      expect(find.textContaining('needs root'), findsOneWidget);
+      expect(find.textContaining('needs root'), findsNothing);
       expect(
         find.text("MacBook saw this phone's screen for 3 min at 21:10"),
         findsOneWidget,
@@ -633,36 +332,12 @@ void main() {
       ),
     );
 
-    testWidgets('a computer with no Android phone has no section', (
-      tester,
-    ) async {
+    testWidgets('a computer with nothing to switch and no history has no '
+        'section', (tester) async {
       await startComputer(tester);
       await pumpComputerSettings(tester);
 
       expect(find.text('no section'), findsOneWidget);
-    });
-
-    testWidgets('a computer with a phone sees how to start', (tester) async {
-      await startComputer(tester);
-      await pumpComputerSettings(
-        tester,
-        devices: [
-          DeviceStatus(
-            TrustedDevice(
-              id: 'pixel',
-              name: 'Pixel',
-              platform: .PLATFORM_ANDROID,
-              formFactor: .FORM_FACTOR_PHONE,
-              publicKey: Uint8List(32),
-              pairedAt: now,
-            ),
-            null,
-          ),
-        ],
-      );
-
-      expect(find.textContaining('choose Show screen'), findsOneWidget);
-      expect(find.text("You haven't mirrored a phone yet."), findsNothing);
     });
 
     testWidgets('a computer keeps showing what it mirrored', (tester) async {
@@ -697,10 +372,23 @@ void main() {
       session,
     );
 
-    testWidgets('"Show screen" only on phones that can share, and health '
-        'follows the last try', (tester) async {
+    testWidgets('"Show screen" on every Android phone, connected or not, '
+        'and health follows the last try', (tester) async {
       await startComputer(tester);
       final iphone = FakeSession('iphone', name: 'iPhone', flags: const []);
+      final iphoneStatus = DeviceStatus(
+        TrustedDevice(
+          id: 'iphone',
+          name: 'iPhone',
+          platform: .PLATFORM_IOS,
+          formFactor: .FORM_FACTOR_PHONE,
+          publicKey: Uint8List(32),
+          pairedAt: now,
+        ),
+        iphone,
+      );
+      final offline = DeviceStatus(status(pixel).device, null);
+      late List<FeatureAction> offlineActions;
       final context = featureContext();
       late List<FeatureAction> pixelActions;
       late List<FeatureAction> iphoneActions;
@@ -716,7 +404,12 @@ void main() {
               iphoneActions = ui.deviceActions(
                 buildContext,
                 context,
-                status(iphone),
+                iphoneStatus,
+              );
+              offlineActions = ui.deviceActions(
+                buildContext,
+                context,
+                offline,
               );
               return const SizedBox.shrink();
             },
@@ -725,11 +418,13 @@ void main() {
       );
 
       expect(pixelActions.single.label, 'Show screen');
-      expect(iphoneActions, isEmpty);
+      expect(pixelActions.single.homeOrder, 15, reason: 'after Send files');
+      expect(offlineActions.single.label, 'Show screen');
+      expect(iphoneActions, isEmpty, reason: 'nothing listens for it here');
       final untried = ui.healthFor(context, status(pixel));
       expect(untried?.state, FeatureHealthState.ok);
       expect(untried?.reason, 'Asks on Pixel every time');
-      expect(ui.healthFor(context, status(iphone)), isNull);
+      expect(ui.healthFor(context, iphoneStatus), isNull);
 
       var changes = 0;
       ui.uiChanges.addListener(() => changes++);
@@ -746,7 +441,7 @@ void main() {
         FeatureHealthState.failing,
       );
 
-      await ui.viewerViewModel.start('pixel');
+      await ui.viewerViewModel.show('pixel', 'Pixel');
       feature.routes?.ferret.onDeny(
         pixel,
         StartDeny(reason: .DENY_REASON_TURNED_OFF),
@@ -862,20 +557,29 @@ void main() {
       expect(note.style?.color, isNot(const Color(0xFFFF453A)));
     });
 
-    testWidgets('a computer has no part until an Android phone is paired', (
+    testWidgets('a computer has no part until it has something to keep', (
       tester,
     ) async {
       await startComputer(tester);
 
-      expect(await partsOf(tester), isEmpty);
+      expect(await partsOf(tester, devices: [androidPhone]), isEmpty);
 
-      final part = (await partsOf(tester, devices: [androidPhone])).single;
+      await MirroringSettings(host.settings).addRecord(
+        MirrorRecord(
+          deviceId: 'pixel',
+          deviceName: 'Pixel',
+          role: .viewed,
+          startedAt: now,
+          endedAt: now.add(const Duration(minutes: 3)),
+          end: .viewerDone,
+        ),
+      );
+      final part = (await partsOf(tester)).single;
 
       expect(part.group, SettingsGroup.phone);
       expect(part.title, 'Screen');
       expect(part.isOn, isNull);
       expect(part.needsAttention, isFalse);
-      expect(find.text('Experimental'), findsOneWidget);
     });
   });
 

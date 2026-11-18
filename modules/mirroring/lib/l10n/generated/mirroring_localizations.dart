@@ -139,36 +139,6 @@ abstract class MirroringLocalizations {
   /// **'Dismiss'**
   String get dismiss;
 
-  /// No description provided for @open.
-  ///
-  /// In en, this message translates to:
-  /// **'Open'**
-  String get open;
-
-  /// No description provided for @fit.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit'**
-  String get fit;
-
-  /// No description provided for @actualSize.
-  ///
-  /// In en, this message translates to:
-  /// **'1:1'**
-  String get actualSize;
-
-  /// No description provided for @fitTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit the picture to the window'**
-  String get fitTooltip;
-
-  /// No description provided for @actualSizeTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'One phone pixel per screen pixel'**
-  String get actualSizeTooltip;
-
   /// No description provided for @fullScreen.
   ///
   /// In en, this message translates to:
@@ -187,12 +157,6 @@ abstract class MirroringLocalizations {
   /// **'Asking {device}…'**
   String requestingTitle(String device);
 
-  /// No description provided for @requestingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'This takes a moment.'**
-  String get requestingBody;
-
   /// No description provided for @waitingTitle.
   ///
   /// In en, this message translates to:
@@ -202,7 +166,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @waitingBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: Android asks whether to share the screen. Tap Start. If {device} shows nothing, open the notice from Ferret.'**
+  /// **'On {device}, choose to share the entire screen, then Start.'**
   String waitingBody(String device);
 
   /// No description provided for @startingTitle.
@@ -238,7 +202,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endDeniedBody.
   ///
   /// In en, this message translates to:
-  /// **'Someone tapped Cancel on {device}. You can ask again in half a minute.'**
+  /// **'Someone tapped Cancel on {device}.'**
   String endDeniedBody(String device);
 
   /// No description provided for @endTimedOutTitle.
@@ -250,7 +214,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endTimedOutBody.
   ///
   /// In en, this message translates to:
-  /// **'The question stays on {device} for a minute. Wake {device}, then try again.'**
+  /// **'The question stays on {device} for a minute. Wake {device}, then ask again.'**
   String endTimedOutBody(String device);
 
   /// No description provided for @endBusyTitle.
@@ -298,7 +262,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endCannotAskBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret, or allow its notifications. Then try again.'**
+  /// **'On {device}: open Ferret, or allow its notifications. Then ask again.'**
   String endCannotAskBody(String device);
 
   /// No description provided for @endVersionTitle.
@@ -334,7 +298,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNotConnectedBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret. Check that {device} and this computer are on the same Wi-Fi.'**
+  /// **'On {device}: open Ferret. Same Wi-Fi as this computer?'**
   String endNotConnectedBody(String device);
 
   /// No description provided for @endNoAnswerTitle.
@@ -348,18 +312,6 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'On {device}: open Ferret. Then try again.'**
   String endNoAnswerBody(String device);
-
-  /// No description provided for @endStoppedHereTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Stopped on this computer'**
-  String get endStoppedHereTitle;
-
-  /// No description provided for @endStoppedHereBody.
-  ///
-  /// In en, this message translates to:
-  /// **'{device} no longer shares its screen.'**
-  String endStoppedHereBody(String device);
 
   /// No description provided for @endStoppedOnPhoneTitle.
   ///
@@ -382,7 +334,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endSystemEndedBody.
   ///
   /// In en, this message translates to:
-  /// **'Android ends screen sharing when {device} locks, or when someone stops it from the status bar.'**
+  /// **'Android stops sharing when {device} locks, or when someone stops it from the status bar. Unlock {device}, then show it again.'**
   String endSystemEndedBody(String device);
 
   /// No description provided for @endLostConnectionTitle.
@@ -394,7 +346,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endLostConnectionBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret reconnects on its own. Try again once {device} is back.'**
+  /// **'Check that {device} is on, and on the same Wi-Fi as this computer.'**
   String endLostConnectionBody(String device);
 
   /// No description provided for @endFailedTitle.
@@ -406,7 +358,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'{device} couldn\'t capture its screen. Try again.'**
+  /// **'{device} couldn\'t capture its screen.'**
   String endFailedBody(String device);
 
   /// No description provided for @endDecoderFailedTitle.
@@ -418,7 +370,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endDecoderFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'The video from {device} didn\'t play here. Try again.'**
+  /// **'The video from {device} didn\'t play here.'**
   String endDecoderFailedBody(String device);
 
   /// No description provided for @statusPicture.
@@ -462,24 +414,6 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Showing {device}\'s screen'**
   String viewingTitle(String device);
-
-  /// No description provided for @viewingWaitingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting for {device}'**
-  String viewingWaitingTitle(String device);
-
-  /// No description provided for @viewingWaitingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'On {device}: answer Android\'s prompt.'**
-  String viewingWaitingBody(String device);
-
-  /// No description provided for @sinceTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Since {time}'**
-  String sinceTime(String time);
 
   /// No description provided for @sharingTitle.
   ///
@@ -577,18 +511,6 @@ abstract class MirroringLocalizations {
   /// **'This phone can\'t capture its screen'**
   String get settingsUnsupported;
 
-  /// No description provided for @settingsScreenOffNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Turning the phone\'s screen off while it is mirrored needs root, so Ferret doesn\'t offer it.'**
-  String get settingsScreenOffNote;
-
-  /// No description provided for @settingsViewerHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Open a connected Android phone and choose Show screen. The phone asks its owner every time.'**
-  String get settingsViewerHint;
-
   /// No description provided for @settingsHistoryTitle.
   ///
   /// In en, this message translates to:
@@ -630,12 +552,6 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Can\'t capture'**
   String get summaryCantCapture;
-
-  /// No description provided for @summaryMoreWays.
-  ///
-  /// In en, this message translates to:
-  /// **'More ways on'**
-  String get summaryMoreWays;
 
   /// No description provided for @permissionAsk.
   ///
@@ -739,52 +655,22 @@ abstract class MirroringLocalizations {
   /// **'Experimental'**
   String get experimental;
 
-  /// No description provided for @moreWaysTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'More ways to show a screen'**
-  String get moreWaysTitle;
-
-  /// No description provided for @moreWaysBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Also show a phone plugged in with a cable, and screens other devices send here themselves. This is new, so expect rough edges.'**
-  String get moreWaysBody;
-
-  /// No description provided for @moreWaysOffer.
-  ///
-  /// In en, this message translates to:
-  /// **'Experimental: show a phone plugged in with a cable, or a screen another device sends here.'**
-  String get moreWaysOffer;
-
-  /// No description provided for @turnOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Turn on'**
-  String get turnOn;
-
   /// No description provided for @targetsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Screens you can show'**
+  /// **'Phones on a cable'**
   String get targetsTitle;
-
-  /// No description provided for @targetsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Found by the experimental ways. They don\'t need Ferret.'**
-  String get targetsSubtitle;
 
   /// No description provided for @targetCable.
   ///
   /// In en, this message translates to:
-  /// **'Plugged in with a cable'**
+  /// **'Cable'**
   String get targetCable;
 
   /// No description provided for @targetWireless.
   ///
   /// In en, this message translates to:
-  /// **'On your network'**
+  /// **'Wi-Fi debugging'**
   String get targetWireless;
 
   /// No description provided for @show.
@@ -793,22 +679,10 @@ abstract class MirroringLocalizations {
   /// **'Show screen'**
   String get show;
 
-  /// No description provided for @checkAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Check again'**
-  String get checkAgain;
-
-  /// No description provided for @setupInstallToolTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'This computer needs a small helper first'**
-  String get setupInstallToolTitle;
-
   /// No description provided for @setupInstallToolBody.
   ///
   /// In en, this message translates to:
-  /// **'How to: install Android\'s platform tools (they include adb) on this computer, then try again.'**
+  /// **'Install Android\'s platform tools (they include adb) on this computer. This page moves on by itself.'**
   String get setupInstallToolBody;
 
   /// No description provided for @setupDownloadToolTitle.
@@ -850,32 +724,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupStartToolBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal, then check again.'**
+  /// **'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.'**
   String get setupStartToolBody;
-
-  /// No description provided for @setupEnableDebuggingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'The phone needs one setting turned on'**
-  String get setupEnableDebuggingTitle;
-
-  /// No description provided for @setupEnableDebuggingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'On the phone: open Settings, then About phone, and tap Build number seven times. Then turn on USB debugging in Developer options.'**
-  String get setupEnableDebuggingBody;
-
-  /// No description provided for @setupAuthorizeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow this computer on the phone'**
-  String get setupAuthorizeTitle;
-
-  /// No description provided for @setupAuthorizeBody.
-  ///
-  /// In en, this message translates to:
-  /// **'On the phone: tap Allow on the question it shows. Then try again.'**
-  String get setupAuthorizeBody;
 
   /// No description provided for @setupPermissionTitle.
   ///
@@ -886,7 +736,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupPermissionBody.
   ///
   /// In en, this message translates to:
-  /// **'How to: allow Ferret under Local Network in this computer\'s privacy settings, then try again.'**
+  /// **'Allow Ferret under Local Network in this computer\'s privacy settings.'**
   String get setupPermissionBody;
 
   /// No description provided for @buttonBack.
@@ -904,7 +754,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @buttonRecents.
   ///
   /// In en, this message translates to:
-  /// **'Recent apps'**
+  /// **'Recents'**
   String get buttonRecents;
 
   /// No description provided for @receiverAirplayTitle.
@@ -937,16 +787,10 @@ abstract class MirroringLocalizations {
   /// **'{device} wants to show its screen here'**
   String allowTitle(String device);
 
-  /// No description provided for @allowBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Say yes only if this is your device. The name is what the device calls itself, and anyone on your network can ask.'**
-  String get allowBody;
-
   /// No description provided for @allow.
   ///
   /// In en, this message translates to:
-  /// **'Allow'**
+  /// **'Show'**
   String get allow;
 
   /// No description provided for @dontAllow.
@@ -954,6 +798,642 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t allow'**
   String get dontAllow;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @showAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show again'**
+  String get showAgain;
+
+  /// No description provided for @askAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask again'**
+  String get askAgain;
+
+  /// No description provided for @askAgainIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You can ask again in {time}.'**
+  String askAgainIn(String time);
+
+  /// No description provided for @how.
+  ///
+  /// In en, this message translates to:
+  /// **'How'**
+  String get how;
+
+  /// No description provided for @why.
+  ///
+  /// In en, this message translates to:
+  /// **'Why?'**
+  String get why;
+
+  /// No description provided for @wake.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake'**
+  String get wake;
+
+  /// No description provided for @notMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Not mine'**
+  String get notMine;
+
+  /// No description provided for @showIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get showIt;
+
+  /// No description provided for @startingCableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {device}…'**
+  String startingCableTitle(String device);
+
+  /// No description provided for @waitingNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on {device}? Open the notice from Ferret.'**
+  String waitingNothing(String device);
+
+  /// No description provided for @waitingWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Android asks every time. Ferret can\'t skip it, and wouldn\'t.'**
+  String get waitingWhy;
+
+  /// No description provided for @timeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String timeLeft(String time);
+
+  /// No description provided for @reconnectingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting to {device}…'**
+  String reconnectingTitle(String device);
+
+  /// No description provided for @lostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost {device}'**
+  String lostTitle(String device);
+
+  /// No description provided for @lostBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This picks up again when {device} is back.'**
+  String lostBody(String device);
+
+  /// No description provided for @lostCableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Plug {device} back in. The picture picks up by itself.'**
+  String lostCableBody(String device);
+
+  /// No description provided for @notConnectedWaits.
+  ///
+  /// In en, this message translates to:
+  /// **'This starts by itself when {device} connects.'**
+  String notConnectedWaits(String device);
+
+  /// No description provided for @orDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get orDivider;
+
+  /// No description provided for @plugInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plug {device} into this computer'**
+  String plugInTitle(String device);
+
+  /// No description provided for @plugInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can click and type on it too.'**
+  String get plugInBody;
+
+  /// No description provided for @buttonRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate'**
+  String get buttonRotate;
+
+  /// No description provided for @buttonKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard'**
+  String get buttonKeyboard;
+
+  /// No description provided for @buttonNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications panel'**
+  String get buttonNotifications;
+
+  /// No description provided for @buttonVolumeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume up'**
+  String get buttonVolumeUp;
+
+  /// No description provided for @buttonVolumeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume down'**
+  String get buttonVolumeDown;
+
+  /// No description provided for @buttonPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get buttonPower;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @tooltipWithKey.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({key})'**
+  String tooltipWithKey(String name, String key);
+
+  /// No description provided for @keyRightClick.
+  ///
+  /// In en, this message translates to:
+  /// **'right-click'**
+  String get keyRightClick;
+
+  /// No description provided for @keyMiddleClick.
+  ///
+  /// In en, this message translates to:
+  /// **'middle-click'**
+  String get keyMiddleClick;
+
+  /// No description provided for @viewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'View only'**
+  String get viewOnly;
+
+  /// No description provided for @viewOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} shares its picture, not its controls. To click and type, plug it in.'**
+  String viewOnlyBody(String device);
+
+  /// No description provided for @viewOnlyAirplayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'An iPhone or iPad shares its picture, not its controls.'**
+  String get viewOnlyAirplayBody;
+
+  /// No description provided for @controlWithCable.
+  ///
+  /// In en, this message translates to:
+  /// **'Control with the cable'**
+  String get controlWithCable;
+
+  /// No description provided for @viewOnlyToast.
+  ///
+  /// In en, this message translates to:
+  /// **'View only.'**
+  String get viewOnlyToast;
+
+  /// No description provided for @keepToolbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep toolbar visible'**
+  String get keepToolbar;
+
+  /// No description provided for @qualityGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get qualityGood;
+
+  /// No description provided for @qualitySlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow'**
+  String get qualitySlow;
+
+  /// No description provided for @qualityPoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Poor'**
+  String get qualityPoor;
+
+  /// No description provided for @pictureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get pictureTitle;
+
+  /// No description provided for @presetAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get presetAuto;
+
+  /// No description provided for @presetAutoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret adapts'**
+  String get presetAutoBody;
+
+  /// No description provided for @presetSharp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp'**
+  String get presetSharp;
+
+  /// No description provided for @presetSharpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Full size'**
+  String get presetSharpBody;
+
+  /// No description provided for @presetFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast'**
+  String get presetFast;
+
+  /// No description provided for @presetFastBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller, smooth'**
+  String get presetFastBody;
+
+  /// No description provided for @presetRestarts.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing it restarts the picture.'**
+  String get presetRestarts;
+
+  /// No description provided for @presetNextTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} has to say yes again for a change, so it applies next time.'**
+  String presetNextTime(String device);
+
+  /// No description provided for @presetAirplay.
+  ///
+  /// In en, this message translates to:
+  /// **'The iPhone picks the quality.'**
+  String get presetAirplay;
+
+  /// No description provided for @basicPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic picture on this computer for now (about 10 a second).'**
+  String get basicPicture;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @wayWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get wayWifi;
+
+  /// No description provided for @wayCable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cable'**
+  String get wayCable;
+
+  /// No description provided for @wayAirplay.
+  ///
+  /// In en, this message translates to:
+  /// **'AirPlay'**
+  String get wayAirplay;
+
+  /// No description provided for @noticeViaCable.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing over the cable instead.'**
+  String get noticeViaCable;
+
+  /// No description provided for @noticeCableNoAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Over a cable, {device} doesn\'t ask each time. Only do this with your own phone.'**
+  String noticeCableNoAsk(String device);
+
+  /// No description provided for @noticeSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow connection to {device}.'**
+  String noticeSlow(String device);
+
+  /// No description provided for @noticeSlowHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow connection to {device}. Move closer to the Wi-Fi, or plug it in.'**
+  String noticeSlowHelp(String device);
+
+  /// No description provided for @useFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Fast'**
+  String get useFast;
+
+  /// No description provided for @textFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or paste, then press Enter'**
+  String get textFieldHint;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @replaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop showing {current} and show {next}?'**
+  String replaceTitle(String current, String next);
+
+  /// No description provided for @replaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {device}'**
+  String replaceConfirm(String device);
+
+  /// No description provided for @leaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop showing {device}?'**
+  String leaveTitle(String device);
+
+  /// No description provided for @leaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaving this page stops sharing on both devices.'**
+  String get leaveBody;
+
+  /// No description provided for @keepShowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep showing'**
+  String get keepShowing;
+
+  /// No description provided for @setupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {device} with a cable'**
+  String setupTitle(String device);
+
+  /// No description provided for @setupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No app needed on the phone.'**
+  String get setupSubtitle;
+
+  /// No description provided for @stepPlug.
+  ///
+  /// In en, this message translates to:
+  /// **'Plug the phone into this computer'**
+  String get stepPlug;
+
+  /// No description provided for @stepDebugging.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on USB debugging'**
+  String get stepDebugging;
+
+  /// No description provided for @stepDebuggingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On the phone:'**
+  String get stepDebuggingOn;
+
+  /// No description provided for @stepDebugging1.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → About phone'**
+  String get stepDebugging1;
+
+  /// No description provided for @stepDebugging2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Build number 7 times'**
+  String get stepDebugging2;
+
+  /// No description provided for @stepDebugging3.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → System → Developer options → USB debugging'**
+  String get stepDebugging3;
+
+  /// No description provided for @brandsToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Samsung, Xiaomi, others'**
+  String get brandsToggle;
+
+  /// No description provided for @brandsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Samsung: Build number is under About phone → Software information.\nXiaomi: tap the OS version instead of Build number, and also turn on USB debugging (Security settings), or clicks won\'t work.\nAny other phone: search its Settings for Build number.'**
+  String get brandsBody;
+
+  /// No description provided for @stepAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Allow on the phone'**
+  String get stepAllow;
+
+  /// No description provided for @stepAllowNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: tap Allow. Tick Always allow from this computer.'**
+  String stepAllowNamed(String device);
+
+  /// No description provided for @setupWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the phone…'**
+  String get setupWaiting;
+
+  /// No description provided for @setupCables.
+  ///
+  /// In en, this message translates to:
+  /// **'Many cables only charge. Try another one.'**
+  String get setupCables;
+
+  /// No description provided for @setupPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Once allowed, this computer can see and control the phone without asking. Only do this with your own phone.'**
+  String get setupPrivacy;
+
+  /// No description provided for @setupUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer can\'t show a phone over a cable.'**
+  String get setupUnsupported;
+
+  /// No description provided for @airplayOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}:'**
+  String airplayOn(String device);
+
+  /// No description provided for @airplayStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Control Center (swipe down from the top right)'**
+  String get airplayStep1;
+
+  /// No description provided for @airplayStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Screen Mirroring'**
+  String get airplayStep2;
+
+  /// No description provided for @airplayStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick “{computer}”'**
+  String airplayStep3(String computer);
+
+  /// No description provided for @airplayListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening…'**
+  String get airplayListening;
+
+  /// No description provided for @airplayNote.
+  ///
+  /// In en, this message translates to:
+  /// **'View only. No sound. Experimental: an iOS update can break it.'**
+  String get airplayNote;
+
+  /// No description provided for @airplayMacTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Macs already do this'**
+  String get airplayMacTitle;
+
+  /// No description provided for @airplayMacBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}, pick this Mac under Screen Mirroring, or use iPhone Mirroring.'**
+  String airplayMacBody(String device);
+
+  /// No description provided for @useFerretAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Ferret anyway'**
+  String get useFerretAnyway;
+
+  /// No description provided for @airplayConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is connecting'**
+  String airplayConnecting(String device);
+
+  /// No description provided for @airplayConnectingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The name is what the device calls itself. Say yes only if it is yours.'**
+  String get airplayConnectingBody;
+
+  /// No description provided for @airplayTimedOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody picked this computer'**
+  String get airplayTimedOutTitle;
+
+  /// No description provided for @airplayTimedOutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret listened for two minutes, then stopped.'**
+  String get airplayTimedOutBody;
+
+  /// No description provided for @listenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen again'**
+  String get listenAgain;
+
+  /// No description provided for @viewingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Since {time} · {way}'**
+  String viewingDetail(String time, String way);
+
+  /// No description provided for @viewingAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking {device}…'**
+  String viewingAsking(String device);
+
+  /// No description provided for @lookForCableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for phones on a cable'**
+  String get lookForCableTitle;
+
+  /// No description provided for @lookForCableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows any Android phone plugged in with USB debugging on.'**
+  String get lookForCableBody;
+
+  /// No description provided for @summaryCable.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for a cable'**
+  String get summaryCable;
+
+  /// No description provided for @sharingReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} dropped off. Waiting a moment for it to come back.'**
+  String sharingReconnecting(String device);
+
+  /// No description provided for @endStoppedHereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get endStoppedHereTitle;
+
+  /// No description provided for @endStoppedHereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} no longer shares its screen.'**
+  String endStoppedHereBody(String device);
+
+  /// No description provided for @allowNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Say yes only if it is yours.'**
+  String get allowNoticeBody;
 }
 
 class _MirroringLocalizationsDelegate

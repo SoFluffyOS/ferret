@@ -9,8 +9,8 @@ import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The phone's screen mirroring settings: on or off, what it can't do, and
-/// the history of who saw the screen.
+/// The phone's screen settings: on or off, what it can't do, and the
+/// history of who saw the screen.
 class ShareSettingsFrame extends StatelessWidget {
   const ShareSettingsFrame({super.key});
 
@@ -48,11 +48,6 @@ class ShareSettingsFrame extends StatelessWidget {
               style: caption.copyWith(color: palette.mutedText),
             ),
           ],
-          Spacing.v4,
-          Text(
-            l10n.settingsScreenOffNote,
-            style: caption.copyWith(color: palette.mutedText),
-          ),
           Spacing.v4,
           Text(
             l10n.settingsPerDevice,

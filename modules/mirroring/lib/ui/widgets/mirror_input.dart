@@ -1,94 +1,210 @@
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/services.dart';
 
-/// Turns clicks, scrolling and typing on a mirrored picture into what its
-/// device understands. Positions are fractions of [child], so they hold
-/// whatever size the picture is drawn at.
-class MirrorInput extends StatelessWidget {
+/// Turns the mouse, the trackpad and the keyboard on a mirrored picture
+/// into what its device understands: a click is a touch, a right-click is
+/// Back, a middle-click is Home, the wheel and two fingers scroll, and
+/// typing types. Positions are fractions of [child], so they hold whatever
+/// size the picture is drawn at.
+class MirrorInput extends StatefulWidget {
   const MirrorInput({
     super.key,
     required this.child,
-    this.onPointer,
-    this.onKey,
+    required this.abilities,
+    this.onAction,
+    this.onViewOnlyTap,
+    this.focusNode,
   });
 
   /// One mouse wheel notch, in the pixels Flutter reports for it.
-  static const _pixelsPerNotch = 50.0;
+  static const pixelsPerNotch = 50.0;
 
   final Widget child;
 
-  /// Null leaves clicks and scrolling on this computer.
-  final ValueChanged<MirrorPointer>? onPointer;
+  /// What the device being shown takes. Empty is view only.
+  final Set<ControlAbility> abilities;
 
-  /// Null leaves typing on this computer.
-  final ValueChanged<MirrorKey>? onKey;
+  final ValueChanged<InputAction>? onAction;
+
+  /// A click on a picture that takes none, to say so.
+  final VoidCallback? onViewOnlyTap;
+
+  final FocusNode? focusNode;
+
+  @override
+  State<MirrorInput> createState() => _MirrorInputState();
+}
+
+class _MirrorInputState extends State<MirrorInput> {
+  /// Pointers whose press was a device button, not a touch: the rest of
+  /// their gesture is swallowed.
+  final Set<int> _buttonPresses = {};
+
+  /// Keys whose press went as text: their release has nothing to send.
+  final Set<PhysicalKeyboardKey> _typedKeys = {};
+
+  bool get _canPoint => widget.abilities.contains(ControlAbility.pointer);
+
+  bool get _canPress => widget.abilities.contains(ControlAbility.buttons);
+
+  KeyModifier get _shortcut => switch (defaultTargetPlatform) {
+    .macOS || .iOS => .meta,
+    _ => .control,
+  };
 
   @override
   Widget build(BuildContext context) {
-    final pointing = switch (onPointer) {
-      null => child,
-      final send => LayoutBuilder(
-        builder: (context, constraints) => Listener(
-          behavior: .opaque,
-          onPointerDown: (event) =>
-              send(_pointerOf(.down, event, constraints.biggest)),
-          onPointerMove: (event) =>
-              send(_pointerOf(.move, event, constraints.biggest)),
-          onPointerUp: (event) =>
-              send(_pointerOf(.up, event, constraints.biggest)),
-          onPointerCancel: (event) =>
-              send(_pointerOf(.cancel, event, constraints.biggest)),
-          onPointerSignal: (event) {
-            if (event is PointerScrollEvent) {
-              send(_pointerOf(.scroll, event, constraints.biggest));
-            }
-          },
-          child: child,
-        ),
-      ),
-    };
-    final sendKey = onKey;
-    if (sendKey == null) {
-      return pointing;
+    if (widget.abilities.isEmpty) {
+      return Listener(
+        behavior: .opaque,
+        onPointerDown: (_) => widget.onViewOnlyTap?.call(),
+        child: widget.child,
+      );
     }
 
-    return Focus(
-      autofocus: true,
-      onKeyEvent: (node, event) {
-        final key = MirrorKeys.keyOf(
-          event,
-          modifiers: MirrorKeys.modifiersOf(HardwareKeyboard.instance),
-        );
-        if (key == null) {
-          return .ignored;
-        }
+    final pointing = switch (_canPoint) {
+      false => widget.child,
+      true => LayoutBuilder(
+        builder: (context, constraints) {
+          final size = constraints.biggest;
 
-        sendKey(key);
-        return .handled;
-      },
+          return Listener(
+            behavior: .opaque,
+            onPointerDown: (event) => _onDown(event, size),
+            onPointerMove: (event) => _onTouch(.move, event, size),
+            onPointerUp: (event) => _onTouch(.up, event, size),
+            onPointerCancel: (event) => _onTouch(.cancel, event, size),
+            onPointerSignal: (event) => _onSignal(event, size),
+            onPointerPanZoomUpdate: (event) => _onPan(event, size),
+            child: widget.child,
+          );
+        },
+      ),
+    };
+
+    return Focus(
+      focusNode: widget.focusNode,
+      autofocus: true,
+      onKeyEvent: _onKey,
       child: pointing,
     );
   }
 
-  MirrorPointer _pointerOf(PointerPhase phase, PointerEvent event, Size size) {
-    final scroll = switch (event) {
-      PointerScrollEvent(:final scrollDelta) => scrollDelta / _pixelsPerNotch,
-      _ => Offset.zero,
-    };
+  void _send(InputAction action) => widget.onAction?.call(action);
 
-    return MirrorPointer(
-      phase: phase,
-      x: _fraction(event.localPosition.dx, size.width),
-      y: _fraction(event.localPosition.dy, size.height),
-      pointerId: event.device,
-      buttons: event.buttons,
-      scrollX: scroll.dx,
-      scrollY: scroll.dy,
+  void _onDown(PointerDownEvent event, Size size) {
+    final button = _buttonOf(event);
+    if (button != null) {
+      _buttonPresses.add(event.pointer);
+      _send(PressButton(button));
+      return;
+    }
+
+    _send(SendPointer(_pointerOf(.down, event, size)));
+  }
+
+  void _onTouch(PointerPhase phase, PointerEvent event, Size size) {
+    final wasButton = _buttonPresses.contains(event.pointer);
+    if (wasButton && phase != .move) {
+      _buttonPresses.remove(event.pointer);
+    }
+
+    if (wasButton) {
+      return;
+    }
+
+    _send(SendPointer(_pointerOf(phase, event, size)));
+  }
+
+  void _onSignal(PointerSignalEvent event, Size size) {
+    if (event is! PointerScrollEvent) {
+      return;
+    }
+
+    _scroll(event, event.scrollDelta, size);
+  }
+
+  /// Two fingers on a trackpad arrive as a pan, not as a wheel: the
+  /// content follows the fingers, so the scroll goes the other way.
+  void _onPan(PointerPanZoomUpdateEvent event, Size size) {
+    final delta = event.localPanDelta;
+    if (delta == Offset.zero) {
+      return;
+    }
+
+    _scroll(event, -delta, size);
+  }
+
+  void _scroll(PointerEvent event, Offset pixels, Size size) {
+    final notches = pixels / MirrorInput.pixelsPerNotch;
+    _send(
+      SendPointer(
+        MirrorPointer(
+          phase: .scroll,
+          x: _fraction(event.localPosition.dx, size.width),
+          y: _fraction(event.localPosition.dy, size.height),
+          buttons: 0,
+          scrollX: notches.dx,
+          scrollY: notches.dy,
+        ),
+      ),
     );
   }
+
+  /// The device button a mouse button stands for: right is Back, middle
+  /// is Home, as in every tool that mirrors a phone.
+  DeviceButton? _buttonOf(PointerDownEvent event) {
+    if (!_canPress || event.kind != PointerDeviceKind.mouse) {
+      return null;
+    }
+
+    if (event.buttons & kSecondaryMouseButton != 0) {
+      return .back;
+    }
+
+    if (event.buttons & kMiddleMouseButton != 0) {
+      return .home;
+    }
+
+    return null;
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent && _typedKeys.remove(event.physicalKey)) {
+      return .handled;
+    }
+
+    final action = MirrorKeys.actionOf(
+      event,
+      modifiers: MirrorKeys.modifiersOf(HardwareKeyboard.instance),
+      abilities: widget.abilities,
+      shortcut: _shortcut,
+    );
+    if (action == null) {
+      return .ignored;
+    }
+
+    if (action is SendText || action is PasteText) {
+      _typedKeys.add(event.physicalKey);
+    }
+
+    _send(action);
+    return .handled;
+  }
+
+  MirrorPointer _pointerOf(PointerPhase phase, PointerEvent event, Size size) =>
+      MirrorPointer(
+        phase: phase,
+        x: _fraction(event.localPosition.dx, size.width),
+        y: _fraction(event.localPosition.dy, size.height),
+        pointerId: event.device,
+        buttons: kPrimaryButton,
+      );
 
   double _fraction(double position, double length) {
     if (length <= 0) {
