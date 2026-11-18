@@ -83,7 +83,12 @@ class _ActivityFrameState extends State<ActivityFrame> {
               ),
             if (feed.isEmpty) _Empty(l10n.activityEmpty),
             for (final item in [...feed.pinned, ...recent])
-              ActivityRow(key: ValueKey(item.id), item: item, now: now),
+              ActivityRow(
+                key: ValueKey(item.id),
+                item: item,
+                now: now,
+                holdsPrimary: identical(item, feed.primaryItem),
+              ),
           ],
         );
       },

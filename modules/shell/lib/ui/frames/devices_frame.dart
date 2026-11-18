@@ -66,7 +66,7 @@ class _DevicesFrameState extends State<DevicesFrame> {
             builder: (context) => DeviceTile(
               status: status,
               actions: _actionsFor(context, scope, status),
-              hasPrimary: index == 0,
+              hasPrimary: index == 0 && !_feedHoldsPrimary(context, scope),
               attention: _attentionFor(context, scope, status),
               onTap: () => widget.onOpen(status),
               onFix: () => widget.onFix(status),
@@ -84,6 +84,16 @@ class _DevicesFrameState extends State<DevicesFrame> {
       ],
     );
   }
+
+  /// Something waiting for an answer or going on right now, such as a call
+  /// ringing, takes the screen's one filled button from the device row.
+  bool _feedHoldsPrimary(BuildContext context, ShellScope scope) =>
+      ActivityFeed.gather(
+        context,
+        scope.features,
+        scope.featureContext,
+      ).primaryItem !=
+      null;
 
   /// The actions features marked for Home, in their order.
   List<FeatureAction> _actionsFor(

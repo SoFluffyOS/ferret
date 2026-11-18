@@ -19,11 +19,12 @@ class NeedsYouFrame extends StatelessWidget {
     return FeatureChangesListener(
       features: scope.features,
       builder: (context) {
-        final waiting = ActivityFeed.gather(
+        final feed = ActivityFeed.gather(
           context,
           scope.features,
           scope.featureContext,
-        ).needsYou;
+        );
+        final waiting = feed.needsYou;
         if (waiting.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -41,7 +42,12 @@ class NeedsYouFrame extends StatelessWidget {
                   crossAxisAlignment: .stretch,
                   children: [
                     for (final item in waiting)
-                      ActivityRow(key: ValueKey(item.id), item: item, now: now),
+                      ActivityRow(
+                        key: ValueKey(item.id),
+                        item: item,
+                        now: now,
+                        holdsPrimary: identical(item, feed.primaryItem),
+                      ),
                   ],
                 ),
               ),

@@ -8,9 +8,18 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// One line of Activity: what happened and with which device, when, a
 /// second line with the detail, and what to do about it.
 class ActivityRow extends StatelessWidget {
-  const ActivityRow({super.key, required this.item, required this.now});
+  const ActivityRow({
+    super.key,
+    required this.item,
+    required this.now,
+    this.holdsPrimary = true,
+  });
 
   final ActivityItem item;
+
+  /// Whether this line may draw its primary action filled. A screen has one
+  /// filled button, so every other line draws the same action outlined.
+  final bool holdsPrimary;
 
   /// The moment "2 min" is counted from.
   final DateTime now;
@@ -110,7 +119,7 @@ class ActivityRow extends StatelessWidget {
                       if (!actionsOwnLine)
                         for (final action in textActions) ...[
                           Spacing.h8,
-                          _TextAction(action: action),
+                          _TextAction(action: action, filled: holdsPrimary),
                         ],
                     ],
                   ),
@@ -123,7 +132,7 @@ class ActivityRow extends StatelessWidget {
                     crossAxisAlignment: .center,
                     children: [
                       for (final action in textActions)
-                        _TextAction(action: action),
+                        _TextAction(action: action, filled: holdsPrimary),
                     ],
                   ),
                 ],
@@ -175,16 +184,17 @@ class ActivityRow extends StatelessWidget {
 }
 
 class _TextAction extends StatelessWidget {
-  const _TextAction({required this.action});
+  const _TextAction({required this.action, required this.filled});
 
   final ActivityAction action;
+  final bool filled;
 
   @override
   Widget build(BuildContext context) {
     if (action.primary) {
       return RowActionButton(
         label: action.label,
-        isPrimary: true,
+        isPrimary: filled,
         onPressed: action.onPressed,
       );
     }

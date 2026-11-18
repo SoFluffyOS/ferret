@@ -48,6 +48,19 @@ class ActivityFeed {
 
   bool get isEmpty => pinned.isEmpty && recent.isEmpty;
 
+  /// The line that holds Home's one filled button: the first thing waiting
+  /// for an answer, or else the first thing going on right now, such as a
+  /// call ringing. Null leaves it to the first device's first action.
+  ActivityItem? get primaryItem {
+    for (final item in [...needsYou, ...pinned]) {
+      if (item.actions.any((action) => action.primary)) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
   static int _newestFirst(ActivityItem a, ActivityItem b) =>
       (b.at ?? _longAgo).compareTo(a.at ?? _longAgo);
 }
