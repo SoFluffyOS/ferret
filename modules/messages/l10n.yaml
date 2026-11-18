@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: messages_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: messages_localizations.dart
+output-class: MessagesLocalizations
+nullable-getter: false

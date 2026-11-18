@@ -7,22 +7,29 @@ environment:
 workspace:
   - apps/ferret
   - apps/ferret_cli
+  - modules/calls
   - modules/clipboard
   - modules/drop
+  - modules/find
   - modules/handoff
   - modules/media
+  - modules/messages
   - modules/notifications
   - modules/shell
   - packages/core
   - packages/engine
   - packages/feature_kit
+  - packages/ferret_calls
   - packages/ferret_clipboard
   - packages/ferret_drop
+  - packages/ferret_find
   - packages/ferret_handoff
   - packages/ferret_media
   - packages/ferret_menubar
+  - packages/ferret_messages
   - packages/ferret_notifications
   - packages/ferret_system
+  - packages/interop_localsend
   - packages/protocol
   - packages/transport
 

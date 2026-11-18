@@ -8,6 +8,12 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  find:
+    path: ../../modules/find
+  calls:
+    path: ../../modules/calls
+  messages:
+    path: ../../modules/messages
   media:
     path: ../../modules/media
   notifications:

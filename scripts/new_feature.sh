@@ -216,6 +216,7 @@ void main() {
 }
 DART
 
+(cd "$plugin" && fvm dart format "lib/ferret_$id.dart" >/dev/null)
 (cd "$module" && fvm flutter gen-l10n >/dev/null)
 (cd "$module" && fvm dart fix --apply --code=directives_ordering >/dev/null && fvm dart format lib test >/dev/null)
 
