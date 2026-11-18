@@ -70,6 +70,18 @@ enum MenubarIconState {
   paused,
 }
 
+/// What is dragged over one of the app's views.
+enum MenubarDragKind {
+  /// Files, from Finder or promised by an app such as Photos.
+  files,
+
+  /// Text, such as words selected on a web page.
+  text,
+
+  /// A web link, such as one dragged from a browser's address bar.
+  link,
+}
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode {
   /// Only while the desktop window is open.
@@ -166,9 +178,16 @@ abstract class MenubarFlutterApi {
   /// Files dropped on the menubar icon.
   void onFilesDropped(List<String> paths);
 
-  /// Files dragged into the view [viewId] (the popover's or the window's),
-  /// at [x], [y] in logical pixels from its top left.
-  void onDragEntered(int viewId, double x, double y, int fileCount);
+  /// Something of [kind] dragged into the view [viewId] (the popover's or
+  /// the window's), at [x], [y] in logical pixels from its top left.
+  /// [fileCount] is 1 for text and links.
+  void onDragEntered(
+    int viewId,
+    double x,
+    double y,
+    int fileCount,
+    MenubarDragKind kind,
+  );
 
   void onDragUpdated(int viewId, double x, double y);
 
@@ -177,6 +196,9 @@ abstract class MenubarFlutterApi {
 
   /// Files dropped on the view at [x], [y].
   void onDragPerformed(int viewId, List<String> paths, double x, double y);
+
+  /// Text, or a link when [isLink], dropped on the view at [x], [y].
+  void onTextDropped(int viewId, String text, bool isLink, double x, double y);
 
   /// The desktop window opened, drawing the Flutter view [viewId].
   void onWindowOpened(int viewId);

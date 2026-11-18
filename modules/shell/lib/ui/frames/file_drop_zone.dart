@@ -58,6 +58,7 @@ class _FileDropZoneState extends State<FileDropZone> {
           ),
       ],
       send: _dispatch,
+      sendText: _dispatchText,
       finder: RenderTreeDropTargetFinder(viewId: () => _viewId),
       onAllowedChanged: _onAllowedChanged,
       onFinished: () => unawaited(menubar?.closeIfOpenedByDrag()),
@@ -130,14 +131,24 @@ class _FileDropZoneState extends State<FileDropZone> {
     }
 
     switch (drag) {
-      case PopoverDragEntered(:final position, :final fileCount):
-        _viewModel.enter(position, fileCount: fileCount);
+      case PopoverDragEntered(:final position, :final fileCount, :final kind):
+        _viewModel.enter(
+          position,
+          fileCount: fileCount,
+          kind: switch (kind) {
+            .files => .files,
+            .text => .text,
+            .link => .link,
+          },
+        );
       case PopoverDragMoved(:final position):
         _viewModel.move(position);
       case PopoverDragExited():
         _viewModel.exit();
       case PopoverDragDropped(:final paths, :final position):
         unawaited(_viewModel.drop(paths, position));
+      case PopoverTextDropped(:final text, :final position, :final isLink):
+        unawaited(_viewModel.dropText(text, position, isLink: isLink));
     }
   }
 
@@ -175,6 +186,43 @@ class _FileDropZoneState extends State<FileDropZone> {
         paths,
         deviceId: deviceId,
       );
+      if (progress != null) {
+        return progress;
+      }
+    }
+
+    return null;
+  }
+
+  /// Text goes to the first feature that takes text (the clipboard), a
+  /// link to the first that takes links (Handoff).
+  Future<Stream<FilesSendProgress>?> _dispatchText(
+    String text,
+    String? deviceId, {
+    required bool isLink,
+  }) async {
+    if (!mounted) {
+      return null;
+    }
+
+    final scope = ShellScope.read(context);
+    final link = switch (isLink) {
+      true => Uri.tryParse(text.trim()),
+      false => null,
+    };
+    for (final feature in scope.features) {
+      final progress = switch (link) {
+        final link? => await feature.onLinkDropped(
+          scope.featureContext,
+          link,
+          deviceId: deviceId,
+        ),
+        null => await feature.onTextDropped(
+          scope.featureContext,
+          text,
+          deviceId: deviceId,
+        ),
+      };
       if (progress != null) {
         return progress;
       }

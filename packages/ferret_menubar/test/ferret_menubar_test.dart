@@ -97,7 +97,7 @@ void main() {
     final subscription = menubar.drags.listen(drags.add);
 
     menubar
-      ..onDragEntered(7, 10, 20, 3)
+      ..onDragEntered(7, 10, 20, 3, .files)
       ..onDragUpdated(7, 12, 24)
       ..onDragPerformed(7, ['/tmp/a.txt'], 12, 24)
       ..onDragExited(7);
@@ -127,6 +127,34 @@ void main() {
       ),
     );
     expect(drags.last, isA<PopoverDragExited>());
+    await subscription.cancel();
+  });
+
+  test('text and links dropped on a view arrive with their kind', () async {
+    final menubar = FerretMenubar();
+    final drags = <PopoverDrag>[];
+    final subscription = menubar.drags.listen(drags.add);
+
+    menubar
+      ..onDragEntered(7, 10, 20, 1, .link)
+      ..onTextDropped(7, 'https://example.com', true, 12, 24);
+    await pumpEventQueue();
+
+    expect(
+      drags.first,
+      isA<PopoverDragEntered>().having(
+        (drag) => drag.kind,
+        'kind',
+        MenubarDragKind.link,
+      ),
+    );
+    expect(
+      drags.last,
+      isA<PopoverTextDropped>()
+          .having((drag) => drag.text, 'text', 'https://example.com')
+          .having((drag) => drag.isLink, 'isLink', true)
+          .having((drag) => drag.position, 'position', const Offset(12, 24)),
+    );
     await subscription.cancel();
   });
 }

@@ -22,10 +22,11 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     var onMenuItemSelected: ((String) -> Void)?
     var onVisibilityChanged: ((Bool) -> Void)?
     var onFilesDropped: (([String]) -> Void)?
-    var onDragEntered: ((NSPoint, Int) -> Void)?
+    var onDragEntered: ((NSPoint, Int, MenubarDragKind) -> Void)?
     var onDragUpdated: ((NSPoint) -> Void)?
     var onDragExited: (() -> Void)?
     var onDragPerformed: (([String], NSPoint) -> Void)?
+    var onTextDropped: ((String, Bool, NSPoint) -> Void)?
 
     init(contentViewController: NSViewController, size: NSSize) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -187,9 +188,9 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         dragView.autoresizingMask = [.width, .height]
         view.addSubview(dragView)
 
-        dragView.onEntered = { [weak self] point, count in
+        dragView.onEntered = { [weak self] point, count, kind in
             self?.dragLeaveTimer?.invalidate()
-            self?.onDragEntered?(point, count)
+            self?.onDragEntered?(point, count, kind)
         }
         dragView.onUpdated = { [weak self] point in self?.onDragUpdated?(point) }
         dragView.onExited = { [weak self] in
@@ -197,6 +198,9 @@ final class MenubarController: NSObject, NSPopoverDelegate {
             self?.closeAfterDragLeft()
         }
         dragView.onPerformed = { [weak self] paths, point in self?.onDragPerformed?(paths, point) }
+        dragView.onTextPerformed = { [weak self] text, isLink, point in
+            self?.onTextDropped?(text, isLink, point)
+        }
     }
 
     private func closeAfterDragLeft() {

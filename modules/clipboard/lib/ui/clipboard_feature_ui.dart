@@ -182,6 +182,21 @@ class ClipboardFeatureUi extends FeatureUi {
     );
   }
 
+  /// Text dragged onto a device lands on its clipboard.
+  @override
+  Future<Stream<FilesSendProgress>?> onTextDropped(
+    FeatureContext feature,
+    String text, {
+    String? deviceId,
+  }) async {
+    final result = await this.feature.sendText(text, toDeviceId: deviceId);
+
+    return Stream.value(switch (result) {
+      .sent => const FilesSent(),
+      _ => FilesSendFailed(_localizations().resultOf(result)),
+    });
+  }
+
   ClipboardLocalizations _localizations() {
     final locale = WidgetsBinding.instance.platformDispatcher.locale;
     final supported = ClipboardLocalizations.supportedLocales.any(

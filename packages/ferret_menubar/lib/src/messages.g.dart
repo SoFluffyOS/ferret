@@ -136,6 +136,18 @@ enum MenubarIconState {
   paused,
 }
 
+/// What is dragged over one of the app's views.
+enum MenubarDragKind {
+  /// Files, from Finder or promised by an app such as Photos.
+  files,
+
+  /// Text, such as words selected on a web page.
+  text,
+
+  /// A web link, such as one dragged from a browser's address bar.
+  link,
+}
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode {
   /// Only while the desktop window is open.
@@ -304,14 +316,17 @@ class _PigeonCodec extends StandardMessageCodec {
     } else if (value is MenubarIconState) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is MenubarDockMode) {
+    } else if (value is MenubarDragKind) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    } else if (value is MenubarMenuItem) {
+    } else if (value is MenubarDockMode) {
       buffer.putUint8(131);
+      writeValue(buffer, value.index);
+    } else if (value is MenubarMenuItem) {
+      buffer.putUint8(132);
       writeValue(buffer, value.encode());
     } else if (value is MenubarShortcut) {
-      buffer.putUint8(132);
+      buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -326,10 +341,13 @@ class _PigeonCodec extends StandardMessageCodec {
         return value == null ? null : MenubarIconState.values[value];
       case 130:
         final value = readValue(buffer) as int?;
-        return value == null ? null : MenubarDockMode.values[value];
+        return value == null ? null : MenubarDragKind.values[value];
       case 131:
-        return MenubarMenuItem.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : MenubarDockMode.values[value];
       case 132:
+        return MenubarMenuItem.decode(readValue(buffer)!);
+      case 133:
         return MenubarShortcut.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -805,9 +823,16 @@ abstract class MenubarFlutterApi {
   /// Files dropped on the menubar icon.
   void onFilesDropped(List<String> paths);
 
-  /// Files dragged into the view [viewId] (the popover's or the window's),
-  /// at [x], [y] in logical pixels from its top left.
-  void onDragEntered(int viewId, double x, double y, int fileCount);
+  /// Something of [kind] dragged into the view [viewId] (the popover's or
+  /// the window's), at [x], [y] in logical pixels from its top left.
+  /// [fileCount] is 1 for text and links.
+  void onDragEntered(
+    int viewId,
+    double x,
+    double y,
+    int fileCount,
+    MenubarDragKind kind,
+  );
 
   void onDragUpdated(int viewId, double x, double y);
 
@@ -816,6 +841,9 @@ abstract class MenubarFlutterApi {
 
   /// Files dropped on the view at [x], [y].
   void onDragPerformed(int viewId, List<String> paths, double x, double y);
+
+  /// Text, or a link when [isLink], dropped on the view at [x], [y].
+  void onTextDropped(int viewId, String text, bool isLink, double x, double y);
 
   /// The desktop window opened, drawing the Flutter view [viewId].
   void onWindowOpened(int viewId);
@@ -929,8 +957,15 @@ abstract class MenubarFlutterApi {
           final double arg_x = args[1]! as double;
           final double arg_y = args[2]! as double;
           final int arg_fileCount = args[3]! as int;
+          final MenubarDragKind arg_kind = args[4]! as MenubarDragKind;
           try {
-            api.onDragEntered(arg_viewId, arg_x, arg_y, arg_fileCount);
+            api.onDragEntered(
+              arg_viewId,
+              arg_x,
+              arg_y,
+              arg_fileCount,
+              arg_kind,
+            );
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -1012,6 +1047,35 @@ abstract class MenubarFlutterApi {
           final double arg_y = args[3]! as double;
           try {
             api.onDragPerformed(arg_viewId, arg_paths, arg_x, arg_y);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onTextDropped$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_viewId = args[0]! as int;
+          final String arg_text = args[1]! as String;
+          final bool arg_isLink = args[2]! as bool;
+          final double arg_x = args[3]! as double;
+          final double arg_y = args[4]! as double;
+          try {
+            api.onTextDropped(arg_viewId, arg_text, arg_isLink, arg_x, arg_y);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

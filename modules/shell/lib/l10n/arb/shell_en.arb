@@ -441,6 +441,10 @@
       }
     }
   },
+  "dropTitleText": "Send text to…",
+  "dropTitleLink": "Open link on…",
+  "dropKindText": "Text, to its clipboard",
+  "dropKindLink": "Link, opens there",
   "dropTryAgain": "Try again",
   "dropClose": "Close",
   "dropCancel": "Cancel",

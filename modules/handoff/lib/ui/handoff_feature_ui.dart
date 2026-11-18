@@ -121,6 +121,48 @@ class HandoffFeatureUi extends FeatureUi {
         child: const HandoffHomeFrame(),
       );
 
+  /// A link dragged onto a device opens there, as if it was sent with
+  /// Send a link; dropped on All my devices, it goes to each.
+  @override
+  Future<Stream<FilesSendProgress>?> onLinkDropped(
+    FeatureContext context,
+    Uri link, {
+    String? deviceId,
+  }) async {
+    final activity = ActivityFactory.fromText(link.toString());
+    final sessions = [
+      for (final session in feature.host.sessions)
+        if (session.supports(featureId) &&
+            (deviceId == null || session.remoteDeviceId == deviceId))
+          session,
+    ];
+    if (activity == null || sessions.isEmpty) {
+      return null;
+    }
+
+    final l10n = handoffL10nForSystem();
+    final failures = <String>[];
+    for (final session in sessions) {
+      final outcome = await feature.sendTo(session.remoteDeviceId, activity);
+      final name = session.remoteDevice?.name ?? '';
+      switch (outcome) {
+        case .opened || .suggested:
+          break;
+        case .failed:
+          failures.add(l10n.sendFailed(name));
+        case .unreachable:
+          failures.add(l10n.sendUnreachable(name));
+      }
+    }
+
+    if (failures case [final first, ...]
+        when failures.length == sessions.length) {
+      return Stream.value(FilesSendFailed(first));
+    }
+
+    return Stream.value(const FilesSent());
+  }
+
   @override
   List<FeatureAction> deviceActions(
     BuildContext context,

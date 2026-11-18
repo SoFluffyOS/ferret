@@ -12,14 +12,25 @@ typedef SendDroppedFiles = Future<Stream<FilesSendProgress>?> Function(
   String? deviceId,
 );
 
-/// Files dragged from the system (Finder, Explorer, a file manager) over
-/// the app's window or the macOS popover: which device is under the
-/// pointer, then how sending to it goes. Fed by whichever drag source the
-/// platform has.
+/// Sends [text] to [deviceId], or to every connected device when it is
+/// null: to its clipboard, or opened there when [isLink]. Null back means
+/// nobody took it.
+typedef SendDroppedText = Future<Stream<FilesSendProgress>?> Function(
+  String text,
+  String? deviceId, {
+  required bool isLink,
+});
+
+/// Files, text or a link dragged from the system (Finder, a browser,
+/// Explorer, a file manager) over the app's window or the macOS popover:
+/// which device is under the pointer, then how sending to it goes. Files go
+/// with Files, text to the device's clipboard, a link opens there. Fed by
+/// whichever drag source the platform has.
 class OsDropViewModel extends ChangeNotifier {
   OsDropViewModel({
     required List<DeviceDropTarget> Function() devices,
     required SendDroppedFiles send,
+    SendDroppedText? sendText,
     DropTargetFinder finder = const RenderTreeDropTargetFinder(),
     void Function(bool allowed)? onAllowedChanged,
     VoidCallback? onFinished,
@@ -28,6 +39,7 @@ class OsDropViewModel extends ChangeNotifier {
     this.sentHold = const Duration(milliseconds: 1500),
   }) : _devices = devices,
        _send = send,
+       _sendText = sendText,
        _finder = finder,
        _onAllowedChanged = onAllowedChanged,
        _onFinished = onFinished,
@@ -35,6 +47,7 @@ class OsDropViewModel extends ChangeNotifier {
 
   final List<DeviceDropTarget> Function() _devices;
   final SendDroppedFiles _send;
+  final SendDroppedText? _sendText;
   final DropTargetFinder _finder;
   final void Function(bool allowed)? _onAllowedChanged;
   final VoidCallback? _onFinished;
@@ -51,6 +64,8 @@ class OsDropViewModel extends ChangeNotifier {
   FilesDropTarget? _hovered;
   FilesDropTarget? _sendTarget;
   List<String> _paths = const [];
+  DropKind _kind = .files;
+  String _text = '';
   Timer? _timer;
   StreamSubscription<FilesSendProgress>? _progress;
   int _sendRun = 0;
@@ -59,6 +74,9 @@ class OsDropViewModel extends ChangeNotifier {
 
   /// How many files are dragged, or 0 when the platform doesn't say.
   int get fileCount => _fileCount;
+
+  /// What is dragged, or was dropped.
+  DropKind get kind => _kind;
 
   /// The target under the pointer, highlighted while dragging.
   FilesDropTarget? get hovered => _hovered;
@@ -76,11 +94,12 @@ class OsDropViewModel extends ChangeNotifier {
     _ => false,
   };
 
-  void enter(Offset position, {int fileCount = 0}) {
+  void enter(Offset position, {int fileCount = 0, DropKind kind = .files}) {
     _timer?.cancel();
     if (!_isDragging) {
       _stopSending();
       _fileCount = fileCount;
+      _kind = kind;
     }
 
     _phase = const DropChoosing();
@@ -127,7 +146,32 @@ class OsDropViewModel extends ChangeNotifier {
       return;
     }
 
-    await _sendTo(paths, target);
+    _kind = .files;
+    _paths = paths;
+    await _sendTo(target);
+  }
+
+  /// Text, or a link when [isLink], dropped at [position]: sent to the
+  /// target there. A lone web address dropped as text counts as a link.
+  Future<void> dropText(
+    String text,
+    Offset position, {
+    required bool isLink,
+  }) async {
+    _locate(position);
+    final target = _hovered;
+    if (text.trim().isEmpty ||
+        _sendText == null ||
+        target == null ||
+        !target.acceptsDrop) {
+      cancel();
+      return;
+    }
+
+    _kind = DropKind.ofText(text, isLink: isLink);
+    _text = text;
+    _fileCount = 1;
+    await _sendTo(target);
   }
 
   /// Files dropped on the menubar icon without waiting for the popover:
@@ -143,7 +187,9 @@ class OsDropViewModel extends ChangeNotifier {
         if (device.isConnected) device,
     ];
     if (connected case [final only]) {
-      await _sendTo(paths, only);
+      _kind = .files;
+      _paths = paths;
+      await _sendTo(only);
       return;
     }
 
@@ -155,6 +201,7 @@ class OsDropViewModel extends ChangeNotifier {
     _timer?.cancel();
     _stopSending();
     _paths = paths;
+    _kind = .files;
     _fileCount = paths.length;
     _hovered = null;
     _phase = const DropChoosing(held: true);
@@ -167,16 +214,20 @@ class OsDropViewModel extends ChangeNotifier {
       return;
     }
 
-    await _sendTo(_paths, target);
+    await _sendTo(target);
   }
 
   Future<void> retry() async {
     final target = _sendTarget;
-    if (target == null || _paths.isEmpty) {
+    final hasSomething = switch (_kind) {
+      .files => _paths.isNotEmpty,
+      .text || .link => _text.isNotEmpty,
+    };
+    if (target == null || !hasSomething) {
       return;
     }
 
-    await _sendTo(_paths, target);
+    await _sendTo(target);
   }
 
   /// Back to rest. A transfer already going keeps going.
@@ -192,11 +243,14 @@ class OsDropViewModel extends ChangeNotifier {
     _hovered = null;
     _sendTarget = null;
     _paths = const [];
+    _text = '';
+    _kind = .files;
     _onAllowedChanged?.call(true);
     notifyListeners();
   }
 
-  Future<void> _sendTo(List<String> paths, FilesDropTarget dropped) async {
+  /// Sends what was dropped, [_paths] or [_text] by [_kind], to [dropped].
+  Future<void> _sendTo(FilesDropTarget dropped) async {
     _timer?.cancel();
     _stopSending();
     final run = _sendRun;
@@ -204,8 +258,10 @@ class OsDropViewModel extends ChangeNotifier {
       PaneDropTarget(:final target) => target,
       _ => dropped,
     };
-    _paths = paths;
-    _fileCount = paths.length;
+    _fileCount = switch (_kind) {
+      .files => _paths.length,
+      .text || .link => 1,
+    };
     _hovered = null;
     _sendTarget = target;
     _phase = const DropSending(0);
@@ -215,7 +271,7 @@ class OsDropViewModel extends ChangeNotifier {
       DeviceDropTarget(:final deviceId) => deviceId,
       AllDevicesDropTarget() || PaneDropTarget() => null,
     };
-    final progress = await _send(paths, deviceId);
+    final progress = await _dispatch(deviceId);
     if (run != _sendRun) {
       return;
     }
@@ -226,6 +282,20 @@ class OsDropViewModel extends ChangeNotifier {
     }
 
     _progress = progress.listen(_onProgress);
+  }
+
+  Future<Stream<FilesSendProgress>?> _dispatch(String? deviceId) async {
+    final sendText = _sendText;
+
+    return switch ((_kind, sendText)) {
+      (.files, _) => _send(_paths, deviceId),
+      (.text || .link, final sendText?) => sendText(
+        _text,
+        deviceId,
+        isLink: _kind == .link,
+      ),
+      (.text || .link, null) => null,
+    };
   }
 
   void _onProgress(FilesSendProgress progress) {

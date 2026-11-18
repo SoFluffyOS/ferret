@@ -41,6 +41,7 @@ Future<void> _wait(int milliseconds) =>
 void main() {
   late List<DeviceDropTarget> devices;
   late List<(List<String>, String?)> sent;
+  late List<(String, String?, bool)> sentText;
   late StreamController<FilesSendProgress> progress;
   late List<bool> allowed;
   late int finished;
@@ -51,6 +52,7 @@ void main() {
   setUp(() {
     devices = [_pixel, _tablet];
     sent = [];
+    sentText = [];
     progress = StreamController<FilesSendProgress>();
     allowed = [];
     finished = 0;
@@ -60,6 +62,10 @@ void main() {
       devices: () => devices,
       send: (paths, deviceId) async {
         sent.add((paths, deviceId));
+        return progress.stream;
+      },
+      sendText: (text, deviceId, {required isLink}) async {
+        sentText.add((text, deviceId, isLink));
         return progress.stream;
       },
       finder: _FakeFinder(),
@@ -203,5 +209,65 @@ void main() {
     await viewModel.pick(const AllDevicesDropTarget());
     expect(sent.single.$1, ['/a.jpg', '/b.jpg']);
     expect(sent.single.$2, isNull);
+  });
+
+  group('text and links', () {
+    test('text dropped on a device goes to its clipboard', () async {
+      viewModel.enter(_overPixel, fileCount: 1, kind: .text);
+      expect(viewModel.kind, DropKind.text);
+
+      await viewModel.dropText('Meet at 6', _overPixel, isLink: false);
+
+      expect(sentText.single, ('Meet at 6', 'pixel-id', false));
+      expect(sent, isEmpty);
+      expect(viewModel.phase, isA<DropSending>());
+    });
+
+    test('a link, or a lone web address, opens on the device', () async {
+      await viewModel.dropText(
+        'https://example.com/a',
+        _overAll,
+        isLink: true,
+      );
+      progress = StreamController<FilesSendProgress>();
+      await viewModel.dropText(
+        ' https://ferret.example/page ',
+        _overPixel,
+        isLink: false,
+      );
+
+      expect(sentText, [
+        ('https://example.com/a', null, true),
+        (' https://ferret.example/page ', 'pixel-id', true),
+      ]);
+      expect(viewModel.kind, DropKind.link);
+    });
+
+    test('words around a link stay text', () {
+      expect(
+        DropKind.ofText('see https://example.com', isLink: false),
+        DropKind.text,
+      );
+      expect(DropKind.ofText('example.com', isLink: false), DropKind.text);
+    });
+
+    test('text on an offline device or a gap is refused', () async {
+      await viewModel.dropText('hi', _overTablet, isLink: false);
+      await viewModel.dropText('hi', _overNothing, isLink: false);
+
+      expect(sentText, isEmpty);
+      expect(viewModel.phase, isA<DropIdle>());
+    });
+
+    test('trying again sends the same text again', () async {
+      await viewModel.dropText('hi', _overPixel, isLink: false);
+      progress.add(const FilesSendFailed('offline'));
+      await _wait(0);
+      progress = StreamController<FilesSendProgress>();
+
+      await viewModel.retry();
+
+      expect(sentText, [('hi', 'pixel-id', false), ('hi', 'pixel-id', false)]);
+    });
   });
 }

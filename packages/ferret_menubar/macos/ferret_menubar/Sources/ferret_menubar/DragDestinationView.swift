@@ -1,14 +1,17 @@
 import Cocoa
 
-/// Lies over the Flutter view and takes file drags for it. Flutter's own
+/// Lies over the Flutter view and takes drags of files, text and links for
+/// it. Flutter's own
 /// drop plugins look for the view's window when they register, which the
 /// popover doesn't have yet, so drags are caught here and handed to Dart.
 /// It never takes clicks: `hitTest` returns nil.
 final class DragDestinationView: NSView {
-    var onEntered: ((NSPoint, Int) -> Void)?
+    var onEntered: ((NSPoint, Int, MenubarDragKind) -> Void)?
     var onUpdated: ((NSPoint) -> Void)?
     var onExited: (() -> Void)?
     var onPerformed: (([String], NSPoint) -> Void)?
+    /// Text, or a link when the flag is set, dropped at the point.
+    var onTextPerformed: ((String, Bool, NSPoint) -> Void)?
 
     private var accepting = false
 
@@ -38,11 +41,12 @@ final class DragDestinationView: NSView {
 
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         let count = itemCount(in: sender)
-        accepting = count > 0
-        guard accepting else { return [] }
+        let kind = kindOf(sender, fileCount: count)
+        accepting = kind != nil
+        guard let kind else { return [] }
 
         dropAllowed = true
-        onEntered?(flutterPoint(sender), count)
+        onEntered?(flutterPoint(sender), max(count, 1), kind)
         return .copy
     }
 
@@ -77,8 +81,7 @@ final class DragDestinationView: NSView {
         let paths = fileURLs(from: sender).map(\.path)
         let promises = filePromises(from: sender)
         guard !paths.isEmpty || !promises.isEmpty else {
-            onExited?()
-            return false
+            return performText(sender, at: point)
         }
 
         guard !promises.isEmpty else {
@@ -93,7 +96,59 @@ final class DragDestinationView: NSView {
     }
 
     private func registerTypes() {
-        registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+        registerForDraggedTypes(
+            [.fileURL, .URL, .string]
+                + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+    }
+
+    /// Files win, since a file drag also carries its name as text; then a
+    /// web link, then plain text.
+    private func kindOf(_ info: NSDraggingInfo, fileCount: Int) -> MenubarDragKind? {
+        if fileCount > 0 {
+            return .files
+        }
+
+        if webLink(from: info) != nil {
+            return .link
+        }
+
+        if text(from: info) != nil {
+            return .text
+        }
+
+        return nil
+    }
+
+    private func performText(_ info: NSDraggingInfo, at point: NSPoint) -> Bool {
+        if let link = webLink(from: info) {
+            onTextPerformed?(link.absoluteString, true, point)
+            return true
+        }
+
+        if let text = text(from: info) {
+            onTextPerformed?(text, false, point)
+            return true
+        }
+
+        onExited?()
+        return false
+    }
+
+    private func webLink(from info: NSDraggingInfo) -> URL? {
+        let urls = info.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil)
+        let link = (urls as? [URL])?.first { !$0.isFileURL }
+        guard let link, let scheme = link.scheme?.lowercased(), ["http", "https"].contains(scheme)
+        else { return nil }
+
+        return link
+    }
+
+    private func text(from info: NSDraggingInfo) -> String? {
+        guard let text = info.draggingPasteboard.string(forType: .string),
+              !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        else { return nil }
+
+        return text
     }
 
     /// Flutter's logical pixels are points with the origin at the top left.

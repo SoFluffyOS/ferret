@@ -145,7 +145,7 @@ void main() {
     await pumpZone(tester, devices: [pixel, ipad, tablet]);
     expect(find.byType(DropTargetTile), findsNothing);
 
-    menubar.onDragEntered(_viewId, 10, 10, 3);
+    menubar.onDragEntered(_viewId, 10, 10, 3, .files);
     await settle(tester);
 
     expect(find.text('Send 3 files to…'), findsOneWidget);
@@ -159,7 +159,7 @@ void main() {
     tester,
   ) async {
     await pumpZone(tester, devices: [pixel, ipad]);
-    menubar.onDragEntered(_viewId, 10, 10, 1);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
     await settle(tester);
 
     final overIpad = tester.getCenter(find.text('iPad'));
@@ -186,7 +186,7 @@ void main() {
 
   testWidgets('an offline tile refuses the drop', (tester) async {
     await pumpZone(tester, devices: [pixel, tablet]);
-    menubar.onDragEntered(_viewId, 10, 10, 1);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
     await settle(tester);
 
     final overTablet = tester.getCenter(find.text('Old tablet'));
@@ -202,7 +202,7 @@ void main() {
 
   testWidgets('a failure says why and can be tried again', (tester) async {
     await pumpZone(tester, devices: [pixel]);
-    menubar.onDragEntered(_viewId, 10, 10, 1);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
     await settle(tester);
     final overPixel = tester.getCenter(find.text('Pixel 7'));
     menubar.onDragPerformed(_viewId, ['/a.jpg'], overPixel.dx, overPixel.dy);
@@ -240,7 +240,7 @@ void main() {
     tester,
   ) async {
     await pumpZone(tester, devices: [tablet]);
-    menubar.onDragEntered(_viewId, 10, 10, 1);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
     await settle(tester);
 
     expect(find.text('No device to send to'), findsOneWidget);
@@ -288,7 +288,7 @@ void main() {
         size: windowSize,
         child: page,
       );
-      menubar.onDragEntered(_viewId, 600, 300, 1);
+      menubar.onDragEntered(_viewId, 600, 300, 1, .files);
       await settle(tester);
 
       expect(find.byType(DropTargetTile), findsNothing);
@@ -319,7 +319,7 @@ void main() {
         child: page,
       );
       final overPage = tester.getCenter(find.text('Page'));
-      menubar.onDragEntered(_viewId, overPage.dx, overPage.dy, 1);
+      menubar.onDragEntered(_viewId, overPage.dx, overPage.dy, 1, .files);
       await settle(tester);
       expect(api.allowed.last, isTrue);
 

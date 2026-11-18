@@ -14,11 +14,15 @@ class DropProgressCard extends StatelessWidget {
     required this.name,
     required this.fileCount,
     required this.phase,
+    this.kind = .files,
   });
 
   final IconData icon;
   final String name;
   final int fileCount;
+
+  /// What was dropped: files, text or a link.
+  final DropKind kind;
   final DropPhase phase;
 
   @override
@@ -27,7 +31,11 @@ class DropProgressCard extends StatelessWidget {
     final detail = switch (phase) {
       DropFailed(:final reason) when reason.isNotEmpty => reason,
       DropFailed() => l10n.dropFailedDetail,
-      _ => l10n.dropFileCount(fileCount),
+      _ => switch (kind) {
+        .files => l10n.dropFileCount(fileCount),
+        .text => l10n.dropKindText,
+        .link => l10n.dropKindLink,
+      },
     };
 
     return Semantics(

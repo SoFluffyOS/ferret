@@ -34,8 +34,8 @@ class FerretMenubar implements MenubarFlutterApi {
   /// Paths of files dropped on the menubar icon.
   Stream<List<String>> get drops => _drops.stream;
 
-  /// Files dragged over and dropped on the popover (docked or detached) or
-  /// the desktop window; each event names its view.
+  /// Files, text and links dragged over and dropped on the popover (docked
+  /// or detached) or the desktop window; each event names its view.
   Stream<PopoverDrag> get drags => _drags.stream;
 
   /// The desktop window opening, taking or losing the keyboard, and closing.
@@ -191,8 +191,15 @@ class FerretMenubar implements MenubarFlutterApi {
   void onFilesDropped(List<String> paths) => _drops.add(paths);
 
   @override
-  void onDragEntered(int viewId, double x, double y, int fileCount) =>
-      _drags.add(PopoverDragEntered(viewId, Offset(x, y), fileCount));
+  void onDragEntered(
+    int viewId,
+    double x,
+    double y,
+    int fileCount,
+    MenubarDragKind kind,
+  ) => _drags.add(
+    PopoverDragEntered(viewId, Offset(x, y), fileCount, kind: kind),
+  );
 
   @override
   void onDragUpdated(int viewId, double x, double y) =>
@@ -204,6 +211,17 @@ class FerretMenubar implements MenubarFlutterApi {
   @override
   void onDragPerformed(int viewId, List<String> paths, double x, double y) =>
       _drags.add(PopoverDragDropped(viewId, paths, Offset(x, y)));
+
+  @override
+  void onTextDropped(
+    int viewId,
+    String text,
+    bool isLink,
+    double x,
+    double y,
+  ) => _drags.add(
+    PopoverTextDropped(viewId, text, Offset(x, y), isLink: isLink),
+  );
 
   @override
   void onWindowOpened(int viewId) =>

@@ -589,6 +589,18 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String get dropTitleText => 'Send text to…';
+
+  @override
+  String get dropTitleLink => 'Open link on…';
+
+  @override
+  String get dropKindText => 'Text, to its clipboard';
+
+  @override
+  String get dropKindLink => 'Link, opens there';
+
+  @override
   String get dropTryAgain => 'Try again';
 
   @override

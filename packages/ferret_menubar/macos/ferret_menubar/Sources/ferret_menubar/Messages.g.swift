@@ -207,6 +207,16 @@ enum MenubarIconState: Int, CaseIterable {
   case paused = 6
 }
 
+/// What is dragged over one of the app's views.
+enum MenubarDragKind: Int, CaseIterable {
+  /// Files, from Finder or promised by an app such as Photos.
+  case files = 0
+  /// Text, such as words selected on a web page.
+  case text = 1
+  /// A web link, such as one dragged from a browser's address bar.
+  case link = 2
+}
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode: Int, CaseIterable {
   /// Only while the desktop window is open.
@@ -346,12 +356,18 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 130:
       let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
       if let enumResultAsInt = enumResultAsInt {
-        return MenubarDockMode(rawValue: enumResultAsInt)
+        return MenubarDragKind(rawValue: enumResultAsInt)
       }
       return nil
     case 131:
-      return MenubarMenuItem.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return MenubarDockMode(rawValue: enumResultAsInt)
+      }
+      return nil
     case 132:
+      return MenubarMenuItem.fromList(self.readValue() as! [Any?])
+    case 133:
       return MenubarShortcut.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -364,14 +380,17 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     if let value = value as? MenubarIconState {
       super.writeByte(129)
       super.writeValue(value.rawValue)
-    } else if let value = value as? MenubarDockMode {
+    } else if let value = value as? MenubarDragKind {
       super.writeByte(130)
       super.writeValue(value.rawValue)
-    } else if let value = value as? MenubarMenuItem {
+    } else if let value = value as? MenubarDockMode {
       super.writeByte(131)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? MenubarMenuItem {
+      super.writeByte(132)
       super.writeValue(value.toList())
     } else if let value = value as? MenubarShortcut {
-      super.writeByte(132)
+      super.writeByte(133)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -811,14 +830,17 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onPopoverVisibilityChanged(shown shownArg: Bool) async throws
   /// Files dropped on the menubar icon.
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws
-  /// Files dragged into the view [viewId] (the popover's or the window's),
-  /// at [x], [y] in logical pixels from its top left.
-  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws
+  /// Something of [kind] dragged into the view [viewId] (the popover's or
+  /// the window's), at [x], [y] in logical pixels from its top left.
+  /// [fileCount] is 1 for text and links.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind) async throws
   @MainActor func onDragUpdated(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double) async throws
   /// The drag left the view or was cancelled.
   @MainActor func onDragExited(viewId viewIdArg: Int64) async throws
   /// Files dropped on the view at [x], [y].
   @MainActor func onDragPerformed(viewId viewIdArg: Int64, paths pathsArg: [String], x xArg: Double, y yArg: Double) async throws
+  /// Text, or a link when [isLink], dropped on the view at [x], [y].
+  @MainActor func onTextDropped(viewId viewIdArg: Int64, text textArg: String, isLink isLinkArg: Bool, x xArg: Double, y yArg: Double) async throws
   /// The desktop window opened, drawing the Flutter view [viewId].
   @MainActor func onWindowOpened(viewId viewIdArg: Int64) async throws
   /// The desktop window became the one that takes the keyboard, or stopped
@@ -900,13 +922,14 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       }
     }
   }
-  /// Files dragged into the view [viewId] (the popover's or the window's),
-  /// at [x], [y] in logical pixels from its top left.
-  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64) async throws {
+  /// Something of [kind] dragged into the view [viewId] (the popover's or
+  /// the window's), at [x], [y] in logical pixels from its top left.
+  /// [fileCount] is 1 for text and links.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage([viewIdArg, xArg, yArg, fileCountArg] as [Any?]) { response in
+      channel.sendMessage([viewIdArg, xArg, yArg, fileCountArg, kindArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return
@@ -969,6 +992,27 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragPerformed\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([viewIdArg, pathsArg, xArg, yArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Text, or a link when [isLink], dropped on the view at [x], [y].
+  @MainActor func onTextDropped(viewId viewIdArg: Int64, text textArg: String, isLink isLinkArg: Bool, x xArg: Double, y yArg: Double) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onTextDropped\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([viewIdArg, textArg, isLinkArg, xArg, yArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

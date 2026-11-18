@@ -1,6 +1,8 @@
 import Cocoa
 
 /// Sits over the status bar button: takes clicks and accepts dropped files.
+/// A drag of text or a link springs the popover open too, to be dropped on
+/// a device there; dropped on the icon itself, it is refused.
 final class StatusItemView: NSView {
     var onClick: (() -> Void)?
     var onSecondaryClick: (() -> Void)?
@@ -16,12 +18,12 @@ final class StatusItemView: NSView {
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        registerForDraggedTypes([.fileURL])
+        registerForDraggedTypes([.fileURL, .URL, .string])
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        registerForDraggedTypes([.fileURL])
+        registerForDraggedTypes([.fileURL, .URL, .string])
     }
 
     override func mouseUp(with event: NSEvent) {
@@ -38,7 +40,10 @@ final class StatusItemView: NSView {
     }
 
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        guard fileURLs(from: sender).isEmpty == false else { return [] }
+        let pasteboard = sender.draggingPasteboard
+        let carriesSomething = !fileURLs(from: sender).isEmpty
+            || pasteboard.availableType(from: [.URL, .string]) != nil
+        guard carriesSomething else { return [] }
 
         springTimer?.invalidate()
         springTimer = Timer.scheduledTimer(withTimeInterval: springDelay, repeats: false) { [weak self] _ in

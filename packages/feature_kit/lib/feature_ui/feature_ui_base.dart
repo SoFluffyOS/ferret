@@ -148,6 +148,25 @@ abstract class FeatureUi {
     List<String> paths, {
     String? deviceId,
   }) async => null;
+
+  /// Text dragged onto the app, such as words selected on a web page. Like
+  /// [onFilesDropped]: [deviceId] names the device it was dropped on, or
+  /// null for every connected device; return null to leave it to another
+  /// feature, or how sending it goes.
+  Future<Stream<FilesSendProgress>?> onTextDropped(
+    FeatureContext feature,
+    String text, {
+    String? deviceId,
+  }) async => null;
+
+  /// A web link dragged onto the app, such as from a browser's address
+  /// bar, to open on [deviceId] (or every connected device when null).
+  /// Return null to leave it to another feature.
+  Future<Stream<FilesSendProgress>?> onLinkDropped(
+    FeatureContext feature,
+    Uri link, {
+    String? deviceId,
+  }) async => null;
 }
 
 /// Something a person can do with a feature, shown as a button.

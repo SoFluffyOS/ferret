@@ -46,10 +46,15 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
             Task { @MainActor in try? await flutterApi?.onFilesDropped(paths: paths) }
         }
         let popoverViewId = flutterViewController.viewIdentifier
-        controller.onDragEntered = { point, count in dragEntered(popoverViewId, point, count) }
+        controller.onDragEntered = { point, count, kind in
+            dragEntered(popoverViewId, point, count, kind)
+        }
         controller.onDragUpdated = { point in dragUpdated(popoverViewId, point) }
         controller.onDragExited = { dragExited(popoverViewId) }
         controller.onDragPerformed = { paths, point in dragPerformed(popoverViewId, paths, point) }
+        controller.onTextDropped = { text, isLink, point in
+            textDropped(popoverViewId, text, isLink, point)
+        }
         self.popoverViewId = popoverViewId
         self.controller = controller
 
@@ -68,6 +73,7 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         windowController.onDragUpdated = dragUpdated
         windowController.onDragExited = dragExited
         windowController.onDragPerformed = dragPerformed
+        windowController.onTextDropped = textDropped
         self.windowController = windowController
 
         let pictureController = PictureWindowController(
@@ -87,10 +93,21 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         windowController?.open() != nil
     }
 
-    private static func dragEntered(_ viewId: Int64, _ point: NSPoint, _ count: Int) {
+    private static func dragEntered(
+        _ viewId: Int64, _ point: NSPoint, _ count: Int, _ kind: MenubarDragKind
+    ) {
         Task { @MainActor in
             try? await flutterApi?.onDragEntered(
-                viewId: viewId, x: point.x, y: point.y, fileCount: Int64(count))
+                viewId: viewId, x: point.x, y: point.y, fileCount: Int64(count), kind: kind)
+        }
+    }
+
+    private static func textDropped(
+        _ viewId: Int64, _ text: String, _ isLink: Bool, _ point: NSPoint
+    ) {
+        Task { @MainActor in
+            try? await flutterApi?.onTextDropped(
+                viewId: viewId, text: text, isLink: isLink, x: point.x, y: point.y)
         }
     }
 

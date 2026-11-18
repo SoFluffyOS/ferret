@@ -184,13 +184,14 @@ class ClipboardFeature extends Feature {
     return _share(content, userAsked: true, toDeviceId: toDeviceId);
   }
 
-  /// Sends [text], such as what the Android tile read from the clipboard.
-  Future<ClipSendResult> sendText(String text) async {
+  /// Sends [text], such as what the Android tile read from the clipboard
+  /// or words dragged onto a device, to [toDeviceId] or every device.
+  Future<ClipSendResult> sendText(String text, {String? toDeviceId}) async {
     if (text.isEmpty) {
       return .nothingToSend;
     }
 
-    return _share(.text(text), userAsked: true);
+    return _share(.text(text), userAsked: true, toDeviceId: toDeviceId);
   }
 
   /// Puts [entry] back on this device's clipboard. False when its content is

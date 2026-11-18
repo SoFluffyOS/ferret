@@ -1006,6 +1006,30 @@ abstract class ShellLocalizations {
   /// **'{count, plural, =1{1 file} other{{count} files}}'**
   String dropFileCount(int count);
 
+  /// No description provided for @dropTitleText.
+  ///
+  /// In en, this message translates to:
+  /// **'Send text to…'**
+  String get dropTitleText;
+
+  /// No description provided for @dropTitleLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Open link on…'**
+  String get dropTitleLink;
+
+  /// No description provided for @dropKindText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text, to its clipboard'**
+  String get dropKindText;
+
+  /// No description provided for @dropKindLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link, opens there'**
+  String get dropKindLink;
+
   /// No description provided for @dropTryAgain.
   ///
   /// In en, this message translates to:

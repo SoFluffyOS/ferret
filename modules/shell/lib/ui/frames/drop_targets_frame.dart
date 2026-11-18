@@ -106,6 +106,9 @@ class _Choosing extends StatelessWidget {
     final fileCount = context.select<OsDropViewModel, int>(
       (drop) => drop.fileCount,
     );
+    final kind = context.select<OsDropViewModel, DropKind>(
+      (drop) => drop.kind,
+    );
     final hovered = context.select<OsDropViewModel, FilesDropTarget?>(
       (drop) => drop.hovered,
     );
@@ -123,7 +126,11 @@ class _Choosing extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                l10n.dropTitle(fileCount),
+                switch (kind) {
+                  .files => l10n.dropTitle(fileCount),
+                  .text => l10n.dropTitleText,
+                  .link => l10n.dropTitleLink,
+                },
                 style: typography.title3.copyWith(color: palette.text),
               ),
             ),
@@ -302,6 +309,9 @@ class _Sending extends StatelessWidget {
     final fileCount = context.select<OsDropViewModel, int>(
       (drop) => drop.fileCount,
     );
+    final kind = context.select<OsDropViewModel, DropKind>(
+      (drop) => drop.kind,
+    );
     final devices = context.select<EngineHost, List<DeviceStatus>>(
       (host) => host.devices,
     );
@@ -336,6 +346,7 @@ class _Sending extends StatelessWidget {
           icon: icon,
           name: cardName,
           fileCount: fileCount,
+          kind: kind,
           phase: phase,
         ),
         if (phase is DropFailed) ...[
