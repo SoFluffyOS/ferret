@@ -1,0 +1,4 @@
+tags:
+  screens:
+    # Renders every main screen to temp/screens for review; takes minutes.
+    skip: false

@@ -26,7 +26,7 @@ for target in "${targets[@]}"; do
     fvm dart analyze --fatal-infos .
     if [ -d test ] && [ -n "$(find test -name '*_test.dart' -print -quit)" ]; then
       if grep -q 'sdk: flutter' pubspec.yaml; then
-        fvm flutter test
+        fvm flutter test --exclude-tags screens
       else
         fvm dart test
       fi

@@ -40,6 +40,17 @@ dependencies:
     path: ../../modules/shell
 
 dev_dependencies:
+  core:
+    path: ../../packages/core
+  feature_kit:
+    path: ../../packages/feature_kit
+  ferret_notifications:
+    path: ../../packages/ferret_notifications
+  lucide_icons_flutter: ^4.0.3
+  protocol:
+    path: ../../packages/protocol
+  transport:
+    path: ../../packages/transport
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
