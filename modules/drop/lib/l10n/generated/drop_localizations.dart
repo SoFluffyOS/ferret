@@ -969,6 +969,42 @@ abstract class DropLocalizations {
   /// In en, this message translates to:
   /// **'{hours} h {minutes} min'**
   String etaHours(int hours, int minutes);
+
+  /// No description provided for @filesDropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files here to send them to {device}.'**
+  String filesDropHere(String device);
+
+  /// No description provided for @filesChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose files…'**
+  String get filesChoose;
+
+  /// No description provided for @filesOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t connected. Send it files once it is.'**
+  String filesOffline(String device);
+
+  /// No description provided for @filesRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent and received'**
+  String get filesRecent;
+
+  /// No description provided for @filesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Files you send to {device}, and the ones it sends you, show here.'**
+  String filesNone(String device);
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
 }
 
 class _DropLocalizationsDelegate

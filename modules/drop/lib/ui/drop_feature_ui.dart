@@ -10,6 +10,7 @@ import 'package:drop/ui/dialogs/dialogs.dart';
 import 'package:drop/ui/drop_activity.dart';
 import 'package:drop/ui/drop_health.dart';
 import 'package:drop/ui/frames/frames.dart';
+import 'package:drop/ui/pages/pages.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -24,6 +25,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// from the file manager, LocalSend devices as extra targets, Quick Share
 /// from phones, notices, and settings.
 class DropFeatureUi extends FeatureUi {
+  /// The id of the section a device's files show in.
+  static const sectionId = 'files';
+
   /// [filesToSend] are the files this run was started with (`ferret send`),
   /// sent once the app is up. [handoff] takes the files of later runs. A
   /// share that arrives within
@@ -362,6 +366,39 @@ class DropFeatureUi extends FeatureUi {
         homeOrder: 10,
         onPressed: () => unawaited(
           _dropViewModel.pickAndSend(device.device.id),
+        ),
+      ),
+    ];
+  }
+
+  /// Files with one device: for a device that takes them, and for one
+  /// that still has transfers listed here.
+  @override
+  List<FeatureSection> deviceSections(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final deviceId = device.device.id;
+    final takesFiles = device.session?.supports(DropFeature.featureId) ?? false;
+    final hasTransfers = _dropViewModel.transfers.any(
+      (transfer) => transfer.deviceId == deviceId,
+    );
+    if (!takesFiles && !hasTransfers) {
+      return const [];
+    }
+
+    return [
+      FeatureSection(
+        id: sectionId,
+        title: title(context),
+        icon: LucideIcons.folder,
+        order: 40,
+        builder: (_) => FilesPage(
+          viewModel: _dropViewModel,
+          deviceId: deviceId,
+          deviceName: device.device.name,
+          isConnected: takesFiles,
         ),
       ),
     ];

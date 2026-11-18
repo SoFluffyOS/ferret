@@ -616,4 +616,28 @@ class DropLocalizationsEn extends DropLocalizations {
   String etaHours(int hours, int minutes) {
     return '$hours h $minutes min';
   }
+
+  @override
+  String filesDropHere(String device) {
+    return 'Drop files here to send them to $device.';
+  }
+
+  @override
+  String get filesChoose => 'Choose files…';
+
+  @override
+  String filesOffline(String device) {
+    return '$device isn\'t connected. Send it files once it is.';
+  }
+
+  @override
+  String get filesRecent => 'Sent and received';
+
+  @override
+  String filesNone(String device) {
+    return 'Files you send to $device, and the ones it sends you, show here.';
+  }
+
+  @override
+  String get back => 'Back';
 }

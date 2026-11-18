@@ -258,5 +258,32 @@
       "hours": {"type": "int"},
       "minutes": {"type": "int"}
     }
-  }
+  },
+  "filesDropHere": "Drop files here to send them to {device}.",
+  "@filesDropHere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "filesChoose": "Choose files…",
+  "filesOffline": "{device} isn't connected. Send it files once it is.",
+  "@filesOffline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "filesRecent": "Sent and received",
+  "filesNone": "Files you send to {device}, and the ones it sends you, show here.",
+  "@filesNone": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "back": "Back"
 }

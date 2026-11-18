@@ -1,3 +1,4 @@
+export 'package:drop/ui/frames/device_files_frame.dart';
 export 'package:drop/ui/frames/drop_home_frame.dart';
 export 'package:drop/ui/frames/drop_settings_frame.dart';
 export 'package:drop/ui/frames/localsend_settings_frame.dart';
