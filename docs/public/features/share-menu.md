@@ -2,13 +2,13 @@
 
 > **TL;DR**
 >
-> 1. Right-click a file in Finder.
-> 2. Pick **Share → Ferret**.
-> 3. Click the device. That's it.
+> 1. Right-click a file in Finder, or tap **Share** on your iPhone.
+> 2. Pick **Ferret**.
+> 3. Pick the device. That's it.
 
 The file is right there in Finder. Opening Ferret first, then finding the file again, is one trip too many.
 
-So Ferret sits where the file already is: in Finder's Share menu, in **Send to** on Windows, and in **Open With** on Linux. Files go the same way as a [drop](drop.md): straight to your device, over your own network.
+So Ferret sits where the file already is: in Finder's Share menu, in the iPhone and iPad share sheet, in **Send to** on Windows, and in **Open With** on Linux. Files go the same way as a [drop](drop.md): straight to your device, over your own network.
 
 ## 🍎 Mac: Share → Ferret
 
@@ -33,6 +33,30 @@ macOS lets you choose which apps show there, and a new one can start switched of
 3. Under **Extensions**, open **Sharing** and switch on **Ferret**.
 
 Or, in the Share menu itself, pick **Edit Extensions…** at the bottom. It opens the same list.
+
+## 📱 iPhone and iPad: Share → Ferret
+
+In Photos, Files, Safari or any app, tap **Share** and pick **Ferret**. Photos, videos, files, text and links all work.
+
+A short list of your devices shows up, the ones Ferret was connected to last time it was open:
+
+- **Tap a device.** Ferret opens and sends right away. You see the progress in **Activity**.
+- **All my devices** sends to each of them. It shows when there are two or more.
+- **No device yet?** Tap **Open Ferret**. It connects and sends as soon as it finds one.
+
+Files go the same way as a [drop](drop.md). Text and links go the way [Handoff](handoff.md) sends them: a link opens on the other device, text lands there ready to copy.
+
+Why does Ferret open? iOS stops apps in the background, so Ferret only sends while it is on screen. Opening it is what makes the send happen right now, not "later, maybe". Keep it open until the files are across.
+
+### Ferret isn't in the share sheet?
+
+1. Open Ferret once, so iOS knows about it.
+2. Tap **Share**, scroll the row of apps to the end and tap **More**.
+3. Tap **Edit**, then add **Ferret**. Drag it up the list to keep it close.
+
+### It says "Open Ferret to send"?
+
+Some iOS versions don't let the share sheet open another app. Your files are ready anyway: open Ferret yourself and it sends them right away.
 
 ## 🐧 Linux: Open With → Send with Ferret
 
@@ -93,10 +117,11 @@ Either way the transfer shows in **Activity** like any other, with progress and 
 | Platform | Where | Picks the device | Notes |
 |---|---|---|---|
 | macOS | **Share → Ferret** | In the Share menu | Files, photos, text and links. You may have to switch it on once in System Settings |
+| iPhone, iPad | **Share → Ferret** | In the share sheet | Files, photos, videos, text and links. Ferret opens to send them |
 | Linux | **Open With → Send with Ferret** | In Ferret, when there are several | You copy one `.desktop` file |
 | Windows | **Send to → Ferret** | In Ferret, when there are several | You make the shortcut once |
 | Android | **Share → Send with Ferret** | In Ferret, when there are several | See [Drop](drop.md) |
 
 Folders aren't sent yet: pick the files inside them.
 
-On a Mac, Ferret gets its own copy of what you share. On the same disk that copy is instant and takes no extra space, and Ferret deletes it once the files are sent.
+On a Mac and an iPhone, Ferret gets its own copy of what you share. On the same disk that copy is instant and takes no extra space, and Ferret deletes it once the files are sent.

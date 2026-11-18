@@ -22,6 +22,7 @@
 - 📦 **Drop**: drag files onto Ferret and drop them on the device you want, or on **All my devices**, or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
 - 🙋 **Needs you**: files from a phone that isn't paired wait at the top of the home screen with their size, **Decline** and **Accept**. Files that arrived open right from the notice, or **Show in Finder**.
 - 📤 **Share → Ferret**: right-click a file in Finder, pick **Share → Ferret** and click the device. On Windows and Linux, `ferret send` puts **Send with Ferret** in the file manager.
+- 📱 **Ferret in the iPhone share sheet**: photos, videos, files, text and links, from ANY app. Tap **Ferret**, tap the device, and Ferret opens and sends while you watch. Links open on the other device.
 - 🔔 **Notifications**: your phone's notifications on your computer, from ALL your apps by default, with Reply and Dismiss synced both ways. Mute a few noisy apps, or pick only the ones you want.
 - 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second. Your music pauses while a call rings or goes on, and plays again after.
 - 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.
