@@ -412,7 +412,76 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsStartOnBoot => 'Start when the phone starts';
 
   @override
-  String get dropHere => 'Drop to send';
+  String dropTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Send $count files to…',
+      one: 'Send a file to…',
+      zero: 'Send files to…',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dropTileDrop => 'Drop to send';
+
+  @override
+  String get dropTilePick => 'Send here';
+
+  @override
+  String get dropTileOffline => 'Offline';
+
+  @override
+  String get dropAllDevices => 'All my devices';
+
+  @override
+  String get dropNobody => 'No devices connected';
+
+  @override
+  String get dropNobodyDetail => 'Open Ferret on your phone first.';
+
+  @override
+  String dropSendingTo(String name) {
+    return 'Sending to $name';
+  }
+
+  @override
+  String dropSentTo(String name) {
+    return 'Sent to $name';
+  }
+
+  @override
+  String dropFailedTo(String name) {
+    return 'Couldn\'t send to $name';
+  }
+
+  @override
+  String get dropFailedDetail =>
+      'Nothing took these files. Try again in a moment.';
+
+  @override
+  String get dropAllDevicesName => 'all my devices';
+
+  @override
+  String dropFileCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dropTryAgain => 'Try again';
+
+  @override
+  String get dropClose => 'Close';
+
+  @override
+  String get dropCancel => 'Cancel';
 
   @override
   String get scanTitle => 'Scan the code';

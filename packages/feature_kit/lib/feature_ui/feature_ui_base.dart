@@ -2,6 +2,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
 import 'package:feature_kit/feature_ui/feature_health.dart';
 import 'package:feature_kit/feature_ui/feature_offer.dart';
+import 'package:feature_kit/feature_ui/files_send_progress.dart';
 import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -59,12 +60,15 @@ abstract class FeatureUi {
   /// The feature's section in Settings, or null.
   Widget? buildSettings(BuildContext context, FeatureContext feature) => null;
 
-  /// Files dropped on the app or on the menubar icon. Return true when the
-  /// feature took them.
-  Future<bool> onFilesDropped(
+  /// Files dropped on the app or on the menubar icon. Dropped on one
+  /// device, [deviceId] names it and they go only there; otherwise they go
+  /// to every connected device. Return null to leave them to another
+  /// feature, or how sending them goes, ending with sent or failed.
+  Future<Stream<FilesSendProgress>?> onFilesDropped(
     FeatureContext feature,
-    List<String> paths,
-  ) async => false;
+    List<String> paths, {
+    String? deviceId,
+  }) async => null;
 }
 
 /// Something a person can do with a feature, shown as a button.

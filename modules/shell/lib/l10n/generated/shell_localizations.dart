@@ -766,11 +766,101 @@ abstract class ShellLocalizations {
   /// **'Start when the phone starts'**
   String get settingsStartOnBoot;
 
-  /// No description provided for @dropHere.
+  /// No description provided for @dropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Send files to…} =1{Send a file to…} other{Send {count} files to…}}'**
+  String dropTitle(int count);
+
+  /// No description provided for @dropTileDrop.
   ///
   /// In en, this message translates to:
   /// **'Drop to send'**
-  String get dropHere;
+  String get dropTileDrop;
+
+  /// No description provided for @dropTilePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Send here'**
+  String get dropTilePick;
+
+  /// No description provided for @dropTileOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get dropTileOffline;
+
+  /// No description provided for @dropAllDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'All my devices'**
+  String get dropAllDevices;
+
+  /// No description provided for @dropNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices connected'**
+  String get dropNobody;
+
+  /// No description provided for @dropNobodyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret on your phone first.'**
+  String get dropNobodyDetail;
+
+  /// No description provided for @dropSendingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending to {name}'**
+  String dropSendingTo(String name);
+
+  /// No description provided for @dropSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {name}'**
+  String dropSentTo(String name);
+
+  /// No description provided for @dropFailedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send to {name}'**
+  String dropFailedTo(String name);
+
+  /// No description provided for @dropFailedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing took these files. Try again in a moment.'**
+  String get dropFailedDetail;
+
+  /// No description provided for @dropAllDevicesName.
+  ///
+  /// In en, this message translates to:
+  /// **'all my devices'**
+  String get dropAllDevicesName;
+
+  /// No description provided for @dropFileCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}}'**
+  String dropFileCount(int count);
+
+  /// No description provided for @dropTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get dropTryAgain;
+
+  /// No description provided for @dropClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get dropClose;
+
+  /// No description provided for @dropCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dropCancel;
 
   /// No description provided for @scanTitle.
   ///

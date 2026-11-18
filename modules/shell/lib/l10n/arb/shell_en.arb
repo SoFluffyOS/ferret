@@ -276,7 +276,57 @@
   "settingsKeepRunning": "Keep running in the background",
   "settingsKeepRunningBody": "Stays connected when Ferret is closed. Shows a quiet notification.",
   "settingsStartOnBoot": "Start when the phone starts",
-  "dropHere": "Drop to send",
+  "dropTitle": "{count, plural, =0{Send files to…} =1{Send a file to…} other{Send {count} files to…}}",
+  "@dropTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropTileDrop": "Drop to send",
+  "dropTilePick": "Send here",
+  "dropTileOffline": "Offline",
+  "dropAllDevices": "All my devices",
+  "dropNobody": "No devices connected",
+  "dropNobodyDetail": "Open Ferret on your phone first.",
+  "dropSendingTo": "Sending to {name}",
+  "@dropSendingTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dropSentTo": "Sent to {name}",
+  "@dropSentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dropFailedTo": "Couldn't send to {name}",
+  "@dropFailedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dropFailedDetail": "Nothing took these files. Try again in a moment.",
+  "dropAllDevicesName": "all my devices",
+  "dropFileCount": "{count, plural, =1{1 file} other{{count} files}}",
+  "@dropFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropTryAgain": "Try again",
+  "dropClose": "Close",
+  "dropCancel": "Cancel",
   "scanTitle": "Scan the code",
   "scanBody": "Point your camera at the code Ferret shows on your computer.",
   "scanButton": "Scan the code on your computer",

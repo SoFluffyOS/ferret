@@ -1,4 +1,5 @@
 export 'package:shell/services/connection_doctor.dart';
+export 'package:shell/services/drop_target_finder.dart';
 export 'package:shell/services/engine_host.dart';
 export 'package:shell/services/local_device_factory.dart';
 export 'package:shell/services/pause_controller.dart';

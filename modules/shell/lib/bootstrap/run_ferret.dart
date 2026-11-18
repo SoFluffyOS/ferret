@@ -66,7 +66,6 @@ Future<void> runFerret({
 
   menubar = MenubarBinding(
     host: host,
-    features: features,
     featureContext: featureContext,
   );
   await menubar.start();
@@ -77,6 +76,7 @@ Future<void> runFerret({
       pause: pause,
       features: features,
       featureContext: featureContext,
+      menubar: menubar.menubar,
     ),
   );
   onStarted?.call(engine);

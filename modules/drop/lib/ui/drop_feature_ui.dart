@@ -177,8 +177,90 @@ class DropFeatureUi extends FeatureUi {
   }
 
   @override
-  Future<bool> onFilesDropped(FeatureContext feature, List<String> paths) =>
-      _send(feature, paths: paths);
+  Future<Stream<FilesSendProgress>?> onFilesDropped(
+    FeatureContext feature,
+    List<String> paths, {
+    String? deviceId,
+  }) async {
+    final l10n = _l10n();
+    final targets = _droppedTargets(deviceId);
+    if (targets.isEmpty) {
+      return Stream.value(FilesSendFailed(l10n.noticeNoDeviceBody));
+    }
+
+    final transferIds = <String>[];
+    for (final target in targets) {
+      final transfer = await _dropViewModel.sendFiles(target.deviceId, paths);
+      if (transfer != null) {
+        transferIds.add(transfer.id);
+      }
+    }
+    if (transferIds.isEmpty) {
+      return Stream.value(FilesSendFailed(l10n.noticeNothingBody));
+    }
+
+    return _progressOf(transferIds);
+  }
+
+  /// One summary of several transfers: failed as soon as one fails, sent
+  /// once all are done, otherwise how far they got together.
+  Stream<FilesSendProgress> _progressOf(List<String> transferIds) {
+    final controller = StreamController<FilesSendProgress>();
+    late final StreamSubscription<Transfer> subscription;
+
+    void emit() {
+      final progress = _summaryOf(transferIds);
+      controller.add(progress);
+      if (progress is FilesSending) {
+        return;
+      }
+
+      unawaited(subscription.cancel());
+      unawaited(controller.close());
+    }
+
+    subscription = feature.updates
+        .where((transfer) => transferIds.contains(transfer.id))
+        .listen((_) => emit());
+    emit();
+    return controller.stream;
+  }
+
+  FilesSendProgress _summaryOf(List<String> transferIds) {
+    final transfers = [
+      for (final id in transferIds) ?feature.registry[id],
+    ];
+    for (final transfer in transfers) {
+      if (transfer.status == .failed || transfer.status == .cancelled) {
+        return FilesSendFailed(TransferTexts(_l10n()).failure(transfer));
+      }
+    }
+
+    final done = transfers.every((transfer) => transfer.status == .done);
+    if (done) {
+      return const FilesSent();
+    }
+
+    final total = transfers.fold(
+      0.0,
+      (sum, transfer) => sum + transfer.progress,
+    );
+    return FilesSending(total / transfers.length);
+  }
+
+  /// Dropped on one device, only that one; anywhere else, every connected
+  /// paired device. LocalSend devices are never sent to without asking.
+  List<DropTarget> _droppedTargets(String? deviceId) {
+    final targets = _dropViewModel.targets;
+    if (deviceId == null) {
+      return targets;
+    }
+
+    return [
+      for (final target in targets)
+        if (target.deviceId == deviceId) target,
+    ];
+  }
 
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {

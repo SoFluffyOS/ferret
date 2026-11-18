@@ -1,4 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +18,7 @@ class FerretApp extends StatelessWidget {
     required this.pause,
     required this.features,
     required this.featureContext,
+    this.menubar,
   });
 
   final EngineHost host;
@@ -26,6 +28,9 @@ class FerretApp extends StatelessWidget {
   final PauseController pause;
   final List<FeatureUi> features;
   final FeatureContext featureContext;
+
+  /// The macOS menubar, for files dragged over its popover and icon.
+  final FerretMenubar? menubar;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +60,7 @@ class FerretApp extends StatelessWidget {
           home: const StartPage(),
           builder: (context, child) => _Themed(
             navigatorKey: featureContext.navigatorKey,
+            menubar: menubar,
             child: child ?? const SizedBox.shrink(),
           ),
         ),
@@ -66,9 +72,14 @@ class FerretApp extends StatelessWidget {
 const _ferretBlue = Color(0xFF0A66D6);
 
 class _Themed extends StatelessWidget {
-  const _Themed({required this.navigatorKey, required this.child});
+  const _Themed({
+    required this.navigatorKey,
+    required this.menubar,
+    required this.child,
+  });
 
   final GlobalKey<NavigatorState> navigatorKey;
+  final FerretMenubar? menubar;
   final Widget child;
 
   @override
@@ -88,6 +99,7 @@ class _Themed extends StatelessWidget {
         builder: (context) => DefaultTextStyle(
           style: theme.typography.base1.copyWith(color: context.palette.text),
           child: FileDropZone(
+            menubar: menubar,
             child: PairingPromptListener(
               navigatorKey: navigatorKey,
               child: child,

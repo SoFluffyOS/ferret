@@ -8,17 +8,15 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/pages.dart';
 
-/// Connects the macOS menubar icon to the app: its menu, its icon state and
-/// files dropped on it.
+/// Connects the macOS menubar icon to the app: its menu and its icon state.
+/// Files dragged onto it are the app's `FileDropZone`'s.
 class MenubarBinding {
   MenubarBinding({
     required this.host,
-    required this.features,
     required this.featureContext,
   });
 
   final EngineHost host;
-  final List<FeatureUi> features;
   final FeatureContext featureContext;
   final FerretMenubar _menubar = FerretMenubar();
   final List<StreamSubscription<Object?>> _subscriptions = [];
@@ -47,11 +45,15 @@ class MenubarBinding {
     ]);
     await _updateIcon();
 
-    _subscriptions
-      ..add(_menubar.menuSelections.listen(_onMenu))
-      ..add(_menubar.drops.listen(_onDrop));
+    _subscriptions.add(_menubar.menuSelections.listen(_onMenu));
     host.addListener(_onHostChanged);
   }
+
+  /// The menubar, for the app's drop targets; null where there is none.
+  FerretMenubar? get menubar => switch (_menubar.isSupported) {
+    true => _menubar,
+    false => null,
+  };
 
   /// Opens the popover, such as when this Mac starts ringing.
   Future<void> reveal() => _menubar.show();
@@ -85,14 +87,6 @@ class MenubarBinding {
         await featureContext.push<void>(const SettingsPage());
       case _quit:
         await SystemNavigator.pop();
-    }
-  }
-
-  Future<void> _onDrop(List<String> paths) async {
-    for (final feature in features) {
-      if (await feature.onFilesDropped(featureContext, paths)) {
-        return;
-      }
     }
   }
 
