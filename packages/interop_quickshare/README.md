@@ -6,7 +6,7 @@ Quick Share is not an open protocol. This package is written from public descrip
 
 ## What's inside
 
-- `discovery/`: `QuickShareAdvertiser` announces the `_FC9F5ED42C8A._tcp` service with the encoded endpoint info (`QuickShareEndpointInfo`, `QuickShareService`). Underneath sits `mdns/`, a small mDNS responder (`MdnsAdvertiser`, `MdnsResponder`, `DnsMessage`).
+- `discovery/`: `QuickShareAdvertiser` announces the `_FC9F5ED42C8A._tcp` service with the encoded endpoint info (`QuickShareEndpointInfo`, `QuickShareService`). Underneath sits `packages/lan_discovery`, a small mDNS responder (`MdnsAdvertiser`, `MdnsResponder`, `DnsMessage`) shared with AirPlay and Ferret's own discovery.
 - `crypto/`: the UKEY2 handshake (`Ukey2Server`, `Ukey2Client`: P-256 ECDH with a SHA-512 commitment), the key schedule (`Ukey2Keys`, `D2DKeys`: HKDF-SHA256), the encrypted frames (`SecureMessageCodec`: AES-256-CBC, HMAC-SHA256, sequence numbers) and the 4-digit PIN (`QuickSharePin`).
 - `connection/`: `QuickShareLink`, the TCP connection with 4-byte length-prefixed frames, and `BytesPayloads`, which joins chunked control payloads.
 - `server/`: `QuickShareServer` accepts senders and runs one `InboundSession` each: handshake, paired key frames, introduction, the answer, then files and text.
@@ -64,7 +64,7 @@ The files describe only what Ferret reads and writes. Field numbers and enum val
 - `crypto`: SHA-256, SHA-512 and HMAC.
 - `protobuf`, `fixnum`: the runtime of the generated messages.
 
-mDNS is implemented here instead of taken from a package. The maintained pure Dart packages only look services up; announcing one needs a responder, and the ones that have it wrap native code. The responder is small on purpose: IPv4, one service, no probing for name conflicts (instance and host names are random).
+mDNS is implemented in `packages/lan_discovery` instead of taken from a package. The maintained pure Dart packages only look services up; announcing one needs a responder, and the ones that have it wrap native code. The responder is small on purpose: IPv4, one service, no probing for name conflicts (instance and host names are random).
 
 No native code anywhere.
 

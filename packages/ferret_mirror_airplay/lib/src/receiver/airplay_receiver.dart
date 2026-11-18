@@ -9,7 +9,7 @@ import 'package:ferret_mirror_airplay/src/fairplay/fairplay.dart';
 import 'package:ferret_mirror_airplay/src/receiver/airplay_connection.dart';
 import 'package:ferret_mirror_airplay/src/receiver/airplay_feed.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
-import 'package:interop_quickshare/interop_quickshare.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// Shows an iPhone's or iPad's screen on this computer: the phone picks
 /// this receiver under Control Center, Screen Mirroring, and its picture

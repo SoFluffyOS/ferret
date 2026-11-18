@@ -7,11 +7,11 @@ import 'package:core/core.dart';
 import 'package:crypto/crypto.dart';
 import 'package:interop_localsend/models/models.dart';
 import 'package:interop_localsend/security/security.dart';
-import 'package:interop_localsend/server/local_networks.dart';
 import 'package:interop_localsend/server/localsend_offer.dart';
 import 'package:interop_localsend/server/localsend_receive_delegate.dart';
 import 'package:interop_localsend/server/localsend_session_end.dart';
 import 'package:interop_localsend/server/receive_session.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// The receiving side of LocalSend: an HTTPS server with the upload API
 /// (`/register`, `/info`, `/prepare-upload`, `/upload`, `/cancel`).

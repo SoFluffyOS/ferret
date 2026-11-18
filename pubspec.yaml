@@ -41,6 +41,7 @@ workspace:
   - packages/ferret_system
   - packages/interop_localsend
   - packages/interop_quickshare
+  - packages/lan_discovery
   - packages/protocol
   - packages/transport
 

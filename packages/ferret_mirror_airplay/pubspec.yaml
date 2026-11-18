@@ -21,8 +21,8 @@ dependencies:
     sdk: flutter
   hooks: ^2.2.0
   # Its mDNS responder announces the AirPlay services.
-  interop_quickshare:
-    path: ../interop_quickshare
+  lan_discovery:
+    path: ../lan_discovery
   # Compiles the vendored FairPlay C code in the build hook.
   native_toolchain_c: ^0.19.6
   # AES-CTR as a running stream, which the video channel needs.

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:interop_localsend/client/client.dart';
 import 'package:interop_localsend/models/models.dart';
-import 'package:interop_localsend/server/local_networks.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// Finds LocalSend members by asking every address on the local network
 /// (protocol section 3.2), for networks where multicast doesn't get

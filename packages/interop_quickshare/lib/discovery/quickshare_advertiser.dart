@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:interop_quickshare/crypto/crypto.dart';
-import 'package:interop_quickshare/discovery/mdns/mdns.dart';
 import 'package:interop_quickshare/discovery/quickshare_endpoint_info.dart';
 import 'package:interop_quickshare/discovery/quickshare_service.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// Makes this device show up in the Quick Share sheet of phones on the
 /// same network, by announcing the Quick Share service over mDNS.

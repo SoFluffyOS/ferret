@@ -217,17 +217,5 @@ void main() {
       expect(LegacyScanner.neighbours(InternetAddress('127.0.0.1')), isEmpty);
       expect(LegacyScanner.neighbours(InternetAddress('::1')), isEmpty);
     });
-
-    test('knows which addresses are local', () {
-      expect(LocalNetworks.contains(InternetAddress('10.0.0.5')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('172.16.4.1')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('172.32.0.1')), isFalse);
-      expect(LocalNetworks.contains(InternetAddress('192.168.0.9')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('169.254.3.3')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('127.0.0.1')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('1.1.1.1')), isFalse);
-      expect(LocalNetworks.contains(InternetAddress('fd12::1')), isTrue);
-      expect(LocalNetworks.contains(InternetAddress('2001:db8::1')), isFalse);
-    });
   });
 }

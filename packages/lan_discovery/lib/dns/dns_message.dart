@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:interop_quickshare/discovery/mdns/dns_question.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_record.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_type.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_wire.dart';
+import 'package:lan_discovery/dns/dns_question.dart';
+import 'package:lan_discovery/dns/dns_record.dart';
+import 'package:lan_discovery/dns/dns_type.dart';
+import 'package:lan_discovery/dns/dns_wire.dart';
 
 /// A DNS message, as far as mDNS service discovery needs it.
 class DnsMessage {
@@ -19,6 +19,7 @@ class DnsMessage {
   static const _responseFlags = 0x8400;
   static const _responseBit = 0x8000;
   static const _maxEntries = 64;
+  static const _srvFixedLength = 6;
 
   final int id;
   final bool isResponse;
@@ -49,7 +50,11 @@ class DnsMessage {
       }
 
       questions.add(
-        DnsQuestion(name: name.$1, type: header.getUint16(name.$2)),
+        DnsQuestion(
+          name: name.$1,
+          type: header.getUint16(name.$2),
+          wantsUnicast: header.getUint16(name.$2 + 2) & DnsType.topBit != 0,
+        ),
       );
       offset = name.$2 + 4;
     }
@@ -70,13 +75,17 @@ class DnsMessage {
           return null;
         }
 
+        final type = header.getUint16(fixed);
+        final (target, port) = _pointsAt(packet, type, dataStart, length);
         records.add(
           DnsRecord(
             name: name.$1,
-            type: header.getUint16(fixed),
+            type: type,
             isUnique: header.getUint16(fixed + 2) & DnsType.topBit != 0,
             ttl: header.getUint32(fixed + 4),
             data: Uint8List.sublistView(packet, dataStart, dataStart + length),
+            target: target,
+            port: port,
           ),
         );
         offset = dataStart + length;
@@ -92,6 +101,27 @@ class DnsMessage {
       answers: sections[0],
       additionals: sections[2],
     );
+  }
+
+  /// The name and port a PTR or SRV record at [dataStart] carries. Names in
+  /// there may point back into [packet], so they are read here.
+  static (List<String>?, int) _pointsAt(
+    Uint8List packet,
+    int type,
+    int dataStart,
+    int length,
+  ) {
+    if (type == DnsType.ptr) {
+      return (DnsWire.readName(packet, dataStart)?.$1, 0);
+    }
+
+    if (type != DnsType.srv || length < _srvFixedLength) {
+      return (null, 0);
+    }
+
+    final port = ByteData.sublistView(packet).getUint16(dataStart + 4);
+    final host = DnsWire.readName(packet, dataStart + _srvFixedLength)?.$1;
+    return (host, port);
   }
 
   /// The wire form.
@@ -112,7 +142,12 @@ class DnsMessage {
       bytes
         ..add(DnsWire.encodeName(question.name))
         ..add(_uint16(question.type))
-        ..add(_uint16(DnsType.classInternet));
+        ..add(
+          _uint16(switch (question.wantsUnicast) {
+            true => DnsType.classInternet | DnsType.topBit,
+            false => DnsType.classInternet,
+          }),
+        );
     }
 
     for (final record in [...answers, ...additionals]) {

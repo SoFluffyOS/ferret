@@ -1,4 +1,3 @@
-export 'package:interop_localsend/server/local_networks.dart';
 export 'package:interop_localsend/server/localsend_offer.dart';
 export 'package:interop_localsend/server/localsend_receive_delegate.dart';
 export 'package:interop_localsend/server/localsend_server.dart';

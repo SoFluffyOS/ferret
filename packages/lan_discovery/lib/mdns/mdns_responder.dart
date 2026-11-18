@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:interop_quickshare/discovery/mdns/dns_message.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_question.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_record.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_type.dart';
-import 'package:interop_quickshare/discovery/mdns/dns_wire.dart';
-import 'package:interop_quickshare/discovery/mdns/mdns_service.dart';
+import 'package:lan_discovery/dns/dns_message.dart';
+import 'package:lan_discovery/dns/dns_question.dart';
+import 'package:lan_discovery/dns/dns_record.dart';
+import 'package:lan_discovery/dns/dns_type.dart';
+import 'package:lan_discovery/dns/dns_wire.dart';
+import 'package:lan_discovery/mdns/mdns_service.dart';
 
 /// Builds the mDNS and DNS-SD answers for one service (RFC 6762, 6763).
 /// It only decides what to say; [MdnsAdvertiser] does the talking.

@@ -5,8 +5,8 @@ import 'package:core/core.dart';
 import 'package:interop_quickshare/connection/connection.dart';
 import 'package:interop_quickshare/crypto/crypto.dart';
 import 'package:interop_quickshare/server/inbound_session.dart';
-import 'package:interop_quickshare/server/local_networks.dart';
 import 'package:interop_quickshare/server/quickshare_receive_delegate.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// The receiving side of Quick Share: a TCP server that senders connect
 /// to after finding this device on mDNS.

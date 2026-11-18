@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ferret_mirror_airplay/src/discovery/airplay_service_info.dart';
-import 'package:interop_quickshare/interop_quickshare.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 
 /// Makes this receiver show up under Screen Mirroring on iPhones, iPads
 /// and Macs on the same network, by announcing the two AirPlay services

@@ -33,6 +33,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 | `packages/core/` | Injector, logging, settings, secret storage (pure Dart) |
 | `packages/protocol/` | Generated from `proto/`. Never edit by hand; run `scripts/gen.sh` |
 | `packages/transport/` | Noise XX secure channel, framing, LAN discovery (pure Dart) |
+| `packages/lan_discovery/` | mDNS / DNS-SD in pure Dart: DNS codec, responder, browser, local network helpers. Shared by transport, Quick Share and AirPlay |
 | `packages/engine/` | Identity, trust store, pairing, sessions, the `Feature` API (pure Dart) |
 | `packages/feature_kit/` | What a feature module plugs into the app: `FeatureUi`, shared Ferret widgets |
 | `packages/ferret_<capability>/` | Flutter plugin packages with the platform code for one capability (Kotlin, Swift, C++, D-Bus), reusable outside Ferret |

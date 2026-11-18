@@ -43,7 +43,7 @@ This is why the receiver sits behind `MirrorReceiver`: the day it stops working,
 - `fairplay/`: `FairPlaySession` (`/fp-setup`), `FairPlayReplies` (the four fixed answers), `playfairDecrypt` (the FFI call).
 - `rtsp/`: `RtspRequestReader`, `RtspRequest`, `RtspResponse`. iPhones mix RTSP and HTTP-style requests on one connection.
 - `stream/`: `MirrorPacketReader` and `MirrorPacketHeader` (128-byte headers), `Avcc` (avcC → SPS/PPS, length-prefixed NALs → Annex-B), `MirrorStreamDecoder` (packets → feed events).
-- `discovery/`: `AirPlayServiceInfo` (TXT records and `/info`), `AirPlayAdvertiser` (`_airplay._tcp` and `_raop._tcp` over the mDNS responder of `interop_quickshare`).
+- `discovery/`: `AirPlayServiceInfo` (TXT records and `/info`), `AirPlayAdvertiser` (`_airplay._tcp` and `_raop._tcp` over the mDNS responder of `lan_discovery`).
 - `receiver/`: `AirPlayReceiver`, `AirPlayConnection` (one phone's control connection), `AirPlayFeed`, `TimingClient`.
 
 ## How a session goes
