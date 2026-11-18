@@ -34,6 +34,8 @@ class FerretPalette {
 
   Color get success => const Color(0xFF34C759);
 
+  Color get warning => const Color(0xFFFF9F0A);
+
   Color get danger => const Color(0xFFFF453A);
 }
 

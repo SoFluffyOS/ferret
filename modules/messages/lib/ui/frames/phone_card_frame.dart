@@ -31,6 +31,10 @@ class PhoneCardFrame extends StatelessWidget {
         .needsAccess => l10n.phoneCardNeedsAccess,
         _ => l10n.phoneCardOff,
       },
+      subtitleTone: switch (stage) {
+        .needsAccess => FeatureTone.danger,
+        _ => FeatureTone.muted,
+      },
       onTap: onSetUp,
       actions: [
         if (stage != .ready)

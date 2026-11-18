@@ -29,6 +29,7 @@ class OutgoingRingCard extends StatelessWidget {
 
     return FeatureCard(
       icon: outgoingIcon(ring.phase),
+      iconTone: outgoingTone(ring.phase),
       title: l10n.outgoingTitle(ring),
       subtitle: l10n.outgoingDetail(ring),
       trailing: switch (ring.isActive) {

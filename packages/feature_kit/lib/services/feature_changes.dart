@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-/// Notifies its listeners each time [source] fires, so the shell can
-/// rebuild the home card and health chips.
+/// Turns a feature's change stream into a [Listenable] for
+/// [FeatureUi.uiChanges], so the shell rebuilds the card and health chips.
 class FeatureChanges extends ChangeNotifier {
   FeatureChanges(Stream<Object?> source) {
     _subscription = source.listen((_) => _notify());
@@ -20,8 +20,10 @@ class FeatureChanges extends ChangeNotifier {
   }
 
   void _notify() {
-    if (!_disposed) {
-      notifyListeners();
+    if (_disposed) {
+      return;
     }
+
+    notifyListeners();
   }
 }

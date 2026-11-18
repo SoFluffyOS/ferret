@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:find/l10n/l10n.dart';
 import 'package:find/models/models.dart';
 import 'package:flutter/widgets.dart';
@@ -40,4 +41,16 @@ IconData outgoingIcon(OutgoingPhase phase) => switch (phase) {
   .timedOut || .stoppedHere || .stoppedElsewhere => LucideIcons.bellOff,
   .noSound => LucideIcons.volumeX,
   .unreachable || .notSupported || .lostConnection => LucideIcons.triangleAlert,
+};
+
+/// How a ring's outcome reads at a glance: found is good news, a ring that
+/// couldn't reach or sound is a problem.
+FeatureTone outgoingTone(OutgoingPhase phase) => switch (phase) {
+  .requesting || .ringing => FeatureTone.accent,
+  .found => FeatureTone.success,
+  .timedOut || .stoppedHere || .stoppedElsewhere => FeatureTone.muted,
+  .noSound ||
+  .unreachable ||
+  .notSupported ||
+  .lostConnection => FeatureTone.danger,
 };

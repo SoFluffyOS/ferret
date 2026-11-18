@@ -1,6 +1,5 @@
 export 'package:messages/services/cache_store.dart';
 export 'package:messages/services/change_tracker.dart';
-export 'package:messages/services/feature_changes.dart';
 export 'package:messages/services/incoming_notices.dart';
 export 'package:messages/services/message_cache.dart';
 export 'package:messages/services/message_library.dart';

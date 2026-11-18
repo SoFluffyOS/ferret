@@ -39,6 +39,11 @@ class MessagesCardFrame extends StatelessWidget {
               .offline => l10n.statusOffline(phone.name),
               _ => l10n.unreadCount(phone.unread),
             },
+            subtitleTone: switch ((phone.readiness, phone.unread)) {
+              (.offline, _) => FeatureTone.muted,
+              (_, > 0) => FeatureTone.accent,
+              _ => FeatureTone.muted,
+            },
             onTap: () => onOpen(phone.deviceId),
             children: [
               if (phone.latest case final latest?)

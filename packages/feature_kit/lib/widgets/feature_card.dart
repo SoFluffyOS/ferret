@@ -3,6 +3,9 @@ import 'package:feature_kit/widgets/surface_card.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
+/// The colour a card gives its icon or subtitle, by meaning.
+enum FeatureTone { normal, muted, accent, success, warning, danger }
+
 /// The one look for a feature's home card: icon and title, a short muted
 /// line, then the content and the actions. Use it so every card reads the
 /// same.
@@ -16,6 +19,8 @@ class FeatureCard extends StatelessWidget {
     this.children = const [],
     this.actions = const [],
     this.onTap,
+    this.iconTone = .normal,
+    this.subtitleTone = .muted,
   });
 
   final IconData icon;
@@ -36,6 +41,12 @@ class FeatureCard extends StatelessWidget {
 
   final VoidCallback? onTap;
 
+  /// Such as success or danger for how a ring ended.
+  final FeatureTone iconTone;
+
+  /// Such as accent for an unread count, or danger for missing access.
+  final FeatureTone subtitleTone;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -51,7 +62,11 @@ class FeatureCard extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(top: Spacing.d1),
-                child: Icon(icon, size: Spacing.d18, color: palette.text),
+                child: Icon(
+                  icon,
+                  size: Spacing.d18,
+                  color: _color(palette, iconTone),
+                ),
               ),
               Spacing.h12,
               Expanded(
@@ -91,4 +106,13 @@ class FeatureCard extends StatelessWidget {
       ),
     );
   }
+
+  Color _color(FerretPalette palette, FeatureTone tone) => switch (tone) {
+    .normal => palette.text,
+    .muted => palette.mutedText,
+    .accent => palette.accent,
+    .success => palette.success,
+    .warning => palette.warning,
+    .danger => palette.danger,
+  };
 }
