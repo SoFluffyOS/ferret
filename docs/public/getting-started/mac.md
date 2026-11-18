@@ -42,13 +42,43 @@ The popover is small on purpose. For a longer look, open Ferret in a normal wind
 1. Click **•••** in the popover, or right-click the icon.
 2. Pick **Open Ferret window**.
 
-That's it. The window and the popover are the SAME Ferret: pause in one and the other shows it right away. Each keeps its own place, so you can read Settings in the window while the popover stays on your devices.
+That's it. The window and the popover are the SAME Ferret: pause in one and the other shows it right away. Each keeps its own place, so you can read your texts in the window while the popover stays on your devices.
 
-- **Resize** it like any window. It opens where you left it, at the size you left it.
+The window is not a big popover. It has room, so it uses it:
+
+- **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls** and **Notifications**. The line you picked stays highlighted.
+- **The page** you picked fills the rest. Anything you open from it (Fix connection, a settings page) opens right there, with a back arrow. The list never moves.
+- **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
+- **Make it wide** (1200 points or more) and an **Activity** pane joins on the right: what is going on now, and the last things that happened with that device.
+- Lists and forms stop at a comfortable width and stay centred. Nothing stretches across a big screen.
+
+The window's title says where you are, such as **Pixel 9 — Messages**.
+
+- **Resize** it like any window. It opens where you left it, at the size you left it, on the device and section you left it on.
 - **Close** it (⌘W or the red button) and only the window goes. Ferret keeps running in the menubar.
 - **The Dock** shows Ferret while the window is open, and a click on its Dock icon brings the window back to the front. Close the window and the Dock icon leaves with it.
 
 Want Ferret in the Dock all the time? Turn on **Settings → Always show in the Dock**. Then a click on the Dock icon opens the window.
+
+### ⌨️ Keys and menus
+
+Everything in the window has a key, and a place in the menu bar.
+
+| Keys | Does |
+|---|---|
+| ⌘1 … ⌘6 | Sections of the selected device. Overview is ⌘1 |
+| ⌥⌘↓ / ⌥⌘↑ | Next / previous device |
+| ⌘N | Add a device |
+| ⌘O | Send files to the selected device |
+| ⇧⌘V | Send the clipboard to the selected device |
+| ⇧⌘A | Activity |
+| ⌘, | Settings |
+| ⌃⌘S | Show or hide the device list |
+| ⌥⌘0 | Show or hide the Activity pane |
+| ⌘[ | Back |
+| ⌘W | Close the window |
+
+The same commands are in the **File**, **View** and **Device** menus. One that can't apply right now is greyed out.
 
 ## 🔐 Optional permissions
 
