@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/frames/device_now_frame.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/widgets/device_header.dart';
@@ -44,6 +45,7 @@ class DevicePage extends StatelessWidget {
       title: '',
       backLabel: l10n.back,
       children: [
+        DeviceNowFrame(deviceId: deviceId),
         DeviceHeader(status: status),
         if (!status.isConnected)
           Button(

@@ -48,6 +48,19 @@ class ActivityFeed {
 
   bool get isEmpty => pinned.isEmpty && recent.isEmpty;
 
+  /// The lines about the device [deviceId], with those about no device in
+  /// particular, such as a song playing here.
+  ActivityFeed withDevice(String deviceId) {
+    bool concerns(ActivityItem item) =>
+        item.deviceId == null || item.deviceId == deviceId;
+
+    return ActivityFeed(
+      needsYou: needsYou.where(concerns).toList(),
+      pinned: pinned.where(concerns).toList(),
+      recent: recent.where(concerns).toList(),
+    );
+  }
+
   /// The line that holds Home's one filled button: the first thing waiting
   /// for an answer, or else the first thing going on right now, such as a
   /// call ringing. Null leaves it to the first device's first action.

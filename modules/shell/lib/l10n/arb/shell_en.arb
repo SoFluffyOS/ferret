@@ -966,5 +966,24 @@
   "menuBack": "Back",
   "menuNextDevice": "Next Device",
   "menuPreviousDevice": "Previous Device",
-  "menuFixConnection": "Fix Connection…"
+  "menuFixConnection": "Fix Connection…",
+  "activityPaneNow": "Now",
+  "activityPaneRecent": "Recent with {device}",
+  "@activityPaneRecent": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityPaneEmpty": "Things you send and receive with {device} show here.",
+  "@activityPaneEmpty": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menuShowActivityPane": "Show Activity Pane",
+  "menuHideActivityPane": "Hide Activity Pane"
 }

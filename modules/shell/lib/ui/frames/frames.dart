@@ -1,7 +1,9 @@
 export 'package:shell/ui/frames/activity_frame.dart';
+export 'package:shell/ui/frames/activity_pane_frame.dart';
 export 'package:shell/ui/frames/app_views_frame.dart';
 export 'package:shell/ui/frames/background_settings.dart';
 export 'package:shell/ui/frames/connect_by_hand_card.dart';
+export 'package:shell/ui/frames/device_now_frame.dart';
 export 'package:shell/ui/frames/devices_frame.dart';
 export 'package:shell/ui/frames/dock_settings.dart';
 export 'package:shell/ui/frames/drop_targets_frame.dart';

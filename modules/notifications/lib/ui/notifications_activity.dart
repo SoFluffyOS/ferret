@@ -20,6 +20,7 @@ abstract final class NotificationsActivity {
       if (notifications case [final latest, ...])
         ActivityItem(
           id: deviceId,
+          deviceId: deviceId,
           icon: LucideIcons.bell,
           title: switch (notifications.length) {
             1 => _single(l10n, latest),

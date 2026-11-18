@@ -38,6 +38,7 @@ List<ActivityItem> messagesActivity({
         deviceName: deviceName(deviceId),
         onOpen: () => onOpen(deviceId, conversation.threadId.toInt()),
         id: 'messages.$deviceId/${conversation.threadId}',
+        deviceId: deviceId,
       ),
   ];
 }
@@ -48,8 +49,10 @@ ActivityItem _line({
   required String deviceName,
   required void Function() onOpen,
   required String id,
+  required String deviceId,
 }) => ActivityItem(
   id: id,
+  deviceId: deviceId,
   icon: LucideIcons.messageSquare,
   title: l10n.activityTitle(conversation.title, deviceName),
   detail: switch (conversation.snippet.isEmpty) {

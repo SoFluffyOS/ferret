@@ -23,6 +23,7 @@ class ActivityItem {
     this.actions = const [],
     this.onTap,
     this.onDismiss,
+    this.deviceId,
   });
 
   /// Stays the same while the line is about the same thing, and is unique
@@ -34,6 +35,11 @@ class ActivityItem {
   /// What happened and with which device, such as "Copied on Pixel 9" or
   /// "IMG_2041.jpg from Pixel 9".
   final String title;
+
+  /// The paired device this happened with, so a window can show the line
+  /// next to that device. Null when it is about no device in particular,
+  /// or about one that isn't paired.
+  final String? deviceId;
 
   /// The second line: a preview, or where it went ("Saved to Downloads").
   /// Never anything the feature marks as sensitive.

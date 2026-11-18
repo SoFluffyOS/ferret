@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/frames/activity_pane_frame.dart';
 import 'package:shell/ui/frames/sidebar_frame.dart';
 import 'package:shell/ui/frames/window_menu_frame.dart';
 import 'package:shell/ui/frames/window_title_frame.dart';
@@ -56,6 +57,7 @@ class WindowShellFrame extends StatelessWidget {
               ),
             },
             Expanded(child: ClipRect(child: child)),
+            const ActivityPaneFrame(),
           ],
         ),
       ),

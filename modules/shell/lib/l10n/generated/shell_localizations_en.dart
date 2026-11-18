@@ -1262,4 +1262,23 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get menuFixConnection => 'Fix Connection…';
+
+  @override
+  String get activityPaneNow => 'Now';
+
+  @override
+  String activityPaneRecent(String device) {
+    return 'Recent with $device';
+  }
+
+  @override
+  String activityPaneEmpty(String device) {
+    return 'Things you send and receive with $device show here.';
+  }
+
+  @override
+  String get menuShowActivityPane => 'Show Activity Pane';
+
+  @override
+  String get menuHideActivityPane => 'Hide Activity Pane';
 }

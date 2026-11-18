@@ -9,6 +9,7 @@ enum WindowCommand {
   openSettings,
   openActivity,
   toggleSidebar,
+  toggleActivityPane,
   nextDevice,
   previousDevice,
   back,
@@ -75,6 +76,11 @@ abstract final class WindowShortcuts {
         control: true,
       ),
     },
+    .toggleActivityPane => _primary(
+      LogicalKeyboardKey.digit0,
+      platform,
+      alt: true,
+    ),
     .nextDevice => _primary(LogicalKeyboardKey.arrowDown, platform, alt: true),
     .previousDevice => _primary(
       LogicalKeyboardKey.arrowUp,

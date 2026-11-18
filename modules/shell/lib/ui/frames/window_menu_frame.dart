@@ -36,6 +36,9 @@ class WindowMenuFrame extends StatelessWidget {
     final isSidebarHidden = context.select<WindowNavViewModel, bool>(
       (viewModel) => viewModel.isSidebarHidden,
     );
+    final isActivityPaneHidden = context.select<WindowNavViewModel, bool>(
+      (viewModel) => viewModel.isActivityPaneHidden,
+    );
     final device = context.select<EngineHost, DeviceStatus?>(
       (host) => switch (selection) {
         DeviceDestination(:final deviceId) => host.statusOf(deviceId),
@@ -63,6 +66,7 @@ class WindowMenuFrame extends StatelessWidget {
       .openSettings: () => nav.select(const SettingsDestination()),
       .openActivity: () => nav.select(const ActivityDestination()),
       .toggleSidebar: nav.toggleSidebar,
+      .toggleActivityPane: nav.toggleActivityPane,
       .nextDevice: () => nav.selectDeviceBy(1),
       .previousDevice: () => nav.selectDeviceBy(-1),
       .back: () => unawaited(nav.navigatorKey.currentState?.maybePop()),
@@ -109,6 +113,7 @@ class WindowMenuFrame extends StatelessWidget {
           sections: sections,
           onSection: selectSection,
           isSidebarHidden: isSidebarHidden,
+          isActivityPaneHidden: isActivityPaneHidden,
         ),
         child: keyed,
       ),
@@ -150,6 +155,7 @@ class WindowMenuFrame extends StatelessWidget {
     required List<(String, String)> sections,
     required void Function(int index) onSection,
     required bool isSidebarHidden,
+    required bool isActivityPaneHidden,
   }) {
     final l10n = context.shellL10n;
     final views = context.read<AppViews?>();
@@ -218,6 +224,10 @@ class WindowMenuFrame extends StatelessWidget {
                 true => l10n.menuShowSidebar,
                 false => l10n.menuHideSidebar,
               }, .toggleSidebar),
+              item(switch (isActivityPaneHidden) {
+                true => l10n.menuShowActivityPane,
+                false => l10n.menuHideActivityPane,
+              }, .toggleActivityPane),
             ],
           ),
           PlatformMenuItemGroup(

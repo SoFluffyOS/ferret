@@ -2115,6 +2115,36 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Fix Connection…'**
   String get menuFixConnection;
+
+  /// No description provided for @activityPaneNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get activityPaneNow;
+
+  /// No description provided for @activityPaneRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent with {device}'**
+  String activityPaneRecent(String device);
+
+  /// No description provided for @activityPaneEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Things you send and receive with {device} show here.'**
+  String activityPaneEmpty(String device);
+
+  /// No description provided for @menuShowActivityPane.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Activity Pane'**
+  String get menuShowActivityPane;
+
+  /// No description provided for @menuHideActivityPane.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Activity Pane'**
+  String get menuHideActivityPane;
 }
 
 class _ShellLocalizationsDelegate

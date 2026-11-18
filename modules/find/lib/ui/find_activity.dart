@@ -14,6 +14,7 @@ List<ActivityItem> findActivity(
   for (final ring in viewModel.outgoing)
     ActivityItem(
       id: 'find.${ring.deviceId}',
+      deviceId: ring.deviceId,
       icon: outgoingIcon(ring.phase),
       tone: outgoingTone(ring.phase),
       title: l10n.outgoingTitle(ring),

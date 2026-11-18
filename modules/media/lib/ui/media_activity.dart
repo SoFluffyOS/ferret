@@ -33,6 +33,7 @@ abstract final class MediaActivity {
     return [
       ActivityItem(
         id: itemId,
+        deviceId: player.deviceId,
         icon: LucideIcons.music,
         title: _title(l10n, player),
         detail: switch (artist.isEmpty) {

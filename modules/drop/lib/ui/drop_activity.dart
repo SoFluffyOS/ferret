@@ -27,6 +27,7 @@ List<ActivityItem> dropActivity(
       else if (!transfer.needsAnswer && !viewModel.needsPin(transfer))
         ActivityItem(
           id: 'drop.${transfer.id}',
+          deviceId: transfer.deviceId,
           icon: _icon(transfer),
           tone: _tone(transfer),
           title: _title(l10n, texts, transfer),

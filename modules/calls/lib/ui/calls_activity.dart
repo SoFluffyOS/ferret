@@ -28,6 +28,7 @@ ActivityItem _line(
 
   return ActivityItem(
     id: 'calls.${call.key}',
+    deviceId: call.deviceId,
     icon: _iconOf(call),
     leading: CallerAvatar(
       photoJpeg: call.call.photoJpeg,
