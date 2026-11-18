@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/foundation.dart';
@@ -92,6 +94,20 @@ class _Themed extends StatelessWidget {
   final FerretMenubar? menubar;
   final Widget child;
 
+  /// The desktop window has a title bar to keep up to date; the popover and
+  /// a phone's screen have none.
+  void Function(String title)? _windowTitle(BuildContext context) {
+    final menubar = this.menubar;
+    final isMainView =
+        View.of(context).viewId ==
+        WidgetsBinding.instance.platformDispatcher.implicitView?.viewId;
+    if (menubar == null || isMainView) {
+      return null;
+    }
+
+    return (title) => unawaited(menubar.setWindowTitle(title));
+  }
+
   @override
   Widget build(BuildContext context) {
     final brightness = MediaQuery.platformBrightnessOf(context);
@@ -113,7 +129,10 @@ class _Themed extends StatelessWidget {
               menubar: menubar,
               child: PairingPromptListener(
                 navigatorKey: navigatorKey,
-                child: WindowShellFrame(child: child),
+                child: WindowShellFrame(
+                  onTitle: _windowTitle(context),
+                  child: child,
+                ),
               ),
             ),
           ),

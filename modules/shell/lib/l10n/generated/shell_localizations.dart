@@ -2007,6 +2007,84 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'{device} — {section}'**
   String windowTitleSection(String device, String section);
+
+  /// No description provided for @menuFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get menuFile;
+
+  /// No description provided for @menuView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get menuView;
+
+  /// No description provided for @menuDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get menuDevice;
+
+  /// No description provided for @menuWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Window'**
+  String get menuWindow;
+
+  /// No description provided for @menuSendFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Files…'**
+  String get menuSendFiles;
+
+  /// No description provided for @menuSendClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Clipboard'**
+  String get menuSendClipboard;
+
+  /// No description provided for @menuCloseWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Window'**
+  String get menuCloseWindow;
+
+  /// No description provided for @menuShowSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Sidebar'**
+  String get menuShowSidebar;
+
+  /// No description provided for @menuHideSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Sidebar'**
+  String get menuHideSidebar;
+
+  /// No description provided for @menuBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get menuBack;
+
+  /// No description provided for @menuNextDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Device'**
+  String get menuNextDevice;
+
+  /// No description provided for @menuPreviousDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Device'**
+  String get menuPreviousDevice;
+
+  /// No description provided for @menuFixConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix Connection…'**
+  String get menuFixConnection;
 }
 
 class _ShellLocalizationsDelegate

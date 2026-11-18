@@ -348,6 +348,9 @@ protocol MenubarHostApi {
   /// running in the menubar.
   func closeWindow() throws
   func isWindowOpen() throws -> Bool
+  /// What the desktop window's title bar says, such as the device and the
+  /// section it shows.
+  func setWindowTitle(title: String) throws
   /// Lets people drag the popover off into its own window.
   func setDetachable(detachable: Bool) throws
   /// Whether a drop where the pointer is now, over the view [viewId], would
@@ -527,6 +530,23 @@ class MenubarHostApiSetup {
       }
     } else {
       isWindowOpenChannel.setMessageHandler(nil)
+    }
+    /// What the desktop window's title bar says, such as the device and the
+    /// section it shows.
+    let setWindowTitleChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setWindowTitle\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setWindowTitleChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let titleArg = args[0] as! String
+        do {
+          try api.setWindowTitle(title: titleArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setWindowTitleChannel.setMessageHandler(nil)
     }
     /// Lets people drag the popover off into its own window.
     let setDetachableChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)

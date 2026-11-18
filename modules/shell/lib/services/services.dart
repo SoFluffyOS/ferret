@@ -13,6 +13,7 @@ export 'package:shell/services/pause_controller.dart';
 export 'package:shell/services/presence_reporter.dart';
 export 'package:shell/services/secret_store_factory.dart';
 export 'package:shell/services/system_notifier.dart';
+export 'package:shell/services/window_intents.dart';
 export 'package:shell/services/window_layout.dart';
 export 'package:shell/services/window_nav_registry.dart';
 export 'package:shell/services/windows_firewall.dart';

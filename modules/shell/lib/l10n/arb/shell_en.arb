@@ -948,5 +948,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "menuFile": "File",
+  "menuView": "View",
+  "menuDevice": "Device",
+  "menuWindow": "Window",
+  "menuSendFiles": "Send Files…",
+  "menuSendClipboard": "Send Clipboard",
+  "menuCloseWindow": "Close Window",
+  "menuShowSidebar": "Show Sidebar",
+  "menuHideSidebar": "Hide Sidebar",
+  "menuBack": "Back",
+  "menuNextDevice": "Next Device",
+  "menuPreviousDevice": "Previous Device",
+  "menuFixConnection": "Fix Connection…"
 }

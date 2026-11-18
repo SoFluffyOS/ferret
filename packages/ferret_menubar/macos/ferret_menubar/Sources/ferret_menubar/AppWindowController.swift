@@ -12,7 +12,7 @@ final class AppWindowController: NSObject, NSWindowDelegate {
     private var dragView: DragDestinationView?
     private lazy var canAddViews = MultiView.enable(on: engine)
 
-    private static let defaultSize = NSSize(width: 960, height: 680)
+    private static let defaultSize = NSSize(width: 1080, height: 720)
     private static let minimumSize = NSSize(width: 720, height: 480)
 
     var onOpened: ((Int64) -> Void)?
@@ -77,6 +77,10 @@ final class AppWindowController: NSObject, NSWindowDelegate {
         guard isOpen else { return }
 
         window.close()
+    }
+
+    func setTitle(_ title: String) {
+        window.title = title
     }
 
     func setDropAllowed(_ allowed: Bool) {

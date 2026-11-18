@@ -150,6 +150,10 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         Self.windowController?.isOpen ?? false
     }
 
+    func setWindowTitle(title: String) throws {
+        Self.windowController?.setTitle(title)
+    }
+
     func setDropAllowed(viewId: Int64, allowed: Bool) throws {
         if viewId == Self.popoverViewId {
             Self.controller?.setDropAllowed(allowed)

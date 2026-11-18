@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/sidebar_frame.dart';
+import 'package:shell/ui/frames/window_menu_frame.dart';
+import 'package:shell/ui/frames/window_title_frame.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -13,10 +15,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// more room the navigator becomes the content pane next to the device
 /// list, so every page the app pushes lands in the pane.
 class WindowShellFrame extends StatelessWidget {
-  const WindowShellFrame({super.key, required this.child});
+  const WindowShellFrame({super.key, required this.child, this.onTitle});
 
   /// The view's navigator.
   final Widget child;
+
+  /// Hears what the view shows, for a window's title bar.
+  final void Function(String title)? onTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +34,15 @@ class WindowShellFrame extends StatelessWidget {
     );
 
     return _WindowNavigator(
+      child: _Framed(
+        onTitle: onTitle,
+        child: _split(context, isSidebarHidden),
+      ),
+    );
+  }
+
+  Widget _split(BuildContext context, bool isSidebarHidden) {
+    return WindowMenuFrame(
       child: ColoredBox(
         color: context.palette.background,
         child: Row(
@@ -46,6 +60,23 @@ class WindowShellFrame extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _Framed extends StatelessWidget {
+  const _Framed({required this.onTitle, required this.child});
+
+  final void Function(String title)? onTitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final onTitle = this.onTitle;
+    if (onTitle == null) {
+      return child;
+    }
+
+    return WindowTitleFrame(onTitle: onTitle, child: child);
   }
 }
 

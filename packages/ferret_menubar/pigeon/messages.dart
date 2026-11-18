@@ -92,6 +92,10 @@ abstract class MenubarHostApi {
 
   bool isWindowOpen();
 
+  /// What the desktop window's title bar says, such as the device and the
+  /// section it shows.
+  void setWindowTitle(String title);
+
   /// Lets people drag the popover off into its own window.
   void setDetachable(bool detachable);
 

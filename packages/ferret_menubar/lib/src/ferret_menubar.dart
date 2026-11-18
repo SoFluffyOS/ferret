@@ -100,6 +100,11 @@ class FerretMenubar implements MenubarFlutterApi {
     return _api.isWindowOpen();
   }
 
+  /// Names the desktop window after what it shows, such as
+  /// "Pixel 9 — Messages".
+  Future<void> setWindowTitle(String title) =>
+      _call(() => _api.setWindowTitle(title));
+
   Future<void> setDetachable(bool detachable) =>
       _call(() => _api.setDetachable(detachable));
 

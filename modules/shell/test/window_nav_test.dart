@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -341,6 +341,32 @@ void main() {
       expect(find.byType(SidebarFrame), findsNothing);
       expect(find.text('A page on top'), findsOneWidget);
       expect(featureContext.navigatorKey.currentState?.canPop(), isTrue);
+    });
+
+    testWidgets('keys open sections, Settings and hide the device list', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+
+      Future<void> press(LogicalKeyboardKey key) async {
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.control);
+        await tester.sendKeyEvent(key);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.control);
+        await tester.pump();
+      }
+
+      await press(LogicalKeyboardKey.digit2);
+      expect(find.text('Texts of Pixel 9'), findsOneWidget);
+
+      await press(LogicalKeyboardKey.digit1);
+      expect(find.byType(DevicePage), findsOneWidget);
+
+      await press(LogicalKeyboardKey.comma);
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      await press(LogicalKeyboardKey.keyB);
+      expect(find.byType(SidebarFrame), findsNothing);
+      expect(find.byType(SettingsPage), findsOneWidget);
     });
 
     testWidgets('a section that is gone falls back to the Overview', (

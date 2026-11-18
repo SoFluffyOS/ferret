@@ -1204,4 +1204,43 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String windowTitleSection(String device, String section) {
     return '$device — $section';
   }
+
+  @override
+  String get menuFile => 'File';
+
+  @override
+  String get menuView => 'View';
+
+  @override
+  String get menuDevice => 'Device';
+
+  @override
+  String get menuWindow => 'Window';
+
+  @override
+  String get menuSendFiles => 'Send Files…';
+
+  @override
+  String get menuSendClipboard => 'Send Clipboard';
+
+  @override
+  String get menuCloseWindow => 'Close Window';
+
+  @override
+  String get menuShowSidebar => 'Show Sidebar';
+
+  @override
+  String get menuHideSidebar => 'Hide Sidebar';
+
+  @override
+  String get menuBack => 'Back';
+
+  @override
+  String get menuNextDevice => 'Next Device';
+
+  @override
+  String get menuPreviousDevice => 'Previous Device';
+
+  @override
+  String get menuFixConnection => 'Fix Connection…';
 }
