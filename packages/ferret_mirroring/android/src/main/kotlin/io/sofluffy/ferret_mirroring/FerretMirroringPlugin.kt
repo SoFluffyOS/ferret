@@ -1,18 +1,157 @@
 package io.sofluffy.ferret_mirroring
 
+import android.content.Context
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.resume
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
-/** FerretMirroringPlugin */
+/** Captures this phone's screen for Dart: consent, the service, and the frames. */
 class FerretMirroringPlugin :
     FlutterPlugin,
-    FerretMirroringPluginApi {
-    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        FerretMirroringPluginApi.setUp(flutterPluginBinding.binaryMessenger, this)
+    MirrorCaptureHostApi,
+    MirrorBridge.Listener {
+    private var context: Context? = null
+    private var flutterApi: MirrorCaptureFlutterApi? = null
+    private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
+    /** Frames handed to Dart that it hasn't taken yet. */
+    private val waitingForDart = AtomicInteger(0)
+
+    @Volatile
+    private var skippingToKeyframe = false
+
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        context = binding.applicationContext
+        flutterApi = MirrorCaptureFlutterApi(binding.binaryMessenger)
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        MirrorCaptureHostApi.setUp(binding.binaryMessenger, this)
+        MirrorBridge.listener = this
     }
 
-    override fun getPlatformVersion(): String = "Android ${android.os.Build.VERSION.RELEASE}"
-
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        FerretMirroringPluginApi.setUp(binding.binaryMessenger, null)
+        MirrorCaptureHostApi.setUp(binding.binaryMessenger, null)
+        if (MirrorBridge.listener === this) {
+            MirrorBridge.listener = null
+        }
+
+        MirrorBridge.service?.finish()
+        scope.cancel()
+        flutterApi = null
+        context = null
+    }
+
+    override fun support(): NativeCaptureSupport = NativeCaptureSupport(h264 = H264Encoder.isSupported(), jpeg = true)
+
+    override suspend fun requestConsent(texts: NativeConsentTexts, timeoutSeconds: Long): NativeConsentResult {
+        val appContext = context ?: return NativeConsentResult.FAILED
+        MirrorBridge.service?.finish()
+
+        return suspendCancellableCoroutine { continuation ->
+            ProjectionConsent.request(appContext, texts, timeoutSeconds) { result ->
+                if (continuation.isActive) {
+                    continuation.resume(result)
+                }
+            }
+        }
+    }
+
+    override fun cancelConsent() {
+        val appContext = context ?: return
+        ProjectionConsent.complete(appContext, NativeConsentResult.TIMED_OUT)
+    }
+
+    override suspend fun start(options: NativeCaptureOptions): Boolean {
+        val service = MirrorBridge.service ?: return false
+        waitingForDart.set(0)
+        skippingToKeyframe = false
+        return service.begin(options, this)
+    }
+
+    override fun stop() {
+        MirrorBridge.service?.finish()
+    }
+
+    override fun requestKeyframe() {
+        MirrorBridge.service?.requestKeyframe()
+    }
+
+    override fun setBitrate(bitrate: Long) {
+        MirrorBridge.service?.setBitrate(bitrate.toInt())
+    }
+
+    override fun onConfig(config: NativeStreamConfig) {
+        toDart { api -> api.onConfig(config) }
+    }
+
+    /**
+     * Called on the capture thread. When Dart falls behind, frames are
+     * skipped up to the next keyframe, because the ones in between can't be
+     * decoded without the skipped one.
+     */
+    override fun onFrame(data: ByteArray, ptsUs: Long, keyframe: Boolean) {
+        val waiting = waitingForDart.get()
+        if (skippingToKeyframe && !keyframe) {
+            return
+        }
+
+        if (waiting >= MAX_WAITING_FRAMES) {
+            skippingToKeyframe = true
+            return
+        }
+
+        if (skippingToKeyframe) {
+            skippingToKeyframe = false
+        }
+
+        waitingForDart.incrementAndGet()
+        scope.launch {
+            try {
+                flutterApi?.onFrame(NativeFrame(data, ptsUs, keyframe))
+            } catch (error: Throwable) {
+                skippingToKeyframe = true
+            } finally {
+                val left = waitingForDart.decrementAndGet()
+                if (left == 0 && skippingToKeyframe) {
+                    MirrorBridge.service?.requestKeyframe()
+                }
+            }
+        }
+    }
+
+    override fun onScreenOff(off: Boolean) {
+        toDart { api -> api.onScreenOff(off) }
+    }
+
+    override fun onEnded(end: NativeCaptureEnd) {
+        scope.launch {
+            MirrorBridge.service?.finish()
+            try {
+                flutterApi?.onEnded(end)
+            } catch (error: Throwable) {
+                android.util.Log.w(TAG, "Dart did not take the end of the capture", error)
+            }
+        }
+    }
+
+    private fun toDart(send: suspend (MirrorCaptureFlutterApi) -> Unit) {
+        scope.launch {
+            val api = flutterApi ?: return@launch
+            try {
+                send(api)
+            } catch (error: Throwable) {
+                android.util.Log.w(TAG, "Dart did not take a capture event", error)
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "FerretMirroring"
+        private const val MAX_WAITING_FRAMES = 8
     }
 }

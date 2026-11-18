@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'ferret_mirroring'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'Decodes a mirrored screen for Ferret screen mirroring.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+Decodes H.264 with VideoToolbox into a Flutter texture.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -23,8 +23,9 @@ A new Flutter plugin project.
   # s.resource_bundles = {'ferret_mirroring_privacy' => ['ferret_mirroring/Sources/ferret_mirroring/PrivacyInfo.xcprivacy']}
 
   s.dependency 'FlutterMacOS'
+  s.frameworks = 'VideoToolbox', 'CoreMedia', 'CoreVideo'
 
-  s.platform = :osx, '10.11'
+  s.platform = :osx, '12.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

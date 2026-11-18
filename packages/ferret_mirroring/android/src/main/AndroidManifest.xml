@@ -1,3 +1,21 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.sofluffy.ferret_mirroring">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <service
+            android:name="io.sofluffy.ferret_mirroring.MirrorService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <activity
+            android:name="io.sofluffy.ferret_mirroring.ProjectionConsentActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:taskAffinity="io.sofluffy.ferret_mirroring.consent"
+            android:theme="@style/FerretMirroringInvisible" />
+    </application>
 </manifest>

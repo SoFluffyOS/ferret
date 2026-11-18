@@ -24,11 +24,5 @@ flutter:
       android:
         package: io.sofluffy.ferret_mirroring
         pluginClass: FerretMirroringPlugin
-      ios:
-        pluginClass: FerretMirroringPlugin
-      linux:
-        pluginClass: FerretMirroringPlugin
       macos:
         pluginClass: FerretMirroringPlugin
-      windows:
-        pluginClass: FerretMirroringPluginCApi

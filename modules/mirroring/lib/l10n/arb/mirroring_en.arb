@@ -1,4 +1,383 @@
 {
   "@@locale": "en",
-  "title": "Screen mirroring"
+  "title": "Screen mirroring",
+  "showScreen": "Show screen",
+  "stop": "Stop",
+  "cancel": "Cancel",
+  "tryAgain": "Try again",
+  "back": "Back",
+  "dismiss": "Dismiss",
+  "open": "Open",
+  "fit": "Fit",
+  "actualSize": "1:1",
+  "fitTooltip": "Fit the picture to the window",
+  "actualSizeTooltip": "One phone pixel per screen pixel",
+  "fullScreen": "Full screen",
+  "exitFullScreen": "Exit full screen",
+  "requestingTitle": "Asking {device}…",
+  "@requestingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "requestingBody": "This takes a moment.",
+  "waitingTitle": "Answer on {device}",
+  "@waitingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingBody": "Android asks whether to share the screen. Tap Start on {device}. If the phone shows nothing, open the notice from Ferret there.",
+  "@waitingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "startingTitle": "{device} said yes",
+  "@startingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "startingBody": "Waiting for the first picture…",
+  "screenOffTitle": "{device}'s screen is off",
+  "@screenOffTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "screenOffBody": "Wake the phone to see it again.",
+  "endDeniedTitle": "{device} said no",
+  "@endDeniedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endDeniedBody": "Someone tapped Cancel on the phone's prompt. You can ask again in half a minute.",
+  "endTimedOutTitle": "Nobody answered on {device}",
+  "@endTimedOutTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endTimedOutBody": "The question stays on the phone for a minute. Wake the phone, then try again.",
+  "endBusyTitle": "{device} is already sharing its screen",
+  "@endBusyTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endBusyBody": "A phone shares its screen with one device at a time. Stop the other one first.",
+  "endUnsupportedTitle": "{device} can't share its screen",
+  "@endUnsupportedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endUnsupportedBody": "Screen mirroring needs an Android phone with Ferret.",
+  "endTurnedOffTitle": "Screen mirroring is off on {device}",
+  "@endTurnedOffTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endTurnedOffBody": "Turn it on in Ferret on the phone: Settings, then Screen mirroring.",
+  "endCannotAskTitle": "{device} couldn't show the question",
+  "@endCannotAskTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endCannotAskBody": "Open Ferret on the phone, or allow its notifications, then try again.",
+  "endVersionTitle": "{device} needs a newer Ferret",
+  "@endVersionTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endVersionBody": "Update Ferret on the phone, then try again.",
+  "endNoCodecTitle": "{device} can't send a picture this computer can show",
+  "@endNoCodecTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endNoCodecBody": "Update Ferret on both devices, then try again.",
+  "endNotConnectedTitle": "{device} isn't connected",
+  "@endNotConnectedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endNotConnectedBody": "Open Ferret on the phone and check both devices are on the same Wi-Fi.",
+  "endNoAnswerTitle": "{device} didn't answer",
+  "@endNoAnswerTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endNoAnswerBody": "Check that Ferret is running on the phone, then try again.",
+  "endStoppedHereTitle": "You stopped mirroring",
+  "endStoppedHereBody": "{device} no longer shares its screen.",
+  "@endStoppedHereBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endStoppedOnPhoneTitle": "Stopped on {device}",
+  "@endStoppedOnPhoneTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endStoppedOnPhoneBody": "Someone tapped Stop on the phone.",
+  "endSystemEndedTitle": "{device} stopped sharing",
+  "@endSystemEndedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endSystemEndedBody": "Android ends screen sharing when the phone locks, or when its owner stops it from the status bar.",
+  "endLostConnectionTitle": "Lost the connection to {device}",
+  "@endLostConnectionTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endLostConnectionBody": "Ferret reconnects on its own. Try again once the phone is back.",
+  "endFailedTitle": "Mirroring stopped working",
+  "endFailedBody": "Capturing the screen failed on {device}. Try again.",
+  "@endFailedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endDecoderFailedTitle": "This computer couldn't show the picture",
+  "endDecoderFailedBody": "Decoding the video failed here. Try again.",
+  "statusPicture": "{codec} · {width}×{height} · {fps} fps",
+  "@statusPicture": {
+    "placeholders": {
+      "codec": {
+        "type": "String"
+      },
+      "width": {
+        "type": "int"
+      },
+      "height": {
+        "type": "int"
+      },
+      "fps": {
+        "type": "int"
+      }
+    }
+  },
+  "statusLatency": "{milliseconds} ms",
+  "@statusLatency": {
+    "placeholders": {
+      "milliseconds": {
+        "type": "int"
+      }
+    }
+  },
+  "statusBitrate": "{megabits} Mbps",
+  "@statusBitrate": {
+    "placeholders": {
+      "megabits": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDropped": "{count} dropped",
+  "@statusDropped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "codecH264": "H.264",
+  "codecJpeg": "JPEG",
+  "viewingTitle": "Showing {device}'s screen",
+  "@viewingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "viewingWaitingTitle": "Waiting for {device}",
+  "@viewingWaitingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "viewingWaitingBody": "Answer the prompt on the phone.",
+  "sinceTime": "Since {time}",
+  "@sinceTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sharingTitle": "Sharing screen with {device}",
+  "@sharingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "sharingBody": "Everything on this screen is visible there. Since {time}.",
+  "@sharingBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "askingTitle": "{device} wants to see this screen",
+  "@askingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askingBody": "Answer Android's prompt. If you don't see it, tap the notice from Ferret.",
+  "auditShared": "{device} viewed your screen for {duration} at {time}",
+  "@auditShared": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auditViewed": "You viewed {device}'s screen for {duration} at {time}",
+  "@auditViewed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "durationSeconds": "{seconds, plural, =1{1 s} other{{seconds} s}}",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{minutes, plural, =1{1 min} other{{minutes} min}}",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} h {minutes} min",
+  "@durationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "noticeAskBody": "Tap to answer",
+  "noticeAskChannel": "Screen sharing requests",
+  "noticeSharingBody": "Everything on this screen is visible there",
+  "noticeSharingChannel": "Screen sharing",
+  "settingsAllow": "Let my computers ask to see this screen",
+  "settingsAllowBody": "Android asks you every time. Nothing is shared before you say yes.",
+  "settingsUnsupported": "This phone can't capture its screen",
+  "settingsScreenOffNote": "Turning the phone's screen off while it is mirrored needs root, so Ferret doesn't offer it.",
+  "settingsViewerHint": "Open a connected Android phone and choose Show screen. The phone asks its owner every time.",
+  "settingsHistoryTitle": "History",
+  "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",
+  "settingsHistoryEmptyViewed": "You haven't mirrored a phone yet.",
+  "clearHistory": "Clear history",
+  "healthViewing": "Showing its screen here",
+  "healthTurnedOff": "Screen mirroring is off on {device}",
+  "@healthTurnedOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthUnsupported": "{device} can't share its screen",
+  "@healthUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthCannotAsk": "{device} couldn't show the question. Open Ferret on it.",
+  "@healthCannotAsk": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

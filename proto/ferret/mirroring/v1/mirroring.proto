@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package ferret.mirroring.v1;
+
+// Screen mirroring shows one device's screen (the source, an Android phone)
+// on another (the viewer, a computer). The viewer asks; the source's owner
+// answers the system's own screen capture prompt every time, sees that the
+// screen is shared while it lasts, and either side can stop at any moment.
+//
+// Versioning: `StartRequest.version` and `StartAccept.version` carry the
+// version of these messages each side speaks, currently 1. A source serves
+// any viewer whose version is not newer than its own and answers with its
+// own. Fields and enum values added later in the same version are optional:
+// a receiver ignores what it doesn't know.
+
+// How the pictures are encoded.
+enum Codec {
+  CODEC_UNSPECIFIED = 0;
+  // H.264 video. `Frame.data` is one access unit in Annex-B form.
+  CODEC_H264 = 1;
+  // A JPEG picture per frame, for viewers without a video decoder. Fewer
+  // frames per second and a smaller picture.
+  CODEC_JPEG = 2;
+}
+
+// Asks the source to show its screen. Expects a `StartPending` or
+// `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
+// or `StartDeny` later, without expecting a reply.
+message StartRequest {
+  // The version of these messages the viewer speaks.
+  uint32 version = 1;
+  // What the viewer can decode, best first.
+  repeated Codec codecs = 2;
+  // The largest picture the viewer wants, in pixels. 0 leaves it to the
+  // source, which never sends more than 1920 on the long side.
+  uint32 max_width = 3;
+  uint32 max_height = 4;
+  // 0 leaves it to the source.
+  uint32 max_fps = 5;
+}
+
+// The source is asking its owner. The answer follows as `StartAccept` or
+// `StartDeny`.
+message StartPending {
+  // How long the source waits for its owner before it denies with
+  // `DENY_REASON_TIMEOUT`.
+  uint32 timeout_seconds = 1;
+}
+
+// The owner said yes. A `StreamConfig` and `Frame`s follow until either
+// side sends `Stop`.
+message StartAccept {
+  // The version of these messages the source speaks.
+  uint32 version = 1;
+  // The codec the source picked from `StartRequest.codecs`.
+  Codec codec = 2;
+}
+
+// Why a source said no.
+enum DenyReason {
+  DENY_REASON_UNSPECIFIED = 0;
+  // Its owner said no on the system prompt.
+  DENY_REASON_DENIED = 1;
+  // Nobody answered on the source in time.
+  DENY_REASON_TIMEOUT = 2;
+  // It already shares its screen, or is asking its owner, for another
+  // device.
+  DENY_REASON_BUSY = 3;
+  // This device can't capture its screen.
+  DENY_REASON_UNSUPPORTED = 4;
+  // Its owner turned screen mirroring off.
+  DENY_REASON_TURNED_OFF = 5;
+  // The viewer speaks a newer version.
+  DENY_REASON_VERSION = 6;
+  // The source can't encode any of `StartRequest.codecs`.
+  DENY_REASON_NO_CODEC = 7;
+  // The source couldn't show the question, such as when its app is in the
+  // background and may not post notices.
+  DENY_REASON_CANNOT_ASK = 8;
+  // Capturing or encoding failed to start.
+  DENY_REASON_FAILED = 9;
+}
+
+message StartDeny {
+  DenyReason reason = 1;
+}
+
+// How to decode the frames that follow. The source sends it before the
+// first frame, and again with a new `config_id` when the picture changes,
+// such as when the phone is rotated.
+message StreamConfig {
+  // Goes up by one with every new config in a mirroring session.
+  uint32 config_id = 1;
+  Codec codec = 2;
+  // Size of the picture in pixels, as it should be shown.
+  uint32 width = 3;
+  uint32 height = 4;
+  // How the source's screen is rotated, in degrees clockwise: 0, 90, 180 or
+  // 270. The picture is already upright; this is for information.
+  uint32 rotation = 5;
+  // The most frames per second the source sends.
+  uint32 fps = 6;
+  // H.264 only: the sequence and picture parameter sets, each one NAL unit
+  // without a start code.
+  bytes sps = 7;
+  bytes pps = 8;
+}
+
+// One picture. Sent without expecting a reply.
+message Frame {
+  // The `StreamConfig` this frame belongs to. A viewer drops frames of a
+  // config it hasn't seen.
+  uint32 config_id = 1;
+  // Goes up by one with every frame the source produced, including those
+  // it dropped, so a gap tells the viewer how many were dropped.
+  uint64 sequence = 2;
+  // When the picture was captured, in microseconds on the source's own
+  // clock. Only differences mean something.
+  int64 pts_us = 3;
+  // The frame decodes on its own. After a gap, a viewer waits for one.
+  bool keyframe = 4;
+  // H.264: one access unit in Annex-B form. JPEG: the picture.
+  bytes data = 5;
+}
+
+// The viewer lost its place, such as after a decoding error, and asks for a
+// frame that decodes on its own. Sent without expecting a reply.
+message KeyframeRequest {}
+
+// Why mirroring ended.
+enum StopReason {
+  STOP_REASON_UNSPECIFIED = 0;
+  // The viewer is done, such as when its mirror page closed, or it gave up
+  // waiting for the answer.
+  STOP_REASON_VIEWER_DONE = 1;
+  // Someone on the source pressed Stop.
+  STOP_REASON_STOPPED_ON_SOURCE = 2;
+  // The source's system ended the capture, such as when the phone was
+  // locked.
+  STOP_REASON_SYSTEM_ENDED = 3;
+  // The source's owner turned screen mirroring off.
+  STOP_REASON_TURNED_OFF = 4;
+  // Capturing or encoding stopped working.
+  STOP_REASON_FAILED = 5;
+  // A frame or request arrived for a mirroring session that isn't running.
+  STOP_REASON_NOT_MIRRORING = 6;
+}
+
+// Ends mirroring. Either side sends it, without expecting a reply. The
+// source stops capturing at once.
+message Stop {
+  StopReason reason = 1;
+}
+
+// Something about the source's screen changed while it is shared.
+message SourceState {
+  // The screen is off: no new frames until it is on again.
+  bool screen_off = 1;
+}
+
+// How the stream is doing. The viewer sends one about every second; the
+// source answers each with its own, and uses them to pick the bitrate.
+message Stats {
+  // When this was sent, in milliseconds on the sender's own clock.
+  int64 sent_at_ms = 1;
+  // Source only: `sent_at_ms` of the viewer's `Stats` this answers, so the
+  // viewer can measure the round trip.
+  int64 echo_sent_at_ms = 2;
+  // Viewer: frames shown in the last second. Source: frames sent.
+  uint32 fps = 3;
+  // Frames dropped in the last second: by the source because the
+  // connection backed up, or by the viewer because decoding fell behind.
+  uint32 dropped_frames = 4;
+  // Source only: what the encoder aims for right now, in kilobits per
+  // second. 0 for JPEG.
+  uint32 bitrate_kbps = 5;
+}
