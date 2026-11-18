@@ -12,10 +12,12 @@ With Ferret, files and text go straight from one of your devices to another, ove
 
 ## 📦 Send files
 
-- **On a computer:** drag files onto the Ferret window or the menubar icon. Or open a device and pick **Send files…**.
+- **On a computer:** drag files over the Ferret window. It turns into one big tile per device. Drop on the one you want, or on **All my devices**. Or open a device and pick **Send files…**.
+- **On a Mac:** drag files onto the menubar icon and hold for a moment. The popover springs open on the same tiles. Drop right on the icon instead and they go to your one connected device, or Ferret shows the tiles so you pick.
 - **On Android:** share from any app and pick **Send with Ferret**. Photos, PDFs, anything.
-- **One device connected?** The files go to it right away.
-- **Several connected?** Ferret asks which one.
+- **Offline devices** stay on screen, faded, and don't take the drop.
+
+After the drop, the tile shows the progress, then **Sent to Pixel 9**. If something went wrong, it says why and offers **Try again**.
 
 The Drop card on the home screen shows each transfer while it runs: progress, speed and time left. You can **Cancel** at any time.
 
