@@ -227,7 +227,7 @@ void main() {
     test('says why a transfer failed', () {
       expect(
         texts.status(sampleTransfer(status: .failed, failure: .checksum)),
-        'The file arrived damaged. Retry sends it again.',
+        'The file arrived damaged. Try again to send it once more.',
       );
       expect(
         texts.status(

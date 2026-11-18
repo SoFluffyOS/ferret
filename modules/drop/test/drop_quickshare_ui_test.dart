@@ -84,10 +84,10 @@ void main() {
     await start();
     await pumpCard(tester);
 
-    expect(find.text('Visible for 10 min'), findsNothing);
+    expect(find.text('Show 10 min'), findsNothing);
     expect(find.textContaining("can't"), findsNothing);
 
-    await tester.tap(find.text('Receive from other apps'));
+    await tester.tap(find.text('Let other phones send you files'));
     await tester.pump();
 
     expect(find.text('Quick Share'), findsOneWidget);
@@ -95,7 +95,7 @@ void main() {
       find.text('Let Android phones without Ferret send here.'),
       findsOneWidget,
     );
-    expect(find.text('Visible for 10 min'), findsOneWidget);
+    expect(find.text('Show 10 min'), findsOneWidget);
   });
 
   testWidgets('with Quick Share turned off the card does not mention it', (
@@ -113,7 +113,7 @@ void main() {
   ) async {
     await start(settings: {DropSettings.localSendEnabled: true});
     await pumpCard(tester);
-    await tester.tap(find.text('Receive from other apps'));
+    await tester.tap(find.text('Let other phones send you files'));
     await tester.pump();
 
     expect(find.byType(ReceiveRow), findsNWidgets(2));
@@ -133,12 +133,12 @@ void main() {
     expect(find.textContaining('Visible as Laptop · '), findsOneWidget);
     expect(find.textContaining(' left'), findsOneWidget);
     expect(find.text('Stop'), findsOneWidget);
-    expect(find.text('Visible for 10 min'), findsNothing);
+    expect(find.text('Show 10 min'), findsNothing);
 
     await tester.runAsync(viewModel.stopQuickShare);
     await tester.pump();
 
-    expect(find.text('Visible for 10 min'), findsOneWidget);
+    expect(find.text('Show 10 min'), findsOneWidget);
     expect(viewModel.quickShareSecondsLeft, isNull);
   });
 
@@ -152,7 +152,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('PIN 0482. It must match the one on the phone.'),
+      find.text('PIN 0482. It must match the one on Pixel 8 (Quick Share).'),
       findsOneWidget,
     );
     expect(find.text('192.168.1.30'), findsOneWidget);
@@ -160,7 +160,8 @@ void main() {
     expect(find.text('2 files · 2 MB'), findsOneWidget);
     expect(
       find.text(
-        "This device isn't paired with Ferret. Accept only if you expect it.",
+        "Pixel 8 (Quick Share) isn't paired with Ferret. "
+        'Accept only if you expect it.',
       ),
       findsOneWidget,
     );
@@ -191,11 +192,11 @@ void main() {
     expect(
       find.text(
         'The connection to Pixel 8 (Quick Share) dropped. '
-        'Send it again from there.',
+        'On Pixel 8 (Quick Share): send it again.',
       ),
       findsOneWidget,
     );
-    expect(find.text('Retry'), findsNothing);
+    expect(find.text('Try again'), findsNothing);
     expect(viewModel.canRetry(link.laptop.feature.transfers.single), isFalse);
 
     final texts = TransferTexts(lookupDropLocalizations(const Locale('en')));
@@ -204,11 +205,11 @@ void main() {
         _offer(status: .failed, failure: .protocol, needsAnswer: false),
       ),
       'Something went wrong with Pixel 8 (Quick Share). '
-      'Send it again from the phone.',
+      'On Pixel 8 (Quick Share): send it again.',
     );
     expect(
       texts.failure(sampleTransfer(status: .failed, failure: .protocol)),
-      contains('Retry to continue'),
+      contains('Try again to continue'),
     );
   });
 

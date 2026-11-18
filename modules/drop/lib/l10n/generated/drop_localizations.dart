@@ -97,7 +97,7 @@ abstract class DropLocalizations {
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Drop'**
+  /// **'Files'**
   String get title;
 
   /// No description provided for @cardEmpty.
@@ -115,7 +115,7 @@ abstract class DropLocalizations {
   /// No description provided for @otherApps.
   ///
   /// In en, this message translates to:
-  /// **'Receive from other apps'**
+  /// **'Let other phones send you files'**
   String get otherApps;
 
   /// No description provided for @sendFiles.
@@ -127,7 +127,7 @@ abstract class DropLocalizations {
   /// No description provided for @clearFinished.
   ///
   /// In en, this message translates to:
-  /// **'Clear'**
+  /// **'Clear finished'**
   String get clearFinished;
 
   /// No description provided for @transferFiles.
@@ -211,7 +211,7 @@ abstract class DropLocalizations {
   /// No description provided for @failureDeclined.
   ///
   /// In en, this message translates to:
-  /// **'{device} said no.'**
+  /// **'{device} declined.'**
   String failureDeclined(String device);
 
   /// No description provided for @failureTimedOut.
@@ -223,13 +223,19 @@ abstract class DropLocalizations {
   /// No description provided for @failureDisconnected.
   ///
   /// In en, this message translates to:
-  /// **'{device} went offline. It continues when it\'s back.'**
+  /// **'{device} went offline. It continues when {device} is back.'**
   String failureDisconnected(String device);
+
+  /// No description provided for @failureDisconnectedSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send to {device}. It went offline. The file wasn\'t sent.'**
+  String failureDisconnectedSending(String device);
 
   /// No description provided for @failureNotConnected.
   ///
   /// In en, this message translates to:
-  /// **'{device} isn\'t connected. Open Ferret on it, then retry.'**
+  /// **'{device} isn\'t connected. On {device}: open Ferret, then try again here.'**
   String failureNotConnected(String device);
 
   /// No description provided for @failureUnsupported.
@@ -241,19 +247,25 @@ abstract class DropLocalizations {
   /// No description provided for @failureStorage.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t write the file. Check free space and the receive folder.'**
+  /// **'Couldn\'t save the file. Check free space and the receive folder.'**
   String get failureStorage;
+
+  /// No description provided for @failureStorageSending.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t save the file. It may be out of space.'**
+  String failureStorageSending(String device);
 
   /// No description provided for @failureChecksum.
   ///
   /// In en, this message translates to:
-  /// **'The file arrived damaged. Retry sends it again.'**
+  /// **'The file arrived damaged. Try again to send it once more.'**
   String get failureChecksum;
 
   /// No description provided for @failureSourceChanged.
   ///
   /// In en, this message translates to:
-  /// **'The file changed or moved while it was being sent.'**
+  /// **'The file changed or moved while it was being sent. Send it again.'**
   String get failureSourceChanged;
 
   /// No description provided for @failureCancelledByPeer.
@@ -271,7 +283,7 @@ abstract class DropLocalizations {
   /// No description provided for @failureProtocol.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong with {device}. Retry to continue.'**
+  /// **'Something went wrong with {device}. Try again to continue.'**
   String failureProtocol(String device);
 
   /// No description provided for @actionOpen.
@@ -289,7 +301,7 @@ abstract class DropLocalizations {
   /// No description provided for @actionRetry.
   ///
   /// In en, this message translates to:
-  /// **'Retry'**
+  /// **'Try again'**
   String get actionRetry;
 
   /// No description provided for @actionCancel.
@@ -373,7 +385,7 @@ abstract class DropLocalizations {
   /// No description provided for @noticeNoDeviceBody.
   ///
   /// In en, this message translates to:
-  /// **'Connect one of your paired devices, then try again.'**
+  /// **'Open Ferret on one of your devices, then try again.'**
   String get noticeNoDeviceBody;
 
   /// No description provided for @noticeNothing.
@@ -457,7 +469,7 @@ abstract class DropLocalizations {
   /// No description provided for @failureUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach {device}. Keep LocalSend open on it, on the same Wi-Fi.'**
+  /// **'Couldn\'t reach {device}. On {device}: keep LocalSend open, on the same Wi-Fi.'**
   String failureUnreachable(String device);
 
   /// No description provided for @failureUntrusted.
@@ -523,8 +535,8 @@ abstract class DropLocalizations {
   /// No description provided for @offerWarning.
   ///
   /// In en, this message translates to:
-  /// **'This device isn\'t paired with Ferret. Accept only if you expect it.'**
-  String get offerWarning;
+  /// **'{device} isn\'t paired with Ferret. Accept only if you expect it.'**
+  String offerWarning(String device);
 
   /// No description provided for @pickerLocalSend.
   ///
@@ -547,7 +559,7 @@ abstract class DropLocalizations {
   /// No description provided for @pickerNoLocalSend.
   ///
   /// In en, this message translates to:
-  /// **'No LocalSend devices found. Open LocalSend on the other device, on the same Wi-Fi.'**
+  /// **'No LocalSend devices found. On the other device: open LocalSend, on the same Wi-Fi.'**
   String get pickerNoLocalSend;
 
   /// No description provided for @pickerNoDevices.
@@ -565,14 +577,14 @@ abstract class DropLocalizations {
   /// No description provided for @noticeGone.
   ///
   /// In en, this message translates to:
-  /// **'That device is gone'**
-  String get noticeGone;
+  /// **'Couldn\'t find {device}'**
+  String noticeGone(String device);
 
   /// No description provided for @noticeGoneBody.
   ///
   /// In en, this message translates to:
-  /// **'It\'s no longer on the network. Open LocalSend on it and try again.'**
-  String get noticeGoneBody;
+  /// **'On {device}: open LocalSend, then send again.'**
+  String noticeGoneBody(String device);
 
   /// No description provided for @receiveTitle.
   ///
@@ -619,7 +631,7 @@ abstract class DropLocalizations {
   /// No description provided for @receiveTurnOn.
   ///
   /// In en, this message translates to:
-  /// **'On for 10 min'**
+  /// **'Allow 10 min'**
   String get receiveTurnOn;
 
   /// No description provided for @receiveTryAgain.
@@ -661,20 +673,20 @@ abstract class DropLocalizations {
   /// No description provided for @failureConnectionLost.
   ///
   /// In en, this message translates to:
-  /// **'The connection to {device} dropped. Send it again from there.'**
+  /// **'The connection to {device} dropped. On {device}: send it again.'**
   String failureConnectionLost(String device);
 
   /// No description provided for @failureQuickShare.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong with {device}. Send it again from the phone.'**
+  /// **'Something went wrong with {device}. On {device}: send it again.'**
   String failureQuickShare(String device);
 
   /// No description provided for @offerPin.
   ///
   /// In en, this message translates to:
-  /// **'PIN {pin}. It must match the one on the phone.'**
-  String offerPin(String pin);
+  /// **'PIN {pin}. It must match the one on {device}.'**
+  String offerPin(String pin, String device);
 
   /// No description provided for @noticePin.
   ///
@@ -703,13 +715,13 @@ abstract class DropLocalizations {
   /// No description provided for @quickShareCannotAdvertise.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t become visible. A firewall or VPN may be blocking local discovery.'**
+  /// **'Couldn\'t become visible. A firewall or VPN may be blocking it.'**
   String get quickShareCannotAdvertise;
 
   /// No description provided for @quickShareTurnOn.
   ///
   /// In en, this message translates to:
-  /// **'Visible for 10 min'**
+  /// **'Show 10 min'**
   String get quickShareTurnOn;
 
   /// No description provided for @settingsQuickShare.
@@ -727,8 +739,14 @@ abstract class DropLocalizations {
   /// No description provided for @healthOk.
   ///
   /// In en, this message translates to:
-  /// **'Ready'**
+  /// **'Nothing sent yet'**
   String get healthOk;
+
+  /// No description provided for @healthArrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive in {folder}'**
+  String healthArrive(String folder);
 
   /// No description provided for @healthSent.
   ///

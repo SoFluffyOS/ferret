@@ -113,11 +113,11 @@ void main() {
     await start();
     await pumpCard(tester);
 
-    expect(find.text('Receive from other apps'), findsOneWidget);
+    expect(find.text('Let other phones send you files'), findsOneWidget);
     expect(find.text('LocalSend'), findsNothing);
-    expect(find.text('On for 10 min'), findsNothing);
+    expect(find.text('Allow 10 min'), findsNothing);
 
-    await tester.tap(find.text('Receive from other apps'));
+    await tester.tap(find.text('Let other phones send you files'));
     await tester.pump();
 
     expect(find.text('LocalSend'), findsOneWidget);
@@ -125,7 +125,7 @@ void main() {
       find.text('Let devices with the LocalSend app send here.'),
       findsOneWidget,
     );
-    expect(find.text('On for 10 min'), findsOneWidget);
+    expect(find.text('Allow 10 min'), findsOneWidget);
   });
 
   testWidgets('with LocalSend turned off the card does not mention it', (
@@ -134,7 +134,7 @@ void main() {
     await start(settings: {DropSettings.localSendEnabled: false});
     await pumpCard(tester);
 
-    await tester.tap(find.text('Receive from other apps'));
+    await tester.tap(find.text('Let other phones send you files'));
     await tester.pump();
 
     expect(find.text('LocalSend'), findsNothing);
@@ -197,7 +197,8 @@ void main() {
     expect(find.text('4 files · 4 MB'), findsOneWidget);
     expect(
       find.text(
-        "This device isn't paired with Ferret. Accept only if you expect it.",
+        "Nice Orange (LocalSend) isn't paired with Ferret. "
+        'Accept only if you expect it.',
       ),
       findsOneWidget,
     );
@@ -236,7 +237,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.text('Retry'), findsNothing);
+    expect(find.text('Try again'), findsNothing);
 
     expect(
       texts.failure(failed(.busy)),
@@ -244,7 +245,7 @@ void main() {
     );
     expect(
       texts.failure(failed(.unreachable)),
-      contains('Keep LocalSend open'),
+      contains('keep LocalSend open'),
     );
     expect(texts.failure(failed(.untrusted)), contains('Nothing was sent'));
     expect(texts.failure(failed(.tooManyAttempts)), contains('wrong PINs'));
@@ -338,7 +339,7 @@ void main() {
       expect(find.text('Phone'), findsOneWidget);
       expect(
         find.text(
-          'No LocalSend devices found. Open LocalSend on the other device, '
+          'No LocalSend devices found. On the other device: open LocalSend, '
           'on the same Wi-Fi.',
         ),
         findsOneWidget,
@@ -406,7 +407,7 @@ void main() {
       );
       final failing = ui.healthOf(status());
       expect(failing?.state, FeatureHealthState.failing);
-      expect(failing?.reason, contains("Couldn't write the file"));
+      expect(failing?.reason, contains("Couldn't save the file"));
     });
 
     testWidgets('someone saying no is not a failure', (tester) async {

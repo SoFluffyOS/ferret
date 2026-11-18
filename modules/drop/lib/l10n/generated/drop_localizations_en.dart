@@ -10,7 +10,7 @@ class DropLocalizationsEn extends DropLocalizations {
   DropLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Drop';
+  String get title => 'Files';
 
   @override
   String get cardEmpty => 'Drop files here to send them to your devices.';
@@ -19,13 +19,13 @@ class DropLocalizationsEn extends DropLocalizations {
   String get cardEmptyPhone => 'Send photos and files to your other devices.';
 
   @override
-  String get otherApps => 'Receive from other apps';
+  String get otherApps => 'Let other phones send you files';
 
   @override
   String get sendFiles => 'Send files…';
 
   @override
-  String get clearFinished => 'Clear';
+  String get clearFinished => 'Clear finished';
 
   @override
   String transferFiles(int count, String name) {
@@ -94,7 +94,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureDeclined(String device) {
-    return '$device said no.';
+    return '$device declined.';
   }
 
   @override
@@ -104,12 +104,17 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureDisconnected(String device) {
-    return '$device went offline. It continues when it\'s back.';
+    return '$device went offline. It continues when $device is back.';
+  }
+
+  @override
+  String failureDisconnectedSending(String device) {
+    return 'Couldn\'t send to $device. It went offline. The file wasn\'t sent.';
   }
 
   @override
   String failureNotConnected(String device) {
-    return '$device isn\'t connected. Open Ferret on it, then retry.';
+    return '$device isn\'t connected. On $device: open Ferret, then try again here.';
   }
 
   @override
@@ -119,15 +124,20 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get failureStorage =>
-      'Couldn\'t write the file. Check free space and the receive folder.';
+      'Couldn\'t save the file. Check free space and the receive folder.';
+
+  @override
+  String failureStorageSending(String device) {
+    return '$device couldn\'t save the file. It may be out of space.';
+  }
 
   @override
   String get failureChecksum =>
-      'The file arrived damaged. Retry sends it again.';
+      'The file arrived damaged. Try again to send it once more.';
 
   @override
   String get failureSourceChanged =>
-      'The file changed or moved while it was being sent.';
+      'The file changed or moved while it was being sent. Send it again.';
 
   @override
   String failureCancelledByPeer(String device) {
@@ -141,7 +151,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureProtocol(String device) {
-    return 'Something went wrong with $device. Retry to continue.';
+    return 'Something went wrong with $device. Try again to continue.';
   }
 
   @override
@@ -151,7 +161,7 @@ class DropLocalizationsEn extends DropLocalizations {
   String get actionReveal => 'Show in folder';
 
   @override
-  String get actionRetry => 'Retry';
+  String get actionRetry => 'Try again';
 
   @override
   String get actionCancel => 'Cancel';
@@ -208,7 +218,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get noticeNoDeviceBody =>
-      'Connect one of your paired devices, then try again.';
+      'Open Ferret on one of your devices, then try again.';
 
   @override
   String get noticeNothing => 'Nothing to send';
@@ -259,7 +269,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureUnreachable(String device) {
-    return 'Couldn\'t reach $device. Keep LocalSend open on it, on the same Wi-Fi.';
+    return 'Couldn\'t reach $device. On $device: keep LocalSend open, on the same Wi-Fi.';
   }
 
   @override
@@ -313,8 +323,9 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
-  String get offerWarning =>
-      'This device isn\'t paired with Ferret. Accept only if you expect it.';
+  String offerWarning(String device) {
+    return '$device isn\'t paired with Ferret. Accept only if you expect it.';
+  }
 
   @override
   String get pickerLocalSend => 'LocalSend';
@@ -329,7 +340,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get pickerNoLocalSend =>
-      'No LocalSend devices found. Open LocalSend on the other device, on the same Wi-Fi.';
+      'No LocalSend devices found. On the other device: open LocalSend, on the same Wi-Fi.';
 
   @override
   String get pickerNoDevices => 'None of your devices is connected.';
@@ -338,11 +349,14 @@ class DropLocalizationsEn extends DropLocalizations {
   String get pickerSearchAgain => 'Search again';
 
   @override
-  String get noticeGone => 'That device is gone';
+  String noticeGone(String device) {
+    return 'Couldn\'t find $device';
+  }
 
   @override
-  String get noticeGoneBody =>
-      'It\'s no longer on the network. Open LocalSend on it and try again.';
+  String noticeGoneBody(String device) {
+    return 'On $device: open LocalSend, then send again.';
+  }
 
   @override
   String get receiveTitle => 'LocalSend';
@@ -372,7 +386,7 @@ class DropLocalizationsEn extends DropLocalizations {
       'Couldn\'t prepare this device for LocalSend.';
 
   @override
-  String get receiveTurnOn => 'On for 10 min';
+  String get receiveTurnOn => 'Allow 10 min';
 
   @override
   String get receiveTryAgain => 'Try again';
@@ -396,17 +410,17 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureConnectionLost(String device) {
-    return 'The connection to $device dropped. Send it again from there.';
+    return 'The connection to $device dropped. On $device: send it again.';
   }
 
   @override
   String failureQuickShare(String device) {
-    return 'Something went wrong with $device. Send it again from the phone.';
+    return 'Something went wrong with $device. On $device: send it again.';
   }
 
   @override
-  String offerPin(String pin) {
-    return 'PIN $pin. It must match the one on the phone.';
+  String offerPin(String pin, String device) {
+    return 'PIN $pin. It must match the one on $device.';
   }
 
   @override
@@ -425,10 +439,10 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get quickShareCannotAdvertise =>
-      'Couldn\'t become visible. A firewall or VPN may be blocking local discovery.';
+      'Couldn\'t become visible. A firewall or VPN may be blocking it.';
 
   @override
-  String get quickShareTurnOn => 'Visible for 10 min';
+  String get quickShareTurnOn => 'Show 10 min';
 
   @override
   String get settingsQuickShare => 'Work with Quick Share';
@@ -438,7 +452,12 @@ class DropLocalizationsEn extends DropLocalizations {
       'Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.';
 
   @override
-  String get healthOk => 'Ready';
+  String get healthOk => 'Nothing sent yet';
+
+  @override
+  String healthArrive(String folder) {
+    return 'Arrive in $folder';
+  }
 
   @override
   String get healthSent => 'The last transfer went through.';

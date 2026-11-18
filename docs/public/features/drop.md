@@ -19,7 +19,7 @@ With Ferret, files and text go straight from one of your devices to another, ove
 
 After the drop, the tile shows the progress, then **Sent to Pixel 9**. If something went wrong, it says why and offers **Try again**.
 
-The Drop card on the home screen shows each transfer while it runs: progress, speed and time left. You can **Cancel** at any time.
+The Files card on the home screen shows each transfer while it runs: progress, speed and time left. You can **Cancel** at any time.
 
 ## 📥 Receive files
 
@@ -27,7 +27,7 @@ Files from your paired devices are accepted on their own. No prompt to click.
 
 When a transfer finishes, you get one quiet notice with **Open** and **Show in folder**.
 
-Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Retry** sends it again.
+Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Try again** sends it again.
 
 Ferret never overwrites a file. If `photo.jpg` already exists, the new one becomes `photo (1).jpg`.
 
@@ -39,11 +39,11 @@ Share text to **Send with Ferret** on Android and it arrives as a notice on your
 
 Wi-Fi drops, a laptop goes to sleep, a phone walks out of range. Ferret keeps what already arrived. When the device is back, the transfer continues where it stopped, without starting over.
 
-If something fails for another reason, the card says why in plain words, with a **Retry** button.
+If something fails for another reason, the card says why in plain words, with a **Try again** button.
 
 ## ⚙️ Settings
 
-In **Settings → Drop**:
+In **Settings → Files**:
 
 - **Receive folder**: where files land. `~/Downloads/Ferret` on computers. On Android, a folder inside **Download**, `Ferret` by default.
 - **Accept from my devices**: on by default. Turn it off to approve each transfer with **Accept** or **Decline**.

@@ -88,7 +88,13 @@ class DropFeatureUi extends FeatureUi {
 
     final last = _lastFinished(device.device.id);
     if (last == null) {
-      return FeatureHealth(.ok, reason: l10n.healthOk);
+      return FeatureHealth(
+        .ok,
+        reason: switch (_dropViewModel.receiveFolderLabel) {
+          '' => l10n.healthOk,
+          final folder => l10n.healthArrive(folder),
+        },
+      );
     }
 
     final stoppedByPeople = switch (last.failure) {
@@ -331,7 +337,10 @@ class DropFeatureUi extends FeatureUi {
     if (text != null) {
       final sent = viewModel.sendText(target.deviceId, text);
       if (sent == null) {
-        await _notices?.explain(l10n.noticeGone, l10n.noticeGoneBody);
+        await _notices?.explain(
+          l10n.noticeGone(target.name),
+          l10n.noticeGoneBody(target.name),
+        );
       }
 
       return;
@@ -347,7 +356,10 @@ class DropFeatureUi extends FeatureUi {
     }
 
     if (target.isLocalSend && viewModel.isGone(target)) {
-      await _notices?.explain(l10n.noticeGone, l10n.noticeGoneBody);
+      await _notices?.explain(
+        l10n.noticeGone(target.name),
+        l10n.noticeGoneBody(target.name),
+      );
       return;
     }
 

@@ -90,10 +90,16 @@ class TransferTexts {
     return switch (transfer.failure) {
       TransferFailure.declined => l10n.failureDeclined(device),
       TransferFailure.timedOut => l10n.failureTimedOut(device),
-      TransferFailure.disconnected => l10n.failureDisconnected(device),
+      TransferFailure.disconnected => switch (transfer.isOutgoing) {
+        true => l10n.failureDisconnectedSending(device),
+        false => l10n.failureDisconnected(device),
+      },
       TransferFailure.notConnected => l10n.failureNotConnected(device),
       TransferFailure.unsupported => l10n.failureUnsupported(device),
-      TransferFailure.storage => l10n.failureStorage,
+      TransferFailure.storage => switch (transfer.isOutgoing) {
+        true => l10n.failureStorageSending(device),
+        false => l10n.failureStorage,
+      },
       TransferFailure.checksum => l10n.failureChecksum,
       TransferFailure.sourceChanged => l10n.failureSourceChanged,
       TransferFailure.cancelledByPeer => l10n.failureCancelledByPeer(device),
@@ -133,14 +139,14 @@ class TransferTexts {
         l10n.offerFingerprint(Fingerprints.short(origin.fingerprint)),
       ],
       if (transfer.quickShare case final origin?) ...[
-        l10n.offerPin(origin.pin),
+        l10n.offerPin(origin.pin, transfer.deviceName),
         origin.address,
       ],
       if (more > 0) l10n.offerFilesMore(names.join(', '), more),
       if (more <= 0 && names.length > 1) l10n.offerFiles(names.join(', ')),
       if (transfer.files.isNotEmpty)
         l10n.offerTotal(transfer.files.length, size(transfer.totalBytes)),
-      l10n.offerWarning,
+      l10n.offerWarning(transfer.deviceName),
     ];
   }
 

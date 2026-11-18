@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On the computer, open **Receive from other apps** on the Drop card and tap **Visible for 10 min** next to **Quick Share**.
+> 1. On the computer, open **Let other phones send you files** on the Files card and tap **Show 10 min** next to **Quick Share**.
 > 2. On the Android phone, pick **Share → Quick Share → your computer**.
 > 3. Check that both screens show the same **PIN**, then **Accept**. The files land in your receive folder. That's it.
 
@@ -12,7 +12,7 @@ Every Android phone already has **Quick Share** (it used to be called Nearby Sha
 
 ## 📥 Send from an Android phone to your computer
 
-1. In Ferret on the computer, open **Receive from other apps** on the Drop card and tap **Visible for 10 min** next to **Quick Share**.
+1. In Ferret on the computer, open **Let other phones send you files** on the Files card and tap **Show 10 min** next to **Quick Share**.
 2. The card shows the name the phone will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the phone, open the photo or file, tap **Share**, then **Quick Share**.
 4. Your computer shows up under the nearby devices. Tap it.
@@ -25,7 +25,7 @@ You can **Cancel** at any time, also in the middle of a file. What already arriv
 
 ### Text and links
 
-Share a link or a piece of text the same way. It shows up on the Drop card with a **Copy** button. The text stays hidden until you accept it.
+Share a link or a piece of text the same way. It shows up on the Files card with a **Copy** button. The text stays hidden until you accept it.
 
 ### Where the files go
 
@@ -37,7 +37,7 @@ Each file is written to a temporary file first. Ferret checks that every announc
 
 Your computer is **invisible** to Quick Share until you turn it on. While it's off, Ferret doesn't listen for Quick Share and doesn't announce anything.
 
-- **Visible for 10 min** makes the computer show up on every phone on your network that opens Quick Share.
+- **Show 10 min** makes the computer show up on every phone on your network that opens Quick Share.
 - After 10 minutes it hides again by itself. A transfer that is still running gets to finish first.
 - **Stop** hides it right away. Offers that were waiting are declined.
 
@@ -54,7 +54,7 @@ That is the only check there is, so **look at it** before you accept.
 ## 📱 The phone doesn't show your computer
 
 - Both devices must be on the **same Wi-Fi**. Guest networks often keep devices apart.
-- The countdown must still be running. Tap **Visible for 10 min** again if it ran out.
+- The countdown must still be running. Tap **Show 10 min** again if it ran out.
 - Turn off a **VPN** on either device. It hides the local network.
 - On the phone, Quick Share itself wants **Bluetooth** and **Location** turned on before it searches. That is the phone's rule, the files still travel over Wi-Fi.
 - Close the share sheet on the phone and open it again. It looks for devices when it opens.
@@ -64,7 +64,7 @@ Ferret says **Couldn't become visible** on the card when it can't announce itsel
 
 ## ⚙️ Turn it off completely
 
-In **Settings → Drop**, turn off **Work with Quick Share**. The row disappears from the Drop card and Ferret never sends or answers a Quick Share packet.
+In **Settings → Files**, turn off **Work with Quick Share**. The row disappears from the Files card and Ferret never sends or answers a Quick Share packet.
 
 ## 🔒 Privacy
 
@@ -104,7 +104,7 @@ Two ways that do work:
 
 - **macOS.** Allow **Local Network** access for Ferret when macOS asks. Without it the phone never sees the computer.
 - **Windows and Linux.** A firewall may ask to allow Ferret, or block it silently. Allow it on **private** networks.
-- **Android.** A phone already has Quick Share, so this is off there. You can turn it on in **Settings → Drop**, but treat it as an experiment: Android may keep Ferret from hearing the phones that look for it.
+- **Android.** A phone already has Quick Share, so this is off there. You can turn it on in **Settings → Files**, but treat it as an experiment: Android may keep Ferret from hearing the phones that look for it.
 - **iPhone and iPad.** Not available. iOS doesn't let apps announce themselves this way.
 
 Quick Share is Google's protocol and isn't documented. Ferret's side is written from public descriptions of it, so an Android update can break it. If your phone stops seeing Ferret, tell us which phone and which Android version.

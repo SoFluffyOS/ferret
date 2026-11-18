@@ -100,7 +100,7 @@ void main() {
     expect(find.text('Saved ✓ · from Pixel'), findsOneWidget);
     expect(find.text('Open'), findsOneWidget);
     expect(find.text('Show in folder'), findsOneWidget);
-    expect(find.text('Clear'), findsOneWidget);
+    expect(find.text('Clear finished'), findsOneWidget);
     expect(find.byType(TransferProgressBar), findsNothing);
   });
 
@@ -128,10 +128,12 @@ void main() {
     );
 
     expect(
-      find.text("Pixel went offline. It continues when it's back."),
+      find.text(
+        "Couldn't send to Pixel. It went offline. The file wasn't sent.",
+      ),
       findsOneWidget,
     );
-    expect(find.text('Retry'), findsNothing);
+    expect(find.text('Try again'), findsNothing);
   });
 
   testWidgets('an offer waiting for an answer shows Accept and Decline', (
