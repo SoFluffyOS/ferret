@@ -21,7 +21,7 @@ import 'package:interop_quickshare/interop_quickshare.dart';
 class AirPlayReceiver implements MirrorReceiver {
   AirPlayReceiver({
     required this.identity,
-    required this.allow,
+    this.allow,
     this.port = 0,
     this.display = const AirPlayDisplay(),
     this.askTimeout = const Duration(seconds: 30),
@@ -41,8 +41,10 @@ class AirPlayReceiver implements MirrorReceiver {
   final Future<AirPlayIdentity> Function() identity;
 
   /// Decides about each phone, given the name it claims: show a prompt,
-  /// or check a PIN. Nothing is accepted without a `true` from here.
-  final Future<bool> Function(String deviceName) allow;
+  /// or check a PIN. Nothing is accepted without a `true` from here, or
+  /// from the one given to [start], which comes first. With neither, every
+  /// phone is turned away.
+  final ReceiverAllow? allow;
 
   /// The TCP port to listen on, 0 for any free one. macOS keeps 7000 for
   /// its own receiver, so a fixed port must be another.
@@ -60,9 +62,13 @@ class AirPlayReceiver implements MirrorReceiver {
   final AirPlayAdvertiser _advertiser = AirPlayAdvertiser();
   final Set<AirPlayConnection> _connections = {};
   ServerSocket? _server;
+  ReceiverAllow? _allowNow;
 
   @override
   String get id => routeId;
+
+  @override
+  bool get listensByDefault => onByDefault;
 
   @override
   bool get isListening => _server != null;
@@ -92,8 +98,9 @@ class AirPlayReceiver implements MirrorReceiver {
   /// Starts listening and announces this receiver as [name]. Throws a
   /// [SocketException] when the port or mDNS can't be used.
   @override
-  Future<void> start(String name) async {
+  Future<void> start(String name, {ReceiverAllow? allow}) async {
     await stop();
+    _allowNow = allow ?? this.allow;
     final loaded = await identity();
     final info = AirPlayServiceInfo(
       name: name,
@@ -148,7 +155,7 @@ class AirPlayReceiver implements MirrorReceiver {
     final connection = AirPlayConnection(
       socket: socket,
       info: info,
-      allow: allow,
+      allow: _ask,
       askTimeout: askTimeout,
       decrypt: _decrypt,
       onFeed: _onFeed,
@@ -156,6 +163,15 @@ class AirPlayReceiver implements MirrorReceiver {
     );
     _connections.add(connection);
     connection.start();
+  }
+
+  Future<bool> _ask(String deviceName) async {
+    final allow = _allowNow;
+    if (allow == null) {
+      return false;
+    }
+
+    return allow(deviceName);
   }
 
   void _onFeed(AirPlayFeed feed) {

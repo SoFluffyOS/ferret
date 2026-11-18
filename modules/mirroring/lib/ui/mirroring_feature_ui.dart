@@ -46,6 +46,8 @@ class MirroringFeatureUi extends FeatureUi {
   late final FeatureChanges _changes = FeatureChanges(feature.changes);
   StreamSubscription<void>? _revealOnAsk;
   StreamSubscription<MirrorFeed>? _openOnIncoming;
+  StreamSubscription<void>? _askOnRequest;
+  final Set<IncomingRequest> _asked = {};
 
   /// When the request the app was last brought to the front for was made.
   DateTime? _revealedFor;
@@ -69,6 +71,7 @@ class MirroringFeatureUi extends FeatureUi {
     _openOnIncoming = feature.routes?.incoming.listen(
       (feed) => unawaited(_openIncoming(context, feed.target)),
     );
+    _askOnRequest = feature.changes.listen((_) => _askWhenRequested(context));
     if (feature.source == null) {
       return;
     }
@@ -234,6 +237,7 @@ class MirroringFeatureUi extends FeatureUi {
   Future<void> dispose() async {
     await _revealOnAsk?.cancel();
     await _openOnIncoming?.cancel();
+    await _askOnRequest?.cancel();
     _changes.dispose();
     viewerViewModel.dispose();
     shareViewModel.dispose();
@@ -274,6 +278,38 @@ class MirroringFeatureUi extends FeatureUi {
     unawaited(viewerViewModel.refreshWindow());
     unawaited(context.reveal());
     await _openPage(context, target);
+  }
+
+  /// Puts each device's question in front of the owner once, wherever
+  /// they are in the app.
+  void _askWhenRequested(FeatureContext context) {
+    final requests = feature.routes?.requests ?? const <IncomingRequest>[];
+    _asked.retainAll(requests);
+    for (final request in requests) {
+      if (_asked.add(request)) {
+        unawaited(_ask(context, request));
+      }
+    }
+  }
+
+  Future<void> _ask(FeatureContext context, IncomingRequest request) async {
+    final navigator = context.navigatorKey.currentState;
+    if (navigator == null) {
+      return;
+    }
+
+    final route = PageRouteBuilder<void>(
+      pageBuilder: (_, _, _) => ChangeNotifierProvider.value(
+        value: viewerViewModel,
+        child: AllowPage(request: request),
+      ),
+    );
+    unawaited(context.reveal());
+    unawaited(navigator.push(route));
+    await request.answer;
+    if (route.isActive) {
+      navigator.removeRoute(route);
+    }
   }
 
   Future<void> _openPage(FeatureContext context, MirrorTarget target) =>

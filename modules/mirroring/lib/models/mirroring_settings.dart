@@ -9,6 +9,7 @@ class MirroringSettings {
   static const historyKey = 'mirroring.history';
   static const actualSizeKey = 'mirroring.actual_size';
   static const moreWaysKey = 'mirroring.more_ways';
+  static const receiverKeyPrefix = 'mirroring.receiver.';
 
   /// How many past times of mirroring the history keeps.
   static const historyLength = 20;
@@ -35,6 +36,15 @@ class MirroringSettings {
   bool get moreWays => _store.get<bool>(moreWaysKey) ?? false;
 
   Future<void> setMoreWays(bool value) => _store.set(moreWaysKey, value);
+
+  /// Whether the receiver [receiverId] listens for devices that send their
+  /// screen here. [byDefault] is the receiver's own say until the owner
+  /// flips the switch.
+  bool receiverOn(String receiverId, {required bool byDefault}) =>
+      _store.get<bool>('$receiverKeyPrefix$receiverId') ?? byDefault;
+
+  Future<void> setReceiverOn(String receiverId, bool value) =>
+      _store.set('$receiverKeyPrefix$receiverId', value);
 
   Future<void> setEnabled(bool value) => _store.set(enabledKey, value);
 

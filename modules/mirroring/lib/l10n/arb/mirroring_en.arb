@@ -400,5 +400,20 @@
   "setupPermissionBody": "How to: allow Ferret under Local Network in this computer's privacy settings, then try again.",
   "buttonBack": "Back",
   "buttonHome": "Home",
-  "buttonRecents": "Recent apps"
+  "buttonRecents": "Recent apps",
+  "receiverAirplayTitle": "Show iPhone and iPad screens here",
+  "receiverAirplayBody": "This computer appears under Screen Mirroring in the iPhone's Control Center. You are asked before anything shows.",
+  "receiverOtherTitle": "Let other devices send their screen here",
+  "receiverOtherBody": "You are asked before anything shows.",
+  "allowTitle": "{device} wants to show its screen here",
+  "@allowTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "allowBody": "Say yes only if this is your device. The name is what the device calls itself, and anyone on your network can ask.",
+  "allow": "Allow",
+  "dontAllow": "Don't allow"
 }

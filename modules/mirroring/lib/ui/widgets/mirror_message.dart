@@ -13,6 +13,8 @@ class MirrorMessage extends StatelessWidget {
     this.tone = .muted,
     this.actionLabel,
     this.onAction,
+    this.secondLabel,
+    this.onSecond,
   });
 
   final IconData icon;
@@ -21,6 +23,10 @@ class MirrorMessage extends StatelessWidget {
   final FeatureTone tone;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// The other way out, such as "Don't allow", next to the main action.
+  final String? secondLabel;
+  final VoidCallback? onSecond;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,23 @@ class MirrorMessage extends StatelessWidget {
             ),
             if ((actionLabel, onAction) case (final label?, final action?)) ...[
               Spacing.v16,
-              Button(variant: .primary, label: label, onPressed: action),
+              Wrap(
+                alignment: .center,
+                spacing: Spacing.d8,
+                runSpacing: Spacing.d8,
+                children: [
+                  if ((secondLabel, onSecond) case (
+                    final otherLabel?,
+                    final otherAction?,
+                  ))
+                    Button(
+                      variant: .ghost,
+                      label: otherLabel,
+                      onPressed: otherAction,
+                    ),
+                  Button(variant: .primary, label: label, onPressed: action),
+                ],
+              ),
             ],
           ],
         ),

@@ -11,6 +11,7 @@ final receiver = AirPlayReceiver(
   // Stable between runs, and made from something only this device knows.
   identity: () async => AirPlayIdentity.derive(privateKeyBytes),
   // Nothing is shown without a yes from here.
+  // Or pass `allow` to `start`, as Ferret does.
   allow: (deviceName) => askTheUser('Show $deviceName\'s screen here?'),
 );
 

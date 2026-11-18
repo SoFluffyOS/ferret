@@ -30,8 +30,15 @@ abstract interface class MirrorReceiver {
 
   Future<RouteStatus> status();
 
+  /// Whether this receiver listens before its owner says anything, once
+  /// receivers are allowed at all. False where the system already does the
+  /// same job, such as AirPlay on a Mac.
+  bool get listensByDefault;
+
   /// Starts listening under [name], the name the other device lists.
-  Future<void> start(String name);
+  /// Every device that wants to show its screen goes through [allow]
+  /// first; without one, the receiver decides by itself.
+  Future<void> start(String name, {ReceiverAllow? allow});
 
   Future<void> stop();
 
@@ -42,6 +49,11 @@ abstract interface class MirrorReceiver {
 
   Future<void> dispose();
 }
+
+/// Asks this computer's owner whether the device calling itself
+/// [deviceName] may show its screen here. The name is only what the device
+/// claims.
+typedef ReceiverAllow = Future<bool> Function(String deviceName);
 
 /// What a route needs from the viewer.
 class FeedOptions {

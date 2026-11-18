@@ -24,6 +24,7 @@ class ViewerViewModel extends ChangeNotifier {
   /// when they really are different lists.
   List<MirrorTarget>? _targets;
   List<RouteNotice>? _notices;
+  List<ReceiverSwitch>? _receivers;
   bool _canFullScreen = false;
   bool _isFullScreen = false;
   bool _disposed = false;
@@ -67,6 +68,21 @@ class ViewerViewModel extends ChangeNotifier {
   /// What the other ways still need before they work on this computer.
   List<RouteNotice> get notices =>
       _notices ??= feature.routes?.notices ?? const [];
+
+  /// The receivers to switch on or off, while the other ways are on.
+  List<ReceiverSwitch> get receivers => _receivers ??= switch (moreWays) {
+    true => feature.routes?.receivers ?? const [],
+    false => const [],
+  };
+
+  /// The devices asking to show their screen here right now.
+  List<IncomingRequest> get requests => feature.routes?.requests ?? const [];
+
+  Future<void> setReceiverOn(String receiverId, bool value) async =>
+      feature.routes?.setReceiverOn(receiverId, value);
+
+  void answer(IncomingRequest request, {required bool allow}) =>
+      feature.routes?.answer(request, allow: allow);
 
   /// Whether clicks and scrolling reach the device being shown.
   bool get canPoint => _abilities.contains(ControlAbility.pointer);
@@ -179,6 +195,7 @@ class ViewerViewModel extends ChangeNotifier {
     _watch();
     _targets = null;
     _notices = null;
+    _receivers = null;
     _notify();
   }
 

@@ -762,6 +762,54 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Recent apps'**
   String get buttonRecents;
+
+  /// No description provided for @receiverAirplayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show iPhone and iPad screens here'**
+  String get receiverAirplayTitle;
+
+  /// No description provided for @receiverAirplayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer appears under Screen Mirroring in the iPhone\'s Control Center. You are asked before anything shows.'**
+  String get receiverAirplayBody;
+
+  /// No description provided for @receiverOtherTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let other devices send their screen here'**
+  String get receiverOtherTitle;
+
+  /// No description provided for @receiverOtherBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are asked before anything shows.'**
+  String get receiverOtherBody;
+
+  /// No description provided for @allowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} wants to show its screen here'**
+  String allowTitle(String device);
+
+  /// No description provided for @allowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Say yes only if this is your device. The name is what the device calls itself, and anyone on your network can ask.'**
+  String get allowBody;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @dontAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t allow'**
+  String get dontAllow;
 }
 
 class _MirroringLocalizationsDelegate

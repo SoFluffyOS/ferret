@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
@@ -240,7 +242,7 @@ void main() {
       cable.find([galaxy, cable.target('a2', 'Tablet', ferretDeviceId: 'tab')]);
       await tester.pump();
       await pumpSettings(tester);
-      final context = tester.element(find.byType(SwitchToggle));
+      final context = tester.element(find.byType(SwitchToggle).first);
       final tablet = host.trustStore['tab'];
       if (tablet == null) {
         fail('The tablet should be paired');
@@ -352,6 +354,71 @@ void main() {
       await tester.tap(find.byType(Texture));
       expect(control.pointers, isEmpty);
     });
+  });
+
+  testWidgets('a receiver has its own switch once the other ways are on', (
+    tester,
+  ) async {
+    await startComputer(tester);
+    await pumpSettings(tester);
+
+    expect(
+      find.text('Let other devices send their screen here'),
+      findsOneWidget,
+    );
+    expect(receiver.isListening, isTrue);
+
+    await tester.tap(find.byType(SwitchToggle).last);
+    await tester.pumpAndSettle();
+
+    expect(receiver.isListening, isFalse);
+    expect(
+      MirroringSettings(host.settings).receiverOn('cast', byDefault: true),
+      isFalse,
+    );
+  });
+
+  testWidgets('a device that asks gets a prompt: Allow lets it in, Don\'t '
+      'allow turns it away', (tester) async {
+    await startComputer(tester);
+    final navigatorKey = GlobalKey<NavigatorState>();
+    await tester.pumpWidget(
+      testApp(const SizedBox.shrink(), navigatorKey: navigatorKey),
+    );
+    var revealed = 0;
+    await ui.onAppStarted(
+      FeatureContext(
+        engine: _FakeEngine(),
+        navigatorKey: navigatorKey,
+        notifier: _QuietNotifier(),
+        onReveal: () async => revealed++,
+      ),
+    );
+    final answers = <bool>[];
+
+    unawaited(receiver.ask("Simon's iPhone").then(answers.add));
+    await tester.pump();
+    await tester.pump();
+    expect(
+      find.text("Simon's iPhone wants to show its screen here"),
+      findsOneWidget,
+    );
+    expect(revealed, 1);
+
+    await tester.tap(find.text('Allow'));
+    await tester.pump();
+    await tester.pump();
+    expect(answers, [true]);
+    expect(find.text('Allow'), findsNothing);
+
+    unawaited(receiver.ask('Stranger').then(answers.add));
+    await tester.pump();
+    await tester.pump();
+    await tester.tap(find.text("Don't allow"));
+    await tester.pump();
+    await tester.pump();
+    expect(answers, [true, false]);
+    expect(find.text("Don't allow"), findsNothing);
   });
 
   testWidgets('a screen a device sends here itself opens the mirror page', (

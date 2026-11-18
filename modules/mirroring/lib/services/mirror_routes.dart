@@ -15,15 +15,23 @@ class MirrorRoutes {
     required String Function() receiverName,
     List<MirrorRoute> routes = const [],
     List<MirrorReceiver> receivers = const [],
+    DateTime Function()? clock,
+    this.askTimeout = const Duration(seconds: 30),
   }) : _settings = settings,
+       _clock = clock ?? DateTime.now,
        _receiverName = receiverName,
        _routes = routes,
        _receivers = receivers;
 
   final FerretRoute ferret;
 
+  /// How long a device's question waits for its answer before it is a no.
+  final Duration askTimeout;
+
   final MirroringSettings _settings;
   final String Function() _receiverName;
+  final DateTime Function() _clock;
+  final List<IncomingRequest> _requests = [];
   final List<MirrorRoute> _routes;
   final List<MirrorReceiver> _receivers;
   final StreamController<void> _changes = .broadcast();
@@ -81,6 +89,27 @@ class MirrorRoutes {
     return null;
   }
 
+  /// The receivers the app plugged in, and whether each listens once the
+  /// other ways are on.
+  List<ReceiverSwitch> get receivers => [
+    for (final receiver in _receivers)
+      ReceiverSwitch(receiverId: receiver.id, on: _isOn(receiver)),
+  ];
+
+  /// The devices asking to show their screen here right now.
+  List<IncomingRequest> get requests => List.of(_requests);
+
+  Future<void> setReceiverOn(String receiverId, bool value) =>
+      _settings.setReceiverOn(receiverId, value);
+
+  /// The owner's answer to [request].
+  void answer(IncomingRequest request, {required bool allow}) {
+    request.complete(allow);
+    if (_requests.remove(request)) {
+      _emit();
+    }
+  }
+
   /// What the other ways still need before they work here.
   List<RouteNotice> get notices => List.of(_notices.values);
 
@@ -113,7 +142,11 @@ class MirrorRoutes {
       )
       ..add(
         _settings.changes
-            .where((key) => key == MirroringSettings.moreWaysKey)
+            .where(
+              (key) =>
+                  key == MirroringSettings.moreWaysKey ||
+                  key.startsWith(MirroringSettings.receiverKeyPrefix),
+            )
             .listen((_) => unawaited(_apply())),
       );
     unawaited(_apply());
@@ -143,6 +176,11 @@ class MirrorRoutes {
 
   Future<void> dispose() async {
     _disposed = true;
+    for (final request in List.of(_requests)) {
+      request.complete(false);
+    }
+
+    _requests.clear();
     for (final subscription in [..._subscriptions, ..._listening]) {
       unawaited(subscription.cancel());
     }
@@ -162,7 +200,12 @@ class MirrorRoutes {
 
   Future<void> _apply() async {
     final wanted = moreWaysOn;
-    if (wanted == _running || _disposed) {
+    if (_disposed) {
+      return;
+    }
+
+    if (wanted == _running) {
+      await refresh();
       return;
     }
 
@@ -206,6 +249,10 @@ class MirrorRoutes {
     _listening.clear();
     _targets.clear();
     _notices.clear();
+    for (final request in List.of(_requests)) {
+      answer(request, allow: false);
+    }
+
     for (final receiver in _receivers) {
       await _guard(receiver.id, receiver.stop);
     }
@@ -213,15 +260,56 @@ class MirrorRoutes {
     _emit();
   }
 
-  /// Starts [receiver] once nothing is missing for it.
+  /// Starts [receiver] once it is switched on and nothing is missing for
+  /// it, and stops one that was switched off.
   Future<void> _listen(MirrorReceiver receiver) async {
+    if (!_isOn(receiver)) {
+      _notices.remove(receiver.id);
+      if (receiver.isListening) {
+        await _guard(receiver.id, receiver.stop);
+      }
+
+      return;
+    }
+
     final status = await _statusOf(receiver.id, receiver.status);
     _note(receiver.id, status);
     if (status is! RouteReady || receiver.isListening || !_running) {
       return;
     }
 
-    await _guard(receiver.id, () => receiver.start(_receiverName()));
+    await _guard(
+      receiver.id,
+      () => receiver.start(
+        _receiverName(),
+        allow: (deviceName) => _ask(receiver.id, deviceName),
+      ),
+    );
+  }
+
+  bool _isOn(MirrorReceiver receiver) => _settings.receiverOn(
+    receiver.id,
+    byDefault: receiver.listensByDefault,
+  );
+
+  /// Puts a device's question in front of the owner. No answer within
+  /// [askTimeout] is a no.
+  Future<bool> _ask(String receiverId, String deviceName) async {
+    if (!_running || _disposed) {
+      return false;
+    }
+
+    final request = IncomingRequest(
+      receiverId: receiverId,
+      deviceName: deviceName,
+      askedAt: _clock(),
+    );
+    _requests.add(request);
+    _emit();
+    final timeout = Timer(askTimeout, () => answer(request, allow: false));
+    final allowed = await request.answer;
+    timeout.cancel();
+    return allowed;
   }
 
   void _note(String routeId, RouteStatus status) {

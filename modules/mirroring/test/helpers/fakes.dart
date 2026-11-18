@@ -451,22 +451,37 @@ class FakeRoute implements MirrorRoute {
 
 /// A receiver in memory: the test makes devices show up on it.
 class FakeReceiver implements MirrorReceiver {
-  FakeReceiver(this.id, {this.statusNow = const RouteReady()});
+  FakeReceiver(
+    this.id, {
+    this.statusNow = const RouteReady(),
+    this.listensByDefault = true,
+  });
 
   @override
   final String id;
   RouteStatus statusNow;
   final StreamController<MirrorFeed> _incoming = .broadcast(sync: true);
   String? listeningAs;
+  ReceiverAllow? _allow;
   bool disposed = false;
 
+  @override
+  final bool listensByDefault;
+
   void receive(MirrorFeed feed) => _incoming.add(feed);
+
+  /// A device asks to be let in, as it would over the network.
+  Future<bool> ask(String deviceName) async =>
+      await _allow?.call(deviceName) ?? false;
 
   @override
   Future<RouteStatus> status() async => statusNow;
 
   @override
-  Future<void> start(String name) async => listeningAs = name;
+  Future<void> start(String name, {ReceiverAllow? allow}) async {
+    listeningAs = name;
+    _allow = allow;
+  }
 
   @override
   Future<void> stop() async => listeningAs = null;

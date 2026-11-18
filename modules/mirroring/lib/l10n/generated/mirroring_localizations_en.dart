@@ -454,4 +454,32 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get buttonRecents => 'Recent apps';
+
+  @override
+  String get receiverAirplayTitle => 'Show iPhone and iPad screens here';
+
+  @override
+  String get receiverAirplayBody =>
+      'This computer appears under Screen Mirroring in the iPhone\'s Control Center. You are asked before anything shows.';
+
+  @override
+  String get receiverOtherTitle => 'Let other devices send their screen here';
+
+  @override
+  String get receiverOtherBody => 'You are asked before anything shows.';
+
+  @override
+  String allowTitle(String device) {
+    return '$device wants to show its screen here';
+  }
+
+  @override
+  String get allowBody =>
+      'Say yes only if this is your device. The name is what the device calls itself, and anyone on your network can ask.';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get dontAllow => 'Don\'t allow';
 }

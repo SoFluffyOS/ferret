@@ -131,6 +131,7 @@ class MirroringFeature extends Feature {
         ),
         settings: settings,
         receiverName: () => host.localDevice.name,
+        clock: _clock,
         routes: _extraRoutes,
         receivers: _receivers,
       );

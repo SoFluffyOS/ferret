@@ -102,6 +102,18 @@ extension MirroringLabels on MirroringLocalizations {
     return '$howTo\n$detail';
   }
 
+  /// What a receiver's switch says. Receivers this build doesn't know by
+  /// name get the general words.
+  String receiverTitle(String receiverId) => switch (receiverId) {
+    'airplay' => receiverAirplayTitle,
+    _ => receiverOtherTitle,
+  };
+
+  String receiverBody(String receiverId) => switch (receiverId) {
+    'airplay' => receiverAirplayBody,
+    _ => receiverOtherBody,
+  };
+
   String buttonName(DeviceButton button) => switch (button) {
     .home => buttonHome,
     .recents => buttonRecents,

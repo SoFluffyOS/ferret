@@ -25,6 +25,9 @@ class ViewerSettingsFrame extends StatelessWidget {
     final moreWays = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.moreWays,
     );
+    final receivers = context.select<ViewerViewModel, List<ReceiverSwitch>>(
+      (viewModel) => viewModel.receivers,
+    );
     final notices = context.select<ViewerViewModel, List<RouteNotice>>(
       (viewModel) => viewModel.notices,
     );
@@ -51,6 +54,15 @@ class ViewerSettingsFrame extends StatelessWidget {
               onChanged: (value) => unawaited(viewModel.setMoreWays(value)),
             ),
           ],
+          for (final receiver in receivers)
+            SettingSwitchRow(
+              title: l10n.receiverTitle(receiver.receiverId),
+              body: l10n.receiverBody(receiver.receiverId),
+              value: receiver.on,
+              onChanged: (value) => unawaited(
+                viewModel.setReceiverOn(receiver.receiverId, value),
+              ),
+            ),
           for (final notice in notices)
             RouteNoticeRow(
               title: l10n.setupTitle(notice.step),

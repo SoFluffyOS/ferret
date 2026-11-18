@@ -1,3 +1,4 @@
+import 'package:fake_async/fake_async.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mirroring/mirroring.dart';
@@ -118,6 +119,63 @@ void main() {
     await settle();
 
     expect(incoming.single, feed);
+  });
+
+  test('a receiver that starts off stays off until its own switch, and '
+      'one switched off stops listening', () async {
+    await create(moreWays: false);
+    await routes.dispose();
+    final quiet = FakeReceiver('airplay', listensByDefault: false);
+    routes = MirrorRoutes(
+      ferret: FerretRoute(host: host, featureId: MirroringFeature.featureId),
+      settings: settings,
+      receiverName: () => 'MacBook',
+      receivers: [quiet],
+    )..start();
+    await settings.setMoreWays(true);
+    await settle();
+    expect(quiet.isListening, isFalse);
+    expect(routes.receivers, const [
+      ReceiverSwitch(receiverId: 'airplay', on: false),
+    ]);
+
+    await routes.setReceiverOn('airplay', true);
+    await settle();
+    expect(quiet.listeningAs, 'MacBook');
+    expect(routes.receivers.single.on, isTrue);
+
+    await routes.setReceiverOn('airplay', false);
+    await settle();
+    expect(quiet.isListening, isFalse);
+  });
+
+  test('a device is only let in with a yes; a no, and no answer in 30 '
+      'seconds, turn it away', () {
+    fakeAsync((async) {
+      create();
+      async.flushMicrotasks();
+      final answers = <bool>[];
+
+      receiver.ask("Simon's iPhone").then(answers.add);
+      async.flushMicrotasks();
+      expect(routes.requests.single.deviceName, "Simon's iPhone");
+      routes.answer(routes.requests.single, allow: true);
+      async.flushMicrotasks();
+      expect(answers, [true]);
+      expect(routes.requests, isEmpty);
+
+      receiver.ask('Stranger').then(answers.add);
+      async.flushMicrotasks();
+      routes.answer(routes.requests.single, allow: false);
+      async.flushMicrotasks();
+      expect(answers, [true, false]);
+
+      receiver.ask('Nobody home').then(answers.add);
+      async.flushMicrotasks();
+      async.elapse(const Duration(seconds: 31));
+      expect(answers, [true, false, false]);
+      expect(routes.requests, isEmpty);
+    });
   });
 
   test('letting go disposes every way', () async {
