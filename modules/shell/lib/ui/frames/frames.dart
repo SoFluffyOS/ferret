@@ -1,4 +1,5 @@
 export 'package:shell/ui/frames/background_settings.dart';
+export 'package:shell/ui/frames/connect_by_hand_card.dart';
 export 'package:shell/ui/frames/devices_frame.dart';
 export 'package:shell/ui/frames/drop_targets_frame.dart';
 export 'package:shell/ui/frames/feature_card_slot.dart';

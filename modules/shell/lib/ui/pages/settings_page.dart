@@ -1,12 +1,18 @@
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
 import 'package:shell/ui/frames/frames.dart';
+import 'package:shell/ui/pages/about_page.dart';
+import 'package:shell/ui/pages/advanced_settings_page.dart';
+import 'package:shell/ui/pages/settings_group_page.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// This device, each feature's settings, and the privacy promise.
+/// Settings as one short list: this device, then a row per group of
+/// features that shows its current state and opens its own page.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -14,43 +20,116 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
     final engine = scope.featureContext.engine;
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
-    final sections = [
-      for (final feature in scope.features)
-        if (feature.buildSettings(context, scope.featureContext)
-            case final section?)
-          (feature, section),
-    ];
 
     return FerretPage(
       title: l10n.settingsTitle,
       backLabel: l10n.back,
       children: [
-        SectionTitle(l10n.settingsThisDevice),
         ThisDeviceCard(engine: engine),
-        BackgroundSettings(settings: engine.settings),
-        SectionTitle(l10n.homeYourDevices),
-        PairingSettings(engine: engine),
-        for (final (feature, section) in sections) ...[
-          SectionTitle(feature.title(context)),
-          section,
-        ],
-        SectionTitle(l10n.settingsPrivacy),
-        SurfaceCard(
-          child: Text(
-            l10n.settingsPrivacyBody,
-            style: typography.body2.copyWith(color: palette.mutedText),
-          ),
+        Spacing.v8,
+        FeatureChangesListener(
+          features: scope.features,
+          builder: (context) => _GroupRows(local: engine.device),
         ),
-        Spacing.v24,
-        Button(
-          variant: .ghost,
-          label: l10n.settingsQuit,
-          onPressed: SystemNavigator.pop,
+        BackgroundSettings(settings: engine.settings),
+        Spacing.v8,
+        SurfaceCard(
+          padding: EdgeInsets.symmetric(
+            horizontal: Spacing.d8,
+            vertical: Spacing.d4,
+          ),
+          child: Column(
+            children: [
+              NavRow(
+                title: l10n.settingsAdvanced,
+                onTap: () => _open(context, const AdvancedSettingsPage()),
+              ),
+              NavRow(
+                title: l10n.settingsAbout,
+                onTap: () => _open(context, const AboutPage()),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
+}
+
+class _GroupRows extends StatelessWidget {
+  const _GroupRows({required this.local});
+
+  final LocalDevice local;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final l10n = context.shellL10n;
+    final rows = SettingsRow.from([
+      for (final feature in scope.features)
+        ...feature.settingsSections(context, scope.featureContext),
+    ]);
+    if (rows.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return SurfaceCard(
+      padding: EdgeInsets.symmetric(
+        horizontal: Spacing.d8,
+        vertical: Spacing.d4,
+      ),
+      child: Column(
+        children: [
+          for (final row in rows)
+            NavRow(
+              title: l10n.settingsGroupTitle(row.group, local),
+              value: _valueOf(l10n, row),
+              attentionLabel: switch (row.needsAttention) {
+                true => l10n.settingsNeedsAttention,
+                false => null,
+              },
+              onTap: () => _open(context, SettingsGroupPage(group: row.group)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// The row's state in a few words. One part speaks for itself; several
+  /// are counted, except other apps, which are named.
+  String _valueOf(ShellLocalizations l10n, SettingsRow row) {
+    final (sections, switchable, on) = (row.sections, row.switchable, row.on);
+    if (sections case [final only]) {
+      return switch ((only.summary, only.isOn)) {
+        ('', true) => l10n.settingsOn,
+        ('', false) => l10n.settingsOff,
+        (final summary, _) => summary,
+      };
+    }
+
+    if (switchable.isEmpty) {
+      return '';
+    }
+
+    if (on.isEmpty) {
+      return l10n.settingsOff;
+    }
+
+    if (row.group == .otherApps) {
+      return l10n.settingsNamedOn(on.map((part) => part.title).join(', '));
+    }
+
+    if (on.length == switchable.length) {
+      return l10n.settingsOn;
+    }
+
+    return l10n.settingsCountOn(on.length, switchable.length);
+  }
+}
+
+void _open(BuildContext context, Widget page) {
+  Navigator.of(
+    context,
+  ).push(PageRouteBuilder<void>(pageBuilder: (_, _, _) => page));
 }
