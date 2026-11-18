@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:ferret_mirror_scrcpy/ferret_mirror_scrcpy.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/fake_adb_server.dart';
 
 void main() {
   const pixel = AdbDevice(serial: 'ABC123', state: .ready, model: 'Pixel_7');
@@ -165,6 +169,86 @@ void main() {
       final result = await route(hasAdb: false).pair('host:1', '000000');
 
       expect(result.succeeded, isFalse);
+    });
+  });
+
+  group('reaching adb', () {
+    late FakeAdbServer server;
+    late int freePort;
+
+    setUp(() async {
+      server = await FakeAdbServer.start();
+      final closed = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+      freePort = closed.port;
+      await closed.close();
+    });
+
+    tearDown(() => server.stop());
+
+    AdbLocator locatorWith(Set<String> files) => AdbLocator(
+      operatingSystem: 'macos',
+      environment: const {'PATH': '/tools'},
+      exists: files.contains,
+    );
+
+    test('uses adb\'s server when one is running, and no program', () async {
+      server.deviceList = 'ABC123 device model:Pixel_7 transport_id:1\n';
+      final scrcpy = ScrcpyRoute(
+        operatingSystem: 'macos',
+        hostAdb: AdbHostClient(port: server.port),
+        locator: locatorWith({}),
+      );
+
+      final targets = await scrcpy.targets.first;
+
+      expect(await scrcpy.status(), isA<RouteReady>());
+      expect(targets.single.name, 'Pixel 7');
+      await scrcpy.dispose();
+    });
+
+    test('asks for adb when there is no server and no program', () async {
+      final scrcpy = ScrcpyRoute(
+        operatingSystem: 'macos',
+        environment: const {},
+        hostAdb: AdbHostClient(port: freePort),
+        locator: locatorWith({}),
+      );
+
+      final status = await scrcpy.status();
+
+      expect((status as RouteNeedsSetup).step, RouteSetup.installTool);
+      expect(status.detail, ScrcpyRoute.needsAdb);
+      expect(scrcpy.canInstallAdb, isTrue);
+    });
+
+    test('asks to start adb when its program may not be run', () async {
+      final scrcpy = ScrcpyRoute(
+        operatingSystem: 'macos',
+        environment: const {},
+        hostAdb: AdbHostClient(port: freePort),
+        locator: locatorWith({'/tools/adb'}),
+      );
+
+      final status = await scrcpy.status();
+
+      expect((status as RouteNeedsSetup).step, RouteSetup.installTool);
+      expect(status.detail, ScrcpyRoute.needsAdbStarted);
+    });
+
+    test('never offers to download adb inside the App Sandbox', () async {
+      final scrcpy = ScrcpyRoute(
+        operatingSystem: 'macos',
+        environment: const {'APP_SANDBOX_CONTAINER_ID': 'io.sofluffy.ferret'},
+        hostAdb: AdbHostClient(port: freePort),
+        locator: locatorWith({}),
+      );
+
+      final status = await scrcpy.status();
+
+      expect(scrcpy.isSandboxed, isTrue);
+      expect(scrcpy.canInstallAdb, isFalse);
+      expect((status as RouteNeedsSetup).detail, ScrcpyRoute.needsAdbStarted);
+      expect(scrcpy.installAdb(), throwsStateError);
     });
   });
 

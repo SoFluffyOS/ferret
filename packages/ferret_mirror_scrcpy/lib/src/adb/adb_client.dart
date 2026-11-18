@@ -22,6 +22,17 @@ class AdbClient implements AdbBridge {
 
   final Map<String, int> _forwardedPorts = {};
 
+  /// Whether the program can be started at all. Inside the macOS App
+  /// Sandbox it can't, wherever the file is.
+  Future<bool> canRun() async {
+    try {
+      final result = await Process.run(executable, ['version']);
+      return result.exitCode == 0;
+    } on ProcessException {
+      return false;
+    }
+  }
+
   @override
   Future<List<AdbDevice>> devices() async =>
       AdbDevice.parseList(await _run(['devices', '-l']));

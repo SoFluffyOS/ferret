@@ -72,6 +72,15 @@ route.targets.listen((targets) async {
 
 Why both? The socket is the lighter way, and the only one that works everywhere a sandbox does. But something has to start that server, own the USB connection and keep the key the phone trusts. Only the `adb` program does that. Its first command starts the server, and from the next call on the route talks to the server directly.
 
+### Inside the macOS App Sandbox
+
+Tried with the sandboxed Ferret app on macOS, mirroring an Android 15 emulator:
+
+- **An adb server that is already running works.** Devices, push, shell and the video all go over the local socket. `com.apple.security.network.client` is all it takes. No USB entitlement: the server owns the cable, and it runs outside the sandbox.
+- **The app can't start adb.** Running the program fails with "Operation not permitted", whether it is the SDK's adb in `~/Library/Android/sdk`, a copy in the app's container, or one the app downloaded. A downloaded file also gets `com.apple.quarantine`, which a sandboxed app can't take off again.
+
+So in the sandbox `canInstallAdb` is false and `installAdb()` throws. Without a server, `status()` is `RouteNeedsSetup(installTool, detail: ScrcpyRoute.needsAdbStarted)`: the user has to open Android Studio or run `adb start-server` once. Outside the sandbox (Windows, Linux, an unsandboxed Mac build) the route starts adb itself.
+
 ## What reaches the internet
 
 Ferret makes no network calls beyond your own devices, and neither does showing a screen with this package. There is one exception, and it never happens on its own:
@@ -80,7 +89,7 @@ Ferret makes no network calls beyond your own devices, and neither does showing 
 |---|---|---|
 | Android platform-tools 37.0.1 | `dl.google.com/android/repository` | Only when `installAdb()` is called |
 
-Call `installAdb()` only from a button the user pressed, whose text says it downloads Android's platform tools from Google. The download is checked against a pinned SHA-256. Google publishes SHA-1 only; the SHA-256 values in `PlatformToolsRelease` were computed from downloads whose SHA-1 matched Google's list.
+Call `installAdb()` only from a button the user pressed, whose text says it downloads Android's platform tools from Google, and only where `canInstallAdb` is true. The download is checked against a pinned SHA-256. Google publishes SHA-1 only; the SHA-256 values in `PlatformToolsRelease` were computed from downloads whose SHA-1 matched Google's list.
 
 The scrcpy server is an asset. Its SHA-256 (from scrcpy's own `SHA256SUMS.txt`) is checked every time before it is used.
 

@@ -10,7 +10,7 @@
 
 Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way you can click and type on the phone too.
 
-> 🧪 This is experimental. Turn on **More ways to show a screen** in **Settings → Screen mirroring** on your computer first. It was tested on a Mac with an Android 15 emulator, not yet with the released app or on Windows and Linux.
+> 🧪 This is experimental. Turn on **More ways to show a screen** in **Settings → Screen mirroring** on your computer first. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
 
 ## 🔑 Turn on debugging on the phone
 
@@ -72,7 +72,9 @@ Ferret never talks to the internet on its own, and it doesn't here.
 
 The small helper that captures the screen on the phone is **scrcpy's server**. It ships inside Ferret. Ferret checks it, copies it to the phone for as long as the picture runs, and it deletes itself after.
 
-Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it, and Ferret finds it. If not, install [Google's platform-tools](https://developer.android.com/tools/releases/platform-tools).
+Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it. If not, install [Google's platform-tools](https://developer.android.com/tools/releases/platform-tools).
+
+On a Mac, adb has to be running before Ferret can use it: macOS doesn't let Ferret start it. Open Android Studio, or run `adb start-server` in Terminal.
 
 Nothing about you or your phone is sent anywhere. The picture goes from the phone to your computer, over the cable or your own Wi-Fi.
 
@@ -80,7 +82,7 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 
 | Ferret says | What to do |
 |---|---|
-| This computer needs a small helper first | adb isn't installed. Install the platform tools, then **Check again** |
+| This computer needs a small helper first | adb isn't installed, or isn't running. Install the platform tools, run `adb start-server` in Terminal (or open Android Studio), then **Check again** |
 | The phone needs one setting turned on | Turn on USB debugging, as above |
 | Allow this computer on the phone | Unlock the phone and tap **Allow**. No question on the phone? Unplug it and plug it in again |
 

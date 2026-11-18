@@ -19,6 +19,8 @@ class ScrcpyRoute implements MirrorRoute {
   ScrcpyRoute({
     Future<Directory> Function()? supportDirectory,
     Future<AdbBridge?> Function()? findAdb,
+    Map<String, String>? environment,
+    AdbLocator? locator,
     AdbHostClient? hostAdb,
     ScrcpyServerBundle? serverBundle,
     String? operatingSystem,
@@ -26,6 +28,8 @@ class ScrcpyRoute implements MirrorRoute {
   }) : _supportDirectory = supportDirectory ?? _defaultSupportDirectory,
        _findAdbOverride = findAdb,
        _hostAdb = hostAdb ?? AdbHostClient(),
+       _environment = environment ?? Platform.environment,
+       _locatorOverride = locator,
        _operatingSystem = operatingSystem ?? Platform.operatingSystem {
     _installer = AdbInstaller(
       directory: _supportDirectory,
@@ -37,6 +41,18 @@ class ScrcpyRoute implements MirrorRoute {
   }
 
   static const String routeId = 'adb';
+
+  /// [RouteNeedsSetup.detail] with [RouteSetup.installTool]: there is no
+  /// adb on this computer.
+  static const String needsAdb = 'adb';
+
+  /// [RouteNeedsSetup.detail] with [RouteSetup.installTool]: this app isn't
+  /// allowed to start adb, as inside the macOS App Sandbox. The user has
+  /// to start it: open Android Studio, or run `adb start-server` in a
+  /// terminal. Installing anything from here wouldn't help.
+  static const String needsAdbStarted = 'adb start-server';
+
+  static const String _sandboxVariable = 'APP_SANDBOX_CONTAINER_ID';
   static const Set<String> _computers = {'macos', 'windows', 'linux'};
 
   /// How often `adb devices` is asked while someone listens to [targets].
@@ -45,6 +61,8 @@ class ScrcpyRoute implements MirrorRoute {
   final Future<Directory> Function() _supportDirectory;
   final Future<AdbBridge?> Function()? _findAdbOverride;
   final AdbHostClient _hostAdb;
+  final Map<String, String> _environment;
+  final AdbLocator? _locatorOverride;
   final String _operatingSystem;
   late final AdbInstaller _installer;
   late final ScrcpyServerBundle _serverBundle;
@@ -52,6 +70,7 @@ class ScrcpyRoute implements MirrorRoute {
   final Set<ScrcpyFeed> _feeds = {};
 
   AdbClient? _program;
+  final Set<String> _blockedPrograms = {};
   Timer? _poll;
   List<MirrorTarget>? _lastTargets;
   bool _isPolling = false;
@@ -61,6 +80,15 @@ class ScrcpyRoute implements MirrorRoute {
 
   bool get isSupported => _computers.contains(_operatingSystem);
 
+  /// Whether this app runs in the macOS App Sandbox. There it can talk to
+  /// an adb server that is already running, but can't start adb itself:
+  /// not the user's own, and not one it downloaded.
+  bool get isSandboxed => _environment.containsKey(_sandboxVariable);
+
+  /// Whether [installAdb] can help here. Offer the download only when it
+  /// does.
+  bool get canInstallAdb => isSupported && !isSandboxed;
+
   @override
   Future<RouteStatus> status() async {
     if (!isSupported) {
@@ -69,7 +97,7 @@ class ScrcpyRoute implements MirrorRoute {
 
     final adb = await _locateAdb();
     if (adb == null) {
-      return const RouteNeedsSetup(.installTool, detail: 'adb');
+      return RouteNeedsSetup(.installTool, detail: _missingAdbDetail);
     }
 
     final devices = await _devicesOf(adb);
@@ -135,7 +163,13 @@ class ScrcpyRoute implements MirrorRoute {
   /// Call it from a button the user pressed, whose text says it downloads
   /// Android's platform tools from Google. Never call it on your own.
   /// Throws a `DownloadException` when it fails.
+  ///
+  /// Throws a [StateError] where [canInstallAdb] is false.
   Future<void> installAdb() async {
+    if (!canInstallAdb) {
+      throw StateError('A downloaded adb cannot be run from here');
+    }
+
     _program = AdbClient(await _installer.install());
   }
 
@@ -203,16 +237,35 @@ class ScrcpyRoute implements MirrorRoute {
       return known;
     }
 
-    final locator = AdbLocator(
-      operatingSystem: _operatingSystem,
-      extraDirectories: [await _installer.installDirectory()],
-    );
-    final executable = locator.find();
-    if (executable == null) {
-      return null;
+    final locator =
+        _locatorOverride ??
+        AdbLocator(
+          operatingSystem: _operatingSystem,
+          environment: _environment,
+          extraDirectories: [await _installer.installDirectory()],
+        );
+    for (final executable in locator.findAll()) {
+      if (_blockedPrograms.contains(executable)) {
+        continue;
+      }
+
+      final program = AdbClient(executable);
+      if (await program.canRun()) {
+        return _program = program;
+      }
+
+      _blockedPrograms.add(executable);
     }
 
-    return _program = AdbClient(executable);
+    return null;
+  }
+
+  String get _missingAdbDetail {
+    if (isSandboxed || _blockedPrograms.isNotEmpty) {
+      return needsAdbStarted;
+    }
+
+    return needsAdb;
   }
 
   Future<List<AdbDevice>> _devicesOf(AdbBridge adb) async {

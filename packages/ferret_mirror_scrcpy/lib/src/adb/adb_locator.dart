@@ -40,15 +40,20 @@ class AdbLocator {
   }
 
   /// The path of adb, or null when there is none.
-  String? find() {
+  String? find() => findAll().firstOrNull;
+
+  /// Every adb on this computer, the preferred one first. One may be there
+  /// and still not be allowed to run, such as from inside a sandbox.
+  List<String> findAll() {
+    final found = <String>{};
     for (final directory in _directories()) {
       final candidate = _path.join(directory, executableName);
       if (_exists(candidate)) {
-        return candidate;
+        found.add(candidate);
       }
     }
 
-    return null;
+    return found.toList();
   }
 
   Iterable<String> _directories() sync* {
