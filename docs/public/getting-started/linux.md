@@ -34,3 +34,7 @@ Nothing paired yet? There is no list to show, so the window is one column that l
 | F9 | Show or hide the device list |
 | Ctrl+Alt+0 | Show or hide the Activity pane |
 | Ctrl+[ | Back |
+
+## 🧱 If your phone doesn't show up
+
+A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. See [Fix connection](../features/connection-doctor.md).

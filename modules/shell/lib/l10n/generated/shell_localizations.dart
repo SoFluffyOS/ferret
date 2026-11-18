@@ -2211,6 +2211,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'{device} is offline. This is what was here last.'**
   String sectionOfflineNoTime(String device);
+
+  /// No description provided for @doctorFirewallLinux.
+  ///
+  /// In en, this message translates to:
+  /// **'{firewall} is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.'**
+  String doctorFirewallLinux(String firewall);
+
+  /// No description provided for @doctorFixCopyFirewallCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the command'**
+  String get doctorFixCopyFirewallCommand;
 }
 
 class _ShellLocalizationsDelegate

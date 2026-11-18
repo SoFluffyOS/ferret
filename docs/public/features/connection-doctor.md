@@ -32,6 +32,22 @@ No button? Open **Windows Security → Firewall & network protection → Allow a
 
 Windows treats a new Wi-Fi as **Public** and hides your computer on it. That is why both boxes matter. On your home Wi-Fi you can also switch it: **Settings → Network & internet → Wi-Fi**, pick your network, then **Private network**. Do that only on a network you trust.
 
+## On Linux: ufw and firewalld
+
+Linux never asks whether to let an app through. If **ufw** (Ubuntu, Mint) or **firewalld** (Fedora, openSUSE) is on, it simply drops what your other devices send, and nothing tells you.
+
+Fix connection checks which one is on, without asking for your password, and names it. **Copy the command** puts the right line on your clipboard. Paste it in a terminal:
+
+```bash
+# ufw
+sudo ufw allow 47640/tcp && sudo ufw allow 47641/udp && sudo ufw allow 5353/udp
+
+# firewalld
+sudo firewall-cmd --permanent --add-port=47640/tcp --add-port=47641/udp --add-service=mdns && sudo firewall-cmd --reload
+```
+
+That's it. `47640/tcp` is Ferret itself, `47641/udp` and `5353/udp` (mDNS) are how your devices find each other.
+
 ## Connect by address
 
 Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.

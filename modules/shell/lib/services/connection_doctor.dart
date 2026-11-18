@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:engine/engine.dart';
+import 'package:shell/services/linux_firewall.dart';
 
 /// How one check came out.
 enum DoctorStatus { running, ok, warning, problem }
@@ -12,6 +13,7 @@ enum DoctorFix {
   connectByAddress,
   pairAgain,
   openFirewall,
+  copyFirewallCommand,
   copyDiagnostics,
 }
 
@@ -46,8 +48,14 @@ enum DoctorCheckKind {
 /// act on: this device's network, a VPN, different networks, the other
 /// device not answering, the other device not accepting this one.
 class ConnectionDoctor {
-  ConnectionDoctor(this._engine, {bool? isWindows})
-    : _isWindows = isWindows ?? Platform.isWindows;
+  ConnectionDoctor(
+    this._engine, {
+    bool? isWindows,
+    bool? isLinux,
+    LinuxFirewall? linuxFirewall,
+  }) : _isWindows = isWindows ?? Platform.isWindows,
+       _isLinux = isLinux ?? Platform.isLinux,
+       _linuxFirewall = linuxFirewall ?? LinuxFirewall();
 
   final FerretEngine _engine;
 
@@ -57,7 +65,12 @@ class ConnectionDoctor {
   /// device can't be found or doesn't answer.
   final bool _isWindows;
 
-  static const _firewallHint = DoctorCheck(
+  /// ufw and firewalld block everything they weren't told about, and on
+  /// Linux nothing ever asks. Named only when one of them is on.
+  final bool _isLinux;
+  final LinuxFirewall _linuxFirewall;
+
+  static const _windowsFirewall = DoctorCheck(
     kind: .firewall,
     status: .warning,
     fixes: [.openFirewall],
@@ -83,6 +96,7 @@ class ConnectionDoctor {
       null => null,
     };
     _target = device;
+    final firewall = await _firewallHint();
 
     final interfaces = await _interfaces();
     final local = interfaces.where((entry) => !_isVpn(entry.name)).toList();
@@ -118,8 +132,8 @@ class ConnectionDoctor {
 
     final online = local.isNotEmpty;
     if (deviceId == null) {
-      if (_isWindows && online) {
-        checks.add(_firewallHint);
+      if (firewall != null && online) {
+        checks.add(firewall);
         yield [...checks];
       }
       return;
@@ -134,8 +148,8 @@ class ConnectionDoctor {
           fixes: [.connectByAddress],
         ),
       );
-      if (_isWindows && online) {
-        checks.add(_firewallHint);
+      if (firewall != null && online) {
+        checks.add(firewall);
       }
       yield [...checks];
       return;
@@ -170,8 +184,8 @@ class ConnectionDoctor {
           fixes: const [.tryAgain, .connectByAddress],
         ),
       );
-      if (_isWindows) {
-        checks.add(_firewallHint);
+      if (firewall != null) {
+        checks.add(firewall);
       }
       yield [...checks];
       return;
@@ -203,6 +217,30 @@ class ConnectionDoctor {
   }
 
   TrustedDevice? _target;
+
+  /// The firewall line for this computer: Windows Firewall always, a Linux
+  /// firewall when one is on, with its name in [DoctorCheck.detail].
+  Future<DoctorCheck?> _firewallHint() async {
+    if (_isWindows) {
+      return _windowsFirewall;
+    }
+
+    if (!_isLinux) {
+      return null;
+    }
+
+    final kind = await _linuxFirewall.active();
+    if (kind == null) {
+      return null;
+    }
+
+    return DoctorCheck(
+      kind: .firewall,
+      status: .warning,
+      detail: kind.name,
+      fixes: const [.copyFirewallCommand],
+    );
+  }
 
   /// A report to paste into an issue: no names, addresses only by their kind.
   /// It says what kind of device was checked and when it was last seen, so

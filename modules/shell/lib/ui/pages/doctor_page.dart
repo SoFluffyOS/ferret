@@ -131,9 +131,32 @@ class _DoctorPageState extends State<DoctorPage> {
         );
       case .openFirewall:
         await WindowsFirewall.openAllowedApps();
+      case .copyFirewallCommand:
+        await _copyFirewallCommand();
       case .copyDiagnostics:
         await _copy();
     }
+  }
+
+  Future<void> _copyFirewallCommand() async {
+    final kind = _linuxFirewallOf(_checks);
+    if (kind == null) {
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: kind.allowCommand));
+  }
+
+  static LinuxFirewallKind? _linuxFirewallOf(List<DoctorCheck> checks) {
+    for (final check in checks) {
+      for (final kind in LinuxFirewallKind.values) {
+        if (check.kind == .firewall && check.detail == kind.name) {
+          return kind;
+        }
+      }
+    }
+
+    return null;
   }
 
   Future<void> _copy() async {
@@ -145,6 +168,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .connectByAddress => l10n.doctorFixConnectByAddress,
     .pairAgain => l10n.doctorFixPairAgain,
     .openFirewall => l10n.doctorFixOpenFirewall,
+    .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
     .copyDiagnostics => l10n.doctorFixCopy,
   };
 
@@ -191,6 +215,10 @@ class _DoctorPageState extends State<DoctorPage> {
       (.network, _) => l10n.doctorNetworkOk(l10n.hereStart(local)),
       (.vpn, _) => l10n.doctorVpn(check.detail),
       (.port, _) => l10n.doctorPort(check.detail),
+      (.firewall, _) when check.detail == LinuxFirewallKind.ufw.name =>
+        l10n.doctorFirewallLinux('ufw'),
+      (.firewall, _) when check.detail == LinuxFirewallKind.firewalld.name =>
+        l10n.doctorFirewallLinux('firewalld'),
       (.firewall, _) => l10n.doctorFirewall,
       (.sameNetwork, .ok) => l10n.doctorSameNetworkOk(device, here),
       (.sameNetwork, _) => l10n.doctorSameNetworkWarning(

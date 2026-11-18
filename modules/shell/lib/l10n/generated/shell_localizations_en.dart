@@ -1320,4 +1320,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String sectionOfflineNoTime(String device) {
     return '$device is offline. This is what was here last.';
   }
+
+  @override
+  String doctorFirewallLinux(String firewall) {
+    return '$firewall is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.';
+  }
+
+  @override
+  String get doctorFixCopyFirewallCommand => 'Copy the command';
 }

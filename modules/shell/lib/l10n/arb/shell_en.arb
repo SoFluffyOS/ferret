@@ -1025,5 +1025,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "doctorFirewallLinux": "{firewall} is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.",
+  "@doctorFirewallLinux": {
+    "placeholders": {
+      "firewall": {
+        "type": "String",
+        "example": "ufw"
+      }
+    }
+  },
+  "doctorFixCopyFirewallCommand": "Copy the command"
 }

@@ -53,3 +53,4 @@
 - 🗂️ **One folder for your data**: on computers Ferret keeps everything in `~/.sofluffy/ferret`. Delete it and nothing is left behind.
 - 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon. The icon shows what's going on: a ring while a file moves, a check when it's done, a dot when someone waits for your answer, a slash while paused.
 - 💻 **`ferret` command line**: run it headless, pair, and list devices.
+- 🧱 **Linux firewalls**: Fix connection notices when ufw or firewalld is on, and copies the one line that lets Ferret through.
