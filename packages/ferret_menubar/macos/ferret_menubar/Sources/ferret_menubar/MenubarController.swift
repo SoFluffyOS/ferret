@@ -260,7 +260,11 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         }
 
         hidePopover()
-        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 4), in: button)
+        // The status item places its own menu under the icon. A menu popped
+        // up at a point there opens scrolled past its first item.
+        statusItem.menu = menu
+        button.performClick(nil)
+        statusItem.menu = nil
     }
 
     @objc private func buttonPressed() {
