@@ -9,7 +9,13 @@
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
   "deviceLastSeen": "Last seen {time}",
-  "@deviceLastSeen": {"placeholders": {"time": {"type": "String"}}},
+  "@deviceLastSeen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "nearbyPairHint": "Tap to pair",
   "pairTitle": "Pair a device",
   "pairShowCode": "Show code",
@@ -18,7 +24,13 @@
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Link copied",
   "pairExpiresIn": "Expires in {minutes} min",
-  "@pairExpiresIn": {"placeholders": {"minutes": {"type": "int"}}},
+  "@pairExpiresIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "pairNewCode": "New code",
   "pairLinkLabel": "Pairing link",
   "pairLinkHint": "ferret://pair?o=…",
@@ -28,10 +40,22 @@
   "pairConnect": "Connect",
   "pairCompareTitle": "Compare the codes",
   "pairCompareBody": "Make sure {device} shows the same code, then confirm there.",
-  "@pairCompareBody": {"placeholders": {"device": {"type": "String"}}},
+  "@pairCompareBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "pairWaiting": "Waiting for the other device…",
   "pairSuccess": "Paired with {device}",
-  "@pairSuccess": {"placeholders": {"device": {"type": "String"}}},
+  "@pairSuccess": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "pairFailedUnreachable": "Couldn't reach that device. Are both on the same network?",
   "pairFailedRejected": "The other device said no.",
   "pairFailedExpired": "That code has expired. Show a new one.",
@@ -40,23 +64,53 @@
   "pairFailedTimedOut": "No answer in time.",
   "pairFailedProtocol": "Something went wrong while pairing.",
   "promptTitle": "Pair with {device}?",
-  "@promptTitle": {"placeholders": {"device": {"type": "String"}}},
+  "@promptTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "promptBody": "Only accept if {device} shows this code too.",
-  "@promptBody": {"placeholders": {"device": {"type": "String"}}},
+  "@promptBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "promptAccept": "Pair",
   "promptReject": "Don't pair",
   "deviceTitleId": "Device ID",
   "deviceActions": "Actions",
   "deviceUnpair": "Unpair",
   "deviceUnpairConfirmTitle": "Unpair {device}?",
-  "@deviceUnpairConfirmTitle": {"placeholders": {"device": {"type": "String"}}},
+  "@deviceUnpairConfirmTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "deviceUnpairConfirmBody": "Both devices forget each other. You can pair again any time.",
   "settingsTitle": "Settings",
   "settingsThisDevice": "This device",
   "settingsDeviceId": "ID {id}",
-  "@settingsDeviceId": {"placeholders": {"id": {"type": "String"}}},
+  "@settingsDeviceId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPort": "Listening on port {port}",
-  "@settingsPort": {"placeholders": {"port": {"type": "int"}}},
+  "@settingsPort": {
+    "placeholders": {
+      "port": {
+        "type": "int"
+      }
+    }
+  },
   "settingsPrivacy": "Privacy",
   "settingsPrivacyBody": "Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.",
   "settingsQuit": "Quit Ferret",
@@ -65,5 +119,132 @@
   "menuOpen": "Open Ferret",
   "menuPair": "Pair a Device…",
   "menuSettings": "Settings…",
-  "menuQuit": "Quit Ferret"
+  "menuQuit": "Quit Ferret",
+  "welcomeTitle": "Your devices, working together",
+  "welcomeBody": "Pair your phone and computer to pass pages, media, files and your clipboard between them.",
+  "welcomePrivacy": "No account. No cloud. Stays on your network.",
+  "welcomePlatforms": "Android · iPhone · Mac · Windows · Linux",
+  "deviceLastSeenJustNow": "Last seen just now",
+  "deviceLastSeenMinutes": "Last seen {minutes} min ago",
+  "@deviceLastSeenMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "deviceLastSeenHours": "Last seen {hours} h ago",
+  "@deviceLastSeenHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "deviceLastSeenDays": "Last seen {days} d ago",
+  "@deviceLastSeenDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "deviceWhy": "Why?",
+  "pausedTitle": "Ferret is paused",
+  "pausedUntil": "Until {time}",
+  "@pausedUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pausedUntilResume": "Until you resume",
+  "resume": "Resume",
+  "pause": "Pause",
+  "pauseOneHour": "Pause for 1 hour",
+  "pauseUntilTomorrow": "Pause until tomorrow",
+  "pauseUntilResume": "Pause until I resume",
+  "doctorTitle": "Connection Doctor",
+  "doctorIntro": "Checking why {device} isn't connected.",
+  "@doctorIntro": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorNetworkOk": "This device is on a network",
+  "doctorNetworkProblem": "This device isn't on a network. Connect to Wi-Fi or Ethernet.",
+  "doctorVpn": "A VPN is on ({name}). It can hide devices on your network. Allow local network access in the VPN, or turn it off.",
+  "@doctorVpn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorPort": "Ferret is using port {port} because the usual port was taken. That's fine.",
+  "@doctorPort": {
+    "placeholders": {
+      "port": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorSameNetworkOk": "Both devices were on the same network",
+  "doctorSameNetworkWarning": "{device} was last seen on a different network ({address}). Put both devices on the same Wi-Fi.",
+  "@doctorSameNetworkWarning": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorReachableRunning": "Knocking on {device}…",
+  "@doctorReachableRunning": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorReachableOk": "{device} answered",
+  "@doctorReachableOk": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorReachableProblem": "{device} isn't answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.",
+  "@doctorReachableProblem": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorAcceptedRunning": "Connecting…",
+  "doctorAcceptedOk": "Connected. All good.",
+  "doctorAcceptedProblem": "{device} answered but didn't accept this device. It may have been reset or reinstalled. Pair again.",
+  "@doctorAcceptedProblem": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorFixTryAgain": "Try again",
+  "doctorFixConnectByAddress": "Connect by address",
+  "doctorFixPairAgain": "Pair again",
+  "doctorFixCopy": "Copy diagnostics",
+  "doctorCopied": "Diagnostics copied. They contain no names or content.",
+  "connectTitle": "Connect by address",
+  "connectBody": "Type the address shown in Settings on the other device.",
+  "featureChipOff": "Off",
+  "settingsPause": "Pause"
 }

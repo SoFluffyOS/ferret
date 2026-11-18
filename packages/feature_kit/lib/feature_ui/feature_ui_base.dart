@@ -1,5 +1,6 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
+import 'package:feature_kit/feature_ui/feature_health.dart';
 import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -26,6 +27,10 @@ abstract class FeatureUi {
   String title(BuildContext context);
 
   IconData get icon;
+
+  /// How this feature is doing with [device], or null to show no chip.
+  /// Report real health (the last round trip), never just "connected".
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) => null;
 
   /// A card on the home screen (the menubar popover on macOS), or null.
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) => null;

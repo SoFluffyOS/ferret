@@ -435,6 +435,246 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Quit Ferret'**
   String get menuQuit;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices, working together'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair your phone and computer to pass pages, media, files and your clipboard between them.'**
+  String get welcomeBody;
+
+  /// No description provided for @welcomePrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'No account. No cloud. Stays on your network.'**
+  String get welcomePrivacy;
+
+  /// No description provided for @welcomePlatforms.
+  ///
+  /// In en, this message translates to:
+  /// **'Android · iPhone · Mac · Windows · Linux'**
+  String get welcomePlatforms;
+
+  /// No description provided for @deviceLastSeenJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen just now'**
+  String get deviceLastSeenJustNow;
+
+  /// No description provided for @deviceLastSeenMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {minutes} min ago'**
+  String deviceLastSeenMinutes(int minutes);
+
+  /// No description provided for @deviceLastSeenHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {hours} h ago'**
+  String deviceLastSeenHours(int hours);
+
+  /// No description provided for @deviceLastSeenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen {days} d ago'**
+  String deviceLastSeenDays(int days);
+
+  /// No description provided for @deviceWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why?'**
+  String get deviceWhy;
+
+  /// No description provided for @pausedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is paused'**
+  String get pausedTitle;
+
+  /// No description provided for @pausedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Until {time}'**
+  String pausedUntil(String time);
+
+  /// No description provided for @pausedUntilResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Until you resume'**
+  String get pausedUntilResume;
+
+  /// No description provided for @resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resume;
+
+  /// No description provided for @pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pause;
+
+  /// No description provided for @pauseOneHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause for 1 hour'**
+  String get pauseOneHour;
+
+  /// No description provided for @pauseUntilTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause until tomorrow'**
+  String get pauseUntilTomorrow;
+
+  /// No description provided for @pauseUntilResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause until I resume'**
+  String get pauseUntilResume;
+
+  /// No description provided for @doctorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Doctor'**
+  String get doctorTitle;
+
+  /// No description provided for @doctorIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking why {device} isn\'t connected.'**
+  String doctorIntro(String device);
+
+  /// No description provided for @doctorNetworkOk.
+  ///
+  /// In en, this message translates to:
+  /// **'This device is on a network'**
+  String get doctorNetworkOk;
+
+  /// No description provided for @doctorNetworkProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'This device isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
+  String get doctorNetworkProblem;
+
+  /// No description provided for @doctorVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'A VPN is on ({name}). It can hide devices on your network. Allow local network access in the VPN, or turn it off.'**
+  String doctorVpn(String name);
+
+  /// No description provided for @doctorPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is using port {port} because the usual port was taken. That\'s fine.'**
+  String doctorPort(String port);
+
+  /// No description provided for @doctorSameNetworkOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Both devices were on the same network'**
+  String get doctorSameNetworkOk;
+
+  /// No description provided for @doctorSameNetworkWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} was last seen on a different network ({address}). Put both devices on the same Wi-Fi.'**
+  String doctorSameNetworkWarning(String device, String address);
+
+  /// No description provided for @doctorReachableRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Knocking on {device}…'**
+  String doctorReachableRunning(String device);
+
+  /// No description provided for @doctorReachableOk.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} answered'**
+  String doctorReachableOk(String device);
+
+  /// No description provided for @doctorReachableProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.'**
+  String doctorReachableProblem(String device);
+
+  /// No description provided for @doctorAcceptedRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get doctorAcceptedRunning;
+
+  /// No description provided for @doctorAcceptedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected. All good.'**
+  String get doctorAcceptedOk;
+
+  /// No description provided for @doctorAcceptedProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} answered but didn\'t accept this device. It may have been reset or reinstalled. Pair again.'**
+  String doctorAcceptedProblem(String device);
+
+  /// No description provided for @doctorFixTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get doctorFixTryAgain;
+
+  /// No description provided for @doctorFixConnectByAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect by address'**
+  String get doctorFixConnectByAddress;
+
+  /// No description provided for @doctorFixPairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair again'**
+  String get doctorFixPairAgain;
+
+  /// No description provided for @doctorFixCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy diagnostics'**
+  String get doctorFixCopy;
+
+  /// No description provided for @doctorCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics copied. They contain no names or content.'**
+  String get doctorCopied;
+
+  /// No description provided for @connectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect by address'**
+  String get connectTitle;
+
+  /// No description provided for @connectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the address shown in Settings on the other device.'**
+  String get connectBody;
+
+  /// No description provided for @featureChipOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get featureChipOff;
+
+  /// No description provided for @settingsPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get settingsPause;
 }
 
 class _ShellLocalizationsDelegate

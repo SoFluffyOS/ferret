@@ -24,8 +24,13 @@ class FerretApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: host,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: host),
+        ChangeNotifierProvider(
+          create: (_) => PauseController(featureContext.engine),
+        ),
+      ],
       child: ShellScope(
         features: features,
         featureContext: featureContext,

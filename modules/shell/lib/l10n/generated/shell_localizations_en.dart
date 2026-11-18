@@ -203,4 +203,152 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get menuQuit => 'Quit Ferret';
+
+  @override
+  String get welcomeTitle => 'Your devices, working together';
+
+  @override
+  String get welcomeBody =>
+      'Pair your phone and computer to pass pages, media, files and your clipboard between them.';
+
+  @override
+  String get welcomePrivacy => 'No account. No cloud. Stays on your network.';
+
+  @override
+  String get welcomePlatforms => 'Android · iPhone · Mac · Windows · Linux';
+
+  @override
+  String get deviceLastSeenJustNow => 'Last seen just now';
+
+  @override
+  String deviceLastSeenMinutes(int minutes) {
+    return 'Last seen $minutes min ago';
+  }
+
+  @override
+  String deviceLastSeenHours(int hours) {
+    return 'Last seen $hours h ago';
+  }
+
+  @override
+  String deviceLastSeenDays(int days) {
+    return 'Last seen $days d ago';
+  }
+
+  @override
+  String get deviceWhy => 'Why?';
+
+  @override
+  String get pausedTitle => 'Ferret is paused';
+
+  @override
+  String pausedUntil(String time) {
+    return 'Until $time';
+  }
+
+  @override
+  String get pausedUntilResume => 'Until you resume';
+
+  @override
+  String get resume => 'Resume';
+
+  @override
+  String get pause => 'Pause';
+
+  @override
+  String get pauseOneHour => 'Pause for 1 hour';
+
+  @override
+  String get pauseUntilTomorrow => 'Pause until tomorrow';
+
+  @override
+  String get pauseUntilResume => 'Pause until I resume';
+
+  @override
+  String get doctorTitle => 'Connection Doctor';
+
+  @override
+  String doctorIntro(String device) {
+    return 'Checking why $device isn\'t connected.';
+  }
+
+  @override
+  String get doctorNetworkOk => 'This device is on a network';
+
+  @override
+  String get doctorNetworkProblem =>
+      'This device isn\'t on a network. Connect to Wi-Fi or Ethernet.';
+
+  @override
+  String doctorVpn(String name) {
+    return 'A VPN is on ($name). It can hide devices on your network. Allow local network access in the VPN, or turn it off.';
+  }
+
+  @override
+  String doctorPort(String port) {
+    return 'Ferret is using port $port because the usual port was taken. That\'s fine.';
+  }
+
+  @override
+  String get doctorSameNetworkOk => 'Both devices were on the same network';
+
+  @override
+  String doctorSameNetworkWarning(String device, String address) {
+    return '$device was last seen on a different network ($address). Put both devices on the same Wi-Fi.';
+  }
+
+  @override
+  String doctorReachableRunning(String device) {
+    return 'Knocking on $device…';
+  }
+
+  @override
+  String doctorReachableOk(String device) {
+    return '$device answered';
+  }
+
+  @override
+  String doctorReachableProblem(String device) {
+    return '$device isn\'t answering. Open Ferret on it. On Android, battery saving may have stopped it. Some networks (guest or office Wi-Fi) block devices from seeing each other.';
+  }
+
+  @override
+  String get doctorAcceptedRunning => 'Connecting…';
+
+  @override
+  String get doctorAcceptedOk => 'Connected. All good.';
+
+  @override
+  String doctorAcceptedProblem(String device) {
+    return '$device answered but didn\'t accept this device. It may have been reset or reinstalled. Pair again.';
+  }
+
+  @override
+  String get doctorFixTryAgain => 'Try again';
+
+  @override
+  String get doctorFixConnectByAddress => 'Connect by address';
+
+  @override
+  String get doctorFixPairAgain => 'Pair again';
+
+  @override
+  String get doctorFixCopy => 'Copy diagnostics';
+
+  @override
+  String get doctorCopied =>
+      'Diagnostics copied. They contain no names or content.';
+
+  @override
+  String get connectTitle => 'Connect by address';
+
+  @override
+  String get connectBody =>
+      'Type the address shown in Settings on the other device.';
+
+  @override
+  String get featureChipOff => 'Off';
+
+  @override
+  String get settingsPause => 'Pause';
 }

@@ -2,10 +2,14 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
+import 'package:shell/ui/dialogs/dialogs.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/device_page.dart';
+import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -29,6 +33,19 @@ class HomePage extends StatelessWidget {
       title: l10n.appName,
       backLabel: l10n.back,
       actions: [
+        Tappable(
+          tooltip: l10n.pause,
+          onTap: () =>
+              PauseDialog.show(context, context.read<PauseController>()),
+          child: Padding(
+            padding: EdgeInsets.all(Spacing.d6),
+            child: Icon(
+              LucideIcons.pause,
+              size: Spacing.d20,
+              color: palette.text,
+            ),
+          ),
+        ),
         Tappable(
           tooltip: l10n.homePairDevice,
           onTap: () => _openPairing(context),
@@ -55,6 +72,7 @@ class HomePage extends StatelessWidget {
         ),
       ],
       children: [
+        const PauseBanner(),
         for (final card in cards)
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
@@ -63,6 +81,8 @@ class HomePage extends StatelessWidget {
         DevicesFrame(
           onOpen: (status) => _openDevice(context, status),
           onPair: () => _openPairing(context),
+          onWhy: (status) =>
+              _push(context, DoctorPage(deviceId: status.device.id)),
         ),
         NearbyFrame(onPair: (peer) => _pairNearby(context, peer)),
       ],
