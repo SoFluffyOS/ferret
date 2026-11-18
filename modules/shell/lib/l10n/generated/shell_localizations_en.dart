@@ -351,4 +351,66 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsPause => 'Pause';
+
+  @override
+  String get stayTitle => 'Stay connected';
+
+  @override
+  String get stayBody =>
+      'Android stops apps in the background to save battery. These steps keep Ferret connected. It uses about 1% battery a day.';
+
+  @override
+  String get stayNotifications =>
+      'Allow Ferret\'s notification, so Android lets it keep running.';
+
+  @override
+  String get stayNotificationsFix => 'Allow';
+
+  @override
+  String get stayBattery => 'Let Ferret run in the background.';
+
+  @override
+  String get stayBatteryFix => 'Allow';
+
+  @override
+  String stayMaker(String maker) {
+    return 'Your $maker phone has its own battery saver too. Allow Ferret there.';
+  }
+
+  @override
+  String get stayMakerFix => 'Open settings';
+
+  @override
+  String stayStops(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return 'Android stopped Ferret $_temp0 today.';
+  }
+
+  @override
+  String get stayTile =>
+      'Add the Ferret tile to Quick Settings to send your clipboard in one tap.';
+
+  @override
+  String get stayTileFix => 'Add tile';
+
+  @override
+  String get settingsBackground => 'Background';
+
+  @override
+  String get settingsKeepRunning => 'Keep running in the background';
+
+  @override
+  String get settingsKeepRunningBody =>
+      'Stays connected when Ferret is closed. Shows a quiet notification.';
+
+  @override
+  String get settingsStartOnBoot => 'Start when the phone starts';
+
+  @override
+  String get dropHere => 'Drop to send';
 }

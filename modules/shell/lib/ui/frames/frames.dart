@@ -1,4 +1,7 @@
+export 'package:shell/ui/frames/background_settings.dart';
 export 'package:shell/ui/frames/devices_frame.dart';
+export 'package:shell/ui/frames/file_drop_zone.dart';
 export 'package:shell/ui/frames/nearby_frame.dart';
 export 'package:shell/ui/frames/pairing_prompt_listener.dart';
 export 'package:shell/ui/frames/pause_banner.dart';
+export 'package:shell/ui/frames/stay_connected_card.dart';

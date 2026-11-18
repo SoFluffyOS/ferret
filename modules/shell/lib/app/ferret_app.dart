@@ -14,11 +14,16 @@ class FerretApp extends StatelessWidget {
   const FerretApp({
     super.key,
     required this.host,
+    required this.pause,
     required this.features,
     required this.featureContext,
   });
 
   final EngineHost host;
+
+  /// Shared with the Android service notification, so a pause from either
+  /// place shows in both.
+  final PauseController pause;
   final List<FeatureUi> features;
   final FeatureContext featureContext;
 
@@ -27,9 +32,7 @@ class FerretApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: host),
-        ChangeNotifierProvider(
-          create: (_) => PauseController(featureContext.engine),
-        ),
+        ChangeNotifierProvider.value(value: pause),
       ],
       child: ShellScope(
         features: features,
@@ -77,9 +80,11 @@ class _Themed extends StatelessWidget {
       child: Builder(
         builder: (context) => DefaultTextStyle(
           style: theme.typography.body1.copyWith(color: context.palette.text),
-          child: PairingPromptListener(
-            navigatorKey: navigatorKey,
-            child: child,
+          child: FileDropZone(
+            child: PairingPromptListener(
+              navigatorKey: navigatorKey,
+              child: child,
+            ),
           ),
         ),
       ),

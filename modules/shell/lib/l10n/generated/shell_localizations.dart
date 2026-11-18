@@ -675,6 +675,102 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Pause'**
   String get settingsPause;
+
+  /// No description provided for @stayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay connected'**
+  String get stayTitle;
+
+  /// No description provided for @stayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Android stops apps in the background to save battery. These steps keep Ferret connected. It uses about 1% battery a day.'**
+  String get stayBody;
+
+  /// No description provided for @stayNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Ferret\'s notification, so Android lets it keep running.'**
+  String get stayNotifications;
+
+  /// No description provided for @stayNotificationsFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get stayNotificationsFix;
+
+  /// No description provided for @stayBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Let Ferret run in the background.'**
+  String get stayBattery;
+
+  /// No description provided for @stayBatteryFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get stayBatteryFix;
+
+  /// No description provided for @stayMaker.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {maker} phone has its own battery saver too. Allow Ferret there.'**
+  String stayMaker(String maker);
+
+  /// No description provided for @stayMakerFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get stayMakerFix;
+
+  /// No description provided for @stayStops.
+  ///
+  /// In en, this message translates to:
+  /// **'Android stopped Ferret {count, plural, =1{once} other{{count} times}} today.'**
+  String stayStops(int count);
+
+  /// No description provided for @stayTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the Ferret tile to Quick Settings to send your clipboard in one tap.'**
+  String get stayTile;
+
+  /// No description provided for @stayTileFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tile'**
+  String get stayTileFix;
+
+  /// No description provided for @settingsBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get settingsBackground;
+
+  /// No description provided for @settingsKeepRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep running in the background'**
+  String get settingsKeepRunning;
+
+  /// No description provided for @settingsKeepRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays connected when Ferret is closed. Shows a quiet notification.'**
+  String get settingsKeepRunningBody;
+
+  /// No description provided for @settingsStartOnBoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Start when the phone starts'**
+  String get settingsStartOnBoot;
+
+  /// No description provided for @dropHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to send'**
+  String get dropHere;
 }
 
 class _ShellLocalizationsDelegate

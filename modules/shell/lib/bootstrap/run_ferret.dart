@@ -44,6 +44,7 @@ Future<void> runFerret({
   final pause = PauseController(engine);
   final system = SystemBinding(engine: engine, host: host, pause: pause);
   await system.start();
+  await PresenceReporter(engine).start();
 
   final notifier = await SystemNotifier.create([
     for (final feature in features) ...feature.noticeCategories,
@@ -65,6 +66,11 @@ Future<void> runFerret({
   await menubar.start();
 
   runApp(
-    FerretApp(host: host, features: features, featureContext: featureContext),
+    FerretApp(
+      host: host,
+      pause: pause,
+      features: features,
+      featureContext: featureContext,
+    ),
   );
 }

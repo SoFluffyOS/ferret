@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/frames.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// This device, each feature's settings, and the privacy promise.
@@ -51,6 +52,7 @@ class SettingsPage extends StatelessWidget {
             ],
           ),
         ),
+        BackgroundSettings(settings: engine.settings),
         for (final (feature, section) in sections) ...[
           SectionTitle(feature.title(context)),
           section,

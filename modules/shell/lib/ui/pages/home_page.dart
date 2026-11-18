@@ -73,6 +73,7 @@ class HomePage extends StatelessWidget {
       ],
       children: [
         const PauseBanner(),
+        const StayConnectedCard(),
         for (final card in cards)
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),

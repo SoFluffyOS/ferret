@@ -246,5 +246,35 @@
   "connectTitle": "Connect by address",
   "connectBody": "Type the address shown in Settings on the other device.",
   "featureChipOff": "Off",
-  "settingsPause": "Pause"
+  "settingsPause": "Pause",
+  "stayTitle": "Stay connected",
+  "stayBody": "Android stops apps in the background to save battery. These steps keep Ferret connected. It uses about 1% battery a day.",
+  "stayNotifications": "Allow Ferret's notification, so Android lets it keep running.",
+  "stayNotificationsFix": "Allow",
+  "stayBattery": "Let Ferret run in the background.",
+  "stayBatteryFix": "Allow",
+  "stayMaker": "Your {maker} phone has its own battery saver too. Allow Ferret there.",
+  "@stayMaker": {
+    "placeholders": {
+      "maker": {
+        "type": "String"
+      }
+    }
+  },
+  "stayMakerFix": "Open settings",
+  "stayStops": "Android stopped Ferret {count, plural, =1{once} other{{count} times}} today.",
+  "@stayStops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stayTile": "Add the Ferret tile to Quick Settings to send your clipboard in one tap.",
+  "stayTileFix": "Add tile",
+  "settingsBackground": "Background",
+  "settingsKeepRunning": "Keep running in the background",
+  "settingsKeepRunningBody": "Stays connected when Ferret is closed. Shows a quiet notification.",
+  "settingsStartOnBoot": "Start when the phone starts",
+  "dropHere": "Drop to send"
 }
