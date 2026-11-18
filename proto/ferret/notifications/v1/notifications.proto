@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package ferret.notifications.v1;
+
+// A button on a notification, such as "Reply" or "Mark as read".
+message NotificationAction {
+  // Chosen by the source device; send it back in `InvokeAction`.
+  string id = 1;
+  string title = 2;
+  // The action takes typed text, such as a message reply.
+  bool is_reply = 3;
+}
+
+// One notification shown on the source device (a phone).
+message NotificationItem {
+  // The source's own key for it. Posting the same key again updates it.
+  string key = 1;
+  // The app that posted it, such as "org.thoughtcrime.securesms".
+  string app_package = 2;
+  string app_name = 3;
+  string title = 4;
+  string text = 5;
+  // When the source posted it, in the source device's clock.
+  int64 posted_at_ms = 6;
+  // A small PNG of the app's icon. Empty when it was already sent for this
+  // app during the current session; receivers keep the last one per app.
+  bytes app_icon_png = 7;
+  // A message in a conversation, such as a chat.
+  bool is_conversation = 8;
+  repeated NotificationAction actions = 9;
+}
+
+// A new or updated notification. Sent without expecting a reply, only for
+// notifications posted after the session opened.
+message NotificationPosted {
+  NotificationItem notification = 1;
+}
+
+// The notification with `key` is gone on the source. Sent without expecting a
+// reply.
+message NotificationRemoved {
+  string key = 1;
+}
+
+// Sent by the source right after a session opens, instead of replaying what
+// happened while the receiver was away.
+message CatchUp {
+  // Notifications posted while the receiver was away and still showing.
+  uint32 missed_count = 1;
+  // Keys of notifications sent earlier that are still showing on the source.
+  // Receivers drop the ones not listed.
+  repeated string active_keys = 2;
+  // Names of the apps the missed notifications came from, without repeats.
+  repeated string missed_app_names = 3;
+}
+
+// Asks the source to run an action of a notification. Expects an
+// `InvokeActionResult` reply.
+message InvokeAction {
+  string key = 1;
+  string action_id = 2;
+  // The typed text for a reply action.
+  string reply_text = 3;
+}
+
+message InvokeActionResult {
+  bool ok = 1;
+}
+
+// Dismisses the notification with `key` on the source. Sent without expecting
+// a reply; the source answers with `NotificationRemoved` once it is gone.
+message DismissNotification {
+  string key = 1;
+}
+
+// How the source mirrors notifications.
+message MirrorSettings {
+  // The person turned mirroring on.
+  bool enabled = 1;
+  // The platform lets the source read notifications.
+  bool access_granted = 2;
+  // Mirroring pauses while the source is in use (screen on and unlocked).
+  bool skip_while_using = 3;
+  // Apps whose notifications are mirrored.
+  repeated string allowed_packages = 4;
+}
+
+// Asks the source for its `MirrorSettings`. Expects a `MirrorSettings` reply.
+message MirrorSettingsRequest {}
+
+// An app the person can pick in the app list.
+message AppEntry {
+  string package = 1;
+  string name = 2;
+  // A small PNG of the app's icon.
+  bytes icon_png = 3;
+  bool allowed = 4;
+  // A messaging app, picked by default.
+  bool is_messaging = 5;
+}
+
+// Asks the source for its apps. Expects an `AppListResponse` reply.
+message AppListRequest {}
+
+message AppListResponse {
+  repeated AppEntry apps = 1;
+}
+
+// Turns one app on or off.
+message AppChoice {
+  string package = 1;
+  bool allowed = 2;
+}
+
+// Changes the source's settings. Expects a `MirrorSettings` reply.
+message UpdateMirrorSettings {
+  repeated AppChoice apps = 1;
+  // Left out to keep the current value.
+  optional bool skip_while_using = 2;
+}

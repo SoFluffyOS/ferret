@@ -1,4 +1,113 @@
 {
   "@@locale": "en",
-  "title": "Notifications"
+  "title": "Notifications",
+  "explainer": "Shows your phone's notifications on your computer. You pick which apps.",
+  "explainerDetail": "Only new notifications from the apps you pick. Nothing leaves your network.",
+  "turnOn": "Turn on",
+  "turnOff": "Turn off mirroring",
+  "accessOn": "Notification access is on",
+  "accessOff": "Notification access is off",
+  "accessStillOff": "Still off. Turn on Ferret on the Notification access screen, then come back.",
+  "accessHowTo": "On the next screen, turn on Ferret, then come back here.",
+  "openAccessSettings": "Open notification access",
+  "openSettingsFailed": "Couldn't open Settings. Open Settings → Notifications → Notification access yourself.",
+  "restrictedTitle": "Android blocked this setting",
+  "restrictedBody": "Android blocks it for apps installed outside an app store. Allow it once:",
+  "restrictedStepOne": "Open App info.",
+  "restrictedStepTwo": "Tap ⋮ in the top corner, then Allow restricted settings.",
+  "restrictedStepThree": "Come back and open notification access again.",
+  "openAppInfo": "Open App info",
+  "skipWhileUsing": "Pause while I'm using the phone",
+  "skipWhileUsingDetail": "When the screen is on and unlocked, you already see them there.",
+  "chooseApps": "Choose apps",
+  "appCount": "{count, plural, =0{No apps picked} =1{1 app picked} other{{count} apps picked}}",
+  "@appCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appPickerTitle": "Apps to mirror",
+  "appPickerSearch": "Search apps",
+  "appPickerMessaging": "Messaging apps",
+  "appPickerOther": "Other apps",
+  "appPickerLoading": "Getting the apps…",
+  "appPickerEmpty": "No apps match.",
+  "appPickerFailed": "Couldn't get the apps from {device}. Make sure it's connected.",
+  "@appPickerFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "appPickerSaveFailed": "Couldn't save that change on {device}.",
+  "@appPickerSaveFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "thisPhone": "this phone",
+  "tryAgain": "Try again",
+  "back": "Back",
+  "noPhone": "Connect your Android phone to see its notifications here.",
+  "phoneMirroring": "Mirroring {count, plural, =0{no apps} =1{1 app} other{{count} apps}}",
+  "@phoneMirroring": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneMirroringOff": "Mirroring is off. Turn it on in Ferret on the phone.",
+  "phoneAccessOff": "Notification access is off. Open Ferret on the phone to fix it.",
+  "phoneChecking": "Checking…",
+  "phoneUnreachable": "Couldn't reach notifications on this phone.",
+  "homeEmpty": "No notifications yet. New ones from your phone show up here.",
+  "clearAll": "Clear all",
+  "reply": "Reply",
+  "dismiss": "Dismiss",
+  "offline": "offline",
+  "whileAway": "{count, plural, =1{1 notification while away} other{{count} notifications while away}}",
+  "@whileAway": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whileAwayFrom": "{count, plural, =1{1 notification while away} other{{count} notifications while away}}, from {apps}",
+  "@whileAwayFrom": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "replyFailedTitle": "Reply not sent",
+  "replyFailedBody": "{device} is offline or the notification is gone. Reply on the phone.",
+  "@replyFailedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "setUp": "Set up",
+  "fix": "Fix",
+  "phoneHomeOn": "Showing notifications from {count, plural, =0{no apps} =1{1 app} other{{count} apps}} on your computers.",
+  "@phoneHomeOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneHomePaused": "Notification access is off, so nothing is mirrored."
 }

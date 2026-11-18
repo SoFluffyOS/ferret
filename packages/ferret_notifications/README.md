@@ -1,15 +1,20 @@
 # ferret_notifications
 
-A new Flutter plugin project.
+Other apps' notifications on Android, for Ferret's notification mirroring:
 
-## Getting Started
+- 🔔 Get each notification as it is posted or removed (never the ones already showing).
+- 💬 Run a notification's actions, including replies through `RemoteInput`.
+- 🧹 Dismiss notifications.
+- 🔑 Check and open notification access, and detect Android 13+ "restricted settings" for apps installed from a file.
+- 📱 List launcher apps with their icons, for an app picker.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+```dart
+final notifications = FerretNotifications();
+if (FerretNotifications.isSupported && await notifications.isAccessGranted()) {
+  notifications.events.listen((event) { /* ... */ });
+}
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The listener service is `io.sofluffy.ferret_notifications.FerretNotificationListener`, declared in the plugin manifest. Other plugins that need notification access (such as `MediaSessionManager.getActiveSessions`) use `FerretNotificationListener.componentName(context)` in Kotlin or `FerretNotifications.listenerClassName` in Dart.
 
+Android only. Regenerate the platform channel code with `fvm dart run pigeon --input pigeon/messages.dart`.

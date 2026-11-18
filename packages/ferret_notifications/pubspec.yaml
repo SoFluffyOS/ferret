@@ -1,5 +1,5 @@
 name: ferret_notifications
-description: Platform code for Ferret's notifications feature, reusable on its own.
+description: Reads, acts on and dismisses other apps' notifications on Android, for Ferret's notification mirroring. Reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -24,11 +24,3 @@ flutter:
       android:
         package: io.sofluffy.ferret_notifications
         pluginClass: FerretNotificationsPlugin
-      ios:
-        pluginClass: FerretNotificationsPlugin
-      linux:
-        pluginClass: FerretNotificationsPlugin
-      macos:
-        pluginClass: FerretNotificationsPlugin
-      windows:
-        pluginClass: FerretNotificationsPluginCApi

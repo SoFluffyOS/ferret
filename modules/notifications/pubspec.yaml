@@ -17,6 +17,7 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_notifications:
     path: ../../packages/ferret_notifications
+  fixnum: ^1.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -34,6 +35,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
+  transport:
+    path: ../../packages/transport
 
 flutter:
   generate: true
