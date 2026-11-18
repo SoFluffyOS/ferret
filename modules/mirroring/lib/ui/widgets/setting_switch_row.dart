@@ -10,12 +10,16 @@ class SettingSwitchRow extends StatelessWidget {
     required this.body,
     required this.value,
     required this.onChanged,
+    this.tag,
   });
 
   final String title;
   final String body;
   final bool value;
   final ValueChanged<bool> onChanged;
+
+  /// A word next to the title, such as "Experimental".
+  final String? tag;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +34,17 @@ class SettingSwitchRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                Text(
-                  title,
-                  style: typography.base1.copyWith(color: palette.text),
+                Wrap(
+                  spacing: Spacing.d8,
+                  runSpacing: Spacing.d4,
+                  crossAxisAlignment: .center,
+                  children: [
+                    Text(
+                      title,
+                      style: typography.base1.copyWith(color: palette.text),
+                    ),
+                    if (tag case final tag?) Tag(tag, color: palette.warning),
+                  ],
                 ),
                 Spacing.vertical(Spacing.d2),
                 Text(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mirroring/l10n/l10n.dart';
@@ -13,10 +14,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// The computer's card: the phone being asked or shown, with Open and
 /// Stop, and the audit line once it is over.
 class ViewerCardFrame extends StatelessWidget {
-  const ViewerCardFrame({super.key, required this.onOpen});
+  const ViewerCardFrame({super.key, required this.onOpen, this.onShow});
 
   /// Opens the mirror page for the session's phone.
   final void Function(ViewSession session) onOpen;
+
+  /// Shows a screen one of the other ways found, on the mirror page.
+  final void Function(MirrorTarget target)? onShow;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,9 @@ class ViewerCardFrame extends StatelessWidget {
     );
     final record = context.select<ViewerViewModel, MirrorRecord?>(
       (viewModel) => viewModel.lastRecord,
+    );
+    final targets = context.select<ViewerViewModel, List<MirrorTarget>>(
+      (viewModel) => viewModel.targets,
     );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
@@ -57,6 +64,23 @@ class ViewerCardFrame extends StatelessWidget {
             label: l10n.stop,
             onPressed: () => unawaited(viewModel.stop()),
           ),
+        ],
+      );
+    }
+
+    if (targets.isNotEmpty) {
+      return FeatureCard(
+        icon: LucideIcons.screenShare,
+        title: l10n.targetsTitle,
+        subtitle: l10n.targetsSubtitle,
+        children: [
+          for (final target in targets)
+            TargetRow(
+              name: target.name,
+              line: l10n.targetLine(target),
+              actionLabel: l10n.show,
+              onAction: () => onShow?.call(target),
+            ),
         ],
       );
     }

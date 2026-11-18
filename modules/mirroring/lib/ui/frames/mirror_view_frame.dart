@@ -34,8 +34,25 @@ class MirrorViewFrame extends StatelessWidget {
     final picture = context.select<ViewerViewModel, MirrorPicture?>(
       (viewModel) => viewModel.picture,
     );
+    final setup = context.select<ViewerViewModel, RouteSetup?>(
+      (viewModel) => _sessionOf(viewModel)?.setup,
+    );
+    final setupDetail = context.select<ViewerViewModel, String?>(
+      (viewModel) => _sessionOf(viewModel)?.setupDetail,
+    );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
+
+    if (phase == .ended && setup != null) {
+      return MirrorMessage(
+        icon: LucideIcons.wrench,
+        tone: .warning,
+        title: l10n.setupTitle(setup),
+        body: l10n.setupBody(setup, detail: setupDetail),
+        actionLabel: l10n.tryAgain,
+        onAction: () => unawaited(viewModel.retry(deviceId)),
+      );
+    }
 
     if (phase == .ended && end != null) {
       return MirrorMessage(
@@ -44,7 +61,7 @@ class MirrorViewFrame extends StatelessWidget {
         title: l10n.endTitle(end, deviceName),
         body: l10n.endBody(end, deviceName),
         actionLabel: l10n.tryAgain,
-        onAction: () => unawaited(viewModel.start(deviceId)),
+        onAction: () => unawaited(viewModel.retry(deviceId)),
       );
     }
 
@@ -120,12 +137,32 @@ class _Picture extends StatelessWidget {
     final deviceName = context.select<ViewerViewModel, String>(
       (viewModel) => viewModel.current?.deviceName ?? '',
     );
+    final canPoint = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.canPoint,
+    );
+    final canType = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.canType,
+    );
+    final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
+    final onPointer = switch (canPoint) {
+      true => viewModel.sendPointer,
+      false => null,
+    };
+    final onKey = switch (canType) {
+      true => viewModel.sendKey,
+      false => null,
+    };
 
     return Stack(
       fit: .expand,
       children: [
-        MirrorSurface(picture: picture, actualSize: actualSize),
+        MirrorSurface(
+          picture: picture,
+          actualSize: actualSize,
+          onPointer: onPointer,
+          onKey: onKey,
+        ),
         if (screenOff)
           Align(
             alignment: .topCenter,

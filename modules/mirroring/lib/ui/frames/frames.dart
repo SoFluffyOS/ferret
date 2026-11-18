@@ -1,3 +1,4 @@
+export 'package:mirroring/ui/frames/mirror_controls_frame.dart';
 export 'package:mirroring/ui/frames/mirror_status_frame.dart';
 export 'package:mirroring/ui/frames/mirror_toolbar_frame.dart';
 export 'package:mirroring/ui/frames/mirror_view_frame.dart';

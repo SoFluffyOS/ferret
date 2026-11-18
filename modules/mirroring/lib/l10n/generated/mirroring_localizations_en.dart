@@ -454,9 +454,4 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get buttonRecents => 'Recent apps';
-
-  @override
-  String controlHint(String device) {
-    return 'Click, scroll and type here to use $device.';
-  }
 }

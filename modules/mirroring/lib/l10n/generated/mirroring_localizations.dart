@@ -762,12 +762,6 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Recent apps'**
   String get buttonRecents;
-
-  /// No description provided for @controlHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Click, scroll and type here to use {device}.'**
-  String controlHint(String device);
 }
 
 class _MirroringLocalizationsDelegate

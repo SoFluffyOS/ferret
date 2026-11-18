@@ -1,3 +1,6 @@
 [submodule "packages/sofluffy_ui"]
 	path = packages/sofluffy_ui
 	url = https://github.com/SoFluffyOS/sofluffy_ui.git
+[submodule "packages/sofluffy_texture"]
+	path = packages/sofluffy_texture
+	url = https://github.com/SoFluffyOS/sofluffy_texture.git

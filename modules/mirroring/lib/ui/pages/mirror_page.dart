@@ -53,6 +53,7 @@ class _MirrorPageState extends State<MirrorPage> {
               deviceName: widget.deviceName,
             ),
           ),
+          const MirrorControlsFrame(),
           const MirrorStatusFrame(),
         ],
       ),

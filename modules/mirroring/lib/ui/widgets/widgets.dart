@@ -1,6 +1,9 @@
 export 'package:mirroring/ui/widgets/dismiss_button.dart';
 export 'package:mirroring/ui/widgets/history_list.dart';
+export 'package:mirroring/ui/widgets/mirror_input.dart';
 export 'package:mirroring/ui/widgets/mirror_message.dart';
 export 'package:mirroring/ui/widgets/mirror_surface.dart';
 export 'package:mirroring/ui/widgets/mirroring_labels.dart';
+export 'package:mirroring/ui/widgets/route_notice_row.dart';
 export 'package:mirroring/ui/widgets/setting_switch_row.dart';
+export 'package:mirroring/ui/widgets/target_row.dart';

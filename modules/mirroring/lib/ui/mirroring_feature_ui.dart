@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mirroring/feature/mirroring_feature.dart';
 import 'package:mirroring/l10n/l10n.dart';
+import 'package:mirroring/models/models.dart';
 import 'package:mirroring/ui/frames/frames.dart';
 import 'package:mirroring/ui/pages/pages.dart';
 import 'package:mirroring/view_models/view_models.dart';
@@ -44,6 +45,7 @@ class MirroringFeatureUi extends FeatureUi {
   late final ShareViewModel shareViewModel = ShareViewModel(feature);
   late final FeatureChanges _changes = FeatureChanges(feature.changes);
   StreamSubscription<void>? _revealOnAsk;
+  StreamSubscription<MirrorFeed>? _openOnIncoming;
 
   /// When the request the app was last brought to the front for was made.
   DateTime? _revealedFor;
@@ -64,6 +66,9 @@ class MirroringFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
+    _openOnIncoming = feature.routes?.incoming.listen(
+      (feed) => unawaited(_openIncoming(context, feed.target)),
+    );
     if (feature.source == null) {
       return;
     }
@@ -78,6 +83,22 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   bool hasHomeCard(FeatureContext feature) =>
       viewerViewModel.hasCard || shareViewModel.hasCard;
+
+  /// The other ways to show a screen stay off until asked for.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (!viewerViewModel.hasMoreWays || viewerViewModel.moreWays) {
+      return null;
+    }
+
+    final l10n = context.mirroringL10n;
+    return FeatureOffer(
+      title: l10n.title,
+      description: l10n.moreWaysOffer,
+      actionLabel: l10n.turnOn,
+      onAction: () => unawaited(viewerViewModel.setMoreWays(true)),
+    );
+  }
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -95,9 +116,8 @@ class MirroringFeatureUi extends FeatureUi {
     return ChangeNotifierProvider.value(
       value: viewerViewModel,
       child: ViewerCardFrame(
-        onOpen: (session) => unawaited(
-          _openMirror(feature, session.deviceId, session.deviceName),
-        ),
+        onOpen: (session) => unawaited(_openPage(feature, session.target)),
+        onShow: (target) => unawaited(_showTarget(feature, target)),
       ),
     );
   }
@@ -145,17 +165,29 @@ class MirroringFeatureUi extends FeatureUi {
     DeviceStatus device,
   ) {
     final session = device.session;
-    if (session == null || !this.feature.canViewDevice(session)) {
+    final label = context.mirroringL10n.showScreen;
+    if (session != null && this.feature.canViewDevice(session)) {
+      return [
+        FeatureAction(
+          label: label,
+          icon: LucideIcons.screenShare,
+          onPressed: () => unawaited(
+            _openMirror(feature, device.device.id, device.device.name),
+          ),
+        ),
+      ];
+    }
+
+    final target = viewerViewModel.targetForDevice(device.device.id);
+    if (target == null) {
       return const [];
     }
 
     return [
       FeatureAction(
-        label: context.mirroringL10n.showScreen,
+        label: label,
         icon: LucideIcons.screenShare,
-        onPressed: () => unawaited(
-          _openMirror(feature, device.device.id, device.device.name),
-        ),
+        onPressed: () => unawaited(_showTarget(feature, target)),
       ),
     ];
   }
@@ -189,9 +221,10 @@ class MirroringFeatureUi extends FeatureUi {
     );
   }
 
-  /// A computer's section only helps once an Android phone is paired, or
-  /// to keep showing what it mirrored before.
+  /// A computer's section only helps once an Android phone is paired, to
+  /// keep showing what it mirrored before, or to turn the other ways on.
   bool _hasViewerSettings(FeatureContext featureContext) =>
+      viewerViewModel.hasMoreWays ||
       viewerViewModel.history.isNotEmpty ||
       featureContext.engine.devices.any(
         (status) => status.device.platform == .PLATFORM_ANDROID,
@@ -200,6 +233,7 @@ class MirroringFeatureUi extends FeatureUi {
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {
     await _revealOnAsk?.cancel();
+    await _openOnIncoming?.cancel();
     _changes.dispose();
     viewerViewModel.dispose();
     shareViewModel.dispose();
@@ -223,6 +257,33 @@ class MirroringFeatureUi extends FeatureUi {
     String deviceName,
   ) async {
     unawaited(viewerViewModel.start(deviceId));
+    await _pushPage(context, deviceId, deviceName);
+  }
+
+  Future<void> _showTarget(FeatureContext context, MirrorTarget target) async {
+    unawaited(viewerViewModel.startTarget(target));
+    await _openPage(context, target);
+  }
+
+  /// A device started showing its screen here by itself: the viewer
+  /// already plays it, so the page only has to come up.
+  Future<void> _openIncoming(
+    FeatureContext context,
+    MirrorTarget target,
+  ) async {
+    unawaited(viewerViewModel.refreshWindow());
+    unawaited(context.reveal());
+    await _openPage(context, target);
+  }
+
+  Future<void> _openPage(FeatureContext context, MirrorTarget target) =>
+      _pushPage(context, ViewSession.deviceIdOf(target), target.name);
+
+  Future<void> _pushPage(
+    FeatureContext context,
+    String deviceId,
+    String deviceName,
+  ) async {
     await context.push<void>(
       ChangeNotifierProvider.value(
         value: viewerViewModel,

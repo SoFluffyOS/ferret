@@ -325,3 +325,158 @@ Future<void> settle() async {
     await Future<void>.delayed(Duration.zero);
   }
 }
+
+/// A way to control a device that remembers what it was told.
+class FakeControl implements MirrorControl {
+  FakeControl({
+    this.abilities = const {
+      ControlAbility.pointer,
+      ControlAbility.keys,
+      ControlAbility.buttons,
+    },
+  });
+
+  @override
+  final Set<ControlAbility> abilities;
+  final List<MirrorPointer> pointers = [];
+  final List<MirrorKey> keys = [];
+  final List<DeviceButton> pressed = [];
+
+  @override
+  void pointer(MirrorPointer event) => pointers.add(event);
+
+  @override
+  void key(MirrorKey event) => keys.add(event);
+
+  @override
+  void press(DeviceButton button) => pressed.add(button);
+
+  @override
+  void text(String text) {}
+
+  @override
+  void setClipboard(String text, {bool paste = false}) {}
+}
+
+/// A feed the test drives by hand.
+class FakeFeed implements MirrorFeed {
+  FakeFeed(this.target, {this.control});
+
+  @override
+  final MirrorTarget target;
+
+  @override
+  final MirrorControl? control;
+  final StreamController<FeedEvent> _events = .new(sync: true);
+  int keyframeRequests = 0;
+  int stops = 0;
+
+  void emit(FeedEvent event) => _events.add(event);
+
+  /// A config and a first keyframe, as a route without a prompt starts.
+  void play({int width = 1080, int height = 2400}) {
+    emit(
+      FeedConfigured(
+        MirrorStreamConfig(codec: .h264, width: width, height: height),
+      ),
+    );
+    emit(FeedFrame(MirrorFrame(data: Uint8List(1), ptsUs: 0, keyframe: true)));
+  }
+
+  @override
+  Stream<FeedEvent> get events => _events.stream;
+
+  @override
+  Future<void> requestKeyframe() async => keyframeRequests++;
+
+  @override
+  Future<void> setBitrate(int bitrate) async {}
+
+  @override
+  Future<void> stop() async => stops++;
+}
+
+/// A route in memory: the test says where it stands and what it finds.
+class FakeRoute implements MirrorRoute {
+  FakeRoute(this.id, {this.statusNow = const RouteReady(), this.control});
+
+  @override
+  final String id;
+  RouteStatus statusNow;
+  final MirrorControl? control;
+  final StreamController<List<MirrorTarget>> _targets = .broadcast(sync: true);
+  final List<FakeFeed> feeds = [];
+  final List<FeedOptions> options = [];
+  List<MirrorTarget> found = const [];
+  bool failOpen = false;
+  bool disposed = false;
+
+  MirrorTarget target(String id, String name, {String? ferretDeviceId}) =>
+      MirrorTarget(
+        routeId: this.id,
+        id: id,
+        name: name,
+        ferretDeviceId: ferretDeviceId,
+      );
+
+  void find(List<MirrorTarget> targets) {
+    found = targets;
+    _targets.add(targets);
+  }
+
+  @override
+  Future<RouteStatus> status() async => statusNow;
+
+  @override
+  Stream<List<MirrorTarget>> get targets async* {
+    yield found;
+    yield* _targets.stream;
+  }
+
+  @override
+  Future<MirrorFeed> open(MirrorTarget target, FeedOptions options) async {
+    if (failOpen) {
+      throw StateError('cannot open');
+    }
+
+    this.options.add(options);
+    final feed = FakeFeed(target, control: control);
+    feeds.add(feed);
+    return feed;
+  }
+
+  @override
+  Future<void> dispose() async => disposed = true;
+}
+
+/// A receiver in memory: the test makes devices show up on it.
+class FakeReceiver implements MirrorReceiver {
+  FakeReceiver(this.id, {this.statusNow = const RouteReady()});
+
+  @override
+  final String id;
+  RouteStatus statusNow;
+  final StreamController<MirrorFeed> _incoming = .broadcast(sync: true);
+  String? listeningAs;
+  bool disposed = false;
+
+  void receive(MirrorFeed feed) => _incoming.add(feed);
+
+  @override
+  Future<RouteStatus> status() async => statusNow;
+
+  @override
+  Future<void> start(String name) async => listeningAs = name;
+
+  @override
+  Future<void> stop() async => listeningAs = null;
+
+  @override
+  bool get isListening => listeningAs != null;
+
+  @override
+  Stream<MirrorFeed> get incoming => _incoming.stream;
+
+  @override
+  Future<void> dispose() async => disposed = true;
+}

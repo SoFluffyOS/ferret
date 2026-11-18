@@ -19,6 +19,11 @@ class ViewerViewModel extends ChangeNotifier {
   final List<StreamSubscription<void>> _subscriptions = [];
 
   MirrorViewer? _watched;
+
+  /// Kept between changes, so the widgets that select them only rebuild
+  /// when they really are different lists.
+  List<MirrorTarget>? _targets;
+  List<RouteNotice>? _notices;
   bool _canFullScreen = false;
   bool _isFullScreen = false;
   bool _disposed = false;
@@ -43,13 +48,79 @@ class ViewerViewModel extends ChangeNotifier {
 
   bool get isFullScreen => _isFullScreen;
 
-  bool get hasCard => (current?.isLive ?? false) || lastRecord != null;
+  bool get hasCard =>
+      (current?.isLive ?? false) || lastRecord != null || targets.isNotEmpty;
+
+  /// The app plugged in more ways to show a screen than Ferret's own.
+  bool get hasMoreWays => feature.routes?.hasMoreWays ?? false;
+
+  /// Those ways are turned on. Off until the owner asks for them.
+  bool get moreWays => feature.routes?.moreWaysOn ?? false;
+
+  /// The screens the other ways found, apart from paired devices: those
+  /// get "Show screen" on their own page.
+  List<MirrorTarget> get targets => _targets ??= [
+    for (final target in feature.routes?.targets ?? const <MirrorTarget>[])
+      if (!_isPaired(target)) target,
+  ];
+
+  /// What the other ways still need before they work on this computer.
+  List<RouteNotice> get notices =>
+      _notices ??= feature.routes?.notices ?? const [];
+
+  /// Whether clicks and scrolling reach the device being shown.
+  bool get canPoint => _abilities.contains(ControlAbility.pointer);
+
+  /// Whether typing reaches the device being shown.
+  bool get canType => _abilities.contains(ControlAbility.keys);
+
+  /// The device's own buttons this computer can press for it.
+  List<DeviceButton> get deviceButtons {
+    if (!_abilities.contains(ControlAbility.buttons)) {
+      return const [];
+    }
+
+    return const [.back, .home, .recents];
+  }
+
+  /// Another way to show the paired device [deviceId] when Ferret's own
+  /// connection can't.
+  MirrorTarget? targetForDevice(String deviceId) =>
+      feature.routes?.targetForDevice(deviceId);
 
   Future<void> start(String deviceId) async {
     _watch();
     unawaited(refreshWindow());
     await _viewer?.start(deviceId);
   }
+
+  Future<void> startTarget(MirrorTarget target) async {
+    _watch();
+    unawaited(refreshWindow());
+    await _viewer?.startTarget(target);
+  }
+
+  /// Asks again the same way as the attempt that just ended.
+  Future<void> retry(String deviceId) async {
+    final current = this.current;
+    if (current == null || current.deviceId != deviceId) {
+      await start(deviceId);
+      return;
+    }
+
+    await startTarget(current.target);
+  }
+
+  Future<void> setMoreWays(bool value) => feature.settings.setMoreWays(value);
+
+  /// Asks the other ways again where they stand, after a setup step.
+  Future<void> checkRoutes() async => feature.routes?.refresh();
+
+  void sendPointer(MirrorPointer event) => _viewer?.control?.pointer(event);
+
+  void sendKey(MirrorKey event) => _viewer?.control?.key(event);
+
+  void press(DeviceButton button) => _viewer?.control?.press(button);
 
   Future<void> stop() async {
     await _viewer?.stop();
@@ -97,8 +168,17 @@ class ViewerViewModel extends ChangeNotifier {
     super.dispose();
   }
 
+  Set<ControlAbility> get _abilities => _viewer?.control?.abilities ?? const {};
+
+  bool _isPaired(MirrorTarget target) {
+    final deviceId = target.ferretDeviceId;
+    return deviceId != null && feature.host.trustStore[deviceId] != null;
+  }
+
   void _onChange() {
     _watch();
+    _targets = null;
+    _notices = null;
     _notify();
   }
 

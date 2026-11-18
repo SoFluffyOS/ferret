@@ -19,6 +19,15 @@ class ViewerSettingsFrame extends StatelessWidget {
     final history = context.select<ViewerViewModel, List<MirrorRecord>>(
       (viewModel) => viewModel.history,
     );
+    final hasMoreWays = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.hasMoreWays,
+    );
+    final moreWays = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.moreWays,
+    );
+    final notices = context.select<ViewerViewModel, List<RouteNotice>>(
+      (viewModel) => viewModel.notices,
+    );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
 
@@ -32,6 +41,30 @@ class ViewerSettingsFrame extends StatelessWidget {
               color: context.palette.mutedText,
             ),
           ),
+          if (hasMoreWays) ...[
+            Spacing.v8,
+            SettingSwitchRow(
+              title: l10n.moreWaysTitle,
+              tag: l10n.experimental,
+              body: l10n.moreWaysBody,
+              value: moreWays,
+              onChanged: (value) => unawaited(viewModel.setMoreWays(value)),
+            ),
+          ],
+          for (final notice in notices)
+            RouteNoticeRow(
+              title: l10n.setupTitle(notice.step),
+              body: l10n.setupBody(notice.step, detail: notice.detail),
+            ),
+          if (notices.isNotEmpty)
+            Align(
+              alignment: .centerLeft,
+              child: Button(
+                variant: .ghost,
+                label: l10n.checkAgain,
+                onPressed: () => unawaited(viewModel.checkRoutes()),
+              ),
+            ),
           HistoryList(
             history: history,
             onClear: () => unawaited(viewModel.clearHistory()),
