@@ -20,6 +20,7 @@ class DeviceTile extends StatelessWidget {
     this.attention,
     this.onTap,
     this.onFix,
+    this.focusNode,
   });
 
   final DeviceStatus status;
@@ -40,6 +41,9 @@ class DeviceTile extends StatelessWidget {
 
   /// Finds out why it isn't connected.
   final VoidCallback? onFix;
+
+  /// The row's keyboard focus, for moving between rows with the arrows.
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,7 @@ class DeviceTile extends StatelessWidget {
       padding: EdgeInsets.only(bottom: Spacing.d8),
       child: SurfaceCard(
         onTap: onTap,
+        focusNode: focusNode,
         child: Column(
           crossAxisAlignment: .stretch,
           children: [

@@ -1,5 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
@@ -22,6 +24,9 @@ class DevicesFrame extends StatefulWidget {
 
   /// From this many devices on, offline ones fold away.
   static const foldsFrom = 4;
+
+  /// The clipboard's action, which ⌘V on a row runs.
+  static const sendClipboardId = 'clipboard.send';
 
   @override
   State<DevicesFrame> createState() => _DevicesFrameState();
@@ -63,13 +68,17 @@ class _DevicesFrameState extends State<DevicesFrame> {
           FeatureChangesListener(
             key: ValueKey(status.device.id),
             features: scope.features,
-            builder: (context) => DeviceTile(
-              status: status,
-              actions: _actionsFor(context, scope, status),
-              hasPrimary: index == 0 && !_feedHoldsPrimary(context, scope),
-              attention: _attentionFor(context, scope, status),
-              onTap: () => widget.onOpen(status),
-              onFix: () => widget.onFix(status),
+            builder: (context) => KeyboardLine(
+              keys: _keysFor(context, scope, status),
+              builder: (context, focusNode) => DeviceTile(
+                status: status,
+                focusNode: focusNode,
+                actions: _actionsFor(context, scope, status),
+                hasPrimary: index == 0 && !_feedHoldsPrimary(context, scope),
+                attention: _attentionFor(context, scope, status),
+                onTap: () => widget.onOpen(status),
+                onFix: () => widget.onFix(status),
+              ),
             ),
           ),
           if (index == 0 && status.isConnected)
@@ -94,6 +103,45 @@ class _DevicesFrameState extends State<DevicesFrame> {
         scope.featureContext,
       ).primaryItem !=
       null;
+
+  /// ⌘V (Ctrl+V off a Mac) on a connected device's row sends it the
+  /// clipboard.
+  Map<SingleActivator, VoidCallback> _keysFor(
+    BuildContext context,
+    ShellScope scope,
+    DeviceStatus status,
+  ) {
+    if (!status.isConnected) {
+      return const {};
+    }
+
+    for (final feature in scope.features) {
+      for (final action in feature.deviceActions(
+        context,
+        scope.featureContext,
+        status,
+      )) {
+        if (action case FeatureAction(
+          id: DevicesFrame.sendClipboardId,
+          :final onPressed?,
+        )) {
+          final usesCommand = switch (defaultTargetPlatform) {
+            .macOS || .iOS => true,
+            _ => false,
+          };
+          final paste = SingleActivator(
+            LogicalKeyboardKey.keyV,
+            meta: usesCommand,
+            control: !usesCommand,
+          );
+
+          return {paste: onPressed};
+        }
+      }
+    }
+
+    return const {};
+  }
 
   /// The actions features marked for Home, in their order, with the one
   /// used most with this device first once it is a habit.

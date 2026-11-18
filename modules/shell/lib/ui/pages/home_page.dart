@@ -15,6 +15,7 @@ import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/qr_pair_page.dart';
 import 'package:shell/ui/pages/scan_page.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Home is your devices: what needs you, the devices with their actions,
@@ -41,68 +42,70 @@ class HomePage extends StatelessWidget {
     );
     final l10n = context.shellL10n;
 
-    return FerretPage(
-      title: l10n.appName,
-      backLabel: l10n.back,
-      status: switch (isPaused) {
-        true => l10n.homeStatusPaused,
-        false => null,
-      },
-      actions: [
-        Tappable(
-          tooltip: l10n.homePairDevice,
-          onTap: () => _push(context, const PairPage()),
-          child: Padding(
-            padding: EdgeInsets.all(Spacing.d6),
-            child: Icon(
-              LucideIcons.plus,
-              size: Spacing.d20,
-              color: context.palette.text,
+    return KeyboardLines(
+      child: FerretPage(
+        title: l10n.appName,
+        backLabel: l10n.back,
+        status: switch (isPaused) {
+          true => l10n.homeStatusPaused,
+          false => null,
+        },
+        actions: [
+          Tappable(
+            tooltip: l10n.homePairDevice,
+            onTap: () => _push(context, const PairPage()),
+            child: Padding(
+              padding: EdgeInsets.all(Spacing.d6),
+              child: Icon(
+                LucideIcons.plus,
+                size: Spacing.d20,
+                color: context.palette.text,
+              ),
             ),
           ),
-        ),
-        HomeMenu(
-          onSettings: () => context.read<WindowNavRegistry>().open(
-            const SettingsDestination(),
-          ),
-        ),
-      ],
-      footer: const HomeFooter(),
-      width: switch (hasDevices) {
-        true => .page,
-        false => .narrow,
-      },
-      children: [
-        const NeedsYouFrame(),
-        const JoinedNoticesFrame(),
-        if (hasDevices)
-          for (final feature in scope.features)
-            FeatureCardSlot(
-              feature: feature,
-              featureContext: scope.featureContext,
+          HomeMenu(
+            onSettings: () => context.read<WindowNavRegistry>().open(
+              const SettingsDestination(),
             ),
-        if (!hasDevices)
-          NearbyFrame(
-            key: _nearbyKey,
-            onPairWithCode: () => unawaited(_pairWithCode(context)),
-            onCantSee: () => _push(context, const DoctorPage()),
           ),
-        DevicesFrame(
-          onOpen: (status) => context.read<WindowNavRegistry>().open(
-            DeviceDestination(status.device.id),
+        ],
+        footer: const HomeFooter(),
+        width: switch (hasDevices) {
+          true => .page,
+          false => .narrow,
+        },
+        children: [
+          const NeedsYouFrame(),
+          const JoinedNoticesFrame(),
+          if (hasDevices)
+            for (final feature in scope.features)
+              FeatureCardSlot(
+                feature: feature,
+                featureContext: scope.featureContext,
+              ),
+          if (!hasDevices)
+            NearbyFrame(
+              key: _nearbyKey,
+              onPairWithCode: () => unawaited(_pairWithCode(context)),
+              onCantSee: () => _push(context, const DoctorPage()),
+            ),
+          DevicesFrame(
+            onOpen: (status) => context.read<WindowNavRegistry>().open(
+              DeviceDestination(status.device.id),
+            ),
+            onFix: (status) =>
+                _push(context, DoctorPage(deviceId: status.device.id)),
           ),
-          onFix: (status) =>
-              _push(context, DoctorPage(deviceId: status.device.id)),
-        ),
-        if (hasDevices) const NearbyFrame(key: _nearbyKey, watch: false),
-        if (hasDevices) const StayConnectedCard(),
-        if (hasDevices)
-          ActivityFrame(
-            limit: _activityShown,
-            onSeeAll: () => _push(context, const ActivityPage()),
-          ),
-        if (hasDevices) const OffersCard(),
-      ],
+          if (hasDevices) const NearbyFrame(key: _nearbyKey, watch: false),
+          if (hasDevices) const StayConnectedCard(),
+          if (hasDevices)
+            ActivityFrame(
+              limit: _activityShown,
+              onSeeAll: () => _push(context, const ActivityPage()),
+            ),
+          if (hasDevices) const OffersCard(),
+        ],
+      ),
     );
   }
 

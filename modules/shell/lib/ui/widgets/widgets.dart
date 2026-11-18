@@ -13,6 +13,8 @@ export 'package:shell/ui/widgets/drop_target_tile.dart';
 export 'package:shell/ui/widgets/footer_hint.dart';
 export 'package:shell/ui/widgets/forget_device_card.dart';
 export 'package:shell/ui/widgets/health_row.dart';
+export 'package:shell/ui/widgets/keyboard_line.dart';
+export 'package:shell/ui/widgets/keyboard_lines.dart';
 export 'package:shell/ui/widgets/nav_row.dart';
 export 'package:shell/ui/widgets/nearby_feature_tile.dart';
 export 'package:shell/ui/widgets/nearby_notice.dart';

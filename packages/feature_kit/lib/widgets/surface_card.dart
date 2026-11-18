@@ -4,11 +4,20 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A filled card with no border.
 class SurfaceCard extends StatelessWidget {
-  const SurfaceCard({super.key, required this.child, this.padding, this.onTap});
+  const SurfaceCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.onTap,
+    this.focusNode,
+  });
 
   final Widget child;
   final EdgeInsets? padding;
   final VoidCallback? onTap;
+
+  /// The keyboard focus of a card that has [onTap].
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +36,11 @@ class SurfaceCard extends StatelessWidget {
       return card;
     }
 
-    return Tappable(semanticButton: true, onTap: onTap, child: card);
+    return Tappable(
+      semanticButton: true,
+      onTap: onTap,
+      focusNode: focusNode,
+      child: card,
+    );
   }
 }

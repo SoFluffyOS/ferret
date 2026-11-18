@@ -105,6 +105,23 @@ class _Themed extends StatelessWidget {
     return (title) => unawaited(menubar.setWindowTitle(title));
   }
 
+  /// Only the menubar popover: the window has a menu bar with these keys.
+  Widget _popoverKeys(BuildContext context, Widget child) {
+    final menubar = this.menubar;
+    final isMainView =
+        View.of(context).viewId ==
+        WidgetsBinding.instance.platformDispatcher.implicitView?.viewId;
+    if (menubar == null || !isMainView) {
+      return child;
+    }
+
+    return PopoverKeysFrame(
+      navigatorKey: navigatorKey,
+      onClose: () => unawaited(menubar.hide()),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final onTitle = _windowTitle(context);
@@ -117,7 +134,10 @@ class _Themed extends StatelessWidget {
             navigatorKey: navigatorKey,
             child: _UnderTitleBar(
               isWindow: onTitle != null,
-              child: WindowShellFrame(onTitle: onTitle, child: child),
+              child: WindowShellFrame(
+                onTitle: onTitle,
+                child: _popoverKeys(context, child),
+              ),
             ),
           ),
         ),

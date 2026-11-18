@@ -1,7 +1,9 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/keyboard_line.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -155,13 +157,31 @@ class ActivityRow extends StatelessWidget {
       ),
     );
 
-    return ContextMenuRegion(
-      entries: _menu(context.shellL10n),
-      child: switch (item.onTap) {
-        final onTap? => Tappable(onTap: onTap, child: row),
-        null => row,
-      },
+    return KeyboardLine(
+      keys: _keys(),
+      builder: (context, focusNode) => ContextMenuRegion(
+        entries: _menu(context.shellL10n),
+        child: switch (item.onTap) {
+          final onTap? => Tappable(
+            onTap: onTap,
+            focusNode: focusNode,
+            child: row,
+          ),
+          null => _FocusableLine(focusNode: focusNode, child: row),
+        },
+      ),
     );
+  }
+
+  /// Enter on a line that opens nothing runs its first action instead,
+  /// such as Open on a received file.
+  Map<SingleActivator, VoidCallback> _keys() {
+    final firstAction = item.actions.firstOrNull;
+
+    return {
+      if (item.onTap == null && firstAction != null)
+        const SingleActivator(LogicalKeyboardKey.enter): firstAction.onPressed,
+    };
   }
 
   /// A right-click on the line: everything the line itself offers.
@@ -209,6 +229,40 @@ class ActivityRow extends StatelessWidget {
     .warning => palette.warning,
     .danger => palette.danger,
   };
+}
+
+/// A line that opens nothing by itself still takes the keyboard, and
+/// shows it has it the way a tappable line does.
+class _FocusableLine extends StatefulWidget {
+  const _FocusableLine({required this.focusNode, required this.child});
+
+  final FocusNode focusNode;
+  final Widget child;
+
+  @override
+  State<_FocusableLine> createState() => _FocusableLineState();
+}
+
+class _FocusableLineState extends State<_FocusableLine> {
+  bool _showsFocus = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FocusableActionDetector(
+      focusNode: widget.focusNode,
+      onShowFocusHighlight: (shows) => setState(() => _showsFocus = shows),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: switch (_showsFocus) {
+            true => context.palette.surface,
+            false => null,
+          },
+          borderRadius: BorderRadius.circular(Spacing.d8),
+        ),
+        child: widget.child,
+      ),
+    );
+  }
 }
 
 class _TextAction extends StatelessWidget {
