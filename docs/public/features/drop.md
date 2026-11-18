@@ -64,3 +64,7 @@ File names and contents are never logged, and nothing leaves your network.
 ## Send to LocalSend
 
 Ferret also talks to [LocalSend](../interop/localsend.md), so you can send files to friends' phones and computers that run it, iPhones included.
+
+## Receive from any Android phone
+
+No Ferret on that phone? Make your computer visible to [Quick Share](../interop/quick-share.md) for 10 minutes and send from the phone's share menu.

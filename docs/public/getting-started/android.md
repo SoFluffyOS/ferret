@@ -75,3 +75,7 @@ Ferret reconnects right away when:
 It checks which connections still answer, replaces the ones that died, and calls your paired devices at their last known address without waiting for discovery. No polling in between, so it stays light on battery.
 
 🦊
+
+## 🔓 Power-ups
+
+Want more? With [Shizuku](../android-modes/shizuku.md) or [root](../android-modes/root-magisk.md), Ferret can send your clipboard on its own and set itself up in one tap. Start with [what works without them](../android-modes/standard.md).

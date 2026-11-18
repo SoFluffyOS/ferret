@@ -56,7 +56,7 @@ Good to know: while Ferret is your assistant, the long-press opens Ferret instea
 
 **Send current page** asks Safari or your Chromium browser (Chrome, Brave, Edge, Arc, Vivaldi, Opera) for the page in its front window. macOS asks you once per browser to allow it. If you said no, allow it in **System Settings → Privacy & Security → Automation → Ferret**.
 
-Firefox can't be asked for its page. Use **Send a link…** instead.
+Firefox can't be asked for its page by macOS. Install the [browser extension](../getting-started/browser.md) instead: it sends any tab, in any browser, with one click.
 
 ## ⚠️ Limits per platform
 

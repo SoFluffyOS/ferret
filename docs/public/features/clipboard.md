@@ -31,6 +31,8 @@ So on Android:
 
 Going the other way needs nothing: what you copy on your computer lands on your phone's clipboard on its own.
 
+Want it automatic anyway? With [Shizuku or root](../android-modes/shizuku.md), turn on **Send automatically in the background** and Ferret sends what you copy on its own (text only).
+
 ## 🍎 On iPhone and iPad
 
 iOS asks before an app reads your clipboard, and only while it is open. Open Ferret, tap **Send clipboard**, and allow the paste.
@@ -62,7 +64,7 @@ Each device page also has **Send clipboard**, to send to just that device.
 | macOS | ✅ | ✅ | Concealed and transient types, set by most password managers |
 | Windows | ✅ | ✅ | Items kept out of Windows clipboard history |
 | Linux | ✅ | ✅ | KeePassXC and KDE password hint |
-| Android | Tap **Send clipboard** | ✅ | Items marked sensitive (Android 13+) |
+| Android | Tap **Send clipboard**, or on its own with Shizuku or root | ✅ | Items marked sensitive (Android 13+) |
 | iOS | Tap **Send clipboard** | While open | Concealed type |
 
 On Linux, images need `wl-clipboard` (Wayland) or `xclip` (X11). Text works without them.
