@@ -1,4 +1,5 @@
 export 'package:shell/ui/pages/about_page.dart';
+export 'package:shell/ui/pages/activity_page.dart';
 export 'package:shell/ui/pages/advanced_settings_page.dart';
 export 'package:shell/ui/pages/connect_page.dart';
 export 'package:shell/ui/pages/device_page.dart';
@@ -10,4 +11,3 @@ export 'package:shell/ui/pages/qr_pair_page.dart';
 export 'package:shell/ui/pages/scan_page.dart';
 export 'package:shell/ui/pages/settings_group_page.dart';
 export 'package:shell/ui/pages/settings_page.dart';
-export 'package:shell/ui/pages/start_page.dart';

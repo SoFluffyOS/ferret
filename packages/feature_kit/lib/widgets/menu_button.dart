@@ -110,7 +110,13 @@ class _MenuOverlay extends StatelessWidget {
                         children: [
                           for (final entry in entries) ...[
                             if (entry.startsGroup) const _Divider(),
-                            _MenuRow(entry: entry, onClose: onClose),
+                            _MenuRow(
+                              entry: entry,
+                              keepsIconSpace: entries.any(
+                                (other) => other.icon != null,
+                              ),
+                              onClose: onClose,
+                            ),
                           ],
                         ],
                       ),
@@ -127,9 +133,16 @@ class _MenuOverlay extends StatelessWidget {
 }
 
 class _MenuRow extends StatelessWidget {
-  const _MenuRow({required this.entry, required this.onClose});
+  const _MenuRow({
+    required this.entry,
+    required this.keepsIconSpace,
+    required this.onClose,
+  });
 
   final MenuEntry entry;
+
+  /// Lines up the labels when only some entries have an icon.
+  final bool keepsIconSpace;
   final VoidCallback onClose;
 
   @override
@@ -148,10 +161,11 @@ class _MenuRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            if (entry.icon case final icon?) ...[
+            if (entry.icon case final icon?)
               Icon(icon, size: Spacing.d16, color: palette.mutedText),
-              Spacing.h12,
-            ],
+            if (entry.icon == null && keepsIconSpace)
+              SizedBox(width: Spacing.d16),
+            if (keepsIconSpace) Spacing.h12,
             Text(
               entry.label,
               style: context.fluffyTheme.typography.base2.copyWith(

@@ -1,3 +1,4 @@
+export 'package:shell/services/activity_feed.dart';
 export 'package:shell/services/connection_doctor.dart';
 export 'package:shell/services/drop_target_finder.dart';
 export 'package:shell/services/engine_host.dart';

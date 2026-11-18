@@ -6,55 +6,127 @@ import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
+import 'package:shell/ui/frames/tips_frame.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 
-/// The paired devices, connected ones first, each with its features' health.
-class DevicesFrame extends StatelessWidget {
-  const DevicesFrame({
-    super.key,
-    required this.onOpen,
-    required this.onPair,
-    required this.onWhy,
-  });
+/// Your devices, connected ones first, each with what to do with it right
+/// on its row. With many devices, the offline ones fold into one line.
+class DevicesFrame extends StatefulWidget {
+  const DevicesFrame({super.key, required this.onOpen, required this.onFix});
 
   final void Function(DeviceStatus status) onOpen;
-  final VoidCallback onPair;
-  final void Function(DeviceStatus status) onWhy;
+  final void Function(DeviceStatus status) onFix;
+
+  /// How many actions fit on a row.
+  static const actionsShown = 3;
+
+  /// From this many devices on, offline ones fold away.
+  static const foldsFrom = 4;
+
+  @override
+  State<DevicesFrame> createState() => _DevicesFrameState();
+}
+
+class _DevicesFrameState extends State<DevicesFrame> {
+  bool _showsOffline = false;
 
   @override
   Widget build(BuildContext context) {
     final devices = context.select<EngineHost, List<DeviceStatus>>(
       (host) => host.devices,
     );
-    final scope = ShellScope.of(context);
     if (devices.isEmpty) {
-      return EmptyDevices(onPair: onPair);
+      return const SizedBox.shrink();
     }
+
+    final scope = ShellScope.of(context);
+    final l10n = context.shellL10n;
+    final offlineCount = devices.where((status) => !status.isConnected).length;
+    final folds =
+        devices.length >= DevicesFrame.foldsFrom &&
+        offlineCount > 1 &&
+        !_showsOffline;
+    final shown = switch (folds) {
+      true => [
+        for (final status in devices)
+          if (status.isConnected) status,
+      ],
+      false => devices,
+    };
+    final firstConnected = devices.where((status) => status.isConnected);
 
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SectionTitle(context.shellL10n.homeYourDevices),
-        for (final status in devices)
+        SectionTitle(l10n.homeYourDevices),
+        for (final (index, status) in shown.indexed) ...[
           FeatureChangesListener(
+            key: ValueKey(status.device.id),
             features: scope.features,
             builder: (context) => DeviceTile(
               status: status,
-              chips: [
-                for (final feature in scope.features)
-                  if (feature.healthFor(scope.featureContext, status)
-                      case final health?)
-                    FeatureChip(
-                      icon: feature.icon,
-                      label: feature.title(context),
-                      health: health,
-                    ),
-              ],
-              onTap: () => onOpen(status),
-              onWhy: () => onWhy(status),
+              actions: _actionsFor(context, scope, status),
+              hasPrimary: index == 0,
+              attention: _attentionFor(context, scope, status),
+              onTap: () => widget.onOpen(status),
+              onFix: () => widget.onFix(status),
             ),
+          ),
+          if (index == 0 && status.isConnected)
+            TipsFrame(device: firstConnected.first),
+        ],
+        if (folds)
+          FooterHint(
+            text: l10n.devicesOffline(offlineCount),
+            actionLabel: l10n.devicesShow,
+            onAction: () => setState(() => _showsOffline = true),
           ),
       ],
     );
+  }
+
+  /// The actions features marked for Home, in their order.
+  List<FeatureAction> _actionsFor(
+    BuildContext context,
+    ShellScope scope,
+    DeviceStatus status,
+  ) {
+    if (!status.isConnected) {
+      return const [];
+    }
+
+    final ordered = <(int, FeatureAction)>[
+      for (final feature in scope.features)
+        for (final action in feature.deviceActions(
+          context,
+          scope.featureContext,
+          status,
+        ))
+          if (action.homeOrder case final order?) (order, action),
+    ]..sort((a, b) => a.$1.compareTo(b.$1));
+
+    return [
+      for (final (_, action) in ordered.take(DevicesFrame.actionsShown)) action,
+    ];
+  }
+
+  /// The first feature that is on and not working with this device.
+  String? _attentionFor(
+    BuildContext context,
+    ShellScope scope,
+    DeviceStatus status,
+  ) {
+    for (final feature in scope.features) {
+      final health = feature.healthFor(scope.featureContext, status);
+      final isBroken = switch (health?.state) {
+        .needsAttention || .failing => true,
+        _ => false,
+      };
+      if (isBroken) {
+        return feature.title(context);
+      }
+    }
+
+    return null;
   }
 }

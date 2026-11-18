@@ -1,34 +1,58 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/ui/widgets/feature_chip.dart';
+import 'package:shell/ui/widgets/row_action_button.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// One paired device: name, whether it is connected (or when it was last
-/// seen), each feature's health, and a way to find out why it isn't
-/// connected.
+/// One paired device on Home: its name, the one thing that is true about its
+/// connection, and what to do with it right there. Connected, that is up
+/// to three actions; offline, a way to fix it.
 class DeviceTile extends StatelessWidget {
   const DeviceTile({
     super.key,
     required this.status,
-    this.chips = const [],
+    this.actions = const [],
+    this.hasPrimary = false,
+    this.attention,
     this.onTap,
-    this.onWhy,
+    this.onFix,
   });
 
   final DeviceStatus status;
-  final List<FeatureChip> chips;
+
+  /// What to do with this device, most useful first. Shown only while it is
+  /// connected: nothing here can be used otherwise.
+  final List<FeatureAction> actions;
+
+  /// Whether the first action is the screen's one primary button.
+  final bool hasPrimary;
+
+  /// The name of a feature that is turned on and not working with this
+  /// device, such as "Notifications".
+  final String? attention;
+
+  /// Opens the device's page.
   final VoidCallback? onTap;
-  final VoidCallback? onWhy;
+
+  /// Finds out why it isn't connected.
+  final VoidCallback? onFix;
 
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+    final l10n = context.shellL10n;
     final device = status.device;
-    final dotColor = switch (status.isConnected) {
-      true => palette.success,
+    final needsAttention = status.isConnected && attention != null;
+    final dotColor = switch ((status.isConnected, needsAttention)) {
+      (false, _) => palette.mutedText,
+      (true, true) => palette.warning,
+      (true, false) => palette.success,
+    };
+    final statusColor = switch (needsAttention) {
+      true => palette.warning,
       false => palette.mutedText,
     };
 
@@ -36,73 +60,92 @@ class DeviceTile extends StatelessWidget {
       padding: EdgeInsets.only(bottom: Spacing.d8),
       child: SurfaceCard(
         onTap: onTap,
-        child: Row(
+        child: Column(
+          crossAxisAlignment: .stretch,
           children: [
-            Icon(
-              deviceIconFor(device.formFactor, device.platform),
-              size: Spacing.d24,
-              color: palette.text,
-            ),
-            Spacing.h12,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Text(
-                    device.name,
-                    style: typography.base1.copyWith(color: palette.text),
-                    overflow: .ellipsis,
-                  ),
-                  Spacing.vertical(Spacing.d2),
-                  Row(
+            Row(
+              children: [
+                Icon(
+                  deviceIconFor(device.formFactor, device.platform),
+                  size: Spacing.d24,
+                  color: palette.text,
+                ),
+                Spacing.h12,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
                     children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: dotColor,
-                          shape: .circle,
-                        ),
-                        child: SizedBox.square(dimension: Spacing.d6),
+                      Text(
+                        device.name,
+                        style: typography.base1.copyWith(color: palette.text),
+                        overflow: .ellipsis,
                       ),
-                      Spacing.h6,
-                      Expanded(
-                        child: Text(
-                          _subtitle(context),
-                          style: typography.caption1.copyWith(
-                            color: palette.mutedText,
+                      Spacing.vertical(Spacing.d2),
+                      Row(
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: dotColor,
+                              shape: .circle,
+                            ),
+                            child: SizedBox.square(dimension: Spacing.d6),
                           ),
-                          overflow: .ellipsis,
-                        ),
+                          Spacing.h6,
+                          Expanded(
+                            child: Text(
+                              _statusLine(l10n),
+                              style: typography.caption1.copyWith(
+                                color: statusColor,
+                              ),
+                              overflow: .ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  if (status.isConnected && chips.isNotEmpty) ...[
-                    Spacing.v6,
-                    Wrap(children: chips),
-                  ],
+                ),
+                if (!status.isConnected && onFix != null) ...[
+                  Spacing.h8,
+                  RowActionButton(label: l10n.deviceFix, onPressed: onFix),
+                ],
+                if (status.isConnected && onTap != null) ...[
+                  Spacing.h8,
+                  Icon(
+                    LucideIcons.chevronRight,
+                    size: Spacing.d16,
+                    color: palette.mutedText,
+                  ),
+                ],
+              ],
+            ),
+            if (status.isConnected && actions.isNotEmpty) ...[
+              Spacing.v12,
+              Wrap(
+                spacing: Spacing.d8,
+                runSpacing: Spacing.d8,
+                children: [
+                  for (final (index, action) in actions.indexed)
+                    RowActionButton(
+                      label: action.label,
+                      isPrimary: hasPrimary && index == 0,
+                      onPressed: action.onPressed,
+                    ),
                 ],
               ),
-            ),
-            if (!status.isConnected && onWhy != null)
-              Tappable(
-                onTap: onWhy,
-                child: Padding(
-                  padding: EdgeInsets.all(Spacing.d4),
-                  child: Text(
-                    context.shellL10n.deviceWhy,
-                    style: typography.caption1.copyWith(color: palette.accent),
-                  ),
-                ),
-              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  String _subtitle(BuildContext context) {
-    final l10n = context.shellL10n;
+  String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
-      return l10n.deviceConnected;
+      return switch (attention) {
+        final feature? => l10n.deviceAttention(feature),
+        null => l10n.deviceConnected,
+      };
     }
 
     final lastSeen = status.device.lastSeen;

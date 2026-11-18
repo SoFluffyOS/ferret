@@ -15,7 +15,19 @@ import 'package:url_launcher/url_launcher.dart';
 /// Devices near you: unpaired Ferret devices on this network, each with a
 /// Pair button, kept up to date while the screen is open.
 class NearbyFrame extends StatefulWidget {
-  const NearbyFrame({super.key, this.watch = true});
+  const NearbyFrame({
+    super.key,
+    this.watch = true,
+    this.onPairWithCode,
+    this.onCantSee,
+  });
+
+  /// With this, the frame is Home before anything is paired: it welcomes,
+  /// and offers the code when no device, or not the right one, is in sight.
+  final VoidCallback? onPairWithCode;
+
+  /// Where "Can't see it?" leads once looking found nobody.
+  final VoidCallback? onCantSee;
 
   /// Whether the user is waiting for a device to show up here. Then Ferret
   /// keeps looking and says so, and says when it found nothing. Otherwise
@@ -50,15 +62,25 @@ class _NearbyFrameState extends State<NearbyFrame> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: _Nearby(watch: widget.watch),
+      child: _Nearby(
+        watch: widget.watch,
+        onPairWithCode: widget.onPairWithCode,
+        onCantSee: widget.onCantSee,
+      ),
     );
   }
 }
 
 class _Nearby extends StatelessWidget {
-  const _Nearby({required this.watch});
+  const _Nearby({
+    required this.watch,
+    required this.onPairWithCode,
+    required this.onCantSee,
+  });
 
   final bool watch;
+  final VoidCallback? onPairWithCode;
+  final VoidCallback? onCantSee;
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +106,18 @@ class _Nearby extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final onPairWithCode = this.onPairWithCode;
+    if (peers.isEmpty && !isBlocked && onPairWithCode != null) {
+      return WelcomeEmpty(
+        onPairWithCode: onPairWithCode,
+        onCantSee: onCantSee ?? onPairWithCode,
+      );
+    }
+
     return Column(
       crossAxisAlignment: .stretch,
       children: [
+        if (onPairWithCode != null && peers.isNotEmpty) const WelcomeIntro(),
         SectionTitle(
           l10n.homeNearby,
           trailing: switch (isLooking && peers.isNotEmpty) {
@@ -124,6 +155,8 @@ class _Nearby extends StatelessWidget {
             ),
             _ => NearbyNotice(body: l10n.nearbyLooking),
           },
+        if (onPairWithCode != null && peers.isNotEmpty)
+          WelcomeNearby(onPairWithCode: onPairWithCode),
       ],
     );
   }
