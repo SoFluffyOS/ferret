@@ -12,7 +12,8 @@ import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Settings as one short list: this device, then a row per group of
-/// features that shows its current state and opens its own page.
+/// features that shows its current state and opens its own page. With room
+/// for two columns, the list stays and the page opens next to it.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -22,6 +23,23 @@ class SettingsPage extends StatelessWidget {
     final engine = scope.featureContext.engine;
     final l10n = context.shellL10n;
 
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= PaneWidths.content) {
+          return const SettingsSplitFrame();
+        }
+
+        return _stacked(context, scope, engine, l10n);
+      },
+    );
+  }
+
+  Widget _stacked(
+    BuildContext context,
+    ShellScope scope,
+    FerretEngine engine,
+    ShellLocalizations l10n,
+  ) {
     return FerretPage(
       title: l10n.settingsTitle,
       backLabel: l10n.back,
@@ -85,7 +103,7 @@ class _GroupRows extends StatelessWidget {
           for (final row in rows)
             NavRow(
               title: l10n.settingsGroupTitle(row.group, local),
-              value: _valueOf(l10n, row),
+              value: l10n.settingsRowValue(row),
               attentionLabel: switch (row.needsAttention) {
                 true => l10n.settingsNeedsAttention,
                 false => null,
@@ -95,37 +113,6 @@ class _GroupRows extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  /// The row's state in a few words. One part speaks for itself; several
-  /// are counted, except other apps, which are named.
-  String _valueOf(ShellLocalizations l10n, SettingsRow row) {
-    final (sections, switchable, on) = (row.sections, row.switchable, row.on);
-    if (sections case [final only]) {
-      return switch ((only.summary, only.isOn)) {
-        ('', true) => l10n.settingsOn,
-        ('', false) => l10n.settingsOff,
-        (final summary, _) => summary,
-      };
-    }
-
-    if (switchable.isEmpty) {
-      return '';
-    }
-
-    if (on.isEmpty) {
-      return l10n.settingsOff;
-    }
-
-    if (row.group == .otherApps) {
-      return l10n.settingsNamedOn(on.map((part) => part.title).join(', '));
-    }
-
-    if (on.length == switchable.length) {
-      return l10n.settingsOn;
-    }
-
-    return l10n.settingsCountOn(on.length, switchable.length);
   }
 }
 

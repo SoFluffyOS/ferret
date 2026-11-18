@@ -13,4 +13,5 @@ export 'package:shell/ui/pages/qr_pair_page.dart';
 export 'package:shell/ui/pages/scan_page.dart';
 export 'package:shell/ui/pages/settings_group_page.dart';
 export 'package:shell/ui/pages/settings_page.dart';
+export 'package:shell/ui/pages/this_device_settings_page.dart';
 export 'package:shell/ui/pages/window_home_page.dart';

@@ -20,6 +20,7 @@ export 'package:shell/ui/frames/paired_closer.dart';
 export 'package:shell/ui/frames/pairing_prompt_listener.dart';
 export 'package:shell/ui/frames/pairing_settings.dart';
 export 'package:shell/ui/frames/pairing_status_card.dart';
+export 'package:shell/ui/frames/settings_split_frame.dart';
 export 'package:shell/ui/frames/sidebar_frame.dart';
 export 'package:shell/ui/frames/sidebar_nearby_frame.dart';
 export 'package:shell/ui/frames/stay_connected_card.dart';

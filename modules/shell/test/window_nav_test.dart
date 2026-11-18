@@ -23,6 +23,30 @@ class _NoFeature extends Feature {
 
 /// A feature with one page per device, and a button that opens it.
 class _TextsUi extends FeatureUi {
+  /// What it found near that isn't paired, by name.
+  final List<String> near = [];
+  final List<String> shown = [];
+  final ChangeNotifier changes = ChangeNotifier();
+
+  @override
+  Listenable get uiChanges => changes;
+
+  @override
+  List<FeatureNearbyRow> nearbyRows(
+    BuildContext context,
+    FeatureContext feature,
+  ) => [
+    for (final name in near)
+      FeatureNearbyRow(
+        id: 'texts.$name',
+        title: name,
+        detail: 'Cable',
+        icon: LucideIcons.smartphone,
+        actionLabel: 'Show screen',
+        onAction: () => shown.add(name),
+      ),
+  ];
+
   @override
   String get featureId => 'texts';
 
@@ -234,6 +258,7 @@ void main() {
     late FerretEngine engine;
     late FeatureContext featureContext;
     late Widget app;
+    late _TextsUi texts;
 
     Future<void> start(WidgetTester tester, Size size) async {
       tester.view
@@ -241,7 +266,8 @@ void main() {
         ..physicalSize = size;
       addTearDown(tester.view.reset);
 
-      final features = <FeatureUi>[_TextsUi()];
+      texts = _TextsUi();
+      final features = <FeatureUi>[texts];
       final started = await tester.runAsync(() async {
         final engine = await _engine(
           features: [for (final feature in features) feature.feature],
@@ -324,6 +350,46 @@ void main() {
       expect(featureContext.navigatorKey.currentState?.canPop(), isTrue);
     });
 
+    testWidgets('what a feature found near sits under Nearby in the device '
+        'list, with its one action', (tester) async {
+      await start(tester, const Size(1000, 720));
+
+      expect(find.text('NEARBY'), findsNothing);
+
+      texts.near.add('Old tablet');
+      texts.changes.notifyListeners();
+      await tester.pump();
+
+      expect(find.text('NEARBY'), findsOneWidget);
+      final row = find.widgetWithText(SidebarRow, 'Old tablet');
+      expect(
+        find.descendant(of: row, matching: find.text('Show screen')),
+        findsOneWidget,
+      );
+
+      await tester.tap(row);
+      expect(texts.shown, ['Old tablet']);
+    });
+
+    testWidgets('on a small view it is a line under Nearby on Home', (
+      tester,
+    ) async {
+      await start(tester, const Size(380, 900));
+      texts.near.add('Old tablet');
+      texts.changes.notifyListeners();
+      await tester.pump();
+
+      expect(find.text('NEARBY'), findsOneWidget);
+      final tile = find.widgetWithText(NearbyFeatureTile, 'Old tablet');
+      expect(
+        find.descendant(of: tile, matching: find.text('Cable')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Show screen'));
+      expect(texts.shown, ['Old tablet']);
+    });
+
     testWidgets('narrowing a window keeps the page opened on top', (
       tester,
     ) async {
@@ -371,6 +437,44 @@ void main() {
       await press(LogicalKeyboardKey.keyB);
       expect(find.byType(SidebarFrame), findsNothing);
       expect(find.byType(SettingsPage), findsOneWidget);
+    });
+
+    testWidgets('Settings keeps its list next to the row that is open', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+
+      await tester.tap(find.widgetWithText(SidebarRow, 'Settings'));
+      await tester.pump();
+
+      expect(find.byType(SettingsSplitFrame), findsOneWidget);
+      expect(find.byType(ThisDeviceSettingsPage), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(SidebarRow, 'Advanced'));
+      await tester.pump();
+
+      expect(find.byType(AdvancedSettingsPage), findsOneWidget);
+      expect(find.byType(ThisDeviceSettingsPage), findsNothing);
+      expect(
+        find.widgetWithText(SidebarRow, 'About · Privacy'),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget<SidebarRow>(find.widgetWithText(SidebarRow, 'Advanced')),
+        isA<SidebarRow>().having((row) => row.isSelected, 'isSelected', true),
+      );
+    });
+
+    testWidgets('in a narrow window Settings is one list that opens pages', (
+      tester,
+    ) async {
+      await start(tester, const Size(700, 720));
+
+      await tester.tap(find.widgetWithText(SidebarRow, 'Settings'));
+      await tester.pump();
+
+      expect(find.byType(SettingsSplitFrame), findsNothing);
+      expect(find.byType(NavRow), findsWidgets);
     });
 
     testWidgets('a section that is gone falls back to the Overview', (
