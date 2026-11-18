@@ -15,7 +15,7 @@ import 'package:path_provider/path_provider.dart';
 /// Shizuku, no Ferret.
 ///
 /// Computers only. On a phone, [status] is [RouteUnsupported].
-class ScrcpyRoute implements MirrorRoute {
+class ScrcpyRoute implements ToolInstaller {
   ScrcpyRoute({
     Future<Directory> Function()? supportDirectory,
     Future<AdbBridge?> Function()? findAdb,
@@ -88,6 +88,15 @@ class ScrcpyRoute implements MirrorRoute {
   /// Whether [installAdb] can help here. Offer the download only when it
   /// does.
   bool get canInstallAdb => isSupported && !isSandboxed;
+
+  @override
+  bool get canInstallTool => canInstallAdb;
+
+  @override
+  String get toolNotStartedDetail => needsAdbStarted;
+
+  @override
+  Future<void> installTool() => installAdb();
 
   @override
   Future<RouteStatus> status() async {

@@ -219,6 +219,7 @@ void main() {
       expect((status as RouteNeedsSetup).step, RouteSetup.installTool);
       expect(status.detail, ScrcpyRoute.needsAdb);
       expect(scrcpy.canInstallAdb, isTrue);
+      expect(scrcpy.canInstallTool, isTrue);
     });
 
     test('asks to start adb when its program may not be run', () async {
@@ -233,6 +234,7 @@ void main() {
 
       expect((status as RouteNeedsSetup).step, RouteSetup.installTool);
       expect(status.detail, ScrcpyRoute.needsAdbStarted);
+      expect(scrcpy.toolNotStartedDetail, status.detail);
     });
 
     test('never offers to download adb inside the App Sandbox', () async {
@@ -248,6 +250,7 @@ void main() {
       expect(scrcpy.isSandboxed, isTrue);
       expect(scrcpy.canInstallAdb, isFalse);
       expect((status as RouteNeedsSetup).detail, ScrcpyRoute.needsAdbStarted);
+      expect(scrcpy.canInstallTool, isFalse);
       expect(scrcpy.installAdb(), throwsStateError);
     });
   });

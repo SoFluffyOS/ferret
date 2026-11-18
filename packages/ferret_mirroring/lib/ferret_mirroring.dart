@@ -17,6 +17,7 @@ export 'package:ferret_mirroring/src/route/mirror_control.dart';
 export 'package:ferret_mirroring/src/route/mirror_feed.dart';
 export 'package:ferret_mirroring/src/route/mirror_route.dart';
 export 'package:ferret_mirroring/src/route/mirror_target.dart';
+export 'package:ferret_mirroring/src/route/tool_installer.dart';
 export 'package:ferret_mirroring/src/stream/mirror_codec.dart';
 export 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 export 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
