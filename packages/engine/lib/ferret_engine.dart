@@ -750,10 +750,12 @@ class FerretEngine implements FeatureHost {
       final prompt = PairingPrompt(device: request.device, code: code);
       _pairingPrompts.add(prompt);
 
-      final accepted = await prompt.decision.timeout(
-        _comparisonTimeout,
-        onTimeout: () => false,
-      );
+      // The prompt ends without an answer when it times out or the other
+      // device hangs up; rejecting it lets the app close its dialog.
+      final timeout = Timer(_comparisonTimeout, prompt.reject);
+      unawaited(channel.done.then((_) => prompt.reject()));
+      final accepted = await prompt.decision;
+      timeout.cancel();
       final result = switch (accepted) {
         true => PairingResult.PAIRING_RESULT_ACCEPTED,
         false => PairingResult.PAIRING_RESULT_REJECTED,

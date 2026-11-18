@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -12,12 +14,26 @@ class PairingPromptDialog extends StatelessWidget {
   final PairingPrompt prompt;
 
   static Future<void> show(BuildContext context, PairingPrompt prompt) async {
+    final navigator = Navigator.of(context);
+    var open = true;
+
+    // The request can end without an answer here: it times out, or the
+    // other device gives up. Close the dialog so the next one can show.
+    unawaited(
+      prompt.decision.then((_) {
+        if (open) {
+          navigator.pop();
+        }
+      }),
+    );
+
     final accepted = await showGeneralDialog<bool>(
       context: context,
       barrierDismissible: false,
       barrierColor: const Color(0x99000000),
       pageBuilder: (_, _, _) => PairingPromptDialog(prompt: prompt),
     );
+    open = false;
 
     switch (accepted) {
       case true:
