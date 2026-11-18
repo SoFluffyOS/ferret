@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:calls/feature/calls_feature.dart';
 import 'package:calls/l10n/l10n.dart';
 import 'package:calls/services/services.dart';
+import 'package:calls/ui/calls_activity.dart';
 import 'package:calls/ui/frames/frames.dart';
 import 'package:calls/ui/pages/pages.dart';
 import 'package:calls/view_models/view_models.dart';
@@ -33,7 +34,14 @@ class CallsFeatureUi extends FeatureUi {
   final CallsFeature feature;
 
   late final FeatureChanges _changes = FeatureChanges(feature.changes);
-  ActiveCallsViewModel? _activeCalls;
+
+  /// The calls behind the Activity lines. It also fires when Answer or Hang
+  /// up didn't work, which the feature's own changes don't tell.
+  late final ActiveCallsViewModel _activeCalls = ActiveCallsViewModel(feature);
+  late final Listenable _uiChanges = switch (feature.isPhone) {
+    true => _changes,
+    false => Listenable.merge([_changes, _activeCalls]),
+  };
   CallNotices? _notices;
 
   @override
@@ -73,14 +81,14 @@ class CallsFeatureUi extends FeatureUi {
   }
 
   @override
-  Listenable get uiChanges => _changes;
+  Listenable get uiChanges => _uiChanges;
 
-  /// On a computer, only while a call rings or goes on; on the phone, only
-  /// while calls are on but Android hides them from Ferret.
+  /// Only on the phone, while calls are on but Android hides them from
+  /// Ferret. A computer shows its calls in [activity].
   @override
   bool hasHomeCard(FeatureContext feature) {
     if (!this.feature.isPhone) {
-      return this.feature.remoteCalls.isNotEmpty;
+      return false;
     }
 
     final permissions = this.feature.permissions;
@@ -161,9 +169,18 @@ class CallsFeatureUi extends FeatureUi {
     }
 
     return ChangeNotifierProvider.value(
-      value: _activeCalls ??= ActiveCallsViewModel(this.feature),
+      value: _activeCalls,
       child: const CallCardFrame(),
     );
+  }
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
+    if (this.feature.isPhone) {
+      return const [];
+    }
+
+    return callsActivity(context.callsL10n, _activeCalls);
   }
 
   @override
@@ -210,10 +227,10 @@ class CallsFeatureUi extends FeatureUi {
     );
   }
 
-  /// Stops the notices and releases the home card's view model.
+  /// Stops the notices and releases the calls' view model.
   Future<void> dispose() async {
     await _notices?.dispose();
-    _activeCalls?.dispose();
+    _activeCalls.dispose();
     _changes.dispose();
   }
 

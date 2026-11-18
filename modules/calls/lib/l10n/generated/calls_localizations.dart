@@ -154,9 +154,29 @@ abstract class CallsLocalizations {
   /// **'Hang up'**
   String get hangUp;
 
+  /// Activity row while a phone rings, such as: Alex is calling Pixel 9
+  ///
+  /// In en, this message translates to:
+  /// **'{caller} is calling {device}'**
+  String activityRinging(String caller, String device);
 
+  /// No description provided for @activityOnCall.
+  ///
+  /// In en, this message translates to:
+  /// **'On a call with {caller}'**
+  String activityOnCall(String caller);
 
+  /// No description provided for @activityDialing.
+  ///
+  /// In en, this message translates to:
+  /// **'Calling {caller}'**
+  String activityDialing(String caller);
 
+  /// No description provided for @activityOnHold.
+  ///
+  /// In en, this message translates to:
+  /// **'On hold with {caller}'**
+  String activityOnHold(String caller);
 
   /// No description provided for @silence.
   ///

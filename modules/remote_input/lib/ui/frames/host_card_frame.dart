@@ -6,13 +6,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_input/l10n/l10n.dart';
 import 'package:remote_input/models/models.dart';
-import 'package:remote_input/ui/widgets/widgets.dart';
 import 'package:remote_input/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// This computer's card: a device asking for control, the "Controlled by
-/// Pixel" indicator with Stop, a request that failed for a missing
-/// permission, and the audit line once it is over.
+/// This computer's card, for what needs its owner: a device asking for
+/// control, and a request that failed for a missing permission. Being
+/// controlled, and having been, are lines in Activity.
 class HostCardFrame extends StatelessWidget {
   const HostCardFrame({super.key});
 
@@ -21,20 +20,12 @@ class HostCardFrame extends StatelessWidget {
     final pending = context.select<HostViewModel, ConsentRequest?>(
       (viewModel) => viewModel.pending,
     );
-    final active = context.select<HostViewModel, ActiveControl?>(
-      (viewModel) => viewModel.active,
-    );
     final permissionAsk = context.select<HostViewModel, PermissionAsk?>(
       (viewModel) => viewModel.permissionAsk,
     );
-    final record = context.select<HostViewModel, ControlRecord?>(
-      (viewModel) => viewModel.lastRecord,
-    );
     final cards = [
       if (pending != null) _PendingCard(pending: pending),
-      if (active != null) _ActiveCard(active: active),
       if (permissionAsk != null) _PermissionCard(ask: permissionAsk),
-      if (record != null && active == null) _RecordCard(record: record),
     ];
     if (cards.isEmpty) {
       return const SizedBox.shrink();
@@ -88,31 +79,6 @@ class _PendingCard extends StatelessWidget {
   }
 }
 
-class _ActiveCard extends StatelessWidget {
-  const _ActiveCard({required this.active});
-
-  final ActiveControl active;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.remoteInputL10n;
-
-    return FeatureCard(
-      icon: LucideIcons.mousePointer2,
-      iconTone: .warning,
-      title: l10n.controlledBy(active.deviceName),
-      subtitle: l10n.since(active.startedAt),
-      actions: [
-        Button(
-          variant: .primary,
-          label: l10n.stop,
-          onPressed: () => unawaited(context.read<HostViewModel>().stop()),
-        ),
-      ],
-    );
-  }
-}
-
 class _PermissionCard extends StatelessWidget {
   const _PermissionCard({required this.ask});
 
@@ -139,28 +105,6 @@ class _PermissionCard extends StatelessWidget {
           onPressed: () => unawaited(viewModel.requestAccess()),
         ),
       ],
-    );
-  }
-}
-
-class _RecordCard extends StatelessWidget {
-  const _RecordCard({required this.record});
-
-  final ControlRecord record;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.remoteInputL10n;
-
-    return FeatureCard(
-      icon: LucideIcons.history,
-      iconTone: .muted,
-      title: l10n.title,
-      subtitle: l10n.audit(record),
-      trailing: _DismissButton(
-        label: l10n.dismiss,
-        onTap: context.read<HostViewModel>().dismissRecord,
-      ),
     );
   }
 }

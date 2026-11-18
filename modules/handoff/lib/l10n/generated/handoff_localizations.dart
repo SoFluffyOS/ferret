@@ -498,6 +498,12 @@ abstract class HandoffLocalizations {
   /// In en, this message translates to:
   /// **'Remove'**
   String get browserClientRemove;
+
+  /// No description provided for @continueUntitledFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue from {device}'**
+  String continueUntitledFrom(String device);
 }
 
 class _HandoffLocalizationsDelegate

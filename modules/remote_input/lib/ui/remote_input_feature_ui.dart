@@ -14,13 +14,15 @@ import 'package:remote_input/services/services.dart';
 import 'package:remote_input/ui/consent_prompter.dart';
 import 'package:remote_input/ui/frames/frames.dart';
 import 'package:remote_input/ui/pages/pages.dart';
+import 'package:remote_input/ui/remote_input_activity.dart';
 import 'package:remote_input/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The app side of Remote input. On a phone: "Use as touchpad" on each
 /// computer, and the touchpad page. On a computer: the consent dialog and
-/// notice, the "Controlled by Pixel · Stop" card and notice, the audit
-/// line, and Settings with revoke and history.
+/// notice, the "Pixel is controlling this Mac · Stop" line in Activity and
+/// its notice, the line once it is over, and Settings with revoke and
+/// history.
 class RemoteInputFeatureUi extends FeatureUi {
   RemoteInputFeatureUi({RemoteInputFeature? feature})
     : feature = feature ?? RemoteInputFeature();
@@ -81,10 +83,22 @@ class RemoteInputFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => hostViewModel;
 
-  /// Only while a device asks, controls this computer, couldn't for a
-  /// missing permission, or just stopped.
+  /// Only while a device asks, or couldn't control this computer for a
+  /// missing permission. Being controlled is a line in [activity].
   @override
   bool hasHomeCard(FeatureContext feature) => hostViewModel.hasCard;
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
+      remoteInputActivity(
+        context.remoteInputL10n,
+        hostViewModel,
+        thisComputer: switch (defaultTargetPlatform) {
+          .macOS => .mac,
+          .windows => .windows,
+          _ => .linux,
+        },
+      );
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {

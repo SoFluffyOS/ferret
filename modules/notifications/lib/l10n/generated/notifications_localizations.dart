@@ -529,7 +529,17 @@ abstract class NotificationsLocalizations {
   /// **'On this phone: Settings → To your computer → Notifications.'**
   String get healthOffThisPhoneHelp;
 
+  /// No description provided for @activityOne.
+  ///
+  /// In en, this message translates to:
+  /// **'{app}: {title}'**
+  String activityOne(String app, String title);
 
+  /// No description provided for @activityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 notification from {device}} other{{count} notifications from {device}}}'**
+  String activityCount(int count, String device);
 }
 
 class _NotificationsLocalizationsDelegate

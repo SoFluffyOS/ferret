@@ -9,6 +9,7 @@ import 'package:notifications/feature/notifications_feature.dart';
 import 'package:notifications/l10n/l10n.dart';
 import 'package:notifications/services/services.dart';
 import 'package:notifications/ui/frames/frames.dart';
+import 'package:notifications/ui/notifications_activity.dart';
 import 'package:notifications/ui/pages/pages.dart';
 import 'package:notifications/view_models/view_models.dart';
 import 'package:protocol/notifications.dart';
@@ -16,7 +17,7 @@ import 'package:protocol/protocol.dart' as proto;
 import 'package:provider/provider.dart';
 
 /// The app side of notification mirroring: setup on the phone, notices and
-/// the home card on computers.
+/// lines in Activity on computers.
 class NotificationsFeatureUi extends FeatureUi {
   factory NotificationsFeatureUi() {
     if (!FerretNotifications.isSupported) {
@@ -108,17 +109,34 @@ class NotificationsFeatureUi extends FeatureUi {
     return changes;
   }
 
-  /// On the phone, only while mirroring is on but access is off. On a
-  /// computer, only once an Android phone is paired or a notification is
-  /// waiting: with no phone there is nothing true to say.
+  /// On the phone, only while mirroring is on but access is off. Never on a
+  /// computer: what its phones sent is in [activity].
   @override
   bool hasHomeCard(FeatureContext feature) {
-    if (this.feature.isSource) {
-      final setup = _phoneSetup;
-      return setup != null && setup.checked && setup.stage == .needsAccess;
+    if (!this.feature.isSource) {
+      return false;
     }
 
-    return _hasPhone(feature) || !_inboxFor(feature).isEmpty;
+    final setup = _phoneSetup;
+    return setup != null && setup.checked && setup.stage == .needsAccess;
+  }
+
+  /// On a computer, one line per phone with notifications waiting. Tapping
+  /// it opens the full list.
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
+    if (this.feature.isSource) {
+      return const [];
+    }
+
+    final inbox = _inboxFor(feature);
+
+    return NotificationsActivity.items(
+      context.notificationsL10n,
+      inbox.byDevice,
+      deviceName: inbox.deviceName,
+      onOpen: () => _openInbox(feature),
+    );
   }
 
   /// On the phone, while mirroring is off.
@@ -457,22 +475,17 @@ class NotificationsFeatureUi extends FeatureUi {
       );
     }
 
-    final inbox = _inboxFor(featureContext);
-
-    if (!_hasPhone(featureContext) && inbox.isEmpty) {
-      return null;
-    }
-
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: inbox),
-        ChangeNotifierProvider(
-          create: (_) => _phonesViewModel(featureContext),
-        ),
-      ],
-      child: const InboxCardFrame(),
-    );
+    return null;
   }
+
+  void _openInbox(FeatureContext featureContext) => unawaited(
+    featureContext.push<void>(
+      InboxPage(
+        inbox: _inboxFor(featureContext),
+        phones: () => _phonesViewModel(featureContext),
+      ),
+    ),
+  );
 
   Widget? _settings(FeatureContext featureContext) {
     if (access case final phoneAccess? when feature.isSource) {

@@ -10,13 +10,14 @@ import 'package:messages/feature/messages_feature.dart';
 import 'package:messages/l10n/l10n.dart';
 import 'package:messages/services/services.dart';
 import 'package:messages/ui/frames/frames.dart';
+import 'package:messages/ui/messages_activity.dart';
 import 'package:messages/ui/pages/pages.dart';
 import 'package:messages/view_models/view_models.dart';
 import 'package:protocol/protocol.dart' as proto;
 import 'package:provider/provider.dart';
 
 /// The app side of Messages: setup on the phone; on computers the Messages
-/// page, the home card with unread texts, notices with Reply, and Settings.
+/// page, unread texts in Activity, notices with Reply, and Settings.
 class MessagesFeatureUi extends FeatureUi {
   factory MessagesFeatureUi() {
     if (FerretMessages.isSupported) {
@@ -99,16 +100,35 @@ class MessagesFeatureUi extends FeatureUi {
     },
   );
 
-  /// On the phone, only while Messages are on but SMS access is missing;
-  /// on a computer, only once a paired phone shared its texts.
+  /// Only on the phone, while Messages are on but SMS access is missing. A
+  /// computer shows unread texts in [activity] and opens them from the
+  /// phone's row.
   @override
   bool hasHomeCard(FeatureContext feature) {
-    if (this.feature.sourceService case final service?) {
-      final access = service.access;
-      return access.hasTelephony && service.settings.enabled && !access.canRead;
+    final service = this.feature.sourceService;
+    if (service == null) {
+      return false;
     }
 
-    return _cardFor(feature).phones.isNotEmpty;
+    final access = service.access;
+    return access.hasTelephony && service.settings.enabled && !access.canRead;
+  }
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
+    if (this.feature.sourceService != null) {
+      return const [];
+    }
+
+    final trustStore = feature.engine.trustStore;
+    return messagesActivity(
+      l10n: context.messagesL10n,
+      library: this.feature.library,
+      deviceName: (deviceId) => _nameOf(feature, deviceId),
+      isPaired: (deviceId) => trustStore[deviceId] != null,
+      onOpen: (deviceId, threadId) =>
+          _openMessages(feature, deviceId, threadId: threadId),
+    );
   }
 
   /// On a phone that can text, while Messages are off.

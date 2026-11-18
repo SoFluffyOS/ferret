@@ -10,12 +10,12 @@ import 'package:notifications/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The home card on a computer: the last few notifications from each phone,
-/// or what keeps them from arriving, in words that match the device tile.
+/// On a computer: the last [shownPerPhone] notifications from each phone, or
+/// what keeps them from arriving, in words that match the device tile.
 class InboxCardFrame extends StatelessWidget {
-  const InboxCardFrame({super.key});
+  const InboxCardFrame({super.key, this.shownPerPhone = 3});
 
-  static const _shownPerPhone = 3;
+  final int shownPerPhone;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class InboxCardFrame extends StatelessWidget {
               _deviceLabel(context, deviceId, names),
               style: typography.caption1.copyWith(color: palette.mutedText),
             ),
-            for (final notification in items.take(_shownPerPhone))
+            for (final notification in items.take(shownPerPhone))
               NotificationRow(
                 key: ValueKey('${notification.deviceId}/${notification.key}'),
                 notification: notification,

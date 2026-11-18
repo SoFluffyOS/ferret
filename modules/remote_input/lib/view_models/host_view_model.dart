@@ -45,11 +45,9 @@ class HostViewModel extends ChangeNotifier {
       (id: id, name: feature.host.trustStore[id]?.name ?? id),
   ];
 
-  bool get hasCard =>
-      pending != null ||
-      active != null ||
-      permissionAsk != null ||
-      lastRecord != null;
+  /// Whether something needs the owner: a device asking, or a request that
+  /// failed for a missing permission. Being controlled is told in Activity.
+  bool get hasCard => pending != null || permissionAsk != null;
 
   Future<void> answer(ConsentChoice choice) async => _host?.answer(choice);
 

@@ -226,5 +226,27 @@
     }
   },
   "healthOffThisPhone": "Off on this phone",
-  "healthOffThisPhoneHelp": "On this phone: Settings → To your computer → Notifications."
+  "healthOffThisPhoneHelp": "On this phone: Settings → To your computer → Notifications.",
+  "activityOne": "{app}: {title}",
+  "@activityOne": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityCount": "{count, plural, =1{1 notification from {device}} other{{count} notifications from {device}}}",
+  "@activityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

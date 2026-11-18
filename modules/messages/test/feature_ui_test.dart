@@ -122,7 +122,7 @@ void main() {
 
     tearDown(() => ui.dispose());
 
-    test('shows once a paired phone shares its texts', () async {
+    test('never shows: unread texts are lines in Activity', () async {
       var changes = 0;
       ui.uiChanges.addListener(() => changes++);
       final before = ui.hasHomeCard(trusted);
@@ -131,8 +131,23 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       expect(before, isFalse);
-      expect(ui.hasHomeCard(trusted), isTrue);
+      expect(ui.hasHomeCard(trusted), isFalse);
       expect(changes, greaterThan(0));
+    });
+
+    testWidgets('Activity names who wrote and the phone, with Reply', (
+      tester,
+    ) async {
+      await tester.runAsync(devices.connect);
+      await tester.pumpWidget(testApp(const SizedBox()));
+      await tester.pumpAndSettle();
+
+      final line = ui
+          .activity(tester.element(find.byType(ListView)), trusted)
+          .single;
+
+      expect(line.title, 'Alex · Pixel');
+      expect(line.actions.single.label, 'Reply');
     });
 
     test('a tapped notice brings the app to the front', () async {

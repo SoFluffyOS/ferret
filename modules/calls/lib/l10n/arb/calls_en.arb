@@ -38,6 +38,42 @@
   "answer": "Answer",
   "decline": "Decline",
   "hangUp": "Hang up",
+  "activityRinging": "{caller} is calling {device}",
+  "@activityRinging": {
+    "description": "Activity row while a phone rings, such as: Alex is calling Pixel 9",
+    "placeholders": {
+      "caller": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityOnCall": "On a call with {caller}",
+  "@activityOnCall": {
+    "placeholders": {
+      "caller": {
+        "type": "String"
+      }
+    }
+  },
+  "activityDialing": "Calling {caller}",
+  "@activityDialing": {
+    "placeholders": {
+      "caller": {
+        "type": "String"
+      }
+    }
+  },
+  "activityOnHold": "On hold with {caller}",
+  "@activityOnHold": {
+    "placeholders": {
+      "caller": {
+        "type": "String"
+      }
+    }
+  },
   "silence": "Silence",
   "silenced": "Ringer silenced",
   "audioStays": "Audio stays on {device} for now. Talk on {device} or its headset.",

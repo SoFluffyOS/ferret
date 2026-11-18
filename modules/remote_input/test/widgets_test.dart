@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -116,28 +117,36 @@ void main() {
       await tester.pump();
 
       expect(feature.controlHost?.active?.deviceName, 'Pixel');
-      expect(find.text('Pixel is controlling this computer'), findsOneWidget);
+      expect(find.byType(FeatureCard), findsNothing);
       await tester.runAsync(feature.stop);
     });
 
-    testWidgets('Stop ends control and leaves an audit line', (tester) async {
+    testWidgets('shows nothing while controlled or once it is over: Activity '
+        'tells both', (tester) async {
       await tester.runAsync(startFeature);
       await tester.runAsync(() async {
         await feature.controlHost?.onRequest(pixel, ControlRequest(version: 1));
         await feature.controlHost?.answer(.allowOnce);
       });
-      await tester.pumpWidget(testApp(card()));
+      final viewModel = HostViewModel(feature);
+      addTearDown(viewModel.dispose);
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider.value(
+            value: viewModel,
+            child: const HostCardFrame(),
+          ),
+        ),
+      );
+      final whileControlled = viewModel.hasCard;
 
-      await tester.tap(find.text('Stop control'));
-      await tester.runAsync(settle);
+      await tester.runAsync(() async => feature.controlHost?.stop());
       await tester.pump();
 
-      expect(feature.controlHost?.active, isNull);
-      expect(injector.releases, 1);
-      expect(
-        find.textContaining('Pixel controlled this computer for less than'),
-        findsOneWidget,
-      );
+      expect(whileControlled, isFalse);
+      expect(viewModel.hasCard, isFalse);
+      expect(feature.controlHost?.lastRecord, isNotNull);
+      expect(find.byType(FeatureCard), findsNothing);
     });
 
     testWidgets('a missing permission says how to fix it', (tester) async {

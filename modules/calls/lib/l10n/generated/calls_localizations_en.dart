@@ -47,9 +47,25 @@ class CallsLocalizationsEn extends CallsLocalizations {
   @override
   String get hangUp => 'Hang up';
 
+  @override
+  String activityRinging(String caller, String device) {
+    return '$caller is calling $device';
+  }
 
+  @override
+  String activityOnCall(String caller) {
+    return 'On a call with $caller';
+  }
 
+  @override
+  String activityDialing(String caller) {
+    return 'Calling $caller';
+  }
 
+  @override
+  String activityOnHold(String caller) {
+    return 'On hold with $caller';
+  }
 
   @override
   String get silence => 'Silence';

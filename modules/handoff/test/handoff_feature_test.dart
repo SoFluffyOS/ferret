@@ -15,7 +15,7 @@ void main() {
   });
 
   test(
-    'the home card shows only while there is something to continue',
+    'a suggestion tells the shell to look again, without a home card',
     () async {
       final ui = HandoffFeatureUi(opener: FakeOpener());
       await ui.feature.start(await FakeHost.create());
@@ -26,13 +26,12 @@ void main() {
       var changes = 0;
       ui.uiChanges.addListener(() => changes++);
       final context = _NoContext();
-      final idle = ui.hasHomeCard(context);
 
       await ui.feature.receivePublished(pixel, webActivity('a'));
       await Future<void>.delayed(Duration.zero);
 
-      expect(idle, isFalse);
-      expect(ui.hasHomeCard(context), isTrue);
+      expect(ui.feature.suggestions, hasLength(1));
+      expect(ui.hasHomeCard(context), isFalse);
       expect(changes, greaterThan(0));
     },
   );

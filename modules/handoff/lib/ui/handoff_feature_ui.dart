@@ -10,14 +10,16 @@ import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/services/services.dart';
 import 'package:handoff/ui/dialogs/send_flows.dart';
 import 'package:handoff/ui/frames/frames.dart';
+import 'package:handoff/ui/handoff_activity.dart';
 import 'package:handoff/ui/handoff_health.dart';
 import 'package:handoff/ui/pages/device_picker_page.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
-/// The app side of Handoff: the "Continue" home card, "Send a link…" on
-/// each device, its settings, and the platform hooks.
+/// The app side of Handoff: "Continue" lines in Activity, the card for a
+/// browser asking to pair, "Send a link…" on each device, its settings, and
+/// the platform hooks.
 class HandoffFeatureUi extends FeatureUi {
   /// [browserBridge] says whether to host the browser extension's bridge;
   /// it defaults to desktops.
@@ -94,11 +96,22 @@ class HandoffFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _changes;
 
-  /// Only while another device offers something to continue here, or a
-  /// browser waits to be allowed.
+  /// Only while a browser waits to be allowed. What other devices offer to
+  /// continue here is in [activity].
   @override
-  bool hasHomeCard(FeatureContext feature) =>
-      this.feature.suggestions.isNotEmpty || browser.pairRequests.isNotEmpty;
+  bool hasHomeCard(FeatureContext feature) => browser.pairRequests.isNotEmpty;
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
+    final viewModel = viewModelFor(feature);
+
+    return HandoffActivity.items(
+      context.handoffL10n,
+      this.feature.suggestions,
+      onOpen: (suggestion) =>
+          unawaited(HandoffActivity.open(context, viewModel, suggestion)),
+    );
+  }
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>

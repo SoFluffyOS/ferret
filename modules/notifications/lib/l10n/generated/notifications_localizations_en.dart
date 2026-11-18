@@ -311,4 +311,20 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   @override
   String get healthOffThisPhoneHelp =>
       'On this phone: Settings → To your computer → Notifications.';
+
+  @override
+  String activityOne(String app, String title) {
+    return '$app: $title';
+  }
+
+  @override
+  String activityCount(int count, String device) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notifications from $device',
+      one: '1 notification from $device',
+    );
+    return '$_temp0';
+  }
 }

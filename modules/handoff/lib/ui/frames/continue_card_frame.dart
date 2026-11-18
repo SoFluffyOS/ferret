@@ -1,15 +1,17 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
+import 'package:handoff/ui/handoff_activity.dart';
 import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The home card: what other devices offer to continue here. Hidden when
-/// there is nothing to offer.
+/// What other devices offer to continue here, as a card. Hidden when there
+/// is nothing to offer.
 class ContinueCardFrame extends StatelessWidget {
   const ContinueCardFrame({super.key});
 
@@ -34,28 +36,17 @@ class ContinueCardFrame extends StatelessWidget {
           SuggestionTile(
             key: ValueKey(suggestion.id),
             suggestion: suggestion,
-            onOpen: () => _open(context, suggestion),
+            onOpen: () => unawaited(
+              HandoffActivity.open(
+                context,
+                context.read<HandoffViewModel>(),
+                suggestion,
+              ),
+            ),
             onDismiss: () =>
                 context.read<HandoffViewModel>().dismiss(suggestion),
           ),
       ],
     );
-  }
-
-  Future<void> _open(BuildContext context, Suggestion suggestion) async {
-    final l10n = context.handoffL10n;
-    final result = await context.read<HandoffViewModel>().open(suggestion);
-    if (!context.mounted) {
-      return;
-    }
-
-    switch (result) {
-      case .opened:
-        return;
-      case .deferred:
-        context.toast(l10n.openDeferred);
-      case .failed:
-        context.toastError(l10n.openFailed);
-    }
   }
 }

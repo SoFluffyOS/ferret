@@ -182,5 +182,13 @@
   "browserClientsEmpty": "No browser yet. Install the extension, open its settings and choose “Pair with Ferret”.",
   "browserClientConnected": "Connected",
   "browserClientOffline": "Not connected",
-  "browserClientRemove": "Remove"
+  "browserClientRemove": "Remove",
+  "continueUntitledFrom": "Continue from {device}",
+  "@continueUntitledFrom": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -8,7 +8,7 @@ import 'package:notifications/models/models.dart';
 import 'package:notifications/services/services.dart';
 
 /// The phones' notifications on a computer: shows each one as a system
-/// notice grouped per phone, keeps the recent ones for the home card, and
+/// notice grouped per phone, keeps the recent ones for Activity and the full list, and
 /// sends replies and dismissals back.
 class InboxViewModel extends ChangeNotifier {
   InboxViewModel({
@@ -39,7 +39,9 @@ class InboxViewModel extends ChangeNotifier {
   static const dismissActionId = 'dismiss';
 
   static const _noticePrefix = '${NotificationsFeature.featureId}/';
-  static const _keptPerDevice = 50;
+
+  /// How many notifications the inbox keeps per phone.
+  static const keptPerDevice = 50;
 
   final MirrorControl _feature;
   final LocalNotifier _notifier;
@@ -261,7 +263,7 @@ class InboxViewModel extends ChangeNotifier {
   }
 
   void _trim(List<MirroredNotification> items) {
-    while (items.length > _keptPerDevice) {
+    while (items.length > keptPerDevice) {
       final oldest = items.removeLast();
       _byNotice.remove(_noticeId(oldest.deviceId, oldest.key));
     }

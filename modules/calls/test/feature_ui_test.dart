@@ -48,7 +48,7 @@ void main() {
       await feature.stop();
     });
 
-    test('has a card only while a call rings or goes on', () async {
+    test('never has a card: a call is a line in Activity', () async {
       final idle = ui.hasHomeCard(context);
 
       await feature.onEnvelope(pixel, envelopeOf(update(.CALL_STATE_RINGING)));
@@ -59,9 +59,64 @@ void main() {
       await settle();
 
       expect(idle, isFalse);
-      expect(ringing, isTrue);
-      expect(ui.hasHomeCard(context), isFalse);
+      expect(ringing, isFalse);
       expect(changes, greaterThanOrEqualTo(2));
+    });
+  });
+
+  group('activity', () {
+    late CallsFeature feature;
+    late CallsFeatureUi ui;
+
+    Future<List<ActivityItem>> activityOf(
+      WidgetTester tester, {
+      required bool isPhone,
+    }) async {
+      await tester.runAsync(() async {
+        final session = FakeSession('phone', flags: [CallsFeature.phoneFlag]);
+        feature = switch (isPhone) {
+          true => CallsFeature(phone: FakePhone()),
+          false => CallsFeature(),
+        };
+        await feature.start(FakeHost()..sessions = [session]);
+        ui = CallsFeatureUi.withFeature(feature);
+        await feature.onEnvelope(
+          session,
+          envelopeOf(
+            CallUpdate(
+              call: Call(
+                id: 'call-1',
+                contactName: 'Alex',
+                direction: .CALL_DIRECTION_INCOMING,
+                state: .CALL_STATE_RINGING,
+              ),
+            ),
+          ),
+        );
+        await settle();
+      });
+      addTearDown(
+        () => tester.runAsync(() async {
+          await ui.dispose();
+          await feature.stop();
+        }),
+      );
+      await tester.pumpWidget(testApp(const SizedBox()));
+      await tester.pumpAndSettle();
+
+      return ui.activity(tester.element(find.byType(ListView)), context);
+    }
+
+    testWidgets('a computer pins the call a phone reports', (tester) async {
+      final lines = await activityOf(tester, isPhone: false);
+
+      expect(lines.single.pinned, isTrue);
+      expect(lines.single.title, startsWith('Alex is calling '));
+      expect(lines.single.actions, hasLength(2));
+    });
+
+    testWidgets('the phone has no lines', (tester) async {
+      expect(await activityOf(tester, isPhone: true), isEmpty);
     });
   });
 

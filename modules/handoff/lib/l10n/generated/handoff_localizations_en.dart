@@ -263,4 +263,9 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get browserClientRemove => 'Remove';
+
+  @override
+  String continueUntitledFrom(String device) {
+    return 'Continue from $device';
+  }
 }

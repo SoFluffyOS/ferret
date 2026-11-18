@@ -117,7 +117,7 @@ void main() {
       },
     );
 
-    test('the computer shows the phone health and its home card', () async {
+    test('the computer shows the phone health, and no home card', () async {
       await connect();
       await until(() => laptopFeature.senderSettings.containsKey(phoneId()));
       final ui = NotificationsFeatureUi.withFeature(laptopFeature);
@@ -130,7 +130,6 @@ void main() {
       addTearDown(ui.dispose);
       var changes = 0;
       ui.uiChanges?.addListener(() => changes++);
-      final emptyInbox = ui.hasHomeCard(context);
 
       source.post(phoneNotification());
       await until(() => posted().isNotEmpty);
@@ -139,8 +138,7 @@ void main() {
       final health = ui.healthFor(context, laptop.devices.single);
       expect(health?.state, FeatureHealthState.ok);
       expect(health?.reason, matches(RegExp(r'^\d+ apps?$')));
-      expect(emptyInbox, isFalse);
-      expect(ui.hasHomeCard(context), isTrue);
+      expect(ui.hasHomeCard(context), isFalse);
       expect(changes, greaterThan(0));
     });
 
