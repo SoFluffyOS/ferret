@@ -411,6 +411,23 @@ void main() {
       expect(updates.last.apps.single.allowed, isTrue);
     });
 
+    testWidgets('a choice the phone refuses is undone', (tester) async {
+      final viewModel = AppPickerViewModel(
+        load: () async => (
+          settings: MirrorSettings(appFilter: .APP_FILTER_ALL),
+          apps: [entry(game, 'Game')],
+        ),
+        update: (_) async => throw StateError('offline'),
+      );
+      addTearDown(viewModel.dispose);
+      await tester.pumpAndSettle();
+
+      await viewModel.setFilter(.APP_FILTER_ALL_EXCEPT);
+
+      expect(viewModel.filter, AppFilter.APP_FILTER_ALL);
+      expect(viewModel.saveFailed, isTrue);
+    });
+
     testWidgets('explains a failed load with a retry', (tester) async {
       var attempts = 0;
       await tester.pumpWidget(
