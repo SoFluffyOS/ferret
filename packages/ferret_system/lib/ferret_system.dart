@@ -2,6 +2,7 @@
 /// tile and battery settings, and network and wake events for reconnecting.
 library;
 
+export 'package:ferret_system/src/desktop/desktop.dart';
 export 'package:ferret_system/src/device_maker.dart';
 export 'package:ferret_system/src/ferret_system.dart';
 export 'package:ferret_system/src/messages.g.dart'

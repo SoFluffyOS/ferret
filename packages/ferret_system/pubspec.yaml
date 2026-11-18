@@ -9,6 +9,7 @@ environment:
   flutter: ">=3.50.0"
 
 dependencies:
+  dbus: ^0.8.0
   flutter:
     sdk: flutter
 

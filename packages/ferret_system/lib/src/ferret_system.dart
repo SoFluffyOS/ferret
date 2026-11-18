@@ -178,6 +178,10 @@ class FerretSystem implements SystemFlutterApi {
   Future<bool> requestNotificationPermission() =>
       _androidValue(_api.requestNotificationPermission, fallback: true);
 
+  /// Passes on what the user picked outside the app's window, such as the
+  /// desktop tray's Send clipboard, the same way the tile's actions come.
+  void emitAction(SystemAction action) => _actions.add(action);
+
   @override
   void onAction(SystemActionMessage action) =>
       _actions.add(SystemAction(action.id, Map.of(action.data)));
