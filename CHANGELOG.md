@@ -9,6 +9,11 @@
 - 📦 **Drop**: drag files onto Ferret or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
 - 🔔 **Notifications**: your phone's notifications on your computer, only new ones from the apps you pick, with Reply and Dismiss synced both ways.
 - 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second.
+- 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.
+- 📞 **Calls**: see who's calling on your computer, answer, decline, hang up or start a call from there.
+- 🔍 **Find my device**: ring a lost phone or computer from another device, even on silent, and stop it with one big **Found it**.
+- 🔁 **LocalSend**: send files to devices running LocalSend, and receive from them with one tap for 10 minutes.
+- 📷 **Scan to pair**: point your phone at the code on your computer.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
 - 🩺 **Connection Doctor**: when a device won't connect, Ferret tells you why in plain words and offers the fix.
