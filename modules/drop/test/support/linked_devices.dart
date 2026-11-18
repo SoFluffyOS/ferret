@@ -65,6 +65,8 @@ class LinkedDevices {
     phone.session = toLaptop;
     laptop.feature.onSessionOpened(toPhone);
     phone.feature.onSessionOpened(toLaptop);
+    laptop.announceSessions();
+    phone.announceSessions();
   }
 
   /// Breaks the link without a goodbye, like Wi-Fi going away.
@@ -82,6 +84,9 @@ class LinkedDevices {
     if (toLaptop != null) {
       phone.feature.onSessionClosed(toLaptop);
     }
+
+    laptop.announceSessions();
+    phone.announceSessions();
   }
 }
 
@@ -96,6 +101,7 @@ class LinkedDevice implements FeatureHost {
   final SettingsStore settings;
 
   LinkedSession? session;
+  final StreamController<List<Session>> _sessionChanges = .broadcast();
 
   @override
   DeviceInfo get localDevice => DeviceInfo(
@@ -109,7 +115,10 @@ class LinkedDevice implements FeatureHost {
   List<Session> get sessions => [?session];
 
   @override
-  Stream<List<Session>> get sessionChanges => const Stream.empty();
+  Stream<List<Session>> get sessionChanges => _sessionChanges.stream;
+
+  /// Tells listeners the link opened or broke, as the engine does.
+  void announceSessions() => _sessionChanges.add(sessions);
 
   @override
   Session? sessionFor(String deviceId) => switch (session) {

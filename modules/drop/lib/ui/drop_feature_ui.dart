@@ -18,16 +18,37 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
-/// The app side of Drop: the home card, "Send files…" on each device,
-/// files dropped on the window or menubar icon, shares from other apps,
-/// LocalSend devices as extra targets, Quick Share from phones, notices,
-/// and settings.
+/// The app side of Drop: transfers in Activity, "Send files" on each device,
+/// files dropped on the window or menubar icon, shares from other apps and
+/// from the file manager, LocalSend devices as extra targets, Quick Share
+/// from phones, notices, and settings.
 class DropFeatureUi extends FeatureUi {
-  DropFeatureUi({FerretDrop? plugin, DropFeature? feature})
-    : this._(plugin ?? FerretDrop(), feature);
+  /// [filesToSend] are the files this run was started with (`ferret send`),
+  /// sent once the app is up. [handoff] takes the files of later runs. A
+  /// share that arrives within
+  /// [connectGrace] of starting waits that long for a device to connect,
+  /// since the share may be what started Ferret.
+  DropFeatureUi({
+    FerretDrop? plugin,
+    DropFeature? feature,
+    List<String> filesToSend = const [],
+    SendHandoff? handoff,
+    Duration connectGrace = const Duration(seconds: 10),
+  }) : this._(
+         plugin ?? FerretDrop(),
+         feature,
+         filesToSend,
+         handoff,
+         connectGrace,
+       );
 
-  DropFeatureUi._(this._plugin, DropFeature? feature)
-    : feature =
+  DropFeatureUi._(
+    this._plugin,
+    DropFeature? feature,
+    this._filesToSend,
+    this._handoff,
+    this._connectGrace,
+  ) : feature =
           feature ??
           DropFeature(
             store: (settings) =>
@@ -39,9 +60,15 @@ class DropFeatureUi extends FeatureUi {
   final DropFeature feature;
 
   final FerretDrop _plugin;
+  final List<String> _filesToSend;
+  final Duration _connectGrace;
+  final Stopwatch _sinceStart = Stopwatch();
+  final SendHandoff? _handoff;
   DropViewModel? _viewModel;
   DropNotices? _notices;
   StreamSubscription<SharedItems>? _shares;
+  StreamSubscription<List<String>>? _handedOver;
+  String? _publishedTargets;
   StreamSubscription<Transfer>? _offers;
   final Set<String> _revealed = {};
 
@@ -117,6 +144,53 @@ class DropFeatureUi extends FeatureUi {
     _offers = feature.updates.listen(
       (transfer) => _revealQuickShareOffer(context, transfer),
     );
+    _sinceStart.start();
+    viewModel.addListener(_publishShareTargets);
+    _publishShareTargets();
+    await _takeSendCommands(context);
+  }
+
+  /// `ferret send <file>…` from a file manager: this run's files now, and
+  /// those of later runs as they hand them over.
+  Future<void> _takeSendCommands(FeatureContext context) async {
+    if (_handoff case final handoff?) {
+      _handedOver = handoff.requests.listen(
+        (paths) => unawaited(_shareTo(context, paths: paths)),
+      );
+      await handoff.listen();
+    }
+
+    if (_filesToSend.isNotEmpty) {
+      unawaited(_shareTo(context, paths: _filesToSend));
+    }
+  }
+
+  /// Keeps the system's share sheet in step with the connected devices,
+  /// where it lists them (Finder's Share menu).
+  void _publishShareTargets() {
+    final targets = [
+      for (final target in _dropViewModel.targets)
+        ShareTarget(
+          deviceId: target.deviceId,
+          name: target.name,
+          kind: switch (target.formFactor) {
+            .FORM_FACTOR_PHONE => 'phone',
+            .FORM_FACTOR_TABLET => 'tablet',
+            .FORM_FACTOR_DESKTOP || .FORM_FACTOR_SERVER => 'desktop',
+            _ => 'laptop',
+          },
+        ),
+    ];
+    final signature = [
+      for (final target in targets)
+        '${target.deviceId}\n${target.name}\n${target.kind}',
+    ].join('\n\n');
+    if (signature == _publishedTargets) {
+      return;
+    }
+
+    _publishedTargets = signature;
+    unawaited(_plugin.setShareTargets(targets));
   }
 
   /// Someone is standing at a phone, waiting, and the PIN to compare is
@@ -133,14 +207,43 @@ class DropFeatureUi extends FeatureUi {
     unawaited(context.reveal());
   }
 
+  /// Only while something waits for the person: an offer to answer, a PIN
+  /// to enter, or phones without Ferret being let in. Transfers themselves
+  /// are lines in Activity.
+  @override
+  bool hasHomeCard(FeatureContext feature) =>
+      _dropViewModel.needingAnswer.isNotEmpty || _dropViewModel.isOpenToOthers;
+
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: _dropViewModel,
         child: DropHomeFrame(
+          needsYouOnly: true,
           onSendFiles: () => unawaited(pickAndSend(feature)),
         ),
       );
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
+      dropActivity(context.dropL10n, _dropViewModel);
+
+  /// Letting phones without Ferret send here is one tap away, without a
+  /// card that stays.
+  @override
+  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
+    if (!_dropViewModel.canOpenToOthers) {
+      return null;
+    }
+
+    final l10n = context.dropL10n;
+    return FeatureOffer(
+      title: l10n.otherApps,
+      description: l10n.offerOtherPhonesBody,
+      actionLabel: l10n.offerOtherPhonesAction,
+      onAction: () => unawaited(_dropViewModel.openToOthers()),
+    );
+  }
 
   @override
   SettingsGroup get settingsGroup => .files;
@@ -207,44 +310,16 @@ class DropFeatureUi extends FeatureUi {
     FeatureContext feature,
     DeviceStatus device,
   ) {
-  /// Only while something waits for the person: an offer to answer, a PIN
-  /// to enter, or phones without Ferret being let in. Transfers themselves
-  /// are lines in Activity.
-  @override
-  bool hasHomeCard(FeatureContext feature) =>
-      _dropViewModel.needingAnswer.isNotEmpty || _dropViewModel.isOpenToOthers;
-
     final session = device.session;
     if (session == null || !session.supports(DropFeature.featureId)) {
       return const [];
     }
 
-          needsYouOnly: true,
     return [
       FeatureAction(
         label: context.dropL10n.sendFiles,
         icon: LucideIcons.upload,
-  @override
-  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
-      dropActivity(context.dropL10n, _dropViewModel);
-
-  /// Letting phones without Ferret send here is one tap away, without a
-  /// card that stays.
-  @override
-  FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
-    if (!_dropViewModel.canOpenToOthers) {
-      return null;
-    }
-
-    final l10n = context.dropL10n;
-    return FeatureOffer(
-      title: l10n.otherApps,
-      description: l10n.offerOtherPhonesBody,
-      actionLabel: l10n.offerOtherPhonesAction,
-      onAction: () => unawaited(_dropViewModel.openToOthers()),
-    );
-  }
-
+        homeOrder: 10,
         onPressed: () => unawaited(
           _dropViewModel.pickAndSend(device.device.id),
         ),
@@ -319,7 +394,6 @@ class DropFeatureUi extends FeatureUi {
 
     final total = transfers.fold(
       0.0,
-        homeOrder: 10,
       (sum, transfer) => sum + transfer.progress,
     );
     return FilesSending(total / transfers.length);
@@ -343,19 +417,98 @@ class DropFeatureUi extends FeatureUi {
   Future<void> dispose() async {
     await _shares?.cancel();
     await _offers?.cancel();
+    await _handedOver?.cancel();
+    await _handoff?.dispose();
+    _viewModel?.removeListener(_publishShareTargets);
     await _notices?.dispose();
     _viewModel?.dispose();
   }
 
   Future<void> _onShared(FeatureContext context, SharedItems items) async {
+    final pickedInSheet =
+        items.deviceId != null || (items.everyDevice ?? false);
     if (items.paths.isNotEmpty) {
-      await _send(context, paths: items.paths, temporary: true);
+      await _shareTo(
+        context,
+        paths: items.paths,
+        deviceId: items.deviceId,
+        pickedInSheet: pickedInSheet,
+        temporary: !(items.keepFiles ?? false),
+      );
       return;
     }
 
     if (items.text case final text? when text.isNotEmpty) {
-      await _send(context, text: text);
+      await _shareTo(
+        context,
+        text: text,
+        deviceId: items.deviceId,
+        pickedInSheet: pickedInSheet,
+      );
     }
+  }
+
+  /// Sends what a share sheet or a file manager handed over. When the
+  /// device was [pickedInSheet] it goes there ([deviceId]) or to every
+  /// connected device; otherwise to the one connected device, or Ferret
+  /// comes forward and asks which.
+  Future<void> _shareTo(
+    FeatureContext context, {
+    List<String> paths = const [],
+    String? text,
+    String? deviceId,
+    bool pickedInSheet = false,
+    bool temporary = false,
+  }) async {
+    await _untilConnected(deviceId);
+    if (!pickedInSheet) {
+      await _send(context, paths: paths, text: text, temporary: temporary);
+      return;
+    }
+
+    final targets = _droppedTargets(deviceId);
+    if (targets.isEmpty) {
+      final l10n = _l10n();
+      await _notices?.explain(l10n.noticeNoDevice, l10n.noticeNoDeviceBody);
+      return;
+    }
+
+    // Copies sent to several devices can't be deleted when the first one
+    // finishes; the platform clears those out later.
+    final deleteAfter = temporary && targets.length == 1;
+    for (final target in targets) {
+      await _sendTo(
+        context,
+        target,
+        paths: paths,
+        text: text,
+        temporary: deleteAfter,
+      );
+    }
+  }
+
+  /// Right after starting, devices are still connecting: waits for
+  /// [deviceId] (or any device) until [_connectGrace] after the start.
+  Future<void> _untilConnected(String? deviceId) async {
+    final viewModel = _dropViewModel;
+    bool isConnected() => viewModel.targets.any(
+      (target) => deviceId == null || target.deviceId == deviceId,
+    );
+    final left = _connectGrace - _sinceStart.elapsed;
+    if (isConnected() || left <= Duration.zero) {
+      return;
+    }
+
+    final connected = Completer<void>();
+    void check() {
+      if (isConnected() && !connected.isCompleted) {
+        connected.complete();
+      }
+    }
+
+    viewModel.addListener(check);
+    await connected.future.timeout(left, onTimeout: () {});
+    viewModel.removeListener(check);
   }
 
   /// The home card's Send button: asks which device, then which files.
@@ -457,6 +610,10 @@ class DropFeatureUi extends FeatureUi {
     final skipPicker = !asked || !offerLocalSend;
     if (targets case [final only] when skipPicker) {
       return only;
+    }
+
+    if (!asked) {
+      await context.reveal();
     }
 
     final navigatorContext = context.navigatorKey.currentContext;
