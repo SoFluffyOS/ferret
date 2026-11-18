@@ -96,6 +96,22 @@ abstract class MenubarHostApi {
   /// section it shows.
   void setWindowTitle(String title);
 
+  /// Opens a window in the shape of a picture [width] by [height] pixels,
+  /// such as a phone's screen, and returns the id of its Flutter view. It
+  /// keeps that shape while it is resized and remembers its size and place
+  /// for each [id]. Asked again for the [id] that is open, it comes to the
+  /// front; another [id] takes its place.
+  int openPictureWindow(String id, String title, double width, double height);
+
+  /// The picture is [width] by [height] pixels now, such as after the
+  /// phone was turned: the window turns with it and keeps its long side.
+  void setPictureWindowSize(double width, double height);
+
+  void focusPictureWindow();
+
+  /// Closes the picture window and removes its Flutter view.
+  void closePictureWindow();
+
   /// Lets people drag the popover off into its own window.
   void setDetachable(bool detachable);
 
@@ -137,4 +153,7 @@ abstract class MenubarFlutterApi {
 
   /// The desktop window closed and its Flutter view [viewId] is gone.
   void onWindowClosed(int viewId);
+
+  /// The picture window closed and its Flutter view [viewId] is gone.
+  void onPictureWindowClosed(int viewId);
 }

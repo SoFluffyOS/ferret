@@ -505,6 +505,92 @@ class MenubarHostApi {
     );
   }
 
+  /// Opens a window in the shape of a picture [width] by [height] pixels,
+  /// such as a phone's screen, and returns the id of its Flutter view. It
+  /// keeps that shape while it is resized and remembers its size and place
+  /// for each [id]. Asked again for the [id] that is open, it comes to the
+  /// front; another [id] takes its place.
+  Future<int> openPictureWindow(
+    String id,
+    String title,
+    double width,
+    double height,
+  ) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id, title, width, height],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as int;
+  }
+
+  /// The picture is [width] by [height] pixels now, such as after the
+  /// phone was turned: the window turns with it and keeps its long side.
+  Future<void> setPictureWindowSize(double width, double height) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowSize$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[width, height],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
+  Future<void> focusPictureWindow() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.focusPictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
+  /// Closes the picture window and removes its Flutter view.
+  Future<void> closePictureWindow() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closePictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
   /// Lets people drag the popover off into its own window.
   Future<void> setDetachable(bool detachable) async {
     final pigeonVar_channelName =
@@ -596,6 +682,9 @@ abstract class MenubarFlutterApi {
 
   /// The desktop window closed and its Flutter view [viewId] is gone.
   void onWindowClosed(int viewId);
+
+  /// The picture window closed and its Flutter view [viewId] is gone.
+  void onPictureWindowClosed(int viewId);
 
   static void setUp(
     MenubarFlutterApi? api, {
@@ -854,6 +943,31 @@ abstract class MenubarFlutterApi {
           final int arg_viewId = args[0]! as int;
           try {
             api.onWindowClosed(arg_viewId);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPictureWindowClosed$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_viewId = args[0]! as int;
+          try {
+            api.onPictureWindowClosed(arg_viewId);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

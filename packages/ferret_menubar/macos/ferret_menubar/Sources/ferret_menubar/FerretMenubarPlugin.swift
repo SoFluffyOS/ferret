@@ -10,6 +10,7 @@ import FlutterMacOS
 public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static var controller: MenubarController?
     private static var windowController: AppWindowController?
+    private static var pictureController: PictureWindowController?
     private static var popoverViewId: Int64 = 0
     private static let dock = DockPresence()
     private static var flutterApi: MenubarFlutterApi?
@@ -66,6 +67,13 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         windowController.onDragExited = dragExited
         windowController.onDragPerformed = dragPerformed
         self.windowController = windowController
+
+        let pictureController = PictureWindowController(
+            engine: flutterViewController.engine, dock: dock)
+        pictureController.onClosed = { viewId in
+            Task { @MainActor in try? await flutterApi?.onPictureWindowClosed(viewId: viewId) }
+        }
+        self.pictureController = pictureController
     }
 
     /// Opens the desktop window, or brings it to the front: for the Dock
@@ -152,6 +160,33 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func setWindowTitle(title: String) throws {
         Self.windowController?.setTitle(title)
+    }
+
+    func openPictureWindow(id: String, title: String, width: Double, height: Double) throws
+        -> Int64
+    {
+        let picture = NSSize(width: width, height: height)
+        guard let viewId = Self.pictureController?.open(id: id, title: title, picture: picture)
+        else {
+            throw PigeonError(
+                code: "window-unsupported",
+                message: "This Flutter can't draw one more view.",
+                details: nil)
+        }
+
+        return viewId
+    }
+
+    func setPictureWindowSize(width: Double, height: Double) throws {
+        Self.pictureController?.setPicture(NSSize(width: width, height: height))
+    }
+
+    func focusPictureWindow() throws {
+        Self.pictureController?.focus()
+    }
+
+    func closePictureWindow() throws {
+        Self.pictureController?.close()
     }
 
     func setDropAllowed(viewId: Int64, allowed: Bool) throws {

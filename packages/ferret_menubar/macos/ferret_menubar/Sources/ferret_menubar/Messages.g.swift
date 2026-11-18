@@ -351,6 +351,18 @@ protocol MenubarHostApi {
   /// What the desktop window's title bar says, such as the device and the
   /// section it shows.
   func setWindowTitle(title: String) throws
+  /// Opens a window in the shape of a picture [width] by [height] pixels,
+  /// such as a phone's screen, and returns the id of its Flutter view. It
+  /// keeps that shape while it is resized and remembers its size and place
+  /// for each [id]. Asked again for the [id] that is open, it comes to the
+  /// front; another [id] takes its place.
+  func openPictureWindow(id: String, title: String, width: Double, height: Double) throws -> Int64
+  /// The picture is [width] by [height] pixels now, such as after the
+  /// phone was turned: the window turns with it and keeps its long side.
+  func setPictureWindowSize(width: Double, height: Double) throws
+  func focusPictureWindow() throws
+  /// Closes the picture window and removes its Flutter view.
+  func closePictureWindow() throws
   /// Lets people drag the popover off into its own window.
   func setDetachable(detachable: Bool) throws
   /// Whether a drop where the pointer is now, over the view [viewId], would
@@ -548,6 +560,74 @@ class MenubarHostApiSetup {
     } else {
       setWindowTitleChannel.setMessageHandler(nil)
     }
+    /// Opens a window in the shape of a picture [width] by [height] pixels,
+    /// such as a phone's screen, and returns the id of its Flutter view. It
+    /// keeps that shape while it is resized and remembers its size and place
+    /// for each [id]. Asked again for the [id] that is open, it comes to the
+    /// front; another [id] takes its place.
+    let openPictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      openPictureWindowChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let idArg = args[0] as! String
+        let titleArg = args[1] as! String
+        let widthArg = args[2] as! Double
+        let heightArg = args[3] as! Double
+        do {
+          let result = try api.openPictureWindow(id: idArg, title: titleArg, width: widthArg, height: heightArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      openPictureWindowChannel.setMessageHandler(nil)
+    }
+    /// The picture is [width] by [height] pixels now, such as after the
+    /// phone was turned: the window turns with it and keeps its long side.
+    let setPictureWindowSizeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowSize\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setPictureWindowSizeChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let widthArg = args[0] as! Double
+        let heightArg = args[1] as! Double
+        do {
+          try api.setPictureWindowSize(width: widthArg, height: heightArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setPictureWindowSizeChannel.setMessageHandler(nil)
+    }
+    let focusPictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.focusPictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      focusPictureWindowChannel.setMessageHandler { _, reply in
+        do {
+          try api.focusPictureWindow()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      focusPictureWindowChannel.setMessageHandler(nil)
+    }
+    /// Closes the picture window and removes its Flutter view.
+    let closePictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closePictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      closePictureWindowChannel.setMessageHandler { _, reply in
+        do {
+          try api.closePictureWindow()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      closePictureWindowChannel.setMessageHandler(nil)
+    }
     /// Lets people drag the popover off into its own window.
     let setDetachableChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
@@ -620,6 +700,8 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onWindowFocusChanged(focused focusedArg: Bool) async throws
   /// The desktop window closed and its Flutter view [viewId] is gone.
   @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws
+  /// The picture window closed and its Flutter view [viewId] is gone.
+  @MainActor func onPictureWindowClosed(viewId viewIdArg: Int64) async throws
 }
 class MenubarFlutterApi: MenubarFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -823,6 +905,27 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
   @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowClosed\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([viewIdArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The picture window closed and its Flutter view [viewId] is gone.
+  @MainActor func onPictureWindowClosed(viewId viewIdArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPictureWindowClosed\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([viewIdArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {

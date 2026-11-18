@@ -21,6 +21,7 @@ class FerretMenubar implements MenubarFlutterApi {
   final StreamController<List<String>> _drops = .broadcast();
   final StreamController<PopoverDrag> _drags = .broadcast();
   final StreamController<MenubarWindowEvent> _windowEvents = .broadcast();
+  final StreamController<int> _pictureWindowClosed = .broadcast();
 
   bool get isSupported => Platform.isMacOS;
 
@@ -39,6 +40,9 @@ class FerretMenubar implements MenubarFlutterApi {
 
   /// The desktop window opening, taking or losing the keyboard, and closing.
   Stream<MenubarWindowEvent> get windowEvents => _windowEvents.stream;
+
+  /// The picture window closing: the id of the Flutter view that is gone.
+  Stream<int> get pictureWindowClosed => _pictureWindowClosed.stream;
 
   /// Draws the icon for [state]. [progress], 0 to 1, fills the ring of
   /// [MenubarIconState.working]. A file drag over the icon shows
@@ -105,6 +109,34 @@ class FerretMenubar implements MenubarFlutterApi {
   Future<void> setWindowTitle(String title) =>
       _call(() => _api.setWindowTitle(title));
 
+  /// Opens a window in the shape of a picture of [size] pixels, such as a
+  /// phone's screen, next to the popover and the desktop window. It keeps
+  /// that shape while it is resized, and gets back the size and place it
+  /// had for [id]. Asked again for the [id] that is open, it comes to the
+  /// front; another [id] takes its place. Gives the id of its Flutter
+  /// view, or null where there is no such window.
+  Future<int?> openPictureWindow({
+    required String id,
+    required String title,
+    required Size size,
+  }) async {
+    if (!await isWindowSupported()) {
+      return null;
+    }
+
+    return _api.openPictureWindow(id, title, size.width, size.height);
+  }
+
+  /// The picture has [size] pixels now, such as after the phone was
+  /// turned: the window turns with it and keeps its long side.
+  Future<void> setPictureWindowSize(Size size) =>
+      _call(() => _api.setPictureWindowSize(size.width, size.height));
+
+  Future<void> focusPictureWindow() => _call(_api.focusPictureWindow);
+
+  /// Closes the picture window and removes its Flutter view.
+  Future<void> closePictureWindow() => _call(_api.closePictureWindow);
+
   Future<void> setDetachable(bool detachable) =>
       _call(() => _api.setDetachable(detachable));
 
@@ -159,4 +191,7 @@ class FerretMenubar implements MenubarFlutterApi {
   @override
   void onWindowClosed(int viewId) =>
       _windowEvents.add(MenubarWindowClosed(viewId));
+
+  @override
+  void onPictureWindowClosed(int viewId) => _pictureWindowClosed.add(viewId);
 }

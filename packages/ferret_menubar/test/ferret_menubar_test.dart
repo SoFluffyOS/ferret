@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_menubar/src/messages.g.dart';
@@ -13,6 +14,27 @@ class _RecordingApi implements MenubarHostApi {
     double progress,
     String tooltip,
   ) async => icons.add((state, progress, tooltip));
+
+  final List<(String, String, double, double)> pictureWindows = [];
+  final List<(double, double)> pictureSizes = [];
+
+  @override
+  Future<bool> isWindowSupported() async => true;
+
+  @override
+  Future<int> openPictureWindow(
+    String id,
+    String title,
+    double width,
+    double height,
+  ) async {
+    pictureWindows.add((id, title, width, height));
+    return 3;
+  }
+
+  @override
+  Future<void> setPictureWindowSize(double width, double height) async =>
+      pictureSizes.add((width, height));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -36,6 +58,35 @@ void main() {
         (MenubarIconState.working, 0.4, 'Ferret'),
         (MenubarIconState.working, 1.0, 'Ferret'),
       ]);
+    },
+    skip: !Platform.isMacOS,
+  );
+
+  test(
+    'a picture window opens in the picture\'s shape, turns with it, and '
+    'says when it closed',
+    () async {
+      final api = _RecordingApi();
+      final menubar = FerretMenubar(api: api);
+      final closed = <int>[];
+      final subscription = menubar.pictureWindowClosed.listen(closed.add);
+
+      final viewId = await menubar.openPictureWindow(
+        id: 'pixel',
+        title: 'Pixel 9 — Screen',
+        size: const Size(1080, 2400),
+      );
+      await menubar.setPictureWindowSize(const Size(2400, 1080));
+      menubar.onPictureWindowClosed(3);
+      await pumpEventQueue();
+
+      expect(viewId, 3);
+      expect(api.pictureWindows, [
+        ('pixel', 'Pixel 9 — Screen', 1080.0, 2400.0),
+      ]);
+      expect(api.pictureSizes, [(2400.0, 1080.0)]);
+      expect(closed, [3]);
+      await subscription.cancel();
     },
     skip: !Platform.isMacOS,
   );
