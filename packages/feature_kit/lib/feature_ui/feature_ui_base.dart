@@ -5,6 +5,7 @@ import 'package:feature_kit/feature_ui/feature_busy.dart';
 import 'package:feature_kit/feature_ui/feature_context.dart';
 import 'package:feature_kit/feature_ui/feature_health.dart';
 import 'package:feature_kit/feature_ui/feature_offer.dart';
+import 'package:feature_kit/feature_ui/feature_section.dart';
 import 'package:feature_kit/feature_ui/feature_settings.dart';
 import 'package:feature_kit/feature_ui/files_send_progress.dart';
 import 'package:feature_kit/feature_ui/settings_group.dart';
@@ -77,6 +78,16 @@ abstract class FeatureUi {
   /// ones with a [FeatureAction.homeOrder] sit on the device's row on Home;
   /// all of them are on the device's page.
   List<FeatureAction> deviceActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) => const [];
+
+  /// The pages this feature has for [device], such as its texts, or empty.
+  /// The device list shows them under the device in a window; on a phone
+  /// they are pushed. Leave out a device the feature can never work with.
+  /// Open one with [FeatureContext.openSection], never by pushing its page.
+  List<FeatureSection> deviceSections(
     BuildContext context,
     FeatureContext feature,
     DeviceStatus device,
