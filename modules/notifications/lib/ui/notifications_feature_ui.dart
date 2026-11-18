@@ -258,8 +258,13 @@ class NotificationsFeatureUi extends FeatureUi {
     ];
   }
 
+  /// The phones that offered their notifications since Ferret started, so
+  /// the section stays while one of them is offline.
+  final Set<String> _offeredBy = {};
+
   /// On a computer, what a phone's apps said: for a phone that offers its
-  /// notifications, and for one that still has some waiting here.
+  /// notifications or did before it went offline, and for one that still
+  /// has some waiting here.
   @override
   List<FeatureSection> deviceSections(
     BuildContext context,
@@ -273,10 +278,19 @@ class NotificationsFeatureUi extends FeatureUi {
     final flags =
         device.session?.remoteFeature(featureId)?.flags ?? const <String>[];
     final inbox = _inboxFor(feature);
-    final waiting = inbox.byDevice[device.device.id]?.length ?? 0;
-    if (!flags.contains(NotificationsFeature.sendFlag) && waiting == 0) {
+    final deviceId = device.device.id;
+    final waiting = inbox.byDevice[deviceId]?.length ?? 0;
+    if (flags.contains(NotificationsFeature.sendFlag)) {
+      _offeredBy.add(deviceId);
+    }
+
+    if (!_offeredBy.contains(deviceId) && waiting == 0) {
       return const [];
     }
+
+    final isOffOnPhone =
+        !(this.feature.senderSettings[deviceId]?.enabled ?? true);
+    final isHiddenHere = !this.feature.receiverPreferences.showsFrom(deviceId);
 
     return [
       FeatureSection(
@@ -285,6 +299,7 @@ class NotificationsFeatureUi extends FeatureUi {
         icon: icon,
         order: 30,
         badge: waiting,
+        isSetUp: !isOffOnPhone && !isHiddenHere,
         builder: (_) =>
             InboxPage(inbox: inbox, phones: () => _phonesViewModel(feature)),
       ),

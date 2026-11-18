@@ -13,6 +13,7 @@ import 'package:ferret_calls/ferret_calls.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:protocol/calls.dart' show CallLogEntry;
 import 'package:protocol/protocol.dart' as proto;
 import 'package:provider/provider.dart';
 
@@ -209,7 +210,12 @@ class CallsFeatureUi extends FeatureUi {
     ];
   }
 
-  /// On a computer, the dialer and recent calls of a phone that can call.
+  /// The recent calls each phone answered with last. In memory only: a
+  /// call history is never written to this device.
+  final Map<String, List<CallLogEntry>> _recentCalls = {};
+
+  /// On a computer, the dialer and recent calls of a phone that can call,
+  /// and of one that went offline after it showed them.
   @override
   List<FeatureSection> deviceSections(
     BuildContext context,
@@ -217,8 +223,12 @@ class CallsFeatureUi extends FeatureUi {
     DeviceStatus device,
   ) {
     final session = device.session;
+    final deviceId = device.device.id;
     final flags = session?.remoteFeature(featureId)?.flags ?? const <String>[];
-    if (this.feature.isPhone || !flags.contains(CallsFeature.phoneFlag)) {
+    final canCall =
+        flags.contains(CallsFeature.phoneFlag) ||
+        _recentCalls.containsKey(deviceId);
+    if (this.feature.isPhone || !canCall) {
       return const [];
     }
 
@@ -228,10 +238,12 @@ class CallsFeatureUi extends FeatureUi {
         title: title(context),
         icon: icon,
         order: 20,
+        isSetUp: this.feature.linkOf(deviceId)?.status?.enabled ?? true,
         builder: (_) => DialerPage(
           control: this.feature,
-          deviceId: device.device.id,
+          deviceId: deviceId,
           deviceName: device.device.name,
+          lastLoaded: _recentCalls,
         ),
       ),
     ];

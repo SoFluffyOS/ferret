@@ -11,9 +11,16 @@ class DialerViewModel extends ChangeNotifier {
     required CallsControl control,
     required this.deviceId,
     required this.deviceName,
-  }) : _control = control {
+    Map<String, List<CallLogEntry>>? lastLoaded,
+  }) : _control = control,
+       _lastLoaded = lastLoaded {
+    _entries = lastLoaded?[deviceId] ?? const [];
     unawaited(loadRecent());
   }
+
+  /// The recent calls each phone answered with last, kept in memory only,
+  /// so they stay readable while the phone is offline.
+  final Map<String, List<CallLogEntry>>? _lastLoaded;
 
   final CallsControl _control;
   final String deviceId;
@@ -49,8 +56,16 @@ class DialerViewModel extends ChangeNotifier {
     _notify();
 
     final result = await _control.fetchCallLog(deviceId);
-    _entries = result.entries;
-    _logProblem = result.problem;
+    final keepsLast = result.problem == .unreachable && _entries.isNotEmpty;
+    if (!keepsLast) {
+      _entries = result.entries;
+      _logProblem = result.problem;
+    }
+
+    if (result.problem == null) {
+      _lastLoaded?[deviceId] = result.entries;
+    }
+
     _loading = false;
     _notify();
   }

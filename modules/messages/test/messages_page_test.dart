@@ -191,14 +191,14 @@ void main() {
     await finish(tester);
   });
 
-  testWidgets('offline shows saved texts and says how to reply', (
+  testWidgets('offline shows saved texts and says when replying works', (
     tester,
   ) async {
     await pumpPage(tester, threadId: 1);
     await tester.runAsync(devices.disconnect);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Pixel is offline.'), findsOneWidget);
+    expect(find.textContaining('Pixel is offline.'), findsNothing);
     expect(find.text('Hi there'), findsOneWidget);
     expect(find.text('Reply once Pixel is back.'), findsOneWidget);
     await finish(tester);

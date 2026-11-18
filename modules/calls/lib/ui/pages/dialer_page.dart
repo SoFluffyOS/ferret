@@ -4,6 +4,7 @@ import 'package:calls/ui/frames/frames.dart';
 import 'package:calls/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:protocol/calls.dart';
 import 'package:provider/provider.dart';
 
 /// "Call…" for one phone: the dialer and the phone's recent calls.
@@ -13,11 +14,15 @@ class DialerPage extends StatelessWidget {
     required this.control,
     required this.deviceId,
     required this.deviceName,
+    this.lastLoaded,
   });
 
   final CallsControl control;
   final String deviceId;
   final String deviceName;
+
+  /// See [DialerViewModel].
+  final Map<String, List<CallLogEntry>>? lastLoaded;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,7 @@ class DialerPage extends StatelessWidget {
             control: control,
             deviceId: deviceId,
             deviceName: deviceName,
+            lastLoaded: lastLoaded,
           ),
           child: const DialerFrame(),
         ),

@@ -26,7 +26,8 @@ class StatusBannerFrame extends StatelessWidget {
     final l10n = context.messagesL10n;
 
     final (String? text, StatusTone tone, bool canRetry) = switch (readiness) {
-      .offline => (l10n.statusOffline(name), StatusTone.info, false),
+      // The device's page already says it is offline, and since when.
+      .offline => (null, StatusTone.info, false),
       .checking => (l10n.statusChecking(name), StatusTone.info, false),
       .off => (l10n.statusOff(name), StatusTone.warning, true),
       .noAccess => (l10n.statusNoAccess(name), StatusTone.warning, true),

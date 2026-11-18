@@ -93,6 +93,41 @@ void main() {
       expect(viewModel.entries, hasLength(1));
     });
 
+    test('the recent calls stay readable while the phone is offline', () async {
+      final lastLoaded = <String, List<CallLogEntry>>{};
+      DialerViewModel open() => DialerViewModel(
+        control: control,
+        deviceId: 'phone',
+        deviceName: 'Pixel',
+        lastLoaded: lastLoaded,
+      );
+      control.log = CallLogResult([CallLogEntry(id: '7', name: 'Alex')]);
+      final viewModel = open();
+      await settle();
+
+      control.log = const .failed(.unreachable);
+      await viewModel.loadRecent();
+      final reopened = open();
+      await settle();
+
+      expect(viewModel.entries.single.name, 'Alex');
+      expect(viewModel.logProblem, isNull);
+      expect(reopened.entries.single.name, 'Alex');
+      expect(reopened.logProblem, isNull);
+    });
+
+    test(
+      'a phone that never answered still says it can\'t be reached',
+      () async {
+        control.log = const .failed(.unreachable);
+        final viewModel = dialer();
+        await settle();
+
+        expect(viewModel.entries, isEmpty);
+        expect(viewModel.logProblem, CallLogProblem.unreachable);
+      },
+    );
+
     test('never sends what is not a number', () async {
       final viewModel = dialer();
 

@@ -314,6 +314,7 @@ class MessagesFeatureUi extends FeatureUi {
         order: 10,
         badge: library.unreadTotal(deviceId),
         fillsPane: true,
+        isSetUp: library.phone(deviceId).readiness != .off,
         builder: (_) => MessagesPage(
           key: ValueKey((deviceId, _threadRequests.value)),
           library: library,

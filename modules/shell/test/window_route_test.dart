@@ -10,7 +10,6 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_menubar/src/messages.g.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:protocol/protocol.dart';
 import 'package:shell/shell.dart';
 
 import 'support/memory_discovery.dart';
