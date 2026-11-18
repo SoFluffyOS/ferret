@@ -220,7 +220,7 @@ void main() {
       testApp(
         ChangeNotifierProvider.value(
           value: viewModel,
-          child: const DropSettingsFrame(),
+          child: const QuickShareSettingsFrame(),
         ),
       ),
     );

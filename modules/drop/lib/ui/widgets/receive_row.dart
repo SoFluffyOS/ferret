@@ -33,7 +33,7 @@ class ReceiveRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final statusColor = switch (hasProblem) {
-      true => palette.danger,
+      true => palette.warning,
       false => palette.mutedText,
     };
 

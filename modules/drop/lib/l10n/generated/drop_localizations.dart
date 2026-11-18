@@ -796,11 +796,101 @@ abstract class DropLocalizations {
   /// **'Arrive in {folder}'**
   String healthArrive(String folder);
 
-  /// No description provided for @healthSent.
+  /// No description provided for @healthLastSent.
   ///
   /// In en, this message translates to:
-  /// **'The last transfer went through.'**
-  String get healthSent;
+  /// **'{name} got the last thing you sent'**
+  String healthLastSent(String name);
+
+  /// No description provided for @healthLastReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'The last thing {name} sent arrived'**
+  String healthLastReceived(String name);
+
+  /// No description provided for @healthDeclinedThere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} declined the last thing you sent'**
+  String healthDeclinedThere(String name);
+
+  /// No description provided for @healthDeclinedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You declined the last thing {name} sent'**
+  String healthDeclinedHere(String name);
+
+  /// No description provided for @healthCancelledThere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cancelled the last transfer'**
+  String healthCancelledThere(String name);
+
+  /// No description provided for @healthCancelledHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You cancelled the last transfer'**
+  String get healthCancelledHere;
+
+  /// No description provided for @healthNoAnswerThere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t answer the last time you sent'**
+  String healthNoAnswerThere(String name);
+
+  /// No description provided for @healthNoAnswerHere.
+  ///
+  /// In en, this message translates to:
+  /// **'The last thing {name} sent wasn\'t accepted in time'**
+  String healthNoAnswerHere(String name);
+
+  /// No description provided for @healthSendAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the files again from here.'**
+  String get healthSendAgain;
+
+  /// No description provided for @healthSendAgainThere.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: send the files again.'**
+  String healthSendAgainThere(String name);
+
+  /// No description provided for @summaryFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'To {folder}'**
+  String summaryFolder(String folder);
+
+  /// No description provided for @summaryOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get summaryOff;
+
+  /// No description provided for @summaryAlwaysReceives.
+  ///
+  /// In en, this message translates to:
+  /// **'Always receives'**
+  String get summaryAlwaysReceives;
+
+  /// No description provided for @summaryReceivingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving now'**
+  String get summaryReceivingNow;
+
+  /// No description provided for @summaryReceivesOnAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Receives when you allow it'**
+  String get summaryReceivesOnAsk;
+
+  /// No description provided for @summaryCannotReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t receive right now'**
+  String get summaryCannotReceive;
 
   /// No description provided for @sizeBytes.
   ///

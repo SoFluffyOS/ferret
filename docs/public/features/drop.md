@@ -48,6 +48,12 @@ In **Settings → Files**:
 - **Receive folder**: where files land. `~/Downloads/Ferret` on computers. On Android, a folder inside **Download**, `Ferret` by default.
 - **Accept from my devices**: on by default. Turn it off to approve each transfer with **Accept** or **Decline**.
 
+The row itself says where files go, such as **To Downloads › Ferret**.
+
+LocalSend and Quick Share have their own switches in **Settings → Other apps**. See [LocalSend](../interop/localsend.md) and [Quick Share](../interop/quick-share.md).
+
+Each device's page lists **Files** under **What works**: where files arrive, or how the last transfer with that device ended. A transfer that broke has a **Fix** button that picks it up again.
+
 ## 🧭 Limits per platform
 
 | Platform | Send | Receive into | Notes |

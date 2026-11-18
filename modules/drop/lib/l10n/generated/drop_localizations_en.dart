@@ -491,7 +491,70 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
-  String get healthSent => 'The last transfer went through.';
+  String healthLastSent(String name) {
+    return '$name got the last thing you sent';
+  }
+
+  @override
+  String healthLastReceived(String name) {
+    return 'The last thing $name sent arrived';
+  }
+
+  @override
+  String healthDeclinedThere(String name) {
+    return '$name declined the last thing you sent';
+  }
+
+  @override
+  String healthDeclinedHere(String name) {
+    return 'You declined the last thing $name sent';
+  }
+
+  @override
+  String healthCancelledThere(String name) {
+    return '$name cancelled the last transfer';
+  }
+
+  @override
+  String get healthCancelledHere => 'You cancelled the last transfer';
+
+  @override
+  String healthNoAnswerThere(String name) {
+    return '$name didn\'t answer the last time you sent';
+  }
+
+  @override
+  String healthNoAnswerHere(String name) {
+    return 'The last thing $name sent wasn\'t accepted in time';
+  }
+
+  @override
+  String get healthSendAgain => 'Send the files again from here.';
+
+  @override
+  String healthSendAgainThere(String name) {
+    return 'On $name: send the files again.';
+  }
+
+  @override
+  String summaryFolder(String folder) {
+    return 'To $folder';
+  }
+
+  @override
+  String get summaryOff => 'Off';
+
+  @override
+  String get summaryAlwaysReceives => 'Always receives';
+
+  @override
+  String get summaryReceivingNow => 'Receiving now';
+
+  @override
+  String get summaryReceivesOnAsk => 'Receives when you allow it';
+
+  @override
+  String get summaryCannotReceive => 'Can\'t receive right now';
 
   @override
   String sizeBytes(String value) {

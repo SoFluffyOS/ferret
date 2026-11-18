@@ -262,7 +262,7 @@ void main() {
       testApp(
         ChangeNotifierProvider.value(
           value: viewModel,
-          child: const DropSettingsFrame(),
+          child: const LocalSendSettingsFrame(),
         ),
       ),
     );
@@ -433,7 +433,7 @@ void main() {
 
       final health = ui.healthOf(status());
       expect(health?.state, FeatureHealthState.ok);
-      expect(health?.reason, 'The last transfer went through.');
+      expect(health?.reason, 'The last thing Pixel sent arrived');
     });
 
     testWidgets('a transfer refreshes the card and the health chip', (

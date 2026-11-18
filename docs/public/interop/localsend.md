@@ -72,11 +72,11 @@ Each file is written to a temporary file first. Ferret checks that every byte ar
 
 ### Keep it on
 
-In **Settings → Files**, turn on **Always receive from LocalSend**. Ferret then listens whenever it runs, also after a restart. Every offer still asks first.
+In **Settings → Other apps**, under **LocalSend**, turn on **Always receive from LocalSend**. Ferret then listens whenever it runs, also after a restart. Every offer still asks first.
 
 ## ⚙️ Turn it off completely
 
-In **Settings → Files**, turn off **Work with LocalSend**. The LocalSend row and the LocalSend devices disappear, and Ferret never sends or answers a LocalSend packet.
+In **Settings → Other apps**, under **LocalSend**, turn off **Work with LocalSend**. The LocalSend row and the LocalSend devices disappear, and Ferret never sends or answers a LocalSend packet.
 
 ## 🔒 Privacy
 

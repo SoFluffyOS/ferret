@@ -7,6 +7,7 @@ import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
 import 'package:drop/ui/dialogs/dialogs.dart';
+import 'package:drop/ui/drop_health.dart';
 import 'package:drop/ui/frames/frames.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:engine/engine.dart';
@@ -81,36 +82,20 @@ class DropFeatureUi extends FeatureUi {
       return null;
     }
 
-    final l10n = _l10n();
-    if (!session.supports(DropFeature.featureId)) {
-      return FeatureHealth(
-        .off,
-        reason: l10n.failureUnsupported(device.device.name),
-      );
-    }
-
     final last = _lastFinished(device.device.id);
-    if (last == null) {
-      return FeatureHealth(
-        .ok,
-        reason: switch (_dropViewModel.receiveFolderLabel) {
-          '' => l10n.healthOk,
-          final folder => l10n.healthArrive(folder),
-        },
-      );
-    }
-
-    final stoppedByPeople = switch (last.failure) {
-      TransferFailure.declined ||
-      TransferFailure.cancelledByPeer ||
-      TransferFailure.timedOut => true,
-      _ => false,
-    };
-    if (last.status == .failed && !stoppedByPeople) {
-      return FeatureHealth(.failing, reason: TransferTexts(l10n).failure(last));
-    }
-
-    return FeatureHealth(.ok, reason: l10n.healthSent);
+    return dropHealthOf(
+      _l10n(),
+      name: device.device.name,
+      supported: session.supports(DropFeature.featureId),
+      last: last,
+      folder: _dropViewModel.receiveFolderLabel,
+      onRetry: switch (last) {
+        final last? when feature.canRetry(last) => () => unawaited(
+          _dropViewModel.retry(last),
+        ),
+        _ => null,
+      },
+    );
   }
 
   @override
@@ -157,11 +142,63 @@ class DropFeatureUi extends FeatureUi {
       );
 
   @override
-  Widget? buildSettings(BuildContext context, FeatureContext feature) =>
-      ChangeNotifierProvider.value(
-        value: _dropViewModel,
-        child: const DropSettingsFrame(),
-      );
+  SettingsGroup get settingsGroup => .files;
+
+  @override
+  Widget buildSettings(BuildContext context, FeatureContext feature) =>
+      _settingsPart(const DropSettingsFrame());
+
+  /// Where files go sits under Files; LocalSend and Quick Share, each
+  /// where it can work, sit with the other apps Ferret works with. Those
+  /// count as on only while they may send here.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.dropL10n;
+    final viewModel = _dropViewModel;
+    final localSend = viewModel.localSendEnabled;
+    final receiving = viewModel.receiveState;
+
+    return [
+      FeatureSettings(
+        group: settingsGroup,
+        title: l10n.title,
+        child: buildSettings(context, feature),
+        summary: filesSummaryOf(l10n, viewModel.receiveFolderLabel),
+      ),
+      FeatureSettings(
+        group: .otherApps,
+        title: l10n.receiveTitle,
+        child: _settingsPart(const LocalSendSettingsFrame()),
+        summary: localSendSummaryOf(
+          l10n,
+          isEnabled: localSend,
+          receiveAlways: viewModel.receiveAlways,
+          state: receiving,
+        ),
+        isOn: localSend && receiving.isOn,
+        needsAttention:
+            localSend && viewModel.receiveAlways && receiving.problem != null,
+      ),
+      if (viewModel.quickShareSupported)
+        FeatureSettings(
+          group: .otherApps,
+          title: l10n.quickShareTitle,
+          child: _settingsPart(const QuickShareSettingsFrame()),
+          summary: quickShareSummaryOf(
+            l10n,
+            isEnabled: viewModel.quickShareEnabled,
+            state: viewModel.quickShareState,
+          ),
+          isOn: viewModel.quickShareEnabled && viewModel.quickShareState.isOn,
+        ),
+    ];
+  }
+
+  Widget _settingsPart(Widget frame) =>
+      ChangeNotifierProvider.value(value: _dropViewModel, child: frame);
 
   @override
   List<FeatureAction> deviceActions(

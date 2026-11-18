@@ -64,7 +64,7 @@ Ferret says **Couldn't become visible** on the card when it can't announce itsel
 
 ## ⚙️ Turn it off completely
 
-In **Settings → Files**, turn off **Work with Quick Share**. The row disappears from the Files card and Ferret never sends or answers a Quick Share packet.
+In **Settings → Other apps**, under **Quick Share**, turn off **Work with Quick Share**. The row disappears from the Files card and Ferret never sends or answers a Quick Share packet.
 
 ## 🔒 Privacy
 
@@ -104,7 +104,7 @@ Two ways that do work:
 
 - **macOS.** Allow **Local Network** access for Ferret when macOS asks. Without it the phone never sees the computer.
 - **Windows and Linux.** A firewall may ask to allow Ferret, or block it silently. Allow it on **private** networks.
-- **Android.** A phone already has Quick Share, so this is off there. You can turn it on in **Settings → Files**, but treat it as an experiment: Android may keep Ferret from hearing the phones that look for it.
+- **Android.** A phone already has Quick Share, so this is off there. You can turn it on in **Settings → Other apps**, but treat it as an experiment: Android may keep Ferret from hearing the phones that look for it.
 - **iPhone and iPad.** Not available. iOS doesn't let apps announce themselves this way.
 
 Quick Share is Google's protocol and isn't documented. Ferret's side is written from public descriptions of it, so an Android update can break it. If your phone stops seeing Ferret, tell us which phone and which Android version.
