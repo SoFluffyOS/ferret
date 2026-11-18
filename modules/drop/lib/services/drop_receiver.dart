@@ -1,0 +1,685 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:core/core.dart';
+import 'package:drop/models/models.dart';
+import 'package:drop/services/failure_codes.dart';
+import 'package:drop/services/file_hasher.dart';
+import 'package:drop/services/file_names.dart';
+import 'package:drop/services/incoming_job.dart';
+import 'package:drop/services/progress_throttle.dart';
+import 'package:drop/services/receive_store.dart';
+import 'package:drop/services/transfer_registry.dart';
+import 'package:engine/engine.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:protocol/drop.dart';
+
+/// Receives files and text over Ferret sessions: answers offers, writes
+/// chunks in order to part files, verifies each file's SHA-256 before
+/// saving it, and asks to resume after a dropped session.
+class DropReceiver {
+  DropReceiver({
+    required this.featureId,
+    required this.registry,
+    required this.store,
+    required this.sessionFor,
+    required this.deviceName,
+    required this.autoAccept,
+    this.answerTimeout = const Duration(seconds: 100),
+  });
+
+  final String featureId;
+  final TransferRegistry registry;
+  final ReceiveStore store;
+  final Session? Function(String deviceId) sessionFor;
+  final String Function(String deviceId) deviceName;
+
+  /// Whether paired devices may send without asking.
+  final bool Function() autoAccept;
+
+  /// How long an offer waits for someone here to accept it. Shorter than the
+  /// sender's offer timeout so it hears the answer.
+  final Duration answerTimeout;
+
+  static final _validId = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
+  static const _maxFiles = 10000;
+
+  final Map<String, IncomingJob> _jobs = {};
+  final Map<String, Completer<bool>> _answers = {};
+  final Map<String, ProgressThrottle> _throttles = {};
+
+  /// Whether a job for [id] is kept, so Retry can resume it.
+  bool ownsJob(String id) => _jobs.containsKey(id);
+
+  Future<TransferAnswer> onOffer(Session session, TransferOffer offer) async {
+    final id = offer.transferId;
+    final deviceId = session.remoteDeviceId;
+    if (!_isValidOffer(offer)) {
+      return _decline(id, .DECLINE_REASON_INVALID);
+    }
+
+    if (_jobs[id] case final existing?) {
+      if (existing.deviceId != deviceId) {
+        return _decline(id, .DECLINE_REASON_INVALID);
+      }
+
+      await existing.idle;
+      await existing.syncWithDisk();
+      return _resumeAnswer(existing);
+    }
+
+    if (registry[id] case final known?) {
+      if (known.deviceId != deviceId || known.isOutgoing) {
+        return _decline(id, .DECLINE_REASON_INVALID);
+      }
+
+      return TransferAnswer(
+        transferId: id,
+        accepted: true,
+        fileIndex: known.files.length,
+      );
+    }
+
+    final transfer = Transfer(
+      id: id,
+      direction: .incoming,
+      deviceId: deviceId,
+      deviceName: deviceName(deviceId),
+      files: [
+        for (final file in offer.files)
+          TransferFile(
+            name: FileNames.safe(file.name),
+            size: file.size.toInt(),
+            mime: file.mime,
+          ),
+      ],
+      text: switch (offer.text.isEmpty) {
+        true => null,
+        false => offer.text,
+      },
+      status: .waiting,
+      startedAt: DateTime.now(),
+    );
+
+    if (!autoAccept()) {
+      final accepted = await _ask(transfer);
+      if (!accepted.accepted) {
+        return accepted;
+      }
+    }
+
+    if (offer.files.isEmpty) {
+      registry.put(transfer.copyWith(status: .done, needsAnswer: false));
+      return TransferAnswer(transferId: id, accepted: true);
+    }
+
+    final Directory parts;
+    try {
+      parts = await store.partsDirectory();
+    } on Object catch (error) {
+      printWarning(
+        'Drop could not prepare the receive folder: ${error.runtimeType}',
+      );
+      registry.put(
+        transfer.copyWith(
+          status: .failed,
+          failure: .storage,
+          needsAnswer: false,
+        ),
+      );
+      return _decline(id, .DECLINE_REASON_STORAGE);
+    }
+
+    final job = IncomingJob(
+      id: id,
+      deviceId: deviceId,
+      files: offer.files,
+      names: [for (final file in transfer.files) file.name],
+      parts: parts,
+    );
+    await job.discard();
+    _jobs[id] = job;
+    registry.put(
+      transfer.copyWith(status: .transferring, needsAnswer: false),
+    );
+    return TransferAnswer(transferId: id, accepted: true);
+  }
+
+  /// Writes [chunk] in order. Returns the acknowledgement for chunks sent
+  /// as requests, or null when the transfer isn't accepting chunks.
+  Future<ChunkReceived?> onChunk(Session session, Chunk chunk) {
+    final job = _activeJob(session, chunk.transferId);
+    if (job == null) {
+      return Future.value();
+    }
+
+    return job.enqueue(() => _write(session, job, chunk));
+  }
+
+  Future<FileVerified> onFileComplete(
+    Session session,
+    FileComplete complete,
+  ) async {
+    final job = _activeJob(session, complete.transferId);
+    if (job == null) {
+      return FileVerified(
+        transferId: complete.transferId,
+        fileIndex: complete.fileIndex,
+        reason: .FAILURE_REASON_UNKNOWN_TRANSFER,
+      );
+    }
+
+    return job.enqueue(() => _verify(job, complete));
+  }
+
+  Future<void> onTransferComplete(
+    Session session,
+    TransferComplete complete,
+  ) async {
+    final job = _activeJob(session, complete.transferId);
+    if (job == null) {
+      return;
+    }
+
+    await job.idle;
+    if (job.isComplete) {
+      _finish(job);
+    }
+  }
+
+  /// The sender stopped the transfer.
+  Future<void> onCancel(Session session, Cancel cancel) async {
+    final id = cancel.transferId;
+    final fromSender = registry[id]?.deviceId == session.remoteDeviceId;
+    if (!fromSender) {
+      return;
+    }
+
+    if (_answers.remove(id) case final pending?) {
+      pending.complete(false);
+      registry.update(
+        id,
+        (transfer) => transfer.copyWith(
+          status: .cancelled,
+          failure: .cancelledByPeer,
+          needsAnswer: false,
+        ),
+      );
+      return;
+    }
+
+    final job = _jobs[id];
+    if (job == null || job.deviceId != session.remoteDeviceId) {
+      return;
+    }
+
+    final failure = FailureCodes.fromWire(cancel.reason);
+    final keepParts = switch (failure) {
+      TransferFailure.storage ||
+      TransferFailure.checksum ||
+      TransferFailure.protocol => true,
+      _ => false,
+    };
+    if (keepParts) {
+      _set(
+        job.id,
+        (transfer) => transfer.copyWith(
+          status: .failed,
+          failure: failure,
+          bytesPerSecond: 0,
+        ),
+      );
+      return;
+    }
+
+    await _drop(job);
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: switch (failure) {
+          TransferFailure.cancelledByPeer => TransferStatus.cancelled,
+          _ => TransferStatus.failed,
+        },
+        failure: failure,
+        bytesPerSecond: 0,
+      ),
+    );
+  }
+
+  /// Answers an offer that waits for someone on this device.
+  void answer(String id, {required bool accept}) =>
+      _answers.remove(id)?.complete(accept);
+
+  /// Cancels from this side and tells the sender.
+  Future<void> cancel(String id) async {
+    if (_answers.containsKey(id)) {
+      answer(id, accept: false);
+      return;
+    }
+
+    final job = _jobs[id];
+    if (job == null) {
+      return;
+    }
+
+    await _drop(job);
+    _set(
+      id,
+      (transfer) => transfer.copyWith(status: .cancelled, bytesPerSecond: 0),
+    );
+    if (sessionFor(job.deviceId) case final session?) {
+      await _sendQuietly(
+        session,
+        Cancel(transferId: id, reason: .FAILURE_REASON_CANCELLED),
+      );
+    }
+  }
+
+  /// Asks the sender to continue where this side stopped.
+  Future<void> retry(String id) async {
+    final job = _jobs[id];
+    if (job == null || job.cancelled) {
+      return;
+    }
+
+    final session = sessionFor(job.deviceId);
+    if (session == null) {
+      _set(
+        id,
+        (transfer) =>
+            transfer.copyWith(status: .failed, failure: .notConnected),
+      );
+      return;
+    }
+
+    await job.idle;
+    await job.syncWithDisk();
+    job
+      ..halted = false
+      ..speed.reset();
+    final resume = job.resumePoint;
+    _set(
+      id,
+      (transfer) => transfer.copyWith(
+        status: .transferring,
+        clearFailure: true,
+        bytesDone: job.receivedBytes,
+        bytesPerSecond: 0,
+      ),
+    );
+
+    try {
+      await session.send(
+        featureId,
+        ResumeRequest(
+          transferId: id,
+          fileIndex: resume.fileIndex,
+          offset: Int64(resume.offset),
+        ),
+      );
+    } on Object {
+      _interrupt(job);
+    }
+  }
+
+  void onSessionOpened(Session session) {
+    for (final job in [..._jobs.values]) {
+      final transfer = registry[job.id];
+      if (job.deviceId != session.remoteDeviceId || transfer == null) {
+        continue;
+      }
+
+      final resumable = switch (transfer.failure) {
+        TransferFailure.disconnected || TransferFailure.notConnected => true,
+        _ => false,
+      };
+      if (transfer.status == .failed && resumable) {
+        unawaited(retry(job.id));
+      }
+    }
+  }
+
+  void onSessionClosed(Session session) {
+    for (final entry in [..._answers.entries]) {
+      if (registry[entry.key]?.deviceId != session.remoteDeviceId) {
+        continue;
+      }
+
+      _answers.remove(entry.key);
+      registry.update(
+        entry.key,
+        (transfer) => transfer.copyWith(
+          status: .failed,
+          failure: .disconnected,
+          needsAnswer: false,
+        ),
+      );
+      entry.value.complete(false);
+    }
+
+    for (final job in [..._jobs.values]) {
+      if (job.deviceId != session.remoteDeviceId) {
+        continue;
+      }
+
+      if (registry[job.id]?.status.isActive ?? false) {
+        _interrupt(job);
+      }
+    }
+  }
+
+  Future<void> dispose() async {
+    for (final job in _jobs.values) {
+      await job.closePart();
+    }
+  }
+
+  Future<ChunkReceived?> _write(
+    Session session,
+    IncomingJob job,
+    Chunk chunk,
+  ) async {
+    if (job.cancelled || job.halted) {
+      return null;
+    }
+
+    final index = chunk.fileIndex;
+    final offset = chunk.offset.toInt();
+    final valid =
+        index < job.files.length &&
+        job.saved[index] == null &&
+        offset == job.written[index] &&
+        offset + chunk.data.length <= job.sizeOf(index);
+    if (!valid) {
+      await _stop(session, job, .protocol);
+      return null;
+    }
+
+    try {
+      final file = await job.openPart(index);
+      await file.writeFrom(chunk.data);
+    } on FileSystemException catch (error) {
+      printWarning('Drop could not write a received file', error.osError);
+      await _stop(session, job, .storage);
+      return null;
+    }
+
+    job.written[index] += chunk.data.length;
+    job.speed.add(job.receivedBytes);
+    final throttle = _throttles.putIfAbsent(job.id, ProgressThrottle.new);
+    if (throttle.shouldEmit) {
+      _set(
+        job.id,
+        (transfer) => transfer.copyWith(
+          bytesDone: job.receivedBytes,
+          bytesPerSecond: job.speed.bytesPerSecond,
+        ),
+      );
+    }
+
+    return ChunkReceived(
+      transferId: job.id,
+      fileIndex: index,
+      offset: Int64(job.written[index]),
+    );
+  }
+
+  Future<FileVerified> _verify(IncomingJob job, FileComplete complete) async {
+    final index = complete.fileIndex;
+    FileVerified answer({FailureReason? reason}) => FileVerified(
+      transferId: job.id,
+      fileIndex: index,
+      ok: reason == null,
+      reason: reason,
+    );
+
+    if (job.cancelled || index >= job.files.length) {
+      return answer(reason: .FAILURE_REASON_PROTOCOL);
+    }
+
+    if (job.saved[index] != null) {
+      return answer();
+    }
+
+    if (job.written[index] != job.sizeOf(index)) {
+      return answer(reason: .FAILURE_REASON_PROTOCOL);
+    }
+
+    await job.closePart();
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .verifying,
+        bytesDone: job.receivedBytes,
+      ),
+    );
+
+    final part = job.partFor(index);
+    try {
+      if (job.sizeOf(index) == 0) {
+        await part.create();
+      }
+
+      final hash = await FileHasher.hashFile(part.path);
+      final promised = job.files[index].sha256;
+      final matches =
+          FileHasher.same(hash, complete.sha256) &&
+          (promised.isEmpty || FileHasher.same(hash, promised));
+      if (!matches) {
+        await job.resetPart(index);
+        _set(
+          job.id,
+          (transfer) => transfer.copyWith(
+            status: .failed,
+            failure: .checksum,
+            bytesDone: job.receivedBytes,
+            bytesPerSecond: 0,
+          ),
+        );
+        return answer(reason: .FAILURE_REASON_CHECKSUM);
+      }
+
+      final saved = await store.save(
+        part,
+        name: job.names[index],
+        mime: job.files[index].mime,
+      );
+      job.saved[index] = saved;
+      _set(
+        job.id,
+        (transfer) => transfer.copyWith(
+          status: .transferring,
+          files: [
+            for (final (fileIndex, file) in transfer.files.indexed)
+              switch (fileIndex == index) {
+                true => file.copyWith(
+                  name: saved.name,
+                  location: saved.location,
+                ),
+                false => file,
+              },
+          ],
+        ),
+      );
+    } on Object catch (error) {
+      printWarning('Drop could not save a received file: ${error.runtimeType}');
+      _set(
+        job.id,
+        (transfer) => transfer.copyWith(
+          status: .failed,
+          failure: .storage,
+          bytesPerSecond: 0,
+        ),
+      );
+      return answer(reason: .FAILURE_REASON_STORAGE);
+    }
+
+    if (job.isComplete) {
+      _finish(job);
+    }
+
+    return answer();
+  }
+
+  Future<TransferAnswer> _ask(Transfer transfer) async {
+    final pending = Completer<bool>();
+    _answers[transfer.id] = pending;
+    registry.put(transfer.copyWith(needsAnswer: true));
+
+    final accepted = await pending.future.timeout(
+      answerTimeout,
+      onTimeout: () => false,
+    );
+    final timedOut = _answers.remove(transfer.id) != null;
+    if (accepted) {
+      return TransferAnswer(transferId: transfer.id, accepted: true);
+    }
+
+    if (timedOut) {
+      registry.update(
+        transfer.id,
+        (current) => current.copyWith(
+          status: .failed,
+          failure: .timedOut,
+          needsAnswer: false,
+        ),
+      );
+      return _decline(transfer.id, .DECLINE_REASON_TIMEOUT);
+    }
+
+    registry.update(
+      transfer.id,
+      (current) => switch (current.status) {
+        TransferStatus.waiting => current.copyWith(
+          status: .cancelled,
+          failure: .declined,
+          needsAnswer: false,
+        ),
+        _ => current,
+      },
+    );
+    return _decline(transfer.id, .DECLINE_REASON_DECLINED);
+  }
+
+  TransferAnswer _resumeAnswer(IncomingJob job) {
+    job
+      ..halted = false
+      ..speed.reset();
+    final resume = job.resumePoint;
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .transferring,
+        clearFailure: true,
+        bytesDone: job.receivedBytes,
+        bytesPerSecond: 0,
+      ),
+    );
+    return TransferAnswer(
+      transferId: job.id,
+      accepted: true,
+      fileIndex: resume.fileIndex,
+      offset: Int64(resume.offset),
+    );
+  }
+
+  void _finish(IncomingJob job) {
+    _jobs.remove(job.id);
+    _throttles.remove(job.id);
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .done,
+        bytesDone: transfer.totalBytes,
+        bytesPerSecond: 0,
+      ),
+    );
+  }
+
+  /// The session dropped. Chunks that already arrived are still written;
+  /// the part closes after them.
+  void _interrupt(IncomingJob job) {
+    unawaited(job.enqueue(job.closePart));
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .failed,
+        failure: .disconnected,
+        bytesPerSecond: 0,
+      ),
+    );
+  }
+
+  /// Stops after an error on this side and tells the sender why.
+  Future<void> _stop(
+    Session session,
+    IncomingJob job,
+    TransferFailure failure,
+  ) async {
+    job.halted = true;
+    await job.closePart();
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .failed,
+        failure: failure,
+        bytesPerSecond: 0,
+      ),
+    );
+    await _sendQuietly(
+      session,
+      Cancel(transferId: job.id, reason: FailureCodes.toWire(failure)),
+    );
+  }
+
+  /// Forgets [job] for good and deletes its parts.
+  Future<void> _drop(IncomingJob job) async {
+    job.cancelled = true;
+    _jobs.remove(job.id);
+    _throttles.remove(job.id);
+    await job.enqueue(job.discard);
+  }
+
+  IncomingJob? _activeJob(Session session, String id) {
+    final job = _jobs[id];
+    if (job == null ||
+        job.deviceId != session.remoteDeviceId ||
+        job.cancelled) {
+      return null;
+    }
+
+    return job;
+  }
+
+  bool _isValidOffer(TransferOffer offer) {
+    if (!_validId.hasMatch(offer.transferId)) {
+      return false;
+    }
+
+    if (offer.files.isEmpty && offer.text.isEmpty) {
+      return false;
+    }
+
+    if (offer.files.length > _maxFiles) {
+      return false;
+    }
+
+    return offer.files.every(
+      (file) => file.name.trim().isNotEmpty && file.size >= 0,
+    );
+  }
+
+  TransferAnswer _decline(String id, DeclineReason reason) =>
+      TransferAnswer(transferId: id, reason: reason);
+
+  void _set(String id, Transfer Function(Transfer current) change) =>
+      registry.update(id, change);
+
+  Future<void> _sendQuietly(Session session, Cancel cancel) async {
+    try {
+      await session.send(featureId, cancel);
+    } on Object {
+      return;
+    }
+  }
+}

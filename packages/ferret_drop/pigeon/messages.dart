@@ -1,15 +1,5 @@
 import 'package:pigeon/pigeon.dart';
 
-// This file is where you define the interface between Dart code and host
-// platform code. After editing this file, run
-//   dart run pigeon --input pigeon/messages.dart
-// to re-generate all of the output files.
-//
-// If you add new platforms to your plugin, add the corresponding output
-// options in the PigeonOptions below.
-//
-// To learn more about Pigeon, see https://pub.dev/packages/pigeon.
-
 @ConfigurePigeon(
   PigeonOptions(
     dartPackageName: 'ferret_drop',
@@ -27,8 +17,55 @@ import 'package:pigeon/pigeon.dart';
     ],
   ),
 )
+/// Files or text another app shared with "Send with Ferret". Files are
+/// already copied to the app's cache, so [paths] are plain file paths.
+class SharedItems {
+  SharedItems({required this.paths, this.text});
+
+  List<String> paths;
+  String? text;
+}
+
+/// A file saved into the shared Downloads collection.
+class SavedFile {
+  SavedFile({required this.location, required this.name});
+
+  /// Where to open it later: a `content://` URI or a file path.
+  String location;
+
+  /// The name it got, which may differ when the wanted one was taken.
+  String name;
+}
+
 @HostApi()
-abstract class FerretDropPluginApi {
-  /// Returns the system version of the host platform.
-  String getPlatformVersion();
+abstract class FerretDropHostApi {
+  /// Shares that arrived before Dart was listening. Each one is returned once.
+  List<SharedItems> takePendingShares();
+
+  /// Whether [saveToDownloads] works here (Android 10 and newer).
+  bool canSaveToDownloads();
+
+  /// Moves [sourcePath] into Downloads/[folder] through MediaStore, never
+  /// overwriting: a taken name becomes "name (1).ext".
+  @async
+  SavedFile saveToDownloads(
+    String sourcePath,
+    String fileName,
+    String mimeType,
+    String folder,
+  );
+
+  /// Opens a received file in its default app. Returns false when nothing
+  /// could open it.
+  bool open(String location, String mimeType);
+
+  /// Shows a received file in Finder, Explorer, the file manager or the
+  /// Downloads app. Returns false when that isn't possible here.
+  bool reveal(String location);
+}
+
+@FlutterApi()
+abstract class FerretDropFlutterApi {
+  /// Another app shared files or text while Ferret was running.
+  void onShared(SharedItems items);
 }

@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package ferret.drop.v1;
+
+// One file in a transfer offer.
+message FileInfo {
+  // Base name only; the receiver never trusts it as a path.
+  string name = 1;
+  uint64 size = 2;
+  string mime = 3;
+  // SHA-256 of the whole file when the sender knows it up front. The
+  // authoritative hash always arrives in FileComplete.
+  bytes sha256 = 4;
+}
+
+// Asks to send files or text (a request, answered with TransferAnswer).
+// Sending the same transfer_id again after a dropped session resumes it.
+message TransferOffer {
+  string transfer_id = 1;
+  repeated FileInfo files = 2;
+  // Text to drop instead of, or along with, files.
+  string text = 3;
+  // Size of each chunk the sender will send.
+  uint32 chunk_size = 4;
+}
+
+// The answer to a TransferOffer.
+message TransferAnswer {
+  string transfer_id = 1;
+  bool accepted = 2;
+  DeclineReason reason = 3;
+  // Where to start sending: the first file that isn't complete yet and the
+  // byte offset in it. Both are 0 for a new transfer.
+  uint32 file_index = 4;
+  uint64 offset = 5;
+}
+
+enum DeclineReason {
+  DECLINE_REASON_UNSPECIFIED = 0;
+  // Someone on the receiving device said no.
+  DECLINE_REASON_DECLINED = 1;
+  // Nobody answered in time.
+  DECLINE_REASON_TIMEOUT = 2;
+  // The receiver can't write to its receive folder.
+  DECLINE_REASON_STORAGE = 3;
+  // The receiver doesn't know this transfer any more and can't resume it.
+  DECLINE_REASON_UNKNOWN_TRANSFER = 4;
+  // The offer is malformed, such as a file without a name.
+  DECLINE_REASON_INVALID = 5;
+}
+
+// A piece of one file. Every few chunks are sent as a request, answered with
+// ChunkReceived once the receiver wrote them, which bounds the data in flight.
+message Chunk {
+  string transfer_id = 1;
+  uint32 file_index = 2;
+  uint64 offset = 3;
+  bytes data = 4;
+}
+
+// Confirms the receiver wrote everything up to offset of file_index.
+message ChunkReceived {
+  string transfer_id = 1;
+  uint32 file_index = 2;
+  uint64 offset = 3;
+}
+
+// The last chunk of a file was sent (a request, answered with FileVerified).
+message FileComplete {
+  string transfer_id = 1;
+  uint32 file_index = 2;
+  bytes sha256 = 3;
+}
+
+// Whether the receiver's copy matched the hash and was saved.
+message FileVerified {
+  string transfer_id = 1;
+  uint32 file_index = 2;
+  bool ok = 3;
+  FailureReason reason = 4;
+}
+
+// Every file was sent and verified.
+message TransferComplete {
+  string transfer_id = 1;
+}
+
+// Either side stops a transfer.
+message Cancel {
+  string transfer_id = 1;
+  FailureReason reason = 2;
+}
+
+enum FailureReason {
+  FAILURE_REASON_UNSPECIFIED = 0;
+  // Someone cancelled it.
+  FAILURE_REASON_CANCELLED = 1;
+  // The received data didn't match the sender's SHA-256.
+  FAILURE_REASON_CHECKSUM = 2;
+  // Reading or writing a file failed, such as a full disk.
+  FAILURE_REASON_STORAGE = 3;
+  // The sender's file changed or disappeared during the transfer.
+  FAILURE_REASON_SOURCE_CHANGED = 4;
+  // A chunk didn't match what the receiver expected.
+  FAILURE_REASON_PROTOCOL = 5;
+  // The sender no longer has this transfer, so it can't be resumed.
+  FAILURE_REASON_UNKNOWN_TRANSFER = 6;
+}
+
+// Sent by a receiver after a dropped session comes back, to continue an
+// interrupted transfer where it stopped.
+message ResumeRequest {
+  string transfer_id = 1;
+  uint32 file_index = 2;
+  uint64 offset = 3;
+}

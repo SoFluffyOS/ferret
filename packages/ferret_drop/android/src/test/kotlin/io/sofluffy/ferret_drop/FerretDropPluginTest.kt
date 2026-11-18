@@ -2,22 +2,17 @@ package io.sofluffy.ferret_drop
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-/*
- * This demonstrates a simple unit test of the Kotlin portion of this plugin's implementation.
- *
- * Once you have built the plugin's example app, you can run these tests from the command
- * line by running `./gradlew testDebugUnitTest` in the `example/android/` directory, or
- * you can run them directly from IDEs that support JUnit such as Android Studio.
- */
+import kotlin.test.assertTrue
 
 internal class FerretDropPluginTest {
     @Test
-    fun getPlatformVersion_returnsExpectedValue() {
-        val plugin = FerretDropPlugin()
+    fun takePendingShares_returnsEachShareOnce() {
+        ShareInbox.keep(SharedItems(paths = listOf("/tmp/a.txt"), text = null))
 
-        val result = plugin.getPlatformVersion()
+        val first = ShareInbox.takeAll()
+        val second = ShareInbox.takeAll()
 
-        assertEquals("Android " + android.os.Build.VERSION.RELEASE, result)
+        assertEquals(listOf("/tmp/a.txt"), first.single().paths)
+        assertTrue(second.isEmpty())
     }
 }

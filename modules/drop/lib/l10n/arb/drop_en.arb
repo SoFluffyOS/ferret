@@ -1,4 +1,124 @@
 {
   "@@locale": "en",
-  "title": "Drop"
+  "title": "Drop",
+  "cardEmpty": "Drop files on Ferret, or pick Send files… on a device.",
+  "sendFiles": "Send files…",
+  "clearFinished": "Clear",
+  "transferFiles": "{count, plural, =1{{name}} other{{count} files}}",
+  "@transferFiles": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "name": {"type": "String"}
+    }
+  },
+  "transferText": "Text",
+  "statusWaitingOutgoing": "Waiting for {device} to accept…",
+  "@statusWaitingOutgoing": {"placeholders": {"device": {"type": "String"}}},
+  "statusWaitingIncoming": "{device} wants to send this",
+  "@statusWaitingIncoming": {"placeholders": {"device": {"type": "String"}}},
+  "statusSending": "To {device} · {done} of {total}",
+  "@statusSending": {
+    "placeholders": {
+      "device": {"type": "String"},
+      "done": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "statusReceiving": "From {device} · {done} of {total}",
+  "@statusReceiving": {
+    "placeholders": {
+      "device": {"type": "String"},
+      "done": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "statusSpeed": "{speed}/s",
+  "@statusSpeed": {"placeholders": {"speed": {"type": "String"}}},
+  "statusSpeedEta": "{speed}/s · {eta} left",
+  "@statusSpeedEta": {
+    "placeholders": {
+      "speed": {"type": "String"},
+      "eta": {"type": "String"}
+    }
+  },
+  "statusVerifying": "Checking the file…",
+  "statusSent": "Sent to {device} ✓",
+  "@statusSent": {"placeholders": {"device": {"type": "String"}}},
+  "statusReceived": "Saved ✓ · from {device}",
+  "@statusReceived": {"placeholders": {"device": {"type": "String"}}},
+  "statusTextReceived": "From {device}",
+  "@statusTextReceived": {"placeholders": {"device": {"type": "String"}}},
+  "statusCancelled": "Cancelled",
+  "failureDeclined": "{device} said no.",
+  "@failureDeclined": {"placeholders": {"device": {"type": "String"}}},
+  "failureTimedOut": "{device} didn't answer in time.",
+  "@failureTimedOut": {"placeholders": {"device": {"type": "String"}}},
+  "failureDisconnected": "{device} went offline. It continues when it's back.",
+  "@failureDisconnected": {"placeholders": {"device": {"type": "String"}}},
+  "failureNotConnected": "{device} isn't connected. Open Ferret on it, then retry.",
+  "@failureNotConnected": {"placeholders": {"device": {"type": "String"}}},
+  "failureUnsupported": "{device} needs a newer Ferret to receive files.",
+  "@failureUnsupported": {"placeholders": {"device": {"type": "String"}}},
+  "failureStorage": "Couldn't write the file. Check free space and the receive folder.",
+  "failureChecksum": "The file arrived damaged. Retry sends it again.",
+  "failureSourceChanged": "The file changed or moved while it was being sent.",
+  "failureCancelledByPeer": "{device} cancelled.",
+  "@failureCancelledByPeer": {"placeholders": {"device": {"type": "String"}}},
+  "failureUnknownTransfer": "{device} lost track of this transfer. Send it again.",
+  "@failureUnknownTransfer": {"placeholders": {"device": {"type": "String"}}},
+  "failureProtocol": "Something went wrong with {device}. Retry to continue.",
+  "@failureProtocol": {"placeholders": {"device": {"type": "String"}}},
+  "actionOpen": "Open",
+  "actionReveal": "Show in folder",
+  "actionRetry": "Retry",
+  "actionCancel": "Cancel",
+  "actionAccept": "Accept",
+  "actionDecline": "Decline",
+  "actionCopy": "Copy",
+  "actionDismiss": "Dismiss",
+  "noticeSending": "Sending to {device}",
+  "@noticeSending": {"placeholders": {"device": {"type": "String"}}},
+  "noticeReceiving": "Receiving from {device}",
+  "@noticeReceiving": {"placeholders": {"device": {"type": "String"}}},
+  "noticeSent": "Sent to {device}",
+  "@noticeSent": {"placeholders": {"device": {"type": "String"}}},
+  "noticeReceived": "Received from {device}",
+  "@noticeReceived": {"placeholders": {"device": {"type": "String"}}},
+  "noticeText": "Text from {device}",
+  "@noticeText": {"placeholders": {"device": {"type": "String"}}},
+  "noticeFailed": "Transfer with {device} stopped",
+  "@noticeFailed": {"placeholders": {"device": {"type": "String"}}},
+  "noticeOffer": "{device} wants to send you something",
+  "@noticeOffer": {"placeholders": {"device": {"type": "String"}}},
+  "noticeNoDevice": "No device to send to",
+  "noticeNoDeviceBody": "Connect one of your paired devices, then try again.",
+  "noticeNothing": "Nothing to send",
+  "noticeNothingBody": "Folders can't be sent yet. Pick the files inside instead.",
+  "pickerTitle": "Send to which device?",
+  "settingsReceiveFolder": "Receive folder",
+  "settingsChange": "Change…",
+  "settingsUseDefault": "Use default",
+  "settingsFolderName": "Folder name in Downloads",
+  "settingsSave": "Save",
+  "settingsAutoAccept": "Accept from my devices",
+  "settingsAutoAcceptBody": "Files from your paired devices go straight to the receive folder. Turn this off to approve each one.",
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {"placeholders": {"value": {"type": "String"}}},
+  "sizeKilobytes": "{value} KB",
+  "@sizeKilobytes": {"placeholders": {"value": {"type": "String"}}},
+  "sizeMegabytes": "{value} MB",
+  "@sizeMegabytes": {"placeholders": {"value": {"type": "String"}}},
+  "sizeGigabytes": "{value} GB",
+  "@sizeGigabytes": {"placeholders": {"value": {"type": "String"}}},
+  "etaSeconds": "{seconds} s",
+  "@etaSeconds": {"placeholders": {"seconds": {"type": "int"}}},
+  "etaMinutes": "{minutes} min",
+  "@etaMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "etaHours": "{hours} h {minutes} min",
+  "@etaHours": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"}
+    }
+  }
 }

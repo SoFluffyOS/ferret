@@ -11,18 +11,24 @@ environment:
 dependencies:
   core:
     path: ../../packages/core
+  crypto: ^3.0.6
   engine:
     path: ../../packages/engine
   feature_kit:
     path: ../../packages/feature_kit
   ferret_drop:
     path: ../../packages/ferret_drop
+  file_selector: ^1.1.0
+  fixnum: ^1.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.3
   lucide_icons_flutter: ^4.0.3
+  mime: ^2.0.0
+  path: ^1.9.1
+  path_provider: ^2.1.6
   protobuf: ^6.1.0
   protocol:
     path: ../../packages/protocol
@@ -34,6 +40,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
+  transport:
+    path: ../../packages/transport
 
 flutter:
   generate: true

@@ -2,12 +2,8 @@
 
 #include "include/ferret_drop/ferret_drop_plugin.h"
 
-// This file exposes some plugin internals for unit testing. See
-// https://github.com/flutter/flutter/issues/88724 for current limitations
-// in the unit-testable API.
+// Exposed for unit tests.
 
-// Handles the getPlatformVersion method call, and returns the response as a
-// gchar* so that it can be inspected in tests.
-//
-// The caller is responsible for freeing the return value.
-gchar* ferret_drop_plugin_get_platform_version();
+// Returns the file:// URI of [path] when the file exists, or nullptr. The
+// caller frees the result.
+gchar* ferret_drop_plugin_uri_for_existing_file(const gchar* path);
