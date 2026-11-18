@@ -57,6 +57,7 @@ class LocalNotice {
     this.image,
     this.silent = false,
     this.progress,
+    this.ongoing = false,
   });
 
   /// Unique per notice; showing the same id again updates it.
@@ -77,6 +78,10 @@ class LocalNotice {
 
   /// 0 to 1 for a progress bar, such as a file transfer.
   final double? progress;
+
+  /// Stays until the feature cancels it and can't be swiped away, such as
+  /// "Controlled by Pixel · Stop".
+  final bool ongoing;
 }
 
 /// Someone tapped a notice or one of its actions.
