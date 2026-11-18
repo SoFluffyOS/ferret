@@ -87,6 +87,13 @@ class FindFeature extends Feature {
     );
   }
 
+  /// Ringing through Do Not Disturb worked before and the system access for
+  /// it is gone now. False when it was simply never allowed.
+  bool get lostDndAccess =>
+      settings.ringOnSilent &&
+      abilities.missingDndAccess &&
+      settings.hadDndAccess;
+
   /// Fires when a ring, a device's answer, the abilities or a setting change.
   Stream<void> get changes => _changes.stream;
 
@@ -103,6 +110,7 @@ class FindFeature extends Feature {
       ..add(_controller.changes.listen(_onLocalRing))
       ..add(settings.changes.listen((_) => _onLocalInfoChanged()));
     await _controller.start();
+    _rememberDndAccess();
     _lastSentInfo = localInfo;
   }
 
@@ -278,6 +286,17 @@ class FindFeature extends Feature {
     return abilities;
   }
 
+  /// Asks [deviceId] again how ringing it would go, after it didn't answer
+  /// or couldn't ring.
+  Future<void> checkAgain(String deviceId) async {
+    final session = host.sessionFor(deviceId);
+    if (session == null || !session.supports(featureId)) {
+      return;
+    }
+
+    await _fetchInfo(session);
+  }
+
   Future<void> openDndAccessSettings() => _platform.openDndAccessSettings();
 
   Future<void> openFullScreenSettings() => _platform.openFullScreenSettings();
@@ -425,6 +444,7 @@ class FindFeature extends Feature {
   /// Sends this device's ring info to the others when it changed, such as
   /// after Do Not Disturb access was granted.
   void _onLocalInfoChanged() {
+    _rememberDndAccess();
     final info = localInfo;
     final previous = _lastSentInfo;
     _lastSentInfo = info;
@@ -433,6 +453,16 @@ class FindFeature extends Feature {
     }
 
     _emit();
+  }
+
+  void _rememberDndAccess() {
+    final abilities = _controller.abilities;
+    final granted = abilities.needsDndAccess && abilities.dndAccessGranted;
+    if (!granted || settings.hadDndAccess) {
+      return;
+    }
+
+    unawaited(settings.setHadDndAccess(true));
   }
 
   String _nameOf(String deviceId, Session? session) =>

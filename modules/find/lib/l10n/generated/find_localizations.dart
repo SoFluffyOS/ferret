@@ -187,7 +187,7 @@ abstract class FindLocalizations {
   /// No description provided for @outgoingRingingMuted.
   ///
   /// In en, this message translates to:
-  /// **'{name} is on silent, so it only vibrates. On {name}: turn on Ring on silent in Ferret.'**
+  /// **'{name} is on silent, so it only vibrates. On {name}: open Ferret → Settings → Control and turn on Ring on silent.'**
   String outgoingRingingMuted(String name);
 
   /// No description provided for @outgoingFound.
@@ -369,6 +369,60 @@ abstract class FindLocalizations {
   /// In en, this message translates to:
   /// **'Rings this device for 5 seconds.'**
   String get settingsTestRingBody;
+
+  /// No description provided for @summaryOnSilent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rings on silent'**
+  String get summaryOnSilent;
+
+  /// No description provided for @summaryQuietOnSilent.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet on silent'**
+  String get summaryQuietOnSilent;
+
+  /// No description provided for @summaryQuietInDnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet in Do Not Disturb'**
+  String get summaryQuietInDnd;
+
+  /// No description provided for @summaryCurrentVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Rings at the current volume'**
+  String get summaryCurrentVolume;
+
+  /// No description provided for @summaryWhileOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Rings while Ferret is open'**
+  String get summaryWhileOpen;
+
+  /// No description provided for @summaryCantRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t ring yet'**
+  String get summaryCantRing;
+
+  /// No description provided for @healthChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking {name}…'**
+  String healthChecking(String name);
+
+  /// No description provided for @healthNeedsPermissionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: open Ferret → Settings → Control and tap Allow in Settings under Ring on silent.'**
+  String healthNeedsPermissionHelp(String name);
+
+  /// No description provided for @healthUnsupportedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: update Ferret.'**
+  String healthUnsupportedHelp(String name);
 
   /// No description provided for @healthLoud.
   ///

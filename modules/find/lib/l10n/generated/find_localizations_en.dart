@@ -65,7 +65,7 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String outgoingRingingMuted(String name) {
-    return '$name is on silent, so it only vibrates. On $name: turn on Ring on silent in Ferret.';
+    return '$name is on silent, so it only vibrates. On $name: open Ferret → Settings → Control and turn on Ring on silent.';
   }
 
   @override
@@ -192,6 +192,39 @@ class FindLocalizationsEn extends FindLocalizations {
 
   @override
   String get settingsTestRingBody => 'Rings this device for 5 seconds.';
+
+  @override
+  String get summaryOnSilent => 'Rings on silent';
+
+  @override
+  String get summaryQuietOnSilent => 'Quiet on silent';
+
+  @override
+  String get summaryQuietInDnd => 'Quiet in Do Not Disturb';
+
+  @override
+  String get summaryCurrentVolume => 'Rings at the current volume';
+
+  @override
+  String get summaryWhileOpen => 'Rings while Ferret is open';
+
+  @override
+  String get summaryCantRing => 'Can\'t ring yet';
+
+  @override
+  String healthChecking(String name) {
+    return 'Checking $name…';
+  }
+
+  @override
+  String healthNeedsPermissionHelp(String name) {
+    return 'On $name: open Ferret → Settings → Control and tap Allow in Settings under Ring on silent.';
+  }
+
+  @override
+  String healthUnsupportedHelp(String name) {
+    return 'On $name: update Ferret.';
+  }
 
   @override
   String healthLoud(String name) {

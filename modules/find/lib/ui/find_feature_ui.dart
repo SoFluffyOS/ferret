@@ -97,7 +97,7 @@ class FindFeatureUi extends FeatureUi {
       remote: this.feature.remoteInfo(deviceId),
       lastRing: this.feature.outgoingFor(deviceId),
     );
-    return _healthOf(health, device.device.name, platformFindL10n());
+    return _healthOf(health, device.device, platformFindL10n());
   }
 
   @override
@@ -134,6 +134,29 @@ class FindFeatureUi extends FeatureUi {
         create: (_) => FindSettingsViewModel(this.feature),
         child: const FindSettingsFrame(),
       );
+
+  /// Find is always on, so its part says how this device rings, and asks
+  /// for attention only when Do Not Disturb access it once had is gone.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final section = buildSettings(context, feature);
+    if (section == null) {
+      return const [];
+    }
+
+    return [
+      FeatureSettings(
+        group: .control,
+        title: title(context),
+        child: section,
+        summary: _summaryOf(context.findL10n),
+        needsAttention: this.feature.lostDndAccess,
+      ),
+    ];
+  }
 
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {
@@ -175,29 +198,75 @@ class FindFeatureUi extends FeatureUi {
     );
   }
 
-  FeatureHealth? _healthOf(
+  /// How this device rings, in a few words, for its row in Settings.
+  String _summaryOf(FindLocalizations l10n) {
+    final abilities = feature.abilities;
+    final ringOnSilent = feature.settings.ringOnSilent;
+    if (!abilities.canPlaySound) {
+      return l10n.summaryCantRing;
+    }
+
+    if (!abilities.ringsInBackground) {
+      return l10n.summaryWhileOpen;
+    }
+
+    if (ringOnSilent && abilities.missingDndAccess) {
+      return l10n.summaryQuietInDnd;
+    }
+
+    if (ringOnSilent && abilities.canRingWhenSilent) {
+      return l10n.summaryOnSilent;
+    }
+
+    if (abilities.controlsVolume) {
+      return l10n.summaryQuietOnSilent;
+    }
+
+    return l10n.summaryCurrentVolume;
+  }
+
+  FeatureHealth _healthOf(
     RingHealth health,
-    String name,
+    TrustedDevice device,
     FindLocalizations l10n,
-  ) => switch (health) {
-    .unknown => null,
-    .loud => FeatureHealth(.ok, reason: l10n.healthLoud(name)),
-    .followsSilent => FeatureHealth(
-      .ok,
-      reason: l10n.healthFollowsSilent(name),
-    ),
-    .needsAppOpen => FeatureHealth(.ok, reason: l10n.healthNeedsAppOpen(name)),
-    .needsPermission => FeatureHealth(
-      .needsAttention,
-      reason: l10n.healthNeedsPermission(name),
-    ),
-    .notAnswering => FeatureHealth(
-      .failing,
-      reason: l10n.healthNotAnswering(name),
-    ),
-    .noSound => FeatureHealth(.failing, reason: l10n.healthNoSound(name)),
-    .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
-  };
+  ) {
+    final name = device.name;
+    void checkAgain() => unawaited(feature.checkAgain(device.id));
+
+    return switch (health) {
+      .unknown => FeatureHealth(.off, reason: l10n.healthChecking(name)),
+      .loud => FeatureHealth(.ok, reason: l10n.healthLoud(name)),
+      .followsSilent => FeatureHealth(
+        .ok,
+        reason: l10n.healthFollowsSilent(name),
+      ),
+      .needsAppOpen => FeatureHealth(
+        .ok,
+        reason: l10n.healthNeedsAppOpen(name),
+      ),
+      .needsPermission => FeatureHealth(
+        .needsAttention,
+        reason: l10n.healthNeedsPermission(name),
+        help: l10n.healthNeedsPermissionHelp(name),
+      ),
+      .notAnswering => FeatureHealth(
+        .failing,
+        reason: l10n.healthNotAnswering(name),
+        help: l10n.outgoingUnreachableDetail(name),
+        onFix: checkAgain,
+      ),
+      .noSound => FeatureHealth(
+        .failing,
+        reason: l10n.healthNoSound(name),
+        help: l10n.outgoingNoSoundDetail(name),
+      ),
+      .unsupported => FeatureHealth(
+        .off,
+        reason: l10n.healthUnsupported(name),
+        help: l10n.healthUnsupportedHelp(name),
+      ),
+    };
+  }
 
   static RingTexts _alertTexts(String requesterName) {
     final l10n = platformFindL10n();
