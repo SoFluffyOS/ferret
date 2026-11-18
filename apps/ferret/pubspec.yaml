@@ -8,6 +8,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  ferret_mirror_scrcpy:
+    path: ../../packages/ferret_mirror_scrcpy
   mirroring:
     path: ../../modules/mirroring
   remote_input:
