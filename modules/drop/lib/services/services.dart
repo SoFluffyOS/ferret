@@ -5,6 +5,7 @@ export 'package:drop/services/drop_sender.dart';
 export 'package:drop/services/failure_codes.dart';
 export 'package:drop/services/file_hasher.dart';
 export 'package:drop/services/file_names.dart';
+export 'package:drop/services/folder_label.dart';
 export 'package:drop/services/folder_receive_store.dart';
 export 'package:drop/services/incoming_job.dart';
 export 'package:drop/services/localsend/localsend.dart';

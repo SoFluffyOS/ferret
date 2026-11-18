@@ -53,7 +53,7 @@ class ViewerCardFrame extends StatelessWidget {
             onPressed: () => onOpen(current),
           ),
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.stop,
             onPressed: () => unawaited(viewModel.stop()),
           ),

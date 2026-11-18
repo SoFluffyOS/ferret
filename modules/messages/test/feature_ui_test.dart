@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:messages/messages.dart';
 import 'package:messages/ui/ui.dart';
 import 'package:provider/provider.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'support/fakes.dart';
 import 'support/test_app.dart';
@@ -280,6 +281,51 @@ void main() {
     expect(find.text('Messages · Pixel'), findsOneWidget);
     expect(find.text('3 unread texts'), findsOneWidget);
     expect(find.text('Alex: Hi'), findsOneWidget);
+
+    await tester.runAsync(devices.stop);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('forgetting saved texts asks first, in red', (tester) async {
+    await tester.runAsync(devices.connect);
+    await tester.runAsync(
+      () => devices.library.loadOlderConversations(PhoneAndComputer.phoneId),
+    );
+
+    await tester.pumpWidget(
+      testApp(
+        ChangeNotifierProvider(
+          create: (_) => ComputerSettingsViewModel(
+            settings: devices.computer.settings,
+            library: devices.library,
+          ),
+          child: const ComputerSettingsFrame(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final forget = find.widgetWithText(Button, 'Forget saved texts');
+    expect(forget, findsOneWidget);
+    expect(tester.widget<Button>(forget).color, isNotNull);
+
+    await tester.tap(forget);
+    await tester.pumpAndSettle();
+    expect(find.text('Forget saved texts?'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(devices.library.hasHistory(PhoneAndComputer.phoneId), isTrue);
+
+    await tester.tap(forget);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Forget'));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+
+    expect(devices.library.hasHistory(PhoneAndComputer.phoneId), isFalse);
+    expect(find.text('Forget saved texts'), findsNothing);
 
     await tester.runAsync(devices.stop);
     await tester.pumpWidget(const SizedBox());

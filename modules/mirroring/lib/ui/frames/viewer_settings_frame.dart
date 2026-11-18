@@ -34,7 +34,6 @@ class ViewerSettingsFrame extends StatelessWidget {
           ),
           HistoryList(
             history: history,
-            emptyText: l10n.settingsHistoryEmptyViewed,
             onClear: () => unawaited(viewModel.clearHistory()),
           ),
         ],

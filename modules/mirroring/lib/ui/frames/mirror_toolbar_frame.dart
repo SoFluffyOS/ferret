@@ -92,7 +92,7 @@ class MirrorToolbarFrame extends StatelessWidget {
           if (isLive) ...[
             Spacing.h4,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.stop,
               onPressed: () => unawaited(viewModel.stop()),
             ),

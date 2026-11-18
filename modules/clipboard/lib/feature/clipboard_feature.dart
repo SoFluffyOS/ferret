@@ -125,8 +125,17 @@ class ClipboardFeature extends Feature {
     _expiryTimers.clear();
   }
 
+  /// Whether a connected device syncs its clipboard with this one.
+  bool get hasPeers =>
+      host.sessions.any((session) => session.supports(featureId));
+
+  @override
+  void onSessionClosed(Session session) => _changes.add(null);
+
   @override
   void onSessionOpened(Session session) {
+    _changes.add(null);
+
     final latest = _latestLocal;
     if (latest == null || latest.item.sensitive) {
       return;

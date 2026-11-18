@@ -191,6 +191,7 @@ void main() {
     late FakeMirrorControl control;
     late InboxViewModel inbox;
     late NotificationsFeature feature;
+    late ConnectedHost host;
 
     setUp(() async {
       control = FakeMirrorControl();
@@ -200,13 +201,17 @@ void main() {
         deviceName: (_) => 'Pixel',
         strings: platformNotificationsL10n,
       );
+      host = ConnectedHost();
       feature = NotificationsFeature();
-      await feature.start(SettingsOnlyHost());
+      await feature.start(host);
     });
 
     tearDown(() => inbox.dispose());
 
-    Future<void> pumpCard(WidgetTester tester) async {
+    Future<void> pumpCard(
+      WidgetTester tester, {
+      List<PairedPhone> paired = const [],
+    }) async {
       await tester.pumpWidget(
         testApp(
           MultiProvider(
@@ -216,6 +221,7 @@ void main() {
                 create: (_) => PhonesViewModel(
                   feature: feature,
                   sessionChanges: const Stream.empty(),
+                  pairedPhones: () => paired,
                 ),
               ),
             ],
@@ -225,15 +231,39 @@ void main() {
       );
     }
 
-    testWidgets('says how to start with no phone connected', (tester) async {
-      await pumpCard(tester);
+    testWidgets('says when the paired phone is offline', (tester) async {
+      await pumpCard(tester, paired: [(deviceId: 'phone', name: 'Pixel 9')]);
 
       expect(
-        find.text('Connect your Android phone to see its notifications here.'),
+        find.text(
+          "Pixel 9 is offline. Notifications show here when it's back.",
+        ),
         findsOneWidget,
       );
+      expect(find.text('How?'), findsNothing);
       expect(find.text('Clear all'), findsNothing);
     });
+
+    testWidgets(
+      'asks to turn mirroring on on a connected phone, and says where',
+      (tester) async {
+        host.connected.add('phone');
+        await pumpCard(tester, paired: [(deviceId: 'phone', name: 'Pixel 9')]);
+
+        expect(
+          find.text(
+            'Turn on Notifications on Pixel 9 to see its notifications here.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Connect your Android'), findsNothing);
+
+        await tester.tap(find.text('How?'));
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('tap Turn on more'), findsOneWidget);
+      },
+    );
 
     testWidgets('shows the last three per phone and clears them', (
       tester,

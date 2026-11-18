@@ -56,7 +56,7 @@ class PowerLadderFrame extends StatelessWidget {
                     runSpacing: Spacing.d8,
                     children: [
                       Button(
-                        variant: .secondary,
+                        variant: .ghost,
                         label: switch (tier) {
                           .standard => l10n.notificationsOpenSettings,
                           _ => l10n.notificationsTurnOnNow,

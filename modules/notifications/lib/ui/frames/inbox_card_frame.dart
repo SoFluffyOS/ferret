@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -9,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The home card on a computer: the last few notifications from each phone,
-/// or what keeps them from arriving.
+/// or what keeps them from arriving, in words that match the device tile.
 class InboxCardFrame extends StatelessWidget {
   const InboxCardFrame({super.key});
 
@@ -22,31 +24,36 @@ class InboxCardFrame extends StatelessWidget {
           (viewModel) => viewModel.byDevice,
         );
     final phones = context.select<PhonesViewModel, List<PhoneStatus>>(
-      (viewModel) => viewModel.phones,
+      (viewModel) => viewModel.pairedPhones,
     );
     final inbox = context.read<InboxViewModel>();
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
-    final names = {for (final phone in phones) phone.deviceId: phone.name};
+    final names = {
+      for (final phone in phones)
+        if (phone.online) phone.deviceId: phone.name,
+    };
     final troubled = [
       for (final phone in phones)
-        if ((!phone.isMirroring && phone.settings != null) || phone.unreachable)
-          phone,
+        if (_problem(context, phone) case final problem?) (phone, problem),
     ];
+    final turnedOff = [
+      for (final (phone, _) in troubled)
+        if (phone.state == .off) phone,
+    ];
+    final soleProblem = switch (troubled) {
+      [(_, final problem)] when byDevice.isEmpty => problem,
+      _ => null,
+    };
 
     final groups = [
-      for (final phone in troubled)
-        Column(
-          crossAxisAlignment: .stretch,
-          children: [
-            Text(
-              phone.name,
-              style: typography.caption1.copyWith(color: palette.mutedText),
-            ),
-            PhoneStatusLine(phone: phone),
-          ],
-        ),
+      if (soleProblem == null)
+        for (final (_, problem) in troubled)
+          Text(
+            problem,
+            style: typography.base2.copyWith(color: palette.mutedText),
+          ),
       for (final MapEntry(key: deviceId, value: items) in byDevice.entries)
         Column(
           crossAxisAlignment: .stretch,
@@ -69,7 +76,7 @@ class InboxCardFrame extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.bell,
       title: l10n.title,
-      subtitle: _emptyLine(context, phones, byDevice, troubled),
+      subtitle: soleProblem ?? _emptyLine(context, byDevice, troubled.length),
       children: [
         for (final (index, group) in groups.indexed) ...[
           if (index > 0) Spacing.v8,
@@ -77,9 +84,15 @@ class InboxCardFrame extends StatelessWidget {
         ],
       ],
       actions: [
+        if (turnedOff case [final phone, ...])
+          Button(
+            variant: .ghost,
+            label: l10n.how,
+            onPressed: () => unawaited(_explain(context, phone.name)),
+          ),
         if (byDevice.isNotEmpty)
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.clearAll,
             onPressed: inbox.clearAll,
           ),
@@ -87,24 +100,39 @@ class InboxCardFrame extends StatelessWidget {
     );
   }
 
+  String? _problem(BuildContext context, PhoneStatus phone) {
+    final l10n = context.notificationsL10n;
+
+    return switch (phone.state) {
+      .offline => l10n.homeOffline(phone.name),
+      .off => l10n.homeTurnOn(phone.name),
+      .unreachable => l10n.homeUnreachable(phone.name),
+      .accessOff => l10n.homeAccessOff(phone.name),
+      .checking || .mirroring => null,
+    };
+  }
+
   String? _emptyLine(
     BuildContext context,
-    List<PhoneStatus> phones,
     Map<String, List<MirroredNotification>> byDevice,
-    List<PhoneStatus> troubled,
+    int troubledCount,
   ) {
-    if (byDevice.isNotEmpty) {
+    if (byDevice.isNotEmpty || troubledCount > 0) {
       return null;
     }
 
+    return context.notificationsL10n.homeEmpty;
+  }
+
+  Future<void> _explain(BuildContext context, String phoneName) async {
     final l10n = context.notificationsL10n;
-    if (phones.isEmpty) {
-      return l10n.noPhone;
-    }
-    if (troubled.isEmpty) {
-      return l10n.homeEmpty;
-    }
-    return null;
+
+    await ContentDialog.show(
+      context,
+      title: l10n.howTitle(phoneName),
+      content: l10n.howBody(phoneName),
+      neutralText: l10n.ok,
+    );
   }
 
   String _deviceLabel(

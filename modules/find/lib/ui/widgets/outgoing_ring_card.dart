@@ -54,7 +54,7 @@ class OutgoingRingCard extends StatelessWidget {
   Widget _action(FindLocalizations l10n) {
     if (ring.isActive) {
       return Button(
-        variant: .secondary,
+        variant: .ghost,
         label: l10n.stop,
         icon: Icon(LucideIcons.bellOff, size: Spacing.d16),
         onPressed: onStop,
@@ -62,7 +62,7 @@ class OutgoingRingCard extends StatelessWidget {
     }
 
     return Button(
-      variant: .secondary,
+      variant: .ghost,
       label: l10n.ringAgain,
       icon: Icon(LucideIcons.bellRing, size: Spacing.d16),
       onPressed: onRingAgain,

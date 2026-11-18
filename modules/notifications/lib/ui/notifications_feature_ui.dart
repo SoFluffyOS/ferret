@@ -43,7 +43,10 @@ class NotificationsFeatureUi extends FeatureUi {
   MirrorSetupViewModel? _setup;
   AppLifecycleListener? _lifecycle;
   FeatureChanges? _mirrorChanges;
+  FeatureChanges? _deviceChanges;
   Listenable? _uiChanges;
+  final StreamController<void> _devicesChanged = .broadcast();
+  StreamSubscription<Object?>? _devicesSubscription;
 
   @override
   String get featureId => NotificationsFeature.featureId;
@@ -97,15 +100,17 @@ class NotificationsFeatureUi extends FeatureUi {
     }
 
     final mirrorChanges = FeatureChanges(feature.mirrorEvents);
+    final deviceChanges = FeatureChanges(_devicesChanged.stream);
     _mirrorChanges = mirrorChanges;
-    final changes = Listenable.merge([?_inbox, mirrorChanges]);
+    _deviceChanges = deviceChanges;
+    final changes = Listenable.merge([?_inbox, mirrorChanges, deviceChanges]);
     _uiChanges = changes;
     return changes;
   }
 
   /// On the phone, only while mirroring is on but access is off. On a
   /// computer, only once an Android phone is paired or a notification is
-  /// waiting.
+  /// waiting: with no phone there is nothing true to say.
   @override
   bool hasHomeCard(FeatureContext feature) {
     if (this.feature.isSource) {
@@ -184,10 +189,15 @@ class NotificationsFeatureUi extends FeatureUi {
   void dispose() {
     _lifecycle?.dispose();
     _setup?.dispose();
+    unawaited(_devicesSubscription?.cancel());
+    _deviceChanges?.dispose();
+    unawaited(_devicesChanged.close());
     _mirrorChanges?.dispose();
     _inbox?.dispose();
   }
 
+  /// On a computer, only once an Android phone is paired: before that the
+  /// section has nothing to set.
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) =>
       _settings(feature);
@@ -217,17 +227,14 @@ class NotificationsFeatureUi extends FeatureUi {
       providers: [
         ChangeNotifierProvider.value(value: inbox),
         ChangeNotifierProvider(
-          create: (_) => PhonesViewModel(
-            feature: feature,
-            sessionChanges: featureContext.engine.sessionChanges,
-          ),
+          create: (_) => _phonesViewModel(featureContext),
         ),
       ],
       child: const InboxCardFrame(),
     );
   }
 
-  Widget _settings(FeatureContext featureContext) {
+  Widget? _settings(FeatureContext featureContext) {
     if (access case final phoneAccess? when feature.isSource) {
       return ChangeNotifierProvider(
         create: (_) =>
@@ -238,11 +245,12 @@ class NotificationsFeatureUi extends FeatureUi {
       );
     }
 
+    if (!_hasPhone(featureContext)) {
+      return null;
+    }
+
     return ChangeNotifierProvider(
-      create: (_) => PhonesViewModel(
-        feature: feature,
-        sessionChanges: featureContext.engine.sessionChanges,
-      ),
+      create: (_) => _phonesViewModel(featureContext),
       child: PhonesSettingsFrame(
         onChooseApps: (phone) => _openRemotePicker(featureContext, phone),
       ),
@@ -274,8 +282,20 @@ class NotificationsFeatureUi extends FeatureUi {
       );
 
   bool _hasPhone(FeatureContext featureContext) =>
-      featureContext.engine.trustStore.devices.any(
-        (device) => device.platform == proto.Platform.PLATFORM_ANDROID,
+      _pairedPhones(featureContext).isNotEmpty;
+
+  List<PairedPhone> _pairedPhones(FeatureContext featureContext) => [
+    for (final device in featureContext.engine.trustStore.devices)
+      if (device.platform == proto.Platform.PLATFORM_ANDROID)
+        (deviceId: device.id, name: device.name),
+  ];
+
+  PhonesViewModel _phonesViewModel(FeatureContext featureContext) =>
+      PhonesViewModel(
+        feature: feature,
+        sessionChanges: featureContext.engine.sessionChanges,
+        pairedPhones: () => _pairedPhones(featureContext),
+        pairingChanges: featureContext.engine.trustStore.changes,
       );
 
   /// The computer's inbox, created once: it must listen before the first
@@ -285,7 +305,12 @@ class NotificationsFeatureUi extends FeatureUi {
       return inbox;
     }
 
-    final trustStore = featureContext.engine.trustStore;
+    final engine = featureContext.engine;
+    _devicesSubscription = engine.deviceChanges.listen(
+      (_) => _devicesChanged.add(null),
+    );
+
+    final trustStore = engine.trustStore;
     final inbox = InboxViewModel(
       feature: feature,
       notifier: featureContext.notifier,

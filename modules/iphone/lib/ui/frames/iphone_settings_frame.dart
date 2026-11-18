@@ -75,7 +75,11 @@ class _IphoneSettingsFrameState extends State<IphoneSettingsFrame> {
           ),
           if (host == .macos) ...[
             Spacing.v8,
-            NoticeBlock(title: l10n.macNote, isProblem: false),
+            NoticeBlock(
+              title: l10n.macNoteTitle,
+              body: l10n.macNote,
+              isProblem: false,
+            ),
           ],
         ],
       ),
@@ -235,7 +239,7 @@ class _Chosen extends StatelessWidget {
         children: [
           if (showRetry)
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.tryAgain,
               onPressed: () => unawaited(viewModel.retry()),
             ),

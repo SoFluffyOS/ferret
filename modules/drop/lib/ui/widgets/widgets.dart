@@ -1,3 +1,4 @@
+export 'package:drop/ui/widgets/disclosure_row.dart';
 export 'package:drop/ui/widgets/receive_row.dart';
 export 'package:drop/ui/widgets/setting_switch.dart';
 export 'package:drop/ui/widgets/target_button.dart';

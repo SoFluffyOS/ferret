@@ -78,15 +78,21 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('the card says phones cannot see this device yet', (
+  testWidgets('Quick Share is offered as a choice, not an error', (
     tester,
   ) async {
     await start();
     await pumpCard(tester);
 
-    expect(find.text('Receive from Quick Share'), findsOneWidget);
+    expect(find.text('Visible for 10 min'), findsNothing);
+    expect(find.textContaining("can't"), findsNothing);
+
+    await tester.tap(find.text('Receive from other apps'));
+    await tester.pump();
+
+    expect(find.text('Quick Share'), findsOneWidget);
     expect(
-      find.text("Off. Android phones can't see this device."),
+      find.text('Let Android phones without Ferret send here.'),
       findsOneWidget,
     );
     expect(find.text('Visible for 10 min'), findsOneWidget);
@@ -98,7 +104,7 @@ void main() {
     await start(settings: {DropSettings.quickShareEnabled: false});
     await pumpCard(tester);
 
-    expect(find.text('Receive from Quick Share'), findsNothing);
+    expect(find.text('Quick Share'), findsNothing);
     expect(find.byType(ReceiveRow), findsNothing);
   });
 
@@ -107,10 +113,12 @@ void main() {
   ) async {
     await start(settings: {DropSettings.localSendEnabled: true});
     await pumpCard(tester);
+    await tester.tap(find.text('Receive from other apps'));
+    await tester.pump();
 
     expect(find.byType(ReceiveRow), findsNWidgets(2));
-    expect(find.text('Receive from LocalSend'), findsOneWidget);
-    expect(find.text('Receive from Quick Share'), findsOneWidget);
+    expect(find.text('LocalSend'), findsOneWidget);
+    expect(find.text('Quick Share'), findsOneWidget);
   });
 
   testWidgets('turning it on shows the name and the time left', (tester) async {

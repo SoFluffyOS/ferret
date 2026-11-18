@@ -111,7 +111,7 @@ class _AssistantSetup extends StatelessWidget {
           ],
           Spacing.v8,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.settingsAssistantOpen,
             mainAxisSize: .min,
             onPressed: viewModel.openAssistantSettings,

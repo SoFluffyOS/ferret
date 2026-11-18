@@ -87,5 +87,9 @@
   "notifySetting": "Show new texts as notifications",
   "notifyDetail": "With Reply, unless the conversation is already open here.",
   "forgetHistory": "Forget saved texts",
-  "forgetDetail": "Ferret keeps recent texts on this computer so they show while the phone is offline."
+  "forgetDetail": "Ferret keeps recent texts on this computer so they show while the phone is offline.",
+  "forgetConfirmTitle": "Forget saved texts?",
+  "forgetConfirmBody": "This deletes the texts saved on this computer. Your phone keeps them all.",
+  "forgetConfirm": "Forget",
+  "cancel": "Cancel"
 }

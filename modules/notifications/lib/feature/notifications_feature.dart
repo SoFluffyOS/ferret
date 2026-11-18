@@ -70,6 +70,9 @@ class NotificationsFeature extends Feature implements MirrorControl {
   /// Whether the phone [deviceId] didn't answer the last settings request.
   bool isUnreachable(String deviceId) => _unreachableSenders.contains(deviceId);
 
+  /// Whether [deviceId] is connected right now.
+  bool isConnected(String deviceId) => host.sessionFor(deviceId) != null;
+
   /// Connected devices that mirror their notifications here.
   List<Session> get senders => [
     for (final session in host.sessions)

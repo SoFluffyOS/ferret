@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:drop/drop.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
@@ -52,19 +52,22 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('an empty card explains how to send and offers the button', (
-    tester,
-  ) async {
-    var picked = false;
-    await pumpCard(tester, onSend: () => picked = true);
+  testWidgets(
+    'an empty card explains how to send and offers the button',
+    (tester) async {
+      var picked = false;
+      await pumpCard(tester, onSend: () => picked = true);
 
-    expect(
-      find.text('Drop files on Ferret, or pick Send files… on a device.'),
-      findsOneWidget,
-    );
-    await tester.tap(find.text('Send files…'));
-    expect(picked, isTrue);
-  });
+      final hint = switch (defaultTargetPlatform) {
+        .android || .iOS => 'Send photos and files to your other devices.',
+        _ => 'Drop files here to send them to your devices.',
+      };
+      expect(find.text(hint), findsOneWidget);
+      await tester.tap(find.text('Send files…'));
+      expect(picked, isTrue);
+    },
+    variant: const TargetPlatformVariant({.macOS, .android}),
+  );
 
   testWidgets('a running transfer shows progress, speed, ETA and Cancel', (
     tester,
@@ -156,7 +159,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('/Users/me/Downloads/Ferret'), findsOneWidget);
+    expect(find.text('Downloads › Ferret'), findsOneWidget);
+    expect(find.text('/Users/me/Downloads/Ferret'), findsNothing);
     expect(find.text('Accept from my devices'), findsOneWidget);
     expect(viewModel.autoAccept, isTrue);
 

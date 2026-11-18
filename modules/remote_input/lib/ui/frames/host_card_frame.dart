@@ -74,7 +74,7 @@ class _PendingCard extends StatelessWidget {
           onPressed: () => unawaited(viewModel.answer(.always)),
         ),
         Button(
-          variant: .secondary,
+          variant: .ghost,
           label: l10n.allowOnce,
           onPressed: () => unawaited(viewModel.answer(.allowOnce)),
         ),

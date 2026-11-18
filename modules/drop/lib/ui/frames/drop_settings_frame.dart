@@ -17,6 +17,9 @@ class DropSettingsFrame extends StatelessWidget {
     final folder = context.select<DropViewModel, String>(
       (model) => model.receiveFolder,
     );
+    final folderLabel = context.select<DropViewModel, String>(
+      (model) => model.receiveFolderLabel,
+    );
     final autoAccept = context.select<DropViewModel, bool>(
       (model) => model.autoAccept,
     );
@@ -52,10 +55,13 @@ class DropSettingsFrame extends StatelessWidget {
                       style: typography.base1.copyWith(color: palette.text),
                     ),
                     Spacing.vertical(Spacing.d2),
-                    Text(
-                      folder,
-                      style: typography.caption1.copyWith(
-                        color: palette.mutedText,
+                    Tappable(
+                      tooltip: folder,
+                      child: Text(
+                        folderLabel,
+                        style: typography.caption1.copyWith(
+                          color: palette.mutedText,
+                        ),
                       ),
                     ),
                   ],
@@ -63,7 +69,7 @@ class DropSettingsFrame extends StatelessWidget {
               ),
               if (viewModel.canChangeFolder)
                 Button(
-                  variant: .secondary,
+                  variant: .ghost,
                   label: l10n.settingsChange,
                   onPressed: () => _changeFolder(context, viewModel),
                 ),

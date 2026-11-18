@@ -96,7 +96,7 @@ class _Failed extends StatelessWidget {
             Button(variant: .ghost, label: l10n.discard, onPressed: onDiscard),
             Spacing.h8,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.retrySend,
               onPressed: onRetry,
             ),

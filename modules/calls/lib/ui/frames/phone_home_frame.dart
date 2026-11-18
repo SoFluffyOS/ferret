@@ -34,7 +34,7 @@ class PhoneHomeFrame extends StatelessWidget {
       onTap: onSetUp,
       children: [StatusLine(text: l10n.phoneHomePaused, tone: .warning)],
       actions: [
-        Button(variant: .secondary, label: l10n.fix, onPressed: onSetUp),
+        Button(variant: .ghost, label: l10n.fix, onPressed: onSetUp),
       ],
     );
   }

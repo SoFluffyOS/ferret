@@ -19,6 +19,11 @@ import 'helpers/fakes.dart';
 import 'helpers/test_app.dart';
 
 class _FakeEngine implements FerretEngine {
+  _FakeEngine([this.devices = const []]);
+
+  @override
+  final List<DeviceStatus> devices;
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -138,13 +143,15 @@ void main() {
     await tester.pump();
   }
 
-  FeatureContext featureContext({Future<void> Function()? onReveal}) =>
-      FeatureContext(
-        engine: _FakeEngine(),
-        navigatorKey: GlobalKey<NavigatorState>(),
-        notifier: _QuietNotifier(),
-        onReveal: onReveal,
-      );
+  FeatureContext featureContext({
+    Future<void> Function()? onReveal,
+    List<DeviceStatus> devices = const [],
+  }) => FeatureContext(
+    engine: _FakeEngine(devices),
+    navigatorKey: GlobalKey<NavigatorState>(),
+    notifier: _QuietNotifier(),
+    onReveal: onReveal,
+  );
 
   group('mirror page', () {
     testWidgets('asking: says so while the request is on its way', (
@@ -610,22 +617,67 @@ void main() {
       expect(find.text('Nobody has seen this screen yet.'), findsOneWidget);
     });
 
-    testWidgets('the computer sees how to start and what it showed', (
+    Future<void> pumpComputerSettings(
+      WidgetTester tester, {
+      List<DeviceStatus> devices = const [],
+    }) => tester.pumpWidget(
+      testApp(
+        Builder(
+          builder: (context) =>
+              ui.buildSettings(context, featureContext(devices: devices)) ??
+              const Text('no section'),
+        ),
+      ),
+    );
+
+    testWidgets('a computer with no Android phone has no section', (
       tester,
     ) async {
       await startComputer(tester);
-      await tester.pumpWidget(
-        testApp(
-          Builder(
-            builder: (context) =>
-                ui.buildSettings(context, featureContext()) ??
-                const SizedBox.shrink(),
+      await pumpComputerSettings(tester);
+
+      expect(find.text('no section'), findsOneWidget);
+    });
+
+    testWidgets('a computer with a phone sees how to start', (tester) async {
+      await startComputer(tester);
+      await pumpComputerSettings(
+        tester,
+        devices: [
+          DeviceStatus(
+            TrustedDevice(
+              id: 'pixel',
+              name: 'Pixel',
+              platform: .PLATFORM_ANDROID,
+              formFactor: .FORM_FACTOR_PHONE,
+              publicKey: Uint8List(32),
+              pairedAt: now,
+            ),
+            null,
           ),
-        ),
+        ],
       );
 
       expect(find.textContaining('choose Show screen'), findsOneWidget);
-      expect(find.text("You haven't mirrored a phone yet."), findsOneWidget);
+      expect(find.text("You haven't mirrored a phone yet."), findsNothing);
+    });
+
+    testWidgets('a computer keeps showing what it mirrored', (tester) async {
+      await startComputer(tester);
+      await MirroringSettings(host.settings).addRecord(
+        MirrorRecord(
+          deviceId: 'pixel',
+          deviceName: 'Pixel',
+          role: .viewed,
+          startedAt: now,
+          endedAt: now.add(const Duration(minutes: 3)),
+          end: .viewerDone,
+        ),
+      );
+      await pumpComputerSettings(tester);
+
+      expect(find.text('no section'), findsNothing);
+      expect(find.text('Clear history'), findsOneWidget);
     });
   });
 

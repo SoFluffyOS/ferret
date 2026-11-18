@@ -34,7 +34,7 @@ class BrowserPairCardFrame extends StatelessWidget {
               unawaited(viewModel.answerPair(request, allow: true)),
         ),
         Button(
-          variant: .secondary,
+          variant: .ghost,
           label: l10n.browserPairDeny,
           mainAxisSize: .min,
           onPressed: () =>

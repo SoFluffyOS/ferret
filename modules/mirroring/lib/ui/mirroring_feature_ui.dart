@@ -160,7 +160,7 @@ class MirroringFeatureUi extends FeatureUi {
           value: shareViewModel,
           child: const ShareSettingsFrame(),
         ),
-      if (viewerViewModel.isAvailable)
+      if (viewerViewModel.isAvailable && _hasViewerSettings(feature))
         ChangeNotifierProvider.value(
           value: viewerViewModel,
           child: const ViewerSettingsFrame(),
@@ -180,6 +180,14 @@ class MirroringFeatureUi extends FeatureUi {
       ],
     );
   }
+
+  /// A computer's section only helps once an Android phone is paired, or
+  /// to keep showing what it mirrored before.
+  bool _hasViewerSettings(FeatureContext featureContext) =>
+      viewerViewModel.history.isNotEmpty ||
+      featureContext.engine.devices.any(
+        (status) => status.device.platform == .PLATFORM_ANDROID,
+      );
 
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {

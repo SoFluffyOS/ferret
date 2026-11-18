@@ -6,14 +6,15 @@ import 'package:drop/ui/frames/transfer_actions.dart';
 import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Drop's home card: active and recent transfers, or a hint to send some,
-/// and the switches that let LocalSend devices and Quick Share on phones
-/// send here for a while.
+/// and, folded under "Receive from other apps", the switches that let
+/// LocalSend devices and Quick Share on phones send here for a while.
 class DropHomeFrame extends StatelessWidget {
   const DropHomeFrame({super.key, required this.onSendFiles});
 
@@ -59,7 +60,7 @@ class DropHomeFrame extends StatelessWidget {
       icon: LucideIcons.send,
       title: l10n.title,
       subtitle: switch (transfers.isEmpty) {
-        true => l10n.cardEmpty,
+        true => _emptyLine(l10n),
         false => null,
       },
       trailing: switch (hasFinished) {
@@ -94,45 +95,50 @@ class DropHomeFrame extends StatelessWidget {
             },
           ),
         ],
-        if (localSend) ...[
+        if (localSend || quickShare) ...[
           if (transfers.isNotEmpty) Spacing.v16,
-          ReceiveRow(
-            title: l10n.receiveTitle,
-            status: _receiveStatus(receiving, secondsLeft, l10n, texts),
-            hasProblem: receiving.problem != null,
-            actionLabel: _receiveAction(receiving, l10n),
-            onAction: switch ((receiving.isStarting, receiving.isOn)) {
-              (true, _) => null,
-              (false, true) => viewModel.stopReceiving,
-              (false, false) => viewModel.receiveFromLocalSend,
-            },
-          ),
-        ],
-        if (quickShare) ...[
-          if (transfers.isNotEmpty || localSend) Spacing.v16,
-          ReceiveRow(
-            icon: LucideIcons.smartphone,
-            title: l10n.quickShareTitle,
-            status: _visibilityStatus(
-              visibility,
-              visibleSecondsLeft,
-              l10n,
-              texts,
-            ),
-            hasProblem: visibility.problem != null,
-            actionLabel: _visibilityAction(visibility, l10n),
-            onAction: switch ((visibility.isStarting, visibility.isOn)) {
-              (true, _) => null,
-              (false, true) => viewModel.stopQuickShare,
-              (false, false) => viewModel.receiveFromQuickShare,
-            },
+          DisclosureRow(
+            title: l10n.otherApps,
+            keepOpen: _isBusy(receiving) || _isVisible(visibility),
+            children: [
+              if (localSend)
+                ReceiveRow(
+                  title: l10n.receiveTitle,
+                  status: _receiveStatus(receiving, secondsLeft, l10n, texts),
+                  hasProblem: receiving.problem != null,
+                  actionLabel: _receiveAction(receiving, l10n),
+                  onAction: switch ((receiving.isStarting, receiving.isOn)) {
+                    (true, _) => null,
+                    (false, true) => viewModel.stopReceiving,
+                    (false, false) => viewModel.receiveFromLocalSend,
+                  },
+                ),
+              if (quickShare)
+                ReceiveRow(
+                  icon: LucideIcons.smartphone,
+                  title: l10n.quickShareTitle,
+                  status: _visibilityStatus(
+                    visibility,
+                    visibleSecondsLeft,
+                    l10n,
+                    texts,
+                  ),
+                  hasProblem: visibility.problem != null,
+                  actionLabel: _visibilityAction(visibility, l10n),
+                  onAction: switch ((visibility.isStarting, visibility.isOn)) {
+                    (true, _) => null,
+                    (false, true) => viewModel.stopQuickShare,
+                    (false, false) => viewModel.receiveFromQuickShare,
+                  },
+                ),
+            ],
           ),
         ],
       ],
       actions: [
         if (canSend)
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.sendFiles,
             icon: Icon(LucideIcons.upload, size: Spacing.d14),
             onPressed: onSendFiles,
@@ -140,6 +146,17 @@ class DropHomeFrame extends StatelessWidget {
       ],
     );
   }
+
+  String _emptyLine(DropLocalizations l10n) => switch (defaultTargetPlatform) {
+    .android || .iOS => l10n.cardEmptyPhone,
+    _ => l10n.cardEmpty,
+  };
+
+  bool _isBusy(LocalSendReceiveState state) =>
+      state.isStarting || state.isOn || state.problem != null;
+
+  bool _isVisible(QuickShareReceiveState state) =>
+      state.isStarting || state.isOn || state.problem != null;
 
   String _receiveStatus(
     LocalSendReceiveState state,

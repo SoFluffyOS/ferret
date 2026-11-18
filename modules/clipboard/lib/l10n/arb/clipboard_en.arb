@@ -2,6 +2,7 @@
   "@@locale": "en",
   "title": "Clipboard",
   "cardEmpty": "Copy something here and paste it on your other devices.",
+  "cardOffline": "Your devices are offline. Copies sync when one is back.",
   "cardEmptyManual": "Copy something, then tap Send clipboard.",
   "statusWithTime": "{status} · {time}",
   "@statusWithTime": {
@@ -54,7 +55,7 @@
   "resultSent": "Sent.",
   "resultNothingToSend": "The clipboard is empty, or holds something other than text or an image.",
   "resultDuplicate": "Already sent.",
-  "resultSensitive": "Not sent: the app you copied from marked it as private. Turn on Private items below to send these.",
+  "resultSensitive": "Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.",
   "resultImagesOff": "Not sent: images are off. Turn on Images below to send them.",
   "resultTooLarge": "Not sent: it's bigger than the size limit.",
   "resultNoDevices": "No device is connected. Open Ferret on your other device and keep it on the same network.",
@@ -75,8 +76,8 @@
   "@settingsImagesBody": {
     "placeholders": {"megabytes": {"type": "int"}}
   },
-  "settingsSensitive": "Private items",
-  "settingsSensitiveBody": "Sync items that password managers mark as private. They leave memory after {minutes} min.",
+  "settingsSensitive": "Include passwords",
+  "settingsSensitiveBody": "Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes} min.",
   "@settingsSensitiveBody": {
     "placeholders": {"minutes": {"type": "int"}}
   },

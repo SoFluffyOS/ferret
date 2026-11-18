@@ -10,7 +10,7 @@ class HistoryList extends StatelessWidget {
   const HistoryList({
     super.key,
     required this.history,
-    required this.emptyText,
+    this.emptyText,
     required this.onClear,
   });
 
@@ -18,7 +18,9 @@ class HistoryList extends StatelessWidget {
   static const shown = 5;
 
   final List<MirrorRecord> history;
-  final String emptyText;
+
+  /// Said while there is no history yet. Null hides the list until then.
+  final String? emptyText;
   final VoidCallback onClear;
 
   @override
@@ -26,14 +28,18 @@ class HistoryList extends StatelessWidget {
     final l10n = context.mirroringL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+    final emptyLine = emptyText;
+    if (history.isEmpty && emptyLine == null) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.settingsHistoryTitle),
-        if (history.isEmpty)
+        if (emptyLine != null && history.isEmpty)
           Text(
-            emptyText,
+            emptyLine,
             style: typography.caption1.copyWith(color: palette.mutedText),
           ),
         for (final record in history.take(shown))
@@ -47,7 +53,7 @@ class HistoryList extends StatelessWidget {
         if (history.isNotEmpty) ...[
           Spacing.v8,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.clearHistory,
             onPressed: onClear,
           ),

@@ -63,7 +63,7 @@ class NoticeBlock extends StatelessWidget {
         ),
         if ((actionLabel, onAction) case (final label?, final action?)) ...[
           Spacing.v8,
-          Button(variant: .secondary, label: label, onPressed: action),
+          Button(variant: .ghost, label: label, onPressed: action),
         ],
       ],
     );

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -16,14 +17,21 @@ import 'package:url_launcher/url_launcher.dart';
 /// ladder, and on Android an offer while one can be turned on, or a home
 /// card when one stopped working.
 class PowerFeatureUi extends FeatureUi {
-  PowerFeatureUi({PowerFeature? feature, Future<bool> Function(Uri)? openLink})
-    : feature = feature ?? PowerFeature(),
-      _openLink = openLink ?? _openInBrowser;
+  PowerFeatureUi({
+    PowerFeature? feature,
+    Future<bool> Function(Uri)? openLink,
+    bool? onPhone,
+  }) : feature = feature ?? PowerFeature(),
+       _openLink = openLink ?? _openInBrowser,
+       _onPhone = onPhone ?? Platform.isAndroid;
 
   @override
   final PowerFeature feature;
 
   final Future<bool> Function(Uri) _openLink;
+
+  /// Power-ups exist only on Android; elsewhere Settings has no section.
+  final bool _onPhone;
   AppLifecycleListener? _lifecycle;
 
   late final PowerViewModel viewModel = PowerViewModel(
@@ -91,11 +99,16 @@ class PowerFeatureUi extends FeatureUi {
       );
 
   @override
-  Widget? buildSettings(BuildContext context, FeatureContext feature) =>
-      ChangeNotifierProvider.value(
-        value: viewModel,
-        child: PowerSettingsFrame(onOpen: () => _openPage(feature)),
-      );
+  Widget? buildSettings(BuildContext context, FeatureContext feature) {
+    if (!_onPhone) {
+      return null;
+    }
+
+    return ChangeNotifierProvider.value(
+      value: viewModel,
+      child: PowerSettingsFrame(onOpen: () => _openPage(feature)),
+    );
+  }
 
   /// Stops listening for the app coming back and releases the view model.
   void dispose() {

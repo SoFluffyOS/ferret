@@ -601,12 +601,6 @@ abstract class MirroringLocalizations {
   /// **'Nobody has seen this screen yet.'**
   String get settingsHistoryEmptyShared;
 
-  /// No description provided for @settingsHistoryEmptyViewed.
-  ///
-  /// In en, this message translates to:
-  /// **'You haven\'t mirrored a phone yet.'**
-  String get settingsHistoryEmptyViewed;
-
   /// No description provided for @clearHistory.
   ///
   /// In en, this message translates to:

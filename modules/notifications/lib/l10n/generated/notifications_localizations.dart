@@ -402,6 +402,54 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Notification access is off, so nothing is mirrored.'**
   String get phoneHomePaused;
+
+  /// No description provided for @homeTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Notifications on {device} to see its notifications here.'**
+  String homeTurnOn(String device);
+
+  /// No description provided for @homeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is offline. Notifications show here when it\'s back.'**
+  String homeOffline(String device);
+
+  /// No description provided for @homeAccessOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification access is off on {device}. Open Ferret on {device} to fix it.'**
+  String homeAccessOff(String device);
+
+  /// No description provided for @homeUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach notifications on {device}.'**
+  String homeUnreachable(String device);
+
+  /// No description provided for @howTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Notifications on {device}'**
+  String howTitle(String device);
+
+  /// No description provided for @howBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.'**
+  String howBody(String device);
+
+  /// No description provided for @how.
+  ///
+  /// In en, this message translates to:
+  /// **'How?'**
+  String get how;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
 }
 
 class _NotificationsLocalizationsDelegate

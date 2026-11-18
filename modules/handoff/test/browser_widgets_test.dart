@@ -125,7 +125,11 @@ void main() {
 
     await show(tester, setup.viewModel, const BrowserSettingsFrame());
 
-    expect(find.textContaining('ports 47650 to 47654'), findsOneWidget);
+    expect(
+      find.textContaining("couldn't start the browser connection"),
+      findsOneWidget,
+    );
+    expect(find.textContaining('port'), findsNothing);
     expect(find.text('Try again'), findsOneWidget);
   });
 }

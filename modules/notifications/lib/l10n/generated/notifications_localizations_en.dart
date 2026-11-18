@@ -216,4 +216,40 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   @override
   String get phoneHomePaused =>
       'Notification access is off, so nothing is mirrored.';
+
+  @override
+  String homeTurnOn(String device) {
+    return 'Turn on Notifications on $device to see its notifications here.';
+  }
+
+  @override
+  String homeOffline(String device) {
+    return '$device is offline. Notifications show here when it\'s back.';
+  }
+
+  @override
+  String homeAccessOff(String device) {
+    return 'Notification access is off on $device. Open Ferret on $device to fix it.';
+  }
+
+  @override
+  String homeUnreachable(String device) {
+    return 'Couldn\'t reach notifications on $device.';
+  }
+
+  @override
+  String howTitle(String device) {
+    return 'Turn on Notifications on $device';
+  }
+
+  @override
+  String howBody(String device) {
+    return 'On $device, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.';
+  }
+
+  @override
+  String get how => 'How?';
+
+  @override
+  String get ok => 'OK';
 }

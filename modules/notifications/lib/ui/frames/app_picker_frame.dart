@@ -48,7 +48,7 @@ class AppPickerFrame extends StatelessWidget {
               ),
               Spacing.v12,
               Button(
-                variant: .secondary,
+                variant: .ghost,
                 label: l10n.tryAgain,
                 onPressed: viewModel.reload,
               ),

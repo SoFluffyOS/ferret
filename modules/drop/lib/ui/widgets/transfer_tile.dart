@@ -124,7 +124,7 @@ class TransferTile extends StatelessWidget {
                 Button(
                   variant: switch (action.primary) {
                     true => ButtonVariant.primary,
-                    false => ButtonVariant.secondary,
+                    false => ButtonVariant.ghost,
                   },
                   label: action.label,
                   icon: Icon(action.icon, size: Spacing.d14),

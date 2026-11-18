@@ -182,7 +182,7 @@ class _Ready extends StatelessWidget {
           if (hasMissing) ...[
             Spacing.v12,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: switch (needsSettings) {
                 true => l10n.openSettings,
                 false => l10n.allowRest,

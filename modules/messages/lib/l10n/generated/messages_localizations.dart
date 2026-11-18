@@ -534,6 +534,30 @@ abstract class MessagesLocalizations {
   /// In en, this message translates to:
   /// **'Ferret keeps recent texts on this computer so they show while the phone is offline.'**
   String get forgetDetail;
+
+  /// No description provided for @forgetConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget saved texts?'**
+  String get forgetConfirmTitle;
+
+  /// No description provided for @forgetConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes the texts saved on this computer. Your phone keeps them all.'**
+  String get forgetConfirmBody;
+
+  /// No description provided for @forgetConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get forgetConfirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _MessagesLocalizationsDelegate

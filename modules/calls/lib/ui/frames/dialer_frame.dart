@@ -136,7 +136,7 @@ class _RecentCalls extends StatelessWidget {
             ),
             Spacing.v12,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.retry,
               enable: !loading,
               onPressed: viewModel.loadRecent,

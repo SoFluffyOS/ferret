@@ -360,9 +360,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get settingsHistoryEmptyShared => 'Nobody has seen this screen yet.';
 
   @override
-  String get settingsHistoryEmptyViewed => 'You haven\'t mirrored a phone yet.';
-
-  @override
   String get clearHistory => 'Clear history';
 
   @override

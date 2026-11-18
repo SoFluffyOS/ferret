@@ -16,7 +16,7 @@ class PhonesSettingsFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final phones = context.select<PhonesViewModel, List<PhoneStatus>>(
-      (viewModel) => viewModel.phones,
+      (viewModel) => viewModel.pairedPhones,
     );
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -74,7 +74,7 @@ class _PhoneCard extends StatelessWidget {
           if (phone.unreachable) ...[
             Spacing.v8,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.tryAgain,
               onPressed: () => viewModel.retry(phone.deviceId),
             ),
@@ -90,7 +90,7 @@ class _PhoneCard extends StatelessWidget {
             ),
             Spacing.v12,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.chooseApps,
               onPressed: onChooseApps,
             ),

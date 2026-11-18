@@ -78,7 +78,7 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
           ..._limits(l10n, platform, abilities),
           Spacing.v12,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.settingsTestRing,
             tooltip: l10n.settingsTestRingBody,
             onPressed: () => unawaited(viewModel.testRing()),

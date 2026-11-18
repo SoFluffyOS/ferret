@@ -38,7 +38,7 @@ class PowerSettingsFrame extends StatelessWidget {
           Text(l10n.tierSummary(tier), style: style),
           Spacing.v12,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.settingsOpen,
             onPressed: onOpen,
           ),

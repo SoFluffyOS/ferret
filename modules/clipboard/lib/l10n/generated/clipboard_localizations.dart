@@ -109,6 +109,12 @@ abstract class ClipboardLocalizations {
   /// **'Copy something here and paste it on your other devices.'**
   String get cardEmpty;
 
+  /// No description provided for @cardOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices are offline. Copies sync when one is back.'**
+  String get cardOffline;
+
   /// No description provided for @cardEmptyManual.
   ///
   /// In en, this message translates to:
@@ -262,7 +268,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @resultSensitive.
   ///
   /// In en, this message translates to:
-  /// **'Not sent: the app you copied from marked it as private. Turn on Private items below to send these.'**
+  /// **'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.'**
   String get resultSensitive;
 
   /// No description provided for @resultImagesOff.
@@ -370,13 +376,13 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsSensitive.
   ///
   /// In en, this message translates to:
-  /// **'Private items'**
+  /// **'Include passwords'**
   String get settingsSensitive;
 
   /// No description provided for @settingsSensitiveBody.
   ///
   /// In en, this message translates to:
-  /// **'Sync items that password managers mark as private. They leave memory after {minutes} min.'**
+  /// **'Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes} min.'**
   String settingsSensitiveBody(int minutes);
 
   /// No description provided for @settingsHistory.

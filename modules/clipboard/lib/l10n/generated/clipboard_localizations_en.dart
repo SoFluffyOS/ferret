@@ -17,6 +17,10 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
       'Copy something here and paste it on your other devices.';
 
   @override
+  String get cardOffline =>
+      'Your devices are offline. Copies sync when one is back.';
+
+  @override
   String get cardEmptyManual => 'Copy something, then tap Send clipboard.';
 
   @override
@@ -117,7 +121,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get resultSensitive =>
-      'Not sent: the app you copied from marked it as private. Turn on Private items below to send these.';
+      'Not sent: the app you copied from marked it as private. Turn on Include passwords in Settings to send these.';
 
   @override
   String get resultImagesOff =>
@@ -183,11 +187,11 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   }
 
   @override
-  String get settingsSensitive => 'Private items';
+  String get settingsSensitive => 'Include passwords';
 
   @override
   String settingsSensitiveBody(int minutes) {
-    return 'Sync items that password managers mark as private. They leave memory after $minutes min.';
+    return 'Off by default: copied passwords are skipped. On, they sync and are wiped after $minutes min.';
   }
 
   @override

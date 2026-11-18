@@ -27,6 +27,9 @@ class ClipboardCardFrame extends StatelessWidget {
     final needsManualSend = context.select<ClipboardViewModel, bool>(
       (viewModel) => viewModel.needsManualSend,
     );
+    final hasPeers = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.hasPeers,
+    );
     final viewModel = context.read<ClipboardViewModel>();
     final l10n = context.clipboardL10n;
     final palette = context.palette;
@@ -41,7 +44,7 @@ class ClipboardCardFrame extends StatelessWidget {
       builder: (context, now) => FeatureCard(
         icon: LucideIcons.clipboard,
         title: l10n.title,
-        subtitle: _subtitle(l10n, latest, now, needsManualSend),
+        subtitle: _subtitle(l10n, latest, now, needsManualSend, hasPeers),
         children: [
           if (latest != null) ClipPreview(entry: latest),
           if (needsManualSend && result != null) ...[
@@ -60,7 +63,7 @@ class ClipboardCardFrame extends StatelessWidget {
         actions: [
           if (canCopy)
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.copy,
               icon: Icon(LucideIcons.copy, size: Spacing.d16),
               onPressed: () => viewModel.copy(latest),
@@ -83,9 +86,14 @@ class ClipboardCardFrame extends StatelessWidget {
     ClipEntry? latest,
     DateTime now,
     bool needsManualSend,
+    bool hasPeers,
   ) {
     if (latest != null) {
       return l10n.statusOf(latest, now);
+    }
+
+    if (!hasPeers) {
+      return l10n.cardOffline;
     }
 
     if (needsManualSend) {

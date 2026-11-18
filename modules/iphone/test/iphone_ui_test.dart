@@ -332,7 +332,7 @@ void main() {
       await start(tester, settings: {IphoneSettings.enabledKey: true});
       await show(tester, host: .macos);
 
-      expect(find.textContaining('experimental'), findsOneWidget);
+      expect(find.textContaining('Experimental'), findsOneWidget);
 
       await finish(tester);
     });

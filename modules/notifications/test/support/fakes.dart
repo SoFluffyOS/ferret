@@ -160,6 +160,24 @@ class SettingsOnlyHost implements FeatureHost {
   TrustStore get trustStore => throw UnimplementedError();
 }
 
+/// A [SettingsOnlyHost] where the devices in [connected] have a session that
+/// doesn't offer mirroring.
+class ConnectedHost extends SettingsOnlyHost {
+  final Set<String> connected = {};
+
+  @override
+  Session? sessionFor(String deviceId) =>
+      switch (connected.contains(deviceId)) {
+        true => _IdleSession(),
+        false => null,
+      };
+}
+
+class _IdleSession implements Session {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 const signal = 'org.thoughtcrime.securesms';
 const game = 'com.example.game';
 

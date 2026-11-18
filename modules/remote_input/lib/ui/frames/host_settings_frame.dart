@@ -183,7 +183,7 @@ class _History extends StatelessWidget {
         if (history.isNotEmpty) ...[
           Spacing.v8,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.clearHistory,
             onPressed: () => unawaited(viewModel.clearHistory()),
           ),

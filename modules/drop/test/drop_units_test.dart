@@ -8,6 +8,33 @@ import 'package:path/path.dart' as p;
 import 'support/transfers.dart';
 
 void main() {
+  group('FolderLabel', () {
+    final posix = p.Context(style: p.Style.posix);
+
+    test('reads a folder in the home folder from there', () {
+      expect(
+        FolderLabel.of(
+          '/Users/me/Downloads/Ferret',
+          home: '/Users/me',
+          style: posix,
+        ),
+        'Downloads › Ferret',
+      );
+    });
+
+    test('keeps the last two folders of anything else', () {
+      expect(
+        FolderLabel.of('/var/folders/x1/T/inbox/Ferret', style: posix),
+        'inbox › Ferret',
+      );
+      expect(
+        FolderLabel.of('Download/Ferret', style: posix),
+        'Download › Ferret',
+      );
+      expect(FolderLabel.of('', style: posix), '');
+    });
+  });
+
   group('FileNames', () {
     test('keeps only the base name and strips unsafe characters', () {
       expect(FileNames.safe('../../etc/passwd'), 'passwd');

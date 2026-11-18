@@ -107,13 +107,22 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('the card says receiving from LocalSend is off', (tester) async {
+  testWidgets('LocalSend waits folded under other apps, offered as a choice', (
+    tester,
+  ) async {
     await start();
     await pumpCard(tester);
 
-    expect(find.text('Receive from LocalSend'), findsOneWidget);
+    expect(find.text('Receive from other apps'), findsOneWidget);
+    expect(find.text('LocalSend'), findsNothing);
+    expect(find.text('On for 10 min'), findsNothing);
+
+    await tester.tap(find.text('Receive from other apps'));
+    await tester.pump();
+
+    expect(find.text('LocalSend'), findsOneWidget);
     expect(
-      find.text("Off. LocalSend devices can't send to this one."),
+      find.text('Let devices with the LocalSend app send here.'),
       findsOneWidget,
     );
     expect(find.text('On for 10 min'), findsOneWidget);
@@ -125,7 +134,10 @@ void main() {
     await start(settings: {DropSettings.localSendEnabled: false});
     await pumpCard(tester);
 
-    expect(find.text('Receive from LocalSend'), findsNothing);
+    await tester.tap(find.text('Receive from other apps'));
+    await tester.pump();
+
+    expect(find.text('LocalSend'), findsNothing);
     expect(find.text('Send files…'), findsOneWidget);
   });
 

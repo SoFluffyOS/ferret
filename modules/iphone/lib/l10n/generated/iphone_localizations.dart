@@ -268,10 +268,16 @@ abstract class IphoneLocalizations {
   /// **'Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.'**
   String get limitsBody;
 
+  /// No description provided for @macNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental on a Mac'**
+  String get macNoteTitle;
+
   /// No description provided for @macNote.
   ///
   /// In en, this message translates to:
-  /// **'On a Mac this is experimental: it only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone\'s notifications to itself.'**
+  /// **'It only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone\'s notifications to itself.'**
   String get macNote;
 
   /// No description provided for @statusUnsupported.

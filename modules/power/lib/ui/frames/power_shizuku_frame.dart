@@ -101,7 +101,7 @@ class PowerShizukuFrame extends StatelessWidget {
               children: [
                 if (!batteryUnrestricted)
                   Button(
-                    variant: .secondary,
+                    variant: .ghost,
                     label: l10n.turnOn,
                     enable: !isBusy,
                     onPressed: viewModel.allowBackgroundRunning,

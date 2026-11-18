@@ -369,6 +369,27 @@ void main() {
   group('settings', () {
     Widget section() => framed(PowerSettingsFrame(onOpen: () => opened++));
 
+    testWidgets('only a phone gets a Power-ups section', (tester) async {
+      await start(tester, status: PowerStatus.unsupported);
+      await tester.pumpWidget(section());
+      final element = tester.element(find.byType(PowerSettingsFrame));
+
+      expect(
+        PowerFeatureUi(
+          feature: harness.feature,
+          onPhone: false,
+        ).buildSettings(element, _NoContext()),
+        isNull,
+      );
+      expect(
+        PowerFeatureUi(
+          feature: harness.feature,
+          onPhone: true,
+        ).buildSettings(element, _NoContext()),
+        isNotNull,
+      );
+    });
+
     testWidgets('a computer is told there is nothing to set up', (
       tester,
     ) async {

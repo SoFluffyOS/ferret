@@ -32,7 +32,7 @@ class ConsentDialog extends StatelessWidget {
         ),
         Spacing.v8,
         Button(
-          variant: .secondary,
+          variant: .ghost,
           label: l10n.allowOnce,
           tooltip: l10n.allowOnce,
           onPressed: () => onAnswer(.allowOnce),

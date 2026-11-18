@@ -102,5 +102,55 @@
   },
   "setUp": "Set up",
   "fix": "Fix",
-  "phoneHomePaused": "Notification access is off, so nothing is mirrored."
+  "phoneHomePaused": "Notification access is off, so nothing is mirrored.",
+  "homeTurnOn": "Turn on Notifications on {device} to see its notifications here.",
+  "@homeTurnOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "homeOffline": "{device} is offline. Notifications show here when it's back.",
+  "@homeOffline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "homeAccessOff": "Notification access is off on {device}. Open Ferret on {device} to fix it.",
+  "@homeAccessOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "homeUnreachable": "Couldn't reach notifications on {device}.",
+  "@homeUnreachable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "howTitle": "Turn on Notifications on {device}",
+  "@howTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "howBody": "On {device}, open Ferret, tap Turn on more, then Notifications. Ferret asks for notification access and lets you pick the apps.",
+  "@howBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "how": "How?",
+  "ok": "OK"
 }

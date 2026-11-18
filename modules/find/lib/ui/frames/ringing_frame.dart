@@ -48,7 +48,7 @@ class RingingFrame extends StatelessWidget {
                   Text(
                     l10n.ringingBody(ring.requesterName),
                     textAlign: .center,
-                    style: typography.body1.copyWith(color: palette.mutedText),
+                    style: typography.body2.copyWith(color: palette.mutedText),
                   ),
                   if (ring.muted) ...[
                     Spacing.v8,

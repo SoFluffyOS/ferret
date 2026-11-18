@@ -57,7 +57,7 @@ class _TouchpadPageState extends State<TouchpadPage> {
       actions: [
         if (isActive)
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.stop,
             onPressed: () => unawaited(Navigator.of(context).maybePop()),
           ),

@@ -19,6 +19,9 @@ class ClipboardViewModel extends ChangeNotifier {
 
   ClipEntry? get latest => feature.latest;
 
+  /// Whether a connected device would get a copy made now.
+  bool get hasPeers => feature.hasPeers;
+
   int get historyCount => feature.history.length;
 
   ClipboardAccess get access => feature.access;

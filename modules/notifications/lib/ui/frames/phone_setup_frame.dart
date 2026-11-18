@@ -177,7 +177,7 @@ class _Ready extends StatelessWidget {
           ),
           Spacing.v12,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: '${l10n.chooseApps} · ${l10n.appCount(appCount)}',
             onPressed: onChooseApps,
           ),

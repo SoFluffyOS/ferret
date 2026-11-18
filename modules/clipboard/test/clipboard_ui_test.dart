@@ -70,6 +70,21 @@ void main() {
     expect(find.text('Send clipboard'), findsNothing);
   });
 
+  testWidgets('with every device offline the card says copies wait', (
+    tester,
+  ) async {
+    await start(tester);
+    host.sessions = [];
+
+    await tester.pumpWidget(card());
+
+    expect(
+      find.text('Your devices are offline. Copies sync when one is back.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('paste it on your other devices'), findsNothing);
+  });
+
   testWidgets('a received clip says where it came from', (tester) async {
     await start(tester);
     await tester.pumpWidget(card());

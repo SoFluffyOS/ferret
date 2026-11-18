@@ -46,7 +46,7 @@ class SuggestionTile extends StatelessWidget {
           ),
           Spacing.h8,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: l10n.open,
             mainAxisSize: .min,
             padding: EdgeInsets.symmetric(

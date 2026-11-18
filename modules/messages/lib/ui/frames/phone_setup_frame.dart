@@ -199,7 +199,7 @@ class _Ready extends StatelessWidget {
           if (contactsMissing || sendMissing) ...[
             Spacing.v8,
             Button(
-              variant: .secondary,
+              variant: .ghost,
               label: l10n.allowAccess,
               onPressed: viewModel.requestAccess,
             ),

@@ -89,7 +89,7 @@ class PowerRootFrame extends StatelessWidget {
                 onPressed: viewModel.stopUsingRoot,
               ),
               false => Button(
-                variant: .secondary,
+                variant: .ghost,
                 label: l10n.useRoot,
                 enable: !isBusy,
                 onPressed: viewModel.useRoot,

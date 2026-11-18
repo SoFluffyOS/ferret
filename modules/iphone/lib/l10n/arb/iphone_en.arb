@@ -34,7 +34,8 @@
   "worksBody": "Notifications as they arrive, with Clear, Answer and Decline. Play, pause, skip and volume for whatever the iPhone plays.",
   "limitsTitle": "Not yet",
   "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.",
-  "macNote": "On a Mac this is experimental: it only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone's notifications to itself.",
+  "macNoteTitle": "Experimental on a Mac",
+  "macNote": "It only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone's notifications to itself.",
 
   "statusUnsupported": "This computer has no Bluetooth LE, which the iPhone link needs.",
   "statusNotConfigured": "This build of Ferret isn't allowed to use Bluetooth.",

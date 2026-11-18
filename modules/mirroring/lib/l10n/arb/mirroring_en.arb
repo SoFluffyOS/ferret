@@ -353,7 +353,6 @@
   "settingsViewerHint": "Open a connected Android phone and choose Show screen. The phone asks its owner every time.",
   "settingsHistoryTitle": "History",
   "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",
-  "settingsHistoryEmptyViewed": "You haven't mirrored a phone yet.",
   "clearHistory": "Clear history",
   "healthViewing": "Showing its screen here",
   "healthTurnedOff": "Screen mirroring is off on {device}",

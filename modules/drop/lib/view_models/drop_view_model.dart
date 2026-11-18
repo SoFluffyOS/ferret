@@ -107,8 +107,14 @@ class DropViewModel extends ChangeNotifier {
 
   bool get autoAccept => feature.autoAccept;
 
-  /// The receive folder as people should read it.
+  /// The receive folder's full path, or "Download/Ferret" on Android.
   String get receiveFolder => _receiveFolder;
+
+  /// The receive folder as people read it, such as "Downloads › Ferret".
+  String get receiveFolderLabel => FolderLabel.of(
+    _receiveFolder,
+    home: Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'],
+  );
 
   bool get canChangeFolder => ReceiveFolders.canChange;
 

@@ -13,8 +13,13 @@ class DropLocalizationsEn extends DropLocalizations {
   String get title => 'Drop';
 
   @override
-  String get cardEmpty =>
-      'Drop files on Ferret, or pick Send files… on a device.';
+  String get cardEmpty => 'Drop files here to send them to your devices.';
+
+  @override
+  String get cardEmptyPhone => 'Send photos and files to your other devices.';
+
+  @override
+  String get otherApps => 'Receive from other apps';
 
   @override
   String get sendFiles => 'Send files…';
@@ -340,10 +345,10 @@ class DropLocalizationsEn extends DropLocalizations {
       'It\'s no longer on the network. Open LocalSend on it and try again.';
 
   @override
-  String get receiveTitle => 'Receive from LocalSend';
+  String get receiveTitle => 'LocalSend';
 
   @override
-  String get receiveOff => 'Off. LocalSend devices can\'t send to this one.';
+  String get receiveOff => 'Let devices with the LocalSend app send here.';
 
   @override
   String get receiveStarting => 'Turning on…';
@@ -410,10 +415,10 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
-  String get quickShareTitle => 'Receive from Quick Share';
+  String get quickShareTitle => 'Quick Share';
 
   @override
-  String get quickShareOff => 'Off. Android phones can\'t see this device.';
+  String get quickShareOff => 'Let Android phones without Ferret send here.';
 
   @override
   String get quickShareFinishing => 'No longer visible. Finishing a transfer…';

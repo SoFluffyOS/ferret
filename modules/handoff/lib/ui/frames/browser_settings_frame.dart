@@ -4,14 +4,13 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
-import 'package:handoff/services/services.dart';
 import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The browser extension's settings: the switch, whether the bridge is up
-/// (with a retry when its ports are taken), and the browsers allowed.
+/// (with a retry when it couldn't start), and the browsers allowed.
 class BrowserSettingsFrame extends StatelessWidget {
   const BrowserSettingsFrame({super.key});
 
@@ -33,7 +32,6 @@ class BrowserSettingsFrame extends StatelessWidget {
     final connected = context.select<HandoffViewModel, Set<String>>(
       (viewModel) => viewModel.connectedBrowserIds,
     );
-    final ports = BrowserBridgeServer.defaultPorts;
 
     return SurfaceCard(
       child: Column(
@@ -48,14 +46,14 @@ class BrowserSettingsFrame extends StatelessWidget {
           if (state.status == .failed) ...[
             Spacing.v8,
             Text(
-              l10n.browserBridgeFailed('${ports.first}', '${ports.last}'),
+              l10n.browserBridgeFailed,
               style: typography.caption1.copyWith(color: palette.danger),
             ),
             Spacing.v8,
             Align(
               alignment: .centerLeft,
               child: Button(
-                variant: .secondary,
+                variant: .ghost,
                 label: l10n.browserBridgeRetry,
                 mainAxisSize: .min,
                 onPressed: () => unawaited(viewModel.retryBrowserBridge()),

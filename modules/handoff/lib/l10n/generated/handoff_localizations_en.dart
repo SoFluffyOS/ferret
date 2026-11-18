@@ -208,9 +208,8 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
       'Ready. Pair from the extension\'s settings page.';
 
   @override
-  String browserBridgeFailed(String first, String last) {
-    return 'Couldn\'t start: ports $first to $last are used by another app. Quit that app, then try again.';
-  }
+  String get browserBridgeFailed =>
+      'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running.';
 
   @override
   String get browserBridgeRetry => 'Try again';

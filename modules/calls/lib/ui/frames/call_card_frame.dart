@@ -78,14 +78,14 @@ class _CallCard extends StatelessWidget {
         onPressed: () => viewModel.answer(call),
       ),
       Button(
-        variant: .secondary,
+        variant: .ghost,
         label: l10n.decline,
         icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
         enable: !busy,
         onPressed: () => viewModel.end(call),
       ),
       Button(
-        variant: .secondary,
+        variant: .ghost,
         label: switch (silenced) {
           true => l10n.silenced,
           false => l10n.silence,

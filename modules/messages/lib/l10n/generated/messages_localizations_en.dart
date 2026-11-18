@@ -272,4 +272,17 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   @override
   String get forgetDetail =>
       'Ferret keeps recent texts on this computer so they show while the phone is offline.';
+
+  @override
+  String get forgetConfirmTitle => 'Forget saved texts?';
+
+  @override
+  String get forgetConfirmBody =>
+      'This deletes the texts saved on this computer. Your phone keeps them all.';
+
+  @override
+  String get forgetConfirm => 'Forget';
+
+  @override
+  String get cancel => 'Cancel';
 }

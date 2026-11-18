@@ -412,8 +412,8 @@ abstract class HandoffLocalizations {
   /// No description provided for @browserBridgeFailed.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t start: ports {first} to {last} are used by another app. Quit that app, then try again.'**
-  String browserBridgeFailed(String first, String last);
+  /// **'Ferret couldn\'t start the browser connection. Another copy of Ferret may be running.'**
+  String get browserBridgeFailed;
 
   /// No description provided for @browserBridgeRetry.
   ///

@@ -103,8 +103,20 @@ abstract class DropLocalizations {
   /// No description provided for @cardEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Drop files on Ferret, or pick Send files… on a device.'**
+  /// **'Drop files here to send them to your devices.'**
   String get cardEmpty;
+
+  /// No description provided for @cardEmptyPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Send photos and files to your other devices.'**
+  String get cardEmptyPhone;
+
+  /// No description provided for @otherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive from other apps'**
+  String get otherApps;
 
   /// No description provided for @sendFiles.
   ///
@@ -565,13 +577,13 @@ abstract class DropLocalizations {
   /// No description provided for @receiveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Receive from LocalSend'**
+  /// **'LocalSend'**
   String get receiveTitle;
 
   /// No description provided for @receiveOff.
   ///
   /// In en, this message translates to:
-  /// **'Off. LocalSend devices can\'t send to this one.'**
+  /// **'Let devices with the LocalSend app send here.'**
   String get receiveOff;
 
   /// No description provided for @receiveStarting.
@@ -673,13 +685,13 @@ abstract class DropLocalizations {
   /// No description provided for @quickShareTitle.
   ///
   /// In en, this message translates to:
-  /// **'Receive from Quick Share'**
+  /// **'Quick Share'**
   String get quickShareTitle;
 
   /// No description provided for @quickShareOff.
   ///
   /// In en, this message translates to:
-  /// **'Off. Android phones can\'t see this device.'**
+  /// **'Let Android phones without Ferret send here.'**
   String get quickShareOff;
 
   /// No description provided for @quickShareFinishing.

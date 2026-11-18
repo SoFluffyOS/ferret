@@ -36,7 +36,7 @@ class StatusLine extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: typography.body2.copyWith(color: palette.text),
+            style: typography.base2.copyWith(color: palette.text),
           ),
         ),
       ],
