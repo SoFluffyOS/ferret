@@ -2,10 +2,10 @@
   "@@locale": "en",
   "appName": "Ferret",
   "homeYourDevices": "Your devices",
-  "homeNearby": "Nearby",
+  "homeNearby": "Devices near you",
   "homeNoDevicesTitle": "No devices yet",
   "homeNoDevicesBody": "Pair your phone and your computer to start passing things between them.",
-  "homePairDevice": "Pair a device",
+  "homePairDevice": "Add a device",
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
   "deviceLastSeen": "Last seen {time}",
@@ -17,10 +17,10 @@
     }
   },
   "nearbyPairHint": "Tap to pair",
-  "pairTitle": "Pair a device",
-  "pairShowCode": "Show code",
-  "pairEnterCode": "Use a link",
-  "pairShowCodeBody": "On your phone, open Ferret and tap Scan the code on your computer.",
+  "pairTitle": "Add a device",
+  "pairShowCode": "Pair with a QR code",
+  "pairEnterCode": "Other ways",
+  "pairShowCodeBody": "On your phone, open Ferret, tap +, then Can't see your device? and scan this code. Scanning is enough: no code to compare.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Link copied",
   "pairExpiresIn": "Expires in {minutes} min",
@@ -38,7 +38,7 @@
   "pairAddressLabel": "Address of the other device",
   "pairAddressHint": "e.g. 192.168.1.20:47640",
   "pairConnect": "Connect",
-  "pairCompareTitle": "Compare the codes",
+  "pairCompareTitle": "Check that the other device shows this code.",
   "pairCompareBody": "Make sure {device} shows the same code, then confirm there.",
   "@pairCompareBody": {
     "placeholders": {
@@ -57,11 +57,11 @@
     }
   },
   "pairFailedUnreachable": "Couldn't reach that device. Are both on the same network?",
-  "pairFailedRejected": "The other device said no.",
+  "pairFailedRejected": "The other device said not now.",
   "pairFailedExpired": "That code has expired. Show a new one.",
   "pairFailedBadProof": "That code doesn't match. Try a new one.",
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
-  "pairFailedTimedOut": "No answer in time.",
+  "pairFailedTimedOut": "The other device didn't answer.",
   "pairFailedProtocol": "Something went wrong while pairing.",
   "promptTitle": "Pair with {device}?",
   "@promptTitle": {
@@ -71,7 +71,7 @@
       }
     }
   },
-  "promptBody": "Only accept if {device} shows this code too.",
+  "promptBody": "Pair only if {device} shows the same code.",
   "@promptBody": {
     "placeholders": {
       "device": {
@@ -80,7 +80,7 @@
     }
   },
   "promptAccept": "Pair",
-  "promptReject": "Don't pair",
+  "promptReject": "Not now",
   "deviceTitleId": "Device ID",
   "deviceActions": "Actions",
   "deviceUnpair": "Unpair",
@@ -357,8 +357,8 @@
   "onboardNameLabel": "Device name",
   "onboardContinue": "Continue",
   "onboardPairTitle": "Pair your other device",
-  "onboardPairBodyComputer": "Install Ferret on your phone, open it, and tap Scan the code on your computer.",
-  "onboardPairBodyPhone": "Open Ferret on your computer, click Pair a device, then scan the code it shows.",
+  "onboardPairBodyComputer": "Open Ferret on your phone, on the same Wi-Fi. It shows up here.",
+  "onboardPairBodyPhone": "Open Ferret on your computer, on the same Wi-Fi. It shows up here.",
   "onboardPairWaiting": "Waiting for your other device…",
   "onboardPairDone": "Paired with {device}",
   "@onboardPairDone": {
@@ -432,5 +432,171 @@
   },
   "pauseTitle": "Pause Ferret?",
   "pauseBody": "Your devices won't connect or sync until you resume.",
-  "settingsConnectByHand": "Connect by hand"
+  "settingsConnectByHand": "Connect by hand",
+  "nearbyLooking": "Looking for devices…",
+  "nearbyNone": "No devices found. Open Ferret on your other device, on the same Wi-Fi.",
+  "nearbyLookAgain": "Look again",
+  "nearbyPair": "Pair",
+  "nearbyConnecting": "Connecting to {device}…",
+  "@nearbyConnecting": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyCheckCode": "Check that {device} shows this code.",
+  "@nearbyCheckCode": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyTheyMatch": "They match",
+  "nearbyTapThere": "On {device}, tap Pair.",
+  "@nearbyTapThere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyWaiting": "Waiting for {device}…",
+  "@nearbyWaiting": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyTryAgain": "Try again",
+  "nearbyNoAnswer": "{device} didn't answer.",
+  "@nearbyNoAnswer": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyNotNow": "{device} said not now.",
+  "@nearbyNotNow": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyUnreachable": "Couldn't reach {device}. Are both on the same Wi-Fi?",
+  "@nearbyUnreachable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyBlockedTitle": "Ferret can't look for your devices",
+  "nearbyBlockedBody": "Your system needs your OK. Allow Ferret under Privacy & Security, Local Network.",
+  "nearbyOpenSettings": "Open Settings",
+  "pairCantSee": "Can't see your device?",
+  "pairCantSeeSteps": "1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.",
+  "promptAlsoOne": "You'll also be connected to {first}.",
+  "@promptAlsoOne": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      }
+    }
+  },
+  "promptAlsoTwo": "You'll also be connected to {first} and {second}.",
+  "@promptAlsoTwo": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "promptAlsoMore": "You'll also be connected to {first}, {second} and {count} more.",
+  "@promptAlsoMore": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "promptSecondsLeft": "{seconds} s",
+  "@promptSecondsLeft": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "promptNotice": "{device} wants to pair",
+  "@promptNotice": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "promptNoticeBody": "Open Ferret to compare the code.",
+  "joinedNotice": "{device} joined your devices",
+  "@joinedNotice": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedNoticeBody": "Added by {introducer}",
+  "@joinedNoticeBody": {
+    "placeholders": {
+      "introducer": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedBanner": "{device} joined your devices (added by {introducer})",
+  "@joinedBanner": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "introducer": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedUndo": "Undo",
+  "joinedKeep": "OK",
+  "devicePairedThrough": "Paired through {device}",
+  "@devicePairedThrough": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceForgetScopeBody": "{device} is connected to your other devices too.",
+  "@deviceForgetScopeBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceForgetEverywhere": "Remove from all my devices",
+  "deviceForgetHere": "Forget here only",
+  "settingsSharePairings": "Share pairings with my devices",
+  "settingsSharePairingsBody": "Pair a device once and it joins all your devices. Remove it once and it leaves them all."
 }

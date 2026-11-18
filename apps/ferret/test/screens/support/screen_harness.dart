@@ -42,11 +42,12 @@ final screensDirectory = Directory('../../temp/screens');
 /// One running Ferret: the engine the app shows, plus a second engine on
 /// loopback when the screen needs a connected phone.
 class ScreenRig {
-  ScreenRig._(this.engine, this.app, this.featureContext);
+  ScreenRig._(this.engine, this.app, this.featureContext, this._discovery);
 
   final FerretEngine engine;
   final FerretApp app;
   final FeatureContext featureContext;
+  final SilentDiscovery _discovery;
   final List<FerretEngine> _others = [];
   final GlobalKey boundaryKey = GlobalKey();
 
@@ -62,6 +63,7 @@ class ScreenRig {
     bool asPhone = false,
   }) async {
     final rig = await tester.runAsync(() async {
+      final discovery = SilentDiscovery();
       final engine = await FerretEngine.create(
         secrets: MemorySecretStore(),
         settings: MemorySettingsStore(),
@@ -80,7 +82,7 @@ class ScreenRig {
           ),
         },
         features: [for (final feature in features) feature.feature],
-        discovery: SilentDiscovery(),
+        discovery: discovery,
         port: 0,
       );
       await engine.start();
@@ -109,7 +111,7 @@ class ScreenRig {
         features: features,
         featureContext: featureContext,
       );
-      return ScreenRig._(engine, app, featureContext);
+      return ScreenRig._(engine, app, featureContext, discovery);
     });
     if (rig == null) {
       throw StateError('Could not start the engine.');
@@ -209,6 +211,87 @@ class ScreenRig {
 
       return phoneEngine.identity.deviceId;
     });
+  }
+
+  /// Makes an unpaired device show up under "Devices near you". Nobody
+  /// answers at its address.
+  Future<void> addNearby(
+    WidgetTester tester, {
+    required String name,
+    Platform platform = .PLATFORM_ANDROID,
+    FormFactor formFactor = .FORM_FACTOR_PHONE,
+  }) async {
+    _discovery.find(
+      DiscoveredPeer(
+        announce: Announce(
+          deviceId: 'nearby${name.hashCode.abs()}',
+          name: name,
+          platform: platform,
+          formFactor: formFactor,
+          port: 9,
+        ),
+        host: '127.0.0.1',
+      ),
+    );
+    await settle(tester);
+  }
+
+  /// Starts a real second device and shows it under "Devices near you", so
+  /// pairing with it gets as far as the code. Returns its engine.
+  Future<FerretEngine?> startNearby(
+    WidgetTester tester, {
+    String name = 'Pixel 9',
+    List<String> alreadyPairedWith = const [],
+  }) async {
+    final other = await tester.runAsync(() async {
+      final secrets = MemorySecretStore();
+      final other = await FerretEngine.create(
+        secrets: secrets,
+        settings: MemorySettingsStore(),
+        device: LocalDevice(
+          name: name,
+          platform: .PLATFORM_ANDROID,
+          formFactor: .FORM_FACTOR_PHONE,
+          appVersion: '0.1.0',
+        ),
+        discovery: SilentDiscovery(),
+        port: 0,
+      );
+      for (final (index, paired) in alreadyPairedWith.indexed) {
+        await other.trustStore.save(
+          TrustedDevice(
+            id: 'alreadypaired$index',
+            name: paired,
+            platform: .PLATFORM_MACOS,
+            formFactor: .FORM_FACTOR_LAPTOP,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime.now(),
+          ),
+        );
+      }
+
+      await other.start();
+      _others.add(other);
+      return other;
+    });
+    if (other == null) {
+      return null;
+    }
+
+    _discovery.find(
+      DiscoveredPeer(
+        announce: Announce(
+          deviceId: other.identity.deviceId,
+          name: name,
+          platform: .PLATFORM_ANDROID,
+          formFactor: .FORM_FACTOR_PHONE,
+          port: other.port,
+        ),
+        host: '127.0.0.1',
+      ),
+    );
+    await settle(tester);
+    return other;
   }
 
   /// Shows the app inside a boundary the harness can capture.
@@ -391,10 +474,15 @@ void setScreen(WidgetTester tester, ScreenSize size, Brightness brightness) {
   });
 }
 
-/// Finds no one; the screens set up devices themselves.
+/// Finds no one by itself; the screens set up devices themselves, and
+/// [find] puts one under "Devices near you".
 class SilentDiscovery implements Discovery {
+  final StreamController<DiscoveredPeer> _peers = .broadcast();
+
   @override
-  Stream<DiscoveredPeer> get peers => const Stream.empty();
+  Stream<DiscoveredPeer> get peers => _peers.stream;
+
+  void find(DiscoveredPeer peer) => _peers.add(peer);
 
   @override
   Future<void> start(Announce self) async {}

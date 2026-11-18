@@ -5,7 +5,8 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The first thing people see: what Ferret does, the privacy promise, and
-/// one button to pair.
+/// the way to the other ways to pair. The devices near you sit right above
+/// it, with the real next step.
 class EmptyDevices extends StatelessWidget {
   const EmptyDevices({super.key, required this.onPair});
 
@@ -42,8 +43,9 @@ class EmptyDevices extends StatelessWidget {
             ),
             Spacing.vertical(Spacing.d20),
             Button(
-              variant: .primary,
-              label: l10n.homePairDevice,
+              variant: .ghost,
+              label: l10n.pairCantSee,
+              titleExpand: .shrink,
               onPressed: onPair,
             ),
             Spacing.v16,

@@ -38,6 +38,7 @@ dependencies:
     path: ../../packages/sofluffy_ui
   transport:
     path: ../../packages/transport
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

@@ -8,18 +8,16 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/nearby_frame.dart';
 import 'package:shell/ui/pages/scan_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Pairs this device with another: show a QR code, or use a link or an
-/// address.
+/// Adds a device: the ones near you first, each with a Pair button. The
+/// QR code, a link and an address wait behind "Can't see your device?".
 class PairPage extends StatefulWidget {
-  const PairPage({super.key, this.initialAddress});
-
-  /// Starts pairing with this `host:port` right away, such as a nearby device.
-  final String? initialAddress;
+  const PairPage({super.key});
 
   @override
   State<PairPage> createState() => _PairPageState();
@@ -37,12 +35,6 @@ class _PairPageState extends State<PairPage> {
     _viewModel = PairingViewModel(
       ShellScope.read(context).featureContext.engine,
     );
-    unawaited(_viewModel.createOffer());
-
-    if (widget.initialAddress case final address?) {
-      _address.text = address;
-      _viewModel.pairWithAddress(address);
-    }
   }
 
   @override
@@ -64,16 +56,21 @@ class _PairPageState extends State<PairPage> {
         backLabel: l10n.back,
         children: [
           const _PairingStatus(),
-          if (_canScan) ...[
-            SectionTitle(l10n.scanSection),
-            Button(variant: .primary, label: l10n.scanButton, onPressed: _scan),
-          ],
-          SectionTitle(l10n.pairShowCode),
-          const _OfferCard(),
-          SectionTitle(l10n.pairEnterCode),
-          Column(
-            crossAxisAlignment: .stretch,
+          const NearbyFrame(),
+          CantSeeDevice(
+            onOpened: () => unawaited(_viewModel.createOffer()),
             children: [
+              if (_canScan) ...[
+                SectionTitle(l10n.scanSection),
+                Button(
+                  variant: .ghost,
+                  label: l10n.scanButton,
+                  onPressed: _scan,
+                ),
+              ],
+              SectionTitle(l10n.pairShowCode),
+              const _OfferCard(),
+              SectionTitle(l10n.pairEnterCode),
               InputText(
                 controller: _link,
                 label: l10n.pairLinkLabel,
@@ -91,7 +88,7 @@ class _PairPageState extends State<PairPage> {
               ),
               Spacing.v12,
               Button(
-                variant: .primary,
+                variant: .ghost,
                 label: l10n.pairConnect,
                 onPressed: _connect,
               ),
@@ -220,19 +217,41 @@ class _PairingStatus extends StatelessWidget {
         l10n.pairWaiting,
         style: typography.body2.copyWith(color: palette.mutedText),
       ),
-      PairingComparing(:final code) => Column(
+      PairingComparing(:final code, :final confirmedHere) => Column(
+        crossAxisAlignment: .stretch,
         children: [
-          Text(
-            l10n.pairCompareTitle,
-            style: typography.title3.copyWith(color: palette.text),
-          ),
-          Spacing.v12,
           ComparisonCode(code: code),
           Spacing.v12,
           Text(
-            l10n.pairWaiting,
+            switch (confirmedHere) {
+              true => l10n.pairWaiting,
+              false => l10n.pairCompareTitle,
+            },
+            textAlign: .center,
             style: typography.body2.copyWith(color: palette.mutedText),
           ),
+          if (!confirmedHere) ...[
+            Spacing.v12,
+            Row(
+              children: [
+                Expanded(
+                  child: Button(
+                    variant: .ghost,
+                    label: l10n.cancel,
+                    onPressed: context.read<PairingViewModel>().cancel,
+                  ),
+                ),
+                Spacing.h12,
+                Expanded(
+                  child: Button(
+                    variant: .primary,
+                    label: l10n.nearbyTheyMatch,
+                    onPressed: context.read<PairingViewModel>().confirm,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
       PairingDone(:final outcome) => Text(
@@ -255,7 +274,7 @@ class _PairingStatus extends StatelessWidget {
       padding: EdgeInsets.only(top: Spacing.d8),
       child: SurfaceCard(
         padding: EdgeInsets.all(Spacing.d16),
-        child: Center(child: content),
+        child: content,
       ),
     );
   }
@@ -270,7 +289,7 @@ class _PairingStatus extends StatelessWidget {
           .badProof => l10n.pairFailedBadProof,
           .wrongDevice => l10n.pairFailedWrongDevice,
           .timedOut => l10n.pairFailedTimedOut,
-          .cancelled => l10n.pairFailedRejected,
+          .cancelled => l10n.pairFailedProtocol,
           .protocol => l10n.pairFailedProtocol,
         },
       };

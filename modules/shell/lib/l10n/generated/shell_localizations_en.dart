@@ -16,7 +16,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get homeYourDevices => 'Your devices';
 
   @override
-  String get homeNearby => 'Nearby';
+  String get homeNearby => 'Devices near you';
 
   @override
   String get homeNoDevicesTitle => 'No devices yet';
@@ -26,7 +26,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Pair your phone and your computer to start passing things between them.';
 
   @override
-  String get homePairDevice => 'Pair a device';
+  String get homePairDevice => 'Add a device';
 
   @override
   String get deviceConnected => 'Connected';
@@ -43,17 +43,17 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get nearbyPairHint => 'Tap to pair';
 
   @override
-  String get pairTitle => 'Pair a device';
+  String get pairTitle => 'Add a device';
 
   @override
-  String get pairShowCode => 'Show code';
+  String get pairShowCode => 'Pair with a QR code';
 
   @override
-  String get pairEnterCode => 'Use a link';
+  String get pairEnterCode => 'Other ways';
 
   @override
   String get pairShowCodeBody =>
-      'On your phone, open Ferret and tap Scan the code on your computer.';
+      'On your phone, open Ferret, tap +, then Can\'t see your device? and scan this code. Scanning is enough: no code to compare.';
 
   @override
   String get pairCopyLink => 'Copy link';
@@ -88,7 +88,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairConnect => 'Connect';
 
   @override
-  String get pairCompareTitle => 'Compare the codes';
+  String get pairCompareTitle => 'Check that the other device shows this code.';
 
   @override
   String pairCompareBody(String device) {
@@ -108,7 +108,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Couldn\'t reach that device. Are both on the same network?';
 
   @override
-  String get pairFailedRejected => 'The other device said no.';
+  String get pairFailedRejected => 'The other device said not now.';
 
   @override
   String get pairFailedExpired => 'That code has expired. Show a new one.';
@@ -121,7 +121,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'A different device answered. Pairing stopped to keep you safe.';
 
   @override
-  String get pairFailedTimedOut => 'No answer in time.';
+  String get pairFailedTimedOut => 'The other device didn\'t answer.';
 
   @override
   String get pairFailedProtocol => 'Something went wrong while pairing.';
@@ -133,14 +133,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String promptBody(String device) {
-    return 'Only accept if $device shows this code too.';
+    return 'Pair only if $device shows the same code.';
   }
 
   @override
   String get promptAccept => 'Pair';
 
   @override
-  String get promptReject => 'Don\'t pair';
+  String get promptReject => 'Not now';
 
   @override
   String get deviceTitleId => 'Device ID';
@@ -552,11 +552,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get onboardPairBodyComputer =>
-      'Install Ferret on your phone, open it, and tap Scan the code on your computer.';
+      'Open Ferret on your phone, on the same Wi-Fi. It shows up here.';
 
   @override
   String get onboardPairBodyPhone =>
-      'Open Ferret on your computer, click Pair a device, then scan the code it shows.';
+      'Open Ferret on your computer, on the same Wi-Fi. It shows up here.';
 
   @override
   String get onboardPairWaiting => 'Waiting for your other device…';
@@ -674,4 +674,147 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsConnectByHand => 'Connect by hand';
+
+  @override
+  String get nearbyLooking => 'Looking for devices…';
+
+  @override
+  String get nearbyNone =>
+      'No devices found. Open Ferret on your other device, on the same Wi-Fi.';
+
+  @override
+  String get nearbyLookAgain => 'Look again';
+
+  @override
+  String get nearbyPair => 'Pair';
+
+  @override
+  String nearbyConnecting(String device) {
+    return 'Connecting to $device…';
+  }
+
+  @override
+  String nearbyCheckCode(String device) {
+    return 'Check that $device shows this code.';
+  }
+
+  @override
+  String get nearbyTheyMatch => 'They match';
+
+  @override
+  String nearbyTapThere(String device) {
+    return 'On $device, tap Pair.';
+  }
+
+  @override
+  String nearbyWaiting(String device) {
+    return 'Waiting for $device…';
+  }
+
+  @override
+  String get nearbyTryAgain => 'Try again';
+
+  @override
+  String nearbyNoAnswer(String device) {
+    return '$device didn\'t answer.';
+  }
+
+  @override
+  String nearbyNotNow(String device) {
+    return '$device said not now.';
+  }
+
+  @override
+  String nearbyUnreachable(String device) {
+    return 'Couldn\'t reach $device. Are both on the same Wi-Fi?';
+  }
+
+  @override
+  String get nearbyBlockedTitle => 'Ferret can\'t look for your devices';
+
+  @override
+  String get nearbyBlockedBody =>
+      'Your system needs your OK. Allow Ferret under Privacy & Security, Local Network.';
+
+  @override
+  String get nearbyOpenSettings => 'Open Settings';
+
+  @override
+  String get pairCantSee => 'Can\'t see your device?';
+
+  @override
+  String get pairCantSeeSteps =>
+      '1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.';
+
+  @override
+  String promptAlsoOne(String first) {
+    return 'You\'ll also be connected to $first.';
+  }
+
+  @override
+  String promptAlsoTwo(String first, String second) {
+    return 'You\'ll also be connected to $first and $second.';
+  }
+
+  @override
+  String promptAlsoMore(String first, String second, int count) {
+    return 'You\'ll also be connected to $first, $second and $count more.';
+  }
+
+  @override
+  String promptSecondsLeft(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String promptNotice(String device) {
+    return '$device wants to pair';
+  }
+
+  @override
+  String get promptNoticeBody => 'Open Ferret to compare the code.';
+
+  @override
+  String joinedNotice(String device) {
+    return '$device joined your devices';
+  }
+
+  @override
+  String joinedNoticeBody(String introducer) {
+    return 'Added by $introducer';
+  }
+
+  @override
+  String joinedBanner(String device, String introducer) {
+    return '$device joined your devices (added by $introducer)';
+  }
+
+  @override
+  String get joinedUndo => 'Undo';
+
+  @override
+  String get joinedKeep => 'OK';
+
+  @override
+  String devicePairedThrough(String device) {
+    return 'Paired through $device';
+  }
+
+  @override
+  String deviceForgetScopeBody(String device) {
+    return '$device is connected to your other devices too.';
+  }
+
+  @override
+  String get deviceForgetEverywhere => 'Remove from all my devices';
+
+  @override
+  String get deviceForgetHere => 'Forget here only';
+
+  @override
+  String get settingsSharePairings => 'Share pairings with my devices';
+
+  @override
+  String get settingsSharePairingsBody =>
+      'Pair a device once and it joins all your devices. Remove it once and it leaves them all.';
 }

@@ -87,6 +87,7 @@ class FerretEngine implements FeatureHost {
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
   final Set<String> _dialing = {};
+  final Set<PairingExchange> _pairing = {};
   final Map<String, ({DiscoveredPeer peer, DateTime seen})> _nearby = {};
   final List<PairingOfferHandle> _offers = [];
   final StreamController<List<Session>> _sessionChanges = .broadcast();
@@ -255,6 +256,10 @@ class FerretEngine implements FeatureHost {
     await _server?.close();
     _server = null;
 
+    for (final exchange in [..._pairing]) {
+      await exchange.close();
+    }
+
     final open = [..._sessions.values];
     for (final session in open) {
       await session.close();
@@ -420,12 +425,26 @@ class FerretEngine implements FeatureHost {
       return const PairingFailed(.wrongDevice);
     }
 
-    return _requestComparison(
-      PairingExchange(channel),
-      onCode: onCode,
-      host: host,
-      port: port,
+    final exchange = PairingExchange(channel);
+    return _whilePairing(
+      exchange,
+      () =>
+          _requestComparison(exchange, onCode: onCode, host: host, port: port),
     );
+  }
+
+  /// Keeps track of a pairing under way, so stopping the engine ends it
+  /// instead of leaving the other device waiting.
+  Future<T> _whilePairing<T>(
+    PairingExchange exchange,
+    Future<T> Function() pair,
+  ) async {
+    _pairing.add(exchange);
+    try {
+      return await pair();
+    } finally {
+      _pairing.remove(exchange);
+    }
   }
 
   /// Forgets [deviceId] here and tells it to forget this device too. With
@@ -947,10 +966,13 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
-    final accepted = switch (request.proof.isEmpty) {
-      true => await _answerComparison(exchange, envelope, request),
-      false => await _answerProof(exchange, envelope, request),
-    };
+    final accepted = await _whilePairing(
+      exchange,
+      () => switch (request.proof.isEmpty) {
+        true => _answerComparison(exchange, envelope, request),
+        false => _answerProof(exchange, envelope, request),
+      },
+    );
     if (!accepted) {
       await exchange.close();
       return;

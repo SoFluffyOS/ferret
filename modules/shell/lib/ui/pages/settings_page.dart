@@ -31,6 +31,8 @@ class SettingsPage extends StatelessWidget {
         SectionTitle(l10n.settingsThisDevice),
         ThisDeviceCard(engine: engine),
         BackgroundSettings(settings: engine.settings),
+        SectionTitle(l10n.homeYourDevices),
+        PairingSettings(engine: engine),
         for (final (feature, section) in sections) ...[
           SectionTitle(feature.title(context)),
           section,

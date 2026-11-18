@@ -9,6 +9,7 @@
 @Tags(['screens'])
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:calls/calls.dart';
@@ -114,11 +115,16 @@ final screens = <Screen>[
     onboarded: false,
     tall: true,
   ),
-  Screen('onboard_3b_more_ways', (tester, rig) async {
-    await rig.tapText(tester, 'Get started');
-    await rig.tapText(tester, 'Continue');
-    await rig.tapText(tester, 'More ways to pair');
-  }, onboarded: false),
+  Screen(
+    'onboard_3b_more_ways',
+    (tester, rig) async {
+      await rig.tapText(tester, 'Get started');
+      await rig.tapText(tester, 'Continue');
+      await rig.tapText(tester, "Can't see your device?");
+    },
+    onboarded: false,
+    tall: true,
+  ),
   Screen('onboard_4_ready_later', (tester, rig) async {
     await rig.tapText(tester, 'Get started');
     await rig.tapText(tester, 'Continue');
@@ -139,8 +145,65 @@ final screens = <Screen>[
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);
   }, tall: true),
+  Screen('home_nearby', (tester, rig) async {
+    await rig.addNearby(tester, name: 'Pixel 9');
+    await rig.addNearby(
+      tester,
+      name: 'Simon’s ThinkPad',
+      platform: .PLATFORM_LINUX,
+      formFactor: .FORM_FACTOR_LAPTOP,
+    );
+  }),
+  Screen('home_connected_nearby', (tester, rig) async {
+    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+    await rig.addNearby(
+      tester,
+      name: 'iPad',
+      platform: .PLATFORM_IOS,
+      formFactor: .FORM_FACTOR_TABLET,
+    );
+    await rig.settle(tester);
+  }, tall: true),
+  Screen('pair_code', (tester, rig) async {
+    await rig.startNearby(tester);
+    await rig.tapText(tester, 'Pair');
+  }),
+  Screen('pair_code_confirmed', (tester, rig) async {
+    await rig.startNearby(tester);
+    await rig.tapText(tester, 'Pair');
+    await rig.tapText(tester, 'They match');
+  }),
+  Screen('pair_request', (tester, rig) async {
+    final other = await rig.startNearby(
+      tester,
+      alreadyPairedWith: ['iPad', 'ThinkPad'],
+    );
+    if (other == null) {
+      return;
+    }
+
+    await tester.runAsync(() async {
+      unawaited(
+        other.pairWithAddress(
+          '127.0.0.1',
+          rig.engine.port,
+          onCode: (_) => true,
+        ),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await rig.settle(tester);
+  }),
   Screen('pair', (tester, rig) async {
     await rig.open(tester, const PairPage());
+  }),
+  Screen('pair_nearby', (tester, rig) async {
+    await rig.addNearby(tester, name: 'Pixel 9');
+    await rig.open(tester, const PairPage());
+  }),
+  Screen('pair_cant_see', (tester, rig) async {
+    await rig.open(tester, const PairPage());
+    await rig.tapText(tester, "Can't see your device?");
   }, tall: true),
   Screen('device_connected', (tester, rig) async {
     final phoneId = await rig.pairConnectedPhone(

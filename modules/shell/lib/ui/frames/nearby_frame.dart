@@ -1,33 +1,158 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/services/services.dart';
 import 'package:shell/ui/widgets/widgets.dart';
+import 'package:shell/view_models/view_models.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:transport/transport.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-/// Unpaired Ferret devices on this network.
-class NearbyFrame extends StatelessWidget {
-  const NearbyFrame({super.key, required this.onPair});
+/// Devices near you: unpaired Ferret devices on this network, each with a
+/// Pair button, kept up to date while the screen is open.
+class NearbyFrame extends StatefulWidget {
+  const NearbyFrame({super.key, this.watch = true});
 
-  final void Function(DiscoveredPeer peer) onPair;
+  /// Whether the user is waiting for a device to show up here. Then Ferret
+  /// keeps looking and says so, and says when it found nothing. Otherwise
+  /// the section only appears when there is someone to pair with.
+  final bool watch;
+
+  @override
+  State<NearbyFrame> createState() => _NearbyFrameState();
+}
+
+class _NearbyFrameState extends State<NearbyFrame> {
+  late final NearbyViewModel _viewModel = NearbyViewModel(
+    ShellScope.read(context).featureContext.engine,
+    watch: widget.watch,
+  );
+
+  @override
+  void didUpdateWidget(NearbyFrame oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.watch && !oldWidget.watch) {
+      unawaited(_viewModel.lookAgain());
+    }
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final nearby = context.select<EngineHost, List<DiscoveredPeer>>(
-      (host) => host.nearby,
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: _Nearby(watch: widget.watch),
     );
-    if (nearby.isEmpty) {
+  }
+}
+
+class _Nearby extends StatelessWidget {
+  const _Nearby({required this.watch});
+
+  final bool watch;
+
+  @override
+  Widget build(BuildContext context) {
+    final peers = context.select<NearbyViewModel, List<DiscoveredPeer>>(
+      (viewModel) => viewModel.peers,
+    );
+    final attempt = context.select<NearbyViewModel, NearbyAttempt?>(
+      (viewModel) => viewModel.attempt,
+    );
+    final isLooking = context.select<NearbyViewModel, bool>(
+      (viewModel) => viewModel.isLooking,
+    );
+    final hasLooked = context.select<NearbyViewModel, bool>(
+      (viewModel) => viewModel.hasLooked,
+    );
+    final isBlocked = context.select<NearbyViewModel, bool>(
+      (viewModel) => viewModel.isBlocked,
+    );
+    final viewModel = context.read<NearbyViewModel>();
+    final l10n = context.shellL10n;
+
+    if (peers.isEmpty && !watch && !isBlocked) {
       return const SizedBox.shrink();
     }
 
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SectionTitle(context.shellL10n.homeNearby),
-        for (final peer in nearby)
-          NearbyTile(peer: peer, onTap: () => onPair(peer)),
+        SectionTitle(
+          l10n.homeNearby,
+          trailing: switch (isLooking && peers.isNotEmpty) {
+            true => _Looking(l10n.nearbyLooking),
+            false => null,
+          },
+        ),
+        for (final (index, peer) in peers.indexed)
+          NearbyTile(
+            key: ValueKey(peer.deviceId),
+            peer: peer,
+            attempt: switch (attempt) {
+              final attempt? when attempt.peer.deviceId == peer.deviceId =>
+                attempt,
+              _ => null,
+            },
+            isFirst: index == 0 && attempt == null,
+            onPair: () => unawaited(viewModel.pair(peer)),
+            onConfirm: viewModel.confirm,
+            onCancel: viewModel.cancel,
+            onDismiss: viewModel.dismiss,
+          ),
+        if (peers.isEmpty)
+          switch ((isBlocked, hasLooked && !isLooking)) {
+            (true, _) => NearbyNotice(
+              title: l10n.nearbyBlockedTitle,
+              body: l10n.nearbyBlockedBody,
+              actionLabel: l10n.nearbyOpenSettings,
+              onAction: _openLocalNetworkSettings,
+            ),
+            (_, true) => NearbyNotice(
+              body: l10n.nearbyNone,
+              actionLabel: l10n.nearbyLookAgain,
+              onAction: () => unawaited(viewModel.lookAgain()),
+            ),
+            _ => NearbyNotice(body: l10n.nearbyLooking),
+          },
       ],
+    );
+  }
+
+  /// macOS and iOS keep the switch in System Settings; elsewhere there is
+  /// nothing to open.
+  void _openLocalNetworkSettings() {
+    final target = switch (Platform.isMacOS) {
+      true =>
+        'x-apple.systempreferences:com.apple.preference.security'
+            '?Privacy_LocalNetwork',
+      false => 'app-settings:',
+    };
+    unawaited(launchUrl(Uri.parse(target)));
+  }
+}
+
+class _Looking extends StatelessWidget {
+  const _Looking(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: context.fluffyTheme.typography.caption1.copyWith(
+        color: context.palette.mutedText,
+      ),
     );
   }
 }

@@ -38,18 +38,23 @@ void main() {
     expect(askedWhy, isTrue);
   });
 
-  testWidgets('the welcome card promises privacy and pairs in one tap', (
-    tester,
-  ) async {
-    var paired = false;
+  testWidgets(
+    'the welcome card promises privacy and leads to the other ways to pair',
+    (
+      tester,
+    ) async {
+      var paired = false;
 
-    await tester.pumpWidget(testApp(EmptyDevices(onPair: () => paired = true)));
+      await tester.pumpWidget(
+        testApp(EmptyDevices(onPair: () => paired = true)),
+      );
 
-    expect(
-      find.text('No account. No cloud. Stays on your network.'),
-      findsOneWidget,
-    );
-    await tester.tap(find.text('Pair a device'));
-    expect(paired, isTrue);
-  });
+      expect(
+        find.text('No account. No cloud. Stays on your network.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text("Can't see your device?"));
+      expect(paired, isTrue);
+    },
+  );
 }

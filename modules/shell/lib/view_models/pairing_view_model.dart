@@ -16,11 +16,13 @@ final class PairingConnecting extends PairingState {
   const PairingConnecting();
 }
 
-/// Comparing codes: show [code] while the other device confirms.
+/// Comparing codes: show [code]. [confirmedHere] once the user here said
+/// they match and only the other device is left to answer.
 final class PairingComparing extends PairingState {
-  const PairingComparing(this.code);
+  const PairingComparing(this.code, {this.confirmedHere = false});
 
   final String code;
+  final bool confirmedHere;
 }
 
 final class PairingDone extends PairingState {
@@ -29,8 +31,8 @@ final class PairingDone extends PairingState {
   final PairingOutcome outcome;
 }
 
-/// The pairing screen: this device's QR offer, and pairing with a link or an
-/// address someone typed.
+/// The other ways to pair: this device's QR offer, and pairing with a link
+/// or an address someone typed.
 class PairingViewModel extends ChangeNotifier {
   PairingViewModel(this._engine);
 
@@ -38,6 +40,7 @@ class PairingViewModel extends ChangeNotifier {
   PairingOfferHandle? _offer;
   PairingState _state = const PairingIdle();
   Timer? _ticker;
+  Completer<bool>? _decision;
   bool _disposed = false;
 
   PairingOfferHandle? get offer => _offer;
@@ -99,6 +102,9 @@ class PairingViewModel extends ChangeNotifier {
       return false;
     }
 
+    _decision?.complete(false);
+    final decision = Completer<bool>();
+    _decision = decision;
     _setState(const PairingConnecting());
     final (host, port) = parsed;
     unawaited(
@@ -108,15 +114,56 @@ class PairingViewModel extends ChangeNotifier {
             port,
             onCode: (code) {
               _setState(PairingComparing(code));
-              return true;
+              return decision.future;
             },
           )
-          .then((outcome) => _setState(PairingDone(outcome))),
+          .then((outcome) => _onAddressOutcome(decision, outcome)),
     );
     return true;
   }
 
+  /// The user saw the same code on the other device.
+  void confirm() {
+    final (state, decision) = (_state, _decision);
+    if (state is! PairingComparing ||
+        decision == null ||
+        decision.isCompleted) {
+      return;
+    }
+
+    decision.complete(true);
+    _setState(PairingComparing(state.code, confirmedHere: true));
+  }
+
+  /// Gives up on comparing: the codes differ, or the user changed their
+  /// mind.
+  void cancel() {
+    final decision = _decision;
+    if (decision == null || decision.isCompleted) {
+      return;
+    }
+
+    decision.complete(false);
+  }
+
   void reset() => _setState(const PairingIdle());
+
+  void _onAddressOutcome(Completer<bool> decision, PairingOutcome outcome) {
+    if (!decision.isCompleted) {
+      decision.complete(false);
+    }
+
+    if (_decision != decision) {
+      return;
+    }
+
+    _decision = null;
+    final state = switch (outcome) {
+      PairingFailed(reason: .cancelled) => const PairingIdle(),
+      _ => PairingDone(outcome),
+    };
+    _setState(state);
+  }
 
   void _onTick() {
     if (_offer?.isExpired ?? false) {
@@ -158,6 +205,7 @@ class PairingViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    cancel();
     _ticker?.cancel();
     super.dispose();
   }

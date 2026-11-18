@@ -13,11 +13,14 @@ import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
-import 'package:transport/transport.dart';
 
 /// Devices, nearby devices, and each feature's card.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  /// One list of devices near you, wherever it sits on the page, so a
+  /// pairing under way survives the move when the first device pairs.
+  static const _nearbyKey = ValueKey('nearby');
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,8 @@ class HomePage extends StatelessWidget {
       ],
       children: [
         const PauseBanner(),
+        const JoinedNoticesFrame(),
+        if (!hasDevices) const NearbyFrame(key: _nearbyKey),
         DevicesFrame(
           onOpen: (status) => _openDevice(context, status),
           onPair: () => _openPairing(context),
@@ -86,15 +91,12 @@ class HomePage extends StatelessWidget {
               featureContext: scope.featureContext,
             ),
         if (hasDevices) const OffersCard(),
-        NearbyFrame(onPair: (peer) => _pairNearby(context, peer)),
+        if (hasDevices) const NearbyFrame(key: _nearbyKey, watch: false),
       ],
     );
   }
 
   void _openPairing(BuildContext context) => _push(context, const PairPage());
-
-  void _pairNearby(BuildContext context, DiscoveredPeer peer) =>
-      _push(context, PairPage(initialAddress: '${peer.host}:${peer.port}'));
 
   void _openDevice(BuildContext context, DeviceStatus status) =>
       _push(context, DevicePage(deviceId: status.device.id));

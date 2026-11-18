@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/dialogs/dialogs.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -93,6 +94,11 @@ class DevicePage extends StatelessWidget {
           '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
           style: typography.caption1.copyWith(color: palette.mutedText),
         ),
+        if (_introducerName(context, device) case final introducer?)
+          Text(
+            l10n.devicePairedThrough(introducer),
+            style: typography.caption1.copyWith(color: palette.mutedText),
+          ),
         Spacing.v24,
         Tappable(
           onTap: () => _forget(context, status),
@@ -108,11 +114,44 @@ class DevicePage extends StatelessWidget {
     );
   }
 
+  /// The name of the device that vouched for [device], when it joined
+  /// through another one and that one is still paired.
+  String? _introducerName(BuildContext context, TrustedDevice device) {
+    final introducedBy = device.introducedBy;
+    if (introducedBy == null) {
+      return null;
+    }
+
+    final engine = ShellScope.read(context).featureContext.engine;
+    return engine.trustStore[introducedBy]?.name;
+  }
+
   Future<void> _forget(BuildContext context, DeviceStatus status) async {
-    final l10n = context.shellL10n;
     final engine = ShellScope.read(context).featureContext.engine;
     final navigator = Navigator.of(context);
+    final sharedWithOthers =
+        engine.sharesPairings && engine.trustStore.devices.length > 1;
 
+    final scope = switch (sharedWithOthers) {
+      true => await ForgetDeviceDialog.show(context, status.device.name),
+      false => await _confirmForget(context, status),
+    };
+    if (scope == null) {
+      return;
+    }
+
+    await engine.unpair(
+      status.device.id,
+      everywhere: scope == ForgetScope.everywhere,
+    );
+    navigator.pop();
+  }
+
+  Future<ForgetScope?> _confirmForget(
+    BuildContext context,
+    DeviceStatus status,
+  ) async {
+    final l10n = context.shellL10n;
     final action = await ConfirmDialog.show(
       context,
       title: l10n.deviceForgetConfirmTitle(status.device.name),
@@ -121,11 +160,10 @@ class DevicePage extends StatelessWidget {
       positiveText: l10n.deviceForget,
     );
     if (action != ConfirmAction.positive) {
-      return;
+      return null;
     }
 
-    await engine.unpair(status.device.id);
-    navigator.pop();
+    return ForgetScope.here;
   }
 }
 

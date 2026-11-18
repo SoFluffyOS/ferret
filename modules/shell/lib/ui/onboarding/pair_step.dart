@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/nearby_frame.dart';
 import 'package:shell/ui/onboarding/onboarding_layout.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/pages/scan_page.dart';
@@ -14,8 +15,8 @@ import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Pairs the first device. Computers show a code to scan; phones scan the
-/// computer's code. Moves on by itself as soon as a device pairs.
+/// Pairs the first device: the ones near you show up by themselves, each
+/// with a Pair button. Moves on as soon as a device pairs.
 class PairStep extends StatefulWidget {
   const PairStep({
     super.key,
@@ -38,13 +39,11 @@ class _PairStepState extends State<PairStep> {
   late final PairingViewModel _viewModel = PairingViewModel(widget.engine);
   late final StreamSubscription<List<DeviceStatus>> _devices;
   late final bool _isPhone = Platform.isAndroid || Platform.isIOS;
-  late bool _showCode = !_isPhone;
   bool _done = false;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_viewModel.createOffer());
     _devices = widget.engine.deviceChanges.listen(_onDevices);
   }
 
@@ -77,17 +76,10 @@ class _PairStepState extends State<PairStep> {
       child: OnboardingLayout(
         step: 3,
         total: widget.total,
-        icon: LucideIcons.qrCode,
+        icon: LucideIcons.radar,
         title: l10n.onboardPairTitle,
         body: body,
         actions: [
-          if (_isPhone)
-            Button(variant: .primary, label: l10n.scanButton, onPressed: _scan),
-          Button(
-            variant: .ghost,
-            label: l10n.onboardMoreWays,
-            onPressed: _moreWays,
-          ),
           Button(
             variant: .ghost,
             label: l10n.onboardLater,
@@ -95,14 +87,28 @@ class _PairStepState extends State<PairStep> {
           ),
         ],
         child: Column(
+          crossAxisAlignment: .stretch,
           children: [
-            if (_showCode) const _Code(),
-            if (!_showCode)
-              Button(
-                variant: .secondary,
-                label: l10n.onboardShowMyCode,
-                onPressed: () => setState(() => _showCode = true),
-              ),
+            const NearbyFrame(),
+            CantSeeDevice(
+              onOpened: () => unawaited(_viewModel.createOffer()),
+              children: [
+                Spacing.v12,
+                if (_isPhone)
+                  Button(
+                    variant: .ghost,
+                    label: l10n.scanButton,
+                    onPressed: _scan,
+                  ),
+                if (!_isPhone) const _Code(),
+                Spacing.v8,
+                Button(
+                  variant: .ghost,
+                  label: l10n.onboardMoreWays,
+                  onPressed: _moreWays,
+                ),
+              ],
+            ),
           ],
         ),
       ),

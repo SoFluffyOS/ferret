@@ -1,3 +1,4 @@
+export 'package:shell/ui/widgets/cant_see_device.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
 export 'package:shell/ui/widgets/device_tile.dart';
 export 'package:shell/ui/widgets/doctor_check_row.dart';
@@ -6,5 +7,7 @@ export 'package:shell/ui/widgets/drop_target_region.dart';
 export 'package:shell/ui/widgets/drop_target_tile.dart';
 export 'package:shell/ui/widgets/empty_devices.dart';
 export 'package:shell/ui/widgets/feature_chip.dart';
+export 'package:shell/ui/widgets/nearby_notice.dart';
 export 'package:shell/ui/widgets/nearby_tile.dart';
 export 'package:shell/ui/widgets/qr_code_view.dart';
+export 'package:shell/ui/widgets/switch_row.dart';
