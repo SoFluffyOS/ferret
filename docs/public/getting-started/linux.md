@@ -74,7 +74,7 @@ ferret --help                      # everything else
 
 `ferret send` needs the app running. It exits with `69` when it isn't, `66` when a file is missing, `64` on wrong usage and `0` when the app took the files. That makes it easy to bind to a key in your window manager.
 
-Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, received-file history, `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
+Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, pairings, and `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
 
 Not there yet: `ferret clip` to send text from a pipe, a Flatpak, an AppImage and a `.deb`.
 
