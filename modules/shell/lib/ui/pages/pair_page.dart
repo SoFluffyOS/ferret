@@ -270,6 +270,7 @@ class _PairingStatus extends StatelessWidget {
           .badProof => l10n.pairFailedBadProof,
           .wrongDevice => l10n.pairFailedWrongDevice,
           .timedOut => l10n.pairFailedTimedOut,
+          .cancelled => l10n.pairFailedRejected,
           .protocol => l10n.pairFailedProtocol,
         },
       };

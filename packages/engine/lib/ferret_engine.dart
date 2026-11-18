@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:core/core.dart';
 import 'package:engine/connection/connection.dart';
 import 'package:engine/feature/feature.dart';
+import 'package:engine/group/group.dart';
 import 'package:engine/identity/identity.dart';
 import 'package:engine/pairing/pairing.dart';
 import 'package:engine/session/session.dart';
 import 'package:engine/trust/trust.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:protobuf/protobuf.dart';
-import 'package:protocol/protocol.dart';
+import 'package:protocol/protocol.dart' hide ForgottenDevice;
 import 'package:transport/transport.dart';
-
-/// Feature id of pairing messages.
-const pairingFeature = 'pairing';
 
 /// Runs Ferret on this device: listens, finds and connects to paired devices,
 /// pairs new ones, and routes each session's envelopes to the [Feature]s.
@@ -30,12 +27,19 @@ class FerretEngine implements FeatureHost {
     required this.preferredPort,
   }) : _device = device,
        _features = {for (final feature in features) feature.id: feature},
-       _discovery = discovery;
+       _discovery = discovery,
+       _roster = DeviceRoster(trustStore, identity.deviceId);
 
   static const defaultPort = 47640;
   static const _maxPendingHandshakes = 8;
   static const _pairingTimeout = Duration(seconds: 30);
-  static const _comparisonTimeout = Duration(minutes: 2);
+
+  /// How long a code comparison waits for each person to answer.
+  static const comparisonTimeout = Duration(seconds: 30);
+
+  /// Setting: whether devices paired here are shared with the user's other
+  /// devices, and theirs taken in. On unless set to false.
+  static const sharePairingsKey = 'pairing.share_with_devices';
   static const _helloTimeout = Duration(seconds: 15);
   static const _nearbyLifetime = Duration(minutes: 2);
   static const _probeTimeout = Duration(seconds: 3);
@@ -78,6 +82,8 @@ class FerretEngine implements FeatureHost {
 
   final Map<String, Feature> _features;
   final Discovery _discovery;
+  final DeviceRoster _roster;
+  final StreamController<DeviceJoined> _joins = .broadcast();
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
   final Set<String> _dialing = {};
@@ -137,6 +143,21 @@ class FerretEngine implements FeatureHost {
 
   /// Requests to pair by comparing codes, for the UI to confirm.
   Stream<PairingPrompt> get pairingPrompts => _pairingPrompts.stream;
+
+  /// Devices that joined through another of the user's devices.
+  Stream<DeviceJoined> get joins => _joins.stream;
+
+  /// Whether pairings are shared between the user's devices.
+  bool get sharesPairings => settings.get<bool>(sharePairingsKey) ?? true;
+
+  /// Turns sharing pairings on or off. Turning it on tells the connected
+  /// devices about each other right away.
+  Future<void> setSharesPairings(bool shares) async {
+    await settings.set(sharePairingsKey, shares);
+    if (shares) {
+      await _introduceEveryone();
+    }
+  }
 
   /// Unpaired Ferret devices seen on the network recently.
   List<DiscoveredPeer> get nearby {
@@ -364,8 +385,8 @@ class FerretEngine implements FeatureHost {
         offer.secret,
         channel.handshakeHash,
       );
-      return _requestPairing(
-        channel,
+      return _requestWithProof(
+        PairingExchange(channel),
         proof: proof,
         secret: offer.secret,
         host: host,
@@ -377,11 +398,14 @@ class FerretEngine implements FeatureHost {
   }
 
   /// Pairs with the device at [host] by comparing codes. [onCode] gets the
-  /// six digits to show while the other device's user confirms.
+  /// six digits to show and answers whether the user saw the same ones on
+  /// the other device; false gives up. With [expectedDeviceId], such as from
+  /// discovery, a different device answering at that address is refused.
   Future<PairingOutcome> pairWithAddress(
     String host,
     int port, {
-    required void Function(String code) onCode,
+    required FutureOr<bool> Function(String code) onCode,
+    String? expectedDeviceId,
   }) async {
     final SecureChannel channel;
     try {
@@ -390,16 +414,54 @@ class FerretEngine implements FeatureHost {
       return PairingFailed(.unreachable, '$error');
     }
 
-    onCode(await PairingCodes.comparisonCode(channel.handshakeHash));
-    return _requestPairing(channel, proof: const [], host: host, port: port);
+    final remoteId = await DeviceIdentity.deviceIdFor(channel.remoteStaticKey);
+    if (expectedDeviceId != null && expectedDeviceId != remoteId) {
+      await channel.close();
+      return const PairingFailed(.wrongDevice);
+    }
+
+    return _requestComparison(
+      PairingExchange(channel),
+      onCode: onCode,
+      host: host,
+      port: port,
+    );
   }
 
-  /// Forgets [deviceId] here and tells it to forget this device too.
-  Future<void> unpair(String deviceId) async {
+  /// Forgets [deviceId] here and tells it to forget this device too. With
+  /// [everywhere], the user's other devices forget it as well, the ones
+  /// that are away as soon as they connect again.
+  Future<void> unpair(String deviceId, {bool everywhere = false}) async {
     final session = _sessions[deviceId];
+    final trusted = trustStore[deviceId];
+    await trustStore.forget(
+      .new(
+        id: deviceId,
+        at: _afterPairing(trusted),
+        by: switch (everywhere && sharesPairings) {
+          true => .everywhere,
+          false => .here,
+        },
+      ),
+    );
     await trustStore.remove(deviceId);
     await session?.close(.GOODBYE_REASON_UNPAIRED);
     _emitDevices();
+    if (everywhere) {
+      await _introduceEveryone();
+    }
+  }
+
+  /// Now, but never before the pairing it undoes: clocks of two devices
+  /// differ, and a forgetting dated before the pairing would not hold.
+  DateTime _afterPairing(TrustedDevice? trusted) {
+    final now = DateTime.now();
+    final pairedAt = trusted?.pairedAt;
+    if (pairedAt == null || now.isAfter(pairedAt)) {
+      return now;
+    }
+
+    return pairedAt.add(const Duration(milliseconds: 1));
   }
 
   /// Renames this device. Nearby devices see it right away; paired ones on
@@ -645,66 +707,183 @@ class FerretEngine implements FeatureHost {
     await _answerPairing(channel, remoteId, connection.remoteHost);
   }
 
-  Future<PairingOutcome> _requestPairing(
-    SecureChannel channel, {
+  /// Pairs from a scanned offer. The proof shows this device saw the
+  /// offer's one-time secret and is tied to this very handshake, so nobody
+  /// in between can reuse it: scanning is enough, there is no code to
+  /// compare.
+  Future<PairingOutcome> _requestWithProof(
+    PairingExchange exchange, {
     required List<int> proof,
+    required List<int> secret,
     required String host,
     required int port,
-    List<int>? secret,
   }) async {
-    final queue = StreamQueue(channel.messages);
-    final request = Envelope(
-      id: Int64(1),
-      feature: pairingFeature,
-      type: PairingRequest().payloadType,
-      payload: PairingRequest(device: localDevice, proof: proof).toPayload(),
-      expectsReply: true,
-    );
-
     final Envelope reply;
     try {
-      await channel.send(request.writeToBuffer());
-      final timeout = switch (proof.isEmpty) {
-        true => _comparisonTimeout,
-        false => _pairingTimeout,
-      };
-      reply = Envelope.fromBuffer(await queue.next.timeout(timeout));
+      await exchange.send(
+        PairingRequest(device: localDevice, proof: proof),
+        expectsReply: true,
+      );
+      reply = await exchange.next(_pairingTimeout);
     } on TimeoutException {
-      await channel.close();
+      await exchange.close();
       return const PairingFailed(.timedOut);
     } on Object catch (error) {
-      await channel.close();
+      await exchange.close();
       return PairingFailed(.protocol, '$error');
     }
 
-    final response = unpackPayload(
-      type: reply.type,
-      payload: reply.payload,
-      create: PairingResponse.new,
-    );
+    final response = PairingExchange.read(reply, PairingResponse.new);
     if (response == null) {
-      await channel.close();
+      await exchange.close();
       return const PairingFailed(.protocol, 'Expected a pairing response');
     }
 
-    final failure = await _checkResponse(response, channel, secret);
+    final failure = await _checkResponse(response, exchange.channel, secret);
     if (failure != null) {
-      await channel.close();
+      await exchange.close();
       return failure;
     }
 
-    await _trust(response.device, channel, host: host, port: port);
+    return _finishRequest(exchange, response.device, host: host, port: port);
+  }
+
+  /// Pairs by comparing codes, as the side that asked: commit to a nonce,
+  /// get the other side's, reveal, show the code. This device trusts the
+  /// other one only when both users agreed.
+  Future<PairingOutcome> _requestComparison(
+    PairingExchange exchange, {
+    required FutureOr<bool> Function(String code) onCode,
+    required String host,
+    required int port,
+  }) async {
+    final nonce = PairingCodes.newNonce();
+    final PairingChallenge? challenge;
+    try {
+      await exchange.send(
+        PairingRequest(
+          device: localDevice,
+          commitment: await PairingCodes.commitment(nonce),
+          alsoDevices: _alsoDevices(),
+        ),
+        expectsReply: true,
+      );
+      final reply = await exchange.next(_pairingTimeout);
+      challenge = PairingExchange.read(reply, PairingChallenge.new);
+      if (challenge == null) {
+        await exchange.close();
+        return _refusal(PairingExchange.read(reply, PairingResponse.new));
+      }
+
+      await exchange.send(PairingReveal(nonce: nonce));
+    } on TimeoutException {
+      await exchange.close();
+      return const PairingFailed(.timedOut);
+    } on Object catch (error) {
+      await exchange.close();
+      return PairingFailed(.protocol, '$error');
+    }
+
+    final code = await PairingCodes.comparisonCode(
+      exchange.channel.handshakeHash,
+      requesterNonce: nonce,
+      answererNonce: challenge.nonce,
+    );
+
+    // The user here may give up while the other one still thinks. Hanging
+    // up ends the wait for the answer below.
+    var cancelled = false;
+    final confirmed = Future.sync(() => onCode(code)).then((accepted) async {
+      cancelled = !accepted;
+      await exchange
+          .send(PairingConfirm(accepted: accepted))
+          .catchError(
+            (
+              Object _,
+            ) {},
+          );
+      if (!accepted) {
+        await exchange.close();
+      }
+
+      return accepted;
+    });
+
+    final PairingResponse? response;
+    try {
+      final reply = await exchange.next(
+        comparisonTimeout + _pairingTimeout,
+      );
+      response = PairingExchange.read(reply, PairingResponse.new);
+    } on Object catch (error) {
+      await exchange.close();
+      return switch ((cancelled, error)) {
+        (true, _) => const PairingFailed(.cancelled),
+        (_, TimeoutException()) => const PairingFailed(.timedOut),
+        _ => PairingFailed(.protocol, '$error'),
+      };
+    }
+
+    if (response == null ||
+        response.result != PairingResult.PAIRING_RESULT_ACCEPTED) {
+      await exchange.close();
+      return _refusal(response);
+    }
+
+    final failure = await _checkResponse(response, exchange.channel, null);
+    if (failure != null) {
+      await exchange.close();
+      return failure;
+    }
+
+    final bool accepted;
+    try {
+      accepted = await confirmed.timeout(comparisonTimeout);
+    } on TimeoutException {
+      await exchange.close();
+      return const PairingFailed(.timedOut);
+    }
+
+    if (!accepted) {
+      return const PairingFailed(.cancelled);
+    }
+
+    return _finishRequest(exchange, response.device, host: host, port: port);
+  }
+
+  PairingFailed _refusal(PairingResponse? response) =>
+      switch (response?.result) {
+        null => const PairingFailed(.protocol, 'Expected a pairing answer'),
+        .PAIRING_RESULT_TIMED_OUT => const PairingFailed(.timedOut),
+        .PAIRING_RESULT_EXPIRED => const PairingFailed(.expired),
+        .PAIRING_RESULT_BAD_PROOF => const PairingFailed(.badProof),
+        _ => const PairingFailed(.rejected),
+      };
+
+  Future<PairingOutcome> _finishRequest(
+    PairingExchange exchange,
+    DeviceInfo device, {
+    required String host,
+    required int port,
+  }) async {
+    await _trust(device, exchange.channel, host: host, port: port);
     unawaited(
       _openSession(
-        channel,
-        queue.rest,
-        remoteId: response.device.id,
+        exchange.channel,
+        exchange.rest,
+        remoteId: device.id,
         initiatedByLocal: true,
         host: host,
       ),
     );
-    return Paired(response.device);
+    return Paired(device);
   }
+
+  /// The other devices a newly paired one gets connected to, by name.
+  List<String> _alsoDevices() => switch (sharesPairings) {
+    true => _roster.names,
+    false => const [],
+  };
 
   Future<PairingFailed?> _checkResponse(
     PairingResponse response,
@@ -747,109 +926,168 @@ class FerretEngine implements FeatureHost {
     String remoteId,
     String host,
   ) async {
-    final queue = StreamQueue(channel.messages);
+    final exchange = PairingExchange(channel);
     final Envelope envelope;
     try {
-      envelope = Envelope.fromBuffer(await queue.next.timeout(_pairingTimeout));
+      envelope = await exchange.next(_pairingTimeout);
     } on Object {
-      await channel.close();
+      await exchange.close();
       return;
     }
 
-    final request = unpackPayload(
-      type: envelope.type,
-      payload: envelope.payload,
-      create: PairingRequest.new,
-    );
-    if (envelope.feature != pairingFeature ||
-        request == null ||
-        request.device.id != remoteId) {
-      printWarning(
-        'Unpaired device $remoteId sent something other than a pairing request',
-      );
-      await channel.close();
+    final request = PairingExchange.read(envelope, PairingRequest.new);
+    if (request == null || request.device.id != remoteId) {
+      // A device that still trusts this one after it was forgotten here.
+      // Telling it so makes it forget too, instead of trying forever.
+      printDebug('Device $remoteId is not paired here; telling it so');
+      await exchange
+          .send(Goodbye(reason: .GOODBYE_REASON_UNPAIRED), as: sessionFeature)
+          .catchError((Object _) {});
+      await exchange.close();
       return;
     }
 
-    final (result, proof) = await _decidePairing(request, channel);
-    final response = PairingResponse(
-      result: result,
-      device: localDevice,
-      proof: proof,
-    );
-    try {
-      await channel.send(
-        Envelope(
-          id: Int64(1),
-          replyTo: envelope.id,
-          feature: pairingFeature,
-          type: response.payloadType,
-          payload: response.toPayload(),
-        ).writeToBuffer(),
-      );
-    } on Object {
-      await channel.close();
-      return;
-    }
-
-    if (result != .PAIRING_RESULT_ACCEPTED) {
-      await channel.close();
+    final accepted = switch (request.proof.isEmpty) {
+      true => await _answerComparison(exchange, envelope, request),
+      false => await _answerProof(exchange, envelope, request),
+    };
+    if (!accepted) {
+      await exchange.close();
       return;
     }
 
     await _trust(request.device, channel, host: host);
     await _openSession(
       channel,
-      queue.rest,
+      exchange.rest,
       remoteId: remoteId,
       initiatedByLocal: false,
       host: host,
     );
   }
 
-  Future<(PairingResult, List<int>)> _decidePairing(
-    PairingRequest request,
-    SecureChannel channel,
-  ) async {
-    if (request.proof.isEmpty) {
-      final code = await PairingCodes.comparisonCode(channel.handshakeHash);
-      final prompt = PairingPrompt(device: request.device, code: code);
-      _pairingPrompts.add(prompt);
-
-      // The prompt ends without an answer when it times out or the other
-      // device hangs up; rejecting it lets the app close its dialog.
-      final timeout = Timer(_comparisonTimeout, prompt.reject);
-      unawaited(channel.done.then((_) => prompt.reject()));
-      final accepted = await prompt.decision;
-      timeout.cancel();
-      final result = switch (accepted) {
-        true => PairingResult.PAIRING_RESULT_ACCEPTED,
-        false => PairingResult.PAIRING_RESULT_REJECTED,
-      };
-      return (result, const <int>[]);
-    }
-
-    for (final offer in _offers) {
-      final expected = await PairingCodes.requestProof(
-        offer.secret,
-        channel.handshakeHash,
+  Future<bool> _respond(
+    PairingExchange exchange,
+    Envelope request,
+    PairingResult result, [
+    List<int> proof = const [],
+  ]) async {
+    try {
+      await exchange.send(
+        PairingResponse(result: result, device: localDevice, proof: proof),
+        replyTo: request,
       );
+      return result == PairingResult.PAIRING_RESULT_ACCEPTED;
+    } on Object {
+      return false;
+    }
+  }
+
+  /// Answers a request that came from a scanned offer.
+  Future<bool> _answerProof(
+    PairingExchange exchange,
+    Envelope envelope,
+    PairingRequest request,
+  ) async {
+    final hash = exchange.channel.handshakeHash;
+    for (final offer in _offers) {
+      final expected = await PairingCodes.requestProof(offer.secret, hash);
       if (!PairingCodes.same(expected, request.proof)) {
         continue;
       }
 
       if (offer.isExpired || offer.isUsed) {
-        return (PairingResult.PAIRING_RESULT_EXPIRED, const <int>[]);
+        return _respond(exchange, envelope, .PAIRING_RESULT_EXPIRED);
       }
 
       offer.complete(request.device);
-      return (
-        PairingResult.PAIRING_RESULT_ACCEPTED,
-        await PairingCodes.responseProof(offer.secret, channel.handshakeHash),
+      return _respond(
+        exchange,
+        envelope,
+        .PAIRING_RESULT_ACCEPTED,
+        await PairingCodes.responseProof(offer.secret, hash),
       );
     }
 
-    return (PairingResult.PAIRING_RESULT_BAD_PROOF, const <int>[]);
+    return _respond(exchange, envelope, .PAIRING_RESULT_BAD_PROOF);
+  }
+
+  /// Answers a request to compare codes: holds the requester's commitment,
+  /// sends this side's nonce, checks the revealed one, then asks the user.
+  /// True only when the user here agreed and the requester's did too.
+  Future<bool> _answerComparison(
+    PairingExchange exchange,
+    Envelope envelope,
+    PairingRequest request,
+  ) async {
+    if (request.commitment.isEmpty) {
+      return _respond(exchange, envelope, .PAIRING_RESULT_REJECTED);
+    }
+
+    final nonce = PairingCodes.newNonce();
+    final PairingReveal? reveal;
+    try {
+      await exchange.send(PairingChallenge(nonce: nonce), replyTo: envelope);
+      reveal = PairingExchange.read(
+        await exchange.next(_pairingTimeout),
+        PairingReveal.new,
+      );
+    } on Object {
+      return false;
+    }
+
+    if (reveal == null ||
+        !PairingCodes.same(
+          await PairingCodes.commitment(reveal.nonce),
+          request.commitment,
+        )) {
+      return _respond(exchange, envelope, .PAIRING_RESULT_BAD_PROOF);
+    }
+
+    final code = await PairingCodes.comparisonCode(
+      exchange.channel.handshakeHash,
+      requesterNonce: reveal.nonce,
+      answererNonce: nonce,
+    );
+    final prompt = PairingPrompt(
+      device: request.device,
+      code: code,
+      expiresAt: DateTime.now().add(comparisonTimeout),
+      alsoDevices: request.alsoDevices.take(DeviceRoster.maxDevices).toList(),
+    );
+
+    // The requester's own answer arrives while the user here still looks.
+    // A no, or a hang-up, takes the prompt away.
+    final confirmed = exchange
+        .next(comparisonTimeout + _pairingTimeout)
+        .then(
+          (reply) =>
+              PairingExchange.read(reply, PairingConfirm.new)?.accepted ??
+              false,
+        )
+        .catchError((Object _) => false);
+    unawaited(
+      confirmed.then((accepted) {
+        if (!accepted) {
+          prompt.withdraw();
+        }
+      }),
+    );
+    final timeout = Timer(comparisonTimeout, prompt.expire);
+    _pairingPrompts.add(prompt);
+    final answer = await prompt.answer;
+    timeout.cancel();
+
+    final result = switch (answer) {
+      .accepted => PairingResult.PAIRING_RESULT_ACCEPTED,
+      .expired => PairingResult.PAIRING_RESULT_TIMED_OUT,
+      .rejected || .withdrawn => PairingResult.PAIRING_RESULT_REJECTED,
+    };
+    if (!await _respond(exchange, envelope, result)) {
+      return false;
+    }
+
+    return confirmed;
   }
 
   Future<void> _trust(
@@ -859,6 +1097,9 @@ class FerretEngine implements FeatureHost {
     int? port,
   }) async {
     final existing = trustStore[info.id];
+    final forgotten = trustStore.forgottenOf(info.id);
+    await trustStore.unforget(info.id);
+    await trustStore.unforgetDroppedBy();
     await trustStore.save(
       TrustedDevice(
         id: info.id,
@@ -866,7 +1107,7 @@ class FerretEngine implements FeatureHost {
         platform: info.platform,
         formFactor: info.formFactor,
         publicKey: channel.remoteStaticKey,
-        pairedAt: existing?.pairedAt ?? DateTime.now(),
+        pairedAt: _afterForgetting(forgotten),
         lastSeen: DateTime.now(),
         lastHost: host,
         lastPort: port ?? existing?.lastPort,
@@ -874,6 +1115,17 @@ class FerretEngine implements FeatureHost {
     );
     _nearby.remove(info.id);
     _nearbyChanges.add(nearby);
+  }
+
+  /// Now, but never before an earlier forgetting of the same device, so
+  /// this pairing counts as newer on every device that heard of it.
+  DateTime _afterForgetting(ForgottenDevice? forgotten) {
+    final now = DateTime.now();
+    if (forgotten == null || now.isAfter(forgotten.at)) {
+      return now;
+    }
+
+    return forgotten.at.add(const Duration(milliseconds: 1));
   }
 
   Future<void> _openSession(
@@ -965,10 +1217,71 @@ class FerretEngine implements FeatureHost {
     }
 
     _emitSessions();
+    await _introduceEveryone();
+  }
+
+  /// Tells every connected device which other devices this one trusts. It
+  /// runs when a device connects and when the list changes, and says the
+  /// same thing again otherwise, which changes nothing on the other side.
+  Future<void> _introduceEveryone() async {
+    if (!sharesPairings) {
+      return;
+    }
+
+    for (final session in sessions) {
+      try {
+        await session.send(
+          pairingFeature,
+          _roster.introductionFor(session.remoteDeviceId),
+        );
+      } on Object {
+        continue;
+      }
+    }
+  }
+
+  Future<void> _onIntroduce(Session session, Envelope envelope) async {
+    final introduce = payloadOf(envelope, Introduce.new);
+    final introducer = trustStore[session.remoteDeviceId];
+    if (introduce == null || introducer == null || !sharesPairings) {
+      return;
+    }
+
+    final changes = await _roster.apply(introduce, introducer);
+    for (final deviceId in changes.removed) {
+      await _sessions[deviceId]?.close(.GOODBYE_REASON_UNPAIRED);
+    }
+
+    for (final joined in changes.joined) {
+      printLog(
+        '${joined.device.name} joined through ${joined.introducer.name}',
+      );
+      _nearby.remove(joined.device.id);
+      _joins.add(joined);
+      if ((joined.device.lastHost, joined.device.lastPort) case (
+        final host?,
+        final port?,
+      )) {
+        unawaited(_dial(host, port, expectedDeviceId: joined.device.id));
+      }
+    }
+
+    if (changes.removed.isEmpty && changes.joined.isEmpty) {
+      return;
+    }
+
+    _nearbyChanges.add(nearby);
+    _emitDevices();
+    await _introduceEveryone();
   }
 
   Future<void> _route(Session session, Envelope envelope) async {
     if (envelope.feature == sessionFeature) {
+      return;
+    }
+
+    if (envelope.feature == pairingFeature) {
+      await _onIntroduce(session, envelope);
       return;
     }
 
@@ -1019,7 +1332,7 @@ class FerretEngine implements FeatureHost {
 
     switch (session.remoteGoodbye) {
       case .GOODBYE_REASON_UNPAIRED:
-        unawaited(trustStore.remove(session.remoteDeviceId));
+        unawaited(_onUnpairedBy(session.remoteDeviceId));
         return;
       case .GOODBYE_REASON_DUPLICATE:
         return;
@@ -1032,6 +1345,20 @@ class FerretEngine implements FeatureHost {
     }
 
     unawaited(_reconnect(session.remoteDeviceId));
+  }
+
+  /// The other device forgot this one. Forgetting it back, here only, keeps
+  /// another of the user's devices from introducing it again.
+  Future<void> _onUnpairedBy(String deviceId) async {
+    final trusted = trustStore[deviceId];
+    if (trusted == null) {
+      return;
+    }
+
+    await trustStore.forget(
+      .new(id: deviceId, at: _afterPairing(trusted), by: .them),
+    );
+    await trustStore.remove(deviceId);
   }
 
   Future<void> _reconnect(String deviceId) async {

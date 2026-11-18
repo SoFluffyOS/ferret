@@ -57,10 +57,21 @@ class PairCommand extends Command<int> {
     return engine.pairWithAddress(
       host,
       port,
-      onCode: (code) => stdout.writeln(
-        'Check that the other device shows $code, then accept there.',
-      ),
+      onCode: _confirm,
     );
+  }
+
+  Future<bool> _confirm(String code) async {
+    stdout
+      ..writeln('Code: $code')
+      ..write('Does the other device show the same code? [y/N] ');
+    final answer = stdin.readLineSync() ?? '';
+    if (!answer.trim().toLowerCase().startsWith('y')) {
+      return false;
+    }
+
+    stdout.writeln('Now tap Pair on the other device.');
+    return true;
   }
 
   int _report(PairingOutcome outcome) {

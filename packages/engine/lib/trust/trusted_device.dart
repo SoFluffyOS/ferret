@@ -15,6 +15,7 @@ class TrustedDevice {
     this.lastSeen,
     this.lastHost,
     this.lastPort,
+    this.introducedBy,
   });
 
   factory TrustedDevice.fromJson(Map<String, dynamic> json) => TrustedDevice(
@@ -33,6 +34,7 @@ class TrustedDevice {
     },
     lastHost: json['last_host'] as String?,
     lastPort: json['last_port'] as int?,
+    introducedBy: json['introduced_by'] as String?,
   );
 
   final String id;
@@ -44,6 +46,10 @@ class TrustedDevice {
   final DateTime? lastSeen;
   final String? lastHost;
   final int? lastPort;
+
+  /// The id of the paired device that vouched for this one, when it joined
+  /// through another of the user's devices instead of being paired here.
+  final String? introducedBy;
 
   TrustedDevice copyWith({
     String? name,
@@ -62,6 +68,7 @@ class TrustedDevice {
     lastSeen: lastSeen ?? this.lastSeen,
     lastHost: lastHost ?? this.lastHost,
     lastPort: lastPort ?? this.lastPort,
+    introducedBy: introducedBy,
   );
 
   Map<String, dynamic> toJson() => {
@@ -74,5 +81,6 @@ class TrustedDevice {
     'last_seen': ?lastSeen?.millisecondsSinceEpoch,
     'last_host': ?lastHost,
     'last_port': ?lastPort,
+    'introduced_by': ?introducedBy,
   };
 }

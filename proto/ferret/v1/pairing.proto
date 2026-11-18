@@ -29,6 +29,34 @@ message PairingRequest {
   // HMAC-SHA256(offer secret, handshake hash) when pairing from an offer.
   // Empty when pairing by comparing codes.
   bytes proof = 2;
+  // SHA-256 of the requester's nonce, when pairing by comparing codes. It
+  // fixes the nonce before the answerer picks its own, so neither side can
+  // steer the six digits (see PairingChallenge).
+  bytes commitment = 3;
+  // Names of the requester's other devices, which the answerer will be
+  // connected to as well (see Introduce). Shown on the answerer's prompt.
+  repeated string also_devices = 4;
+}
+
+// Pairing by comparing codes, step 2: the answerer's 16-byte nonce, sent once
+// it holds the requester's commitment (feature "pairing").
+message PairingChallenge {
+  bytes nonce = 1;
+}
+
+// Pairing by comparing codes, step 3: the requester's 16-byte nonce, which
+// must hash to its commitment (feature "pairing"). Both sides then show
+// HMAC-SHA256(handshake hash, "ferret-compare" || requester nonce ||
+// answerer nonce) as six digits.
+message PairingReveal {
+  bytes nonce = 1;
+}
+
+// Pairing by comparing codes: what the requester's user said after seeing
+// the six digits (feature "pairing"). The answerer trusts the requester only
+// after its own user agreed and this arrived with accepted = true.
+message PairingConfirm {
+  bool accepted = 1;
 }
 
 // The answer to a PairingRequest (feature "pairing").
@@ -46,4 +74,41 @@ enum PairingResult {
   PAIRING_RESULT_REJECTED = 2;
   PAIRING_RESULT_EXPIRED = 3;
   PAIRING_RESULT_BAD_PROOF = 4;
+  // Nobody answered the prompt in time.
+  PAIRING_RESULT_TIMED_OUT = 5;
+}
+
+// Tells a paired device about the sender's other paired devices, so one
+// pairing joins them all (feature "pairing", on a trusted session only).
+// The session's Noise handshake proves who sends it; a device accepts it
+// only from a device it already trusts, and only while its user lets
+// pairings be shared. Devices that don't know the message ignore it.
+message Introduce {
+  repeated IntroducedDevice devices = 1;
+  // Devices the user removed from all their devices.
+  repeated ForgottenDevice forgotten = 2;
+}
+
+// One device the sender trusts.
+message IntroducedDevice {
+  // Must be the id derived from static_public_key, or the entry is dropped.
+  string id = 1;
+  string name = 2;
+  Platform platform = 3;
+  FormFactor form_factor = 4;
+  // X25519 static public key, 32 bytes. The receiver trusts exactly this key.
+  bytes static_public_key = 5;
+  // Where the sender last reached the device, to connect without waiting
+  // for discovery. May be empty.
+  string host = 6;
+  uint32 port = 7;
+  // When the user paired the device, passed along unchanged. An entry older
+  // than the receiver's record of forgetting the device is dropped.
+  uint64 paired_at_ms = 8;
+}
+
+// A device to stop trusting, with when the user removed it.
+message ForgottenDevice {
+  string id = 1;
+  uint64 forgotten_at_ms = 2;
 }

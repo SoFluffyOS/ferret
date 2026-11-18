@@ -106,7 +106,10 @@ class PairingViewModel extends ChangeNotifier {
           .pairWithAddress(
             host,
             port,
-            onCode: (code) => _setState(PairingComparing(code)),
+            onCode: (code) {
+              _setState(PairingComparing(code));
+              return true;
+            },
           )
           .then((outcome) => _setState(PairingDone(outcome))),
     );

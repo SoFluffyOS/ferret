@@ -118,7 +118,11 @@ void main() {
       final outcome = phone.pairWithAddress(
         '127.0.0.1',
         laptop.port,
-        onCode: (code) => phoneCode = code,
+        expectedDeviceId: laptop.identity.deviceId,
+        onCode: (code) {
+          phoneCode = code;
+          return true;
+        },
       );
 
       final shown = await prompt;
@@ -142,12 +146,151 @@ void main() {
     final outcome = await phone.pairWithAddress(
       '127.0.0.1',
       laptop.port,
-      onCode: (_) {},
+      onCode: (_) => true,
     );
 
     expect((outcome as PairingFailed).reason, PairingFailure.rejected);
     expect(laptop.trustStore.devices, isEmpty);
     expect(phone.trustStore.devices, isEmpty);
+  });
+
+  test('the asking side saying no trusts no one, even after a yes', () async {
+    final laptop = await startEngine('Laptop');
+    final phone = await startEngine('Phone');
+    final decision = Completer<bool>();
+
+    final prompt = laptop.pairingPrompts.first;
+    final outcome = phone.pairWithAddress(
+      '127.0.0.1',
+      laptop.port,
+      onCode: (_) => decision.future,
+    );
+    (await prompt).accept();
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    expect(laptop.trustStore.devices, isEmpty);
+
+    decision.complete(false);
+
+    expect(((await outcome) as PairingFailed).reason, PairingFailure.cancelled);
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    expect(laptop.trustStore.devices, isEmpty);
+    expect(phone.trustStore.devices, isEmpty);
+  });
+
+  test('giving up on the asking side takes the prompt away', () async {
+    final laptop = await startEngine('Laptop');
+    final phone = await startEngine('Phone');
+    final decision = Completer<bool>();
+
+    final prompt = laptop.pairingPrompts.first;
+    final outcome = phone.pairWithAddress(
+      '127.0.0.1',
+      laptop.port,
+      onCode: (_) => decision.future,
+    );
+    final shown = await prompt;
+    decision.complete(false);
+
+    expect(await shown.answer, PairingAnswer.withdrawn);
+    expect(((await outcome) as PairingFailed).reason, PairingFailure.cancelled);
+  });
+
+  test('a device other than the one found nearby is refused', () async {
+    final laptop = await startEngine('Laptop');
+    final phone = await startEngine('Phone');
+    final stranger = await DeviceIdentity.generate();
+    var asked = false;
+
+    final outcome = await phone.pairWithAddress(
+      '127.0.0.1',
+      laptop.port,
+      expectedDeviceId: stranger.deviceId,
+      onCode: (_) => asked = true,
+    );
+
+    expect((outcome as PairingFailed).reason, PairingFailure.wrongDevice);
+    expect(asked, isFalse);
+  });
+
+  test('a comparison without a commitment is turned down unasked', () async {
+    final laptop = await startEngine('Laptop');
+    final identity = await DeviceIdentity.generate();
+    var prompted = false;
+    laptop.pairingPrompts.listen((_) => prompted = true);
+
+    final channel = await SecureChannel.initiate(
+      await SocketConnection.connect('127.0.0.1', laptop.port),
+      identity.keyPair,
+    );
+    final exchange = PairingExchange(channel);
+    await exchange.send(
+      PairingRequest(
+        device: DeviceInfo(id: identity.deviceId, name: 'Old'),
+      ),
+    );
+    final reply = await exchange.next(const Duration(seconds: 2));
+
+    expect(
+      PairingExchange.read(reply, PairingResponse.new)?.result,
+      PairingResult.PAIRING_RESULT_REJECTED,
+    );
+    expect(prompted, isFalse);
+    await exchange.close();
+  });
+
+  test(
+    'a revealed nonce that breaks the commitment ends the pairing',
+    () async {
+      final laptop = await startEngine('Laptop');
+      final identity = await DeviceIdentity.generate();
+      var prompted = false;
+      laptop.pairingPrompts.listen((_) => prompted = true);
+
+      final channel = await SecureChannel.initiate(
+        await SocketConnection.connect('127.0.0.1', laptop.port),
+        identity.keyPair,
+      );
+      final exchange = PairingExchange(channel);
+      await exchange.send(
+        PairingRequest(
+          device: DeviceInfo(id: identity.deviceId, name: 'Cheat'),
+          commitment: await PairingCodes.commitment(PairingCodes.newNonce()),
+        ),
+      );
+      final challenge = await exchange.next(const Duration(seconds: 2));
+      expect(PairingExchange.read(challenge, PairingChallenge.new), isNotNull);
+      await exchange.send(PairingReveal(nonce: PairingCodes.newNonce()));
+      final reply = await exchange.next(const Duration(seconds: 2));
+
+      expect(
+        PairingExchange.read(reply, PairingResponse.new)?.result,
+        PairingResult.PAIRING_RESULT_BAD_PROOF,
+      );
+      expect(prompted, isFalse);
+      expect(laptop.trustStore.devices, isEmpty);
+      await exchange.close();
+    },
+  );
+
+  test('the code depends on both nonces, not only on the handshake', () async {
+    final hash = List<int>.filled(32, 9);
+    final first = await PairingCodes.comparisonCode(
+      hash,
+      requesterNonce: List.filled(16, 1),
+      answererNonce: List.filled(16, 2),
+    );
+    final otherAnswer = await PairingCodes.comparisonCode(
+      hash,
+      requesterNonce: List.filled(16, 1),
+      answererNonce: List.filled(16, 3),
+    );
+    final swapped = await PairingCodes.comparisonCode(
+      hash,
+      requesterNonce: List.filled(16, 2),
+      answererNonce: List.filled(16, 1),
+    );
+
+    expect({first, otherAnswer, swapped}, hasLength(3));
   });
 
   test(

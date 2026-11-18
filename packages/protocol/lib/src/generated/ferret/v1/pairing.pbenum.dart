@@ -26,16 +26,21 @@ class PairingResult extends $pb.ProtobufEnum {
   static const PairingResult PAIRING_RESULT_BAD_PROOF =
       PairingResult._(4, _omitEnumNames ? '' : 'PAIRING_RESULT_BAD_PROOF');
 
+  /// Nobody answered the prompt in time.
+  static const PairingResult PAIRING_RESULT_TIMED_OUT =
+      PairingResult._(5, _omitEnumNames ? '' : 'PAIRING_RESULT_TIMED_OUT');
+
   static const $core.List<PairingResult> values = <PairingResult>[
     PAIRING_RESULT_UNSPECIFIED,
     PAIRING_RESULT_ACCEPTED,
     PAIRING_RESULT_REJECTED,
     PAIRING_RESULT_EXPIRED,
     PAIRING_RESULT_BAD_PROOF,
+    PAIRING_RESULT_TIMED_OUT,
   ];
 
   static final $core.List<PairingResult?> _byValue =
-      $pb.ProtobufEnum.$_initByValueList(values, 4);
+      $pb.ProtobufEnum.$_initByValueList(values, 5);
   static PairingResult? valueOf($core.int value) =>
       value < 0 || value >= _byValue.length ? null : _byValue[value];
 

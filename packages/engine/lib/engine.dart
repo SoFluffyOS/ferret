@@ -4,6 +4,7 @@ library;
 export 'package:engine/connection/connection.dart';
 export 'package:engine/feature/feature.dart';
 export 'package:engine/ferret_engine.dart';
+export 'package:engine/group/group.dart';
 export 'package:engine/identity/identity.dart';
 export 'package:engine/pairing/pairing.dart';
 export 'package:engine/session/session.dart';

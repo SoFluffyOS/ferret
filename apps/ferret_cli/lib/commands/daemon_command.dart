@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_cli/cli_environment.dart';
+import 'package:transport/transport.dart';
 
 /// Runs Ferret headless until Ctrl-C: listens, reconnects to paired devices,
 /// and asks on the terminal before pairing with a new one.
@@ -45,6 +46,15 @@ class DaemonCommand extends Command<int> {
         (sessions) => stdout.writeln('Connected: ${_names(sessions)}'),
       ),
       engine.pairingPrompts.listen((prompt) => unawaited(_ask(prompt, lines))),
+      engine.joins.listen(
+        (joined) => stdout.writeln(
+          '${joined.device.name} joined your devices '
+          '(added by ${joined.introducer.name}).',
+        ),
+      ),
+      engine.nearbyChanges.listen(
+        (nearby) => stdout.writeln('Nearby: ${_nearbyNames(nearby)}'),
+      ),
     ];
 
     await ProcessSignal.sigint.watch().first;
@@ -66,11 +76,33 @@ class DaemonCommand extends Command<int> {
         .join(', ');
   }
 
+  String _nearbyNames(List<DiscoveredPeer> nearby) {
+    if (nearby.isEmpty) {
+      return 'none';
+    }
+
+    return nearby.map((peer) => peer.announce.name).join(', ');
+  }
+
   Future<void> _ask(PairingPrompt prompt, Stream<String> lines) async {
+    if (prompt.alsoDevices.isNotEmpty) {
+      stdout.writeln(
+        'You will also be connected to ${prompt.alsoDevices.join(', ')}.',
+      );
+    }
+
     stdout
       ..writeln('${prompt.device.name} wants to pair. Code: ${prompt.code}')
       ..write('Does ${prompt.device.name} show the same code? [y/N] ');
-    final answer = await lines.first;
+    final answer = await Future.any([
+      lines.first,
+      prompt.answer.then((_) => ''),
+    ]);
+    if (prompt.isDecided) {
+      stdout.writeln('\n${prompt.device.name} stopped waiting.');
+      return;
+    }
+
     if (answer.trim().toLowerCase().startsWith('y')) {
       prompt.accept();
       return;

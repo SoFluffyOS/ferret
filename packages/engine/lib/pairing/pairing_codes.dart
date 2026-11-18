@@ -10,6 +10,7 @@ import 'package:transport/transport.dart';
 abstract final class PairingCodes {
   static const scheme = 'ferret';
   static const secretLength = 16;
+  static const nonceLength = 16;
 
   static final _random = Random.secure();
 
@@ -59,13 +60,36 @@ abstract final class PairingCodes {
     List<int> handshakeHash,
   ) => NoiseCrypto.hmac(secret, [...handshakeHash, ...utf8.encode('response')]);
 
+  /// A fresh nonce for one code comparison.
+  static Uint8List newNonce() => Uint8List.fromList(
+    List.generate(nonceLength, (_) => _random.nextInt(256)),
+  );
+
+  /// What the requester sends before it learns the answerer's nonce, so it
+  /// can't pick its own afterwards.
+  static Future<Uint8List> commitment(List<int> nonce) =>
+      NoiseCrypto.hash(nonce);
+
   /// Six digits both screens show when pairing without a QR code. They match
   /// only when both sides share one handshake, so no one sits in between.
-  static Future<String> comparisonCode(List<int> handshakeHash) async {
-    final mac = await NoiseCrypto.hmac(
-      handshakeHash,
-      utf8.encode('ferret-compare'),
-    );
+  ///
+  /// The handshake hash alone is not enough for a code this short: someone
+  /// in the middle runs two handshakes and can retry keys until both hashes
+  /// give the same six digits, about a thousand tries. The two nonces stop
+  /// that. The requester commits to its nonce first, the answerer then picks
+  /// its own, and only then is the first one revealed, so each side's nonce
+  /// was fixed before it saw the other's and nobody can aim at a code. One
+  /// attempt matches by luck once in a million.
+  static Future<String> comparisonCode(
+    List<int> handshakeHash, {
+    required List<int> requesterNonce,
+    required List<int> answererNonce,
+  }) async {
+    final mac = await NoiseCrypto.hmac(handshakeHash, [
+      ...utf8.encode('ferret-compare'),
+      ...requesterNonce,
+      ...answererNonce,
+    ]);
     final value = ByteData.sublistView(mac).getUint32(0) % 1000000;
     return value.toString().padLeft(6, '0');
   }
