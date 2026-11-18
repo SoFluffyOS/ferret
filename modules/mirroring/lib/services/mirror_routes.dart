@@ -83,14 +83,23 @@ class MirrorRoutes {
   ];
 
   /// The cable's way to the paired device [deviceId]: a phone it found
-  /// that says it is that device, or the only one with its name. With
-  /// [orOnlyOne], the single phone on a cable counts too, for an owner
-  /// who just followed the steps to plug that device in.
+  /// that says it is that device, or one with its name, the one on a real
+  /// cable before the same phone over Wi-Fi debugging. With [orOnlyOne],
+  /// the single phone on a cable counts too, for an owner who just
+  /// followed the steps to plug that device in.
   MirrorTarget? cableTargetFor(String deviceId, {bool orOnlyOne = false}) {
-    for (final target in _cableTargets) {
-      if (_pairedIdOf(target) == deviceId) {
+    final matches = [
+      for (final target in _cableTargets)
+        if (_pairedIdOf(target) == deviceId) target,
+    ];
+    for (final target in matches) {
+      if (!target.wireless) {
         return _claim(target, deviceId);
       }
+    }
+
+    if (matches.isNotEmpty) {
+      return _claim(matches.first, deviceId);
     }
 
     final unpaired = targets;
@@ -303,7 +312,8 @@ class MirrorRoutes {
   }
 
   /// The paired device [target] is: the one it names, or the only paired
-  /// phone called the same when no other phone on a cable is.
+  /// phone called the same. A phone plugged in that also has Wi-Fi
+  /// debugging on shows up twice under one name, and is one phone.
   String? _pairedIdOf(MirrorTarget target) {
     final phones = _pairedPhones();
     final deviceId = target.ferretDeviceId;
@@ -319,11 +329,7 @@ class MirrorRoutes {
       for (final MapEntry(:key, :value) in phones.entries)
         if (_plain(value) == name) key,
     ];
-    final twins = [
-      for (final other in _cableTargets)
-        if (other.ferretDeviceId == null && _plain(other.name) == name) other,
-    ];
-    if (sameName.length != 1 || twins.length != 1) {
+    if (sameName.length != 1) {
       return null;
     }
 

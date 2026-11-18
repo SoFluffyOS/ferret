@@ -162,16 +162,32 @@ void main() {
       );
     });
 
-    test('two phones of the same model are not guessed apart', () async {
+    test('a phone seen over USB and over Wi-Fi debugging is one phone, and '
+        'the real cable is the one used', () async {
       await create();
       cable.find([
-        cable.target('a1', 'Galaxy S24'),
-        cable.target('a2', 'Galaxy S24'),
+        const MirrorTarget(
+          routeId: 'cable',
+          id: '192.168.1.78:5555',
+          name: 'Galaxy S24',
+          wireless: true,
+        ),
+        cable.target('R58', 'Galaxy S24'),
       ]);
       await settle();
 
-      expect(routes.cableTargetFor('galaxy'), isNull);
-      expect(routes.targets, hasLength(2));
+      expect(routes.cableTargetFor('galaxy')?.id, 'R58');
+      expect(routes.targets, isEmpty, reason: 'neither is a stranger');
+    });
+
+    test('two paired phones with one name are not guessed apart', () async {
+      await create();
+      paired = {'one': 'Galaxy S24', 'two': 'Galaxy S24'};
+      cable.find([cable.target('R58', 'Galaxy S24')]);
+      await settle();
+
+      expect(routes.cableTargetFor('one'), isNull);
+      expect(routes.targets, hasLength(1));
     });
 
     test('the only phone on a cable counts for an owner who followed the '

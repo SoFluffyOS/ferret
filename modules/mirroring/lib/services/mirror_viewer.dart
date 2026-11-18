@@ -162,14 +162,16 @@ class MirrorViewer {
       return;
     }
 
+    final attempt = ++_attempt;
     _detach();
     await _stopFeed(feed);
-    if (!identical(_current, current)) {
+    final latest = _current;
+    if (attempt != _attempt || latest == null || !latest.isMirroring) {
       return;
     }
 
-    _set(current.copyWith(phase: .starting));
-    await _reopen(current.target);
+    _set(latest.copyWith(phase: .starting));
+    await _reopen(latest.target);
   }
 
   /// Stop or Back on this computer.
