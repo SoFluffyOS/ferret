@@ -6,8 +6,10 @@ import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 
 /// A device's Screen section. Before anything is shown it is the
-/// launcher; once Show screen was pressed it hosts the mirror stage, from
-/// the first question to the ending.
+/// launcher. Once Show screen was pressed, the stage is in a window of its
+/// own where there is one, and the section says where things stand;
+/// elsewhere the section hosts the stage itself, from the first question
+/// to the ending.
 class ScreenSectionPage extends StatelessWidget {
   const ScreenSectionPage({
     super.key,
@@ -29,6 +31,20 @@ class ScreenSectionPage extends StatelessWidget {
     final hasStage = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.stageDeviceId == deviceId,
     );
+    final inWindow = context.select<StageWindowViewModel, bool>(
+      (stageWindow) => stageWindow.deviceId == deviceId,
+    );
+    final background = context.palette.background;
+    if (inWindow) {
+      return ColoredBox(
+        color: background,
+        child: AdaptiveContent(
+          width: .narrow,
+          child: ScreenStatusFrame(deviceId: deviceId, deviceName: deviceName),
+        ),
+      );
+    }
+
     if (hasStage) {
       return MirrorPage(
         deviceId: deviceId,
@@ -38,7 +54,7 @@ class ScreenSectionPage extends StatelessWidget {
     }
 
     return ColoredBox(
-      color: context.palette.background,
+      color: background,
       child: AdaptiveContent(
         width: .narrow,
         child: ScreenLauncherFrame(deviceName: deviceName, onShow: onShow),

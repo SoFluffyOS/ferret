@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mirroring/mirroring.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/protocol.dart';
@@ -147,6 +149,51 @@ class FakeDecoder implements MirrorDecoder {
 
   @override
   Future<void> dispose() async => disposed = true;
+}
+
+/// The app's windows for features, in memory: remembers what was opened
+/// and every shape it was given.
+class FakeWindows extends ChangeNotifier implements FeatureWindows {
+  FakeWindows({this.canOpen = true});
+
+  @override
+  final bool canOpen;
+  FeatureWindow? window;
+  final List<Size> shapes = [];
+  int broughtToFront = 0;
+
+  @override
+  String? get openId => window?.id;
+
+  @override
+  Future<bool> open(FeatureWindow window) async {
+    if (!canOpen) {
+      return false;
+    }
+
+    if (this.window?.id == window.id) {
+      broughtToFront++;
+      return true;
+    }
+
+    this.window = window;
+    shapes.add(window.contentSize);
+    notifyListeners();
+    return true;
+  }
+
+  @override
+  Future<void> setContentSize(Size contentSize) async =>
+      shapes.add(contentSize);
+
+  @override
+  Future<void> bringToFront() async => broughtToFront++;
+
+  @override
+  Future<void> close() async {
+    window = null;
+    notifyListeners();
+  }
 }
 
 /// A window that remembers whether it is full screen.

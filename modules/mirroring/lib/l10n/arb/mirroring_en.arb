@@ -2,6 +2,23 @@
   "@@locale": "en",
   "title": "Screen",
   "showScreen": "Show screen",
+  "windowTitle": "{device} — Screen",
+  "@windowTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "inWindowTitle": "{device}'s screen has its own window",
+  "@inWindowTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "bringToFront": "Bring to front",
   "launcherTitle": "See {device}'s screen on this computer",
   "@launcherTitle": {
     "placeholders": {

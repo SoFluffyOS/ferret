@@ -25,10 +25,15 @@ class MirrorStageFrame extends StatelessWidget {
     required this.deviceName,
     this.onClose,
     this.clock,
+    this.fillsWindow = false,
   });
 
   final String deviceId;
   final String deviceName;
+
+  /// The stage is all its window shows, and the window has the picture's
+  /// shape: the toolbar floats over the picture, never beside it.
+  final bool fillsWindow;
 
   /// Closes what hosts the stage: Stop, Cancel and Close all end there.
   /// Null where the host stays, such as a pane.
@@ -125,6 +130,7 @@ class MirrorStageFrame extends StatelessWidget {
         deviceName: deviceName,
         picture: picture,
         onStop: stop,
+        floats: fillsWindow,
       );
     }
 

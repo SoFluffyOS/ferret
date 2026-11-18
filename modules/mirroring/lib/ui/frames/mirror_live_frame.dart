@@ -23,12 +23,17 @@ class MirrorLiveFrame extends StatefulWidget {
     required this.deviceName,
     required this.picture,
     required this.onStop,
+    this.floats = false,
   });
 
   final String deviceId;
   final String deviceName;
   final MirrorPicture picture;
   final VoidCallback onStop;
+
+  /// The toolbar always floats over the picture: for a window in the
+  /// picture's own shape, where anything beside it would leave bars.
+  final bool floats;
 
   @override
   State<MirrorLiveFrame> createState() => _MirrorLiveFrameState();
@@ -64,7 +69,10 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final beside = !isSmall && constraints.maxWidth > constraints.maxHeight;
+        final beside =
+            !widget.floats &&
+            !isSmall &&
+            constraints.maxWidth > constraints.maxHeight;
         if (beside) {
           final toolbar = _toolbar(.vertical);
           final aspect = widget.picture.width / widget.picture.height;
@@ -90,7 +98,7 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
           );
         }
 
-        if (pinned) {
+        if (pinned && !widget.floats) {
           return Column(
             children: [
               Expanded(child: _picture(context, textFieldOpen)),

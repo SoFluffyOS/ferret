@@ -505,6 +505,118 @@ void main() {
       expect(find.text('Show screen'), findsOneWidget);
     });
 
+    testWidgets('where the app has a window to give, Show screen opens one '
+        'in the phone\'s shape, it turns with the phone, and the section '
+        'says where things stand', (tester) async {
+      await startComputer(tester);
+      final windows = FakeWindows();
+      final opened = <(String, String)>[];
+      final context = featureContext(devices: [status(pixel)])
+        ..windows = windows
+        ..onOpenSection = (deviceId, sectionId) async {
+          opened.add((deviceId, sectionId));
+        };
+      ui.stageWindow.attach(windows);
+      late List<FeatureAction> actions;
+      await tester.pumpWidget(
+        testApp(
+          scroll: false,
+          ListenableBuilder(
+            listenable: windows,
+            builder: (buildContext, _) {
+              actions = ui.deviceActions(buildContext, context, status(pixel));
+              final section = ui
+                  .deviceSections(buildContext, context, status(pixel))
+                  .single;
+
+              return Column(
+                children: [
+                  Expanded(child: section.builder(buildContext)),
+                  if (windows.window case final window?)
+                    Expanded(
+                      key: ValueKey(window.id),
+                      child: Builder(builder: window.builder),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+
+      actions.single.onPressed?.call();
+      await tester.pump();
+      await tester.pump();
+
+      expect(opened, isEmpty, reason: 'the stage is in its own window');
+      expect(windows.window?.id, 'mirroring.pixel');
+      expect(windows.window?.title, 'Pixel — Screen');
+      expect(windows.shapes, [StageWindowViewModel.firstShape]);
+      expect(find.byType(MirrorWindowPage), findsOneWidget);
+      expect(find.byType(MirrorPage), findsNothing);
+      expect(find.text("Pixel's screen has its own window"), findsOneWidget);
+
+      final route = feature.routes?.ferret;
+      if (route == null) {
+        fail('The computer should be able to view');
+      }
+
+      void picture(int configId, int width, int height) {
+        route
+          ..onConfig(
+            pixel,
+            StreamConfig(
+              configId: configId,
+              codec: .CODEC_H264,
+              width: width,
+              height: height,
+              sps: [0x67],
+              pps: [0x68],
+            ),
+          )
+          ..onFrame(
+            pixel,
+            Frame(
+              configId: configId,
+              sequence: Int64(configId),
+              keyframe: true,
+              data: [1],
+            ),
+          );
+      }
+
+      route.onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+      picture(1, 1080, 2400);
+      await tester.pump();
+      await tester.pump();
+
+      expect(windows.shapes.last, const Size(1080, 2400));
+      expect(find.text("Showing Pixel's screen"), findsOneWidget);
+
+      picture(2, 2400, 1080);
+      await tester.pump();
+      await tester.pump();
+
+      expect(windows.shapes.last, const Size(2400, 1080));
+
+      final where = find.byType(ScreenStatusFrame);
+      await tester.tap(
+        find.descendant(of: where, matching: find.text('Bring to front')),
+      );
+      expect(windows.broughtToFront, 1);
+
+      await tester.tap(
+        find.descendant(of: where, matching: find.text('Stop')),
+      );
+      await tester.pump();
+      await tester.pump();
+
+      expect(windows.window, isNull);
+      expect(find.byType(MirrorWindowPage), findsNothing);
+      expect(ui.viewerViewModel.current?.isLive ?? false, isFalse);
+      expect(find.text("See Pixel's screen on this computer"), findsOneWidget);
+    });
+
     testWidgets('a phone offers no "Show screen"', (tester) async {
       await startPhone(tester);
       late List<FeatureAction> actions;

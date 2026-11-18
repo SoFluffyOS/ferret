@@ -58,6 +58,9 @@ class MirroringFeatureUi extends FeatureUi {
     feature,
     window: _window,
   );
+  late final StageWindowViewModel stageWindow = StageWindowViewModel(
+    viewerViewModel,
+  );
   late final ShareViewModel shareViewModel = ShareViewModel(feature);
   late final FeatureChanges _changes = FeatureChanges(feature.changes);
   StreamSubscription<void>? _revealOnAsk;
@@ -104,6 +107,7 @@ class MirroringFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
+    stageWindow.attach(context.windows);
     _openOnIncoming = feature.routes?.incoming.listen(
       (feed) => unawaited(_openIncoming(context, feed.target)),
     );
@@ -302,9 +306,8 @@ class MirroringFeatureUi extends FeatureUi {
         icon: icon,
         order: 50,
         fillsPane: true,
-        builder: (_) => ChangeNotifierProvider.value(
-          value: viewerViewModel,
-          child: ScreenSectionPage(
+        builder: (_) => _withViewModels(
+          ScreenSectionPage(
             deviceId: trusted.id,
             deviceName: trusted.name,
             onShow: () => unawaited(_openMirror(feature, trusted)),
@@ -410,6 +413,14 @@ class MirroringFeatureUi extends FeatureUi {
   /// An iPhone or iPad shows its screen by picking this computer itself.
   bool _viaAirplay(TrustedDevice device) =>
       device.platform == .PLATFORM_IOS && viewerViewModel.hasReceivers;
+
+  Widget _withViewModels(Widget child) => MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: viewerViewModel),
+      ChangeNotifierProvider.value(value: stageWindow),
+    ],
+    child: child,
+  );
 
   Widget _shareSettings() => ChangeNotifierProvider.value(
     value: shareViewModel,
@@ -525,6 +536,7 @@ class MirroringFeatureUi extends FeatureUi {
     await _askOnRequest?.cancel();
     await _noticeResponses?.cancel();
     _changes.dispose();
+    stageWindow.dispose();
     viewerViewModel.dispose();
     shareViewModel.dispose();
   }
@@ -628,15 +640,20 @@ class MirroringFeatureUi extends FeatureUi {
   Future<void> _openPage(FeatureContext context, MirrorTarget target) =>
       _openStage(context, ViewSession.deviceIdOf(target), target.name);
 
-  /// Puts the stage for a device in front of the person. A paired device
-  /// has its Screen section: pushed on a small view, selected next to the
-  /// device list in a window. A phone that isn't paired has no section, so
-  /// its stage is a page of its own.
+  /// Puts the stage for a device in front of the person: in a window of
+  /// its own where there is one. Elsewhere a paired device has its Screen
+  /// section, pushed on a small view and selected next to the device list
+  /// in a window; a phone that isn't paired has no section, so its stage
+  /// is a page of its own.
   Future<void> _openStage(
     FeatureContext context,
     String deviceId,
     String deviceName,
   ) async {
+    if (await _openWindow(deviceId, deviceName)) {
+      return;
+    }
+
     final isPaired = context.engine.devices.any(
       (status) => status.device.id == deviceId,
     );
@@ -685,6 +702,28 @@ class MirroringFeatureUi extends FeatureUi {
       _page = null;
       _pageDeviceId = null;
     }
+  }
+
+  /// The stage in a window in the phone's shape. The stage is said to be
+  /// this device's before the window is there, so the one it replaces
+  /// leaves everything alone as it goes.
+  Future<bool> _openWindow(String deviceId, String deviceName) async {
+    if (!stageWindow.canOpen) {
+      return false;
+    }
+
+    viewerViewModel.openStage(deviceId);
+    return stageWindow.open(
+      deviceId: deviceId,
+      title: platformMirroringL10n().windowTitle(deviceName),
+      builder: (_) => _withViewModels(
+        MirrorWindowPage(
+          deviceId: deviceId,
+          deviceName: deviceName,
+          onClose: () => unawaited(stageWindow.close()),
+        ),
+      ),
+    );
   }
 
   ConsentTexts _noticeTexts(String deviceName) {

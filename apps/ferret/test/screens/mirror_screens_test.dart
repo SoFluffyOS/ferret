@@ -70,6 +70,10 @@ class _Rig {
   final MirroringFeature feature;
   final ViewerViewModel viewModel;
 
+  /// The stage's own window, as on a Mac.
+  late final StageWindowViewModel stageWindow = StageWindowViewModel(viewModel)
+    ..attach(_Windows());
+
   DateTime now = DateTime(2026, 11, 19, 21, 10);
 
   FerretRoute get ferret {
@@ -93,6 +97,7 @@ class _Rig {
     await viewModel.leaveStage('pixel');
     await feature.viewer?.stop();
     await routes?.disarmReceivers();
+    stageWindow.dispose();
     viewModel.dispose();
   }
 
@@ -448,7 +453,64 @@ final _screens = <_Screen>[
       onShow: () {},
     ),
   ),
+  _Screen(
+    'mirror_32_section_while_in_window',
+    body: (rig) => ScreenSectionPage(
+      deviceId: 'pixel',
+      deviceName: 'Pixel 9',
+      onShow: () {},
+    ),
+    before: (rig) async {
+      await rig.streamOverFerret();
+      await rig.stageWindow.open(
+        deviceId: 'pixel',
+        title: 'Pixel 9 — Screen',
+        builder: (_) => const SizedBox.shrink(),
+      );
+    },
+  ),
+  _Screen(
+    'mirror_33_own_window',
+    body: (rig) => MirrorWindowPage(
+      deviceId: 'pixel',
+      deviceName: 'Pixel 9',
+      onClose: () {},
+      clock: () => rig.now,
+    ),
+    before: (rig) => rig.streamOverFerret(),
+  ),
 ];
+
+/// The app's windows for features, as a Mac has them: one opens, and
+/// stays open.
+class _Windows extends ChangeNotifier implements FeatureWindows {
+  FeatureWindow? _window;
+
+  @override
+  bool get canOpen => true;
+
+  @override
+  String? get openId => _window?.id;
+
+  @override
+  Future<bool> open(FeatureWindow window) async {
+    _window = window;
+    notifyListeners();
+    return true;
+  }
+
+  @override
+  Future<void> setContentSize(Size contentSize) async {}
+
+  @override
+  Future<void> bringToFront() async {}
+
+  @override
+  Future<void> close() async {
+    _window = null;
+    notifyListeners();
+  }
+}
 
 /// A frame as it sits on Home or in Settings: on the page's background,
 /// with the page's margins.
@@ -539,8 +601,11 @@ Future<void> _run(
       key: boundary,
       child: _App(
         brightness: brightness,
-        child: ChangeNotifierProvider.value(
-          value: rig.viewModel,
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: rig.viewModel),
+            ChangeNotifierProvider.value(value: rig.stageWindow),
+          ],
           child: page,
         ),
       ),

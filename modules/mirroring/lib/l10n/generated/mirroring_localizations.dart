@@ -109,6 +109,24 @@ abstract class MirroringLocalizations {
   /// **'Show screen'**
   String get showScreen;
 
+  /// No description provided for @windowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} — Screen'**
+  String windowTitle(String device);
+
+  /// No description provided for @inWindowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}\'s screen has its own window'**
+  String inWindowTitle(String device);
+
+  /// No description provided for @bringToFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring to front'**
+  String get bringToFront;
+
   /// No description provided for @launcherTitle.
   ///
   /// In en, this message translates to:

@@ -16,6 +16,19 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get showScreen => 'Show screen';
 
   @override
+  String windowTitle(String device) {
+    return '$device — Screen';
+  }
+
+  @override
+  String inWindowTitle(String device) {
+    return '$device\'s screen has its own window';
+  }
+
+  @override
+  String get bringToFront => 'Bring to front';
+
+  @override
   String launcherTitle(String device) {
     return 'See $device\'s screen on this computer';
   }
