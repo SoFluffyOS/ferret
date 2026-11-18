@@ -35,7 +35,9 @@ class DropViewModel extends ChangeNotifier {
             .where((key) => key.startsWith('${DropFeature.featureId}.'))
             .listen((_) => _onSettings()),
       )
-      ..add(feature.localSend.changes.listen((_) => _onLocalSend()));
+      ..add(feature.localSend.changes.listen((_) => _onLocalSend()))
+      ..add(feature.quickShare.changes.listen((_) => _onQuickShare()));
+    _quickShareState = feature.quickShare.receiveState;
     _onLocalSend();
     unawaited(_loadFolder());
   }
@@ -52,6 +54,7 @@ class DropViewModel extends ChangeNotifier {
   List<DropTarget> _targets = const [];
   List<DropTarget> _localSendTargets = const [];
   LocalSendReceiveState _receiveState = const LocalSendReceiveState();
+  QuickShareReceiveState _quickShareState = const QuickShareReceiveState();
   Timer? _countdown;
   String _receiveFolder = '';
 
@@ -85,6 +88,22 @@ class DropViewModel extends ChangeNotifier {
     final left? => (left.inMilliseconds / 1000).ceil(),
     null => null,
   };
+
+  /// Whether Drop offers to be found by Quick Share on phones.
+  bool get quickShareEnabled => feature.quickShare.isEnabled;
+
+  /// Whether this platform can be found by Quick Share at all.
+  bool get quickShareSupported => feature.quickShare.isSupported;
+
+  QuickShareReceiveState get quickShareState => _quickShareState;
+
+  /// Whole seconds this device stays visible to Quick Share, or null
+  /// when it isn't. Changes every second while it is.
+  int? get quickShareSecondsLeft =>
+      switch (_quickShareState.remaining(_clock())) {
+        final left? => (left.inMilliseconds / 1000).ceil(),
+        null => null,
+      };
 
   bool get autoAccept => feature.autoAccept;
 
@@ -167,6 +186,16 @@ class DropViewModel extends ChangeNotifier {
 
   Future<void> setLocalSendEnabled(bool value) =>
       feature.localSend.setEnabled(value);
+
+  /// Makes this device show up in Quick Share on phones for the next 10
+  /// minutes.
+  Future<void> receiveFromQuickShare() => feature.quickShare.receiveForAWhile();
+
+  /// Hides this device from Quick Share now.
+  Future<void> stopQuickShare() => feature.quickShare.stopReceiving();
+
+  Future<void> setQuickShareEnabled(bool value) =>
+      feature.quickShare.setEnabled(value);
 
   bool needsPin(Transfer transfer) => feature.needsPin(transfer);
 
@@ -252,16 +281,32 @@ class DropViewModel extends ChangeNotifier {
   void _onLocalSend() {
     _receiveState = feature.localSend.receiveState;
     _localSendTargets = _readLocalSendTargets();
+    _restartCountdown();
+    notifyListeners();
+  }
+
+  void _onQuickShare() {
+    _quickShareState = feature.quickShare.receiveState;
+    _restartCountdown();
+    notifyListeners();
+  }
+
+  /// Ticks every second while a receive window is counting down.
+  void _restartCountdown() {
     _countdown?.cancel();
     _countdown = null;
-    if (_receiveState.remaining(_clock()) != null) {
-      _countdown = .periodic(
-        const Duration(seconds: 1),
-        (_) => notifyListeners(),
-      );
+    final now = _clock();
+    final counting =
+        _receiveState.remaining(now) != null ||
+        _quickShareState.remaining(now) != null;
+    if (!counting) {
+      return;
     }
 
-    notifyListeners();
+    _countdown = .periodic(
+      const Duration(seconds: 1),
+      (_) => notifyListeners(),
+    );
   }
 
   List<DropTarget> _readLocalSendTargets() {

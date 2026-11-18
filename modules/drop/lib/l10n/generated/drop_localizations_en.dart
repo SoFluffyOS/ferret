@@ -390,6 +390,49 @@ class DropLocalizationsEn extends DropLocalizations {
       'Keeps this device visible to LocalSend devices on your network, also after a restart. Off, it\'s visible for 10 minutes when you ask.';
 
   @override
+  String failureConnectionLost(String device) {
+    return 'The connection to $device dropped. Send it again from there.';
+  }
+
+  @override
+  String failureQuickShare(String device) {
+    return 'Something went wrong with $device. Send it again from the phone.';
+  }
+
+  @override
+  String offerPin(String pin) {
+    return 'PIN $pin. It must match the one on the phone.';
+  }
+
+  @override
+  String noticePin(String pin) {
+    return 'PIN $pin';
+  }
+
+  @override
+  String get quickShareTitle => 'Receive from Quick Share';
+
+  @override
+  String get quickShareOff => 'Off. Android phones can\'t see this device.';
+
+  @override
+  String get quickShareFinishing => 'No longer visible. Finishing a transfer…';
+
+  @override
+  String get quickShareCannotAdvertise =>
+      'Couldn\'t become visible. A firewall or VPN may be blocking local discovery.';
+
+  @override
+  String get quickShareTurnOn => 'Visible for 10 min';
+
+  @override
+  String get settingsQuickShare => 'Work with Quick Share';
+
+  @override
+  String get settingsQuickShareBody =>
+      'Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.';
+
+  @override
   String get healthOk => 'Ready';
 
   @override

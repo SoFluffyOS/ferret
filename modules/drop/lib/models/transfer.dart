@@ -1,4 +1,5 @@
 import 'package:drop/models/localsend_origin.dart';
+import 'package:drop/models/quickshare_origin.dart';
 import 'package:drop/models/transfer_direction.dart';
 import 'package:drop/models/transfer_failure.dart';
 import 'package:drop/models/transfer_file.dart';
@@ -21,6 +22,7 @@ class Transfer {
     this.bytesPerSecond = 0,
     this.needsAnswer = false,
     this.localSend,
+    this.quickShare,
   });
 
   final String id;
@@ -44,7 +46,16 @@ class Transfer {
   /// Ferret device.
   final LocalSendOrigin? localSend;
 
+  /// Set when the other side is a phone sending with Quick Share.
+  final QuickShareOrigin? quickShare;
+
   bool get isLocalSend => localSend != null;
+
+  bool get isQuickShare => quickShare != null;
+
+  /// Whether the other side isn't a paired Ferret device, so nothing it
+  /// says about itself is proven.
+  bool get isUnpaired => isLocalSend || isQuickShare;
 
   int get totalBytes => files.fold(0, (sum, file) => sum + file.size);
 
@@ -86,7 +97,7 @@ class Transfer {
       TransferFailure.busy ||
       TransferFailure.unreachable ||
       TransferFailure.untrusted => isOutgoing,
-      _ => !isLocalSend || isOutgoing,
+      _ => !isUnpaired || isOutgoing,
     },
     _ => false,
   };
@@ -117,5 +128,6 @@ class Transfer {
     startedAt: startedAt,
     needsAnswer: needsAnswer ?? this.needsAnswer,
     localSend: localSend,
+    quickShare: quickShare,
   );
 }

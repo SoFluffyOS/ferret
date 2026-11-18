@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:drop/drop.dart';
 import 'package:engine/engine.dart';
 import 'package:interop_localsend/interop_localsend.dart';
+import 'package:interop_quickshare/interop_quickshare.dart';
 import 'package:protocol/protocol.dart';
 
 import 'files.dart';
@@ -16,7 +17,20 @@ const loopbackOptions = LocalSendOptions(
   multicastWait: Duration.zero,
 );
 
-/// A device with Drop and no paired devices, for LocalSend tests.
+/// Quick Share on loopback: no mDNS, and short waits.
+final loopbackQuickShare = QuickShareOptions(
+  bindAddress: InternetAddress.loopbackIPv4,
+  advertise: false,
+  timeouts: const QuickShareTimeouts(
+    handshake: Duration(seconds: 5),
+    idle: Duration(seconds: 5),
+    keepAlive: Duration(milliseconds: 200),
+    closeGrace: Duration(milliseconds: 200),
+  ),
+);
+
+/// A device with Drop and no paired devices, for LocalSend and Quick
+/// Share tests.
 class SoloDevice implements FeatureHost {
   SoloDevice(this.name, this.feature, this.settings, this.secrets);
 
@@ -26,6 +40,7 @@ class SoloDevice implements FeatureHost {
     String name,
     Directory inbox, {
     LocalSendOptions options = loopbackOptions,
+    QuickShareOptions? quickShare,
     Map<String, Object?> settings = const {},
     LocalSendIdentity? identity,
   }) async {
@@ -48,6 +63,7 @@ class SoloDevice implements FeatureHost {
           answerTimeout: options.answerTimeout,
           multicastWait: options.multicastWait,
         ),
+        quickShareOptions: quickShare ?? loopbackQuickShare,
       ),
       MemorySettingsStore({...settings}),
       secrets,
@@ -64,6 +80,8 @@ class SoloDevice implements FeatureHost {
   final SettingsStore settings;
 
   LocalSendBridge get localSend => feature.localSend;
+
+  QuickShareBridge get quickShare => feature.quickShare;
 
   List<Transfer> get transfers => feature.transfers;
 

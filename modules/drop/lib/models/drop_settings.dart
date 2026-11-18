@@ -17,4 +17,9 @@ abstract final class DropSettings {
   /// Keep receiving from LocalSend devices after a restart. Off by
   /// default; the 10 minute window is never stored.
   static const localSendReceiveAlways = 'drop.localsend_receive_always';
+
+  /// Offer to become visible to Quick Share on Android phones. On by
+  /// default on computers; nothing is sent on the network until someone
+  /// turns visibility on, and that is never stored.
+  static const quickShareEnabled = 'drop.quickshare_enabled';
 }

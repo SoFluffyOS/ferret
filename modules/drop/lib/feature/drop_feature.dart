@@ -6,6 +6,8 @@ import 'package:drop/models/models.dart';
 import 'package:drop/services/services.dart';
 import 'package:engine/engine.dart';
 import 'package:interop_localsend/interop_localsend.dart';
+import 'package:interop_quickshare/interop_quickshare.dart'
+    show QuickShareDeviceKind;
 import 'package:path/path.dart' as p;
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/drop.dart';
@@ -17,14 +19,16 @@ typedef ReceiveStoreFactory = ReceiveStore Function(SettingsStore settings);
 /// The engine side of Drop: files and text between paired devices.
 ///
 /// The Ferret protocol lives in [DropSender] and [DropReceiver]; LocalSend
-/// devices are reached through [localSend]. All of them report to one
-/// [TransferRegistry] and save through one [ReceiveStore].
+/// devices are reached through [localSend], and Android phones send in
+/// through [quickShare]. All of them report to one [TransferRegistry] and
+/// save through one [ReceiveStore].
 class DropFeature extends Feature {
   DropFeature({
     ReceiveStoreFactory? store,
     this.chunkSize = DropSender.defaultChunkSize,
     this.ackEvery = DropSender.defaultAckEvery,
     this.localSendOptions = const LocalSendOptions(),
+    this.quickShareOptions = const QuickShareOptions(),
     SecretStore? secrets,
   }) : _storeFactory = store ?? _defaultStore,
        _secrets = secrets;
@@ -34,6 +38,7 @@ class DropFeature extends Feature {
   final int chunkSize;
   final int ackEvery;
   final LocalSendOptions localSendOptions;
+  final QuickShareOptions quickShareOptions;
   final ReceiveStoreFactory _storeFactory;
 
   /// Keeps this device's LocalSend certificate. Without it, the device
@@ -43,6 +48,9 @@ class DropFeature extends Feature {
 
   /// Sending to and receiving from LocalSend devices.
   late final LocalSendBridge localSend;
+
+  /// Receiving from Android phones through Quick Share.
+  late final QuickShareBridge quickShare;
 
   late final DropSender _sender;
   late final DropReceiver _receiver;
@@ -86,6 +94,13 @@ class DropFeature extends Feature {
       options: localSendOptions,
     );
     unawaited(localSend.start());
+    quickShare = QuickShareBridge(
+      registry: registry,
+      store: store,
+      settings: host.settings,
+      describeSelf: _describeSelfForQuickShare,
+      options: quickShareOptions,
+    );
     _sender = DropSender(
       featureId: featureId,
       registry: registry,
@@ -107,6 +122,7 @@ class DropFeature extends Feature {
   @override
   Future<void> stop() async {
     await localSend.dispose();
+    await quickShare.dispose();
     await _receiver.dispose();
   }
 
@@ -140,6 +156,11 @@ class DropFeature extends Feature {
   Future<void> cancel(String id) async {
     if (localSend.owns(id)) {
       await localSend.cancel(id);
+      return;
+    }
+
+    if (quickShare.owns(id)) {
+      await quickShare.cancel(id);
       return;
     }
 
@@ -196,6 +217,11 @@ class DropFeature extends Feature {
   void answer(String id, {required bool accept}) {
     if (localSend.receiver.owns(id)) {
       localSend.receiver.answer(id, accept: accept);
+      return;
+    }
+
+    if (quickShare.owns(id)) {
+      quickShare.receiver.answer(id, accept: accept);
       return;
     }
 
@@ -297,6 +323,23 @@ class DropFeature extends Feature {
           .PLATFORM_ANDROID || .PLATFORM_IOS => .mobile,
           .PLATFORM_CLI => .headless,
           _ => .desktop,
+        },
+      },
+    );
+  }
+
+  ({String name, QuickShareDeviceKind kind}) _describeSelfForQuickShare() {
+    final device = host.localDevice;
+    return (
+      name: device.name,
+      kind: switch (device.formFactor) {
+        .FORM_FACTOR_PHONE => .phone,
+        .FORM_FACTOR_TABLET => .tablet,
+        .FORM_FACTOR_LAPTOP || .FORM_FACTOR_DESKTOP => .laptop,
+        _ => switch (device.platform) {
+          .PLATFORM_ANDROID || .PLATFORM_IOS => .phone,
+          .PLATFORM_MACOS || .PLATFORM_LINUX || .PLATFORM_WINDOWS => .laptop,
+          _ => .unknown,
         },
       },
     );

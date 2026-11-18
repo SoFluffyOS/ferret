@@ -12,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Drop's home card: active and recent transfers, or a hint to send some,
-/// and the switch that lets LocalSend devices send here for a while.
+/// and the switches that let LocalSend devices and Quick Share on phones
+/// send here for a while.
 class DropHomeFrame extends StatelessWidget {
   const DropHomeFrame({super.key, required this.onSendFiles});
 
@@ -38,6 +39,15 @@ class DropHomeFrame extends StatelessWidget {
     );
     final secondsLeft = context.select<DropViewModel, int?>(
       (model) => model.receiveSecondsLeft,
+    );
+    final quickShare = context.select<DropViewModel, bool>(
+      (model) => model.quickShareEnabled,
+    );
+    final visibility = context.select<DropViewModel, QuickShareReceiveState>(
+      (model) => model.quickShareState,
+    );
+    final visibleSecondsLeft = context.select<DropViewModel, int?>(
+      (model) => model.quickShareSecondsLeft,
     );
     final hasFinished = context.select<DropViewModel, bool>(
       (model) => model.hasFinished,
@@ -86,7 +96,7 @@ class DropHomeFrame extends StatelessWidget {
         ],
         if (localSend) ...[
           if (transfers.isNotEmpty) Spacing.v16,
-          LocalSendReceiveRow(
+          ReceiveRow(
             title: l10n.receiveTitle,
             status: _receiveStatus(receiving, secondsLeft, l10n, texts),
             hasProblem: receiving.problem != null,
@@ -95,6 +105,26 @@ class DropHomeFrame extends StatelessWidget {
               (true, _) => null,
               (false, true) => viewModel.stopReceiving,
               (false, false) => viewModel.receiveFromLocalSend,
+            },
+          ),
+        ],
+        if (quickShare) ...[
+          if (transfers.isNotEmpty || localSend) Spacing.v16,
+          ReceiveRow(
+            icon: LucideIcons.smartphone,
+            title: l10n.quickShareTitle,
+            status: _visibilityStatus(
+              visibility,
+              visibleSecondsLeft,
+              l10n,
+              texts,
+            ),
+            hasProblem: visibility.problem != null,
+            actionLabel: _visibilityAction(visibility, l10n),
+            onAction: switch ((visibility.isStarting, visibility.isOn)) {
+              (true, _) => null,
+              (false, true) => viewModel.stopQuickShare,
+              (false, false) => viewModel.receiveFromQuickShare,
             },
           ),
         ],
@@ -152,6 +182,52 @@ class DropHomeFrame extends StatelessWidget {
     }
 
     return l10n.receiveTurnOn;
+  }
+
+  String _visibilityStatus(
+    QuickShareReceiveState state,
+    int? secondsLeft,
+    DropLocalizations l10n,
+    TransferTexts texts,
+  ) {
+    if (state.isStarting) {
+      return l10n.receiveStarting;
+    }
+
+    if (state.problem case final problem?) {
+      return switch (problem) {
+        QuickShareProblem.cannotListen => l10n.receiveCannotListen,
+        QuickShareProblem.cannotAdvertise => l10n.quickShareCannotAdvertise,
+      };
+    }
+
+    if (!state.isOn) {
+      return l10n.quickShareOff;
+    }
+
+    if (secondsLeft == null || secondsLeft <= 0) {
+      return l10n.quickShareFinishing;
+    }
+
+    return l10n.receiveTimed(
+      state.name,
+      texts.countdown(Duration(seconds: secondsLeft)),
+    );
+  }
+
+  String _visibilityAction(
+    QuickShareReceiveState state,
+    DropLocalizations l10n,
+  ) {
+    if (state.isOn) {
+      return l10n.receiveStop;
+    }
+
+    if (state.problem != null) {
+      return l10n.receiveTryAgain;
+    }
+
+    return l10n.quickShareTurnOn;
   }
 
   Future<void> _enterPin(

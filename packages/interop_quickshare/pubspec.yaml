@@ -10,7 +10,14 @@ environment:
 dependencies:
   core:
     path: ../core
+  crypto: ^3.0.6
+  fixnum: ^1.1.1
+  # P-256 key agreement and AES-CBC for the UKEY2 handshake and the
+  # encrypted frames. Pure Dart, maintained by the Bouncy Castle project.
+  pointycastle: ^4.0.0
+  protobuf: ^6.1.0
 
 dev_dependencies:
   lints: ^6.0.0
+  path: ^1.9.1
   test: ^1.32.0

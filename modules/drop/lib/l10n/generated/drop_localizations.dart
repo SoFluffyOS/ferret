@@ -646,6 +646,72 @@ abstract class DropLocalizations {
   /// **'Keeps this device visible to LocalSend devices on your network, also after a restart. Off, it\'s visible for 10 minutes when you ask.'**
   String get settingsReceiveAlwaysBody;
 
+  /// No description provided for @failureConnectionLost.
+  ///
+  /// In en, this message translates to:
+  /// **'The connection to {device} dropped. Send it again from there.'**
+  String failureConnectionLost(String device);
+
+  /// No description provided for @failureQuickShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong with {device}. Send it again from the phone.'**
+  String failureQuickShare(String device);
+
+  /// No description provided for @offerPin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN {pin}. It must match the one on the phone.'**
+  String offerPin(String pin);
+
+  /// No description provided for @noticePin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN {pin}'**
+  String noticePin(String pin);
+
+  /// No description provided for @quickShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive from Quick Share'**
+  String get quickShareTitle;
+
+  /// No description provided for @quickShareOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. Android phones can\'t see this device.'**
+  String get quickShareOff;
+
+  /// No description provided for @quickShareFinishing.
+  ///
+  /// In en, this message translates to:
+  /// **'No longer visible. Finishing a transfer…'**
+  String get quickShareFinishing;
+
+  /// No description provided for @quickShareCannotAdvertise.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t become visible. A firewall or VPN may be blocking local discovery.'**
+  String get quickShareCannotAdvertise;
+
+  /// No description provided for @quickShareTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible for 10 min'**
+  String get quickShareTurnOn;
+
+  /// No description provided for @settingsQuickShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Work with Quick Share'**
+  String get settingsQuickShare;
+
+  /// No description provided for @settingsQuickShareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.'**
+  String get settingsQuickShareBody;
+
   /// No description provided for @healthOk.
   ///
   /// In en, this message translates to:

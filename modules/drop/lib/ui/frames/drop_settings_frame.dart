@@ -6,7 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Drop's settings: where files go, whether to ask first, and LocalSend.
+/// Drop's settings: where files go, whether to ask first, LocalSend and
+/// Quick Share.
 class DropSettingsFrame extends StatelessWidget {
   const DropSettingsFrame({super.key});
 
@@ -27,6 +28,9 @@ class DropSettingsFrame extends StatelessWidget {
     );
     final receiveAlways = context.select<DropViewModel, bool>(
       (model) => model.receiveAlways,
+    );
+    final quickShare = context.select<DropViewModel, bool>(
+      (model) => model.quickShareEnabled,
     );
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -95,6 +99,15 @@ class DropSettingsFrame extends StatelessWidget {
               body: l10n.settingsReceiveAlwaysBody,
               value: receiveAlways,
               onChanged: viewModel.setReceiveAlways,
+            ),
+          ],
+          if (viewModel.quickShareSupported) ...[
+            Spacing.v16,
+            SettingSwitch(
+              title: l10n.settingsQuickShare,
+              body: l10n.settingsQuickShareBody,
+              value: quickShare,
+              onChanged: viewModel.setQuickShareEnabled,
             ),
           ],
         ],

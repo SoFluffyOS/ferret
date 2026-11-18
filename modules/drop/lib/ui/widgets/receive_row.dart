@@ -3,15 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Whether LocalSend devices can send here right now, with the countdown
-/// while the window is open and one button to turn it on or off.
-class LocalSendReceiveRow extends StatelessWidget {
-  const LocalSendReceiveRow({
+/// Whether devices outside Ferret, such as LocalSend apps or Quick Share
+/// on phones, can send here right now, with the countdown while the
+/// window is open and one button to turn it on or off.
+class ReceiveRow extends StatelessWidget {
+  const ReceiveRow({
     super.key,
     required this.title,
     required this.status,
     required this.actionLabel,
     required this.onAction,
+    this.icon = LucideIcons.radio,
     this.hasProblem = false,
   });
 
@@ -23,6 +25,7 @@ class LocalSendReceiveRow extends StatelessWidget {
 
   /// Null while it is turning on.
   final VoidCallback? onAction;
+  final IconData icon;
   final bool hasProblem;
 
   @override
@@ -36,7 +39,7 @@ class LocalSendReceiveRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(LucideIcons.radio, size: Spacing.d16, color: palette.text),
+        Icon(icon, size: Spacing.d16, color: palette.text),
         Spacing.h8,
         Expanded(
           child: Column(

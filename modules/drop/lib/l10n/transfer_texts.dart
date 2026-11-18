@@ -103,16 +103,20 @@ class TransferTexts {
       TransferFailure.busy => l10n.failureBusy(device),
       TransferFailure.unreachable => l10n.failureUnreachable(device),
       TransferFailure.untrusted => l10n.failureUntrusted(device),
-      TransferFailure.protocol || null => l10n.failureProtocol(device),
+      TransferFailure.connectionLost => l10n.failureConnectionLost(device),
+      TransferFailure.protocol || null => switch (transfer.isQuickShare) {
+        true => l10n.failureQuickShare(device),
+        false => l10n.failureProtocol(device),
+      },
     };
   }
 
-  /// What to know before accepting an offer from a LocalSend device: what
-  /// the device says it is, its fingerprint, the files and their size.
-  /// Empty for paired devices.
+  /// What to know before accepting an offer from a device that isn't
+  /// paired: for LocalSend what the device says it is and its
+  /// fingerprint, for Quick Share the PIN to compare with the phone, then
+  /// the files and their size. Empty for paired devices.
   List<String> offerDetails(Transfer transfer) {
-    final origin = transfer.localSend;
-    if (origin == null || !transfer.needsAnswer) {
+    if (!transfer.isUnpaired || !transfer.needsAnswer) {
       return const [];
     }
 
@@ -121,11 +125,17 @@ class TransferTexts {
     ];
     final more = transfer.files.length - names.length;
     return [
-      switch (origin.deviceModel.isEmpty) {
-        true => origin.address,
-        false => l10n.offerFrom(origin.deviceModel, origin.address),
-      },
-      l10n.offerFingerprint(Fingerprints.short(origin.fingerprint)),
+      if (transfer.localSend case final origin?) ...[
+        switch (origin.deviceModel.isEmpty) {
+          true => origin.address,
+          false => l10n.offerFrom(origin.deviceModel, origin.address),
+        },
+        l10n.offerFingerprint(Fingerprints.short(origin.fingerprint)),
+      ],
+      if (transfer.quickShare case final origin?) ...[
+        l10n.offerPin(origin.pin),
+        origin.address,
+      ],
       if (more > 0) l10n.offerFilesMore(names.join(', '), more),
       if (more <= 0 && names.length > 1) l10n.offerFiles(names.join(', ')),
       if (transfer.files.isNotEmpty)

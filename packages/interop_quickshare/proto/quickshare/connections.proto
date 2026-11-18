@@ -1,0 +1,151 @@
+// The connection layer Quick Share runs on: the frames that open a
+// connection, carry payloads in chunks, keep it alive and close it.
+//
+// Ferret's own description of the wire format, limited to what Ferret
+// reads and writes. Field numbers and enum values are the protocol's, as
+// published in Google's open source Nearby definitions (Apache-2.0);
+// message names are Ferret's.
+syntax = "proto2";
+
+package quickshare.connections;
+
+message OfflineFrame {
+  enum Version {
+    UNKNOWN_VERSION = 0;
+    V1 = 1;
+  }
+
+  optional Version version = 1;
+  optional OfflineFrameV1 v1 = 2;
+}
+
+message OfflineFrameV1 {
+  enum FrameType {
+    UNKNOWN_FRAME_TYPE = 0;
+    CONNECTION_REQUEST = 1;
+    CONNECTION_RESPONSE = 2;
+    PAYLOAD_TRANSFER = 3;
+    BANDWIDTH_UPGRADE_NEGOTIATION = 4;
+    KEEP_ALIVE = 5;
+    DISCONNECTION = 6;
+    PAIRED_KEY_ENCRYPTION = 7;
+  }
+
+  optional FrameType type = 1;
+  optional ConnectionRequest connection_request = 2;
+  optional ConnectionResponse connection_response = 3;
+  optional PayloadTransfer payload_transfer = 4;
+  optional KeepAlive keep_alive = 6;
+  optional Disconnection disconnection = 7;
+}
+
+message ConnectionRequest {
+  enum Medium {
+    UNKNOWN_MEDIUM = 0;
+    MDNS = 1;
+    BLUETOOTH = 2;
+    WIFI_HOTSPOT = 3;
+    BLE = 4;
+    WIFI_LAN = 5;
+    WIFI_AWARE = 6;
+    NFC = 7;
+    WIFI_DIRECT = 8;
+    WEB_RTC = 9;
+    BLE_L2CAP = 10;
+    USB = 11;
+  }
+
+  optional string endpoint_id = 1;
+  optional string endpoint_name = 2;
+  optional int32 nonce = 4;
+  repeated Medium mediums = 5;
+
+  // Device kind and name, in the same layout as the mDNS TXT record.
+  optional bytes endpoint_info = 6;
+  optional int32 keep_alive_interval_millis = 8;
+  optional int32 keep_alive_timeout_millis = 9;
+}
+
+message ConnectionResponse {
+  enum ResponseStatus {
+    UNKNOWN_RESPONSE_STATUS = 0;
+    ACCEPT = 1;
+    REJECT = 2;
+  }
+
+  // The older way to answer: 0 accepts.
+  optional int32 status = 1;
+  optional ResponseStatus response = 3;
+  optional OsInfo os_info = 4;
+}
+
+message OsInfo {
+  enum OsType {
+    UNKNOWN_OS_TYPE = 0;
+    ANDROID = 1;
+    CHROME_OS = 2;
+    WINDOWS = 3;
+    APPLE = 4;
+    LINUX = 100;
+  }
+
+  optional OsType type = 1;
+}
+
+message PayloadTransfer {
+  enum PacketType {
+    UNKNOWN_PACKET_TYPE = 0;
+    DATA = 1;
+    CONTROL = 2;
+    PAYLOAD_ACK = 3;
+  }
+
+  message PayloadHeader {
+    enum PayloadType {
+      UNKNOWN_PAYLOAD_TYPE = 0;
+      BYTES = 1;
+      FILE = 2;
+      STREAM = 3;
+    }
+
+    optional int64 id = 1;
+    optional PayloadType type = 2;
+    optional int64 total_size = 3;
+    optional bool is_sensitive = 4;
+    optional string file_name = 5;
+    optional string parent_folder = 6;
+  }
+
+  message PayloadChunk {
+    // Bit 0 of flags marks the last chunk of a payload.
+    optional int32 flags = 1;
+    optional int64 offset = 2;
+    optional bytes body = 3;
+  }
+
+  message ControlMessage {
+    enum EventType {
+      UNKNOWN_EVENT_TYPE = 0;
+      PAYLOAD_ERROR = 1;
+      PAYLOAD_CANCELED = 2;
+      PAYLOAD_RECEIVED_ACK = 3;
+    }
+
+    optional EventType event = 1;
+    optional int64 offset = 2;
+  }
+
+  optional PacketType packet_type = 1;
+  optional PayloadHeader payload_header = 2;
+  optional PayloadChunk payload_chunk = 3;
+  optional ControlMessage control_message = 4;
+}
+
+message KeepAlive {
+  optional bool ack = 1;
+}
+
+message Disconnection {
+  optional bool request_safe_to_disconnect = 1;
+  optional bool ack_safe_to_disconnect = 2;
+}

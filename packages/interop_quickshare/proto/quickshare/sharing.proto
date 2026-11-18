@@ -1,0 +1,125 @@
+// The sharing layer of Quick Share: what is being sent and whether the
+// receiver takes it. These frames travel as BYTES payloads of the
+// connection layer.
+//
+// Ferret's own description of the wire format, limited to what Ferret
+// reads and writes. Field numbers and enum values are the protocol's, as
+// published in Google's open source Nearby definitions (Apache-2.0);
+// message names are Ferret's.
+syntax = "proto2";
+
+package quickshare.sharing;
+
+message SharingFrame {
+  enum Version {
+    UNKNOWN_VERSION = 0;
+    V1 = 1;
+  }
+
+  optional Version version = 1;
+  optional SharingFrameV1 v1 = 2;
+}
+
+message SharingFrameV1 {
+  enum FrameType {
+    UNKNOWN_FRAME_TYPE = 0;
+    INTRODUCTION = 1;
+    RESPONSE = 2;
+    PAIRED_KEY_ENCRYPTION = 3;
+    PAIRED_KEY_RESULT = 4;
+    CERTIFICATE_INFO = 5;
+    CANCEL = 6;
+    PROGRESS_UPDATE = 7;
+  }
+
+  optional FrameType type = 1;
+  optional Introduction introduction = 2;
+  optional TransferResponse connection_response = 3;
+  optional PairedKeyEncryption paired_key_encryption = 4;
+  optional PairedKeyResult paired_key_result = 5;
+}
+
+message FileMetadata {
+  enum Type {
+    UNKNOWN = 0;
+    IMAGE = 1;
+    VIDEO = 2;
+    ANDROID_APP = 3;
+    AUDIO = 4;
+    DOCUMENT = 5;
+    CONTACT_CARD = 6;
+  }
+
+  optional string name = 1;
+  optional Type type = 2;
+
+  // The id the file's chunks carry in the connection layer.
+  optional int64 payload_id = 3;
+  optional int64 size = 4;
+  optional string mime_type = 5;
+  optional int64 id = 6;
+  optional string parent_folder = 7;
+}
+
+message TextMetadata {
+  enum Type {
+    UNKNOWN = 0;
+    TEXT = 1;
+    URL = 2;
+    ADDRESS = 3;
+    PHONE_NUMBER = 4;
+  }
+
+  optional string text_title = 2;
+  optional Type type = 3;
+  optional int64 payload_id = 4;
+  optional int64 size = 5;
+  optional int64 id = 6;
+}
+
+// Wi-Fi passwords shared from a phone. Ferret only counts them, to say it
+// can't take them.
+message WifiCredentialsMetadata {
+  optional string ssid = 2;
+  optional int64 payload_id = 4;
+  optional int64 id = 5;
+}
+
+message Introduction {
+  repeated FileMetadata file_metadata = 1;
+  repeated TextMetadata text_metadata = 2;
+  optional string required_package = 3;
+  repeated WifiCredentialsMetadata wifi_credentials_metadata = 4;
+}
+
+message TransferResponse {
+  enum Status {
+    UNKNOWN = 0;
+    ACCEPT = 1;
+    REJECT = 2;
+    NOT_ENOUGH_SPACE = 3;
+    UNSUPPORTED_ATTACHMENT_TYPE = 4;
+    TIMED_OUT = 5;
+  }
+
+  optional Status status = 1;
+}
+
+// Proves a shared Google account or contact. Ferret has neither, so it
+// sends random bytes, as other independent implementations do.
+message PairedKeyEncryption {
+  optional bytes signed_data = 1;
+  optional bytes secret_id_hash = 2;
+  optional bytes optional_signed_data = 3;
+}
+
+message PairedKeyResult {
+  enum Status {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAIL = 2;
+    UNABLE = 3;
+  }
+
+  optional Status status = 1;
+}

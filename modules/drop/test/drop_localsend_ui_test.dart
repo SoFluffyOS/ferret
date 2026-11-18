@@ -125,7 +125,7 @@ void main() {
     await start(settings: {DropSettings.localSendEnabled: false});
     await pumpCard(tester);
 
-    expect(find.byType(LocalSendReceiveRow), findsNothing);
+    expect(find.text('Receive from LocalSend'), findsNothing);
     expect(find.text('Send files…'), findsOneWidget);
   });
 
@@ -137,20 +137,20 @@ void main() {
       testApp(
         Column(
           children: [
-            LocalSendReceiveRow(
+            ReceiveRow(
               title: 'Receive from LocalSend',
               status: 'Visible as Laptop · 9:41 left',
               actionLabel: 'Stop',
               onAction: () => stopped = true,
             ),
-            LocalSendReceiveRow(
+            ReceiveRow(
               title: 'Receive from LocalSend',
               status: 'Couldn\'t start.',
               actionLabel: 'Try again',
               hasProblem: true,
               onAction: () {},
             ),
-            const LocalSendReceiveRow(
+            const ReceiveRow(
               title: 'Receive from LocalSend',
               status: 'Turning on…',
               actionLabel: '',

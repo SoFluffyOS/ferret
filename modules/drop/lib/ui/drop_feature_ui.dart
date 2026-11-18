@@ -18,7 +18,8 @@ import 'package:provider/provider.dart';
 
 /// The app side of Drop: the home card, "Send files…" on each device,
 /// files dropped on the window or menubar icon, shares from other apps,
-/// LocalSend devices as extra targets, notices, and settings.
+/// LocalSend devices as extra targets, Quick Share from phones, notices,
+/// and settings.
 class DropFeatureUi extends FeatureUi {
   DropFeatureUi({FerretDrop? plugin, DropFeature? feature})
     : this._(plugin ?? FerretDrop(), feature);
@@ -39,6 +40,8 @@ class DropFeatureUi extends FeatureUi {
   DropViewModel? _viewModel;
   DropNotices? _notices;
   StreamSubscription<SharedItems>? _shares;
+  StreamSubscription<Transfer>? _offers;
+  final Set<String> _revealed = {};
 
   @override
   String get featureId => DropFeature.featureId;
@@ -116,6 +119,23 @@ class DropFeatureUi extends FeatureUi {
     _shares = _plugin.shares.listen(
       (items) => unawaited(_onShared(context, items)),
     );
+    _offers = feature.updates.listen(
+      (transfer) => _revealQuickShareOffer(context, transfer),
+    );
+  }
+
+  /// Someone is standing at a phone, waiting, and the PIN to compare is
+  /// on the card: bring it to the front, once per offer.
+  void _revealQuickShareOffer(FeatureContext context, Transfer transfer) {
+    final isNewOffer =
+        transfer.isQuickShare &&
+        transfer.needsAnswer &&
+        _revealed.add(transfer.id);
+    if (!isNewOffer) {
+      return;
+    }
+
+    unawaited(context.reveal());
   }
 
   @override
@@ -163,6 +183,7 @@ class DropFeatureUi extends FeatureUi {
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {
     await _shares?.cancel();
+    await _offers?.cancel();
     await _notices?.dispose();
     _viewModel?.dispose();
   }

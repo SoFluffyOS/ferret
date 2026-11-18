@@ -27,6 +27,7 @@ class LinkedDevices {
     Map<String, Object?> laptopSettings = const {},
     SecretStore? laptopSecrets,
     LocalSendOptions localSend = const LocalSendOptions(),
+    QuickShareOptions quickShare = const QuickShareOptions(),
   }) async {
     final laptop = LinkedDevice(
       'laptop-id',
@@ -37,6 +38,7 @@ class LinkedDevices {
         ackEvery: ackEvery,
         secrets: laptopSecrets,
         localSendOptions: localSend,
+        quickShareOptions: quickShare,
       ),
       MemorySettingsStore({...laptopSettings}),
     );

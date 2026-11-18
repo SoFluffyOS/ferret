@@ -1,0 +1,78 @@
+// The encrypted envelope every frame travels in once the key exchange is
+// done, and the public key format the exchange uses.
+//
+// Ferret's own description of the wire format, limited to what Ferret
+// reads and writes. Field numbers and enum values are the protocol's, as
+// published in Google's open source SecureMessage and UKEY2 definitions
+// (Apache-2.0).
+syntax = "proto2";
+
+package quickshare.securemessage;
+
+message SecureMessage {
+  // A serialized HeaderAndBody. The signature covers exactly these bytes.
+  optional bytes header_and_body = 1;
+  optional bytes signature = 2;
+}
+
+enum SigScheme {
+  UNKNOWN_SIG_SCHEME = 0;
+  HMAC_SHA256 = 1;
+  ECDSA_P256_SHA256 = 2;
+  RSA2048_SHA256 = 3;
+}
+
+enum EncScheme {
+  UNKNOWN_ENC_SCHEME = 0;
+  NONE = 1;
+  AES_256_CBC = 2;
+}
+
+message Header {
+  optional SigScheme signature_scheme = 1;
+  optional EncScheme encryption_scheme = 2;
+  optional bytes verification_key_id = 3;
+  optional bytes decryption_key_id = 4;
+  optional bytes iv = 5;
+
+  // A serialized GcmMetadata.
+  optional bytes public_metadata = 6;
+  optional uint32 associated_data_length = 7;
+}
+
+message HeaderAndBody {
+  optional Header header = 1;
+
+  // An encrypted DeviceToDeviceMessage.
+  optional bytes body = 2;
+}
+
+message GcmMetadata {
+  // 13 marks a device to device message, the only kind Quick Share sends.
+  optional int32 type = 1;
+  optional int32 version = 2;
+}
+
+message DeviceToDeviceMessage {
+  // A serialized OfflineFrame.
+  optional bytes message = 1;
+  optional int32 sequence_number = 2;
+}
+
+enum PublicKeyType {
+  UNKNOWN_PUBLIC_KEY_TYPE = 0;
+  EC_P256 = 1;
+  RSA2048 = 2;
+  DH2048_MODP = 3;
+}
+
+message EcP256PublicKey {
+  // Big-endian two's complement, so a leading zero byte may be present.
+  optional bytes x = 1;
+  optional bytes y = 2;
+}
+
+message GenericPublicKey {
+  optional PublicKeyType type = 1;
+  optional EcP256PublicKey ec_p256_public_key = 2;
+}

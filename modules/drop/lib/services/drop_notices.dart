@@ -143,7 +143,9 @@ class DropNotices {
         title: l10n.noticeOffer(device),
         body: [
           title,
-          if (transfer.isLocalSend && !transfer.isText)
+          if (transfer.quickShare case final origin?)
+            l10n.noticePin(origin.pin),
+          if (transfer.isUnpaired && !transfer.isText)
             texts.size(transfer.totalBytes),
         ].join(' · '),
         category: offerCategory,

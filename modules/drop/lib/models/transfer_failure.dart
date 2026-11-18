@@ -47,4 +47,8 @@ enum TransferFailure {
 
   /// A LocalSend device showed another certificate than it announced.
   untrusted,
+
+  /// The connection to a Quick Share sender dropped before everything
+  /// arrived. Only the sender can start again.
+  connectionLost,
 }
