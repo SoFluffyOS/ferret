@@ -667,12 +667,6 @@ abstract class MirroringLocalizations {
   /// **'Experimental'**
   String get experimental;
 
-  /// No description provided for @targetsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Phones on a cable'**
-  String get targetsTitle;
-
   /// No description provided for @targetCable.
   ///
   /// In en, this message translates to:
@@ -684,12 +678,6 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Wi-Fi debugging'**
   String get targetWireless;
-
-  /// No description provided for @show.
-  ///
-  /// In en, this message translates to:
-  /// **'Show screen'**
-  String get show;
 
   /// No description provided for @setupInstallToolBody.
   ///

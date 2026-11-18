@@ -423,16 +423,10 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get experimental => 'Experimental';
 
   @override
-  String get targetsTitle => 'Phones on a cable';
-
-  @override
   String get targetCable => 'Cable';
 
   @override
   String get targetWireless => 'Wi-Fi debugging';
-
-  @override
-  String get show => 'Show screen';
 
   @override
   String get setupInstallToolBody =>

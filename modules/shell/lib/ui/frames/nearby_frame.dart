@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -14,7 +15,9 @@ import 'package:transport/transport.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Devices near you: unpaired Ferret devices on this network, each with a
-/// Pair button, kept up to date while the screen is open.
+/// Pair button, kept up to date while the screen is open. Once something
+/// is paired, what features found near (a phone on a cable) is listed with
+/// them.
 class NearbyFrame extends StatefulWidget {
   const NearbyFrame({
     super.key,
@@ -61,12 +64,23 @@ class _NearbyFrameState extends State<NearbyFrame> {
 
   @override
   Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final welcomes = widget.onPairWithCode != null;
+
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: _Nearby(
-        watch: widget.watch,
-        onPairWithCode: widget.onPairWithCode,
-        onCantSee: widget.onCantSee,
+      child: FeatureChangesListener(
+        features: scope.features,
+        builder: (context) => _Nearby(
+          watch: widget.watch,
+          onPairWithCode: widget.onPairWithCode,
+          onCantSee: widget.onCantSee,
+          rows: [
+            if (!welcomes)
+              for (final feature in scope.features)
+                ...feature.nearbyRows(context, scope.featureContext),
+          ],
+        ),
       ),
     );
   }
@@ -77,11 +91,15 @@ class _Nearby extends StatelessWidget {
     required this.watch,
     required this.onPairWithCode,
     required this.onCantSee,
+    required this.rows,
   });
 
   final bool watch;
   final VoidCallback? onPairWithCode;
   final VoidCallback? onCantSee;
+
+  /// What features found near that isn't a device to pair with.
+  final List<FeatureNearbyRow> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +121,8 @@ class _Nearby extends StatelessWidget {
     final viewModel = context.read<NearbyViewModel>();
     final l10n = context.shellL10n;
 
-    if (peers.isEmpty && !watch && !isBlocked) {
+    final waitsForPeers = watch || isBlocked;
+    if (peers.isEmpty && rows.isEmpty && !waitsForPeers) {
       return const SizedBox.shrink();
     }
 
@@ -112,7 +131,7 @@ class _Nearby extends StatelessWidget {
     // scanning the computer's code.
     final isIphone = defaultTargetPlatform == .iOS;
     final onPairWithCode = this.onPairWithCode;
-    if (peers.isEmpty && isIphone && onPairWithCode == null) {
+    if (peers.isEmpty && rows.isEmpty && isIphone && onPairWithCode == null) {
       return const SizedBox.shrink();
     }
 
@@ -149,7 +168,9 @@ class _Nearby extends StatelessWidget {
             onCancel: viewModel.cancel,
             onDismiss: viewModel.dismiss,
           ),
-        if (peers.isEmpty)
+        for (final row in rows)
+          NearbyFeatureTile(key: ValueKey(row.id), row: row),
+        if (peers.isEmpty && waitsForPeers)
           switch ((isBlocked, hasLooked && !isLooking)) {
             (true, _) => NearbyNotice(
               title: l10n.nearbyBlockedTitle,

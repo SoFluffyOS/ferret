@@ -1366,33 +1366,38 @@ void main() {
       expect(await answer, isTrue);
     });
 
-    testWidgets('phones on a cable that aren\'t paired get a card with '
-        'Show screen; a paired one doesn\'t show there', (tester) async {
+    testWidgets('phones on a cable that aren\'t paired are lines under '
+        'Nearby with Show screen; a paired one isn\'t there', (tester) async {
       await startUi(tester);
       cable.find([
         cable.target('R58', 'Old tablet'),
         cable.target('2A13', 'Pixel'),
       ]);
       await tester.pump();
-      final shown = <MirrorTarget>[];
+      late List<FeatureNearbyRow> rows;
       await tester.pumpWidget(
         testApp(
-          ChangeNotifierProvider.value(
-            value: ui.viewerViewModel,
-            child: ViewerCardFrame(onShow: shown.add),
+          Builder(
+            builder: (buildContext) {
+              rows = ui.nearbyRows(buildContext, context);
+              return const SizedBox.shrink();
+            },
           ),
         ),
       );
 
-      expect(ui.hasHomeCard(context), isTrue);
-      expect(find.text('Phones on a cable'), findsOneWidget);
-      expect(find.text('Old tablet'), findsOneWidget);
-      expect(find.text('Cable'), findsOneWidget);
-      expect(find.text('Pixel'), findsNothing);
-      expect(find.textContaining('experimental'), findsNothing);
+      expect(ui.hasHomeCard(context), isFalse);
+      final row = rows.single;
+      expect(row.id, 'mirroring.R58');
+      expect(row.title, 'Old tablet');
+      expect(row.detail, 'Cable');
+      expect(row.actionLabel, 'Show screen');
 
-      await tester.tap(find.text('Show screen'));
-      expect(shown.single.id, 'R58');
+      row.onAction();
+      await tester.pump();
+
+      expect(ui.viewerViewModel.current?.target.id, 'R58');
+      await ui.viewerViewModel.stop();
     });
 
     testWidgets('settings are two switches, each marked Experimental, and '

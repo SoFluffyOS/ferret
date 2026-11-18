@@ -12,6 +12,5 @@ export 'package:mirroring/ui/widgets/quality_mark.dart';
 export 'package:mirroring/ui/widgets/setting_switch_row.dart';
 export 'package:mirroring/ui/widgets/setup_step_row.dart';
 export 'package:mirroring/ui/widgets/stage_notice_bar.dart';
-export 'package:mirroring/ui/widgets/target_row.dart';
 export 'package:mirroring/ui/widgets/toolbar_button.dart';
 export 'package:mirroring/ui/widgets/toolbar_popup.dart';

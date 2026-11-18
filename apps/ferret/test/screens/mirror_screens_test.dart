@@ -441,14 +441,12 @@ final _screens = <_Screen>[
     },
   ),
   _Screen(
-    'mirror_31_cable_card',
-    body: (rig) => _Listed(child: ViewerCardFrame(onShow: (_) {})),
-    before: (rig) async {
-      rig.cable.find([
-        rig.cable.target('R58', 'Galaxy S24'),
-        rig.cable.target('192.168.1.20:5555', 'Old tablet'),
-      ]);
-    },
+    'mirror_31_launcher',
+    body: (rig) => ScreenSectionPage(
+      deviceId: 'pixel',
+      deviceName: 'Pixel 9',
+      onShow: () {},
+    ),
   ),
 ];
 

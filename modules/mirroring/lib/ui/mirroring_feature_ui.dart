@@ -18,7 +18,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// The app side of Screen. On a computer: "Show screen" on every phone
 /// and tablet, the mirror stage that tells the whole story from the first
 /// question to the ending, a pinned Activity line while a screen is
-/// shown, and a card for phones on a cable that aren't paired. On a
+/// shown, and a line under Nearby for each phone on a cable that isn't
+/// paired. On a
 /// phone: the "Sharing screen with MacBook · Stop" card (next to Android's
 /// own ongoing notice), the audit line, and Settings with the history.
 class MirroringFeatureUi extends FeatureUi {
@@ -121,30 +122,42 @@ class MirroringFeatureUi extends FeatureUi {
   Listenable get uiChanges => _changes;
 
   /// A phone's card while its screen is asked for or shared, or just
-  /// was; a computer's only for phones on a cable that aren't paired.
+  /// was. A computer has none: what it can show is on its devices.
   @override
-  bool hasHomeCard(FeatureContext feature) =>
-      shareViewModel.hasCard || viewerViewModel.hasCard;
+  bool hasHomeCard(FeatureContext feature) => shareViewModel.hasCard;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
-    if (shareViewModel.isAvailable && shareViewModel.hasCard) {
-      return ChangeNotifierProvider.value(
-        value: shareViewModel,
-        child: const ShareCardFrame(),
-      );
-    }
-
-    if (!viewerViewModel.isAvailable) {
+    if (!shareViewModel.isAvailable || !shareViewModel.hasCard) {
       return null;
     }
 
     return ChangeNotifierProvider.value(
-      value: viewerViewModel,
-      child: ViewerCardFrame(
-        onShow: (target) => unawaited(_showTarget(feature, target)),
-      ),
+      value: shareViewModel,
+      child: const ShareCardFrame(),
     );
+  }
+
+  /// The phones on a cable that aren't paired: each one is near, and its
+  /// screen can be shown without pairing.
+  @override
+  List<FeatureNearbyRow> nearbyRows(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.mirroringL10n;
+
+    return [
+      for (final target in viewerViewModel.targets)
+        FeatureNearbyRow(
+          id: '$featureId.${target.id}',
+          title: target.name,
+          detail: l10n.targetLine(target),
+          icon: LucideIcons.smartphone,
+          actionLabel: l10n.showScreen,
+          onAction: () => unawaited(_showTarget(feature, target)),
+        ),
+    ];
   }
 
   /// A device that asks to show its screen needs the person; the screen

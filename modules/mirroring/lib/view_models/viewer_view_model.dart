@@ -8,7 +8,7 @@ import 'package:mirroring/feature/mirroring_feature.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/services.dart';
 
-/// What the computer's mirror stage, card and settings show, and what
+/// What the computer's mirror stage, launcher and settings show, and what
 /// they can do.
 class ViewerViewModel extends ChangeNotifier {
   ViewerViewModel(
@@ -131,8 +131,6 @@ class ViewerViewModel extends ChangeNotifier {
   bool get canFullScreen => _canFullScreen;
 
   bool get isFullScreen => _isFullScreen;
-
-  bool get hasCard => targets.isNotEmpty;
 
   /// The app plugged in a way to show a phone on a cable.
   bool get hasCable => _routes?.hasCable ?? false;
