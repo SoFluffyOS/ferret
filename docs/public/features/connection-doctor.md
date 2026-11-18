@@ -18,6 +18,20 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 
 Each problem comes with a button that fixes it, or tells you exactly where to go.
 
+## On Windows: the firewall
+
+The first time Ferret opens, Windows asks whether to allow it on your network. Close that question, or tick only one kind of network, and your other devices can't find this computer. Windows never asks again.
+
+Fix connection names it whenever your other device doesn't show up or doesn't answer:
+
+1. Click **Open Windows Firewall**, then **Change settings**.
+2. Tick **Ferret**, under both **Private** and **Public**.
+3. Select **OK**, then **Try again**.
+
+No button? Open **Windows Security → Firewall & network protection → Allow an app through firewall**. It's the same list.
+
+Windows treats a new Wi-Fi as **Public** and hides your computer on it. That is why both boxes matter. On your home Wi-Fi you can also switch it: **Settings → Network & internet → Wi-Fi**, pick your network, then **Private network**. Do that only on a network you trust.
+
 ## Connect by address
 
 Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.

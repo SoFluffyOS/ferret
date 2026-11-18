@@ -59,7 +59,9 @@ class _DoctorPageState extends State<DoctorPage> {
     final l10n = context.shellL10n;
     final here = l10n.here(engine.device);
     final fixes = {for (final check in _checks) ...check.fixes};
-    final networkIsFine = _checks.every((check) => check.status != .problem);
+    final networkIsFine = _shown(
+      _checks,
+    ).every((check) => check.status == .ok);
 
     return FerretPage(
       title: l10n.doctorTitle,
@@ -127,6 +129,8 @@ class _DoctorPageState extends State<DoctorPage> {
         await Navigator.of(context).push(
           PageRouteBuilder<void>(pageBuilder: (_, _, _) => const PairPage()),
         );
+      case .openFirewall:
+        await WindowsFirewall.openAllowedApps();
       case .copyDiagnostics:
         await _copy();
     }
@@ -140,6 +144,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .tryAgain => l10n.doctorFixTryAgain,
     .connectByAddress => l10n.doctorFixConnectByAddress,
     .pairAgain => l10n.doctorFixPairAgain,
+    .openFirewall => l10n.doctorFixOpenFirewall,
     .copyDiagnostics => l10n.doctorFixCopy,
   };
 
@@ -186,6 +191,7 @@ class _DoctorPageState extends State<DoctorPage> {
       (.network, _) => l10n.doctorNetworkOk(l10n.hereStart(local)),
       (.vpn, _) => l10n.doctorVpn(check.detail),
       (.port, _) => l10n.doctorPort(check.detail),
+      (.firewall, _) => l10n.doctorFirewall,
       (.sameNetwork, .ok) => l10n.doctorSameNetworkOk(device, here),
       (.sameNetwork, _) => l10n.doctorSameNetworkWarning(
         device,

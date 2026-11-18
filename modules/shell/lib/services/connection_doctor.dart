@@ -7,7 +7,13 @@ import 'package:engine/engine.dart';
 enum DoctorStatus { running, ok, warning, problem }
 
 /// Something the user can do about a check.
-enum DoctorFix { tryAgain, connectByAddress, pairAgain, copyDiagnostics }
+enum DoctorFix {
+  tryAgain,
+  connectByAddress,
+  pairAgain,
+  openFirewall,
+  copyDiagnostics,
+}
 
 /// One line of Fix connection: what was checked and what it found.
 class DoctorCheck {
@@ -26,15 +32,36 @@ class DoctorCheck {
   final List<DoctorFix> fixes;
 }
 
-enum DoctorCheckKind { network, vpn, sameNetwork, reachable, accepted, port }
+enum DoctorCheckKind {
+  network,
+  vpn,
+  sameNetwork,
+  reachable,
+  accepted,
+  port,
+  firewall,
+}
 
 /// Works out why a paired device isn't connected, in the order people can
 /// act on: this device's network, a VPN, different networks, the other
 /// device not answering, the other device not accepting this one.
 class ConnectionDoctor {
-  ConnectionDoctor(this._engine);
+  ConnectionDoctor(this._engine, {bool? isWindows})
+    : _isWindows = isWindows ?? Platform.isWindows;
 
   final FerretEngine _engine;
+
+  /// Windows Firewall hides a computer from its network until the app is
+  /// allowed, and a dismissed prompt never comes back. Nothing tells Ferret
+  /// it happened, so it is named as a likely cause whenever the other
+  /// device can't be found or doesn't answer.
+  final bool _isWindows;
+
+  static const _firewallHint = DoctorCheck(
+    kind: .firewall,
+    status: .warning,
+    fixes: [.openFirewall],
+  );
 
   static const _vpnPrefixes = [
     'utun',
@@ -89,7 +116,12 @@ class ConnectionDoctor {
       yield [...checks];
     }
 
+    final online = local.isNotEmpty;
     if (deviceId == null) {
+      if (_isWindows && online) {
+        checks.add(_firewallHint);
+        yield [...checks];
+      }
       return;
     }
 
@@ -102,6 +134,9 @@ class ConnectionDoctor {
           fixes: [.connectByAddress],
         ),
       );
+      if (_isWindows && online) {
+        checks.add(_firewallHint);
+      }
       yield [...checks];
       return;
     }
@@ -135,6 +170,9 @@ class ConnectionDoctor {
           fixes: const [.tryAgain, .connectByAddress],
         ),
       );
+      if (_isWindows) {
+        checks.add(_firewallHint);
+      }
       yield [...checks];
       return;
     }

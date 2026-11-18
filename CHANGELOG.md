@@ -32,7 +32,7 @@
 - 📷 **Pair with a QR code**: no device in sight? **Add a device** has the QR code one tap down, and a link or an address under **Other ways**.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
-- 🩺 **Fix connection**: when a device won't connect, Ferret tells you why in plain words and offers the fix. **Check my network** does the same before you have paired anything.
+- 🩺 **Fix connection**: when a device won't connect, Ferret tells you why in plain words and offers the fix. **Check my network** does the same before you have paired anything. On Windows it names the firewall and opens the right list.
 - 📱 **Device page**: everything that works with a device in one list, with what is off (and **How?** to turn it on) and what is broken (and **Fix**). What that device may do here sits right below.
 - ⚙️ **Settings on one screen**: ten rows, each showing its state (**Files · To Downloads**), each opening its own page. No endless scroll.
 - 💬 **Plain words everywhere**: every line names the device and says which side acts. "On Pixel 9: open Ferret."

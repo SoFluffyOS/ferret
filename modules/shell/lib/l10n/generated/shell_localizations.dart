@@ -1971,6 +1971,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get tipDismiss;
+
+  /// No description provided for @doctorFirewall.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows Firewall may be blocking Ferret.\n1. Tap Open Windows Firewall, then Change settings.\n2. Tick Ferret, under both Private and Public.\n3. Select OK, then Try again.'**
+  String get doctorFirewall;
+
+  /// No description provided for @doctorFixOpenFirewall.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Windows Firewall'**
+  String get doctorFixOpenFirewall;
 }
 
 class _ShellLocalizationsDelegate

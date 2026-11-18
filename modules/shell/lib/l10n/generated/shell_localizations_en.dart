@@ -1181,4 +1181,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get tipDismiss => 'Got it';
+
+  @override
+  String get doctorFirewall =>
+      'Windows Firewall may be blocking Ferret.\n1. Tap Open Windows Firewall, then Change settings.\n2. Tick Ferret, under both Private and Public.\n3. Select OK, then Try again.';
+
+  @override
+  String get doctorFixOpenFirewall => 'Open Windows Firewall';
 }
