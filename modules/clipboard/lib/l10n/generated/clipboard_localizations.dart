@@ -172,7 +172,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @writeFailed.
   ///
   /// In en, this message translates to:
-  /// **'From {device}, but Ferret couldn\'t put it on the clipboard'**
+  /// **'From {device}, not on this clipboard yet. Tap Copy.'**
   String writeFailed(String device);
 
   /// No description provided for @timeJustNow.
@@ -274,7 +274,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @resultImagesOff.
   ///
   /// In en, this message translates to:
-  /// **'Not sent: images are off. Turn on Images below to send them.'**
+  /// **'Not sent: images are off. Turn on Images in Settings to send them.'**
   String get resultImagesOff;
 
   /// No description provided for @resultTooLarge.
@@ -286,13 +286,13 @@ abstract class ClipboardLocalizations {
   /// No description provided for @resultNoDevices.
   ///
   /// In en, this message translates to:
-  /// **'No device is connected. Open Ferret on your other device and keep it on the same network.'**
+  /// **'No device is connected. Open Ferret on your other device, on the same Wi-Fi.'**
   String get resultNoDevices;
 
   /// No description provided for @resultFailed.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach your devices. Check they\'re on the same network, then try again.'**
+  /// **'Couldn\'t reach your devices. Check they\'re on the same Wi-Fi, then try again.'**
   String get resultFailed;
 
   /// No description provided for @settingsAutoSend.
@@ -310,7 +310,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsAutoSendBodyManual.
   ///
   /// In en, this message translates to:
-  /// **'Your phone only allows this for copies made inside Ferret. Use Send clipboard for the rest.'**
+  /// **'This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.'**
   String get settingsAutoSendBodyManual;
 
   /// No description provided for @settingsBackgroundSend.
@@ -358,7 +358,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsAutoReceiveBody.
   ///
   /// In en, this message translates to:
-  /// **'Put what your devices send straight on this clipboard. When off, use Copy on the card.'**
+  /// **'Put what your devices send straight on this clipboard. When off, tap Copy next to what arrived.'**
   String get settingsAutoReceiveBody;
 
   /// No description provided for @settingsImages.

@@ -57,7 +57,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String writeFailed(String device) {
-    return 'From $device, but Ferret couldn\'t put it on the clipboard';
+    return 'From $device, not on this clipboard yet. Tap Copy.';
   }
 
   @override
@@ -125,18 +125,18 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get resultImagesOff =>
-      'Not sent: images are off. Turn on Images below to send them.';
+      'Not sent: images are off. Turn on Images in Settings to send them.';
 
   @override
   String get resultTooLarge => 'Not sent: it\'s bigger than the size limit.';
 
   @override
   String get resultNoDevices =>
-      'No device is connected. Open Ferret on your other device and keep it on the same network.';
+      'No device is connected. Open Ferret on your other device, on the same Wi-Fi.';
 
   @override
   String get resultFailed =>
-      'Couldn\'t reach your devices. Check they\'re on the same network, then try again.';
+      'Couldn\'t reach your devices. Check they\'re on the same Wi-Fi, then try again.';
 
   @override
   String get settingsAutoSend => 'Send automatically';
@@ -147,7 +147,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsAutoSendBodyManual =>
-      'Your phone only allows this for copies made inside Ferret. Use Send clipboard for the rest.';
+      'This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.';
 
   @override
   String get settingsBackgroundSend => 'Send automatically in the background';
@@ -176,7 +176,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsAutoReceiveBody =>
-      'Put what your devices send straight on this clipboard. When off, use Copy on the card.';
+      'Put what your devices send straight on this clipboard. When off, tap Copy next to what arrived.';
 
   @override
   String get settingsImages => 'Images';
