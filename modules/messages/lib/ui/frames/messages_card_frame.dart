@@ -23,88 +23,45 @@ class MessagesCardFrame extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final l10n = context.messagesL10n;
+    final palette = context.palette;
+    final typography = context.fluffyTheme.typography;
+
     return Column(
       crossAxisAlignment: .stretch,
       children: [
         for (final (index, phone) in phones.indexed) ...[
           if (index > 0) Spacing.v8,
-          _PhoneCard(phone: phone, onOpen: () => onOpen(phone.deviceId)),
-        ],
-      ],
-    );
-  }
-}
-
-class _PhoneCard extends StatelessWidget {
-  const _PhoneCard({required this.phone, required this.onOpen});
-
-  final PhoneSummary phone;
-  final VoidCallback onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-    final l10n = context.messagesL10n;
-    final latest = phone.latest;
-    final subtitle = switch (phone.readiness) {
-      .offline => l10n.statusOffline(phone.name),
-      _ => l10n.unreadCount(phone.unread),
-    };
-
-    return SurfaceCard(
-      onTap: onOpen,
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Row(
+          FeatureCard(
+            icon: LucideIcons.messageSquare,
+            title: '${l10n.title} · ${phone.name}',
+            subtitle: switch (phone.readiness) {
+              .offline => l10n.statusOffline(phone.name),
+              _ => l10n.unreadCount(phone.unread),
+            },
+            onTap: () => onOpen(phone.deviceId),
             children: [
-              Icon(
-                LucideIcons.messageSquare,
-                size: Spacing.d20,
-                color: palette.text,
-              ),
-              Spacing.h12,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      '${l10n.title} · ${phone.name}',
-                      style: typography.base1.copyWith(color: palette.text),
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                    Spacing.vertical(Spacing.d2),
-                    Text(
-                      subtitle,
-                      style: typography.caption1.copyWith(
-                        color: switch (phone.unread > 0) {
-                          true => palette.accent,
-                          false => palette.mutedText,
-                        },
-                      ),
-                    ),
-                  ],
+              if (phone.latest case final latest?)
+                Text(
+                  switch (latest.snippet.isEmpty) {
+                    true => '${latest.title}: ${l10n.attachment}',
+                    false => '${latest.title}: ${latest.snippet}',
+                  },
+                  style: typography.body2.copyWith(color: palette.text),
+                  maxLines: 1,
+                  overflow: .ellipsis,
                 ),
+            ],
+            actions: [
+              Button(
+                variant: .secondary,
+                label: l10n.open,
+                onPressed: () => onOpen(phone.deviceId),
               ),
-              Button(variant: .secondary, label: l10n.open, onPressed: onOpen),
             ],
           ),
-          if (latest != null) ...[
-            Spacing.v8,
-            Text(
-              switch (latest.snippet.isEmpty) {
-                true => '${latest.title}: ${l10n.attachment}',
-                false => '${latest.title}: ${latest.snippet}',
-              },
-              style: typography.caption1.copyWith(color: palette.mutedText),
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ],
         ],
-      ),
+      ],
     );
   }
 }

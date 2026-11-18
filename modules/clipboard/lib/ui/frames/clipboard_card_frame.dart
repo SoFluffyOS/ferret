@@ -22,6 +22,13 @@ class ClipboardCardFrame extends StatelessWidget {
     final access = context.select<ClipboardViewModel, ClipboardAccess>(
       (viewModel) => viewModel.access,
     );
+    final isSending = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.isSending,
+    );
+    final result = context.select<ClipboardViewModel, ClipSendResult?>(
+      (viewModel) => viewModel.lastResult,
+    );
+    final viewModel = context.read<ClipboardViewModel>();
     final l10n = context.clipboardL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -31,52 +38,53 @@ class ClipboardCardFrame extends StatelessWidget {
         latest.direction == .received &&
         !latest.onClipboard &&
         latest.hasContent;
+    final limit = switch (access) {
+      .onRequest => l10n.limitIos,
+      _ => l10n.limitAndroid,
+    };
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
+    return MinuteTicker(
+      builder: (context, now) => FeatureCard(
+        icon: LucideIcons.clipboard,
+        title: l10n.title,
+        subtitle: _subtitle(l10n, latest, now, needsManualSend),
         children: [
-          Row(
-            children: [
-              Icon(
-                LucideIcons.clipboard,
-                size: Spacing.d20,
-                color: palette.text,
+          if (latest != null) ClipPreview(entry: latest),
+          if (latest != null && needsManualSend) Spacing.v8,
+          if (needsManualSend)
+            Text(
+              limit,
+              style: typography.caption1.copyWith(color: palette.mutedText),
+            ),
+          if (needsManualSend && result != null) ...[
+            Spacing.v6,
+            Text(
+              l10n.resultOf(result),
+              style: typography.caption1.copyWith(
+                color: switch (result) {
+                  .sent => palette.success,
+                  _ => palette.mutedText,
+                },
               ),
-              Spacing.h12,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      l10n.title,
-                      style: typography.base1.copyWith(color: palette.text),
-                    ),
-                    Spacing.vertical(Spacing.d2),
-                    MinuteTicker(
-                      builder: (context, now) => Text(
-                        _subtitle(l10n, latest, now, needsManualSend),
-                        style: typography.caption1.copyWith(
-                          color: palette.mutedText,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (latest != null) ...[Spacing.v12, ClipPreview(entry: latest)],
-          if (canCopy) ...[
-            Spacing.v8,
+            ),
+          ],
+        ],
+        actions: [
+          if (canCopy)
             Button(
               variant: .secondary,
               label: l10n.copy,
               icon: Icon(LucideIcons.copy, size: Spacing.d16),
-              onPressed: () => context.read<ClipboardViewModel>().copy(latest),
+              onPressed: () => viewModel.copy(latest),
             ),
-          ],
-          if (needsManualSend) _ManualSend(access: access),
+          if (needsManualSend)
+            Button(
+              variant: .primary,
+              label: l10n.sendClipboard,
+              icon: Icon(LucideIcons.send, size: Spacing.d16),
+              enable: !isSending,
+              onPressed: () => viewModel.sendClipboard(),
+            ),
         ],
       ),
     );
@@ -97,59 +105,5 @@ class ClipboardCardFrame extends StatelessWidget {
     }
 
     return l10n.cardEmpty;
-  }
-}
-
-class _ManualSend extends StatelessWidget {
-  const _ManualSend({required this.access});
-
-  final ClipboardAccess access;
-
-  @override
-  Widget build(BuildContext context) {
-    final isSending = context.select<ClipboardViewModel, bool>(
-      (viewModel) => viewModel.isSending,
-    );
-    final result = context.select<ClipboardViewModel, ClipSendResult?>(
-      (viewModel) => viewModel.lastResult,
-    );
-    final l10n = context.clipboardL10n;
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-    final limit = switch (access) {
-      .onRequest => l10n.limitIos,
-      _ => l10n.limitAndroid,
-    };
-
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        Spacing.v12,
-        Text(
-          limit,
-          style: typography.caption1.copyWith(color: palette.mutedText),
-        ),
-        Spacing.v8,
-        Button(
-          variant: .primary,
-          label: l10n.sendClipboard,
-          icon: Icon(LucideIcons.send, size: Spacing.d16),
-          enable: !isSending,
-          onPressed: () => context.read<ClipboardViewModel>().sendClipboard(),
-        ),
-        if (result != null) ...[
-          Spacing.v6,
-          Text(
-            l10n.resultOf(result),
-            style: typography.caption1.copyWith(
-              color: switch (result) {
-                .sent => palette.success,
-                _ => palette.mutedText,
-              },
-            ),
-          ),
-        ],
-      ],
-    );
   }
 }

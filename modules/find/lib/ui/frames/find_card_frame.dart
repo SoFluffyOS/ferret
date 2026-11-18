@@ -29,22 +29,21 @@ class FindCardFrame extends StatelessWidget {
 
     final viewModel = context.read<FindViewModel>();
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (isRingingHere) const _RingingHere(),
-          for (final (index, ring) in outgoing.indexed) ...[
-            if (index > 0 || isRingingHere) Spacing.v16,
-            OutgoingRingRow(
-              ring: ring,
-              onStop: () => unawaited(viewModel.stop(ring.deviceId)),
-              onRingAgain: () => unawaited(viewModel.ring(ring.deviceId)),
-              onDismiss: () => viewModel.dismiss(ring.deviceId),
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        if (isRingingHere) const _RingingHere(),
+        for (final (index, ring) in outgoing.indexed) ...[
+          if (index > 0 || isRingingHere) Spacing.v8,
+          OutgoingRingCard(
+            key: ValueKey(ring.deviceId),
+            ring: ring,
+            onStop: () => unawaited(viewModel.stop(ring.deviceId)),
+            onRingAgain: () => unawaited(viewModel.ring(ring.deviceId)),
+            onDismiss: () => viewModel.dismiss(ring.deviceId),
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -58,41 +57,12 @@ class _RingingHere extends StatelessWidget {
       (viewModel) => viewModel.localRing,
     );
     final l10n = context.findL10n;
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
 
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        Row(
-          children: [
-            Icon(
-              LucideIcons.bellRing,
-              size: Spacing.d20,
-              color: palette.accent,
-            ),
-            Spacing.h12,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Text(
-                    l10n.ringingHere,
-                    style: typography.base1.copyWith(color: palette.text),
-                  ),
-                  Spacing.vertical(Spacing.d2),
-                  Text(
-                    l10n.ringingBody(ring.requesterName),
-                    style: typography.caption1.copyWith(
-                      color: palette.mutedText,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        Spacing.v12,
+    return FeatureCard(
+      icon: LucideIcons.bellRing,
+      title: l10n.ringingHere,
+      subtitle: l10n.ringingBody(ring.requesterName),
+      actions: [
         FoundItButton(
           onPressed: () => unawaited(context.read<FindViewModel>().foundIt()),
         ),

@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_find/ferret_find.dart';
 import 'package:find/find.dart';
 import 'package:find/ui/frames/frames.dart';
@@ -80,6 +81,7 @@ void main() {
       await feature.onEnvelope(pixel, envelopeOf(RingRequest()));
       await tester.pump();
 
+      expect(find.byType(FeatureCard), findsOneWidget);
       expect(find.text('This device is ringing'), findsOneWidget);
       expect(find.text('Pixel is looking for this device.'), findsOneWidget);
 

@@ -4,6 +4,7 @@ import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
 import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -23,29 +24,21 @@ class ContinueCardFrame extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.handoffL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Text(
-            l10n.cardTitle,
-            style: typography.caption1.copyWith(color: palette.mutedText),
+    return FeatureCard(
+      icon: LucideIcons.monitorSmartphone,
+      title: l10n.cardTitle,
+      children: [
+        for (final suggestion in suggestions.take(_maxShown))
+          SuggestionTile(
+            key: ValueKey(suggestion.id),
+            suggestion: suggestion,
+            onOpen: () => _open(context, suggestion),
+            onDismiss: () =>
+                context.read<HandoffViewModel>().dismiss(suggestion),
           ),
-          Spacing.v4,
-          for (final suggestion in suggestions.take(_maxShown))
-            SuggestionTile(
-              key: ValueKey(suggestion.id),
-              suggestion: suggestion,
-              onOpen: () => _open(context, suggestion),
-              onDismiss: () =>
-                  context.read<HandoffViewModel>().dismiss(suggestion),
-            ),
-        ],
-      ),
+      ],
     );
   }
 

@@ -21,50 +21,21 @@ class PhoneCardFrame extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.messagesL10n;
-    final subtitle = switch (stage) {
-      .ready => l10n.phoneCardOn,
-      .needsAccess => l10n.phoneCardNeedsAccess,
-      _ => l10n.phoneCardOff,
-    };
 
-    return SurfaceCard(
+    return FeatureCard(
+      icon: LucideIcons.messageSquare,
+      title: l10n.title,
+      subtitle: switch (stage) {
+        .ready => l10n.phoneCardOn,
+        .needsAccess => l10n.phoneCardNeedsAccess,
+        _ => l10n.phoneCardOff,
+      },
       onTap: onSetUp,
-      child: Row(
-        children: [
-          Icon(
-            LucideIcons.messageSquare,
-            size: Spacing.d20,
-            color: palette.text,
-          ),
-          Spacing.h12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  l10n.title,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-                Spacing.vertical(Spacing.d2),
-                Text(
-                  subtitle,
-                  style: typography.caption1.copyWith(
-                    color: switch (stage) {
-                      .needsAccess => palette.danger,
-                      _ => palette.mutedText,
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (stage != .ready)
-            Button(variant: .secondary, label: l10n.setUp, onPressed: onSetUp),
-        ],
-      ),
+      actions: [
+        if (stage != .ready)
+          Button(variant: .primary, label: l10n.setUp, onPressed: onSetUp),
+      ],
     );
   }
 }

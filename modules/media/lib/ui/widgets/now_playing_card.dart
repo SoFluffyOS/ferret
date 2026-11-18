@@ -45,119 +45,83 @@ class NowPlayingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.mediaL10n;
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final item = player.player;
     final heading = switch (player.isPlaying) {
       true => l10n.nowPlayingOn(player.deviceName),
       false => l10n.pausedOn(player.deviceName),
     };
-    final subtitle = [
+    final details = [
       item.artist,
       item.appName,
     ].where((part) => part.isNotEmpty).join(' · ');
+    final subtitle = [
+      heading,
+      details,
+    ].where((part) => part.isNotEmpty).join('\n');
     final continueLabel = switch (continuing) {
       true => l10n.continueOpening,
       false => l10n.continueHere,
     };
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (picker case final picker?) ...[picker, Spacing.v8],
-          Text(
-            heading,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-            overflow: .ellipsis,
+    return FeatureCard(
+      icon: LucideIcons.music,
+      title: item.title,
+      subtitle: subtitle,
+      trailing: ArtworkView(artwork: player.artwork, size: Spacing.d56),
+      children: [
+        if (picker case final picker?) ...[picker, Spacing.v8],
+        ProgressLine(
+          positionAt: player.positionAt,
+          now: now,
+          durationMs: player.durationMs,
+          playing: player.isPlaying,
+          onSeek: onSeek,
+        ),
+        Spacing.v8,
+        Row(
+          children: [
+            TransportButton(
+              icon: LucideIcons.skipBack,
+              tooltip: l10n.previous,
+              onPressed: onPrevious,
+            ),
+            Spacing.h8,
+            TransportButton(
+              icon: switch (player.isPlaying) {
+                true => LucideIcons.pause,
+                false => LucideIcons.play,
+              },
+              tooltip: switch (player.isPlaying) {
+                true => l10n.pause,
+                false => l10n.play,
+              },
+              onPressed: onToggle,
+              prominent: true,
+            ),
+            Spacing.h8,
+            TransportButton(
+              icon: LucideIcons.skipForward,
+              tooltip: l10n.next,
+              onPressed: onNext,
+            ),
+          ],
+        ),
+        if (notice case final notice?) ...[Spacing.v8, notice],
+      ],
+      actions: [
+        if (onContinue != null)
+          Button(
+            variant: .primary,
+            label: continueLabel,
+            tooltip: switch (continueKeepsPosition) {
+              true => null,
+              false => l10n.continueFromStart,
+            },
+            icon: Icon(LucideIcons.monitorUp, size: Spacing.d16),
+            enable: !continuing,
+            onPressed: onContinue,
           ),
-          Spacing.v8,
-          Row(
-            children: [
-              ArtworkView(artwork: player.artwork, size: Spacing.d56),
-              Spacing.h12,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: typography.base1.copyWith(color: palette.text),
-                      maxLines: 2,
-                      overflow: .ellipsis,
-                    ),
-                    if (subtitle.isNotEmpty) ...[
-                      Spacing.vertical(Spacing.d2),
-                      Text(
-                        subtitle,
-                        style: typography.caption1.copyWith(
-                          color: palette.mutedText,
-                        ),
-                        overflow: .ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Spacing.v8,
-          ProgressLine(
-            positionAt: player.positionAt,
-            now: now,
-            durationMs: player.durationMs,
-            playing: player.isPlaying,
-            onSeek: onSeek,
-          ),
-          Spacing.v8,
-          Row(
-            children: [
-              TransportButton(
-                icon: LucideIcons.skipBack,
-                tooltip: l10n.previous,
-                onPressed: onPrevious,
-              ),
-              Spacing.h8,
-              TransportButton(
-                icon: switch (player.isPlaying) {
-                  true => LucideIcons.pause,
-                  false => LucideIcons.play,
-                },
-                tooltip: switch (player.isPlaying) {
-                  true => l10n.pause,
-                  false => l10n.play,
-                },
-                onPressed: onToggle,
-                prominent: true,
-              ),
-              Spacing.h8,
-              TransportButton(
-                icon: LucideIcons.skipForward,
-                tooltip: l10n.next,
-                onPressed: onNext,
-              ),
-              const Expanded(child: SizedBox.shrink()),
-              if (onContinue != null)
-                Button(
-                  variant: .secondary,
-                  label: continueLabel,
-                  tooltip: switch (continueKeepsPosition) {
-                    true => null,
-                    false => l10n.continueFromStart,
-                  },
-                  icon: Icon(
-                    LucideIcons.monitorUp,
-                    size: Spacing.d16,
-                    color: palette.text,
-                  ),
-                  enable: !continuing,
-                  onPressed: onContinue,
-                ),
-            ],
-          ),
-          if (notice case final notice?) ...[Spacing.v8, notice],
-        ],
-      ),
+      ],
     );
   }
 }

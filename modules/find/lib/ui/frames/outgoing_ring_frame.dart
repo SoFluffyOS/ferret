@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:feature_kit/feature_kit.dart';
 import 'package:find/models/models.dart';
 import 'package:find/ui/widgets/widgets.dart';
 import 'package:find/view_models/view_models.dart';
@@ -24,16 +23,14 @@ class OutgoingRingFrame extends StatelessWidget {
 
     final viewModel = context.read<FindViewModel>();
 
-    return SurfaceCard(
-      child: OutgoingRingRow(
-        ring: ring,
-        onStop: () => unawaited(viewModel.stop(deviceId)),
-        onRingAgain: () => unawaited(viewModel.ring(deviceId)),
-        onDismiss: () {
-          viewModel.dismiss(deviceId);
-          unawaited(Navigator.of(context).maybePop());
-        },
-      ),
+    return OutgoingRingCard(
+      ring: ring,
+      onStop: () => unawaited(viewModel.stop(deviceId)),
+      onRingAgain: () => unawaited(viewModel.ring(deviceId)),
+      onDismiss: () {
+        viewModel.dismiss(deviceId);
+        unawaited(Navigator.of(context).maybePop());
+      },
     );
   }
 }

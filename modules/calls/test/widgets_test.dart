@@ -1,6 +1,7 @@
 import 'package:calls/calls.dart';
 import 'package:calls/ui/frames/frames.dart';
 import 'package:calls/ui/widgets/widgets.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -50,6 +51,7 @@ void main() {
       control.emit(remoteCall());
       await tester.pump();
 
+      expect(find.byType(FeatureCard), findsOneWidget);
       expect(find.text('Alex'), findsOneWidget);
       expect(find.text('+15550100 · Incoming call on Pixel'), findsOneWidget);
       expect(find.text('Answer'), findsOneWidget);

@@ -44,6 +44,13 @@ class _CallCard extends StatelessWidget {
     final problem = context.select<ActiveCallsViewModel, CommandOutcome?>(
       (viewModel) => viewModel.problemOf(call),
     );
+    final busy = context.select<ActiveCallsViewModel, bool>(
+      (viewModel) => viewModel.isBusy(call),
+    );
+    final silenced = context.select<ActiveCallsViewModel, bool>(
+      (viewModel) => viewModel.isSilenced(call),
+    );
+    final viewModel = context.read<ActiveCallsViewModel>();
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.callsL10n;
@@ -53,131 +60,76 @@ class _CallCard extends StatelessWidget {
         details.number,
       l10n.stateOf(call),
     ].join(' · ');
-
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Row(
-            children: [
-              CallerAvatar(photoJpeg: details.photoJpeg),
-              Spacing.h12,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      l10n.callerOf(details),
-                      style: typography.base1.copyWith(color: palette.text),
-                      overflow: .ellipsis,
-                    ),
-                    Spacing.vertical(Spacing.d2),
-                    Text(
-                      subtitle,
-                      style: typography.caption1.copyWith(
-                        color: palette.mutedText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (!call.isRinging) ...[
-                Spacing.h12,
-                CallTimer(
-                  since: call.timerStart,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-              ],
-            ],
-          ),
-          Spacing.v12,
-          _CallButtons(call: call),
-          Spacing.v8,
-          Text(
-            l10n.audioStays(call.deviceName),
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-          if (problem != null) ...[
-            Spacing.v6,
-            Text(
-              l10n.outcomeText(problem, call.deviceName),
-              style: typography.caption1.copyWith(color: palette.danger),
-            ),
-          ],
-        ],
-      ),
+    final hangUp = Button(
+      variant: .primary,
+      color: palette.danger,
+      label: l10n.hangUp,
+      icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
+      enable: !busy,
+      onPressed: () => viewModel.end(call),
     );
-  }
-}
-
-class _CallButtons extends StatelessWidget {
-  const _CallButtons({required this.call});
-
-  final RemoteCall call;
-
-  @override
-  Widget build(BuildContext context) {
-    final busy = context.select<ActiveCallsViewModel, bool>(
-      (viewModel) => viewModel.isBusy(call),
-    );
-    final silenced = context.select<ActiveCallsViewModel, bool>(
-      (viewModel) => viewModel.isSilenced(call),
-    );
-    final viewModel = context.read<ActiveCallsViewModel>();
-    final palette = context.palette;
-    final l10n = context.callsL10n;
-
-    if (!call.isRinging) {
-      return Button(
+    final ringingActions = [
+      Button(
         variant: .primary,
-        color: palette.danger,
-        label: l10n.hangUp,
+        color: palette.success,
+        label: l10n.answer,
+        icon: Icon(LucideIcons.phone, size: Spacing.d16),
+        enable: !busy,
+        onPressed: () => viewModel.answer(call),
+      ),
+      Button(
+        variant: .secondary,
+        label: l10n.decline,
         icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
         enable: !busy,
         onPressed: () => viewModel.end(call),
-      );
-    }
+      ),
+      Button(
+        variant: .secondary,
+        label: switch (silenced) {
+          true => l10n.silenced,
+          false => l10n.silence,
+        },
+        icon: Icon(LucideIcons.bellOff, size: Spacing.d16),
+        enable: !busy && !silenced,
+        onPressed: () => viewModel.silence(call),
+      ),
+    ];
 
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Button(
-                variant: .primary,
-                color: palette.success,
-                label: l10n.answer,
-                icon: Icon(LucideIcons.phone, size: Spacing.d16),
-                enable: !busy,
-                onPressed: () => viewModel.answer(call),
-              ),
+    return FeatureCard(
+      icon: LucideIcons.phone,
+      title: l10n.callerOf(details),
+      subtitle: subtitle,
+      trailing: Row(
+        mainAxisSize: .min,
+        children: [
+          if (!call.isRinging) ...[
+            CallTimer(
+              since: call.timerStart,
+              style: typography.base1.copyWith(color: palette.text),
             ),
-            Spacing.h8,
-            Expanded(
-              child: Button(
-                variant: .primary,
-                color: palette.danger,
-                label: l10n.decline,
-                icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
-                enable: !busy,
-                onPressed: () => viewModel.end(call),
-              ),
-            ),
+            Spacing.h12,
           ],
+          CallerAvatar(photoJpeg: details.photoJpeg),
+        ],
+      ),
+      children: [
+        Text(
+          l10n.audioStays(call.deviceName),
+          style: typography.caption1.copyWith(color: palette.mutedText),
         ),
-        Spacing.v8,
-        Button(
-          variant: .ghost,
-          label: switch (silenced) {
-            true => l10n.silenced,
-            false => l10n.silence,
-          },
-          icon: Icon(LucideIcons.bellOff, size: Spacing.d16),
-          enable: !busy && !silenced,
-          onPressed: () => viewModel.silence(call),
-        ),
+        if (problem case final problem?) ...[
+          Spacing.v6,
+          Text(
+            l10n.outcomeText(problem, call.deviceName),
+            style: typography.caption1.copyWith(color: palette.danger),
+          ),
+        ],
       ],
+      actions: switch (call.isRinging) {
+        true => ringingActions,
+        false => [hangUp],
+      },
     );
   }
 }

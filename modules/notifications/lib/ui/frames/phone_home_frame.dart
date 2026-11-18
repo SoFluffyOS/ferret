@@ -25,57 +25,36 @@ class PhoneHomeFrame extends StatelessWidget {
     final appCount = context.select<MirrorSetupViewModel, int>(
       (viewModel) => viewModel.allowedAppCount,
     );
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
 
-    final Widget body = switch (stage) {
-      .off => Row(
-        children: [
-          Expanded(
-            child: Text(
-              l10n.explainer,
-              style: typography.body2.copyWith(color: palette.mutedText),
-            ),
-          ),
-          Spacing.h12,
-          Button(variant: .secondary, label: l10n.setUp, onPressed: onSetUp),
-        ],
-      ),
-      .needsAccess when checked => Row(
-        children: [
-          Expanded(
-            child: StatusLine(text: l10n.phoneHomePaused, tone: .warning),
-          ),
-          Spacing.h12,
-          Button(variant: .secondary, label: l10n.fix, onPressed: onSetUp),
-        ],
-      ),
-      .needsAccess => const SizedBox.shrink(),
-      .ready => StatusLine(text: l10n.phoneHomeOn(appCount), tone: .good),
+    final subtitle = switch (stage) {
+      .off => l10n.explainer,
+      _ => null,
+    };
+    final children = switch (stage) {
+      .needsAccess when checked => [
+        StatusLine(text: l10n.phoneHomePaused, tone: .warning),
+      ],
+      .ready => [StatusLine(text: l10n.phoneHomeOn(appCount), tone: .good)],
+      _ => <Widget>[],
+    };
+    final actions = switch (stage) {
+      .off => [
+        Button(variant: .primary, label: l10n.setUp, onPressed: onSetUp),
+      ],
+      .needsAccess when checked => [
+        Button(variant: .primary, label: l10n.fix, onPressed: onSetUp),
+      ],
+      _ => <Widget>[],
     };
 
-    return SurfaceCard(
+    return FeatureCard(
+      icon: LucideIcons.bell,
+      title: l10n.title,
+      subtitle: subtitle,
       onTap: onSetUp,
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Row(
-            children: [
-              Icon(LucideIcons.bell, size: Spacing.d16, color: palette.text),
-              Spacing.h8,
-              Expanded(
-                child: Text(
-                  l10n.title,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-              ),
-            ],
-          ),
-          Spacing.v8,
-          body,
-        ],
-      ),
+      actions: actions,
+      children: children,
     );
   }
 }

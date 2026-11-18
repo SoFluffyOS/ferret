@@ -35,53 +35,22 @@ class InboxCardFrame extends StatelessWidget {
           phone,
     ];
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Row(
-            children: [
-              Icon(LucideIcons.bell, size: Spacing.d16, color: palette.text),
-              Spacing.h8,
-              Expanded(
-                child: Text(
-                  l10n.title,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-              ),
-              if (byDevice.isNotEmpty)
-                Button(
-                  variant: .ghost,
-                  label: l10n.clearAll,
-                  onPressed: inbox.clearAll,
-                ),
-            ],
-          ),
-          if (phones.isEmpty && byDevice.isEmpty) ...[
-            Spacing.v8,
-            Text(
-              l10n.noPhone,
-              style: typography.caption1.copyWith(color: palette.mutedText),
-            ),
-          ],
-          if (phones.isNotEmpty && byDevice.isEmpty && troubled.isEmpty) ...[
-            Spacing.v8,
-            Text(
-              l10n.homeEmpty,
-              style: typography.caption1.copyWith(color: palette.mutedText),
-            ),
-          ],
-          for (final phone in troubled) ...[
-            Spacing.v8,
+    final groups = [
+      for (final phone in troubled)
+        Column(
+          crossAxisAlignment: .stretch,
+          children: [
             Text(
               phone.name,
               style: typography.caption1.copyWith(color: palette.mutedText),
             ),
             PhoneStatusLine(phone: phone),
           ],
-          for (final MapEntry(key: deviceId, value: items)
-              in byDevice.entries) ...[
-            Spacing.v8,
+        ),
+      for (final MapEntry(key: deviceId, value: items) in byDevice.entries)
+        Column(
+          crossAxisAlignment: .stretch,
+          children: [
             Text(
               _deviceLabel(context, deviceId, names),
               style: typography.caption1.copyWith(color: palette.mutedText),
@@ -94,9 +63,48 @@ class InboxCardFrame extends StatelessWidget {
                 onDismiss: () => inbox.dismiss(notification),
               ),
           ],
+        ),
+    ];
+
+    return FeatureCard(
+      icon: LucideIcons.bell,
+      title: l10n.title,
+      subtitle: _emptyLine(context, phones, byDevice, troubled),
+      children: [
+        for (final (index, group) in groups.indexed) ...[
+          if (index > 0) Spacing.v8,
+          group,
         ],
-      ),
+      ],
+      actions: [
+        if (byDevice.isNotEmpty)
+          Button(
+            variant: .secondary,
+            label: l10n.clearAll,
+            onPressed: inbox.clearAll,
+          ),
+      ],
     );
+  }
+
+  String? _emptyLine(
+    BuildContext context,
+    List<PhoneStatus> phones,
+    Map<String, List<MirroredNotification>> byDevice,
+    List<PhoneStatus> troubled,
+  ) {
+    if (byDevice.isNotEmpty) {
+      return null;
+    }
+
+    final l10n = context.notificationsL10n;
+    if (phones.isEmpty) {
+      return l10n.noPhone;
+    }
+    if (troubled.isEmpty) {
+      return l10n.homeEmpty;
+    }
+    return null;
   }
 
   String _deviceLabel(

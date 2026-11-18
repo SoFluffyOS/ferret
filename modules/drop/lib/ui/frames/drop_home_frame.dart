@@ -42,88 +42,72 @@ class DropHomeFrame extends StatelessWidget {
     final hasFinished = context.select<DropViewModel, bool>(
       (model) => model.hasFinished,
     );
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.dropL10n;
     final texts = context.transferTexts;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        mainAxisSize: .min,
-        children: [
-          Row(
-            children: [
-              Icon(LucideIcons.send, size: Spacing.d16, color: palette.text),
-              Spacing.h8,
-              Expanded(
-                child: Text(
-                  l10n.title,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-              ),
-              if (hasFinished)
-                Button(
-                  variant: .ghost,
-                  label: l10n.clearFinished,
-                  onPressed: viewModel.clearFinished,
-                ),
-            ],
+    return FeatureCard(
+      icon: LucideIcons.send,
+      title: l10n.title,
+      subtitle: switch (transfers.isEmpty) {
+        true => l10n.cardEmpty,
+        false => null,
+      },
+      trailing: switch (hasFinished) {
+        true => Button(
+          variant: .ghost,
+          label: l10n.clearFinished,
+          onPressed: viewModel.clearFinished,
+        ),
+        false => null,
+      },
+      children: [
+        for (final (index, transfer) in transfers.take(_shown).indexed) ...[
+          if (index > 0) Spacing.v16,
+          TransferTile(
+            key: ValueKey(transfer.id),
+            transfer: transfer,
+            title: texts.title(transfer),
+            status: texts.status(transfer),
+            speed: texts.speed(transfer),
+            details: texts.offerDetails(transfer),
+            actions: transferActions(
+              viewModel,
+              transfer,
+              l10n,
+              onEnterPin: (failed) =>
+                  unawaited(_enterPin(context, viewModel, failed)),
+            ),
+            dismissLabel: l10n.actionDismiss,
+            onDismiss: switch (transfer.status.isActive) {
+              true => null,
+              false => () => viewModel.dismiss(transfer),
+            },
           ),
-          Spacing.v8,
-          if (transfers.isEmpty)
-            Text(
-              l10n.cardEmpty,
-              style: typography.body2.copyWith(color: palette.mutedText),
-            ),
-          for (final (index, transfer) in transfers.take(_shown).indexed) ...[
-            if (index > 0) Spacing.v16,
-            TransferTile(
-              key: ValueKey(transfer.id),
-              transfer: transfer,
-              title: texts.title(transfer),
-              status: texts.status(transfer),
-              speed: texts.speed(transfer),
-              details: texts.offerDetails(transfer),
-              actions: transferActions(
-                viewModel,
-                transfer,
-                l10n,
-                onEnterPin: (failed) =>
-                    unawaited(_enterPin(context, viewModel, failed)),
-              ),
-              dismissLabel: l10n.actionDismiss,
-              onDismiss: switch (transfer.status.isActive) {
-                true => null,
-                false => () => viewModel.dismiss(transfer),
-              },
-            ),
-          ],
-          if (canSend) ...[
-            Spacing.v12,
-            Button(
-              variant: .secondary,
-              label: l10n.sendFiles,
-              icon: Icon(LucideIcons.upload, size: Spacing.d14),
-              onPressed: onSendFiles,
-            ),
-          ],
-          if (localSend) ...[
-            Spacing.v16,
-            LocalSendReceiveRow(
-              title: l10n.receiveTitle,
-              status: _receiveStatus(receiving, secondsLeft, l10n, texts),
-              hasProblem: receiving.problem != null,
-              actionLabel: _receiveAction(receiving, l10n),
-              onAction: switch ((receiving.isStarting, receiving.isOn)) {
-                (true, _) => null,
-                (false, true) => viewModel.stopReceiving,
-                (false, false) => viewModel.receiveFromLocalSend,
-              },
-            ),
-          ],
         ],
-      ),
+        if (localSend) ...[
+          if (transfers.isNotEmpty) Spacing.v16,
+          LocalSendReceiveRow(
+            title: l10n.receiveTitle,
+            status: _receiveStatus(receiving, secondsLeft, l10n, texts),
+            hasProblem: receiving.problem != null,
+            actionLabel: _receiveAction(receiving, l10n),
+            onAction: switch ((receiving.isStarting, receiving.isOn)) {
+              (true, _) => null,
+              (false, true) => viewModel.stopReceiving,
+              (false, false) => viewModel.receiveFromLocalSend,
+            },
+          ),
+        ],
+      ],
+      actions: [
+        if (canSend)
+          Button(
+            variant: .secondary,
+            label: l10n.sendFiles,
+            icon: Icon(LucideIcons.upload, size: Spacing.d14),
+            onPressed: onSendFiles,
+          ),
+      ],
     );
   }
 

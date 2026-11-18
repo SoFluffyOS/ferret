@@ -46,9 +46,11 @@ void main() {
         ),
       );
 
-      expect(find.text('Paused on Pixel'), findsOneWidget);
+      expect(
+        find.text('Paused on Pixel\nMassive Attack · Spotify'),
+        findsOneWidget,
+      );
       expect(find.text('Teardrop'), findsOneWidget);
-      expect(find.text('Massive Attack · Spotify'), findsOneWidget);
       expect(find.text('1:23'), findsOneWidget);
       expect(find.text('5:30'), findsOneWidget);
       expect(find.text('Continue here'), findsOneWidget);
