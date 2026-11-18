@@ -16,7 +16,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get homeYourDevices => 'Your devices';
 
   @override
-  String get homeNearby => 'Devices near you';
+  String get homeNearby => 'Nearby';
 
   @override
   String get homeNoDevicesTitle => 'No devices yet';
@@ -53,13 +53,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairShowCodeBody =>
-      'On your phone, open Ferret, tap +, then Can\'t see your device? and scan this code. Scanning is enough: no code to compare.';
+      'On your phone, open Ferret and tap +, then Pair with a QR code.';
 
   @override
   String get pairCopyLink => 'Copy link';
 
   @override
-  String get pairLinkCopied => 'Link copied';
+  String get pairLinkCopied => 'Copied';
 
   @override
   String pairExpiresIn(int minutes) {
@@ -70,7 +70,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairNewCode => 'New code';
 
   @override
-  String get pairLinkLabel => 'Pairing link';
+  String get pairLinkLabel => 'Paste a link';
 
   @override
   String get pairLinkHint => 'Paste a ferret://pair link';
@@ -85,10 +85,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairAddressHint => 'e.g. 192.168.1.20:47640';
 
   @override
-  String get pairConnect => 'Connect';
+  String get pairConnect => 'Pair';
 
   @override
-  String get pairCompareTitle => 'Check that the other device shows this code.';
+  String get pairCompareTitle =>
+      'Check that your other device shows this code, then tap Pair there.';
 
   @override
   String pairCompareBody(String device) {
@@ -96,7 +97,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get pairWaiting => 'Waiting for the other device…';
+  String get pairWaiting => 'Waiting for your other device…';
 
   @override
   String pairSuccess(String device) {
@@ -105,26 +106,28 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairFailedUnreachable =>
-      'Couldn\'t reach that device. Are both on the same network?';
+      'Couldn\'t reach that device. Put both on the same Wi-Fi, then try again.';
 
   @override
-  String get pairFailedRejected => 'The other device said not now.';
+  String get pairFailedRejected => 'Your other device said not now.';
 
   @override
-  String get pairFailedExpired => 'That code has expired. Show a new one.';
+  String get pairFailedExpired => 'That code expired.';
 
   @override
-  String get pairFailedBadProof => 'That code doesn\'t match. Try a new one.';
+  String get pairFailedBadProof =>
+      'The codes didn\'t match, so nothing was paired. Try once more, close to the other device.';
 
   @override
   String get pairFailedWrongDevice =>
       'A different device answered. Pairing stopped to keep you safe.';
 
   @override
-  String get pairFailedTimedOut => 'The other device didn\'t answer.';
+  String get pairFailedTimedOut => 'Your other device didn\'t answer.';
 
   @override
-  String get pairFailedProtocol => 'Something went wrong while pairing.';
+  String get pairFailedProtocol =>
+      'Pairing stopped before it finished. Try again.';
 
   @override
   String promptTitle(String device) {
@@ -196,7 +199,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get menuOpen => 'Open Ferret';
 
   @override
-  String get menuPair => 'Pair a Device…';
+  String get menuPair => 'Add a Device…';
 
   @override
   String get menuSettings => 'Settings…';
@@ -321,7 +324,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pauseUntilResume => 'Pause until I resume';
 
   @override
-  String get doctorTitle => 'Connection Doctor';
+  String get doctorTitle => 'Fix connection';
 
   @override
   String doctorIntro(String device) {
@@ -329,11 +332,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get doctorNetworkOk => 'This device is on a network';
+  String doctorNetworkOk(String here) {
+    return '$here is on a network';
+  }
 
   @override
-  String get doctorNetworkProblem =>
-      'This device isn\'t on a network. Connect to Wi-Fi or Ethernet.';
+  String doctorNetworkProblem(String here) {
+    return '$here isn\'t on a network. Connect to Wi-Fi or Ethernet.';
+  }
 
   @override
   String doctorVpn(String name) {
@@ -346,11 +352,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get doctorSameNetworkOk => 'Both devices were on the same network';
+  String doctorSameNetworkOk(String device, String here) {
+    return '$device and $here were on the same network';
+  }
 
   @override
-  String doctorSameNetworkWarning(String device, String address) {
-    return '$device was last seen on a different network ($address). Put both devices on the same Wi-Fi.';
+  String doctorSameNetworkWarning(String device, String address, String here) {
+    return '$device was last seen on a different network ($address). Put $device and $here on the same Wi-Fi.';
   }
 
   @override
@@ -375,8 +383,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get doctorAcceptedOk => 'Connected. All good.';
 
   @override
-  String doctorAcceptedProblem(String device) {
-    return '$device answered but didn\'t accept this device. It may have been reset or reinstalled. Pair again.';
+  String doctorAcceptedProblem(String device, String here) {
+    return '$device answered but doesn\'t know $here any more. It may have been reset or reinstalled. Pair them again.';
   }
 
   @override
@@ -400,7 +408,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get connectBody =>
-      'Type the address shown in Settings on the other device.';
+      'On the other device, open Ferret, then Settings and Advanced. Type the address it shows.';
 
   @override
   String get featureChipOff => 'Off';
@@ -492,10 +500,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get dropAllDevices => 'All my devices';
 
   @override
-  String get dropNobody => 'No devices connected';
+  String get dropNobody => 'No device to send to';
 
   @override
-  String get dropNobodyDetail => 'Open Ferret on your phone first.';
+  String get dropNobodyDetail => 'Open Ferret on your other device first.';
 
   @override
   String dropSendingTo(String name) {
@@ -514,7 +522,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get dropFailedDetail =>
-      'Nothing took these files. Try again in a moment.';
+      'The files weren\'t sent. Try again in a moment.';
 
   @override
   String get dropAllDevicesName => 'all my devices';
@@ -554,10 +562,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get scanNotFerret =>
-      'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.';
+      'That\'s not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.';
 
   @override
-  String get offersTitle => 'Turn on more';
+  String get offersTitle => 'Do more';
 
   @override
   String get offersSubtitle => 'Each one asks only for what it needs.';
@@ -685,7 +693,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsAddressHint =>
-      'Type this on another device under Connect by address if it can\'t find this one.';
+      'If another device can\'t find this one: on it, open Add a device, then Other ways, and type this address.';
 
   @override
   String get deviceWhyLong => 'Why isn\'t it connecting?';
@@ -699,7 +707,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceDetails => 'Details';
 
   @override
-  String get deviceForget => 'Forget this device';
+  String deviceForget(String device) {
+    return 'Forget $device';
+  }
 
   @override
   String deviceForgetConfirmTitle(String device) {
@@ -707,8 +717,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get deviceForgetConfirmBody =>
-      'Both devices forget each other. You can pair them again any time.';
+  String deviceForgetConfirmBody(String device, String here) {
+    return '$device and $here forget each other. You can pair them again any time.';
+  }
 
   @override
   String get chipOff => 'Off';
@@ -717,8 +728,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get doctorTryAgainPrimary => 'Try again';
 
   @override
-  String doctorNotAnsweringSteps(String device) {
-    return 'Try this:\n1. Open Ferret on $device.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
+  String doctorNotAnsweringSteps(String device, String here) {
+    return 'Try this:\n1. On $device, open Ferret.\n2. Put $device and $here on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
   }
 
   @override
@@ -732,11 +743,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsConnectByHand => 'Connect by hand';
 
   @override
-  String get nearbyLooking => 'Looking for devices…';
+  String get nearbyLooking => 'Looking…';
 
   @override
-  String get nearbyNone =>
-      'No devices found. Open Ferret on your other device, on the same Wi-Fi.';
+  String get nearbyNone => 'No devices found yet.';
 
   @override
   String get nearbyLookAgain => 'Look again';
@@ -865,12 +875,288 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceForgetEverywhere => 'Remove from all my devices';
 
   @override
-  String get deviceForgetHere => 'Forget here only';
+  String deviceForgetHere(String here) {
+    return 'Forget on $here only';
+  }
 
   @override
-  String get settingsSharePairings => 'Share pairings with my devices';
+  String get settingsSharePairings => 'Pair once for all my devices';
 
   @override
   String get settingsSharePairingsBody =>
-      'Pair a device once and it joins all your devices. Remove it once and it leaves them all.';
+      'A device you pair here joins all your devices. Remove it once and it leaves them all.';
+
+  @override
+  String doctorNothingWrong(String here, String device) {
+    return 'Everything looks right on $here. On $device, open Ferret.';
+  }
+
+  @override
+  String doctorNetworkIntro(String here) {
+    return 'Checking the network on $here.';
+  }
+
+  @override
+  String doctorNetworkAllGood(String here) {
+    return 'Everything looks right on $here. Open Ferret on your other device, on the same Wi-Fi.';
+  }
+
+  @override
+  String get connectAction => 'Try this address';
+
+  @override
+  String get thisMac => 'this Mac';
+
+  @override
+  String get thisPhone => 'this phone';
+
+  @override
+  String get thisTablet => 'this tablet';
+
+  @override
+  String get thisComputer => 'this computer';
+
+  @override
+  String get thisMacStart => 'This Mac';
+
+  @override
+  String get thisPhoneStart => 'This phone';
+
+  @override
+  String get thisTabletStart => 'This tablet';
+
+  @override
+  String get thisComputerStart => 'This computer';
+
+  @override
+  String get settingsGroupClipboard => 'Clipboard';
+
+  @override
+  String get settingsGroupFiles => 'Files';
+
+  @override
+  String get settingsGroupContinue => 'Continue & media';
+
+  @override
+  String get settingsGroupFromPhone => 'From your phone';
+
+  @override
+  String get settingsGroupToComputer => 'To your computer';
+
+  @override
+  String get settingsGroupControl => 'Control';
+
+  @override
+  String get settingsGroupOtherApps => 'Other apps';
+
+  @override
+  String get settingsOn => 'On';
+
+  @override
+  String get settingsOff => 'Off';
+
+  @override
+  String settingsCountOn(int on, int total) {
+    return '$on of $total on';
+  }
+
+  @override
+  String settingsNamedOn(String names) {
+    return '$names on';
+  }
+
+  @override
+  String get settingsNeedsAttention => 'Needs attention';
+
+  @override
+  String get settingsAdvanced => 'Advanced';
+
+  @override
+  String get settingsAbout => 'About · Privacy';
+
+  @override
+  String settingsVersion(String version) {
+    return 'Ferret $version';
+  }
+
+  @override
+  String get settingsLicense =>
+      'Free software under GPL-3.0. The protocol is open too, under MIT.';
+
+  @override
+  String get settingsDeviceIdLabel => 'Device ID';
+
+  @override
+  String get settingsAddressLabel => 'Address';
+
+  @override
+  String get settingsCopy => 'Copy';
+
+  @override
+  String get settingsCheckNetwork => 'Check my network';
+
+  @override
+  String get settingsNothingHere =>
+      'Nothing to set here yet. Pair a device first.';
+
+  @override
+  String deviceMay(String device) {
+    return '$device may';
+  }
+
+  @override
+  String get deviceHow => 'How?';
+
+  @override
+  String get deviceFix => 'Fix';
+
+  @override
+  String devicePairedOn(String date) {
+    return 'Paired on $date';
+  }
+
+  @override
+  String deviceNothingWorks(String device) {
+    return 'Nothing to show yet. Keep Ferret open on $device.';
+  }
+
+  @override
+  String get addDontSee => 'Don\'t see it?';
+
+  @override
+  String addShowsAs(String name) {
+    return 'Shows as $name';
+  }
+
+  @override
+  String get qrScanEnough => 'Scanning is enough. No code to compare.';
+
+  @override
+  String get qrWaiting => 'Waiting for your phone…';
+
+  @override
+  String get qrScanRow => 'Scan a QR code';
+
+  @override
+  String get otherShowQr => 'Show a QR code';
+
+  @override
+  String get otherLinkTitle => 'With a link';
+
+  @override
+  String get otherLinkBody =>
+      'Copy this device\'s link and open it on the other one, or paste the other one\'s link here.';
+
+  @override
+  String get otherAddressTitle => 'With an address';
+
+  @override
+  String get otherAddressBody =>
+      'For networks that hide devices from each other. The address is in Ferret\'s Settings, under Advanced, on the other device.';
+
+  @override
+  String get otherPairLink => 'Pair with link';
+
+  @override
+  String get otherPairAddress => 'Pair with address';
+
+  @override
+  String get homeMore => 'More';
+
+  @override
+  String get homeStatusPaused => 'Paused';
+
+  @override
+  String deviceAttention(String feature) {
+    return 'Connected · $feature: needs attention';
+  }
+
+  @override
+  String devicesOffline(int count) {
+    return '$count offline';
+  }
+
+  @override
+  String get devicesShow => 'Show';
+
+  @override
+  String get emptyBody =>
+      'Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.';
+
+  @override
+  String get emptyCantSee => 'Can\'t see it?';
+
+  @override
+  String get emptyGetFerretPhone => 'Get Ferret for your phone';
+
+  @override
+  String get emptyGetFerretComputer => 'Get Ferret for your computer';
+
+  @override
+  String get welcomeNearbyBody => 'Pair a device near you to start.';
+
+  @override
+  String get nearbyNotTheOne =>
+      'Not the one you want? Open Ferret on your other device.';
+
+  @override
+  String get activityTitle => 'Activity';
+
+  @override
+  String get activitySeeAll => 'See all';
+
+  @override
+  String get activityEmpty => 'Nothing yet. Copy something or send a file.';
+
+  @override
+  String get activityNow => 'now';
+
+  @override
+  String activityMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String activityHours(int count) {
+    return '$count h';
+  }
+
+  @override
+  String activityDays(int count) {
+    return '$count d';
+  }
+
+  @override
+  String get footerDrag => 'Drag files onto a device to send';
+
+  @override
+  String get footerNobody => 'Nothing to send to right now.';
+
+  @override
+  String footerPausedUntil(String time) {
+    return 'Paused until $time';
+  }
+
+  @override
+  String get footerPaused => 'Paused until you resume';
+
+  @override
+  String tipCopyHere(String device) {
+    return 'Try it: copy something here, then paste on $device.';
+  }
+
+  @override
+  String tipCopyThere(String device) {
+    return 'Try it: copy something on $device, then paste here.';
+  }
+
+  @override
+  String get tipDone => 'That\'s it.';
+
+  @override
+  String get tipDrag =>
+      'Drag files onto the Ferret icon in the menubar to send them.';
+
+  @override
+  String get tipDismiss => 'Got it';
 }

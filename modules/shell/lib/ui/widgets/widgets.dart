@@ -1,12 +1,17 @@
 export 'package:shell/ui/widgets/cant_see_device.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
+export 'package:shell/ui/widgets/device_header.dart';
 export 'package:shell/ui/widgets/device_tile.dart';
+export 'package:shell/ui/widgets/disclosure.dart';
 export 'package:shell/ui/widgets/doctor_check_row.dart';
 export 'package:shell/ui/widgets/drop_progress_card.dart';
 export 'package:shell/ui/widgets/drop_target_region.dart';
 export 'package:shell/ui/widgets/drop_target_tile.dart';
 export 'package:shell/ui/widgets/empty_devices.dart';
 export 'package:shell/ui/widgets/feature_chip.dart';
+export 'package:shell/ui/widgets/forget_device_card.dart';
+export 'package:shell/ui/widgets/health_row.dart';
+export 'package:shell/ui/widgets/nav_row.dart';
 export 'package:shell/ui/widgets/nearby_notice.dart';
 export 'package:shell/ui/widgets/nearby_tile.dart';
 export 'package:shell/ui/widgets/qr_code_view.dart';

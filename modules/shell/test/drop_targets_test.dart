@@ -232,8 +232,11 @@ void main() {
     menubar.onDragEntered(10, 10, 1);
     await settle(tester);
 
-    expect(find.text('No devices connected'), findsOneWidget);
-    expect(find.text('Open Ferret on your phone first.'), findsOneWidget);
+    expect(find.text('No device to send to'), findsOneWidget);
+    expect(
+      find.text('Open Ferret on your other device first.'),
+      findsOneWidget,
+    );
     expect(find.text('All my devices'), findsNothing);
   });
 }

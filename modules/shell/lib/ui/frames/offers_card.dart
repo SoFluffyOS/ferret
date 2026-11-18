@@ -72,7 +72,7 @@ class _OfferRow extends StatelessWidget {
           ),
           Spacing.h12,
           Button(
-            variant: .secondary,
+            variant: .ghost,
             label: offer.actionLabel,
             onPressed: offer.onAction,
           ),

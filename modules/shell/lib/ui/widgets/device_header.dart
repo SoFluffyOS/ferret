@@ -1,0 +1,105 @@
+import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/widgets.dart';
+import 'package:shell/l10n/l10n.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
+
+/// The top of a device's page: its icon, its name and the one thing that is
+/// true about its connection right now.
+class DeviceHeader extends StatelessWidget {
+  const DeviceHeader({super.key, required this.status});
+
+  final DeviceStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final typography = context.fluffyTheme.typography;
+    final device = status.device;
+    final dotColor = switch (status.isConnected) {
+      true => palette.success,
+      false => palette.mutedText,
+    };
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Spacing.d4,
+        Spacing.d8,
+        Spacing.d4,
+        Spacing.d16,
+      ),
+      child: Row(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: palette.surface,
+              borderRadius: BorderRadius.circular(Spacing.d12),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Spacing.d12),
+              child: Icon(
+                deviceIconFor(device.formFactor, device.platform),
+                size: Spacing.d24,
+                color: palette.text,
+              ),
+            ),
+          ),
+          Spacing.h12,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(
+                  device.name,
+                  style: typography.title3.copyWith(color: palette.text),
+                  overflow: .ellipsis,
+                ),
+                Spacing.vertical(Spacing.d2),
+                Row(
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: dotColor,
+                        shape: .circle,
+                      ),
+                      child: SizedBox.square(dimension: Spacing.d8),
+                    ),
+                    Spacing.h6,
+                    Expanded(
+                      child: Text(
+                        _statusLine(context.shellL10n),
+                        style: typography.base2.copyWith(
+                          color: palette.mutedText,
+                        ),
+                        overflow: .ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _statusLine(ShellLocalizations l10n) {
+    if (status.isConnected) {
+      return l10n.deviceConnected;
+    }
+
+    final lastSeen = status.device.lastSeen;
+    if (lastSeen == null) {
+      return l10n.deviceOffline;
+    }
+
+    final elapsed = DateTime.now().difference(lastSeen);
+    return switch (elapsed) {
+      Duration(inMinutes: < 1) => l10n.deviceLastSeenJustNow,
+      Duration(inHours: < 1) => l10n.deviceLastSeenMinutes(elapsed.inMinutes),
+      Duration(inDays: < 1) => l10n.deviceLastSeenHours(elapsed.inHours),
+      _ => l10n.deviceLastSeenDays(elapsed.inDays),
+    };
+  }
+}

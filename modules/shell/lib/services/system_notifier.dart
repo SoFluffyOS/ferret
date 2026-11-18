@@ -212,7 +212,7 @@ class SystemNotifier implements LocalNotifier {
     .transfers => 'Transfers',
     .incoming => 'From your devices',
     .suggestions => 'Continue suggestions',
-    .find => 'Find my device',
+    .find => 'Find',
     .problems => 'Connection problems',
   };
 

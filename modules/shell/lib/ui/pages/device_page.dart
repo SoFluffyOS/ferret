@@ -1,18 +1,25 @@
+import 'dart:async';
+
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
-import 'package:shell/ui/dialogs/dialogs.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
-import 'package:shell/ui/widgets/widgets.dart';
+import 'package:shell/ui/widgets/device_header.dart';
+import 'package:shell/ui/widgets/disclosure.dart';
+import 'package:shell/ui/widgets/forget_device_card.dart';
+import 'package:shell/ui/widgets/health_row.dart';
+import 'package:shell/ui/widgets/switch_row.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// One paired device: whether it's connected, what works with it, what to do
-/// about it, and forgetting it.
+/// One paired device: whether it's connected, what to do with it, what
+/// works with it (and what is off or broken), what it may do here, and
+/// forgetting it.
 class DevicePage extends StatelessWidget {
   const DevicePage({super.key, required this.deviceId});
 
@@ -24,28 +31,20 @@ class DevicePage extends StatelessWidget {
       (host) => host.statusOf(deviceId),
     );
     final scope = ShellScope.of(context);
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
 
     if (status == null) {
       return FerretPage(title: '', backLabel: l10n.back, children: const []);
     }
 
+    final engine = scope.featureContext.engine;
     final device = status.device;
-    final actions = switch (status.isConnected) {
-      true => [
-        for (final feature in scope.features)
-          ...feature.deviceActions(context, scope.featureContext, status),
-      ],
-      false => const <FeatureAction>[],
-    };
 
     return FerretPage(
       title: device.name,
       backLabel: l10n.back,
       children: [
-        DeviceTile(status: status),
+        DeviceHeader(status: status),
         if (!status.isConnected)
           Button(
             variant: .primary,
@@ -56,62 +55,41 @@ class DevicePage extends StatelessWidget {
               ),
             ),
           ),
-        if (actions.isNotEmpty) SectionTitle(l10n.deviceActions),
-        for (final action in actions)
-          Padding(
-            padding: EdgeInsets.only(bottom: Spacing.d8),
-            child: Button(
-              variant: .ghost,
-              label: action.label,
-              icon: Icon(action.icon, size: Spacing.d16),
-              onPressed: action.onPressed,
-              mainAxisAlignment: .start,
-            ),
-          ),
-        if (status.isConnected) ...[
-          SectionTitle(l10n.deviceWhatWorks(device.name)),
+        if (status.isConnected)
           FeatureChangesListener(
             features: scope.features,
-            builder: (context) => SurfaceCard(
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  for (final feature in scope.features)
-                    if (feature.healthFor(scope.featureContext, status)
-                        case final health?)
-                      _HealthRow(
-                        icon: feature.icon,
-                        title: feature.title(context),
-                        health: health,
-                      ),
-                ],
-              ),
-            ),
+            builder: (context) => _Connected(status: status),
           ),
-        ],
-        SectionTitle(l10n.deviceDetails),
-        Text(
-          '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
-          style: typography.caption1.copyWith(color: palette.mutedText),
+        Spacing.v8,
+        Disclosure(
+          title: l10n.deviceDetails,
+          children: [
+            for (final line in _details(context, device)) _DetailLine(line),
+          ],
         ),
-        if (_introducerName(context, device) case final introducer?)
-          Text(
-            l10n.devicePairedThrough(introducer),
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-        Spacing.v24,
-        Tappable(
-          onTap: () => _forget(context, status),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.d8),
-            child: Text(
-              l10n.deviceForget,
-              style: typography.base1.copyWith(color: palette.danger),
-            ),
-          ),
+        ForgetDeviceCard(
+          deviceName: device.name,
+          here: l10n.here(engine.device),
+          sharedWithOthers:
+              engine.sharesPairings && engine.trustStore.devices.length > 1,
+          onForget: (scope) => unawaited(_forget(context, scope)),
         ),
       ],
     );
+  }
+
+  List<String> _details(BuildContext context, TrustedDevice device) {
+    final l10n = context.shellL10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    return [
+      '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
+      if ((device.lastHost, device.lastPort) case (final host?, final port?))
+        l10n.settingsAddress('$host:$port'),
+      l10n.devicePairedOn(DateFormat.yMMMd(locale).format(device.pairedAt)),
+      if (_introducerName(context, device) case final introducer?)
+        l10n.devicePairedThrough(introducer),
+    ];
   }
 
   /// The name of the device that vouched for [device], when it joined
@@ -126,95 +104,143 @@ class DevicePage extends StatelessWidget {
     return engine.trustStore[introducedBy]?.name;
   }
 
-  Future<void> _forget(BuildContext context, DeviceStatus status) async {
+  Future<void> _forget(BuildContext context, ForgetScope scope) async {
     final engine = ShellScope.read(context).featureContext.engine;
     final navigator = Navigator.of(context);
-    final sharedWithOthers =
-        engine.sharesPairings && engine.trustStore.devices.length > 1;
 
-    final scope = switch (sharedWithOthers) {
-      true => await ForgetDeviceDialog.show(context, status.device.name),
-      false => await _confirmForget(context, status),
-    };
-    if (scope == null) {
-      return;
-    }
-
-    await engine.unpair(
-      status.device.id,
-      everywhere: scope == ForgetScope.everywhere,
-    );
+    await engine.unpair(deviceId, everywhere: scope == .everywhere);
     navigator.pop();
-  }
-
-  Future<ForgetScope?> _confirmForget(
-    BuildContext context,
-    DeviceStatus status,
-  ) async {
-    final l10n = context.shellL10n;
-    final action = await ConfirmDialog.show(
-      context,
-      title: l10n.deviceForgetConfirmTitle(status.device.name),
-      message: l10n.deviceForgetConfirmBody,
-      negativeText: l10n.cancel,
-      positiveText: l10n.deviceForget,
-    );
-    if (action != ConfirmAction.positive) {
-      return null;
-    }
-
-    return ForgetScope.here;
   }
 }
 
-class _HealthRow extends StatelessWidget {
-  const _HealthRow({
-    required this.icon,
-    required this.title,
-    required this.health,
-  });
+/// What a connected device adds to its page: its actions, what works with
+/// it, and what it may do here.
+class _Connected extends StatelessWidget {
+  const _Connected({required this.status});
 
-  final IconData icon;
-  final String title;
-  final FeatureHealth health;
+  final DeviceStatus status;
+
+  /// Sorts after every action that has a place on Home.
+  static const _pageOnly = 1 << 20;
 
   @override
   Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final color = switch (health.state) {
-      .ok => palette.success,
-      .needsAttention => palette.warning,
-      .failing => palette.danger,
-      .off => palette.mutedText,
-    };
+    final l10n = context.shellL10n;
+    final name = status.device.name;
+    final featureContext = scope.featureContext;
+    final actions = [
+      for (final feature in scope.features)
+        ...feature.deviceActions(context, featureContext, status),
+    ];
+    final ordered = [
+      for (final (index, action) in actions.indexed) (index, action),
+    ]..sort(_byHomeOrder);
+    final health = [
+      for (final feature in scope.features)
+        if (feature.healthFor(featureContext, status) case final health?)
+          (feature.title(context), health),
+    ];
+    final permissions = [
+      for (final feature in scope.features)
+        ...feature.devicePermissions(context, featureContext, status),
+    ];
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-      child: Row(
-        crossAxisAlignment: .start,
-        children: [
-          Icon(icon, size: Spacing.d18, color: color),
-          Spacing.h12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  title,
-                  style: typography.base2.copyWith(color: palette.text),
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        if (ordered.isNotEmpty)
+          Wrap(
+            spacing: Spacing.d8,
+            runSpacing: Spacing.d8,
+            children: [
+              for (final (position, (_, action)) in ordered.indexed)
+                Button(
+                  variant: switch (position) {
+                    0 => .primary,
+                    _ => .ghost,
+                  },
+                  label: action.label,
+                  icon: Icon(action.icon, size: Spacing.d16),
+                  onPressed: action.onPressed,
                 ),
-                if (health.reason.isNotEmpty)
-                  Text(
-                    health.reason,
-                    style: typography.caption1.copyWith(
-                      color: palette.mutedText,
-                    ),
+            ],
+          ),
+        SectionTitle(l10n.deviceWhatWorks(name)),
+        SurfaceCard(
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              if (health.isEmpty)
+                Text(
+                  l10n.deviceNothingWorks(name),
+                  style: typography.base2.copyWith(color: palette.mutedText),
+                ),
+              for (final (title, featureHealth) in health)
+                HealthRow(
+                  key: ValueKey(title),
+                  title: title,
+                  health: featureHealth,
+                  howLabel: l10n.deviceHow,
+                  fixLabel: l10n.deviceFix,
+                ),
+            ],
+          ),
+        ),
+        if (permissions.isNotEmpty) ...[
+          SectionTitle(l10n.deviceMay(name)),
+          SurfaceCard(
+            child: Column(
+              children: [
+                for (final (index, permission) in permissions.indexed) ...[
+                  if (index > 0) Spacing.v12,
+                  SwitchRow(
+                    title: permission.label,
+                    subtitle: switch (permission.detail) {
+                      '' => null,
+                      final detail => detail,
+                    },
+                    value: permission.value,
+                    onChanged: permission.onChanged,
                   ),
+                ],
               ],
             ),
           ),
         ],
+      ],
+    );
+  }
+
+  /// Home's order first, then the order features gave them in.
+  static int _byHomeOrder((int, FeatureAction) a, (int, FeatureAction) b) {
+    final byOrder = (a.$2.homeOrder ?? _pageOnly).compareTo(
+      b.$2.homeOrder ?? _pageOnly,
+    );
+    if (byOrder != 0) {
+      return byOrder;
+    }
+
+    return a.$1.compareTo(b.$1);
+  }
+}
+
+class _DetailLine extends StatelessWidget {
+  const _DetailLine(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Spacing.d4),
+      child: Text(
+        text,
+        style: context.fluffyTheme.typography.caption1.copyWith(
+          color: context.palette.mutedText,
+        ),
       ),
     );
   }

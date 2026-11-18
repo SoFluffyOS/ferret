@@ -2,7 +2,7 @@
   "@@locale": "en",
   "appName": "Ferret",
   "homeYourDevices": "Your devices",
-  "homeNearby": "Devices near you",
+  "homeNearby": "Nearby",
   "homeNoDevicesTitle": "No devices yet",
   "homeNoDevicesBody": "Pair your phone and your computer to start passing things between them.",
   "homePairDevice": "Add a device",
@@ -20,9 +20,9 @@
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
   "pairEnterCode": "Other ways",
-  "pairShowCodeBody": "On your phone, open Ferret, tap +, then Can't see your device? and scan this code. Scanning is enough: no code to compare.",
+  "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
-  "pairLinkCopied": "Link copied",
+  "pairLinkCopied": "Copied",
   "pairExpiresIn": "Expires in {minutes} min",
   "@pairExpiresIn": {
     "placeholders": {
@@ -32,13 +32,13 @@
     }
   },
   "pairNewCode": "New code",
-  "pairLinkLabel": "Pairing link",
+  "pairLinkLabel": "Paste a link",
   "pairLinkHint": "Paste a ferret://pair link",
   "pairLinkInvalid": "That isn't a Ferret pairing link.",
   "pairAddressLabel": "Address of the other device",
   "pairAddressHint": "e.g. 192.168.1.20:47640",
-  "pairConnect": "Connect",
-  "pairCompareTitle": "Check that the other device shows this code.",
+  "pairConnect": "Pair",
+  "pairCompareTitle": "Check that your other device shows this code, then tap Pair there.",
   "pairCompareBody": "Make sure {device} shows the same code, then confirm there.",
   "@pairCompareBody": {
     "placeholders": {
@@ -47,7 +47,7 @@
       }
     }
   },
-  "pairWaiting": "Waiting for the other device…",
+  "pairWaiting": "Waiting for your other device…",
   "pairSuccess": "Paired with {device}",
   "@pairSuccess": {
     "placeholders": {
@@ -56,13 +56,13 @@
       }
     }
   },
-  "pairFailedUnreachable": "Couldn't reach that device. Are both on the same network?",
-  "pairFailedRejected": "The other device said not now.",
-  "pairFailedExpired": "That code has expired. Show a new one.",
-  "pairFailedBadProof": "That code doesn't match. Try a new one.",
+  "pairFailedUnreachable": "Couldn't reach that device. Put both on the same Wi-Fi, then try again.",
+  "pairFailedRejected": "Your other device said not now.",
+  "pairFailedExpired": "That code expired.",
+  "pairFailedBadProof": "The codes didn't match, so nothing was paired. Try once more, close to the other device.",
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
-  "pairFailedTimedOut": "The other device didn't answer.",
-  "pairFailedProtocol": "Something went wrong while pairing.",
+  "pairFailedTimedOut": "Your other device didn't answer.",
+  "pairFailedProtocol": "Pairing stopped before it finished. Try again.",
   "promptTitle": "Pair with {device}?",
   "@promptTitle": {
     "placeholders": {
@@ -117,7 +117,7 @@
   "back": "Back",
   "cancel": "Cancel",
   "menuOpen": "Open Ferret",
-  "menuPair": "Pair a Device…",
+  "menuPair": "Add a Device…",
   "menuSettings": "Settings…",
   "menuQuit": "Quit Ferret",
   "menubarTipConnectedTo": "Ferret · Connected to {device}",
@@ -226,7 +226,7 @@
   "pauseOneHour": "Pause for 1 hour",
   "pauseUntilTomorrow": "Pause until tomorrow",
   "pauseUntilResume": "Pause until I resume",
-  "doctorTitle": "Connection Doctor",
+  "doctorTitle": "Fix connection",
   "doctorIntro": "Checking why {device} isn't connected.",
   "@doctorIntro": {
     "placeholders": {
@@ -235,8 +235,22 @@
       }
     }
   },
-  "doctorNetworkOk": "This device is on a network",
-  "doctorNetworkProblem": "This device isn't on a network. Connect to Wi-Fi or Ethernet.",
+  "doctorNetworkOk": "{here} is on a network",
+  "@doctorNetworkOk": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorNetworkProblem": "{here} isn't on a network. Connect to Wi-Fi or Ethernet.",
+  "@doctorNetworkProblem": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "doctorVpn": "A VPN is on ({name}). It can hide devices on your network. Allow local network access in the VPN, or turn it off.",
   "@doctorVpn": {
     "placeholders": {
@@ -253,14 +267,27 @@
       }
     }
   },
-  "doctorSameNetworkOk": "Both devices were on the same network",
-  "doctorSameNetworkWarning": "{device} was last seen on a different network ({address}). Put both devices on the same Wi-Fi.",
+  "doctorSameNetworkOk": "{device} and {here} were on the same network",
+  "@doctorSameNetworkOk": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorSameNetworkWarning": "{device} was last seen on a different network ({address}). Put {device} and {here} on the same Wi-Fi.",
   "@doctorSameNetworkWarning": {
     "placeholders": {
       "device": {
         "type": "String"
       },
       "address": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -291,10 +318,13 @@
   },
   "doctorAcceptedRunning": "Connecting…",
   "doctorAcceptedOk": "Connected. All good.",
-  "doctorAcceptedProblem": "{device} answered but didn't accept this device. It may have been reset or reinstalled. Pair again.",
+  "doctorAcceptedProblem": "{device} answered but doesn't know {here} any more. It may have been reset or reinstalled. Pair them again.",
   "@doctorAcceptedProblem": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -305,7 +335,7 @@
   "doctorFixCopy": "Copy diagnostics",
   "doctorCopied": "Diagnostics copied. They contain no names or content.",
   "connectTitle": "Connect by address",
-  "connectBody": "Type the address shown in Settings on the other device.",
+  "connectBody": "On the other device, open Ferret, then Settings and Advanced. Type the address it shows.",
   "featureChipOff": "Off",
   "settingsPause": "Pause",
   "stayTitle": "Stay connected",
@@ -349,8 +379,8 @@
   "dropTilePick": "Send here",
   "dropTileOffline": "Offline",
   "dropAllDevices": "All my devices",
-  "dropNobody": "No devices connected",
-  "dropNobodyDetail": "Open Ferret on your phone first.",
+  "dropNobody": "No device to send to",
+  "dropNobodyDetail": "Open Ferret on your other device first.",
   "dropSendingTo": "Sending to {name}",
   "@dropSendingTo": {
     "placeholders": {
@@ -375,7 +405,7 @@
       }
     }
   },
-  "dropFailedDetail": "Nothing took these files. Try again in a moment.",
+  "dropFailedDetail": "The files weren't sent. Try again in a moment.",
   "dropAllDevicesName": "all my devices",
   "dropFileCount": "{count, plural, =1{1 file} other{{count} files}}",
   "@dropFileCount": {
@@ -392,8 +422,8 @@
   "scanBody": "Point your camera at the code Ferret shows on your computer.",
   "scanButton": "Scan the code on your computer",
   "scanSection": "Scan",
-  "scanNotFerret": "That's not a Ferret code. Open Ferret on your computer and choose Pair a device.",
-  "offersTitle": "Turn on more",
+  "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",
+  "offersTitle": "Do more",
   "offersSubtitle": "Each one asks only for what it needs.",
   "onboardWelcomeTitle": "Your devices, working together",
   "onboardWelcomeBody": "Ferret passes what you're doing between your phone and your computer.",
@@ -460,7 +490,7 @@
       }
     }
   },
-  "settingsAddressHint": "Type this on another device under Connect by address if it can't find this one.",
+  "settingsAddressHint": "If another device can't find this one: on it, open Add a device, then Other ways, and type this address.",
   "deviceWhyLong": "Why isn't it connecting?",
   "deviceWhatWorks": "What works with {device}",
   "@deviceWhatWorks": {
@@ -471,7 +501,14 @@
     }
   },
   "deviceDetails": "Details",
-  "deviceForget": "Forget this device",
+  "deviceForget": "Forget {device}",
+  "@deviceForget": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "deviceForgetConfirmTitle": "Forget {device}?",
   "@deviceForgetConfirmTitle": {
     "placeholders": {
@@ -480,13 +517,26 @@
       }
     }
   },
-  "deviceForgetConfirmBody": "Both devices forget each other. You can pair them again any time.",
+  "deviceForgetConfirmBody": "{device} and {here} forget each other. You can pair them again any time.",
+  "@deviceForgetConfirmBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "chipOff": "Off",
   "doctorTryAgainPrimary": "Try again",
-  "doctorNotAnsweringSteps": "Try this:\n1. Open Ferret on {device}.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
+  "doctorNotAnsweringSteps": "Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
   "@doctorNotAnsweringSteps": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -494,8 +544,8 @@
   "pauseTitle": "Pause Ferret?",
   "pauseBody": "Your devices won't connect or sync until you resume.",
   "settingsConnectByHand": "Connect by hand",
-  "nearbyLooking": "Looking for devices…",
-  "nearbyNone": "No devices found. Open Ferret on your other device, on the same Wi-Fi.",
+  "nearbyLooking": "Looking…",
+  "nearbyNone": "No devices found yet.",
   "nearbyLookAgain": "Look again",
   "nearbyPair": "Pair",
   "nearbyConnecting": "Connecting to {device}…",
@@ -657,7 +707,223 @@
     }
   },
   "deviceForgetEverywhere": "Remove from all my devices",
-  "deviceForgetHere": "Forget here only",
-  "settingsSharePairings": "Share pairings with my devices",
-  "settingsSharePairingsBody": "Pair a device once and it joins all your devices. Remove it once and it leaves them all."
+  "deviceForgetHere": "Forget on {here} only",
+  "@deviceForgetHere": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSharePairings": "Pair once for all my devices",
+  "settingsSharePairingsBody": "A device you pair here joins all your devices. Remove it once and it leaves them all.",
+  "doctorNothingWrong": "Everything looks right on {here}. On {device}, open Ferret.",
+  "@doctorNothingWrong": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorNetworkIntro": "Checking the network on {here}.",
+  "@doctorNetworkIntro": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorNetworkAllGood": "Everything looks right on {here}. Open Ferret on your other device, on the same Wi-Fi.",
+  "@doctorNetworkAllGood": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "connectAction": "Try this address",
+  "thisMac": "this Mac",
+  "thisPhone": "this phone",
+  "thisTablet": "this tablet",
+  "thisComputer": "this computer",
+  "thisMacStart": "This Mac",
+  "thisPhoneStart": "This phone",
+  "thisTabletStart": "This tablet",
+  "thisComputerStart": "This computer",
+  "settingsGroupClipboard": "Clipboard",
+  "settingsGroupFiles": "Files",
+  "settingsGroupContinue": "Continue & media",
+  "settingsGroupFromPhone": "From your phone",
+  "settingsGroupToComputer": "To your computer",
+  "settingsGroupControl": "Control",
+  "settingsGroupOtherApps": "Other apps",
+  "settingsOn": "On",
+  "settingsOff": "Off",
+  "settingsCountOn": "{on} of {total} on",
+  "@settingsCountOn": {
+    "placeholders": {
+      "on": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsNamedOn": "{names} on",
+  "@settingsNamedOn": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsNeedsAttention": "Needs attention",
+  "settingsAdvanced": "Advanced",
+  "settingsAbout": "About · Privacy",
+  "settingsVersion": "Ferret {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLicense": "Free software under GPL-3.0. The protocol is open too, under MIT.",
+  "settingsDeviceIdLabel": "Device ID",
+  "settingsAddressLabel": "Address",
+  "settingsCopy": "Copy",
+  "settingsCheckNetwork": "Check my network",
+  "settingsNothingHere": "Nothing to set here yet. Pair a device first.",
+  "deviceMay": "{device} may",
+  "@deviceMay": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceHow": "How?",
+  "deviceFix": "Fix",
+  "devicePairedOn": "Paired on {date}",
+  "@devicePairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceNothingWorks": "Nothing to show yet. Keep Ferret open on {device}.",
+  "@deviceNothingWorks": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "addDontSee": "Don't see it?",
+  "addShowsAs": "Shows as {name}",
+  "@addShowsAs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qrScanEnough": "Scanning is enough. No code to compare.",
+  "qrWaiting": "Waiting for your phone…",
+  "qrScanRow": "Scan a QR code",
+  "otherShowQr": "Show a QR code",
+  "otherLinkTitle": "With a link",
+  "otherLinkBody": "Copy this device's link and open it on the other one, or paste the other one's link here.",
+  "otherAddressTitle": "With an address",
+  "otherAddressBody": "For networks that hide devices from each other. The address is in Ferret's Settings, under Advanced, on the other device.",
+  "otherPairLink": "Pair with link",
+  "otherPairAddress": "Pair with address",
+  "homeMore": "More",
+  "homeStatusPaused": "Paused",
+  "deviceAttention": "Connected · {feature}: needs attention",
+  "@deviceAttention": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "devicesOffline": "{count} offline",
+  "@devicesOffline": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicesShow": "Show",
+  "emptyBody": "Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.",
+  "emptyCantSee": "Can't see it?",
+  "emptyGetFerretPhone": "Get Ferret for your phone",
+  "emptyGetFerretComputer": "Get Ferret for your computer",
+  "welcomeNearbyBody": "Pair a device near you to start.",
+  "nearbyNotTheOne": "Not the one you want? Open Ferret on your other device.",
+  "activityTitle": "Activity",
+  "activitySeeAll": "See all",
+  "activityEmpty": "Nothing yet. Copy something or send a file.",
+  "activityNow": "now",
+  "activityMinutes": "{count} min",
+  "@activityMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityHours": "{count} h",
+  "@activityHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityDays": "{count} d",
+  "@activityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "footerDrag": "Drag files onto a device to send",
+  "footerNobody": "Nothing to send to right now.",
+  "footerPausedUntil": "Paused until {time}",
+  "@footerPausedUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "footerPaused": "Paused until you resume",
+  "tipCopyHere": "Try it: copy something here, then paste on {device}.",
+  "@tipCopyHere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "tipCopyThere": "Try it: copy something on {device}, then paste here.",
+  "@tipCopyThere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "tipDone": "That's it.",
+  "tipDrag": "Drag files onto the Ferret icon in the menubar to send them.",
+  "tipDismiss": "Got it"
 }

@@ -9,7 +9,7 @@ enum DoctorStatus { running, ok, warning, problem }
 /// Something the user can do about a check.
 enum DoctorFix { tryAgain, connectByAddress, pairAgain, copyDiagnostics }
 
-/// One line of the Connection Doctor: what was checked and what it found.
+/// One line of Fix connection: what was checked and what it found.
 class DoctorCheck {
   const DoctorCheck({
     required this.kind,
@@ -48,9 +48,13 @@ class ConnectionDoctor {
   ];
 
   /// Runs every check for [deviceId], reporting each result as it lands.
-  Stream<List<DoctorCheck>> diagnose(String deviceId) async* {
+  /// With no device, only this device's own network is checked.
+  Stream<List<DoctorCheck>> diagnose(String? deviceId) async* {
     final checks = <DoctorCheck>[];
-    final device = _engine.trustStore[deviceId];
+    final device = switch (deviceId) {
+      final deviceId? => _engine.trustStore[deviceId],
+      null => null,
+    };
 
     final interfaces = await _interfaces();
     final local = interfaces.where((entry) => !_isVpn(entry.name)).toList();
@@ -82,6 +86,10 @@ class ConnectionDoctor {
         DoctorCheck(kind: .port, status: .warning, detail: '${_engine.port}'),
       );
       yield [...checks];
+    }
+
+    if (deviceId == null) {
+      return;
     }
 
     final (host, port) = (device?.lastHost, device?.lastPort);

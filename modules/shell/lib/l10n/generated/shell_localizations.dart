@@ -109,7 +109,7 @@ abstract class ShellLocalizations {
   /// No description provided for @homeNearby.
   ///
   /// In en, this message translates to:
-  /// **'Devices near you'**
+  /// **'Nearby'**
   String get homeNearby;
 
   /// No description provided for @homeNoDevicesTitle.
@@ -175,7 +175,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairShowCodeBody.
   ///
   /// In en, this message translates to:
-  /// **'On your phone, open Ferret, tap +, then Can\'t see your device? and scan this code. Scanning is enough: no code to compare.'**
+  /// **'On your phone, open Ferret and tap +, then Pair with a QR code.'**
   String get pairShowCodeBody;
 
   /// No description provided for @pairCopyLink.
@@ -187,7 +187,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairLinkCopied.
   ///
   /// In en, this message translates to:
-  /// **'Link copied'**
+  /// **'Copied'**
   String get pairLinkCopied;
 
   /// No description provided for @pairExpiresIn.
@@ -205,7 +205,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairLinkLabel.
   ///
   /// In en, this message translates to:
-  /// **'Pairing link'**
+  /// **'Paste a link'**
   String get pairLinkLabel;
 
   /// No description provided for @pairLinkHint.
@@ -235,13 +235,13 @@ abstract class ShellLocalizations {
   /// No description provided for @pairConnect.
   ///
   /// In en, this message translates to:
-  /// **'Connect'**
+  /// **'Pair'**
   String get pairConnect;
 
   /// No description provided for @pairCompareTitle.
   ///
   /// In en, this message translates to:
-  /// **'Check that the other device shows this code.'**
+  /// **'Check that your other device shows this code, then tap Pair there.'**
   String get pairCompareTitle;
 
   /// No description provided for @pairCompareBody.
@@ -253,7 +253,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairWaiting.
   ///
   /// In en, this message translates to:
-  /// **'Waiting for the other device…'**
+  /// **'Waiting for your other device…'**
   String get pairWaiting;
 
   /// No description provided for @pairSuccess.
@@ -265,25 +265,25 @@ abstract class ShellLocalizations {
   /// No description provided for @pairFailedUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach that device. Are both on the same network?'**
+  /// **'Couldn\'t reach that device. Put both on the same Wi-Fi, then try again.'**
   String get pairFailedUnreachable;
 
   /// No description provided for @pairFailedRejected.
   ///
   /// In en, this message translates to:
-  /// **'The other device said not now.'**
+  /// **'Your other device said not now.'**
   String get pairFailedRejected;
 
   /// No description provided for @pairFailedExpired.
   ///
   /// In en, this message translates to:
-  /// **'That code has expired. Show a new one.'**
+  /// **'That code expired.'**
   String get pairFailedExpired;
 
   /// No description provided for @pairFailedBadProof.
   ///
   /// In en, this message translates to:
-  /// **'That code doesn\'t match. Try a new one.'**
+  /// **'The codes didn\'t match, so nothing was paired. Try once more, close to the other device.'**
   String get pairFailedBadProof;
 
   /// No description provided for @pairFailedWrongDevice.
@@ -295,13 +295,13 @@ abstract class ShellLocalizations {
   /// No description provided for @pairFailedTimedOut.
   ///
   /// In en, this message translates to:
-  /// **'The other device didn\'t answer.'**
+  /// **'Your other device didn\'t answer.'**
   String get pairFailedTimedOut;
 
   /// No description provided for @pairFailedProtocol.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong while pairing.'**
+  /// **'Pairing stopped before it finished. Try again.'**
   String get pairFailedProtocol;
 
   /// No description provided for @promptTitle.
@@ -421,7 +421,7 @@ abstract class ShellLocalizations {
   /// No description provided for @menuPair.
   ///
   /// In en, this message translates to:
-  /// **'Pair a Device…'**
+  /// **'Add a Device…'**
   String get menuPair;
 
   /// No description provided for @menuSettings.
@@ -613,7 +613,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorTitle.
   ///
   /// In en, this message translates to:
-  /// **'Connection Doctor'**
+  /// **'Fix connection'**
   String get doctorTitle;
 
   /// No description provided for @doctorIntro.
@@ -625,14 +625,14 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'This device is on a network'**
-  String get doctorNetworkOk;
+  /// **'{here} is on a network'**
+  String doctorNetworkOk(String here);
 
   /// No description provided for @doctorNetworkProblem.
   ///
   /// In en, this message translates to:
-  /// **'This device isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
-  String get doctorNetworkProblem;
+  /// **'{here} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
+  String doctorNetworkProblem(String here);
 
   /// No description provided for @doctorVpn.
   ///
@@ -649,14 +649,14 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorSameNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'Both devices were on the same network'**
-  String get doctorSameNetworkOk;
+  /// **'{device} and {here} were on the same network'**
+  String doctorSameNetworkOk(String device, String here);
 
   /// No description provided for @doctorSameNetworkWarning.
   ///
   /// In en, this message translates to:
-  /// **'{device} was last seen on a different network ({address}). Put both devices on the same Wi-Fi.'**
-  String doctorSameNetworkWarning(String device, String address);
+  /// **'{device} was last seen on a different network ({address}). Put {device} and {here} on the same Wi-Fi.'**
+  String doctorSameNetworkWarning(String device, String address, String here);
 
   /// No description provided for @doctorReachableRunning.
   ///
@@ -691,8 +691,8 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorAcceptedProblem.
   ///
   /// In en, this message translates to:
-  /// **'{device} answered but didn\'t accept this device. It may have been reset or reinstalled. Pair again.'**
-  String doctorAcceptedProblem(String device);
+  /// **'{device} answered but doesn\'t know {here} any more. It may have been reset or reinstalled. Pair them again.'**
+  String doctorAcceptedProblem(String device, String here);
 
   /// No description provided for @doctorFixTryAgain.
   ///
@@ -733,7 +733,7 @@ abstract class ShellLocalizations {
   /// No description provided for @connectBody.
   ///
   /// In en, this message translates to:
-  /// **'Type the address shown in Settings on the other device.'**
+  /// **'On the other device, open Ferret, then Settings and Advanced. Type the address it shows.'**
   String get connectBody;
 
   /// No description provided for @featureChipOff.
@@ -871,13 +871,13 @@ abstract class ShellLocalizations {
   /// No description provided for @dropNobody.
   ///
   /// In en, this message translates to:
-  /// **'No devices connected'**
+  /// **'No device to send to'**
   String get dropNobody;
 
   /// No description provided for @dropNobodyDetail.
   ///
   /// In en, this message translates to:
-  /// **'Open Ferret on your phone first.'**
+  /// **'Open Ferret on your other device first.'**
   String get dropNobodyDetail;
 
   /// No description provided for @dropSendingTo.
@@ -901,7 +901,7 @@ abstract class ShellLocalizations {
   /// No description provided for @dropFailedDetail.
   ///
   /// In en, this message translates to:
-  /// **'Nothing took these files. Try again in a moment.'**
+  /// **'The files weren\'t sent. Try again in a moment.'**
   String get dropFailedDetail;
 
   /// No description provided for @dropAllDevicesName.
@@ -961,13 +961,13 @@ abstract class ShellLocalizations {
   /// No description provided for @scanNotFerret.
   ///
   /// In en, this message translates to:
-  /// **'That\'s not a Ferret code. Open Ferret on your computer and choose Pair a device.'**
+  /// **'That\'s not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.'**
   String get scanNotFerret;
 
   /// No description provided for @offersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Turn on more'**
+  /// **'Do more'**
   String get offersTitle;
 
   /// No description provided for @offersSubtitle.
@@ -1183,7 +1183,7 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsAddressHint.
   ///
   /// In en, this message translates to:
-  /// **'Type this on another device under Connect by address if it can\'t find this one.'**
+  /// **'If another device can\'t find this one: on it, open Add a device, then Other ways, and type this address.'**
   String get settingsAddressHint;
 
   /// No description provided for @deviceWhyLong.
@@ -1207,8 +1207,8 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForget.
   ///
   /// In en, this message translates to:
-  /// **'Forget this device'**
-  String get deviceForget;
+  /// **'Forget {device}'**
+  String deviceForget(String device);
 
   /// No description provided for @deviceForgetConfirmTitle.
   ///
@@ -1219,8 +1219,8 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'Both devices forget each other. You can pair them again any time.'**
-  String get deviceForgetConfirmBody;
+  /// **'{device} and {here} forget each other. You can pair them again any time.'**
+  String deviceForgetConfirmBody(String device, String here);
 
   /// No description provided for @chipOff.
   ///
@@ -1237,8 +1237,8 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNotAnsweringSteps.
   ///
   /// In en, this message translates to:
-  /// **'Try this:\n1. Open Ferret on {device}.\n2. Put both devices on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
-  String doctorNotAnsweringSteps(String device);
+  /// **'Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
+  String doctorNotAnsweringSteps(String device, String here);
 
   /// No description provided for @pauseTitle.
   ///
@@ -1261,13 +1261,13 @@ abstract class ShellLocalizations {
   /// No description provided for @nearbyLooking.
   ///
   /// In en, this message translates to:
-  /// **'Looking for devices…'**
+  /// **'Looking…'**
   String get nearbyLooking;
 
   /// No description provided for @nearbyNone.
   ///
   /// In en, this message translates to:
-  /// **'No devices found. Open Ferret on your other device, on the same Wi-Fi.'**
+  /// **'No devices found yet.'**
   String get nearbyNone;
 
   /// No description provided for @nearbyLookAgain.
@@ -1453,20 +1453,482 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetHere.
   ///
   /// In en, this message translates to:
-  /// **'Forget here only'**
-  String get deviceForgetHere;
+  /// **'Forget on {here} only'**
+  String deviceForgetHere(String here);
 
   /// No description provided for @settingsSharePairings.
   ///
   /// In en, this message translates to:
-  /// **'Share pairings with my devices'**
+  /// **'Pair once for all my devices'**
   String get settingsSharePairings;
 
   /// No description provided for @settingsSharePairingsBody.
   ///
   /// In en, this message translates to:
-  /// **'Pair a device once and it joins all your devices. Remove it once and it leaves them all.'**
+  /// **'A device you pair here joins all your devices. Remove it once and it leaves them all.'**
   String get settingsSharePairingsBody;
+
+  /// No description provided for @doctorNothingWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything looks right on {here}. On {device}, open Ferret.'**
+  String doctorNothingWrong(String here, String device);
+
+  /// No description provided for @doctorNetworkIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the network on {here}.'**
+  String doctorNetworkIntro(String here);
+
+  /// No description provided for @doctorNetworkAllGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything looks right on {here}. Open Ferret on your other device, on the same Wi-Fi.'**
+  String doctorNetworkAllGood(String here);
+
+  /// No description provided for @connectAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try this address'**
+  String get connectAction;
+
+  /// No description provided for @thisMac.
+  ///
+  /// In en, this message translates to:
+  /// **'this Mac'**
+  String get thisMac;
+
+  /// No description provided for @thisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'this phone'**
+  String get thisPhone;
+
+  /// No description provided for @thisTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'this tablet'**
+  String get thisTablet;
+
+  /// No description provided for @thisComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'this computer'**
+  String get thisComputer;
+
+  /// No description provided for @thisMacStart.
+  ///
+  /// In en, this message translates to:
+  /// **'This Mac'**
+  String get thisMacStart;
+
+  /// No description provided for @thisPhoneStart.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone'**
+  String get thisPhoneStart;
+
+  /// No description provided for @thisTabletStart.
+  ///
+  /// In en, this message translates to:
+  /// **'This tablet'**
+  String get thisTabletStart;
+
+  /// No description provided for @thisComputerStart.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer'**
+  String get thisComputerStart;
+
+  /// No description provided for @settingsGroupClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard'**
+  String get settingsGroupClipboard;
+
+  /// No description provided for @settingsGroupFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get settingsGroupFiles;
+
+  /// No description provided for @settingsGroupContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue & media'**
+  String get settingsGroupContinue;
+
+  /// No description provided for @settingsGroupFromPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'From your phone'**
+  String get settingsGroupFromPhone;
+
+  /// No description provided for @settingsGroupToComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'To your computer'**
+  String get settingsGroupToComputer;
+
+  /// No description provided for @settingsGroupControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Control'**
+  String get settingsGroupControl;
+
+  /// No description provided for @settingsGroupOtherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Other apps'**
+  String get settingsGroupOtherApps;
+
+  /// No description provided for @settingsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get settingsOn;
+
+  /// No description provided for @settingsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsOff;
+
+  /// No description provided for @settingsCountOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{on} of {total} on'**
+  String settingsCountOn(int on, int total);
+
+  /// No description provided for @settingsNamedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} on'**
+  String settingsNamedOn(String names);
+
+  /// No description provided for @settingsNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get settingsNeedsAttention;
+
+  /// No description provided for @settingsAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get settingsAdvanced;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About · Privacy'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret {version}'**
+  String settingsVersion(String version);
+
+  /// No description provided for @settingsLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Free software under GPL-3.0. The protocol is open too, under MIT.'**
+  String get settingsLicense;
+
+  /// No description provided for @settingsDeviceIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID'**
+  String get settingsDeviceIdLabel;
+
+  /// No description provided for @settingsAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get settingsAddressLabel;
+
+  /// No description provided for @settingsCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get settingsCopy;
+
+  /// No description provided for @settingsCheckNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Check my network'**
+  String get settingsCheckNetwork;
+
+  /// No description provided for @settingsNothingHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to set here yet. Pair a device first.'**
+  String get settingsNothingHere;
+
+  /// No description provided for @deviceMay.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} may'**
+  String deviceMay(String device);
+
+  /// No description provided for @deviceHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How?'**
+  String get deviceHow;
+
+  /// No description provided for @deviceFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get deviceFix;
+
+  /// No description provided for @devicePairedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired on {date}'**
+  String devicePairedOn(String date);
+
+  /// No description provided for @deviceNothingWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to show yet. Keep Ferret open on {device}.'**
+  String deviceNothingWorks(String device);
+
+  /// No description provided for @addDontSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t see it?'**
+  String get addDontSee;
+
+  /// No description provided for @addShowsAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows as {name}'**
+  String addShowsAs(String name);
+
+  /// No description provided for @qrScanEnough.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning is enough. No code to compare.'**
+  String get qrScanEnough;
+
+  /// No description provided for @qrWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your phone…'**
+  String get qrWaiting;
+
+  /// No description provided for @qrScanRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a QR code'**
+  String get qrScanRow;
+
+  /// No description provided for @otherShowQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a QR code'**
+  String get otherShowQr;
+
+  /// No description provided for @otherLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'With a link'**
+  String get otherLinkTitle;
+
+  /// No description provided for @otherLinkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy this device\'s link and open it on the other one, or paste the other one\'s link here.'**
+  String get otherLinkBody;
+
+  /// No description provided for @otherAddressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'With an address'**
+  String get otherAddressTitle;
+
+  /// No description provided for @otherAddressBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For networks that hide devices from each other. The address is in Ferret\'s Settings, under Advanced, on the other device.'**
+  String get otherAddressBody;
+
+  /// No description provided for @otherPairLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair with link'**
+  String get otherPairLink;
+
+  /// No description provided for @otherPairAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair with address'**
+  String get otherPairAddress;
+
+  /// No description provided for @homeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get homeMore;
+
+  /// No description provided for @homeStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get homeStatusPaused;
+
+  /// No description provided for @deviceAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · {feature}: needs attention'**
+  String deviceAttention(String feature);
+
+  /// No description provided for @devicesOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} offline'**
+  String devicesOffline(int count);
+
+  /// No description provided for @devicesShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get devicesShow;
+
+  /// No description provided for @emptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.'**
+  String get emptyBody;
+
+  /// No description provided for @emptyCantSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t see it?'**
+  String get emptyCantSee;
+
+  /// No description provided for @emptyGetFerretPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Ferret for your phone'**
+  String get emptyGetFerretPhone;
+
+  /// No description provided for @emptyGetFerretComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Ferret for your computer'**
+  String get emptyGetFerretComputer;
+
+  /// No description provided for @welcomeNearbyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair a device near you to start.'**
+  String get welcomeNearbyBody;
+
+  /// No description provided for @nearbyNotTheOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Not the one you want? Open Ferret on your other device.'**
+  String get nearbyNotTheOne;
+
+  /// No description provided for @activityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activityTitle;
+
+  /// No description provided for @activitySeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get activitySeeAll;
+
+  /// No description provided for @activityEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet. Copy something or send a file.'**
+  String get activityEmpty;
+
+  /// No description provided for @activityNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get activityNow;
+
+  /// No description provided for @activityMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String activityMinutes(int count);
+
+  /// No description provided for @activityHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h'**
+  String activityHours(int count);
+
+  /// No description provided for @activityDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d'**
+  String activityDays(int count);
+
+  /// No description provided for @footerDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag files onto a device to send'**
+  String get footerDrag;
+
+  /// No description provided for @footerNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to send to right now.'**
+  String get footerNobody;
+
+  /// No description provided for @footerPausedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused until {time}'**
+  String footerPausedUntil(String time);
+
+  /// No description provided for @footerPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused until you resume'**
+  String get footerPaused;
+
+  /// No description provided for @tipCopyHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it: copy something here, then paste on {device}.'**
+  String tipCopyHere(String device);
+
+  /// No description provided for @tipCopyThere.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it: copy something on {device}, then paste here.'**
+  String tipCopyThere(String device);
+
+  /// No description provided for @tipDone.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s it.'**
+  String get tipDone;
+
+  /// No description provided for @tipDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag files onto the Ferret icon in the menubar to send them.'**
+  String get tipDrag;
+
+  /// No description provided for @tipDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get tipDismiss;
 }
 
 class _ShellLocalizationsDelegate
