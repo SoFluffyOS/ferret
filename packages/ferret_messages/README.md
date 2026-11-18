@@ -1,15 +1,20 @@
 # ferret_messages
 
-A new Flutter plugin project.
+Reads and sends SMS and MMS on Android, for Ferret's messages feature. Reusable on its own.
 
-## Getting Started
+- Conversations from the Telephony providers, most recent first, with contact names and small photos.
+- Messages of one conversation, paged by date, with MMS text and image previews.
+- A change stream (provider observer, incoming SMS, delivery reports), merged into one event per burst.
+- Sending through `SmsManager`, split into parts, waiting for the radio to confirm.
+- The permission flow: `access()`, `requestAccess()` and `openAppSettings()`.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+```dart
+final messages = FerretMessages();
+if (FerretMessages.isSupported && (await messages.requestAccess()).canRead) {
+  final page = await messages.listConversations(limit: 30);
+}
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The plugin declares `READ_SMS`, `RECEIVE_SMS`, `SEND_SMS` and `READ_CONTACTS`. RCS chats live inside Google Messages and no other app can read them.
 
+Regenerate the platform API with `fvm dart run pigeon --input pigeon/messages.dart`.

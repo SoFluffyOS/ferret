@@ -1,5 +1,5 @@
 name: ferret_messages
-description: Platform code for Ferret's messages feature, reusable on its own.
+description: Reads and sends SMS and MMS on Android, with contact names and photos, for Ferret's messages feature. Reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -24,11 +24,3 @@ flutter:
       android:
         package: io.sofluffy.ferret_messages
         pluginClass: FerretMessagesPlugin
-      ios:
-        pluginClass: FerretMessagesPlugin
-      linux:
-        pluginClass: FerretMessagesPlugin
-      macos:
-        pluginClass: FerretMessagesPlugin
-      windows:
-        pluginClass: FerretMessagesPluginCApi

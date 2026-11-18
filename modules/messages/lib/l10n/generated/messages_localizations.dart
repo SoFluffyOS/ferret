@@ -102,6 +102,438 @@ abstract class MessagesLocalizations {
   /// In en, this message translates to:
   /// **'Messages'**
   String get title;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @explainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Read and reply to your texts from your computer.'**
+  String get explainer;
+
+  /// No description provided for @explainerDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret reads SMS and MMS on this phone and sends them only to your paired computers, over your own network. Contacts give conversations names and photos.'**
+  String get explainerDetail;
+
+  /// No description provided for @rcsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'RCS chats live inside Google Messages, and no other app can read them. Notification mirroring covers them: allow Google Messages in Notifications to see and answer them on your computer.'**
+  String get rcsNote;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get turnOn;
+
+  /// No description provided for @turnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get turnOff;
+
+  /// No description provided for @noTelephony.
+  ///
+  /// In en, this message translates to:
+  /// **'This device can\'t send or receive texts, so there is nothing to share.'**
+  String get noTelephony;
+
+  /// No description provided for @accessOff.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS access is off'**
+  String get accessOff;
+
+  /// No description provided for @accessStillOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Still off. Allow SMS so Ferret can read your texts.'**
+  String get accessStillOff;
+
+  /// No description provided for @accessHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret needs SMS to read and send texts, and Contacts to show names.'**
+  String get accessHowTo;
+
+  /// No description provided for @allowAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get allowAccess;
+
+  /// No description provided for @accessBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Android won\'t ask again. Open Ferret\'s settings, tap Permissions, then allow SMS and Contacts.'**
+  String get accessBlocked;
+
+  /// No description provided for @openAppSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openAppSettings;
+
+  /// No description provided for @openSettingsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings couldn\'t be opened on this phone.'**
+  String get openSettingsFailed;
+
+  /// No description provided for @accessOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your computers can read and reply to your texts'**
+  String get accessOn;
+
+  /// No description provided for @contactsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts are off, so conversations show numbers instead of names.'**
+  String get contactsOff;
+
+  /// No description provided for @sendOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending is off, so replies from your computer won\'t go out.'**
+  String get sendOff;
+
+  /// No description provided for @phoneCardOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Read and reply to texts from your computer'**
+  String get phoneCardOff;
+
+  /// No description provided for @phoneCardNeedsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs SMS access'**
+  String get phoneCardNeedsAccess;
+
+  /// No description provided for @phoneCardOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with your computers'**
+  String get phoneCardOn;
+
+  /// No description provided for @setUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get setUp;
+
+  /// No description provided for @unreadCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No unread texts} =1{1 unread text} other{{count} unread texts}}'**
+  String unreadCount(int count);
+
+  /// No description provided for @open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get open;
+
+  /// No description provided for @conversationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet.'**
+  String get conversationsEmpty;
+
+  /// No description provided for @statusOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is offline. You can read saved texts and reply once it\'s back.'**
+  String statusOffline(String name);
+
+  /// No description provided for @statusChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to {name}…'**
+  String statusChecking(String name);
+
+  /// No description provided for @statusOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages are off on {name}. Open Ferret on the phone and turn them on.'**
+  String statusOff(String name);
+
+  /// No description provided for @statusNoAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret on {name} can\'t read texts yet. Open Ferret on the phone and allow SMS.'**
+  String statusNoAccess(String name);
+
+  /// No description provided for @statusUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t answer. Check that Ferret is open on the phone, then try again.'**
+  String statusUnreachable(String name);
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing recent conversations…'**
+  String get syncing;
+
+  /// No description provided for @loadingOlder.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading older texts…'**
+  String get loadingOlder;
+
+  /// No description provided for @loadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load texts from {name}.'**
+  String loadFailed(String name);
+
+  /// No description provided for @pickConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a conversation'**
+  String get pickConversation;
+
+  /// No description provided for @composerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Text message'**
+  String get composerHint;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @composerOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect {name} to reply.'**
+  String composerOffline(String name);
+
+  /// No description provided for @composerGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Group texts need MMS, which only your phone\'s messaging app can send. Reply on the phone.'**
+  String get composerGroup;
+
+  /// No description provided for @composerNoSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending is off on the phone. Allow SMS in Ferret on the phone to reply from here.'**
+  String get composerNoSend;
+
+  /// No description provided for @sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get sending;
+
+  /// No description provided for @notSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent'**
+  String get notSent;
+
+  /// No description provided for @outcomeOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone isn\'t connected.'**
+  String get outcomeOffline;
+
+  /// No description provided for @outcomeNoAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret may not send texts on the phone.'**
+  String get outcomeNoAccess;
+
+  /// No description provided for @outcomeNoRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'This conversation has no one to send to.'**
+  String get outcomeNoRecipient;
+
+  /// No description provided for @outcomeGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Group texts can only be sent from the phone.'**
+  String get outcomeGroup;
+
+  /// No description provided for @outcomeNoService.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone has no signal.'**
+  String get outcomeNoService;
+
+  /// No description provided for @outcomeTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone didn\'t confirm in time. Check the conversation on the phone before sending again.'**
+  String get outcomeTimeout;
+
+  /// No description provided for @outcomeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone couldn\'t send it.'**
+  String get outcomeFailed;
+
+  /// No description provided for @retrySend.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retrySend;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @kindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not delivered'**
+  String get kindFailed;
+
+  /// No description provided for @kindQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to send'**
+  String get kindQueued;
+
+  /// No description provided for @kindOutbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get kindOutbox;
+
+  /// No description provided for @photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photo;
+
+  /// No description provided for @video.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get video;
+
+  /// No description provided for @audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get audio;
+
+  /// No description provided for @contactCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contactCard;
+
+  /// No description provided for @attachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get attachment;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @imageFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the picture from {name}.'**
+  String imageFailed(String name);
+
+  /// No description provided for @rcsComputerNote.
+  ///
+  /// In en, this message translates to:
+  /// **'RCS chats don\'t show here. Mirror Google Messages\' notifications to answer them.'**
+  String get rcsComputerNote;
+
+  /// No description provided for @replyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get replyAction;
+
+  /// No description provided for @markReadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get markReadAction;
+
+  /// No description provided for @replyFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply not sent'**
+  String get replyFailedTitle;
+
+  /// No description provided for @noticeTitleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {count} new'**
+  String noticeTitleCount(String name, int count);
+
+  /// No description provided for @noticeGroupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{sender}: {text}'**
+  String noticeGroupBody(String sender, String text);
+
+  /// No description provided for @notifySetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Show new texts as notifications'**
+  String get notifySetting;
+
+  /// No description provided for @notifyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'With Reply, unless the conversation is already open here.'**
+  String get notifyDetail;
+
+  /// No description provided for @forgetHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget saved texts'**
+  String get forgetHistory;
+
+  /// No description provided for @forgetDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret keeps recent texts on this computer so they show while the phone is offline.'**
+  String get forgetDetail;
 }
 
 class _MessagesLocalizationsDelegate

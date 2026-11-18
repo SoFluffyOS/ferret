@@ -1,0 +1,62 @@
+import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
+
+/// A page title with a back button when there is somewhere to go back to.
+class PageHeader extends StatelessWidget {
+  const PageHeader({
+    super.key,
+    required this.title,
+    required this.backLabel,
+    this.onBack,
+  });
+
+  final String title;
+  final String backLabel;
+
+  /// Null hides the back button.
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final typography = context.fluffyTheme.typography;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Spacing.d12,
+        Spacing.d12,
+        Spacing.d12,
+        Spacing.d4,
+      ),
+      child: Row(
+        children: [
+          if (onBack case final back?) ...[
+            Tappable(
+              tooltip: backLabel,
+              onTap: back,
+              child: Padding(
+                padding: EdgeInsets.all(Spacing.d4),
+                child: Icon(
+                  LucideIcons.chevronLeft,
+                  size: Spacing.d20,
+                  color: palette.text,
+                ),
+              ),
+            ),
+            Spacing.h4,
+          ],
+          Expanded(
+            child: Text(
+              title,
+              style: typography.title2.copyWith(color: palette.text),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

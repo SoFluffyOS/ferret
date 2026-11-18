@@ -17,12 +17,14 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_messages:
     path: ../../packages/ferret_messages
+  fixnum: ^1.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.3
   lucide_icons_flutter: ^4.0.3
+  path_provider: ^2.1.6
   protobuf: ^6.1.0
   protocol:
     path: ../../packages/protocol

@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package ferret.messages.v1;
+
+// Feature "messages": a phone (the source) lets paired computers read and
+// reply to its SMS and MMS. Computers ask for pages with requests; the source
+// pushes `MessagesChanged` for what changes while a session is open, and never
+// replays older messages on reconnect.
+
+// Where a message sits on the phone.
+enum MessageKind {
+  MESSAGE_KIND_UNSPECIFIED = 0;
+  // Received.
+  MESSAGE_KIND_INBOX = 1;
+  MESSAGE_KIND_SENT = 2;
+  // Being sent right now.
+  MESSAGE_KIND_OUTBOX = 3;
+  MESSAGE_KIND_FAILED = 4;
+  // Waiting to be sent, such as with no signal.
+  MESSAGE_KIND_QUEUED = 5;
+}
+
+// Someone in a conversation.
+message Participant {
+  // The phone number or email address as the phone stores it.
+  string address = 1;
+  // The contact's name on the phone, or empty when it isn't a contact.
+  string name = 2;
+  // A small JPEG of the contact's photo (at most 96 px), or empty.
+  bytes avatar_jpeg = 3;
+}
+
+// A conversation (an Android thread).
+message Conversation {
+  int64 thread_id = 1;
+  // Everyone in it except the phone's owner.
+  repeated Participant participants = 2;
+  // The last message's text, or empty when it was only an attachment.
+  string snippet = 3;
+  int64 last_date_ms = 4;
+  uint32 unread_count = 5;
+  // More than one other person, as in a group MMS.
+  bool is_group = 6;
+}
+
+// A file in an MMS, such as a photo.
+message Attachment {
+  // The MMS part's id on the phone; send it back in `FetchAttachment`.
+  string part_id = 1;
+  string mime = 2;
+  // Bytes, or 0 when unknown.
+  int64 size = 3;
+  // A small JPEG preview (at most 320 px) for images, or empty.
+  bytes thumbnail_jpeg = 4;
+  // The file name the sender gave, or empty.
+  string name = 5;
+}
+
+message Message {
+  // Unique on the phone across SMS and MMS, such as "sms:12" or "mms:7".
+  string id = 1;
+  int64 thread_id = 2;
+  // Who sent it, for received messages; empty for messages sent from the
+  // phone.
+  string sender_address = 3;
+  string body = 4;
+  int64 date_ms = 5;
+  MessageKind kind = 6;
+  repeated Attachment attachments = 7;
+  bool read = 8;
+}
+
+// What the source can do right now. Answers a `StatusRequest`, and is pushed
+// without a request whenever it changes.
+message MessagesStatus {
+  // The person turned Messages on on the phone.
+  bool enabled = 1;
+  // The phone lets Ferret read SMS.
+  bool sms_access = 2;
+  // The phone lets Ferret send SMS.
+  bool send_access = 3;
+  // The phone lets Ferret read contacts for names and photos.
+  bool contacts_access = 4;
+}
+
+// Expects a `MessagesStatus` reply.
+message StatusRequest {}
+
+// Asks for conversations, most recent first. Expects a `ConversationPage`.
+message ListConversations {
+  // Only conversations whose last message is older than this; 0 for the
+  // newest.
+  int64 before_date_ms = 1;
+  uint32 limit = 2;
+}
+
+message ConversationPage {
+  repeated Conversation conversations = 1;
+  // There are older conversations.
+  bool has_more = 2;
+}
+
+// Asks for messages of one conversation, newest first. Expects a
+// `MessagePage`.
+message ListMessages {
+  int64 thread_id = 1;
+  // Only messages at or before this date; 0 for the newest.
+  int64 before_date_ms = 2;
+  // Messages at exactly `before_date_ms` the asker already has, so pages
+  // never skip messages that share a date.
+  repeated string skip_ids = 3;
+  uint32 limit = 4;
+}
+
+message MessagePage {
+  int64 thread_id = 1;
+  repeated Message messages = 2;
+  // There are older messages.
+  bool has_more = 3;
+}
+
+// Asks for one attachment in full. Expects an `AttachmentData`.
+message FetchAttachment {
+  string message_id = 1;
+  string part_id = 2;
+}
+
+message AttachmentData {
+  string mime = 1;
+  bytes data = 2;
+}
+
+// Why a message wasn't sent.
+enum SendFailure {
+  SEND_FAILURE_UNSPECIFIED = 0;
+  // Ferret may not send SMS on the phone.
+  SEND_FAILURE_NO_ACCESS = 1;
+  // No address to send to, or the conversation is gone.
+  SEND_FAILURE_NO_RECIPIENT = 2;
+  // Group conversations need MMS, which only the default messaging app sends.
+  SEND_FAILURE_GROUP = 3;
+  // The phone has no signal or the carrier refused it.
+  SEND_FAILURE_NO_SERVICE = 4;
+  // The radio didn't confirm in time.
+  SEND_FAILURE_TIMEOUT = 5;
+  SEND_FAILURE_OTHER = 6;
+}
+
+// Sends an SMS. Expects a `SendResult`.
+message SendText {
+  // The conversation to answer, or 0 to start one with `addresses`.
+  int64 thread_id = 1;
+  repeated string addresses = 2;
+  string text = 3;
+}
+
+message SendResult {
+  bool ok = 1;
+  SendFailure failure = 2;
+  // The conversation the message went to, when known.
+  int64 thread_id = 3;
+}
+
+// Marks a conversation as read. Expects a `MarkReadResult`.
+message MarkRead {
+  int64 thread_id = 1;
+}
+
+message MarkReadResult {
+  // The phone changed it. Android lets only the default messaging app mark
+  // SMS as read, so this is usually false; computers then keep it read
+  // themselves.
+  bool applied = 1;
+}
+
+// New or changed messages and their conversations, pushed by the source
+// without a reply. Only for changes seen while the session is open.
+message MessagesChanged {
+  repeated Message messages = 1;
+  repeated Conversation conversations = 2;
+}

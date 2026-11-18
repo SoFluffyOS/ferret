@@ -1,3 +1,16 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.sofluffy.ferret_messages">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Reads conversations, watches for new texts and sends replies. Asked for
+       only when the person turns Messages on. -->
+  <uses-permission android:name="android.permission.READ_SMS" />
+  <uses-permission android:name="android.permission.RECEIVE_SMS" />
+  <uses-permission android:name="android.permission.SEND_SMS" />
+  <!-- Names and photos of the people in conversations. -->
+  <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+  <!-- The SMS permissions imply a phone radio; keep the app installable on
+       tablets, where Messages simply stays off. -->
+  <uses-feature
+    android:name="android.hardware.telephony"
+    android:required="false" />
 </manifest>
