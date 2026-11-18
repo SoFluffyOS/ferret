@@ -2,13 +2,12 @@ import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
 import 'package:ferret/wiring/call_media_pause.dart';
-import 'package:ferret_mirror_scrcpy/ferret_mirror_scrcpy.dart';
+import 'package:ferret/wiring/mirroring_ways.dart';
 import 'package:find/find.dart';
 import 'package:handoff/handoff.dart';
 import 'package:iphone/iphone.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
-import 'package:mirroring/mirroring.dart';
 import 'package:notifications/notifications.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
@@ -24,7 +23,7 @@ Future<void> main() => runFerret(
     IphoneFeatureUi(),
     MediaFeatureUi(),
     MessagesFeatureUi(),
-    MirroringFeatureUi(routes: [ScrcpyRoute()]),
+    MirroringWays.create(),
     NotificationsFeatureUi(),
     PowerFeatureUi(),
     RemoteInputFeatureUi(),

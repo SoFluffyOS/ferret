@@ -8,6 +8,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  ferret_mirror_airplay:
+    path: ../../packages/ferret_mirror_airplay
   ferret_mirror_scrcpy:
     path: ../../packages/ferret_mirror_scrcpy
   mirroring:

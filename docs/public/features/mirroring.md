@@ -31,7 +31,11 @@ Ferret can show those too. This part is **experimental** and off until you ask f
 1. On the computer, open **Settings → Screen mirroring**.
 2. Turn on **More ways to show a screen**.
 
-That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show**. A screen another device sends by itself opens right away.
+That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show**.
+
+Some devices start it themselves, like an iPhone from Control Center. Those have their own switch right below, such as **Show iPhone and iPad screens here**. It starts off on a Mac, which can already do this by itself.
+
+Ferret asks you first, every time: "Simon's iPhone wants to show its screen here", with **Allow** and **Don't allow**. No answer in 30 seconds is a no. After **Allow**, the screen opens by itself.
 
 - [Mirror a phone without Ferret on it](mirroring-with-a-cable.md): any Android phone, over a cable or Wi-Fi.
 - [Show an iPhone's screen](mirroring-from-iphone.md): from Control Center, nothing to install.
