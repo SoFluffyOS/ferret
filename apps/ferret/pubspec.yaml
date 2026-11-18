@@ -20,6 +20,8 @@ dependencies:
     path: ../../modules/notifications
   drop:
     path: ../../modules/drop
+  engine:
+    path: ../../packages/engine
   handoff:
     path: ../../modules/handoff
   clipboard:

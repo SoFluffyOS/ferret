@@ -34,6 +34,7 @@ class MediaViewModel extends ChangeNotifier {
   bool _askedAccess = false;
   bool _shareEnabled = false;
   bool _showRemote = true;
+  bool _pauseOnCall = true;
   MediaAccess? _access;
 
   List<RemotePlayer> get players => _players;
@@ -47,6 +48,8 @@ class MediaViewModel extends ChangeNotifier {
   bool get shareEnabled => _shareEnabled;
 
   bool get showRemote => _showRemote;
+
+  bool get pauseOnCall => _pauseOnCall;
 
   bool get canShare => _feature.canShare;
 
@@ -128,6 +131,13 @@ class MediaViewModel extends ChangeNotifier {
     _refresh();
   }
 
+  Future<void> setPauseOnCall(bool pause) async {
+    _pauseOnCall = pause;
+    notifyListeners();
+    await _feature.setPauseOnCall(pause);
+    _refresh();
+  }
+
   Future<void> requestAccess() async {
     _askedAccess = true;
     await _feature.requestAccess();
@@ -169,6 +179,7 @@ class MediaViewModel extends ChangeNotifier {
     _selected = PlayerSelector.select(_players, pick: _pick);
     _shareEnabled = _feature.shareEnabled;
     _showRemote = _feature.showRemote;
+    _pauseOnCall = _feature.pauseOnCall;
     _access = _feature.localAccess;
     notifyListeners();
   }

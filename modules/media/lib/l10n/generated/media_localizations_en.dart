@@ -28,6 +28,13 @@ class MediaLocalizationsEn extends MediaLocalizations {
   }
 
   @override
+  String get settingsPauseOnCall => 'Pause during calls';
+
+  @override
+  String get settingsPauseOnCallBody =>
+      'Pauses what plays on this device while a call rings or goes on, and plays it again after.';
+
+  @override
   String get play => 'Play';
 
   @override

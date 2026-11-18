@@ -1,3 +1,4 @@
+export 'package:notifications/services/feature_changes.dart';
 export 'package:notifications/services/forward_policy.dart';
 export 'package:notifications/services/mirror_control.dart';
 export 'package:notifications/services/mirror_preferences.dart';

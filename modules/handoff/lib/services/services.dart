@@ -1,5 +1,6 @@
 export 'package:handoff/services/activity_factory.dart';
 export 'package:handoff/services/activity_opener.dart';
+export 'package:handoff/services/feature_changes.dart';
 export 'package:handoff/services/geo_link.dart';
 export 'package:handoff/services/handoff_bridge.dart';
 export 'package:handoff/services/handoff_settings.dart';

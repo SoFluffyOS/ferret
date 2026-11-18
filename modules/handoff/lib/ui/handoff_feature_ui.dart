@@ -32,6 +32,7 @@ class HandoffFeatureUi extends FeatureUi {
   @override
   final HandoffFeature feature;
   final FerretHandoff _handoff;
+  late final FeatureChanges _changes = FeatureChanges(feature.changes);
   HandoffViewModel? _viewModel;
   AppLifecycleListener? _lifecycle;
 
@@ -66,6 +67,14 @@ class HandoffFeatureUi extends FeatureUi {
     );
     await viewModel.refreshAssistant();
   }
+
+  @override
+  Listenable get uiChanges => _changes;
+
+  /// Only while another device offers something to continue here.
+  @override
+  bool hasHomeCard(FeatureContext feature) =>
+      this.feature.suggestions.isNotEmpty;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
@@ -109,6 +118,13 @@ class HandoffFeatureUi extends FeatureUi {
         value: viewModelFor(feature),
         child: const HandoffSettingsFrame(),
       );
+
+  /// Stops listening, for tests and hot restarts.
+  void dispose() {
+    _lifecycle?.dispose();
+    _viewModel?.dispose();
+    _changes.dispose();
+  }
 
   /// The one view model, made the first time the app asks for anything.
   HandoffViewModel viewModelFor(FeatureContext context) {

@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
@@ -12,6 +13,29 @@ void main() {
     expect(ui.featureId, HandoffFeature.featureId);
     expect(ui.feature.id, HandoffFeature.featureId);
   });
+
+  test(
+    'the home card shows only while there is something to continue',
+    () async {
+      final ui = HandoffFeatureUi(opener: FakeOpener());
+      await ui.feature.start(await FakeHost.create());
+      addTearDown(() async {
+        ui.dispose();
+        await ui.feature.stop();
+      });
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
+      final context = _NoContext();
+      final idle = ui.hasHomeCard(context);
+
+      await ui.feature.receivePublished(pixel, webActivity('a'));
+      await Future<void>.delayed(Duration.zero);
+
+      expect(idle, isFalse);
+      expect(ui.hasHomeCard(context), isTrue);
+      expect(changes, greaterThan(0));
+    },
+  );
 
   group('passive', () {
     test('a published activity becomes a suggestion that expires', () async {
@@ -233,4 +257,9 @@ void main() {
       );
     });
   });
+}
+
+class _NoContext implements FeatureContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

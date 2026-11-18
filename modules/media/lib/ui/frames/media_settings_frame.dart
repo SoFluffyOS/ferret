@@ -28,6 +28,9 @@ class MediaSettingsFrame extends StatelessWidget {
     final askedAccess = context.select<MediaViewModel, bool>(
       (model) => model.askedAccess,
     );
+    final pauseOnCall = context.select<MediaViewModel, bool>(
+      (model) => model.pauseOnCall,
+    );
     final model = context.read<MediaViewModel>();
     final l10n = context.mediaL10n;
     final limit = _limit(l10n, model.platform);
@@ -55,6 +58,15 @@ class MediaSettingsFrame extends StatelessWidget {
             value: showRemote,
             onChanged: model.setShowRemote,
           ),
+          if (canShare) ...[
+            Spacing.v8,
+            SettingSwitchRow(
+              title: l10n.settingsPauseOnCall,
+              body: l10n.settingsPauseOnCallBody,
+              value: pauseOnCall,
+              onChanged: model.setPauseOnCall,
+            ),
+          ],
           if (limit case final limit?) ...[
             Spacing.v8,
             Text(

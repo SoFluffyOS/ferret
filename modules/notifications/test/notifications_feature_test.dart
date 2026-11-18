@@ -1,6 +1,8 @@
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_notifications/ferret_notifications.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notifications/notifications.dart';
 import 'package:protocol/notifications.dart';
@@ -114,6 +116,56 @@ void main() {
         expect(posted().map((item) => item.key), ['new']);
       },
     );
+
+    test('the computer shows the phone health and its home card', () async {
+      await connect();
+      await until(() => laptopFeature.senderSettings.containsKey(phoneId()));
+      final ui = NotificationsFeatureUi.withFeature(laptopFeature);
+      final context = FeatureContext(
+        engine: laptop,
+        navigatorKey: GlobalKey<NavigatorState>(),
+        notifier: FakeNotifier(),
+      );
+      await ui.onAppStarted(context);
+      addTearDown(ui.dispose);
+      var changes = 0;
+      ui.uiChanges?.addListener(() => changes++);
+      final emptyInbox = ui.hasHomeCard(context);
+
+      source.post(phoneNotification());
+      await until(() => posted().isNotEmpty);
+      await pumpEventQueue();
+
+      final health = ui.healthFor(context, laptop.devices.single);
+      expect(health?.state, FeatureHealthState.ok);
+      expect(health?.reason, startsWith('Mirroring'));
+      expect(emptyInbox, isFalse);
+      expect(ui.hasHomeCard(context), isTrue);
+      expect(changes, greaterThan(0));
+    });
+
+    test('the health chip says when mirroring is off on the phone', () async {
+      await connect();
+      await until(() => laptopFeature.senderSettings.containsKey(phoneId()));
+      final ui = NotificationsFeatureUi.withFeature(laptopFeature);
+      final context = FeatureContext(
+        engine: laptop,
+        navigatorKey: GlobalKey<NavigatorState>(),
+        notifier: FakeNotifier(),
+      );
+
+      await phone.settings.set(MirrorPreferences.enabledKey, false);
+      await until(
+        () => laptopFeature.senderSettings[phoneId()]?.enabled == false,
+      );
+
+      final health = ui.healthFor(context, laptop.devices.single);
+      expect(health?.state, FeatureHealthState.off);
+      expect(
+        ui.healthFor(context, DeviceStatus(laptop.devices.single.device, null)),
+        isNull,
+      );
+    });
 
     test('the same content is sent once, a change is sent again', () async {
       await connect();

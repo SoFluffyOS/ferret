@@ -64,6 +64,10 @@ class DropFeatureUi extends FeatureUi {
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) =>
       healthOf(device);
 
+  /// Transfers drive both the card and each device's health.
+  @override
+  Listenable get uiChanges => _dropViewModel;
+
   /// Drop's health with [device], from its session and the last transfer.
   FeatureHealth? healthOf(DeviceStatus device) {
     final session = device.session;
@@ -99,7 +103,7 @@ class DropFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
-    final viewModel = _viewModelFor(context);
+    final viewModel = _dropViewModel;
     final notices = DropNotices(
       feature: feature,
       notifier: context.notifier,
@@ -117,7 +121,7 @@ class DropFeatureUi extends FeatureUi {
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
-        value: _viewModelFor(feature),
+        value: _dropViewModel,
         child: DropHomeFrame(
           onSendFiles: () => unawaited(pickAndSend(feature)),
         ),
@@ -126,7 +130,7 @@ class DropFeatureUi extends FeatureUi {
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
-        value: _viewModelFor(feature),
+        value: _dropViewModel,
         child: const DropSettingsFrame(),
       );
 
@@ -146,7 +150,7 @@ class DropFeatureUi extends FeatureUi {
         label: context.dropL10n.sendFiles,
         icon: LucideIcons.upload,
         onPressed: () => unawaited(
-          _viewModelFor(feature).pickAndSend(device.device.id),
+          _dropViewModel.pickAndSend(device.device.id),
         ),
       ),
     ];
@@ -181,7 +185,7 @@ class DropFeatureUi extends FeatureUi {
       return;
     }
 
-    final viewModel = _viewModelFor(context);
+    final viewModel = _dropViewModel;
     final paths = await viewModel.pickFiles();
     if (paths.isEmpty) {
       return;
@@ -219,7 +223,7 @@ class DropFeatureUi extends FeatureUi {
     String? text,
     bool temporary = false,
   }) async {
-    final viewModel = _viewModelFor(context);
+    final viewModel = _dropViewModel;
     final l10n = _l10n();
     if (text != null) {
       final sent = viewModel.sendText(target.deviceId, text);
@@ -255,7 +259,7 @@ class DropFeatureUi extends FeatureUi {
     FeatureContext context, {
     required bool asked,
   }) async {
-    final viewModel = _viewModelFor(context);
+    final viewModel = _dropViewModel;
     final targets = viewModel.targets;
     final offerLocalSend = viewModel.localSendEnabled;
     if (targets.isEmpty && !offerLocalSend) {
@@ -287,7 +291,7 @@ class DropFeatureUi extends FeatureUi {
     return null;
   }
 
-  DropViewModel _viewModelFor(FeatureContext context) =>
+  DropViewModel get _dropViewModel =>
       _viewModel ??= DropViewModel(feature: feature, plugin: _plugin);
 
   DropLocalizations _l10n() {

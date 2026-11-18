@@ -40,6 +40,8 @@ class MessagesFeatureUi extends FeatureUi {
   final MessagesFeature feature;
 
   IncomingNotices? _notices;
+  CardViewModel? _card;
+  FeatureChanges? _changes;
 
   @override
   String get featureId => MessagesFeature.featureId;
@@ -80,9 +82,28 @@ class MessagesFeatureUi extends FeatureUi {
       strings: platformMessagesL10n,
       deviceName: (deviceId) => _nameOf(context, deviceId),
       onOpen: (deviceId, threadId) =>
-          _openMessages(context, deviceId, threadId: threadId),
+          unawaited(_openFromNotice(context, deviceId, threadId)),
     )..start();
     _notices = notices;
+  }
+
+  @override
+  Listenable get uiChanges => _changes ??= FeatureChanges(
+    switch (feature.sourceService) {
+      final SourceService service => service.changes,
+      null => feature.library.events,
+    },
+  );
+
+  /// On the phone, only when it can text at all; on a computer, only once a
+  /// paired phone shared its texts.
+  @override
+  bool hasHomeCard(FeatureContext feature) {
+    if (this.feature.sourceService case final service?) {
+      return service.access.hasTelephony;
+    }
+
+    return _cardFor(feature).phones.isNotEmpty;
   }
 
   @override
@@ -123,13 +144,8 @@ class MessagesFeatureUi extends FeatureUi {
       );
     }
 
-    final trustStore = feature.engine.trustStore;
-    return ChangeNotifierProvider(
-      create: (_) => CardViewModel(
-        library: this.feature.library,
-        deviceName: (deviceId) => _nameOf(feature, deviceId),
-        isPaired: (deviceId) => trustStore[deviceId] != null,
-      ),
+    return ChangeNotifierProvider.value(
+      value: _cardFor(feature),
       child: MessagesCardFrame(
         onOpen: (deviceId) => _openMessages(feature, deviceId),
       ),
@@ -186,6 +202,34 @@ class MessagesFeatureUi extends FeatureUi {
   Future<void> dispose() async {
     await _notices?.stop();
     _notices = null;
+    _card?.dispose();
+    _changes?.dispose();
+  }
+
+  /// The computer's home card, made once so the shell can ask whether it
+  /// has anything to show.
+  CardViewModel _cardFor(FeatureContext context) {
+    if (_card case final card?) {
+      return card;
+    }
+
+    final trustStore = context.engine.trustStore;
+    final card = CardViewModel(
+      library: feature.library,
+      deviceName: (deviceId) => _nameOf(context, deviceId),
+      isPaired: (deviceId) => trustStore[deviceId] != null,
+    );
+    _card = card;
+    return card;
+  }
+
+  Future<void> _openFromNotice(
+    FeatureContext context,
+    String deviceId,
+    int threadId,
+  ) async {
+    await context.reveal();
+    _openMessages(context, deviceId, threadId: threadId);
   }
 
   void _openMessages(

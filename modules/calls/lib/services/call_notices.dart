@@ -13,9 +13,11 @@ class CallNotices {
     required CallsControl control,
     required LocalNotifier notifier,
     required CallsLocalizations Function() strings,
+    Future<void> Function()? onOpen,
   }) : _control = control,
        _notifier = notifier,
-       _strings = strings {
+       _strings = strings,
+       _onOpen = onOpen {
     _calls = control.callEvents.listen(_onCall);
     _responses = notifier.responses.listen(_onResponse);
   }
@@ -27,6 +29,10 @@ class CallNotices {
   final CallsControl _control;
   final LocalNotifier _notifier;
   final CallsLocalizations Function() _strings;
+
+  /// Brings the app to the front when a ringing notice is tapped, where the
+  /// home card has Answer and Decline.
+  final Future<void> Function()? _onOpen;
   final Map<String, RemoteCall> _ringing = {};
   late final StreamSubscription<RemoteCall> _calls;
   late final StreamSubscription<NoticeResponse> _responses;
@@ -126,6 +132,10 @@ class CallNotices {
         unawaited(_run(call, _control.answer));
       case declineAction:
         unawaited(_run(call, _control.end));
+      case null:
+        if (_onOpen case final onOpen?) {
+          unawaited(onOpen());
+        }
     }
   }
 

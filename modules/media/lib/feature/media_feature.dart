@@ -86,6 +86,9 @@ class MediaFeature extends Feature {
   bool get showRemote =>
       host.settings.get<bool>(MediaSettings.showRemote) ?? true;
 
+  bool get pauseOnCall =>
+      host.settings.get<bool>(MediaSettings.pauseOnCall) ?? true;
+
   /// Players on connected devices, or none when showing them is off.
   List<RemotePlayer> get remotePlayers {
     if (!showRemote) {
@@ -177,6 +180,58 @@ class MediaFeature extends Feature {
     await _startSharing();
     if (_localAccess == .notGranted) {
       await requestAccess();
+    }
+  }
+
+  Future<void> setPauseOnCall(bool pause) async {
+    await host.settings.set(MediaSettings.pauseOnCall, pause);
+    _emit();
+  }
+
+  /// Pauses every player on this device that is playing, such as when a
+  /// call starts. Returns the ids of the players it paused, for
+  /// [resumeLocalPlayback]. Never asks for access: without it, nothing is
+  /// paused.
+  Future<List<String>> pauseLocalPlayback() async {
+    final players = await _readLocalPlayers();
+    final backend = _backend;
+    if (backend == null) {
+      return const [];
+    }
+
+    final paused = <String>[];
+    for (final player in players) {
+      if (player.status != .playing || !_supports(player, .pause)) {
+        continue;
+      }
+
+      if (await _localCommand(backend, player.id, .pause)) {
+        paused.add(player.id);
+      }
+    }
+
+    return paused;
+  }
+
+  /// Plays again the players [playerIds] that [pauseLocalPlayback] paused,
+  /// unless they closed or someone already started them.
+  Future<void> resumeLocalPlayback(List<String> playerIds) async {
+    if (playerIds.isEmpty) {
+      return;
+    }
+
+    final players = await _readLocalPlayers();
+    final backend = _backend;
+    if (backend == null) {
+      return;
+    }
+
+    for (final player in players) {
+      if (!playerIds.contains(player.id) || player.status == .playing) {
+        continue;
+      }
+
+      await _localCommand(backend, player.id, .play);
     }
   }
 
@@ -588,6 +643,37 @@ class MediaFeature extends Feature {
       player: item,
       paused: paused,
     );
+  }
+
+  Future<List<PlayerInfo>> _readLocalPlayers() async {
+    final backend = _backend ?? _createBackend();
+    if (backend == null) {
+      return const [];
+    }
+
+    try {
+      if (await backend.access() != .granted) {
+        return const [];
+      }
+
+      return await backend.currentPlayers();
+    } on Object catch (error) {
+      printWarning('Reading the players on this device failed', error);
+      return const [];
+    }
+  }
+
+  Future<bool> _localCommand(
+    MediaBackend backend,
+    String playerId,
+    PlayerAction action,
+  ) async {
+    try {
+      return await backend.command(playerId, action);
+    } on Object catch (error) {
+      printWarning('Media $action on this device failed', error);
+      return false;
+    }
   }
 
   static bool _supports(PlayerInfo info, PlayerAction action) {

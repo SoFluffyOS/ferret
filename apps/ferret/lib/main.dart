@@ -1,6 +1,7 @@
 import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
+import 'package:ferret/wiring/call_media_pause.dart';
 import 'package:find/find.dart';
 import 'package:handoff/handoff.dart';
 import 'package:media/media.dart';
@@ -20,4 +21,5 @@ Future<void> main() => runFerret(
     NotificationsFeatureUi(),
   ],
   appVersion: '0.1.0',
+  onStarted: CallMediaPause.attach,
 );

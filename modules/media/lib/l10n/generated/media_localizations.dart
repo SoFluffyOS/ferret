@@ -118,6 +118,18 @@ abstract class MediaLocalizations {
   /// **'{app} on {device}'**
   String playerOn(String app, String device);
 
+  /// No description provided for @settingsPauseOnCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause during calls'**
+  String get settingsPauseOnCall;
+
+  /// No description provided for @settingsPauseOnCallBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pauses what plays on this device while a call rings or goes on, and plays it again after.'**
+  String get settingsPauseOnCallBody;
+
   /// No description provided for @play.
   ///
   /// In en, this message translates to:

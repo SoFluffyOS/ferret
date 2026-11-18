@@ -45,6 +45,7 @@ In **Settings → Media**:
 
 - **Share my media**: your other devices see what plays here and can control it.
 - **Show media from other devices**: the Now playing card and its controls.
+- **Pause during calls**: when your phone rings, what plays on this device pauses, and only that plays again once the call ends. On by default.
 
 ## 🤖 On Android: allow Notification access
 

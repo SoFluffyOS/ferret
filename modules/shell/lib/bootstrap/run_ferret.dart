@@ -14,10 +14,12 @@ import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/services/services.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
-/// the app.
+/// the app. [onStarted] gets the running engine, for wiring between
+/// features that the app owns.
 Future<void> runFerret({
   required List<FeatureUi> features,
   String appVersion = '',
+  void Function(FerretEngine engine)? onStarted,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
@@ -77,4 +79,5 @@ Future<void> runFerret({
       featureContext: featureContext,
     ),
   );
+  onStarted?.call(engine);
 }

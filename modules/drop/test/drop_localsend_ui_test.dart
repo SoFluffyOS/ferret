@@ -422,5 +422,19 @@ void main() {
       expect(health?.state, FeatureHealthState.ok);
       expect(health?.reason, 'The last transfer went through.');
     });
+
+    testWidgets('a transfer refreshes the card and the health chip', (
+      tester,
+    ) async {
+      await start();
+      final ui = DropFeatureUi(feature: link.laptop.feature);
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
+
+      link.laptop.feature.registry.put(sampleTransfer(status: .failed));
+      await tester.pump();
+
+      expect(changes, greaterThan(0));
+    });
   });
 }

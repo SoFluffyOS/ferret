@@ -28,6 +28,8 @@
       }
     }
   },
+  "settingsPauseOnCall": "Pause during calls",
+  "settingsPauseOnCallBody": "Pauses what plays on this device while a call rings or goes on, and plays it again after.",
   "play": "Play",
   "pause": "Pause",
   "next": "Next",

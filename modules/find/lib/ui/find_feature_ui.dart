@@ -28,6 +28,10 @@ class FindFeatureUi extends FeatureUi {
   FindNotices? _notices;
   RingingOverlay? _overlay;
   AppLifecycleListener? _lifecycle;
+  VoidCallback? _revealOnRing;
+
+  /// The start of the ring the app was last brought to the front for.
+  DateTime? _revealedFor;
 
   @override
   String get featureId => FindFeature.featureId;
@@ -61,7 +65,20 @@ class FindFeatureUi extends FeatureUi {
     _lifecycle = AppLifecycleListener(
       onResume: () => unawaited(feature.refreshAbilities()),
     );
+    void revealOnRing() => _revealWhenRinging(context);
+    _revealOnRing = revealOnRing;
+    viewModel.addListener(revealOnRing);
+    revealOnRing();
   }
+
+  @override
+  Listenable get uiChanges => viewModel;
+
+  /// Only while this device rings, or a ring to another device is going or
+  /// has an outcome to show.
+  @override
+  bool hasHomeCard(FeatureContext feature) =>
+      viewModel.isRingingHere || viewModel.outgoing.isNotEmpty;
 
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
@@ -117,8 +134,24 @@ class FindFeatureUi extends FeatureUi {
   Future<void> dispose() async {
     await _notices?.dispose();
     _overlay?.dispose();
+    if (_revealOnRing case final revealOnRing?) {
+      viewModel.removeListener(revealOnRing);
+    }
+
     _lifecycle?.dispose();
     viewModel.dispose();
+  }
+
+  /// Brings Ferret to the front once per ring, so "Found it" is one click
+  /// away, such as in the macOS menubar popover.
+  void _revealWhenRinging(FeatureContext context) {
+    final ring = viewModel.localRing;
+    if (!ring.isRinging || _revealedFor == ring.startedAt) {
+      return;
+    }
+
+    _revealedFor = ring.startedAt;
+    unawaited(context.reveal());
   }
 
   /// One tap rings, and opens the ring's page so Stop and the outcome are

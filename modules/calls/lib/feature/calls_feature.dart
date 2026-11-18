@@ -449,10 +449,14 @@ class CallsFeature extends Feature implements CallsControl {
   Future<void> _sendTo(Session session, GeneratedMessage message) async {
     try {
       await session.send(featureId, message);
-      _unreached.remove(session.remoteDeviceId);
+      if (_unreached.remove(session.remoteDeviceId)) {
+        _changes.add(null);
+      }
     } on Object catch (error) {
       printWarning('Call update to ${session.remoteDeviceId} failed', error);
-      _unreached.add(session.remoteDeviceId);
+      if (_unreached.add(session.remoteDeviceId)) {
+        _changes.add(null);
+      }
     }
   }
 

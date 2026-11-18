@@ -55,6 +55,7 @@ void main() {
 
     expect(ui.featureId, ClipboardFeature.featureId);
     expect(ui.feature.id, ClipboardFeature.featureId);
+    expect(ui.uiChanges, same(ui.viewModel));
   });
 
   testWidgets('an empty card explains what to do', (tester) async {

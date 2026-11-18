@@ -139,6 +139,24 @@ void main() {
     expect(control.endedCalls, ['call-1']);
   });
 
+  test('tapping a ringing notice brings the app to the front', () async {
+    var reveals = 0;
+    final revealing = CallNotices(
+      control: control,
+      notifier: notifier,
+      strings: platformCallsL10n,
+      onOpen: () async => reveals++,
+    );
+    control.emit(ringing);
+
+    notifier.respond(ringId);
+    await settle();
+
+    expect(reveals, 1);
+    expect(control.answered, isEmpty);
+    await revealing.dispose();
+  });
+
   test('says why when answering did not work', () async {
     control
       ..outcome = .permissionMissing

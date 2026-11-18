@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_notifications/ferret_notifications.dart';
 import 'package:flutter/widgets.dart';
@@ -39,6 +40,8 @@ class NotificationsFeatureUi extends FeatureUi {
   final NotificationAccess? access;
 
   InboxViewModel? _inbox;
+  FeatureChanges? _mirrorChanges;
+  Listenable? _uiChanges;
 
   @override
   String get featureId => NotificationsFeature.featureId;
@@ -67,9 +70,83 @@ class NotificationsFeatureUi extends FeatureUi {
     }
   }
 
+  /// On a computer: the inbox and what each phone says about mirroring.
+  @override
+  Listenable? get uiChanges {
+    if (feature.isSource) {
+      return null;
+    }
+
+    if (_uiChanges case final changes?) {
+      return changes;
+    }
+
+    final mirrorChanges = FeatureChanges(feature.mirrorEvents);
+    _mirrorChanges = mirrorChanges;
+    final changes = Listenable.merge([?_inbox, mirrorChanges]);
+    _uiChanges = changes;
+    return changes;
+  }
+
+  /// On a computer, only once an Android phone is paired or a notification
+  /// is waiting.
+  @override
+  bool hasHomeCard(FeatureContext feature) {
+    if (this.feature.isSource) {
+      return true;
+    }
+
+    return _hasPhone(feature) || !_inboxFor(feature).isEmpty;
+  }
+
+  /// On a computer, whether a phone mirrors here: off, access missing, or
+  /// not answering.
+  @override
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
+    final session = device.session;
+    if (this.feature.isSource || session == null) {
+      return null;
+    }
+
+    final flags = session.remoteFeature(featureId)?.flags ?? const <String>[];
+    if (!flags.contains(NotificationsFeature.sendFlag)) {
+      return null;
+    }
+
+    final l10n = platformNotificationsL10n();
+    final deviceId = device.device.id;
+    if (this.feature.isUnreachable(deviceId)) {
+      return FeatureHealth(.failing, reason: l10n.phoneUnreachable);
+    }
+
+    final settings = this.feature.senderSettings[deviceId];
+    if (settings == null) {
+      return null;
+    }
+
+    if (!settings.enabled) {
+      return FeatureHealth(.off, reason: l10n.phoneMirroringOff);
+    }
+
+    if (!settings.accessGranted) {
+      return FeatureHealth(.needsAttention, reason: l10n.phoneAccessOff);
+    }
+
+    return FeatureHealth(
+      .ok,
+      reason: l10n.phoneMirroring(settings.allowedPackages.length),
+    );
+  }
+
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       _homeCard(feature);
+
+  /// Stops listening, for tests and hot restarts.
+  void dispose() {
+    _mirrorChanges?.dispose();
+    _inbox?.dispose();
+  }
 
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) =>
@@ -96,10 +173,7 @@ class NotificationsFeatureUi extends FeatureUi {
 
     final inbox = _inboxFor(featureContext);
 
-    final hasPhone = featureContext.engine.trustStore.devices.any(
-      (device) => device.platform == proto.Platform.PLATFORM_ANDROID,
-    );
-    if (!hasPhone && inbox.isEmpty) {
+    if (!_hasPhone(featureContext) && inbox.isEmpty) {
       return null;
     }
 
@@ -138,6 +212,11 @@ class NotificationsFeatureUi extends FeatureUi {
       ),
     );
   }
+
+  bool _hasPhone(FeatureContext featureContext) =>
+      featureContext.engine.trustStore.devices.any(
+        (device) => device.platform == proto.Platform.PLATFORM_ANDROID,
+      );
 
   /// The computer's inbox, created once: it must listen before the first
   /// notification arrives, whichever of start-up or the home card comes first.

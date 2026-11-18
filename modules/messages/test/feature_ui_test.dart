@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -12,6 +13,13 @@ import 'support/fakes.dart';
 import 'support/test_app.dart';
 
 class _FakeEngine implements FerretEngine {
+  _FakeEngine([this._trustStore]);
+
+  final TrustStore? _trustStore;
+
+  @override
+  TrustStore get trustStore => _trustStore ?? (throw UnimplementedError());
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -91,6 +99,59 @@ void main() {
 
   test('no chip for a device that is not connected', () {
     expect(ui.healthFor(context, DeviceStatus(pixel, null)), isNull);
+  });
+
+  group('the home card on a computer', () {
+    late TrustStore trustStore;
+    late FeatureContext trusted;
+    late int reveals;
+
+    setUp(() async {
+      trustStore = await TrustStore.open(MemorySecretStore());
+      await trustStore.save(pixel);
+      reveals = 0;
+      trusted = FeatureContext(
+        engine: _FakeEngine(trustStore),
+        navigatorKey: GlobalKey<NavigatorState>(),
+        notifier: FakeNotifier(),
+        onReveal: () async => reveals++,
+      );
+    });
+
+    tearDown(() => ui.dispose());
+
+    test('shows once a paired phone shares its texts', () async {
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
+      final before = ui.hasHomeCard(trusted);
+
+      await devices.connect();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(before, isFalse);
+      expect(ui.hasHomeCard(trusted), isTrue);
+      expect(changes, greaterThan(0));
+    });
+
+    test('a tapped notice brings the app to the front', () async {
+      final notifier = FakeNotifier();
+      final revealing = FeatureContext(
+        engine: _FakeEngine(trustStore),
+        navigatorKey: GlobalKey<NavigatorState>(),
+        notifier: notifier,
+        onReveal: () async => reveals++,
+      );
+      await ui.onAppStarted(revealing);
+
+      notifier.respond(
+        NoticeResponse(
+          noticeId: IncomingNotices.noticeIdFor(PhoneAndComputer.phoneId, 1),
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(reveals, 1);
+    });
   });
 
   testWidgets('the home card shows unread texts per phone', (tester) async {

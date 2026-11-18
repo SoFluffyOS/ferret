@@ -48,6 +48,13 @@ class MediaFeatureUi extends FeatureUi {
   }
 
   @override
+  Listenable get uiChanges => viewModel;
+
+  /// Only while something plays, or is paused, on another device.
+  @override
+  bool hasHomeCard(FeatureContext feature) => viewModel.selected != null;
+
+  @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: viewModel,

@@ -56,6 +56,9 @@ class ClipboardFeatureUi extends FeatureUi {
   }
 
   @override
+  Listenable get uiChanges => viewModel;
+
+  @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: viewModel,

@@ -31,6 +31,7 @@ class CallsFeatureUi extends FeatureUi {
   @override
   final CallsFeature feature;
 
+  late final FeatureChanges _changes = FeatureChanges(feature.changes);
   ActiveCallsViewModel? _activeCalls;
   CallNotices? _notices;
 
@@ -66,7 +67,25 @@ class CallsFeatureUi extends FeatureUi {
       control: feature,
       notifier: context.notifier,
       strings: platformCallsL10n,
+      onOpen: context.reveal,
     );
+  }
+
+  @override
+  Listenable get uiChanges => _changes;
+
+  /// On a computer, only while a call rings or goes on; on the phone, only
+  /// while calls still need setting up.
+  @override
+  bool hasHomeCard(FeatureContext feature) {
+    if (!this.feature.isPhone) {
+      return this.feature.remoteCalls.isNotEmpty;
+    }
+
+    final permissions = this.feature.permissions;
+    final canSeeCalls = permissions?.phoneState ?? false;
+    return !this.feature.settings.enabled ||
+        (permissions != null && !canSeeCalls);
   }
 
   @override
@@ -151,6 +170,7 @@ class CallsFeatureUi extends FeatureUi {
   Future<void> dispose() async {
     await _notices?.dispose();
     _activeCalls?.dispose();
+    _changes.dispose();
   }
 
   /// On a computer, about a phone: what the phone last said it can do, or
