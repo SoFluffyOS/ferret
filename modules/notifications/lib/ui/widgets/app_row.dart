@@ -24,22 +24,24 @@ class AppRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-      child: Row(
-        children: [
-          AppIcon(png: .fromList(app.iconPng), size: Spacing.d32),
-          Spacing.h12,
-          Expanded(
-            child: Text(
-              app.name,
-              style: typography.base1.copyWith(color: palette.text),
-              overflow: .ellipsis,
+    return MergeSemantics(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: Spacing.d6),
+        child: Row(
+          children: [
+            AppIcon(png: .fromList(app.iconPng), size: Spacing.d32),
+            Spacing.h12,
+            Expanded(
+              child: Text(
+                app.name,
+                style: typography.base1.copyWith(color: palette.text),
+                overflow: .ellipsis,
+              ),
             ),
-          ),
-          Spacing.h12,
-          SwitchToggle(value: value, onChanged: onChanged),
-        ],
+            Spacing.h12,
+            SwitchToggle(value: value, onChanged: onChanged),
+          ],
+        ),
       ),
     );
   }

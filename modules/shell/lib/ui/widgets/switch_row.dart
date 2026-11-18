@@ -22,27 +22,31 @@ class SwitchRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(
-                title,
-                style: typography.base2.copyWith(color: palette.text),
-              ),
-              if (subtitle case final subtitle?)
+    return MergeSemantics(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
                 Text(
-                  subtitle,
-                  style: typography.caption1.copyWith(color: palette.mutedText),
+                  title,
+                  style: typography.base2.copyWith(color: palette.text),
                 ),
-            ],
+                if (subtitle case final subtitle?)
+                  Text(
+                    subtitle,
+                    style: typography.caption1.copyWith(
+                      color: palette.mutedText,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        Spacing.h12,
-        SwitchToggle(value: value, onChanged: onChanged),
-      ],
+          Spacing.h12,
+          SwitchToggle(value: value, onChanged: onChanged),
+        ],
+      ),
     );
   }
 }

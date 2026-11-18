@@ -22,27 +22,29 @@ class ToggleRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(
-                title,
-                style: typography.base1.copyWith(color: palette.text),
-              ),
-              Spacing.vertical(Spacing.d2),
-              Text(
-                detail,
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-            ],
+    return MergeSemantics(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(
+                  title,
+                  style: typography.base1.copyWith(color: palette.text),
+                ),
+                Spacing.vertical(Spacing.d2),
+                Text(
+                  detail,
+                  style: typography.caption1.copyWith(color: palette.mutedText),
+                ),
+              ],
+            ),
           ),
-        ),
-        Spacing.h12,
-        SwitchToggle(value: value, onChanged: onChanged),
-      ],
+          Spacing.h12,
+          SwitchToggle(value: value, onChanged: onChanged),
+        ],
+      ),
     );
   }
 }

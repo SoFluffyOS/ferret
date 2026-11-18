@@ -66,6 +66,15 @@
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
   "pairFailedTimedOut": "Your other device didn't answer.",
   "pairFailedProtocol": "Pairing stopped before it finished. Try again.",
+  "pairCodeSpoken": "Code: {digits}",
+  "@pairCodeSpoken": {
+    "description": "What a screen reader says for the six pairing digits, read one by one.",
+    "placeholders": {
+      "digits": {
+        "type": "String"
+      }
+    }
+  },
   "promptTitle": "Pair with {device}?",
   "@promptTitle": {
     "placeholders": {

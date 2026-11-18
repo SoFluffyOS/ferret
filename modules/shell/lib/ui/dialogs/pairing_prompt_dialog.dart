@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -74,6 +75,27 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // Esc is "Not now": the barrier can't be dismissed, so the route
+    // doesn't answer it by itself. The keys only get here while something
+    // inside has the focus, which the route's own scope doesn't count as.
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): () =>
+            Navigator.of(context).pop(false),
+      },
+      child: Focus(
+        autofocus: true,
+        child: Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          explicitChildNodes: true,
+          child: _card(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _card(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
@@ -124,6 +146,7 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
                       variant: .ghost,
                       label: l10n.promptReject,
                       mainAxisSize: .max,
+                      titleExpand: .shrink,
                       onPressed: () => Navigator.of(context).pop(false),
                     ),
                   ),
@@ -133,6 +156,7 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
                       variant: .primary,
                       label: l10n.promptAccept,
                       mainAxisSize: .max,
+                      titleExpand: .shrink,
                       onPressed: () => Navigator.of(context).pop(true),
                     ),
                   ),

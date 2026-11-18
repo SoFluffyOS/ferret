@@ -141,6 +141,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Pairing stopped before it finished. Try again.';
 
   @override
+  String pairCodeSpoken(String digits) {
+    return 'Code: $digits';
+  }
+
+  @override
   String promptTitle(String device) {
     return 'Pair with $device?';
   }

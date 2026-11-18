@@ -26,39 +26,41 @@ class SettingSwitchRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Wrap(
-                  spacing: Spacing.d8,
-                  runSpacing: Spacing.d4,
-                  crossAxisAlignment: .center,
-                  children: [
-                    Text(
-                      title,
-                      style: typography.base1.copyWith(color: palette.text),
-                    ),
-                    if (tag case final tag?) Tag(tag, color: palette.warning),
-                  ],
-                ),
-                Spacing.vertical(Spacing.d2),
-                Text(
-                  body,
-                  style: typography.caption1.copyWith(
-                    color: palette.mutedText,
+    return MergeSemantics(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: Spacing.d6),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Wrap(
+                    spacing: Spacing.d8,
+                    runSpacing: Spacing.d4,
+                    crossAxisAlignment: .center,
+                    children: [
+                      Text(
+                        title,
+                        style: typography.base1.copyWith(color: palette.text),
+                      ),
+                      if (tag case final tag?) Tag(tag, color: palette.warning),
+                    ],
                   ),
-                ),
-              ],
+                  Spacing.vertical(Spacing.d2),
+                  Text(
+                    body,
+                    style: typography.caption1.copyWith(
+                      color: palette.mutedText,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Spacing.h12,
-          SwitchToggle(value: value, onChanged: onChanged),
-        ],
+            Spacing.h12,
+            SwitchToggle(value: value, onChanged: onChanged),
+          ],
+        ),
       ),
     );
   }

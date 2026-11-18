@@ -322,6 +322,12 @@ abstract class ShellLocalizations {
   /// **'Pairing stopped before it finished. Try again.'**
   String get pairFailedProtocol;
 
+  /// What a screen reader says for the six pairing digits, read one by one.
+  ///
+  /// In en, this message translates to:
+  /// **'Code: {digits}'**
+  String pairCodeSpoken(String digits);
+
   /// No description provided for @promptTitle.
   ///
   /// In en, this message translates to:

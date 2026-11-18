@@ -23,14 +23,23 @@ class DropProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
     final detail = switch (phase) {
       DropFailed(:final reason) when reason.isNotEmpty => reason,
       DropFailed() => l10n.dropFailedDetail,
       _ => l10n.dropFileCount(fileCount),
     };
+
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      child: _card(context, detail),
+    );
+  }
+
+  Widget _card(BuildContext context, String detail) {
+    final palette = context.palette;
+    final typography = context.fluffyTheme.typography;
 
     return SurfaceCard(
       padding: EdgeInsets.all(Spacing.d16),
