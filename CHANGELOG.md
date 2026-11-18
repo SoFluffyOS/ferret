@@ -12,6 +12,7 @@
 - 🔄 **Handoff**: send a page or link to another device with **Continue on…** and it opens there. Your other devices quietly suggest the page you were on.
 - 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put.
 - 📦 **Drop**: drag files onto Ferret and drop them on the device you want, or on **All my devices**, or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
+- 📤 **Share → Ferret**: right-click a file in Finder, pick **Share → Ferret** and click the device. On Windows and Linux, `ferret send` puts **Send with Ferret** in the file manager.
 - 🔔 **Notifications**: your phone's notifications on your computer, only new ones from the apps you pick, with Reply and Dismiss synced both ways.
 - 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second. Your music pauses while a call rings or goes on, and plays again after.
 - 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.

@@ -15,6 +15,7 @@ With Ferret, files and text go straight from one of your devices to another, ove
 - **On a computer:** drag files over the Ferret window. It turns into one big tile per device. Drop on the one you want, or on **All my devices**. Or open a device and pick **Send files…**.
 - **On a Mac:** drag files onto the menubar icon and hold for a moment. The popover springs open on the same tiles. Drop right on the icon instead and they go to your one connected device, or Ferret shows the tiles so you pick.
 - **On Android:** share from any app and pick **Send with Ferret**. Photos, PDFs, anything.
+- **From the file manager:** right-click a file and pick **Share → Ferret** in Finder, **Send to** on Windows or **Open With** on Linux. See [Send from the file manager](share-menu.md).
 - **Offline devices** stay on screen, faded, and don't take the drop.
 
 After the drop, the tile shows the progress, then **Sent to Pixel 9**. If something went wrong, it says why and offers **Try again**.
@@ -58,7 +59,7 @@ Each device's page lists **Files** under **What works**: where files arrive, or 
 
 | Platform | Send | Receive into | Notes |
 |---|---|---|---|
-| macOS | Drop on the window or menubar icon, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** opens Finder |
+| macOS | Drop on the window or menubar icon, **Share → Ferret** in Finder, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** opens Finder |
 | Windows | Drop on the window, or **Send files…** | `Downloads\Ferret`, or a folder you pick | **Show in folder** opens Explorer |
 | Linux | Drop on the window, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** uses your file manager |
 | Android 10+ | **Send with Ferret** from any app, or **Send files…** | `Download/Ferret`, visible in the Files app | **Show in folder** opens Downloads |
