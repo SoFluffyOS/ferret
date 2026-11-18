@@ -35,6 +35,15 @@ class PowerLocalizationsEn extends PowerLocalizations {
   String get settingsOpen => 'Open Power-ups';
 
   @override
+  String get settingsShortStandard => 'Off';
+
+  @override
+  String get settingsShortShizuku => 'Shizuku on';
+
+  @override
+  String get settingsShortRoot => 'Root on';
+
+  @override
   String get ladderTitle => 'What this phone lets Ferret do';
 
   @override
@@ -159,7 +168,7 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get shizukuOnBody =>
-      'Next: turn on Send in the background in the Clipboard settings. Shizuku stops when the phone restarts; start it again from its app.';
+      'Next: turn on Send automatically in the background in Settings → Clipboard. Shizuku stops when the phone restarts; start it again from its app.';
 
   @override
   String get stopUsingShizuku => 'Stop using Shizuku';

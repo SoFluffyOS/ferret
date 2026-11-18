@@ -6,7 +6,7 @@ order: 2
 > **TL;DR**
 >
 > 1. Install [Shizuku](https://shizuku.rikka.app/download/) and start it.
-> 2. In Ferret, open **Settings → Power-ups → Open Power-ups** and tap **Allow Ferret**.
+> 2. In Ferret, open **Settings → Control → Open Power-ups** and tap **Allow Ferret**.
 > 3. Turn on **Send automatically in the background** in **Settings → Clipboard**.
 > 4. Copy anywhere on your phone. It lands on your other devices.
 

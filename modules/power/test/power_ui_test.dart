@@ -393,6 +393,94 @@ void main() {
       );
     });
 
+    Future<List<FeatureSettings>> partsOf(
+      WidgetTester tester, {
+      bool onPhone = true,
+    }) async {
+      final ui = PowerFeatureUi(feature: harness.feature, onPhone: onPhone);
+      addTearDown(ui.dispose);
+      late List<FeatureSettings> parts;
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) {
+              parts = ui.settingsSections(context, _NoContext());
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      return parts;
+    }
+
+    testWidgets('a phone without power-ups reads Off under Control', (
+      tester,
+    ) async {
+      await start(tester);
+
+      final part = (await partsOf(tester)).single;
+
+      expect(part.group, SettingsGroup.control);
+      expect(part.title, 'Power-ups');
+      expect(part.summary, 'Off');
+      expect(part.isOn, isFalse);
+      expect(part.needsAttention, isFalse);
+    });
+
+    testWidgets('Shizuku waiting to be allowed is not a problem', (
+      tester,
+    ) async {
+      await start(
+        tester,
+        status: const PowerStatus(supported: true, shizuku: .notAuthorized),
+      );
+
+      final part = (await partsOf(tester)).single;
+
+      expect(part.isOn, isFalse);
+      expect(part.needsAttention, isFalse);
+    });
+
+    testWidgets('Shizuku in use reads on', (tester) async {
+      await start(
+        tester,
+        status: const PowerStatus(supported: true, shizuku: .ready),
+        settings: {PowerSettings.shizukuEnabledKey: true},
+      );
+
+      final part = (await partsOf(tester)).single;
+
+      expect(part.summary, 'Shizuku on');
+      expect(part.isOn, isTrue);
+      expect(part.needsAttention, isFalse);
+    });
+
+    testWidgets('Shizuku that stopped after it was turned on needs attention', (
+      tester,
+    ) async {
+      await start(
+        tester,
+        status: const PowerStatus(supported: true, shizuku: .notRunning),
+        settings: {PowerSettings.shizukuEnabledKey: true},
+      );
+
+      final part = (await partsOf(tester)).single;
+
+      expect(part.summary, 'Off');
+      expect(part.isOn, isFalse);
+      expect(part.needsAttention, isTrue);
+    });
+
+    testWidgets('there is no part where power-ups cannot apply', (
+      tester,
+    ) async {
+      await start(tester, status: PowerStatus.unsupported);
+
+      expect(await partsOf(tester), isEmpty);
+      expect(await partsOf(tester, onPhone: false), isEmpty);
+    });
+
     testWidgets('a computer is told there is nothing to set up', (
       tester,
     ) async {

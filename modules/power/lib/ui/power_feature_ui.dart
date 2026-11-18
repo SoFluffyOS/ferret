@@ -110,6 +110,31 @@ class PowerFeatureUi extends FeatureUi {
     );
   }
 
+  /// Only on a phone that can have power-ups. It is on once Shizuku or root
+  /// works, and needs attention when one that was turned on stopped.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final section = buildSettings(context, feature);
+    if (section == null || !viewModel.status.supported) {
+      return const [];
+    }
+
+    final l10n = context.powerL10n;
+    return [
+      FeatureSettings(
+        group: .control,
+        title: title(context),
+        child: section,
+        summary: l10n.tierShort(viewModel.tier),
+        isOn: viewModel.tier != .standard,
+        needsAttention: viewModel.prompt?.isProblem ?? false,
+      ),
+    ];
+  }
+
   /// Stops listening for the app coming back and releases the view model.
   void dispose() {
     _lifecycle?.dispose();

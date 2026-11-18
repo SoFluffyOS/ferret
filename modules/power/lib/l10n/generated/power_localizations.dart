@@ -136,6 +136,24 @@ abstract class PowerLocalizations {
   /// **'Open Power-ups'**
   String get settingsOpen;
 
+  /// No description provided for @settingsShortStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsShortStandard;
+
+  /// No description provided for @settingsShortShizuku.
+  ///
+  /// In en, this message translates to:
+  /// **'Shizuku on'**
+  String get settingsShortShizuku;
+
+  /// No description provided for @settingsShortRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Root on'**
+  String get settingsShortRoot;
+
   /// No description provided for @ladderTitle.
   ///
   /// In en, this message translates to:
@@ -367,7 +385,7 @@ abstract class PowerLocalizations {
   /// No description provided for @shizukuOnBody.
   ///
   /// In en, this message translates to:
-  /// **'Next: turn on Send in the background in the Clipboard settings. Shizuku stops when the phone restarts; start it again from its app.'**
+  /// **'Next: turn on Send automatically in the background in Settings → Clipboard. Shizuku stops when the phone restarts; start it again from its app.'**
   String get shizukuOnBody;
 
   /// No description provided for @stopUsingShizuku.

@@ -11,7 +11,7 @@ order: 1
 
 Android gives every app the same small set of abilities. More needs your say-so, one permission at a time.
 
-Ferret shows this as a ladder in **Settings → Power-ups → Open Power-ups**. Each step lists what it adds, with a lock on what your phone doesn't have yet.
+Ferret shows this as a ladder in **Settings → Control → Open Power-ups**. Each step lists what it adds, with a lock on what your phone doesn't have yet.
 
 ## 🪜 The ladder
 

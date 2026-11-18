@@ -5,7 +5,7 @@ order: 3
 
 > **TL;DR**
 >
-> 1. Your phone is rooted already? Open **Settings → Power-ups → Open Power-ups**.
+> 1. Your phone is rooted already? Open **Settings → Control → Open Power-ups**.
 > 2. Read the warning, then tap **Use root** and confirm in your root manager.
 > 3. Turn on **Send automatically in the background** in **Settings → Clipboard**.
 
@@ -19,7 +19,7 @@ This page is for phones that are rooted already. Ferret never roots a phone, and
 
 ## 🔑 Turn it on
 
-1. Open **Settings → Power-ups → Open Power-ups** and scroll to **Root**.
+1. Open **Settings → Control → Open Power-ups** and scroll to **Root**.
 2. Ferret says which root manager it found: Magisk, KernelSU or APatch.
 3. Tap **Use root**. Your root manager asks you to confirm.
 

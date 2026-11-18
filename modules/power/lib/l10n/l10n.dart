@@ -58,6 +58,13 @@ extension PowerLabels on PowerLocalizations {
     .root => settingsSummaryRoot,
   };
 
+  /// The active tier in a word or two, for the row in Settings.
+  String tierShort(PowerTier tier) => switch (tier) {
+    .standard => settingsShortStandard,
+    .shizuku => settingsShortShizuku,
+    .root => settingsShortRoot,
+  };
+
   String rootFoundText(RootManager manager) => switch (manager) {
     .magisk => rootFoundWith('Magisk'),
     .kernelSu => rootFoundWith('KernelSU'),
