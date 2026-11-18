@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/protocol.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/shell.dart';
 
 import 'support/memory_discovery.dart';
@@ -516,6 +517,31 @@ void main() {
       await tester.pump();
 
       expect(find.byType(DoctorPage), findsOneWidget);
+    });
+
+    testWidgets('files dragged over an offline device say it is offline, '
+        'and the page stays', (tester) async {
+      await start(tester, const Size(1000, 720));
+      final drop = tester
+          .element(find.byType(SidebarFrame))
+          .read<OsDropViewModel>();
+
+      drop.enter(tester.getCenter(find.byType(SidebarDeviceRow)));
+      await tester.pump();
+
+      expect(find.byType(DropTargetTile), findsNothing);
+      expect(find.byType(DevicePage), findsOneWidget);
+      expect(find.text('Offline'), findsOneWidget);
+
+      drop.move(tester.getCenter(find.byType(DevicePage)));
+      await tester.pump();
+
+      expect(find.text('Pixel 9 is offline'), findsOneWidget);
+
+      drop.cancel();
+      await tester.pump();
+
+      expect(find.text('Pixel 9 is offline'), findsNothing);
     });
 
     testWidgets('a section that is gone falls back to the Overview', (

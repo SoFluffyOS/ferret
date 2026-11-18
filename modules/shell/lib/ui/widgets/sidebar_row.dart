@@ -16,6 +16,7 @@ class SidebarRow extends StatelessWidget {
     this.isSelected = false,
     this.isDimmed = false,
     this.isIndented = false,
+    this.isDropTarget = false,
     this.tooltip,
   });
 
@@ -32,6 +33,9 @@ class SidebarRow extends StatelessWidget {
 
   /// A level below the line above, such as a device's section.
   final bool isIndented;
+
+  /// Files dragged over the line would go where it points.
+  final bool isDropTarget;
   final String? tooltip;
 
   /// Lines are a finger high on touch screens, and denser under a pointer.
@@ -113,6 +117,10 @@ class SidebarRow extends StatelessWidget {
   }
 
   Color? _fill(FerretPalette palette, TappableState state) {
+    if (isDropTarget) {
+      return palette.accent.withValues(alpha: 0.4);
+    }
+
     if (isSelected) {
       return palette.accent.withValues(alpha: 0.18);
     }

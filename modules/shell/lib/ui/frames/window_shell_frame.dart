@@ -6,6 +6,7 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/activity_pane_frame.dart';
 import 'package:shell/ui/frames/needs_you_frame.dart';
+import 'package:shell/ui/frames/pane_drop_frame.dart';
 import 'package:shell/ui/frames/sidebar_frame.dart';
 import 'package:shell/ui/frames/window_menu_frame.dart';
 import 'package:shell/ui/frames/window_title_frame.dart';
@@ -58,23 +59,25 @@ class WindowShellFrame extends StatelessWidget {
               ),
             },
             Expanded(
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
-                    child: const AdaptiveContent(child: NeedsYouFrame()),
-                  ),
-                  // A route hides whatever was drawn before it from screen
-                  // readers, up to the nearest container: without this one
-                  // the pane's pages would take the device list with them.
-                  Expanded(
-                    child: Semantics(
-                      container: true,
-                      child: ClipRect(child: _TabsOnward(child: child)),
+              child: PaneDropFrame(
+                child: Column(
+                  crossAxisAlignment: .stretch,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
+                      child: const AdaptiveContent(child: NeedsYouFrame()),
                     ),
-                  ),
-                ],
+                    // A route hides whatever was drawn before it from screen
+                    // readers, up to the nearest container: without this one
+                    // the pane's pages would take the device list with them.
+                    Expanded(
+                      child: Semantics(
+                        container: true,
+                        child: ClipRect(child: _TabsOnward(child: child)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const ActivityPaneFrame(),

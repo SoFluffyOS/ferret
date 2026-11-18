@@ -105,7 +105,13 @@ void main() {
   Future<void> pumpZone(
     WidgetTester tester, {
     required List<DeviceStatus> devices,
+    Size size = const Size(380, 560),
+    Widget child = const Text('Home'),
   }) async {
+    tester.view
+      ..devicePixelRatio = 1
+      ..physicalSize = size;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ChangeNotifierProvider<EngineHost>.value(
         value: _FakeHost(devices),
@@ -117,7 +123,7 @@ void main() {
             notifier: _FakeNotifier(),
           ),
           child: testApp(
-            FileDropZone(menubar: menubar, child: const Text('Home')),
+            FileDropZone(menubar: menubar, child: child),
           ),
         ),
       ),
@@ -243,5 +249,134 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('All my devices'), findsNothing);
+  });
+
+  group('in a window', () {
+    const windowSize = Size(1000, 720);
+    final page = Row(
+      children: [
+        SizedBox(
+          width: 240,
+          child: Column(
+            children: [
+              DropTargetRegion(
+                target: WindowDropTargets.device(pixel),
+                child: const Text('Pixel row'),
+              ),
+              DropTargetRegion(
+                target: WindowDropTargets.device(tablet),
+                child: const Text('Tablet row'),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: DropTargetRegion(
+            target: PaneDropTarget(WindowDropTargets.device(pixel)),
+            child: const Center(child: Text('Page')),
+          ),
+        ),
+      ],
+    );
+
+    testWidgets('a drag keeps the page and finds the row under the pointer', (
+      tester,
+    ) async {
+      await pumpZone(
+        tester,
+        devices: [pixel, tablet],
+        size: windowSize,
+        child: page,
+      );
+      menubar.onDragEntered(_viewId, 600, 300, 1);
+      await settle(tester);
+
+      expect(find.byType(DropTargetTile), findsNothing);
+      expect(find.text('Page'), findsOneWidget);
+
+      final overTablet = tester.getCenter(find.text('Tablet row'));
+      menubar.onDragUpdated(_viewId, overTablet.dx, overTablet.dy);
+      await settle(tester);
+      expect(api.allowed.last, isFalse);
+
+      final overPixel = tester.getCenter(find.text('Pixel row'));
+      menubar.onDragUpdated(_viewId, overPixel.dx, overPixel.dy);
+      await settle(tester);
+      expect(api.allowed.last, isTrue);
+
+      menubar.onDragPerformed(_viewId, ['/a.jpg'], overPixel.dx, overPixel.dy);
+      await settle(tester);
+      expect(feature.drops.single.$2, 'pixel-id');
+      expect(find.text('Sending to Pixel 7'), findsOneWidget);
+      expect(find.text('Page'), findsOneWidget);
+    });
+
+    testWidgets('the pane sends to the device it shows', (tester) async {
+      await pumpZone(
+        tester,
+        devices: [pixel, tablet],
+        size: windowSize,
+        child: page,
+      );
+      final overPage = tester.getCenter(find.text('Page'));
+      menubar.onDragEntered(_viewId, overPage.dx, overPage.dy, 1);
+      await settle(tester);
+      expect(api.allowed.last, isTrue);
+
+      menubar.onDragPerformed(_viewId, ['/a.jpg'], overPage.dx, overPage.dy);
+      await settle(tester);
+
+      expect(feature.drops.single.$2, 'pixel-id');
+      expect(find.text('Sending to Pixel 7'), findsOneWidget);
+    });
+
+    testWidgets('a blind drop still asks which device', (tester) async {
+      await pumpZone(
+        tester,
+        devices: [pixel, ipad],
+        size: windowSize,
+        child: page,
+      );
+
+      menubar.onFilesDropped(['/a.jpg']);
+      await settle(tester);
+
+      expect(find.text('Send here'), findsNWidgets(3));
+    });
+  });
+
+  test('files dropped on no device go to the connected ones', () {
+    expect(WindowDropTargets.everyone([tablet]), isNull);
+    expect(
+      WindowDropTargets.everyone([pixel, tablet]),
+      WindowDropTargets.device(pixel),
+    );
+    expect(
+      WindowDropTargets.everyone([pixel, ipad]),
+      const AllDevicesDropTarget(),
+    );
+  });
+
+  testWidgets('resting on a row opens it after a moment, once', (
+    tester,
+  ) async {
+    var opened = 0;
+    Widget spring({required bool active}) => DropSpringOpen(
+      active: active,
+      onOpen: () => opened++,
+      child: const SizedBox.shrink(),
+    );
+
+    await tester.pumpWidget(spring(active: true));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpWidget(spring(active: false));
+    await tester.pump(const Duration(seconds: 1));
+    expect(opened, 0);
+
+    await tester.pumpWidget(spring(active: true));
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpWidget(spring(active: true));
+    await tester.pump(const Duration(seconds: 1));
+    expect(opened, 1);
   });
 }

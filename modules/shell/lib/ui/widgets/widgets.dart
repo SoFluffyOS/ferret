@@ -7,6 +7,7 @@ export 'package:shell/ui/widgets/device_tile.dart';
 export 'package:shell/ui/widgets/disclosure.dart';
 export 'package:shell/ui/widgets/doctor_check_row.dart';
 export 'package:shell/ui/widgets/drop_progress_card.dart';
+export 'package:shell/ui/widgets/drop_spring_open.dart';
 export 'package:shell/ui/widgets/drop_target_region.dart';
 export 'package:shell/ui/widgets/drop_target_tile.dart';
 export 'package:shell/ui/widgets/footer_hint.dart';

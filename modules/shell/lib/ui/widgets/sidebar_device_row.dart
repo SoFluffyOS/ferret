@@ -16,6 +16,7 @@ class SidebarDeviceRow extends StatelessWidget {
     this.isSelected = false,
     this.needsAttention = false,
     this.badge = 0,
+    this.isDropHovered = false,
     this.tooltip,
   });
 
@@ -31,6 +32,10 @@ class SidebarDeviceRow extends StatelessWidget {
 
   /// What waits in its sections, shown while they are folded away.
   final int badge;
+
+  /// Files are dragged over it: a connected device says it takes them, an
+  /// offline one that it can't.
+  final bool isDropHovered;
 
   /// Its connection in words, such as "Last seen 12 min ago".
   final String? tooltip;
@@ -54,21 +59,36 @@ class SidebarDeviceRow extends StatelessWidget {
       (true, false) => l10n.deviceConnected,
     };
 
+    final takesDrop = isDropHovered && status.isConnected;
+    final refusesDrop = isDropHovered && !status.isConnected;
+
     return SidebarRow(
-      label: device.name,
+      label: switch (takesDrop) {
+        true => l10n.dropSendTo(device.name),
+        false => device.name,
+      },
       icon: deviceIconFor(device.formFactor, device.platform),
       isSelected: isSelected,
       isDimmed: !status.isConnected,
+      isDropTarget: takesDrop,
       tooltip: tooltip ?? dotInWords,
       onTap: onTap,
       trailing: Row(
         mainAxisSize: .min,
         children: [
           if (badge > 0) ...[SidebarBadge(badge), Spacing.h8],
-          DecoratedBox(
-            decoration: BoxDecoration(color: dotColor, shape: .circle),
-            child: SizedBox.square(dimension: Spacing.d8),
-          ),
+          if (refusesDrop)
+            Text(
+              l10n.dropTileOffline,
+              style: context.fluffyTheme.typography.caption1.copyWith(
+                color: palette.mutedText,
+              ),
+            ),
+          if (!refusesDrop)
+            DecoratedBox(
+              decoration: BoxDecoration(color: dotColor, shape: .circle),
+              child: SizedBox.square(dimension: Spacing.d8),
+            ),
         ],
       ),
     );

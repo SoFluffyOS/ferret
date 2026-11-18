@@ -196,10 +196,14 @@ class OsDropViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _sendTo(List<String> paths, FilesDropTarget target) async {
+  Future<void> _sendTo(List<String> paths, FilesDropTarget dropped) async {
     _timer?.cancel();
     _stopSending();
     final run = _sendRun;
+    final target = switch (dropped) {
+      PaneDropTarget(:final target) => target,
+      _ => dropped,
+    };
     _paths = paths;
     _fileCount = paths.length;
     _hovered = null;
@@ -209,7 +213,7 @@ class OsDropViewModel extends ChangeNotifier {
 
     final deviceId = switch (target) {
       DeviceDropTarget(:final deviceId) => deviceId,
-      AllDevicesDropTarget() => null,
+      AllDevicesDropTarget() || PaneDropTarget() => null,
     };
     final progress = await _send(paths, deviceId);
     if (run != _sendRun) {

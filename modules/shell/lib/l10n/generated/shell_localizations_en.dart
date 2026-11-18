@@ -598,6 +598,21 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get dropCancel => 'Cancel';
 
   @override
+  String dropSendTo(String name) {
+    return 'Send to $name';
+  }
+
+  @override
+  String dropSendToAll(int count) {
+    return 'Send to all $count devices';
+  }
+
+  @override
+  String dropDeviceOffline(String name) {
+    return '$name is offline';
+  }
+
+  @override
   String get scanTitle => 'Scan the code';
 
   @override

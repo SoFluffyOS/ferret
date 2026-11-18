@@ -12,9 +12,11 @@ import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// While files are dragged in, the whole window becomes one big tile per
-/// device (offline ones faded) plus "All my devices"; after the drop, the
-/// chosen one shows how sending goes. Nothing while idle.
+/// While files are dragged in, a small view (a phone, the popover) becomes
+/// one big tile per device (offline ones faded) plus "All my devices";
+/// after the drop, the chosen one shows how sending goes. A window keeps
+/// its page: its device list and pane are the targets, and sending shows
+/// in a card in the corner. Nothing while idle.
 class DropTargetsFrame extends StatelessWidget {
   const DropTargetsFrame({super.key});
 
@@ -23,8 +25,17 @@ class DropTargetsFrame extends StatelessWidget {
     final phase = context.select<OsDropViewModel, DropPhase>(
       (drop) => drop.phase,
     );
+    final isWindow = WindowLayout.splits(context);
     if (phase is DropIdle) {
       return const SizedBox.shrink();
+    }
+
+    if (phase case DropChoosing(held: false) when isWindow) {
+      return const SizedBox.shrink();
+    }
+
+    if (isWindow && phase is! DropChoosing) {
+      return _CornerCard(phase: phase);
     }
 
     final palette = context.palette;
@@ -37,6 +48,46 @@ class DropTargetsFrame extends StatelessWidget {
           DropChoosing(:final held) => _Choosing(held: held),
           _ => _Sending(phase: phase),
         },
+      ),
+    );
+  }
+}
+
+/// How sending goes, in a window: a card in the pane's corner over the
+/// page that stays.
+class _CornerCard extends StatelessWidget {
+  const _CornerCard({required this.phase});
+
+  final DropPhase phase;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+
+    return Align(
+      alignment: .bottomRight,
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d16),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: PaneWidths.narrowContent),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: palette.background,
+              borderRadius: BorderRadius.circular(Spacing.d16),
+              boxShadow: [
+                BoxShadow(
+                  color: palette.text.withValues(alpha: 0.16),
+                  blurRadius: Spacing.d24,
+                  offset: .new(0, Spacing.d4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Spacing.d16),
+              child: _Sending(phase: phase),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -276,6 +327,7 @@ class _Sending extends StatelessWidget {
     };
 
     return Column(
+      mainAxisSize: .min,
       crossAxisAlignment: .stretch,
       children: [
         Text(title, style: typography.title3.copyWith(color: palette.text)),

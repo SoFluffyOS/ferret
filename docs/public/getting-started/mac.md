@@ -50,6 +50,7 @@ The window is not a big popover. It has room, so it uses it:
 - **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
 - **The page** you picked fills the rest. Anything you open from it (Fix connection, a settings page) opens right there, with a back arrow. The list never moves.
 - **Overview** shows the device, the few things you do most (**Send files**, **Show screen**, **Send clipboard**, **Ring**) and **More** for the rest. With room, what works with the device sits on the left and what it may do on your Mac on the right.
+- **Drag files** onto a device in the list to send them there. Rest on it for a moment and it opens. Dropped on the page, they go to the device you have open.
 - **Right-click** a device for the same actions, **Fix Connection…** and **Forget This Device…**. Right-click a line in Activity for what that line offers.
 - **A device that goes offline keeps its sections.** You still read what was there, under one line that says since when, with **Fix connection**. A section whose feature is off is dimmed, and says how to turn it on.
 - **Settings** keeps its list on the left and opens the row you pick next to it.

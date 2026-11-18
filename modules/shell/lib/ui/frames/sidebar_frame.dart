@@ -52,40 +52,43 @@ class SidebarFrame extends StatelessWidget {
               ),
               if (isPaused) const _PausedLine(),
               Expanded(
-                child: ListView(
-                  padding: EdgeInsets.only(bottom: Spacing.d16),
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
-                      child: SectionTitle(l10n.homeYourDevices),
-                    ),
-                    for (final status in devices)
-                      FeatureChangesListener(
-                        key: ValueKey(status.device.id),
-                        features: scope.features,
-                        builder: (context) => _DeviceGroup(
-                          status: status,
-                          selection: selection,
-                          onSelect: nav.select,
-                        ),
+                child: _DropOnAll(
+                  devices: devices,
+                  child: ListView(
+                    padding: EdgeInsets.only(bottom: Spacing.d16),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
+                        child: SectionTitle(l10n.homeYourDevices),
                       ),
-                    SidebarNearbyFrame(
-                      onPair: () => nav.show(const PairPage()),
-                    ),
-                    Spacing.v16,
-                    SidebarRow(
-                      label: l10n.activityTitle,
-                      icon: LucideIcons.history,
-                      isSelected: selection is ActivityDestination,
-                      onTap: () => nav.select(const ActivityDestination()),
-                    ),
-                    SidebarRow(
-                      label: l10n.settingsTitle,
-                      icon: LucideIcons.settings,
-                      isSelected: selection is SettingsDestination,
-                      onTap: () => nav.select(const SettingsDestination()),
-                    ),
-                  ],
+                      for (final status in devices)
+                        FeatureChangesListener(
+                          key: ValueKey(status.device.id),
+                          features: scope.features,
+                          builder: (context) => _DeviceGroup(
+                            status: status,
+                            selection: selection,
+                            onSelect: nav.select,
+                          ),
+                        ),
+                      SidebarNearbyFrame(
+                        onPair: () => nav.show(const PairPage()),
+                      ),
+                      Spacing.v16,
+                      SidebarRow(
+                        label: l10n.activityTitle,
+                        icon: LucideIcons.history,
+                        isSelected: selection is ActivityDestination,
+                        onTap: () => nav.select(const ActivityDestination()),
+                      ),
+                      SidebarRow(
+                        label: l10n.settingsTitle,
+                        icon: LucideIcons.settings,
+                        isSelected: selection is SettingsDestination,
+                        onTap: () => nav.select(const SettingsDestination()),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -93,6 +96,25 @@ class SidebarFrame extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Files dropped on the list but on no device in particular go to every
+/// connected device.
+class _DropOnAll extends StatelessWidget {
+  const _DropOnAll({required this.devices, required this.child});
+
+  final List<DeviceStatus> devices;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final target = WindowDropTargets.everyone(devices);
+    if (target == null) {
+      return child;
+    }
+
+    return DropTargetRegion(target: target, child: child);
   }
 }
 
@@ -215,48 +237,61 @@ class _DeviceGroup extends StatelessWidget {
       0,
       (count, section) => count + (section.badge ?? 0),
     );
+    final dropTarget = WindowDropTargets.device(status);
+    final isDropHovered = context.select<OsDropViewModel, bool>(
+      (drop) => drop.hovered == dropTarget,
+    );
 
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        ContextMenuRegion(
-          entries: _menu(context, scope, sections),
-          child: SidebarDeviceRow(
-            status: status,
-            isSelected: isOpen && sections.isEmpty,
-            needsAttention: _needsAttention(scope),
-            badge: switch (isOpen) {
-              true => 0,
-              false => waiting,
-            },
-            onTap: () => onSelect(DeviceDestination(deviceId)),
-          ),
-        ),
-        if (isOpen && sections.isNotEmpty) ...[
-          SidebarRow(
-            label: context.shellL10n.sectionOverview,
-            icon: LucideIcons.layoutDashboard,
-            isIndented: true,
-            isSelected: !showsFeatureSection,
-            onTap: () => onSelect(DeviceDestination(deviceId)),
-          ),
-          for (final section in sections)
-            SidebarRow(
-              key: ValueKey(section.id),
-              label: section.title,
-              icon: section.icon,
-              isIndented: true,
-              isDimmed: !section.isSetUp,
-              isSelected: section.id == openSectionId,
-              trailing: switch (section.badge) {
-                final badge? when badge > 0 => SidebarBadge(badge),
-                _ => null,
-              },
-              onTap: () =>
-                  onSelect(DeviceDestination(deviceId, sectionId: section.id)),
+    return DropTargetRegion(
+      target: dropTarget,
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          ContextMenuRegion(
+            entries: _menu(context, scope, sections),
+            child: DropSpringOpen(
+              active: isDropHovered && status.isConnected && !isOpen,
+              onOpen: () => onSelect(DeviceDestination(deviceId)),
+              child: SidebarDeviceRow(
+                status: status,
+                isSelected: isOpen && sections.isEmpty,
+                needsAttention: _needsAttention(scope),
+                isDropHovered: isDropHovered,
+                badge: switch (isOpen) {
+                  true => 0,
+                  false => waiting,
+                },
+                onTap: () => onSelect(DeviceDestination(deviceId)),
+              ),
             ),
+          ),
+          if (isOpen && sections.isNotEmpty) ...[
+            SidebarRow(
+              label: context.shellL10n.sectionOverview,
+              icon: LucideIcons.layoutDashboard,
+              isIndented: true,
+              isSelected: !showsFeatureSection,
+              onTap: () => onSelect(DeviceDestination(deviceId)),
+            ),
+            for (final section in sections)
+              SidebarRow(
+                key: ValueKey(section.id),
+                label: section.title,
+                icon: section.icon,
+                isIndented: true,
+                isDimmed: !section.isSetUp,
+                isSelected: section.id == openSectionId,
+                trailing: switch (section.badge) {
+                  final badge? when badge > 0 => SidebarBadge(badge),
+                  _ => null,
+                },
+                onTap: () => onSelect(
+                  DeviceDestination(deviceId, sectionId: section.id),
+                ),
+              ),
+          ],
         ],
-      ],
+      ),
     );
   }
 

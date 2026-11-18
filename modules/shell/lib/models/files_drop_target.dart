@@ -46,3 +46,22 @@ final class AllDevicesDropTarget extends FilesDropTarget {
   @override
   int get hashCode => (AllDevicesDropTarget).hashCode;
 }
+
+/// A window's content pane, which sends to [target]: the device it shows,
+/// or everyone. Kept apart from [target] itself so the pane and the device
+/// row each light up only while the pointer is over them.
+final class PaneDropTarget extends FilesDropTarget {
+  const PaneDropTarget(this.target);
+
+  final FilesDropTarget target;
+
+  @override
+  bool get acceptsDrop => target.acceptsDrop;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PaneDropTarget && other.target == target;
+
+  @override
+  int get hashCode => Object.hash(PaneDropTarget, target);
+}

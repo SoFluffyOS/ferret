@@ -444,6 +444,32 @@
   "dropTryAgain": "Try again",
   "dropClose": "Close",
   "dropCancel": "Cancel",
+  "dropSendTo": "Send to {name}",
+  "@dropSendTo": {
+    "description": "On a device row or the window's pane while files are dragged over it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dropSendToAll": "Send to all {count} devices",
+  "@dropSendToAll": {
+    "description": "On the window's pane while files are dragged over it and several devices are connected",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropDeviceOffline": "{name} is offline",
+  "@dropDeviceOffline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "scanTitle": "Scan the code",
   "scanBody": "On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.",
   "scanButton": "Scan the code on your computer",

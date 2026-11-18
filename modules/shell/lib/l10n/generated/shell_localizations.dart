@@ -1024,6 +1024,24 @@ abstract class ShellLocalizations {
   /// **'Cancel'**
   String get dropCancel;
 
+  /// On a device row or the window's pane while files are dragged over it
+  ///
+  /// In en, this message translates to:
+  /// **'Send to {name}'**
+  String dropSendTo(String name);
+
+  /// On the window's pane while files are dragged over it and several devices are connected
+  ///
+  /// In en, this message translates to:
+  /// **'Send to all {count} devices'**
+  String dropSendToAll(int count);
+
+  /// No description provided for @dropDeviceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is offline'**
+  String dropDeviceOffline(String name);
+
   /// No description provided for @scanTitle.
   ///
   /// In en, this message translates to:
