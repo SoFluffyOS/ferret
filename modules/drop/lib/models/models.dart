@@ -1,5 +1,9 @@
 export 'package:drop/models/drop_settings.dart';
 export 'package:drop/models/drop_target.dart';
+export 'package:drop/models/localsend_options.dart';
+export 'package:drop/models/localsend_origin.dart';
+export 'package:drop/models/localsend_problem.dart';
+export 'package:drop/models/localsend_receive_state.dart';
 export 'package:drop/models/received_file.dart';
 export 'package:drop/models/transfer.dart';
 export 'package:drop/models/transfer_direction.dart';

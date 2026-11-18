@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 
 /// The app side of Drop: the home card, "Send files…" on each device,
 /// files dropped on the window or menubar icon, shares from other apps,
-/// notices, and settings.
+/// LocalSend devices as extra targets, notices, and settings.
 class DropFeatureUi extends FeatureUi {
   DropFeatureUi({FerretDrop? plugin, DropFeature? feature})
     : this._(plugin ?? FerretDrop(), feature);
@@ -29,6 +29,7 @@ class DropFeatureUi extends FeatureUi {
           DropFeature(
             store: (settings) =>
                 PlatformReceiveStore(settings, plugin: _plugin),
+            secrets: SupportSecretStore(),
           );
 
   @override
@@ -56,6 +57,46 @@ class DropFeatureUi extends FeatureUi {
   @override
   IconData get icon => LucideIcons.send;
 
+  /// Drop has no heartbeat of its own, so health is what really happened:
+  /// the device said it offers Drop when it connected, and the last
+  /// transfer with it either went through or didn't.
+  @override
+  FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) =>
+      healthOf(device);
+
+  /// Drop's health with [device], from its session and the last transfer.
+  FeatureHealth? healthOf(DeviceStatus device) {
+    final session = device.session;
+    if (session == null) {
+      return null;
+    }
+
+    final l10n = _l10n();
+    if (!session.supports(DropFeature.featureId)) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.failureUnsupported(device.device.name),
+      );
+    }
+
+    final last = _lastFinished(device.device.id);
+    if (last == null) {
+      return FeatureHealth(.ok, reason: l10n.healthOk);
+    }
+
+    final stoppedByPeople = switch (last.failure) {
+      TransferFailure.declined ||
+      TransferFailure.cancelledByPeer ||
+      TransferFailure.timedOut => true,
+      _ => false,
+    };
+    if (last.status == .failed && !stoppedByPeople) {
+      return FeatureHealth(.failing, reason: TransferTexts(l10n).failure(last));
+    }
+
+    return FeatureHealth(.ok, reason: l10n.healthSent);
+  }
+
   @override
   Future<void> onAppStarted(FeatureContext context) async {
     final viewModel = _viewModelFor(context);
@@ -78,7 +119,7 @@ class DropFeatureUi extends FeatureUi {
       ChangeNotifierProvider.value(
         value: _viewModelFor(feature),
         child: DropHomeFrame(
-          onSendFiles: () => unawaited(_pickAndSend(feature)),
+          onSendFiles: () => unawaited(pickAndSend(feature)),
         ),
       );
 
@@ -133,13 +174,20 @@ class DropFeatureUi extends FeatureUi {
     }
   }
 
-  Future<void> _pickAndSend(FeatureContext context) async {
-    final target = await _chooseTarget(context);
+  /// The home card's Send button: asks which device, then which files.
+  Future<void> pickAndSend(FeatureContext context) async {
+    final target = await _chooseTarget(context, asked: true);
     if (target == null) {
       return;
     }
 
-    await _viewModelFor(context).pickAndSend(target.deviceId);
+    final viewModel = _viewModelFor(context);
+    final paths = await viewModel.pickFiles();
+    if (paths.isEmpty) {
+      return;
+    }
+
+    await _sendTo(context, target, paths: paths);
   }
 
   /// Sends [paths] or [text] to the one connected device, or asks which.
@@ -149,15 +197,37 @@ class DropFeatureUi extends FeatureUi {
     String? text,
     bool temporary = false,
   }) async {
-    final target = await _chooseTarget(context);
+    final target = await _chooseTarget(context, asked: false);
     if (target == null) {
       return true;
     }
 
+    await _sendTo(
+      context,
+      target,
+      paths: paths,
+      text: text,
+      temporary: temporary,
+    );
+    return true;
+  }
+
+  Future<void> _sendTo(
+    FeatureContext context,
+    DropTarget target, {
+    List<String> paths = const [],
+    String? text,
+    bool temporary = false,
+  }) async {
     final viewModel = _viewModelFor(context);
+    final l10n = _l10n();
     if (text != null) {
-      viewModel.sendText(target.deviceId, text);
-      return true;
+      final sent = viewModel.sendText(target.deviceId, text);
+      if (sent == null) {
+        await _notices?.explain(l10n.noticeGone, l10n.noticeGoneBody);
+      }
+
+      return;
     }
 
     final transfer = await viewModel.sendFiles(
@@ -165,23 +235,37 @@ class DropFeatureUi extends FeatureUi {
       paths,
       temporary: temporary,
     );
-    if (transfer == null) {
-      final l10n = _l10n();
-      await _notices?.explain(l10n.noticeNothing, l10n.noticeNothingBody);
+    if (transfer != null) {
+      return;
     }
 
-    return true;
+    if (target.isLocalSend && viewModel.isGone(target)) {
+      await _notices?.explain(l10n.noticeGone, l10n.noticeGoneBody);
+      return;
+    }
+
+    await _notices?.explain(l10n.noticeNothing, l10n.noticeNothingBody);
   }
 
-  Future<DropTarget?> _chooseTarget(FeatureContext context) async {
-    final targets = _viewModelFor(context).targets;
-    if (targets.isEmpty) {
+  /// Picks where to send. Things dropped or shared go straight to the one
+  /// connected paired device; a LocalSend device is never picked without
+  /// asking. When someone [asked] to send, LocalSend devices are offered
+  /// next to the paired ones.
+  Future<DropTarget?> _chooseTarget(
+    FeatureContext context, {
+    required bool asked,
+  }) async {
+    final viewModel = _viewModelFor(context);
+    final targets = viewModel.targets;
+    final offerLocalSend = viewModel.localSendEnabled;
+    if (targets.isEmpty && !offerLocalSend) {
       final l10n = _l10n();
       await _notices?.explain(l10n.noticeNoDevice, l10n.noticeNoDeviceBody);
       return null;
     }
 
-    if (targets case [final only]) {
+    final skipPicker = !asked || !offerLocalSend;
+    if (targets case [final only] when skipPicker) {
       return only;
     }
 
@@ -190,7 +274,17 @@ class DropFeatureUi extends FeatureUi {
       return null;
     }
 
-    return DevicePickerDialog.show(navigatorContext, targets);
+    return DevicePickerDialog.show(navigatorContext, viewModel);
+  }
+
+  Transfer? _lastFinished(String deviceId) {
+    for (final transfer in feature.transfers) {
+      if (transfer.deviceId == deviceId && !transfer.status.isActive) {
+        return transfer;
+      }
+    }
+
+    return null;
   }
 
   DropViewModel _viewModelFor(FeatureContext context) =>

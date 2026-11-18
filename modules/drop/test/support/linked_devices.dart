@@ -24,6 +24,9 @@ class LinkedDevices {
     int chunkSize = 1024,
     int ackEvery = 4,
     Map<String, Object?> phoneSettings = const {},
+    Map<String, Object?> laptopSettings = const {},
+    SecretStore? laptopSecrets,
+    LocalSendOptions localSend = const LocalSendOptions(),
   }) async {
     final laptop = LinkedDevice(
       'laptop-id',
@@ -32,8 +35,10 @@ class LinkedDevices {
         store: laptopStore,
         chunkSize: chunkSize,
         ackEvery: ackEvery,
+        secrets: laptopSecrets,
+        localSendOptions: localSend,
       ),
-      MemorySettingsStore(),
+      MemorySettingsStore({...laptopSettings}),
     );
     final phone = LinkedDevice(
       'phone-id',
@@ -89,6 +94,14 @@ class LinkedDevice implements FeatureHost {
   final SettingsStore settings;
 
   LinkedSession? session;
+
+  @override
+  DeviceInfo get localDevice => DeviceInfo(
+    id: id,
+    name: name,
+    platform: .PLATFORM_MACOS,
+    formFactor: .FORM_FACTOR_LAPTOP,
+  );
 
   @override
   List<Session> get sessions => [?session];

@@ -424,6 +424,240 @@ abstract class DropLocalizations {
   /// **'Files from your paired devices go straight to the receive folder. Turn this off to approve each one.'**
   String get settingsAutoAcceptBody;
 
+  /// No description provided for @failurePinRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} asks for a PIN. Enter the one it shows.'**
+  String failurePinRequired(String device);
+
+  /// No description provided for @failureTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong PINs for {device}. Wait a moment, then try again.'**
+  String failureTooManyAttempts(String device);
+
+  /// No description provided for @failureBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is busy with another transfer. Try again when it\'s done.'**
+  String failureBusy(String device);
+
+  /// No description provided for @failureUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach {device}. Keep LocalSend open on it, on the same Wi-Fi.'**
+  String failureUnreachable(String device);
+
+  /// No description provided for @failureUntrusted.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t the device it said it was. Nothing was sent.'**
+  String failureUntrusted(String device);
+
+  /// No description provided for @actionEnterPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter PIN'**
+  String get actionEnterPin;
+
+  /// No description provided for @pinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN for {device}'**
+  String pinTitle(String device);
+
+  /// No description provided for @pinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get pinLabel;
+
+  /// No description provided for @pinSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get pinSend;
+
+  /// No description provided for @offerFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'{model} · {address}'**
+  String offerFrom(String model, String address);
+
+  /// No description provided for @offerFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fingerprint {fingerprint}'**
+  String offerFingerprint(String fingerprint);
+
+  /// No description provided for @offerFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'{names}'**
+  String offerFiles(String names);
+
+  /// No description provided for @offerFilesMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} and {count} more'**
+  String offerFilesMore(String names, int count);
+
+  /// No description provided for @offerTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}} · {size}'**
+  String offerTotal(int count, String size);
+
+  /// No description provided for @offerWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This device isn\'t paired with Ferret. Accept only if you expect it.'**
+  String get offerWarning;
+
+  /// No description provided for @pickerLocalSend.
+  ///
+  /// In en, this message translates to:
+  /// **'LocalSend'**
+  String get pickerLocalSend;
+
+  /// No description provided for @pickerLocalSendModel.
+  ///
+  /// In en, this message translates to:
+  /// **'LocalSend · {model}'**
+  String pickerLocalSendModel(String model);
+
+  /// No description provided for @pickerScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for LocalSend devices…'**
+  String get pickerScanning;
+
+  /// No description provided for @pickerNoLocalSend.
+  ///
+  /// In en, this message translates to:
+  /// **'No LocalSend devices found. Open LocalSend on the other device, on the same Wi-Fi.'**
+  String get pickerNoLocalSend;
+
+  /// No description provided for @pickerNoDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'None of your devices is connected.'**
+  String get pickerNoDevices;
+
+  /// No description provided for @pickerSearchAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Search again'**
+  String get pickerSearchAgain;
+
+  /// No description provided for @noticeGone.
+  ///
+  /// In en, this message translates to:
+  /// **'That device is gone'**
+  String get noticeGone;
+
+  /// No description provided for @noticeGoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s no longer on the network. Open LocalSend on it and try again.'**
+  String get noticeGoneBody;
+
+  /// No description provided for @receiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive from LocalSend'**
+  String get receiveTitle;
+
+  /// No description provided for @receiveOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. LocalSend devices can\'t send to this one.'**
+  String get receiveOff;
+
+  /// No description provided for @receiveStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning on…'**
+  String get receiveStarting;
+
+  /// No description provided for @receiveTimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible as {alias} · {time} left'**
+  String receiveTimed(String alias, String time);
+
+  /// No description provided for @receiveAlwaysOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible as {alias} · stays on'**
+  String receiveAlwaysOn(String alias);
+
+  /// No description provided for @receiveCannotListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start. A firewall or another app may be blocking it.'**
+  String get receiveCannotListen;
+
+  /// No description provided for @receiveNoIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t prepare this device for LocalSend.'**
+  String get receiveNoIdentity;
+
+  /// No description provided for @receiveTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On for 10 min'**
+  String get receiveTurnOn;
+
+  /// No description provided for @receiveTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get receiveTryAgain;
+
+  /// No description provided for @receiveStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get receiveStop;
+
+  /// No description provided for @settingsLocalSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Work with LocalSend'**
+  String get settingsLocalSend;
+
+  /// No description provided for @settingsLocalSendBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Send files to devices running the LocalSend app, and receive from them when you turn it on. Each file from LocalSend asks first.'**
+  String get settingsLocalSendBody;
+
+  /// No description provided for @settingsReceiveAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always receive from LocalSend'**
+  String get settingsReceiveAlways;
+
+  /// No description provided for @settingsReceiveAlwaysBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps this device visible to LocalSend devices on your network, also after a restart. Off, it\'s visible for 10 minutes when you ask.'**
+  String get settingsReceiveAlwaysBody;
+
+  /// No description provided for @healthOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get healthOk;
+
+  /// No description provided for @healthSent.
+  ///
+  /// In en, this message translates to:
+  /// **'The last transfer went through.'**
+  String get healthSent;
+
   /// No description provided for @sizeBytes.
   ///
   /// In en, this message translates to:

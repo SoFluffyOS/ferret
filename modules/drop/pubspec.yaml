@@ -24,6 +24,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  interop_localsend:
+    path: ../../packages/interop_localsend
   intl: ^0.20.3
   lucide_icons_flutter: ^4.0.3
   mime: ^2.0.0

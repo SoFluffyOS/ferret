@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/ui/frames/transfer_actions.dart';
@@ -9,7 +11,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Drop's home card: active and recent transfers, or a hint to send some.
+/// Drop's home card: active and recent transfers, or a hint to send some,
+/// and the switch that lets LocalSend devices send here for a while.
 class DropHomeFrame extends StatelessWidget {
   const DropHomeFrame({super.key, required this.onSendFiles});
 
@@ -25,7 +28,16 @@ class DropHomeFrame extends StatelessWidget {
       (model) => model.transfers,
     );
     final canSend = context.select<DropViewModel, bool>(
-      (model) => model.targets.isNotEmpty,
+      (model) => model.canSend,
+    );
+    final localSend = context.select<DropViewModel, bool>(
+      (model) => model.localSendEnabled,
+    );
+    final receiving = context.select<DropViewModel, LocalSendReceiveState>(
+      (model) => model.receiveState,
+    );
+    final secondsLeft = context.select<DropViewModel, int?>(
+      (model) => model.receiveSecondsLeft,
     );
     final hasFinished = context.select<DropViewModel, bool>(
       (model) => model.hasFinished,
@@ -72,7 +84,14 @@ class DropHomeFrame extends StatelessWidget {
               title: texts.title(transfer),
               status: texts.status(transfer),
               speed: texts.speed(transfer),
-              actions: transferActions(viewModel, transfer, l10n),
+              details: texts.offerDetails(transfer),
+              actions: transferActions(
+                viewModel,
+                transfer,
+                l10n,
+                onEnterPin: (failed) =>
+                    unawaited(_enterPin(context, viewModel, failed)),
+              ),
               dismissLabel: l10n.actionDismiss,
               onDismiss: switch (transfer.status.isActive) {
                 true => null,
@@ -89,8 +108,85 @@ class DropHomeFrame extends StatelessWidget {
               onPressed: onSendFiles,
             ),
           ],
+          if (localSend) ...[
+            Spacing.v16,
+            LocalSendReceiveRow(
+              title: l10n.receiveTitle,
+              status: _receiveStatus(receiving, secondsLeft, l10n, texts),
+              hasProblem: receiving.problem != null,
+              actionLabel: _receiveAction(receiving, l10n),
+              onAction: switch ((receiving.isStarting, receiving.isOn)) {
+                (true, _) => null,
+                (false, true) => viewModel.stopReceiving,
+                (false, false) => viewModel.receiveFromLocalSend,
+              },
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  String _receiveStatus(
+    LocalSendReceiveState state,
+    int? secondsLeft,
+    DropLocalizations l10n,
+    TransferTexts texts,
+  ) {
+    if (state.isStarting) {
+      return l10n.receiveStarting;
+    }
+
+    if (state.problem case final problem?) {
+      return switch (problem) {
+        LocalSendProblem.cannotListen => l10n.receiveCannotListen,
+        LocalSendProblem.noIdentity => l10n.receiveNoIdentity,
+      };
+    }
+
+    if (!state.isOn) {
+      return l10n.receiveOff;
+    }
+
+    if (secondsLeft == null) {
+      return l10n.receiveAlwaysOn(state.alias);
+    }
+
+    return l10n.receiveTimed(
+      state.alias,
+      texts.countdown(Duration(seconds: secondsLeft)),
+    );
+  }
+
+  String _receiveAction(LocalSendReceiveState state, DropLocalizations l10n) {
+    if (state.isOn) {
+      return l10n.receiveStop;
+    }
+
+    if (state.problem != null) {
+      return l10n.receiveTryAgain;
+    }
+
+    return l10n.receiveTurnOn;
+  }
+
+  Future<void> _enterPin(
+    BuildContext context,
+    DropViewModel viewModel,
+    Transfer transfer,
+  ) async {
+    final l10n = context.dropL10n;
+    final pin = await InputTextDialog.show(
+      context,
+      title: l10n.pinTitle(transfer.deviceName),
+      labelText: l10n.pinLabel,
+      cancelText: l10n.actionCancel,
+      confirmText: l10n.pinSend,
+    );
+    if (pin == null || pin.trim().isEmpty) {
+      return;
+    }
+
+    await viewModel.retryWithPin(transfer, pin);
   }
 }

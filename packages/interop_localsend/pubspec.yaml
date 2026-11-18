@@ -10,7 +10,12 @@ environment:
 dependencies:
   core:
     path: ../core
+  crypto: ^3.0.6
+  # RSA key generation and signing for the self-signed TLS certificate.
+  # Pure Dart, maintained by the Bouncy Castle project.
+  pointycastle: ^4.0.0
 
 dev_dependencies:
   lints: ^6.0.0
+  path: ^1.9.1
   test: ^1.32.0

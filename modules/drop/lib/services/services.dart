@@ -7,6 +7,7 @@ export 'package:drop/services/file_hasher.dart';
 export 'package:drop/services/file_names.dart';
 export 'package:drop/services/folder_receive_store.dart';
 export 'package:drop/services/incoming_job.dart';
+export 'package:drop/services/localsend/localsend.dart';
 export 'package:drop/services/outgoing_file.dart';
 export 'package:drop/services/outgoing_job.dart';
 export 'package:drop/services/progress_throttle.dart';

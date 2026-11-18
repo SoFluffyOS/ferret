@@ -1,11 +1,12 @@
 import 'package:drop/l10n/l10n.dart';
+import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Drop's settings: where files go, and whether to ask first.
+/// Drop's settings: where files go, whether to ask first, and LocalSend.
 class DropSettingsFrame extends StatelessWidget {
   const DropSettingsFrame({super.key});
 
@@ -20,6 +21,12 @@ class DropSettingsFrame extends StatelessWidget {
     );
     final customFolder = context.select<DropViewModel, bool>(
       (model) => model.hasCustomFolder,
+    );
+    final localSend = context.select<DropViewModel, bool>(
+      (model) => model.localSendEnabled,
+    );
+    final receiveAlways = context.select<DropViewModel, bool>(
+      (model) => model.receiveAlways,
     );
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -68,33 +75,28 @@ class DropSettingsFrame extends StatelessWidget {
               ),
             ),
           Spacing.v16,
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      l10n.settingsAutoAccept,
-                      style: typography.base1.copyWith(color: palette.text),
-                    ),
-                    Spacing.vertical(Spacing.d2),
-                    Text(
-                      l10n.settingsAutoAcceptBody,
-                      style: typography.caption1.copyWith(
-                        color: palette.mutedText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Spacing.h12,
-              SwitchToggle(
-                value: autoAccept,
-                onChanged: viewModel.setAutoAccept,
-              ),
-            ],
+          SettingSwitch(
+            title: l10n.settingsAutoAccept,
+            body: l10n.settingsAutoAcceptBody,
+            value: autoAccept,
+            onChanged: viewModel.setAutoAccept,
           ),
+          Spacing.v16,
+          SettingSwitch(
+            title: l10n.settingsLocalSend,
+            body: l10n.settingsLocalSendBody,
+            value: localSend,
+            onChanged: viewModel.setLocalSendEnabled,
+          ),
+          if (localSend) ...[
+            Spacing.v16,
+            SettingSwitch(
+              title: l10n.settingsReceiveAlways,
+              body: l10n.settingsReceiveAlwaysBody,
+              value: receiveAlways,
+              onChanged: viewModel.setReceiveAlways,
+            ),
+          ],
         ],
       ),
     );

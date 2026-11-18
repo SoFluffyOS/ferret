@@ -141,7 +141,11 @@ class DropNotices {
         id: id,
         channel: .transfers,
         title: l10n.noticeOffer(device),
-        body: title,
+        body: [
+          title,
+          if (transfer.isLocalSend && !transfer.isText)
+            texts.size(transfer.totalBytes),
+        ].join(' · '),
         category: offerCategory,
         groupKey: transfer.deviceId,
       );

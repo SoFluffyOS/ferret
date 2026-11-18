@@ -1,3 +1,4 @@
+import 'package:drop/models/localsend_origin.dart';
 import 'package:drop/models/transfer_direction.dart';
 import 'package:drop/models/transfer_failure.dart';
 import 'package:drop/models/transfer_file.dart';
@@ -19,6 +20,7 @@ class Transfer {
     this.bytesDone = 0,
     this.bytesPerSecond = 0,
     this.needsAnswer = false,
+    this.localSend,
   });
 
   final String id;
@@ -37,6 +39,12 @@ class Transfer {
 
   /// An incoming offer waiting for someone on this device to accept it.
   final bool needsAnswer;
+
+  /// Set when the other side is a LocalSend device instead of a paired
+  /// Ferret device.
+  final LocalSendOrigin? localSend;
+
+  bool get isLocalSend => localSend != null;
 
   int get totalBytes => files.fold(0, (sum, file) => sum + file.size);
 
@@ -72,14 +80,20 @@ class Transfer {
     TransferStatus.failed => switch (failure) {
       TransferFailure.declined ||
       TransferFailure.unsupported ||
-      TransferFailure.cancelledByPeer => isOutgoing,
-      _ => true,
+      TransferFailure.cancelledByPeer ||
+      TransferFailure.pinRequired ||
+      TransferFailure.tooManyAttempts ||
+      TransferFailure.busy ||
+      TransferFailure.unreachable ||
+      TransferFailure.untrusted => isOutgoing,
+      _ => !isLocalSend || isOutgoing,
     },
     _ => false,
   };
 
   Transfer copyWith({
     List<TransferFile>? files,
+    String? text,
     TransferStatus? status,
     TransferFailure? failure,
     bool clearFailure = false,
@@ -92,7 +106,7 @@ class Transfer {
     deviceId: deviceId,
     deviceName: deviceName,
     files: files ?? this.files,
-    text: text,
+    text: text ?? this.text,
     status: status ?? this.status,
     failure: switch (clearFailure) {
       true => null,
@@ -102,5 +116,6 @@ class Transfer {
     bytesPerSecond: bytesPerSecond ?? this.bytesPerSecond,
     startedAt: startedAt,
     needsAnswer: needsAnswer ?? this.needsAnswer,
+    localSend: localSend,
   );
 }

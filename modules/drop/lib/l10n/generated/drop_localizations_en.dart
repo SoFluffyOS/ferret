@@ -238,6 +238,164 @@ class DropLocalizationsEn extends DropLocalizations {
       'Files from your paired devices go straight to the receive folder. Turn this off to approve each one.';
 
   @override
+  String failurePinRequired(String device) {
+    return '$device asks for a PIN. Enter the one it shows.';
+  }
+
+  @override
+  String failureTooManyAttempts(String device) {
+    return 'Too many wrong PINs for $device. Wait a moment, then try again.';
+  }
+
+  @override
+  String failureBusy(String device) {
+    return '$device is busy with another transfer. Try again when it\'s done.';
+  }
+
+  @override
+  String failureUnreachable(String device) {
+    return 'Couldn\'t reach $device. Keep LocalSend open on it, on the same Wi-Fi.';
+  }
+
+  @override
+  String failureUntrusted(String device) {
+    return '$device isn\'t the device it said it was. Nothing was sent.';
+  }
+
+  @override
+  String get actionEnterPin => 'Enter PIN';
+
+  @override
+  String pinTitle(String device) {
+    return 'PIN for $device';
+  }
+
+  @override
+  String get pinLabel => 'PIN';
+
+  @override
+  String get pinSend => 'Send';
+
+  @override
+  String offerFrom(String model, String address) {
+    return '$model · $address';
+  }
+
+  @override
+  String offerFingerprint(String fingerprint) {
+    return 'Fingerprint $fingerprint';
+  }
+
+  @override
+  String offerFiles(String names) {
+    return '$names';
+  }
+
+  @override
+  String offerFilesMore(String names, int count) {
+    return '$names and $count more';
+  }
+
+  @override
+  String offerTotal(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0 · $size';
+  }
+
+  @override
+  String get offerWarning =>
+      'This device isn\'t paired with Ferret. Accept only if you expect it.';
+
+  @override
+  String get pickerLocalSend => 'LocalSend';
+
+  @override
+  String pickerLocalSendModel(String model) {
+    return 'LocalSend · $model';
+  }
+
+  @override
+  String get pickerScanning => 'Looking for LocalSend devices…';
+
+  @override
+  String get pickerNoLocalSend =>
+      'No LocalSend devices found. Open LocalSend on the other device, on the same Wi-Fi.';
+
+  @override
+  String get pickerNoDevices => 'None of your devices is connected.';
+
+  @override
+  String get pickerSearchAgain => 'Search again';
+
+  @override
+  String get noticeGone => 'That device is gone';
+
+  @override
+  String get noticeGoneBody =>
+      'It\'s no longer on the network. Open LocalSend on it and try again.';
+
+  @override
+  String get receiveTitle => 'Receive from LocalSend';
+
+  @override
+  String get receiveOff => 'Off. LocalSend devices can\'t send to this one.';
+
+  @override
+  String get receiveStarting => 'Turning on…';
+
+  @override
+  String receiveTimed(String alias, String time) {
+    return 'Visible as $alias · $time left';
+  }
+
+  @override
+  String receiveAlwaysOn(String alias) {
+    return 'Visible as $alias · stays on';
+  }
+
+  @override
+  String get receiveCannotListen =>
+      'Couldn\'t start. A firewall or another app may be blocking it.';
+
+  @override
+  String get receiveNoIdentity =>
+      'Couldn\'t prepare this device for LocalSend.';
+
+  @override
+  String get receiveTurnOn => 'On for 10 min';
+
+  @override
+  String get receiveTryAgain => 'Try again';
+
+  @override
+  String get receiveStop => 'Stop';
+
+  @override
+  String get settingsLocalSend => 'Work with LocalSend';
+
+  @override
+  String get settingsLocalSendBody =>
+      'Send files to devices running the LocalSend app, and receive from them when you turn it on. Each file from LocalSend asks first.';
+
+  @override
+  String get settingsReceiveAlways => 'Always receive from LocalSend';
+
+  @override
+  String get settingsReceiveAlwaysBody =>
+      'Keeps this device visible to LocalSend devices on your network, also after a restart. Off, it\'s visible for 10 minutes when you ask.';
+
+  @override
+  String get healthOk => 'Ready';
+
+  @override
+  String get healthSent => 'The last transfer went through.';
+
+  @override
   String sizeBytes(String value) {
     return '$value B';
   }

@@ -8,4 +8,13 @@ abstract final class DropSettings {
   static const receiveFolder = 'drop.receive_folder';
 
   static const defaultFolderName = 'Ferret';
+
+  /// Work with LocalSend devices at all: list them as send targets and
+  /// offer to receive from them. On by default; nothing is sent on the
+  /// network until someone looks for devices or turns receiving on.
+  static const localSendEnabled = 'drop.localsend_enabled';
+
+  /// Keep receiving from LocalSend devices after a restart. Off by
+  /// default; the 10 minute window is never stored.
+  static const localSendReceiveAlways = 'drop.localsend_receive_always';
 }

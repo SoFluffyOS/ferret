@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/services.dart';
 import 'package:engine/engine.dart';
+import 'package:interop_localsend/interop_localsend.dart';
 import 'package:path/path.dart' as p;
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/drop.dart';
@@ -15,22 +16,33 @@ typedef ReceiveStoreFactory = ReceiveStore Function(SettingsStore settings);
 
 /// The engine side of Drop: files and text between paired devices.
 ///
-/// The Ferret protocol lives in [DropSender] and [DropReceiver]; both report
-/// to one [TransferRegistry] and save through one [ReceiveStore], so another
-/// transport can plug into the same list and folder later.
+/// The Ferret protocol lives in [DropSender] and [DropReceiver]; LocalSend
+/// devices are reached through [localSend]. All of them report to one
+/// [TransferRegistry] and save through one [ReceiveStore].
 class DropFeature extends Feature {
   DropFeature({
     ReceiveStoreFactory? store,
     this.chunkSize = DropSender.defaultChunkSize,
     this.ackEvery = DropSender.defaultAckEvery,
-  }) : _storeFactory = store ?? _defaultStore;
+    this.localSendOptions = const LocalSendOptions(),
+    SecretStore? secrets,
+  }) : _storeFactory = store ?? _defaultStore,
+       _secrets = secrets;
 
   static const featureId = 'drop';
 
   final int chunkSize;
   final int ackEvery;
+  final LocalSendOptions localSendOptions;
   final ReceiveStoreFactory _storeFactory;
+
+  /// Keeps this device's LocalSend certificate. Without it, the device
+  /// gets a new LocalSend fingerprint each time the app starts.
+  final SecretStore? _secrets;
   final TransferRegistry registry = TransferRegistry();
+
+  /// Sending to and receiving from LocalSend devices.
+  late final LocalSendBridge localSend;
 
   late final DropSender _sender;
   late final DropReceiver _receiver;
@@ -64,6 +76,16 @@ class DropFeature extends Feature {
 
   @override
   Future<void> onStart() async {
+    final store = _storeFactory(host.settings);
+    localSend = LocalSendBridge(
+      registry: registry,
+      store: store,
+      settings: host.settings,
+      describeSelf: _describeSelf,
+      secrets: _secrets,
+      options: localSendOptions,
+    );
+    unawaited(localSend.start());
     _sender = DropSender(
       featureId: featureId,
       registry: registry,
@@ -75,7 +97,7 @@ class DropFeature extends Feature {
     _receiver = DropReceiver(
       featureId: featureId,
       registry: registry,
-      store: _storeFactory(host.settings),
+      store: store,
       sessionFor: host.sessionFor,
       deviceName: _deviceName,
       autoAccept: () => autoAccept,
@@ -83,7 +105,10 @@ class DropFeature extends Feature {
   }
 
   @override
-  Future<void> stop() => _receiver.dispose();
+  Future<void> stop() async {
+    await localSend.dispose();
+    await _receiver.dispose();
+  }
 
   /// Sends the files at [paths] to [deviceId]. Folders and missing files
   /// are skipped; returns null when nothing is left to send. [temporary]
@@ -100,13 +125,24 @@ class DropFeature extends Feature {
       return null;
     }
 
+    if (LocalSendIds.isLocalSend(deviceId)) {
+      return localSend.sendFiles(deviceId, files, temporary: temporary);
+    }
+
     return _sender.sendFiles(deviceId, files, temporary: temporary);
   }
 
+  /// Sends [text] to the paired device [deviceId]. Text for a LocalSend
+  /// device goes through [localSend].
   Transfer sendText(String deviceId, String text) =>
       _sender.sendText(deviceId, text);
 
   Future<void> cancel(String id) async {
+    if (localSend.owns(id)) {
+      await localSend.cancel(id);
+      return;
+    }
+
     if (_sender.owns(id)) {
       await _sender.cancel(id);
       return;
@@ -117,8 +153,12 @@ class DropFeature extends Feature {
 
   /// Whether Retry can pick [transfer] up again from this device.
   bool canRetry(Transfer transfer) {
-    if (!transfer.canRetry) {
+    if (!transfer.canRetry || transfer.failure == .pinRequired) {
       return false;
+    }
+
+    if (transfer.isLocalSend) {
+      return localSend.sender.owns(transfer.id);
     }
 
     return switch (transfer.isOutgoing) {
@@ -128,6 +168,11 @@ class DropFeature extends Feature {
   }
 
   Future<void> retry(String id) async {
+    if (localSend.sender.owns(id)) {
+      await localSend.sender.retry(id);
+      return;
+    }
+
     if (_sender.owns(id)) {
       await _sender.retry(id);
       return;
@@ -136,9 +181,26 @@ class DropFeature extends Feature {
     await _receiver.retry(id);
   }
 
+  /// Whether [transfer] stopped because the LocalSend receiver wants a
+  /// PIN, and can be sent again with one.
+  bool needsPin(Transfer transfer) =>
+      transfer.status == .failed &&
+      transfer.failure == .pinRequired &&
+      localSend.sender.owns(transfer.id);
+
+  /// Offers a LocalSend transfer again with the receiver's [pin].
+  Future<void> retryWithPin(String id, String pin) =>
+      localSend.sender.retry(id, pin: pin);
+
   /// Accepts or declines an offer waiting for this device's answer.
-  void answer(String id, {required bool accept}) =>
-      _receiver.answer(id, accept: accept);
+  void answer(String id, {required bool accept}) {
+    if (localSend.receiver.owns(id)) {
+      localSend.receiver.answer(id, accept: accept);
+      return;
+    }
+
+    _receiver.answer(id, accept: accept);
+  }
 
   /// Removes a finished transfer from the list.
   void dismiss(String id) {
@@ -213,6 +275,31 @@ class DropFeature extends Feature {
     }
 
     return '';
+  }
+
+  ({String alias, String model, LocalSendDeviceType type}) _describeSelf() {
+    final device = host.localDevice;
+    return (
+      alias: device.name,
+      model: switch (device.platform) {
+        .PLATFORM_ANDROID => 'Android',
+        .PLATFORM_IOS => 'iOS',
+        .PLATFORM_MACOS => 'macOS',
+        .PLATFORM_LINUX => 'Linux',
+        .PLATFORM_WINDOWS => 'Windows',
+        _ => 'Ferret',
+      },
+      type: switch (device.formFactor) {
+        .FORM_FACTOR_PHONE || .FORM_FACTOR_TABLET => .mobile,
+        .FORM_FACTOR_SERVER => .server,
+        .FORM_FACTOR_LAPTOP || .FORM_FACTOR_DESKTOP => .desktop,
+        _ => switch (device.platform) {
+          .PLATFORM_ANDROID || .PLATFORM_IOS => .mobile,
+          .PLATFORM_CLI => .headless,
+          _ => .desktop,
+        },
+      },
+    );
   }
 
   static ReceiveStore _defaultStore(SettingsStore settings) =>

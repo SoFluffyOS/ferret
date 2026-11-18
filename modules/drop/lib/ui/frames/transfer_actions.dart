@@ -8,8 +8,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 List<TransferAction> transferActions(
   DropViewModel viewModel,
   Transfer transfer,
-  DropLocalizations l10n,
-) {
+  DropLocalizations l10n, {
+  void Function(Transfer transfer)? onEnterPin,
+}) {
   if (transfer.needsAnswer) {
     return [
       TransferAction(
@@ -59,6 +60,16 @@ List<TransferAction> transferActions(
         onPressed: () => viewModel.reveal(transfer),
       ),
     ],
+    (TransferStatus.failed, _, _)
+        when onEnterPin != null && viewModel.needsPin(transfer) =>
+      [
+        TransferAction(
+          label: l10n.actionEnterPin,
+          icon: LucideIcons.keyRound,
+          primary: true,
+          onPressed: () => onEnterPin(transfer),
+        ),
+      ],
     (TransferStatus.failed, _, _) when viewModel.canRetry(transfer) => [
       TransferAction(
         label: l10n.actionRetry,

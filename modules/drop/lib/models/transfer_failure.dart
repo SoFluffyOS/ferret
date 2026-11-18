@@ -32,4 +32,19 @@ enum TransferFailure {
 
   /// The other device sent something unexpected.
   protocol,
+
+  /// A LocalSend device wants a PIN, or the PIN was wrong.
+  pinRequired,
+
+  /// A LocalSend device locked after too many wrong PINs.
+  tooManyAttempts,
+
+  /// A LocalSend device is busy with another transfer.
+  busy,
+
+  /// A LocalSend device didn't answer: gone, asleep or on another network.
+  unreachable,
+
+  /// A LocalSend device showed another certificate than it announced.
+  untrusted,
 }

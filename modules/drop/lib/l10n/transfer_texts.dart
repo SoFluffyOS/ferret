@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:drop/l10n/generated/drop_localizations.dart';
 import 'package:drop/models/models.dart';
+import 'package:interop_localsend/interop_localsend.dart' show Fingerprints;
 import 'package:intl/intl.dart';
 
 /// Plain-word descriptions of a transfer, shared by the home card and the
@@ -12,6 +13,7 @@ class TransferTexts {
   final DropLocalizations l10n;
 
   static const _kilo = 1024;
+  static const _namesShown = 3;
 
   String title(Transfer transfer) {
     if (transfer.isText) {
@@ -96,8 +98,46 @@ class TransferTexts {
       TransferFailure.sourceChanged => l10n.failureSourceChanged,
       TransferFailure.cancelledByPeer => l10n.failureCancelledByPeer(device),
       TransferFailure.unknownTransfer => l10n.failureUnknownTransfer(device),
+      TransferFailure.pinRequired => l10n.failurePinRequired(device),
+      TransferFailure.tooManyAttempts => l10n.failureTooManyAttempts(device),
+      TransferFailure.busy => l10n.failureBusy(device),
+      TransferFailure.unreachable => l10n.failureUnreachable(device),
+      TransferFailure.untrusted => l10n.failureUntrusted(device),
       TransferFailure.protocol || null => l10n.failureProtocol(device),
     };
+  }
+
+  /// What to know before accepting an offer from a LocalSend device: what
+  /// the device says it is, its fingerprint, the files and their size.
+  /// Empty for paired devices.
+  List<String> offerDetails(Transfer transfer) {
+    final origin = transfer.localSend;
+    if (origin == null || !transfer.needsAnswer) {
+      return const [];
+    }
+
+    final names = [
+      for (final file in transfer.files.take(_namesShown)) file.name,
+    ];
+    final more = transfer.files.length - names.length;
+    return [
+      switch (origin.deviceModel.isEmpty) {
+        true => origin.address,
+        false => l10n.offerFrom(origin.deviceModel, origin.address),
+      },
+      l10n.offerFingerprint(Fingerprints.short(origin.fingerprint)),
+      if (more > 0) l10n.offerFilesMore(names.join(', '), more),
+      if (more <= 0 && names.length > 1) l10n.offerFiles(names.join(', ')),
+      if (transfer.files.isNotEmpty)
+        l10n.offerTotal(transfer.files.length, size(transfer.totalBytes)),
+      l10n.offerWarning,
+    ];
+  }
+
+  /// Time left in a receive window, as `9:41`.
+  String countdown(Duration left) {
+    final seconds = (left.inMilliseconds / 1000).ceil();
+    return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
   }
 
   String size(int bytes) {

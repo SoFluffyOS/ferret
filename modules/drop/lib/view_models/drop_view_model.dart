@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:drop/feature/drop_feature.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
+import 'package:drop/services/services.dart';
 import 'package:ferret_drop/ferret_drop.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:interop_localsend/interop_localsend.dart';
 
 /// What Drop's card and settings show, and what they can do.
 class DropViewModel extends ChangeNotifier {
@@ -17,7 +19,9 @@ class DropViewModel extends ChangeNotifier {
     Future<List<String>> Function()? pickFiles,
     Future<String?> Function()? pickFolder,
     Future<String> Function()? describeFolder,
+    DateTime Function()? clock,
   }) : _plugin = plugin ?? FerretDrop(),
+       _clock = clock ?? DateTime.now,
        _pickFiles = pickFiles ?? _openFiles,
        _pickFolder = pickFolder ?? getDirectoryPath,
        _describeFolder = describeFolder {
@@ -30,7 +34,9 @@ class DropViewModel extends ChangeNotifier {
         feature.host.settings.changes
             .where((key) => key.startsWith('${DropFeature.featureId}.'))
             .listen((_) => _onSettings()),
-      );
+      )
+      ..add(feature.localSend.changes.listen((_) => _onLocalSend()));
+    _onLocalSend();
     unawaited(_loadFolder());
   }
 
@@ -39,10 +45,14 @@ class DropViewModel extends ChangeNotifier {
   final Future<List<String>> Function() _pickFiles;
   final Future<String?> Function() _pickFolder;
   final Future<String> Function()? _describeFolder;
+  final DateTime Function() _clock;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   List<Transfer> _transfers = const [];
   List<DropTarget> _targets = const [];
+  List<DropTarget> _localSendTargets = const [];
+  LocalSendReceiveState _receiveState = const LocalSendReceiveState();
+  Timer? _countdown;
   String _receiveFolder = '';
 
   /// Newest first.
@@ -51,8 +61,30 @@ class DropViewModel extends ChangeNotifier {
   bool get hasFinished =>
       _transfers.any((transfer) => !transfer.status.isActive);
 
-  /// Connected devices that can receive drops.
+  /// Connected paired devices that can receive drops.
   List<DropTarget> get targets => _targets;
+
+  /// LocalSend devices found on the network, when LocalSend is on.
+  List<DropTarget> get localSendTargets => _localSendTargets;
+
+  /// Whether Drop works with LocalSend devices at all.
+  bool get localSendEnabled => feature.localSend.isEnabled;
+
+  /// Whether the Send button has anywhere to send to, or to look.
+  bool get canSend => _targets.isNotEmpty || localSendEnabled;
+
+  bool get isScanning => feature.localSend.isScanning;
+
+  LocalSendReceiveState get receiveState => _receiveState;
+
+  bool get receiveAlways => feature.localSend.receiveAlways;
+
+  /// Whole seconds left in the receive window, or null when it is off or
+  /// stays on. Changes every second while the window is open.
+  int? get receiveSecondsLeft => switch (_receiveState.remaining(_clock())) {
+    final left? => (left.inMilliseconds / 1000).ceil(),
+    null => null,
+  };
 
   bool get autoAccept => feature.autoAccept;
 
@@ -91,14 +123,55 @@ class DropViewModel extends ChangeNotifier {
     return feature.sendFiles(deviceId, paths);
   }
 
+  /// Asks for files to send. Empty when nothing was picked.
+  Future<List<String>> pickFiles() => _pickFiles();
+
+  /// Whether the LocalSend device [target] left the network.
+  bool isGone(DropTarget target) =>
+      feature.localSend.peerFor(target.deviceId) == null;
+
   Future<Transfer?> sendFiles(
     String deviceId,
     List<String> paths, {
     bool temporary = false,
   }) => feature.sendFiles(deviceId, paths, temporary: temporary);
 
-  Transfer sendText(String deviceId, String text) =>
-      feature.sendText(deviceId, text);
+  /// Sends [text], or returns null when [deviceId] is a LocalSend device
+  /// that left the network.
+  Transfer? sendText(String deviceId, String text) {
+    if (LocalSendIds.isLocalSend(deviceId)) {
+      return feature.localSend.sendText(deviceId, text);
+    }
+
+    return feature.sendText(deviceId, text);
+  }
+
+  /// Looks for LocalSend devices on the network.
+  Future<void> scan() => feature.localSend.scan();
+
+  /// Lets LocalSend devices send here for the next 10 minutes.
+  Future<void> receiveFromLocalSend() => feature.localSend.receiveForAWhile();
+
+  /// Stops receiving from LocalSend, also when it was set to stay on.
+  Future<void> stopReceiving() async {
+    if (receiveAlways) {
+      await feature.localSend.setReceiveAlways(false);
+      return;
+    }
+
+    await feature.localSend.stopReceiving();
+  }
+
+  Future<void> setReceiveAlways(bool value) =>
+      feature.localSend.setReceiveAlways(value);
+
+  Future<void> setLocalSendEnabled(bool value) =>
+      feature.localSend.setEnabled(value);
+
+  bool needsPin(Transfer transfer) => feature.needsPin(transfer);
+
+  Future<void> retryWithPin(Transfer transfer, String pin) =>
+      feature.retryWithPin(transfer.id, pin.trim());
 
   Future<void> cancel(Transfer transfer) => feature.cancel(transfer.id);
 
@@ -158,6 +231,7 @@ class DropViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _countdown?.cancel();
     for (final subscription in _subscriptions) {
       unawaited(subscription.cancel());
     }
@@ -173,6 +247,49 @@ class DropViewModel extends ChangeNotifier {
   void _onSessions() {
     _targets = _readTargets();
     notifyListeners();
+  }
+
+  void _onLocalSend() {
+    _receiveState = feature.localSend.receiveState;
+    _localSendTargets = _readLocalSendTargets();
+    _countdown?.cancel();
+    _countdown = null;
+    if (_receiveState.remaining(_clock()) != null) {
+      _countdown = .periodic(
+        const Duration(seconds: 1),
+        (_) => notifyListeners(),
+      );
+    }
+
+    notifyListeners();
+  }
+
+  List<DropTarget> _readLocalSendTargets() {
+    if (!localSendEnabled) {
+      return const [];
+    }
+
+    return [
+      for (final peer in feature.localSend.peers)
+        DropTarget(
+          deviceId: LocalSendIds.deviceId(peer.fingerprint),
+          name: peer.info.alias,
+          formFactor: switch (peer.info.deviceType) {
+            LocalSendDeviceType.mobile => .FORM_FACTOR_PHONE,
+            LocalSendDeviceType.server => .FORM_FACTOR_SERVER,
+            LocalSendDeviceType.desktop => .FORM_FACTOR_DESKTOP,
+            LocalSendDeviceType.web ||
+            LocalSendDeviceType.headless => .FORM_FACTOR_UNSPECIFIED,
+          },
+          platform: switch (peer.info.deviceType) {
+            LocalSendDeviceType.web => .PLATFORM_BROWSER,
+            LocalSendDeviceType.headless => .PLATFORM_CLI,
+            _ => .PLATFORM_UNSPECIFIED,
+          },
+          isLocalSend: true,
+          detail: peer.info.deviceModel ?? '',
+        ),
+    ];
   }
 
   void _onSettings() {

@@ -16,6 +16,7 @@ class TransferTile extends StatelessWidget {
     required this.status,
     required this.actions,
     this.speed,
+    this.details = const [],
     this.onDismiss,
     this.dismissLabel = '',
   });
@@ -24,6 +25,9 @@ class TransferTile extends StatelessWidget {
   final String title;
   final String status;
   final String? speed;
+
+  /// Extra lines under the status, such as who a LocalSend offer is from.
+  final List<String> details;
   final List<TransferAction> actions;
   final VoidCallback? onDismiss;
   final String dismissLabel;
@@ -77,6 +81,13 @@ class TransferTile extends StatelessWidget {
                   if (speed case final line?)
                     Text(
                       line,
+                      style: typography.caption1.copyWith(
+                        color: palette.mutedText,
+                      ),
+                    ),
+                  for (final detail in details)
+                    Text(
+                      detail,
                       style: typography.caption1.copyWith(
                         color: palette.mutedText,
                       ),
