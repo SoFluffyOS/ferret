@@ -104,71 +104,62 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
     final name = prompt.device.name;
     final also = _alsoLine(l10n, prompt.alsoDevices);
 
+    // Scrolls when it is taller than the view, as it is in the popover
+    // with text set large: the answers are at the bottom.
     return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: Spacing.d320),
-        child: SurfaceCard(
-          padding: EdgeInsets.all(Spacing.d20),
-          child: Column(
-            mainAxisSize: .min,
-            children: [
-              Icon(
-                deviceIconFor(prompt.device.formFactor, prompt.device.platform),
-                size: Spacing.d32,
-                color: palette.text,
-              ),
-              Spacing.v8,
-              Text(
-                l10n.promptTitle(name),
-                textAlign: .center,
-                style: typography.title3.copyWith(color: palette.text),
-              ),
-              Spacing.v16,
-              ComparisonCode(code: prompt.code),
-              Spacing.v12,
-              Text(
-                l10n.promptBody(name),
-                textAlign: .center,
-                style: typography.body2.copyWith(color: palette.mutedText),
-              ),
-              if (also case final also?) ...[
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(Spacing.d16),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: Spacing.d320),
+          child: SurfaceCard(
+            padding: EdgeInsets.all(Spacing.d20),
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                Icon(
+                  deviceIconFor(
+                    prompt.device.formFactor,
+                    prompt.device.platform,
+                  ),
+                  size: Spacing.d32,
+                  color: palette.text,
+                ),
                 Spacing.v8,
                 Text(
-                  also,
+                  l10n.promptTitle(name),
                   textAlign: .center,
-                  style: typography.base2.copyWith(color: palette.mutedText),
+                  style: typography.title3.copyWith(color: palette.text),
                 ),
-              ],
-              Spacing.vertical(Spacing.d20),
-              Row(
-                children: [
-                  Expanded(
-                    child: Button(
-                      variant: .ghost,
-                      label: l10n.promptReject,
-                      mainAxisSize: .max,
-                      titleExpand: .shrink,
-                      onPressed: () => Navigator.of(context).pop(false),
-                    ),
-                  ),
-                  Spacing.h12,
-                  Expanded(
-                    child: Button(
-                      variant: .primary,
-                      label: l10n.promptAccept,
-                      mainAxisSize: .max,
-                      titleExpand: .shrink,
-                      onPressed: () => Navigator.of(context).pop(true),
-                    ),
+                Spacing.v16,
+                ComparisonCode(code: prompt.code),
+                Spacing.v12,
+                Text(
+                  l10n.promptBody(name),
+                  textAlign: .center,
+                  style: typography.body2.copyWith(color: palette.mutedText),
+                ),
+                if (also case final also?) ...[
+                  Spacing.v8,
+                  Text(
+                    also,
+                    textAlign: .center,
+                    style: typography.base2.copyWith(color: palette.mutedText),
                   ),
                 ],
-              ),
-              Spacing.v8,
-              Text(
-                l10n.promptSecondsLeft(_secondsLeft),
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-            ],
+                Spacing.vertical(Spacing.d20),
+                ActionPair(
+                  ghostLabel: l10n.promptReject,
+                  onGhost: () => Navigator.of(context).pop(false),
+                  primaryLabel: l10n.promptAccept,
+                  onPrimary: () => Navigator.of(context).pop(true),
+                ),
+                Spacing.v8,
+                Text(
+                  l10n.promptSecondsLeft(_secondsLeft),
+                  style: typography.caption1.copyWith(color: palette.mutedText),
+                ),
+              ],
+            ),
           ),
         ),
       ),

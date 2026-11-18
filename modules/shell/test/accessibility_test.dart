@@ -34,6 +34,64 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('the pairing code stays on one line when text is set large', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(
+      testApp(
+        const Center(
+          child: SizedBox(width: 200, child: ComparisonCode(code: '123456')),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(tester.getSize(find.byType(ComparisonCode)).width, 200);
+    final digits = tester.getRect(find.text('123 456'));
+    final box = tester.getRect(find.byType(ComparisonCode));
+    expect(digits.left, greaterThanOrEqualTo(box.left));
+    expect(digits.right, lessThanOrEqualTo(box.right));
+  });
+
+  testWidgets('two answers stack when text is set large', (tester) async {
+    Future<void> pump(double scale) async {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      await tester.pumpWidget(
+        testApp(
+          Center(
+            child: SizedBox(
+              width: 320,
+              child: ActionPair(
+                ghostLabel: 'Cancel',
+                onGhost: () {},
+                primaryLabel: 'They match',
+                onPrimary: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pump(1);
+    expect(
+      tester.getTopLeft(find.text('Cancel')).dy,
+      tester.getTopLeft(find.text('They match')).dy,
+    );
+
+    await pump(2);
+    expect(
+      tester.getTopLeft(find.text('They match')).dy,
+      lessThan(tester.getTopLeft(find.text('Cancel')).dy),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a switch row is one stop that says its name and state', (
     tester,
   ) async {
@@ -108,6 +166,27 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await prompt.answer, PairingAnswer.accepted);
+    });
+
+    testWidgets('at 200% text in the popover, both answers can be reached', (
+      tester,
+    ) async {
+      tester.view
+        ..devicePixelRatio = 1
+        ..physicalSize = const Size(380, 560);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final prompt = await open(tester);
+
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.text('Pair'));
+      await tester.pump();
+      await tester.tap(find.text('Pair'));
       await tester.pump(const Duration(milliseconds: 200));
       await tester.pump(const Duration(milliseconds: 300));
 

@@ -1,3 +1,4 @@
+export 'package:shell/ui/widgets/action_pair.dart';
 export 'package:shell/ui/widgets/activity_row.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
 export 'package:shell/ui/widgets/device_actions.dart';

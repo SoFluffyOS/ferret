@@ -29,7 +29,14 @@ class NavRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
+    final valueStyle = typography.base2.copyWith(color: palette.mutedText);
+    final titleText = Text(
+      title,
+      style: typography.base2.copyWith(color: palette.text),
+    );
+
     return Tappable(
+      semanticButton: true,
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -38,17 +45,40 @@ class NavRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(title, style: typography.base2.copyWith(color: palette.text)),
-            Spacing.h12,
-            Expanded(
-              child: Text(
-                value,
-                textAlign: .end,
-                overflow: .ellipsis,
-                maxLines: 1,
-                style: typography.base2.copyWith(color: palette.mutedText),
-              ),
-            ),
+            // Side by side, the value is cut to a few letters once text
+            // is set large, so it goes under the title there.
+            ...switch (context.hasLargeText) {
+              true => [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      titleText,
+                      if (value.isNotEmpty)
+                        Text(
+                          value,
+                          overflow: .ellipsis,
+                          maxLines: 2,
+                          style: valueStyle,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+              false => [
+                titleText,
+                Spacing.h12,
+                Expanded(
+                  child: Text(
+                    value,
+                    textAlign: .end,
+                    overflow: .ellipsis,
+                    maxLines: 1,
+                    style: valueStyle,
+                  ),
+                ),
+              ],
+            },
             if (attentionLabel case final label?) ...[
               Spacing.h6,
               Semantics(

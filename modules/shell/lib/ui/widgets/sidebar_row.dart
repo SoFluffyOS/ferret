@@ -60,7 +60,9 @@ class SidebarRow extends StatelessWidget {
         enableAnimation: false,
         enableHover: true,
         builder: (context, state) => Container(
-          height: height,
+          // At least a line high, and taller when text is set large:
+          // a fixed height would cut the letters.
+          constraints: BoxConstraints(minHeight: height),
           margin: EdgeInsets.symmetric(
             horizontal: Spacing.d8,
             vertical: Spacing.d1,

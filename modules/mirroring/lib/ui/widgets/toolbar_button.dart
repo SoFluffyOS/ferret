@@ -62,6 +62,11 @@ class ToolbarButton extends StatelessWidget {
               Spacing.h4,
               Text(
                 name,
+                // The tooltip already says the name once.
+                semanticsLabel: switch (tooltip) {
+                  null => '',
+                  _ => null,
+                },
                 style: context.fluffyTheme.typography.base2.copyWith(
                   color: color,
                 ),

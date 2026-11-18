@@ -41,12 +41,17 @@ class NeedsYouFrame extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .stretch,
                   children: [
+                    // Spoken when it shows up: it waits for an answer.
                     for (final item in waiting)
-                      ActivityRow(
+                      Semantics(
                         key: ValueKey(item.id),
-                        item: item,
-                        now: now,
-                        holdsPrimary: identical(item, feed.primaryItem),
+                        container: true,
+                        liveRegion: true,
+                        child: ActivityRow(
+                          item: item,
+                          now: now,
+                          holdsPrimary: identical(item, feed.primaryItem),
+                        ),
                       ),
                   ],
                 ),

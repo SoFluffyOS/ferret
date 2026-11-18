@@ -3,6 +3,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:protocol/protocol.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/action_pair.dart';
 import 'package:shell/ui/widgets/comparison_code.dart';
 import 'package:shell/view_models/nearby_view_model.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -228,26 +229,11 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Button(
-            variant: .ghost,
-            label: ghostLabel,
-            mainAxisSize: .max,
-            onPressed: onGhost,
-          ),
-        ),
-        Spacing.h12,
-        Expanded(
-          child: Button(
-            variant: .primary,
-            label: primaryLabel,
-            mainAxisSize: .max,
-            onPressed: onPrimary,
-          ),
-        ),
-      ],
+    return ActionPair(
+      ghostLabel: ghostLabel,
+      onGhost: onGhost,
+      primaryLabel: primaryLabel,
+      onPrimary: onPrimary,
     );
   }
 }

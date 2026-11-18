@@ -27,7 +27,14 @@ class ComparisonCode extends StatelessWidget {
       label: context.shellL10n.pairCodeSpoken(code.split('').join(' ')),
       liveRegion: true,
       excludeSemantics: true,
-      child: Center(child: Text(grouped, style: style)),
+      // Always one line and all six digits, shrunk when text is set so
+      // large that they would wrap or be cut.
+      child: Center(
+        child: FittedBox(
+          fit: .scaleDown,
+          child: Text(grouped, style: style, maxLines: 1),
+        ),
+      ),
     );
   }
 }

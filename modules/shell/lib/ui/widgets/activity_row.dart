@@ -40,7 +40,15 @@ class ActivityRow extends StatelessWidget {
     final time = _time(context.shellL10n);
     final trailing = item.trailing;
     final onDismiss = item.onDismiss;
-    final actionsOwnLine = textActions.length > _actionsBesideDetail;
+    // With text set large, a line and its buttons no longer share a row:
+    // the words wrap and the buttons go below them.
+    final hasLargeText = context.hasLargeText;
+    final textLines = switch (hasLargeText) {
+      true => 3,
+      false => 1,
+    };
+    final actionsOwnLine =
+        hasLargeText || textActions.length > _actionsBesideDetail;
 
     final row = Padding(
       padding: EdgeInsets.symmetric(
@@ -71,7 +79,7 @@ class ActivityRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.title,
-                        maxLines: 1,
+                        maxLines: textLines,
                         overflow: .ellipsis,
                         style: typography.base2.copyWith(color: palette.text),
                       ),
@@ -109,7 +117,7 @@ class ActivityRow extends StatelessWidget {
                       Expanded(
                         child: Text(
                           detail ?? '',
-                          maxLines: 1,
+                          maxLines: textLines,
                           overflow: .ellipsis,
                           style: typography.caption1.copyWith(
                             color: palette.mutedText,

@@ -27,6 +27,6 @@ class SurfaceCard extends StatelessWidget {
       return card;
     }
 
-    return Tappable(onTap: onTap, child: card);
+    return Tappable(semanticButton: true, onTap: onTap, child: card);
   }
 }
