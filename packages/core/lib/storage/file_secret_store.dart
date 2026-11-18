@@ -51,7 +51,8 @@ class FileSecretStore implements SecretStore {
 
     final temporary = File('${_file.path}.tmp');
     await temporary.writeAsString(jsonEncode(values), flush: true);
-    if (!Platform.isWindows) {
+    // Phones keep app files private already, and iOS can't start `chmod`.
+    if (Platform.isMacOS || Platform.isLinux) {
       await Process.run('chmod', ['600', temporary.path]);
     }
 

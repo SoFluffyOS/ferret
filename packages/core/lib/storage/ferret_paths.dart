@@ -90,10 +90,11 @@ class FerretPaths {
       FerretPaths(_path.join(root, name), context: _path);
 
   /// Creates [folder] (one of the paths above) with every missing parent,
-  /// readable only by this user on macOS and Linux.
+  /// readable only by this user on macOS and Linux. Phones keep each app's
+  /// folders private already, and iOS can't start `chmod` at all.
   Future<Directory> create(String folder) async {
     final directory = await Directory(folder).create(recursive: true);
-    if (Platform.isWindows) {
+    if (!Platform.isMacOS && !Platform.isLinux) {
       return directory;
     }
 
