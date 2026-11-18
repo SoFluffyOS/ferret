@@ -27,7 +27,7 @@ class NoticeBlock extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final (icon, color) = switch (isProblem) {
-      true => (LucideIcons.triangleAlert, palette.danger),
+      true => (LucideIcons.triangleAlert, palette.warning),
       false => (LucideIcons.info, palette.mutedText),
     };
 

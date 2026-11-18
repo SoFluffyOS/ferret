@@ -316,6 +316,24 @@ abstract class IphoneLocalizations {
   /// **'Couldn\'t talk to {device}. Trying again shortly.'**
   String statusFailed(String device);
 
+  /// Settings row value when this computer can't use Bluetooth LE.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this computer'**
+  String get summaryUnavailable;
+
+  /// Settings row value.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is out of reach'**
+  String summaryOutOfReach(String device);
+
+  /// Settings row value.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t sharing'**
+  String summaryNotShared(String device);
+
   /// No description provided for @notificationsNotShared.
   ///
   /// In en, this message translates to:

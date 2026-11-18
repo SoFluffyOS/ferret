@@ -5,7 +5,7 @@ order: 3
 
 > **TL;DR**
 >
-> 1. In Ferret: **Settings → iPhone → Connect an iPhone**.
+> 1. In Ferret: **Settings → Other apps → Connect an iPhone**.
 > 2. On the iPhone: **Settings → Bluetooth**, tap your computer under **Other Devices**, confirm the code on both.
 > 3. Back in Ferret, tap **Use** next to the iPhone.
 
@@ -15,7 +15,7 @@ You need BlueZ 5.56 or later (every current distribution has it) and a Bluetooth
 
 On Linux, the pairing starts **from the iPhone**. An iPhone won't let a computer connect to it first, so Ferret makes your computer show up in the iPhone's Bluetooth list.
 
-1. In Ferret, open **Settings → iPhone** and turn on **Connect an iPhone**.
+1. In Ferret, open **Settings → Other apps** and turn on **Connect an iPhone**.
 2. On the iPhone, open **Settings → Bluetooth**. Your computer appears under **Other Devices**. Tap it.
 3. Both screens show a code. Your desktop (GNOME, KDE, …) asks you to confirm it. Same code? Confirm on both.
 4. Back in Ferret, the iPhone is in the list. Tap **Use**.

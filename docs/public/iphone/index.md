@@ -5,7 +5,7 @@ order: 1
 
 > **TL;DR**
 >
-> 1. In Ferret on the computer, open **Settings → iPhone** and turn on **Connect an iPhone**.
+> 1. In Ferret on the computer, open **Settings → Other apps** and turn on **Connect an iPhone**.
 > 2. Pair the iPhone with the computer over Bluetooth, and allow it to share notifications.
 > 3. Pick the iPhone in Ferret. That's it.
 
@@ -49,7 +49,7 @@ The first pairing is different on each system. Pick yours:
 
 ## ⚙️ Settings
 
-In **Settings → iPhone**:
+In **Settings → Other apps**, under iPhone:
 
 - **Connect an iPhone**: off by default. Turning it on is when Ferret first touches Bluetooth.
 - **Show notifications**: turn it off to keep only the media card.

@@ -21,7 +21,7 @@ We built it, it compiles and runs, and we have not yet confirmed it against a re
 
 ## 🔑 Try it
 
-1. In Ferret, open **Settings → iPhone** and turn on **Connect an iPhone**.
+1. In Ferret, open **Settings → Other apps** and turn on **Connect an iPhone**.
 2. macOS asks to let Ferret use Bluetooth. **Allow**.
 3. Keep the iPhone unlocked and next to the Mac, Bluetooth on.
 4. Tap **Look again**. If the iPhone shows up, tap **Use**.

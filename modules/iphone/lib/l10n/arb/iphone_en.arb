@@ -49,6 +49,28 @@
   "@statusOutOfReach": {"placeholders": {"device": {"type": "String"}}},
   "statusFailed": "Couldn't talk to {device}. Trying again shortly.",
   "@statusFailed": {"placeholders": {"device": {"type": "String"}}},
+  "summaryUnavailable": "Not available on this computer",
+  "@summaryUnavailable": {
+    "description": "Settings row value when this computer can't use Bluetooth LE."
+  },
+  "summaryOutOfReach": "{device} is out of reach",
+  "@summaryOutOfReach": {
+    "description": "Settings row value.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryNotShared": "{device} isn't sharing",
+  "@summaryNotShared": {
+    "description": "Settings row value.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "notificationsNotShared": "{device} isn't sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.",
   "@notificationsNotShared": {"placeholders": {"device": {"type": "String"}}},
   "mediaNotShared": "{device} isn't sharing what it plays with this computer.",

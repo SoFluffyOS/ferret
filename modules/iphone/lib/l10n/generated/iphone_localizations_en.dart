@@ -149,6 +149,19 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
+  String get summaryUnavailable => 'Not available on this computer';
+
+  @override
+  String summaryOutOfReach(String device) {
+    return '$device is out of reach';
+  }
+
+  @override
+  String summaryNotShared(String device) {
+    return '$device isn\'t sharing';
+  }
+
+  @override
   String notificationsNotShared(String device) {
     return '$device isn\'t sharing its notifications. On $device: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.';
   }

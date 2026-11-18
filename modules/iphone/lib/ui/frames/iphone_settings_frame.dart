@@ -152,7 +152,7 @@ class _Link extends StatelessWidget {
         const _Chosen(showRetry: true),
       ],
       .failed => [
-        _Status(text: l10n.statusFailed(device), color: palette.danger),
+        _Status(text: l10n.statusFailed(device), color: palette.warning),
         const _Chosen(showRetry: true),
       ],
     };
