@@ -1,4 +1,5 @@
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_ui/feature_window.dart';
 import 'package:feature_kit/navigation/navigation.dart';
 import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +25,10 @@ class FeatureContext {
   /// How [openSection] shows a section. The shell sets it once its views
   /// exist.
   Future<void> Function(String deviceId, String sectionId)? onOpenSection;
+
+  /// Windows a feature can open for itself, such as one in the shape of a
+  /// phone's screen. Null until the shell set it, and where it has none.
+  FeatureWindows? windows;
 
   /// Brings Ferret to the front (the menubar popover on macOS), such as when
   /// this device starts ringing.
