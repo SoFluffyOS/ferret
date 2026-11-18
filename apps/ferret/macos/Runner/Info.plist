@@ -24,8 +24,12 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAccessibilityUsageDescription</key>
+	<string>Ferret moves the pointer and types for a phone you allowed, only while Controlled by shows on screen.</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Ferret reads the page in your browser and what Music or Spotify is playing, only when you send it or turn on sharing, so your other devices can continue it.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Ferret connects to your iPhone over Bluetooth to show its notifications and what it plays on this Mac, only after you turn that on.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_FC9F5ED42C8A._tcp</string>
