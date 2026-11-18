@@ -39,12 +39,26 @@ final class BrowserReader {
     lastBrowser = bundleId
   }
 
-  func access() -> BrowserAccess {
+  /// Answers on the main queue. AEDeterminePermissionToAutomateTarget can
+  /// block for a long time even without asking, so it runs on [queue], and
+  /// an answer that takes over two seconds counts as not decided yet.
+  func access(_ completion: @escaping (BrowserAccess) -> Void) {
     guard let browser = pickBrowser() else {
-      return .noBrowser
+      completion(.noBrowser)
+      return
     }
 
-    return Self.permission(for: browser.bundleId, ask: false)
+    var answered = false
+    let answer: (BrowserAccess) -> Void = { access in
+      DispatchQueue.main.async {
+        guard !answered else { return }
+        answered = true
+        completion(access)
+      }
+    }
+
+    queue.async { answer(Self.permission(for: browser.bundleId, ask: false)) }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { answer(.notDetermined) }
   }
 
   func currentTab() async throws -> BrowserTab? {

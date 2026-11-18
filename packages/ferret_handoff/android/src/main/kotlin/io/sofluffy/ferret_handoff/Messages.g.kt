@@ -504,8 +504,12 @@ interface HandoffHostApi {
    * for Automation permission the first time.
    */
   suspend fun currentBrowserTab(): BrowserTab?
-  /** macOS: whether reading the browser's page is allowed, without asking. */
-  fun browserAccess(): BrowserAccess
+  /**
+   * macOS: whether reading the browser's page is allowed, without asking.
+   * Async: macOS can take a while to answer, so it never runs on the main
+   * thread.
+   */
+  suspend fun browserAccess(): BrowserAccess
   /**
    * macOS: reports when the user leaves a browser, so its page can be
    * suggested on other devices.
@@ -626,12 +630,14 @@ interface HandoffHostApi {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_handoff.HandoffHostApi.browserAccess$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              listOf(api.browserAccess())
-            } catch (exception: Throwable) {
-              MessagesPigeonUtils.wrapError(exception)
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.browserAccess())
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
             }
-            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

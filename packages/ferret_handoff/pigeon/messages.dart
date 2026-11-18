@@ -125,6 +125,9 @@ abstract class HandoffHostApi {
   BrowserTab? currentBrowserTab();
 
   /// macOS: whether reading the browser's page is allowed, without asking.
+  /// Async: macOS can take a while to answer, so it never runs on the main
+  /// thread.
+  @async
   BrowserAccess browserAccess();
 
   /// macOS: reports when the user leaves a browser, so its page can be

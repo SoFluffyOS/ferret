@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-  List<Object?>? replyList,
-  String channelName, {
-  required bool isNullValid,
+    List<Object?>? replyList,
+    String channelName, {
+    required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -34,11 +34,8 @@ Object? _extractReplyValueOrThrow(
   return replyList.firstOrNull;
 }
 
-List<Object?> wrapResponse({
-  Object? result,
-  PlatformException? error,
-  bool empty = false,
-}) {
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -47,7 +44,6 @@ List<Object?> wrapResponse({
   }
   return <Object?>[error.code, error.message, error.details];
 }
-
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -60,9 +56,8 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed.every(
-          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
-        );
+        a.indexed
+            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -111,28 +106,25 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
+
 /// Where a shared item came from.
 enum ShareOrigin {
   /// The Android share sheet ("Continue on…").
   shareSheet,
-
   /// The Android assistant, reading what is on screen.
-  assistant,
+  assistant;
 }
 
 /// Whether Ferret may ask the browser for its current page (macOS Automation).
 enum BrowserAccess {
   granted,
   denied,
-
   /// macOS will ask the first time.
   notDetermined,
-
   /// No supported browser is running.
   noBrowser,
-
   /// This platform can't read browser tabs.
-  unsupported,
+  unsupported;
 }
 
 /// Something the user asked to continue on another device, picked outside
@@ -197,8 +189,7 @@ class SharedItem {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static SharedItem decode(Object result) {
     result as List<Object?>;
@@ -226,17 +217,7 @@ class SharedItem {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(origin, other.origin) &&
-        _deepEquals(targetDeviceId, other.targetDeviceId) &&
-        _deepEquals(text, other.text) &&
-        _deepEquals(subject, other.subject) &&
-        _deepEquals(webUri, other.webUri) &&
-        _deepEquals(deepLink, other.deepLink) &&
-        _deepEquals(appPackage, other.appPackage) &&
-        _deepEquals(appName, other.appName) &&
-        _deepEquals(structuredData, other.structuredData) &&
-        _deepEquals(title, other.title) &&
-        _deepEquals(createdAtMs, other.createdAtMs);
+    return _deepEquals(origin, other.origin) && _deepEquals(targetDeviceId, other.targetDeviceId) && _deepEquals(text, other.text) && _deepEquals(subject, other.subject) && _deepEquals(webUri, other.webUri) && _deepEquals(deepLink, other.deepLink) && _deepEquals(appPackage, other.appPackage) && _deepEquals(appName, other.appName) && _deepEquals(structuredData, other.structuredData) && _deepEquals(title, other.title) && _deepEquals(createdAtMs, other.createdAtMs);
   }
 
   @override
@@ -268,8 +249,7 @@ class HandoffDevice {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static HandoffDevice decode(Object result) {
     result as List<Object?>;
@@ -328,8 +308,7 @@ class BrowserTab {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static BrowserTab decode(Object result) {
     result as List<Object?>;
@@ -350,10 +329,7 @@ class BrowserTab {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(url, other.url) &&
-        _deepEquals(title, other.title) &&
-        _deepEquals(browserBundleId, other.browserBundleId) &&
-        _deepEquals(browserName, other.browserName);
+    return _deepEquals(url, other.url) && _deepEquals(title, other.title) && _deepEquals(browserBundleId, other.browserBundleId) && _deepEquals(browserName, other.browserName);
   }
 
   @override
@@ -366,6 +342,7 @@ class BrowserTab {
   }
 }
 
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -373,19 +350,19 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    } else if (value is ShareOrigin) {
+    }    else if (value is ShareOrigin) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is BrowserAccess) {
+    }    else if (value is BrowserAccess) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    } else if (value is SharedItem) {
+    }    else if (value is SharedItem) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    } else if (value is HandoffDevice) {
+    }    else if (value is HandoffDevice) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    } else if (value is BrowserTab) {
+    }    else if (value is BrowserTab) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
@@ -419,43 +396,40 @@ class HandoffHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   HandoffHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   /// The connected devices the native chooser and assistant offer.
   Future<void> setDevices(List<HandoffDevice> devices) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.setDevices$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.setDevices$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[devices],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[devices]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Items shared while Flutter wasn't running, oldest first. Taking them
   /// removes them.
   Future<List<SharedItem>> takePending() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.takePending$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.takePending$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -464,39 +438,37 @@ class HandoffHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return (pigeonVar_replyValue! as List<Object?>).cast<SharedItem>();
   }
 
   /// Opens [uri] in the app [appId] (Android package or macOS bundle id).
   /// False when that app isn't installed or can't take the URI.
   Future<bool> openInApp(String uri, String appId) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.openInApp$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.openInApp$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[uri, appId],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[uri, appId]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Android: whether Ferret is the default digital assistant.
   Future<bool> isAssistantEnabled() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.isAssistantEnabled$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.isAssistantEnabled$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -505,17 +477,17 @@ class HandoffHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Android: opens the system screen to pick the default assistant.
   Future<void> openAssistantSettings() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.openAssistantSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.openAssistantSettings$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -524,17 +496,17 @@ class HandoffHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// macOS: the current page of the frontmost (or last used) browser. Asks
   /// for Automation permission the first time.
   Future<BrowserTab?> currentBrowserTab() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.currentBrowserTab$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.currentBrowserTab$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -543,17 +515,19 @@ class HandoffHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
     return pigeonVar_replyValue as BrowserTab?;
   }
 
   /// macOS: whether reading the browser's page is allowed, without asking.
+  /// Async: macOS can take a while to answer, so it never runs on the main
+  /// thread.
   Future<BrowserAccess> browserAccess() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.browserAccess$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.browserAccess$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -562,32 +536,31 @@ class HandoffHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as BrowserAccess;
   }
 
   /// macOS: reports when the user leaves a browser, so its page can be
   /// suggested on other devices.
   Future<void> setBrowserWatch(bool enabled) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.setBrowserWatch$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_handoff.HandoffHostApi.setBrowserWatch$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[enabled],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[enabled]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -600,20 +573,16 @@ abstract class HandoffEventsApi {
   /// The user switched away from the browser [bundleId].
   void onBrowserDeactivated(String bundleId);
 
-  static void setUp(
-    HandoffEventsApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(HandoffEventsApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_handoff.HandoffEventsApi.onShared$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_handoff.HandoffEventsApi.onShared$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -625,20 +594,16 @@ abstract class HandoffEventsApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_handoff.HandoffEventsApi.onBrowserDeactivated$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_handoff.HandoffEventsApi.onBrowserDeactivated$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -650,10 +615,8 @@ abstract class HandoffEventsApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }

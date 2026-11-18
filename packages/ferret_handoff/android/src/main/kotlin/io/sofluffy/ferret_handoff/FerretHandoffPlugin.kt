@@ -91,7 +91,7 @@ class FerretHandoffPlugin : FlutterPlugin, HandoffHostApi {
 
     override suspend fun currentBrowserTab(): BrowserTab? = null
 
-    override fun browserAccess(): BrowserAccess = BrowserAccess.UNSUPPORTED
+    override suspend fun browserAccess(): BrowserAccess = BrowserAccess.UNSUPPORTED
 
     override fun setBrowserWatch(enabled: Boolean) {}
 

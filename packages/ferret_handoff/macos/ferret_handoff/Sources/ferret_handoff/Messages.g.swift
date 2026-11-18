@@ -479,7 +479,9 @@ protocol HandoffHostApi {
   /// for Automation permission the first time.
   func currentBrowserTab() async throws -> BrowserTab?
   /// macOS: whether reading the browser's page is allowed, without asking.
-  func browserAccess() throws -> BrowserAccess
+  /// Async: macOS can take a while to answer, so it never runs on the main
+  /// thread.
+  func browserAccess() async throws -> BrowserAccess
   /// macOS: reports when the user leaves a browser, so its page can be
   /// suggested on other devices.
   func setBrowserWatch(enabled: Bool) throws
@@ -588,14 +590,18 @@ class HandoffHostApiSetup {
       currentBrowserTabChannel.setMessageHandler(nil)
     }
     /// macOS: whether reading the browser's page is allowed, without asking.
+    /// Async: macOS can take a while to answer, so it never runs on the main
+    /// thread.
     let browserAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_handoff.HandoffHostApi.browserAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       browserAccessChannel.setMessageHandler { _, reply in
-        do {
-          let result = try api.browserAccess()
-          reply(wrapResult(result))
-        } catch {
-          reply(wrapError(error))
+        Task { @MainActor in
+          do {
+            let result = try await api.browserAccess()
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
         }
       }
     } else {

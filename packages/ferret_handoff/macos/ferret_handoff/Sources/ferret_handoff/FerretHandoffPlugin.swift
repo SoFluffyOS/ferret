@@ -60,8 +60,10 @@ public class FerretHandoffPlugin: NSObject, FlutterPlugin, HandoffHostApi {
     try await browsers.currentTab()
   }
 
-  func browserAccess() throws -> BrowserAccess {
-    browsers.access()
+  func browserAccess() async throws -> BrowserAccess {
+    await withCheckedContinuation { continuation in
+      browsers.access { continuation.resume(returning: $0) }
+    }
   }
 
   func setBrowserWatch(enabled: Bool) throws {
