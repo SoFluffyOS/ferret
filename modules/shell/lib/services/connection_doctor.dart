@@ -55,6 +55,7 @@ class ConnectionDoctor {
       final deviceId? => _engine.trustStore[deviceId],
       null => null,
     };
+    _target = device;
 
     final interfaces = await _interfaces();
     final local = interfaces.where((entry) => !_isVpn(entry.name)).toList();
@@ -163,14 +164,42 @@ class ConnectionDoctor {
     yield [...checks];
   }
 
+  TrustedDevice? _target;
+
   /// A report to paste into an issue: no names, addresses only by their kind.
-  String diagnostics(List<DoctorCheck> checks) {
+  /// It says what kind of device was checked and when it was last seen, so
+  /// an iPhone asleep in the background reads differently from a blocked
+  /// port.
+  String diagnostics(List<DoctorCheck> checks, {DateTime? now}) {
+    final target = _target;
     final lines = [
       'Ferret ${_engine.device.appVersion} on ${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
       'Port ${_engine.port}',
+      if (target != null)
+        'Checked: ${target.platform.name.replaceFirst('PLATFORM_', '').toLowerCase()} '
+            '${target.formFactor.name.replaceFirst('FORM_FACTOR_', '').toLowerCase()}, '
+            '${_seen(target.lastSeen, now ?? DateTime.now())}',
       for (final check in checks) '${check.kind.name}: ${check.status.name}',
     ];
     return lines.join('\n');
+  }
+
+  static String _seen(DateTime? lastSeen, DateTime now) {
+    if (lastSeen == null) {
+      return 'never connected';
+    }
+
+    final ago = now.difference(lastSeen);
+    if (ago.inMinutes < 1) {
+      return 'last seen just now';
+    }
+    if (ago.inHours < 1) {
+      return 'last seen ${ago.inMinutes} min ago';
+    }
+    if (ago.inDays < 1) {
+      return 'last seen ${ago.inHours} h ago';
+    }
+    return 'last seen ${ago.inDays} d ago';
   }
 
   Future<List<({String name, String address})>> _interfaces() async {
