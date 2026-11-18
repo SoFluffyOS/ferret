@@ -5,9 +5,11 @@
 import FlutterMacOS
 import Foundation
 
+import desktop_drop
 import device_info_plus
 import ferret_clipboard
 import ferret_drop
+import ferret_find
 import ferret_handoff
 import ferret_media
 import ferret_menubar
@@ -18,9 +20,11 @@ import flutter_secure_storage_darwin
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  DesktopDropPlugin.register(with: registry.registrar(forPlugin: "DesktopDropPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   FerretClipboardPlugin.register(with: registry.registrar(forPlugin: "FerretClipboardPlugin"))
   FerretDropPlugin.register(with: registry.registrar(forPlugin: "FerretDropPlugin"))
+  FerretFindPlugin.register(with: registry.registrar(forPlugin: "FerretFindPlugin"))
   FerretHandoffPlugin.register(with: registry.registrar(forPlugin: "FerretHandoffPlugin"))
   FerretMediaPlugin.register(with: registry.registrar(forPlugin: "FerretMediaPlugin"))
   FerretMenubarPlugin.register(with: registry.registrar(forPlugin: "FerretMenubarPlugin"))
