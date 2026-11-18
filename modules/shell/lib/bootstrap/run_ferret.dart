@@ -65,12 +65,15 @@ Future<void> runFerret({
     notifier: notifier,
     onReveal: views.reveal,
   );
+  final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
+  featureContext.windows = featureWindows;
   final navigation = WindowNavRegistry(featureContext, views: views);
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
   }
 
   await views.start();
+  await featureWindows.start();
   final menubar = MenubarBinding(
     host: host,
     pause: pause,
@@ -90,6 +93,7 @@ Future<void> runFerret({
       featureContext: featureContext,
       menubar: menubar.menubar,
       navigation: navigation,
+      featureWindows: featureWindows,
       views: switch (ferretMenubar.isSupported) {
         true => views,
         false => null,

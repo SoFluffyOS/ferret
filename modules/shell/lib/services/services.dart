@@ -6,6 +6,7 @@ export 'package:shell/services/device_action_order.dart';
 export 'package:shell/services/device_sections.dart';
 export 'package:shell/services/drop_target_finder.dart';
 export 'package:shell/services/engine_host.dart';
+export 'package:shell/services/feature_window_host.dart';
 export 'package:shell/services/local_device_factory.dart';
 export 'package:shell/services/menubar_icon_inputs.dart';
 export 'package:shell/services/menubar_icon_resolver.dart';
