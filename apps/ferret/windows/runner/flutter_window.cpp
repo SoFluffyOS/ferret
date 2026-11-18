@@ -4,8 +4,9 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
-FlutterWindow::FlutterWindow(const flutter::DartProject& project)
-    : project_(project) {}
+FlutterWindow::FlutterWindow(const flutter::DartProject& project,
+                             bool started_hidden)
+    : project_(project), started_hidden_(started_hidden) {}
 
 FlutterWindow::~FlutterWindow() {}
 
@@ -26,9 +27,12 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+  desktop_window_ = std::make_unique<DesktopWindow>(
+      GetHandle(), flutter_controller_->engine()->messenger(), started_hidden_);
+  desktop_window_->RestorePlacement();
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
-    this->Show();
+    desktop_window_->ShowAtStart();
   });
 
   // Flutter can complete the first frame before the "show window" callback is
@@ -40,6 +44,7 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  desktop_window_ = nullptr;
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
@@ -51,6 +56,14 @@ LRESULT
 FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
                               WPARAM const wparam,
                               LPARAM const lparam) noexcept {
+  if (desktop_window_) {
+    std::optional<LRESULT> handled =
+        desktop_window_->HandleMessage(message, wparam, lparam);
+    if (handled) {
+      return *handled;
+    }
+  }
+
   // Give Flutter, including plugins, an opportunity to handle window messages.
   if (flutter_controller_) {
     std::optional<LRESULT> result =

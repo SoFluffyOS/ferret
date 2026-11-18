@@ -2,18 +2,34 @@
 
 #include <flutter_linux/flutter_linux.h>
 
+#include "desktop_window.h"
 #include "flutter/generated_plugin_registrant.h"
 
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
+  DesktopWindow* desktop_window;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
-// Called when first Flutter frame received.
+// Called when first Flutter frame received. Autostart's --hidden keeps the
+// window in the tray; Dart shows it when there is no tray.
 static void first_frame_cb(MyApplication* self, FlView* view) {
+  if (!desktop_window_shows_at_start(self->desktop_window)) {
+    return;
+  }
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
+}
+
+static gboolean has_argument(char** arguments, const char* wanted) {
+  for (char** argument = arguments; argument != nullptr && *argument != nullptr;
+       argument++) {
+    if (g_strcmp0(*argument, wanted) == 0) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 // Implements GApplication::activate.
@@ -22,7 +38,8 @@ static void my_application_activate(GApplication* application) {
 
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
-  gtk_window_set_default_size(window, 1280, 720);
+  self->desktop_window = desktop_window_new(
+      window, has_argument(self->dart_entrypoint_arguments, "--hidden"));
 
   // If you want to use a header bar, uncomment the following lines.
   // Header bars are commonly used in GNOME based desktop environments and
@@ -33,7 +50,7 @@ static void my_application_activate(GApplication* application) {
   // gtk_header_bar_set_show_close_button(header_bar, TRUE);
   // gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
 
-  gtk_window_set_title(window, "ferret");
+  gtk_window_set_title(window, "Ferret");
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(
@@ -55,6 +72,7 @@ static void my_application_activate(GApplication* application) {
   gtk_widget_realize(GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+  desktop_window_attach(self->desktop_window, view);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
@@ -102,6 +120,7 @@ static void my_application_shutdown(GApplication* application) {
 static void my_application_dispose(GObject* object) {
   MyApplication* self = MY_APPLICATION(object);
   g_clear_pointer(&self->dart_entrypoint_arguments, g_strfreev);
+  g_clear_pointer(&self->desktop_window, desktop_window_free);
   G_OBJECT_CLASS(my_application_parent_class)->dispose(object);
 }
 
