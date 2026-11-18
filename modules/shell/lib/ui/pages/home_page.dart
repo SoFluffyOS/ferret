@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
           NearbyFrame(
             key: _nearbyKey,
             onPairWithCode: () => _pairWithCode(context),
-            onCantSee: () => _push(context, const PairPage()),
+            onCantSee: () => _push(context, const DoctorPage()),
           ),
         DevicesFrame(
           onOpen: (status) =>
