@@ -8,9 +8,13 @@ import 'package:path/path.dart' as p;
 /// its first `# ` heading. Pages can set `order: 3` in front matter.
 Sidebar docsSidebar(String root) {
   final directory = Directory(root);
+  final topLevel = _pages(directory, root).where((link) => link.href != '/');
   final groups = <SidebarGroup>[
-    const SidebarGroup(
-      links: [SidebarLink(text: 'Overview', href: '/')],
+    SidebarGroup(
+      links: [
+        const SidebarLink(text: 'Overview', href: '/'),
+        ...topLevel,
+      ],
     ),
   ];
 

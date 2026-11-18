@@ -10,4 +10,4 @@ Ferret carries what you're doing between your own devices: pages, media, your cl
 
 ## Features
 
-Each feature has its own page in [features](features/).
+Start with [pairing](getting-started/pairing.md), then pick what you need from the features in the sidebar. Ferret takes your [privacy](privacy.md) seriously.
