@@ -35,7 +35,7 @@ When **Suggest what I'm doing** is on (it is by default), your devices tell each
 - On a Mac with **Read the current browser page** on, leaving Safari or Chrome offers that page to your other devices.
 - On Android, calling Ferret as your assistant on any screen offers it too (see below).
 
-The other device shows **Continue “title” from Pixel** in **Activity**, with **Open**. No notification, no sound.
+The other device shows **Continue “title” from Pixel** in **Activity**, with **Open**, and **✕** to let it go. No notification, no sound.
 
 Suggestions go away after 5 minutes, and a newer one from the same device replaces the older one. When a device says someone is using it right now, suggestions go only there.
 

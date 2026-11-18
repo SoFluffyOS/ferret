@@ -110,6 +110,7 @@ class HandoffFeatureUi extends FeatureUi {
       this.feature.suggestions,
       onOpen: (suggestion) =>
           unawaited(HandoffActivity.open(context, viewModel, suggestion)),
+      onDismiss: viewModel.dismiss,
     );
   }
 

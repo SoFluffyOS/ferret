@@ -7,13 +7,15 @@ import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Handoff's lines in Home's Activity list: what other devices offer to
-/// continue here, each with Open.
+/// continue here, each with Open and a ✕ to let it go.
 abstract final class HandoffActivity {
-  /// One line per suggestion. [onOpen] continues it on this device.
+  /// One line per suggestion. [onOpen] continues it on this device;
+  /// [onDismiss] lets it go.
   static List<ActivityItem> items(
     HandoffLocalizations l10n,
     List<Suggestion> suggestions, {
     required ValueChanged<Suggestion> onOpen,
+    ValueChanged<Suggestion>? onDismiss,
   }) => [
     for (final suggestion in suggestions)
       ActivityItem(
@@ -25,6 +27,10 @@ abstract final class HandoffActivity {
         actions: [
           ActivityAction(label: l10n.open, onPressed: () => onOpen(suggestion)),
         ],
+        onDismiss: switch (onDismiss) {
+          final onDismiss? => () => onDismiss(suggestion),
+          null => null,
+        },
       ),
   ];
 

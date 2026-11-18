@@ -119,6 +119,51 @@ void main() {
 
       expect(opened, ['b']);
     });
+
+    test('a line can be let go only when there is a way to', () {
+      final dismissed = <String>[];
+      final items = HandoffActivity.items(
+        l10n,
+        [suggestion(webActivity('a')), suggestion(webActivity('b'))],
+        onOpen: (_) {},
+        onDismiss: (suggestion) => dismissed.add(suggestion.id),
+      );
+      final quiet = HandoffActivity.items(l10n, [
+        suggestion(webActivity('a')),
+      ], onOpen: (_) {});
+
+      items[1].onDismiss?.call();
+
+      expect(dismissed, ['b']);
+      expect(quiet.single.onDismiss, isNull);
+    });
+  });
+
+  testWidgets('dismissing a line takes it off the list without opening it', (
+    tester,
+  ) async {
+    final setup = await tester.runAsync(build);
+    if (setup == null) {
+      fail('Setup failed');
+    }
+
+    await tester.runAsync(
+      () => setup.feature.receivePublished(
+        pixel,
+        webActivity('a', title: 'Cats'),
+      ),
+    );
+    final items = HandoffActivity.items(
+      l10n,
+      setup.feature.suggestions,
+      onOpen: (_) {},
+      onDismiss: setup.viewModel.dismiss,
+    );
+
+    items.single.onDismiss?.call();
+
+    expect(setup.opener.opened, isEmpty);
+    expect(setup.feature.suggestions, isEmpty);
   });
 
   testWidgets('opening a line opens the activity and takes it off the list', (
