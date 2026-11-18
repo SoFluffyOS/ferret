@@ -1,11 +1,14 @@
 // The harness may only touch test/screens, so packages the app gets through
 // its modules are imported without listing them in pubspec.yaml.
 
+import 'package:calls/ui/widgets/widgets.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/protocol.dart';
+// ignore: depend_on_referenced_packages
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Fills Activity with what a busy afternoon looks like, so the screens
 /// show every kind of line without staging real transfers and songs.
@@ -31,6 +34,57 @@ class SampleActivityFeatureUi extends FeatureUi {
 
     return [
       ActivityItem(
+        id: 'offer',
+        icon: LucideIcons.arrowDown,
+        tone: .accent,
+        title: "Ana's Pixel wants to send",
+        detail: '2 files · 6 MB',
+        pinned: true,
+        needsYou: true,
+        onTap: () {},
+        actions: [
+          ActivityAction(label: 'Decline', onPressed: () {}),
+          ActivityAction(label: 'Accept', primary: true, onPressed: () {}),
+        ],
+      ),
+      ActivityItem(
+        id: 'call.ringing',
+        icon: LucideIcons.phoneIncoming,
+        leading: CallerAvatar(
+          photoJpeg: const [],
+          name: 'Ana Bell',
+          size: Spacing.d32,
+        ),
+        title: 'Ana Bell is calling Pixel 9',
+        detail: '+1 555 0100',
+        pinned: true,
+        actions: [
+          ActivityAction(label: 'Answer', primary: true, onPressed: () {}),
+          ActivityAction(label: 'Decline', onPressed: () {}),
+          ActivityAction(label: 'Silence', onPressed: () {}),
+        ],
+      ),
+      ActivityItem(
+        id: 'call.active',
+        icon: LucideIcons.phoneCall,
+        leading: CallerAvatar(
+          photoJpeg: const [],
+          name: 'Marc',
+          size: Spacing.d32,
+        ),
+        title: 'On a call with Marc',
+        detail: 'Pixel 9',
+        pinned: true,
+        trailing: Text(
+          '4:12',
+          style: TextStyle(
+            fontSize: Spacing.d12,
+            color: const Color(0xFF8E8E93),
+          ),
+        ),
+        actions: [ActivityAction(label: 'Hang up', onPressed: () {})],
+      ),
+      ActivityItem(
         id: 'media',
         icon: LucideIcons.music,
         title: 'Lo-fi mix · Pixel 9',
@@ -53,7 +107,7 @@ class SampleActivityFeatureUi extends FeatureUi {
         id: 'transfer',
         icon: LucideIcons.arrowUp,
         title: 'Holiday.mov to Pixel 9',
-        detail: 'To Pixel 9 · 26 MB of 42 MB',
+        detail: '26 MB of 42 MB · 1 min left',
         pinned: true,
         progress: 0.61,
         actions: [ActivityAction(label: 'Cancel', onPressed: () {})],
@@ -72,7 +126,19 @@ class SampleActivityFeatureUi extends FeatureUi {
         title: 'IMG_2041.jpg from Pixel 9',
         detail: 'Saved to Downloads › Ferret',
         at: now.subtract(const Duration(minutes: 2)),
+        actions: [
+          ActivityAction(label: 'Open', onPressed: () {}),
+          ActivityAction(label: 'Show in Finder', onPressed: () {}),
+        ],
+      ),
+      ActivityItem(
+        id: 'handoff',
+        icon: LucideIcons.globe,
+        title: 'Continue “Cats” from Pixel 9',
+        detail: 'example.org',
+        at: now.subtract(const Duration(minutes: 5)),
         actions: [ActivityAction(label: 'Open', onPressed: () {})],
+        onDismiss: () {},
       ),
       ActivityItem(
         id: 'notification',
