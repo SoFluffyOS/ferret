@@ -1,0 +1,4 @@
+// The App Group the app and its Share extension both reach. On macOS a
+// group that starts with the Team ID needs no provisioning profile. Keep it
+// the same as in the three entitlements files.
+FERRET_SHARE_GROUP = 66UZUS2MST.io.sofluffy.ferret

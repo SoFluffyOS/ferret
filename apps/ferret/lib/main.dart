@@ -3,6 +3,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
 import 'package:ferret/wiring/call_media_pause.dart';
 import 'package:ferret/wiring/mirroring_ways.dart';
+import 'package:ferret/wiring/send_command.dart';
 import 'package:find/find.dart';
 import 'package:handoff/handoff.dart';
 import 'package:iphone/iphone.dart';
@@ -13,21 +14,25 @@ import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
-Future<void> main() => runFerret(
-  features: [
-    CallsFeatureUi(),
-    ClipboardFeatureUi(),
-    DropFeatureUi(),
-    FindFeatureUi(),
-    HandoffFeatureUi(),
-    IphoneFeatureUi(),
-    MediaFeatureUi(),
-    MessagesFeatureUi(),
-    MirroringWays.create(),
-    NotificationsFeatureUi(),
-    PowerFeatureUi(),
-    RemoteInputFeatureUi(),
-  ],
-  appVersion: '0.1.0',
-  onStarted: CallMediaPause.attach,
-);
+Future<void> main(List<String> arguments) async {
+  final send = await SendCommand.read(arguments);
+
+  await runFerret(
+    features: [
+      CallsFeatureUi(),
+      ClipboardFeatureUi(),
+      DropFeatureUi(filesToSend: send.files, handoff: send.handoff),
+      FindFeatureUi(),
+      HandoffFeatureUi(),
+      IphoneFeatureUi(),
+      MediaFeatureUi(),
+      MessagesFeatureUi(),
+      MirroringWays.create(),
+      NotificationsFeatureUi(),
+      PowerFeatureUi(),
+      RemoteInputFeatureUi(),
+    ],
+    appVersion: '0.1.0',
+    onStarted: CallMediaPause.attach,
+  );
+}

@@ -1,0 +1,8 @@
+// The Share extension has no Flutter in it. It only borrows the app's
+// version numbers, so the two always match as macOS requires.
+#include? "../Flutter/ephemeral/Flutter-Generated.xcconfig"
+#include "../Runner/Configs/ShareGroup.xcconfig"
+
+PRODUCT_NAME = Share
+PRODUCT_BUNDLE_IDENTIFIER = io.sofluffy.ferret.Share
+PRODUCT_COPYRIGHT = Copyright © 2026 io.sofluffy. All rights reserved.
