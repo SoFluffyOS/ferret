@@ -6,7 +6,7 @@ order: 2
 > **TL;DR**
 >
 > 1. Install [Shizuku](https://shizuku.rikka.app/download/) and start it.
-> 2. In Ferret, open **Settings → Power-ups → Open Power-ups** and tap **Allow**.
+> 2. In Ferret, open **Settings → Power-ups → Open Power-ups** and tap **Allow Ferret**.
 > 3. Turn on **Send automatically in the background** in **Settings → Clipboard**.
 > 4. Copy anywhere on your phone. It lands on your other devices.
 
@@ -22,7 +22,7 @@ Ferret walks you through it, one button per step:
 
 1. **Install Shizuku.** Tap **Get Shizuku**. It is on F-Droid too.
 2. **Start Shizuku.** Tap **Open Shizuku** and follow its Start steps. On Android 11 and later that is wireless debugging, no computer needed. On older phones you run one command from a computer.
-3. **Allow Ferret.** Come back to Ferret and tap **Allow**. Shizuku asks you to confirm. Choose **Allow all the time**.
+3. **Allow Ferret.** Come back to Ferret and tap **Allow Ferret**. Shizuku asks you to confirm. Choose **Allow all the time**.
 
 Ferret checks again every time you come back to it, so each step ticks itself off.
 
@@ -65,4 +65,4 @@ And the usual rules hold:
 - **Text only.** Images still need **Send clipboard**.
 - **Up to 200,000 characters** per copy in the background.
 - Android may show its own "pasted from your clipboard" notice when the helper reads a copy.
-- Nothing runs until you tapped **Allow**. Tap **Stop using Shizuku** in Power-ups and it all stops.
+- Nothing runs until you tapped **Allow Ferret**. Tap **Stop using Shizuku** in Power-ups and it all stops.

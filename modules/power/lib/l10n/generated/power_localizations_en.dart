@@ -17,7 +17,7 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get settingsUnsupported =>
-      'Power-ups are extra abilities for Android phones. There\'s nothing to set up on this device.';
+      'Power-ups are extra abilities for Android phones. There\'s nothing to set up here.';
 
   @override
   String get settingsSummaryStandard =>
@@ -152,7 +152,7 @@ class PowerLocalizationsEn extends PowerLocalizations {
       'Shizuku asks whether Ferret may use it. Choose Allow all the time.';
 
   @override
-  String get stepAllowButton => 'Allow';
+  String get stepAllowButton => 'Allow Ferret';
 
   @override
   String get shizukuOn => 'Shizuku is on.';
@@ -178,14 +178,15 @@ class PowerLocalizationsEn extends PowerLocalizations {
 
   @override
   String get noticeGrantFailed =>
-      'That didn\'t work. Try again, or change it in the system settings.';
+      'Android didn\'t take the change. Try again, or turn it on in this phone\'s Settings.';
 
   @override
   String get noticeRootRefused =>
       'Root access was denied. Allow Ferret in your root manager, then try again.';
 
   @override
-  String get noticeSettingsNotOpened => 'Couldn\'t open the system settings.';
+  String get noticeSettingsNotOpened =>
+      'Couldn\'t open this phone\'s Settings. Open Settings, then Apps, then Ferret.';
 
   @override
   String get batteryTitle => 'Keep Ferret running in the background';
@@ -256,7 +257,7 @@ class PowerLocalizationsEn extends PowerLocalizations {
       'Root access was taken away, so background clipboard is paused.';
 
   @override
-  String get cardSetUp => 'Set up';
+  String get cardSetUp => 'Open Power-ups';
 
   @override
   String get cardAskAgain => 'Ask again';

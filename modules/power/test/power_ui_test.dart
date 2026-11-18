@@ -140,7 +140,10 @@ void main() {
 
       await tapAndSettle(tester, 'Turn on now');
 
-      expect(find.textContaining("That didn't work."), findsOneWidget);
+      expect(
+        find.textContaining("Android didn't take the change."),
+        findsOneWidget,
+      );
       expect(locksIn(.notifications), 2);
     });
   });
@@ -154,7 +157,7 @@ void main() {
 
       expect(find.text('Get Shizuku'), findsOneWidget);
       expect(find.text('Open Shizuku'), findsNothing);
-      expect(find.text('Allow'), findsNothing);
+      expect(find.text('Allow Ferret'), findsNothing);
       await tapAndSettle(tester, 'Get Shizuku');
       expect(harness.openedLinks.single, PowerViewModel.shizukuDownload);
 
@@ -177,7 +180,7 @@ void main() {
       await tester.pump();
       expect(find.text('Open Shizuku'), findsNothing);
       expect(find.byIcon(LucideIcons.circleCheck), findsNWidgets(2));
-      await tapAndSettle(tester, 'Allow');
+      await tapAndSettle(tester, 'Allow Ferret');
 
       expect(find.text('Shizuku is on.'), findsOneWidget);
       expect(find.byIcon(LucideIcons.circleCheck), findsNWidgets(3));
@@ -193,7 +196,7 @@ void main() {
       harness.phone.shizukuAnswer = false;
       await tester.pumpWidget(framed(const PowerShizukuFrame()));
 
-      await tapAndSettle(tester, 'Allow');
+      await tapAndSettle(tester, 'Allow Ferret');
 
       expect(find.textContaining('Shizuku said no.'), findsOneWidget);
       expect(find.text('Shizuku is on.'), findsNothing);
@@ -215,7 +218,7 @@ void main() {
 
       await tapAndSettle(tester, 'Stop using Shizuku');
       expect(harness.feature.tier, PowerTier.standard);
-      expect(find.text('Allow'), findsOneWidget);
+      expect(find.text('Allow Ferret'), findsOneWidget);
     });
   });
 
@@ -304,7 +307,7 @@ void main() {
         offer?.description,
         'Allow Shizuku and Ferret sends what you copy on its own.',
       );
-      expect(offer?.actionLabel, 'Set up');
+      expect(offer?.actionLabel, 'Open Power-ups');
       expect(ui.hasHomeCard(_NoContext()), isFalse);
       expect(find.text('Power-ups'), findsNothing);
     });

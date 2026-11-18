@@ -17,7 +17,7 @@ Ferret shows this as a ladder in **Settings → Power-ups → Open Power-ups**. 
 
 | Step | What you do | What it adds |
 |---|---|---|
-| **Basic** | Nothing | Files, **Send clipboard** by tap, handoff, media controls, find my device |
+| **Basic** | Nothing | Files, **Send clipboard** by tap, handoff, media controls, find |
 | **+ Notifications** | Turn on notification access | Your phone's notifications on your other devices, with replies |
 | **+ Messages & calls** | Allow SMS and phone when asked | Text messages and calls from your computer |
 | **+ Shizuku** | [Set up Shizuku](shizuku.md) | Clipboard sent on its own, one-tap setup |

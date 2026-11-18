@@ -109,7 +109,7 @@ abstract class PowerLocalizations {
   /// No description provided for @settingsUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'Power-ups are extra abilities for Android phones. There\'s nothing to set up on this device.'**
+  /// **'Power-ups are extra abilities for Android phones. There\'s nothing to set up here.'**
   String get settingsUnsupported;
 
   /// No description provided for @settingsSummaryStandard.
@@ -355,7 +355,7 @@ abstract class PowerLocalizations {
   /// No description provided for @stepAllowButton.
   ///
   /// In en, this message translates to:
-  /// **'Allow'**
+  /// **'Allow Ferret'**
   String get stepAllowButton;
 
   /// No description provided for @shizukuOn.
@@ -397,7 +397,7 @@ abstract class PowerLocalizations {
   /// No description provided for @noticeGrantFailed.
   ///
   /// In en, this message translates to:
-  /// **'That didn\'t work. Try again, or change it in the system settings.'**
+  /// **'Android didn\'t take the change. Try again, or turn it on in this phone\'s Settings.'**
   String get noticeGrantFailed;
 
   /// No description provided for @noticeRootRefused.
@@ -409,7 +409,7 @@ abstract class PowerLocalizations {
   /// No description provided for @noticeSettingsNotOpened.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t open the system settings.'**
+  /// **'Couldn\'t open this phone\'s Settings. Open Settings, then Apps, then Ferret.'**
   String get noticeSettingsNotOpened;
 
   /// No description provided for @batteryTitle.
@@ -529,7 +529,7 @@ abstract class PowerLocalizations {
   /// No description provided for @cardSetUp.
   ///
   /// In en, this message translates to:
-  /// **'Set up'**
+  /// **'Open Power-ups'**
   String get cardSetUp;
 
   /// No description provided for @cardAskAgain.
