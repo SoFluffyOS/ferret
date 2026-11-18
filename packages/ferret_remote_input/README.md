@@ -1,15 +1,20 @@
 # ferret_remote_input
 
-A new Flutter plugin project.
+Moves the pointer, clicks, scrolls and types on this computer for another device. Key names are the same everywhere (`InputKey`, `KeyModifier`); each platform maps them to its own codes.
 
-## Getting Started
+| Platform | How | Needs |
+|---|---|---|
+| macOS | CGEvent (Swift) | Accessibility access (`CGRequestPostEventAccess`) |
+| Windows | SendInput (C++) | Nothing; apps running as administrator can't be reached |
+| Linux | uinput virtual device (Dart FFI), else `ydotool` (Wayland) or `xdotool` (X11) | Write access to `/dev/uinput`, or one of the tools |
+| Android, iOS | Not supported | They are controllers |
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+```dart
+final injector = InputInjector.current();
+if ((await injector.status()).isReady) {
+  await injector.inject(const [MoveAction(10, 0), ButtonAction(.left, pressed: true), ButtonAction(.left, pressed: false)]);
+}
+await injector.releaseAll();
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+Regenerate the platform channel with `fvm dart run pigeon --input pigeon/messages.dart`.

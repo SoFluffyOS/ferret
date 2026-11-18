@@ -1,4 +1,283 @@
 {
   "@@locale": "en",
-  "title": "Remote input"
+  "title": "Remote input",
+  "useAsTouchpad": "Use as touchpad",
+  "back": "Back",
+  "consentTitle": "Let {device} control this computer?",
+  "@consentTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "consentBody": "{device} can move the pointer, click and type here until you stop it. You'll see it the whole time.",
+  "@consentBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "allowOnce": "Allow once",
+  "allowAlways": "Always",
+  "dontAllow": "Don't allow",
+  "controlledBy": "Controlled by {device}",
+  "@controlledBy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "controlledSince": "Since {time}. It can move the pointer and type.",
+  "@controlledSince": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "stop": "Stop",
+  "activeNoticeBody": "Tap Stop to take back control.",
+  "permissionTitle": "{device} can't control this computer yet",
+  "@permissionTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionBody": "Allow Ferret in Accessibility settings, then try again on {device}.",
+  "@permissionBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "openSettings": "Open Settings",
+  "dismiss": "Dismiss",
+  "auditLine": "{device} controlled this computer for {minutes, plural, =0{less than a minute} =1{1 min} other{{minutes} min}} at {time}",
+  "@auditLine": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsEnabled": "Let my phones control this computer",
+  "settingsEnabledBody": "A phone becomes its touchpad and keyboard. Each phone asks you first.",
+  "statusReadyQuartz": "Ready. Uses Accessibility access.",
+  "statusReadySendInput": "Ready. Apps running as administrator can't be controlled.",
+  "statusReadyUinput": "Ready. Uses a virtual input device.",
+  "statusReadyXdotool": "Ready. Uses xdotool, which works on X11 only.",
+  "statusReadyYdotool": "Ready. Uses ydotool.",
+  "statusNeedsPermission": "Accessibility access is off",
+  "statusNeedsPermissionBody": "macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back.",
+  "allowAccess": "Allow access",
+  "statusNoLinuxBackend": "This computer can't be controlled yet",
+  "statusNoLinuxBackendBody": "Ferret needs write access to /dev/uinput, or xdotool (X11) or ydotool (Wayland). Install one with your package manager, then check again.",
+  "statusYdotoolNotRunning": "ydotool is installed, but its service isn't running",
+  "statusYdotoolNotRunningBody": "Start the ydotoold service, then check again.",
+  "statusFailed": "Ferret couldn't check whether it may control this computer.",
+  "checkAgain": "Check again",
+  "settingsAllowedTitle": "Always allowed",
+  "settingsAllowedEmpty": "No device yet. Pick Always when a phone asks.",
+  "revoke": "Revoke",
+  "settingsHistoryTitle": "History",
+  "settingsHistoryEmpty": "No device controlled this computer yet.",
+  "clearHistory": "Clear history",
+  "settingsSpeed": "Touchpad speed",
+  "settingsSpeedBody": "How far the pointer moves for the same finger move.",
+  "settingsNaturalScroll": "Natural scrolling",
+  "settingsNaturalScrollBody": "Move two fingers up to scroll down, like on your phone's screen.",
+  "requesting": "Asking {device}…",
+  "@requesting": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingTitle": "Waiting for {device}",
+  "@waitingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingBody": "Click Allow on {device}. Pick Always and it won't ask again.",
+  "@waitingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "touchpadHint": "One finger moves. Tap to click, hold to right-click. Two fingers scroll. Tap, then slide to drag.",
+  "leftButton": "Left click",
+  "rightButton": "Right click",
+  "keyboardHint": "Type here",
+  "keyEscape": "Esc",
+  "keyTab": "Tab",
+  "keyEnter": "Enter",
+  "keyBackspace": "Backspace",
+  "keyLeft": "Left",
+  "keyRight": "Right",
+  "keyUp": "Up",
+  "keyDown": "Down",
+  "mediaPrevious": "Previous",
+  "mediaPlayPause": "Play or pause",
+  "mediaNext": "Next",
+  "volumeDown": "Volume down",
+  "volumeMute": "Mute",
+  "volumeUp": "Volume up",
+  "modShift": "Shift",
+  "modControl": "Ctrl",
+  "modAlt": "Alt",
+  "modAltMac": "Option",
+  "modMeta": "Win",
+  "modMetaMac": "Cmd",
+  "modMetaLinux": "Super",
+  "deniedDenied": "{device} said no.",
+  "@deniedDenied": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedTimeout": "Nobody answered on {device}.",
+  "@deniedTimeout": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedBusy": "Another device controls {device} right now.",
+  "@deniedBusy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedNeedsPermission": "{device} needs Accessibility access first. Open Ferret on {device} to allow it.",
+  "@deniedNeedsPermission": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedUnsupported": "{device} can't be controlled yet. Open Ferret's settings on {device} to see why.",
+  "@deniedUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedTurnedOff": "Remote input is off on {device}. Turn it on in Ferret's settings there.",
+  "@deniedTurnedOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deniedVersion": "{device} runs an older Ferret. Update it, then try again.",
+  "@deniedVersion": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "stoppedOnHost": "Someone stopped it on {device}.",
+  "@stoppedOnHost": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "stoppedIdle": "Stopped after a long time without input.",
+  "stoppedRevoked": "{device} turned remote input off for this phone.",
+  "@stoppedRevoked": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "stoppedFailed": "{device} can't inject input anymore. Check Accessibility access there.",
+  "@stoppedFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lostConnection": "Lost the connection to {device}.",
+  "@lostConnection": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "unreachable": "{device} didn't answer. Is Ferret open on it?",
+  "@unreachable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "tryAgain": "Try again",
+  "controllingTitle": "Controlling {device}",
+  "@controllingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "controllingBody": "Your phone is its touchpad.",
+  "openTouchpad": "Open touchpad",
+  "healthNeedsPermission": "{device} needs Accessibility access for remote input",
+  "@healthNeedsPermission": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthUnsupported": "{device} can't be controlled",
+  "@healthUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthTurnedOff": "Remote input is off on {device}",
+  "@healthTurnedOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

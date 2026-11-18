@@ -1,5 +1,5 @@
 name: ferret_remote_input
-description: Platform code for Ferret's remote input feature, reusable on its own.
+description: Injects pointer and keyboard input on macOS, Windows and Linux for a remote controller. Platform code for Ferret's remote input feature, reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -9,6 +9,7 @@ environment:
   flutter: ">=3.50.0"
 
 dependencies:
+  ffi: ^2.2.0
   flutter:
     sdk: flutter
 
@@ -21,13 +22,6 @@ dev_dependencies:
 flutter:
   plugin:
     platforms:
-      android:
-        package: io.sofluffy.ferret_remote_input
-        pluginClass: FerretRemoteInputPlugin
-      ios:
-        pluginClass: FerretRemoteInputPlugin
-      linux:
-        pluginClass: FerretRemoteInputPlugin
       macos:
         pluginClass: FerretRemoteInputPlugin
       windows:

@@ -1,0 +1,90 @@
+import 'package:ferret_remote_input/src/keys/input_key.dart';
+import 'package:ferret_remote_input/src/keys/key_modifier.dart';
+
+/// A key as macOS posts it: a virtual key code (`kVK_*`), or a media key
+/// (`NX_KEYTYPE_*`) sent as a system-defined event.
+typedef MacKey = ({int code, bool isMedia});
+
+/// Virtual key codes from `HIToolbox/Events.h` (ANSI layout positions) and
+/// media key types from `IOKit/hidsystem/ev_keymap.h`.
+abstract final class MacKeyCodes {
+  static const Map<InputKey, MacKey> keys = {
+    .enter: (code: 0x24, isMedia: false),
+    .backspace: (code: 0x33, isMedia: false),
+    .delete: (code: 0x75, isMedia: false),
+    .tab: (code: 0x30, isMedia: false),
+    .escape: (code: 0x35, isMedia: false),
+    .space: (code: 0x31, isMedia: false),
+    .arrowLeft: (code: 0x7B, isMedia: false),
+    .arrowRight: (code: 0x7C, isMedia: false),
+    .arrowDown: (code: 0x7D, isMedia: false),
+    .arrowUp: (code: 0x7E, isMedia: false),
+    .home: (code: 0x73, isMedia: false),
+    .end: (code: 0x77, isMedia: false),
+    .pageUp: (code: 0x74, isMedia: false),
+    .pageDown: (code: 0x79, isMedia: false),
+    .volumeUp: (code: 0, isMedia: true),
+    .volumeDown: (code: 1, isMedia: true),
+    .volumeMute: (code: 7, isMedia: true),
+    .mediaPlayPause: (code: 16, isMedia: true),
+    // The Mac's own keyboard sends FAST and REWIND for next and previous,
+    // and that is what Music and browsers listen for.
+    .mediaNext: (code: 19, isMedia: true),
+    .mediaPrevious: (code: 20, isMedia: true),
+    .f1: (code: 0x7A, isMedia: false),
+    .f2: (code: 0x78, isMedia: false),
+    .f3: (code: 0x63, isMedia: false),
+    .f4: (code: 0x76, isMedia: false),
+    .f5: (code: 0x60, isMedia: false),
+    .f6: (code: 0x61, isMedia: false),
+    .f7: (code: 0x62, isMedia: false),
+    .f8: (code: 0x64, isMedia: false),
+    .f9: (code: 0x65, isMedia: false),
+    .f10: (code: 0x6D, isMedia: false),
+    .f11: (code: 0x67, isMedia: false),
+    .f12: (code: 0x6F, isMedia: false),
+    .a: (code: 0x00, isMedia: false),
+    .s: (code: 0x01, isMedia: false),
+    .d: (code: 0x02, isMedia: false),
+    .f: (code: 0x03, isMedia: false),
+    .h: (code: 0x04, isMedia: false),
+    .g: (code: 0x05, isMedia: false),
+    .z: (code: 0x06, isMedia: false),
+    .x: (code: 0x07, isMedia: false),
+    .c: (code: 0x08, isMedia: false),
+    .v: (code: 0x09, isMedia: false),
+    .b: (code: 0x0B, isMedia: false),
+    .q: (code: 0x0C, isMedia: false),
+    .w: (code: 0x0D, isMedia: false),
+    .e: (code: 0x0E, isMedia: false),
+    .r: (code: 0x0F, isMedia: false),
+    .y: (code: 0x10, isMedia: false),
+    .t: (code: 0x11, isMedia: false),
+    .o: (code: 0x1F, isMedia: false),
+    .u: (code: 0x20, isMedia: false),
+    .i: (code: 0x22, isMedia: false),
+    .p: (code: 0x23, isMedia: false),
+    .l: (code: 0x25, isMedia: false),
+    .j: (code: 0x26, isMedia: false),
+    .k: (code: 0x28, isMedia: false),
+    .n: (code: 0x2D, isMedia: false),
+    .m: (code: 0x2E, isMedia: false),
+    .digit1: (code: 0x12, isMedia: false),
+    .digit2: (code: 0x13, isMedia: false),
+    .digit3: (code: 0x14, isMedia: false),
+    .digit4: (code: 0x15, isMedia: false),
+    .digit6: (code: 0x16, isMedia: false),
+    .digit5: (code: 0x17, isMedia: false),
+    .digit9: (code: 0x19, isMedia: false),
+    .digit7: (code: 0x1A, isMedia: false),
+    .digit8: (code: 0x1C, isMedia: false),
+    .digit0: (code: 0x1D, isMedia: false),
+  };
+
+  static const Map<KeyModifier, int> modifiers = {
+    .shift: 0x38,
+    .control: 0x3B,
+    .alt: 0x3A,
+    .meta: 0x37,
+  };
+}
