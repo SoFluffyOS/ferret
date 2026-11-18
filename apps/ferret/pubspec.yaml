@@ -8,6 +8,10 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  remote_input:
+    path: ../../modules/remote_input
+  iphone:
+    path: ../../modules/iphone
   power:
     path: ../../modules/power
   find:

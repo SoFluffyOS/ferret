@@ -11,8 +11,10 @@ import ferret_clipboard
 import ferret_drop
 import ferret_find
 import ferret_handoff
+import ferret_iphone
 import ferret_media
 import ferret_menubar
+import ferret_remote_input
 import ferret_system
 import file_selector_macos
 import flutter_local_notifications
@@ -26,8 +28,10 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FerretDropPlugin.register(with: registry.registrar(forPlugin: "FerretDropPlugin"))
   FerretFindPlugin.register(with: registry.registrar(forPlugin: "FerretFindPlugin"))
   FerretHandoffPlugin.register(with: registry.registrar(forPlugin: "FerretHandoffPlugin"))
+  FerretIphonePlugin.register(with: registry.registrar(forPlugin: "FerretIphonePlugin"))
   FerretMediaPlugin.register(with: registry.registrar(forPlugin: "FerretMediaPlugin"))
   FerretMenubarPlugin.register(with: registry.registrar(forPlugin: "FerretMenubarPlugin"))
+  FerretRemoteInputPlugin.register(with: registry.registrar(forPlugin: "FerretRemoteInputPlugin"))
   FerretSystemPlugin.register(with: registry.registrar(forPlugin: "FerretSystemPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))

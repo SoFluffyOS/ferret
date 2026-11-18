@@ -12,10 +12,12 @@ workspace:
   - modules/drop
   - modules/find
   - modules/handoff
+  - modules/iphone
   - modules/media
   - modules/messages
   - modules/notifications
   - modules/power
+  - modules/remote_input
   - modules/shell
   - packages/core
   - packages/engine
@@ -25,11 +27,13 @@ workspace:
   - packages/ferret_drop
   - packages/ferret_find
   - packages/ferret_handoff
+  - packages/ferret_iphone
   - packages/ferret_media
   - packages/ferret_menubar
   - packages/ferret_messages
   - packages/ferret_notifications
   - packages/ferret_power
+  - packages/ferret_remote_input
   - packages/ferret_system
   - packages/interop_localsend
   - packages/interop_quickshare

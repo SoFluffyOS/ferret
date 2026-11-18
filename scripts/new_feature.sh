@@ -11,6 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 id="$1"
 title="$2"
 class="$3"
+camel="$(echo "$id" | awk -F_ '{printf $1; for (i = 2; i <= NF; i++) printf toupper(substr($i,1,1)) substr($i,2)}')"
 icon="${4:-box}"
 module="$ROOT/modules/$id"
 plugin="$ROOT/packages/ferret_$id"
@@ -145,7 +146,7 @@ import 'package:flutter/widgets.dart';
 export 'package:$id/l10n/generated/${id}_localizations.dart';
 
 extension ${class}L10n on BuildContext {
-  ${class}Localizations get ${id}L10n => ${class}Localizations.of(this);
+  ${class}Localizations get ${camel}L10n => ${class}Localizations.of(this);
 }
 DART
 
@@ -187,7 +188,7 @@ class ${class}FeatureUi extends FeatureUi {
   List<LocalizationsDelegate<Object>> get localizationsDelegates => const [${class}Localizations.delegate];
 
   @override
-  String title(BuildContext context) => context.${id}L10n.title;
+  String title(BuildContext context) => context.${camel}L10n.title;
 
   @override
   IconData get icon => LucideIcons.$icon;
@@ -248,4 +249,5 @@ body = re.sub(r'(  features: \[\n)(?:    \w+FeatureUi\(\),\n)*', lambda m: m.gro
 open(path, 'w').write('\n'.join(imports) + '\n\n' + body)
 PY
 
+"$ROOT/scripts/with_lock.sh" pub fvm flutter pub get >/dev/null
 echo "Created modules/$id and packages/ferret_$id"

@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: iphone_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: iphone_localizations.dart
+output-class: IphoneLocalizations
+nullable-getter: false

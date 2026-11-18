@@ -1,0 +1,6 @@
+arb-dir: lib/l10n/arb
+template-arb-file: remote_input_en.arb
+output-dir: lib/l10n/generated
+output-localization-file: remote_input_localizations.dart
+output-class: RemoteInputLocalizations
+nullable-getter: false
