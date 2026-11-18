@@ -15,6 +15,7 @@ workspace:
   - modules/media
   - modules/messages
   - modules/notifications
+  - modules/power
   - modules/shell
   - packages/core
   - packages/engine
@@ -28,8 +29,10 @@ workspace:
   - packages/ferret_menubar
   - packages/ferret_messages
   - packages/ferret_notifications
+  - packages/ferret_power
   - packages/ferret_system
   - packages/interop_localsend
+  - packages/interop_quickshare
   - packages/protocol
   - packages/transport
 

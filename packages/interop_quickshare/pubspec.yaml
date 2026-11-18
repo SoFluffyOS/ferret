@@ -1,0 +1,16 @@
+name: interop_quickshare
+description: Speaks Google's Quick Share (Nearby Share) protocol over the local network, so Android phones can send to Ferret without installing anything.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  core:
+    path: ../core
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.32.0

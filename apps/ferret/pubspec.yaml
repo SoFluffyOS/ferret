@@ -8,6 +8,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  power:
+    path: ../../modules/power
   find:
     path: ../../modules/find
   calls:

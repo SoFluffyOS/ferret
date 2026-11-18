@@ -7,6 +7,7 @@ import 'package:handoff/handoff.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
+import 'package:power/power.dart';
 import 'package:shell/shell.dart';
 
 Future<void> main() => runFerret(
@@ -19,6 +20,7 @@ Future<void> main() => runFerret(
     MediaFeatureUi(),
     MessagesFeatureUi(),
     NotificationsFeatureUi(),
+    PowerFeatureUi(),
   ],
   appVersion: '0.1.0',
   onStarted: CallMediaPause.attach,

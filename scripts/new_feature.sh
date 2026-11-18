@@ -239,10 +239,13 @@ open(path, 'w').write(text)
 
 path = f'{root}/apps/ferret/lib/main.dart'
 text = open(path).read()
-imports = sorted(set(re.findall(r"import '[^']+';", text)) | {f"import 'package:{feature}/{feature}.dart';"})
-features = sorted(set(re.findall(r'(\w+FeatureUi)\(\)', text)) | {f'{cls}FeatureUi'})
-body = '\n'.join(imports) + '\n\n' + 'Future<void> main() => runFerret(\n  features: [\n' + ''.join(f'    {name}(),\n' for name in features) + "  ],\n  appVersion: '0.1.0',\n);\n"
-open(path, 'w').write(body)
+new_import = f"import 'package:{feature}/{feature}.dart';"
+imports = sorted(set(re.findall(r"import '[^']+';", text)) | {new_import})
+body = text[text.index('Future<void> main()'):]
+entries = re.findall(r'^    (\w+FeatureUi\(\)),$', body, re.M)
+entries = sorted(set(entries) | {f'{cls}FeatureUi()'})
+body = re.sub(r'(  features: \[\n)(?:    \w+FeatureUi\(\),\n)*', lambda m: m.group(1) + ''.join(f'    {entry},\n' for entry in entries), body, count=1)
+open(path, 'w').write('\n'.join(imports) + '\n\n' + body)
 PY
 
 echo "Created modules/$id and packages/ferret_$id"
