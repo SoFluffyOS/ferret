@@ -20,6 +20,7 @@
 - 📱 **iPhone on your PC**: your iPhone's notifications (with Clear, Answer and Decline) and media controls on Windows and Linux over Bluetooth, with nothing to install on the iPhone.
 - 🖱️ **Remote input**: use your phone as the touchpad and keyboard of your computer. The computer asks first, shows **Controlled by · Stop** while it happens, and keeps a history.
 - 🪞 **Screen mirroring**: see your Android phone's screen on your computer. Android asks you every time, the phone shows **Sharing screen · Stop** while it lasts, and both devices keep a history.
+- 🔌 **Mirror any Android phone (experimental)**: show and control a phone that has USB or wireless debugging on, with no Ferret on it. Powered by scrcpy's server.
 - 📷 **Scan to pair**: point your phone at the code on your computer.
 - 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
 - ⚡ **Instant reconnect** after sleep or a network change.
