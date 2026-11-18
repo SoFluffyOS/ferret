@@ -72,6 +72,7 @@ void main() {
     expect(line.title, 'Pixel is controlling this Mac');
     expect(line.pinned, isTrue);
     expect(line.at, feature.controlHost?.active?.startedAt);
+    expect(line.deviceId, 'pixel');
     expect(line.actions.single.label, 'Stop');
     expect(viewModel.hasCard, isFalse);
   });

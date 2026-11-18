@@ -34,6 +34,7 @@ ActivityItem _controlling(
   icon: LucideIcons.mousePointer2,
   title: l10n.activityControlling(active.deviceName, thisComputer.name),
   at: active.startedAt,
+  deviceId: active.deviceId,
   pinned: true,
   tone: .warning,
   actions: [
@@ -60,6 +61,7 @@ ActivityItem? _controlled(
     title: l10n.activityControlled(record.deviceName, thisComputer.name),
     detail: l10n.activityControlledFor(record.duration.inMinutes),
     at: record.endedAt,
+    deviceId: record.deviceId,
     tone: .muted,
     onDismiss: viewModel.dismissRecord,
   );

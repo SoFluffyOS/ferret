@@ -50,6 +50,10 @@ ActivityItem _clip(
     icon: LucideIcons.clipboard,
     title: _title(l10n, entry),
     detail: _detail(l10n, entry),
+    deviceId: switch (entry.deviceIds) {
+      [final only] => only,
+      _ => null,
+    },
     at: entry.at,
     tone: switch (entry.skip) {
       .none => .normal,

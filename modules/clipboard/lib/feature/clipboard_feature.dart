@@ -409,6 +409,7 @@ class ClipboardFeature extends Feature {
         direction: .sent,
         at: at,
         deviceNames: [for (final session in reached) _nameOf(session)],
+        deviceIds: [for (final session in reached) session.remoteDeviceId],
         skip: switch (reached.isEmpty) {
           true => .noDevices,
           false => .none,
@@ -451,6 +452,7 @@ class ClipboardFeature extends Feature {
       direction: .received,
       at: _clock(),
       deviceNames: [_nameOf(session)],
+      deviceIds: [session.remoteDeviceId],
       skip: _skipFor(content),
     );
     if (entry.skip != .none || !settings.autoReceive) {

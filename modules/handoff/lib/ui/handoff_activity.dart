@@ -24,6 +24,7 @@ abstract final class HandoffActivity {
         title: _title(l10n, suggestion),
         detail: _site(suggestion),
         at: suggestion.receivedAt,
+        deviceId: suggestion.from.id,
         actions: [
           ActivityAction(label: l10n.open, onPressed: () => onOpen(suggestion)),
         ],

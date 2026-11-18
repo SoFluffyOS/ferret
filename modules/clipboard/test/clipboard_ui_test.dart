@@ -81,6 +81,7 @@ void main() {
     expect(row.title, 'Copied on Pixel');
     expect(row.detail, '“from the phone”');
     expect(row.at, isNotNull);
+    expect(row.deviceId, 'pixelpixelpixelp');
   });
 
   testWidgets('a private clip never shows what it holds', (tester) async {

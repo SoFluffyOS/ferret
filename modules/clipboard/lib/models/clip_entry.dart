@@ -30,6 +30,7 @@ class ClipEntry {
     required this.direction,
     required this.at,
     this.deviceNames = const [],
+    this.deviceIds = const [],
     this.skip = .none,
     this.onClipboard = false,
     this.redacted = false,
@@ -45,6 +46,9 @@ class ClipEntry {
   /// The source device for a received clip; the devices it reached for a
   /// sent one.
   final List<String> deviceNames;
+
+  /// The same devices as [deviceNames], by id.
+  final List<String> deviceIds;
   final ClipSkip skip;
 
   /// It was put on this device's clipboard.
@@ -66,6 +70,7 @@ class ClipEntry {
     direction: direction,
     at: at,
     deviceNames: deviceNames,
+    deviceIds: deviceIds,
     skip: skip ?? this.skip,
     onClipboard: onClipboard ?? this.onClipboard,
     redacted: redacted,
@@ -83,6 +88,7 @@ class ClipEntry {
     direction: direction,
     at: at,
     deviceNames: deviceNames,
+    deviceIds: deviceIds,
     skip: skip,
     onClipboard: onClipboard,
     redacted: true,

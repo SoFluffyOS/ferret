@@ -75,6 +75,7 @@ void main() {
       expect(item.detail, 'example.org');
       expect(item.at, offeredAt);
       expect(item.pinned, isFalse);
+      expect(item.deviceId, pixel.id);
       expect(item.actions.single.label, 'Open');
     });
 
