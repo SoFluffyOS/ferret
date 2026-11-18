@@ -197,11 +197,23 @@ void main() {
       final health = ui.healthFor(featureContext, statusOf(_Session()));
 
       expect(health?.state, FeatureHealthState.ok);
-      expect(
-        health?.reason,
-        "Nothing playing on Pixel 9, or it isn't sharing. "
-        'Pixel 9 sees what plays on this Mac.',
+      expect(health?.reason, 'Pixel 9 sees what plays on this Mac.');
+    });
+
+    testWidgets('a dash while nothing plays and nothing is shared', (
+      tester,
+    ) async {
+      final ui = await start(
+        tester,
+        backend: FakeMediaBackend(),
+        platform: .macos,
+        shareByDefault: false,
       );
+
+      final health = ui.healthFor(featureContext, statusOf(_Session()));
+
+      expect(health?.state, FeatureHealthState.off);
+      expect(health?.reason, 'Nothing playing right now');
     });
 
     testWidgets('says so while something plays there', (tester) async {
@@ -217,7 +229,8 @@ void main() {
         model: model,
       );
 
-      expect(health?.reason, 'Shows what plays on Pixel 9.');
+      expect(health?.state, FeatureHealthState.ok);
+      expect(health?.reason, startsWith("Shares what's playing."));
     });
 
     testWidgets('lost access offers the fix', (tester) async {

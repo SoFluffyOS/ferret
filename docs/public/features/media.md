@@ -49,7 +49,7 @@ In **Settings → Continue & media**, under **Media**:
 - **Show media from other devices**: the Now playing card and its controls.
 - **Pause during calls**: when your phone rings, what plays on this device pauses, and only that plays again once the call ends. On by default.
 
-Not sure what a device sees? Open it from Home. Under **What works**, Media says what each side shows of the other, and has a **Fix** button when Ferret lost its access to the players.
+Not sure what a device sees? Open it from Home. Under **What works**, Media has a check while something really goes across, such as **Shares what's playing**, and a dash with **Nothing playing right now** otherwise. It has a **Fix** button when Ferret lost its access to the players.
 
 ## 🤖 On Android: allow Notification access
 

@@ -7,7 +7,9 @@ import 'package:media/l10n/l10n.dart';
 import 'package:media/view_models/view_models.dart';
 
 /// How Media is doing with the device behind [session], called [name]: what
-/// each side sees of the other's players. Null when neither side can share
+/// each side sees of the other's players. A check only while something
+/// really goes across: their player shows here, or this device shares
+/// its own; a dash while nothing plays. Null when neither side can share
 /// what it plays.
 FeatureHealth? mediaHealthOf(
   MediaLocalizations l10n, {
@@ -39,14 +41,17 @@ FeatureHealth? mediaHealthOf(
     return _off(l10n, here: here, hidesTheirs: theyCanShare);
   }
 
-  final isPlaying = model.players.any(
-    (player) => player.deviceId == session.remoteDeviceId,
-  );
+  final showsPlaying =
+      showsTheirs &&
+      model.players.any((player) => player.deviceId == session.remoteDeviceId);
+  if (!showsPlaying && !model.isSharing) {
+    return FeatureHealth(.off, reason: l10n.healthNothingPlaying);
+  }
+
   return FeatureHealth(
     .ok,
     reason: [
-      if (showsTheirs && isPlaying) l10n.healthShowsTheirs(name),
-      if (showsTheirs && !isPlaying) l10n.healthNothingPlaying(name),
+      if (showsPlaying) l10n.healthShowsTheirs,
       if (model.isSharing) l10n.healthSharesMine(name, here),
     ].join(' '),
   );

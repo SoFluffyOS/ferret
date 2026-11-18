@@ -277,14 +277,14 @@ abstract class MediaLocalizations {
   /// No description provided for @healthShowsTheirs.
   ///
   /// In en, this message translates to:
-  /// **'Shows what plays on {name}.'**
-  String healthShowsTheirs(String name);
+  /// **'Shares what\'s playing.'**
+  String get healthShowsTheirs;
 
   /// No description provided for @healthNothingPlaying.
   ///
   /// In en, this message translates to:
-  /// **'Nothing playing on {name}, or it isn\'t sharing.'**
-  String healthNothingPlaying(String name);
+  /// **'Nothing playing right now'**
+  String get healthNothingPlaying;
 
   /// No description provided for @healthSharesMine.
   ///

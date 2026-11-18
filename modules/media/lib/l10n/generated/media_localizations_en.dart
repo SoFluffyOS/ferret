@@ -123,14 +123,10 @@ class MediaLocalizationsEn extends MediaLocalizations {
   }
 
   @override
-  String healthShowsTheirs(String name) {
-    return 'Shows what plays on $name.';
-  }
+  String get healthShowsTheirs => 'Shares what\'s playing.';
 
   @override
-  String healthNothingPlaying(String name) {
-    return 'Nothing playing on $name, or it isn\'t sharing.';
-  }
+  String get healthNothingPlaying => 'Nothing playing right now';
 
   @override
   String healthSharesMine(String name, String here) {

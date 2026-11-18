@@ -99,14 +99,8 @@
   "@healthUnsupported": {
     "placeholders": {"name": {"type": "String"}}
   },
-  "healthShowsTheirs": "Shows what plays on {name}.",
-  "@healthShowsTheirs": {
-    "placeholders": {"name": {"type": "String"}}
-  },
-  "healthNothingPlaying": "Nothing playing on {name}, or it isn't sharing.",
-  "@healthNothingPlaying": {
-    "placeholders": {"name": {"type": "String"}}
-  },
+  "healthShowsTheirs": "Shares what's playing.",
+  "healthNothingPlaying": "Nothing playing right now",
   "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
   "@healthSharesMine": {
     "placeholders": {"name": {"type": "String"}, "here": {"type": "String"}}

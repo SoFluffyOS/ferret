@@ -41,7 +41,7 @@ class DevicePage extends StatelessWidget {
     final device = status.device;
 
     return FerretPage(
-      title: device.name,
+      title: '',
       backLabel: l10n.back,
       children: [
         DeviceHeader(status: status),
