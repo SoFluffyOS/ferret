@@ -5,6 +5,8 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 // The pigeon API is what a fake of the Mac side implements.
 // ignore: implementation_imports
 import 'package:ferret_menubar/src/messages.g.dart';
+import 'package:ferret_system/ferret_system.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shell/services/services.dart';
 
@@ -65,6 +67,35 @@ void main() {
     await views.reveal();
     expect(api.popoverShown, 1);
   }, skip: !Platform.isMacOS);
+
+  testWidgets('on Windows and Linux, reveal brings the window back from '
+      'the tray', (tester) async {
+    const channel = MethodChannel(DesktopWindow.channelName);
+    final calls = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
+      calls.add(call.method);
+      return null;
+    });
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        null,
+      ),
+    );
+    api = _FakeMenubarApi(tester.view.viewId);
+    final desktop = AppViews(
+      menubar: FerretMenubar(api: api),
+      settings: MemorySettingsStore(),
+      desktopWindow: DesktopWindow.withChannel(channel),
+    );
+    addTearDown(desktop.dispose);
+
+    await desktop.reveal();
+
+    expect(calls, ['window.show']);
+  });
 
   testWidgets('an open window is the active view, until the popover is in '
       'front of it', (tester) async {

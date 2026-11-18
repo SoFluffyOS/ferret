@@ -56,7 +56,14 @@ Future<void> runFerret({
     for (final feature in features) ...feature.noticeCategories,
   ]);
   final ferretMenubar = FerretMenubar();
-  final views = AppViews(menubar: ferretMenubar, settings: settings);
+  final views = AppViews(
+    menubar: ferretMenubar,
+    settings: settings,
+    desktopWindow: switch (Platform.isWindows || Platform.isLinux) {
+      true => DesktopWindow(),
+      false => null,
+    },
+  );
   final featureContext = FeatureContext(
     engine: engine,
     navigatorKey: switch (ferretMenubar.isSupported) {

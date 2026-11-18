@@ -25,6 +25,7 @@ Nothing paired yet? There is no list to show, so the window is one column that l
 Ferret puts an icon in the notification area, next to the clock. Click it to show the window. Right-click it for **Open Ferret**, **Send clipboard to my devices**, **Pause syncing for 1 hour** (or **Resume**) and **Quit Ferret**.
 
 - **Closing the window keeps Ferret running in the tray**, so copies and files still arrive. The first time, a notification says where it went. Quit from the tray menu.
+- **Open Ferret again** from the app menu and the one already running shows its window. There is only ever one Ferret.
 - Windows may tuck the icon under the **^** arrow. Drag it next to the clock to keep it in sight.
 - The window opens where you left it, at the size you left it, maximized or not.
 

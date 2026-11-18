@@ -26,6 +26,7 @@ Ferret puts an icon in your panel's tray. Click it to show or hide the window. I
 
 - **With a tray, closing the window keeps Ferret running there**, so copies and files still arrive. The first time, a notification says where it went. Quit from the tray menu.
 - **Without a tray, closing the window quits Ferret.** A hidden window you can't get back would be worse. Stock GNOME has no tray: turn on the **AppIndicator and KStatusNotifierItem Support** extension (Ubuntu ships it on) and log in again.
+- **Open Ferret again** from the app menu and the one already running shows its window. There is only ever one Ferret.
 - KDE Plasma, Xfce, Cinnamon, MATE, Budgie and waybar show the icon as they are.
 - The window opens at the size you left it. On X11 it also opens where you left it. On Wayland the compositor decides where windows go, so only the size is kept.
 

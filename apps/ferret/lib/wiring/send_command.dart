@@ -5,7 +5,8 @@ import 'package:feature_kit/feature_kit.dart';
 
 /// `ferret send <file>…`, which a file manager's "Send with Ferret" entry
 /// runs: the files go to the Ferret that is already running, or this run
-/// starts up and sends them itself.
+/// starts up and sends them itself. On Windows and Linux a plain second
+/// launch shows the running Ferret's window and ends.
 class SendCommand {
   const SendCommand._(this.files, this.handoff);
 
@@ -29,6 +30,13 @@ class SendCommand {
     final paths = await AppPaths.get();
     final handoff = SendHandoff(paths.root);
     if (await handoff.handOver(files)) {
+      exit(0);
+    }
+
+    // Windows and Linux start a second Ferret on every launch; the first
+    // one, maybe hidden in the tray, shows its window instead.
+    final wakes = Platform.isLinux || Platform.isWindows;
+    if (wakes && files.isEmpty && await handoff.wakeUp()) {
       exit(0);
     }
 

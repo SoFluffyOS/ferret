@@ -24,7 +24,8 @@ class SendHandoff {
   ServerSocket? _server;
   String _secret = '';
 
-  /// Files later `ferret send` runs handed over, as absolute paths.
+  /// Files later `ferret send` runs handed over, as absolute paths. An
+  /// empty list is a later launch asking to see the window ([wakeUp]).
   Stream<List<String>> get requests => _requests.stream;
 
   /// Starts taking files from later runs. Quietly does nothing when this
@@ -58,6 +59,15 @@ class SendHandoff {
       return false;
     }
 
+    return _send(paths);
+  }
+
+  /// Asks the running Ferret to show its window, as a second launch from
+  /// the app menu does while the first one sits in the tray. It arrives on
+  /// [requests] with no files. False when no Ferret is running.
+  Future<bool> wakeUp() => _send(const []);
+
+  Future<bool> _send(List<String> paths) async {
     try {
       final address = jsonDecode(await _file.readAsString());
       if (address case {

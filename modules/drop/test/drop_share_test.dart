@@ -155,6 +155,22 @@ void main() {
       await first.dispose();
     });
 
+    test('a second launch wakes the running Ferret instead of starting '
+        'again', () async {
+      final running = SendHandoff(root.path);
+      final received = <List<String>>[];
+      running.requests.listen(received.add);
+      await running.listen();
+      final later = SendHandoff(root.path);
+
+      expect(await later.wakeUp(), isTrue);
+      expect(received, [<String>[]]);
+      await running.dispose();
+      await later.dispose();
+
+      expect(await SendHandoff(root.path).wakeUp(), isFalse);
+    });
+
     test('a Ferret that quit no longer takes files', () async {
       final running = SendHandoff(root.path);
       await running.listen();
@@ -275,6 +291,26 @@ void main() {
       expect(sentTo(), ['phone-id']);
       expect(source.existsSync(), isTrue);
     });
+
+    test(
+      'a later launch with no files shows the window, sends nothing',
+      () async {
+        var revealed = 0;
+        context = FeatureContext(
+          engine: _FakeEngine(),
+          navigatorKey: GlobalKey<NavigatorState>(),
+          notifier: notifier,
+          onReveal: () async => revealed++,
+        );
+        final handoff = SendHandoff(root.path);
+        await start(handoff: handoff);
+
+        await SendHandoff(root.path).wakeUp();
+        await until(() => revealed > 0);
+
+        expect(sentTo(), isEmpty);
+      },
+    );
 
     test('files a later run hands over are sent and kept', () async {
       final handoff = SendHandoff(root.path);

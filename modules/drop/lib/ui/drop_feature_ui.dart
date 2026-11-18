@@ -160,7 +160,7 @@ class DropFeatureUi extends FeatureUi {
   Future<void> _takeSendCommands(FeatureContext context) async {
     if (_handoff case final handoff?) {
       _handedOver = handoff.requests.listen(
-        (paths) => unawaited(_shareTo(context, paths: paths)),
+        (paths) => unawaited(_takeHandedOver(context, paths)),
       );
       await handoff.listen();
     }
@@ -168,6 +168,18 @@ class DropFeatureUi extends FeatureUi {
     if (_filesToSend.isNotEmpty) {
       unawaited(_shareTo(context, paths: _filesToSend));
     }
+  }
+
+  Future<void> _takeHandedOver(
+    FeatureContext context,
+    List<String> paths,
+  ) async {
+    if (paths.isEmpty) {
+      await context.reveal();
+      return;
+    }
+
+    await _shareTo(context, paths: paths);
   }
 
   /// Keeps the system's share sheet in step with the connected devices,

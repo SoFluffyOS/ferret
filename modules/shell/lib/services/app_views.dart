@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:core/core.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/services/active_navigator_key.dart';
 
@@ -16,6 +17,7 @@ class AppViews extends ChangeNotifier with WidgetsBindingObserver {
     required FerretMenubar menubar,
     required SettingsStore settings,
     PlatformDispatcher? dispatcher,
+    this.desktopWindow,
   }) : _menubar = menubar,
        _settings = settings,
        _dispatcher = dispatcher ?? PlatformDispatcher.instance;
@@ -26,6 +28,9 @@ class AppViews extends ChangeNotifier with WidgetsBindingObserver {
 
   final FerretMenubar _menubar;
   final SettingsStore _settings;
+
+  /// The Windows and Linux window, which may sit hidden in the tray.
+  final DesktopWindow? desktopWindow;
   final PlatformDispatcher _dispatcher;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
@@ -139,6 +144,7 @@ class AppViews extends ChangeNotifier with WidgetsBindingObserver {
   /// otherwise the popover.
   Future<void> reveal() async {
     if (_window == null) {
+      await desktopWindow?.show();
       await _menubar.show();
       return;
     }
