@@ -2241,6 +2241,24 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Copy the command'**
   String get doctorFixCopyFirewallCommand;
+
+  /// No description provided for @traySendClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Send clipboard to my devices'**
+  String get traySendClipboard;
+
+  /// No description provided for @trayStillRunningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is still running'**
+  String get trayStillRunningTitle;
+
+  /// No description provided for @trayStillRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Find it in the tray, next to the clock. Quit from its menu.'**
+  String get trayStillRunningBody;
 }
 
 class _ShellLocalizationsDelegate

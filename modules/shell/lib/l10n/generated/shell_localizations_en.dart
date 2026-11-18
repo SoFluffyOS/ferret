@@ -1343,4 +1343,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixCopyFirewallCommand => 'Copy the command';
+
+  @override
+  String get traySendClipboard => 'Send clipboard to my devices';
+
+  @override
+  String get trayStillRunningTitle => 'Ferret is still running';
+
+  @override
+  String get trayStillRunningBody =>
+      'Find it in the tray, next to the clock. Quit from its menu.';
 }

@@ -16,8 +16,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 /// The app side of Clipboard: what synced in Activity, "Send clipboard" for
-/// each device, the Settings section, and the Android tile and notification
-/// action.
+/// each device, the Settings section, and Send clipboard from the Android
+/// tile and notification or the Windows and Linux tray.
 class ClipboardFeatureUi extends FeatureUi {
   ClipboardFeatureUi({ClipboardFeature? feature})
     : feature = feature ?? ClipboardFeature();
@@ -46,7 +46,9 @@ class ClipboardFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
-    if (!Platform.isAndroid) {
+    final hasSystemActions =
+        Platform.isAndroid || Platform.isWindows || Platform.isLinux;
+    if (!hasSystemActions) {
       return;
     }
 

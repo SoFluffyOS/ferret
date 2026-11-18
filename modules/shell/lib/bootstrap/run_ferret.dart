@@ -9,6 +9,7 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shell/app/app.dart';
+import 'package:shell/bootstrap/desktop_binding.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
 import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/services/services.dart';
@@ -84,6 +85,12 @@ Future<void> runFerret({
     menubar: ferretMenubar,
   );
   await menubar.start();
+  await DesktopBinding(
+    host: host,
+    pause: pause,
+    settings: settings,
+    notifier: notifier,
+  ).start();
 
   _run(
     FerretApp(

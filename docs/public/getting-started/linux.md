@@ -20,6 +20,17 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 
 Nothing paired yet? There is no list to show, so the window is one column that looks for your other devices. See [Pair your devices](pairing.md).
 
+## 🧷 The tray, and closing the window
+
+Ferret puts an icon in your panel's tray. Click it to show or hide the window. Its menu has **Open Ferret**, **Send clipboard to my devices**, **Pause syncing for 1 hour** (or **Resume**) and **Quit Ferret**.
+
+- **With a tray, closing the window keeps Ferret running there**, so copies and files still arrive. The first time, a notification says where it went. Quit from the tray menu.
+- **Without a tray, closing the window quits Ferret.** A hidden window you can't get back would be worse. Stock GNOME has no tray: turn on the **AppIndicator and KStatusNotifierItem Support** extension (Ubuntu ships it on) and log in again.
+- KDE Plasma, Xfce, Cinnamon, MATE, Budgie and waybar show the icon as they are.
+- The window opens at the size you left it. On X11 it also opens where you left it. On Wayland the compositor decides where windows go, so only the size is kept.
+
+The icon speaks StatusNotifierItem over D-Bus. Nothing to install, and inside a Flatpak it only needs to talk to `org.kde.StatusNotifierWatcher`.
+
 ## ⌨️ Keys
 
 | Keys | Does |

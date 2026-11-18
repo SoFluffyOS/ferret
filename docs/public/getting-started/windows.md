@@ -20,6 +20,14 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 
 Nothing paired yet? There is no list to show, so the window is one column that looks for your other devices. See [Pair your devices](pairing.md).
 
+## 🧷 The tray, and closing the window
+
+Ferret puts an icon in the notification area, next to the clock. Click it to show the window. Right-click it for **Open Ferret**, **Send clipboard to my devices**, **Pause syncing for 1 hour** (or **Resume**) and **Quit Ferret**.
+
+- **Closing the window keeps Ferret running in the tray**, so copies and files still arrive. The first time, a notification says where it went. Quit from the tray menu.
+- Windows may tuck the icon under the **^** arrow. Drag it next to the clock to keep it in sight.
+- The window opens where you left it, at the size you left it, maximized or not.
+
 ## ⌨️ Keys
 
 | Keys | Does |
