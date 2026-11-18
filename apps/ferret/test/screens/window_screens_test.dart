@@ -8,6 +8,7 @@
 @Tags(['screens'])
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:calls/calls.dart';
@@ -82,7 +83,7 @@ final windowScreens = <WindowScreen>[
   WindowScreen('empty_nearby', (tester, rig) async {
     await rig.addNearby(tester, name: 'Pixel 9');
   }),
-  WindowScreen('overview', _pairPhone, sampleActivity: true),
+  const WindowScreen('overview', _pairPhone, sampleActivity: true),
   WindowScreen('overview_offline', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.settle(tester);
@@ -129,6 +130,25 @@ final windowScreens = <WindowScreen>[
     await rig.settle(tester);
     await rig.tapText(tester, "Why isn't it connecting?");
   }),
+  WindowScreen('pair_request', (tester, rig) async {
+    await _pairPhone(tester, rig);
+    final other = await rig.startNearby(tester, name: 'Galaxy S24');
+    if (other == null) {
+      return;
+    }
+
+    await tester.runAsync(() async {
+      unawaited(
+        other.pairWithAddress(
+          '127.0.0.1',
+          rig.engine.port,
+          onCode: (_) => true,
+        ),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await rig.settle(tester);
+  }),
   WindowScreen('sidebar_hidden', (tester, rig) async {
     await _pairPhone(tester, rig);
     await tester.tap(find.byIcon(LucideIcons.panelLeftClose));
@@ -158,7 +178,7 @@ void main() {
           setScreen(tester, size, brightness);
           mockPlugins(tester);
           debugDisableShadows = false;
-          debugDefaultTargetPlatformOverride = size.platform;
+          debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
           final reportError = FlutterError.onError;
           FlutterError.onError = (details) {
             final message = details.exceptionAsString();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/models/models.dart';
@@ -154,10 +155,6 @@ class WindowNavViewModel extends ChangeNotifier {
   }
 
   void _push(Widget page) {
-    unawaited(
-      navigatorKey.currentState?.push(
-        PageRouteBuilder<void>(pageBuilder: (_, _, _) => page),
-      ),
-    );
+    unawaited(navigatorKey.currentState?.push(ferretRoute<void>(page)));
   }
 }
