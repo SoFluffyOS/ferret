@@ -125,40 +125,25 @@ class MirroringFeatureUi extends FeatureUi {
     );
   }
 
+  /// On a computer: whether [device] can show its screen here, from how
+  /// the last try went. On a phone: whether [device] may ask to see it.
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
     final session = device.session;
-    final viewer = this.feature.viewer;
-    if (session == null ||
-        viewer == null ||
-        !this.feature.canViewDevice(session)) {
+    if (session == null) {
       return null;
     }
 
-    final deviceId = device.device.id;
-    final name = device.device.name;
     final l10n = platformMirroringL10n();
-    final current = viewer.current;
-    if (current != null &&
-        current.deviceId == deviceId &&
-        current.isMirroring) {
-      return FeatureHealth(.ok, reason: l10n.healthViewing);
+    if (this.feature.canViewDevice(session)) {
+      return _viewerHealth(l10n, device.device);
     }
 
-    return switch (viewer.lastEndFor(deviceId)) {
-      .turnedOff => FeatureHealth(.off, reason: l10n.healthTurnedOff(name)),
-      .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
-      .cannotAsk => FeatureHealth(
-        .needsAttention,
-        reason: l10n.healthCannotAsk(name),
-      ),
-      .failed => FeatureHealth(.failing, reason: l10n.healthFailed(name)),
-      .decoderFailed => FeatureHealth(
-        .failing,
-        reason: l10n.healthDecoderFailed,
-      ),
-      _ => null,
-    };
+    if (shareViewModel.isAvailable && _isViewer(session)) {
+      return _shareHealth(l10n, device.device);
+    }
+
+    return null;
   }
 
   @override
@@ -198,16 +183,9 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) {
     final sections = [
-      if (shareViewModel.isAvailable)
-        ChangeNotifierProvider.value(
-          value: shareViewModel,
-          child: const ShareSettingsFrame(),
-        ),
+      if (shareViewModel.isAvailable) _shareSettings(),
       if (viewerViewModel.isAvailable && _hasViewerSettings(feature))
-        ChangeNotifierProvider.value(
-          value: viewerViewModel,
-          child: const ViewerSettingsFrame(),
-        ),
+        _viewerSettings(),
     ];
     if (sections.isEmpty) {
       return null;
@@ -224,14 +202,177 @@ class MirroringFeatureUi extends FeatureUi {
     );
   }
 
-  /// A computer's section only helps once an Android phone is paired, to
-  /// keep showing what it mirrored before, or to turn the other ways on.
+  /// Screen sits with what a phone shares with a computer. A phone's part
+  /// is on while computers may ask; a computer's part has no on and off,
+  /// because the phone decides every time.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.mirroringL10n;
+    final title = this.title(context);
+
+    return [
+      if (shareViewModel.isAvailable)
+        FeatureSettings(
+          group: .phone,
+          title: title,
+          child: _shareSettings(),
+          summary: _shareSummary(l10n),
+          isOn: shareViewModel.enabled && shareViewModel.canCapture,
+        ),
+      if (viewerViewModel.isAvailable && _hasViewerSettings(feature))
+        FeatureSettings(
+          group: .phone,
+          title: title,
+          child: _viewerSettings(),
+          summary: switch (viewerViewModel.moreWays) {
+            true => l10n.summaryMoreWays,
+            false => '',
+          },
+        ),
+    ];
+  }
+
+  /// On a phone, whether the computer [device] may ask to see its screen.
+  @override
+  List<DevicePermission> devicePermissions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final deviceId = device.device.id;
+    final applies =
+        _isViewer(device.session) || !shareViewModel.mayAsk(deviceId);
+    if (!shareViewModel.isAvailable || !applies) {
+      return const [];
+    }
+
+    final l10n = context.mirroringL10n;
+    return [
+      DevicePermission(
+        label: l10n.permissionAsk,
+        detail: switch (shareViewModel.enabled) {
+          true => l10n.settingsAllowBody,
+          false => l10n.permissionAskOff,
+        },
+        value: shareViewModel.mayAsk(deviceId),
+        onChanged: (value) =>
+            unawaited(shareViewModel.setMayAsk(deviceId, value)),
+      ),
+    ];
+  }
+
+  Widget _shareSettings() => ChangeNotifierProvider.value(
+    value: shareViewModel,
+    child: const ShareSettingsFrame(),
+  );
+
+  Widget _viewerSettings() => ChangeNotifierProvider.value(
+    value: viewerViewModel,
+    child: const ViewerSettingsFrame(),
+  );
+
+  /// A computer's part only helps once an Android phone is paired, to keep
+  /// showing what it mirrored before, or once the other ways are on. Until
+  /// then the other ways are an offer, not a setting.
   bool _hasViewerSettings(FeatureContext featureContext) =>
-      viewerViewModel.hasMoreWays ||
+      viewerViewModel.moreWays ||
       viewerViewModel.history.isNotEmpty ||
       featureContext.engine.devices.any(
         (status) => status.device.platform == .PLATFORM_ANDROID,
       );
+
+  /// Whether [session]'s device can show another's screen.
+  bool _isViewer(Session? session) =>
+      session
+          ?.remoteFeature(featureId)
+          ?.flags
+          .contains(MirroringFeature.viewFlag) ??
+      false;
+
+  String _shareSummary(MirroringLocalizations l10n) {
+    if (!shareViewModel.enabled) {
+      return l10n.summaryOff;
+    }
+
+    if (!shareViewModel.canCapture) {
+      return l10n.summaryCantCapture;
+    }
+
+    return l10n.summaryAsks;
+  }
+
+  FeatureHealth _viewerHealth(
+    MirroringLocalizations l10n,
+    TrustedDevice device,
+  ) {
+    final name = device.name;
+    final current = feature.viewer?.current;
+    if (current != null &&
+        current.deviceId == device.id &&
+        current.isMirroring) {
+      return FeatureHealth(.ok, reason: l10n.healthViewing);
+    }
+
+    return switch (feature.viewer?.lastEndFor(device.id)) {
+      .turnedOff => FeatureHealth(
+        .off,
+        reason: l10n.healthTurnedOff(name),
+        help: l10n.endTurnedOffBody(name),
+      ),
+      .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
+      .cannotAsk => FeatureHealth(
+        .needsAttention,
+        reason: l10n.healthCannotAsk(name),
+        help: l10n.endCannotAskBody(name),
+      ),
+      .failed => FeatureHealth(
+        .failing,
+        reason: l10n.healthFailed(name),
+        help: l10n.healthTryAgainHelp,
+      ),
+      .decoderFailed => FeatureHealth(
+        .failing,
+        reason: l10n.healthDecoderFailed,
+        help: l10n.healthTryAgainHelp,
+      ),
+      _ => FeatureHealth(.ok, reason: l10n.healthAsks(name)),
+    };
+  }
+
+  FeatureHealth _shareHealth(
+    MirroringLocalizations l10n,
+    TrustedDevice device,
+  ) {
+    final name = device.name;
+    if (!shareViewModel.enabled) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthShareOff,
+        help: l10n.healthShareOffHelp,
+      );
+    }
+
+    if (!shareViewModel.mayAsk(device.id)) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.healthShareBlocked(name),
+        help: l10n.healthShareBlockedHelp(name),
+      );
+    }
+
+    if (!shareViewModel.canCapture) {
+      return FeatureHealth(.off, reason: l10n.settingsUnsupported);
+    }
+
+    if (shareViewModel.active?.deviceId == device.id) {
+      return FeatureHealth(.ok, reason: l10n.healthSharing);
+    }
+
+    return FeatureHealth(.ok, reason: l10n.healthShareAsks);
+  }
 
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {

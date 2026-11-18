@@ -93,7 +93,7 @@ class MirrorSource {
       return StartDeny(reason: .DENY_REASON_VERSION);
     }
 
-    if (!_settings.enabled) {
+    if (!_settings.enabled || _settings.isBlocked(deviceId)) {
       return StartDeny(reason: .DENY_REASON_TURNED_OFF);
     }
 
@@ -214,6 +214,27 @@ class MirrorSource {
     }
 
     if (_active != null) {
+      await _end(.turnedOff, notify: .STOP_REASON_TURNED_OFF);
+    }
+
+    _emit();
+  }
+
+  /// Whether [deviceId] may ask to see this screen. Turning it away also
+  /// ends its request, and its look at the screen, right now.
+  Future<void> setBlocked(String deviceId, bool blocked) async {
+    await _settings.setBlocked(deviceId, blocked);
+    if (!blocked) {
+      _emit();
+      return;
+    }
+
+    if (_pending?.deviceId == deviceId) {
+      await _dropPending();
+      await _send(deviceId, StartDeny(reason: .DENY_REASON_TURNED_OFF));
+    }
+
+    if (_active?.deviceId == deviceId) {
       await _end(.turnedOff, notify: .STOP_REASON_TURNED_OFF);
     }
 

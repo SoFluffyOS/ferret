@@ -120,14 +120,29 @@ void main() {
     await pumpPage(tester);
   }
 
-  Future<void> pumpSettings(WidgetTester tester) => tester.pumpWidget(
+  Future<void> pumpSettings(
+    WidgetTester tester, {
+    List<DeviceStatus> devices = const [],
+  }) => tester.pumpWidget(
     testApp(
       Builder(
         builder: (context) =>
-            ui.buildSettings(context, featureContext()) ??
+            ui.buildSettings(context, featureContext(devices: devices)) ??
             const Text('no section'),
       ),
     ),
+  );
+
+  final androidPhone = DeviceStatus(
+    TrustedDevice(
+      id: 'pixel',
+      name: 'Pixel',
+      platform: .PLATFORM_ANDROID,
+      formFactor: .FORM_FACTOR_PHONE,
+      publicKey: Uint8List(32),
+      pairedAt: DateTime(2026),
+    ),
+    null,
   );
 
   group('opt-in', () {
@@ -143,7 +158,7 @@ void main() {
         'them on is one tap', (tester) async {
       await startComputer(tester, moreWays: false);
       await pumpSettings(tester);
-      final context = tester.element(find.byType(SwitchToggle));
+      final context = tester.element(find.text('no section'));
 
       final offer = ui.offerFor(context, featureContext());
       expect(offer?.title, 'Screen');
@@ -160,10 +175,29 @@ void main() {
       expect(ui.hasHomeCard(featureContext()), isTrue);
     });
 
-    testWidgets('settings mark the switch Experimental, off until asked '
-        'for', (tester) async {
+    testWidgets('settings stay away until an Android phone is paired or the '
+        'other ways are on', (tester) async {
       await startComputer(tester, moreWays: false);
       await pumpSettings(tester);
+      expect(find.text('no section'), findsOneWidget);
+
+      await MirroringSettings(host.settings).setMoreWays(true);
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox.shrink());
+      await pumpSettings(tester);
+
+      expect(find.text('no section'), findsNothing);
+      expect(find.text('Experimental'), findsOneWidget);
+      expect(
+        tester.widgetList<SwitchToggle>(find.byType(SwitchToggle)).first.value,
+        isTrue,
+      );
+    });
+
+    testWidgets('settings are marked Experimental, with the other ways off '
+        'until asked for', (tester) async {
+      await startComputer(tester, moreWays: false);
+      await pumpSettings(tester, devices: [androidPhone]);
 
       expect(find.text('More ways to show a screen'), findsOneWidget);
       expect(find.text('Experimental'), findsOneWidget);

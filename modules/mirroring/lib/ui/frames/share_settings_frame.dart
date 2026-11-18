@@ -36,6 +36,7 @@ class ShareSettingsFrame extends StatelessWidget {
         children: [
           SettingSwitchRow(
             title: l10n.settingsAllow,
+            tag: l10n.experimental,
             body: l10n.settingsAllowBody,
             value: enabled,
             onChanged: (value) => unawaited(viewModel.setEnabled(value)),
@@ -44,12 +45,17 @@ class ShareSettingsFrame extends StatelessWidget {
             Spacing.v4,
             Text(
               l10n.settingsUnsupported,
-              style: caption.copyWith(color: palette.danger),
+              style: caption.copyWith(color: palette.mutedText),
             ),
           ],
           Spacing.v4,
           Text(
             l10n.settingsScreenOffNote,
+            style: caption.copyWith(color: palette.mutedText),
+          ),
+          Spacing.v4,
+          Text(
+            l10n.settingsPerDevice,
             style: caption.copyWith(color: palette.mutedText),
           ),
           HistoryList(

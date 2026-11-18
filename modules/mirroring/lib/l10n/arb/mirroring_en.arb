@@ -122,7 +122,7 @@
       }
     }
   },
-  "endTurnedOffBody": "On {device}: open Ferret's settings, then Screen, and turn it on.",
+  "endTurnedOffBody": "On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.",
   "@endTurnedOffBody": {
     "placeholders": {
       "device": {
@@ -452,6 +452,42 @@
   "settingsHistoryTitle": "History",
   "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",
   "clearHistory": "Clear history",
+  "settingsPerDevice": "To stop one computer from asking, open it from Home.",
+  "summaryOff": "Off",
+  "summaryAsks": "Asks every time",
+  "summaryCantCapture": "Can't capture",
+  "summaryMoreWays": "More ways on",
+  "permissionAsk": "Ask to see this phone's screen",
+  "permissionAskOff": "Screen is off for every computer. Turn it on in Settings → To your computer.",
+  "healthAsks": "Asks on {device} every time",
+  "@healthAsks": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthTryAgainHelp": "Choose Show screen to try again.",
+  "healthShareOff": "Off on this phone",
+  "healthShareOffHelp": "Open Settings → To your computer and turn on Let my computers ask to see this screen.",
+  "healthShareBlocked": "Off for {device}",
+  "@healthShareBlocked": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthShareBlockedHelp": "Turn on Ask to see this phone's screen for {device}, further down this page.",
+  "@healthShareBlockedHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthSharing": "Sees this phone's screen now",
+  "healthShareAsks": "Asks you every time",
   "healthViewing": "Showing its screen here",
   "healthTurnedOff": "Off on {device}",
   "@healthTurnedOff": {

@@ -83,7 +83,10 @@ void main() {
     });
   }
 
-  Future<void> startPhone(WidgetTester tester) async {
+  Future<void> startPhone(
+    WidgetTester tester, {
+    CaptureSupport support = const CaptureSupport(h264: true, jpeg: true),
+  }) async {
     final created = await tester.runAsync(FakeHost.create);
     if (created == null) {
       fail('The host should start');
@@ -92,7 +95,7 @@ void main() {
     host = created;
     mac = FakeSession('mac', name: 'MacBook', flags: const ['view']);
     host.sessions = [mac];
-    capture = FakeCapture();
+    capture = FakeCapture(supportNow: support);
     now = DateTime(2026, 11, 18, 21, 10);
     feature = MirroringFeature(
       capture: () => capture,
@@ -723,7 +726,9 @@ void main() {
 
       expect(pixelActions.single.label, 'Show screen');
       expect(iphoneActions, isEmpty);
-      expect(ui.healthFor(context, status(pixel)), isNull);
+      final untried = ui.healthFor(context, status(pixel));
+      expect(untried?.state, FeatureHealthState.ok);
+      expect(untried?.reason, 'Asks on Pixel every time');
       expect(ui.healthFor(context, status(iphone)), isNull);
 
       var changes = 0;
@@ -749,6 +754,10 @@ void main() {
       final health = ui.healthFor(context, status(pixel));
       expect(health?.state, FeatureHealthState.off);
       expect(health?.reason, 'Off on Pixel');
+      expect(
+        health?.help,
+        startsWith('On Pixel: open Ferret → Settings → To your computer'),
+      );
     });
 
     testWidgets('a phone offers no "Show screen"', (tester) async {
@@ -770,6 +779,209 @@ void main() {
       );
 
       expect(actions, isEmpty);
+    });
+  });
+
+  group('settings parts', () {
+    final androidPhone = DeviceStatus(
+      TrustedDevice(
+        id: 'pixel',
+        name: 'Pixel',
+        platform: .PLATFORM_ANDROID,
+        formFactor: .FORM_FACTOR_PHONE,
+        publicKey: Uint8List(32),
+        pairedAt: DateTime(2026),
+      ),
+      null,
+    );
+
+    Future<List<FeatureSettings>> partsOf(
+      WidgetTester tester, {
+      List<DeviceStatus> devices = const [],
+    }) async {
+      late List<FeatureSettings> parts;
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) {
+              parts = ui.settingsSections(
+                context,
+                featureContext(devices: devices),
+              );
+              return Column(children: [for (final part in parts) part.child]);
+            },
+          ),
+        ),
+      );
+
+      return parts;
+    }
+
+    testWidgets('a phone has Screen under what it shares with a computer, '
+        'on and marked Experimental', (tester) async {
+      await startPhone(tester);
+
+      final part = (await partsOf(tester)).single;
+
+      expect(part.group, SettingsGroup.phone);
+      expect(part.title, 'Screen');
+      expect(part.summary, 'Asks every time');
+      expect(part.isOn, isTrue);
+      expect(part.needsAttention, isFalse);
+      expect(find.text('Experimental'), findsOneWidget);
+    });
+
+    testWidgets('turned off on the phone reads Off, and the row hears about '
+        'it', (tester) async {
+      await startPhone(tester);
+      var changes = 0;
+      ui.uiChanges.addListener(() => changes++);
+
+      await ui.shareViewModel.setEnabled(false);
+      await tester.pump();
+      final part = (await partsOf(tester)).single;
+
+      expect(changes, greaterThan(0));
+      expect(part.summary, 'Off');
+      expect(part.isOn, isFalse);
+      expect(part.needsAttention, isFalse);
+    });
+
+    testWidgets('a phone that cannot capture says so quietly', (tester) async {
+      await startPhone(tester, support: const .none());
+
+      final part = (await partsOf(tester)).single;
+      final note = tester.widget<Text>(
+        find.text("This phone can't capture its screen"),
+      );
+
+      expect(part.summary, "Can't capture");
+      expect(part.isOn, isFalse);
+      expect(part.needsAttention, isFalse);
+      expect(note.style?.color, isNot(const Color(0xFFFF453A)));
+    });
+
+    testWidgets('a computer has no part until an Android phone is paired', (
+      tester,
+    ) async {
+      await startComputer(tester);
+
+      expect(await partsOf(tester), isEmpty);
+
+      final part = (await partsOf(tester, devices: [androidPhone])).single;
+
+      expect(part.group, SettingsGroup.phone);
+      expect(part.title, 'Screen');
+      expect(part.isOn, isNull);
+      expect(part.needsAttention, isFalse);
+      expect(find.text('Experimental'), findsOneWidget);
+    });
+  });
+
+  group('what a computer may do on this phone', () {
+    DeviceStatus status(FakeSession session) => DeviceStatus(
+      TrustedDevice(
+        id: session.remoteDeviceId,
+        name: session.name,
+        platform: .PLATFORM_MACOS,
+        formFactor: .FORM_FACTOR_LAPTOP,
+        publicKey: Uint8List(32),
+        pairedAt: now,
+      ),
+      session,
+    );
+
+    Future<List<DevicePermission>> permissionsFor(
+      WidgetTester tester,
+      FakeSession session,
+    ) async {
+      late List<DevicePermission> permissions;
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) {
+              permissions = ui.devicePermissions(
+                context,
+                featureContext(),
+                status(session),
+              );
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      return permissions;
+    }
+
+    Future<GeneratedMessage?> ask() => feature.onEnvelope(
+      mac,
+      envelopeOf(
+        StartRequest(version: 1, codecs: const [.CODEC_H264]),
+        expectsReply: true,
+      ),
+    );
+
+    testWidgets('a computer may ask until its switch is turned off, which '
+        'also stops it at once', (tester) async {
+      await startPhone(tester);
+      final permission = (await permissionsFor(tester, mac)).single;
+      expect(permission.label, "Ask to see this phone's screen");
+      expect(permission.value, isTrue);
+      expect(
+        ui.healthFor(featureContext(), status(mac))?.reason,
+        'Asks you every time',
+      );
+
+      await ask();
+      capture.answer(.granted);
+      await tester.pump();
+      await tester.pump();
+      expect(feature.source?.active?.deviceId, 'mac');
+      expect(
+        ui.healthFor(featureContext(), status(mac))?.reason,
+        "Sees this phone's screen now",
+      );
+
+      permission.onChanged(false);
+      await tester.pump();
+      await tester.pump();
+
+      expect(feature.source?.active, isNull);
+      expect((await permissionsFor(tester, mac)).single.value, isFalse);
+      expect(await ask(), isA<StartDeny>());
+      final health = ui.healthFor(featureContext(), status(mac));
+      expect(health?.state, FeatureHealthState.off);
+      expect(health?.reason, 'Off for MacBook');
+      expect(health?.help, contains("Ask to see this phone's screen"));
+    });
+
+    testWidgets('with Screen off for everyone, the switch says where to turn '
+        'it on', (tester) async {
+      await startPhone(tester);
+      await ui.shareViewModel.setEnabled(false);
+
+      final permission = (await permissionsFor(tester, mac)).single;
+      final health = ui.healthFor(featureContext(), status(mac));
+
+      expect(permission.detail, contains('Settings → To your computer'));
+      expect(health?.state, FeatureHealthState.off);
+      expect(health?.reason, 'Off on this phone');
+      expect(health?.help, startsWith('Open Settings → To your computer'));
+    });
+
+    testWidgets('a device that cannot show a screen gets no switch, and a '
+        'computer gives none', (tester) async {
+      await startPhone(tester);
+      final tablet = FakeSession('tablet', name: 'Tablet', flags: const []);
+
+      expect(await permissionsFor(tester, tablet), isEmpty);
+      expect(ui.healthFor(featureContext(), status(tablet)), isNull);
+
+      await startComputer(tester);
+      expect(await permissionsFor(tester, pixel), isEmpty);
     });
   });
 }

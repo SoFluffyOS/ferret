@@ -10,6 +10,7 @@ class MirroringSettings {
   static const actualSizeKey = 'mirroring.actual_size';
   static const moreWaysKey = 'mirroring.more_ways';
   static const receiverKeyPrefix = 'mirroring.receiver.';
+  static const blockedDevicesKey = 'mirroring.blocked_devices';
 
   /// How many past times of mirroring the history keeps.
   static const historyLength = 20;
@@ -19,6 +20,15 @@ class MirroringSettings {
   /// Paired computers may ask to see this screen. On by default: Android
   /// still asks its owner every single time.
   bool get enabled => _store.get<bool>(enabledKey) ?? true;
+
+  /// Paired computers the owner turned away for good: they can't even
+  /// ask to see this screen.
+  List<String> get blockedDevices => [
+    for (final id in _store.get<List<Object?>>(blockedDevicesKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  bool isBlocked(String deviceId) => blockedDevices.contains(deviceId);
 
   /// Past times of mirroring on this device, newest first.
   List<MirrorRecord> get history => [
@@ -47,6 +57,13 @@ class MirroringSettings {
       _store.set('$receiverKeyPrefix$receiverId', value);
 
   Future<void> setEnabled(bool value) => _store.set(enabledKey, value);
+
+  Future<void> setBlocked(String deviceId, bool blocked) =>
+      _store.set(blockedDevicesKey, [
+        for (final id in blockedDevices)
+          if (id != deviceId) id,
+        if (blocked) deviceId,
+      ]);
 
   Future<void> setActualSize(bool value) => _store.set(actualSizeKey, value);
 

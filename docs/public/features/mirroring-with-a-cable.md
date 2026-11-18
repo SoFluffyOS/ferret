@@ -10,7 +10,7 @@
 
 Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way you can click and type on the phone too.
 
-> 🧪 This is experimental. Turn on **More ways to show a screen** in **Settings → Screen** on your computer first. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
+> 🧪 This is experimental. On your computer, click **Turn on** next to Screen in **Do more** on Ferret's home screen first. Already paired an Android phone? The switch, **More ways to show a screen**, is in **Settings → From your phone** too. It was tested on a Mac with an Android 15 emulator, not yet with a real phone or on Windows and Linux.
 
 ## 🔑 Turn on debugging on the phone
 

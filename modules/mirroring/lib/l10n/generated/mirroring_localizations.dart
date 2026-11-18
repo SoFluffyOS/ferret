@@ -286,7 +286,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @endTurnedOffBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret\'s settings, then Screen, and turn it on.'**
+  /// **'On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.'**
   String endTurnedOffBody(String device);
 
   /// No description provided for @endCannotAskTitle.
@@ -606,6 +606,96 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Clear history'**
   String get clearHistory;
+
+  /// No description provided for @settingsPerDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'To stop one computer from asking, open it from Home.'**
+  String get settingsPerDevice;
+
+  /// No description provided for @summaryOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get summaryOff;
+
+  /// No description provided for @summaryAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks every time'**
+  String get summaryAsks;
+
+  /// No description provided for @summaryCantCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t capture'**
+  String get summaryCantCapture;
+
+  /// No description provided for @summaryMoreWays.
+  ///
+  /// In en, this message translates to:
+  /// **'More ways on'**
+  String get summaryMoreWays;
+
+  /// No description provided for @permissionAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask to see this phone\'s screen'**
+  String get permissionAsk;
+
+  /// No description provided for @permissionAskOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen is off for every computer. Turn it on in Settings → To your computer.'**
+  String get permissionAskOff;
+
+  /// No description provided for @healthAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks on {device} every time'**
+  String healthAsks(String device);
+
+  /// No description provided for @healthTryAgainHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Show screen to try again.'**
+  String get healthTryAgainHelp;
+
+  /// No description provided for @healthShareOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this phone'**
+  String get healthShareOff;
+
+  /// No description provided for @healthShareOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings → To your computer and turn on Let my computers ask to see this screen.'**
+  String get healthShareOffHelp;
+
+  /// No description provided for @healthShareBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Off for {device}'**
+  String healthShareBlocked(String device);
+
+  /// No description provided for @healthShareBlockedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Ask to see this phone\'s screen for {device}, further down this page.'**
+  String healthShareBlockedHelp(String device);
+
+  /// No description provided for @healthSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees this phone\'s screen now'**
+  String get healthSharing;
+
+  /// No description provided for @healthShareAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks you every time'**
+  String get healthShareAsks;
 
   /// No description provided for @healthViewing.
   ///

@@ -38,6 +38,12 @@ class ShareViewModel extends ChangeNotifier {
 
   Future<void> setEnabled(bool value) async => _source?.setEnabled(value);
 
+  /// Whether the computer [deviceId] may ask to see this screen.
+  bool mayAsk(String deviceId) => !feature.settings.isBlocked(deviceId);
+
+  Future<void> setMayAsk(String deviceId, bool value) async =>
+      _source?.setBlocked(deviceId, !value);
+
   void dismissRecord() => _source?.dismissRecord();
 
   Future<void> clearHistory() async => _source?.clearHistory();

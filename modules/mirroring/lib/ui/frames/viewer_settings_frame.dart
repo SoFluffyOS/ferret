@@ -42,6 +42,11 @@ class ViewerSettingsFrame extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
+          Align(
+            alignment: .centerLeft,
+            child: Tag(l10n.experimental, color: context.palette.warning),
+          ),
+          Spacing.v8,
           Text(
             l10n.settingsViewerHint,
             style: context.fluffyTheme.typography.caption1.copyWith(
@@ -52,7 +57,6 @@ class ViewerSettingsFrame extends StatelessWidget {
             Spacing.v8,
             SettingSwitchRow(
               title: l10n.moreWaysTitle,
-              tag: l10n.experimental,
               body: l10n.moreWaysBody,
               value: moreWays,
               onChanged: (value) => unawaited(viewModel.setMoreWays(value)),

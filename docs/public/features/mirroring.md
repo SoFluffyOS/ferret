@@ -28,10 +28,12 @@ Not every screen has Ferret behind it. A spare phone on your desk, an iPhone, a 
 
 Ferret can show those too. This part is **experimental** and off until you ask for it:
 
-1. On the computer, open **Settings → Screen**.
-2. Turn on **More ways to show a screen**.
+1. On the computer, find **Screen** in **Do more** on Ferret's home screen.
+2. Click **Turn on**.
 
-That's it. Screens found this way appear on the home card under **Screens you can show**, each with **Show screen**.
+That's it. From then on the switch, **More ways to show a screen**, is in **Settings → From your phone**, under **Screen**. Paired an Android phone already? Then it is there from the start.
+
+Screens found this way appear on the home card under **Screens you can show**, each with **Show screen**.
 
 Some devices start it themselves, like an iPhone from Control Center. Those have their own switch right below, such as **Show iPhone and iPad screens here**. It starts off on a Mac, which can already do this by itself.
 
@@ -52,8 +54,9 @@ Nobody sees your screen without you knowing.
 
 - **Every time**, Android asks you with its own prompt. Ferret never remembers a yes. There is no "Always".
 - **While it happens**, a notice you can't swipe away says "Sharing screen with MacBook" with **Stop**. The home card says it too, and Android shows its own icon in the status bar.
-- **Afterwards**, both devices keep a line such as "MacBook saw this phone's screen for 12 min at 21:10". The last 20 are in **Settings → Screen → History**.
-- Don't want it at all? Turn off **Let my computers ask to see this screen** on the phone.
+- **Afterwards**, both devices keep a line such as "MacBook saw this phone's screen for 12 min at 21:10". The last 20 are under **Screen**: in **Settings → To your computer** on the phone, in **Settings → From your phone** on the computer.
+- Don't want it at all? On the phone, turn off **Let my computers ask to see this screen** in **Settings → To your computer**.
+- Only one computer you'd rather keep out? On the phone, open that computer in Ferret and turn off **Ask to see this phone's screen**. It can't even ask anymore.
 
 Phone in your pocket when the computer asks? Ferret posts a notice: "MacBook wants to see this screen". Tap it to get the prompt. The question stays for a minute.
 

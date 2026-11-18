@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your computer, turn on **More ways to show a screen** in **Settings → Screen**.
+> 1. On your computer, click **Turn on** next to Screen in **Do more** on Ferret's home screen.
 > 2. On the iPhone, open **Control Center → Screen Mirroring** and pick your computer.
 > 3. Say yes on the computer. That's it.
 
@@ -16,10 +16,10 @@ But an iPhone already knows how to send its screen: **AirPlay**. So Ferret on yo
 
 Ferret doesn't listen for iPhones until you ask.
 
-1. On the computer, open **Settings → Screen**.
-2. Turn on **More ways to show a screen**.
+1. On the computer, find **Screen** in **Do more** on Ferret's home screen.
+2. Click **Turn on**.
 
-Your computer now shows up on iPhones on the same Wi-Fi, under its Ferret name. Turn the switch off and it is gone from their lists.
+Your computer now shows up on iPhones on the same Wi-Fi, under its Ferret name. Turn off **More ways to show a screen** in **Settings → From your phone** and it is gone from their lists.
 
 ## 📱 Start from the iPhone
 

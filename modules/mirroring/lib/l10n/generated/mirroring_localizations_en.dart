@@ -132,7 +132,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String endTurnedOffBody(String device) {
-    return 'On $device: open Ferret\'s settings, then Screen, and turn it on.';
+    return 'On $device: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.';
   }
 
   @override
@@ -380,6 +380,60 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get clearHistory => 'Clear history';
+
+  @override
+  String get settingsPerDevice =>
+      'To stop one computer from asking, open it from Home.';
+
+  @override
+  String get summaryOff => 'Off';
+
+  @override
+  String get summaryAsks => 'Asks every time';
+
+  @override
+  String get summaryCantCapture => 'Can\'t capture';
+
+  @override
+  String get summaryMoreWays => 'More ways on';
+
+  @override
+  String get permissionAsk => 'Ask to see this phone\'s screen';
+
+  @override
+  String get permissionAskOff =>
+      'Screen is off for every computer. Turn it on in Settings → To your computer.';
+
+  @override
+  String healthAsks(String device) {
+    return 'Asks on $device every time';
+  }
+
+  @override
+  String get healthTryAgainHelp => 'Choose Show screen to try again.';
+
+  @override
+  String get healthShareOff => 'Off on this phone';
+
+  @override
+  String get healthShareOffHelp =>
+      'Open Settings → To your computer and turn on Let my computers ask to see this screen.';
+
+  @override
+  String healthShareBlocked(String device) {
+    return 'Off for $device';
+  }
+
+  @override
+  String healthShareBlockedHelp(String device) {
+    return 'Turn on Ask to see this phone\'s screen for $device, further down this page.';
+  }
+
+  @override
+  String get healthSharing => 'Sees this phone\'s screen now';
+
+  @override
+  String get healthShareAsks => 'Asks you every time';
 
   @override
   String get healthViewing => 'Showing its screen here';
