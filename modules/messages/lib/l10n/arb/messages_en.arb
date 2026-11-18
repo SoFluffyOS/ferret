@@ -44,6 +44,38 @@
   "@healthOff": {"description": "Device page, next to Messages.", "placeholders": {"name": {"type": "String"}}},
   "healthNoAccess": "Android turned off Ferret's access",
   "@healthNoAccess": {"description": "Device page, next to Messages."},
+  "healthChecking": "Checking…",
+  "healthOffHelp": "On {name}: Ferret → Do more → Messages.",
+  "@healthOffHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthNoAccessHelp": "On {name}: open Ferret and allow SMS.",
+  "@healthNoAccessHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthOffThisPhone": "Off on this phone",
+  "healthOffThisPhoneHelp": "On this phone: Settings → To your computer → Messages.",
+  "settingsNeedsAccess": "Needs access",
+  "@settingsNeedsAccess": {
+    "description": "Settings row value on the phone: Messages are on but Android doesn't let Ferret read texts."
+  },
+  "settingsNeedsAccessOn": "Needs access on {name}",
+  "@settingsNeedsAccessOn": {
+    "description": "Settings row value on a computer.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthUnreachable": "{name} didn't answer",
   "@healthUnreachable": {"description": "Device page, next to Messages.", "placeholders": {"name": {"type": "String"}}},
   "retry": "Try again",

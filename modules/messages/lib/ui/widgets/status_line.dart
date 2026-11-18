@@ -18,7 +18,7 @@ class StatusLine extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final (icon, color) = switch (tone) {
       .good => (LucideIcons.circleCheck, palette.success),
-      .warning => (LucideIcons.triangleAlert, palette.danger),
+      .warning => (LucideIcons.triangleAlert, palette.warning),
       .info => (LucideIcons.info, palette.mutedText),
     };
 

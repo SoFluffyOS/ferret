@@ -140,6 +140,34 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get healthNoAccess => 'Android turned off Ferret\'s access';
 
   @override
+  String get healthChecking => 'Checking…';
+
+  @override
+  String healthOffHelp(String name) {
+    return 'On $name: Ferret → Do more → Messages.';
+  }
+
+  @override
+  String healthNoAccessHelp(String name) {
+    return 'On $name: open Ferret and allow SMS.';
+  }
+
+  @override
+  String get healthOffThisPhone => 'Off on this phone';
+
+  @override
+  String get healthOffThisPhoneHelp =>
+      'On this phone: Settings → To your computer → Messages.';
+
+  @override
+  String get settingsNeedsAccess => 'Needs access';
+
+  @override
+  String settingsNeedsAccessOn(String name) {
+    return 'Needs access on $name';
+  }
+
+  @override
   String healthUnreachable(String name) {
     return '$name didn\'t answer';
   }

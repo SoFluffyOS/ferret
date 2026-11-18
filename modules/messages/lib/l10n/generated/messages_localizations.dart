@@ -295,6 +295,48 @@ abstract class MessagesLocalizations {
   /// **'Android turned off Ferret\'s access'**
   String get healthNoAccess;
 
+  /// No description provided for @healthChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get healthChecking;
+
+  /// No description provided for @healthOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: Ferret → Do more → Messages.'**
+  String healthOffHelp(String name);
+
+  /// No description provided for @healthNoAccessHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On {name}: open Ferret and allow SMS.'**
+  String healthNoAccessHelp(String name);
+
+  /// No description provided for @healthOffThisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this phone'**
+  String get healthOffThisPhone;
+
+  /// No description provided for @healthOffThisPhoneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On this phone: Settings → To your computer → Messages.'**
+  String get healthOffThisPhoneHelp;
+
+  /// Settings row value on the phone: Messages are on but Android doesn't let Ferret read texts.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access'**
+  String get settingsNeedsAccess;
+
+  /// Settings row value on a computer.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs access on {name}'**
+  String settingsNeedsAccessOn(String name);
+
   /// Device page, next to Messages.
   ///
   /// In en, this message translates to:

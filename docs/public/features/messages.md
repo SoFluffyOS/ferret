@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Messages in **Do more** on Ferret's home screen (or open **Settings → Messages**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Messages in **Do more** on Ferret's home screen (or open **Settings → To your computer**), then **Turn on**.
 > 2. Allow **SMS** and **Contacts** when Android asks.
 > 3. On your computer, open **Messages** from your phone's card. Read, scroll back, reply.
 
@@ -25,13 +25,13 @@ When a text arrives and that conversation isn't open on your computer, you get a
 
 Texts that arrived while your computer was off are not replayed as notifications. They're simply there when you open Messages.
 
-Turn the notifications off in **Settings → Messages** on your computer.
+Turn the notifications off in **Settings → From your phone** on your computer, under Messages.
 
 ## 💾 Works offline too
 
 Your computer keeps your recent conversations and texts, so they're still there when the phone is out of reach. Replying works again as soon as the phone is back.
 
-They're saved in Ferret's folder on your computer (`~/.sofluffy/ferret/features/messages`) and never leave your network. **Settings → Messages → Forget saved texts** deletes them.
+They're saved in Ferret's folder on your computer (`~/.sofluffy/ferret/features/messages`) and never leave your network. **Settings → From your phone → Forget saved texts** deletes them.
 
 ## 🔑 Permissions on the phone
 

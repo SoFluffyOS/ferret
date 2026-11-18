@@ -28,7 +28,7 @@ class PhoneCardFrame extends StatelessWidget {
       icon: LucideIcons.messageSquare,
       title: l10n.title,
       subtitle: l10n.phoneCardNeedsAccess,
-      subtitleTone: FeatureTone.danger,
+      subtitleTone: FeatureTone.warning,
       onTap: onSetUp,
       actions: [Button(variant: .primary, label: l10n.fix, onPressed: onSetUp)],
     );

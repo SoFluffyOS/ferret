@@ -12,6 +12,7 @@ import 'package:messages/services/services.dart';
 import 'package:messages/ui/frames/frames.dart';
 import 'package:messages/ui/pages/pages.dart';
 import 'package:messages/view_models/view_models.dart';
+import 'package:protocol/protocol.dart' as proto;
 import 'package:provider/provider.dart';
 
 /// The app side of Messages: setup on the phone; on computers the Messages
@@ -129,31 +130,82 @@ class MessagesFeatureUi extends FeatureUi {
     );
   }
 
+  /// On a computer, how a phone's texts are doing here. On a phone that
+  /// can text, whether a computer may read them.
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
     final session = device.session;
-    if (this.feature.isSource ||
-        session == null ||
-        !MessagesFeature.isPhone(session)) {
+    if (session == null) {
+      return null;
+    }
+
+    if (this.feature.sourceService case final service?) {
+      return _phoneHealth(feature, service, session);
+    }
+
+    if (!MessagesFeature.isPhone(session)) {
       return null;
     }
 
     final strings = platformMessagesL10n();
     final name = device.device.name;
-    return switch (this.feature.library.phone(device.device.id).readiness) {
+    final deviceId = device.device.id;
+    return switch (this.feature.library.phone(deviceId).readiness) {
       .ready => FeatureHealth(.ok, reason: strings.healthOk),
       .unreachable => FeatureHealth(
         .failing,
         reason: strings.healthUnreachable(name),
+        onFix: () => unawaited(this.feature.library.refresh(deviceId)),
       ),
-      .off => FeatureHealth(.off, reason: strings.healthOff(name)),
+      .off => FeatureHealth(
+        .off,
+        reason: strings.healthOff(name),
+        help: strings.healthOffHelp(name),
+      ),
       .noAccess => FeatureHealth(
         .needsAttention,
         reason: strings.healthNoAccess,
+        help: strings.healthNoAccessHelp(name),
       ),
-      .checking || .offline => null,
+      .checking || .offline => FeatureHealth(
+        .off,
+        reason: strings.healthChecking,
+      ),
     };
   }
+
+  /// On a phone that can text, and on a computer once an Android phone is
+  /// paired or texts are saved, under "To your computer" and "From your
+  /// phone".
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final l10n = context.messagesL10n;
+    final state = switch (this.feature.sourceService) {
+      final SourceService service => _phoneSettingsState(l10n, service),
+      null => _computerSettingsState(l10n, feature),
+    };
+    final child = buildSettings(context, feature);
+    if (state == null || child == null) {
+      return const [];
+    }
+
+    return [
+      FeatureSettings(
+        group: .phone,
+        title: l10n.title,
+        child: child,
+        summary: state.summary,
+        isOn: state.isOn,
+        needsAttention: state.needsAttention,
+      ),
+    ];
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .phone;
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -218,6 +270,113 @@ class MessagesFeatureUi extends FeatureUi {
     );
   }
 
+  FeatureHealth? _phoneHealth(
+    FeatureContext context,
+    SourceService service,
+    Session session,
+  ) {
+    final reads =
+        session
+            .remoteFeature(featureId)
+            ?.flags
+            .contains(MessagesFeature.receiveFlag) ??
+        false;
+    final access = service.access;
+    if (!reads || !access.hasTelephony) {
+      return null;
+    }
+
+    final strings = platformMessagesL10n();
+    if (!service.settings.enabled) {
+      return FeatureHealth(
+        .off,
+        reason: strings.healthOffThisPhone,
+        help: strings.healthOffThisPhoneHelp,
+      );
+    }
+
+    if (!access.canRead) {
+      return FeatureHealth(
+        .needsAttention,
+        reason: strings.healthNoAccess,
+        onFix: () => _openSetup(context, service),
+      );
+    }
+
+    return FeatureHealth(.ok, reason: strings.healthOk);
+  }
+
+  /// Null on a device that can't text: there is nothing to set.
+  _SettingsState? _phoneSettingsState(
+    MessagesLocalizations l10n,
+    SourceService service,
+  ) {
+    final access = service.access;
+    if (!access.hasTelephony) {
+      return null;
+    }
+
+    if (!service.settings.enabled) {
+      return (summary: '', isOn: false, needsAttention: false);
+    }
+
+    if (!access.canRead) {
+      return (
+        summary: l10n.settingsNeedsAccess,
+        isOn: true,
+        needsAttention: true,
+      );
+    }
+
+    return (summary: '', isOn: true, needsAttention: false);
+  }
+
+  /// Null until an Android phone is paired or texts are saved. The phone
+  /// that needs the person speaks first.
+  _SettingsState? _computerSettingsState(
+    MessagesLocalizations l10n,
+    FeatureContext context,
+  ) {
+    final library = feature.library;
+    final phones = [
+      for (final device in context.engine.trustStore.devices)
+        if (device.platform == proto.Platform.PLATFORM_ANDROID) device,
+    ];
+    final hasSaved = library.deviceIds.any(library.hasHistory);
+    if (phones.isEmpty && !hasSaved) {
+      return null;
+    }
+
+    for (final device in phones) {
+      final phone = library.phone(device.id);
+      final wasOn = phone.status?.enabled ?? library.hasHistory(device.id);
+      if (phone.readiness == .noAccess) {
+        return (
+          summary: l10n.settingsNeedsAccessOn(device.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+
+      if (phone.readiness == .unreachable && wasOn) {
+        return (
+          summary: l10n.healthUnreachable(device.name),
+          isOn: true,
+          needsAttention: true,
+        );
+      }
+    }
+
+    final isOn = phones.any(
+      (device) => switch (library.phone(device.id).readiness) {
+        .ready => true,
+        .off => false,
+        _ => library.hasHistory(device.id),
+      },
+    );
+    return (summary: '', isOn: isOn, needsAttention: false);
+  }
+
   /// Stops showing notices.
   Future<void> dispose() async {
     await _notices?.stop();
@@ -277,3 +436,6 @@ class MessagesFeatureUi extends FeatureUi {
   static String _nameOf(FeatureContext context, String deviceId) =>
       context.engine.trustStore[deviceId]?.name ?? deviceId;
 }
+
+/// What the Settings row says about Messages.
+typedef _SettingsState = ({String summary, bool isOn, bool needsAttention});
