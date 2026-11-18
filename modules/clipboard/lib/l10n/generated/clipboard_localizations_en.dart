@@ -13,32 +13,6 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   String get title => 'Clipboard';
 
   @override
-  String get cardEmpty =>
-      'Copy something here and paste it on your other devices.';
-
-  @override
-  String get cardOffline =>
-      'Your devices are offline. Copies sync when one is back.';
-
-  @override
-  String get cardEmptyManual => 'Copy something, then tap Send clipboard.';
-
-  @override
-  String statusWithTime(String status, String time) {
-    return '$status · $time';
-  }
-
-  @override
-  String copiedFrom(String device) {
-    return 'Copied from $device';
-  }
-
-  @override
-  String waitingToCopyFrom(String device) {
-    return 'From $device, not on your clipboard yet';
-  }
-
-  @override
   String sentTo(String devices) {
     return 'Sent to $devices';
   }
@@ -61,27 +35,16 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   }
 
   @override
-  String get timeJustNow => 'just now';
-
-  @override
-  String timeMinutes(int count) {
-    return '$count min ago';
+  String activityCopiedOn(String device) {
+    return 'Copied on $device';
   }
 
   @override
-  String timeHours(int count) {
-    return '$count h ago';
-  }
+  String get activityNotSent => 'Clipboard not sent';
 
   @override
-  String timeDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count days ago',
-      one: 'yesterday',
-    );
-    return '$_temp0';
+  String activityQuote(String text) {
+    return '“$text”';
   }
 
   @override

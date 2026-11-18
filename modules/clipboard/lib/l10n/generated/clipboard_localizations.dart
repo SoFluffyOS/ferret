@@ -103,42 +103,6 @@ abstract class ClipboardLocalizations {
   /// **'Clipboard'**
   String get title;
 
-  /// No description provided for @cardEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy something here and paste it on your other devices.'**
-  String get cardEmpty;
-
-  /// No description provided for @cardOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Your devices are offline. Copies sync when one is back.'**
-  String get cardOffline;
-
-  /// No description provided for @cardEmptyManual.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy something, then tap Send clipboard.'**
-  String get cardEmptyManual;
-
-  /// No description provided for @statusWithTime.
-  ///
-  /// In en, this message translates to:
-  /// **'{status} · {time}'**
-  String statusWithTime(String status, String time);
-
-  /// No description provided for @copiedFrom.
-  ///
-  /// In en, this message translates to:
-  /// **'Copied from {device}'**
-  String copiedFrom(String device);
-
-  /// No description provided for @waitingToCopyFrom.
-  ///
-  /// In en, this message translates to:
-  /// **'From {device}, not on your clipboard yet'**
-  String waitingToCopyFrom(String device);
-
   /// No description provided for @sentTo.
   ///
   /// In en, this message translates to:
@@ -175,29 +139,23 @@ abstract class ClipboardLocalizations {
   /// **'From {device}, not on this clipboard yet. Tap Copy.'**
   String writeFailed(String device);
 
-  /// No description provided for @timeJustNow.
+  /// No description provided for @activityCopiedOn.
   ///
   /// In en, this message translates to:
-  /// **'just now'**
-  String get timeJustNow;
+  /// **'Copied on {device}'**
+  String activityCopiedOn(String device);
 
-  /// No description provided for @timeMinutes.
+  /// No description provided for @activityNotSent.
   ///
   /// In en, this message translates to:
-  /// **'{count} min ago'**
-  String timeMinutes(int count);
+  /// **'Clipboard not sent'**
+  String get activityNotSent;
 
-  /// No description provided for @timeHours.
+  /// No description provided for @activityQuote.
   ///
   /// In en, this message translates to:
-  /// **'{count} h ago'**
-  String timeHours(int count);
-
-  /// No description provided for @timeDays.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{yesterday} other{{count} days ago}}'**
-  String timeDays(int count);
+  /// **'“{text}”'**
+  String activityQuote(String text);
 
   /// No description provided for @imageLabel.
   ///

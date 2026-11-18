@@ -1,5 +1,8 @@
 import 'package:clipboard/clipboard.dart';
+import 'package:clipboard/l10n/l10n.dart';
+import 'package:clipboard/ui/clip_activity.dart';
 import 'package:clipboard/ui/frames/frames.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_clipboard/ferret_clipboard.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,12 +39,8 @@ void main() {
     });
   }
 
-  Widget card() => testApp(
-    ChangeNotifierProvider.value(
-      value: viewModel,
-      child: const ClipboardCardFrame(),
-    ),
-  );
+  List<ActivityItem> activity() =>
+      clipActivity(lookupClipboardLocalizations(const Locale('en')), viewModel);
 
   Widget settings() => testApp(
     ChangeNotifierProvider.value(
@@ -58,50 +57,34 @@ void main() {
     expect(ui.uiChanges, same(ui.viewModel));
   });
 
-  testWidgets('an empty card explains what to do', (tester) async {
-    await start(tester);
-
-    await tester.pumpWidget(card());
-
-    expect(
-      find.text('Copy something here and paste it on your other devices.'),
-      findsOneWidget,
-    );
-    expect(find.text('Send clipboard'), findsNothing);
-  });
-
-  testWidgets('with every device offline the card says copies wait', (
+  testWidgets('clipboard has no card, only its trace in Activity', (
     tester,
   ) async {
     await start(tester);
-    host.sessions = [];
+    final ui = ClipboardFeatureUi(feature: feature);
+    addTearDown(ui.viewModel.dispose);
 
-    await tester.pumpWidget(card());
-
-    expect(
-      find.text('Your devices are offline. Copies sync when one is back.'),
-      findsOneWidget,
-    );
-    expect(find.textContaining('paste it on your other devices'), findsNothing);
+    expect(ui.hasHomeCard(_NoContext()), isFalse);
+    expect(activity(), isEmpty);
   });
 
-  testWidgets('a received clip says where it came from', (tester) async {
+  testWidgets('a received clip says which device it was copied on', (
+    tester,
+  ) async {
     await start(tester);
-    await tester.pumpWidget(card());
 
     await tester.runAsync(
       () => feature.onEnvelope(pixel, envelopeOf(pushOf('from the phone'))),
     );
-    await tester.pump();
 
-    expect(find.text('Copied from Pixel · just now'), findsOneWidget);
-    expect(find.text('from the phone'), findsOneWidget);
-    expect(find.byType(ImageFiltered), findsNothing);
+    final row = activity().single;
+    expect(row.title, 'Copied on Pixel');
+    expect(row.detail, '“from the phone”');
+    expect(row.at, isNotNull);
   });
 
-  testWidgets('a private clip is blurred', (tester) async {
+  testWidgets('a private clip never shows what it holds', (tester) async {
     await start(tester, settings: {ClipboardSettings.syncSensitiveKey: true});
-    await tester.pumpWidget(card());
 
     await tester.runAsync(
       () => feature.onEnvelope(
@@ -109,73 +92,66 @@ void main() {
         envelopeOf(pushOf('hunter2', sensitive: true)),
       ),
     );
-    await tester.pump();
 
-    expect(find.byType(ImageFiltered), findsOneWidget);
+    expect(activity().single.detail, 'Private item');
   });
 
-  testWidgets('with auto receive off, Copy puts it on the clipboard', (
-    tester,
-  ) async {
+  testWidgets('a long clip is cut to its first words', (tester) async {
+    await start(tester);
+
+    await tester.runAsync(
+      () => feature.onEnvelope(pixel, envelopeOf(pushOf('word ' * 40))),
+    );
+
+    final detail = activity().single.detail ?? '';
+    expect(detail.endsWith('…”'), isTrue);
+    expect(detail.length, lessThan(70));
+  });
+
+  testWidgets('Copy puts a received clip on the clipboard', (tester) async {
     await start(tester, settings: {ClipboardSettings.autoReceiveKey: false});
-    await tester.pumpWidget(card());
     await tester.runAsync(
       () => feature.onEnvelope(pixel, envelopeOf(pushOf('on demand'))),
     );
-    await tester.pump();
 
+    final copy = activity().single.actions.single;
+    expect(copy.label, 'Copy');
     await tester.runAsync(() async {
-      await tester.tap(find.text('Copy'));
+      copy.onPressed();
       await settle();
     });
-    await tester.pump();
 
     expect(clipboard.writes.single.text, 'on demand');
-    expect(find.text('Copy'), findsNothing);
   });
 
-  testWidgets('Android keeps the card to one line and sends on tap', (
-    tester,
-  ) async {
+  testWidgets('Send clipboard leaves a line for what was sent', (tester) async {
     await start(tester, access: .foreground);
     clipboard.content = const .text('copied in another app');
-    await tester.pumpWidget(card());
-
-    expect(
-      find.text('Copy something, then tap Send clipboard.'),
-      findsOneWidget,
-    );
-    expect(
-      find.textContaining("Android doesn't let apps read your clipboard"),
-      findsNothing,
-    );
 
     await tester.runAsync(() async {
-      await tester.tap(find.text('Send clipboard'));
-      await settle();
+      await viewModel.sendClipboard();
       await settle();
     });
-    await tester.pump();
 
     expect(pixel.pushes.single.item.text, 'copied in another app');
-    expect(find.text('Sent.'), findsOneWidget);
-    expect(find.text('Sent to Pixel · just now'), findsOneWidget);
+    final row = activity().single;
+    expect(row.title, 'Sent to Pixel');
+    expect(row.actions, isEmpty);
   });
 
-  testWidgets('a failed tap says why in plain words', (tester) async {
+  testWidgets('a Send clipboard that reached nobody says why', (tester) async {
     await start(tester, access: .foreground);
     host.sessions = [];
     clipboard.content = const .text('nobody home');
-    await tester.pumpWidget(card());
 
     await tester.runAsync(() async {
-      await tester.tap(find.text('Send clipboard'));
-      await settle();
+      await viewModel.sendClipboard();
       await settle();
     });
-    await tester.pump();
 
-    expect(find.textContaining('No device is connected.'), findsOneWidget);
+    final row = activity().first;
+    expect(row.title, 'Clipboard not sent');
+    expect(row.detail, contains('No device is connected.'));
   });
 
   testWidgets('iPhone settings say why Send clipboard is needed', (
@@ -218,4 +194,9 @@ void main() {
       findsOneWidget,
     );
   });
+}
+
+class _NoContext implements FeatureContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

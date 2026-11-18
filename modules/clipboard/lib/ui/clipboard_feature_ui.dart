@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:clipboard/feature/clipboard_feature.dart';
 import 'package:clipboard/l10n/l10n.dart';
+import 'package:clipboard/ui/clip_activity.dart';
 import 'package:clipboard/ui/frames/frames.dart';
 import 'package:clipboard/ui/widgets/widgets.dart';
 import 'package:clipboard/view_models/clipboard_view_model.dart';
@@ -13,8 +14,8 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
-/// The app side of Clipboard: the home card, "Send clipboard" for each
-/// device, the Settings section, and the Android tile and notification
+/// The app side of Clipboard: what synced in Activity, "Send clipboard" for
+/// each device, the Settings section, and the Android tile and notification
 /// action.
 class ClipboardFeatureUi extends FeatureUi {
   ClipboardFeatureUi({ClipboardFeature? feature})
@@ -75,12 +76,14 @@ class ClipboardFeatureUi extends FeatureUi {
     );
   }
 
+  /// Clipboard just works, so it has no card: what synced shows in
+  /// Activity, and Send clipboard sits on each device.
   @override
-  Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
-      ChangeNotifierProvider.value(
-        value: viewModel,
-        child: const ClipboardCardFrame(),
-      );
+  bool hasHomeCard(FeatureContext feature) => false;
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
+      clipActivity(context.clipboardL10n, viewModel);
 
   @override
   List<FeatureAction> deviceActions(
@@ -97,6 +100,7 @@ class ClipboardFeatureUi extends FeatureUi {
       FeatureAction(
         label: context.clipboardL10n.sendClipboard,
         icon: LucideIcons.clipboardCopy,
+        homeOrder: 20,
         onPressed: () =>
             unawaited(viewModel.sendClipboard(toDeviceId: device.device.id)),
       ),

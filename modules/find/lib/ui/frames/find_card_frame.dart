@@ -13,7 +13,11 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// The home card, only while something happens: "Found it" when this device
 /// rings, and each ring to another device with Stop, or how it ended.
 class FindCardFrame extends StatelessWidget {
-  const FindCardFrame({super.key});
+  const FindCardFrame({super.key, this.showOutgoing = true});
+
+  /// Whether rings to other devices show here too. Home leaves them to
+  /// Activity.
+  final bool showOutgoing;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,10 @@ class FindCardFrame extends StatelessWidget {
       (viewModel) => viewModel.isRingingHere,
     );
     final outgoing = context.select<FindViewModel, List<OutgoingRing>>(
-      (viewModel) => viewModel.outgoing,
+      (viewModel) => switch (showOutgoing) {
+        true => viewModel.outgoing,
+        false => const [],
+      },
     );
     if (!isRingingHere && outgoing.isEmpty) {
       return const SizedBox.shrink();

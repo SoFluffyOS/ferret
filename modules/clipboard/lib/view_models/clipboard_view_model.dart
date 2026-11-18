@@ -16,8 +16,12 @@ class ClipboardViewModel extends ChangeNotifier {
 
   bool _isSending = false;
   ClipSendResult? _lastResult;
+  DateTime? _lastResultAt;
 
   ClipEntry? get latest => feature.latest;
+
+  /// Newest first.
+  List<ClipEntry> get history => feature.history;
 
   /// Whether a connected device would get a copy made now.
   bool get hasPeers => feature.hasPeers;
@@ -43,6 +47,9 @@ class ClipboardViewModel extends ChangeNotifier {
 
   /// The outcome of the last "Send clipboard" tap.
   ClipSendResult? get lastResult => _lastResult;
+
+  /// When [lastResult] came in.
+  DateTime? get lastResultAt => _lastResultAt;
 
   ClipboardSettings get _settings => feature.settings;
 
@@ -72,6 +79,7 @@ class ClipboardViewModel extends ChangeNotifier {
 
     try {
       _lastResult = await feature.sendClipboard(toDeviceId: toDeviceId);
+      _lastResultAt = DateTime.now();
     } finally {
       _isSending = false;
       notifyListeners();

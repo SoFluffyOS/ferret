@@ -247,12 +247,7 @@ void main() {
       });
     }
 
-    Widget card() => testApp(
-      ChangeNotifierProvider.value(
-        value: viewModel,
-        child: const ClipboardCardFrame(),
-      ),
-    );
+    Widget home() => testApp(const SizedBox.shrink(key: ValueKey('home')));
 
     Widget settingsSection() => testApp(
       ChangeNotifierProvider.value(
@@ -262,23 +257,19 @@ void main() {
     );
 
     FeatureOffer? offerOf(WidgetTester tester, ClipboardFeatureUi ui) =>
-        ui.offerFor(tester.element(find.byType(ClipboardCardFrame)), context);
+        ui.offerFor(
+          tester.element(find.byKey(const ValueKey('home'))),
+          context,
+        );
 
-    testWidgets('without a power-up, the card is short and offers nothing', (
-      tester,
-    ) async {
+    testWidgets('without a power-up, nothing is offered', (tester) async {
       await startUi(tester, shizukuEnabled: false);
       final ui = ClipboardFeatureUi(feature: feature);
       addTearDown(ui.viewModel.dispose);
 
-      await tester.pumpWidget(card());
+      await tester.pumpWidget(home());
 
-      expect(
-        find.text('Copy something, then tap Send clipboard.'),
-        findsOneWidget,
-      );
-      expect(find.textContaining('Power-ups'), findsNothing);
-      expect(find.text('Send clipboard'), findsOneWidget);
+      expect(viewModel.needsManualSend, isTrue);
       expect(offerOf(tester, ui), isNull);
     });
 
@@ -290,7 +281,7 @@ void main() {
       addTearDown(ui.viewModel.dispose);
       var changes = 0;
       ui.uiChanges.addListener(() => changes++);
-      await tester.pumpWidget(card());
+      await tester.pumpWidget(home());
 
       final offer = offerOf(tester, ui);
       expect(offer?.title, 'Clipboard');
@@ -298,7 +289,6 @@ void main() {
         offer?.description,
         'Send what you copy on its own, even in the background.',
       );
-      expect(ui.hasHomeCard(context), isTrue);
       await tester.runAsync(() async {
         offer?.onAction();
         await settle();
@@ -310,11 +300,7 @@ void main() {
       expect(phone.watchedTier, PowerTier.shizuku);
       expect(offerOf(tester, ui), isNull);
       expect(changes, greaterThan(0));
-      expect(find.text('Send clipboard'), findsNothing);
-      expect(
-        find.text('Copy something here and paste it on your other devices.'),
-        findsOneWidget,
-      );
+      expect(ui.viewModel.needsManualSend, isFalse);
     });
 
     testWidgets('settings explain why Send clipboard is needed', (

@@ -1,6 +1,8 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_find/ferret_find.dart';
 import 'package:find/find.dart';
+import 'package:find/l10n/l10n.dart';
+import 'package:find/ui/find_activity.dart';
 import 'package:find/ui/frames/frames.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -61,6 +63,43 @@ void main() {
       child: const FindSettingsFrame(),
     ),
   );
+
+  group('activity', () {
+    testWidgets('a ring to another device is pinned with Stop, then ends', (
+      tester,
+    ) async {
+      await start(tester);
+      pixel.answer = (request) => switch (request) {
+        RingRequest() => RingStatus(
+          state: .RING_STATE_RINGING,
+          remainingMs: 120000,
+        ),
+        _ => RingStatus(
+          state: .RING_STATE_STOPPED,
+          reason: .STOP_REASON_STOPPED_REMOTELY,
+        ),
+      };
+      final l10n = lookupFindLocalizations(const Locale('en'));
+
+      await feature.ring('pixel');
+      final ringing = findActivity(l10n, viewModel).single;
+
+      expect(ringing.title, 'Ringing Pixel…');
+      expect(ringing.pinned, isTrue);
+      expect(ringing.actions.single.label, 'Stop');
+
+      ringing.actions.single.onPressed();
+      await tester.pump();
+      await tester.pump();
+      final stopped = findActivity(l10n, viewModel).single;
+
+      expect(pixel.requests.last, isA<StopRingRequest>());
+      expect(stopped.pinned, isFalse);
+      expect(stopped.actions.single.label, 'Ring again');
+
+      await finish(tester);
+    });
+  });
 
   group('home card', () {
     testWidgets('stays out of the way while nothing rings', (tester) async {

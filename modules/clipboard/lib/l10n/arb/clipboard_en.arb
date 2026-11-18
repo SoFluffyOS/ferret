@@ -1,24 +1,6 @@
 {
   "@@locale": "en",
   "title": "Clipboard",
-  "cardEmpty": "Copy something here and paste it on your other devices.",
-  "cardOffline": "Your devices are offline. Copies sync when one is back.",
-  "cardEmptyManual": "Copy something, then tap Send clipboard.",
-  "statusWithTime": "{status} · {time}",
-  "@statusWithTime": {
-    "placeholders": {
-      "status": {"type": "String"},
-      "time": {"type": "String"}
-    }
-  },
-  "copiedFrom": "Copied from {device}",
-  "@copiedFrom": {
-    "placeholders": {"device": {"type": "String"}}
-  },
-  "waitingToCopyFrom": "From {device}, not on your clipboard yet",
-  "@waitingToCopyFrom": {
-    "placeholders": {"device": {"type": "String"}}
-  },
   "sentTo": "Sent to {devices}",
   "@sentTo": {
     "placeholders": {"devices": {"type": "String"}}
@@ -31,18 +13,14 @@
   "@writeFailed": {
     "placeholders": {"device": {"type": "String"}}
   },
-  "timeJustNow": "just now",
-  "timeMinutes": "{count} min ago",
-  "@timeMinutes": {
-    "placeholders": {"count": {"type": "int"}}
+  "activityCopiedOn": "Copied on {device}",
+  "@activityCopiedOn": {
+    "placeholders": {"device": {"type": "String"}}
   },
-  "timeHours": "{count} h ago",
-  "@timeHours": {
-    "placeholders": {"count": {"type": "int"}}
-  },
-  "timeDays": "{count, plural, =1{yesterday} other{{count} days ago}}",
-  "@timeDays": {
-    "placeholders": {"count": {"type": "int"}}
+  "activityNotSent": "Clipboard not sent",
+  "activityQuote": "“{text}”",
+  "@activityQuote": {
+    "placeholders": {"text": {"type": "String"}}
   },
   "imageLabel": "Image",
   "privateCleared": "Private item, cleared from memory",

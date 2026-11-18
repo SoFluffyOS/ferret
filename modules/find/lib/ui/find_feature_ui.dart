@@ -6,6 +6,7 @@ import 'package:find/feature/find_feature.dart';
 import 'package:find/l10n/l10n.dart';
 import 'package:find/models/models.dart';
 import 'package:find/services/services.dart';
+import 'package:find/ui/find_activity.dart';
 import 'package:find/ui/frames/frames.dart';
 import 'package:find/ui/pages/pages.dart';
 import 'package:find/ui/ringing_overlay.dart';
@@ -14,8 +15,8 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
-/// The app side of Find my device: "Ring" on each device, the home card
-/// while a ring is going, the ringing screen and notice with "Found it",
+/// The app side of Find my device: "Ring" on each device, each ring as a
+/// line in Activity, the ringing screen and notice with "Found it",
 /// Settings, and each device's ring health.
 class FindFeatureUi extends FeatureUi {
   FindFeatureUi({FindFeature? feature})
@@ -74,11 +75,14 @@ class FindFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => viewModel;
 
-  /// Only while this device rings, or a ring to another device is going or
-  /// has an outcome to show.
+  /// Only while this device rings, for "Found it". Rings to other devices
+  /// are lines in Activity.
   @override
-  bool hasHomeCard(FeatureContext feature) =>
-      viewModel.isRingingHere || viewModel.outgoing.isNotEmpty;
+  bool hasHomeCard(FeatureContext feature) => viewModel.isRingingHere;
+
+  @override
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
+      findActivity(context.findL10n, viewModel);
 
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {
@@ -100,7 +104,7 @@ class FindFeatureUi extends FeatureUi {
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider.value(
         value: viewModel,
-        child: const FindCardFrame(),
+        child: const FindCardFrame(showOutgoing: false),
       );
 
   @override
@@ -118,6 +122,7 @@ class FindFeatureUi extends FeatureUi {
       FeatureAction(
         label: context.findL10n.ring,
         icon: LucideIcons.bellRing,
+        homeOrder: 30,
         onPressed: () => unawaited(_ring(feature, device)),
       ),
     ];
