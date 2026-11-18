@@ -132,5 +132,5 @@ class _GroupRows extends StatelessWidget {
 void _open(BuildContext context, Widget page) {
   Navigator.of(
     context,
-  ).push(PageRouteBuilder<void>(pageBuilder: (_, _, _) => page));
+  ).push(ferretRoute<void>(page));
 }

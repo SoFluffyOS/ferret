@@ -141,8 +141,8 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                 child: NavRow(
                   title: l10n.otherShowQr,
                   onTap: () => Navigator.of(context).push(
-                    PageRouteBuilder<void>(
-                      pageBuilder: (_, _, _) => const QrPairPage(),
+                    ferretRoute<void>(
+                      const QrPairPage(),
                     ),
                   ),
                 ),

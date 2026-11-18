@@ -111,7 +111,6 @@ class HomePage extends StatelessWidget {
   }
 
   void _push(BuildContext context, Widget page) {
-    Navigator.of(context)
-        .push(PageRouteBuilder<void>(pageBuilder: (_, _, _) => page));
+    Navigator.of(context).push(ferretRoute<void>(page));
   }
 }

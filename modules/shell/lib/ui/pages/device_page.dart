@@ -50,8 +50,8 @@ class DevicePage extends StatelessWidget {
             variant: .primary,
             label: l10n.deviceWhyLong,
             onPressed: () => Navigator.of(context).push(
-              PageRouteBuilder<void>(
-                pageBuilder: (_, _, _) => DoctorPage(deviceId: deviceId),
+              ferretRoute<void>(
+                DoctorPage(deviceId: deviceId),
               ),
             ),
           ),

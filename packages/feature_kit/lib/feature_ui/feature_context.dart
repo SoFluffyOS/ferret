@@ -1,4 +1,5 @@
 import 'package:engine/engine.dart';
+import 'package:feature_kit/navigation/navigation.dart';
 import 'package:feature_kit/services/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -43,7 +44,7 @@ class FeatureContext {
       return null;
     }
 
-    return navigator.push(PageRouteBuilder<T>(pageBuilder: (_, _, _) => page));
+    return navigator.push(ferretRoute<T>(page));
   }
 
   /// Shows a section of the device [deviceId] (a `FeatureSection.id`):

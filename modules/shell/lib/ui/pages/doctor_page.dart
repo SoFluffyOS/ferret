@@ -122,12 +122,12 @@ class _DoctorPageState extends State<DoctorPage> {
         _run();
       case .connectByAddress:
         await Navigator.of(context).push(
-          PageRouteBuilder<void>(pageBuilder: (_, _, _) => const ConnectPage()),
+          ferretRoute<void>(const ConnectPage()),
         );
         _run();
       case .pairAgain:
         await Navigator.of(context).push(
-          PageRouteBuilder<void>(pageBuilder: (_, _, _) => const PairPage()),
+          ferretRoute<void>(const PairPage()),
         );
       case .openFirewall:
         await WindowsFirewall.openAllowedApps();

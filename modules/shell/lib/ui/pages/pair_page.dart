@@ -131,7 +131,7 @@ class _PairPageState extends State<PairPage> {
     }
 
     final link = await Navigator.of(context).push<String>(
-      PageRouteBuilder<String>(pageBuilder: (_, _, _) => const ScanPage()),
+      ferretRoute<String>(const ScanPage()),
     );
     if (link == null) {
       return;
@@ -153,7 +153,7 @@ class _PairPageState extends State<PairPage> {
     unawaited(
       Navigator.of(
         context,
-      ).push(PageRouteBuilder<void>(pageBuilder: (_, _, _) => page)),
+      ).push(ferretRoute<void>(page)),
     );
   }
 }

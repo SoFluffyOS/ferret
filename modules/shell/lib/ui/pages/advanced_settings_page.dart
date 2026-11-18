@@ -35,8 +35,8 @@ class AdvancedSettingsPage extends StatelessWidget {
           child: NavRow(
             title: l10n.settingsCheckNetwork,
             onTap: () => Navigator.of(context).push(
-              PageRouteBuilder<void>(
-                pageBuilder: (_, _, _) => const DoctorPage(),
+              ferretRoute<void>(
+                const DoctorPage(),
               ),
             ),
           ),
