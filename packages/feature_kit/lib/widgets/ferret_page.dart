@@ -1,10 +1,12 @@
+import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A full page with a title bar and a scrolling body. Pages pushed on top get
-/// a back button.
+/// a back button. On a large view the body stops at [width] and is centred,
+/// so nothing stretches across a window.
 class FerretPage extends StatelessWidget {
   const FerretPage({
     super.key,
@@ -14,6 +16,7 @@ class FerretPage extends StatelessWidget {
     this.backLabel = 'Back',
     this.status,
     this.footer,
+    this.width = .page,
   });
 
   final String title;
@@ -28,11 +31,15 @@ class FerretPage extends StatelessWidget {
   /// Stays at the bottom while the body scrolls, such as a one-line hint.
   final Widget? footer;
 
+  /// How wide the body may get on a large view.
+  final ContentWidth width;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final canPop = Navigator.of(context).canPop();
+    final screenSize = context.screenSize;
 
     return ColoredBox(
       color: palette.background,
@@ -87,14 +94,24 @@ class FerretPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(
-                  Spacing.d12,
-                  Spacing.d4,
-                  Spacing.d12,
-                  Spacing.d24,
-                ),
-                children: children,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final margin = AdaptiveContent.marginFor(
+                    screenSize,
+                    constraints.maxWidth - Spacing.d12 * 2,
+                    width,
+                  );
+
+                  return ListView(
+                    padding: EdgeInsets.fromLTRB(
+                      Spacing.d12 + margin,
+                      Spacing.d4,
+                      Spacing.d12 + margin,
+                      Spacing.d24,
+                    ),
+                    children: children,
+                  );
+                },
               ),
             ),
             ?footer,
