@@ -11,6 +11,7 @@
 - 📴 **Offline, not empty**: a phone that drops off keeps its sections with what they showed last, under a line that says since when. A section whose feature is off is dimmed.
 - ↗️ **The popover hands over**: on the Mac, a device, Settings, texts and notifications open the window right where you need to be. So does a notification you click.
 - ⌨️ **Keys and a real menu bar**: ⌘1 to ⌘6 for a device's sections, ⌘N to add a device, ⌘O to send files, ⌘, for Settings, ⌃⌘S for the device list. Ctrl on Windows and Linux.
+- ♿️ **Accessibility**: Ferret works with VoiceOver and TalkBack (every button has a name, switches say on or off, the pairing code is read digit by digit), with a keyboard alone (Tab, Enter, Space, Esc, a focus ring you can see), with text at 200%, and with readable contrast in light and dark.
 - 🏠 **Devices are the home screen**: each device has **Send files**, **Send clipboard** and **Ring** on its row, and **Fix** when it isn't connected.
 - 🧾 **Activity**: what just happened, in one short list. A copy that synced, a file that arrived, a call, a song playing, each with the one thing to do about it.
 - 🔑 **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. No QR code to scan, no account, ever.
