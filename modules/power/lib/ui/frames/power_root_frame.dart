@@ -83,12 +83,14 @@ class PowerRootFrame extends StatelessWidget {
             alignment: .centerLeft,
             child: switch (usesRoot) {
               true => Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.stopUsingRoot,
                 enable: !isBusy,
                 onPressed: viewModel.stopUsingRoot,
               ),
               false => Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.useRoot,
                 enable: !isBusy,

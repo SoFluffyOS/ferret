@@ -51,7 +51,12 @@ class DeviceRow extends StatelessWidget {
             ),
           ),
           Spacing.h8,
-          Button(variant: .ghost, label: actionLabel, onPressed: onAction),
+          Button(
+            mainAxisSize: .min,
+            variant: .ghost,
+            label: actionLabel,
+            onPressed: onAction,
+          ),
         ],
       ),
     );

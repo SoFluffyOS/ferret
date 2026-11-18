@@ -61,6 +61,7 @@ class LocalSendSettingsFrame extends StatelessWidget {
             Align(
               alignment: .centerLeft,
               child: Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.receiveTryAgain,
                 onPressed: () => viewModel.setReceiveAlways(true),

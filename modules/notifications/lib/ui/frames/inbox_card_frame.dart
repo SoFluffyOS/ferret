@@ -87,12 +87,14 @@ class InboxCardFrame extends StatelessWidget {
       actions: [
         if (turnedOff case [final phone, ...])
           Button(
+            mainAxisSize: .min,
             variant: .ghost,
             label: l10n.how,
             onPressed: () => unawaited(_explain(context, phone.name)),
           ),
         if (byDevice.isNotEmpty)
           Button(
+            mainAxisSize: .min,
             variant: .ghost,
             label: l10n.clearAll,
             onPressed: inbox.clearAll,

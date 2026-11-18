@@ -29,6 +29,7 @@ class StatusBanner extends StatelessWidget {
           Align(
             alignment: .centerLeft,
             child: Button(
+              mainAxisSize: .min,
               variant: .ghost,
               label: label,
               onPressed: onAction,

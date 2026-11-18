@@ -35,8 +35,14 @@ class AccessPrompt extends StatelessWidget {
           spacing: Spacing.d8,
           runSpacing: Spacing.d8,
           children: [
-            Button(variant: .primary, label: actionLabel, onPressed: onAction),
             Button(
+              mainAxisSize: .min,
+              variant: .primary,
+              label: actionLabel,
+              onPressed: onAction,
+            ),
+            Button(
+              mainAxisSize: .min,
               variant: .ghost,
               label: checkAgainLabel,
               onPressed: onCheckAgain,

@@ -59,7 +59,12 @@ class ReceiveRow extends StatelessWidget {
         ),
         if (onAction case final action?) ...[
           Spacing.h12,
-          Button(variant: .ghost, label: actionLabel, onPressed: action),
+          Button(
+            mainAxisSize: .min,
+            variant: .ghost,
+            label: actionLabel,
+            onPressed: action,
+          ),
         ],
       ],
     );

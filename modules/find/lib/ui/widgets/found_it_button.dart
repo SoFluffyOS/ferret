@@ -24,6 +24,10 @@ class FoundItButton extends StatelessWidget {
       label: context.findL10n.foundIt,
       icon: Icon(LucideIcons.circleCheck, size: Spacing.d20),
       height: height,
+      mainAxisSize: switch (large) {
+        true => .max,
+        false => .min,
+      },
       onPressed: onPressed,
     );
   }

@@ -59,6 +59,7 @@ class MessagesCardFrame extends StatelessWidget {
             ],
             actions: [
               Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.open,
                 onPressed: () => onOpen(phone.deviceId),

@@ -46,6 +46,7 @@ class ComputerSettingsFrame extends StatelessWidget {
             Align(
               alignment: .centerLeft,
               child: Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 color: palette.danger,
                 label: l10n.forgetHistory,

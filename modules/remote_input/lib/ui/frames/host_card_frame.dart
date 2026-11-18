@@ -60,16 +60,19 @@ class _PendingCard extends StatelessWidget {
       subtitle: l10n.consentBody(pending.deviceName),
       actions: [
         Button(
+          mainAxisSize: .min,
           variant: .primary,
           label: l10n.allowAlways,
           onPressed: () => unawaited(viewModel.answer(.always)),
         ),
         Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: l10n.allowOnce,
           onPressed: () => unawaited(viewModel.answer(.allowOnce)),
         ),
         Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: l10n.dontAllow,
           onPressed: () => unawaited(viewModel.answer(.deny)),
@@ -100,6 +103,7 @@ class _PermissionCard extends StatelessWidget {
       ),
       actions: [
         Button(
+          mainAxisSize: .min,
           variant: .primary,
           label: l10n.openSettings,
           onPressed: () => unawaited(viewModel.requestAccess()),

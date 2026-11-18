@@ -67,6 +67,7 @@ class SetupStepRow extends StatelessWidget {
             ),
             Spacing.v8,
             Button(
+              mainAxisSize: .min,
               variant: .primary,
               label: buttonLabel,
               enable: enabled,

@@ -98,6 +98,7 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
                   Align(
                     alignment: .centerLeft,
                     child: Button(
+                      mainAxisSize: .min,
                       variant: .ghost,
                       label: l10n.pickerSearchAgain,
                       onPressed: () => unawaited(viewModel.scan()),

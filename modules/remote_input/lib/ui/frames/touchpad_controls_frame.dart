@@ -90,6 +90,7 @@ class _TouchpadControlsFrameState extends State<TouchpadControlsFrame> {
             ),
             Spacing.h8,
             Button(
+              mainAxisSize: .min,
               variant: .ghost,
               label: keyboardLabel,
               icon: Icon(keyboardIcon, size: Spacing.d16),

@@ -56,6 +56,7 @@ class PowerLadderFrame extends StatelessWidget {
                     runSpacing: Spacing.d8,
                     children: [
                       Button(
+                        mainAxisSize: .min,
                         variant: .ghost,
                         label: switch (tier) {
                           .standard => l10n.notificationsOpenSettings,
@@ -66,6 +67,7 @@ class PowerLadderFrame extends StatelessWidget {
                       ),
                       if (tier == .standard)
                         Button(
+                          mainAxisSize: .min,
                           variant: .ghost,
                           label: l10n.appInfo,
                           enable: !isBusy,
@@ -80,6 +82,7 @@ class PowerLadderFrame extends StatelessWidget {
                   Align(
                     alignment: .centerLeft,
                     child: Button(
+                      mainAxisSize: .min,
                       variant: .ghost,
                       label: l10n.appInfo,
                       enable: !isBusy,

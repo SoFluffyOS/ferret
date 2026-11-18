@@ -30,7 +30,14 @@ class PhoneCardFrame extends StatelessWidget {
       subtitle: l10n.phoneCardNeedsAccess,
       subtitleTone: FeatureTone.warning,
       onTap: onSetUp,
-      actions: [Button(variant: .primary, label: l10n.fix, onPressed: onSetUp)],
+      actions: [
+        Button(
+          mainAxisSize: .min,
+          variant: .primary,
+          label: l10n.fix,
+          onPressed: onSetUp,
+        ),
+      ],
     );
   }
 }

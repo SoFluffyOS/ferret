@@ -119,6 +119,7 @@ class ClipboardSettingsFrame extends StatelessWidget {
               ),
               Spacing.h12,
               Button(
+                mainAxisSize: .min,
                 variant: .ghost,
                 label: l10n.settingsClearHistory,
                 enable: historyCount > 0,

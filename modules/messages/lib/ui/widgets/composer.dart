@@ -72,6 +72,7 @@ class _ComposerState extends State<Composer> {
           ),
           Spacing.h8,
           Button(
+            mainAxisSize: .min,
             variant: .primary,
             label: l10n.send,
             icon: Icon(LucideIcons.sendHorizontal, size: Spacing.d16),

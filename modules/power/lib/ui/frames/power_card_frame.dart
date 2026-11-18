@@ -48,6 +48,7 @@ class PowerCardFrame extends StatelessWidget {
       onTap: onOpen,
       actions: [
         Button(
+          mainAxisSize: .min,
           variant: .primary,
           label: switch (prompt) {
             .rootLost => l10n.cardAskAgain,
@@ -62,6 +63,7 @@ class PowerCardFrame extends StatelessWidget {
           },
         ),
         Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: switch (prompt) {
             .rootLost => l10n.stopUsingRoot,

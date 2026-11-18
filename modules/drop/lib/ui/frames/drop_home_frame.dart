@@ -77,6 +77,7 @@ class DropHomeFrame extends StatelessWidget {
       },
       trailing: switch (hasFinished && !needsYouOnly) {
         true => Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: l10n.clearFinished,
           onPressed: viewModel.clearFinished,
@@ -150,6 +151,7 @@ class DropHomeFrame extends StatelessWidget {
       actions: [
         if (canSend && !needsYouOnly)
           Button(
+            mainAxisSize: .min,
             variant: .ghost,
             label: l10n.sendFiles,
             icon: Icon(LucideIcons.upload, size: Spacing.d14),

@@ -25,6 +25,7 @@ class ConsentDialog extends StatelessWidget {
       content: Text(l10n.consentBody(deviceName)),
       actions: [
         Button(
+          mainAxisSize: .min,
           variant: .primary,
           label: l10n.allowAlways,
           tooltip: l10n.allowAlways,
@@ -32,6 +33,7 @@ class ConsentDialog extends StatelessWidget {
         ),
         Spacing.v8,
         Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: l10n.allowOnce,
           tooltip: l10n.allowOnce,
@@ -39,6 +41,7 @@ class ConsentDialog extends StatelessWidget {
         ),
         Spacing.v8,
         Button(
+          mainAxisSize: .min,
           variant: .ghost,
           label: l10n.dontAllow,
           tooltip: l10n.dontAllow,

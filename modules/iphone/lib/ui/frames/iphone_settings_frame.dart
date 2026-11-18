@@ -246,11 +246,13 @@ class _Chosen extends StatelessWidget {
         children: [
           if (showRetry)
             Button(
+              mainAxisSize: .min,
               variant: .ghost,
               label: l10n.tryAgain,
               onPressed: () => unawaited(viewModel.retry()),
             ),
           Button(
+            mainAxisSize: .min,
             variant: .ghost,
             label: l10n.forget,
             onPressed: () => unawaited(viewModel.forget()),
@@ -301,11 +303,13 @@ class _Pairing extends StatelessWidget {
           runSpacing: Spacing.d8,
           children: [
             Button(
+              mainAxisSize: .min,
               variant: .primary,
               label: l10n.openBluetoothSettings,
               onPressed: () => unawaited(viewModel.openBluetoothSettings()),
             ),
             Button(
+              mainAxisSize: .min,
               variant: .ghost,
               label: l10n.devicesRefresh,
               onPressed: () => unawaited(viewModel.loadDevices()),

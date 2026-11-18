@@ -111,6 +111,7 @@ class NowPlayingCard extends StatelessWidget {
       actions: [
         if (onContinue != null)
           Button(
+            mainAxisSize: .min,
             variant: .primary,
             label: continueLabel,
             tooltip: switch (continueKeepsPosition) {

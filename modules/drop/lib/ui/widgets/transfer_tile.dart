@@ -122,6 +122,7 @@ class TransferTile extends StatelessWidget {
             children: [
               for (final action in actions)
                 Button(
+                  mainAxisSize: .min,
                   variant: switch (action.primary) {
                     true => ButtonVariant.primary,
                     false => ButtonVariant.ghost,

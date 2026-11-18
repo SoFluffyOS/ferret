@@ -32,7 +32,14 @@ class PhoneHomeFrame extends StatelessWidget {
       icon: LucideIcons.bell,
       title: l10n.title,
       onTap: onSetUp,
-      actions: [Button(variant: .primary, label: l10n.fix, onPressed: onSetUp)],
+      actions: [
+        Button(
+          mainAxisSize: .min,
+          variant: .primary,
+          label: l10n.fix,
+          onPressed: onSetUp,
+        ),
+      ],
       children: [StatusLine(text: l10n.phoneHomePaused, tone: .warning)],
     );
   }

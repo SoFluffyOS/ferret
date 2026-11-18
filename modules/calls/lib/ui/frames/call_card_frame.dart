@@ -61,6 +61,7 @@ class _CallCard extends StatelessWidget {
       l10n.stateOf(call),
     ].join(' · ');
     final hangUp = Button(
+      mainAxisSize: .min,
       variant: .primary,
       color: palette.danger,
       label: l10n.hangUp,
@@ -70,6 +71,7 @@ class _CallCard extends StatelessWidget {
     );
     final ringingActions = [
       Button(
+        mainAxisSize: .min,
         variant: .primary,
         color: palette.success,
         label: l10n.answer,
@@ -78,6 +80,7 @@ class _CallCard extends StatelessWidget {
         onPressed: () => viewModel.answer(call),
       ),
       Button(
+        mainAxisSize: .min,
         variant: .ghost,
         label: l10n.decline,
         icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
@@ -85,6 +88,7 @@ class _CallCard extends StatelessWidget {
         onPressed: () => viewModel.end(call),
       ),
       Button(
+        mainAxisSize: .min,
         variant: .ghost,
         label: switch (silenced) {
           true => l10n.silenced,

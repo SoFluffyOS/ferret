@@ -29,16 +29,19 @@ class LinkProblemCard extends StatelessWidget {
       false => link.deviceName,
     };
     final openBluetooth = Button(
+      mainAxisSize: .min,
       variant: .primary,
       label: l10n.openBluetoothSettings,
       onPressed: onOpenBluetooth,
     );
     final tryAgain = Button(
+      mainAxisSize: .min,
       variant: .ghost,
       label: l10n.tryAgain,
       onPressed: onRetry,
     );
     final setUp = Button(
+      mainAxisSize: .min,
       variant: .primary,
       label: l10n.setUp,
       onPressed: onSetUp,
