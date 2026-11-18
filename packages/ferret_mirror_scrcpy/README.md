@@ -10,7 +10,10 @@ macOS, Windows and Linux only. On a phone, `status()` is `RouteUnsupported`.
 final route = ScrcpyRoute();
 
 switch (await route.status()) {
-  case RouteNeedsSetup(step: .installTool):
+  case RouteNeedsSetup(step: .installTool, detail: ScrcpyRoute.needsAdbStarted):
+    // adb is there but this app can't start it: "Open Android Studio, or
+    // run adb start-server"
+  case RouteNeedsSetup(step: .installTool) when route.canInstallAdb:
     // Only from a button that says it downloads Android's platform tools
     // from Google: await route.installAdb();
   case RouteNeedsSetup(step: .authorizeComputer, :final detail):
@@ -70,16 +73,18 @@ route.targets.listen((targets) async {
 | Needs | An adb server that is already running | The `adb` program on this computer |
 | Sockets to the device | Straight through the server. No port is opened here | Through `adb forward tcp:0 …`, removed after |
 
-Why both? The socket is the lighter way, and the only one that works everywhere a sandbox does. But something has to start that server, own the USB connection and keep the key the phone trusts. Only the `adb` program does that. Its first command starts the server, and from the next call on the route talks to the server directly.
+Why both? The socket is the lighter way, and the only one that also works inside a sandbox. But something has to start that server, own the USB connection and keep the key the phone trusts. Only the `adb` program does that. Its first command starts the server, and from the next call on the route talks to the server directly.
 
-### Inside the macOS App Sandbox
+### The macOS App Sandbox
 
-Tried with the sandboxed Ferret app on macOS, mirroring an Android 15 emulator:
+Ferret for macOS ships outside the Mac App Store (Developer ID, notarized, hardened runtime) and is **not** sandboxed, so the route starts adb itself there, as on Windows and Linux. The hardened runtime needs no entitlement for running a program.
 
-- **An adb server that is already running works.** Devices, push, shell and the video all go over the local socket. `com.apple.security.network.client` is all it takes. No USB entitlement: the server owns the cable, and it runs outside the sandbox.
-- **The app can't start adb.** Running the program fails with "Operation not permitted", whether it is the SDK's adb in `~/Library/Android/sdk`, a copy in the app's container, or one the app downloaded. A downloaded file also gets `com.apple.quarantine`, which a sandboxed app can't take off again.
+Another app that embeds this route inside the App Sandbox gets less. Tried with a sandboxed build mirroring an Android 15 emulator:
 
-So in the sandbox `canInstallAdb` is false and `installAdb()` throws. Without a server, `status()` is `RouteNeedsSetup(installTool, detail: ScrcpyRoute.needsAdbStarted)`: the user has to open Android Studio or run `adb start-server` once. Outside the sandbox (Windows, Linux, an unsandboxed Mac build) the route starts adb itself.
+- **An adb server that is already running works.** Devices, push, shell and the video all go over the local socket. `com.apple.security.network.client` is all it takes.
+- **The app can't start adb.** Running the program fails with "Operation not permitted", wherever the file is. A downloaded file also gets `com.apple.quarantine`, which a sandboxed app can't take off again.
+
+So in a sandbox `canInstallAdb` is false and `installAdb()` throws. Without a server, `status()` is `RouteNeedsSetup(installTool, detail: ScrcpyRoute.needsAdbStarted)`: the user has to open Android Studio or run `adb start-server` once.
 
 ## What reaches the internet
 
@@ -89,7 +94,7 @@ Ferret makes no network calls beyond your own devices, and neither does showing 
 |---|---|---|
 | Android platform-tools 37.0.1 | `dl.google.com/android/repository` | Only when `installAdb()` is called |
 
-Call `installAdb()` only from a button the user pressed, whose text says it downloads Android's platform tools from Google, and only where `canInstallAdb` is true. The download is checked against a pinned SHA-256. Google publishes SHA-1 only; the SHA-256 values in `PlatformToolsRelease` were computed from downloads whose SHA-1 matched Google's list.
+Call `installAdb()` only from a button the user pressed, whose text says it downloads Android's platform tools from Google, and only where `canInstallAdb` is true. Ferret's mirroring settings do exactly that: **Get Android's helper tool**, "Ferret downloads Android's platform tools from Google, about 16 MB, once.", **Download**. The route also implements `ToolInstaller` from `ferret_mirroring` (`canInstallTool`, `installTool()`, `toolNotStartedDetail`), so a UI can offer this without importing the package. The download is checked against a pinned SHA-256. Google publishes SHA-1 only; the SHA-256 values in `PlatformToolsRelease` were computed from downloads whose SHA-1 matched Google's list.
 
 The scrcpy server is an asset. Its SHA-256 (from scrcpy's own `SHA256SUMS.txt`) is checked every time before it is used.
 

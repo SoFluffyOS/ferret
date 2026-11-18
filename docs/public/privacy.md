@@ -21,6 +21,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 - **Pause** Ferret any time, for an hour or until you resume.
 - **Unpair** a device in one click; both sides forget each other.
 - Every feature is a switch in Settings, and sensitive ones (notifications, messages, calls) stay off until you turn them on.
+- Ferret downloads one thing, and only when you click **Download**: Android's platform tools from Google, for [mirroring a phone without Ferret on it](features/mirroring-with-a-cable.md).
 
 ## 🔓 Check it yourself
 

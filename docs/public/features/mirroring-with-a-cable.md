@@ -66,15 +66,15 @@ Debugging is a strong permission. Be sure about it.
 - Only allow computers that are yours.
 - Done? Turn **USB debugging** off again, or tap **Revoke USB debugging authorizations** in Developer options to forget every computer.
 
-## 📦 Nothing is downloaded
+## 📦 One download, only if you ask
 
-Ferret never talks to the internet on its own, and it doesn't here.
+Ferret never talks to the internet on its own.
 
 The small helper that captures the screen on the phone is **scrcpy's server**. It ships inside Ferret. Ferret checks it, copies it to the phone for as long as the picture runs, and it deletes itself after.
 
-Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it. If not, install [Google's platform-tools](https://developer.android.com/tools/releases/platform-tools).
+Ferret also needs **adb**, Android's tool for talking to phones. Have Android Studio? Then you have it, and Ferret uses that one.
 
-On a Mac, adb has to be running before Ferret can use it: macOS doesn't let Ferret start it. Open Android Studio, or run `adb start-server` in Terminal.
+No adb on this computer? Ferret says **Get Android's helper tool**, with a **Download** button. Click it and Ferret downloads Google's [platform tools](https://developer.android.com/tools/releases/platform-tools) from Google, about 16 MB, once. It checks the file against a fingerprint built into Ferret before it uses it. That is the only time this feature reaches the internet, and only when you click.
 
 Nothing about you or your phone is sent anywhere. The picture goes from the phone to your computer, over the cable or your own Wi-Fi.
 
@@ -82,7 +82,8 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 
 | Ferret says | What to do |
 |---|---|
-| This computer needs a small helper first | adb isn't installed, or isn't running. Install the platform tools, run `adb start-server` in Terminal (or open Android Studio), then **Check again** |
+| Get Android's helper tool | adb isn't on this computer. Click **Download**, or install the platform tools yourself, then **Check again** |
+| Start Android's helper tool | adb is here but Ferret can't start it. Open Android Studio, or run `adb start-server` in Terminal, then **Check again** |
 | The phone needs one setting turned on | Turn on USB debugging, as above |
 | Allow this computer on the phone | Unlock the phone and tap **Allow**. No question on the phone? Unplug it and plug it in again |
 

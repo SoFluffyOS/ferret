@@ -2,6 +2,14 @@
 
 Ferret lives in your menubar. No Dock icon, no window in the way.
 
+## 📦 Installing on a Mac
+
+Download Ferret from its releases page and drag it to **Applications**. That's it.
+
+Ferret for Mac comes straight from us, not from the Mac App Store. It is signed with a Developer ID and notarized by Apple, so macOS opens it without a warning.
+
+Why not the App Store? Apps there must run in Apple's sandbox, and a sandboxed app can't start **adb**, Android's tool that [mirroring a phone without Ferret on it](../features/mirroring-with-a-cable.md) needs.
+
 ## 🍎 First run
 
 1. Open Ferret. Its icon (⇆) appears in the menubar.
