@@ -148,6 +148,7 @@ class FeatureAction {
     required this.icon,
     required this.onPressed,
     this.homeOrder,
+    this.sectionId,
   });
 
   /// A verb and its object, such as "Send files".
@@ -159,4 +160,9 @@ class FeatureAction {
   /// Home, lowest first: Send files is 10, Send clipboard 20, Ring 30. Null
   /// keeps it on the device's page only.
   final int? homeOrder;
+
+  /// The `FeatureSection.id` this only opens, such as `messages`, or null
+  /// when it does something. Where the device list already shows that
+  /// section, the shell leaves the button out.
+  final String? sectionId;
 }

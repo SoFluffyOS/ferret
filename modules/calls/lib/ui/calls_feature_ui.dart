@@ -204,6 +204,7 @@ class CallsFeatureUi extends FeatureUi {
         icon: LucideIcons.phoneOutgoing,
         onPressed: () =>
             unawaited(feature.openSection(device.device.id, sectionId)),
+        sectionId: sectionId,
       ),
     ];
   }

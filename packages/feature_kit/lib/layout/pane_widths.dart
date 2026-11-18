@@ -13,6 +13,10 @@ abstract final class PaneWidths {
   /// The widest a list or a form gets. Past it, the margins grow.
   static const double content = 720;
 
+  /// From this much room a page lays two blocks side by side, such as a
+  /// device's Overview.
+  static const double twoColumns = 640;
+
   /// The widest pairing and empty states get.
   static const double narrowContent = 480;
 

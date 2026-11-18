@@ -10,12 +10,9 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/device_now_frame.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
+import 'package:shell/ui/frames/offers_card.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
-import 'package:shell/ui/widgets/device_header.dart';
-import 'package:shell/ui/widgets/disclosure.dart';
-import 'package:shell/ui/widgets/forget_device_card.dart';
-import 'package:shell/ui/widgets/health_row.dart';
-import 'package:shell/ui/widgets/switch_row.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One paired device: whether it's connected, what to do with it, what
@@ -41,41 +38,65 @@ class DevicePage extends StatelessWidget {
     final engine = scope.featureContext.engine;
     final device = status.device;
 
+    final details = [
+      Spacing.v8,
+      Disclosure(
+        title: l10n.deviceDetails,
+        children: [
+          for (final line in _details(context, device)) _DetailLine(line),
+        ],
+      ),
+      ForgetDeviceCard(
+        deviceName: device.name,
+        here: l10n.here(engine.device),
+        sharedWithOthers:
+            engine.sharesPairings && engine.trustStore.devices.length > 1,
+        onForget: (scope) => unawaited(_forget(context, scope)),
+      ),
+    ];
+    // Home shows what else could be set up; a window has no Home.
+    final offers = [
+      if (WindowLayout.splits(context)) ...[Spacing.v8, const OffersCard()],
+    ];
+
     return FerretPage(
       title: '',
       backLabel: l10n.back,
       children: [
         DeviceNowFrame(deviceId: deviceId),
-        DeviceHeader(status: status),
         if (!status.isConnected)
-          Button(
-            variant: .primary,
-            label: l10n.deviceWhyLong,
-            onPressed: () => Navigator.of(context).push(
-              ferretRoute<void>(
-                DoctorPage(deviceId: deviceId),
+          TwoColumns(
+            leading: [
+              DeviceHeader(status: status),
+              Button(
+                variant: .primary,
+                titleExpand: .shrink,
+                label: l10n.deviceWhyLong,
+                onPressed: () => Navigator.of(context).push(
+                  ferretRoute<void>(
+                    DoctorPage(deviceId: deviceId),
+                  ),
+                ),
               ),
-            ),
+            ],
+            trailing: [...offers, ...details],
           ),
         if (status.isConnected)
           FeatureChangesListener(
             features: scope.features,
-            builder: (context) => _Connected(status: status),
+            builder: (context) => TwoColumns(
+              leading: [
+                DeviceHeader(status: status),
+                _Actions(status: status),
+                _WhatWorks(status: status),
+              ],
+              trailing: [
+                _May(status: status),
+                ...offers,
+                ...details,
+              ],
+            ),
           ),
-        Spacing.v8,
-        Disclosure(
-          title: l10n.deviceDetails,
-          children: [
-            for (final line in _details(context, device)) _DetailLine(line),
-          ],
-        ),
-        ForgetDeviceCard(
-          deviceName: device.name,
-          here: l10n.here(engine.device),
-          sharedWithOthers:
-              engine.sharesPairings && engine.trustStore.devices.length > 1,
-          onForget: (scope) => unawaited(_forget(context, scope)),
-        ),
       ],
     );
   }
@@ -119,62 +140,70 @@ class DevicePage extends StatelessWidget {
   }
 }
 
-/// What a connected device adds to its page: its actions, what works with
-/// it, and what it may do here.
-class _Connected extends StatelessWidget {
-  const _Connected({required this.status});
+/// What to do with a connected device: the few things done most, then
+/// "More". An action that only opens a section is left out where the device
+/// list already shows that section.
+class _Actions extends StatelessWidget {
+  const _Actions({required this.status});
 
   final DeviceStatus status;
-
-  /// Sorts after every action that has a place on Home.
-  static const _pageOnly = 1 << 20;
 
   @override
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-    final l10n = context.shellL10n;
-    final name = status.device.name;
     final featureContext = scope.featureContext;
-    final actions = [
+    final listed = switch (WindowLayout.splits(context)) {
+      true => {
+        for (final section in DeviceSections.of(
+          context,
+          scope.features,
+          featureContext,
+          status,
+        ))
+          section.id,
+      },
+      false => const <String>{},
+    };
+    final actions = DeviceActionOrder.of([
       for (final feature in scope.features)
         ...feature.deviceActions(context, featureContext, status),
-    ];
-    final ordered = [
-      for (final (index, action) in actions.indexed) (index, action),
-    ]..sort(_byHomeOrder);
+    ], listedSections: listed);
+    if (actions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return DeviceActions(
+      actions: actions,
+      moreLabel: context.shellL10n.homeMore,
+      shown: switch (context.screenSize) {
+        .small => 3,
+        _ => 4,
+      },
+    );
+  }
+}
+
+/// Every feature that can work with a connected device, and how it is
+/// doing: working, off or broken.
+class _WhatWorks extends StatelessWidget {
+  const _WhatWorks({required this.status});
+
+  final DeviceStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final l10n = context.shellL10n;
+    final name = status.device.name;
     final health = [
       for (final feature in scope.features)
-        if (feature.healthFor(featureContext, status) case final health?)
+        if (feature.healthFor(scope.featureContext, status) case final health?)
           (feature.title(context), health),
-    ];
-    final permissions = [
-      for (final feature in scope.features)
-        ...feature.devicePermissions(context, featureContext, status),
     ];
 
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        if (ordered.isNotEmpty)
-          Wrap(
-            spacing: Spacing.d8,
-            runSpacing: Spacing.d8,
-            children: [
-              for (final (position, (_, action)) in ordered.indexed)
-                Button(
-                  mainAxisSize: .min,
-                  variant: switch (position) {
-                    0 => .primary,
-                    _ => .ghost,
-                  },
-                  label: action.label,
-                  icon: Icon(action.icon, size: Spacing.d16),
-                  onPressed: action.onPressed,
-                ),
-            ],
-          ),
         SectionTitle(l10n.deviceWhatWorks(name)),
         SurfaceCard(
           child: Column(
@@ -183,7 +212,9 @@ class _Connected extends StatelessWidget {
               if (health.isEmpty)
                 Text(
                   l10n.deviceNothingWorks(name),
-                  style: typography.base2.copyWith(color: palette.mutedText),
+                  style: context.fluffyTheme.typography.base2.copyWith(
+                    color: context.palette.mutedText,
+                  ),
                 ),
               for (final (title, featureHealth) in health)
                 HealthRow(
@@ -196,41 +227,52 @@ class _Connected extends StatelessWidget {
             ],
           ),
         ),
-        if (permissions.isNotEmpty) ...[
-          SectionTitle(l10n.deviceMay(name)),
-          SurfaceCard(
-            child: Column(
-              children: [
-                for (final (index, permission) in permissions.indexed) ...[
-                  if (index > 0) Spacing.v12,
-                  SwitchRow(
-                    title: permission.label,
-                    subtitle: switch (permission.detail) {
-                      '' => null,
-                      final detail => detail,
-                    },
-                    value: permission.value,
-                    onChanged: permission.onChanged,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
       ],
     );
   }
+}
 
-  /// Home's order first, then the order features gave them in.
-  static int _byHomeOrder((int, FeatureAction) a, (int, FeatureAction) b) {
-    final byOrder = (a.$2.homeOrder ?? _pageOnly).compareTo(
-      b.$2.homeOrder ?? _pageOnly,
-    );
-    if (byOrder != 0) {
-      return byOrder;
+/// What a connected device may do on this one, as switches.
+class _May extends StatelessWidget {
+  const _May({required this.status});
+
+  final DeviceStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final permissions = [
+      for (final feature in scope.features)
+        ...feature.devicePermissions(context, scope.featureContext, status),
+    ];
+    if (permissions.isEmpty) {
+      return const SizedBox.shrink();
     }
 
-    return a.$1.compareTo(b.$1);
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        SectionTitle(context.shellL10n.deviceMay(status.device.name)),
+        SurfaceCard(
+          child: Column(
+            children: [
+              for (final (index, permission) in permissions.indexed) ...[
+                if (index > 0) Spacing.v12,
+                SwitchRow(
+                  title: permission.label,
+                  subtitle: switch (permission.detail) {
+                    '' => null,
+                    final detail => detail,
+                  },
+                  value: permission.value,
+                  onChanged: permission.onChanged,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
