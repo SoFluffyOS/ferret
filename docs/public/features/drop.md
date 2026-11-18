@@ -39,7 +39,7 @@ Share text to **Send with Ferret** on Android and it arrives as a notice on your
 
 Wi-Fi drops, a laptop goes to sleep, a phone walks out of range. Ferret keeps what already arrived. When the device is back, the transfer continues where it stopped, without starting over.
 
-If something fails for another reason, the card says why in plain words, with a **Try again** button.
+If something fails for another reason, its line in **Activity** says why in plain words, with a **Retry** button.
 
 ## ⚙️ Settings
 

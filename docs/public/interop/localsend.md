@@ -37,8 +37,8 @@ Some people protect LocalSend with a PIN. The transfer stops with **Enter PIN**.
 
 Receiving is **off** until you turn it on. While it's off, Ferret doesn't listen for LocalSend at all.
 
-1. On the Files card, open **Let other phones send you files** and tap **Allow 10 min** next to **LocalSend**.
-2. The card shows the name the other device will see and a countdown: **Visible as Laptop · 9:41 left**.
+1. On the home screen, under **Do more**, tap **Turn on** next to **Let other phones send you files**.
+2. A card shows the name the other device will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the other device, open LocalSend, pick the files and pick your device.
 4. Ferret shows the offer. Check it, then **Accept** or **Decline**.
 

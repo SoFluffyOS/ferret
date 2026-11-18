@@ -3,7 +3,9 @@
 ## [Unreleased]
 
 ### Added
-- 👋 **First-run walkthrough**: what Ferret does, name this device, pair, and three tips for your platform. About a minute.
+- 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
+- 🏠 **Devices are the home screen**: each device has **Send files**, **Send clipboard** and **Ring** on its row, and **Fix** when it isn't connected.
+- 🧾 **Activity**: what just happened, in one short list. A copy that synced, a file that arrived, a call, a song playing, each with the one thing to do about it.
 - 🔑 **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. No QR code to scan, no account, ever.
 - 📡 **Devices near you**: Ferret finds your other devices on the Wi-Fi by itself and lists them on the home screen, kept up to date while you look.
 - 👨‍👩‍👧 **Pair once, join them all**: a device you pair with one of your devices joins all of them. Copy on one, paste on any. **Forget** removes it from all of them, or only here.
@@ -31,7 +33,7 @@
 - 📱 **Device page**: everything that works with a device in one list, with what is off (and **How?** to turn it on) and what is broken (and **Fix**). What that device may do here sits right below.
 - ⚙️ **Settings on one screen**: ten rows, each showing its state (**Files · To Downloads**), each opening its own page. No endless scroll.
 - 💬 **Plain words everywhere**: every line names the device and says which side acts. "On Pixel 9: open Ferret."
-- ⏸️ **Pause** Ferret for an hour, until tomorrow, or until you resume.
+- ⏸️ **Pause** Ferret for an hour, until tomorrow, or until you resume, from the **•••** menu. The last line of the home screen says until when.
 - 🗂️ **One folder for your data**: on computers Ferret keeps everything in `~/.sofluffy/ferret`. Delete it and nothing is left behind.
 - 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon. The icon shows what's going on: a ring while a file moves, a check when it's done, a dot when someone waits for your answer, a slash while paused.
 - 💻 **`ferret` command line**: run it headless, pair, and list devices.

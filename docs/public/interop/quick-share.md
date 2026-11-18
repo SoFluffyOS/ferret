@@ -12,8 +12,8 @@ Every Android phone already has **Quick Share** (it used to be called Nearby Sha
 
 ## 📥 Send from an Android phone to your computer
 
-1. In Ferret on the computer, open **Let other phones send you files** on the Files card and tap **Show 10 min** next to **Quick Share**.
-2. The card shows the name the phone will see and a countdown: **Visible as Laptop · 9:41 left**.
+1. In Ferret on the computer, under **Do more**, tap **Turn on** next to **Let other phones send you files**.
+2. A card shows the name the phone will see and a countdown: **Visible as Laptop · 9:41 left**.
 3. On the phone, open the photo or file, tap **Share**, then **Quick Share**.
 4. Your computer shows up under the nearby devices. Tap it.
 5. The phone shows a 4-digit **PIN**. Ferret comes to the front with the offer and the same PIN.

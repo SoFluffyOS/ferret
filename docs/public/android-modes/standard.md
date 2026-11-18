@@ -46,7 +46,7 @@ Ferret asks for these the first time you turn on **Messages** or **Calls**. Said
 
 Android doesn't let apps read your clipboard in the background. No app can, not just Ferret.
 
-So in Standard mode you copy, then tap **Send clipboard** in the Ferret notification, the Quick Settings tile or the Clipboard card. See [Clipboard](../features/clipboard.md).
+So in Standard mode you copy, then tap **Send clipboard** in the Ferret notification, the Quick Settings tile or on your computer's row in Ferret. See [Clipboard](../features/clipboard.md).
 
 Going the other way needs nothing: what you copy on your computer lands on your phone on its own.
 

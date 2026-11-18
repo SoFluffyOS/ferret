@@ -18,6 +18,8 @@ When something plays on one of your devices, the home screen (the menubar popove
 - A progress line. Tap it to jump to that spot.
 - ⏮ ⏯ ⏭ to go back, play or pause, and skip.
 
+It sits at the top of **Activity** as one line with ⏯ and ⏭. Tap the line for the rest.
+
 Several players at once? Pick one from the row above the card. Ferret follows the last one that started playing, so the card is usually right on its own.
 
 Ferret sends an update only when something changes: a new track, a pause, a seek. The progress line moves on its own in between. No constant traffic, no extra battery drain.

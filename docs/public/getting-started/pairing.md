@@ -90,4 +90,4 @@ The command line is its own device, named after your computer with **· Terminal
 
 ## Not connecting?
 
-Tap **Why?** next to the device. [Fix connection](../features/connection-doctor.md) checks your network, VPN and the other device, then tells you what to fix.
+Tap **Fix** next to the device. [Fix connection](../features/connection-doctor.md) checks your network, VPN and the other device, then tells you what to fix.

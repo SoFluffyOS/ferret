@@ -16,7 +16,7 @@ With Ferret, what you copy on one device lands on the clipboard of your other de
 - Ferret sends it to your connected devices right away.
 - Paste it there.
 
-The Clipboard card on the home screen shows the last item and where it went: "Copied from Pixel · just now" or "Sent to Laptop · 2 min ago".
+Nothing to open, nothing to press. **Activity** on the home screen keeps the trace: "Copied on Pixel" or "Sent to Laptop", with the first words and a **Copy** button.
 
 Copied while your other device was asleep? If it reconnects within 2 minutes, it still gets your last copy. Older copies are never replayed.
 
@@ -27,7 +27,7 @@ Android doesn't let apps read your clipboard in the background. No app can, not 
 So on Android:
 
 1. Copy something.
-2. Tap **Send clipboard** in the Ferret notification, the Quick Settings tile, or the Clipboard card.
+2. Tap **Send clipboard** in the Ferret notification, the Quick Settings tile, or on your computer's row in Ferret.
 
 Going the other way needs nothing: what you copy on your computer lands on your phone's clipboard on its own.
 
@@ -43,7 +43,7 @@ Receiving works while Ferret is open.
 
 Password managers mark what they copy as private. Ferret skips those items by default.
 
-If you turn on **Include passwords**, they are sent marked as private, blurred on the card, kept out of clipboard history on the other device, and dropped from Ferret's memory after 2 minutes.
+If you turn on **Include passwords**, they are sent marked as private, never shown in Activity, kept out of clipboard history on the other device, and dropped from Ferret's memory after 2 minutes.
 
 ## ⚙️ Settings
 

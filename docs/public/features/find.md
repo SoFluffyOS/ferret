@@ -14,7 +14,7 @@ With Ferret, any of your devices can make another one ring. Out loud, even on si
 
 - Open the device in Ferret and tap **Ring**.
 - It plays a loud alarm for up to 2 minutes. Phones vibrate too, and Android flashes the torch.
-- A page shows "Ringing Pixel…" with **Stop**. The home card shows it too.
+- A page shows "Ringing Pixel…" with **Stop**. It stays on top of **Activity** too.
 - Found it? Tap the big **Found it** on the ringing device. On Android, a volume key works as well.
 
 Your other device hears how it ended: "Pixel was found", "stopped ringing on its own", or why it didn't ring at all.
