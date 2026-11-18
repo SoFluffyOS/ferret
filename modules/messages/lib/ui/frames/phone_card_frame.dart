@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The phone's home card, only while Messages are on but SMS access is
-/// missing. Turning Messages on is offered in the shell's "Turn on more".
+/// missing. Turning Messages on is offered in the shell's "Do more".
 class PhoneCardFrame extends StatelessWidget {
   const PhoneCardFrame({super.key, required this.onSetUp});
 

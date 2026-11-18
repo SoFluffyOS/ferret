@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Android phone, tap **Set up** next to Messages in **Turn on more** on Ferret's home screen (or open **Settings → Messages**), then **Turn on**.
+> 1. On your Android phone, tap **Set up** next to Messages in **Do more** on Ferret's home screen (or open **Settings → Messages**), then **Turn on**.
 > 2. Allow **SMS** and **Contacts** when Android asks.
 > 3. On your computer, open **Messages** from your phone's card. Read, scroll back, reply.
 
@@ -17,7 +17,7 @@ With Ferret, your phone's texts are on your computer. Every conversation, with n
 - Open a conversation and scroll up for older texts. Pictures show inline; click one to see it full size.
 - Type in the box and click **Send**. Your reply shows as "Sending…" until the phone confirms it went out.
 
-Didn't go out? Ferret says why, in plain words ("The phone has no signal"), with **Retry**.
+Didn't go out? Ferret says why, in plain words ("Pixel 9 has no signal"), with **Send again**.
 
 ## 🔔 New texts
 

@@ -6,16 +6,18 @@ import 'package:messages/ui/widgets/bubble.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A reply typed here: faded while the phone sends it, with the reason and
-/// Retry when it failed.
+/// Send again when it failed.
 class PendingBubble extends StatelessWidget {
   const PendingBubble({
     super.key,
     required this.message,
+    required this.phoneName,
     required this.onRetry,
     required this.onDiscard,
   });
 
   final PendingMessage message;
+  final String phoneName;
   final VoidCallback onRetry;
   final VoidCallback onDiscard;
 
@@ -45,7 +47,9 @@ class PendingBubble extends StatelessWidget {
             ),
             child: switch (message.outcome) {
               final SendOutcome outcome when message.failed => _Failed(
-                reason: '${l10n.notSent}. ${l10n.outcomeText(outcome)}',
+                reason:
+                    '${l10n.notSent}. '
+                    '${l10n.outcomeText(outcome, phoneName)}',
                 onRetry: onRetry,
                 onDiscard: onDiscard,
               ),

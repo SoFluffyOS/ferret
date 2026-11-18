@@ -70,6 +70,7 @@ void main() {
     await devices.connect();
 
     expect(health()?.state, FeatureHealthState.ok);
+    expect(health()?.reason, 'Texts and replies');
   });
 
   test('health says when Messages is off on the phone', () async {
@@ -77,7 +78,7 @@ void main() {
     await devices.connect();
 
     expect(health()?.state, FeatureHealthState.off);
-    expect(health()?.reason, contains('Messages are off on Pixel'));
+    expect(health()?.reason, 'Off on Pixel');
   });
 
   test('health asks for attention when the phone lacks SMS access', () async {
@@ -254,7 +255,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text("Messages are on, but Ferret can't read your texts yet."),
+        find.text(
+          "Messages are on, but Ferret can't read this phone's texts yet.",
+        ),
         findsOneWidget,
       );
       expect(find.text('Fix'), findsOneWidget);

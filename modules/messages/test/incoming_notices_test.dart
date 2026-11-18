@@ -183,7 +183,7 @@ void main() {
     final problem = notifier.history.last;
     expect(problem.channel, NoticeChannel.problems);
     expect(problem.title, 'Reply not sent');
-    expect(problem.body, 'Pixel: The phone has no signal.');
+    expect(problem.body, 'Pixel has no signal.');
   });
 
   test('tapping the notice opens the conversation', () async {

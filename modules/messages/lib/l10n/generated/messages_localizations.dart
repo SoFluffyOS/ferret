@@ -184,7 +184,7 @@ abstract class MessagesLocalizations {
   /// No description provided for @openSettingsFailed.
   ///
   /// In en, this message translates to:
-  /// **'Settings couldn\'t be opened on this phone.'**
+  /// **'Couldn\'t open Settings. Open Android Settings → Apps → Ferret → Permissions yourself.'**
   String get openSettingsFailed;
 
   /// No description provided for @accessOn.
@@ -214,7 +214,7 @@ abstract class MessagesLocalizations {
   /// No description provided for @phoneCardNeedsAccess.
   ///
   /// In en, this message translates to:
-  /// **'Messages are on, but Ferret can\'t read your texts yet.'**
+  /// **'Messages are on, but Ferret can\'t read this phone\'s texts yet.'**
   String get phoneCardNeedsAccess;
 
   /// No description provided for @fix.
@@ -262,20 +262,44 @@ abstract class MessagesLocalizations {
   /// No description provided for @statusOff.
   ///
   /// In en, this message translates to:
-  /// **'Messages are off on {name}. Open Ferret on the phone and turn them on.'**
+  /// **'Messages are off on {name}. On {name}: Ferret → Do more → Messages.'**
   String statusOff(String name);
 
   /// No description provided for @statusNoAccess.
   ///
   /// In en, this message translates to:
-  /// **'Ferret on {name} can\'t read texts yet. Open Ferret on the phone and allow SMS.'**
+  /// **'Ferret on {name} can\'t read texts yet. On {name}: open Ferret and allow SMS.'**
   String statusNoAccess(String name);
 
   /// No description provided for @statusUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'{name} didn\'t answer. Check that Ferret is open on the phone, then try again.'**
+  /// **'{name} didn\'t answer. On {name}: open Ferret, then try again.'**
   String statusUnreachable(String name);
+
+  /// Device page, next to Messages, while it works.
+  ///
+  /// In en, this message translates to:
+  /// **'Texts and replies'**
+  String get healthOk;
+
+  /// Device page, next to Messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Off on {name}'**
+  String healthOff(String name);
+
+  /// Device page, next to Messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Android turned off Ferret\'s access'**
+  String get healthNoAccess;
+
+  /// Device page, next to Messages.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t answer'**
+  String healthUnreachable(String name);
 
   /// No description provided for @retry.
   ///
@@ -322,20 +346,20 @@ abstract class MessagesLocalizations {
   /// No description provided for @composerOffline.
   ///
   /// In en, this message translates to:
-  /// **'Connect {name} to reply.'**
+  /// **'Reply once {name} is back.'**
   String composerOffline(String name);
 
   /// No description provided for @composerGroup.
   ///
   /// In en, this message translates to:
-  /// **'Group texts need MMS, which only your phone\'s messaging app can send. Reply on the phone.'**
-  String get composerGroup;
+  /// **'Group texts need MMS, which only {name}\'s messaging app can send. Reply on {name}.'**
+  String composerGroup(String name);
 
   /// No description provided for @composerNoSend.
   ///
   /// In en, this message translates to:
-  /// **'Sending is off on the phone. Allow SMS in Ferret on the phone to reply from here.'**
-  String get composerNoSend;
+  /// **'Sending is off on {name}. On {name}: open Ferret and allow SMS to reply from here.'**
+  String composerNoSend(String name);
 
   /// No description provided for @sending.
   ///
@@ -352,14 +376,14 @@ abstract class MessagesLocalizations {
   /// No description provided for @outcomeOffline.
   ///
   /// In en, this message translates to:
-  /// **'The phone isn\'t connected.'**
-  String get outcomeOffline;
+  /// **'{name} isn\'t connected.'**
+  String outcomeOffline(String name);
 
   /// No description provided for @outcomeNoAccess.
   ///
   /// In en, this message translates to:
-  /// **'Ferret may not send texts on the phone.'**
-  String get outcomeNoAccess;
+  /// **'Ferret isn\'t allowed to send texts on {name}. On {name}: open Ferret and allow SMS.'**
+  String outcomeNoAccess(String name);
 
   /// No description provided for @outcomeNoRecipient.
   ///
@@ -370,31 +394,31 @@ abstract class MessagesLocalizations {
   /// No description provided for @outcomeGroup.
   ///
   /// In en, this message translates to:
-  /// **'Group texts can only be sent from the phone.'**
-  String get outcomeGroup;
+  /// **'Group texts can only be sent from {name}.'**
+  String outcomeGroup(String name);
 
   /// No description provided for @outcomeNoService.
   ///
   /// In en, this message translates to:
-  /// **'The phone has no signal.'**
-  String get outcomeNoService;
+  /// **'{name} has no signal.'**
+  String outcomeNoService(String name);
 
   /// No description provided for @outcomeTimeout.
   ///
   /// In en, this message translates to:
-  /// **'The phone didn\'t confirm in time. Check the conversation on the phone before sending again.'**
-  String get outcomeTimeout;
+  /// **'{name} didn\'t confirm in time. Check the conversation on {name} before sending again.'**
+  String outcomeTimeout(String name);
 
   /// No description provided for @outcomeFailed.
   ///
   /// In en, this message translates to:
-  /// **'The phone couldn\'t send it.'**
-  String get outcomeFailed;
+  /// **'{name} couldn\'t send it. Send again, or send it from {name}.'**
+  String outcomeFailed(String name);
 
   /// No description provided for @retrySend.
   ///
   /// In en, this message translates to:
-  /// **'Retry'**
+  /// **'Send again'**
   String get retrySend;
 
   /// No description provided for @discard.
@@ -486,6 +510,12 @@ abstract class MessagesLocalizations {
   /// In en, this message translates to:
   /// **'Reply'**
   String get replyAction;
+
+  /// Activity row for an unread text: who wrote, then the phone it arrived on
+  ///
+  /// In en, this message translates to:
+  /// **'{sender} · {device}'**
+  String activityTitle(String sender, String device);
 
   /// No description provided for @markReadAction.
   ///

@@ -169,10 +169,10 @@ void main() {
     await tester.tap(find.text('Send'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Not sent. The phone has no signal.'), findsOneWidget);
+    expect(find.text('Not sent. Pixel has no signal.'), findsOneWidget);
 
     source.sendResult = SendResult(ok: true);
-    await tester.tap(find.text('Retry'));
+    await tester.tap(find.text('Send again'));
     await tester.pumpAndSettle();
 
     expect(source.sent, hasLength(2));
@@ -200,7 +200,7 @@ void main() {
 
     expect(find.textContaining('Pixel is offline.'), findsOneWidget);
     expect(find.text('Hi there'), findsOneWidget);
-    expect(find.text('Connect Pixel to reply.'), findsOneWidget);
+    expect(find.text('Reply once Pixel is back.'), findsOneWidget);
     await finish(tester);
   });
 
@@ -213,7 +213,7 @@ void main() {
 
     expect(
       find.text(
-        "Ferret on Pixel can't read texts yet. Open Ferret on the phone and allow SMS.",
+        "Ferret on Pixel can't read texts yet. On Pixel: open Ferret and allow SMS.",
       ),
       findsOneWidget,
     );

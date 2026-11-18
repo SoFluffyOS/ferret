@@ -141,15 +141,15 @@ class MessagesFeatureUi extends FeatureUi {
     final strings = platformMessagesL10n();
     final name = device.device.name;
     return switch (this.feature.library.phone(device.device.id).readiness) {
-      .ready => const FeatureHealth(.ok),
+      .ready => FeatureHealth(.ok, reason: strings.healthOk),
       .unreachable => FeatureHealth(
         .failing,
-        reason: strings.statusUnreachable(name),
+        reason: strings.healthUnreachable(name),
       ),
-      .off => FeatureHealth(.off, reason: strings.statusOff(name)),
+      .off => FeatureHealth(.off, reason: strings.healthOff(name)),
       .noAccess => FeatureHealth(
         .needsAttention,
-        reason: strings.statusNoAccess(name),
+        reason: strings.healthNoAccess,
       ),
       .checking || .offline => null,
     };

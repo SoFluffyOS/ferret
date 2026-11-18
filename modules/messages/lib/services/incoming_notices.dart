@@ -191,7 +191,7 @@ class IncomingNotices {
         id: '$_prefix$deviceId/reply-failed',
         channel: .problems,
         title: strings.replyFailedTitle,
-        body: '${_deviceName(deviceId)}: ${strings.outcomeText(outcome)}',
+        body: strings.outcomeText(outcome, _deviceName(deviceId)),
         groupKey: '$_prefix$deviceId',
       ),
     );

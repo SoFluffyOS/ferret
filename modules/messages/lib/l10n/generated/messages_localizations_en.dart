@@ -59,7 +59,7 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get openSettingsFailed =>
-      'Settings couldn\'t be opened on this phone.';
+      'Couldn\'t open Settings. Open Android Settings → Apps → Ferret → Permissions yourself.';
 
   @override
   String get accessOn => 'Your computers can read and reply to your texts';
@@ -77,7 +77,7 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get phoneCardNeedsAccess =>
-      'Messages are on, but Ferret can\'t read your texts yet.';
+      'Messages are on, but Ferret can\'t read this phone\'s texts yet.';
 
   @override
   String get fix => 'Fix';
@@ -115,17 +115,33 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String statusOff(String name) {
-    return 'Messages are off on $name. Open Ferret on the phone and turn them on.';
+    return 'Messages are off on $name. On $name: Ferret → Do more → Messages.';
   }
 
   @override
   String statusNoAccess(String name) {
-    return 'Ferret on $name can\'t read texts yet. Open Ferret on the phone and allow SMS.';
+    return 'Ferret on $name can\'t read texts yet. On $name: open Ferret and allow SMS.';
   }
 
   @override
   String statusUnreachable(String name) {
-    return '$name didn\'t answer. Check that Ferret is open on the phone, then try again.';
+    return '$name didn\'t answer. On $name: open Ferret, then try again.';
+  }
+
+  @override
+  String get healthOk => 'Texts and replies';
+
+  @override
+  String healthOff(String name) {
+    return 'Off on $name';
+  }
+
+  @override
+  String get healthNoAccess => 'Android turned off Ferret\'s access';
+
+  @override
+  String healthUnreachable(String name) {
+    return '$name didn\'t answer';
   }
 
   @override
@@ -153,16 +169,18 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String composerOffline(String name) {
-    return 'Connect $name to reply.';
+    return 'Reply once $name is back.';
   }
 
   @override
-  String get composerGroup =>
-      'Group texts need MMS, which only your phone\'s messaging app can send. Reply on the phone.';
+  String composerGroup(String name) {
+    return 'Group texts need MMS, which only $name\'s messaging app can send. Reply on $name.';
+  }
 
   @override
-  String get composerNoSend =>
-      'Sending is off on the phone. Allow SMS in Ferret on the phone to reply from here.';
+  String composerNoSend(String name) {
+    return 'Sending is off on $name. On $name: open Ferret and allow SMS to reply from here.';
+  }
 
   @override
   String get sending => 'Sending…';
@@ -171,29 +189,40 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get notSent => 'Not sent';
 
   @override
-  String get outcomeOffline => 'The phone isn\'t connected.';
+  String outcomeOffline(String name) {
+    return '$name isn\'t connected.';
+  }
 
   @override
-  String get outcomeNoAccess => 'Ferret may not send texts on the phone.';
+  String outcomeNoAccess(String name) {
+    return 'Ferret isn\'t allowed to send texts on $name. On $name: open Ferret and allow SMS.';
+  }
 
   @override
   String get outcomeNoRecipient => 'This conversation has no one to send to.';
 
   @override
-  String get outcomeGroup => 'Group texts can only be sent from the phone.';
+  String outcomeGroup(String name) {
+    return 'Group texts can only be sent from $name.';
+  }
 
   @override
-  String get outcomeNoService => 'The phone has no signal.';
+  String outcomeNoService(String name) {
+    return '$name has no signal.';
+  }
 
   @override
-  String get outcomeTimeout =>
-      'The phone didn\'t confirm in time. Check the conversation on the phone before sending again.';
+  String outcomeTimeout(String name) {
+    return '$name didn\'t confirm in time. Check the conversation on $name before sending again.';
+  }
 
   @override
-  String get outcomeFailed => 'The phone couldn\'t send it.';
+  String outcomeFailed(String name) {
+    return '$name couldn\'t send it. Send again, or send it from $name.';
+  }
 
   @override
-  String get retrySend => 'Retry';
+  String get retrySend => 'Send again';
 
   @override
   String get discard => 'Discard';
@@ -242,6 +271,11 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get replyAction => 'Reply';
+
+  @override
+  String activityTitle(String sender, String device) {
+    return '$sender · $device';
+  }
 
   @override
   String get markReadAction => 'Mark as read';

@@ -38,14 +38,16 @@ extension MessageLabels on MessagesLocalizations {
     return attachmentLabel(message.attachments.first);
   }
 
-  String outcomeText(SendOutcome outcome) => switch (outcome) {
-    .sent => '',
-    .offline => outcomeOffline,
-    .noAccess => outcomeNoAccess,
-    .noRecipient => outcomeNoRecipient,
-    .group => outcomeGroup,
-    .noService => outcomeNoService,
-    .timeout => outcomeTimeout,
-    .failed => outcomeFailed,
-  };
+  /// Why a reply didn't go out through the phone called [phoneName].
+  String outcomeText(SendOutcome outcome, String phoneName) =>
+      switch (outcome) {
+        .sent => '',
+        .offline => outcomeOffline(phoneName),
+        .noAccess => outcomeNoAccess(phoneName),
+        .noRecipient => outcomeNoRecipient,
+        .group => outcomeGroup(phoneName),
+        .noService => outcomeNoService(phoneName),
+        .timeout => outcomeTimeout(phoneName),
+        .failed => outcomeFailed(phoneName),
+      };
 }

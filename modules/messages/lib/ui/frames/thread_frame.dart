@@ -101,8 +101,8 @@ class ThreadFrame extends StatelessWidget {
           blockedReason: switch (block) {
             .none => null,
             .offline => l10n.composerOffline(phoneName),
-            .group => l10n.composerGroup,
-            .noSend => l10n.composerNoSend,
+            .group => l10n.composerGroup(phoneName),
+            .noSend => l10n.composerNoSend(phoneName),
           },
           onSend: viewModel.send,
         ),
@@ -158,6 +158,7 @@ class ThreadFrame extends StatelessWidget {
         PendingBubble(
           key: ValueKey(message.id),
           message: message,
+          phoneName: phoneName,
           onRetry: () => unawaited(viewModel.retry(message)),
           onDiscard: () => viewModel.discard(message),
         ),
