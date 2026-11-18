@@ -1066,5 +1066,12 @@
   "trayStillRunningTitle": "Ferret is still running",
   "trayStillRunningBody": "Find it in the tray, next to the clock. Quit from its menu.",
   "settingsStartAtLogin": "Start Ferret when I log in",
-  "settingsStartAtLoginBody": "It starts in the tray, so your devices connect before you need them."
+  "settingsStartAtLoginBody": "It starts in the tray, so your devices connect before you need them.",
+  "menuHelp": "Help",
+  "menuKeyboardShortcuts": "Keyboard Shortcuts",
+  "menuCheckNetwork": "Check My Network…",
+  "shortcutsTitle": "Keyboard shortcuts",
+  "shortcutSections": "Sections of the selected device",
+  "shortcutSidebar": "Show or hide the device list",
+  "shortcutActivityPane": "Show or hide the Activity pane"
 }

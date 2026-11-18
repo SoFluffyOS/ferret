@@ -35,6 +35,8 @@ Ferret puts an icon in the notification area, next to the clock. Click it to sho
 
 ## ⌨️ Keys
 
+There is no menu bar. The **•••** at the top of the device list holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
+
 | Keys | Does |
 |---|---|
 | Ctrl+1 … Ctrl+6 | Sections of the selected device. Overview is Ctrl+1 |
@@ -47,6 +49,8 @@ Ferret puts an icon in the notification area, next to the clock. Click it to sho
 | Ctrl+B | Show or hide the device list |
 | Ctrl+Alt+0 | Show or hide the Activity pane |
 | Ctrl+[ | Back |
+| Ctrl+? | Keyboard shortcuts |
+| Ctrl+Q | Quit Ferret |
 
 ## 🧱 If your phone doesn't show up
 

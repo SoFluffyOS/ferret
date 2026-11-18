@@ -7,6 +7,7 @@ export 'package:shell/ui/pages/device_page.dart';
 export 'package:shell/ui/pages/device_section_page.dart';
 export 'package:shell/ui/pages/doctor_page.dart';
 export 'package:shell/ui/pages/home_page.dart';
+export 'package:shell/ui/pages/keyboard_shortcuts_page.dart';
 export 'package:shell/ui/pages/other_ways_page.dart';
 export 'package:shell/ui/pages/pair_page.dart';
 export 'package:shell/ui/pages/qr_pair_page.dart';

@@ -30,5 +30,6 @@ export 'package:shell/ui/frames/stay_connected_card.dart';
 export 'package:shell/ui/frames/this_device_card.dart';
 export 'package:shell/ui/frames/tips_frame.dart';
 export 'package:shell/ui/frames/window_menu_frame.dart';
+export 'package:shell/ui/frames/window_more_menu.dart';
 export 'package:shell/ui/frames/window_shell_frame.dart';
 export 'package:shell/ui/frames/window_title_frame.dart';

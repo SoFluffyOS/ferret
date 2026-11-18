@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +12,7 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
+import 'package:shell/ui/pages/keyboard_shortcuts_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/view_models/view_models.dart';
 
@@ -83,6 +85,8 @@ class WindowMenuFrame extends StatelessWidget {
         ),
         null => null,
       },
+      .showShortcuts: () => nav.show(const KeyboardShortcutsPage()),
+      .quit: () => unawaited(_quit()),
     };
     void selectSection(int index) {
       if (sectionsDevice == null || index >= sections.length) {
@@ -108,7 +112,14 @@ class WindowMenuFrame extends StatelessWidget {
             onInvoke: (intent) => selectSection(intent.index),
           ),
         },
-        child: Focus(autofocus: true, skipTraversal: true, child: child),
+        child: Focus(
+          autofocus: true,
+          skipTraversal: true,
+          child: Provider<WindowCommands?>.value(
+            value: WindowCommands(commands),
+            child: child,
+          ),
+        ),
       ),
     );
     if (defaultTargetPlatform != .macOS) {
@@ -124,10 +135,22 @@ class WindowMenuFrame extends StatelessWidget {
           onSection: selectSection,
           isSidebarHidden: isSidebarHidden,
           isActivityPaneHidden: isActivityPaneHidden,
+          onCheckNetwork: () => nav.show(const DoctorPage()),
         ),
         child: keyed,
       ),
     );
+  }
+
+  /// On Windows and Linux the window may only be hiding in the tray, so
+  /// Quit goes through the runner, which also remembers where it was.
+  static Future<void> _quit() async {
+    if (defaultTargetPlatform == .windows || defaultTargetPlatform == .linux) {
+      await DesktopWindow().quit();
+      return;
+    }
+
+    await SystemNavigator.pop();
   }
 
   /// The device's action features placed at [order], while it is connected.
@@ -166,6 +189,7 @@ class WindowMenuFrame extends StatelessWidget {
     required void Function(int index) onSection,
     required bool isSidebarHidden,
     required bool isActivityPaneHidden,
+    required VoidCallback onCheckNetwork,
   }) {
     final l10n = context.shellL10n;
     final views = context.read<AppViews?>();
@@ -284,6 +308,28 @@ class WindowMenuFrame extends StatelessWidget {
           ),
           PlatformMenuItemGroup(
             members: [PlatformProvidedMenuItem(type: .arrangeWindowsInFront)],
+          ),
+        ],
+      ),
+      PlatformMenu(
+        label: l10n.menuHelp,
+        menus: [
+          PlatformMenuItemGroup(
+            members: [
+              PlatformMenuItem(
+                label: l10n.menuKeyboardShortcuts,
+                onSelected: commands[WindowCommand.showShortcuts],
+              ),
+            ],
+          ),
+          PlatformMenuItemGroup(
+            members: [
+              item(l10n.menuFixConnection, .fixConnection),
+              PlatformMenuItem(
+                label: l10n.menuCheckNetwork,
+                onSelected: onCheckNetwork,
+              ),
+            ],
           ),
         ],
       ),

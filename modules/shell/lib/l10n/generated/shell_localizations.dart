@@ -2271,6 +2271,48 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'It starts in the tray, so your devices connect before you need them.'**
   String get settingsStartAtLoginBody;
+
+  /// No description provided for @menuHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get menuHelp;
+
+  /// No description provided for @menuKeyboardShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard Shortcuts'**
+  String get menuKeyboardShortcuts;
+
+  /// No description provided for @menuCheckNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Check My Network…'**
+  String get menuCheckNetwork;
+
+  /// No description provided for @shortcutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get shortcutsTitle;
+
+  /// No description provided for @shortcutSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Sections of the selected device'**
+  String get shortcutSections;
+
+  /// No description provided for @shortcutSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Show or hide the device list'**
+  String get shortcutSidebar;
+
+  /// No description provided for @shortcutActivityPane.
+  ///
+  /// In en, this message translates to:
+  /// **'Show or hide the Activity pane'**
+  String get shortcutActivityPane;
 }
 
 class _ShellLocalizationsDelegate

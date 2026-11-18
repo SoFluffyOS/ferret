@@ -86,7 +86,7 @@ Everything in the window has a key, and a place in the menu bar.
 | ⌘[ | Back |
 | ⌘W | Close the window |
 
-The same commands are in the **File**, **View** and **Device** menus. One that can't apply right now is greyed out.
+The same commands are in the **File**, **View** and **Device** menus. One that can't apply right now is greyed out. **Help** lists every key under **Keyboard Shortcuts**, and has **Fix Connection…** and **Check My Network…**.
 
 ## 🔐 Optional permissions
 

@@ -1360,4 +1360,25 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get settingsStartAtLoginBody =>
       'It starts in the tray, so your devices connect before you need them.';
+
+  @override
+  String get menuHelp => 'Help';
+
+  @override
+  String get menuKeyboardShortcuts => 'Keyboard Shortcuts';
+
+  @override
+  String get menuCheckNetwork => 'Check My Network…';
+
+  @override
+  String get shortcutsTitle => 'Keyboard shortcuts';
+
+  @override
+  String get shortcutSections => 'Sections of the selected device';
+
+  @override
+  String get shortcutSidebar => 'Show or hide the device list';
+
+  @override
+  String get shortcutActivityPane => 'Show or hide the Activity pane';
 }

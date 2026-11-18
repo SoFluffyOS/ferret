@@ -14,6 +14,8 @@ enum WindowCommand {
   previousDevice,
   back,
   fixConnection,
+  showShortcuts,
+  quit,
 }
 
 class WindowCommandIntent extends Intent {
@@ -89,7 +91,58 @@ abstract final class WindowShortcuts {
     ),
     .back => _primary(LogicalKeyboardKey.bracketLeft, platform),
     .fixConnection => null,
+    // A Mac gets Help and Quit from its menu bar.
+    .showShortcuts => switch (platform) {
+      .macOS || .iOS => null,
+      _ => const SingleActivator(
+        LogicalKeyboardKey.slash,
+        control: true,
+        shift: true,
+      ),
+    },
+    .quit => switch (platform) {
+      .macOS || .iOS => null,
+      _ => const SingleActivator(LogicalKeyboardKey.keyQ, control: true),
+    },
   };
+
+  /// How [activator] is written on [platform]: "⇧⌘V" on a Mac,
+  /// "Ctrl+Shift+V" elsewhere. Ctrl+Shift+/ reads as "Ctrl+?", the way
+  /// GNOME writes it.
+  static String describe(SingleActivator activator, TargetPlatform platform) {
+    final key = _keyName(activator);
+    if (platform == .macOS || platform == .iOS) {
+      return [
+        if (activator.control) '⌃',
+        if (activator.alt) '⌥',
+        if (activator.shift) '⇧',
+        if (activator.meta) '⌘',
+        key,
+      ].join();
+    }
+
+    final isQuestion =
+        activator.trigger == LogicalKeyboardKey.slash && activator.shift;
+    return [
+      if (activator.control) 'Ctrl',
+      if (activator.alt) 'Alt',
+      if (activator.shift && !isQuestion) 'Shift',
+      switch (isQuestion) {
+        true => '?',
+        false => key,
+      },
+    ].join('+');
+  }
+
+  static String _keyName(SingleActivator activator) =>
+      switch (activator.trigger) {
+        LogicalKeyboardKey.arrowDown => '↓',
+        LogicalKeyboardKey.arrowUp => '↑',
+        LogicalKeyboardKey.comma => ',',
+        LogicalKeyboardKey.bracketLeft => '[',
+        LogicalKeyboardKey.slash => '/',
+        final key => key.keyLabel.toUpperCase(),
+      };
 
   static SingleActivator _primary(
     LogicalKeyboardKey key,

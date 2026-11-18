@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/sidebar_nearby_frame.dart';
+import 'package:shell/ui/frames/window_more_menu.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -159,6 +161,8 @@ class _Header extends StatelessWidget {
               child: Icon(LucideIcons.plus, size: Spacing.d18, color: color),
             ),
           ),
+          if (defaultTargetPlatform != TargetPlatform.macOS)
+            const WindowMoreMenu(),
         ],
       ),
     );
