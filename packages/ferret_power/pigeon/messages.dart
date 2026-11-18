@@ -1,34 +1,115 @@
 import 'package:pigeon/pigeon.dart';
 
-// This file is where you define the interface between Dart code and host
-// platform code. After editing this file, run
-//   dart run pigeon --input pigeon/messages.dart
-// to re-generate all of the output files.
-//
-// If you add new platforms to your plugin, add the corresponding output
-// options in the PigeonOptions below.
-//
-// To learn more about Pigeon, see https://pub.dev/packages/pigeon.
-
 @ConfigurePigeon(
   PigeonOptions(
     dartPackageName: 'ferret_power',
     dartOut: 'lib/src/messages.g.dart',
-    cppHeaderOut: 'windows/messages.g.h',
-    cppSourceOut: 'windows/messages.g.cpp',
-    cppOptions: CppOptions(namespace: 'ferret_power'),
-    gobjectHeaderOut: 'linux/messages.g.h',
-    gobjectSourceOut: 'linux/messages.g.cc',
     kotlinOut: 'android/src/main/kotlin/io/sofluffy/ferret_power/Messages.g.kt',
     kotlinOptions: KotlinOptions(package: 'io.sofluffy.ferret_power'),
-    swiftOut: [
-      'ios/ferret_power/Sources/ferret_power/Messages.g.swift',
-      'macos/ferret_power/Sources/ferret_power/Messages.g.swift',
-    ],
   ),
 )
+/// The app that manages root on this phone, when one is installed.
+enum PlatformRootManager { none, magisk, kernelSu, aPatch, unknown }
+
+/// What runs a capability: the Shizuku service, or `su`.
+enum PlatformPowerBackend { shizuku, root }
+
+/// A setting Ferret may turn on for itself through a backend.
+enum PlatformPowerGrant { notificationAccess, batteryUnrestricted }
+
+/// What this phone offers right now. Reading it never asks for anything.
+class PlatformPowerState {
+  PlatformPowerState({
+    required this.shizukuInstalled,
+    required this.shizukuRunning,
+    required this.shizukuGranted,
+    required this.rootFound,
+    required this.rootGranted,
+    required this.rootManager,
+    required this.notificationAccess,
+    required this.messagesAndCalls,
+    required this.batteryUnrestricted,
+  });
+
+  bool shizukuInstalled;
+  bool shizukuRunning;
+  bool shizukuGranted;
+
+  /// A `su` binary or a root manager app is present.
+  bool rootFound;
+
+  /// `su` answered as root since the app started.
+  bool rootGranted;
+  PlatformRootManager rootManager;
+
+  /// Ferret's notification listener is turned on.
+  bool notificationAccess;
+
+  /// The SMS or the phone permission is granted.
+  bool messagesAndCalls;
+
+  /// Ferret is exempt from battery optimisation.
+  bool batteryUnrestricted;
+}
+
+/// Text on the clipboard, read through a backend.
+class PlatformPowerClip {
+  PlatformPowerClip({required this.text, required this.sensitive});
+
+  String text;
+
+  /// The source app marked it as private (`EXTRA_IS_SENSITIVE`).
+  bool sensitive;
+}
+
 @HostApi()
-abstract class FerretPowerPluginApi {
-  /// Returns the system version of the host platform.
-  String getPlatformVersion();
+abstract class PowerHostApi {
+  PlatformPowerState getState();
+
+  /// Shows Shizuku's permission dialog. False when the user said no or
+  /// Shizuku isn't running.
+  @async
+  bool requestShizukuPermission();
+
+  /// Opens the Shizuku app. False when it isn't installed.
+  bool openShizuku();
+
+  bool openNotificationAccessSettings();
+
+  /// Opens Ferret's page in the system settings.
+  bool openAppSettings();
+
+  /// Runs `su -c id`, which makes the root manager ask the user. False when
+  /// denied or when there is no `su`.
+  @async
+  bool requestRoot();
+
+  /// The clipboard text, read as the shell user. Null when it is empty or
+  /// holds something other than text.
+  @async
+  PlatformPowerClip? readClipboard(PlatformPowerBackend backend);
+
+  /// Starts reporting copies through
+  /// [PowerFlutterApi.onClipboardChanged], also while Ferret is in the
+  /// background.
+  @async
+  void startClipboardWatch(PlatformPowerBackend backend);
+
+  @async
+  void stopClipboardWatch();
+
+  /// Turns [grant] on for Ferret itself. False when the command failed.
+  @async
+  bool grant(PlatformPowerBackend backend, PlatformPowerGrant grant);
+}
+
+@FlutterApi()
+abstract class PowerFlutterApi {
+  /// Shizuku started, stopped, or its permission changed.
+  void onStateChanged(PlatformPowerState state);
+
+  void onClipboardChanged(PlatformPowerClip clip);
+
+  /// The watcher ended on its own, such as when Shizuku stopped.
+  void onClipboardWatchStopped();
 }

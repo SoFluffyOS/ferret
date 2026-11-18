@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:label="Ferret handoff hooks"
+        android:hasCode="true">
+
+        <!-- What makes LSPosed list this app as a module. -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Experimental: lets Ferret continue what you are doing in the apps you pick." />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="93" />
+        <!-- The apps suggested in LSPosed's scope list. The user decides. -->
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/recommended_scope" />
+    </application>
+</manifest>

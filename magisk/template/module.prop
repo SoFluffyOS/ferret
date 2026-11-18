@@ -1,0 +1,6 @@
+id=ferret_privileged
+name=Ferret (privileged install)
+version=@VERSION@
+versionCode=@VERSION_CODE@
+author=Ferret contributors
+description=Installs Ferret as a privileged system app. Experimental and untested on real devices; read the README first.

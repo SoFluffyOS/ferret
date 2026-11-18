@@ -5,6 +5,7 @@ import 'package:clipboard/services/services.dart';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_clipboard/ferret_clipboard.dart';
+import 'package:ferret_power/ferret_power.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/clipboard.dart';
@@ -18,7 +19,9 @@ class ClipboardFeature extends Feature {
     ClipboardPlatform Function()? clipboard,
     DateTime Function()? clock,
     ClipCodec? codec,
+    PowerCapabilities Function()? power,
   }) : _createClipboard = clipboard ?? ClipboardPlatform.current,
+       _createPower = power ?? PowerCapabilities.new,
        _clock = clock ?? DateTime.now,
        _codec = codec ?? ClipCodec();
 
@@ -34,6 +37,10 @@ class ClipboardFeature extends Feature {
   final ClipboardPlatform Function() _createClipboard;
   final DateTime Function() _clock;
   final ClipCodec _codec;
+  final PowerCapabilities Function() _createPower;
+
+  /// Made on first use, once the app's platform channels are up.
+  late final PowerCapabilities _power = _createPower();
   final ClipHistory _history = ClipHistory(limit: historyLimit);
   final RecentIds _seen = RecentIds();
   final StreamController<void> _changes = .broadcast();
@@ -42,6 +49,8 @@ class ClipboardFeature extends Feature {
   ClipboardPlatform? _clipboard;
   StreamSubscription<void>? _clipboardChanges;
   StreamSubscription<String>? _settingsChanges;
+  StreamSubscription<PowerClip>? _backgroundClips;
+  StreamSubscription<PowerTier>? _tierChanges;
   _LocalClip? _latestLocal;
 
   /// Fingerprint of what this device's clipboard holds as far as Ferret
@@ -66,6 +75,16 @@ class ClipboardFeature extends Feature {
   /// feature starts, assumes a desktop.
   ClipboardAccess get access => _clipboard?.access ?? .always;
 
+  /// Whether an Android power-up (Shizuku or root) is on, so copies made in
+  /// other apps can be read while Ferret is in the background.
+  bool get canSendInBackground =>
+      access == .foreground && _power.activeTier.readsClipboardInBackground;
+
+  /// Whether copies made in other apps go out on their own right now: the
+  /// power-up is on and the user asked for it.
+  bool get sendsInBackground =>
+      canSendInBackground && settings.autoSend && settings.backgroundSend;
+
   /// Newest first, at most [historyLimit].
   List<ClipEntry> get history => _history.entries;
 
@@ -79,6 +98,7 @@ class ClipboardFeature extends Feature {
     final clipboard = _createClipboard();
     _clipboard = clipboard;
     _settingsChanges = settings.changes.listen(_onSettingChanged);
+    _tierChanges = _power.tierChanges.listen((_) => _onTierChanged());
 
     if (clipboard.access.watchesOtherApps) {
       final current = await _read();
@@ -94,6 +114,9 @@ class ClipboardFeature extends Feature {
   Future<void> stop() async {
     await _settingsChanges?.cancel();
     _settingsChanges = null;
+    await _tierChanges?.cancel();
+    _tierChanges = null;
+    await _stopBackgroundWatching();
     await _stopWatching();
     for (final timer in _expiryTimers.values) {
       timer.cancel();
@@ -144,7 +167,7 @@ class ClipboardFeature extends Feature {
   /// Reads this device's clipboard and sends it, to [toDeviceId] only when
   /// given. Sends even when it was synced already, since someone asked.
   Future<ClipSendResult> sendClipboard({String? toDeviceId}) async {
-    final content = await _read();
+    final content = await _read() ?? await _readInBackground();
     if (content == null) {
       return .nothingToSend;
     }
@@ -194,14 +217,70 @@ class ClipboardFeature extends Feature {
   }
 
   void _onSettingChanged(String key) {
-    if (key == ClipboardSettings.autoSendKey) {
+    if (key == ClipboardSettings.autoSendKey ||
+        key == ClipboardSettings.backgroundSendKey) {
       unawaited(_updateWatching());
     }
 
     _changes.add(null);
   }
 
+  void _onTierChanged() {
+    unawaited(_updateWatching());
+    _changes.add(null);
+  }
+
   Future<void> _updateWatching() async {
+    await _updateBackgroundWatching();
+    await _updateForegroundWatching();
+  }
+
+  /// Listening is what starts the power-up's watcher, so there is no
+  /// listener, and no watcher, unless the user turned this on.
+  Future<void> _updateBackgroundWatching() async {
+    if (!sendsInBackground) {
+      await _stopBackgroundWatching();
+      return;
+    }
+
+    _backgroundClips ??= _power.clipboardChanges.listen(_onBackgroundClip);
+  }
+
+  Future<void> _stopBackgroundWatching() async {
+    final subscription = _backgroundClips;
+    _backgroundClips = null;
+    await subscription?.cancel();
+  }
+
+  /// A copy made in another app, read by the power-up. It goes through the
+  /// same rules as any other copy: dedupe, private items, size.
+  void _onBackgroundClip(PowerClip clip) {
+    if (!sendsInBackground || clip.text.isEmpty) {
+      return;
+    }
+
+    unawaited(
+      _share(.text(clip.text, sensitive: clip.sensitive), userAsked: false),
+    );
+  }
+
+  /// What the power-up reads when Android won't let the app itself, such as
+  /// for "Send clipboard" tapped in the notification. Null unless the user
+  /// turned background sending on.
+  Future<ClipboardContent?> _readInBackground() async {
+    if (!canSendInBackground || !settings.backgroundSend) {
+      return null;
+    }
+
+    final clip = await _power.readClipboard();
+    if (clip == null || clip.text.isEmpty) {
+      return null;
+    }
+
+    return .text(clip.text, sensitive: clip.sensitive);
+  }
+
+  Future<void> _updateForegroundWatching() async {
     final clipboard = _clipboard;
     if (clipboard == null) {
       return;

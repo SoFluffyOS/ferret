@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Privileged permissions Ferret may hold when it is installed in
+  /system/priv-app. Android grants a privileged permission to such an app
+  only when it is both requested in the app's manifest and listed here.
+
+  Ferret's manifest requests none of these today, so this file changes
+  nothing yet. It is here so a later Ferret that does request them doesn't
+  stop a phone from booting: with ro.control_privapp_permissions=enforce,
+  a privileged app asking for a permission missing from this list does.
+
+  Keep this list and the manifest in step. Never add a permission here that
+  Ferret has no feature for.
+-->
+<permissions>
+    <privapp-permissions package="io.sofluffy.ferret">
+        <!-- Stream what the phone plays to another device (planned). -->
+        <permission name="android.permission.CAPTURE_AUDIO_OUTPUT" />
+        <!-- Move playback between the phone and another device (planned). -->
+        <permission name="android.permission.MODIFY_AUDIO_ROUTING" />
+        <!-- Read the clipboard without Shizuku or su. On stock Android this
+             permission is signature-only, so listing it here grants nothing;
+             it only helps on systems that made it privileged. -->
+        <permission name="android.permission.READ_CLIPBOARD_IN_BACKGROUND" />
+    </privapp-permissions>
+</permissions>

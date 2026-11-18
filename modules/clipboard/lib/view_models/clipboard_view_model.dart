@@ -24,7 +24,17 @@ class ClipboardViewModel extends ChangeNotifier {
   ClipboardAccess get access => feature.access;
 
   /// Copies made in other apps can't be noticed here, so people send by hand.
-  bool get needsManualSend => !access.watchesOtherApps;
+  bool get needsManualSend =>
+      !access.watchesOtherApps && !feature.sendsInBackground;
+
+  /// An Android power-up is on, so background sending can be offered.
+  bool get canSendInBackground => feature.canSendInBackground;
+
+  /// The power-up is on and only the switch is missing.
+  bool get offersBackgroundSend =>
+      canSendInBackground && autoSend && !backgroundSend;
+
+  bool get backgroundSend => _settings.backgroundSend;
 
   bool get isSending => _isSending;
 
@@ -68,6 +78,9 @@ class ClipboardViewModel extends ChangeNotifier {
   Future<bool> copy(ClipEntry entry) => feature.copyToClipboard(entry);
 
   Future<void> setAutoSend(bool value) => _settings.setAutoSend(value);
+
+  Future<void> setBackgroundSend(bool value) =>
+      _settings.setBackgroundSend(value);
 
   Future<void> setAutoReceive(bool value) => _settings.setAutoReceive(value);
 

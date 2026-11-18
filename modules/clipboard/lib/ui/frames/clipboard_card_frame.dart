@@ -28,11 +28,16 @@ class ClipboardCardFrame extends StatelessWidget {
     final result = context.select<ClipboardViewModel, ClipSendResult?>(
       (viewModel) => viewModel.lastResult,
     );
+    final needsManualSend = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.needsManualSend,
+    );
+    final offersBackgroundSend = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.offersBackgroundSend,
+    );
     final viewModel = context.read<ClipboardViewModel>();
     final l10n = context.clipboardL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final needsManualSend = !access.watchesOtherApps;
     final canCopy =
         latest != null &&
         latest.direction == .received &&
@@ -40,7 +45,10 @@ class ClipboardCardFrame extends StatelessWidget {
         latest.hasContent;
     final limit = switch (access) {
       .onRequest => l10n.limitIos,
-      _ => l10n.limitAndroid,
+      _ => switch (offersBackgroundSend) {
+        true => l10n.limitAndroidPowerReady,
+        false => l10n.limitAndroid,
+      },
     };
 
     return MinuteTicker(
@@ -76,6 +84,13 @@ class ClipboardCardFrame extends StatelessWidget {
               label: l10n.copy,
               icon: Icon(LucideIcons.copy, size: Spacing.d16),
               onPressed: () => viewModel.copy(latest),
+            ),
+          if (offersBackgroundSend)
+            Button(
+              variant: .secondary,
+              label: l10n.sendInBackground,
+              icon: Icon(LucideIcons.zap, size: Spacing.d16),
+              onPressed: () => viewModel.setBackgroundSend(true),
             ),
           if (needsManualSend)
             Button(

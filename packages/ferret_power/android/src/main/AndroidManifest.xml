@@ -1,3 +1,23 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.sofluffy.ferret_power">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Finds Shizuku and the root manager apps without asking for the list of
+       every installed app. -->
+  <queries>
+    <package android:name="moe.shizuku.privileged.api" />
+    <package android:name="com.topjohnwu.magisk" />
+    <package android:name="me.weishu.kernelsu" />
+    <package android:name="me.bmax.apatch" />
+  </queries>
+
+  <application>
+    <!-- How the Shizuku service hands Ferret its binder. Only Shizuku (which
+         holds INTERACT_ACROSS_USERS_FULL) may call it. -->
+    <provider
+      android:name="rikka.shizuku.ShizukuProvider"
+      android:authorities="${applicationId}.shizuku"
+      android:enabled="true"
+      android:exported="true"
+      android:multiprocess="false"
+      android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+  </application>
 </manifest>

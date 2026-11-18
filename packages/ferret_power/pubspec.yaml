@@ -1,5 +1,5 @@
 name: ferret_power
-description: Platform code for Ferret's power-ups feature, reusable on its own.
+description: Android power-ups for Ferret (Shizuku and root), reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -24,11 +24,3 @@ flutter:
       android:
         package: io.sofluffy.ferret_power
         pluginClass: FerretPowerPlugin
-      ios:
-        pluginClass: FerretPowerPlugin
-      linux:
-        pluginClass: FerretPowerPlugin
-      macos:
-        pluginClass: FerretPowerPlugin
-      windows:
-        pluginClass: FerretPowerPluginCApi

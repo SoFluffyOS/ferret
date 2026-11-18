@@ -29,6 +29,7 @@ dependencies:
   provider: ^6.1.5+1
   sofluffy_ui:
     path: ../../packages/sofluffy_ui
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

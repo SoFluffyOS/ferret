@@ -2,6 +2,7 @@ import 'package:clipboard/l10n/l10n.dart';
 import 'package:clipboard/ui/widgets/widgets.dart';
 import 'package:clipboard/view_models/clipboard_view_model.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_clipboard/ferret_clipboard.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -26,6 +27,15 @@ class ClipboardSettingsFrame extends StatelessWidget {
     );
     final needsManualSend = context.select<ClipboardViewModel, bool>(
       (viewModel) => viewModel.needsManualSend,
+    );
+    final access = context.select<ClipboardViewModel, ClipboardAccess>(
+      (viewModel) => viewModel.access,
+    );
+    final canSendInBackground = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.canSendInBackground,
+    );
+    final backgroundSend = context.select<ClipboardViewModel, bool>(
+      (viewModel) => viewModel.backgroundSend,
     );
     final megabytes = context.select<ClipboardViewModel, int>(
       (viewModel) => viewModel.maxImageMegabytes,
@@ -54,6 +64,18 @@ class ClipboardSettingsFrame extends StatelessWidget {
             value: autoSend,
             onChanged: viewModel.setAutoSend,
           ),
+          if (access == .foreground && canSendInBackground)
+            SettingSwitchRow(
+              title: l10n.settingsBackgroundSend,
+              body: l10n.settingsBackgroundSendBody,
+              value: backgroundSend,
+              onChanged: viewModel.setBackgroundSend,
+            ),
+          if (access == .foreground && !canSendInBackground)
+            SettingInfoRow(
+              title: l10n.settingsBackgroundSend,
+              body: l10n.settingsBackgroundSendLocked,
+            ),
           SettingSwitchRow(
             title: l10n.settingsAutoReceive,
             body: l10n.settingsAutoReceiveBody,

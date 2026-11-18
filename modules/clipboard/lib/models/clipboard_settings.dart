@@ -5,6 +5,7 @@ class ClipboardSettings {
   const ClipboardSettings(this._store);
 
   static const autoSendKey = 'clipboard.auto_send';
+  static const backgroundSendKey = 'clipboard.background_send';
   static const autoReceiveKey = 'clipboard.auto_receive';
   static const syncImagesKey = 'clipboard.sync_images';
   static const syncSensitiveKey = 'clipboard.sync_sensitive';
@@ -21,6 +22,11 @@ class ClipboardSettings {
 
   /// Sends what is copied here to connected devices on its own.
   bool get autoSend => _store.get<bool>(autoSendKey) ?? true;
+
+  /// On Android, also sends copies made in other apps while Ferret is in
+  /// the background. Only works with a power-up (Shizuku or root), so it is
+  /// off until the user asks for it.
+  bool get backgroundSend => _store.get<bool>(backgroundSendKey) ?? false;
 
   /// Puts what other devices send straight on this device's clipboard.
   bool get autoReceive => _store.get<bool>(autoReceiveKey) ?? true;
@@ -41,6 +47,9 @@ class ClipboardSettings {
   };
 
   Future<void> setAutoSend(bool value) => _store.set(autoSendKey, value);
+
+  Future<void> setBackgroundSend(bool value) =>
+      _store.set(backgroundSendKey, value);
 
   Future<void> setAutoReceive(bool value) => _store.set(autoReceiveKey, value);
 
