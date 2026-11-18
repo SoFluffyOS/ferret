@@ -366,6 +366,7 @@ class ScreenRig {
 /// tests when nobody answers, such as asking for the Downloads folder.
 void mockPlugins(WidgetTester tester) {
   final folder = Directory.systemTemp.createTempSync('ferret_screens');
+  AppPaths.use(FerretPaths(folder.path));
   tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/path_provider'),
     (call) async => folder.path,

@@ -1,9 +1,9 @@
 import 'package:core/core.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
-/// Drop's own secrets, in a file only this user can read inside the app's
-/// support folder. Opened on first use, so nothing touches the disk until
+/// Drop's own secrets, in a file only this user can read inside Ferret's
+/// secrets folder. Opened on first use, so nothing touches the disk until
 /// LocalSend is used.
 class SupportSecretStore implements SecretStore {
   static const _folder = 'drop';
@@ -23,7 +23,8 @@ class SupportSecretStore implements SecretStore {
   Future<SecretStore> _open() => _store ??= _create();
 
   Future<SecretStore> _create() async {
-    final support = await getApplicationSupportDirectory();
-    return FileSecretStore(p.join(support.path, _folder));
+    final paths = await AppPaths.get();
+    final folder = await paths.create(p.join(paths.secrets, _folder));
+    return FileSecretStore(folder.path);
   }
 }

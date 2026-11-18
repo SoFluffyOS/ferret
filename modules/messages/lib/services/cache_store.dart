@@ -12,8 +12,8 @@ abstract interface class CacheStore {
   Future<void> delete(String deviceId);
 }
 
-/// Saves into `messages/<device id>.json` under a directory such as the
-/// app's support folder, readable only by this user.
+/// Saves into `<device id>.json` in a folder, such as Messages' own folder
+/// among Ferret's files, readable only by this user.
 class FileCacheStore implements CacheStore {
   FileCacheStore(this._directory);
 
@@ -69,7 +69,7 @@ class FileCacheStore implements CacheStore {
       return folder;
     }
 
-    final folder = Directory('${await _directory()}/messages');
+    final folder = Directory(await _directory());
     _folder = folder;
     return folder;
   }

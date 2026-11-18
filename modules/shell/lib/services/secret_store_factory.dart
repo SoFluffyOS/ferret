@@ -2,17 +2,16 @@ import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// Picks where the device key and pairings live: the platform keystore on
-/// phones, a file only this user can read in the app's private folder on
-/// desktops.
-Future<SecretStore> createSecretStore() async {
+/// phones, a file only this user can read in [paths]' secrets folder on
+/// computers.
+Future<SecretStore> createSecretStore(FerretPaths paths) async {
   if (Platform.isAndroid || Platform.isIOS) {
     return const KeystoreSecretStore();
   }
 
-  final directory = await getApplicationSupportDirectory();
+  final directory = await paths.create(paths.secrets);
   return FileSecretStore(directory.path);
 }
 

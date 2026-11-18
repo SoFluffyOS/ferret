@@ -7,7 +7,6 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
 import 'package:shell/bootstrap/system_binding.dart';
@@ -24,9 +23,10 @@ Future<void> runFerret({
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
 
-  final supportDirectory = await getApplicationSupportDirectory();
-  final settings = await JsonFileSettingsStore.open(supportDirectory.path);
-  final secrets = await createSecretStore();
+  final paths = await AppPaths.get();
+  final settingsDirectory = await paths.create(paths.settings);
+  final settings = await JsonFileSettingsStore.open(settingsDirectory.path);
+  final secrets = await createSecretStore(paths);
   final device = await describeThisDevice(
     name: settings.get<String>('device.name'),
     appVersion: appVersion,

@@ -12,7 +12,6 @@ import 'package:messages/services/services.dart';
 import 'package:messages/ui/frames/frames.dart';
 import 'package:messages/ui/pages/pages.dart';
 import 'package:messages/view_models/view_models.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 /// The app side of Messages: setup on the phone; on computers the Messages
@@ -27,9 +26,13 @@ class MessagesFeatureUi extends FeatureUi {
 
     return MessagesFeatureUi.withFeature(
       MessagesFeature(
-        cacheStore: FileCacheStore(
-          () async => (await getApplicationSupportDirectory()).path,
-        ),
+        cacheStore: FileCacheStore(() async {
+          final paths = await AppPaths.get();
+          final folder = await paths.create(
+            paths.feature(MessagesFeature.featureId),
+          );
+          return folder.path;
+        }),
       ),
     );
   }

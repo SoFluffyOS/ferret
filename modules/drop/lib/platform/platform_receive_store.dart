@@ -5,8 +5,8 @@ import 'package:drop/models/models.dart';
 import 'package:drop/platform/media_store_receive_store.dart';
 import 'package:drop/platform/receive_folders.dart';
 import 'package:drop/services/services.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_drop/ferret_drop.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// Picks the right [ReceiveStore] for this device: MediaStore Downloads on
 /// Android 10+, otherwise a plain folder.
@@ -36,7 +36,10 @@ class PlatformReceiveStore implements ReceiveStore {
       return MediaStoreReceiveStore(
         plugin: _plugin,
         folderName: () => ReceiveFolders.folderName(settings),
-        appDirectory: () async => (await getApplicationSupportDirectory()).path,
+        appDirectory: () async {
+          final paths = await AppPaths.get();
+          return (await paths.create(paths.cache)).path;
+        },
       );
     }
 
