@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirror_airplay/ferret_mirror_airplay.dart';
 import 'package:ferret_mirror_scrcpy/ferret_mirror_scrcpy.dart';
 import 'package:mirroring/mirroring.dart';
@@ -13,7 +14,14 @@ abstract final class MirroringWays {
     final onComputer =
         Platform.isMacOS || Platform.isWindows || Platform.isLinux;
     mirroring = MirroringFeatureUi(
-      routes: [ScrcpyRoute()],
+      routes: [
+        ScrcpyRoute(
+          toolsDirectory: () async {
+            final paths = await AppPaths.get();
+            return paths.create(paths.tools);
+          },
+        ),
+      ],
       receivers: [
         if (onComputer)
           AirPlayReceiver(

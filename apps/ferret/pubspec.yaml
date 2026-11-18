@@ -8,6 +8,8 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  feature_kit:
+    path: ../../packages/feature_kit
   ferret_mirror_airplay:
     path: ../../packages/ferret_mirror_airplay
   ferret_mirror_scrcpy:
@@ -46,8 +48,6 @@ dependencies:
 dev_dependencies:
   core:
     path: ../../packages/core
-  feature_kit:
-    path: ../../packages/feature_kit
   ferret_notifications:
     path: ../../packages/ferret_notifications
   lucide_icons_flutter: ^4.0.3

@@ -15,9 +15,12 @@ import 'package:path_provider/path_provider.dart';
 /// Shizuku, no Ferret.
 ///
 /// Computers only. On a phone, [status] is [RouteUnsupported].
+///
+/// [toolsDirectory] is where downloaded platform tools and scrcpy's server
+/// go; it defaults to a `mirror_scrcpy` folder in the app support folder.
 class ScrcpyRoute implements ToolInstaller {
   ScrcpyRoute({
-    Future<Directory> Function()? supportDirectory,
+    Future<Directory> Function()? toolsDirectory,
     Future<AdbBridge?> Function()? findAdb,
     Map<String, String>? environment,
     AdbLocator? locator,
@@ -25,18 +28,18 @@ class ScrcpyRoute implements ToolInstaller {
     ScrcpyServerBundle? serverBundle,
     String? operatingSystem,
     this.pollInterval = const Duration(seconds: 2),
-  }) : _supportDirectory = supportDirectory ?? _defaultSupportDirectory,
+  }) : _toolsDirectory = toolsDirectory ?? _defaultToolsDirectory,
        _findAdbOverride = findAdb,
        _hostAdb = hostAdb ?? AdbHostClient(),
        _environment = environment ?? Platform.environment,
        _locatorOverride = locator,
        _operatingSystem = operatingSystem ?? Platform.operatingSystem {
     _installer = AdbInstaller(
-      directory: _supportDirectory,
+      directory: _toolsDirectory,
       operatingSystem: _operatingSystem,
     );
     _serverBundle =
-        serverBundle ?? ScrcpyServerBundle(directory: _supportDirectory);
+        serverBundle ?? ScrcpyServerBundle(directory: _toolsDirectory);
     _changes = .broadcast(onListen: _startPolling, onCancel: _stopPolling);
   }
 
@@ -58,7 +61,7 @@ class ScrcpyRoute implements ToolInstaller {
   /// How often `adb devices` is asked while someone listens to [targets].
   final Duration pollInterval;
 
-  final Future<Directory> Function() _supportDirectory;
+  final Future<Directory> Function() _toolsDirectory;
   final Future<AdbBridge?> Function()? _findAdbOverride;
   final AdbHostClient _hostAdb;
   final Map<String, String> _environment;
@@ -347,7 +350,7 @@ class ScrcpyRoute implements ToolInstaller {
     return true;
   }
 
-  static Future<Directory> _defaultSupportDirectory() async {
+  static Future<Directory> _defaultToolsDirectory() async {
     final support = await getApplicationSupportDirectory();
     return Directory(p.join(support.path, 'mirror_scrcpy'));
   }
