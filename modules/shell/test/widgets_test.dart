@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/shell.dart';
@@ -199,5 +200,109 @@ void main() {
 
     expect(find.text('now'), findsNothing);
     expect(find.byIcon(LucideIcons.pause), findsOneWidget);
+  });
+
+  testWidgets('a line can be dismissed with its ✕', (tester) async {
+    var dismissed = 0;
+    final now = DateTime(2026, 11, 18, 12);
+
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: now,
+          item: ActivityItem(
+            id: 'page',
+            icon: LucideIcons.globe,
+            title: 'Continue “Cats” from Pixel',
+            at: now,
+            onDismiss: () => dismissed++,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byIcon(LucideIcons.x));
+    expect(dismissed, 1);
+  });
+
+  testWidgets('a line shows its own picture and trailing widget', (
+    tester,
+  ) async {
+    final now = DateTime(2026, 11, 18, 12);
+
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: now,
+          item: ActivityItem(
+            id: 'call',
+            icon: LucideIcons.phone,
+            title: 'On a call with Ana',
+            at: now.subtract(const Duration(minutes: 3)),
+            leading: const Text('AB'),
+            trailing: const Text('3:00'),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('AB'), findsOneWidget);
+    expect(find.byIcon(LucideIcons.phone), findsNothing);
+    expect(find.text('3:00'), findsOneWidget);
+    expect(find.text('3 min'), findsNothing);
+  });
+
+  testWidgets('three actions get a line of their own', (tester) async {
+    final pressed = <String>[];
+    final now = DateTime(2026, 11, 18, 12);
+
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: now,
+          item: ActivityItem(
+            id: 'call',
+            icon: LucideIcons.phoneIncoming,
+            title: 'Ana is calling Pixel',
+            detail: '+1 555 0100',
+            pinned: true,
+            actions: [
+              for (final label in ['Answer', 'Decline', 'Silence'])
+                ActivityAction(
+                  label: label,
+                  primary: label == 'Answer',
+                  onPressed: () => pressed.add(label),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Silence'));
+    await tester.tap(find.text('Answer'));
+    expect(pressed, ['Silence', 'Answer']);
+    expect(
+      tester.getTopLeft(find.text('Silence')).dy,
+      greaterThan(tester.getTopLeft(find.text('+1 555 0100')).dy),
+    );
+  });
+
+  test('the feed keeps what needs an answer apart', () {
+    const feed = ActivityFeed(
+      needsYou: [
+        ActivityItem(
+          id: 'offer',
+          icon: LucideIcons.download,
+          title: 'Ana wants to send',
+          needsYou: true,
+        ),
+      ],
+      pinned: [],
+      recent: [],
+    );
+
+    expect(feed.needsYou.single.id, 'offer');
+    expect(feed.isEmpty, isTrue);
   });
 }

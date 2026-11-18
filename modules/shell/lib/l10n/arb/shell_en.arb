@@ -870,6 +870,8 @@
   "nearbyNotTheOne": "Not the one you want? Open Ferret on your other device.",
   "activityTitle": "Activity",
   "activitySeeAll": "See all",
+  "activityDismiss": "Dismiss",
+  "needsYouTitle": "Needs you",
   "activityEmpty": "Nothing yet. Copy something or send a file.",
   "activityNow": "now",
   "activityMinutes": "{count} min",

@@ -15,10 +15,14 @@ class ActivityItem {
     this.detail,
     this.at,
     this.pinned = false,
+    this.needsYou = false,
+    this.leading,
+    this.trailing,
     this.progress,
     this.tone = .normal,
     this.actions = const [],
     this.onTap,
+    this.onDismiss,
   });
 
   /// Stays the same while the line is about the same thing, and is unique
@@ -44,6 +48,18 @@ class ActivityItem {
   /// others and don't count toward the three Home shows.
   final bool pinned;
 
+  /// Waits for the person's answer, such as a file from a device that
+  /// isn't paired. These lines sit under "Needs you" at the top of Home,
+  /// above the devices, instead of in Activity.
+  final bool needsYou;
+
+  /// Drawn in place of [icon], such as the caller's photo.
+  final Widget? leading;
+
+  /// Drawn at the end of the first line in place of the time, such as a
+  /// call's running timer.
+  final Widget? trailing;
+
   /// From 0 to 1 while bytes move, drawn as a thin bar under the line.
   final double? progress;
 
@@ -51,12 +67,16 @@ class ActivityItem {
   /// failed.
   final FeatureTone tone;
 
-  /// At most two things to do about it, such as Copy, Open, or Answer and
-  /// Decline.
+  /// At most three things to do about it, such as Copy, Open, or Answer,
+  /// Decline and Silence.
   final List<ActivityAction> actions;
 
   /// Opens the full story, such as the list of notifications.
   final VoidCallback? onTap;
+
+  /// Takes the line away, behind a small ✕ at its end. Null when the line
+  /// goes by itself, such as a call that ended.
+  final VoidCallback? onDismiss;
 }
 
 /// Something to do about an [ActivityItem], shown at the end of its line.

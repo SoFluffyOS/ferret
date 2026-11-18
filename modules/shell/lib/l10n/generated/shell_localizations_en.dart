@@ -1106,6 +1106,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get activitySeeAll => 'See all';
 
   @override
+  String get activityDismiss => 'Dismiss';
+
+  @override
+  String get needsYouTitle => 'Needs you';
+
+  @override
   String get activityEmpty => 'Nothing yet. Copy something or send a file.';
 
   @override

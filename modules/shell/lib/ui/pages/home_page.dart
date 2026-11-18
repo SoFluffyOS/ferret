@@ -64,6 +64,7 @@ class HomePage extends StatelessWidget {
       ],
       footer: const HomeFooter(),
       children: [
+        const NeedsYouFrame(),
         const JoinedNoticesFrame(),
         if (hasDevices)
           for (final feature in scope.features)

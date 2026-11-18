@@ -1846,6 +1846,18 @@ abstract class ShellLocalizations {
   /// **'See all'**
   String get activitySeeAll;
 
+  /// No description provided for @activityDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get activityDismiss;
+
+  /// No description provided for @needsYouTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you'**
+  String get needsYouTitle;
+
   /// No description provided for @activityEmpty.
   ///
   /// In en, this message translates to:

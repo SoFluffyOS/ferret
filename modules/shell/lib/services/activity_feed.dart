@@ -1,10 +1,15 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 
-/// Every feature's activity as Home shows it: what is going on right now
-/// first, then what happened, newest first.
+/// Every feature's activity as Home shows it: what waits for the person's
+/// answer, apart at the top; then what is going on right now, then what
+/// happened, newest first.
 class ActivityFeed {
-  const ActivityFeed({required this.pinned, required this.recent});
+  const ActivityFeed({
+    required this.pinned,
+    required this.recent,
+    this.needsYou = const [],
+  });
 
   /// Asks each of [features] what it did, and sorts the answers.
   factory ActivityFeed.gather(
@@ -18,18 +23,25 @@ class ActivityFeed {
     ];
 
     return ActivityFeed(
+      needsYou: [
+        for (final item in items)
+          if (item.needsYou) item,
+      ],
       pinned: [
         for (final item in items)
-          if (item.pinned) item,
+          if (item.pinned && !item.needsYou) item,
       ],
       recent: [
         for (final item in items)
-          if (!item.pinned) item,
+          if (!item.pinned && !item.needsYou) item,
       ]..sort(_newestFirst),
     );
   }
 
   static final _longAgo = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// Shown under "Needs you", not in Activity.
+  final List<ActivityItem> needsYou;
 
   final List<ActivityItem> pinned;
   final List<ActivityItem> recent;

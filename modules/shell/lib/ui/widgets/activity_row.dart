@@ -1,5 +1,6 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -28,6 +29,9 @@ class ActivityRow extends StatelessWidget {
     ];
     final detail = item.detail;
     final time = _time(context.shellL10n);
+    final trailing = item.trailing;
+    final onDismiss = item.onDismiss;
+    final actionsOwnLine = textActions.length > _actionsBesideDetail;
 
     final row = Padding(
       padding: EdgeInsets.symmetric(
@@ -37,14 +41,17 @@ class ActivityRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: .start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: Spacing.d2),
-            child: Icon(
-              item.icon,
-              size: Spacing.d16,
-              color: _toneColor(palette),
+          switch (item.leading) {
+            final leading? => leading,
+            null => Padding(
+              padding: EdgeInsets.only(top: Spacing.d2),
+              child: Icon(
+                item.icon,
+                size: Spacing.d16,
+                color: _toneColor(palette),
+              ),
             ),
-          ),
+          },
           Spacing.h12,
           Expanded(
             child: Column(
@@ -60,7 +67,10 @@ class ActivityRow extends StatelessWidget {
                         style: typography.base2.copyWith(color: palette.text),
                       ),
                     ),
-                    if (time != null && iconActions.isEmpty) ...[
+                    if (trailing != null) ...[Spacing.h8, trailing],
+                    if (time != null &&
+                        trailing == null &&
+                        iconActions.isEmpty) ...[
                       Spacing.h8,
                       Text(
                         time,
@@ -71,9 +81,19 @@ class ActivityRow extends StatelessWidget {
                     ],
                     for (final action in iconActions)
                       _IconAction(action: action),
+                    if (onDismiss != null)
+                      _IconAction(
+                        action: ActivityAction(
+                          label: context.shellL10n.activityDismiss,
+                          icon: LucideIcons.x,
+                          onPressed: onDismiss,
+                        ),
+                        muted: true,
+                      ),
                   ],
                 ),
-                if (detail != null || textActions.isNotEmpty) ...[
+                if (detail != null ||
+                    (textActions.isNotEmpty && !actionsOwnLine)) ...[
                   Spacing.vertical(Spacing.d2),
                   Row(
                     children: [
@@ -87,10 +107,23 @@ class ActivityRow extends StatelessWidget {
                           ),
                         ),
                       ),
-                      for (final action in textActions) ...[
-                        Spacing.h8,
+                      if (!actionsOwnLine)
+                        for (final action in textActions) ...[
+                          Spacing.h8,
+                          _TextAction(action: action),
+                        ],
+                    ],
+                  ),
+                ],
+                if (actionsOwnLine) ...[
+                  Spacing.v6,
+                  Wrap(
+                    spacing: Spacing.d8,
+                    runSpacing: Spacing.d6,
+                    crossAxisAlignment: .center,
+                    children: [
+                      for (final action in textActions)
                         _TextAction(action: action),
-                      ],
                     ],
                   ),
                 ],
@@ -112,6 +145,10 @@ class ActivityRow extends StatelessWidget {
 
     return Tappable(onTap: onTap, child: row);
   }
+
+  /// Two actions fit next to the detail; a third moves them all to a line
+  /// of their own.
+  static const _actionsBesideDetail = 2;
 
   String? _time(ShellLocalizations l10n) {
     final at = item.at;
@@ -171,9 +208,12 @@ class _TextAction extends StatelessWidget {
 }
 
 class _IconAction extends StatelessWidget {
-  const _IconAction({required this.action});
+  const _IconAction({required this.action, this.muted = false});
 
   final ActivityAction action;
+
+  /// Drawn quieter, for the ✕ that only tidies up.
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +225,10 @@ class _IconAction extends StatelessWidget {
         child: Icon(
           action.icon,
           size: Spacing.d16,
-          color: context.palette.text,
+          color: switch (muted) {
+            true => context.palette.mutedText,
+            false => context.palette.text,
+          },
         ),
       ),
     );
