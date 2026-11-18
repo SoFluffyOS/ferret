@@ -1,14 +1,14 @@
 import Cocoa
 import CoreVideo
 import FlutterMacOS
+import sofluffy_texture
 
 /// Shows a mirrored phone screen: H.264 decoded with VideoToolbox into a
 /// Flutter texture, and full screen for the window Flutter is in.
 public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostApi {
   private let registrar: FlutterPluginRegistrar
   private let flutterApi: MirrorDecoderFlutterApi
-  private var texture: MirrorTexture?
-  private var textureId: Int64?
+  private var texture: OpaquePointer?
   private var decoder: H264Decoder?
 
   init(registrar: FlutterPluginRegistrar) {
@@ -23,20 +23,17 @@ public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostAp
 
   func create() throws -> Int64 {
     try dispose()
-    let texture = MirrorTexture()
-    let textures = registrar.textures
-    let id = textures.register(texture)
+    guard let texture = sft_texture_create(registrar.textures, nil, nil) else {
+      throw PigeonError(code: "no_texture", message: "Flutter refused the texture", details: nil)
+    }
+
     let api = flutterApi
     self.texture = texture
-    textureId = id
     decoder = H264Decoder(
-      onPicture: { pixelBuffer, ptsUs in
-        texture.show(pixelBuffer)
-        let width = Int64(CVPixelBufferGetWidth(pixelBuffer))
-        let height = Int64(CVPixelBufferGetHeight(pixelBuffer))
+      texture: texture,
+      onPicture: { width, height, ptsUs in
         Task { @MainActor in
-          textures.textureFrameAvailable(id)
-          try? await api.onDecoded(ptsUs: ptsUs, width: width, height: height)
+          try? await api.onDecoded(ptsUs: ptsUs, width: Int64(width), height: Int64(height))
         }
       },
       onError: { status in
@@ -44,7 +41,7 @@ public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostAp
           try? await api.onDecodeError(status: Int64(status))
         }
       })
-    return id
+    return sft_texture_id(texture)
   }
 
   func configure(sps: FlutterStandardTypedData, pps: FlutterStandardTypedData) throws {
@@ -66,12 +63,8 @@ public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostAp
   func dispose() throws {
     decoder?.invalidate()
     decoder = nil
+    sft_texture_dispose(texture)
     texture = nil
-    if let textureId {
-      registrar.textures.unregisterTexture(textureId)
-    }
-
-    textureId = nil
   }
 
   func canFullScreen() throws -> Bool {

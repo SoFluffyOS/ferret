@@ -23,6 +23,7 @@ Decodes H.264 with VideoToolbox into a Flutter texture.
   # s.resource_bundles = {'ferret_mirroring_privacy' => ['ferret_mirroring/Sources/ferret_mirroring/PrivacyInfo.xcprivacy']}
 
   s.dependency 'FlutterMacOS'
+  s.dependency 'sofluffy_texture'
   s.frameworks = 'VideoToolbox', 'CoreMedia', 'CoreVideo'
 
   s.platform = :osx, '12.0'

@@ -12,13 +12,15 @@ let package = Package(
         .library(name: "ferret-mirroring", targets: ["ferret_mirroring"])
     ],
     dependencies: [
-        .package(name: "FlutterFramework", path: "../FlutterFramework")
+        .package(name: "FlutterFramework", path: "../FlutterFramework"),
+        .package(name: "sofluffy_texture", path: "../sofluffy_texture"),
     ],
     targets: [
         .target(
             name: "ferret_mirroring",
             dependencies: [
-                .product(name: "FlutterFramework", package: "FlutterFramework")
+                .product(name: "FlutterFramework", package: "FlutterFramework"),
+                .product(name: "sofluffy-texture", package: "sofluffy_texture"),
             ],
             resources: [
                 // If your plugin requires a privacy manifest, for example if it collects user

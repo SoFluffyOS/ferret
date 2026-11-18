@@ -2,23 +2,31 @@ import CoreMedia
 import CoreVideo
 import Foundation
 import VideoToolbox
+import sofluffy_texture
 
 /// Decodes H.264 access units with VideoToolbox, on its own queue, into
-/// BGRA pixel buffers Metal can draw without a copy.
+/// BGRA pixel buffers Metal can draw without a copy, and shows each on a
+/// sofluffy_texture texture.
 final class H264Decoder {
   private let queue = DispatchQueue(label: "io.sofluffy.ferret_mirroring.decoder")
-  private let onPicture: (CVPixelBuffer, Int64) -> Void
+  private let texture: OpaquePointer
+  private let onPicture: (Int, Int, Int64) -> Void
   private let onError: (OSStatus) -> Void
   private var format: CMVideoFormatDescription?
   private var session: VTDecompressionSession?
   private var needsKeyframe = true
   private var invalidated = false
 
-  /// Both callbacks run on the decoder's queue.
+  /// Pictures go to `texture`, which must outlive the decoder: call
+  /// `invalidate` before disposing it. `onPicture` gets the size and
+  /// timestamp of each picture shown. Both callbacks run on the decoder's
+  /// queue.
   init(
-    onPicture: @escaping (CVPixelBuffer, Int64) -> Void,
+    texture: OpaquePointer,
+    onPicture: @escaping (Int, Int, Int64) -> Void,
     onError: @escaping (OSStatus) -> Void
   ) {
+    self.texture = texture
     self.onPicture = onPicture
     self.onError = onError
   }
@@ -144,7 +152,10 @@ final class H264Decoder {
     }
 
     needsKeyframe = false
-    onPicture(picture, ptsUs)
+    // The texture keeps the buffer until the next picture is on screen,
+    // then VideoToolbox's pool has it back.
+    sft_texture_present_pixel_buffer(texture, picture)
+    onPicture(CVPixelBufferGetWidth(picture), CVPixelBufferGetHeight(picture), ptsUs)
   }
 
   private func fail(_ status: OSStatus) {

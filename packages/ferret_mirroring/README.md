@@ -5,7 +5,7 @@ Captures an Android screen as H.264 (or JPEG pictures) and shows it on a compute
 | Platform | What | How |
 |---|---|---|
 | Android | Capture | MediaProjection (the system prompt every time) → VirtualDisplay → MediaCodec H.264, inside a `mediaProjection` foreground service with an ongoing notice. JPEG through an ImageReader as the fallback |
-| macOS | Decode | VideoToolbox `VTDecompressionSession` → `CVPixelBuffer` → Flutter texture. Full screen for a normal window |
+| macOS | Decode | VideoToolbox `VTDecompressionSession` → `CVPixelBuffer` → Flutter texture, through `sofluffy_texture`. Full screen for a normal window |
 | Windows, Linux, iOS | Decode | JPEG only, with Flutter's own image codecs (`JpegMirrorDecoder`). No native code |
 
 ```dart

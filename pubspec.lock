@@ -1058,6 +1058,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sofluffy_texture:
+    dependency: transitive
+    description:
+      path: "packages/sofluffy_texture"
+      relative: true
+    source: path
+    version: "0.1.0"
   sofluffy_ui:
     dependency: transitive
     description:
