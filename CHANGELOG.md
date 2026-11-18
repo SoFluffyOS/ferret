@@ -5,7 +5,7 @@
 ### Added
 - 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
 - 🪟 **A window on the Mac**: **Open Ferret window** gives you Ferret in a normal window, next to the menubar popover. Same app, live in both. Close the window and Ferret stays in the menubar.
-- 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications** and **Files** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.
+- 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications**, **Files** and **Screen** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.
 - 🧭 **An Overview you can read**: the few things you do most with a device, then **More**. With room, what works sits next to what the device may do. **Settings** keeps its list and opens the row you pick beside it.
 - 🖱️ **Right-click**: a device in the list for its actions, **Fix Connection…** and **Forget This Device…**; a line in Activity for what that line offers.
 - 📴 **Offline, not empty**: a phone that drops off keeps its sections with what they showed last, under a line that says since when. A section whose feature is off is dimmed.
@@ -35,6 +35,8 @@
 - 🖱️ **Control**: use your phone as the touchpad and keyboard of your computer. Two-finger scrolling glides on, and **Keyboard** shows or hides the keys. The computer asks first, says who is in control next to **Stop control** while it happens, and keeps a history.
 - 🪞 **Screen**: click **Show screen** on a phone and its screen shows up on your computer. Ferret picks the way: Wi-Fi with Ferret on the phone, where Android asks you every time, or a cable. One page tells the whole story, with a countdown while the phone asks and the right button when it ends.
 - 🧰 **A toolbar on the picture**: Back, Home, Recents, Rotate, Keyboard and **Stop**, hiding when the pointer rests. Three bars say **Good**, **Slow** or **Poor**, with **Auto**, **Sharp** and **Fast** behind them. Over Wi-Fi it says **View only**.
+- 🪟 **The phone gets its own window (Mac)**: **Show screen** opens a window in the phone's shape. Resize it and the shape holds, turn the phone and it turns, and each phone gets its size back. `⌘0`, `⌘+` and `⌘−` set the size. Closing it stops sharing.
+- 📸 **Screenshot**: the camera on the toolbar, or `⇧⌘S`, saves the phone's screen to **Downloads › Ferret** at full size, with **Show in Finder**.
 - 🔁 **Screen picks up again**: a dropped connection keeps the last picture, and coming back within 20 seconds needs no new prompt. Leaving the page stops sharing on both devices.
 - 🔌 **Show any Android phone with a cable (experimental)**: no Ferret on the phone, and you can click, scroll, type and paste on it. Right-click is Back, middle-click is Home. A checklist ticks itself as you plug in and tap Allow. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.
 - 📲 **Show an iPhone or iPad (experimental)**: click **Show screen** on the iPhone in Ferret, pick your computer under **Screen Mirroring** in Control Center, and confirm on the same page. Nothing to install on the iPhone.

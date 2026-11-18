@@ -23,7 +23,7 @@ Ferret shows a checklist: plug the phone in, turn on USB debugging, tap Allow. I
 
 Opening the checklist also turns on **Look for phones on a cable** in **Settings → From your phone**, under **Screen**. Turn it off there when you're done with cables.
 
-A phone that isn't paired with Ferret shows up on the home screen under **Phones on a cable**, with **Show screen**.
+A phone that isn't paired with Ferret shows up under **Nearby**, on the home screen and in the window's device list, with **Show screen**.
 
 ## 🔑 Turn on debugging on the phone
 

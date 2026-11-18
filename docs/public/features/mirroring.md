@@ -22,9 +22,36 @@ Ferret picks the way by itself:
 
 The name on top of the page says which one you got: **Wi-Fi**, **Cable** or **AirPlay**.
 
+In Ferret's window, **Screen** is also one of the phone's sections in the device list. It starts with the same button.
+
 A no is a no. If someone taps Cancel on the phone, Ferret NEVER goes around it with the cable.
 
 Phone not connected? The page says so, waits, and starts by itself the moment the phone shows up.
+
+## 🪟 A window in the phone's shape
+
+A phone is tall. A window is wide. Put one in the other and you get a small picture with a lot of nothing around it.
+
+So on a Mac the phone gets its OWN window. Click **Show screen** anywhere, the menubar popover included, and it opens.
+
+- **It has the phone's shape.** Drag any edge or corner: the shape holds, so there are never bars around the picture.
+- **Turn the phone** and the window turns with it.
+- **Each phone gets its size and place back** next time.
+- The title says whose screen it is: "Pixel — Screen".
+
+Three sizes on the usual keys:
+
+| Keys | Size |
+|---|---|
+| `⌘0` | Actual size: one phone pixel per screen pixel |
+| `⌘+` | Larger |
+| `⌘−` | Smaller |
+
+Meanwhile the phone's **Screen** section in Ferret's window says where things stand: "Showing Pixel's screen", since when and which way, with **Bring to front** and **Stop**.
+
+Closing the window stops sharing. That is the only way to be sure nothing shares behind your back.
+
+On Windows and Linux the picture lives in the **Screen** section itself, or in a page on a small window.
 
 ## ⏳ While the phone asks
 
@@ -46,6 +73,7 @@ One small toolbar sits over the bottom of the picture. Stop moving the pointer a
 | Home | Home | middle-click, `⌘1` |
 | Recents | Recent apps | `⌘2` |
 | Rotate | Turns the phone's picture | `⌘R` |
+| Screenshot | Saves the picture as it is right now | `⇧⌘S` |
 | Keyboard | A field for accents, emoji, another language | `⌘K` |
 | The three bars | How the picture is doing, and its presets | |
 | ••• | Keep toolbar visible, Notifications panel, Volume, Power | |
@@ -58,6 +86,14 @@ The phone's own buttons only show when you can press them, which is over a cable
 Too narrow for all of it? The toolbar folds what you use least behind **•••**. In a wide window it stands beside the picture, with words.
 
 Want it to stay? **••• → Keep toolbar visible** puts it under the picture for good.
+
+## 📸 Screenshot
+
+Click the camera, or press `⇧⌘S`. Ferret saves the phone's screen as a PNG in **Downloads › Ferret**, at the phone's full size, whatever size the window has.
+
+A line over the picture says "Saved to Downloads › Ferret", with **Show in Finder**. Easy, right?
+
+It works over Wi-Fi too. You can't click a phone that is **View only**, but you can keep what you see.
 
 ## 🖱️ The mouse is a finger
 
@@ -96,11 +132,11 @@ Pulled the cable? Plug it back in and the picture picks up by itself.
 
 ## 🛑 Stopping
 
-**Stop** ends it on both devices. So does leaving the page: Back asks "Stop showing Pixel?" first.
+**Stop** ends it on both devices. So does closing the phone's window, and leaving the page where there is no window: Back asks "Stop showing Pixel?" first.
 
-Nothing shares from a page that is closed.
+Nothing shares from a window or a page that is closed.
 
-While a screen is shown, Activity has a pinned line, "Showing Pixel's screen", with **Stop**. Click it to get back to the picture.
+While a screen is shown, Activity has a pinned line, "Showing Pixel's screen", with **Stop**. Click it to bring the picture back to the front.
 
 Asked for a second phone while one is on screen? Ferret asks before it swaps them. Never silently.
 
@@ -157,13 +193,14 @@ A Mac decodes it with its own hardware decoder. Windows and Linux get a JPEG pic
 | Android 7 and later | Yes |
 | iPhone and iPad | No. iOS only lets an app record itself |
 
-| Computer | Shows the phone | Picture |
-|---|---|---|
-| macOS | Yes | H.264, up to 60 fps |
-| Windows | Yes | JPEG, about 10 fps |
-| Linux | Yes | JPEG, about 10 fps |
+| Computer | Shows the phone | Picture | Its own window |
+|---|---|---|---|
+| macOS | Yes | H.264, up to 60 fps | Yes |
+| Windows | Yes | JPEG, about 10 fps | Not yet: in Ferret's window |
+| Linux | Yes | JPEG, about 10 fps | Not yet: in Ferret's window |
 
 - **No sound.** Only the picture is sent.
 - **Protected screens stay black.** Banking apps, password fields and DRM video can tell Android to hide them from any capture. Ferret can't see them, and shouldn't.
 - **One app only**: on Android 14 and later the prompt lets you share a single app instead of the whole screen. Ferret shows whatever you pick.
-- **Screenshots and its own window** aren't there yet. The picture lives in Ferret's page for now.
+- **One phone at a time.** A second phone takes the first one's place, after asking.
+- **No full screen** for the phone's window yet. The green button makes it as big as the screen allows.
