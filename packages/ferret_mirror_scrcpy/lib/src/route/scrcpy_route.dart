@@ -133,6 +133,10 @@ class ScrcpyRoute implements MirrorRoute {
   /// Every device adb sees, including the ones still to authorize, so the
   /// UI can say "Tap Allow on Pixel".
   Future<List<AdbDevice>> devices() async {
+    if (!isSupported) {
+      return const [];
+    }
+
     final adb = await _locateAdb();
     if (adb == null) {
       return const [];
@@ -215,7 +219,7 @@ class ScrcpyRoute implements MirrorRoute {
   }
 
   Future<void> _pollOnce() async {
-    if (_isPolling || !isSupported) {
+    if (_isPolling) {
       return;
     }
 

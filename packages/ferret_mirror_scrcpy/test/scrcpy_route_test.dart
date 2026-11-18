@@ -85,6 +85,15 @@ void main() {
       await scrcpy.dispose();
     });
 
+    test('are none on a phone, without asking adb', () async {
+      adb.found = [pixel];
+      final scrcpy = route(system: 'android');
+
+      expect(await scrcpy.targets.first, isEmpty);
+      expect(adb.calls, 0);
+      await scrcpy.dispose();
+    });
+
     test('emits again only when the list changes', () async {
       adb.found = [pixel];
       final scrcpy = route();
