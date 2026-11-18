@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'ferret_media'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'Media sessions for Ferret.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+Media sessions for Ferret.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }

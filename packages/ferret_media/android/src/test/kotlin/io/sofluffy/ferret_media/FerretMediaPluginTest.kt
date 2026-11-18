@@ -2,22 +2,24 @@ package io.sofluffy.ferret_media
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-/*
- * This demonstrates a simple unit test of the Kotlin portion of this plugin's implementation.
- *
- * Once you have built the plugin's example app, you can run these tests from the command
- * line by running `./gradlew testDebugUnitTest` in the `example/android/` directory, or
- * you can run them directly from IDEs that support JUnit such as Android Studio.
- */
+import kotlin.test.assertNull
 
 internal class FerretMediaPluginTest {
     @Test
-    fun getPlatformVersion_returnsExpectedValue() {
-        val plugin = FerretMediaPlugin()
+    fun contentUriKeepsSpotifyAndWebLinks() {
+        assertEquals("spotify:track:abc", PlayerSnapshots.contentUriFrom("spotify:track:abc"))
+        assertEquals("https://youtu.be/x", PlayerSnapshots.contentUriFrom("https://youtu.be/x"))
+    }
 
-        val result = plugin.getPlatformVersion()
+    @Test
+    fun contentUriDropsOpaqueMediaIds() {
+        assertNull(PlayerSnapshots.contentUriFrom("12345"))
+        assertNull(PlayerSnapshots.contentUriFrom(null))
+    }
 
-        assertEquals("Android " + android.os.Build.VERSION.RELEASE, result)
+    @Test
+    fun knownAppNamesFallBackToThePackage() {
+        assertEquals("Spotify", AppNames.known("com.spotify.music"))
+        assertNull(AppNames.known("org.example.player"))
     }
 }

@@ -9,6 +9,7 @@ environment:
   flutter: ">=3.50.0"
 
 dependencies:
+  dbus: ^0.8.0
   flutter:
     sdk: flutter
 
@@ -25,8 +26,6 @@ flutter:
         package: io.sofluffy.ferret_media
         pluginClass: FerretMediaPlugin
       ios:
-        pluginClass: FerretMediaPlugin
-      linux:
         pluginClass: FerretMediaPlugin
       macos:
         pluginClass: FerretMediaPlugin

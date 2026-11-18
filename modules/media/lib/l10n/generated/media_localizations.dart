@@ -99,6 +99,198 @@ abstract class MediaLocalizations {
   /// In en, this message translates to:
   /// **'Media'**
   String get title;
+
+  /// No description provided for @nowPlayingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing on {device}'**
+  String nowPlayingOn(String device);
+
+  /// No description provided for @pausedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused on {device}'**
+  String pausedOn(String device);
+
+  /// No description provided for @playerOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} on {device}'**
+  String playerOn(String app, String device);
+
+  /// No description provided for @play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// No description provided for @pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pause;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @continueHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue here'**
+  String get continueHere;
+
+  /// No description provided for @continueOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening…'**
+  String get continueOpening;
+
+  /// No description provided for @continueFromStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens from the start'**
+  String get continueFromStart;
+
+  /// No description provided for @continueNoLink.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be opened here. {app} didn\'t share a link to it.'**
+  String continueNoLink(String app);
+
+  /// No description provided for @continueOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'No app here could open it. It keeps playing on {device}.'**
+  String continueOpenFailed(String device);
+
+  /// No description provided for @playerGone.
+  ///
+  /// In en, this message translates to:
+  /// **'That player closed on {device}.'**
+  String playerGone(String device);
+
+  /// No description provided for @deviceUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer. Check that Ferret is running there, then try again.'**
+  String deviceUnreachable(String device);
+
+  /// No description provided for @deviceNotSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} stopped sharing its media. Turn on Share my media there.'**
+  String deviceNotSharing(String device);
+
+  /// No description provided for @commandUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This player can\'t do that.'**
+  String get commandUnsupported;
+
+  /// No description provided for @commandFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The player on {device} didn\'t respond. Try again.'**
+  String commandFailed(String device);
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @settingsShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my media'**
+  String get settingsShare;
+
+  /// No description provided for @settingsShareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other devices see what plays here and can control it.'**
+  String get settingsShareBody;
+
+  /// No description provided for @settingsShowRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Show media from other devices'**
+  String get settingsShowRemote;
+
+  /// No description provided for @settingsShowRemoteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What plays on your other devices, with controls and Continue here.'**
+  String get settingsShowRemoteBody;
+
+  /// No description provided for @accessAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret needs Notification access to see what plays on this phone. It only reads media controls here.'**
+  String get accessAndroid;
+
+  /// No description provided for @accessMacos.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS asks once to let Ferret control Music and Spotify.'**
+  String get accessMacos;
+
+  /// No description provided for @accessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret can\'t control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.'**
+  String get accessDenied;
+
+  /// No description provided for @accessAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get accessAllow;
+
+  /// No description provided for @accessOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get accessOpenSettings;
+
+  /// No description provided for @accessCheckAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get accessCheckAgain;
+
+  /// No description provided for @limitMacos.
+  ///
+  /// In en, this message translates to:
+  /// **'On a Mac, Ferret sees Music and Spotify. macOS doesn\'t let apps see other players.'**
+  String get limitMacos;
+
+  /// No description provided for @limitIos.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone doesn\'t let apps see what other apps play. You can still see and control media on your other devices.'**
+  String get limitIos;
+
+  /// No description provided for @limitWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret sees players that show in the Windows media controls. Volume stays on this PC.'**
+  String get limitWindows;
+
+  /// No description provided for @limitLinux.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret sees players that support MPRIS, which most Linux players do.'**
+  String get limitLinux;
 }
 
 class _MediaLocalizationsDelegate

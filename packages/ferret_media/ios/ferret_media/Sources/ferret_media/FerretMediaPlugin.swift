@@ -1,13 +1,34 @@
 import Flutter
 import UIKit
 
-public class FerretMediaPlugin: NSObject, FlutterPlugin, FerretMediaPluginApi {
+/// iOS never lets an app see or control what other apps play, so this
+/// reports the platform as unsupported. Ferret on iPhone still shows and
+/// controls media playing on the user's other devices.
+public class FerretMediaPlugin: NSObject, FlutterPlugin, MediaHostApi {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let instance = FerretMediaPlugin()
-    FerretMediaPluginApiSetup.setUp(binaryMessenger: registrar.messenger(), api: instance)
+    MediaHostApiSetup.setUp(binaryMessenger: registrar.messenger(), api: instance)
   }
 
-  public func getPlatformVersion() throws -> String {
-    return "iOS " + UIDevice.current.systemVersion
+  func access() throws -> MediaAccess {
+    return .unsupported
+  }
+
+  func requestAccess() async throws -> MediaAccess {
+    return .unsupported
+  }
+
+  func openAccessSettings() throws {}
+
+  func startWatching() throws {}
+
+  func stopWatching() throws {}
+
+  func players() async throws -> [PlayerInfo] {
+    return []
+  }
+
+  func command(playerId: String, action: PlayerAction, positionMs: Int64, volume: Double) async throws -> Bool {
+    return false
   }
 }

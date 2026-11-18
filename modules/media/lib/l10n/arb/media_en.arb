@@ -1,4 +1,102 @@
 {
   "@@locale": "en",
-  "title": "Media"
+  "title": "Media",
+  "nowPlayingOn": "Now playing on {device}",
+  "@nowPlayingOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "pausedOn": "Paused on {device}",
+  "@pausedOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "playerOn": "{app} on {device}",
+  "@playerOn": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "play": "Play",
+  "pause": "Pause",
+  "next": "Next",
+  "previous": "Previous",
+  "continueHere": "Continue here",
+  "continueOpening": "Opening…",
+  "continueFromStart": "Opens from the start",
+  "continueNoLink": "This can't be opened here. {app} didn't share a link to it.",
+  "@continueNoLink": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "continueOpenFailed": "No app here could open it. It keeps playing on {device}.",
+  "@continueOpenFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "playerGone": "That player closed on {device}.",
+  "@playerGone": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceUnreachable": "{device} didn't answer. Check that Ferret is running there, then try again.",
+  "@deviceUnreachable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceNotSharing": "{device} stopped sharing its media. Turn on Share my media there.",
+  "@deviceNotSharing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "commandUnsupported": "This player can't do that.",
+  "commandFailed": "The player on {device} didn't respond. Try again.",
+  "@commandFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "tryAgain": "Try again",
+  "settingsShare": "Share my media",
+  "settingsShareBody": "Your other devices see what plays here and can control it.",
+  "settingsShowRemote": "Show media from other devices",
+  "settingsShowRemoteBody": "What plays on your other devices, with controls and Continue here.",
+  "accessAndroid": "Ferret needs Notification access to see what plays on this phone. It only reads media controls here.",
+  "accessMacos": "macOS asks once to let Ferret control Music and Spotify.",
+  "accessDenied": "Ferret can't control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.",
+  "accessAllow": "Allow",
+  "accessOpenSettings": "Open settings",
+  "accessCheckAgain": "Check again",
+  "limitMacos": "On a Mac, Ferret sees Music and Spotify. macOS doesn't let apps see other players.",
+  "limitIos": "iPhone doesn't let apps see what other apps play. You can still see and control media on your other devices.",
+  "limitWindows": "Ferret sees players that show in the Windows media controls. Volume stays on this PC.",
+  "limitLinux": "Ferret sees players that support MPRIS, which most Linux players do."
 }

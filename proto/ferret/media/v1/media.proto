@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package ferret.media.v1;
+
+// What a device is playing right now: every media player it can see. Sent
+// when something changes (feature "media"), never on a timer: the receiver
+// extrapolates the position of a playing item itself. An empty list means the
+// device stopped sharing or nothing plays.
+message MediaState {
+  repeated MediaPlayer players = 1;
+  // The sender's clock when it sent this, so the receiver can map the
+  // players' timestamps onto its own clock.
+  uint64 sent_at_ms = 2;
+}
+
+// Asks a device for its current MediaState (feature "media"). The reply is a
+// MediaState.
+message MediaStateRequest {}
+
+// One media player, such as Spotify or a browser tab, and what it plays.
+message MediaPlayer {
+  // Stable while the player exists on the sender.
+  string player_id = 1;
+  // The app behind the player, such as "com.spotify.music" on Android or
+  // "com.spotify.client" on macOS.
+  string app_id = 2;
+  string app_name = 3;
+  string title = 4;
+  string artist = 5;
+  string album = 6;
+  // Identifies the artwork, so the image is sent only once per session.
+  string artwork_id = 7;
+  // A small JPEG or PNG (at most 64 KiB). Empty when the receiver already got
+  // the image for artwork_id in this session.
+  bytes artwork = 8;
+  // 0 when unknown, such as a live stream.
+  uint64 duration_ms = 9;
+  // The position at position_at_ms.
+  uint64 position_ms = 10;
+  // The sender's clock when position_ms was true.
+  uint64 position_at_ms = 11;
+  MediaPlaybackStatus status = 12;
+  // Playback speed while playing; 0 means 1.
+  float playback_rate = 13;
+  // A link to the item, such as a YouTube URL or a spotify: URI, when the
+  // player tells it.
+  string content_uri = 14;
+  // The sender's clock when this player last started playing or changed item,
+  // to follow the last active player.
+  uint64 last_active_at_ms = 15;
+  repeated MediaAction actions = 16;
+  // Player volume 0 to 1, or -1 when unknown.
+  float volume = 17;
+}
+
+enum MediaPlaybackStatus {
+  MEDIA_PLAYBACK_STATUS_UNSPECIFIED = 0;
+  MEDIA_PLAYBACK_STATUS_STOPPED = 1;
+  MEDIA_PLAYBACK_STATUS_PAUSED = 2;
+  MEDIA_PLAYBACK_STATUS_PLAYING = 3;
+  MEDIA_PLAYBACK_STATUS_BUFFERING = 4;
+}
+
+enum MediaAction {
+  MEDIA_ACTION_UNSPECIFIED = 0;
+  MEDIA_ACTION_PLAY = 1;
+  MEDIA_ACTION_PAUSE = 2;
+  MEDIA_ACTION_TOGGLE = 3;
+  MEDIA_ACTION_NEXT = 4;
+  MEDIA_ACTION_PREVIOUS = 5;
+  MEDIA_ACTION_SEEK = 6;
+  MEDIA_ACTION_SET_VOLUME = 7;
+}
+
+// Asks a device to control one of its players (feature "media"). The reply
+// is a MediaCommandReply.
+message MediaCommand {
+  string player_id = 1;
+  MediaAction action = 2;
+  // For MEDIA_ACTION_SEEK.
+  uint64 position_ms = 3;
+  // For MEDIA_ACTION_SET_VOLUME, 0 to 1.
+  float volume = 4;
+}
+
+message MediaCommandReply {
+  MediaCommandResult result = 1;
+}
+
+enum MediaCommandResult {
+  MEDIA_COMMAND_RESULT_UNSPECIFIED = 0;
+  MEDIA_COMMAND_RESULT_OK = 1;
+  // No player with that id, such as one that just closed.
+  MEDIA_COMMAND_RESULT_UNKNOWN_PLAYER = 2;
+  // The user turned off sharing media on that device.
+  MEDIA_COMMAND_RESULT_NOT_SHARED = 3;
+  // The player can't do that action.
+  MEDIA_COMMAND_RESULT_UNSUPPORTED = 4;
+  MEDIA_COMMAND_RESULT_FAILED = 5;
+}
+
+// Asks a device to hand one of its players over (feature "media"): it pauses
+// the player when pause_source is set and replies with a MediaContinueReply
+// holding the item and the position it stopped at.
+message MediaContinueRequest {
+  string player_id = 1;
+  bool pause_source = 2;
+}
+
+message MediaContinueReply {
+  MediaCommandResult result = 1;
+  // The player as it was when it paused, with a fresh position.
+  MediaPlayer player = 2;
+  // Whether the source paused, so the receiver can resume it if opening the
+  // item here fails.
+  bool paused = 3;
+}
