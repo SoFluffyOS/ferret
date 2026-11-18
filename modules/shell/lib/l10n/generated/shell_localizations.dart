@@ -1003,7 +1003,7 @@ abstract class ShellLocalizations {
   /// No description provided for @offersSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Each one asks only for what it needs.'**
+  /// **'Extras you can turn on. All optional.'**
   String get offersSubtitle;
 
   /// No description provided for @onboardWelcomeTitle.
@@ -1393,7 +1393,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairCantSeeSteps.
   ///
   /// In en, this message translates to:
-  /// **'1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.'**
+  /// **'1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.\n3. Still nothing? Check my network tells you why.'**
   String get pairCantSeeSteps;
 
   /// No description provided for @promptAlsoOne.
@@ -1831,7 +1831,7 @@ abstract class ShellLocalizations {
   /// No description provided for @emptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.'**
+  /// **'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.'**
   String get emptyBody;
 
   /// No description provided for @emptyCantSee.
@@ -1855,7 +1855,7 @@ abstract class ShellLocalizations {
   /// No description provided for @welcomeNearbyBody.
   ///
   /// In en, this message translates to:
-  /// **'Pair a device near you to start.'**
+  /// **'Tap Pair next to your other device. You only do it once.'**
   String get welcomeNearbyBody;
 
   /// No description provided for @nearbyNotTheOne.
@@ -1927,7 +1927,7 @@ abstract class ShellLocalizations {
   /// No description provided for @footerNobody.
   ///
   /// In en, this message translates to:
-  /// **'Nothing to send to right now.'**
+  /// **'Your devices are offline. Open Ferret on one to reach it.'**
   String get footerNobody;
 
   /// No description provided for @footerPausedUntil.

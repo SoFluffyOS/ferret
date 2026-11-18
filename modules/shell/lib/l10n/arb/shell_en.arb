@@ -429,7 +429,7 @@
   "scanSection": "Scan",
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",
   "offersTitle": "Do more",
-  "offersSubtitle": "Each one asks only for what it needs.",
+  "offersSubtitle": "Extras you can turn on. All optional.",
   "onboardWelcomeTitle": "Your devices, working together",
   "onboardWelcomeBody": "Ferret passes what you're doing between your phone and your computer.",
   "onboardPointContinue": "Continue a page or song on another device",
@@ -615,7 +615,7 @@
   "nearbyBlockedBody": "Your system needs your OK. Allow Ferret under Privacy & Security, Local Network.",
   "nearbyOpenSettings": "Open Settings",
   "pairCantSee": "Can't see your device?",
-  "pairCantSeeSteps": "1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.",
+  "pairCantSeeSteps": "1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.\n3. Still nothing? Check my network tells you why.",
   "promptAlsoOne": "You'll also be connected to {first}.",
   "@promptAlsoOne": {
     "placeholders": {
@@ -867,11 +867,11 @@
     }
   },
   "devicesShow": "Show",
-  "emptyBody": "Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.",
+  "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.",
   "emptyCantSee": "Can't see it?",
   "emptyGetFerretPhone": "Get Ferret for your phone",
   "emptyGetFerretComputer": "Get Ferret for your computer",
-  "welcomeNearbyBody": "Pair a device near you to start.",
+  "welcomeNearbyBody": "Tap Pair next to your other device. You only do it once.",
   "nearbyNotTheOne": "Not the one you want? Open Ferret on your other device.",
   "activityTitle": "Activity",
   "activitySeeAll": "See all",
@@ -904,7 +904,7 @@
     }
   },
   "footerDrag": "Drag files onto a device to send",
-  "footerNobody": "Nothing to send to right now.",
+  "footerNobody": "Your devices are offline. Open Ferret on one to reach it.",
   "footerPausedUntil": "Paused until {time}",
   "@footerPausedUntil": {
     "placeholders": {

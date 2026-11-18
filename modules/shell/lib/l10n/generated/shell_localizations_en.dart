@@ -584,7 +584,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get offersTitle => 'Do more';
 
   @override
-  String get offersSubtitle => 'Each one asks only for what it needs.';
+  String get offersSubtitle => 'Extras you can turn on. All optional.';
 
   @override
   String get onboardWelcomeTitle => 'Your devices, working together';
@@ -826,7 +826,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairCantSeeSteps =>
-      '1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.';
+      '1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.\n3. Still nothing? Check my network tells you why.';
 
   @override
   String promptAlsoOne(String first) {
@@ -1097,7 +1097,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get emptyBody =>
-      'Open Ferret on your other device. It shows up here when both are on the same Wi-Fi.';
+      'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.';
 
   @override
   String get emptyCantSee => 'Can\'t see it?';
@@ -1109,7 +1109,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get emptyGetFerretComputer => 'Get Ferret for your computer';
 
   @override
-  String get welcomeNearbyBody => 'Pair a device near you to start.';
+  String get welcomeNearbyBody =>
+      'Tap Pair next to your other device. You only do it once.';
 
   @override
   String get nearbyNotTheOne =>
@@ -1152,7 +1153,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get footerDrag => 'Drag files onto a device to send';
 
   @override
-  String get footerNobody => 'Nothing to send to right now.';
+  String get footerNobody =>
+      'Your devices are offline. Open Ferret on one to reach it.';
 
   @override
   String footerPausedUntil(String time) {
