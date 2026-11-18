@@ -68,11 +68,11 @@ class MenubarBinding {
   void _onHostChanged() => unawaited(_updateIcon());
 
   Future<void> _updateIcon() async {
-    final symbol = switch (host.connectedCount) {
-      0 => 'arrow.left.arrow.right',
-      _ => 'arrow.left.arrow.right.circle.fill',
+    final state = switch (host.connectedCount) {
+      0 => MenubarIconState.alone,
+      _ => MenubarIconState.normal,
     };
-    await _menubar.setIcon(symbol, tooltip: 'Ferret');
+    await _menubar.setIconState(state);
   }
 
   Future<void> _onMenu(String id) async {

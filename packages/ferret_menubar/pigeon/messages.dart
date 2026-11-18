@@ -23,10 +23,37 @@ class MenubarMenuItem {
   String? keyEquivalent;
 }
 
+/// What the menubar icon says, one at a time.
+enum MenubarIconState {
+  /// At least one device is connected: the plain glyph.
+  normal,
+
+  /// Nothing is connected, which is no error: the glyph, dimmed.
+  alone,
+
+  /// A file drag is over the icon. The icon shows this by itself while the
+  /// drag is there, then goes back to the state it was given.
+  dragOver,
+
+  /// A transfer is running: the glyph in a progress ring.
+  working,
+
+  /// A transfer just finished: a check.
+  done,
+
+  /// A pairing or file request waits for the person: the glyph with a dot.
+  needsYou,
+
+  /// Ferret is paused: the glyph, slashed.
+  paused,
+}
+
 @HostApi()
 abstract class MenubarHostApi {
-  /// Shows an SF Symbol as the menubar icon, drawn as a template image.
-  void setIcon(String symbolName, String? tooltip);
+  /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
+  /// ring of [MenubarIconState.working]; [tooltip] shows when the pointer
+  /// rests on the icon.
+  void setIconState(MenubarIconState state, double progress, String tooltip);
 
   void setPopoverSize(double width, double height);
 

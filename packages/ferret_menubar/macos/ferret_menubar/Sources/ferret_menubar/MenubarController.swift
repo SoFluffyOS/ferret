@@ -11,6 +11,9 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     private var detachable = true
     private var openedByDrag = false
     private var dragLeaveTimer: Timer?
+    private var iconState: MenubarIconState = .alone
+    private var iconProgress: Double = 0
+    private var isDragOverIcon = false
 
     /// How long the popover waits after a drag leaves it, since people
     /// overshoot, before it closes (only when the drag opened it).
@@ -37,16 +40,24 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         setUpIconView()
         setUpDragView(over: contentViewController.view)
         forwardMouseButtons()
-        setIcon(symbolName: "arrow.left.arrow.right", tooltip: nil)
+        renderIcon()
     }
 
     var isPopoverShown: Bool { popover.isShown }
 
-    func setIcon(symbolName: String, tooltip: String?) {
-        let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: tooltip)
-        image?.isTemplate = true
-        statusItem.button?.image = image
+    func setIconState(_ state: MenubarIconState, progress: Double, tooltip: String) {
+        iconState = state
+        iconProgress = progress
         statusItem.button?.toolTip = tooltip
+        statusItem.button?.setAccessibilityLabel(tooltip)
+        renderIcon()
+    }
+
+    /// A drag over the icon wins while it is there; the state Dart set last
+    /// comes back when it leaves.
+    private func renderIcon() {
+        let shown: MenubarIconState = isDragOverIcon ? .dragOver : iconState
+        statusItem.button?.image = StatusIconRenderer.image(for: shown, progress: iconProgress)
     }
 
     func setPopoverSize(_ size: NSSize) {
@@ -224,6 +235,12 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         iconView.onSecondaryClick = { [weak self] in self?.showMenu() }
         iconView.onDragHeld = { [weak self] in self?.springOpen() }
         iconView.onFilesDropped = { [weak self] paths in self?.onFilesDropped?(paths) }
+        iconView.onDragOverChanged = { [weak self] isOver in
+            guard let self, self.isDragOverIcon != isOver else { return }
+
+            self.isDragOverIcon = isOver
+            self.renderIcon()
+        }
     }
 
     private func showMenu() {

@@ -57,8 +57,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         self.controller = controller
     }
 
-    func setIcon(symbolName: String, tooltip: String?) throws {
-        Self.controller?.setIcon(symbolName: symbolName, tooltip: tooltip)
+    func setIconState(state: MenubarIconState, progress: Double, tooltip: String) throws {
+        Self.controller?.setIconState(state, progress: progress, tooltip: tooltip)
     }
 
     func setPopoverSize(width: Double, height: Double) throws {

@@ -188,6 +188,25 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 
 
+/// What the menubar icon says, one at a time.
+enum MenubarIconState: Int, CaseIterable {
+  /// At least one device is connected: the plain glyph.
+  case normal = 0
+  /// Nothing is connected, which is no error: the glyph, dimmed.
+  case alone = 1
+  /// A file drag is over the icon. The icon shows this by itself while the
+  /// drag is there, then goes back to the state it was given.
+  case dragOver = 2
+  /// A transfer is running: the glyph in a progress ring.
+  case working = 3
+  /// A transfer just finished: a check.
+  case done = 4
+  /// A pairing or file request waits for the person: the glyph with a dot.
+  case needsYou = 5
+  /// Ferret is paused: the glyph, slashed.
+  case paused = 6
+}
+
 /// Generated class from Pigeon that represents data sent in messages.
 struct MenubarMenuItem: Hashable, CustomStringConvertible {
   var id: String
@@ -247,6 +266,12 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
     case 129:
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return MenubarIconState(rawValue: enumResultAsInt)
+      }
+      return nil
+    case 130:
       return MenubarMenuItem.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -256,8 +281,11 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
 
 private class MessagesPigeonCodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
-    if let value = value as? MenubarMenuItem {
+    if let value = value as? MenubarIconState {
       super.writeByte(129)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? MenubarMenuItem {
+      super.writeByte(130)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -281,8 +309,10 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol MenubarHostApi {
-  /// Shows an SF Symbol as the menubar icon, drawn as a template image.
-  func setIcon(symbolName: String, tooltip: String?) throws
+  /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
+  /// ring of [MenubarIconState.working]; [tooltip] shows when the pointer
+  /// rests on the icon.
+  func setIconState(state: MenubarIconState, progress: Double, tooltip: String) throws
   func setPopoverSize(width: Double, height: Double) throws
   func showPopover() throws
   func hidePopover() throws
@@ -306,22 +336,25 @@ class MenubarHostApiSetup {
   /// Sets up an instance of `MenubarHostApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: MenubarHostApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
-    /// Shows an SF Symbol as the menubar icon, drawn as a template image.
-    let setIconChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIcon\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
+    /// ring of [MenubarIconState.working]; [tooltip] shows when the pointer
+    /// rests on the icon.
+    let setIconStateChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconState\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
-      setIconChannel.setMessageHandler { message, reply in
+      setIconStateChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let symbolNameArg = args[0] as! String
-        let tooltipArg: String? = nilOrValue(args[1])
+        let stateArg = args[0] as! MenubarIconState
+        let progressArg = args[1] as! Double
+        let tooltipArg = args[2] as! String
         do {
-          try api.setIcon(symbolName: symbolNameArg, tooltip: tooltipArg)
+          try api.setIconState(state: stateArg, progress: progressArg, tooltip: tooltipArg)
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      setIconChannel.setMessageHandler(nil)
+      setIconStateChannel.setMessageHandler(nil)
     }
     let setPopoverSizeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPopoverSize\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {

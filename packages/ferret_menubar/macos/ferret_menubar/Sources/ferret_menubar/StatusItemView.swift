@@ -7,6 +7,8 @@ final class StatusItemView: NSView {
     /// A file drag rested on the icon for [springDelay].
     var onDragHeld: (() -> Void)?
     var onFilesDropped: (([String]) -> Void)?
+    /// A file drag came over the icon (true) or left it, dropped or not.
+    var onDragOverChanged: ((Bool) -> Void)?
 
     /// How long a drag rests on the icon before the popover springs open.
     var springDelay: TimeInterval = 0.3
@@ -42,17 +44,24 @@ final class StatusItemView: NSView {
         springTimer = Timer.scheduledTimer(withTimeInterval: springDelay, repeats: false) { [weak self] _ in
             self?.onDragHeld?()
         }
+        onDragOverChanged?(true)
         return .copy
     }
 
     override func draggingExited(_ sender: NSDraggingInfo?) {
         springTimer?.invalidate()
         springTimer = nil
+        onDragOverChanged?(false)
+    }
+
+    override func draggingEnded(_ sender: NSDraggingInfo) {
+        onDragOverChanged?(false)
     }
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         springTimer?.invalidate()
         springTimer = nil
+        onDragOverChanged?(false)
         let paths = fileURLs(from: sender).map(\.path)
         guard !paths.isEmpty else { return false }
 

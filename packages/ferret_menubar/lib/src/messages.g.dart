@@ -107,6 +107,25 @@ int _deepHash(Object? value) {
 }
 
 
+/// What the menubar icon says, one at a time.
+enum MenubarIconState {
+  /// At least one device is connected: the plain glyph.
+  normal,
+  /// Nothing is connected, which is no error: the glyph, dimmed.
+  alone,
+  /// A file drag is over the icon. The icon shows this by itself while the
+  /// drag is there, then goes back to the state it was given.
+  dragOver,
+  /// A transfer is running: the glyph in a progress ring.
+  working,
+  /// A transfer just finished: a check.
+  done,
+  /// A pairing or file request waits for the person: the glyph with a dot.
+  needsYou,
+  /// Ferret is paused: the glyph, slashed.
+  paused;
+}
+
 class MenubarMenuItem {
   MenubarMenuItem({
     required this.id,
@@ -180,8 +199,11 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is MenubarMenuItem) {
+    }    else if (value is MenubarIconState) {
       buffer.putUint8(129);
+      writeValue(buffer, value.index);
+    }    else if (value is MenubarMenuItem) {
+      buffer.putUint8(130);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -192,6 +214,9 @@ class _PigeonCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 129:
+        final value = readValue(buffer) as int?;
+        return value == null ? null : MenubarIconState.values[value];
+      case 130:
         return MenubarMenuItem.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -216,15 +241,17 @@ class MenubarHostApi {
   final String pigeonVar_messageChannelSuffix;
 
 
-  /// Shows an SF Symbol as the menubar icon, drawn as a template image.
-  Future<void> setIcon(String symbolName, String? tooltip) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIcon$pigeonVar_messageChannelSuffix';
+  /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
+  /// ring of [MenubarIconState.working]; [tooltip] shows when the pointer
+  /// rests on the icon.
+  Future<void> setIconState(MenubarIconState state, double progress, String tooltip) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconState$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[symbolName, tooltip]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[state, progress, tooltip]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
         pigeonVar_replyList,

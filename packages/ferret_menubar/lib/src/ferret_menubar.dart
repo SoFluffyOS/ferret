@@ -34,8 +34,16 @@ class FerretMenubar implements MenubarFlutterApi {
   /// Files dragged over and dropped on the popover, docked or detached.
   Stream<PopoverDrag> get drags => _drags.stream;
 
-  Future<void> setIcon(String symbolName, {String? tooltip}) =>
-      _call(() => _api.setIcon(symbolName, tooltip));
+  /// Draws the icon for [state]. [progress], 0 to 1, fills the ring of
+  /// [MenubarIconState.working]. A file drag over the icon shows
+  /// [MenubarIconState.dragOver] by itself, then this state again.
+  Future<void> setIconState(
+    MenubarIconState state, {
+    double progress = 0,
+    String tooltip = 'Ferret',
+  }) => _call(
+    () => _api.setIconState(state, progress.clamp(0, 1).toDouble(), tooltip),
+  );
 
   Future<void> setPopoverSize(double width, double height) =>
       _call(() => _api.setPopoverSize(width, height));
