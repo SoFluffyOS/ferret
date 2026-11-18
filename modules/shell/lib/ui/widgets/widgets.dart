@@ -1,5 +1,4 @@
 export 'package:shell/ui/widgets/activity_row.dart';
-export 'package:shell/ui/widgets/cant_see_device.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
 export 'package:shell/ui/widgets/device_header.dart';
 export 'package:shell/ui/widgets/device_tile.dart';
