@@ -27,6 +27,11 @@ class FerretDrop implements FerretDropFlutterApi {
   @override
   void onShared(SharedItems items) => _shares.add(items);
 
+  /// Tells the system's share sheet which devices to offer, where it lists
+  /// them: Finder's Share menu on macOS.
+  Future<void> setShareTargets(List<ShareTarget> targets) =>
+      _soft(() => _api.setShareTargets(targets), fallback: null);
+
   /// Whether received files can go to the shared Downloads collection.
   Future<bool> canSaveToDownloads() =>
       _soft(_api.canSaveToDownloads, fallback: false);

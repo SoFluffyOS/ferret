@@ -24,6 +24,8 @@ class FerretDropPlugin : public flutter::Plugin, public FerretDropHostApi {
   FerretDropPlugin& operator=(const FerretDropPlugin&) = delete;
 
   ErrorOr<::flutter::EncodableList> TakePendingShares() override;
+  std::optional<FlutterError> SetShareTargets(
+      const ::flutter::EncodableList& targets) override;
   ErrorOr<bool> CanSaveToDownloads() override;
   void SaveToDownloads(
       const std::string& source_path, const std::string& file_name,

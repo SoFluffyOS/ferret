@@ -64,6 +64,13 @@ handle_take_pending_shares(gpointer user_data) {
       shares);
 }
 
+// File managers here start "ferret send" with the files, and the app asks
+// which device, so there is no list to publish.
+static FerretDropFerretDropHostApiSetShareTargetsResponse*
+handle_set_share_targets(FlValue* targets, gpointer user_data) {
+  return ferret_drop_ferret_drop_host_api_set_share_targets_response_new();
+}
+
 static FerretDropFerretDropHostApiCanSaveToDownloadsResponse*
 handle_can_save_to_downloads(gpointer user_data) {
   return ferret_drop_ferret_drop_host_api_can_save_to_downloads_response_new(
@@ -120,6 +127,7 @@ void ferret_drop_plugin_register_with_registrar(FlPluginRegistrar* registrar) {
 
   static FerretDropFerretDropHostApiVTable api_vtable = {
       .take_pending_shares = handle_take_pending_shares,
+      .set_share_targets = handle_set_share_targets,
       .can_save_to_downloads = handle_can_save_to_downloads,
       .save_to_downloads = handle_save_to_downloads,
       .open = handle_open,

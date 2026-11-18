@@ -57,6 +57,13 @@ ErrorOr<::flutter::EncodableList> FerretDropPlugin::TakePendingShares() {
   return ::flutter::EncodableList();
 }
 
+// Send to starts ferret.exe with the files, and the app asks which device,
+// so there is no list to publish.
+std::optional<FlutterError> FerretDropPlugin::SetShareTargets(
+    const ::flutter::EncodableList& targets) {
+  return std::nullopt;
+}
+
 ErrorOr<bool> FerretDropPlugin::CanSaveToDownloads() { return false; }
 
 void FerretDropPlugin::SaveToDownloads(

@@ -195,39 +195,107 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 struct SharedItems: Hashable, CustomStringConvertible {
   var paths: [String]
   var text: String? = nil
+  /// The device picked in the share sheet, where the sheet lists Ferret's
+  /// devices (the macOS Share menu). Null when none was picked there.
+  var deviceId: String? = nil
+  /// True when "All my devices" was picked in the share sheet.
+  var everyDevice: Bool? = nil
+  /// True when [paths] are the files themselves, which must stay where they
+  /// are. Otherwise they are copies, to delete once sent.
+  var keepFiles: Bool? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> SharedItems? {
     let paths = pigeonVar_list[0] as! [String]
     let text: String? = nilOrValue(pigeonVar_list[1])
+    let deviceId: String? = nilOrValue(pigeonVar_list[2])
+    let everyDevice: Bool? = nilOrValue(pigeonVar_list[3])
+    let keepFiles: Bool? = nilOrValue(pigeonVar_list[4])
 
     return SharedItems(
       paths: paths,
-      text: text
+      text: text,
+      deviceId: deviceId,
+      everyDevice: everyDevice,
+      keepFiles: keepFiles
     )
   }
   func toList() -> [Any?] {
     return [
       paths,
       text,
+      deviceId,
+      everyDevice,
+      keepFiles,
     ]
   }
   static func == (lhs: SharedItems, rhs: SharedItems) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return MessagesPigeonInternal.deepEquals(lhs.paths, rhs.paths) && MessagesPigeonInternal.deepEquals(lhs.text, rhs.text)
+    return MessagesPigeonInternal.deepEquals(lhs.paths, rhs.paths) && MessagesPigeonInternal.deepEquals(lhs.text, rhs.text) && MessagesPigeonInternal.deepEquals(lhs.deviceId, rhs.deviceId) && MessagesPigeonInternal.deepEquals(lhs.everyDevice, rhs.everyDevice) && MessagesPigeonInternal.deepEquals(lhs.keepFiles, rhs.keepFiles)
   }
 
   func hash(into hasher: inout Hasher) {
     hasher.combine("SharedItems")
     MessagesPigeonInternal.deepHash(value: paths, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: text, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: deviceId, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: everyDevice, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: keepFiles, hasher: &hasher)
   }
 
   public var description: String {
-    return "SharedItems(paths: \(String(describing: paths)), text: \(String(describing: text)))"
+    return "SharedItems(paths: \(String(describing: paths)), text: \(String(describing: text)), deviceId: \(String(describing: deviceId)), everyDevice: \(String(describing: everyDevice)), keepFiles: \(String(describing: keepFiles)))"
+  }
+}
+
+/// A device the system's share sheet can offer, where the sheet lists them.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct ShareTarget: Hashable, CustomStringConvertible {
+  var deviceId: String
+  var name: String
+  /// What to draw next to the name: "phone", "tablet", "laptop" or "desktop".
+  var kind: String
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> ShareTarget? {
+    let deviceId = pigeonVar_list[0] as! String
+    let name = pigeonVar_list[1] as! String
+    let kind = pigeonVar_list[2] as! String
+
+    return ShareTarget(
+      deviceId: deviceId,
+      name: name,
+      kind: kind
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      deviceId,
+      name,
+      kind,
+    ]
+  }
+  static func == (lhs: ShareTarget, rhs: ShareTarget) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.deviceId, rhs.deviceId) && MessagesPigeonInternal.deepEquals(lhs.name, rhs.name) && MessagesPigeonInternal.deepEquals(lhs.kind, rhs.kind)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("ShareTarget")
+    MessagesPigeonInternal.deepHash(value: deviceId, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: name, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: kind, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "ShareTarget(deviceId: \(String(describing: deviceId)), name: \(String(describing: name)), kind: \(String(describing: kind)))"
   }
 }
 
@@ -281,6 +349,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 129:
       return SharedItems.fromList(self.readValue() as! [Any?])
     case 130:
+      return ShareTarget.fromList(self.readValue() as! [Any?])
+    case 131:
       return SavedFile.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -293,8 +363,11 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     if let value = value as? SharedItems {
       super.writeByte(129)
       super.writeValue(value.toList())
-    } else if let value = value as? SavedFile {
+    } else if let value = value as? ShareTarget {
       super.writeByte(130)
+      super.writeValue(value.toList())
+    } else if let value = value as? SavedFile {
+      super.writeByte(131)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -321,6 +394,9 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 protocol FerretDropHostApi {
   /// Shares that arrived before Dart was listening. Each one is returned once.
   func takePendingShares() throws -> [SharedItems]
+  /// The connected devices the share sheet may offer. Does nothing where
+  /// the sheet can't list devices.
+  func setShareTargets(targets: [ShareTarget]) throws
   /// Whether [saveToDownloads] works here (Android 10 and newer).
   func canSaveToDownloads() throws -> Bool
   /// Moves [sourcePath] into Downloads/[folder] through MediaStore, never
@@ -353,6 +429,23 @@ class FerretDropHostApiSetup {
       }
     } else {
       takePendingSharesChannel.setMessageHandler(nil)
+    }
+    /// The connected devices the share sheet may offer. Does nothing where
+    /// the sheet can't list devices.
+    let setShareTargetsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setShareTargetsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let targetsArg = args[0] as! [ShareTarget]
+        do {
+          try api.setShareTargets(targets: targetsArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setShareTargetsChannel.setMessageHandler(nil)
     }
     /// Whether [saveToDownloads] works here (Android 10 and newer).
     let canSaveToDownloadsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_drop.FerretDropHostApi.canSaveToDownloads\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)

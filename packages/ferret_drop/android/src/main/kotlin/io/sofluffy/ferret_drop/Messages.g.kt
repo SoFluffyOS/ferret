@@ -209,20 +209,38 @@ class FlutterError (
  */
 data class SharedItems (
   val paths: List<String>,
-  val text: String? = null
+  val text: String? = null,
+  /**
+   * The device picked in the share sheet, where the sheet lists Ferret's
+   * devices (the macOS Share menu). Null when none was picked there.
+   */
+  val deviceId: String? = null,
+  /** True when "All my devices" was picked in the share sheet. */
+  val everyDevice: Boolean? = null,
+  /**
+   * True when [paths] are the files themselves, which must stay where they
+   * are. Otherwise they are copies, to delete once sent.
+   */
+  val keepFiles: Boolean? = null
 )
  {
   companion object {
     fun fromList(pigeonVar_list: List<Any?>): SharedItems {
       val paths = pigeonVar_list[0] as List<String>
       val text = pigeonVar_list[1] as String?
-      return SharedItems(paths, text)
+      val deviceId = pigeonVar_list[2] as String?
+      val everyDevice = pigeonVar_list[3] as Boolean?
+      val keepFiles = pigeonVar_list[4] as Boolean?
+      return SharedItems(paths, text, deviceId, everyDevice, keepFiles)
     }
   }
   fun toList(): List<Any?> {
     return listOf(
       paths,
       text,
+      deviceId,
+      everyDevice,
+      keepFiles,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -233,17 +251,70 @@ data class SharedItems (
       return true
     }
     val other = other as SharedItems
-    return MessagesPigeonUtils.deepEquals(this.paths, other.paths) && MessagesPigeonUtils.deepEquals(this.text, other.text)
+    return MessagesPigeonUtils.deepEquals(this.paths, other.paths) && MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.deviceId, other.deviceId) && MessagesPigeonUtils.deepEquals(this.everyDevice, other.everyDevice) && MessagesPigeonUtils.deepEquals(this.keepFiles, other.keepFiles)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
     result = 31 * result + MessagesPigeonUtils.deepHash(this.paths)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.text)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.deviceId)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.everyDevice)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.keepFiles)
     return result
   }
   override fun toString(): String {
-    return "SharedItems(paths=$paths, text=$text)"
+    return "SharedItems(paths=$paths, text=$text, deviceId=$deviceId, everyDevice=$everyDevice, keepFiles=$keepFiles)"
+  }
+}
+
+/**
+ * A device the system's share sheet can offer, where the sheet lists them.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class ShareTarget (
+  val deviceId: String,
+  val name: String,
+  /** What to draw next to the name: "phone", "tablet", "laptop" or "desktop". */
+  val kind: String
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): ShareTarget {
+      val deviceId = pigeonVar_list[0] as String
+      val name = pigeonVar_list[1] as String
+      val kind = pigeonVar_list[2] as String
+      return ShareTarget(deviceId, name, kind)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      deviceId,
+      name,
+      kind,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as ShareTarget
+    return MessagesPigeonUtils.deepEquals(this.deviceId, other.deviceId) && MessagesPigeonUtils.deepEquals(this.name, other.name) && MessagesPigeonUtils.deepEquals(this.kind, other.kind)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.deviceId)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.name)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.kind)
+    return result
+  }
+  override fun toString(): String {
+    return "ShareTarget(deviceId=$deviceId, name=$name, kind=$kind)"
   }
 }
 
@@ -303,6 +374,11 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       130.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
+          ShareTarget.fromList(it)
+        }
+      }
+      131.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
           SavedFile.fromList(it)
         }
       }
@@ -315,8 +391,12 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(129)
         writeValue(stream, value.toList())
       }
-      is SavedFile -> {
+      is ShareTarget -> {
         stream.write(130)
+        writeValue(stream, value.toList())
+      }
+      is SavedFile -> {
+        stream.write(131)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -329,6 +409,11 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
 interface FerretDropHostApi {
   /** Shares that arrived before Dart was listening. Each one is returned once. */
   fun takePendingShares(): List<SharedItems>
+  /**
+   * The connected devices the share sheet may offer. Does nothing where
+   * the sheet can't list devices.
+   */
+  fun setShareTargets(targets: List<ShareTarget>)
   /** Whether [saveToDownloads] works here (Android 10 and newer). */
   fun canSaveToDownloads(): Boolean
   /**
@@ -362,6 +447,24 @@ interface FerretDropHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               listOf(api.takePendingShares())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val targetsArg = args[0] as List<ShareTarget>
+            val wrapped: List<Any?> = try {
+              api.setShareTargets(targetsArg)
+              listOf(null)
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

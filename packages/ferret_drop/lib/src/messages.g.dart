@@ -113,16 +113,33 @@ class SharedItems {
   SharedItems({
     required this.paths,
     this.text,
+    this.deviceId,
+    this.everyDevice,
+    this.keepFiles,
   });
 
   List<String> paths;
 
   String? text;
 
+  /// The device picked in the share sheet, where the sheet lists Ferret's
+  /// devices (the macOS Share menu). Null when none was picked there.
+  String? deviceId;
+
+  /// True when "All my devices" was picked in the share sheet.
+  bool? everyDevice;
+
+  /// True when [paths] are the files themselves, which must stay where they
+  /// are. Otherwise they are copies, to delete once sent.
+  bool? keepFiles;
+
   List<Object?> _toList() {
     return <Object?>[
       paths,
       text,
+      deviceId,
+      everyDevice,
+      keepFiles,
     ];
   }
 
@@ -134,6 +151,9 @@ class SharedItems {
     return SharedItems(
       paths: (result[0]! as List<Object?>).cast<String>(),
       text: result[1] as String?,
+      deviceId: result[2] as String?,
+      everyDevice: result[3] as bool?,
+      keepFiles: result[4] as bool?,
     );
   }
 
@@ -146,7 +166,7 @@ class SharedItems {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(paths, other.paths) && _deepEquals(text, other.text);
+    return _deepEquals(paths, other.paths) && _deepEquals(text, other.text) && _deepEquals(deviceId, other.deviceId) && _deepEquals(everyDevice, other.everyDevice) && _deepEquals(keepFiles, other.keepFiles);
   }
 
   @override
@@ -155,7 +175,64 @@ class SharedItems {
 
   @override
   String toString() {
-    return 'SharedItems(paths: $paths, text: $text)';
+    return 'SharedItems(paths: $paths, text: $text, deviceId: $deviceId, everyDevice: $everyDevice, keepFiles: $keepFiles)';
+  }
+}
+
+/// A device the system's share sheet can offer, where the sheet lists them.
+class ShareTarget {
+  ShareTarget({
+    required this.deviceId,
+    required this.name,
+    required this.kind,
+  });
+
+  String deviceId;
+
+  String name;
+
+  /// What to draw next to the name: "phone", "tablet", "laptop" or "desktop".
+  String kind;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      deviceId,
+      name,
+      kind,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static ShareTarget decode(Object result) {
+    result as List<Object?>;
+    return ShareTarget(
+      deviceId: result[0]! as String,
+      name: result[1]! as String,
+      kind: result[2]! as String,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! ShareTarget || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(deviceId, other.deviceId) && _deepEquals(name, other.name) && _deepEquals(kind, other.kind);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'ShareTarget(deviceId: $deviceId, name: $name, kind: $kind)';
   }
 }
 
@@ -223,8 +300,11 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is SharedItems) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    }    else if (value is SavedFile) {
+    }    else if (value is ShareTarget) {
       buffer.putUint8(130);
+      writeValue(buffer, value.encode());
+    }    else if (value is SavedFile) {
+      buffer.putUint8(131);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -237,6 +317,8 @@ class _PigeonCodec extends StandardMessageCodec {
       case 129:
         return SharedItems.decode(readValue(buffer)!);
       case 130:
+        return ShareTarget.decode(readValue(buffer)!);
+      case 131:
         return SavedFile.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -278,6 +360,25 @@ class FerretDropHostApi {
     )
     ;
     return (pigeonVar_replyValue! as List<Object?>).cast<SharedItems>();
+  }
+
+  /// The connected devices the share sheet may offer. Does nothing where
+  /// the sheet can't list devices.
+  Future<void> setShareTargets(List<ShareTarget> targets) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[targets]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Whether [saveToDownloads] works here (Android 10 and newer).

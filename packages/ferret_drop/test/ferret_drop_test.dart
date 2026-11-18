@@ -27,6 +27,23 @@ void main() {
     await subscription.cancel();
   });
 
+  test('share targets reach the platform', () async {
+    final api = _FakeApi();
+    final drop = FerretDrop(api: api);
+
+    await drop.setShareTargets([
+      ShareTarget(deviceId: 'phone-id', name: 'Pixel 9', kind: 'phone'),
+    ]);
+
+    expect(api.targets.single.name, 'Pixel 9');
+  });
+
+  test('a platform without a share sheet list ignores targets', () async {
+    final drop = FerretDrop(api: _FakeApi()..fails = true);
+
+    await expectLater(drop.setShareTargets(const []), completes);
+  });
+
   test('platform failures become false instead of throwing', () async {
     final drop = FerretDrop(api: _FakeApi()..fails = true);
 
@@ -38,6 +55,7 @@ void main() {
 
 class _FakeApi implements FerretDropHostApi {
   List<SharedItems> pending = [];
+  List<ShareTarget> targets = [];
   bool fails = false;
 
   @override
@@ -45,6 +63,12 @@ class _FakeApi implements FerretDropHostApi {
     final taken = pending;
     pending = [];
     return taken;
+  }
+
+  @override
+  Future<void> setShareTargets(List<ShareTarget> targets) async {
+    await _answer(true);
+    this.targets = targets;
   }
 
   @override

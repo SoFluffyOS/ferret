@@ -21,12 +21,15 @@ G_DECLARE_FINAL_TYPE(FerretDropSharedItems, ferret_drop_shared_items, FERRET_DRO
  * ferret_drop_shared_items_new:
  * paths: field in this object.
  * text: field in this object.
+ * device_id: field in this object.
+ * every_device: field in this object.
+ * keep_files: field in this object.
  *
  * Creates a new #SharedItems object.
  *
  * Returns: a new #FerretDropSharedItems
  */
-FerretDropSharedItems* ferret_drop_shared_items_new(FlValue* paths, const gchar* text);
+FerretDropSharedItems* ferret_drop_shared_items_new(FlValue* paths, const gchar* text, const gchar* device_id, gboolean* every_device, gboolean* keep_files);
 
 /**
  * ferret_drop_shared_items_get_paths
@@ -47,6 +50,38 @@ FlValue* ferret_drop_shared_items_get_paths(FerretDropSharedItems* object);
  * Returns: the field value.
  */
 const gchar* ferret_drop_shared_items_get_text(FerretDropSharedItems* object);
+
+/**
+ * ferret_drop_shared_items_get_device_id
+ * @object: a #FerretDropSharedItems.
+ *
+ * The device picked in the share sheet, where the sheet lists Ferret's
+ * devices (the macOS Share menu). Null when none was picked there.
+ *
+ * Returns: the field value.
+ */
+const gchar* ferret_drop_shared_items_get_device_id(FerretDropSharedItems* object);
+
+/**
+ * ferret_drop_shared_items_get_every_device
+ * @object: a #FerretDropSharedItems.
+ *
+ * True when "All my devices" was picked in the share sheet.
+ *
+ * Returns: the field value.
+ */
+gboolean* ferret_drop_shared_items_get_every_device(FerretDropSharedItems* object);
+
+/**
+ * ferret_drop_shared_items_get_keep_files
+ * @object: a #FerretDropSharedItems.
+ *
+ * True when [paths] are the files themselves, which must stay where they
+ * are. Otherwise they are copies, to delete once sent.
+ *
+ * Returns: the field value.
+ */
+gboolean* ferret_drop_shared_items_get_keep_files(FerretDropSharedItems* object);
 
 /**
  * ferret_drop_shared_items_equals:
@@ -78,6 +113,87 @@ guint ferret_drop_shared_items_hash(FerretDropSharedItems* object);
  * Returns: (transfer full): a new string, free with g_free().
  */
 gchar* ferret_drop_shared_items_to_string(FerretDropSharedItems* object);
+
+/**
+ * FerretDropShareTarget:
+ *
+ * A device the system's share sheet can offer, where the sheet lists them.
+ */
+
+G_DECLARE_FINAL_TYPE(FerretDropShareTarget, ferret_drop_share_target, FERRET_DROP, SHARE_TARGET, GObject)
+
+/**
+ * ferret_drop_share_target_new:
+ * device_id: field in this object.
+ * name: field in this object.
+ * kind: field in this object.
+ *
+ * Creates a new #ShareTarget object.
+ *
+ * Returns: a new #FerretDropShareTarget
+ */
+FerretDropShareTarget* ferret_drop_share_target_new(const gchar* device_id, const gchar* name, const gchar* kind);
+
+/**
+ * ferret_drop_share_target_get_device_id
+ * @object: a #FerretDropShareTarget.
+ *
+ * Gets the value of the deviceId field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* ferret_drop_share_target_get_device_id(FerretDropShareTarget* object);
+
+/**
+ * ferret_drop_share_target_get_name
+ * @object: a #FerretDropShareTarget.
+ *
+ * Gets the value of the name field of @object.
+ *
+ * Returns: the field value.
+ */
+const gchar* ferret_drop_share_target_get_name(FerretDropShareTarget* object);
+
+/**
+ * ferret_drop_share_target_get_kind
+ * @object: a #FerretDropShareTarget.
+ *
+ * What to draw next to the name: "phone", "tablet", "laptop" or "desktop".
+ *
+ * Returns: the field value.
+ */
+const gchar* ferret_drop_share_target_get_kind(FerretDropShareTarget* object);
+
+/**
+ * ferret_drop_share_target_equals:
+ * @a: a #FerretDropShareTarget.
+ * @b: another #FerretDropShareTarget.
+ *
+ * Checks if two #FerretDropShareTarget objects are equal.
+ *
+ * Returns: TRUE if @a and @b are equal.
+ */
+gboolean ferret_drop_share_target_equals(FerretDropShareTarget* a, FerretDropShareTarget* b);
+
+/**
+ * ferret_drop_share_target_hash:
+ * @object: a #FerretDropShareTarget.
+ *
+ * Calculates a hash code for a #FerretDropShareTarget object.
+ *
+ * Returns: the hash code.
+ */
+guint ferret_drop_share_target_hash(FerretDropShareTarget* object);
+
+/**
+ * ferret_drop_share_target_to_string:
+ * @object: a #FerretDropShareTarget.
+ *
+ * Returns a string representation of a #FerretDropShareTarget object.
+ *
+ * Returns: (transfer full): a new string, free with g_free().
+ */
+gchar* ferret_drop_share_target_to_string(FerretDropShareTarget* object);
 
 /**
  * FerretDropSavedFile:
@@ -159,6 +275,7 @@ G_DECLARE_FINAL_TYPE(FerretDropMessageCodec, ferret_drop_message_codec, FERRET_D
  * They may be used in custom object creation functions to identify the type.
  */
 extern const int ferret_drop_shared_items_type_id;
+extern const int ferret_drop_share_target_type_id;
 extern const int ferret_drop_saved_file_type_id;
 
 G_DECLARE_FINAL_TYPE(FerretDropFerretDropHostApi, ferret_drop_ferret_drop_host_api, FERRET_DROP, FERRET_DROP_HOST_API, GObject)
@@ -187,6 +304,29 @@ FerretDropFerretDropHostApiTakePendingSharesResponse* ferret_drop_ferret_drop_ho
  * Returns: a new #FerretDropFerretDropHostApiTakePendingSharesResponse
  */
 FerretDropFerretDropHostApiTakePendingSharesResponse* ferret_drop_ferret_drop_host_api_take_pending_shares_response_new_error(const gchar* code, const gchar* message, FlValue* details);
+
+G_DECLARE_FINAL_TYPE(FerretDropFerretDropHostApiSetShareTargetsResponse, ferret_drop_ferret_drop_host_api_set_share_targets_response, FERRET_DROP, FERRET_DROP_HOST_API_SET_SHARE_TARGETS_RESPONSE, GObject)
+
+/**
+ * ferret_drop_ferret_drop_host_api_set_share_targets_response_new:
+ *
+ * Creates a new response to FerretDropHostApi.setShareTargets.
+ *
+ * Returns: a new #FerretDropFerretDropHostApiSetShareTargetsResponse
+ */
+FerretDropFerretDropHostApiSetShareTargetsResponse* ferret_drop_ferret_drop_host_api_set_share_targets_response_new();
+
+/**
+ * ferret_drop_ferret_drop_host_api_set_share_targets_response_new_error:
+ * @code: error code.
+ * @message: error message.
+ * @details: (allow-none): error details or %NULL.
+ *
+ * Creates a new error response to FerretDropHostApi.setShareTargets.
+ *
+ * Returns: a new #FerretDropFerretDropHostApiSetShareTargetsResponse
+ */
+FerretDropFerretDropHostApiSetShareTargetsResponse* ferret_drop_ferret_drop_host_api_set_share_targets_response_new_error(const gchar* code, const gchar* message, FlValue* details);
 
 G_DECLARE_FINAL_TYPE(FerretDropFerretDropHostApiCanSaveToDownloadsResponse, ferret_drop_ferret_drop_host_api_can_save_to_downloads_response, FERRET_DROP, FERRET_DROP_HOST_API_CAN_SAVE_TO_DOWNLOADS_RESPONSE, GObject)
 
@@ -264,6 +404,7 @@ FerretDropFerretDropHostApiRevealResponse* ferret_drop_ferret_drop_host_api_reve
  */
 typedef struct {
   FerretDropFerretDropHostApiTakePendingSharesResponse* (*take_pending_shares)(gpointer user_data);
+  FerretDropFerretDropHostApiSetShareTargetsResponse* (*set_share_targets)(FlValue* targets, gpointer user_data);
   FerretDropFerretDropHostApiCanSaveToDownloadsResponse* (*can_save_to_downloads)(gpointer user_data);
   void (*save_to_downloads)(const gchar* source_path, const gchar* file_name, const gchar* mime_type, const gchar* folder, FerretDropFerretDropHostApiResponseHandle* response_handle, gpointer user_data);
   FerretDropFerretDropHostApiOpenResponse* (*open)(const gchar* location, const gchar* mime_type, gpointer user_data);

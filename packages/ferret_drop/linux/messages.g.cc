@@ -291,6 +291,9 @@ struct _FerretDropSharedItems {
 
   FlValue* paths;
   gchar* text;
+  gchar* device_id;
+  gboolean* every_device;
+  gboolean* keep_files;
 };
 
 G_DEFINE_TYPE(FerretDropSharedItems, ferret_drop_shared_items, G_TYPE_OBJECT)
@@ -299,6 +302,9 @@ static void ferret_drop_shared_items_dispose(GObject* object) {
   FerretDropSharedItems* self = FERRET_DROP_SHARED_ITEMS(object);
   g_clear_pointer(&self->paths, fl_value_unref);
   g_clear_pointer(&self->text, g_free);
+  g_clear_pointer(&self->device_id, g_free);
+  g_clear_pointer(&self->every_device, g_free);
+  g_clear_pointer(&self->keep_files, g_free);
   G_OBJECT_CLASS(ferret_drop_shared_items_parent_class)->dispose(object);
 }
 
@@ -309,7 +315,7 @@ static void ferret_drop_shared_items_class_init(FerretDropSharedItemsClass* klas
   G_OBJECT_CLASS(klass)->dispose = ferret_drop_shared_items_dispose;
 }
 
-FerretDropSharedItems* ferret_drop_shared_items_new(FlValue* paths, const gchar* text) {
+FerretDropSharedItems* ferret_drop_shared_items_new(FlValue* paths, const gchar* text, const gchar* device_id, gboolean* every_device, gboolean* keep_files) {
   FerretDropSharedItems* self = FERRET_DROP_SHARED_ITEMS(g_object_new(ferret_drop_shared_items_get_type(), nullptr));
   self->paths = fl_value_ref(paths);
   if (text != nullptr) {
@@ -317,6 +323,26 @@ FerretDropSharedItems* ferret_drop_shared_items_new(FlValue* paths, const gchar*
   }
   else {
     self->text = nullptr;
+  }
+  if (device_id != nullptr) {
+    self->device_id = g_strdup(device_id);
+  }
+  else {
+    self->device_id = nullptr;
+  }
+  if (every_device != nullptr) {
+    self->every_device = static_cast<gboolean*>(malloc(sizeof(gboolean)));
+    *self->every_device = *every_device;
+  }
+  else {
+    self->every_device = nullptr;
+  }
+  if (keep_files != nullptr) {
+    self->keep_files = static_cast<gboolean*>(malloc(sizeof(gboolean)));
+    *self->keep_files = *keep_files;
+  }
+  else {
+    self->keep_files = nullptr;
   }
   return self;
 }
@@ -331,10 +357,28 @@ const gchar* ferret_drop_shared_items_get_text(FerretDropSharedItems* self) {
   return self->text;
 }
 
+const gchar* ferret_drop_shared_items_get_device_id(FerretDropSharedItems* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARED_ITEMS(self), nullptr);
+  return self->device_id;
+}
+
+gboolean* ferret_drop_shared_items_get_every_device(FerretDropSharedItems* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARED_ITEMS(self), nullptr);
+  return self->every_device;
+}
+
+gboolean* ferret_drop_shared_items_get_keep_files(FerretDropSharedItems* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARED_ITEMS(self), nullptr);
+  return self->keep_files;
+}
+
 static FlValue* ferret_drop_shared_items_to_list(FerretDropSharedItems* self) {
   FlValue* values = fl_value_new_list();
   fl_value_append_take(values, fl_value_ref(self->paths));
   fl_value_append_take(values, self->text != nullptr ? fl_value_new_string(self->text) : fl_value_new_null());
+  fl_value_append_take(values, self->device_id != nullptr ? fl_value_new_string(self->device_id) : fl_value_new_null());
+  fl_value_append_take(values, self->every_device != nullptr ? fl_value_new_bool(*self->every_device) : fl_value_new_null());
+  fl_value_append_take(values, self->keep_files != nullptr ? fl_value_new_bool(*self->keep_files) : fl_value_new_null());
   return values;
 }
 
@@ -346,7 +390,26 @@ static FerretDropSharedItems* ferret_drop_shared_items_new_from_list(FlValue* va
   if (fl_value_get_type(value1) != FL_VALUE_TYPE_NULL) {
     text = fl_value_get_string(value1);
   }
-  return ferret_drop_shared_items_new(paths, text);
+  FlValue* value2 = fl_value_get_list_value(values, 2);
+  const gchar* device_id = nullptr;
+  if (fl_value_get_type(value2) != FL_VALUE_TYPE_NULL) {
+    device_id = fl_value_get_string(value2);
+  }
+  FlValue* value3 = fl_value_get_list_value(values, 3);
+  gboolean* every_device = nullptr;
+  gboolean every_device_value;
+  if (fl_value_get_type(value3) != FL_VALUE_TYPE_NULL) {
+    every_device_value = fl_value_get_bool(value3);
+    every_device = &every_device_value;
+  }
+  FlValue* value4 = fl_value_get_list_value(values, 4);
+  gboolean* keep_files = nullptr;
+  gboolean keep_files_value;
+  if (fl_value_get_type(value4) != FL_VALUE_TYPE_NULL) {
+    keep_files_value = fl_value_get_bool(value4);
+    keep_files = &keep_files_value;
+  }
+  return ferret_drop_shared_items_new(paths, text, device_id, every_device, keep_files);
 }
 
 gboolean ferret_drop_shared_items_equals(FerretDropSharedItems* a, FerretDropSharedItems* b) {
@@ -362,6 +425,21 @@ gboolean ferret_drop_shared_items_equals(FerretDropSharedItems* a, FerretDropSha
   if (g_strcmp0(a->text, b->text) != 0) {
     return FALSE;
   }
+  if (g_strcmp0(a->device_id, b->device_id) != 0) {
+    return FALSE;
+  }
+  if ((a->every_device == nullptr) != (b->every_device == nullptr)) {
+    return FALSE;
+  }
+  if (a->every_device != nullptr && *a->every_device != *b->every_device) {
+    return FALSE;
+  }
+  if ((a->keep_files == nullptr) != (b->keep_files == nullptr)) {
+    return FALSE;
+  }
+  if (a->keep_files != nullptr && *a->keep_files != *b->keep_files) {
+    return FALSE;
+  }
   return TRUE;
 }
 
@@ -370,6 +448,9 @@ guint ferret_drop_shared_items_hash(FerretDropSharedItems* self) {
   guint result = 0;
   result = result * 31 + flpigeon_deep_hash(self->paths);
   result = result * 31 + (self->text != nullptr ? g_str_hash(self->text) : 0);
+  result = result * 31 + (self->device_id != nullptr ? g_str_hash(self->device_id) : 0);
+  result = result * 31 + (self->every_device != nullptr ? static_cast<guint>(*self->every_device) : 0);
+  result = result * 31 + (self->keep_files != nullptr ? static_cast<guint>(*self->keep_files) : 0);
   return result;
 }
 
@@ -388,6 +469,149 @@ gchar* ferret_drop_shared_items_to_string(FerretDropSharedItems* self) {
   g_string_append(str, ", text: ");
   if (self->text != nullptr) {
     g_string_append_printf(str, "\"%s\"", self->text);
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ", device_id: ");
+  if (self->device_id != nullptr) {
+    g_string_append_printf(str, "\"%s\"", self->device_id);
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ", every_device: ");
+  if (self->every_device != nullptr) {
+    g_string_append(str, *self->every_device ? "true" : "false");
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ", keep_files: ");
+  if (self->keep_files != nullptr) {
+    g_string_append(str, *self->keep_files ? "true" : "false");
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ")");
+  return g_string_free(str, FALSE);
+}
+
+struct _FerretDropShareTarget {
+  GObject parent_instance;
+
+  gchar* device_id;
+  gchar* name;
+  gchar* kind;
+};
+
+G_DEFINE_TYPE(FerretDropShareTarget, ferret_drop_share_target, G_TYPE_OBJECT)
+
+static void ferret_drop_share_target_dispose(GObject* object) {
+  FerretDropShareTarget* self = FERRET_DROP_SHARE_TARGET(object);
+  g_clear_pointer(&self->device_id, g_free);
+  g_clear_pointer(&self->name, g_free);
+  g_clear_pointer(&self->kind, g_free);
+  G_OBJECT_CLASS(ferret_drop_share_target_parent_class)->dispose(object);
+}
+
+static void ferret_drop_share_target_init(FerretDropShareTarget* self) {
+}
+
+static void ferret_drop_share_target_class_init(FerretDropShareTargetClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose = ferret_drop_share_target_dispose;
+}
+
+FerretDropShareTarget* ferret_drop_share_target_new(const gchar* device_id, const gchar* name, const gchar* kind) {
+  FerretDropShareTarget* self = FERRET_DROP_SHARE_TARGET(g_object_new(ferret_drop_share_target_get_type(), nullptr));
+  self->device_id = g_strdup(device_id);
+  self->name = g_strdup(name);
+  self->kind = g_strdup(kind);
+  return self;
+}
+
+const gchar* ferret_drop_share_target_get_device_id(FerretDropShareTarget* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARE_TARGET(self), nullptr);
+  return self->device_id;
+}
+
+const gchar* ferret_drop_share_target_get_name(FerretDropShareTarget* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARE_TARGET(self), nullptr);
+  return self->name;
+}
+
+const gchar* ferret_drop_share_target_get_kind(FerretDropShareTarget* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARE_TARGET(self), nullptr);
+  return self->kind;
+}
+
+static FlValue* ferret_drop_share_target_to_list(FerretDropShareTarget* self) {
+  FlValue* values = fl_value_new_list();
+  fl_value_append_take(values, fl_value_new_string(self->device_id));
+  fl_value_append_take(values, fl_value_new_string(self->name));
+  fl_value_append_take(values, fl_value_new_string(self->kind));
+  return values;
+}
+
+static FerretDropShareTarget* ferret_drop_share_target_new_from_list(FlValue* values) {
+  FlValue* value0 = fl_value_get_list_value(values, 0);
+  const gchar* device_id = fl_value_get_string(value0);
+  FlValue* value1 = fl_value_get_list_value(values, 1);
+  const gchar* name = fl_value_get_string(value1);
+  FlValue* value2 = fl_value_get_list_value(values, 2);
+  const gchar* kind = fl_value_get_string(value2);
+  return ferret_drop_share_target_new(device_id, name, kind);
+}
+
+gboolean ferret_drop_share_target_equals(FerretDropShareTarget* a, FerretDropShareTarget* b) {
+  if (a == b) {
+    return TRUE;
+  }
+  if (a == nullptr || b == nullptr) {
+    return FALSE;
+  }
+  if (g_strcmp0(a->device_id, b->device_id) != 0) {
+    return FALSE;
+  }
+  if (g_strcmp0(a->name, b->name) != 0) {
+    return FALSE;
+  }
+  if (g_strcmp0(a->kind, b->kind) != 0) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+guint ferret_drop_share_target_hash(FerretDropShareTarget* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARE_TARGET(self), 0);
+  guint result = 0;
+  result = result * 31 + (self->device_id != nullptr ? g_str_hash(self->device_id) : 0);
+  result = result * 31 + (self->name != nullptr ? g_str_hash(self->name) : 0);
+  result = result * 31 + (self->kind != nullptr ? g_str_hash(self->kind) : 0);
+  return result;
+}
+
+gchar* ferret_drop_share_target_to_string(FerretDropShareTarget* self) {
+  g_return_val_if_fail(FERRET_DROP_IS_SHARE_TARGET(self), NULL);
+  GString* str = g_string_new("ShareTarget(");
+  g_string_append(str, "device_id: ");
+  if (self->device_id != nullptr) {
+    g_string_append_printf(str, "\"%s\"", self->device_id);
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ", name: ");
+  if (self->name != nullptr) {
+    g_string_append_printf(str, "\"%s\"", self->name);
+  }
+  else {
+    g_string_append(str, "null");
+  }
+  g_string_append(str, ", kind: ");
+  if (self->kind != nullptr) {
+    g_string_append_printf(str, "\"%s\"", self->kind);
   }
   else {
     g_string_append(str, "null");
@@ -504,12 +728,20 @@ struct _FerretDropMessageCodec {
 G_DEFINE_TYPE(FerretDropMessageCodec, ferret_drop_message_codec, fl_standard_message_codec_get_type())
 
 const int ferret_drop_shared_items_type_id = 129;
-const int ferret_drop_saved_file_type_id = 130;
+const int ferret_drop_share_target_type_id = 130;
+const int ferret_drop_saved_file_type_id = 131;
 
 static gboolean ferret_drop_message_codec_write_ferret_drop_shared_items(FlStandardMessageCodec* codec, GByteArray* buffer, FerretDropSharedItems* value, GError** error) {
   uint8_t type = ferret_drop_shared_items_type_id;
   g_byte_array_append(buffer, &type, sizeof(uint8_t));
   g_autoptr(FlValue) values = ferret_drop_shared_items_to_list(value);
+  return fl_standard_message_codec_write_value(codec, buffer, values, error);
+}
+
+static gboolean ferret_drop_message_codec_write_ferret_drop_share_target(FlStandardMessageCodec* codec, GByteArray* buffer, FerretDropShareTarget* value, GError** error) {
+  uint8_t type = ferret_drop_share_target_type_id;
+  g_byte_array_append(buffer, &type, sizeof(uint8_t));
+  g_autoptr(FlValue) values = ferret_drop_share_target_to_list(value);
   return fl_standard_message_codec_write_value(codec, buffer, values, error);
 }
 
@@ -525,6 +757,8 @@ static gboolean ferret_drop_message_codec_write_value(FlStandardMessageCodec* co
     switch (fl_value_get_custom_type(value)) {
       case ferret_drop_shared_items_type_id:
         return ferret_drop_message_codec_write_ferret_drop_shared_items(codec, buffer, FERRET_DROP_SHARED_ITEMS(fl_value_get_custom_value_object(value)), error);
+      case ferret_drop_share_target_type_id:
+        return ferret_drop_message_codec_write_ferret_drop_share_target(codec, buffer, FERRET_DROP_SHARE_TARGET(fl_value_get_custom_value_object(value)), error);
       case ferret_drop_saved_file_type_id:
         return ferret_drop_message_codec_write_ferret_drop_saved_file(codec, buffer, FERRET_DROP_SAVED_FILE(fl_value_get_custom_value_object(value)), error);
     }
@@ -548,6 +782,21 @@ static FlValue* ferret_drop_message_codec_read_ferret_drop_shared_items(FlStanda
   return fl_value_new_custom_object(ferret_drop_shared_items_type_id, G_OBJECT(value));
 }
 
+static FlValue* ferret_drop_message_codec_read_ferret_drop_share_target(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, GError** error) {
+  g_autoptr(FlValue) values = fl_standard_message_codec_read_value(codec, buffer, offset, error);
+  if (values == nullptr) {
+    return nullptr;
+  }
+
+  g_autoptr(FerretDropShareTarget) value = ferret_drop_share_target_new_from_list(values);
+  if (value == nullptr) {
+    g_set_error(error, FL_MESSAGE_CODEC_ERROR, FL_MESSAGE_CODEC_ERROR_FAILED, "Invalid data received for MessageData");
+    return nullptr;
+  }
+
+  return fl_value_new_custom_object(ferret_drop_share_target_type_id, G_OBJECT(value));
+}
+
 static FlValue* ferret_drop_message_codec_read_ferret_drop_saved_file(FlStandardMessageCodec* codec, GBytes* buffer, size_t* offset, GError** error) {
   g_autoptr(FlValue) values = fl_standard_message_codec_read_value(codec, buffer, offset, error);
   if (values == nullptr) {
@@ -567,6 +816,8 @@ static FlValue* ferret_drop_message_codec_read_value_of_type(FlStandardMessageCo
   switch (type) {
     case ferret_drop_shared_items_type_id:
       return ferret_drop_message_codec_read_ferret_drop_shared_items(codec, buffer, offset, error);
+    case ferret_drop_share_target_type_id:
+      return ferret_drop_message_codec_read_ferret_drop_share_target(codec, buffer, offset, error);
     case ferret_drop_saved_file_type_id:
       return ferret_drop_message_codec_read_ferret_drop_saved_file(codec, buffer, offset, error);
     default:
@@ -647,6 +898,43 @@ FerretDropFerretDropHostApiTakePendingSharesResponse* ferret_drop_ferret_drop_ho
 
 FerretDropFerretDropHostApiTakePendingSharesResponse* ferret_drop_ferret_drop_host_api_take_pending_shares_response_new_error(const gchar* code, const gchar* message, FlValue* details) {
   FerretDropFerretDropHostApiTakePendingSharesResponse* self = FERRET_DROP_FERRET_DROP_HOST_API_TAKE_PENDING_SHARES_RESPONSE(g_object_new(ferret_drop_ferret_drop_host_api_take_pending_shares_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_string(code));
+  fl_value_append_take(self->value, fl_value_new_string(message != nullptr ? message : ""));
+  fl_value_append_take(self->value, details != nullptr ? fl_value_ref(details) : fl_value_new_null());
+  return self;
+}
+
+struct _FerretDropFerretDropHostApiSetShareTargetsResponse {
+  GObject parent_instance;
+
+  FlValue* value;
+};
+
+G_DEFINE_TYPE(FerretDropFerretDropHostApiSetShareTargetsResponse, ferret_drop_ferret_drop_host_api_set_share_targets_response, G_TYPE_OBJECT)
+
+static void ferret_drop_ferret_drop_host_api_set_share_targets_response_dispose(GObject* object) {
+  FerretDropFerretDropHostApiSetShareTargetsResponse* self = FERRET_DROP_FERRET_DROP_HOST_API_SET_SHARE_TARGETS_RESPONSE(object);
+  g_clear_pointer(&self->value, fl_value_unref);
+  G_OBJECT_CLASS(ferret_drop_ferret_drop_host_api_set_share_targets_response_parent_class)->dispose(object);
+}
+
+static void ferret_drop_ferret_drop_host_api_set_share_targets_response_init(FerretDropFerretDropHostApiSetShareTargetsResponse* self) {
+}
+
+static void ferret_drop_ferret_drop_host_api_set_share_targets_response_class_init(FerretDropFerretDropHostApiSetShareTargetsResponseClass* klass) {
+  G_OBJECT_CLASS(klass)->dispose = ferret_drop_ferret_drop_host_api_set_share_targets_response_dispose;
+}
+
+FerretDropFerretDropHostApiSetShareTargetsResponse* ferret_drop_ferret_drop_host_api_set_share_targets_response_new() {
+  FerretDropFerretDropHostApiSetShareTargetsResponse* self = FERRET_DROP_FERRET_DROP_HOST_API_SET_SHARE_TARGETS_RESPONSE(g_object_new(ferret_drop_ferret_drop_host_api_set_share_targets_response_get_type(), nullptr));
+  self->value = fl_value_new_list();
+  fl_value_append_take(self->value, fl_value_new_null());
+  return self;
+}
+
+FerretDropFerretDropHostApiSetShareTargetsResponse* ferret_drop_ferret_drop_host_api_set_share_targets_response_new_error(const gchar* code, const gchar* message, FlValue* details) {
+  FerretDropFerretDropHostApiSetShareTargetsResponse* self = FERRET_DROP_FERRET_DROP_HOST_API_SET_SHARE_TARGETS_RESPONSE(g_object_new(ferret_drop_ferret_drop_host_api_set_share_targets_response_get_type(), nullptr));
   self->value = fl_value_new_list();
   fl_value_append_take(self->value, fl_value_new_string(code));
   fl_value_append_take(self->value, fl_value_new_string(message != nullptr ? message : ""));
@@ -857,6 +1145,27 @@ static void ferret_drop_ferret_drop_host_api_take_pending_shares_cb(FlBasicMessa
   }
 }
 
+static void ferret_drop_ferret_drop_host_api_set_share_targets_cb(FlBasicMessageChannel* channel, FlValue* message_, FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
+  FerretDropFerretDropHostApi* self = FERRET_DROP_FERRET_DROP_HOST_API(user_data);
+
+  if (self->vtable == nullptr || self->vtable->set_share_targets == nullptr) {
+    return;
+  }
+
+  FlValue* value0 = fl_value_get_list_value(message_, 0);
+  FlValue* targets = value0;
+  g_autoptr(FerretDropFerretDropHostApiSetShareTargetsResponse) response = self->vtable->set_share_targets(targets, self->user_data);
+  if (response == nullptr) {
+    g_warning("No response returned to %s.%s", "FerretDropHostApi", "setShareTargets");
+    return;
+  }
+
+  g_autoptr(GError) error = NULL;
+  if (!fl_basic_message_channel_respond(channel, response_handle, response->value, &error)) {
+    g_warning("Failed to send response to %s.%s: %s", "FerretDropHostApi", "setShareTargets", error->message);
+  }
+}
+
 static void ferret_drop_ferret_drop_host_api_can_save_to_downloads_cb(FlBasicMessageChannel* channel, FlValue* message_, FlBasicMessageChannelResponseHandle* response_handle, gpointer user_data) {
   FerretDropFerretDropHostApi* self = FERRET_DROP_FERRET_DROP_HOST_API(user_data);
 
@@ -947,6 +1256,9 @@ void ferret_drop_ferret_drop_host_api_set_method_handlers(FlBinaryMessenger* mes
   g_autofree gchar* take_pending_shares_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.takePendingShares%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) take_pending_shares_channel = fl_basic_message_channel_new(messenger, take_pending_shares_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(take_pending_shares_channel, ferret_drop_ferret_drop_host_api_take_pending_shares_cb, g_object_ref(api_data), g_object_unref);
+  g_autofree gchar* set_share_targets_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) set_share_targets_channel = fl_basic_message_channel_new(messenger, set_share_targets_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(set_share_targets_channel, ferret_drop_ferret_drop_host_api_set_share_targets_cb, g_object_ref(api_data), g_object_unref);
   g_autofree gchar* can_save_to_downloads_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.canSaveToDownloads%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) can_save_to_downloads_channel = fl_basic_message_channel_new(messenger, can_save_to_downloads_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(can_save_to_downloads_channel, ferret_drop_ferret_drop_host_api_can_save_to_downloads_cb, g_object_ref(api_data), g_object_unref);
@@ -968,6 +1280,9 @@ void ferret_drop_ferret_drop_host_api_clear_method_handlers(FlBinaryMessenger* m
   g_autofree gchar* take_pending_shares_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.takePendingShares%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) take_pending_shares_channel = fl_basic_message_channel_new(messenger, take_pending_shares_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(take_pending_shares_channel, nullptr, nullptr, nullptr);
+  g_autofree gchar* set_share_targets_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets%s", dot_suffix);
+  g_autoptr(FlBasicMessageChannel) set_share_targets_channel = fl_basic_message_channel_new(messenger, set_share_targets_channel_name, FL_MESSAGE_CODEC(codec));
+  fl_basic_message_channel_set_message_handler(set_share_targets_channel, nullptr, nullptr, nullptr);
   g_autofree gchar* can_save_to_downloads_channel_name = g_strdup_printf("dev.flutter.pigeon.ferret_drop.FerretDropHostApi.canSaveToDownloads%s", dot_suffix);
   g_autoptr(FlBasicMessageChannel) can_save_to_downloads_channel = fl_basic_message_channel_new(messenger, can_save_to_downloads_channel_name, FL_MESSAGE_CODEC(codec));
   fl_basic_message_channel_set_message_handler(can_save_to_downloads_channel, nullptr, nullptr, nullptr);

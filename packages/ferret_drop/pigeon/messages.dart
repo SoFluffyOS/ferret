@@ -20,10 +20,38 @@ import 'package:pigeon/pigeon.dart';
 /// Files or text another app shared with "Send with Ferret". Files are
 /// already copied to the app's cache, so [paths] are plain file paths.
 class SharedItems {
-  SharedItems({required this.paths, this.text});
+  SharedItems({
+    required this.paths,
+    this.text,
+    this.deviceId,
+    this.everyDevice,
+    this.keepFiles,
+  });
 
   List<String> paths;
   String? text;
+
+  /// The device picked in the share sheet, where the sheet lists Ferret's
+  /// devices (the macOS Share menu). Null when none was picked there.
+  String? deviceId;
+
+  /// True when "All my devices" was picked in the share sheet.
+  bool? everyDevice;
+
+  /// True when [paths] are the files themselves, which must stay where they
+  /// are. Otherwise they are copies, to delete once sent.
+  bool? keepFiles;
+}
+
+/// A device the system's share sheet can offer, where the sheet lists them.
+class ShareTarget {
+  ShareTarget({required this.deviceId, required this.name, required this.kind});
+
+  String deviceId;
+  String name;
+
+  /// What to draw next to the name: "phone", "tablet", "laptop" or "desktop".
+  String kind;
 }
 
 /// A file saved into the shared Downloads collection.
@@ -41,6 +69,10 @@ class SavedFile {
 abstract class FerretDropHostApi {
   /// Shares that arrived before Dart was listening. Each one is returned once.
   List<SharedItems> takePendingShares();
+
+  /// The connected devices the share sheet may offer. Does nothing where
+  /// the sheet can't list devices.
+  void setShareTargets(List<ShareTarget> targets);
 
   /// Whether [saveToDownloads] works here (Android 10 and newer).
   bool canSaveToDownloads();

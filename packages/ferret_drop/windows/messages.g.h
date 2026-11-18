@@ -71,7 +71,10 @@ class SharedItems {
   // Constructs an object setting all fields.
   explicit SharedItems(
     const ::flutter::EncodableList& paths,
-    const std::string* text);
+    const std::string* text,
+    const std::string* device_id,
+    const bool* every_device,
+    const bool* keep_files);
 
   const ::flutter::EncodableList& paths() const;
   void set_paths(const ::flutter::EncodableList& value_arg);
@@ -79,6 +82,23 @@ class SharedItems {
   const std::string* text() const;
   void set_text(const std::string_view* value_arg);
   void set_text(std::string_view value_arg);
+
+  // The device picked in the share sheet, where the sheet lists Ferret's
+  // devices (the macOS Share menu). Null when none was picked there.
+  const std::string* device_id() const;
+  void set_device_id(const std::string_view* value_arg);
+  void set_device_id(std::string_view value_arg);
+
+  // True when "All my devices" was picked in the share sheet.
+  const bool* every_device() const;
+  void set_every_device(const bool* value_arg);
+  void set_every_device(bool value_arg);
+
+  // True when [paths] are the files themselves, which must stay where they
+  // are. Otherwise they are copies, to delete once sent.
+  const bool* keep_files() const;
+  void set_keep_files(const bool* value_arg);
+  void set_keep_files(bool value_arg);
 
   bool operator==(const SharedItems& other) const;
   bool operator!=(const SharedItems& other) const;
@@ -94,6 +114,48 @@ class SharedItems {
   friend class PigeonInternalCodecSerializer;
   ::flutter::EncodableList paths_;
   std::optional<std::string> text_;
+  std::optional<std::string> device_id_;
+  std::optional<bool> every_device_;
+  std::optional<bool> keep_files_;
+};
+
+
+// A device the system's share sheet can offer, where the sheet lists them.
+//
+// Generated class from Pigeon that represents data sent in messages.
+class ShareTarget {
+ public:
+  // Constructs an object setting all fields.
+  explicit ShareTarget(
+    const std::string& device_id,
+    const std::string& name,
+    const std::string& kind);
+
+  const std::string& device_id() const;
+  void set_device_id(std::string_view value_arg);
+
+  const std::string& name() const;
+  void set_name(std::string_view value_arg);
+
+  // What to draw next to the name: "phone", "tablet", "laptop" or "desktop".
+  const std::string& kind() const;
+  void set_kind(std::string_view value_arg);
+
+  bool operator==(const ShareTarget& other) const;
+  bool operator!=(const ShareTarget& other) const;
+  /// Returns a hash code value for the object. This method is supported for the benefit of hash tables.
+  size_t Hash() const;
+  /// Stream output operator for formatted string representation.
+  friend std::ostream& operator<<(std::ostream& os, const ShareTarget& obj);
+ private:
+  static ShareTarget FromEncodableList(const ::flutter::EncodableList& list);
+  ::flutter::EncodableList ToEncodableList() const;
+  friend class FerretDropHostApi;
+  friend class FerretDropFlutterApi;
+  friend class PigeonInternalCodecSerializer;
+  std::string device_id_;
+  std::string name_;
+  std::string kind_;
 };
 
 
@@ -157,6 +219,9 @@ class FerretDropHostApi {
   virtual ~FerretDropHostApi() {}
   // Shares that arrived before Dart was listening. Each one is returned once.
   virtual ErrorOr<::flutter::EncodableList> TakePendingShares() = 0;
+  // The connected devices the share sheet may offer. Does nothing where
+  // the sheet can't list devices.
+  virtual std::optional<FlutterError> SetShareTargets(const ::flutter::EncodableList& targets) = 0;
   // Whether [saveToDownloads] works here (Android 10 and newer).
   virtual ErrorOr<bool> CanSaveToDownloads() = 0;
   // Moves [sourcePath] into Downloads/[folder] through MediaStore, never

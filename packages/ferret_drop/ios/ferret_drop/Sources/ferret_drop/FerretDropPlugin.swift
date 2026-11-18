@@ -16,6 +16,8 @@ public class FerretDropPlugin: NSObject, FlutterPlugin, FerretDropHostApi,
     return []
   }
 
+  func setShareTargets(targets: [ShareTarget]) throws {}
+
   func canSaveToDownloads() throws -> Bool {
     return false
   }

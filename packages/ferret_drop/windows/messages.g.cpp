@@ -326,9 +326,15 @@ SharedItems::SharedItems(const EncodableList& paths)
 
 SharedItems::SharedItems(
   const EncodableList& paths,
-  const std::string* text)
+  const std::string* text,
+  const std::string* device_id,
+  const bool* every_device,
+  const bool* keep_files)
  : paths_(paths),
-    text_(text ? std::optional<std::string>(*text) : std::nullopt) {}
+    text_(text ? std::optional<std::string>(*text) : std::nullopt),
+    device_id_(device_id ? std::optional<std::string>(*device_id) : std::nullopt),
+    every_device_(every_device ? std::optional<bool>(*every_device) : std::nullopt),
+    keep_files_(keep_files ? std::optional<bool>(*keep_files) : std::nullopt) {}
 
 const EncodableList& SharedItems::paths() const {
   return paths_;
@@ -352,11 +358,53 @@ void SharedItems::set_text(std::string_view value_arg) {
 }
 
 
+const std::string* SharedItems::device_id() const {
+  return device_id_ ? &(*device_id_) : nullptr;
+}
+
+void SharedItems::set_device_id(const std::string_view* value_arg) {
+  device_id_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
+}
+
+void SharedItems::set_device_id(std::string_view value_arg) {
+  device_id_ = value_arg;
+}
+
+
+const bool* SharedItems::every_device() const {
+  return every_device_ ? &(*every_device_) : nullptr;
+}
+
+void SharedItems::set_every_device(const bool* value_arg) {
+  every_device_ = value_arg ? std::optional<bool>(*value_arg) : std::nullopt;
+}
+
+void SharedItems::set_every_device(bool value_arg) {
+  every_device_ = value_arg;
+}
+
+
+const bool* SharedItems::keep_files() const {
+  return keep_files_ ? &(*keep_files_) : nullptr;
+}
+
+void SharedItems::set_keep_files(const bool* value_arg) {
+  keep_files_ = value_arg ? std::optional<bool>(*value_arg) : std::nullopt;
+}
+
+void SharedItems::set_keep_files(bool value_arg) {
+  keep_files_ = value_arg;
+}
+
+
 EncodableList SharedItems::ToEncodableList() const {
   EncodableList list;
-  list.reserve(2);
+  list.reserve(5);
   list.push_back(EncodableValue(paths_));
   list.push_back(text_ ? EncodableValue(*text_) : EncodableValue());
+  list.push_back(device_id_ ? EncodableValue(*device_id_) : EncodableValue());
+  list.push_back(every_device_ ? EncodableValue(*every_device_) : EncodableValue());
+  list.push_back(keep_files_ ? EncodableValue(*keep_files_) : EncodableValue());
   return list;
 }
 
@@ -367,11 +415,23 @@ SharedItems SharedItems::FromEncodableList(const EncodableList& list) {
   if (!encodable_text.IsNull()) {
     decoded.set_text(std::get<std::string>(encodable_text));
   }
+  auto& encodable_device_id = list[2];
+  if (!encodable_device_id.IsNull()) {
+    decoded.set_device_id(std::get<std::string>(encodable_device_id));
+  }
+  auto& encodable_every_device = list[3];
+  if (!encodable_every_device.IsNull()) {
+    decoded.set_every_device(std::get<bool>(encodable_every_device));
+  }
+  auto& encodable_keep_files = list[4];
+  if (!encodable_keep_files.IsNull()) {
+    decoded.set_keep_files(std::get<bool>(encodable_keep_files));
+  }
   return decoded;
 }
 
 bool SharedItems::operator==(const SharedItems& other) const {
-  return PigeonInternalDeepEquals(paths_, other.paths_) && PigeonInternalDeepEquals(text_, other.text_);
+  return PigeonInternalDeepEquals(paths_, other.paths_) && PigeonInternalDeepEquals(text_, other.text_) && PigeonInternalDeepEquals(device_id_, other.device_id_) && PigeonInternalDeepEquals(every_device_, other.every_device_) && PigeonInternalDeepEquals(keep_files_, other.keep_files_);
 }
 
 bool SharedItems::operator!=(const SharedItems& other) const {
@@ -382,6 +442,9 @@ size_t SharedItems::Hash() const {
   size_t result = 1;
   result = result * 31 + PigeonInternalDeepHash(paths_);
   result = result * 31 + PigeonInternalDeepHash(text_);
+  result = result * 31 + PigeonInternalDeepHash(device_id_);
+  result = result * 31 + PigeonInternalDeepHash(every_device_);
+  result = result * 31 + PigeonInternalDeepHash(keep_files_);
   return result;
 }
 
@@ -398,11 +461,120 @@ std::ostream& operator<<(
   else {
     os << "null";
   }
+  os << ", device_id: ";
+  if (obj.device_id_) {
+    os << PigeonInternalToString(*obj.device_id_);
+  }
+  else {
+    os << "null";
+  }
+  os << ", every_device: ";
+  if (obj.every_device_) {
+    os << PigeonInternalToString(*obj.every_device_);
+  }
+  else {
+    os << "null";
+  }
+  os << ", keep_files: ";
+  if (obj.keep_files_) {
+    os << PigeonInternalToString(*obj.keep_files_);
+  }
+  else {
+    os << "null";
+  }
   os << ")";
   return os;
 }
 
 size_t PigeonInternalDeepHash(const SharedItems& v) {
+  return v.Hash();
+}
+
+// ShareTarget
+
+ShareTarget::ShareTarget(
+  const std::string& device_id,
+  const std::string& name,
+  const std::string& kind)
+ : device_id_(device_id),
+    name_(name),
+    kind_(kind) {}
+
+const std::string& ShareTarget::device_id() const {
+  return device_id_;
+}
+
+void ShareTarget::set_device_id(std::string_view value_arg) {
+  device_id_ = value_arg;
+}
+
+
+const std::string& ShareTarget::name() const {
+  return name_;
+}
+
+void ShareTarget::set_name(std::string_view value_arg) {
+  name_ = value_arg;
+}
+
+
+const std::string& ShareTarget::kind() const {
+  return kind_;
+}
+
+void ShareTarget::set_kind(std::string_view value_arg) {
+  kind_ = value_arg;
+}
+
+
+EncodableList ShareTarget::ToEncodableList() const {
+  EncodableList list;
+  list.reserve(3);
+  list.push_back(EncodableValue(device_id_));
+  list.push_back(EncodableValue(name_));
+  list.push_back(EncodableValue(kind_));
+  return list;
+}
+
+ShareTarget ShareTarget::FromEncodableList(const EncodableList& list) {
+  ShareTarget decoded(
+    std::get<std::string>(list[0]),
+    std::get<std::string>(list[1]),
+    std::get<std::string>(list[2]));
+  return decoded;
+}
+
+bool ShareTarget::operator==(const ShareTarget& other) const {
+  return PigeonInternalDeepEquals(device_id_, other.device_id_) && PigeonInternalDeepEquals(name_, other.name_) && PigeonInternalDeepEquals(kind_, other.kind_);
+}
+
+bool ShareTarget::operator!=(const ShareTarget& other) const {
+  return !(*this == other);
+}
+
+size_t ShareTarget::Hash() const {
+  size_t result = 1;
+  result = result * 31 + PigeonInternalDeepHash(device_id_);
+  result = result * 31 + PigeonInternalDeepHash(name_);
+  result = result * 31 + PigeonInternalDeepHash(kind_);
+  return result;
+}
+
+std::ostream& operator<<(
+  std::ostream& os,
+  const ShareTarget& obj) {
+  os << "ShareTarget(";
+  os << "device_id: ";
+  os << PigeonInternalToString(obj.device_id_);
+  os << ", name: ";
+  os << PigeonInternalToString(obj.name_);
+  os << ", kind: ";
+  os << PigeonInternalToString(obj.kind_);
+  os << ")";
+  return os;
+}
+
+size_t PigeonInternalDeepHash(const ShareTarget& v) {
   return v.Hash();
 }
 
@@ -489,6 +661,9 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
         return CustomEncodableValue(SharedItems::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
       }
     case 130: {
+        return CustomEncodableValue(ShareTarget::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+      }
+    case 131: {
         return CustomEncodableValue(SavedFile::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
       }
     default:
@@ -505,8 +680,13 @@ void PigeonInternalCodecSerializer::WriteValue(
       WriteValue(EncodableValue(std::any_cast<SharedItems>(*custom_value).ToEncodableList()), stream);
       return;
     }
-    if (custom_value->type() == typeid(SavedFile)) {
+    if (custom_value->type() == typeid(ShareTarget)) {
       stream->WriteByte(130);
+      WriteValue(EncodableValue(std::any_cast<ShareTarget>(*custom_value).ToEncodableList()), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(SavedFile)) {
+      stream->WriteByte(131);
       WriteValue(EncodableValue(std::any_cast<SavedFile>(*custom_value).ToEncodableList()), stream);
       return;
     }
@@ -543,6 +723,34 @@ void FerretDropHostApi::SetUp(
           }
           EncodableList wrapped;
           wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_drop.FerretDropHostApi.setShareTargets" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          const auto& args = std::get<EncodableList>(message);
+          const auto& encodable_targets_arg = args.at(0);
+          if (encodable_targets_arg.IsNull()) {
+            reply(WrapError("targets_arg unexpectedly null."));
+            return;
+          }
+          const auto& targets_arg = std::get<EncodableList>(encodable_targets_arg);
+          std::optional<FlutterError> output = api->SetShareTargets(targets_arg);
+          if (output.has_value()) {
+            reply(WrapError(output.value()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue());
           reply(EncodableValue(std::move(wrapped)));
         } catch (const std::exception& exception) {
           reply(WrapError(exception.what()));
