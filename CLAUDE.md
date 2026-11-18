@@ -37,6 +37,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 | `packages/feature_kit/` | What a feature module plugs into the app: `FeatureUi`, shared Ferret widgets |
 | `packages/ferret_<capability>/` | Flutter plugin packages with the platform code for one capability (Kotlin, Swift, C++, D-Bus), reusable outside Ferret |
 | `packages/sofluffy_ui/` | Design system (git submodule). Edit it here when Ferret needs a new component, then commit and push inside the submodule |
+| `packages/sofluffy_texture/` | Shared GPU-texture plugin (git submodule, public repo `SoFluffyOS/sofluffy_texture`): shows decoded video frames as a Flutter texture. Edit it here, then commit and push inside the submodule |
 | `proto/` | Protobuf source of truth, linted and checked for breaking changes with `buf` |
 | `docs/public/` | The docs site, and the only copy of each page. `docs/public/spec/` is the protocol spec |
 | `extensions/browser/` | WebExtension (TypeScript) |
