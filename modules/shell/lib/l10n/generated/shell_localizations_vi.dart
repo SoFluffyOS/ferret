@@ -1220,6 +1220,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceFix => 'Sửa';
 
   @override
+  String activityActionFor(String action, String subject) {
+    return '$action: $subject';
+  }
+
+  @override
   String healthActionFor(String action, String feature) {
     return '$action $feature';
   }

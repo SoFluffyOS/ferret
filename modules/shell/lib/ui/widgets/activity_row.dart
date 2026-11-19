@@ -199,6 +199,7 @@ class ActivityRow extends StatelessWidget {
                           Spacing.h8,
                           ActivityTextAction(
                             action: action,
+                            subject: item.title,
                             filled: holdsPrimary,
                             isShown: showsLinks,
                             reachesDown: linksBesideDetail,
@@ -217,6 +218,7 @@ class ActivityRow extends StatelessWidget {
                       for (final action in textActions)
                         ActivityTextAction(
                           action: action,
+                          subject: item.title,
                           filled: holdsPrimary,
                           isShown: showsLinks,
                         ),

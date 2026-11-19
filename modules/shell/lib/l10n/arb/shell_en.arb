@@ -926,6 +926,18 @@
     "description": "Link on a health row that opens the steps to fix it"
   },
   "deviceFix": "Fix",
+  "activityActionFor": "{action}: {subject}",
+  "@activityActionFor": {
+    "description": "What a screen reader says for an action on an Activity line, such as \"Open: IMG_2041.jpg from Pixel 9\".",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "subject": {
+        "type": "String"
+      }
+    }
+  },
   "healthActionFor": "{action} {feature}",
   "@healthActionFor": {
     "description": "What a screen reader says for How? or Fix on a feature's line, such as \"How? Messages\".",

@@ -1712,6 +1712,12 @@ abstract class ShellLocalizations {
   /// **'Fix'**
   String get deviceFix;
 
+  /// What a screen reader says for an action on an Activity line, such as "Open: IMG_2041.jpg from Pixel 9".
+  ///
+  /// In en, this message translates to:
+  /// **'{action}: {subject}'**
+  String activityActionFor(String action, String subject);
+
   /// What a screen reader says for How? or Fix on a feature's line, such as "How? Messages".
   ///
   /// In en, this message translates to:

@@ -1,5 +1,6 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
 
 class ActivityTextAction extends StatelessWidget {
@@ -9,6 +10,7 @@ class ActivityTextAction extends StatelessWidget {
     required this.filled,
     required this.isShown,
     this.reachesDown = false,
+    this.subject,
   });
 
   final ActivityAction action;
@@ -21,11 +23,23 @@ class ActivityTextAction extends StatelessWidget {
   /// goes on below them. Among buttons it is centred like they are.
   final bool reachesDown;
 
+  /// The line's title, so a screen reader tells this line's "Open" from
+  /// another's.
+  final String? subject;
+
   @override
   Widget build(BuildContext context) {
+    final spoken = switch (subject) {
+      final subject? => context.shellL10n.activityActionFor(
+        action.label,
+        subject,
+      ),
+      null => null,
+    };
     if (action.primary) {
       return RowActionButton(
         label: action.label,
+        semanticLabel: spoken,
         isPrimary: filled,
         onPressed: action.onPressed,
       );
@@ -39,6 +53,7 @@ class ActivityTextAction extends StatelessWidget {
       alwaysIncludeSemantics: true,
       child: TextLink(
         label: action.label,
+        semanticLabel: spoken,
         onTap: action.onPressed,
         alignment: switch (reachesDown) {
           true => Alignment.topCenter,

@@ -21,4 +21,26 @@ void main() {
     expect(find.bySemanticsLabel('How? Messages'), findsOneWidget);
     semantics.dispose();
   });
+
+  testWidgets("an Activity line's Open says which line it is on", (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      testApp(
+        ActivityTextAction(
+          action: ActivityAction(label: 'Open', onPressed: () {}),
+          filled: false,
+          isShown: true,
+          subject: 'IMG_2041.jpg from Pixel 9',
+        ),
+      ),
+    );
+
+    expect(
+      find.bySemanticsLabel('Open: IMG_2041.jpg from Pixel 9'),
+      findsOneWidget,
+    );
+    semantics.dispose();
+  });
 }

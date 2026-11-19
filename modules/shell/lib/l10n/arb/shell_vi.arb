@@ -270,6 +270,7 @@
   "deviceMay": "{device} được phép",
   "deviceHow": "Cách làm?",
   "deviceFix": "Sửa",
+  "activityActionFor": "{action}: {subject}",
   "healthActionFor": "{action} {feature}",
   "devicePairedOn": "Đã ghép đôi vào {date}",
   "deviceNothingWorks": "Chưa có gì để hiện. Hãy giữ Ferret mở trên {device}.",

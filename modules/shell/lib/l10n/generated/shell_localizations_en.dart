@@ -1224,6 +1224,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceFix => 'Fix';
 
   @override
+  String activityActionFor(String action, String subject) {
+    return '$action: $subject';
+  }
+
+  @override
   String healthActionFor(String action, String feature) {
     return '$action $feature';
   }

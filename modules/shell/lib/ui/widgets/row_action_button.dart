@@ -10,6 +10,7 @@ class RowActionButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.isPrimary = false,
+    this.semanticLabel,
   });
 
   final String label;
@@ -17,6 +18,9 @@ class RowActionButton extends StatelessWidget {
 
   /// The one real next step on the screen; every other one is outlined.
   final bool isPrimary;
+
+  /// What a screen reader says instead of [label].
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,7 @@ class RowActionButton extends StatelessWidget {
       },
       onPressed: onPressed,
       enable: onPressed != null,
+      semanticLabel: semanticLabel,
       mainAxisSize: .min,
       // It sits a card's padding from the card's corner, where a curve of
       // its own would be none at all: a capsule.
@@ -37,6 +42,10 @@ class RowActionButton extends StatelessWidget {
       ),
       child: Text(
         label,
+        semanticsLabel: switch (semanticLabel) {
+          null => null,
+          _ => '',
+        },
         maxLines: 1,
         overflow: .ellipsis,
         style: context.fluffyTheme.typography.caption1,

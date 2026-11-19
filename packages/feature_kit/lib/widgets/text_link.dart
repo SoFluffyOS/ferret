@@ -12,6 +12,7 @@ class TextLink extends StatelessWidget {
     required this.onTap,
     this.style,
     this.alignment = Alignment.center,
+    this.semanticLabel,
   });
 
   final String label;
@@ -25,6 +26,10 @@ class TextLink extends StatelessWidget {
   /// space below, so a row of text doesn't grow for it.
   final AlignmentGeometry alignment;
 
+  /// What a screen reader says instead of [label], when several links on
+  /// a screen share the same words.
+  final String? semanticLabel;
+
   /// The least a pointer target should be (WCAG 2.2, 2.5.8).
   static double get minHeight => Spacing.d24;
 
@@ -34,6 +39,7 @@ class TextLink extends StatelessWidget {
 
     return Tappable(
       onTap: onTap,
+      semanticLabel: semanticLabel,
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: minHeight),
         child: Padding(
@@ -44,6 +50,10 @@ class TextLink extends StatelessWidget {
             heightFactor: 1,
             child: Text(
               label,
+              semanticsLabel: switch (semanticLabel) {
+                null => null,
+                _ => '',
+              },
               style: style.copyWith(color: context.palette.link),
             ),
           ),
