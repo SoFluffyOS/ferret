@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/privacy_line.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -78,11 +77,7 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
       ),
       child: Column(
         children: [
-          Icon(
-            LucideIcons.arrowLeftRight,
-            size: Spacing.d36,
-            color: palette.accent,
-          ),
+          FerretLogo(size: Spacing.d64),
           Spacing.v16,
           Text(
             l10n.welcomeTitle,
