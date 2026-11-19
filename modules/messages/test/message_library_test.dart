@@ -1,3 +1,5 @@
+import 'package:core/core.dart';
+import 'package:engine/engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messages/messages.dart';
 import 'package:protocol/messages.dart';
@@ -227,6 +229,23 @@ void main() {
 
     expect(store.files, isEmpty);
     expect(devices.library.hasHistory(phoneId), isFalse);
+  });
+
+  test('a phone that was unpaired takes its saved texts with it', () async {
+    final store = MemoryCacheStore();
+    await start(store: store);
+    await devices.library.flush();
+    final trust = await TrustStore.open(MemorySecretStore());
+
+    await devices.library.forgetUnpaired(trust);
+    expect(store.files, contains(phoneId));
+
+    await trust.forget(
+      ForgottenDevice(id: phoneId, at: DateTime(2026), by: .here),
+    );
+    await devices.library.forgetUnpaired(trust);
+
+    expect(store.files, isEmpty);
   });
 
   test('connecting syncs the first page once', () async {

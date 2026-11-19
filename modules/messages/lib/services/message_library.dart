@@ -342,6 +342,17 @@ class MessageLibrary {
     _emit(LibraryChanged(deviceId));
   }
 
+  /// Deletes the saved texts of every phone [trust] has forgotten since:
+  /// unpairing a phone takes its texts off this computer too.
+  Future<void> forgetUnpaired(TrustStore trust) async {
+    final forgotten = {for (final device in trust.forgotten) device.id};
+    for (final deviceId in deviceIds) {
+      if (forgotten.contains(deviceId) && trust[deviceId] == null) {
+        await forget(deviceId);
+      }
+    }
+  }
+
   Future<void> forgetAll() async {
     for (final deviceId in [..._caches.keys]) {
       await forget(deviceId);

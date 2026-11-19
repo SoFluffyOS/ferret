@@ -48,6 +48,7 @@ class MessagesFeatureUi extends FeatureUi {
   final MessagesFeature feature;
 
   IncomingNotices? _notices;
+  StreamSubscription<List<TrustedDevice>>? _trustChanges;
   CardViewModel? _card;
   FeatureChanges? _changes;
   Listenable? _uiChanges;
@@ -87,6 +88,11 @@ class MessagesFeatureUi extends FeatureUi {
     await initializeDateFormatting();
 
     final library = feature.library;
+    final trust = context.engine.trustStore;
+    await library.forgetUnpaired(trust);
+    _trustChanges = trust.changes.listen(
+      (_) => unawaited(library.forgetUnpaired(trust)),
+    );
     final notices = IncomingNotices(
       library: library,
       notifier: context.notifier,
@@ -456,6 +462,7 @@ class MessagesFeatureUi extends FeatureUi {
 
   /// Stops showing notices.
   Future<void> dispose() async {
+    await _trustChanges?.cancel();
     await _notices?.stop();
     _notices = null;
     _card?.dispose();
