@@ -99,7 +99,7 @@ private struct ShareRow: View {
     }
     .buttonStyle(.plain)
     .background(
-      RoundedRectangle(cornerRadius: 8)
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
         .fill(Color.accentColor.opacity(isHovered ? 0.16 : 0.06))
     )
     .onHover { isHovered = $0 }
