@@ -67,6 +67,10 @@ class _DoctorPageState extends State<DoctorPage> {
     final l10n = context.shellL10n;
     final here = l10n.here(engine.device);
     final fixes = {for (final check in _checks) ...check.fixes};
+    final realFixes = [
+      for (final fix in fixes)
+        if (!_quietFixes.contains(fix)) fix,
+    ];
     final networkIsFine = _shown(
       _checks,
     ).every((check) => check.status == .ok);
@@ -110,25 +114,58 @@ class _DoctorPageState extends State<DoctorPage> {
           ),
         ),
         Spacing.v16,
-        Button(
-          variant: .primary,
-          label: l10n.doctorTryAgainPrimary,
-          onPressed: _run,
-        ),
-        Spacing.v8,
-        for (final fix in fixes.where((fix) => fix != .tryAgain))
+        for (final (index, fix) in realFixes.indexed)
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
             child: Button(
-              variant: .ghost,
+              variant: switch (index) {
+                0 => .primary,
+                _ => .ghost,
+              },
               label: _fixLabel(l10n, fix),
               onPressed: () => _apply(fix),
             ),
           ),
-        Button(variant: .ghost, label: l10n.doctorFixCopy, onPressed: _copy),
+        Button(
+          variant: switch (realFixes.isEmpty) {
+            true => .primary,
+            false => .ghost,
+          },
+          label: l10n.doctorTryAgainPrimary,
+          onPressed: _run,
+        ),
+        Spacing.v8,
+        Wrap(
+          alignment: .center,
+          children: [
+            for (final fix in [
+              if (fixes.contains(DoctorFix.connectByAddress))
+                DoctorFix.connectByAddress,
+              DoctorFix.copyDiagnostics,
+            ])
+              Tappable(
+                onTap: () => _apply(fix),
+                child: Padding(
+                  padding: EdgeInsets.all(Spacing.d8),
+                  child: Text(
+                    _fixLabel(l10n, fix),
+                    style: typography.base2.copyWith(color: palette.link),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
+
+  /// Fixes for what is actually wrong, as buttons. Connect by address and
+  /// Copy diagnostics are for whoever helps, so they stay quiet links.
+  static const _quietFixes = {
+    DoctorFix.tryAgain,
+    DoctorFix.connectByAddress,
+    DoctorFix.copyDiagnostics,
+  };
 
   Future<void> _apply(DoctorFix fix) async {
     switch (fix) {

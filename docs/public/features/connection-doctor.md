@@ -16,7 +16,7 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 4. **Is the other device answering?** If not, open Ferret on it. On Android, battery saving may have stopped it: see [Ferret on Android](../getting-started/android.md).
 5. **Does it still know this device?** If it was reset or reinstalled, pair again.
 
-Each problem comes with a button that fixes it, or tells you exactly where to go.
+Each problem comes with a button that fixes it, or tells you exactly where to go. The real fix is the filled button. **Connect by address** and **Copy diagnostics** sit as small links at the bottom, for when you or a friend dig deeper.
 
 ## On Windows: the firewall
 
@@ -65,8 +65,8 @@ A device that answers slowly says **Connected · weak connection**. Things still
 
 ## Connect by address
 
-Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.
+Some networks block devices from finding each other but still let them connect. Tap the **Connect by address** link at the bottom and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.
 
 ## Report a problem
 
-**Copy diagnostics** puts a short report on your clipboard. It has no names, no addresses and no content, so it's safe to paste into an issue.
+The **Copy diagnostics** link at the bottom puts a short report on your clipboard. It has no names, no addresses and no content, so it's safe to paste into an issue.
