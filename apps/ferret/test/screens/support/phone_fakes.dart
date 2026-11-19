@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:ferret_notifications/ferret_notifications.dart';
 import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
+import 'package:protocol/notifications.dart';
 
 /// An Android phone whose notification access is still off, so the
 /// notifications feature offers its phone setup. Tests run on the macOS
@@ -74,4 +75,39 @@ class OffSmsSource implements SmsSource {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       throw UnsupportedError('Screens never read texts.');
+}
+
+/// A phone's app picker with a few apps, under [filter].
+AppPickerPage samplePicker(AppFilter filter) {
+  var settings = MirrorSettings(
+    appFilter: filter,
+    excludedPackages: ['com.duolingo'],
+    allowedPackages: ['org.thoughtcrime.securesms'],
+  );
+  final minutesAgo = DateTime.now().millisecondsSinceEpoch;
+  AppEntry app(String package, String name, int minutes) =>
+      AppEntry()..mergeFromProto3Json({
+        'package': package,
+        'name': name,
+        'lastPostedMs': switch (minutes) {
+          0 => '0',
+          _ => '${minutesAgo - minutes * 60000}',
+        },
+      });
+
+  return AppPickerPage(
+    deviceName: 'this phone',
+    load: () async => (
+      settings: settings,
+      apps: [
+        app('org.thoughtcrime.securesms', 'Signal', 3),
+        app('com.google.android.gm', 'Gmail', 12),
+        app('com.duolingo', 'Duolingo', 30),
+        app('com.whatsapp', 'WhatsApp', 90),
+        app('com.google.android.calendar', 'Calendar', 0),
+        app('com.spotify.music', 'Spotify', 0),
+      ],
+    ),
+    update: (update) async => settings = settings.withUpdate(update),
+  );
 }

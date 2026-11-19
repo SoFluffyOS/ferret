@@ -408,6 +408,21 @@ final screens = <Screen>[
     phone: true,
     tall: true,
   ),
+  Screen(
+    'phone_notifications_apps',
+    (tester, rig) async {
+      await rig.open(tester, samplePicker(.APP_FILTER_ALL));
+    },
+    phone: true,
+  ),
+  Screen(
+    'phone_notifications_apps_except',
+    (tester, rig) async {
+      await rig.open(tester, samplePicker(.APP_FILTER_ALL_EXCEPT));
+    },
+    phone: true,
+    tall: true,
+  ),
 ];
 
 // Layout overflows seen in the captures (see capturedOverflows) are written
