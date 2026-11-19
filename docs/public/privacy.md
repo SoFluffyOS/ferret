@@ -67,6 +67,7 @@ Checked against the code, line by line:
 |---|---|---|
 | Your device's name and kind | Your Wi-Fi only (mDNS and a broadcast), so your devices find each other | While Ferret runs and isn't paused |
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
+| Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
 | Files and links | Phones you share with through Quick Share or LocalSend, on your Wi-Fi | Only when you turn that on in Drop |
 | A download of Android's platform tools | `dl.google.com` | Only when you click **Download**, for [mirroring with a cable](features/mirroring-with-a-cable.md) |
 

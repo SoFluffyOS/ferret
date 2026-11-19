@@ -15,6 +15,7 @@ export 'package:shell/services/joined_summary.dart';
 export 'package:shell/services/language_preference.dart';
 export 'package:shell/services/linux_firewall.dart';
 export 'package:shell/services/local_device_factory.dart';
+export 'package:shell/services/low_battery_notices.dart';
 export 'package:shell/services/menubar_icon_inputs.dart';
 export 'package:shell/services/menubar_icon_resolver.dart';
 export 'package:shell/services/menubar_tooltips.dart';

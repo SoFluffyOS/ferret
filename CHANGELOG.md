@@ -101,3 +101,4 @@
 - 📷 **Your phone as a webcam**: open an Android phone on your computer and **Use Pixel 7 as a webcam** shows how to turn on the phone's own USB webcam mode (Android 14 and later).
 - 🔒 **Lock this computer from your phone**: tap **Lock MacBook Air**. The computer asks once (**Let Pixel 7 lock this Mac?**), then locks right away on macOS, Windows and Linux.
 - 🎤 **Your phone as a clicker**: **Present on MacBook Air** gives you a huge **Next**, **Previous**, **Black screen** and a timer. Works with PowerPoint, Keynote, Google Slides and PDFs.
+- 🔋 **Battery on your devices**: a phone or laptop shows **62%** next to **Connected**, with a bolt while it charges. At 15% the others say **Pixel 7 is at 15%**, once. Turn it off in **Settings → Advanced**.

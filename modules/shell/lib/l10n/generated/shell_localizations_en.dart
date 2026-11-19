@@ -2100,4 +2100,29 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get webcamNotOverWifi =>
       'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.';
+
+  @override
+  String batteryLevel(String percent) {
+    return 'Battery $percent';
+  }
+
+  @override
+  String batteryCharging(String percent) {
+    return 'Battery $percent, charging';
+  }
+
+  @override
+  String lowBatteryTitle(String device, int percent) {
+    return '$device is at $percent%';
+  }
+
+  @override
+  String get lowBatteryBody => 'Plug it in soon to keep it connected.';
+
+  @override
+  String get settingsLowBattery => 'Low battery notice';
+
+  @override
+  String get settingsLowBatteryBody =>
+      'Says once when one of your devices drops to 15%.';
 }

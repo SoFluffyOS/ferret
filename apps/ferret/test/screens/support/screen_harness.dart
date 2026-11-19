@@ -68,6 +68,10 @@ class ScreenRig {
   final FeatureContext featureContext;
   final SilentDiscovery _discovery;
   final List<FerretEngine> _others = [];
+
+  /// The engines paired with this one, such as the phone of
+  /// [pairConnectedPhone], newest last.
+  List<FerretEngine> get others => List.unmodifiable(_others);
   final GlobalKey boundaryKey = GlobalKey();
 
   NavigatorState? get navigator => featureContext.navigatorKey.currentState;

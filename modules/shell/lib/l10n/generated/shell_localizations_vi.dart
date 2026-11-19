@@ -2094,4 +2094,29 @@ class ShellLocalizationsVi extends ShellLocalizations {
   @override
   String get webcamNotOverWifi =>
       'Ferret chưa gửi camera của điện thoại qua Wi-Fi.';
+
+  @override
+  String batteryLevel(String percent) {
+    return 'Pin $percent';
+  }
+
+  @override
+  String batteryCharging(String percent) {
+    return 'Pin $percent, đang sạc';
+  }
+
+  @override
+  String lowBatteryTitle(String device, int percent) {
+    return '$device còn $percent%';
+  }
+
+  @override
+  String get lowBatteryBody => 'Hãy sạc sớm để thiết bị vẫn kết nối.';
+
+  @override
+  String get settingsLowBattery => 'Báo pin yếu';
+
+  @override
+  String get settingsLowBatteryBody =>
+      'Báo một lần khi một thiết bị của bạn còn 15%.';
 }

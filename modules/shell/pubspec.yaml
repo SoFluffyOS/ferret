@@ -17,6 +17,8 @@ dependencies:
     path: ../../packages/engine
   feature_kit:
     path: ../../packages/feature_kit
+  ferret_battery:
+    path: ../../packages/ferret_battery
   ferret_menubar:
     path: ../../packages/ferret_menubar
   ferret_system:

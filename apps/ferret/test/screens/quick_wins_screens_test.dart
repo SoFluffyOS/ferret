@@ -190,6 +190,34 @@ final _screens = <String, _Script>{
     );
     await rig.settle(tester);
   },
+  'battery': (tester, rig, features) async {
+    await rig.pairConnectedPhone(
+      tester,
+      phoneFeatures: phoneFeatures(),
+      name: 'Pixel 7',
+    );
+    await tester.runAsync(() async {
+      await rig.others.last.updatePresence(
+        Presence(userActive: true, batteryPercent: 62, charging: true),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await rig.settle(tester);
+  },
+  'battery_low': (tester, rig, features) async {
+    await rig.pairConnectedPhone(
+      tester,
+      phoneFeatures: phoneFeatures(),
+      name: 'Pixel 7',
+    );
+    await tester.runAsync(() async {
+      await rig.others.last.updatePresence(
+        Presence(userActive: true, batteryPercent: 14),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await rig.settle(tester);
+  },
   'webcam_help': (tester, rig, features) async {
     await rig.open(
       tester,

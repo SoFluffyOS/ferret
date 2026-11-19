@@ -354,6 +354,18 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   String get settingsAutoSendBodyWayland =>
       pseudo(super.settingsAutoSendBodyWayland);
   @override
+  String get recentClips => pseudo(super.recentClips);
+  @override
+  String get recentClipsMenu => pseudo(super.recentClipsMenu);
+  @override
+  String get recentClipsEmpty => pseudo(super.recentClipsEmpty);
+  @override
+  String get recentClipsNote => pseudo(super.recentClipsNote);
+  @override
+  String get recentCopiedHere => pseudo(super.recentCopiedHere);
+  @override
+  String get recentHidden => pseudo(super.recentHidden);
+  @override
   String sentTo(String devices) => pseudo(super.sentTo(devices));
   @override
   String sentWhenBack(String devices) => pseudo(super.sentWhenBack(devices));
@@ -381,6 +393,8 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
       pseudo(super.settingsSensitiveBody(minutes));
   @override
   String settingsHistory(int count) => pseudo(super.settingsHistory(count));
+  @override
+  String recentFrom(String device) => pseudo(super.recentFrom(device));
 }
 
 class PseudoDropLocalizations extends DropLocalizationsEn {

@@ -1559,5 +1559,35 @@
       }
     }
   },
-  "webcamNotOverWifi": "Ferret doesn't send a phone's camera over Wi-Fi yet."
+  "webcamNotOverWifi": "Ferret doesn't send a phone's camera over Wi-Fi yet.",
+  "batteryLevel": "Battery {percent}",
+  "@batteryLevel": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "batteryCharging": "Battery {percent}, charging",
+  "@batteryCharging": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lowBatteryTitle": "{device} is at {percent}%",
+  "@lowBatteryTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "lowBatteryBody": "Plug it in soon to keep it connected.",
+  "settingsLowBattery": "Low battery notice",
+  "settingsLowBatteryBody": "Says once when one of your devices drops to 15%."
 }

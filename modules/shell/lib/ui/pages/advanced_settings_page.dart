@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/battery_settings.dart';
 import 'package:shell/ui/frames/connect_by_hand_card.dart';
 import 'package:shell/ui/frames/global_shortcut_settings.dart';
 import 'package:shell/ui/frames/language_settings.dart';
@@ -12,7 +13,7 @@ import 'package:shell/ui/widgets/nav_row.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What few people need: this device's ID and address, whether pairings
-/// are shared, a network check, and quitting.
+/// are shared, the low battery notice, a network check, and quitting.
 class AdvancedSettingsPage extends StatelessWidget {
   const AdvancedSettingsPage({super.key});
 
@@ -31,6 +32,8 @@ class AdvancedSettingsPage extends StatelessWidget {
         const GlobalShortcutSettings(),
         Spacing.v24,
         const LanguageSettings(),
+        Spacing.v24,
+        const BatterySettings(),
         Spacing.v24,
         GroupedCard(
           children: [

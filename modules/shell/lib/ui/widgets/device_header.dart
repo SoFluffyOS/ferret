@@ -2,6 +2,8 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
+import 'package:shell/ui/widgets/battery_badge.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The top of a device's page: its icon, its name and the one thing that is
@@ -67,7 +69,7 @@ class DeviceHeader extends StatelessWidget {
                       child: SizedBox.square(dimension: Spacing.d8),
                     ),
                     Spacing.h6,
-                    Expanded(
+                    Flexible(
                       child: Text(
                         _statusLine(context.shellL10n),
                         style: typography.base2.copyWith(
@@ -76,6 +78,10 @@ class DeviceHeader extends StatelessWidget {
                         overflow: .ellipsis,
                       ),
                     ),
+                    if (status.battery case final battery?) ...[
+                      Spacing.h8,
+                      BatteryBadge(battery: battery),
+                    ],
                   ],
                 ),
               ],

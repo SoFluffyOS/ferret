@@ -2995,6 +2995,42 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.'**
   String get webcamNotOverWifi;
+
+  /// No description provided for @batteryLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery {percent}'**
+  String batteryLevel(String percent);
+
+  /// No description provided for @batteryCharging.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery {percent}, charging'**
+  String batteryCharging(String percent);
+
+  /// No description provided for @lowBatteryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is at {percent}%'**
+  String lowBatteryTitle(String device, int percent);
+
+  /// No description provided for @lowBatteryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Plug it in soon to keep it connected.'**
+  String get lowBatteryBody;
+
+  /// No description provided for @settingsLowBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery notice'**
+  String get settingsLowBattery;
+
+  /// No description provided for @settingsLowBatteryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Says once when one of your devices drops to 15%.'**
+  String get settingsLowBatteryBody;
 }
 
 class _ShellLocalizationsDelegate

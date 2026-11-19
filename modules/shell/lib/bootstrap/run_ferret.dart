@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_battery/ferret_battery.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
@@ -71,6 +72,7 @@ Future<void> runFerret({
     engine,
     isAtScreen: () => screen.isActive,
     atScreenChanges: screen.changes,
+    battery: BatterySource.current(),
   ).start();
   final notifier = PrivateNotifier(
     await SystemNotifier.create([
@@ -82,6 +84,12 @@ Future<void> runFerret({
       AppLocale.pick(ShellLocalizations.supportedLocales),
     ).privateCoverBody,
   );
+  LowBatteryNotices(
+    devices: engine.deviceChanges,
+    notifier: notifier,
+    settings: settings,
+    nameOf: engine.displayNameOf,
+  ).start();
   final ferretMenubar = FerretMenubar();
   final views = AppViews(
     menubar: ferretMenubar,

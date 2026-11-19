@@ -23,6 +23,8 @@ Tap a device on Home. Its page answers three questions.
 
 **What may it do here?** Under **Pixel 9 may** you find the switches that are about this one device, such as letting it control this Mac without asking.
 
+**How full is it?** Next to **Connected** a connected phone or laptop shows its battery, such as **62%**, with a bolt while it charges. When one of your devices drops to 15%, the others say so once: **Pixel 7 is at 15%**. Don't want that? Turn off **Settings → Advanced → Low battery notice**. Desktops have no battery, so they show none.
+
 **Details** holds the device ID, its address and the day you paired. **Forget Pixel 9** is at the bottom. See [Pair your devices](pairing.md).
 
 Not connected? The page says when it was last seen and offers **Why isn't it connecting?**. See [Fix connection](../features/connection-doctor.md).
@@ -40,7 +42,7 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 | **From your phone** | [Notifications](../features/notifications.md), [messages](../features/messages.md), [calls](../features/calls.md) and the phone's [screen](../features/mirroring.md). On the phone itself this row is **To your computer**. |
 | **Control** | [Control](../features/remote-input.md) a computer from your phone, [find](../features/find.md) a device, and Power-ups on Android. |
 | **Other apps** | [LocalSend](../interop/localsend.md), [Quick Share](../interop/quick-share.md), the [browser extension](browser.md) and an [iPhone](../iphone/index.md). |
-| **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Check my network** and **Quit Ferret**. |
+| **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Low battery notice**, **Check my network** and **Quit Ferret**. |
 | **About · Privacy** | The [privacy](../privacy.md) promise, **Show tips again** for the short hints you waved off, the version and the licence. |
 
 A row that can't apply to your device isn't there. No Power-ups on a Mac.

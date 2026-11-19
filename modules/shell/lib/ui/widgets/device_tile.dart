@@ -3,6 +3,8 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
+import 'package:shell/ui/widgets/battery_badge.dart';
 import 'package:shell/ui/widgets/pin_marker.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -120,7 +122,7 @@ class DeviceTile extends StatelessWidget {
                             child: SizedBox.square(dimension: Spacing.d6),
                           ),
                           Spacing.h6,
-                          Expanded(
+                          Flexible(
                             child: Text(
                               _statusLine(l10n),
                               style: typography.caption1.copyWith(
@@ -129,6 +131,10 @@ class DeviceTile extends StatelessWidget {
                               overflow: .ellipsis,
                             ),
                           ),
+                          if (status.battery case final battery?) ...[
+                            Spacing.h6,
+                            BatteryBadge(battery: battery),
+                          ],
                         ],
                       ),
                     ],

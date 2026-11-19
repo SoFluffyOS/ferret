@@ -1,3 +1,4 @@
+export 'package:shell/models/device_battery.dart';
 export 'package:shell/models/drop_kind.dart';
 export 'package:shell/models/drop_phase.dart';
 export 'package:shell/models/feature_access.dart';

@@ -483,5 +483,11 @@
   "webcamIntro": "Nhiều điện thoại Android chạy Android 14 trở lên tự làm webcam USB được. Không cần ứng dụng, không cần driver.",
   "webcamSteps": "1. Cắm {device} vào {here, select, mac{Mac này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} bằng cáp USB.\n2. Trên {device}, vuốt từ trên xuống và chạm vào thông báo USB.\n3. Chọn Webcam.\n4. Trong ứng dụng gọi video, chọn điện thoại làm camera.",
   "webcamMissing": "Không thấy Webcam trong danh sách? {device} chưa có tính năng này. Điện thoại Pixel từ Pixel 6 trở đi đều có.",
-  "webcamNotOverWifi": "Ferret chưa gửi camera của điện thoại qua Wi-Fi."
+  "webcamNotOverWifi": "Ferret chưa gửi camera của điện thoại qua Wi-Fi.",
+  "batteryLevel": "Pin {percent}",
+  "batteryCharging": "Pin {percent}, đang sạc",
+  "lowBatteryTitle": "{device} còn {percent}%",
+  "lowBatteryBody": "Hãy sạc sớm để thiết bị vẫn kết nối.",
+  "settingsLowBattery": "Báo pin yếu",
+  "settingsLowBatteryBody": "Báo một lần khi một thiết bị của bạn còn 15%."
 }

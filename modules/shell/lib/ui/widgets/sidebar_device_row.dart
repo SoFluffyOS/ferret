@@ -2,6 +2,8 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
+import 'package:shell/ui/widgets/battery_badge.dart';
 import 'package:shell/ui/widgets/pin_marker.dart';
 import 'package:shell/ui/widgets/sidebar_badge.dart';
 import 'package:shell/ui/widgets/sidebar_row.dart';
@@ -90,6 +92,10 @@ class SidebarDeviceRow extends StatelessWidget {
         children: [
           if (isPinned) ...[const PinMarker(), Spacing.h8],
           if (badge > 0) ...[SidebarBadge(badge), Spacing.h8],
+          if (status.battery case final battery? when !refusesDrop) ...[
+            BatteryBadge(battery: battery),
+            Spacing.h8,
+          ],
           if (refusesDrop)
             Text(
               l10n.dropTileOffline,
