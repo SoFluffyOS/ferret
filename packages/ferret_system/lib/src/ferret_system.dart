@@ -144,6 +144,16 @@ class FerretSystem implements SystemFlutterApi {
   Future<bool> requestIgnoreBatteryOptimizations() =>
       _androidValue(_api.requestIgnoreBatteryOptimizations, fallback: false);
 
+  /// Whether the user set Ferret's battery use to Restricted on Android,
+  /// which takes the service down as soon as the app leaves the screen.
+  Future<bool> isBackgroundRestricted() =>
+      _androidValue(_api.isBackgroundRestricted, fallback: false);
+
+  /// Opens Android's page for Ferret, where battery use is set. Returns
+  /// false when nothing opened.
+  Future<bool> openAppSettings() =>
+      _androidValue(_api.openAppSettings, fallback: false);
+
   Future<DeviceMaker> deviceMaker() async {
     if (!isAndroid) {
       return DeviceMaker.other;

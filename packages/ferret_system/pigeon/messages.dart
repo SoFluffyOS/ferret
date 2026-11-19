@@ -90,6 +90,14 @@ abstract class SystemHostApi {
   /// details page when there is none. Returns false when nothing opened.
   bool openMakerBatterySettings();
 
+  /// Whether the user set Ferret's battery use to Restricted. Android then
+  /// drops the service as soon as the app leaves the screen.
+  bool isBackgroundRestricted();
+
+  /// Opens Android's page for this app, where battery use is set. Returns
+  /// false when nothing opened.
+  bool openAppSettings();
+
   /// When Android stopped the service without being asked, in milliseconds
   /// since the epoch, over the last week.
   List<int> recentServiceStops();

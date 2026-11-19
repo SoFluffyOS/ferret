@@ -413,6 +413,16 @@ interface SystemHostApi {
    */
   fun openMakerBatterySettings(): Boolean
   /**
+   * Whether the user set Ferret's battery use to Restricted. Android then
+   * drops the service as soon as the app leaves the screen.
+   */
+  fun isBackgroundRestricted(): Boolean
+  /**
+   * Opens Android's page for this app, where battery use is set. Returns
+   * false when nothing opened.
+   */
+  fun openAppSettings(): Boolean
+  /**
    * When Android stopped the service without being asked, in milliseconds
    * since the epoch, over the last week.
    */
@@ -685,6 +695,36 @@ interface SystemHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               listOf(api.openMakerBatterySettings())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.isBackgroundRestricted$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.isBackgroundRestricted())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.openAppSettings$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.openAppSettings())
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

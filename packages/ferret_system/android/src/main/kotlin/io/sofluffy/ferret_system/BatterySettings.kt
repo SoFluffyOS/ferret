@@ -1,6 +1,7 @@
 package io.sofluffy.ferret_system
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
@@ -59,6 +60,18 @@ object BatterySettings {
         return power.isIgnoringBatteryOptimizations(context.packageName)
     }
 
+    /** The user chose Restricted: Android takes the service down outside the app. */
+    fun isBackgroundRestricted(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return false
+        }
+
+        val activities = context.getSystemService(ActivityManager::class.java) ?: return false
+        return activities.isBackgroundRestricted
+    }
+
+    fun openAppSettings(context: Context): Boolean = open(context, appDetails(context))
+
     /** Asks for the exemption Ferret declares; falls back to the full list. */
     @SuppressLint("BatteryLife")
     fun requestExemption(context: Context): Boolean {
@@ -78,12 +91,13 @@ object BatterySettings {
             }
         }
 
-        val details = Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.parse("package:${context.packageName}"),
-        )
-        return open(context, details)
+        return openAppSettings(context)
     }
+
+    private fun appDetails(context: Context): Intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.parse("package:${context.packageName}"),
+    )
 
     private fun open(context: Context, intent: Intent): Boolean {
         if (context !is android.app.Activity) {

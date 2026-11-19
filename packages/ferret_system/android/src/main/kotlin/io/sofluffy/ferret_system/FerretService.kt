@@ -19,6 +19,7 @@ class FerretService : Service() {
         running = this
         ServiceStops.onServiceCreated(this)
         FerretRuntime.ensureEngine(this)
+        ReconnectAlarm.update(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -43,6 +44,7 @@ class FerretService : Service() {
         if (running === this) {
             running = null
         }
+        ReconnectAlarm.update(this)
         super.onDestroy()
     }
 

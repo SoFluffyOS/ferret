@@ -382,6 +382,12 @@ protocol SystemHostApi {
   /// Opens the maker's own background or autostart settings, or the app's
   /// details page when there is none. Returns false when nothing opened.
   func openMakerBatterySettings() throws -> Bool
+  /// Whether the user set Ferret's battery use to Restricted. Android then
+  /// drops the service as soon as the app leaves the screen.
+  func isBackgroundRestricted() throws -> Bool
+  /// Opens Android's page for this app, where battery use is set. Returns
+  /// false when nothing opened.
+  func openAppSettings() throws -> Bool
   /// When Android stopped the service without being asked, in milliseconds
   /// since the epoch, over the last week.
   func recentServiceStops() throws -> [Int64]
@@ -627,6 +633,36 @@ class SystemHostApiSetup {
       }
     } else {
       openMakerBatterySettingsChannel.setMessageHandler(nil)
+    }
+    /// Whether the user set Ferret's battery use to Restricted. Android then
+    /// drops the service as soon as the app leaves the screen.
+    let isBackgroundRestrictedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.isBackgroundRestricted\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isBackgroundRestrictedChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isBackgroundRestricted()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isBackgroundRestrictedChannel.setMessageHandler(nil)
+    }
+    /// Opens Android's page for this app, where battery use is set. Returns
+    /// false when nothing opened.
+    let openAppSettingsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.openAppSettings\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      openAppSettingsChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.openAppSettings()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      openAppSettingsChannel.setMessageHandler(nil)
     }
     /// When Android stopped the service without being asked, in milliseconds
     /// since the epoch, over the last week.

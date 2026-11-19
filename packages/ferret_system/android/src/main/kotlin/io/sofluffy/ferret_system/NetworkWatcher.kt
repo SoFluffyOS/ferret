@@ -23,6 +23,7 @@ class NetworkWatcher(
     private val main = Handler(Looper.getMainLooper())
     private val connectivity = context.getSystemService(ConnectivityManager::class.java)
     private val addresses = mutableMapOf<Network, List<String>>()
+    private val blocked = mutableMapOf<Network, Boolean>()
     private var initialNetwork: Network? = null
     private var watching = false
 
@@ -41,7 +42,21 @@ class NetworkWatcher(
         override fun onLost(network: Network) {
             main.post {
                 addresses.remove(network)
+                blocked.remove(network)
                 onChange(NetworkChange.LOST)
+            }
+        }
+
+        /**
+         * Android cut Ferret off the network (Doze, Data Saver, restricted
+         * battery use) and now lets it back on: connections made before are dead.
+         */
+        override fun onBlockedStatusChanged(network: Network, isBlocked: Boolean) {
+            main.post {
+                val wasBlocked = blocked.put(network, isBlocked) ?: false
+                if (wasBlocked && !isBlocked) {
+                    onChange(NetworkChange.AVAILABLE)
+                }
             }
         }
 
@@ -66,6 +81,12 @@ class NetworkWatcher(
                         onChange(NetworkChange.WAKE)
                     }
                 }
+                PowerManager.ACTION_DEVICE_LIGHT_IDLE_MODE_CHANGED -> {
+                    val power = context.getSystemService(PowerManager::class.java)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && power?.isDeviceLightIdleMode == false) {
+                        onChange(NetworkChange.WAKE)
+                    }
+                }
             }
         }
     }
@@ -86,6 +107,9 @@ class NetworkWatcher(
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                addAction(PowerManager.ACTION_DEVICE_LIGHT_IDLE_MODE_CHANGED)
+            }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(wakeReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
@@ -107,5 +131,6 @@ class NetworkWatcher(
         }
         context.unregisterReceiver(wakeReceiver)
         addresses.clear()
+        blocked.clear()
     }
 }

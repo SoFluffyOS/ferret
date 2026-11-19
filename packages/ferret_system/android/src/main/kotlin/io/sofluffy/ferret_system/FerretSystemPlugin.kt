@@ -166,6 +166,16 @@ class FerretSystemPlugin :
         return BatterySettings.openMakerSettings(target)
     }
 
+    override fun isBackgroundRestricted(): Boolean {
+        val appContext = context ?: return false
+        return BatterySettings.isBackgroundRestricted(appContext)
+    }
+
+    override fun openAppSettings(): Boolean {
+        val target = uiContext ?: return false
+        return BatterySettings.openAppSettings(target)
+    }
+
     override fun recentServiceStops(): List<Long> {
         val appContext = context ?: return emptyList()
         return ServiceStops.recent(appContext)
@@ -253,6 +263,10 @@ class FerretSystemPlugin :
 
     override fun onPauseChanged(pause: PauseMessage) {
         scope.launch { runCatching { flutterApi?.onPauseChanged(pause) } }
+    }
+
+    override fun onReconnectDue() {
+        scope.launch { runCatching { flutterApi?.onNetworkChange(NetworkChange.WAKE) } }
     }
 
     private companion object {

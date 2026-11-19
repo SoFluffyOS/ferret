@@ -162,6 +162,10 @@ public class FerretSystemPlugin: NSObject, FlutterPlugin, SystemHostApi {
 
     func openMakerBatterySettings() throws -> Bool { false }
 
+    func isBackgroundRestricted() throws -> Bool { false }
+
+    func openAppSettings() throws -> Bool { false }
+
     func recentServiceStops() throws -> [Int64] { [] }
 
     func canRequestAddTile() throws -> Bool { false }

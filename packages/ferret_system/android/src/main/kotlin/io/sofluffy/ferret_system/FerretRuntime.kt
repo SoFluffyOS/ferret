@@ -23,6 +23,9 @@ object FerretRuntime {
         fun onAction(action: SystemActionMessage)
 
         fun onPauseChanged(pause: PauseMessage)
+
+        /** Time to look for the user's devices again. */
+        fun onReconnectDue()
     }
 
     private const val MAX_QUEUED_ACTIONS = 8
@@ -90,12 +93,17 @@ object FerretRuntime {
         }
     }
 
+    fun reconnectDue() {
+        main.post { listener?.onReconnectDue() }
+    }
+
     fun updateStatus(context: Context, devices: List<String>) {
         if (devices == connectedDevices) {
             return
         }
 
         connectedDevices = devices
+        ReconnectAlarm.update(context)
         refreshSurfaces(context)
     }
 
@@ -132,6 +140,7 @@ object FerretRuntime {
 
         prefs.setPause(pause.paused, untilMs)
         PauseAlarm.schedule(context, untilMs)
+        ReconnectAlarm.update(context)
         refreshSurfaces(context)
         return true
     }

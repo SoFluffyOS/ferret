@@ -85,6 +85,12 @@ void main() {
       expect(await system.serviceStopsToday(now: now), 2);
     });
 
+    test('restricted battery use is reported', () async {
+      api.restricted = true;
+
+      expect(await system.isBackgroundRestricted(), isTrue);
+    });
+
     test('the maker comes from the manufacturer', () async {
       api.maker = 'Redmi';
 
@@ -103,6 +109,8 @@ void main() {
 
       expect(api.calls, isEmpty);
       expect(await system.isIgnoringBatteryOptimizations(), isTrue);
+      expect(await system.isBackgroundRestricted(), isFalse);
+      expect(await system.openAppSettings(), isFalse);
       expect(await system.requestAddTile(), AddTileResult.unsupported);
       expect(await system.pauseState(), PauseState.running);
       expect(await system.serviceStopsToday(), 0);
@@ -146,6 +154,7 @@ class _FakeApi extends SystemHostApi {
   PauseMessage? pause;
   List<int> stops = const [];
   String maker = 'Google';
+  bool restricted = false;
 
   @override
   Future<void> listenForActions() async => calls.add('listenForActions');
@@ -173,4 +182,7 @@ class _FakeApi extends SystemHostApi {
 
   @override
   Future<String> manufacturer() async => maker;
+
+  @override
+  Future<bool> isBackgroundRestricted() async => restricted;
 }
