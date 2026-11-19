@@ -100,6 +100,15 @@ final familyScreens = <FamilyScreen>[
     await rig.tapText(tester, 'iPhone');
   }),
   const FamilyScreen('window', _family, window: true),
+  FamilyScreen('window_pinned', (tester, rig) async {
+    await _family(tester, rig);
+    await tester.runAsync(
+      () => DevicePreferences(
+        rig.engine.settings,
+      ).setPinned(thinkpadId, pinned: true),
+    );
+    await rig.settle(tester);
+  }, window: true),
   FamilyScreen('window_search', (tester, rig) async {
     await _family(tester, rig);
     await addMoreFamily(tester, rig);
