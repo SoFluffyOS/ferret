@@ -34,6 +34,7 @@ class ClipEntry {
     this.skip = .none,
     this.onClipboard = false,
     this.redacted = false,
+    this.deliveredLater = false,
   });
 
   /// The clip. Its content is cleared once [redacted].
@@ -57,6 +58,10 @@ class ClipEntry {
   /// A private clip whose content was dropped after it expired.
   final bool redacted;
 
+  /// No device was connected when it was copied; it went out to
+  /// [deviceNames] when they came back.
+  final bool deliveredLater;
+
   String get id => item.id;
 
   bool get isSensitive => item.sensitive;
@@ -65,15 +70,22 @@ class ClipEntry {
 
   bool get hasContent => !redacted && skip != .sensitive;
 
-  ClipEntry copyWith({bool? onClipboard, ClipSkip? skip}) => ClipEntry(
+  ClipEntry copyWith({
+    bool? onClipboard,
+    ClipSkip? skip,
+    List<String>? deviceNames,
+    List<String>? deviceIds,
+    bool? deliveredLater,
+  }) => ClipEntry(
     item: item,
     direction: direction,
     at: at,
-    deviceNames: deviceNames,
-    deviceIds: deviceIds,
+    deviceNames: deviceNames ?? this.deviceNames,
+    deviceIds: deviceIds ?? this.deviceIds,
     skip: skip ?? this.skip,
     onClipboard: onClipboard ?? this.onClipboard,
     redacted: redacted,
+    deliveredLater: deliveredLater ?? this.deliveredLater,
   );
 
   /// The same entry with its content dropped, for private clips that expired.
@@ -92,5 +104,6 @@ class ClipEntry {
     skip: skip,
     onClipboard: onClipboard,
     redacted: true,
+    deliveredLater: deliveredLater,
   );
 }

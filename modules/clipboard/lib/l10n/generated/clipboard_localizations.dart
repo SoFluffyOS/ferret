@@ -115,6 +115,18 @@ abstract class ClipboardLocalizations {
   /// **'Copied here, no device connected'**
   String get sentNowhere;
 
+  /// No description provided for @sentWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a device. It goes to the first one that connects'**
+  String get sentWaiting;
+
+  /// No description provided for @sentWhenBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {devices} when it came back'**
+  String sentWhenBack(String devices);
+
   /// No description provided for @skippedSensitive.
   ///
   /// In en, this message translates to:

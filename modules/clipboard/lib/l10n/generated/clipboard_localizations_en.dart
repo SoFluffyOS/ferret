@@ -21,6 +21,15 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   String get sentNowhere => 'Copied here, no device connected';
 
   @override
+  String get sentWaiting =>
+      'Waiting for a device. It goes to the first one that connects';
+
+  @override
+  String sentWhenBack(String devices) {
+    return 'Sent to $devices when it came back';
+  }
+
+  @override
   String get skippedSensitive => 'Not synced: marked as private';
 
   @override

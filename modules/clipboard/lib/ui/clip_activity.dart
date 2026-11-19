@@ -48,7 +48,7 @@ ActivityItem _clip(
   return ActivityItem(
     id: 'clipboard.${entry.id}',
     icon: LucideIcons.clipboard,
-    title: _title(l10n, entry),
+    title: _title(l10n, entry, waiting: viewModel.isWaiting(entry)),
     detail: _detail(l10n, entry),
     deviceId: switch (entry.deviceIds) {
       [final only] => only,
@@ -69,8 +69,20 @@ ActivityItem _clip(
   );
 }
 
-String _title(ClipboardLocalizations l10n, ClipEntry entry) {
+String _title(
+  ClipboardLocalizations l10n,
+  ClipEntry entry, {
+  required bool waiting,
+}) {
   final devices = entry.deviceNames.join(', ');
+  if (waiting) {
+    return l10n.sentWaiting;
+  }
+
+  if (entry.deliveredLater && entry.direction == .sent) {
+    return l10n.sentWhenBack(devices);
+  }
+
   return switch (entry.skip) {
     .sensitive => l10n.skippedSensitive,
     .imagesOff => l10n.skippedImagesOff,

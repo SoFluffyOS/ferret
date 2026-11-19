@@ -23,6 +23,9 @@ class ClipboardViewModel extends ChangeNotifier {
   /// Newest first.
   List<ClipEntry> get history => feature.history;
 
+  /// Whether [entry] waits for a device to connect.
+  bool isWaiting(ClipEntry entry) => feature.isWaiting(entry);
+
   /// Whether a connected device would get a copy made now.
   bool get hasPeers => feature.hasPeers;
 

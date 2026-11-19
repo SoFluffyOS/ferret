@@ -84,6 +84,29 @@ void main() {
     expect(row.deviceId, 'pixelpixelpixelp');
   });
 
+  testWidgets('a copy made offline waits, then says where it went', (
+    tester,
+  ) async {
+    await start(tester);
+    host.sessions = [];
+
+    await tester.runAsync(() async {
+      clipboard.copy(const .text('the address'));
+      await settle();
+    });
+    expect(
+      activity().last.title,
+      'Waiting for a device. It goes to the first one that connects',
+    );
+
+    await tester.runAsync(() async {
+      host.sessions = [pixel];
+      feature.onSessionOpened(pixel);
+      await settle();
+    });
+    expect(activity().last.title, 'Sent to Pixel when it came back');
+  });
+
   testWidgets('a private clip never shows what it holds', (tester) async {
     await start(tester, settings: {ClipboardSettings.syncSensitiveKey: true});
 

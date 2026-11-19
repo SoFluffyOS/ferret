@@ -36,6 +36,10 @@ class ClipboardFeature extends Feature {
 
   final ClipboardPlatform Function() _createClipboard;
   final DateTime Function() _clock;
+
+  /// Ends "Waiting for a device" in Activity once the copy is too old to
+  /// send.
+  Timer? _waitTimer;
   final ClipCodec _codec;
   final PowerCapabilities Function() _createPower;
 
@@ -118,6 +122,7 @@ class ClipboardFeature extends Feature {
     _tierChanges = null;
     await _stopBackgroundWatching();
     await _stopWatching();
+    _waitTimer?.cancel();
     for (final timer in _expiryTimers.values) {
       timer.cancel();
     }
@@ -152,11 +157,53 @@ class ClipboardFeature extends Feature {
     }
 
     unawaited(
-      _push(latest.item, [session]).then(
-        (reached) =>
-            latest.reached.addAll(reached.map((s) => s.remoteDeviceId)),
-      ),
+      _push(latest.item, [session]).then((reached) {
+        latest.reached.addAll(reached.map((s) => s.remoteDeviceId));
+        if (reached.isEmpty) {
+          return;
+        }
+
+        _deliveredLater(latest.item.id, session);
+      }),
     );
+  }
+
+  /// Whether [entry] was copied here while no device was connected, and
+  /// still goes to the first one that connects within the expiry.
+  bool isWaiting(ClipEntry entry) {
+    if (entry.direction != .sent || entry.skip != .noDevices) {
+      return false;
+    }
+
+    final latest = _latestLocal;
+    if (latest == null || latest.item.id != entry.id) {
+      return false;
+    }
+
+    return _clock().difference(latest.at) <= settings.expiry;
+  }
+
+  /// Activity says where a clip that waited went, once it went.
+  void _deliveredLater(String id, Session session) {
+    final changed = _history.update(id, (entry) {
+      if (entry.deviceIds.contains(session.remoteDeviceId)) {
+        return entry;
+      }
+
+      final waited = entry.skip == .noDevices || entry.deliveredLater;
+      return entry.copyWith(
+        skip: switch (entry.skip) {
+          .noDevices => ClipSkip.none,
+          _ => entry.skip,
+        },
+        deviceNames: [...entry.deviceNames, _nameOf(session)],
+        deviceIds: [...entry.deviceIds, session.remoteDeviceId],
+        deliveredLater: waited,
+      );
+    });
+    if (changed) {
+      _changes.add(null);
+    }
   }
 
   @override
@@ -424,6 +471,8 @@ class ClipboardFeature extends Feature {
     );
 
     if (targets.isEmpty) {
+      _waitTimer?.cancel();
+      _waitTimer = Timer(settings.expiry, () => _changes.add(null));
       return .noDevices;
     }
 

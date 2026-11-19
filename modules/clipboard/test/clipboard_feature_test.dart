@@ -151,13 +151,20 @@ void main() {
 
         clipboard.copy(const .text('later'));
         await settle();
-        expect(feature.latest?.skip, ClipSkip.noDevices);
+        final waiting = feature.latest;
+        expect(waiting?.skip, ClipSkip.noDevices);
+        expect(feature.isWaiting(feature.history.first), isTrue);
 
         now = now.add(const Duration(seconds: 30));
         feature.onSessionOpened(pixel);
         await settle();
 
         expect(pixel.pushes.single.item.text, 'later');
+        final delivered = feature.history.single;
+        expect(delivered.skip, ClipSkip.none);
+        expect(delivered.deliveredLater, isTrue);
+        expect(delivered.deviceNames, ['Pixel']);
+        expect(feature.isWaiting(delivered), isFalse);
       },
     );
 
@@ -168,10 +175,12 @@ void main() {
       await settle();
 
       now = now.add(const Duration(minutes: 3));
+      expect(feature.isWaiting(feature.history.single), isFalse);
       feature.onSessionOpened(pixel);
       await settle();
 
       expect(pixel.pushes, isEmpty);
+      expect(feature.history.single.skip, ClipSkip.noDevices);
     });
 
     test('a failed send is reported, not hidden', () async {
