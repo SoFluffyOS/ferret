@@ -181,7 +181,7 @@ Request. The phone replies with CallCommandResult.
 Request. The phone replies with CallsStatus.
 
 
-### message `GetCallsStatus.CallsStatus`
+### message `CallsStatus`
 
 What the phone can do right now. Also sent on its own when it changes.
 
@@ -195,7 +195,7 @@ What the phone can do right now. Also sent on its own when it changes.
 | `can_read_log` | `bool` | 6 | The phone may read its call history. |
 | `can_read_contacts` | `bool` | 7 | The phone may look numbers up in its contacts. |
 
-### enum `GetCallsStatus.CallLogType`
+### enum `CallLogType`
 
 What a past call was.
 
@@ -207,7 +207,7 @@ What a past call was.
 | `CALL_LOG_TYPE_MISSED` | 3 |  |
 | `CALL_LOG_TYPE_REJECTED` | 4 | The phone's owner declined it. |
 
-### message `GetCallsStatus.CallLogEntry`
+### message `CallLogEntry`
 
 One past call.
 
@@ -220,7 +220,7 @@ One past call.
 | `date_ms` | `int64` | 5 | When the call happened, in the phone's clock. |
 | `duration_s` | `int64` | 6 | How long the call lasted, zero when it was not picked up. |
 
-### message `GetCallsStatus.GetCallLog`
+### message `GetCallLog`
 
 Request. The phone replies with CallLog.
 
@@ -228,7 +228,7 @@ Request. The phone replies with CallLog.
 |---|---|---|---|
 | `limit` | `uint32` | 1 | The most entries to send back, newest first. Zero means 50; the phone never sends more than 200. |
 
-### message `GetCallsStatus.CallLog`
+### message `CallLog`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -484,7 +484,7 @@ Asks the receiver to ring so someone can find it. Expects a `RingStatus` reply. 
 Asks the receiver to stop ringing. Expects a `RingStatus` reply.
 
 
-### enum `StopRingRequest.RingState`
+### enum `RingState`
 
 Whether a device rings.
 
@@ -494,7 +494,7 @@ Whether a device rings.
 | `RING_STATE_RINGING` | 1 |  |
 | `RING_STATE_STOPPED` | 2 |  |
 
-### enum `StopRingRequest.StopReason`
+### enum `StopReason`
 
 Why a ring stopped.
 
@@ -506,7 +506,7 @@ Why a ring stopped.
 | `STOP_REASON_STOPPED_REMOTELY` | 3 | A `StopRingRequest` arrived. |
 | `STOP_REASON_FAILED` | 4 | The device could not play a sound at all. |
 
-### message `StopRingRequest.RingStatus`
+### message `RingStatus`
 
 Where a ring stands. The reply to `RingRequest` and `StopRingRequest`, and sent without expecting a reply to each device that asked for the ring when it stops on the ringing device.
 
@@ -517,12 +517,12 @@ Where a ring stands. The reply to `RingRequest` and `StopRingRequest`, and sent 
 | `remaining_ms` | `uint32` | 3 | Milliseconds left until the ring stops on its own, while ringing. |
 | `muted` | `bool` | 4 | It rings, but without sound, because it is on silent or Do Not Disturb and may not override that. It still vibrates and shows a notice. |
 
-### message `StopRingRequest.GetRingInfo`
+### message `GetRingInfo`
 
 Asks what the receiver can do when rung. Expects a `RingInfo` reply.
 
 
-### message `StopRingRequest.GetRingInfo.RingInfo`
+### message `RingInfo`
 
 What the receiver can do when rung. The reply to `GetRingInfo`, and sent without expecting a reply when it changes, such as after a permission was granted.
 
@@ -636,7 +636,7 @@ What a device is playing right now: every media player it can see. Sent when som
 Asks a device for its current MediaState (feature "media"). The reply is a MediaState.
 
 
-### message `MediaStateRequest.MediaPlayer`
+### message `MediaPlayer`
 
 One media player, such as Spotify or a browser tab, and what it plays.
 
@@ -660,7 +660,7 @@ One media player, such as Spotify or a browser tab, and what it plays.
 | `actions` | `repeated MediaAction` | 16 |  |
 | `volume` | `float` | 17 | Player volume 0 to 1, or -1 when unknown. |
 
-### enum `MediaStateRequest.MediaPlaybackStatus`
+### enum `MediaPlaybackStatus`
 
 | Value | Number | Meaning |
 |---|---|---|
@@ -670,7 +670,7 @@ One media player, such as Spotify or a browser tab, and what it plays.
 | `MEDIA_PLAYBACK_STATUS_PLAYING` | 3 |  |
 | `MEDIA_PLAYBACK_STATUS_BUFFERING` | 4 |  |
 
-### enum `MediaStateRequest.MediaAction`
+### enum `MediaAction`
 
 | Value | Number | Meaning |
 |---|---|---|
@@ -683,7 +683,7 @@ One media player, such as Spotify or a browser tab, and what it plays.
 | `MEDIA_ACTION_SEEK` | 6 |  |
 | `MEDIA_ACTION_SET_VOLUME` | 7 |  |
 
-### message `MediaStateRequest.MediaCommand`
+### message `MediaCommand`
 
 Asks a device to control one of its players (feature "media"). The reply is a MediaCommandReply.
 
@@ -694,13 +694,13 @@ Asks a device to control one of its players (feature "media"). The reply is a Me
 | `position_ms` | `uint64` | 3 | For MEDIA_ACTION_SEEK. |
 | `volume` | `float` | 4 | For MEDIA_ACTION_SET_VOLUME, 0 to 1. |
 
-### message `MediaStateRequest.MediaCommandReply`
+### message `MediaCommandReply`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `result` | `MediaCommandResult` | 1 |  |
 
-### enum `MediaStateRequest.MediaCommandResult`
+### enum `MediaCommandResult`
 
 | Value | Number | Meaning |
 |---|---|---|
@@ -711,7 +711,7 @@ Asks a device to control one of its players (feature "media"). The reply is a Me
 | `MEDIA_COMMAND_RESULT_UNSUPPORTED` | 4 | The player can't do that action. |
 | `MEDIA_COMMAND_RESULT_FAILED` | 5 |  |
 
-### message `MediaStateRequest.MediaContinueRequest`
+### message `MediaContinueRequest`
 
 Asks a device to hand one of its players over (feature "media"): it pauses the player when pause_source is set and replies with a MediaContinueReply holding the item and the position it stopped at.
 
@@ -720,7 +720,7 @@ Asks a device to hand one of its players over (feature "media"): it pauses the p
 | `player_id` | `string` | 1 |  |
 | `pause_source` | `bool` | 2 |  |
 
-### message `MediaStateRequest.MediaContinueReply`
+### message `MediaContinueReply`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -807,7 +807,7 @@ What the source can do right now. Answers a `StatusRequest`, and is pushed witho
 Expects a `MessagesStatus` reply.
 
 
-### message `StatusRequest.ListConversations`
+### message `ListConversations`
 
 Asks for conversations, most recent first. Expects a `ConversationPage`.
 
@@ -816,14 +816,14 @@ Asks for conversations, most recent first. Expects a `ConversationPage`.
 | `before_date_ms` | `int64` | 1 | Only conversations whose last message is older than this; 0 for the newest. |
 | `limit` | `uint32` | 2 |  |
 
-### message `StatusRequest.ConversationPage`
+### message `ConversationPage`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `conversations` | `repeated Conversation` | 1 |  |
 | `has_more` | `bool` | 2 | There are older conversations. |
 
-### message `StatusRequest.ListMessages`
+### message `ListMessages`
 
 Asks for messages of one conversation, newest first. Expects a `MessagePage`.
 
@@ -834,7 +834,7 @@ Asks for messages of one conversation, newest first. Expects a `MessagePage`.
 | `skip_ids` | `repeated string` | 3 | Messages at exactly `before_date_ms` the asker already has, so pages never skip messages that share a date. |
 | `limit` | `uint32` | 4 |  |
 
-### message `StatusRequest.MessagePage`
+### message `MessagePage`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -842,7 +842,7 @@ Asks for messages of one conversation, newest first. Expects a `MessagePage`.
 | `messages` | `repeated Message` | 2 |  |
 | `has_more` | `bool` | 3 | There are older messages. |
 
-### message `StatusRequest.FetchAttachment`
+### message `FetchAttachment`
 
 Asks for one attachment in full. Expects an `AttachmentData`.
 
@@ -851,14 +851,14 @@ Asks for one attachment in full. Expects an `AttachmentData`.
 | `message_id` | `string` | 1 |  |
 | `part_id` | `string` | 2 |  |
 
-### message `StatusRequest.AttachmentData`
+### message `AttachmentData`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `mime` | `string` | 1 |  |
 | `data` | `bytes` | 2 |  |
 
-### enum `StatusRequest.SendFailure`
+### enum `SendFailure`
 
 Why a message wasn't sent.
 
@@ -872,7 +872,7 @@ Why a message wasn't sent.
 | `SEND_FAILURE_TIMEOUT` | 5 | The radio didn't confirm in time. |
 | `SEND_FAILURE_OTHER` | 6 |  |
 
-### message `StatusRequest.SendText`
+### message `SendText`
 
 Sends an SMS. Expects a `SendResult`.
 
@@ -882,7 +882,7 @@ Sends an SMS. Expects a `SendResult`.
 | `addresses` | `repeated string` | 2 |  |
 | `text` | `string` | 3 |  |
 
-### message `StatusRequest.SendResult`
+### message `SendResult`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -890,7 +890,7 @@ Sends an SMS. Expects a `SendResult`.
 | `failure` | `SendFailure` | 2 |  |
 | `thread_id` | `int64` | 3 | The conversation the message went to, when known. |
 
-### message `StatusRequest.MarkRead`
+### message `MarkRead`
 
 Marks a conversation as read. Expects a `MarkReadResult`.
 
@@ -898,13 +898,13 @@ Marks a conversation as read. Expects a `MarkReadResult`.
 |---|---|---|---|
 | `thread_id` | `int64` | 1 |  |
 
-### message `StatusRequest.MarkReadResult`
+### message `MarkReadResult`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `applied` | `bool` | 1 | The phone changed it. Android lets only the default messaging app mark SMS as read, so this is usually false; computers then keep it read themselves. |
 
-### message `StatusRequest.MessagesChanged`
+### message `MessagesChanged`
 
 New or changed messages and their conversations, pushed by the source without a reply. Only for changes seen while the session is open.
 
@@ -915,6 +915,122 @@ New or changed messages and their conversations, pushed by the source without a 
 
 ## `ferret.mirroring.v1`
 
+### enum `ControlStatus`
+
+Where control stands on the source.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CONTROL_STATUS_UNSPECIFIED` | 0 |  |
+| `CONTROL_STATUS_CAN_ASK` | 1 | The source can be controlled. A `ControlAsk` makes it ask its owner. |
+| `CONTROL_STATUS_ASKING` | 2 | The owner is being asked, for at most `ControlState.timeout_seconds`. |
+| `CONTROL_STATUS_ALLOWED` | 3 | The viewer may send `ControlInput`. |
+| `CONTROL_STATUS_DENIED` | 4 | The owner said no. The viewer may ask again later. |
+| `CONTROL_STATUS_TIMED_OUT` | 5 | The owner didn't answer in time. |
+| `CONTROL_STATUS_NEEDS_SETUP` | 6 | Nothing on the source can inject input until its owner sets it up there: the accessibility service is off and there are no power-ups. |
+| `CONTROL_STATUS_UNSUPPORTED` | 7 | The source can't be controlled at all, such as an iPhone. |
+| `CONTROL_STATUS_STOPPED` | 8 | The owner stopped control on the source. The viewer may ask again. |
+
+### enum `ControlKind`
+
+What the source can take while control is allowed.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CONTROL_KIND_UNSPECIFIED` | 0 |  |
+| `CONTROL_KIND_POINTER` | 1 | Taps, drags and scrolling: `PointerInput`. |
+| `CONTROL_KIND_KEYS` | 2 | Every `ferret.remote_input.v1.Key`, with modifiers. |
+| `CONTROL_KIND_TEXT` | 3 | Typed text. |
+| `CONTROL_KIND_BUTTONS` | 4 | The device's own buttons: `ButtonPress`. |
+
+### message `ControlState`
+
+Sent by the source after `StartAccept`, and again whenever control changes. Expects no reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `status` | `ControlStatus` | 1 |  |
+| `kinds` | `repeated ControlKind` | 2 | What the source takes right now, or would take once allowed. |
+| `timeout_seconds` | `uint32` | 3 | With `CONTROL_STATUS_ASKING`: how long the owner has to answer. |
+| `buttons` | `repeated ControlButton` | 4 | The buttons a `ButtonPress` can press. Empty without `CONTROL_KIND_BUTTONS`. |
+
+### message `ControlAsk`
+
+The viewer wants control. The source answers with `ControlState`: `ASKING` while its owner decides, then `ALLOWED`, `DENIED` or `TIMED_OUT`; `ALLOWED` at once for a viewer its owner always allows. Ignored while the source isn't showing its screen to this viewer.
+
+
+### message `ControlRelease`
+
+The viewer gives control back and only watches. The source answers with `ControlState` `CAN_ASK`.
+
+
+### enum `TouchPhase`
+
+What a pointer does.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `TOUCH_PHASE_UNSPECIFIED` | 0 |  |
+| `TOUCH_PHASE_DOWN` | 1 | A finger goes down at (`x`, `y`). |
+| `TOUCH_PHASE_MOVE` | 2 | The finger that is down moves to (`x`, `y`). |
+| `TOUCH_PHASE_UP` | 3 | The finger lifts at (`x`, `y`). |
+| `TOUCH_PHASE_CANCEL` | 4 | The touch is abandoned: nothing under it is activated. |
+| `TOUCH_PHASE_SCROLL` | 5 | The content under (`x`, `y`) scrolls by `scroll_x` and `scroll_y`. |
+
+### message `PointerInput`
+
+One step of a touch. Positions are fractions of the picture as the source sends it, in its current rotation: (0, 0) is the top left corner and (1, 1) the bottom right. The source clamps them to that range.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `phase` | `TouchPhase` | 1 |  |
+| `x` | `float` | 2 |  |
+| `y` | `float` | 3 |  |
+| `scroll_x` | `float` | 4 | `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is right. |
+| `scroll_y` | `float` | 5 | `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is down. |
+
+### enum `ControlButton`
+
+A button of the device itself.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CONTROL_BUTTON_UNSPECIFIED` | 0 |  |
+| `CONTROL_BUTTON_BACK` | 1 |  |
+| `CONTROL_BUTTON_HOME` | 2 |  |
+| `CONTROL_BUTTON_RECENTS` | 3 |  |
+| `CONTROL_BUTTON_NOTIFICATIONS` | 4 | Opens the notification shade. |
+| `CONTROL_BUTTON_POWER` | 5 | Turns the screen off; with power-ups it also turns it back on. |
+| `CONTROL_BUTTON_VOLUME_UP` | 6 |  |
+| `CONTROL_BUTTON_VOLUME_DOWN` | 7 |  |
+
+### message `ButtonPress`
+
+A press and release of one of the device's buttons.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `button` | `ControlButton` | 1 |  |
+
+### message `ControlEvent`
+
+One thing the viewer does.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `pointer` | `PointerInput` | 1 |  |
+| `key` | `ferret.remote_input.v1.KeyEvent` | 2 |  |
+| `text` | `ferret.remote_input.v1.TextInput` | 3 |  |
+| `button` | `ButtonPress` | 4 |  |
+
+### message `ControlInput`
+
+Sent by the viewer while control is allowed, in order. Expects no reply. The source drops it when control isn't allowed for this viewer, and takes at most 512 events from one batch.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `events` | `repeated ControlEvent` | 1 |  |
+
 ### enum `Codec`
 
 How the pictures are encoded.
@@ -924,6 +1040,16 @@ How the pictures are encoded.
 | `CODEC_UNSPECIFIED` | 0 |  |
 | `CODEC_H264` | 1 | H.264 video. `Frame.data` is one access unit in Annex-B form. |
 | `CODEC_JPEG` | 2 | A JPEG picture per frame, for viewers without a video decoder. Fewer frames per second and a smaller picture. |
+
+### enum `AudioCodec`
+
+How the source's sound is encoded.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `AUDIO_CODEC_UNSPECIFIED` | 0 |  |
+| `AUDIO_CODEC_OPUS` | 1 | Opus, timed at 48 kHz. `AudioFrame.data` is one Opus packet. |
+| `AUDIO_CODEC_PCM_S16LE` | 2 | Signed 16-bit little-endian samples, channels interleaved, for viewers without an Opus decoder. |
 
 ### message `StartRequest`
 
@@ -936,6 +1062,7 @@ Asks the source to show its screen. Expects a `StartPending` or `StartDeny` repl
 | `max_width` | `uint32` | 3 | The largest picture the viewer wants, in pixels. 0 leaves it to the source, which never sends more than 1920 on the long side. |
 | `max_height` | `uint32` | 4 |  |
 | `max_fps` | `uint32` | 5 | 0 leaves it to the source. |
+| `audio_codecs` | `repeated AudioCodec` | 6 | What the viewer can play of the source's sound, best first. Empty asks for pictures only. |
 
 ### message `StartPending`
 
@@ -953,6 +1080,19 @@ The owner said yes. A `StreamConfig` and `Frame`s follow until either side sends
 |---|---|---|---|
 | `version` | `uint32` | 1 | The version of these messages the source speaks. |
 | `codec` | `Codec` | 2 | The codec the source picked from `StartRequest.codecs`. |
+| `audio` | `AudioAnswer` | 3 | Whether sound comes with the pictures, for a viewer that asked. |
+| `audio_codec` | `AudioCodec` | 4 | With `AUDIO_ANSWER_SENDING`: the codec the source picked from `StartRequest.audio_codecs`. |
+
+### enum `AudioAnswer`
+
+What a source says to a viewer that asked for sound. Only what plays on the source is ever sent, never its microphone, and only while its screen is shown.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `AUDIO_ANSWER_UNSPECIFIED` | 0 | The source doesn't know about sound (an older build), or wasn't asked. |
+| `AUDIO_ANSWER_SENDING` | 1 | An `AudioConfig` and `AudioFrame`s follow. |
+| `AUDIO_ANSWER_OFF` | 2 | The source's owner hasn't turned sending sound on. |
+| `AUDIO_ANSWER_UNSUPPORTED` | 3 | The source can't capture what it plays, or can't encode any of `StartRequest.audio_codecs`. |
 
 ### enum `DenyReason`
 
@@ -1004,12 +1144,37 @@ One picture. Sent without expecting a reply.
 | `keyframe` | `bool` | 4 | The frame decodes on its own. After a gap, a viewer waits for one. |
 | `data` | `bytes` | 5 | H.264: one access unit in Annex-B form. JPEG: the picture. |
 
+### message `AudioConfig`
+
+How to play the sound that follows. The source sends it before the first `AudioFrame`, and again after a viewer came back from a dropped connection.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `codec` | `AudioCodec` | 1 |  |
+| `sample_rate` | `uint32` | 2 | Samples per second of each channel. |
+| `channels` | `uint32` | 3 | 1 or 2. With two, samples are interleaved left then right. |
+
+### message `AudioFrame`
+
+A few milliseconds of what plays on the source. Sent without expecting a reply. Apps on the source that don't allow their sound to be captured are simply not in it, and nothing is sent while the source is silent.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `sequence` | `uint64` | 1 | Goes up by one with every frame the source produced, including those it dropped because the connection backed up. |
+| `pts_us` | `int64` | 2 | When the sound was captured, in microseconds on the same clock as `Frame.pts_us`, so a viewer can keep sound and picture together. |
+| `data` | `bytes` | 3 | Opus: one packet. PCM: whole samples for every channel. |
+
+### message `AudioEnded`
+
+The source's sound stopped, such as when capturing it failed. The pictures go on. Sent without expecting a reply.
+
+
 ### message `KeyframeRequest`
 
 The viewer lost its place, such as after a decoding error, and asks for a frame that decodes on its own. Sent without expecting a reply.
 
 
-### enum `KeyframeRequest.StopReason`
+### enum `StopReason`
 
 Why mirroring ended.
 
@@ -1023,7 +1188,7 @@ Why mirroring ended.
 | `STOP_REASON_FAILED` | 5 | Capturing or encoding stopped working. |
 | `STOP_REASON_NOT_MIRRORING` | 6 | A frame or request arrived for a mirroring session that isn't running. |
 
-### message `KeyframeRequest.Stop`
+### message `Stop`
 
 Ends mirroring. Either side sends it, without expecting a reply. The source stops capturing at once.
 
@@ -1031,7 +1196,7 @@ Ends mirroring. Either side sends it, without expecting a reply. The source stop
 |---|---|---|---|
 | `reason` | `StopReason` | 1 |  |
 
-### message `KeyframeRequest.SourceState`
+### message `SourceState`
 
 Something about the source's screen changed while it is shared.
 
@@ -1039,7 +1204,7 @@ Something about the source's screen changed while it is shared.
 |---|---|---|---|
 | `screen_off` | `bool` | 1 | The screen is off: no new frames until it is on again. |
 
-### message `KeyframeRequest.Stats`
+### message `Stats`
 
 How the stream is doing. The viewer sends one about every second; the source answers each with its own, and uses them to pick the bitrate.
 
@@ -1159,7 +1324,7 @@ How the source mirrors notifications.
 Asks the source for its `MirrorSettings`. Expects a `MirrorSettings` reply.
 
 
-### message `MirrorSettingsRequest.AppEntry`
+### message `AppEntry`
 
 An app the person can pick in the app list.
 
@@ -1172,18 +1337,18 @@ An app the person can pick in the app list.
 | `is_messaging` | `bool` | 5 | A messaging app, such as Signal or WhatsApp. |
 | `last_posted_ms` | `int64` | 6 | When the app last posted a notification the source saw, in the source device's clock. 0 when unknown. |
 
-### message `MirrorSettingsRequest.AppListRequest`
+### message `AppListRequest`
 
 Asks the source for its apps. Expects an `AppListResponse` reply.
 
 
-### message `MirrorSettingsRequest.AppListRequest.AppListResponse`
+### message `AppListResponse`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `apps` | `repeated AppEntry` | 1 |  |
 
-### message `MirrorSettingsRequest.AppListRequest.AppChoice`
+### message `AppChoice`
 
 Turns one app on or off: under `APP_FILTER_ALL_EXCEPT` it changes `excluded_packages`, under `APP_FILTER_ONLY` `allowed_packages`. Turning an app off under `APP_FILTER_ALL` switches to `APP_FILTER_ALL_EXCEPT`.
 
@@ -1192,7 +1357,7 @@ Turns one app on or off: under `APP_FILTER_ALL_EXCEPT` it changes `excluded_pack
 | `package` | `string` | 1 |  |
 | `allowed` | `bool` | 2 |  |
 
-### message `MirrorSettingsRequest.AppListRequest.UpdateMirrorSettings`
+### message `UpdateMirrorSettings`
 
 Changes the source's settings. Expects a `MirrorSettings` reply.
 
@@ -1555,7 +1720,7 @@ Input from the controller, in order, without expecting a reply. The controller s
 Asks the computer to lock its screen now, as its own Lock Screen command does. Send it only to a computer whose `FeatureSupport` flags for this feature include "lock"; older computers don't know it. Expects a `LockReply`. The first time per device the computer asks its owner, so the reply can take as long as its consent timeout (60 seconds).
 
 
-### enum `LockRequest.LockResult`
+### enum `LockResult`
 
 What came of a `LockRequest`.
 
@@ -1569,7 +1734,7 @@ What came of a `LockRequest`.
 | `LOCK_RESULT_TURNED_OFF` | 5 | Its owner turned remote input off. |
 | `LOCK_RESULT_FAILED` | 6 | The computer tried and couldn't lock. |
 
-### message `LockRequest.LockReply`
+### message `LockReply`
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|

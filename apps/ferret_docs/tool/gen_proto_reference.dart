@@ -131,8 +131,11 @@ class _Type {
       };
       final type = _Type(match.group(1) ?? '', name, comment.join(' '));
       types.add(type);
-      stack.add(type);
       comment.clear();
+      if (!line.endsWith('}')) {
+        stack.add(type);
+      }
+
       continue;
     }
 
