@@ -33,7 +33,7 @@ List<ActivityItem> dropActivity(
           title: _title(l10n, texts, transfer),
           detail: _detail(l10n, texts, viewModel, transfer),
           at: transfer.startedAt,
-          pinned: transfer.status.isActive,
+          pinned: transfer.status.isActive || transfer.isPaused,
           progress: switch (transfer.status) {
             .transferring || .verifying => transfer.progress,
             _ => null,
@@ -105,6 +105,7 @@ ActivityItem _offer(
 }
 
 IconData _icon(Transfer transfer) => switch (transfer.status) {
+  .failed when transfer.isPaused => LucideIcons.pause,
   .failed => LucideIcons.triangleAlert,
   _ => switch (transfer.isOutgoing) {
     true => LucideIcons.arrowUp,
@@ -113,6 +114,7 @@ IconData _icon(Transfer transfer) => switch (transfer.status) {
 };
 
 FeatureTone _tone(Transfer transfer) => switch (transfer.status) {
+  .failed when transfer.isPaused => .warning,
   .failed => .danger,
   .cancelled => .muted,
   _ => .normal,
@@ -177,6 +179,20 @@ List<ActivityAction> _actions(
         label: l10n.actionCancel,
         onPressed: () => unawaited(viewModel.cancel(transfer)),
       ),
+    ];
+  }
+
+  if (transfer.isPaused) {
+    return [
+      ActivityAction(
+        label: l10n.actionCancel,
+        onPressed: () => unawaited(viewModel.cancel(transfer)),
+      ),
+      if (viewModel.canRetry(transfer))
+        ActivityAction(
+          label: l10n.actionTryNow,
+          onPressed: () => unawaited(viewModel.retry(transfer)),
+        ),
     ];
   }
 

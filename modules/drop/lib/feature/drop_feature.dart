@@ -240,7 +240,10 @@ class DropFeature extends Feature {
   void clearFinished() => registry.clearFinished();
 
   @override
-  void onSessionOpened(Session session) => _receiver.onSessionOpened(session);
+  void onSessionOpened(Session session) {
+    _receiver.onSessionOpened(session);
+    _sender.onSessionOpened(session);
+  }
 
   @override
   void onSessionClosed(Session session) => _receiver.onSessionClosed(session);

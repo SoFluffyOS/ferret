@@ -105,6 +105,8 @@ void main() {
     expect(onLaptop(sent.id)?.failure, TransferFailure.disconnected);
     expect(onPhone(sent.id)?.failure, TransferFailure.disconnected);
     expect(partFiles(phoneInbox), isNotEmpty);
+    expect(onLaptop(sent.id)?.isPaused, isTrue);
+    expect(onPhone(sent.id)?.isPaused, isTrue);
 
     link.connect();
     await until(() => onPhone(sent.id)?.status == .done);
@@ -120,6 +122,68 @@ void main() {
       await File(p.join(phoneInbox.path, 'movie.mp4')).readAsBytes(),
       await source.readAsBytes(),
     );
+  });
+
+  test('a send to a device that is away goes once it is back', () async {
+    await startLink();
+    final source = await randomFile(sources, 'notes.pdf', 5000);
+    link.drop();
+
+    final sent = await send([source]);
+    await until(() => onLaptop(sent.id)?.isPaused ?? false);
+    expect(onLaptop(sent.id)?.failure, TransferFailure.notConnected);
+
+    link.connect();
+    await until(() => onPhone(sent.id)?.status == .done);
+    await until(() => onLaptop(sent.id)?.status == .done);
+    expect(
+      await File(p.join(phoneInbox.path, 'notes.pdf')).readAsBytes(),
+      await source.readAsBytes(),
+    );
+  });
+
+  test(
+    'an offer cut off before its answer is asked again on reconnect',
+    () async {
+      await startLink(phoneSettings: {DropSettings.autoAccept: false});
+      final source = await randomFile(sources, 'plan.key', 2000);
+
+      final sent = await send([source]);
+      await until(() => onPhone(sent.id)?.needsAnswer ?? false);
+      link.drop();
+      await until(() => onLaptop(sent.id)?.isPaused ?? false);
+      expect(onPhone(sent.id)?.isPaused, isTrue);
+
+      link.connect();
+      await until(() => onPhone(sent.id)?.needsAnswer ?? false);
+      expect(onLaptop(sent.id)?.status, TransferStatus.waiting);
+      link.phone.feature.answer(sent.id, accept: true);
+      await until(() => onLaptop(sent.id)?.status == .done);
+      expect(
+        await File(p.join(phoneInbox.path, 'plan.key')).readAsBytes(),
+        await source.readAsBytes(),
+      );
+    },
+  );
+
+  test('a cancelled offer is not asked again', () async {
+    await startLink(phoneSettings: {DropSettings.autoAccept: false});
+    final source = await randomFile(sources, 'old.zip', 2000);
+
+    final sent = await send([source]);
+    await until(() => onPhone(sent.id)?.needsAnswer ?? false);
+    link.drop();
+    await until(() => onPhone(sent.id)?.isPaused ?? false);
+    await link.phone.feature.cancel(sent.id);
+    expect(onPhone(sent.id)?.status, TransferStatus.cancelled);
+
+    link.connect();
+    await until(
+      () =>
+          onLaptop(sent.id)?.status == .failed &&
+          onLaptop(sent.id)?.failure == TransferFailure.declined,
+    );
+    expect(onPhone(sent.id)?.needsAnswer, isFalse);
   });
 
   test('offering the same transfer again answers where to continue', () async {

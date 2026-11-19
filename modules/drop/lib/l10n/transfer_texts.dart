@@ -120,6 +120,10 @@ class TransferTexts {
 
   String failure(Transfer transfer) {
     final device = transfer.deviceName;
+    if (transfer.isPaused) {
+      return paused(transfer);
+    }
+
     return switch (transfer.failure) {
       TransferFailure.declined => l10n.failureDeclined(device),
       TransferFailure.timedOut => l10n.failureTimedOut(device),
@@ -148,6 +152,21 @@ class TransferTexts {
         false => l10n.failureProtocol(device),
       },
     };
+  }
+
+  /// A transfer that stopped because the device went away: how far it got,
+  /// and that it goes on by itself.
+  String paused(Transfer transfer) {
+    final device = transfer.deviceName;
+    if (transfer.bytesDone <= 0 || transfer.isText) {
+      return l10n.statusWaitingForDevice(device);
+    }
+
+    return l10n.statusPaused(
+      size(transfer.bytesDone),
+      size(transfer.totalBytes),
+      device,
+    );
   }
 
   /// What to know before accepting an offer from a device that isn't

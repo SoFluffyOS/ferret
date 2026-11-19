@@ -116,7 +116,9 @@ void main() {
     expect(find.text('Copy'), findsOneWidget);
   });
 
-  testWidgets('a failure says why in plain words', (tester) async {
+  testWidgets('a send cut off by the Wi-Fi waits for the device', (
+    tester,
+  ) async {
     await pumpCard(tester);
     await put(
       tester,
@@ -128,11 +130,10 @@ void main() {
     );
 
     expect(
-      find.text(
-        "Couldn't send to Pixel. It went offline. The file wasn't sent.",
-      ),
+      find.text('Waiting for Pixel. It goes as soon as Pixel is back.'),
       findsOneWidget,
     );
+    expect(find.text('Cancel'), findsOneWidget);
     expect(find.text('Try again'), findsNothing);
   });
 

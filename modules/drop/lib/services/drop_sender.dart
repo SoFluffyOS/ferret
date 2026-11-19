@@ -29,6 +29,7 @@ class DropSender {
     this.ackEvery = defaultAckEvery,
     this.offerTimeout = const Duration(minutes: 2),
     this.ackTimeout = const Duration(seconds: 60),
+    this.resumeGrace = const Duration(seconds: 3),
   });
 
   static const defaultChunkSize = 256 * 1024;
@@ -45,6 +46,11 @@ class DropSender {
   final int ackEvery;
   final Duration offerTimeout;
   final Duration ackTimeout;
+
+  /// How long a device that came back gets to ask to resume on its own
+  /// before this side offers again. An offer also resumes, but the
+  /// receiver knows best where it stopped.
+  final Duration resumeGrace;
 
   final Map<String, OutgoingJob> _jobs = {};
 
@@ -106,6 +112,34 @@ class DropSender {
     );
   }
 
+  /// [session]'s device is back: every send to it that paused because the
+  /// link dropped, or that started while it was away, goes on by itself.
+  void onSessionOpened(Session session) {
+    final paused = [
+      for (final job in _jobs.values)
+        if (job.deviceId == session.remoteDeviceId &&
+            !job.cancelled &&
+            (registry[job.id]?.isPaused ?? false))
+          job,
+    ];
+    if (paused.isEmpty) {
+      return;
+    }
+
+    unawaited(
+      Future<void>.delayed(resumeGrace, () async {
+        for (final job in paused) {
+          final stillPaused = registry[job.id]?.isPaused ?? false;
+          if (job.cancelled || !stillPaused || !_jobs.containsKey(job.id)) {
+            continue;
+          }
+
+          await retry(job.id);
+        }
+      }),
+    );
+  }
+
   /// The receiver came back after a dropped session and asks to continue.
   Future<void> onResumeRequest(Session session, ResumeRequest request) async {
     final job = _jobs[request.transferId];
@@ -125,6 +159,10 @@ class DropSender {
     }
 
     await job.stopped;
+    if (!_jobs.containsKey(job.id) || job.cancelled) {
+      return;
+    }
+
     _run(
       job,
       offer: false,

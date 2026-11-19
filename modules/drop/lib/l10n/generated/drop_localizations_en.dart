@@ -166,8 +166,26 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failureDisconnectedSending(String device) {
-    return 'Couldn\'t send to $device. It went offline. The file wasn\'t sent.';
+    return '$device went offline. It goes on when $device is back.';
   }
+
+  @override
+  String statusPaused(String done, String total, String device) {
+    return 'Paused at $done of $total. It goes on when $device is back.';
+  }
+
+  @override
+  String statusWaitingForDevice(String device) {
+    return 'Waiting for $device. It goes as soon as $device is back.';
+  }
+
+  @override
+  String noticePaused(String device) {
+    return 'Paused with $device';
+  }
+
+  @override
+  String get actionTryNow => 'Try now';
 
   @override
   String failureNotConnected(String device) {

@@ -108,12 +108,30 @@ void main() {
       sampleTransfer(
         direction: .outgoing,
         status: .failed,
-        failure: .disconnected,
+        failure: .storage,
       ),
     );
 
     expect(rows.single.title, 'photo.jpg to Pixel');
-    expect(rows.single.detail, contains('It went offline'));
+    expect(rows.single.detail, contains("couldn't save the file"));
+  });
+
+  test('a send cut off by the Wi-Fi is paused, not failed', () async {
+    final rows = await rowsAfter(
+      sampleTransfer(
+        direction: .outgoing,
+        status: .failed,
+        failure: .disconnected,
+        bytesDone: 1024 * 1024,
+      ),
+    );
+
+    expect(
+      rows.single.detail,
+      'Paused at 1 MB of 4 MB. It goes on when Pixel is back.',
+    );
+    expect(rows.single.pinned, isTrue);
+    expect(rows.single.actions, contains('Cancel'));
   });
 
   test('an offer waits under Needs you with its size, Decline and '

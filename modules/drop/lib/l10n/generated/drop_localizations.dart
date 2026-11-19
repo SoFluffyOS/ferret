@@ -313,8 +313,32 @@ abstract class DropLocalizations {
   /// No description provided for @failureDisconnectedSending.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t send to {device}. It went offline. The file wasn\'t sent.'**
+  /// **'{device} went offline. It goes on when {device} is back.'**
   String failureDisconnectedSending(String device);
+
+  /// No description provided for @statusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused at {done} of {total}. It goes on when {device} is back.'**
+  String statusPaused(String done, String total, String device);
+
+  /// No description provided for @statusWaitingForDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {device}. It goes as soon as {device} is back.'**
+  String statusWaitingForDevice(String device);
+
+  /// No description provided for @noticePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused with {device}'**
+  String noticePaused(String device);
+
+  /// No description provided for @actionTryNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Try now'**
+  String get actionTryNow;
 
   /// No description provided for @failureNotConnected.
   ///

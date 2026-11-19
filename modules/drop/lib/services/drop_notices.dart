@@ -179,6 +179,14 @@ class DropNotices {
         ),
       },
       .done => _doneNotice(id, transfer, texts),
+      .failed when transfer.isPaused => LocalNotice(
+        id: id,
+        channel: .transfers,
+        title: l10n.noticePaused(device),
+        body: texts.paused(transfer),
+        groupKey: transfer.deviceId,
+        silent: true,
+      ),
       .failed => LocalNotice(
         id: id,
         channel: .transfers,

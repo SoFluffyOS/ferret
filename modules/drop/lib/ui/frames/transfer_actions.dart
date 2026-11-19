@@ -70,6 +70,19 @@ List<TransferAction> transferActions(
           onPressed: () => onEnterPin(transfer),
         ),
       ],
+    (TransferStatus.failed, _, _) when transfer.isPaused => [
+      TransferAction(
+        label: l10n.actionCancel,
+        icon: LucideIcons.x,
+        onPressed: () => viewModel.cancel(transfer),
+      ),
+      if (viewModel.canRetry(transfer))
+        TransferAction(
+          label: l10n.actionTryNow,
+          icon: LucideIcons.rotateCw,
+          onPressed: () => viewModel.retry(transfer),
+        ),
+    ],
     (TransferStatus.failed, _, _) when viewModel.canRetry(transfer) => [
       TransferAction(
         label: l10n.actionRetry,

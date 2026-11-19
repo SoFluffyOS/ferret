@@ -49,6 +49,8 @@ class LinkedDevices {
       MemorySettingsStore({...phoneSettings}),
     );
     final link = LinkedDevices._(laptop, phone);
+    laptop.trustStore = await TrustStore.open(MemorySecretStore());
+    phone.trustStore = await TrustStore.open(MemorySecretStore());
     await laptop.feature.start(laptop);
     await phone.feature.start(phone);
     link.connect();
@@ -99,6 +101,9 @@ class LinkedDevice implements FeatureHost {
 
   @override
   final SettingsStore settings;
+
+  @override
+  late final TrustStore trustStore;
 
   LinkedSession? session;
   final StreamController<List<Session>> _sessionChanges = .broadcast();

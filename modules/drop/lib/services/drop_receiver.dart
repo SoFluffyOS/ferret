@@ -73,11 +73,21 @@ class DropReceiver {
         return _decline(id, .DECLINE_REASON_INVALID);
       }
 
-      return TransferAnswer(
-        transferId: id,
-        accepted: true,
-        fileIndex: known.files.length,
-      );
+      // Only a finished transfer is answered as complete. One that was
+      // cancelled stays so; one that never got an answer, such as an offer
+      // cut off by a dropped link, is asked again.
+      switch (known.status) {
+        case .done:
+          return TransferAnswer(
+            transferId: id,
+            accepted: true,
+            fileIndex: known.files.length,
+          );
+        case .cancelled:
+          return _decline(id, .DECLINE_REASON_DECLINED);
+        default:
+          break;
+      }
     }
 
     final transfer = Transfer(
@@ -259,6 +269,14 @@ class DropReceiver {
 
     final job = _jobs[id];
     if (job == null) {
+      if (registry[id]?.status == .done) {
+        return;
+      }
+
+      _set(
+        id,
+        (transfer) => transfer.copyWith(status: .cancelled, bytesPerSecond: 0),
+      );
       return;
     }
 

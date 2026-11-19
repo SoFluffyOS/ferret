@@ -86,6 +86,18 @@ class Transfer {
     return Duration(milliseconds: (seconds * 1000).round());
   }
 
+  /// Stopped only because the device went away: it goes on by itself, from
+  /// where it stopped, once the device is back. LocalSend and Quick Share
+  /// can't resume, so theirs never pause.
+  bool get isPaused => switch ((status, failure)) {
+    (
+      TransferStatus.failed,
+      TransferFailure.disconnected || TransferFailure.notConnected,
+    ) =>
+      !isLocalSend && !isQuickShare,
+    _ => false,
+  };
+
   /// Whether Retry can pick this transfer up again.
   bool get canRetry => switch (status) {
     TransferStatus.failed => switch (failure) {
