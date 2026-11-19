@@ -69,6 +69,9 @@ class _Nearby extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final isCollapsed = context.select<WindowNavViewModel, bool>(
+      (viewModel) => viewModel.isNearbyCollapsed,
+    );
     final l10n = context.shellL10n;
     final pairStyle = context.fluffyTheme.typography.caption1.copyWith(
       color: context.palette.link,
@@ -77,30 +80,33 @@ class _Nearby extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
-          child: SectionTitle(l10n.homeNearby),
+        SidebarHeader(
+          title: l10n.homeNearby,
+          isCollapsed: isCollapsed,
+          onToggle: context.read<WindowNavViewModel>().toggleNearby,
         ),
-        for (final peer in peers)
-          SidebarRow(
-            key: ValueKey(peer.deviceId),
-            label: peer.announce.name,
-            icon: deviceIconFor(
-              peer.announce.formFactor,
-              peer.announce.platform,
+        if (!isCollapsed)
+          for (final peer in peers)
+            SidebarRow(
+              key: ValueKey(peer.deviceId),
+              label: peer.announce.name,
+              icon: deviceIconFor(
+                peer.announce.formFactor,
+                peer.announce.platform,
+              ),
+              trailing: Text(l10n.nearbyPair, style: pairStyle),
+              onTap: onPair,
             ),
-            trailing: Text(l10n.nearbyPair, style: pairStyle),
-            onTap: onPair,
-          ),
-        for (final row in rows)
-          SidebarRow(
-            key: ValueKey(row.id),
-            label: row.title,
-            icon: row.icon,
-            tooltip: row.detail,
-            trailing: Text(row.actionLabel, style: pairStyle),
-            onTap: row.onAction,
-          ),
+        if (!isCollapsed)
+          for (final row in rows)
+            SidebarRow(
+              key: ValueKey(row.id),
+              label: row.title,
+              icon: row.icon,
+              tooltip: row.detail,
+              trailing: Text(row.actionLabel, style: pairStyle),
+              onTap: row.onAction,
+            ),
       ],
     );
   }

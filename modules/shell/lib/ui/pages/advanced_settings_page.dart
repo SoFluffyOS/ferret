@@ -25,24 +25,21 @@ class AdvancedSettingsPage extends StatelessWidget {
       backLabel: l10n.back,
       children: [
         ConnectByHandCard(engine: engine),
-        Spacing.v8,
+        Spacing.v24,
         PairingSettings(engine: engine),
-        Spacing.v8,
         const GlobalShortcutSettings(),
-        Spacing.v8,
-        SurfaceCard(
-          padding: EdgeInsets.symmetric(
-            horizontal: Spacing.d8,
-            vertical: Spacing.d4,
-          ),
-          child: NavRow(
-            title: l10n.settingsCheckNetwork,
-            onTap: () => Navigator.of(context).push(
-              ferretRoute<void>(
-                const DoctorPage(),
+        Spacing.v24,
+        GroupedCard(
+          children: [
+            NavRow(
+              title: l10n.settingsCheckNetwork,
+              onTap: () => Navigator.of(context).push(
+                ferretRoute<void>(
+                  const DoctorPage(),
+                ),
               ),
             ),
-          ),
+          ],
         ),
         Spacing.v24,
         Button(

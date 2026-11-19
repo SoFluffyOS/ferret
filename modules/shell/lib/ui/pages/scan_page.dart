@@ -37,8 +37,8 @@ class _ScanPageState extends State<ScanPage> {
           style: typography.body2.copyWith(color: palette.mutedText),
         ),
         Spacing.v12,
-        ClipRRect(
-          borderRadius: BorderRadius.circular(Spacing.d16),
+        ClipRSuperellipse(
+          borderRadius: Corners.radius(Corners.panel),
           child: AspectRatio(
             aspectRatio: 3 / 4,
             child: ReaderWidget(

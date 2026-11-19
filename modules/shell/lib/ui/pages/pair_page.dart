@@ -78,15 +78,13 @@ class _PairPageState extends State<PairPage> {
                 isPrimary: true,
               ),
               Spacing.v16,
-              SurfaceCard(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Spacing.d8,
-                  vertical: Spacing.d4,
-                ),
-                child: NavRow(
-                  title: l10n.pairEnterCode,
-                  onTap: () => _open(const OtherWaysPage()),
-                ),
+              GroupedCard(
+                children: [
+                  NavRow(
+                    title: l10n.pairEnterCode,
+                    onTap: () => _open(const OtherWaysPage()),
+                  ),
+                ],
               ),
             ],
             if (!isIphone) ...[
@@ -101,32 +99,26 @@ class _PairPageState extends State<PairPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+                padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
                 child: Text(
                   l10n.pairCantSeeSteps,
                   style: typography.base2.copyWith(color: palette.mutedText),
                 ),
               ),
               Spacing.v16,
-              SurfaceCard(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Spacing.d8,
-                  vertical: Spacing.d4,
-                ),
-                child: Column(
-                  children: [
-                    NavRow(title: l10n.pairShowCode, onTap: _pairWithQr),
-                    NavRow(
-                      title: l10n.pairEnterCode,
-                      onTap: () => _open(const OtherWaysPage()),
-                    ),
-                  ],
-                ),
+              GroupedCard(
+                children: [
+                  NavRow(title: l10n.pairShowCode, onTap: _pairWithQr),
+                  NavRow(
+                    title: l10n.pairEnterCode,
+                    onTap: () => _open(const OtherWaysPage()),
+                  ),
+                ],
               ),
             ],
             Spacing.v16,
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+              padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
               child: Row(
                 children: [
                   Expanded(

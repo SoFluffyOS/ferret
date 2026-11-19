@@ -54,6 +54,16 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
 
   @override
   Widget build(BuildContext context) {
+    // Lines of text stay readable however wide the view is.
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: PaneWidths.narrowContent),
+        child: _content(context),
+      ),
+    );
+  }
+
+  Widget _content(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;

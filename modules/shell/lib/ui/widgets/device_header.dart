@@ -24,17 +24,17 @@ class DeviceHeader extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        Spacing.d4,
+        Spacing.d0,
         Spacing.d8,
-        Spacing.d4,
+        Spacing.d0,
         Spacing.d16,
       ),
       child: Row(
         children: [
           DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: ShapeDecoration(
               color: palette.surface,
-              borderRadius: BorderRadius.circular(Spacing.d12),
+              shape: Corners.shape(Corners.card),
             ),
             child: Padding(
               padding: EdgeInsets.all(Spacing.d12),

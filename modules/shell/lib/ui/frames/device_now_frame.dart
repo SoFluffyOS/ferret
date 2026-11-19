@@ -46,6 +46,7 @@ class DeviceNowFrame extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(bottom: Spacing.d12),
           child: SurfaceCard(
+            padding: EdgeInsets.symmetric(vertical: Spacing.d6),
             child: Column(
               crossAxisAlignment: .stretch,
               children: [

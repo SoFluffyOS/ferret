@@ -7,8 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/frames/login_settings.dart';
-import 'package:shell/ui/widgets/widgets.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Android: keep running in the background, and start with the phone.
 /// Windows and Linux: start at login ([LoginSettings]).
@@ -46,31 +44,28 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.settingsBackground),
-        SurfaceCard(
-          child: Column(
-            children: [
-              SwitchRow(
-                title: l10n.settingsKeepRunning,
-                subtitle: l10n.settingsKeepRunningBody,
-                value: _keepRunning,
-                onChanged: (value) => _set(
-                  SystemBinding.backgroundServiceKey,
-                  value,
-                  () => _keepRunning = value,
-                ),
+        GroupedCard(
+          children: [
+            SettingSwitchRow(
+              title: l10n.settingsKeepRunning,
+              body: l10n.settingsKeepRunningBody,
+              value: _keepRunning,
+              onChanged: (value) => _set(
+                SystemBinding.backgroundServiceKey,
+                value,
+                () => _keepRunning = value,
               ),
-              Spacing.v12,
-              SwitchRow(
-                title: l10n.settingsStartOnBoot,
-                value: _startOnBoot,
-                onChanged: (value) => _set(
-                  SystemBinding.startOnBootKey,
-                  value,
-                  () => _startOnBoot = value,
-                ),
+            ),
+            SettingSwitchRow(
+              title: l10n.settingsStartOnBoot,
+              value: _startOnBoot,
+              onChanged: (value) => _set(
+                SystemBinding.startOnBootKey,
+                value,
+                () => _startOnBoot = value,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );

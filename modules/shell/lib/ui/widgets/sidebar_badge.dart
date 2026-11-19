@@ -19,9 +19,9 @@ class SidebarBadge extends StatelessWidget {
     };
 
     return DecoratedBox(
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: context.palette.accent,
-        borderRadius: BorderRadius.circular(Spacing.d10),
+        shape: const StadiumBorder(),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(

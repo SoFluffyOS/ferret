@@ -8,7 +8,7 @@ import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/about_page.dart';
 import 'package:shell/ui/pages/advanced_settings_page.dart';
 import 'package:shell/ui/pages/settings_group_page.dart';
-import 'package:shell/ui/widgets/widgets.dart';
+import 'package:shell/ui/pages/this_device_settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Settings as one short list: this device, then a row per group of
@@ -45,73 +45,20 @@ class SettingsPage extends StatelessWidget {
       backLabel: l10n.back,
       children: [
         ThisDeviceCard(engine: engine),
-        Spacing.v8,
-        FeatureChangesListener(
-          features: scope.features,
-          builder: (context) => _GroupRows(local: engine.device),
-        ),
-        BackgroundSettings(settings: engine.settings),
-        const DockSettings(),
-        Spacing.v8,
-        SurfaceCard(
-          padding: EdgeInsets.symmetric(
-            horizontal: Spacing.d8,
-            vertical: Spacing.d4,
-          ),
-          child: Column(
-            children: [
-              NavRow(
-                title: l10n.settingsAdvanced,
-                onTap: () => _open(context, const AdvancedSettingsPage()),
-              ),
-              NavRow(
-                title: l10n.settingsAbout,
-                onTap: () => _open(context, const AboutPage()),
-              ),
-            ],
-          ),
+        Spacing.v24,
+        SettingsListFrame(
+          onPick: (pick) => _open(context, switch (pick) {
+            ThisDevicePick() => const ThisDeviceSettingsPage(),
+            GroupPick(:final group) => SettingsGroupPage(group: group),
+            AdvancedPick() => const AdvancedSettingsPage(),
+            AboutPick() => const AboutPage(),
+          }),
+          between: [
+            BackgroundSettings(settings: engine.settings),
+            const DockSettings(),
+          ],
         ),
       ],
-    );
-  }
-}
-
-class _GroupRows extends StatelessWidget {
-  const _GroupRows({required this.local});
-
-  final LocalDevice local;
-
-  @override
-  Widget build(BuildContext context) {
-    final scope = ShellScope.of(context);
-    final l10n = context.shellL10n;
-    final rows = SettingsRow.from([
-      for (final feature in scope.features)
-        ...feature.settingsSections(context, scope.featureContext),
-    ]);
-    if (rows.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return SurfaceCard(
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.d8,
-        vertical: Spacing.d4,
-      ),
-      child: Column(
-        children: [
-          for (final row in rows)
-            NavRow(
-              title: l10n.settingsGroupTitle(row.group, local),
-              value: l10n.settingsRowValue(row),
-              attentionLabel: switch (row.needsAttention) {
-                true => l10n.settingsNeedsAttention,
-                false => null,
-              },
-              onTap: () => _open(context, SettingsGroupPage(group: row.group)),
-            ),
-        ],
-      ),
     );
   }
 }

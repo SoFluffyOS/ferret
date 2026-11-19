@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/frames/frames.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The part of Settings about this device itself: its name, and how Ferret
 /// runs on it. Next to the list in a window; on a phone these sit on
@@ -21,7 +20,6 @@ class ThisDeviceSettingsPage extends StatelessWidget {
       backLabel: l10n.back,
       children: [
         ThisDeviceCard(engine: engine),
-        Spacing.v8,
         BackgroundSettings(settings: engine.settings),
         const DockSettings(),
       ],

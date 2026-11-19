@@ -65,69 +65,73 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
       (false, false) => l10n.settingsShortcutBody,
     };
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.settingsShortcutTitle,
-                  style: typography.base1.copyWith(color: palette.text),
-                ),
-              ),
-              Spacing.h8,
-              Text(
-                value,
-                style: typography.base1.copyWith(color: palette.mutedText),
-              ),
-            ],
-          ),
-          Spacing.v4,
-          Text(
-            note,
-            style: typography.caption1.copyWith(
-              color: switch (_wasRefused && !_isRecording) {
-                true => palette.warning,
-                false => palette.mutedText,
-              },
-            ),
-          ),
-          Spacing.v12,
-          Wrap(
-            spacing: Spacing.d8,
-            runSpacing: Spacing.d8,
-            children: [
-              Button(
-                mainAxisSize: .min,
-                variant: .ghost,
-                label: l10n.settingsShortcutChange,
-                onPressed: switch (_isRecording) {
-                  true => null,
-                  false => () => unawaited(_record(menubar)),
-                },
-              ),
-              Button(
-                mainAxisSize: .min,
-                variant: .ghost,
-                label: switch (shortcut) {
-                  null => l10n.settingsShortcutTurnOn,
-                  _ => l10n.settingsShortcutTurnOff,
-                },
-                onPressed: switch (_isRecording) {
-                  true => null,
-                  false => () => unawaited(
-                    _use(menubar, switch (shortcut) {
-                      null => GlobalShortcut.fallback,
-                      _ => null,
-                    }),
+    // It brings the gap above it, so a Mac without a menubar shows none.
+    return Padding(
+      padding: EdgeInsets.only(top: PageInsets.group),
+      child: SurfaceCard(
+        child: Column(
+          crossAxisAlignment: .stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.settingsShortcutTitle,
+                    style: typography.base1.copyWith(color: palette.text),
                   ),
+                ),
+                Spacing.h8,
+                Text(
+                  value,
+                  style: typography.base1.copyWith(color: palette.mutedText),
+                ),
+              ],
+            ),
+            Spacing.v4,
+            Text(
+              note,
+              style: typography.caption1.copyWith(
+                color: switch (_wasRefused && !_isRecording) {
+                  true => palette.warning,
+                  false => palette.mutedText,
                 },
               ),
-            ],
-          ),
-        ],
+            ),
+            Spacing.v12,
+            Wrap(
+              spacing: Spacing.d8,
+              runSpacing: Spacing.d8,
+              children: [
+                Button(
+                  mainAxisSize: .min,
+                  variant: .ghost,
+                  label: l10n.settingsShortcutChange,
+                  onPressed: switch (_isRecording) {
+                    true => null,
+                    false => () => unawaited(_record(menubar)),
+                  },
+                ),
+                Button(
+                  mainAxisSize: .min,
+                  variant: .ghost,
+                  label: switch (shortcut) {
+                    null => l10n.settingsShortcutTurnOn,
+                    _ => l10n.settingsShortcutTurnOff,
+                  },
+                  onPressed: switch (_isRecording) {
+                    true => null,
+                    false => () => unawaited(
+                      _use(menubar, switch (shortcut) {
+                        null => GlobalShortcut.fallback,
+                        _ => null,
+                      }),
+                    ),
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

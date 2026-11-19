@@ -16,9 +16,9 @@ class WelcomeIntro extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        Spacing.d4,
+        PageInsets.row,
         Spacing.d12,
-        Spacing.d4,
+        PageInsets.row,
         Spacing.d4,
       ),
       child: Column(
@@ -29,9 +29,14 @@ class WelcomeIntro extends StatelessWidget {
             style: typography.title3.copyWith(color: palette.text),
           ),
           Spacing.v4,
-          Text(
-            l10n.welcomeNearbyBody,
-            style: typography.base2.copyWith(color: palette.mutedText),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: PaneWidths.narrowContent,
+            ),
+            child: Text(
+              l10n.welcomeNearbyBody,
+              style: typography.base2.copyWith(color: palette.mutedText),
+            ),
           ),
         ],
       ),

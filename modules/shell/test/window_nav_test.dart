@@ -356,13 +356,13 @@ void main() {
         'list, with its one action', (tester) async {
       await start(tester, const Size(1000, 720));
 
-      expect(find.text('NEARBY'), findsNothing);
+      expect(find.text('Nearby'), findsNothing);
 
       texts.near.add('Old tablet');
       texts.changes.notifyListeners();
       await tester.pump();
 
-      expect(find.text('NEARBY'), findsOneWidget);
+      expect(find.text('Nearby'), findsOneWidget);
       final row = find.widgetWithText(SidebarRow, 'Old tablet');
       expect(
         find.descendant(of: row, matching: find.text('Show screen')),
@@ -373,6 +373,54 @@ void main() {
       expect(texts.shown, ['Old tablet']);
     });
 
+    testWidgets('Nearby in the device list folds away, and stays folded', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+      texts.near.add('Old tablet');
+      texts.changes.notifyListeners();
+      await tester.pump();
+
+      await tester.tap(find.text('Nearby'));
+      await tester.pump();
+
+      expect(find.text('Nearby'), findsOneWidget);
+      expect(find.widgetWithText(SidebarRow, 'Old tablet'), findsNothing);
+      expect(
+        engine.settings.get<bool>(WindowNavViewModel.nearbyCollapsedKey),
+        isTrue,
+      );
+
+      await tester.tap(find.text('Nearby'));
+      await tester.pump();
+
+      expect(find.widgetWithText(SidebarRow, 'Old tablet'), findsOneWidget);
+    });
+
+    testWidgets('the pane has a toolbar that names it and hides the list', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+
+      expect(
+        find.descendant(
+          of: find.byType(PaneToolbarFrame),
+          matching: find.textContaining('Overview'),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(LucideIcons.panelLeftClose));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SidebarFrame), findsNothing);
+
+      await tester.tap(find.byIcon(LucideIcons.panelLeftOpen));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SidebarFrame), findsOneWidget);
+    });
+
     testWidgets('on a small view it is a line under Nearby on Home', (
       tester,
     ) async {
@@ -381,7 +429,7 @@ void main() {
       texts.changes.notifyListeners();
       await tester.pump();
 
-      expect(find.text('NEARBY'), findsOneWidget);
+      expect(find.text('Nearby'), findsOneWidget);
       final tile = find.widgetWithText(NearbyFeatureTile, 'Old tablet');
       expect(
         find.descendant(of: tile, matching: find.text('Cable')),
@@ -437,6 +485,7 @@ void main() {
 
       await press(LogicalKeyboardKey.comma);
       await press(LogicalKeyboardKey.keyB);
+      await tester.pumpAndSettle();
       expect(find.byType(SidebarFrame), findsNothing);
       expect(find.byType(SettingsPage), findsOneWidget);
     });
@@ -452,18 +501,18 @@ void main() {
       expect(find.byType(SettingsSplitFrame), findsOneWidget);
       expect(find.byType(ThisDeviceSettingsPage), findsOneWidget);
 
-      await tester.tap(find.widgetWithText(SidebarRow, 'Advanced'));
+      await tester.tap(find.widgetWithText(NavRow, 'Advanced'));
       await tester.pump();
 
       expect(find.byType(AdvancedSettingsPage), findsOneWidget);
       expect(find.byType(ThisDeviceSettingsPage), findsNothing);
       expect(
-        find.widgetWithText(SidebarRow, 'About · Privacy'),
+        find.widgetWithText(NavRow, 'About · Privacy'),
         findsOneWidget,
       );
       expect(
-        tester.widget<SidebarRow>(find.widgetWithText(SidebarRow, 'Advanced')),
-        isA<SidebarRow>().having((row) => row.isSelected, 'isSelected', true),
+        tester.widget<NavRow>(find.widgetWithText(NavRow, 'Advanced')),
+        isA<NavRow>().having((row) => row.isSelected, 'isSelected', true),
       );
     });
 

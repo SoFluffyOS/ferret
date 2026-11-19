@@ -134,6 +134,18 @@ abstract final class WindowShortcuts {
     ].join('+');
   }
 
+  /// [label] with the keys that do the same after it, for a tooltip:
+  /// "Add a device (⌘N)". Just [label] where there are no keys.
+  static String hint(
+    String label,
+    SingleActivator? activator,
+    TargetPlatform platform,
+  ) => switch (activator) {
+    final SingleActivator activator =>
+      '$label (${describe(activator, platform)})',
+    null => label,
+  };
+
   static String _keyName(SingleActivator activator) =>
       switch (activator.trigger) {
         LogicalKeyboardKey.arrowDown => '↓',

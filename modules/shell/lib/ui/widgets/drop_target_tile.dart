@@ -87,9 +87,7 @@ class DropTargetTile extends StatelessWidget {
       child: DecoratedBox(
         decoration: ShapeDecoration(
           color: fill,
-          shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(Spacing.d12),
-          ),
+          shape: Corners.shape(Corners.card),
         ),
         child: Padding(
           padding: EdgeInsets.all(Spacing.d16),

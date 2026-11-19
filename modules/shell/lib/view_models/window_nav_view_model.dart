@@ -23,6 +23,7 @@ class WindowNavViewModel extends ChangeNotifier {
     _selection = WindowDestination.parse(settings?.get<String>(selectionKey));
     _isSidebarHidden = settings?.get<bool>(sidebarHiddenKey) ?? false;
     _isActivityPaneHidden = settings?.get<bool>(activityPaneHiddenKey) ?? false;
+    _isNearbyCollapsed = settings?.get<bool>(nearbyCollapsedKey) ?? false;
     _host.addListener(notifyListeners);
   }
 
@@ -35,6 +36,9 @@ class WindowNavViewModel extends ChangeNotifier {
   /// Settings key that says the person hid the Activity pane.
   static const activityPaneHiddenKey = 'shell.window.activity_pane_hidden';
 
+  /// Settings key that says the person folded Nearby in the device list.
+  static const nearbyCollapsedKey = 'shell.window.nearby_collapsed';
+
   /// The navigator of this view's content pane.
   final GlobalKey<NavigatorState> navigatorKey;
 
@@ -44,6 +48,7 @@ class WindowNavViewModel extends ChangeNotifier {
   WindowDestination? _selection;
   bool _isSidebarHidden = false;
   bool _isActivityPaneHidden = false;
+  bool _isNearbyCollapsed = false;
 
   /// What the pane shows first. With nothing chosen yet, or after the
   /// chosen device was forgotten, the first device's Overview. Null while
@@ -73,6 +78,9 @@ class WindowNavViewModel extends ChangeNotifier {
   bool get isSidebarHidden => _isSidebarHidden;
 
   bool get isActivityPaneHidden => _isActivityPaneHidden;
+
+  /// Whether Nearby in the device list shows only its heading.
+  bool get isNearbyCollapsed => _isNearbyCollapsed;
 
   @override
   void dispose() {
@@ -159,6 +167,12 @@ class WindowNavViewModel extends ChangeNotifier {
   void toggleActivityPane() {
     _isActivityPaneHidden = !_isActivityPaneHidden;
     unawaited(_settings?.set(activityPaneHiddenKey, _isActivityPaneHidden));
+    notifyListeners();
+  }
+
+  void toggleNearby() {
+    _isNearbyCollapsed = !_isNearbyCollapsed;
+    unawaited(_settings?.set(nearbyCollapsedKey, _isNearbyCollapsed));
     notifyListeners();
   }
 

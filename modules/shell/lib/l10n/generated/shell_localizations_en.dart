@@ -1311,6 +1311,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get sidebarShow => 'Show sidebar';
 
   @override
+  String get activityPaneHide => 'Hide Activity';
+
+  @override
+  String get activityPaneShow => 'Show Activity';
+
+  @override
   String get sectionOverview => 'Overview';
 
   @override

@@ -256,23 +256,19 @@ class _May extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(context.shellL10n.deviceMay(status.device.name)),
-        SurfaceCard(
-          child: Column(
-            children: [
-              for (final (index, permission) in permissions.indexed) ...[
-                if (index > 0) Spacing.v12,
-                SwitchRow(
-                  title: permission.label,
-                  subtitle: switch (permission.detail) {
-                    '' => null,
-                    final detail => detail,
-                  },
-                  value: permission.value,
-                  onChanged: permission.onChanged,
-                ),
-              ],
-            ],
-          ),
+        GroupedCard(
+          children: [
+            for (final permission in permissions)
+              SettingSwitchRow(
+                title: permission.label,
+                body: switch (permission.detail) {
+                  '' => null,
+                  final detail => detail,
+                },
+                value: permission.value,
+                onChanged: permission.onChanged,
+              ),
+          ],
         ),
       ],
     );

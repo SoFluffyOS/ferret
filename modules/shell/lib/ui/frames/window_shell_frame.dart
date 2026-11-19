@@ -1,12 +1,11 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/activity_pane_frame.dart';
 import 'package:shell/ui/frames/needs_you_frame.dart';
 import 'package:shell/ui/frames/pane_drop_frame.dart';
+import 'package:shell/ui/frames/pane_toolbar_frame.dart';
 import 'package:shell/ui/frames/sidebar_frame.dart';
 import 'package:shell/ui/frames/window_menu_frame.dart';
 import 'package:shell/ui/frames/window_title_frame.dart';
@@ -45,19 +44,18 @@ class WindowShellFrame extends StatelessWidget {
   }
 
   Widget _split(BuildContext context, bool isSidebarHidden) {
+    final title = PaneTitles.of(context);
+
     return WindowMenuFrame(
       child: ColoredBox(
         color: context.palette.background,
         child: Row(
           crossAxisAlignment: .stretch,
           children: [
-            switch (isSidebarHidden) {
-              true => const _SidebarStrip(),
-              false => SizedBox(
-                width: WindowLayout.sidebarWidth(context.screenSize),
-                child: const SidebarFrame(),
-              ),
-            },
+            _SlidingSidebar(
+              isHidden: isSidebarHidden,
+              width: WindowLayout.sidebarWidth(context.screenSize),
+            ),
             Expanded(
               child: PaneDropFrame(
                 child: SafeArea(
@@ -67,8 +65,11 @@ class WindowShellFrame extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: .stretch,
                     children: [
+                      PaneToolbarFrame(title: title),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: PageInsets.side(context.screenSize),
+                        ),
                         child: const AdaptiveContent(child: NeedsYouFrame()),
                       ),
                       // A route hides whatever was drawn before it from screen
@@ -77,7 +78,12 @@ class WindowShellFrame extends StatelessWidget {
                       Expanded(
                         child: Semantics(
                           container: true,
-                          child: ClipRect(child: _TabsOnward(child: child)),
+                          child: ClipRect(
+                            child: PaneToolbarScope(
+                              title: title.place,
+                              child: _TabsOnward(child: child),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -180,37 +186,82 @@ class _WindowContent extends InheritedWidget {
       content != oldWidget.content;
 }
 
-/// What is left of a hidden device list: the way to bring it back, where
-/// the list was.
-class _SidebarStrip extends StatelessWidget {
-  const _SidebarStrip();
+/// The device list, which slides out of the window when it is hidden and
+/// back in when it is shown. Hidden, it takes no room and is out of the
+/// keyboard's and the screen reader's reach.
+class _SlidingSidebar extends StatefulWidget {
+  const _SlidingSidebar({required this.isHidden, required this.width});
+
+  final bool isHidden;
+  final double width;
+
+  @override
+  State<_SlidingSidebar> createState() => _SlidingSidebarState();
+}
+
+class _SlidingSidebarState extends State<_SlidingSidebar>
+    with SingleTickerProviderStateMixin {
+  static const _duration = Duration(milliseconds: 220);
+
+  late final AnimationController _shown = AnimationController(
+    vsync: this,
+    duration: _duration,
+    value: switch (widget.isHidden) {
+      true => 0,
+      false => 1,
+    },
+  )..addStatusListener(_onStatus);
+
+  @override
+  void didUpdateWidget(_SlidingSidebar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isHidden == oldWidget.isHidden) {
+      return;
+    }
+
+    final target = switch (widget.isHidden) {
+      true => 0.0,
+      false => 1.0,
+    };
+    if (context.reducesMotion) {
+      _shown.value = target;
+      return;
+    }
+
+    _shown.animateTo(target, curve: Curves.easeOut);
+  }
+
+  @override
+  void dispose() {
+    _shown.dispose();
+    super.dispose();
+  }
+
+  /// Rebuilds once it is all the way out, to take the list off the tree.
+  void _onStatus(AnimationStatus status) {
+    if (!status.isAnimating) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.palette;
+    if (widget.isHidden && _shown.value == 0) {
+      return const SizedBox.shrink();
+    }
 
-    return ColoredBox(
-      color: palette.surface,
-      child: SafeArea(
-        right: false,
-        child: Padding(
-          padding: EdgeInsets.all(Spacing.d8),
-          child: Align(
-            alignment: .topCenter,
-            child: Tappable(
-              tooltip: context.shellL10n.sidebarShow,
-              onTap: context.read<WindowNavViewModel>().toggleSidebar,
-              child: Padding(
-                padding: EdgeInsets.all(Spacing.d6),
-                child: Icon(
-                  LucideIcons.panelLeftOpen,
-                  size: Spacing.d18,
-                  color: palette.text,
-                ),
-              ),
-            ),
-          ),
+    return AnimatedBuilder(
+      animation: _shown,
+      builder: (context, child) => ClipRect(
+        child: Align(
+          alignment: .centerRight,
+          widthFactor: _shown.value,
+          child: child,
         ),
+      ),
+      child: ExcludeFocus(
+        excluding: widget.isHidden,
+        child: SizedBox(width: widget.width, child: const SidebarFrame()),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -27,6 +28,9 @@ class RowActionButton extends StatelessWidget {
       onPressed: onPressed,
       enable: onPressed != null,
       mainAxisSize: .min,
+      // It sits a card's padding from the card's corner, where a curve of
+      // its own would be none at all: a capsule.
+      radius: Corners.capsule,
       padding: EdgeInsets.symmetric(
         horizontal: Spacing.d12,
         vertical: Spacing.d6,

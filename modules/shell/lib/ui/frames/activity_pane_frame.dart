@@ -133,9 +133,9 @@ class _Pane extends StatelessWidget {
         left: false,
         child: ListView(
           padding: EdgeInsets.fromLTRB(
-            Spacing.d12,
             Spacing.d8,
-            Spacing.d12,
+            Spacing.d8,
+            Spacing.d8,
             Spacing.d24,
           ),
           children: [
@@ -163,7 +163,7 @@ class _Pane extends StatelessWidget {
             if (recent.isEmpty)
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Spacing.d4,
+                  horizontal: PageInsets.row,
                   vertical: Spacing.d8,
                 ),
                 child: Text(
@@ -177,6 +177,7 @@ class _Pane extends StatelessWidget {
                 item: item,
                 now: now,
                 holdsPrimary: false,
+                quietLinks: true,
               ),
           ],
         ),

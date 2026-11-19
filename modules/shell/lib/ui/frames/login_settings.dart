@@ -5,7 +5,6 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/ui/widgets/widgets.dart';
 
 /// Windows and Linux: start Ferret, in the tray, when you log in.
 class LoginSettings extends StatefulWidget {
@@ -62,13 +61,15 @@ class _LoginSettingsState extends State<LoginSettings> {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.settingsBackground),
-        SurfaceCard(
-          child: SwitchRow(
-            title: l10n.settingsStartAtLogin,
-            subtitle: l10n.settingsStartAtLoginBody,
-            value: _enabled,
-            onChanged: (value) => unawaited(_set(value)),
-          ),
+        GroupedCard(
+          children: [
+            SettingSwitchRow(
+              title: l10n.settingsStartAtLogin,
+              body: l10n.settingsStartAtLoginBody,
+              value: _enabled,
+              onChanged: (value) => unawaited(_set(value)),
+            ),
+          ],
         ),
       ],
     );

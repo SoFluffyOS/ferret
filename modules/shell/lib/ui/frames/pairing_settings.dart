@@ -4,7 +4,6 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/ui/widgets/widgets.dart';
 
 /// Whether a device paired here joins the user's other devices too.
 class PairingSettings extends StatefulWidget {
@@ -23,13 +22,15 @@ class _PairingSettingsState extends State<PairingSettings> {
   Widget build(BuildContext context) {
     final l10n = context.shellL10n;
 
-    return SurfaceCard(
-      child: SwitchRow(
-        title: l10n.settingsSharePairings,
-        subtitle: l10n.settingsSharePairingsBody,
-        value: _shares,
-        onChanged: _set,
-      ),
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.settingsSharePairings,
+          body: l10n.settingsSharePairingsBody,
+          value: _shares,
+          onChanged: _set,
+        ),
+      ],
     );
   }
 

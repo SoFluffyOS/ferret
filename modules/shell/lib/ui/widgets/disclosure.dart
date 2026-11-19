@@ -30,7 +30,7 @@ class _DisclosureState extends State<Disclosure> {
           onTap: () => setState(() => _open = !_open),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: Spacing.d4,
+              horizontal: PageInsets.row,
               vertical: Spacing.d12,
             ),
             child: Row(

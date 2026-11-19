@@ -71,10 +71,10 @@ class _CornerCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: PaneWidths.narrowContent),
           child: DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: ShapeDecoration(
               color: palette.background,
-              borderRadius: BorderRadius.circular(Spacing.d16),
-              boxShadow: [
+              shape: Corners.shape(Corners.panel),
+              shadows: [
                 BoxShadow(
                   color: palette.text.withValues(alpha: 0.16),
                   blurRadius: Spacing.d24,

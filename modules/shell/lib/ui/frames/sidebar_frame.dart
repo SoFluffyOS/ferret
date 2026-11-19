@@ -12,7 +12,6 @@ import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/sidebar_nearby_frame.dart';
-import 'package:shell/ui/frames/window_more_menu.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -39,6 +38,7 @@ class SidebarFrame extends StatelessWidget {
     final nav = context.read<WindowNavViewModel>();
     final scope = ShellScope.of(context);
     final l10n = context.shellL10n;
+    final platform = defaultTargetPlatform;
 
     return ColoredBox(
       color: context.palette.surface,
@@ -48,10 +48,6 @@ class SidebarFrame extends StatelessWidget {
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
-              _Header(
-                onHide: nav.toggleSidebar,
-                onAdd: () => nav.show(const PairPage()),
-              ),
               if (isPaused) const _PausedLine(),
               Expanded(
                 child: _DropOnAll(
@@ -59,9 +55,26 @@ class SidebarFrame extends StatelessWidget {
                   child: ListView(
                     padding: EdgeInsets.only(bottom: Spacing.d16),
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
-                        child: SectionTitle(l10n.homeYourDevices),
+                      SidebarHeader(
+                        title: l10n.homeYourDevices,
+                        action: Tappable(
+                          tooltip: WindowShortcuts.hint(
+                            l10n.homePairDevice,
+                            WindowShortcuts.activatorOf(.addDevice, platform),
+                            platform,
+                          ),
+                          semanticLabel: l10n.homePairDevice,
+                          hoverOverlayBorderRadius: Corners.tile,
+                          onTap: () => nav.show(const PairPage()),
+                          child: Padding(
+                            padding: EdgeInsets.all(Spacing.d4),
+                            child: Icon(
+                              LucideIcons.plus,
+                              size: Spacing.d16,
+                              color: context.palette.mutedText,
+                            ),
+                          ),
+                        ),
                       ),
                       for (final status in devices)
                         FeatureChangesListener(
@@ -80,12 +93,22 @@ class SidebarFrame extends StatelessWidget {
                       SidebarRow(
                         label: l10n.activityTitle,
                         icon: LucideIcons.history,
+                        tooltip: WindowShortcuts.hint(
+                          l10n.activityTitle,
+                          WindowShortcuts.activatorOf(.openActivity, platform),
+                          platform,
+                        ),
                         isSelected: selection is ActivityDestination,
                         onTap: () => nav.select(const ActivityDestination()),
                       ),
                       SidebarRow(
                         label: l10n.settingsTitle,
                         icon: LucideIcons.settings,
+                        tooltip: WindowShortcuts.hint(
+                          l10n.settingsTitle,
+                          WindowShortcuts.activatorOf(.openSettings, platform),
+                          platform,
+                        ),
                         isSelected: selection is SettingsDestination,
                         onTap: () => nav.select(const SettingsDestination()),
                       ),
@@ -117,55 +140,6 @@ class _DropOnAll extends StatelessWidget {
     }
 
     return DropTargetRegion(target: target, child: child);
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({required this.onHide, required this.onAdd});
-
-  final VoidCallback onHide;
-  final VoidCallback onAdd;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.shellL10n;
-    final color = context.palette.text;
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Spacing.d8,
-        Spacing.d8,
-        Spacing.d8,
-        Spacing.d0,
-      ),
-      child: Row(
-        mainAxisAlignment: .end,
-        children: [
-          Tappable(
-            tooltip: l10n.sidebarHide,
-            onTap: onHide,
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d6),
-              child: Icon(
-                LucideIcons.panelLeftClose,
-                size: Spacing.d18,
-                color: color,
-              ),
-            ),
-          ),
-          Tappable(
-            tooltip: l10n.homePairDevice,
-            onTap: onAdd,
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d6),
-              child: Icon(LucideIcons.plus, size: Spacing.d18, color: color),
-            ),
-          ),
-          if (defaultTargetPlatform != TargetPlatform.macOS)
-            const WindowMoreMenu(),
-        ],
-      ),
-    );
   }
 }
 
@@ -273,15 +247,17 @@ class _DeviceGroup extends StatelessWidget {
             SidebarRow(
               label: context.shellL10n.sectionOverview,
               icon: LucideIcons.layoutDashboard,
+              tooltip: _sectionHint(context.shellL10n.sectionOverview, 0),
               isIndented: true,
               isSelected: !showsFeatureSection,
               onTap: () => onSelect(DeviceDestination(deviceId)),
             ),
-            for (final section in sections)
+            for (final (index, section) in sections.indexed)
               SidebarRow(
                 key: ValueKey(section.id),
                 label: section.title,
                 icon: section.icon,
+                tooltip: _sectionHint(section.title, index + 1),
                 isIndented: true,
                 isDimmed: !section.isSetUp,
                 isSelected: section.id == openSectionId,
@@ -296,6 +272,19 @@ class _DeviceGroup extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+
+  /// The section's name with its digit key, for the ones that have one.
+  String _sectionHint(String title, int index) {
+    if (index >= WindowShortcuts.sectionCount) {
+      return title;
+    }
+
+    return WindowShortcuts.hint(
+      title,
+      WindowShortcuts.sectionActivator(index, defaultTargetPlatform),
+      defaultTargetPlatform,
     );
   }
 

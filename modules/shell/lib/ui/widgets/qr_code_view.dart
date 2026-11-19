@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -18,9 +19,9 @@ class QrCodeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: _paper,
-          borderRadius: BorderRadius.circular(Spacing.d16),
+          shape: Corners.shape(Corners.panel),
         ),
         child: Padding(
           padding: EdgeInsets.all(Spacing.d16),

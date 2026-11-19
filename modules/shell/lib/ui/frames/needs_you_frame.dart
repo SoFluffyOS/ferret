@@ -38,6 +38,7 @@ class NeedsYouFrame extends StatelessWidget {
             children: [
               SectionTitle(context.shellL10n.needsYouTitle),
               SurfaceCard(
+                padding: EdgeInsets.symmetric(vertical: Spacing.d6),
                 child: Column(
                   crossAxisAlignment: .stretch,
                   children: [

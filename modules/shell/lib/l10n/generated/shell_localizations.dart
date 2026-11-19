@@ -2188,6 +2188,18 @@ abstract class ShellLocalizations {
   /// **'Show sidebar'**
   String get sidebarShow;
 
+  /// No description provided for @activityPaneHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Activity'**
+  String get activityPaneHide;
+
+  /// No description provided for @activityPaneShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Activity'**
+  String get activityPaneShow;
+
   /// No description provided for @sectionOverview.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -19,6 +20,7 @@ class ActivityRow extends StatelessWidget {
     required this.item,
     required this.now,
     this.holdsPrimary = true,
+    this.quietLinks = false,
   });
 
   final ActivityItem item;
@@ -27,11 +29,33 @@ class ActivityRow extends StatelessWidget {
   /// filled button, so every other line draws the same action outlined.
   final bool holdsPrimary;
 
+  /// Whether the line's links stay out of sight until the pointer or the
+  /// keyboard is on the line, so a column of lines isn't a column of blue
+  /// words. They keep their place, their Tab stop and their name for a
+  /// screen reader. Only under a pointer: a finger has no hover.
+  final bool quietLinks;
+
   /// The moment "2 min" is counted from.
   final DateTime now;
 
   @override
   Widget build(BuildContext context) {
+    final hidesLinks =
+        quietLinks &&
+        switch (defaultTargetPlatform) {
+          .macOS || .windows || .linux => true,
+          .android || .iOS || .fuchsia => false,
+        };
+    if (!hidesLinks) {
+      return _line(context, showsLinks: true);
+    }
+
+    return _RevealOnPointerOrFocus(
+      builder: (context, isRevealed) => _line(context, showsLinks: isRevealed),
+    );
+  }
+
+  Widget _line(BuildContext context, {required bool showsLinks}) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final iconActions = [
@@ -58,7 +82,7 @@ class ActivityRow extends StatelessWidget {
 
     final row = Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: Spacing.d4,
+        horizontal: PageInsets.row,
         vertical: Spacing.d6,
       ),
       child: Row(
@@ -133,7 +157,11 @@ class ActivityRow extends StatelessWidget {
                       if (!actionsOwnLine)
                         for (final action in textActions) ...[
                           Spacing.h8,
-                          _TextAction(action: action, filled: holdsPrimary),
+                          _TextAction(
+                            action: action,
+                            filled: holdsPrimary,
+                            isShown: showsLinks,
+                          ),
                         ],
                     ],
                   ),
@@ -146,13 +174,21 @@ class ActivityRow extends StatelessWidget {
                     crossAxisAlignment: .center,
                     children: [
                       for (final action in textActions)
-                        _TextAction(action: action, filled: holdsPrimary),
+                        _TextAction(
+                          action: action,
+                          filled: holdsPrimary,
+                          isShown: showsLinks,
+                        ),
                     ],
                   ),
                 ],
                 if (item.progress case final progress?) ...[
                   Spacing.v6,
-                  _ProgressBar(progress: progress),
+                  FluffyProgressBar(
+                    value: progress.clamp(0, 1).toDouble(),
+                    color: palette.accent,
+                    backgroundColor: palette.surface,
+                  ),
                 ],
               ],
             ),
@@ -283,12 +319,12 @@ class _FocusableLineState extends State<_FocusableLine> {
       focusNode: widget.focusNode,
       onShowFocusHighlight: (shows) => setState(() => _showsFocus = shows),
       child: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: switch (_showsFocus) {
             true => context.palette.surface,
             false => null,
           },
-          borderRadius: BorderRadius.circular(Spacing.d8),
+          shape: Corners.shape(Corners.row),
         ),
         child: widget.child,
       ),
@@ -296,11 +332,49 @@ class _FocusableLineState extends State<_FocusableLine> {
   }
 }
 
+/// Tells [builder] whether the pointer is over what it builds or the
+/// keyboard's focus is inside it.
+class _RevealOnPointerOrFocus extends StatefulWidget {
+  const _RevealOnPointerOrFocus({required this.builder});
+
+  final Widget Function(BuildContext context, bool isRevealed) builder;
+
+  @override
+  State<_RevealOnPointerOrFocus> createState() =>
+      _RevealOnPointerOrFocusState();
+}
+
+class _RevealOnPointerOrFocusState extends State<_RevealOnPointerOrFocus> {
+  bool _isHovered = false;
+  bool _hasFocus = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: Focus(
+        canRequestFocus: false,
+        skipTraversal: true,
+        onFocusChange: (hasFocus) => setState(() => _hasFocus = hasFocus),
+        child: widget.builder(context, _isHovered || _hasFocus),
+      ),
+    );
+  }
+}
+
 class _TextAction extends StatelessWidget {
-  const _TextAction({required this.action, required this.filled});
+  const _TextAction({
+    required this.action,
+    required this.filled,
+    required this.isShown,
+  });
 
   final ActivityAction action;
   final bool filled;
+
+  /// A link that isn't shown keeps its place and can still be reached.
+  final bool isShown;
 
   @override
   Widget build(BuildContext context) {
@@ -312,17 +386,24 @@ class _TextAction extends StatelessWidget {
       );
     }
 
-    return Tappable(
-      onTap: action.onPressed,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: Spacing.d4,
-          vertical: Spacing.d2,
-        ),
-        child: Text(
-          action.label,
-          style: context.fluffyTheme.typography.caption1.copyWith(
-            color: context.palette.link,
+    return Opacity(
+      opacity: switch (isShown) {
+        true => 1,
+        false => 0,
+      },
+      alwaysIncludeSemantics: true,
+      child: Tappable(
+        onTap: action.onPressed,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Spacing.d4,
+            vertical: Spacing.d2,
+          ),
+          child: Text(
+            action.label,
+            style: context.fluffyTheme.typography.caption1.copyWith(
+              color: context.palette.link,
+            ),
           ),
         ),
       ),
@@ -352,34 +433,6 @@ class _IconAction extends StatelessWidget {
             true => context.palette.mutedText,
             false => context.palette.text,
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar({required this.progress});
-
-  final double progress;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = context.palette;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(Spacing.d2),
-      child: ColoredBox(
-        color: palette.surface,
-        child: Align(
-          alignment: .centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: progress.clamp(0, 1).toDouble(),
-            child: ColoredBox(
-              color: palette.accent,
-              child: SizedBox(height: Spacing.d4),
-            ),
-          ),
         ),
       ),
     );

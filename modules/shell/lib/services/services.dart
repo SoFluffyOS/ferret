@@ -14,6 +14,7 @@ export 'package:shell/services/local_device_factory.dart';
 export 'package:shell/services/menubar_icon_inputs.dart';
 export 'package:shell/services/menubar_icon_resolver.dart';
 export 'package:shell/services/menubar_tooltips.dart';
+export 'package:shell/services/pane_titles.dart';
 export 'package:shell/services/pause_controller.dart';
 export 'package:shell/services/presence_reporter.dart';
 export 'package:shell/services/secret_store_factory.dart';

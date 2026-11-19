@@ -44,6 +44,13 @@ class SidebarRow extends StatelessWidget {
     .macOS || .windows || .linux => Spacing.d32,
   };
 
+  /// Between the list's edge and a line's fill.
+  static double get margin => Spacing.d8;
+
+  /// Between a line's fill and what is in it. Headings in the list start
+  /// at [margin] plus this, where the lines' icons do.
+  static double get inset => Spacing.d8;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -64,32 +71,34 @@ class SidebarRow extends StatelessWidget {
         semanticButton: onTap != null,
         enableAnimation: false,
         enableHover: true,
-        // The line draws its own ring, inside its rounded fill.
+        // The line draws its own ring, on the shape of its fill.
         enableFocusBorder: false,
         builder: (context, state) => Container(
           // At least a line high, and taller when text is set large:
           // a fixed height would cut the letters.
           constraints: BoxConstraints(minHeight: height),
           margin: EdgeInsets.symmetric(
-            horizontal: Spacing.d8,
+            horizontal: margin,
             vertical: Spacing.d1,
           ),
           padding: EdgeInsets.only(
             left: switch (isIndented) {
               true => Spacing.d32,
-              false => Spacing.d8,
+              false => inset,
             },
-            right: Spacing.d8,
+            right: inset,
           ),
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: _fill(palette, state),
-            borderRadius: BorderRadius.circular(Spacing.d8),
-            border: Border.all(
-              color: switch (state) {
-                .focus => palette.accent,
-                _ => const Color(0x00000000),
-              },
-              width: Spacing.d2,
+            shape: Corners.shape(
+              Corners.row,
+              side: BorderSide(
+                color: switch (state) {
+                  .focus => palette.accent,
+                  _ => const Color(0x00000000),
+                },
+                width: Spacing.d2,
+              ),
             ),
           ),
           child: Row(

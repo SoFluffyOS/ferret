@@ -50,7 +50,7 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
         onTap: () => setState(() => _asking = true),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: Spacing.d4,
+            horizontal: PageInsets.row,
             vertical: Spacing.d12,
           ),
           child: Text(

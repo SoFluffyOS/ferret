@@ -77,7 +77,11 @@ class DropProgressCard extends StatelessWidget {
                 ),
                 if (phase case DropSending(:final fraction)) ...[
                   Spacing.v8,
-                  _ProgressBar(fraction: fraction),
+                  FluffyProgressBar(
+                    value: fraction.clamp(0, 1).toDouble(),
+                    color: context.palette.accent,
+                    backgroundColor: context.palette.background,
+                  ),
                 ],
               ],
             ),
@@ -91,35 +95,6 @@ class DropProgressCard extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar({required this.fraction});
-
-  final double fraction;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = context.palette;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(Spacing.d2),
-      child: SizedBox(
-        height: Spacing.d4,
-        child: Stack(
-          fit: .expand,
-          children: [
-            ColoredBox(color: palette.background),
-            FractionallySizedBox(
-              alignment: .centerLeft,
-              widthFactor: fraction.clamp(0, 1).toDouble(),
-              child: ColoredBox(color: palette.accent),
-            ),
-          ],
-        ),
       ),
     );
   }

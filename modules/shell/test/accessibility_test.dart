@@ -1,4 +1,5 @@
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -99,9 +100,9 @@ void main() {
     final changes = <bool>[];
     await tester.pumpWidget(
       testApp(
-        SwitchRow(
+        SettingSwitchRow(
           title: 'Open at login',
-          subtitle: 'Ferret starts with your computer.',
+          body: 'Ferret starts with your computer.',
           value: true,
           onChanged: changes.add,
         ),
@@ -110,7 +111,7 @@ void main() {
     await tester.pump();
 
     expect(
-      tester.getSemantics(find.byType(SwitchRow)),
+      tester.getSemantics(find.byType(SettingSwitchRow)),
       isSemantics(
         label: 'Open at login\nFerret starts with your computer.',
         hasToggledState: true,

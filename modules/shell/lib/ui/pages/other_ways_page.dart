@@ -133,19 +133,17 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
             ),
             if (Platform.isAndroid || Platform.isIOS) ...[
               Spacing.v16,
-              SurfaceCard(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Spacing.d8,
-                  vertical: Spacing.d4,
-                ),
-                child: NavRow(
-                  title: l10n.otherShowQr,
-                  onTap: () => Navigator.of(context).push(
-                    ferretRoute<void>(
-                      const QrPairPage(),
+              GroupedCard(
+                children: [
+                  NavRow(
+                    title: l10n.otherShowQr,
+                    onTap: () => Navigator.of(context).push(
+                      ferretRoute<void>(
+                        const QrPairPage(),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ],

@@ -1013,6 +1013,8 @@
   "doctorFixOpenFirewall": "Open Windows Firewall",
   "sidebarHide": "Hide sidebar",
   "sidebarShow": "Show sidebar",
+  "activityPaneHide": "Hide Activity",
+  "activityPaneShow": "Show Activity",
   "sectionOverview": "Overview",
   "windowTitleSection": "{device} — {section}",
   "@windowTitleSection": {

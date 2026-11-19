@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
         ),
         Spacing.v16,
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+          padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
           child: Column(
             crossAxisAlignment: .start,
             children: [
