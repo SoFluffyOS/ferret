@@ -55,7 +55,7 @@
 		<string>_ferret._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Ferret uses the camera only to scan the pairing code on your other device.</string>
+	<string>Ferret uses the camera to scan the pairing code on your other device, and to take a photo or scan a document for your computer when you tap Take photo.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Ferret shows your recent photos and screenshots on the computers you choose, only while Ferret is open. It never changes or deletes a photo.</string>
 	<key>NSLocalNetworkUsageDescription</key>
