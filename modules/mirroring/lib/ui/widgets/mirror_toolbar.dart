@@ -27,6 +27,9 @@ class MirrorToolbar extends StatefulWidget {
     required this.onButton,
     required this.qualityPanel,
     required this.viewOnlyPanel,
+    this.soundPanel,
+    this.soundDetail,
+    this.soundMuted = false,
     this.quality = .good,
     this.moreButtons = const [],
     this.isFullScreen = false,
@@ -48,6 +51,16 @@ class MirrorToolbar extends StatefulWidget {
   final ValueChanged<DeviceButton> onButton;
   final WidgetBuilder qualityPanel;
   final WidgetBuilder viewOnlyPanel;
+
+  /// Where the device's sound plays and how loud, behind More. Null on a
+  /// computer that can't play it.
+  final WidgetBuilder? soundPanel;
+
+  /// Where the sound is right now, next to Sound in More.
+  final String? soundDetail;
+
+  /// No sound of the device plays here right now.
+  final bool soundMuted;
   final ViewQuality quality;
 
   /// The device's keys that sit behind More: volume, power, its
@@ -72,8 +85,8 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   final OverlayPortalController _quality = OverlayPortalController();
   final OverlayPortalController _viewOnly = OverlayPortalController();
 
-  /// More shows the picture's quality in place of its list.
-  bool _moreShowsQuality = false;
+  /// What More shows in place of its list.
+  _MorePage _morePage = .list;
 
   String get _modifier => switch (defaultTargetPlatform) {
     .macOS || .iOS => '⌘',
@@ -81,7 +94,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   };
 
   void _open(OverlayPortalController popup) {
-    setState(() => _moreShowsQuality = false);
+    setState(() => _morePage = .list);
     popup.show();
     widget.onPopup?.call(true);
   }
@@ -350,8 +363,13 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
 
   Widget _moreMenu(BuildContext context, ToolbarFold fold) {
     final l10n = context.mirroringL10n;
-    if (_moreShowsQuality) {
+    final soundPanel = widget.soundPanel;
+    if (_morePage == .quality) {
       return widget.qualityPanel(context);
+    }
+
+    if (_morePage == .sound && soundPanel != null) {
+      return soundPanel(context);
     }
 
     return Padding(
@@ -367,7 +385,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
                   icon: LucideIcons.signal,
                   label: l10n.pictureTitle,
                   detail: l10n.qualityName(widget.quality),
-                  onTap: () => setState(() => _moreShowsQuality = true),
+                  onTap: () => setState(() => _morePage = .quality),
                 ),
                 _ => PopupRow(
                   icon: _iconOf(item),
@@ -375,6 +393,16 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
                   onTap: () => _act(item),
                 ),
               },
+            if (soundPanel != null)
+              PopupRow(
+                icon: switch (widget.soundMuted) {
+                  true => LucideIcons.volumeX,
+                  false => LucideIcons.volume2,
+                },
+                label: l10n.soundTitle,
+                detail: widget.soundDetail,
+                onTap: () => setState(() => _morePage = .sound),
+              ),
             if (widget.pinned case final pinned?)
               PopupRow(
                 label: l10n.keepToolbar,
@@ -467,3 +495,5 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     return l10n.tooltipWithKey(name, keys);
   }
 }
+
+enum _MorePage { list, quality, sound }

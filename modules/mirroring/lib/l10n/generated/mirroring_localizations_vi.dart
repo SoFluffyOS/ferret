@@ -679,6 +679,75 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get keepToolbar => 'Luôn hiện thanh công cụ';
 
   @override
+  String get soundTitle => 'Sound';
+
+  @override
+  String get soundDetailHere => 'Here';
+
+  @override
+  String get soundDetailThere => 'On the phone';
+
+  @override
+  String get soundDetailNone => 'None';
+
+  @override
+  String get soundHere => 'On this computer';
+
+  @override
+  String soundThere(String device) {
+    return 'On $device';
+  }
+
+  @override
+  String get soundVolume => 'Volume';
+
+  @override
+  String soundMovesNote(String device) {
+    return '$device goes quiet while its sound plays here. Changing it restarts the picture.';
+  }
+
+  @override
+  String soundCopiesNote(String device) {
+    return '$device keeps playing too: turn its volume down to hear it only here. Apps that block capture, like some video apps, stay silent.';
+  }
+
+  @override
+  String soundNextTime(String device) {
+    return '$device has to say yes again, so sound starts next time.';
+  }
+
+  @override
+  String soundNotAllowed(String device) {
+    return '$device isn\'t sending its sound. On the phone, open Ferret, then Settings → Screen, and turn on Send sound too.';
+  }
+
+  @override
+  String soundUnsupportedCable(String device) {
+    return '$device can\'t send its sound. That takes Android 11 or newer, and an unlocked screen when the picture starts.';
+  }
+
+  @override
+  String soundUnsupportedWifi(String device) {
+    return '$device can\'t send its sound. That takes Android 10 or newer and the latest Ferret on it.';
+  }
+
+  @override
+  String soundFailed(String device) {
+    return '$device couldn\'t capture its sound. Stop, then show the screen again.';
+  }
+
+  @override
+  String get soundNoOutput =>
+      'This computer couldn\'t play the sound. Check its sound output.';
+
+  @override
+  String get soundAirplay =>
+      'Sound over AirPlay isn\'t here yet. It stays on the iPhone.';
+
+  @override
+  String get soundWaiting => 'Waiting for sound…';
+
+  @override
   String get qualityGood => 'Tốt';
 
   @override

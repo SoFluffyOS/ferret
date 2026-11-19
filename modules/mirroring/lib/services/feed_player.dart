@@ -60,9 +60,13 @@ class FeedPlayer {
   int _shownInWindow = 0;
   int _droppedInWindow = 0;
   int _decodeMs = 0;
+  int? _shownPtsUs;
 
   /// The picture to draw, or null before the first frame.
   ValueListenable<MirrorPicture?> get picture => _decoder.picture;
+
+  /// The time of the picture shown right now, on the feed's own clock.
+  int? get shownPtsUs => _shownPtsUs;
 
   /// How long the last picture took to decode.
   int get decodeMs => _decodeMs;
@@ -174,6 +178,7 @@ class FeedPlayer {
 
   void _onDecoded(DecodedFrame frame) {
     _shownInWindow++;
+    _shownPtsUs = frame.ptsUs;
     final since = _decodingSince.remove(frame.ptsUs);
     _decodingSince.removeWhere((ptsUs, _) => ptsUs < frame.ptsUs);
     if (since != null) {

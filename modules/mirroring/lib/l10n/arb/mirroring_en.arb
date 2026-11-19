@@ -707,6 +707,94 @@
   "controlWithCable": "Control with the cable",
   "viewOnlyToast": "View only.",
   "keepToolbar": "Keep toolbar visible",
+  "soundTitle": "Sound",
+  "@soundTitle": {
+    "description": "Heading of the panel that picks where a shown phone's sound plays, and a row in the toolbar's More menu"
+  },
+  "soundDetailHere": "Here",
+  "@soundDetailHere": {
+    "description": "Short state next to Sound in a menu: the phone's sound plays on this computer"
+  },
+  "soundDetailThere": "On the phone",
+  "@soundDetailThere": {
+    "description": "Short state next to Sound in a menu: the sound stays on the phone"
+  },
+  "soundDetailNone": "None",
+  "@soundDetailNone": {
+    "description": "Short state next to Sound in a menu: no sound arrives"
+  },
+  "soundHere": "On this computer",
+  "@soundHere": {
+    "description": "Choice: play the shown phone's sound on this computer"
+  },
+  "soundThere": "On {device}",
+  "@soundThere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundVolume": "Volume",
+  "soundMovesNote": "{device} goes quiet while its sound plays here. Changing it restarts the picture.",
+  "@soundMovesNote": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundCopiesNote": "{device} keeps playing too: turn its volume down to hear it only here. Apps that block capture, like some video apps, stay silent.",
+  "@soundCopiesNote": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundNextTime": "{device} has to say yes again, so sound starts next time.",
+  "@soundNextTime": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundNotAllowed": "{device} isn't sending its sound. On the phone, open Ferret, then Settings → Screen, and turn on Send sound too.",
+  "@soundNotAllowed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundUnsupportedCable": "{device} can't send its sound. That takes Android 11 or newer, and an unlocked screen when the picture starts.",
+  "@soundUnsupportedCable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundUnsupportedWifi": "{device} can't send its sound. That takes Android 10 or newer and the latest Ferret on it.",
+  "@soundUnsupportedWifi": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundFailed": "{device} couldn't capture its sound. Stop, then show the screen again.",
+  "@soundFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "soundNoOutput": "This computer couldn't play the sound. Check its sound output.",
+  "soundAirplay": "Sound over AirPlay isn't here yet. It stays on the iPhone.",
+  "soundWaiting": "Waiting for sound…",
   "qualityGood": "Good",
   "qualitySlow": "Slow",
   "@qualitySlow": {

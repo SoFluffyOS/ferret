@@ -19,6 +19,8 @@ class MirrorViewer {
     required MirrorDecoder Function() createDecoder,
     required List<MirrorCodec> codecs,
     required MirroringSettings settings,
+    AudioSink Function()? createAudioSink,
+    List<MirrorAudioCodec>? audioCodecs,
     DateTime Function()? clock,
     this.consentMargin = const Duration(seconds: 5),
     this.firstPictureTimeout = const Duration(seconds: 10),
@@ -29,7 +31,13 @@ class MirrorViewer {
        _createDecoder = createDecoder,
        _codecs = codecs,
        _settings = settings,
+       _createAudioSink = createAudioSink ?? AudioSink.current,
+       audioCodecs = audioCodecs ?? AudioSink.platformCodecs,
        _clock = clock ?? DateTime.now;
+
+  /// What this computer can play of a device's sound, best first. Empty
+  /// where it can't play any.
+  final List<MirrorAudioCodec> audioCodecs;
 
   /// Added to the other side's own consent timeout before giving up on it.
   final Duration consentMargin;
@@ -57,6 +65,7 @@ class MirrorViewer {
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec> _codecs;
   final MirroringSettings _settings;
+  final AudioSink Function() _createAudioSink;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final StreamController<void> _statsChanges = .broadcast();
@@ -68,6 +77,11 @@ class MirrorViewer {
   MirrorFeed? _feed;
   StreamSubscription<FeedEvent>? _feedEvents;
   FeedPlayer? _player;
+  AudioPlayout? _sound;
+
+  /// How the feed last said its sound is encoded, kept so the sound can
+  /// be turned back on without asking the device again.
+  MirrorAudioConfig? _audioConfig;
   StreamSubscription<void>? _reachable;
   Timer? _waitTimer;
   Timer? _statsTimer;
@@ -175,8 +189,53 @@ class MirrorViewer {
       return;
     }
 
-    _set(latest.copyWith(phase: .starting));
+    _set(latest.copyWith(phase: .starting, sound: _askedSound));
     await _reopen(latest.target);
+  }
+
+  /// Whether a shown screen's sound plays here.
+  bool get soundOn => _settings.sound && audioCodecs.isNotEmpty;
+
+  double get soundVolume => _settings.soundVolume;
+
+  /// Plays the sound of shown screens here, or leaves it on the device.
+  /// Over a way that doesn't ask the device's owner, the picture opens
+  /// again right away, with or without sound: a phone on a cable plays
+  /// its sound in one place only. Otherwise sound that already arrives is
+  /// played or left alone, and anything more waits for the next time.
+  Future<void> setSound(bool on) async {
+    await _settings.setSound(on);
+    final current = _current;
+    if (current == null || !current.isMirroring) {
+      _emit();
+      return;
+    }
+
+    final asks = current.target.routeId == _routes.ferret.id;
+    if (_reopenable && !asks) {
+      await restart();
+      return;
+    }
+
+    if (!on) {
+      await _closeSound();
+      _set(current.copyWith(sound: .off));
+      return;
+    }
+
+    final config = _audioConfig;
+    if (config == null) {
+      _emit();
+      return;
+    }
+
+    await _playSound(config);
+  }
+
+  Future<void> setSoundVolume(double volume) async {
+    await _settings.setSoundVolume(volume);
+    _sound?.setVolume(_settings.soundVolume);
+    _emit();
   }
 
   /// Stop or Back on this computer.
@@ -243,6 +302,7 @@ class MirrorViewer {
         target: target,
         phase: .requesting,
         viaFallback: viaFallback,
+        sound: _askedSound,
       ),
     );
     final status = await _routes.statusOf(route);
@@ -271,7 +331,7 @@ class MirrorViewer {
 
     final MirrorFeed feed;
     try {
-      feed = await route.open(target, _settings.quality.options(_codecs));
+      feed = await route.open(target, _options);
     } on Object catch (error) {
       printWarning('Opening a screen through ${route.id} failed', error);
       await _endAttempt(attempt, .failed);
@@ -302,7 +362,7 @@ class MirrorViewer {
 
     final MirrorFeed feed;
     try {
-      feed = await route.open(target, _settings.quality.options(_codecs));
+      feed = await route.open(target, _options);
     } on Object catch (error) {
       printWarning('Opening a screen through ${route.id} failed', error);
       await _endAttempt(attempt, .lostConnection);
@@ -318,6 +378,21 @@ class MirrorViewer {
     _stopLooking();
     _attach(feed, attempt);
   }
+
+  /// What a route is asked for: the picture as the settings say, and the
+  /// sound when it plays here.
+  FeedOptions get _options => _settings.quality.options(
+    _codecs,
+    audioCodecs: switch (soundOn) {
+      true => audioCodecs,
+      false => const [],
+    },
+  );
+
+  ViewSound get _askedSound => switch (soundOn) {
+    true => .starting,
+    false => .off,
+  };
 
   bool _isAsking(int attempt) =>
       attempt == _attempt && _current?.phase == .requesting;
@@ -354,8 +429,13 @@ class MirrorViewer {
         _player?.add(frame, lost: lost);
       case FeedSourceState(:final screenOff):
         _onSourceState(screenOff);
-      case FeedAudioConfigured() || FeedAudio() || FeedAudioUnavailable():
-        break;
+      case FeedAudioConfigured(:final config):
+        _audioConfig = config;
+        unawaited(_playSound(config));
+      case FeedAudio(:final packet):
+        _sound?.add(packet, videoPtsUs: _player?.shownPtsUs);
+      case FeedAudioUnavailable(:final reason):
+        _onSoundUnavailable(reason);
       case FeedStats():
         _onStats(event);
       case FeedEnded(:final reason):
@@ -438,6 +518,69 @@ class MirrorViewer {
     }
 
     _set(_current?.copyWith(config: config));
+  }
+
+  /// Plays the feed's sound as [config] says, unless it is turned off
+  /// here: then it arrives and is left alone.
+  Future<void> _playSound(MirrorAudioConfig config) async {
+    if (!soundOn) {
+      return;
+    }
+
+    final sound = _sound ??= AudioPlayout(
+      sink: _createAudioSink(),
+      clock: _clock,
+    );
+    final ready = await sound.configure(config);
+    if (!identical(_sound, sound)) {
+      return;
+    }
+
+    final current = _current;
+    if (current == null || !current.isLive) {
+      return;
+    }
+
+    if (!ready) {
+      printWarning('This computer cannot play the mirrored sound');
+      _set(current.copyWith(sound: .noOutput));
+      return;
+    }
+
+    sound.setVolume(_settings.soundVolume);
+    _set(current.copyWith(sound: .playing));
+  }
+
+  void _onSoundUnavailable(AudioUnavailable reason) {
+    final current = _current;
+    if (current == null || !current.isLive || !soundOn) {
+      return;
+    }
+
+    unawaited(_closeSound());
+    _set(
+      current.copyWith(
+        sound: switch (reason) {
+          .unsupported => .unsupported,
+          .notAllowed => .notAllowed,
+          .failed => .failed,
+        },
+      ),
+    );
+  }
+
+  Future<void> _closeSound() async {
+    final sound = _sound;
+    _sound = null;
+    if (sound == null) {
+      return;
+    }
+
+    try {
+      await sound.close();
+    } on Object catch (error) {
+      printWarning('Closing the mirrored sound failed', error);
+    }
   }
 
   void _onSourceState(bool screenOff) {
@@ -630,7 +773,11 @@ class MirrorViewer {
   void _reconnect(ViewSession session) {
     _detach();
     _resuming = false;
-    _current = session.copyWith(phase: .reconnecting, screenOff: false);
+    _current = session.copyWith(
+      phase: .reconnecting,
+      screenOff: false,
+      sound: _askedSound,
+    );
     _emit();
     _graceTimer = Timer(reconnectGrace, _onGraceOver);
     _reachable = _routes.changes.listen((_) => _resume());
@@ -672,6 +819,8 @@ class MirrorViewer {
   MirrorFeed? _detach() {
     final feed = _feed;
     unawaited(_feedEvents?.cancel());
+    unawaited(_closeSound());
+    _audioConfig = null;
     _feed = null;
     _feedEvents = null;
     _waitTimer?.cancel();

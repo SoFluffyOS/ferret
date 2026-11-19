@@ -1,6 +1,7 @@
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:mirroring/models/mirror_way.dart';
 import 'package:mirroring/models/view_quality.dart';
+import 'package:mirroring/models/view_sound.dart';
 
 /// Where the computer stands with one phone's screen.
 enum ViewPhase {
@@ -173,6 +174,7 @@ class ViewSession {
     this.screenOff = false,
     this.lost = false,
     this.viaFallback = false,
+    this.sound = .off,
     this.stats = const ViewStats(),
   });
 
@@ -216,6 +218,9 @@ class ViewSession {
 
   /// Ferret couldn't reach the phone, so this goes over the cable instead.
   final bool viaFallback;
+
+  /// The device's sound, next to its picture.
+  final ViewSound sound;
   final ViewStats stats;
 
   String get deviceId => deviceIdOf(target);
@@ -242,6 +247,7 @@ class ViewSession {
     bool? screenOff,
     bool? lost,
     bool? viaFallback,
+    ViewSound? sound,
     ViewStats? stats,
   }) => ViewSession(
     target: target,
@@ -256,6 +262,7 @@ class ViewSession {
     screenOff: screenOff ?? this.screenOff,
     lost: lost ?? this.lost,
     viaFallback: viaFallback ?? this.viaFallback,
+    sound: sound ?? this.sound,
     stats: stats ?? this.stats,
   );
 }

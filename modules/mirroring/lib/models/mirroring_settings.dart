@@ -12,6 +12,9 @@ class MirroringSettings {
   static const qualityKey = 'mirroring.quality';
   static const toolbarPinnedKey = 'mirroring.toolbar_pinned';
   static const cableToldKey = 'mirroring.cable_told';
+  static const soundKey = 'mirroring.sound';
+  static const soundVolumeKey = 'mirroring.sound_volume';
+  static const sendSoundKey = 'mirroring.send_sound';
 
   /// The one switch the cable and the receivers used to share. Only read,
   /// so a computer that had it on keeps both.
@@ -70,6 +73,26 @@ class MirroringSettings {
 
   Future<void> setToolbarPinned(bool value) =>
       _store.set(toolbarPinnedKey, value);
+
+  /// A shown screen's sound plays on this computer. On by default: over
+  /// the cable it just works, and over Ferret the phone's owner decides
+  /// whether sound is sent at all.
+  bool get sound => _store.get<bool>(soundKey) ?? true;
+
+  Future<void> setSound(bool value) => _store.set(soundKey, value);
+
+  /// How loud a shown screen's sound plays here, from 0 to 1.
+  double get soundVolume =>
+      (_store.get<num>(soundVolumeKey) ?? 1).clamp(0, 1).toDouble();
+
+  Future<void> setSoundVolume(double value) =>
+      _store.set(soundVolumeKey, value.clamp(0, 1).toDouble());
+
+  /// This phone sends what it plays along with its screen. Off until its
+  /// owner turns it on, which is when Android asks for the permission.
+  bool get sendSound => _store.get<bool>(sendSoundKey) ?? false;
+
+  Future<void> setSendSound(bool value) => _store.set(sendSoundKey, value);
 
   /// The phones whose owner was told once that a cable doesn't ask.
   List<String> get cableTold => [

@@ -54,6 +54,7 @@ void main() {
   late FakeToolRoute cable;
   late FakeControl control;
   late FakeReceiver receiver;
+  late FakeAudioSink speaker;
   late MirroringFeature feature;
   late ViewerViewModel viewModel;
   late DateTime now;
@@ -124,6 +125,8 @@ void main() {
     feature = MirroringFeature(
       decoder: () => decoder,
       codecs: const [.h264, .jpeg],
+      audioSink: () => speaker = FakeAudioSink(),
+      audioCodecs: const [.opus, .pcm],
       routes: [cable],
       receivers: [receiver],
       canShare: false,
@@ -1274,6 +1277,106 @@ void main() {
       await tester.tap(find.text('Rotate'));
 
       expect(control.pressed, const <DeviceButton>[.rotate]);
+    });
+  });
+
+  group('the sound of the screen', () {
+    Future<void> openSound(WidgetTester tester) async {
+      await tester.tap(tool(LucideIcons.ellipsis));
+      await tester.pump();
+      await tester.tap(find.text('Sound'));
+      await tester.pump();
+    }
+
+    testWidgets('over the cable it plays here, and says the phone goes '
+        'quiet', (tester) async {
+      await start(tester, lookForCable: true);
+      final target = await streamOverCable(tester);
+      cable.feeds.last.emit(
+        const FeedAudioConfigured(MirrorAudioConfig(codec: .opus)),
+      );
+      await pumpStage(
+        tester,
+        deviceId: ViewSession.deviceIdOf(target),
+        deviceName: 'Old tablet',
+      );
+
+      await tester.tap(tool(LucideIcons.ellipsis));
+      await tester.pump();
+      expect(find.text('Here'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.volume2), findsWidgets);
+
+      await tester.tap(find.text('Sound'));
+      await tester.pump();
+
+      expect(find.text('On this computer'), findsOneWidget);
+      expect(find.text('On Old tablet'), findsOneWidget);
+      expect(find.byType(FluffySlider), findsOneWidget);
+      expect(
+        find.text(
+          'Old tablet goes quiet while its sound plays here. Changing it '
+          'restarts the picture.',
+        ),
+        findsOneWidget,
+      );
+      expect(cable.options.last.audioCodecs, isNotEmpty);
+    });
+
+    testWidgets('choosing the phone opens the picture again without '
+        'sound', (tester) async {
+      await start(tester, lookForCable: true);
+      final target = await streamOverCable(tester);
+      cable.feeds.last.emit(
+        const FeedAudioConfigured(MirrorAudioConfig(codec: .opus)),
+      );
+      await pumpStage(
+        tester,
+        deviceId: ViewSession.deviceIdOf(target),
+        deviceName: 'Old tablet',
+      );
+      await openSound(tester);
+
+      await tester.tap(find.text('On Old tablet'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(MirroringSettings(host.settings).sound, isFalse);
+      expect(cable.options.last.audioCodecs, isEmpty);
+      expect(speaker.disposed, isTrue);
+      expect(find.byType(FluffySlider), findsNothing);
+      expect(find.text('On the phone'), findsOneWidget);
+    });
+
+    testWidgets('a phone that cannot send its sound says what it takes', (
+      tester,
+    ) async {
+      await start(tester, lookForCable: true);
+      final target = await streamOverCable(tester);
+      cable.feeds.last.emit(const FeedAudioUnavailable(.unsupported));
+      await pumpStage(
+        tester,
+        deviceId: ViewSession.deviceIdOf(target),
+        deviceName: 'Old tablet',
+      );
+      await openSound(tester);
+
+      expect(find.text('None'), findsOneWidget);
+      expect(
+        find.textContaining('That takes Android 11 or newer'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('over Ferret it waits for the phone to send any', (
+      tester,
+    ) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      await pumpStage(tester);
+      await openSound(tester);
+
+      expect(find.text('On Pixel'), findsOneWidget);
+      expect(find.text('Waiting for sound…'), findsOneWidget);
     });
   });
 

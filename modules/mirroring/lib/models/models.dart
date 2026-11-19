@@ -19,3 +19,4 @@ export 'package:mirroring/models/toolbar_item.dart';
 export 'package:mirroring/models/toolbar_place.dart';
 export 'package:mirroring/models/view_quality.dart';
 export 'package:mirroring/models/view_session.dart';
+export 'package:mirroring/models/view_sound.dart';

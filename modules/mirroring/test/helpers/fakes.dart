@@ -623,3 +623,39 @@ Future<void> nameHere(
   );
   await store.rename(deviceId, nickname);
 }
+
+/// A sound output that remembers what it was asked to play.
+class FakeAudioSink implements AudioSink {
+  final List<MirrorAudioConfig> configs = [];
+  final List<MirrorAudioPacket> played = [];
+  bool refuse = false;
+  bool disposed = false;
+  double volume = 1;
+
+  @override
+  Future<void> configure(
+    MirrorAudioConfig config, {
+    bool silent = false,
+  }) async {
+    if (refuse) {
+      throw StateError('no output');
+    }
+
+    configs.add(config);
+  }
+
+  @override
+  void play(MirrorAudioPacket packet) => played.add(packet);
+
+  @override
+  void flush() {}
+
+  @override
+  void setVolume(double volume) => this.volume = volume;
+
+  @override
+  Future<AudioSinkStats> stats() async => const AudioSinkStats();
+
+  @override
+  Future<void> dispose() async => disposed = true;
+}

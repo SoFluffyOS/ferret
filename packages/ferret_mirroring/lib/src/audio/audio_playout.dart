@@ -37,7 +37,8 @@ class AudioPlayout {
   Duration get level => _jitter.level;
 
   /// Sets the sink up for [config]. False when this computer can't play
-  /// it. Packets that arrive meanwhile are dropped.
+  /// it. Packets that arrive meanwhile are dropped; so are those of a
+  /// config that a newer one replaced before it was ready.
   Future<bool> configure(MirrorAudioConfig config) async {
     final configuration = ++_configuration;
     _config = null;
@@ -49,7 +50,7 @@ class AudioPlayout {
     }
 
     if (_closed || configuration != _configuration) {
-      return false;
+      return true;
     }
 
     _config = config;

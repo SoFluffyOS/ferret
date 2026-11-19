@@ -17,6 +17,8 @@ class MirroringFeature extends Feature {
     ScreenCapture Function()? capture,
     MirrorDecoder Function()? decoder,
     List<MirrorCodec>? codecs,
+    AudioSink Function()? audioSink,
+    List<MirrorAudioCodec>? audioCodecs,
     List<MirrorRoute> routes = const [],
     List<MirrorReceiver> receivers = const [],
     bool? canShare,
@@ -29,6 +31,8 @@ class MirroringFeature extends Feature {
   }) : _createCapture = capture ?? ScreenCapture.current,
        _createDecoder = decoder ?? MirrorDecoder.current,
        _codecs = codecs,
+       _createAudioSink = audioSink,
+       _audioCodecs = audioCodecs,
        _extraRoutes = routes,
        _receivers = receivers,
        canShare = canShare ?? ScreenCapture.isSupportedPlatform,
@@ -68,6 +72,8 @@ class MirroringFeature extends Feature {
   final ScreenCapture Function() _createCapture;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec>? _codecs;
+  final AudioSink Function()? _createAudioSink;
+  final List<MirrorAudioCodec>? _audioCodecs;
   final List<MirrorRoute> _extraRoutes;
   final List<MirrorReceiver> _receivers;
   final DateTime Function() _clock;
@@ -141,6 +147,8 @@ class MirroringFeature extends Feature {
         createDecoder: _createDecoder,
         codecs: _codecs ?? MirrorDecoder.platformCodecs,
         settings: settings,
+        createAudioSink: _createAudioSink,
+        audioCodecs: _audioCodecs,
         clock: _clock,
         firstPictureTimeout: firstPictureTimeout,
       );

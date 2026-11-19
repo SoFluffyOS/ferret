@@ -25,16 +25,26 @@ enum QualityPreset {
     return .auto;
   }
 
-  /// What a route is asked for under this preset.
-  FeedOptions options(List<MirrorCodec> codecs) => switch (this) {
-    .auto => FeedOptions(codecs: codecs, control: true),
+  /// What a route is asked for under this preset. [audioCodecs] asks for
+  /// the device's sound too, in what this computer plays.
+  FeedOptions options(
+    List<MirrorCodec> codecs, {
+    List<MirrorAudioCodec> audioCodecs = const [],
+  }) => switch (this) {
+    .auto => FeedOptions(
+      codecs: codecs,
+      audioCodecs: audioCodecs,
+      control: true,
+    ),
     .sharp => FeedOptions(
       codecs: codecs,
+      audioCodecs: audioCodecs,
       control: true,
       bitrate: _sharpBitrate,
     ),
     .fast => FeedOptions(
       codecs: codecs,
+      audioCodecs: audioCodecs,
       control: true,
       maxSize: _fastLongSide,
       bitrate: _fastBitrate,

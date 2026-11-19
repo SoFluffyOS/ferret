@@ -38,6 +38,53 @@ extension MirroringLabels on MirroringLocalizations {
     }
   }
 
+  /// Where the sound of the screen shown is, in a word or two.
+  String soundDetail(ViewSound sound, {required bool on}) {
+    if (!on) {
+      return soundDetailThere;
+    }
+
+    return switch (sound) {
+      .playing || .starting => soundDetailHere,
+      .off => soundDetailThere,
+      .unsupported || .notAllowed || .failed || .noOutput => soundDetailNone,
+    };
+  }
+
+  /// What to know about the sound of [device]'s screen right now: why
+  /// there is none, or what turning it on does.
+  String soundNote(
+    ViewSound sound, {
+    required SoundWay way,
+    required bool on,
+    required String device,
+  }) {
+    if (way == .none) {
+      return soundAirplay;
+    }
+
+    final explains = switch (way) {
+      .copies => soundCopiesNote(device),
+      _ => soundMovesNote(device),
+    };
+    if (!on) {
+      return explains;
+    }
+
+    return switch (sound) {
+      .playing => explains,
+      .starting => soundWaiting,
+      .off => soundNextTime(device),
+      .notAllowed => soundNotAllowed(device),
+      .unsupported => switch (way) {
+        .copies => soundUnsupportedWifi(device),
+        _ => soundUnsupportedCable(device),
+      },
+      .failed => soundFailed(device),
+      .noOutput => soundNoOutput,
+    };
+  }
+
   /// Why the computer isn't showing the phone's screen, in a few words.
   String endTitle(ViewEnd end, String device) => switch (end) {
     .denied => endDeniedTitle(device),

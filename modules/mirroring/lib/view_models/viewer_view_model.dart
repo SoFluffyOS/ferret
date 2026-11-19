@@ -190,6 +190,33 @@ class ViewerViewModel extends ChangeNotifier {
   /// opened again without asking the device's owner.
   bool get presetRestarts => current?.way == MirrorWay.cable;
 
+  /// Whether this computer can play a shown screen's sound at all.
+  bool get canPlaySound => _viewer?.audioCodecs.isNotEmpty ?? false;
+
+  /// Whether a shown screen's sound plays here.
+  bool get soundOn => _viewer?.soundOn ?? false;
+
+  double get soundVolume => _viewer?.soundVolume ?? 1;
+
+  /// What the way the screen on stage arrives does with its sound.
+  SoundWay get soundWay {
+    final target = current?.target;
+    if (target == null || current?.way == MirrorWay.airplay) {
+      return .none;
+    }
+
+    if (target.routeId == FerretRoute.routeId) {
+      return .copies;
+    }
+
+    return .moves;
+  }
+
+  Future<void> setSound(bool on) async => _viewer?.setSound(on);
+
+  Future<void> setSoundVolume(double volume) async =>
+      _viewer?.setSoundVolume(volume);
+
   bool get toolbarPinned => feature.settings.toolbarPinned;
 
   Future<void> setToolbarPinned(bool value) =>

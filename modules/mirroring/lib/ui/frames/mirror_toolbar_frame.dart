@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mirroring/l10n/l10n.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/ui/frames/quality_panel_frame.dart';
+import 'package:mirroring/ui/frames/sound_panel_frame.dart';
 import 'package:mirroring/ui/widgets/widgets.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
@@ -59,10 +60,23 @@ class MirrorToolbarFrame extends StatelessWidget {
     final quality = context.select<ViewerViewModel, ViewQuality>(
       (viewModel) => viewModel.current?.stats.quality ?? .good,
     );
+    final canPlaySound = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.canPlaySound,
+    );
+    final soundOn = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.soundOn,
+    );
+    final sound = context.select<ViewerViewModel, ViewSound>(
+      (viewModel) => viewModel.current?.sound ?? .off,
+    );
+    final soundWay = context.select<ViewerViewModel, SoundWay>(
+      (viewModel) => viewModel.soundWay,
+    );
     final viewModel = context.read<ViewerViewModel>();
+    final l10n = context.mirroringL10n;
     // Only the window's bar fades, so only there is keeping it a choice.
     final canPin = place == .bar;
-    final hasMore = canPress || place != .beside;
+    final hasMore = canPress || canPlaySound || place != .beside;
 
     return MirrorToolbar(
       place: place,
@@ -101,6 +115,15 @@ class MirrorToolbarFrame extends StatelessWidget {
         .viewOnly || .quality || .more => null,
       },
       qualityPanel: (_) => QualityPanelFrame(deviceName: deviceName),
+      soundPanel: switch (canPlaySound) {
+        true => (_) => SoundPanelFrame(deviceName: deviceName),
+        false => null,
+      },
+      soundDetail: switch (soundWay) {
+        .none => l10n.soundDetailNone,
+        _ => l10n.soundDetail(sound, on: soundOn),
+      },
+      soundMuted: !soundOn || sound != .playing,
       viewOnlyPanel: (_) => _ViewOnlyPanel(
         deviceId: deviceId,
         deviceName: deviceName,

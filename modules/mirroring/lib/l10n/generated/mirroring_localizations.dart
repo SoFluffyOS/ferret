@@ -1073,6 +1073,108 @@ abstract class MirroringLocalizations {
   /// **'Keep toolbar visible'**
   String get keepToolbar;
 
+  /// Heading of the panel that picks where a shown phone's sound plays, and a row in the toolbar's More menu
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get soundTitle;
+
+  /// Short state next to Sound in a menu: the phone's sound plays on this computer
+  ///
+  /// In en, this message translates to:
+  /// **'Here'**
+  String get soundDetailHere;
+
+  /// Short state next to Sound in a menu: the sound stays on the phone
+  ///
+  /// In en, this message translates to:
+  /// **'On the phone'**
+  String get soundDetailThere;
+
+  /// Short state next to Sound in a menu: no sound arrives
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get soundDetailNone;
+
+  /// Choice: play the shown phone's sound on this computer
+  ///
+  /// In en, this message translates to:
+  /// **'On this computer'**
+  String get soundHere;
+
+  /// No description provided for @soundThere.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}'**
+  String soundThere(String device);
+
+  /// No description provided for @soundVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get soundVolume;
+
+  /// No description provided for @soundMovesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} goes quiet while its sound plays here. Changing it restarts the picture.'**
+  String soundMovesNote(String device);
+
+  /// No description provided for @soundCopiesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} keeps playing too: turn its volume down to hear it only here. Apps that block capture, like some video apps, stay silent.'**
+  String soundCopiesNote(String device);
+
+  /// No description provided for @soundNextTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} has to say yes again, so sound starts next time.'**
+  String soundNextTime(String device);
+
+  /// No description provided for @soundNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t sending its sound. On the phone, open Ferret, then Settings → Screen, and turn on Send sound too.'**
+  String soundNotAllowed(String device);
+
+  /// No description provided for @soundUnsupportedCable.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} can\'t send its sound. That takes Android 11 or newer, and an unlocked screen when the picture starts.'**
+  String soundUnsupportedCable(String device);
+
+  /// No description provided for @soundUnsupportedWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} can\'t send its sound. That takes Android 10 or newer and the latest Ferret on it.'**
+  String soundUnsupportedWifi(String device);
+
+  /// No description provided for @soundFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t capture its sound. Stop, then show the screen again.'**
+  String soundFailed(String device);
+
+  /// No description provided for @soundNoOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer couldn\'t play the sound. Check its sound output.'**
+  String get soundNoOutput;
+
+  /// No description provided for @soundAirplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound over AirPlay isn\'t here yet. It stays on the iPhone.'**
+  String get soundAirplay;
+
+  /// No description provided for @soundWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for sound…'**
+  String get soundWaiting;
+
   /// No description provided for @qualityGood.
   ///
   /// In en, this message translates to:

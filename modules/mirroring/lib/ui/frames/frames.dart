@@ -11,4 +11,5 @@ export 'package:mirroring/ui/frames/screen_launcher_frame.dart';
 export 'package:mirroring/ui/frames/screen_status_frame.dart';
 export 'package:mirroring/ui/frames/share_card_frame.dart';
 export 'package:mirroring/ui/frames/share_settings_frame.dart';
+export 'package:mirroring/ui/frames/sound_panel_frame.dart';
 export 'package:mirroring/ui/frames/viewer_settings_frame.dart';
