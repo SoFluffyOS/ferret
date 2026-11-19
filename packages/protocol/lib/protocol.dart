@@ -11,4 +11,6 @@ export 'package:protocol/src/generated/ferret/v1/pairing.pb.dart';
 export 'package:protocol/src/generated/ferret/v1/pairing.pbenum.dart';
 export 'package:protocol/src/generated/ferret/v1/session.pb.dart';
 export 'package:protocol/src/generated/ferret/v1/session.pbenum.dart';
+export 'package:protocol/src/generated/ferret/v1/wake.pb.dart';
+export 'package:protocol/src/generated/ferret/v1/wake.pbenum.dart';
 export 'package:protocol/src/payload.dart';

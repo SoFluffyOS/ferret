@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:engine/trust/forgotten_device.dart';
 import 'package:engine/trust/trusted_device.dart';
+import 'package:protocol/protocol.dart' show WakeInfo;
 
 /// The devices this one is paired with, and the ones the user removed, kept
 /// in the [SecretStore].
@@ -72,6 +73,18 @@ class TrustStore {
     }
 
     await save(device.withNickname(nickname));
+  }
+
+  /// Remembers how to wake [deviceId], as it just told this device. Saves
+  /// only when something changed, since computers tell it on every
+  /// connect.
+  Future<void> saveWake(String deviceId, WakeInfo wake) async {
+    final device = _devices[deviceId];
+    if (device == null || device.wake == wake) {
+      return;
+    }
+
+    await save(device.copyWith(wake: wake));
   }
 
   /// [device] with the end of its id added to its name while another

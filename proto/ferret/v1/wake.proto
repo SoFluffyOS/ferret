@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package ferret.v1;
+
+// How to wake a computer from sleep with a Wake-on-LAN magic packet. A
+// computer shares it only with its paired devices (feature "wake"), when a
+// session opens and again when its network cards change. A MAC address
+// identifies the computer, so it never goes anywhere else.
+message WakeInfo {
+  // Its wired and Wi-Fi network cards that have an IPv4 address, wired
+  // first. Virtual cards (VPNs, bridges, containers) are left out.
+  repeated WakeInterface interfaces = 1;
+}
+
+// One network card a computer can be woken through.
+message WakeInterface {
+  // Hardware (MAC) address, 6 bytes.
+  bytes mac = 1;
+  // Its IPv4 address on that network, such as "192.168.1.20".
+  string address = 2;
+  // That network's broadcast address, such as "192.168.1.255".
+  string broadcast = 3;
+  WakeLink link = 4;
+  // Whether the card is set to wake on a magic packet, when the computer
+  // can tell.
+  WakeSetting setting = 5;
+}
+
+// How a network card is connected. Wired cards wake reliably once
+// Wake-on-LAN is on; few Wi-Fi cards wake at all.
+enum WakeLink {
+  WAKE_LINK_UNSPECIFIED = 0;
+  WAKE_LINK_WIRED = 1;
+  WAKE_LINK_WIFI = 2;
+}
+
+// What the computer's own settings say about waking on a magic packet.
+enum WakeSetting {
+  // It couldn't tell, such as without permission to ask the driver.
+  WAKE_SETTING_UNSPECIFIED = 0;
+  WAKE_SETTING_ON = 1;
+  WAKE_SETTING_OFF = 2;
+}

@@ -18,6 +18,7 @@ class TrustedDevice {
     this.introducedBy,
     this.nickname,
     this.sameNameTag,
+    this.wake,
   }) : ownName = name;
 
   factory TrustedDevice.fromJson(Map<String, dynamic> json) => TrustedDevice(
@@ -38,6 +39,10 @@ class TrustedDevice {
     lastPort: json['last_port'] as int?,
     introducedBy: json['introduced_by'] as String?,
     nickname: json['nickname'] as String?,
+    wake: switch (json['wake']) {
+      final String encoded => WakeInfo.fromBuffer(base64Decode(encoded)),
+      _ => null,
+    },
   );
 
   final String id;
@@ -67,6 +72,11 @@ class TrustedDevice {
   /// "Pixel 7 (0718)" and "Pixel 7 (3F2A)". Never stored.
   final String? sameNameTag;
 
+  /// How to wake it from sleep, as it last told this device: its network
+  /// cards' MAC and broadcast addresses. Only computers share it, and only
+  /// with their paired devices.
+  final WakeInfo? wake;
+
   /// What to call it on screen: the user's nickname, else its own name,
   /// told apart from a namesake by the end of its id.
   String get name {
@@ -87,6 +97,7 @@ class TrustedDevice {
     DateTime? lastSeen,
     String? lastHost,
     int? lastPort,
+    WakeInfo? wake,
   }) => TrustedDevice(
     id: id,
     name: name ?? ownName,
@@ -99,6 +110,7 @@ class TrustedDevice {
     lastPort: lastPort ?? this.lastPort,
     introducedBy: introducedBy,
     nickname: nickname,
+    wake: wake ?? this.wake,
   );
 
   /// The same device with [nickname] as its name here, or its own name
@@ -118,6 +130,7 @@ class TrustedDevice {
       final trimmed? when trimmed.isNotEmpty && trimmed != ownName => trimmed,
       _ => null,
     },
+    wake: wake,
   );
 
   /// The same device told apart from a namesake by [tag].
@@ -134,6 +147,7 @@ class TrustedDevice {
     introducedBy: introducedBy,
     nickname: nickname,
     sameNameTag: tag,
+    wake: wake,
   );
 
   Map<String, dynamic> toJson() => {
@@ -148,5 +162,6 @@ class TrustedDevice {
     'last_port': ?lastPort,
     'introduced_by': ?introducedBy,
     'nickname': ?nickname,
+    if (wake case final wake?) 'wake': base64Encode(wake.writeToBuffer()),
   };
 }

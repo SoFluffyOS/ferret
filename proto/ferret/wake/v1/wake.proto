@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package ferret.wake.v1;
+
+import "ferret/v1/wake.proto";
+
+// Asks a device that is on to send the magic packet for another of the
+// user's devices, for when the asking one can't reach that network itself
+// (an iPhone may not broadcast, a phone may be on mobile data). Expects a
+// `WakeReply`. The receiver acts only for a device it is paired with too.
+message WakeRequest {
+  // The device to wake.
+  string device_id = 1;
+  // What the asking device knows about how to wake it. The receiver uses
+  // its own copy first.
+  ferret.v1.WakeInfo info = 2;
+  // The address the asking device last reached it at, such as
+  // "192.168.1.20".
+  string last_address = 3;
+}
+
+// What came of a `WakeRequest`.
+message WakeReply {
+  WakeResult result = 1;
+}
+
+enum WakeResult {
+  WAKE_RESULT_UNSPECIFIED = 0;
+  // The magic packet went out. Whether the device wakes shows when it
+  // connects.
+  WAKE_RESULT_SENT = 1;
+  // The receiver isn't paired with that device, so it won't wake it.
+  WAKE_RESULT_NOT_PAIRED = 2;
+  // Its owner turned off waking devices for others on the receiver.
+  WAKE_RESULT_RELAY_OFF = 3;
+  // Neither side knows the device's network card.
+  WAKE_RESULT_NO_INFO = 4;
+  // Sending failed, such as with no network.
+  WAKE_RESULT_FAILED = 5;
+}
