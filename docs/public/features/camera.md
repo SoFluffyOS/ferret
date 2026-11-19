@@ -57,3 +57,4 @@ Android has no document scanner Ferret can use without Google's own libraries, w
 - One request per phone at a time. Asking again replaces the first one.
 - The phone needs to be connected. If it isn't, Activity says **Pixel 7 isn't connected**, with **Try again**.
 - On Linux the photo goes on the clipboard as a PNG, which most apps paste. That needs `wl-clipboard` (Wayland) or `xclip` (X11), like [Clipboard](clipboard.md) pictures.
+- From a script: `ferret-cli camera "Pixel 7"` asks, waits for the photo, and prints where it was saved. Add `--document` for an iPhone scan, `--json` for your script. See [Scripting](scripting.md).

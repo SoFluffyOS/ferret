@@ -17,6 +17,7 @@ CommandRunner<int> buildRunner(
   Stream<Object?>? stop,
 }) => _FerretRunner(environment)
   ..addCommand(ActionCommand(environment))
+  ..addCommand(CameraCommand(environment))
   ..addCommand(ClipboardCommand(environment))
   ..addCommand(DaemonCommand(environment))
   ..addCommand(DevicesCommand(environment))

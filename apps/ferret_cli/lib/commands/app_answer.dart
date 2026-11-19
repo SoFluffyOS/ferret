@@ -75,6 +75,12 @@ abstract final class AppAnswer {
         '$device has no action by that name. '
             '"ferret-cli action <computer>" lists them.',
       (_, 'denied') => 'Someone at $device said no.',
+      (_, 'declined') => 'Someone at $device said not now.',
+      (_, 'unsupported') => "$device can't take that kind of picture.",
+      (_, 'noPermission') =>
+        "$device didn't let Ferret use its camera. Allow it in its settings.",
+      (_, 'expired') => 'Nobody took the photo on $device in time.',
+      (_, 'offline') => "$device isn't connected right now.",
       (_, 'not_answered') => 'Nobody answered on $device.',
       (_, 'busy') => '$device is busy with another request.',
       (_, 'turned_off') => 'Actions are turned off on $device.',

@@ -21,6 +21,7 @@ ferret-cli watch                         # what happens, live
 ferret-cli open "Pixel 7" https://example.com
 ferret-cli notify "Pixel 7" "Build done" "All tests green"
 ferret-cli ring "Pixel 7"
+ferret-cli camera "Pixel 7"              # waits for the photo, prints where it was saved
 ferret-cli clipboard get                 # the last text that arrived
 ferret-cli clipboard send "hello"        # to every connected device
 ferret-cli action "Family PC" sleep

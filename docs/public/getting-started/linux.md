@@ -131,6 +131,7 @@ sudo firewall-cmd --permanent --add-service=ferret && sudo firewall-cmd --reload
 ferret send ~/Pictures/photo.jpg       # hands it to the Ferret app, which sends it
 ferret-cli devices --json              # paired devices, for scripts and jq
 ferret-cli ring pixel                  # rings your phone, the start of its name is enough
+ferret-cli camera pixel                # asks your phone for a photo, then prints its path
 ferret-cli clipboard get               # the last text copied on another device
 ferret-cli clipboard send --to pixel   # sends what you pipe in
 ferret-cli action "Family PC" sleep    # sleep, restart, shut_down, mute, or one of its own actions

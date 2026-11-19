@@ -395,4 +395,59 @@ void main() {
       expect(answer['ok'], isTrue);
     });
   });
+
+  group('camera', () {
+    test('asks the phone and answers with where the photo was saved', () async {
+      final asked = <(String, bool)>[];
+      final control = CliControl(
+        devices: () => devices,
+        takePicture: (deviceId, {required document}) async {
+          asked.add((deviceId, document));
+          return (result: 'done', path: '/Downloads/Ferret/photo.jpg');
+        },
+      );
+
+      final answer = await control.handle('camera', {'device': 'pixel 7'});
+
+      expect(asked, [('aaaa-1111', false)]);
+      expect(answer, {
+        'ok': true,
+        'device': 'Pixel 7',
+        'result': 'done',
+        'path': '/Downloads/Ferret/photo.jpg',
+      });
+    });
+
+    test('a scan asks for a document, and Not now is not ok', () async {
+      final control = CliControl(
+        devices: () => devices,
+        takePicture: (_, {required document}) async =>
+            (result: document ? 'declined' : 'done', path: null),
+      );
+
+      final answer = await control.handle('camera', {
+        'device': 'Pixel 7',
+        'kind': 'document',
+      });
+
+      expect(answer['ok'], isFalse);
+      expect(answer['result'], 'declined');
+      expect(answer.containsKey('path'), isFalse);
+    });
+
+    test('an offline phone is not asked', () async {
+      final control = CliControl(
+        devices: () => devices,
+        takePicture: (_, {required document}) async =>
+            throw StateError('asked'),
+      );
+
+      final answer = await control.handle('camera', {
+        'device': 'Pixel Tablet',
+      });
+
+      expect(answer['ok'], isFalse);
+      expect(answer['error'], 'not_connected');
+    });
+  });
 }

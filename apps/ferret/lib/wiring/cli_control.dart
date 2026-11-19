@@ -7,6 +7,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret/wiring/script_events.dart';
 import 'package:find/find.dart';
 import 'package:handoff/handoff.dart';
+import 'package:phone_camera/phone_camera.dart';
 import 'package:scripting/scripting.dart';
 import 'package:wake/wake.dart';
 
@@ -24,8 +25,12 @@ typedef CliAction = ({String id, String title});
 /// and how a command of its owner's ended.
 typedef CliActionResult = ({String result, int? exitCode});
 
+/// How asking a phone for a picture ended: `done` with where it was saved,
+/// or `declined`, `expired`….
+typedef CliPicture = ({String result, String? path});
+
 /// Answers `ferret-cli` commands (`ring`, `clipboard`, `action`, `wake`,
-/// `open`, `notify`, `watch`) from the running app, and the same commands
+/// `open`, `notify`, `camera`, `watch`) from the running app, and the same commands
 /// from Tasker and Shortcuts on a phone. Features never import each other,
 /// so the app joins them here.
 class CliControl {
@@ -41,6 +46,8 @@ class CliControl {
     Future<String> Function(String deviceId, String link)? openLink,
     Future<String> Function(String deviceId, String title, String body)? notify,
     Future<String> Function(String deviceId, List<String> paths)? sendFiles,
+    Future<CliPicture> Function(String deviceId, {required bool document})?
+    takePicture,
   }) : _devices = devices,
        _ring = ring,
        _latestClip = latestClip,
@@ -50,7 +57,8 @@ class CliControl {
        _wake = wake,
        _openLink = openLink,
        _notify = notify,
-       _sendFiles = sendFiles;
+       _sendFiles = sendFiles,
+       _takePicture = takePicture;
 
   final List<CliDevice> Function() _devices;
   final Future<String> Function(String deviceId)? _ring;
@@ -65,6 +73,8 @@ class CliControl {
   _notify;
   final Future<String> Function(String deviceId, List<String> paths)?
   _sendFiles;
+  final Future<CliPicture> Function(String deviceId, {required bool document})?
+  _takePicture;
 
   static const String ringCommand = 'ring';
   static const String clipboardGetCommand = 'clipboard_get';
@@ -75,6 +85,7 @@ class CliControl {
   static const String openCommand = 'open';
   static const String notifyCommand = 'notify';
   static const String sendFilesCommand = 'send_files';
+  static const String cameraCommand = 'camera';
 
   /// Starts answering on this computer, or returns null on phones, where
   /// there is no command line.
@@ -112,6 +123,7 @@ class CliControl {
     final handoff = engine.feature<HandoffFeature>();
     final scripting = engine.feature<ScriptingFeature>();
     final drop = engine.feature<DropFeature>();
+    final camera = engine.feature<CameraFeature>();
 
     return CliControl(
       devices: () => [
@@ -180,7 +192,40 @@ class CliControl {
         },
         null => null,
       },
+      takePicture: switch (camera) {
+        final camera? => (deviceId, {required document}) => _pictureFrom(
+          camera,
+          deviceId,
+          document: document,
+        ),
+        null => null,
+      },
     );
+  }
+
+  /// Asks [deviceId] for a picture and waits until it arrived or the
+  /// request ended, as Activity shows it.
+  static Future<CliPicture> _pictureFrom(
+    CameraFeature camera,
+    String deviceId, {
+    required bool document,
+  }) async {
+    final job = await camera.request(
+      deviceId,
+      kind: switch (document) {
+        true => PictureKind.document,
+        false => PictureKind.photo,
+      },
+    );
+    var current = camera.jobs[job.id] ?? job;
+    if (current.status.isOpen) {
+      await camera.jobs.changes
+          .map((_) => camera.jobs[job.id])
+          .firstWhere((latest) => latest == null || !latest.status.isOpen);
+      current = camera.jobs[job.id] ?? current.copyWith(status: .cancelled);
+    }
+
+    return (result: current.status.name, path: current.paths.firstOrNull);
   }
 
   Future<Map<String, Object?>> handle(
@@ -196,8 +241,32 @@ class CliControl {
     openCommand => _open(arguments),
     notifyCommand => _notifyDevice(arguments),
     sendFilesCommand => _sendFilesTo(arguments),
+    cameraCommand => _camera(arguments),
     _ => _failure('unknown_command'),
   };
+
+  Future<Map<String, Object?>> _camera(Map<String, Object?> arguments) async {
+    final takePicture = _takePicture;
+    if (takePicture == null) {
+      return _failure('not_supported');
+    }
+
+    final device = _connected(arguments['device']);
+    if (device case {'ok': false}) {
+      return device;
+    }
+
+    final picture = await takePicture(
+      '${device['id']}',
+      document: arguments['kind'] == 'document',
+    );
+    return {
+      'ok': picture.result == CaptureJobStatus.done.name,
+      'device': device['device'],
+      'result': picture.result,
+      'path': ?picture.path,
+    };
+  }
 
   Future<Map<String, Object?>> _ringDevice(
     Map<String, Object?> arguments,
