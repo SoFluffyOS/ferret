@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
@@ -29,6 +30,9 @@ class _FakeSession implements Session {
 }
 
 class _FakeEngine implements FerretEngine {
+  @override
+  final SettingsStore settings = MemorySettingsStore();
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

@@ -59,6 +59,7 @@ class _FileDropZoneState extends State<FileDropZone> {
       ],
       send: _dispatch,
       sendText: _dispatchText,
+      settings: ShellScope.read(context).featureContext.engine.settings,
       finder: RenderTreeDropTargetFinder(viewId: () => _viewId),
       onAllowedChanged: _onAllowedChanged,
       onFinished: () => unawaited(menubar?.closeIfOpenedByDrag()),
@@ -152,23 +153,18 @@ class _FileDropZoneState extends State<FileDropZone> {
     }
   }
 
-  /// Dropped on the icon before the popover opened: one device connected
-  /// gets them; otherwise the popover opens on the tiles to pick one.
+  /// Dropped on the icon before the popover opened: the only connected
+  /// device, or the one used last, gets them while the icon shows the
+  /// ring; otherwise the popover opens on the tiles to pick one.
   Future<void> _onIconDrop(List<String> paths) async {
     if (!_isMainView) {
       return;
     }
 
-    final connected = context
-        .read<EngineHost>()
-        .devices
-        .where((status) => status.isConnected)
-        .length;
-    if (connected != 1) {
+    final held = await _viewModel.dropBlind(paths);
+    if (held) {
       await widget.menubar?.show();
     }
-
-    await _viewModel.dropBlind(paths);
   }
 
   Future<Stream<FilesSendProgress>?> _dispatch(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/models/models.dart';
@@ -31,6 +32,7 @@ class OsDropViewModel extends ChangeNotifier {
     required List<DeviceDropTarget> Function() devices,
     required SendDroppedFiles send,
     SendDroppedText? sendText,
+    SettingsStore? settings,
     DropTargetFinder finder = const RenderTreeDropTargetFinder(),
     void Function(bool allowed)? onAllowedChanged,
     VoidCallback? onFinished,
@@ -40,6 +42,7 @@ class OsDropViewModel extends ChangeNotifier {
   }) : _devices = devices,
        _send = send,
        _sendText = sendText,
+       _settings = settings,
        _finder = finder,
        _onAllowedChanged = onAllowedChanged,
        _onFinished = onFinished,
@@ -48,6 +51,11 @@ class OsDropViewModel extends ChangeNotifier {
   final List<DeviceDropTarget> Function() _devices;
   final SendDroppedFiles _send;
   final SendDroppedText? _sendText;
+  final SettingsStore? _settings;
+
+  /// Settings key of the device files were last dropped on, where a blind
+  /// drop on the menubar icon goes.
+  static const lastDeviceKey = 'shell.last_drop_device';
   final DropTargetFinder _finder;
   final void Function(bool allowed)? _onAllowedChanged;
   final VoidCallback? _onFinished;
@@ -175,25 +183,33 @@ class OsDropViewModel extends ChangeNotifier {
   }
 
   /// Files dropped on the menubar icon without waiting for the popover:
-  /// with one device connected they go straight to it; otherwise the
-  /// targets show so people pick one rather than Ferret guessing.
-  Future<void> dropBlind(List<String> paths) async {
+  /// with one device connected they go straight to it, and with several to
+  /// the one files were last dropped on while it is connected. Otherwise
+  /// the targets show so people pick one rather than Ferret guessing; true
+  /// back means they were held for that.
+  Future<bool> dropBlind(List<String> paths) async {
     if (paths.isEmpty) {
-      return;
+      return false;
     }
 
     final connected = [
       for (final device in _devices())
         if (device.isConnected) device,
     ];
-    if (connected case [final only]) {
-      _kind = .files;
-      _paths = paths;
-      await _sendTo(only);
-      return;
+    final lastId = _settings?.get<String>(lastDeviceKey);
+    final target = switch (connected) {
+      [final only] => only,
+      _ => connected.where((device) => device.deviceId == lastId).firstOrNull,
+    };
+    if (target == null) {
+      hold(paths);
+      return true;
     }
 
-    hold(paths);
+    _kind = .files;
+    _paths = paths;
+    await _sendTo(target);
+    return false;
   }
 
   /// Shows the targets for [paths] already dropped, to pick one by tapping.
@@ -271,6 +287,10 @@ class OsDropViewModel extends ChangeNotifier {
       DeviceDropTarget(:final deviceId) => deviceId,
       AllDevicesDropTarget() || PaneDropTarget() => null,
     };
+    if (deviceId != null && _kind == .files) {
+      unawaited(_settings?.set(lastDeviceKey, deviceId));
+    }
+
     final progress = await _dispatch(deviceId);
     if (run != _sendRun) {
       return;

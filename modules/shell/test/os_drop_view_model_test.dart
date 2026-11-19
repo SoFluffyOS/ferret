@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shell/shell.dart';
@@ -41,6 +42,7 @@ Future<void> _wait(int milliseconds) =>
 void main() {
   late List<DeviceDropTarget> devices;
   late List<(List<String>, String?)> sent;
+  late MemorySettingsStore settings;
   late List<(String, String?, bool)> sentText;
   late StreamController<FilesSendProgress> progress;
   late List<bool> allowed;
@@ -52,6 +54,7 @@ void main() {
   setUp(() {
     devices = [_pixel, _tablet];
     sent = [];
+    settings = MemorySettingsStore();
     sentText = [];
     progress = StreamController<FilesSendProgress>();
     allowed = [];
@@ -68,6 +71,7 @@ void main() {
         sentText.add((text, deviceId, isLink));
         return progress.stream;
       },
+      settings: settings,
       finder: _FakeFinder(),
       onAllowedChanged: allowed.add,
       onFinished: () => finished++,
@@ -209,6 +213,47 @@ void main() {
     await viewModel.pick(const AllDevicesDropTarget());
     expect(sent.single.$1, ['/a.jpg', '/b.jpg']);
     expect(sent.single.$2, isNull);
+  });
+
+  test('a blind drop goes to the device files were last dropped on', () async {
+    const ipad = DeviceDropTarget(
+      deviceId: 'ipad',
+      name: 'iPad',
+      isConnected: true,
+    );
+    devices = [_pixel, ipad];
+    viewModel.enter(_overPixel, fileCount: 1);
+    await viewModel.drop(['/first.jpg'], _overPixel);
+    progress.add(const FilesSent());
+    await _wait(60);
+    progress = StreamController<FilesSendProgress>();
+
+    final held = await viewModel.dropBlind(['/blind.jpg']);
+
+    expect(held, isFalse);
+    expect(sent.last.$1, ['/blind.jpg']);
+    expect(sent.last.$2, 'pixel-id');
+    expect(viewModel.phase, isA<DropSending>());
+  });
+
+  test('a blind drop asks when the last device is offline', () async {
+    settings = MemorySettingsStore({
+      OsDropViewModel.lastDeviceKey: 'tablet-id',
+    });
+    devices = [
+      _pixel,
+      const DeviceDropTarget(deviceId: 'ipad', name: 'iPad', isConnected: true),
+    ];
+    final asking = OsDropViewModel(
+      devices: () => devices,
+      send: (paths, deviceId) async => progress.stream,
+      settings: settings,
+      finder: _FakeFinder(),
+    );
+    addTearDown(asking.dispose);
+
+    expect(await asking.dropBlind(['/a.jpg']), isTrue);
+    expect(asking.phase, isA<DropChoosing>());
   });
 
   group('text and links', () {
