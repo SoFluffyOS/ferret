@@ -84,6 +84,35 @@ abstract class FeatureUi {
     DeviceStatus device,
   ) => const [];
 
+  /// What can still be done with [device] while it is offline, such as
+  /// "Wake". They sit on its row on Home and on its page, next to the way
+  /// to find out why it isn't connected.
+  List<FeatureAction> offlineActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) => const [];
+
+  /// What this feature is doing with an offline [device] right now, such
+  /// as "Waking MacBook Pro…", shown in place of "Last seen". Null keeps
+  /// the usual line.
+  String? offlineStatus(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) => null;
+
+  /// A group of its own on [device]'s page, under the action buttons, with
+  /// its `SectionTitle`: for a set of things to do there that belong
+  /// together, such as what a computer can do to itself ("This Mac":
+  /// Sleep, Restart, Shut down). Null for none, which is the rule: a single
+  /// action belongs in [deviceActions].
+  Widget? buildDeviceGroup(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) => null;
+
   /// What this feature offers apart from any one device, such as "Recent
   /// clips…". The shell lists them in the ••• menu and the File menu.
   List<FeatureAction> appActions(

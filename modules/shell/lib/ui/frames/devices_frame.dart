@@ -98,6 +98,7 @@ class _DevicesFrameState extends State<DevicesFrame> {
                 actions: _actionsFor(context, scope, status),
                 hasPrimary: index == 0 && !_feedHoldsPrimary(context, scope),
                 attention: _attentionFor(context, scope, status),
+                offlineStatus: _offlineStatusFor(context, scope, status),
                 onTap: () => widget.onOpen(status),
                 onFix: () => widget.onFix(status),
                 isPinned: preferences.isPinned(status.device.id),
@@ -212,7 +213,11 @@ class _DevicesFrameState extends State<DevicesFrame> {
     }
 
     if (!status.isConnected) {
-      return const [];
+      return [
+        if (status.versionMismatch == null)
+          for (final feature in scope.features)
+            ...feature.offlineActions(context, scope.featureContext, status),
+      ];
     }
 
     final ordered = <(int, FeatureAction)>[
@@ -233,6 +238,26 @@ class _DevicesFrameState extends State<DevicesFrame> {
     final shown = arranged.take(DevicesFrame.actionsShown).toList();
     _lastActions[status.device.id] = shown;
     return shown;
+  }
+
+  /// What a feature is doing with this offline device, such as waking it.
+  String? _offlineStatusFor(
+    BuildContext context,
+    ShellScope scope,
+    DeviceStatus status,
+  ) {
+    if (status.isConnected) {
+      return null;
+    }
+
+    for (final feature in scope.features) {
+      if (feature.offlineStatus(context, scope.featureContext, status)
+          case final line?) {
+        return line;
+      }
+    }
+
+    return null;
   }
 
   /// The first feature that is on and not working with this device.

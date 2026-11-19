@@ -127,21 +127,12 @@ class DevicePage extends StatelessWidget {
             trailing: [...offers, ...details],
           ),
         if (!status.isConnected && status.versionMismatch == null)
-          TwoColumns(
-            leading: [
-              DeviceHeader(status: status),
-              Button(
-                variant: .primary,
-                titleExpand: .shrink,
-                label: l10n.deviceWhyLong,
-                onPressed: () => Navigator.of(context).push(
-                  ferretRoute<void>(
-                    DoctorPage(deviceId: deviceId),
-                  ),
-                ),
-              ),
-            ],
-            trailing: [...offers, ...details],
+          FeatureChangesListener(
+            features: scope.features,
+            builder: (context) => _Offline(
+              status: status,
+              trailing: [...offers, ...details],
+            ),
           ),
         if (status.isConnected)
           FeatureChangesListener(
@@ -150,6 +141,12 @@ class DevicePage extends StatelessWidget {
               leading: [
                 DeviceHeader(status: status),
                 _Actions(status: status),
+                for (final feature in scope.features)
+                  ?feature.buildDeviceGroup(
+                    context,
+                    scope.featureContext,
+                    status,
+                  ),
                 _WhatWorks(status: status),
               ],
               trailing: [
@@ -212,6 +209,54 @@ class DevicePage extends StatelessWidget {
     if (navigator.canPop()) {
       navigator.pop();
     }
+  }
+}
+
+/// An offline device: what features can still do with it, such as wake
+/// it, and finding out why it isn't connected.
+class _Offline extends StatelessWidget {
+  const _Offline({required this.status, required this.trailing});
+
+  final DeviceStatus status;
+  final List<Widget> trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final featureContext = scope.featureContext;
+    final l10n = context.shellL10n;
+    final actions = [
+      for (final feature in scope.features)
+        ...feature.offlineActions(context, featureContext, status),
+    ];
+    final offlineStatus = scope.features
+        .map(
+          (feature) => feature.offlineStatus(context, featureContext, status),
+        )
+        .nonNulls
+        .firstOrNull;
+
+    return TwoColumns(
+      leading: [
+        DeviceHeader(status: status, offlineStatus: offlineStatus),
+        if (actions.isNotEmpty) ...[
+          DeviceActions(actions: actions, moreLabel: l10n.homeMore),
+          Spacing.v8,
+        ],
+        Button(
+          variant: switch (actions.isEmpty) {
+            true => .primary,
+            false => .ghost,
+          },
+          titleExpand: .shrink,
+          label: l10n.deviceWhyLong,
+          onPressed: () => Navigator.of(context).push(
+            ferretRoute<void>(DoctorPage(deviceId: status.device.id)),
+          ),
+        ),
+      ],
+      trailing: trailing,
+    );
   }
 }
 

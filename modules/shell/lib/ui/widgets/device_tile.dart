@@ -23,6 +23,7 @@ class DeviceTile extends StatelessWidget {
     this.actions = const [],
     this.hasPrimary = false,
     this.attention,
+    this.offlineStatus,
     this.onTap,
     this.onFix,
     this.focusNode,
@@ -31,8 +32,8 @@ class DeviceTile extends StatelessWidget {
 
   final DeviceStatus status;
 
-  /// What to do with this device, most useful first. Shown only while it is
-  /// connected: nothing here can be used otherwise.
+  /// What to do with this device, most useful first. While it is offline,
+  /// only what still works then, such as "Wake".
   final List<FeatureAction> actions;
 
   /// Whether the first action is the screen's one primary button.
@@ -41,6 +42,10 @@ class DeviceTile extends StatelessWidget {
   /// The name of a feature that is turned on and not working with this
   /// device, such as "Notifications".
   final String? attention;
+
+  /// What a feature is doing with it while offline, such as waking it, in
+  /// place of "Last seen".
+  final String? offlineStatus;
 
   /// Opens the device's page.
   final VoidCallback? onTap;
@@ -156,12 +161,12 @@ class DeviceTile extends StatelessWidget {
                 ],
               ],
             ),
-            if (showsActions && actions.isNotEmpty) ...[
+            if (actions.isNotEmpty) ...[
               Spacing.v12,
               Opacity(
-                opacity: switch (status.isConnected) {
-                  true => 1,
-                  false => _waitingOpacity,
+                opacity: switch (status.isReconnecting) {
+                  true => _waitingOpacity,
+                  false => 1,
                 },
                 child: Wrap(
                   spacing: Spacing.d8,
@@ -203,6 +208,10 @@ class DeviceTile extends StatelessWidget {
         .otherDevice => l10n.deviceUpdateThere,
         .thisDevice => l10n.deviceUpdateHere,
       };
+    }
+
+    if (offlineStatus case final line?) {
+      return line;
     }
 
     if (status.device.platform == .PLATFORM_IOS) {

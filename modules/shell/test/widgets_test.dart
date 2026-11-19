@@ -46,13 +46,6 @@ void main() {
       testApp(
         DeviceTile(
           status: DeviceStatus(_device(lastSeen: lastSeen), null),
-          actions: [
-            FeatureAction(
-              label: 'Send files',
-              icon: LucideIcons.upload,
-              onPressed: () {},
-            ),
-          ],
           onFix: () => fixes++,
         ),
       ),
@@ -60,10 +53,38 @@ void main() {
 
     expect(find.text('Pixel'), findsOneWidget);
     expect(find.text('Last seen 5 min ago'), findsOneWidget);
-    expect(find.text('Send files'), findsNothing);
     await tester.tap(find.text('Fix'));
     expect(fixes, 1);
   });
+
+  testWidgets(
+    'an offline device shows what still works offline and what it is doing',
+    (tester) async {
+      var wakes = 0;
+
+      await tester.pumpWidget(
+        testApp(
+          DeviceTile(
+            status: DeviceStatus(_device(), null),
+            actions: [
+              FeatureAction(
+                label: 'Wake',
+                icon: LucideIcons.power,
+                onPressed: () => wakes++,
+              ),
+            ],
+            offlineStatus: 'Waking Pixel… (up to a minute)',
+            onFix: () {},
+          ),
+        ),
+      );
+      await tester.tap(find.text('Wake'));
+
+      expect(find.text('Waking Pixel… (up to a minute)'), findsOneWidget);
+      expect(find.text('Fix'), findsOneWidget);
+      expect(wakes, 1);
+    },
+  );
 
   testWidgets('a pinned device shows a pin by its name, in both lists', (
     tester,

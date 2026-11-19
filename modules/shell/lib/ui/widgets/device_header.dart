@@ -9,9 +9,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// The top of a device's page: its icon, its name and the one thing that is
 /// true about its connection right now.
 class DeviceHeader extends StatelessWidget {
-  const DeviceHeader({super.key, required this.status});
+  const DeviceHeader({super.key, required this.status, this.offlineStatus});
 
   final DeviceStatus status;
+
+  /// What a feature is doing with it while offline, such as waking it, in
+  /// place of "Last seen".
+  final String? offlineStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +116,6 @@ class DeviceHeader extends StatelessWidget {
       };
     }
 
-    return l10n.lastSeen(status.device.lastSeen);
+    return offlineStatus ?? l10n.lastSeen(status.device.lastSeen);
   }
 }
