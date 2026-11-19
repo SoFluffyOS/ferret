@@ -85,9 +85,11 @@ class FeatureCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .start,
                   children: [
+                    // Titles carry device names; two lines keep them whole.
                     Text(
                       title,
                       style: typography.base1.copyWith(color: palette.text),
+                      maxLines: 2,
                       overflow: .ellipsis,
                     ),
                     if (subtitle case final subtitle?) ...[
