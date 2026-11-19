@@ -73,8 +73,17 @@ class FerretBatteryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Even
         }
 
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-        val charging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-            status == BatteryManager.BATTERY_STATUS_FULL
-        return mapOf("percent" to level * 100 / scale, "charging" to charging)
+        val plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
+        return mapOf("percent" to level * 100 / scale, "charging" to isOnPower(status, plugged))
+    }
+
+    companion object {
+        /** On power, as the desktop readers count it: a Pixel on its cable
+         * at a full or held-back charge says "not charging", yet it isn't
+         * running down. */
+        fun isOnPower(status: Int, plugged: Int): Boolean =
+            plugged != 0 ||
+                status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                status == BatteryManager.BATTERY_STATUS_FULL
     }
 }
