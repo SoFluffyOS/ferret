@@ -158,6 +158,24 @@ abstract class PhotosLocalizations {
   /// **'Saving…'**
   String get saving;
 
+  /// Button on a saved photo or video: opens it in its app.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openSaved;
+
+  /// No description provided for @revealSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in folder'**
+  String get revealSaved;
+
+  /// No description provided for @revealSavedFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get revealSavedFinder;
+
   /// No description provided for @saved.
   ///
   /// In en, this message translates to:

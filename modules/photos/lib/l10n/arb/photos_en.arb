@@ -34,6 +34,12 @@
   },
   "save": "Save",
   "saving": "Saving…",
+  "openSaved": "Open",
+  "@openSaved": {
+    "description": "Button on a saved photo or video: opens it in its app."
+  },
+  "revealSaved": "Show in folder",
+  "revealSavedFinder": "Show in Finder",
   "saved": "Saved to your receive folder.",
   "saveFailed": "Couldn't save it. Try again.",
   "limited": "{device} shares only the photos you picked.",

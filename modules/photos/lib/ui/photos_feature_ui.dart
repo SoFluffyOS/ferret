@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path/path.dart' as p;
@@ -255,6 +256,21 @@ class PhotosFeatureUi extends FeatureUi {
         files: save.paths,
         deviceId: save.deviceId,
         tone: .success,
+        actions: [
+          if (save.paths case [final path])
+            ActivityAction(
+              label: l10n.openSaved,
+              onPressed: () => unawaited(feature.openSaved(path)),
+            ),
+          if (save.paths case [final path, ...])
+            ActivityAction(
+              label: switch (defaultTargetPlatform) {
+                .macOS => l10n.revealSavedFinder,
+                _ => l10n.revealSaved,
+              },
+              onPressed: () => unawaited(feature.revealSaved(path)),
+            ),
+        ],
         private: PrivateContent(save.deviceId, cover: done),
         onDismiss: () => feature.saves.remove(save.id),
       ),

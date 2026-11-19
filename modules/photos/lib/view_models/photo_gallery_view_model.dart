@@ -154,6 +154,10 @@ class PhotoGalleryViewModel extends ChangeNotifier {
     return _feature.save(deviceId, ids);
   }
 
+  Future<bool> open(String path) => _feature.openSaved(path);
+
+  Future<bool> reveal(String path) => _feature.revealSaved(path);
+
   Future<void> setAutoScreenshots(bool enabled) async {
     await _feature.setAutoScreenshots(deviceId, enabled: enabled);
     _notify();

@@ -12,4 +12,10 @@ abstract interface class PhotoTransfers {
   /// On a computer: how the transfer [transferId] goes, ending with done
   /// or failed. It is accepted without asking: this computer asked for it.
   Stream<PhotoTransferProgress> follow(String transferId);
+
+  /// On a computer: opens a saved photo or video in its app.
+  Future<bool> open(String path);
+
+  /// On a computer: shows a saved file in Finder or the file manager.
+  Future<bool> reveal(String path);
 }

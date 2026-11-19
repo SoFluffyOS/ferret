@@ -285,6 +285,11 @@ void main() {
 
     expect(save.status, PhotoTransferStatus.done);
     expect(save.paths, ['/r/p0.jpg', '/r/p2.jpg']);
+
+    expect(await setup.computer.openSaved('/r/p0.jpg'), isTrue);
+    expect(await setup.computer.revealSaved('/r/p2.jpg'), isTrue);
+    expect(setup.computerTransfers.opened, ['/r/p0.jpg']);
+    expect(setup.computerTransfers.revealed, ['/r/p2.jpg']);
   });
 
   test('saving from a phone that does not share fails with why', () async {

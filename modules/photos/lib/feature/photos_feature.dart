@@ -426,6 +426,14 @@ class PhotosFeature extends Feature {
     }
   }
 
+  /// Opens a saved file in its app. False when nothing could open it.
+  Future<bool> openSaved(String path) async =>
+      await transfers?.open(path) ?? false;
+
+  /// Shows a saved file in Finder or the file manager.
+  Future<bool> revealSaved(String path) async =>
+      await transfers?.reveal(path) ?? false;
+
   /// Saves the full files of [photoIds] from [deviceId] into the receive
   /// folder. Returns the save, which Activity shows as it goes.
   Future<PhotoSave> save(String deviceId, List<String> photoIds) async {

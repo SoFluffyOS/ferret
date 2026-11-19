@@ -50,6 +50,15 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   String get saving => 'Saving…';
 
   @override
+  String get openSaved => 'Open';
+
+  @override
+  String get revealSaved => 'Show in folder';
+
+  @override
+  String get revealSavedFinder => 'Show in Finder';
+
+  @override
   String get saved => 'Saved to your receive folder.';
 
   @override

@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photos/l10n/l10n.dart';
 import 'package:photos/models/models.dart';
@@ -11,7 +11,8 @@ import 'package:protocol/photos.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One photo, larger: a bigger thumbnail kept only in the cache, and Save
-/// to bring the full file into the receive folder.
+/// to bring the full file into the receive folder. Once saved, Open and
+/// Show in folder, which is the only way to play a video.
 class PhotoPreviewPage extends StatefulWidget {
   const PhotoPreviewPage({
     super.key,
@@ -32,6 +33,7 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
     maxPx: PhotoSizes.preview,
   );
   PhotoTransferStatus? _status;
+  String? _savedPath;
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +60,34 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
     return FerretPage(
       title: title,
       backLabel: l10n.back,
-      actions: [
-        Button(
-          variant: .primary,
-          mainAxisSize: .min,
-          label: l10n.save,
-          enable: _status != .running && _status != .done,
-          onPressed: () => unawaited(_save()),
-        ),
-      ],
+      actions: switch (_savedPath) {
+        final path? => [
+          Button(
+            variant: .ghost,
+            mainAxisSize: .min,
+            label: switch (defaultTargetPlatform) {
+              .macOS => l10n.revealSavedFinder,
+              _ => l10n.revealSaved,
+            },
+            onPressed: () => unawaited(widget.viewModel.reveal(path)),
+          ),
+          Button(
+            variant: .primary,
+            mainAxisSize: .min,
+            label: l10n.openSaved,
+            onPressed: () => unawaited(widget.viewModel.open(path)),
+          ),
+        ],
+        null => [
+          Button(
+            variant: .primary,
+            mainAxisSize: .min,
+            label: l10n.save,
+            enable: _status != .running && _status != .done,
+            onPressed: () => unawaited(_saveIt()),
+          ),
+        ],
+      },
       children: [
         ClipRSuperellipse(
           borderRadius: Corners.radius(Corners.card),
@@ -96,14 +117,20 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
     );
   }
 
-  Future<void> _save() async {
+  Future<void> _saveIt() async {
     setState(() => _status = .running);
     final save = await widget.viewModel.save([widget.item.id]);
     if (!mounted) {
       return;
     }
 
-    setState(() => _status = save.status);
+    setState(() {
+      _status = save.status;
+      _savedPath = switch (save) {
+        PhotoSave(status: .done, paths: [final path, ...]) => path,
+        _ => null,
+      };
+    });
   }
 
   static double _aspect(PhotoItem item) {

@@ -19,6 +19,21 @@ class FakeTransfers implements PhotoTransfers {
   Stream<PhotoTransferProgress> follow(String transferId) =>
       _controller(transferId).stream;
 
+  final List<String> opened = [];
+  final List<String> revealed = [];
+
+  @override
+  Future<bool> open(String path) async {
+    opened.add(path);
+    return true;
+  }
+
+  @override
+  Future<bool> reveal(String path) async {
+    revealed.add(path);
+    return true;
+  }
+
   bool isFollowing(String transferId) => _follows.containsKey(transferId);
 
   void finish(String transferId, List<String> paths) {

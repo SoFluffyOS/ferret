@@ -49,6 +49,15 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String get saving => 'Đang lưu…';
 
   @override
+  String get openSaved => 'Mở';
+
+  @override
+  String get revealSaved => 'Hiển thị trong thư mục';
+
+  @override
+  String get revealSavedFinder => 'Hiển thị trong Finder';
+
+  @override
   String get saved => 'Đã lưu vào thư mục nhận.';
 
   @override

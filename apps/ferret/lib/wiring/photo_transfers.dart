@@ -2,16 +2,22 @@ import 'dart:async';
 
 import 'package:drop/drop.dart';
 import 'package:engine/engine.dart';
+import 'package:ferret_drop/ferret_drop.dart';
 import 'package:photos/photos.dart';
 
 /// Carries full photos through drop's transfers (resume, SHA-256). Photos
 /// and Drop never import each other, so the app joins them here.
 class DropPhotoTransfers implements PhotoTransfers {
-  DropPhotoTransfers(this._drop, {this.appearWithin = _appearWithin});
+  DropPhotoTransfers(
+    this._drop, {
+    this.appearWithin = _appearWithin,
+    FerretDrop? files,
+  }) : _files = files ?? FerretDrop();
 
   static const _appearWithin = Duration(seconds: 60);
 
   final DropFeature _drop;
+  final FerretDrop _files;
 
   /// How long a transfer the phone promised may take to show up here.
   final Duration appearWithin;
@@ -27,6 +33,12 @@ class DropPhotoTransfers implements PhotoTransfers {
 
     photos.transfers = DropPhotoTransfers(drop);
   }
+
+  @override
+  Future<bool> open(String path) => _files.open(path);
+
+  @override
+  Future<bool> reveal(String path) => _files.reveal(path);
 
   @override
   Future<String?> send(String deviceId, List<String> paths) async {
