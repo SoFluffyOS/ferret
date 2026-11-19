@@ -62,10 +62,6 @@ class PowerViewModel extends ChangeNotifier {
       return .rootLost;
     }
 
-    if (feature.settings.cardDismissed) {
-      return null;
-    }
-
     return switch (status.shizuku) {
       .notRunning => .startShizuku,
       .notAuthorized || .ready => .allowShizuku,

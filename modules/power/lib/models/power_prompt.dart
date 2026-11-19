@@ -19,8 +19,8 @@ enum PowerPrompt {
   /// Ferret was using root and `su` now says no.
   rootLost;
 
-  /// Something that worked stopped working. These can't be waved away with
-  /// "Not now": the card stays until it is fixed or the tier is turned off.
+  /// Something that worked stopped working, rather than an offer: the card
+  /// stays until it is fixed or the tier is turned off.
   bool get isProblem =>
       this == shizukuStopped || this == shizukuRevoked || this == rootLost;
 }

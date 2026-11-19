@@ -156,27 +156,6 @@ void main() {
       expect(await promptFor(rooted), PowerPrompt.useRoot);
     });
 
-    test('"Not now" hides an offer but never a problem', () async {
-      const dismissed = {PowerSettings.cardDismissedKey: true};
-
-      expect(await promptFor(shizukuWaiting, settings: dismissed), isNull);
-      expect(await promptFor(rooted, settings: dismissed), isNull);
-      expect(
-        await promptFor(
-          const PowerStatus(supported: true, shizuku: .notRunning),
-          settings: {...dismissed, PowerSettings.shizukuEnabledKey: true},
-        ),
-        PowerPrompt.shizukuStopped,
-      );
-      expect(
-        await promptFor(
-          shizukuWaiting,
-          settings: {...dismissed, PowerSettings.shizukuEnabledKey: true},
-        ),
-        PowerPrompt.shizukuRevoked,
-      );
-    });
-
     test('says so when root was taken away', () async {
       final harness = await PowerHarness.start(
         status: rooted,
