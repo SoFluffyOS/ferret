@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:ferret_remote_input/src/linux/command_injector.dart';
+import 'package:ferret_remote_input/src/linux/linux.dart';
 
 /// Locks this computer's screen right away, as its own Lock Screen command
 /// does: `SACLockScreenImmediate` on macOS (what the Apple menu's Lock
