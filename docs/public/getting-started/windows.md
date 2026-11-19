@@ -35,7 +35,7 @@ Ferret puts an icon in the notification area, next to the clock. Click it to sho
 
 ## ⌨️ Keys
 
-There is no menu bar. The **•••** at the top of the device list holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
+There is no menu bar. The **•••** at the end of the window's toolbar holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
 
 | Keys | Does |
 |---|---|

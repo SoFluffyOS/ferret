@@ -74,8 +74,9 @@ The window is not a big popover. It has room, so it uses it:
 - **Drag files** onto a device in the list to send them there. Rest on it for a moment and it opens. Dropped on the page, they go to the device you have open.
 - **Right-click** a device for the same actions, **Fix Connection…** and **Forget This Device…**. Right-click a line in Activity for what that line offers.
 - **A device that goes offline keeps its sections.** You still read what was there, under one line that says since when, with **Fix connection**. A section whose feature is off is dimmed, and says how to turn it on.
-- **Settings** keeps its list on the left and opens the row you pick next to it.
-- **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
+- **Settings** keeps its list on the left and opens the row you pick next to it. Each row has its own coloured icon, the same one as in the popover.
+- **Your devices** has a **+** that adds one. **Nearby** shows devices you can pair, and folds away with a click on its name. **Activity** and **Settings** sit under your devices.
+- **A toolbar** runs along the top of the page. It says where you are, and its buttons hide or show the device list and the Activity pane. Rest the pointer on a button, or on a line of the device list, and it tells you its keys.
 - **Make it wide** (1200 points or more) and an **Activity** pane joins on the right: what is going on now, and the last things that happened with that device.
 - Lists and forms stop at a comfortable width and stay centred. Nothing stretches across a big screen.
 

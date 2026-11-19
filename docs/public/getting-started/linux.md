@@ -97,7 +97,7 @@ The icon speaks StatusNotifierItem over D-Bus. Nothing to install, and inside a 
 
 ## ⌨️ Keys
 
-There is no menu bar. The **•••** at the top of the device list holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
+There is no menu bar. The **•••** at the end of the window's toolbar holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
 
 | Keys | Does |
 |---|---|
