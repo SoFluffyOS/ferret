@@ -6,7 +6,8 @@ import 'package:flutter/widgets.dart';
 /// A column of lines walked with ↑ and ↓ as well as Tab, the way a list in
 /// a sidebar is on every desktop: the arrows move from line to line and
 /// stop at either end, Home and End jump to the first and the last. A
-/// button inside a line is skipped; Tab still reaches it.
+/// button inside a line is skipped; Tab still reaches it. A text field
+/// among the lines keeps its keys, and ↓ goes on from it.
 ///
 /// Unlike [KeyboardLines] it needs nothing from the lines: whatever takes
 /// Tab below it is a stop.
@@ -41,8 +42,12 @@ class ArrowKeyStops extends StatelessWidget {
       return .ignored;
     }
 
+    // In a field, such as the list's search, the keys move the caret.
+    // Only ↓ leaves it, into what was found.
+    final isTyping = lines[current].any(_isField);
     final target = switch (event.logicalKey) {
       LogicalKeyboardKey.arrowDown => current + 1,
+      _ when isTyping => null,
       LogicalKeyboardKey.arrowUp => current - 1,
       LogicalKeyboardKey.home => 0,
       LogicalKeyboardKey.end => lines.length - 1,
@@ -70,6 +75,11 @@ class ArrowKeyStops extends StatelessWidget {
   }
 
   static bool _hasKeyboard(FocusNode stop) => stop.hasPrimaryFocus;
+
+  /// Whether the keyboard is in a text field at [stop].
+  static bool _isField(FocusNode stop) =>
+      stop.hasPrimaryFocus &&
+      stop.context?.findAncestorWidgetOfExactType<EditableText>() != null;
 
   /// The stops under [node], top to bottom, those that share a line
   /// together.

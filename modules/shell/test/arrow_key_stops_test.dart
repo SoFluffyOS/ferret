@@ -98,4 +98,46 @@ void main() {
     await press(tester, LogicalKeyboardKey.arrowDown);
     expect(focused(tester), 'Three');
   });
+
+  testWidgets('a field among the lines keeps Home, End and ↑, and ↓ goes on '
+      'from it', (tester) async {
+    final typed = TextEditingController(text: 'pix');
+    final field = FocusNode();
+    addTearDown(typed.dispose);
+    addTearDown(field.dispose);
+    await tester.pumpWidget(
+      testApp(
+        ArrowKeyStops(
+          child: Column(
+            children: [
+              line('One'),
+              SizedBox(
+                height: 32,
+                child: EditableText(
+                  controller: typed,
+                  focusNode: field,
+                  style: const TextStyle(fontSize: 14),
+                  cursorColor: const Color(0xFF000000),
+                  backgroundCursorColor: const Color(0xFF000000),
+                ),
+              ),
+              line('Three'),
+            ],
+          ),
+        ),
+      ),
+    );
+    field.requestFocus();
+    await tester.pump();
+    bool isTyping() => field.hasPrimaryFocus;
+    expect(isTyping(), isTrue);
+
+    await press(tester, LogicalKeyboardKey.home);
+    await press(tester, LogicalKeyboardKey.end);
+    await press(tester, LogicalKeyboardKey.arrowUp);
+    expect(isTyping(), isTrue);
+
+    await press(tester, LogicalKeyboardKey.arrowDown);
+    expect(focused(tester), 'Three');
+  });
 }

@@ -98,22 +98,29 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
             textAlign: .center,
             style: typography.base1.copyWith(color: palette.mutedText),
           ),
-          Spacing.v16,
+          // "Looking…" and the link that takes its place share a slot as
+          // high as the link's target, so nothing moves when they swap.
+          Spacing.v12,
           switch (_isLooking) {
-            _ when isIphone => const SizedBox.shrink(),
-            true => Text(
-              l10n.nearbyLooking,
-              style: typography.caption1.copyWith(color: palette.mutedText),
-            ),
-            false => Tappable(
-              onTap: widget.onCantSee,
-              child: Text(
-                l10n.emptyCantSee,
-                style: typography.caption1.copyWith(color: palette.link),
+            _ when isIphone => SizedBox(height: Spacing.d8),
+            true => ConstrainedBox(
+              constraints: BoxConstraints(minHeight: TextLink.minHeight),
+              child: Center(
+                heightFactor: 1,
+                child: Text(
+                  l10n.nearbyLooking,
+                  style: typography.caption1.copyWith(
+                    color: palette.mutedText,
+                  ),
+                ),
               ),
             ),
+            false => TextLink(
+              label: l10n.emptyCantSee,
+              onTap: widget.onCantSee,
+            ),
           },
-          Spacing.vertical(Spacing.d20),
+          Spacing.v16,
           Button(
             variant: .primary,
             label: switch (isIphone) {

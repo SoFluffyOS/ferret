@@ -31,15 +31,13 @@ class WelcomeNearby extends StatelessWidget {
             textAlign: .center,
             style: typography.base2.copyWith(color: palette.mutedText),
           ),
-          Spacing.v6,
-          Tappable(
+          Spacing.vertical(Spacing.d2),
+          TextLink(
+            label: l10n.pairShowCode,
             onTap: onPairWithCode,
-            child: Text(
-              l10n.pairShowCode,
-              style: typography.base2.copyWith(color: palette.link),
-            ),
+            style: typography.base2,
           ),
-          Spacing.v24,
+          Spacing.vertical(Spacing.d20),
           const PrivacyLine(),
         ],
       ),

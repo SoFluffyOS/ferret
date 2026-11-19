@@ -42,16 +42,7 @@ class OfflineLine extends StatelessWidget {
             ),
           ),
           Spacing.h8,
-          Tappable(
-            onTap: onFix,
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d4),
-              child: Text(
-                fixLabel,
-                style: typography.base2.copyWith(color: palette.link),
-              ),
-            ),
-          ),
+          TextLink(label: fixLabel, onTap: onFix, style: typography.base2),
         ],
       ),
     );

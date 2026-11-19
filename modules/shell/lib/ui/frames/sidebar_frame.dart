@@ -226,11 +226,9 @@ class _PausedLine extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
 
+    // The link's target is the line's height.
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.d16,
-        vertical: Spacing.d4,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: Spacing.d16),
       child: Row(
         children: [
           Expanded(
@@ -239,12 +237,10 @@ class _PausedLine extends StatelessWidget {
               style: typography.base2.copyWith(color: palette.mutedText),
             ),
           ),
-          Tappable(
+          TextLink(
+            label: l10n.resume,
             onTap: () => unawaited(context.read<PauseController>().resume()),
-            child: Text(
-              l10n.resume,
-              style: typography.base2.copyWith(color: palette.link),
-            ),
+            style: typography.base2,
           ),
         ],
       ),

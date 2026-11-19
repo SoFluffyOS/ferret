@@ -128,15 +128,7 @@ class _PairPageState extends State<PairPage> {
                     ),
                   ),
                   Spacing.h12,
-                  Tappable(
-                    onTap: _rename,
-                    child: Text(
-                      l10n.settingsRename,
-                      style: typography.caption1.copyWith(
-                        color: palette.link,
-                      ),
-                    ),
-                  ),
+                  TextLink(label: l10n.settingsRename, onTap: _rename),
                 ],
               ),
             ),
