@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+package ferret.mirroring.v1;
+
+import "ferret/remote_input/v1/remote_input.proto";
+
+// Control lets the viewer click and type on the source while it shows its
+// screen over Ferret's own route. It is a second yes, apart from the one for
+// the picture: the source's owner answers "Let MacBook Air control Pixel 7
+// while showing its screen?" with Always, Once or No, sees that the phone is
+// being controlled while it lasts, and can stop it at any moment. Control
+// never outlives the picture: when the screen stops being shown, it ends.
+//
+// Keys and typed text reuse `ferret.remote_input.v1`, which carries the same
+// things the other way (a phone driving a computer).
+//
+// These messages are optional in version 1 of `ferret.mirroring.v1`. A
+// source that knows them sends a `ControlState` right after `StartAccept`; a
+// viewer that never gets one shows the screen as view only. A source that
+// gets a message it doesn't know ignores it.
+
+// Where control stands on the source.
+enum ControlStatus {
+  CONTROL_STATUS_UNSPECIFIED = 0;
+  // The source can be controlled. A `ControlAsk` makes it ask its owner.
+  CONTROL_STATUS_CAN_ASK = 1;
+  // The owner is being asked, for at most `ControlState.timeout_seconds`.
+  CONTROL_STATUS_ASKING = 2;
+  // The viewer may send `ControlInput`.
+  CONTROL_STATUS_ALLOWED = 3;
+  // The owner said no. The viewer may ask again later.
+  CONTROL_STATUS_DENIED = 4;
+  // The owner didn't answer in time.
+  CONTROL_STATUS_TIMED_OUT = 5;
+  // Nothing on the source can inject input until its owner sets it up
+  // there: the accessibility service is off and there are no power-ups.
+  CONTROL_STATUS_NEEDS_SETUP = 6;
+  // The source can't be controlled at all, such as an iPhone.
+  CONTROL_STATUS_UNSUPPORTED = 7;
+  // The owner stopped control on the source. The viewer may ask again.
+  CONTROL_STATUS_STOPPED = 8;
+}
+
+// What the source can take while control is allowed.
+enum ControlKind {
+  CONTROL_KIND_UNSPECIFIED = 0;
+  // Taps, drags and scrolling: `PointerInput`.
+  CONTROL_KIND_POINTER = 1;
+  // Every `ferret.remote_input.v1.Key`, with modifiers.
+  CONTROL_KIND_KEYS = 2;
+  // Typed text.
+  CONTROL_KIND_TEXT = 3;
+  // The device's own buttons: `ButtonPress`.
+  CONTROL_KIND_BUTTONS = 4;
+}
+
+// Sent by the source after `StartAccept`, and again whenever control
+// changes. Expects no reply.
+message ControlState {
+  ControlStatus status = 1;
+  // What the source takes right now, or would take once allowed.
+  repeated ControlKind kinds = 2;
+  // With `CONTROL_STATUS_ASKING`: how long the owner has to answer.
+  uint32 timeout_seconds = 3;
+  // The buttons a `ButtonPress` can press. Empty without
+  // `CONTROL_KIND_BUTTONS`.
+  repeated ControlButton buttons = 4;
+}
+
+// The viewer wants control. The source answers with `ControlState`:
+// `ASKING` while its owner decides, then `ALLOWED`, `DENIED` or
+// `TIMED_OUT`; `ALLOWED` at once for a viewer its owner always allows.
+// Ignored while the source isn't showing its screen to this viewer.
+message ControlAsk {}
+
+// The viewer gives control back and only watches. The source answers with
+// `ControlState` `CAN_ASK`.
+message ControlRelease {}
+
+// What a pointer does.
+enum TouchPhase {
+  TOUCH_PHASE_UNSPECIFIED = 0;
+  // A finger goes down at (`x`, `y`).
+  TOUCH_PHASE_DOWN = 1;
+  // The finger that is down moves to (`x`, `y`).
+  TOUCH_PHASE_MOVE = 2;
+  // The finger lifts at (`x`, `y`).
+  TOUCH_PHASE_UP = 3;
+  // The touch is abandoned: nothing under it is activated.
+  TOUCH_PHASE_CANCEL = 4;
+  // The content under (`x`, `y`) scrolls by `scroll_x` and `scroll_y`.
+  TOUCH_PHASE_SCROLL = 5;
+}
+
+// One step of a touch. Positions are fractions of the picture as the source
+// sends it, in its current rotation: (0, 0) is the top left corner and
+// (1, 1) the bottom right. The source clamps them to that range.
+message PointerInput {
+  TouchPhase phase = 1;
+  float x = 2;
+  float y = 3;
+  // `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is right.
+  float scroll_x = 4;
+  // `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is down.
+  float scroll_y = 5;
+}
+
+// A button of the device itself.
+enum ControlButton {
+  CONTROL_BUTTON_UNSPECIFIED = 0;
+  CONTROL_BUTTON_BACK = 1;
+  CONTROL_BUTTON_HOME = 2;
+  CONTROL_BUTTON_RECENTS = 3;
+  // Opens the notification shade.
+  CONTROL_BUTTON_NOTIFICATIONS = 4;
+  // Turns the screen off; with power-ups it also turns it back on.
+  CONTROL_BUTTON_POWER = 5;
+  CONTROL_BUTTON_VOLUME_UP = 6;
+  CONTROL_BUTTON_VOLUME_DOWN = 7;
+}
+
+// A press and release of one of the device's buttons.
+message ButtonPress {
+  ControlButton button = 1;
+}
+
+// One thing the viewer does.
+message ControlEvent {
+  oneof kind {
+    PointerInput pointer = 1;
+    ferret.remote_input.v1.KeyEvent key = 2;
+    ferret.remote_input.v1.TextInput text = 3;
+    ButtonPress button = 4;
+  }
+}
+
+// Sent by the viewer while control is allowed, in order. Expects no reply.
+// The source drops it when control isn't allowed for this viewer, and
+// takes at most 512 events from one batch.
+message ControlInput {
+  repeated ControlEvent events = 1;
+}
