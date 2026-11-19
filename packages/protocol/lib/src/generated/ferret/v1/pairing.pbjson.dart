@@ -61,6 +61,13 @@ const PairingOffer$json = {
     },
     {'1': 'secret', '3': 8, '4': 1, '5': 12, '10': 'secret'},
     {'1': 'expires_at_ms', '3': 9, '4': 1, '5': 4, '10': 'expiresAtMs'},
+    {
+      '1': 'oldest_protocol_version',
+      '3': 10,
+      '4': 1,
+      '5': 13,
+      '10': 'oldestProtocolVersion'
+    },
   ],
 };
 
@@ -71,7 +78,8 @@ final $typed_data.Uint8List pairingOfferDescriptor = $convert.base64Decode(
     'bGF0Zm9ybRgEIAEoDjITLmZlcnJldC52MS5QbGF0Zm9ybVIIcGxhdGZvcm0SFAoFaG9zdHMYBS'
     'ADKAlSBWhvc3RzEhIKBHBvcnQYBiABKA1SBHBvcnQSKgoRc3RhdGljX3B1YmxpY19rZXkYByAB'
     'KAxSD3N0YXRpY1B1YmxpY0tleRIWCgZzZWNyZXQYCCABKAxSBnNlY3JldBIiCg1leHBpcmVzX2'
-    'F0X21zGAkgASgEUgtleHBpcmVzQXRNcw==');
+    'F0X21zGAkgASgEUgtleHBpcmVzQXRNcxI2ChdvbGRlc3RfcHJvdG9jb2xfdmVyc2lvbhgKIAEo'
+    'DVIVb2xkZXN0UHJvdG9jb2xWZXJzaW9u');
 
 @$core.Deprecated('Use pairingRequestDescriptor instead')
 const PairingRequest$json = {

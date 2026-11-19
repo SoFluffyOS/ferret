@@ -143,6 +143,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairFailedTimedOut => 'Your other device didn\'t answer.';
 
   @override
+  String pairFailedUpdateHere(String name) {
+    return '$name has a newer Ferret. Update Ferret here, then scan again.';
+  }
+
+  @override
+  String pairFailedUpdateThere(String name) {
+    return '$name needs a newer Ferret. Update it there, then show the code again.';
+  }
+
+  @override
   String get pairFailedProtocol =>
       'Pairing stopped before it finished. Try again.';
 

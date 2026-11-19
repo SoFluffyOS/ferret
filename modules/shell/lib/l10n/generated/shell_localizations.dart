@@ -332,6 +332,18 @@ abstract class ShellLocalizations {
   /// **'Your other device didn\'t answer.'**
   String get pairFailedTimedOut;
 
+  /// No description provided for @pairFailedUpdateHere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has a newer Ferret. Update Ferret here, then scan again.'**
+  String pairFailedUpdateHere(String name);
+
+  /// No description provided for @pairFailedUpdateThere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} needs a newer Ferret. Update it there, then show the code again.'**
+  String pairFailedUpdateThere(String name);
+
   /// No description provided for @pairFailedProtocol.
   ///
   /// In en, this message translates to:

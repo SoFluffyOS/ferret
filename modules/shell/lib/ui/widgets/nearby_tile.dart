@@ -116,6 +116,8 @@ class NearbyTile extends StatelessWidget {
     .badProof => l10n.pairFailedBadProof,
     .expired => l10n.pairFailedExpired,
     .protocol || .cancelled => l10n.pairFailedProtocol,
+    .updateThisDevice => l10n.pairFailedUpdateHere(name),
+    .updateOtherDevice => l10n.pairFailedUpdateThere(name),
   };
 }
 

@@ -20,6 +20,10 @@ message PairingOffer {
   // One-time secret, 16 bytes, proving the scanner saw this offer.
   bytes secret = 8;
   uint64 expires_at_ms = 9;
+  // The oldest protocol version the offering device still speaks; with
+  // protocol_version, the range a scanner must overlap to pair. Zero from
+  // builds before it: they speak protocol_version only.
+  uint32 oldest_protocol_version = 10;
 }
 
 // Sent by the device that wants to pair, first thing on a new channel

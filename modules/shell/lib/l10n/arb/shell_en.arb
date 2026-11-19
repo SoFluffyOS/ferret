@@ -56,6 +56,22 @@
   "pairFailedBadProof": "The codes didn't match, so nothing was paired. Try once more, close to the other device.",
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
   "pairFailedTimedOut": "Your other device didn't answer.",
+  "pairFailedUpdateHere": "{name} has a newer Ferret. Update Ferret here, then scan again.",
+  "@pairFailedUpdateHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pairFailedUpdateThere": "{name} needs a newer Ferret. Update it there, then show the code again.",
+  "@pairFailedUpdateThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "pairFailedProtocol": "Pairing stopped before it finished. Try again.",
   "pairCodeSpoken": "Code: {digits}",
   "@pairCodeSpoken": {

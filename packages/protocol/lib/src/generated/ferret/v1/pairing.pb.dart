@@ -35,6 +35,7 @@ class PairingOffer extends $pb.GeneratedMessage {
     $core.List<$core.int>? staticPublicKey,
     $core.List<$core.int>? secret,
     $fixnum.Int64? expiresAtMs,
+    $core.int? oldestProtocolVersion,
   }) {
     final result = PairingOffer._();
     if (protocolVersion != null) result.protocolVersion = protocolVersion;
@@ -46,6 +47,8 @@ class PairingOffer extends $pb.GeneratedMessage {
     if (staticPublicKey != null) result.staticPublicKey = staticPublicKey;
     if (secret != null) result.secret = secret;
     if (expiresAtMs != null) result.expiresAtMs = expiresAtMs;
+    if (oldestProtocolVersion != null)
+      result.oldestProtocolVersion = oldestProtocolVersion;
     return result;
   }
 
@@ -77,6 +80,8 @@ class PairingOffer extends $pb.GeneratedMessage {
     ..a<$fixnum.Int64>(
         9, _omitFieldNames ? '' : 'expiresAtMs', $pb.PbFieldType.OU6,
         defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aI(10, _omitFieldNames ? '' : 'oldestProtocolVersion',
+        fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -179,6 +184,18 @@ class PairingOffer extends $pb.GeneratedMessage {
   $core.bool hasExpiresAtMs() => $_has(8);
   @$pb.TagNumber(9)
   void clearExpiresAtMs() => $_clearField(9);
+
+  /// The oldest protocol version the offering device still speaks; with
+  /// protocol_version, the range a scanner must overlap to pair. Zero from
+  /// builds before it: they speak protocol_version only.
+  @$pb.TagNumber(10)
+  $core.int get oldestProtocolVersion => $_getIZ(9);
+  @$pb.TagNumber(10)
+  set oldestProtocolVersion($core.int value) => $_setUnsignedInt32(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasOldestProtocolVersion() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearOldestProtocolVersion() => $_clearField(10);
 }
 
 /// Sent by the device that wants to pair, first thing on a new channel

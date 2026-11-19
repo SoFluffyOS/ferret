@@ -40,6 +40,8 @@
   "pairFailedBadProof": "Mã không khớp nên chưa ghép đôi. Hãy thử lại, ở gần thiết bị kia.",
   "pairFailedWrongDevice": "Một thiết bị khác đã phản hồi. Đã dừng ghép đôi để giữ an toàn cho bạn.",
   "pairFailedTimedOut": "Thiết bị kia không phản hồi.",
+  "pairFailedUpdateHere": "{name} có Ferret mới hơn. Hãy cập nhật Ferret ở đây rồi quét lại.",
+  "pairFailedUpdateThere": "{name} cần Ferret mới hơn. Hãy cập nhật ở đó rồi hiện lại mã.",
   "pairFailedProtocol": "Ghép đôi bị dừng giữa chừng. Hãy thử lại.",
   "pairCodeSpoken": "Mã: {digits}",
   "promptTitle": "Ghép đôi với {device}?",

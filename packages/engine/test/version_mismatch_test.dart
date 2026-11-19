@@ -80,19 +80,59 @@ void main() {
       return engine;
     }
 
-    Future<void> pair(FerretEngine scanner, FerretEngine shower) async {
+    Future<PairingOffer> offerOf(FerretEngine shower) async {
       final handle = await shower.createPairingOffer();
       final offer = PairingCodes.parseOffer(handle.qrText);
       if (offer == null) {
         fail('The offer did not parse');
       }
 
-      offer
+      return offer
         ..hosts.clear()
         ..hosts.add('127.0.0.1')
         ..port = shower.port;
+    }
+
+    /// Pairs as two devices did before one of them updated: the offer
+    /// says nothing about versions, as the first builds' offers didn't.
+    Future<void> pair(FerretEngine scanner, FerretEngine shower) async {
+      final offer = await offerOf(shower)
+        ..clearProtocolVersion()
+        ..clearOldestProtocolVersion();
       expect(await scanner.pairWithOffer(offer), isA<Paired>());
     }
+
+    test('a QR code from a Ferret too new says so before pairing', () async {
+      final mac = await start('MacBook', newest: 2, oldest: 2);
+      final phone = await start('Pixel 7');
+
+      final outcome = await phone.pairWithOffer(await offerOf(mac));
+
+      expect(outcome, isA<PairingFailed>());
+      final failed = outcome as PairingFailed;
+      expect(failed.reason, PairingFailure.updateThisDevice);
+      expect(failed.detail, 'MacBook');
+      expect(phone.devices, isEmpty);
+    });
+
+    test('a QR code from a Ferret too old asks to update it', () async {
+      final mac = await start('MacBook', newest: 2, oldest: 2);
+      final phone = await start('Pixel 7');
+
+      final outcome = await mac.pairWithOffer(await offerOf(phone));
+
+      expect(
+        (outcome as PairingFailed).reason,
+        PairingFailure.updateOtherDevice,
+      );
+    });
+
+    test('overlapping versions pair from a QR code', () async {
+      final mac = await start('MacBook', newest: 2);
+      final phone = await start('Pixel 7');
+
+      expect(await phone.pairWithOffer(await offerOf(mac)), isA<Paired>());
+    });
 
     test('both sides say which one needs an update, and stay apart', () async {
       final mac = await start('MacBook', newest: 2, oldest: 2);

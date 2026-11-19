@@ -83,6 +83,14 @@ enum PairingFailure {
   timedOut,
   protocol,
 
+  /// The offer comes from a newer Ferret this one can't talk to. The
+  /// failure's detail is that device's name.
+  updateThisDevice,
+
+  /// The offer comes from an older Ferret that can't talk to this one. The
+  /// failure's detail is that device's name.
+  updateOtherDevice,
+
   /// The user on this device said the codes don't match, or gave up.
   cancelled,
 }

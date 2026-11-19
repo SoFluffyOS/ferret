@@ -493,7 +493,8 @@ class FerretEngine implements FeatureHost {
     final hosts = await _localAddresses();
     final expiresAt = DateTime.now().add(lifetime).millisecondsSinceEpoch;
     final offer = PairingOffer(
-      protocolVersion: protocolVersion,
+      protocolVersion: device.newestProtocol,
+      oldestProtocolVersion: device.oldestProtocol,
       deviceId: identity.deviceId,
       name: device.name,
       platform: device.platform,
@@ -513,6 +514,20 @@ class FerretEngine implements FeatureHost {
   Future<PairingOutcome> pairWithOffer(PairingOffer offer) async {
     if (DateTime.now().millisecondsSinceEpoch > offer.expiresAtMs.toInt()) {
       return const PairingFailed(.expired);
+    }
+
+    final mismatch = VersionMismatch.between(
+      device.toInfo(identity.deviceId),
+      DeviceInfo(
+        protocolVersion: offer.protocolVersion,
+        oldestProtocolVersion: offer.oldestProtocolVersion,
+      ),
+    );
+    if (mismatch != null) {
+      return PairingFailed(switch (mismatch.update) {
+        .thisDevice => PairingFailure.updateThisDevice,
+        .otherDevice => PairingFailure.updateOtherDevice,
+      }, offer.name);
     }
 
     for (final host in offer.hosts) {

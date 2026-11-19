@@ -144,6 +144,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairFailedTimedOut => 'Thiết bị kia không phản hồi.';
 
   @override
+  String pairFailedUpdateHere(String name) {
+    return '$name có Ferret mới hơn. Hãy cập nhật Ferret ở đây rồi quét lại.';
+  }
+
+  @override
+  String pairFailedUpdateThere(String name) {
+    return '$name cần Ferret mới hơn. Hãy cập nhật ở đó rồi hiện lại mã.';
+  }
+
+  @override
   String get pairFailedProtocol => 'Ghép đôi bị dừng giữa chừng. Hãy thử lại.';
 
   @override

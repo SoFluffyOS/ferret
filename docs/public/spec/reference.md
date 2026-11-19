@@ -1886,6 +1886,7 @@ What a pairing QR code or link carries. Encoded as base64url in ferret://pair?o=
 | `static_public_key` | `bytes` | 7 | X25519 static public key, 32 bytes. The scanner checks the Noise handshake's remote static key against it. |
 | `secret` | `bytes` | 8 | One-time secret, 16 bytes, proving the scanner saw this offer. |
 | `expires_at_ms` | `uint64` | 9 |  |
+| `oldest_protocol_version` | `uint32` | 10 | The oldest protocol version the offering device still speaks; with protocol_version, the range a scanner must overlap to pair. Zero from builds before it: they speak protocol_version only. |
 
 ### message `PairingRequest`
 

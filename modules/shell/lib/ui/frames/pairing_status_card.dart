@@ -117,7 +117,9 @@ class PairingStatusCard extends StatelessWidget {
   String _describe(ShellLocalizations l10n, PairingOutcome outcome) =>
       switch (outcome) {
         Paired(:final device) => l10n.pairSuccess(device.name),
-        PairingFailed(:final reason) => switch (reason) {
+        PairingFailed(:final reason, :final detail) => switch (reason) {
+          .updateThisDevice => l10n.pairFailedUpdateHere(detail),
+          .updateOtherDevice => l10n.pairFailedUpdateThere(detail),
           .unreachable when defaultTargetPlatform == .iOS =>
             l10n.pairFailedUnreachableIphone,
           .unreachable => l10n.pairFailedUnreachable,
