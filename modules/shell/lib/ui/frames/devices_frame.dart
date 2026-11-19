@@ -147,12 +147,17 @@ class _DevicesFrameState extends State<DevicesFrame> {
   /// Something waiting for an answer or going on right now, such as a call
   /// ringing, takes the screen's one filled button from the device row.
   bool _feedHoldsPrimary(BuildContext context, ShellScope scope) =>
+      scope.features.any(
+        (feature) =>
+            feature.hasHomeCard(scope.featureContext) &&
+            feature.homeCardHoldsPrimary(scope.featureContext),
+      ) ||
       ActivityFeed.gather(
-        context,
-        scope.features,
-        scope.featureContext,
-      ).primaryItem !=
-      null;
+            context,
+            scope.features,
+            scope.featureContext,
+          ).primaryItem !=
+          null;
 
   /// ⌘V (Ctrl+V off a Mac) on a connected device's row sends it the
   /// clipboard.

@@ -60,6 +60,11 @@ abstract class FeatureUi {
   /// [activity], and what can be done with a device in [deviceActions].
   bool hasHomeCard(FeatureContext feature) => true;
 
+  /// Whether the home card shows the screen's one filled button right now,
+  /// such as Once on a request to answer. The device list then outlines
+  /// its own.
+  bool homeCardHoldsPrimary(FeatureContext feature) => false;
+
   /// What setting this feature up would give the user, or null when it is
   /// already on or can't be on here. Offers replace setup-only home cards:
   /// return false from [hasHomeCard] while you make an offer.

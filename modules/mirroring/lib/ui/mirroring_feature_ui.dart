@@ -172,6 +172,12 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   bool hasHomeCard(FeatureContext feature) => shareViewModel.hasCard;
 
+  /// Once, or Stop while a computer sees or controls this phone.
+  @override
+  bool homeCardHoldsPrimary(FeatureContext feature) =>
+      shareViewModel.isAvailable &&
+      (shareViewModel.controlPending != null || shareViewModel.active != null);
+
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
     if (!shareViewModel.isAvailable || !shareViewModel.hasCard) {
