@@ -27,6 +27,7 @@ On a computer you never need the mouse.
 | Key | What it does |
 |---|---|
 | **Tab** / **Shift Tab** | Next / previous button, switch or row. From the page it goes on into the device list, and back |
+| **↓** / **↑** | In the window's device list and the Settings list: one line down or up. **Home** and **End** jump to the first and the last. In an open menu they go round |
 | **Enter** or **Space** | Press what has the focus. Flips a switch |
 | **Esc** | Close a menu. On a pairing request it answers **Not now** |
 
@@ -46,6 +47,8 @@ Every main screen is checked at 200%: no button ends up out of reach. Rows that 
 
 Text has a contrast of at least 4.5:1 with what is behind it, in light and in dark mode, checked on every main screen. That includes the grey secondary lines, the links, and the green, orange and red status lines.
 
+On a computer, links such as **See all**, **Cancel** and **Open** take the pointer on at least 24 points of height, even where the words are small.
+
 Nothing is said with colour alone. A status dot always has words next to it, or under your pointer.
 
 ## 🚧 Where it falls short
@@ -54,7 +57,6 @@ Better you hear it from me:
 
 - **Small buttons on phones.** Some buttons and links are lower than the 48 dp Android asks for (44 pt on iPhone). Bigger touch areas are on the way.
 - **Icons don't grow with the text.** At 200% the words are big and the icons next to them stay small.
-- **An empty page keeps Tab.** In the window, a page with nothing to press doesn't hand Tab over to the device list. ⌘1 to ⌘6 and the menu bar still get you there.
 - **The mirrored screen.** Your phone's screen in a window is a picture to a screen reader. Use the phone's own screen reader for what is on it.
 
 Found something that isn't on this list? Open an issue. Say which screen reader and which screen, and it gets fixed.

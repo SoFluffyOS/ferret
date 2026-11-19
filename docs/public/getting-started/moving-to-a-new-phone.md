@@ -51,4 +51,6 @@ Back after a while? One device may have updated Ferret and the other not. When t
 - **Needs a newer Ferret**: update Ferret on that device, then open it once.
 - **Update Ferret here to connect**: update this one. On a computer, **Get the update** opens the download page.
 
-They connect again by themselves after the update. After an update, Home also shows one quiet line, **Updated to Ferret 0.2.0 · What's new**, once.
+They connect again by themselves after the update. After an update, Home (in the window: under the device list) also shows one quiet line, **Updated to Ferret 0.2.0 · What's new**, once.
+
+Forgot how something works? **Settings → About → Show tips again** brings back the short hints, one at a time.

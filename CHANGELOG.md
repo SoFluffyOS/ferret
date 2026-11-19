@@ -3,13 +3,13 @@
 ## [Unreleased]
 
 ### Added
-- 👪 **A computer the family shares**: Ferret in each account goes by its account, such as **Family PC (Anna)**, and moves to the next free port when another account has the usual one. See [A computer the family shares](docs/public/getting-started/shared-computer.md).
+- 👪 **A computer the family shares**: Ferret in each account goes by its account, such as **Family PC (Anna)**, and moves to the next free port when another account has the usual one. Your phone shows a locked or switched-away computer as **Connected · locked**. See [A computer the family shares](docs/public/getting-started/shared-computer.md).
 - 🙈 **Private previews**: a phone's notifications, texts, callers and copied text hide while the screen is locked or another account is in front. **Show previews on this computer** turns them off for one phone, and starts off on a shared computer.
 - 🎟️ **Receive a file from a guest**: **Allow once** lets a phone without Ferret send one file with Quick Share or LocalSend, then closes again.
 - 🇻🇳 **Ferret in Vietnamese**: the whole app, the share sheets, permission prompts and Android notices. Pick a language in **Settings → Advanced → Language**, or let Ferret follow the system. Want your language? [Translate Ferret](docs/public/contributing/translating.md).
-- 🌐 **Ready for every language**: counts read right (**1 device**, not **1 devices**), times and numbers follow your region, and layouts mirror for right-to-left languages.
+- 🌐 **Ready for every language**: counts read right (**1 device**, not **1 devices**), times and numbers follow your region, lists use your language's comma, and layouts mirror for right-to-left languages.
 - 🔁 **New phone? Replace the old one**: pair the new phone and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings, and the old one goes from all your devices.
-- 🆙 **Says who needs an update**: when two devices no longer speak the same Ferret, the device says **Needs a newer Ferret** or **Update Ferret here to connect** instead of staying offline. After an update, one quiet **What's new** line shows up once.
+- 🆙 **Says who needs an update**: when two devices no longer speak the same Ferret, the device says **Needs a newer Ferret** or **Update Ferret here to connect** instead of staying offline. After an update, one quiet **What's new** line shows up once. **Show tips again** in **Settings → About** brings back the short hints.
 - 👀 **What a device can use**: open a device and see every feature it can reach here, with a switch each. Turn one off and it stops right away, on both devices. **Turn everything off** keeps it paired.
 - 🔑 **Codes stay on your phone**: sign-in and bank codes in notifications show up on your computer as **Code hidden**. Turn off **Hide one-time codes** on the phone if you want them.
 - 🟢 **Watched? You know**: on a Mac, the menubar icon keeps a dot while a device sees your screen or controls your computer, and says who.
@@ -22,8 +22,8 @@
 - ⌨️ **Keys where you need them**: rest the pointer on a toolbar button or a line of the device list and it tells you its shortcut.
 - 💎 **Calmer pages**: smooth corners EVERYWHERE, more room at the edges, headings in normal case instead of ALL CAPS, and Activity's links show up when you point at a line.
 - 🦊 **A real app icon**: Ferret has its own icon on macOS, iOS, Android and Windows. Dark and tinted on iOS, themed on Android.
-- 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**.
-- ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away.
+- 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**, on the device and on a transfer that crawls.
+- ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away. **Try all again** restarts every stopped transfer with a device.
 - 📋 **A copy waits for you**: copied with no device around? Activity says it's waiting, then **Sent to Pixel 7 when it came back**.
 - 🧭 **Café and hotel Wi-Fi**: Fix connection says when a network keeps devices apart, and what to do instead.
 - 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
@@ -42,7 +42,7 @@
 - 📤 **Drag a file out of Activity**: a file that just arrived drags straight to Finder or any app. Space shows it in Quick Look.
 - 🎯 **Your favourite action first**: use one of a device's actions a few times and it moves to the front of its row.
 - 📍 **Drop on the icon, done**: files dropped on the menubar icon go to the device you sent to last, and the icon's ring shows them going.
-- ♿️ **Accessibility**: Ferret works with VoiceOver and TalkBack (every button has a name, switches say on or off, the pairing code is read digit by digit), with a keyboard alone (Tab, Enter, Space, Esc, a focus ring you can see), with text at 200%, and with readable contrast in light and dark.
+- ♿️ **Accessibility**: Ferret works with VoiceOver and TalkBack (every button has a name, switches say on or off, the pairing code is read digit by digit), with a keyboard alone (Tab, arrow keys in lists and menus, Enter, Space, Esc, a focus ring you can see), with text at 200%, and with readable contrast in light and dark.
 - 🏠 **Devices are the home screen**: each device has **Send files**, **Send clipboard** and **Ring** on its row, and **Fix** when it isn't connected.
 - 🧾 **Activity**: what just happened, in one short list. A copy that synced, a file that arrived, a call, a song playing, each with the one thing to do about it.
 - 🔑 **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. No QR code to scan, no account, ever.

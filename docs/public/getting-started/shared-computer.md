@@ -30,6 +30,8 @@ That switch sits at the bottom of **What Pixel 7 can use** on the phone's page. 
 
 Covered lines stay in Activity, so you still see that something arrived. Open Ferret to read it.
 
+Your phone knows too. While your account is locked or switched away, the computer's row on your phone says **Connected · locked**: what you send there waits for you, and **Continue** suggestions go to a device you're at instead.
+
 This is not a lock. Anyone who opens Ferret in your account can read your texts, like any app there. Give each person their own login and lock the screen when you walk away.
 
 ## 🎟️ A guest sends one file

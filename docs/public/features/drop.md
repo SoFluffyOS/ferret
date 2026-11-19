@@ -51,6 +51,10 @@ While it waits, its line in **Activity** stays at the top and says so: **Paused 
 
 Sent something while the other device was away? Same thing: it waits, then goes as soon as the device is back.
 
+Several stopped at once? In the window, the device's **Files** section has **Try all again**. One click, and they go in the order you sent them.
+
+A transfer that crawls says why: **Weak connection · 620 MB of 1.8 GB · 12 min left**. Move closer to the Wi-Fi.
+
 LocalSend and Quick Share can't pick up where they stopped, so those start over.
 
 If something fails for another reason, its line in **Activity** says why in plain words, with a **Retry** button.

@@ -41,7 +41,7 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 | **Control** | [Control](../features/remote-input.md) a computer from your phone, [find](../features/find.md) a device, and Power-ups on Android. |
 | **Other apps** | [LocalSend](../interop/localsend.md), [Quick Share](../interop/quick-share.md), the [browser extension](browser.md) and an [iPhone](../iphone/index.md). |
 | **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Check my network** and **Quit Ferret**. |
-| **About · Privacy** | The [privacy](../privacy.md) promise, the version and the licence. |
+| **About · Privacy** | The [privacy](../privacy.md) promise, **Show tips again** for the short hints you waved off, the version and the licence. |
 
 A row that can't apply to your device isn't there. No Power-ups on a Mac.
 
