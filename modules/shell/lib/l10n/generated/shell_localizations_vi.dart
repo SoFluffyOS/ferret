@@ -1210,12 +1210,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Ferret miễn phí. Nếu Ferret giúp bạn tiết kiệm thời gian, bạn có thể tài trợ trên GitHub.';
 
   @override
-  String get settingsOpenSource => 'Ferret miễn phí và mã nguồn mở.';
-
-  @override
-  String get settingsSponsorLink => 'Tài trợ';
-
-  @override
   String get settingsDeviceIdLabel => 'ID thiết bị';
 
   @override

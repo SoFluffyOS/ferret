@@ -3789,10 +3789,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsSponsorDetail => pseudo(super.settingsSponsorDetail);
   @override
-  String get settingsOpenSource => pseudo(super.settingsOpenSource);
-  @override
-  String get settingsSponsorLink => pseudo(super.settingsSponsorLink);
-  @override
   String get settingsDeviceIdLabel => pseudo(super.settingsDeviceIdLabel);
   @override
   String get settingsAddressLabel => pseudo(super.settingsAddressLabel);

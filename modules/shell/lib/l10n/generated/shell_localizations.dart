@@ -1610,18 +1610,6 @@ abstract class ShellLocalizations {
   /// **'Ferret is free. If it saves you time, you can sponsor its work on GitHub.'**
   String get settingsSponsorDetail;
 
-  /// Settings, About: a quiet line at the bottom, followed by the settingsSponsorLink link and a heart
-  ///
-  /// In en, this message translates to:
-  /// **'Ferret is free and open source.'**
-  String get settingsOpenSource;
-
-  /// No description provided for @settingsSponsorLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Sponsor'**
-  String get settingsSponsorLink;
-
   /// No description provided for @settingsDeviceIdLabel.
   ///
   /// In en, this message translates to:

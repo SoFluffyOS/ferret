@@ -1,11 +1,7 @@
-import 'dart:async';
-
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -54,24 +50,6 @@ class AboutPage extends StatelessWidget {
               ),
               Spacing.v4,
               Text(l10n.settingsLicense, style: muted),
-              Spacing.v4,
-              Wrap(
-                crossAxisAlignment: .center,
-                children: [
-                  Text(l10n.settingsOpenSource, style: muted),
-                  TextLink(
-                    label: l10n.settingsSponsorLink,
-                    onTap: () => unawaited(Sponsor.open()),
-                  ),
-                  ExcludeSemantics(
-                    child: Icon(
-                      LucideIcons.heart,
-                      size: Spacing.d12,
-                      color: PlaceColor.pink.fill,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

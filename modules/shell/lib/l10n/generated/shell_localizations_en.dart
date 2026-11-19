@@ -1214,12 +1214,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Ferret is free. If it saves you time, you can sponsor its work on GitHub.';
 
   @override
-  String get settingsOpenSource => 'Ferret is free and open source.';
-
-  @override
-  String get settingsSponsorLink => 'Sponsor';
-
-  @override
   String get settingsDeviceIdLabel => 'Device ID';
 
   @override
