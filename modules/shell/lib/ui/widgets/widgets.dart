@@ -35,6 +35,7 @@ export 'package:shell/ui/widgets/reveal_on_pointer_or_focus.dart';
 export 'package:shell/ui/widgets/row_action_button.dart';
 export 'package:shell/ui/widgets/sidebar_badge.dart';
 export 'package:shell/ui/widgets/sidebar_device_row.dart';
+export 'package:shell/ui/widgets/sidebar_drop_on_all.dart';
 export 'package:shell/ui/widgets/sidebar_header.dart';
 export 'package:shell/ui/widgets/sidebar_row.dart';
 export 'package:shell/ui/widgets/stale_devices_card.dart';

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +9,9 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
+import 'package:shell/ui/frames/sidebar_device_group.dart';
 import 'package:shell/ui/frames/sidebar_nearby_frame.dart';
+import 'package:shell/ui/frames/sidebar_paused_line.dart';
 import 'package:shell/ui/frames/whats_new_frame.dart';
 import 'package:shell/ui/pages/pages.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -85,9 +85,9 @@ class _SidebarFrameState extends State<SidebarFrame> {
             child: Column(
               crossAxisAlignment: .stretch,
               children: [
-                if (isPaused) const _PausedLine(),
+                if (isPaused) const SidebarPausedLine(),
                 Expanded(
-                  child: _DropOnAll(
+                  child: SidebarDropOnAll(
                     devices: devices,
                     child: ListView(
                       padding: EdgeInsets.only(bottom: Spacing.d16),
@@ -144,7 +144,7 @@ class _SidebarFrameState extends State<SidebarFrame> {
                           FeatureChangesListener(
                             key: ValueKey(status.device.id),
                             features: scope.features,
-                            builder: (context) => _DeviceGroup(
+                            builder: (context) => SidebarDeviceGroup(
                               status: status,
                               selection: selection,
                               onSelect: nav.select,
@@ -193,246 +193,5 @@ class _SidebarFrameState extends State<SidebarFrame> {
         ),
       ),
     );
-  }
-}
-
-/// Files dropped on the list but on no device in particular go to every
-/// connected device.
-class _DropOnAll extends StatelessWidget {
-  const _DropOnAll({required this.devices, required this.child});
-
-  final List<DeviceStatus> devices;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = WindowDropTargets.everyone(devices);
-    if (target == null) {
-      return child;
-    }
-
-    return DropTargetRegion(target: target, child: child);
-  }
-}
-
-/// Shown only while Ferret is paused, with the way out next to it.
-class _PausedLine extends StatelessWidget {
-  const _PausedLine();
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-    final l10n = context.shellL10n;
-
-    // The link's target is the line's height.
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Spacing.d16),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              l10n.homeStatusPaused,
-              style: typography.base2.copyWith(color: palette.mutedText),
-            ),
-          ),
-          TextLink(
-            label: l10n.resume,
-            onTap: () => unawaited(context.read<PauseController>().resume()),
-            style: typography.base2,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// One device and, while it is the open one, its sections under it.
-class _DeviceGroup extends StatelessWidget {
-  const _DeviceGroup({
-    required this.status,
-    required this.selection,
-    required this.onSelect,
-  });
-
-  final DeviceStatus status;
-  final WindowDestination? selection;
-  final void Function(WindowDestination destination) onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    final scope = ShellScope.of(context);
-    final deviceId = status.device.id;
-    final sections = DeviceSections.of(
-      context,
-      scope.features,
-      scope.featureContext,
-      status,
-    );
-    final openSectionId = switch (selection) {
-      DeviceDestination(deviceId: final selected, :final sectionId)
-          when selected == deviceId =>
-        sectionId,
-      _ => null,
-    };
-    final isOpen = openSectionId != null;
-    final showsFeatureSection = sections.any(
-      (section) => section.id == openSectionId,
-    );
-    final waiting = sections.fold(
-      0,
-      (count, section) => count + (section.badge ?? 0),
-    );
-    final isPinned = context.select<EngineHost, bool>(
-      (host) => host.preferences.isPinned(deviceId),
-    );
-    final dropTarget = WindowDropTargets.device(status);
-    final isDropHovered = context.select<OsDropViewModel, bool>(
-      (drop) => drop.hovered == dropTarget,
-    );
-
-    return DropTargetRegion(
-      target: dropTarget,
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          ContextMenuRegion(
-            entries: _menu(context, scope, sections),
-            child: DropSpringOpen(
-              active: isDropHovered && status.isConnected && !isOpen,
-              onOpen: () => onSelect(DeviceDestination(deviceId)),
-              child: SidebarDeviceRow(
-                status: status,
-                isSelected: isOpen && sections.isEmpty,
-                needsAttention: _needsAttention(scope),
-                isDropHovered: isDropHovered,
-                isPinned: isPinned,
-                badge: switch (isOpen) {
-                  true => 0,
-                  false => waiting,
-                },
-                onTap: () => onSelect(DeviceDestination(deviceId)),
-              ),
-            ),
-          ),
-          if (isOpen && sections.isNotEmpty) ...[
-            SidebarRow(
-              label: context.shellL10n.sectionOverview,
-              icon: LucideIcons.layoutDashboard,
-              tooltip: _sectionHint(context.shellL10n.sectionOverview, 0),
-              isIndented: true,
-              isSelected: !showsFeatureSection,
-              onTap: () => onSelect(DeviceDestination(deviceId)),
-            ),
-            for (final (index, section) in sections.indexed)
-              SidebarRow(
-                key: ValueKey(section.id),
-                label: section.title,
-                icon: section.icon,
-                tooltip: _sectionHint(section.title, index + 1),
-                isIndented: true,
-                isDimmed: !section.isSetUp,
-                isSelected: section.id == openSectionId,
-                trailing: switch (section.badge) {
-                  final badge? when badge > 0 => SidebarBadge(badge),
-                  _ => null,
-                },
-                onTap: () => onSelect(
-                  DeviceDestination(deviceId, sectionId: section.id),
-                ),
-              ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  /// The section's name with its digit key, for the ones that have one.
-  String _sectionHint(String title, int index) {
-    if (index >= WindowShortcuts.sectionCount) {
-      return title;
-    }
-
-    return WindowShortcuts.hint(
-      title,
-      WindowShortcuts.sectionActivator(index, defaultTargetPlatform),
-      defaultTargetPlatform,
-    );
-  }
-
-  /// A right-click on the device: what its Overview offers, without
-  /// opening it first.
-  List<MenuEntry> _menu(
-    BuildContext context,
-    ShellScope scope,
-    List<FeatureSection> sections,
-  ) {
-    final l10n = context.shellL10n;
-    final nav = context.read<WindowNavViewModel>();
-    final deviceId = status.device.id;
-    final preferences = context.read<EngineHost>().preferences;
-    final isPinned = preferences.isPinned(deviceId);
-    final actions = switch (status.isConnected) {
-      true => DeviceActionUsage(scope.featureContext.engine.settings).arrange(
-        deviceId,
-        DeviceActionOrder.of(
-          [
-            for (final feature in scope.features)
-              ...feature.deviceActions(context, scope.featureContext, status),
-          ],
-          listedSections: {for (final section in sections) section.id},
-        ),
-      ),
-      false => const <FeatureAction>[],
-    };
-
-    return [
-      for (final action in actions)
-        if (action.onPressed case final onPressed?)
-          MenuEntry(
-            label: action.label,
-            icon: action.icon,
-            onSelected: onPressed,
-          ),
-      MenuEntry(
-        label: switch (isPinned) {
-          true => l10n.devicesUnpin,
-          false => l10n.devicesPin,
-        },
-        icon: switch (isPinned) {
-          true => LucideIcons.pinOff,
-          false => LucideIcons.pin,
-        },
-        startsGroup: actions.isNotEmpty,
-        onSelected: () =>
-            unawaited(preferences.setPinned(deviceId, pinned: !isPinned)),
-      ),
-      MenuEntry(
-        label: l10n.menuFixConnection,
-        icon: LucideIcons.wrench,
-        onSelected: () => nav.show(DoctorPage(deviceId: deviceId)),
-      ),
-      MenuEntry(
-        label: l10n.menuForgetDevice,
-        icon: LucideIcons.trash2,
-        onSelected: () => onSelect(DeviceDestination(deviceId)),
-      ),
-    ];
-  }
-
-  /// Whether a feature that is on isn't working with this device.
-  bool _needsAttention(ShellScope scope) {
-    for (final feature in scope.features) {
-      final health = feature.healthFor(scope.featureContext, status);
-      final isBroken = switch (health?.state) {
-        .needsAttention || .failing => true,
-        _ => false,
-      };
-      if (isBroken) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }
