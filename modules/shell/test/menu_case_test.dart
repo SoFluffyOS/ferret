@@ -15,6 +15,7 @@ void main() {
     expect(on(.linux, 'Forget This Device…'), 'Forget this device…');
     expect(on(.linux, 'Show Activity Pane'), 'Show activity pane');
     expect(on(.windows, 'Check My Network…'), 'Check my network…');
+    expect(on(.android, 'Pin to Top'), 'Pin to top');
   });
 
   test('names stay as they are', () {

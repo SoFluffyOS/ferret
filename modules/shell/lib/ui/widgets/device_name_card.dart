@@ -1,6 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/window_commands.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Naming a paired device on this one only, and pinning it to the top of
@@ -161,7 +162,7 @@ class _DeviceNameCardState extends State<DeviceNameCard> {
         _QuietLine(
           switch (widget.isPinned) {
             true => l10n.devicesUnpin,
-            false => l10n.devicesPin,
+            false => WindowCommands.inCase(l10n, l10n.devicesPin),
           },
           onTap: () => widget.onPin(!widget.isPinned),
         ),

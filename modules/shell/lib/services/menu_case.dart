@@ -21,6 +21,8 @@ abstract final class MenuCase {
     'shortcuts',
     'sidebar',
     'this',
+    'to',
+    'top',
     'window',
     'with',
   };

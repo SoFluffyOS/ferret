@@ -166,7 +166,7 @@ class SidebarDeviceGroup extends StatelessWidget {
       MenuEntry(
         label: switch (isPinned) {
           true => l10n.devicesUnpin,
-          false => l10n.devicesPin,
+          false => WindowCommands.inCase(l10n, l10n.devicesPin),
         },
         icon: switch (isPinned) {
           true => LucideIcons.pinOff,
