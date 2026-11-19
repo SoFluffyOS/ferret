@@ -292,19 +292,7 @@ class DropFeature extends Feature {
     return null;
   }
 
-  String _deviceName(String deviceId) {
-    if (host.sessionFor(deviceId)?.remoteDevice case final device?) {
-      return device.name;
-    }
-
-    for (final device in host.trustStore.devices) {
-      if (device.id == deviceId) {
-        return device.name;
-      }
-    }
-
-    return '';
-  }
+  String _deviceName(String deviceId) => host.displayNameOf(deviceId);
 
   ({String alias, String model, LocalSendDeviceType type}) _describeSelf() {
     final device = host.localDevice;

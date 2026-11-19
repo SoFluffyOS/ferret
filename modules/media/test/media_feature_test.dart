@@ -40,6 +40,18 @@ void main() {
     expect(ui.feature.id, MediaFeature.featureId);
   });
 
+  test('the player names the phone as the laptop calls it', () async {
+    await engines.laptop.trustStore.rename(
+      engines.phone.identity.deviceId,
+      'Work phone',
+    );
+    phoneBackend.emit([playerInfo(positionAtMs: nowMs())]);
+
+    await until(() => engines.laptopMedia.remotePlayers.isNotEmpty);
+
+    expect(engines.laptopMedia.remotePlayers.single.deviceName, 'Work phone');
+  });
+
   test(
     'what plays on the phone shows on the laptop with its artwork',
     () async {

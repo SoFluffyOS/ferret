@@ -46,6 +46,20 @@ void main() {
       await feature.stop();
     });
 
+    test('says who asked by the name this device gives it', () async {
+      final host = await FakeHost.create();
+      final platform = FakeFindPlatform();
+      final laptop = FakeSession('laptop', name: 'Laptop');
+      host.sessions = [laptop];
+      await nameHere(host.trustStore, 'laptop', 'Work laptop');
+      final feature = await startFeature(host, platform);
+
+      await feature.onEnvelope(laptop, envelopeOf(RingRequest()));
+
+      expect(platform.playing?.body, contains('Work laptop'));
+      await feature.stop();
+    });
+
     test(
       'tells each device that asked how it ended, except the stopper',
       () async {

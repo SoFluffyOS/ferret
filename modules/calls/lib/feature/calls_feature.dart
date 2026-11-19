@@ -592,7 +592,7 @@ class CallsFeature extends Feature implements CallsControl {
     };
     final remote = RemoteCall(
       deviceId: deviceId,
-      deviceName: session.remoteDevice?.name ?? deviceId,
+      deviceName: host.displayNameOf(deviceId),
       call: call,
       startedAt:
           known?.startedAt ?? _localTime(call.startedAtMs.toInt(), skew, now),

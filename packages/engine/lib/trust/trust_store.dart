@@ -10,6 +10,9 @@ import 'package:engine/trust/trusted_device.dart';
 class TrustStore {
   TrustStore._(this._store, this._devices, this._forgotten);
 
+  /// An empty store kept in memory only, such as for tests and previews.
+  factory TrustStore.memory() => TrustStore._(MemorySecretStore(), {}, {});
+
   static const _storageKey = 'ferret.trusted_devices';
   static const _forgottenKey = 'ferret.forgotten_devices';
 

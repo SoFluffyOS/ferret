@@ -467,6 +467,17 @@ void main() {
 
     tearDown(() => feature.stop());
 
+    test('names the phone as this device calls it', () async {
+      await nameHere(host.trustStore, 'phone', 'Work phone');
+
+      await feature.onEnvelope(
+        pixel,
+        envelopeOf(update(.CALL_STATE_RINGING)),
+      );
+
+      expect(feature.remoteCalls.single.deviceName, 'Work phone');
+    });
+
     test('shows a call while it lasts', () async {
       await feature.onEnvelope(
         pixel,

@@ -35,5 +35,5 @@ class FakeHost implements FeatureHost {
   DeviceInfo get localDevice => DeviceInfo(name: 'Test');
 
   @override
-  TrustStore get trustStore => throw UnimplementedError();
+  final TrustStore trustStore = TrustStore.memory();
 }

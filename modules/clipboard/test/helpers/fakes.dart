@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:core/core.dart';
@@ -111,6 +112,9 @@ class FakeHost implements FeatureHost {
   final MemorySettingsStore settings;
 
   @override
+  final TrustStore trustStore = TrustStore.memory();
+
+  @override
   List<Session> sessions = [];
 
   @override
@@ -162,3 +166,22 @@ ClipPush pushOf(
 
 /// Lets queued stream events and futures run.
 Future<void> settle() => Future<void>.delayed(Duration.zero);
+
+/// Pairs [deviceId] in [store] and names it [nickname] on this device only.
+Future<void> nameHere(
+  TrustStore store,
+  String deviceId,
+  String nickname,
+) async {
+  await store.save(
+    TrustedDevice(
+      id: deviceId,
+      name: 'Pixel',
+      platform: .PLATFORM_ANDROID,
+      formFactor: .FORM_FACTOR_PHONE,
+      publicKey: Uint8List(32),
+      pairedAt: DateTime(2026, 11),
+    ),
+  );
+  await store.rename(deviceId, nickname);
+}

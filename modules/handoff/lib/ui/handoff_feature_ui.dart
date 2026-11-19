@@ -144,7 +144,7 @@ class HandoffFeatureUi extends FeatureUi {
     final failures = <String>[];
     for (final session in sessions) {
       final outcome = await feature.sendTo(session.remoteDeviceId, activity);
-      final name = session.remoteDevice?.name ?? '';
+      final name = feature.host.displayNameOf(session.remoteDeviceId);
       switch (outcome) {
         case .opened || .suggested:
           break;

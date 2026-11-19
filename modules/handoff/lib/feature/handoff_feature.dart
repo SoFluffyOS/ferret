@@ -112,6 +112,7 @@ class HandoffFeature extends Feature {
     final from = HandoffPeer.fromInfo(
       session.remoteDeviceId,
       session.remoteDevice,
+      name: host.displayNameOf(session.remoteDeviceId),
     );
 
     if (payloadOf(envelope, PublishActivity.new) case final publish?) {
@@ -213,7 +214,11 @@ class HandoffFeature extends Feature {
     await _timeline.add(
       TimelineEntry(
         activity: stamped,
-        peer: HandoffPeer.fromInfo(deviceId, session.remoteDevice),
+        peer: HandoffPeer.fromInfo(
+          deviceId,
+          session.remoteDevice,
+          name: host.displayNameOf(deviceId),
+        ),
         direction: .sent,
         at: _now(),
       ),

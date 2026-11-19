@@ -532,7 +532,7 @@ class MediaFeature extends Feature {
 
     _store.apply(
       deviceId: session.remoteDeviceId,
-      deviceName: session.remoteDevice?.name ?? session.remoteDeviceId,
+      deviceName: host.displayNameOf(session.remoteDeviceId),
       state: state,
       nowMs: now,
     );

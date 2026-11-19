@@ -188,7 +188,7 @@ class FindFeature extends Feature {
     final session = host.sessionFor(deviceId);
     final ring = OutgoingRing(
       deviceId: deviceId,
-      deviceName: _nameOf(deviceId, session),
+      deviceName: host.displayNameOf(deviceId),
       phase: .requesting,
       startedAt: _clock(),
     );
@@ -311,7 +311,7 @@ class FindFeature extends Feature {
     };
     final ring = await _controller.ring(
       requesterId: session.remoteDeviceId,
-      requesterName: _nameOf(session.remoteDeviceId, session),
+      requesterName: host.displayNameOf(session.remoteDeviceId),
       duration: duration,
       overrideSilent: request.overrideSilent,
     );
@@ -464,11 +464,6 @@ class FindFeature extends Feature {
 
     unawaited(settings.setHadDndAccess(true));
   }
-
-  String _nameOf(String deviceId, Session? session) =>
-      session?.remoteDevice?.name ??
-      host.trustStore[deviceId]?.name ??
-      deviceId;
 
   void _emit() {
     if (!_changes.isClosed) {

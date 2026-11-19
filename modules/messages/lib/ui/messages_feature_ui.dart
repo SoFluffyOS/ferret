@@ -513,7 +513,7 @@ class MessagesFeatureUi extends FeatureUi {
   }
 
   static String _nameOf(FeatureContext context, String deviceId) =>
-      context.engine.trustStore[deviceId]?.name ?? deviceId;
+      context.engine.displayNameOf(deviceId);
 }
 
 /// What the Settings row says about Messages.

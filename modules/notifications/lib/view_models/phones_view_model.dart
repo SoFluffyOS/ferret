@@ -36,7 +36,7 @@ class PhonesViewModel extends ChangeNotifier {
     for (final session in _feature.senders)
       PhoneStatus(
         deviceId: session.remoteDeviceId,
-        name: session.remoteDevice?.name ?? session.remoteDeviceId,
+        name: _feature.host.displayNameOf(session.remoteDeviceId),
         settings: _feature.senderSettings[session.remoteDeviceId],
         unreachable: _feature.isUnreachable(session.remoteDeviceId),
       ),

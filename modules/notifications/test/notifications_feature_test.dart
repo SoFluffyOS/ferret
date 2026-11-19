@@ -100,6 +100,20 @@ void main() {
       expect(laptopFeature.senders.single.remoteDeviceId, phoneId());
     });
 
+    test('the phone list names the phone as the laptop calls it', () async {
+      await connect();
+      await laptop.trustStore.rename(phoneId(), 'Work phone');
+
+      final phones = PhonesViewModel(
+        feature: laptopFeature,
+        sessionChanges: const Stream.empty(),
+        pairedPhones: () => const [],
+      );
+      addTearDown(phones.dispose);
+
+      expect(phones.phones.single.name, 'Work phone');
+    });
+
     test(
       'notifications posted before the session opened are never replayed',
       () async {

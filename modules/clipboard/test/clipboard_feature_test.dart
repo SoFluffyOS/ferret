@@ -43,6 +43,16 @@ void main() {
       expect(feature.latest?.deviceNames, ['Pixel']);
     });
 
+    test('Activity names the device as this device calls it', () async {
+      await start();
+      await nameHere(host.trustStore, pixel.remoteDeviceId, 'Work phone');
+
+      clipboard.copy(const .text('hello'));
+      await settle();
+
+      expect(feature.latest?.deviceNames, ['Work phone']);
+    });
+
     test('links are sent as links', () async {
       await start();
 
@@ -156,6 +166,7 @@ void main() {
         expect(feature.isWaiting(feature.history.first), isTrue);
 
         now = now.add(const Duration(seconds: 30));
+        host.sessions = [pixel];
         feature.onSessionOpened(pixel);
         await settle();
 

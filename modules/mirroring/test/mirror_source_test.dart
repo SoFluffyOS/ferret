@@ -67,6 +67,18 @@ void main() {
     expect(capture.started, isEmpty, reason: 'nothing before the yes');
   });
 
+  test('the prompt names the computer as this device calls it', () async {
+    await nameHere(host.trustStore, 'mac', 'Studio Mac');
+
+    await source.onRequest(mac, request());
+
+    expect(source.pending?.deviceName, 'Studio Mac');
+    expect(
+      capture.asked.single.askTitle,
+      'Studio Mac wants to see this screen',
+    );
+  });
+
   test('a yes accepts, then starts the capture with H.264 inside the '
       'limits', () async {
     await share();

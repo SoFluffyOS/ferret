@@ -46,6 +46,14 @@ void main() {
       expect(control.active, isNull);
     });
 
+    test('the request names the device as this one calls it', () async {
+      await nameHere(host.trustStore, 'pixel', 'Work phone');
+
+      await request(pixel);
+
+      expect(control.pending?.deviceName, 'Work phone');
+    });
+
     test('allow once grants this time, and asks again next time', () async {
       await request(pixel);
       await control.answer(.allowOnce);

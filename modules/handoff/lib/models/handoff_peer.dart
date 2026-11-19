@@ -9,12 +9,14 @@ class HandoffPeer {
     this.formFactor = .FORM_FACTOR_UNSPECIFIED,
   });
 
-  factory HandoffPeer.fromInfo(String id, DeviceInfo? info) => HandoffPeer(
+  /// [name] is what this device calls it, from `FeatureHost.displayNameOf`.
+  factory HandoffPeer.fromInfo(
+    String id,
+    DeviceInfo? info, {
+    required String name,
+  }) => HandoffPeer(
     id: id,
-    name: switch (info?.name) {
-      final name? when name.isNotEmpty => name,
-      _ => id,
-    },
+    name: name,
     platform: info?.platform ?? .PLATFORM_UNSPECIFIED,
     formFactor: info?.formFactor ?? .FORM_FACTOR_UNSPECIFIED,
   );

@@ -131,7 +131,7 @@ class MirrorSource {
 
     final pending = ShareRequest(
       deviceId: deviceId,
-      deviceName: _nameOf(deviceId, session),
+      deviceName: _host.displayNameOf(deviceId),
       askedAt: _clock(),
     );
     _pending = pending;
@@ -579,11 +579,6 @@ class MirrorSource {
       printWarning('Mirroring message to $deviceId failed', error);
     }
   }
-
-  String _nameOf(String deviceId, Session session) =>
-      session.remoteDevice?.name ??
-      _host.trustStore[deviceId]?.name ??
-      deviceId;
 
   void _emit() {
     if (!_changes.isClosed) {

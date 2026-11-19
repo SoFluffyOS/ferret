@@ -64,7 +64,7 @@ class ControlClient {
     final session = _host.sessionFor(deviceId);
     final control = OutgoingControl(
       deviceId: deviceId,
-      deviceName: _nameOf(deviceId, session),
+      deviceName: _host.displayNameOf(deviceId),
       phase: .requesting,
     );
     if (session == null) {
@@ -340,11 +340,6 @@ class ControlClient {
       printWarning('Remote input message to $deviceId failed', error);
     }
   }
-
-  String _nameOf(String deviceId, Session? session) =>
-      session?.remoteDevice?.name ??
-      _host.trustStore[deviceId]?.name ??
-      deviceId;
 
   void _emit() {
     if (!_changes.isClosed) {

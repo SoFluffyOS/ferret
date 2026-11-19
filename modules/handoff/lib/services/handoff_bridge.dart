@@ -178,7 +178,11 @@ class HandoffBridge {
     final connected = [
       for (final session in engine.sessions)
         if (session.supports(HandoffFeature.featureId))
-          HandoffPeer.fromInfo(session.remoteDeviceId, session.remoteDevice),
+          HandoffPeer.fromInfo(
+            session.remoteDeviceId,
+            session.remoteDevice,
+            name: engine.displayNameOf(session.remoteDeviceId),
+          ),
     ];
     if (connected.length == 1) {
       return connected.single.id;
@@ -361,20 +365,7 @@ class HandoffBridge {
     }
   }
 
-  String _nameOf(String deviceId) {
-    final session = engine.sessionFor(deviceId);
-    if (session?.remoteDevice?.name case final name? when name.isNotEmpty) {
-      return name;
-    }
-
-    for (final device in engine.trustStore.devices) {
-      if (device.id == deviceId) {
-        return device.name;
-      }
-    }
-
-    return deviceId;
-  }
+  String _nameOf(String deviceId) => engine.displayNameOf(deviceId);
 
   Future<void> _notify({
     required String id,

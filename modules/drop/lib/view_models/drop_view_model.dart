@@ -5,6 +5,7 @@ import 'package:drop/feature/drop_feature.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_drop/ferret_drop.dart';
 import 'package:file_selector/file_selector.dart';
@@ -477,7 +478,7 @@ class DropViewModel extends ChangeNotifier {
     for (final session in feature.targets)
       DropTarget(
         deviceId: session.remoteDeviceId,
-        name: session.remoteDevice?.name ?? '',
+        name: feature.host.displayNameOf(session.remoteDeviceId),
         formFactor:
             session.remoteDevice?.formFactor ?? .FORM_FACTOR_UNSPECIFIED,
         platform: session.remoteDevice?.platform ?? .PLATFORM_UNSPECIFIED,

@@ -135,7 +135,7 @@ class ControlHost {
     ControlRequest request,
   ) async {
     final deviceId = session.remoteDeviceId;
-    final deviceName = _nameOf(deviceId, session);
+    final deviceName = _host.displayNameOf(deviceId);
 
     if (request.version > InputCodec.protocolVersion) {
       return ControlDeny(reason: .DENY_REASON_VERSION);
@@ -492,11 +492,6 @@ class ControlHost {
       printWarning('Remote input message to $deviceId failed', error);
     }
   }
-
-  String _nameOf(String deviceId, Session? session) =>
-      session?.remoteDevice?.name ??
-      _host.trustStore[deviceId]?.name ??
-      deviceId;
 
   void _emit() {
     if (!_changes.isClosed) {

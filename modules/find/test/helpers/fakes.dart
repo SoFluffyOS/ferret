@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -233,4 +234,23 @@ Future<void> settle() async {
   for (var turn = 0; turn < 5; turn++) {
     await Future<void>.delayed(Duration.zero);
   }
+}
+
+/// Pairs [deviceId] in [store] and names it [nickname] on this device only.
+Future<void> nameHere(
+  TrustStore store,
+  String deviceId,
+  String nickname,
+) async {
+  await store.save(
+    TrustedDevice(
+      id: deviceId,
+      name: deviceId,
+      platform: .PLATFORM_ANDROID,
+      formFactor: .FORM_FACTOR_PHONE,
+      publicKey: Uint8List(32),
+      pairedAt: DateTime(2026, 11),
+    ),
+  );
+  await store.rename(deviceId, nickname);
 }

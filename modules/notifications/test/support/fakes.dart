@@ -157,7 +157,7 @@ class SettingsOnlyHost implements FeatureHost {
   DeviceInfo get localDevice => throw UnimplementedError();
 
   @override
-  TrustStore get trustStore => throw UnimplementedError();
+  final TrustStore trustStore = TrustStore.memory();
 }
 
 /// A [SettingsOnlyHost] where the devices in [connected] have a session that

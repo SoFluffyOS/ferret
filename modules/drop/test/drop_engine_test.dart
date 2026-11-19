@@ -68,6 +68,7 @@ void main() {
         ..hosts.add('127.0.0.1');
       expect(await phone.pairWithOffer(offer), isA<Paired>());
       await until(() => laptopDrop.targets.isNotEmpty);
+      await phone.trustStore.rename(laptop.identity.deviceId, 'Work laptop');
 
       final source = await randomFile(root, 'video.mp4', 1300 * 1024);
       final sent = await laptopDrop.sendFiles(phone.identity.deviceId, [
@@ -80,7 +81,7 @@ void main() {
       await until(() => laptopDrop.registry[sent.id]?.status == .done);
       final received = phoneDrop.registry[sent.id];
       expect(received?.status, TransferStatus.done);
-      expect(received?.deviceName, 'Laptop');
+      expect(received?.deviceName, 'Work laptop');
       expect(
         await File(p.join(phoneInbox.path, 'video.mp4')).readAsBytes(),
         await source.readAsBytes(),

@@ -55,7 +55,7 @@ class FerretRoute implements MirrorRoute {
   MirrorTarget targetFor(String deviceId) => MirrorTarget(
     routeId: routeId,
     id: deviceId,
-    name: _nameOf(deviceId, _host.sessionFor(deviceId)),
+    name: _host.displayNameOf(deviceId),
     ferretDeviceId: deviceId,
     wireless: true,
   );
@@ -209,9 +209,4 @@ class FerretRoute implements MirrorRoute {
       printWarning('Mirroring message to $deviceId failed', error);
     }
   }
-
-  String _nameOf(String deviceId, Session? session) =>
-      session?.remoteDevice?.name ??
-      _host.trustStore[deviceId]?.name ??
-      deviceId;
 }

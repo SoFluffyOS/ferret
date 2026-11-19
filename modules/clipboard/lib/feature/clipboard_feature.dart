@@ -603,8 +603,7 @@ class ClipboardFeature extends Feature {
     });
   }
 
-  String _nameOf(Session session) =>
-      session.remoteDevice?.name ?? session.remoteDeviceId;
+  String _nameOf(Session session) => host.displayNameOf(session.remoteDeviceId);
 }
 
 /// The last clip copied here, and the devices that got it.

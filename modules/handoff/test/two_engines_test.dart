@@ -94,6 +94,19 @@ void main() {
     );
   });
 
+  test('the timeline names the device as this one calls it', () async {
+    final phone = await startEngine('Phone', HandoffFeature());
+    final mac = await startEngine('Mac', HandoffFeature(opener: FakeOpener()));
+    await pair(phone, mac);
+    await connected([phone, mac], 1);
+    await phone.trustStore.rename(mac.identity.deviceId, 'Studio Mac');
+    final phoneHandoff = phone.feature<HandoffFeature>();
+
+    await phoneHandoff?.sendTo(mac.identity.deviceId, webActivity('page'));
+
+    expect(phoneHandoff?.timeline.single.peer.name, 'Studio Mac');
+  });
+
   test('with automatic opening off the send waits as a suggestion', () async {
     final macOpener = FakeOpener();
     final phone = await startEngine('Phone', HandoffFeature());
