@@ -13,7 +13,7 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// A window's content pane as a drop target: files dropped on it go to the
 /// device it shows, or to every connected device on Activity and Settings.
 /// While they are over it, the pane dims under one card that says where
-/// they would go, and the page stays where it was.
+/// they would go, and the page stays where it was, inert.
 class PaneDropFrame extends StatelessWidget {
   const PaneDropFrame({super.key, required this.child});
 
@@ -42,7 +42,10 @@ class PaneDropFrame extends StatelessWidget {
       child: Stack(
         fit: .expand,
         children: [
-          child,
+          // Under the hint the page is a dimmed backdrop: nothing on it can
+          // be read or pressed until the files are dropped or taken away,
+          // so for that moment it isn't there for a screen reader either.
+          ExcludeSemantics(excluding: isHovered, child: child),
           if (isHovered)
             Positioned.fill(
               child: IgnorePointer(
