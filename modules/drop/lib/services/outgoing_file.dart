@@ -10,6 +10,8 @@ class OutgoingFile {
     required this.name,
     required this.size,
     required this.mime,
+    this.folder,
+    this.modified,
   });
 
   final String path;
@@ -17,20 +19,31 @@ class OutgoingFile {
   final int size;
   final String mime;
 
+  /// The folder the file sits in when a whole folder is sent, relative and
+  /// separated by `/`, starting with the sent folder's name: `Photos/2024`.
+  /// Null for a file sent on its own.
+  final String? folder;
+
+  /// When the file was last modified, for the receiver to keep.
+  final DateTime? modified;
+
   /// Describes the file at [path], or returns null when it isn't a readable
-  /// file, such as a folder.
-  static Future<OutgoingFile?> fromPath(String path) async {
+  /// file, such as a folder. [folder] places it inside a sent folder.
+  static Future<OutgoingFile?> fromPath(String path, {String? folder}) async {
     final file = File(path);
-    if (await FileSystemEntity.type(path) != FileSystemEntityType.file) {
+    if (await FileSystemEntity.type(path, followLinks: false) !=
+        FileSystemEntityType.file) {
       return null;
     }
 
-    final size = await file.length();
+    final stat = await file.stat();
     return OutgoingFile(
       path: path,
       name: p.basename(path),
-      size: size,
+      size: stat.size,
       mime: lookupMimeType(path) ?? '',
+      folder: folder,
+      modified: stat.modified,
     );
   }
 }

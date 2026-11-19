@@ -372,7 +372,7 @@ void main() {
     );
   });
 
-  test('folders and missing files are not sent', () async {
+  test('empty folders and missing files send nothing', () async {
     await startLink();
 
     final transfer = await link.laptop.feature.sendFiles(link.phone.id, [

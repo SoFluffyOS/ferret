@@ -23,11 +23,23 @@ class PlatformReceiveStore implements ReceiveStore {
       (await _resolve()).partsDirectory();
 
   @override
+  Future<String> reserveFolder(String name) async =>
+      (await _resolve()).reserveFolder(name);
+
+  @override
   Future<ReceivedFile> save(
     File part, {
     required String name,
     required String mime,
-  }) async => (await _resolve()).save(part, name: name, mime: mime);
+    String? folder,
+    DateTime? modified,
+  }) async => (await _resolve()).save(
+    part,
+    name: name,
+    mime: mime,
+    folder: folder,
+    modified: modified,
+  );
 
   Future<ReceiveStore> _resolve() => _store ??= _pick();
 

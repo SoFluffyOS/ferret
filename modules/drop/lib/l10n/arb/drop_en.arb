@@ -786,5 +786,56 @@
   "actionTryAll": "Try all again",
   "@actionTryAll": {
     "description": "Link above a device's transfers when several stopped and can be tried again"
+  },
+  "failureFoldersUnsupported": "{device}'s Ferret is too old for folders. Update it, or send the files.",
+  "@failureFoldersUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "actionSendLoose": "Send the files",
+  "@actionSendLoose": {
+    "description": "Sends a folder's files on their own, without the folder, to a device whose Ferret can't take folders"
+  },
+  "filesChooseFolder": "Choose a folder…",
+  "@filesChooseFolder": {
+    "description": "Button that picks a folder to send with everything in it"
+  },
+  "sendFolder": "Send a folder",
+  "@sendFolder": {
+    "description": "Device action that picks a folder to send"
+  },
+  "folderFilesDone": "{done} of {total, plural, =1{1 file} other{{total} files}}",
+  "@folderFilesDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "folderProgressDone": "{files} · {size}",
+  "@folderProgressDone": {
+    "description": "How far a folder is: '120 of 340 files · 1.2 GB', followed by 'of 3.4 GB'",
+    "placeholders": {
+      "files": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "folderSkipped": "{count, plural, =1{1 link or special file left out} other{{count} links or special files left out}}",
+  "@folderSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

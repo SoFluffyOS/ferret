@@ -65,13 +65,16 @@ const FileInfo$json = {
     {'1': 'size', '3': 2, '4': 1, '5': 4, '10': 'size'},
     {'1': 'mime', '3': 3, '4': 1, '5': 9, '10': 'mime'},
     {'1': 'sha256', '3': 4, '4': 1, '5': 12, '10': 'sha256'},
+    {'1': 'folder', '3': 5, '4': 1, '5': 9, '10': 'folder'},
+    {'1': 'modified_ms', '3': 6, '4': 1, '5': 3, '10': 'modifiedMs'},
   ],
 };
 
 /// Descriptor for `FileInfo`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List fileInfoDescriptor = $convert.base64Decode(
     'CghGaWxlSW5mbxISCgRuYW1lGAEgASgJUgRuYW1lEhIKBHNpemUYAiABKARSBHNpemUSEgoEbW'
-    'ltZRgDIAEoCVIEbWltZRIWCgZzaGEyNTYYBCABKAxSBnNoYTI1Ng==');
+    'ltZRgDIAEoCVIEbWltZRIWCgZzaGEyNTYYBCABKAxSBnNoYTI1NhIWCgZmb2xkZXIYBSABKAlS'
+    'BmZvbGRlchIfCgttb2RpZmllZF9tcxgGIAEoA1IKbW9kaWZpZWRNcw==');
 
 @$core.Deprecated('Use transferOfferDescriptor instead')
 const TransferOffer$json = {

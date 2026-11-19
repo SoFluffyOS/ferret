@@ -255,6 +255,34 @@ class DropViewModel extends ChangeNotifier {
   /// Asks for files to send. Empty when nothing was picked.
   Future<List<String>> pickFiles() => _pickFiles();
 
+  /// Whether this platform's picker can choose a folder to send: the
+  /// desktops. Phones share folders from their file manager instead.
+  bool get canPickFolder =>
+      Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+
+  /// Asks for a folder to send. Null when none was picked.
+  Future<String?> pickFolder() => _pickFolder();
+
+  /// Asks for a folder, then sends it with everything inside to
+  /// [deviceId]. Returns null when nothing was picked or sent.
+  Future<Transfer?> pickFolderAndSend(String deviceId) async {
+    final folder = await _pickFolder();
+    if (folder == null) {
+      return null;
+    }
+
+    return feature.sendFiles(deviceId, [folder]);
+  }
+
+  /// Whether [transfer] is a folder that stopped because the other device
+  /// can't take folders, so its files can go on their own.
+  bool canSendLoose(Transfer transfer) =>
+      transfer.failure == .foldersUnsupported && feature.canRetry(transfer);
+
+  /// Sends a folder's files on their own, in place of [transfer].
+  Future<Transfer?> sendLoose(Transfer transfer) =>
+      feature.sendLoose(transfer.id);
+
   /// Whether the LocalSend device [target] left the network.
   bool isGone(DropTarget target) =>
       feature.localSend.peerFor(target.deviceId) == null;
@@ -324,8 +352,14 @@ class DropViewModel extends ChangeNotifier {
 
   void clearFinished() => feature.clearFinished();
 
-  /// Opens a single received file, or shows several in their folder.
+  /// Opens a single received file or a received folder, or shows several
+  /// files in their folder.
   Future<void> open(Transfer transfer) async {
+    if (transfer.folderLocation case final folder?) {
+      await _plugin.open(folder);
+      return;
+    }
+
     if (transfer.files case [final file]) {
       if (file.location case final location?) {
         await _plugin.open(location, mimeType: file.mime);
@@ -338,6 +372,11 @@ class DropViewModel extends ChangeNotifier {
   }
 
   Future<void> reveal(Transfer transfer) async {
+    if (transfer.folderLocation case final folder?) {
+      await _plugin.reveal(folder);
+      return;
+    }
+
     for (final file in transfer.files) {
       if (file.location case final location?) {
         await _plugin.reveal(location);

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/file_names.dart';
+import 'package:drop/services/folder_paths.dart';
+import 'package:drop/services/folder_plan.dart';
 import 'package:drop/services/localsend/localsend_ids.dart';
 import 'package:drop/services/progress_throttle.dart';
 import 'package:drop/services/receive_store.dart';
@@ -80,6 +82,15 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
   Future<Set<String>?> onOffer(LocalSendOffer offer) async {
     final transferId = TransferIds.next();
     final message = _messageOf(offer);
+    final paths = [
+      for (final file in offer.files) FolderPaths.split(file.fileName),
+    ];
+    final plan = FolderPlan.parse([for (final path in paths) path.folder]);
+    if (plan == null) {
+      printWarning('Drop refused a LocalSend offer with unsafe folders');
+      return null;
+    }
+
     final transfer = Transfer(
       id: transferId,
       direction: .incoming,
@@ -87,11 +98,13 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
       deviceName: LocalSendIds.label(offer.sender.alias),
       files: switch (message) {
         null => [
-          for (final file in offer.files)
+          for (final (index, file) in offer.files.indexed)
             TransferFile(
-              name: FileNames.safe(file.fileName),
+              name: FileNames.safe(paths[index].name),
               size: file.size,
               mime: file.fileType,
+              folder: plan.remote[index],
+              modified: file.modified,
             ),
         ],
         _ => const [],
@@ -125,7 +138,9 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
     }
 
     try {
-      incoming.parts = await store.partsDirectory();
+      incoming
+        ..parts = await store.partsDirectory()
+        ..folders = await plan.place(store);
     } on Object catch (error) {
       printWarning(
         'Drop could not prepare the receive folder: ${error.runtimeType}',
@@ -144,7 +159,14 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
 
     registry.update(
       transferId,
-      (current) => current.copyWith(status: .transferring, needsAnswer: false),
+      (current) => current.copyWith(
+        status: .transferring,
+        needsAnswer: false,
+        files: [
+          for (final (index, file) in current.files.indexed)
+            file.copyWith(folder: incoming.folders.elementAtOrNull(index)),
+        ],
+      ),
     );
     return {for (final file in offer.files) file.id};
   }
@@ -196,8 +218,10 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
     final index = offer.files.indexWhere((listed) => listed.id == file.id);
     final saved = await store.save(
       part,
-      name: FileNames.safe(file.fileName),
+      name: FileNames.safe(FolderPaths.split(file.fileName).name),
       mime: file.fileType,
+      folder: incoming.folders.elementAtOrNull(index),
+      modified: file.modified,
     );
     registry.update(
       incoming.transferId,
@@ -336,4 +360,7 @@ class _Incoming {
   final SpeedMeter speed = SpeedMeter();
   final ProgressThrottle throttle = ProgressThrottle();
   Directory? parts;
+
+  /// The folder each file goes to here, null for loose files.
+  List<String?> folders = const [];
 }

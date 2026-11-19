@@ -64,6 +64,58 @@ void main() {
     });
   });
 
+  group('FolderPaths', () {
+    test('cleans each part of a folder another device names', () {
+      expect(FolderPaths.parts(''), isEmpty);
+      expect(FolderPaths.parts('Photos/2024'), ['Photos', '2024']);
+      expect(FolderPaths.parts(r'Photos\2024'), ['Photos', '2024']);
+      expect(FolderPaths.parts('Photos//./2024/'), ['Photos', '2024']);
+      expect(FolderPaths.parts('CON/aux.txt/a<b>'), [
+        '_CON',
+        '_aux.txt',
+        'a_b_',
+      ]);
+      expect(FolderPaths.parts('trailing. /x'), ['trailing', 'x']);
+      expect(FolderPaths.parts('${'x' * 300}/y')?.first.length, 200);
+    });
+
+    test('refuses folders that climb out or start at a root', () {
+      for (final hostile in [
+        '..',
+        '../etc',
+        'Photos/../../etc',
+        'Photos/ .. /x',
+        r'..\Windows',
+        '/etc',
+        r'\\server\share',
+        'C:/Windows',
+        r'c:\Windows',
+        List.filled(40, 'a').join('/'),
+        'a' * 2000,
+      ]) {
+        expect(FolderPaths.parts(hostile), isNull, reason: hostile);
+      }
+    });
+
+    test('splits a name that carries its folder', () {
+      expect(FolderPaths.split('a.jpg'), (folder: '', name: 'a.jpg'));
+      expect(
+        FolderPaths.split('Photos/2024/a.jpg'),
+        (folder: 'Photos/2024', name: 'a.jpg'),
+      );
+      expect(
+        FolderPaths.split(r'Photos\a.jpg'),
+        (folder: 'Photos', name: 'a.jpg'),
+      );
+    });
+
+    test('numbers folder copies as file managers do', () {
+      expect(FileNames.numberedFolder('Photos', 0), 'Photos');
+      expect(FileNames.numberedFolder('Photos', 1), 'Photos (2)');
+      expect(FileNames.numberedFolder('v1.2', 2), 'v1.2 (3)');
+    });
+  });
+
   group('FolderReceiveStore', () {
     late Directory folder;
 
@@ -108,6 +160,70 @@ void main() {
           'same.txt',
           'same (1).txt',
         },
+      );
+    });
+  });
+
+  group('FolderReceiveStore folders', () {
+    late Directory folder;
+    late FolderReceiveStore store;
+
+    setUp(() async {
+      folder = await Directory.systemTemp.createTemp('ferret_store');
+      store = FolderReceiveStore(() async => folder.path);
+    });
+
+    tearDown(() => folder.delete(recursive: true));
+
+    test('claims a new folder each time, never one that is there', () async {
+      await File(p.join(folder.path, 'Notes')).writeAsString('a file');
+      await Directory(p.join(folder.path, 'Photos (2)')).create();
+
+      final names = [
+        await store.reserveFolder('Photos'),
+        await store.reserveFolder('Photos'),
+        await store.reserveFolder('Notes'),
+        await store.reserveFolder('.ferret-partial'),
+      ];
+
+      expect(names, [
+        'Photos',
+        'Photos (3)',
+        'Notes (2)',
+        '.ferret-partial (2)',
+      ]);
+    });
+
+    test('saves into the folder and keeps the modified time', () async {
+      final parts = await store.partsDirectory();
+      final part = File(p.join(parts.path, '1.part'));
+      await part.writeAsString('hi');
+      final when = DateTime(2023, 3, 4, 5, 6, 7);
+
+      final saved = await store.save(
+        part,
+        name: 'a.txt',
+        mime: 'text/plain',
+        folder: 'Photos/2024',
+        modified: when,
+      );
+
+      expect(saved.location, p.join(folder.path, 'Photos', '2024', 'a.txt'));
+      expect(File(saved.location).lastModifiedSync(), when);
+    });
+
+    test('never saves outside the receive folder', () async {
+      final parts = await store.partsDirectory();
+      final part = File(p.join(parts.path, '1.part'));
+      await part.writeAsString('hi');
+
+      await expectLater(
+        store.save(part, name: 'a.txt', mime: '', folder: '../escape'),
+        throwsA(isA<FileSystemException>()),
+      );
+      expect(
+        File(p.join(p.dirname(folder.path), 'escape')).existsSync(),
+        isFalse,
       );
     });
   });
@@ -253,6 +369,56 @@ void main() {
       );
     });
 
+    test('a folder reads as its name, with files and bytes', () {
+      const files = [
+        TransferFile(name: 'a.jpg', size: 1024, folder: 'Photos'),
+        TransferFile(name: 'b.jpg', size: 1024, folder: 'Photos/2024'),
+        TransferFile(name: 'c.jpg', size: 2048, folder: 'Photos/2024'),
+      ];
+      final folder = sampleTransfer(files: files, bytesDone: 2048 + 512);
+
+      expect(texts.title(folder), 'Photos');
+      expect(folder.filesDone, 2);
+      expect(
+        texts.status(folder),
+        'From Pixel · 2 of 3 files · 2.5 KB of 4 KB',
+      );
+      expect(
+        texts.status(
+          sampleTransfer(
+            files: [files.first],
+            bytesDone: 0,
+          ),
+        ),
+        'From Pixel · 0 of 1 file · 0 B of 1 KB',
+      );
+    });
+
+    test('a received folder is found from its files', () {
+      final folder = sampleTransfer(
+        status: .done,
+        files: const [
+          TransferFile(
+            name: 'b.jpg',
+            size: 1,
+            folder: 'Photos (2)/2024',
+            location: '/home/me/Ferret/Photos (2)/2024/b.jpg',
+          ),
+        ],
+      );
+      final loose = sampleTransfer(status: .done);
+      final mixed = sampleTransfer(
+        files: const [
+          TransferFile(name: 'a', size: 1, folder: 'A'),
+          TransferFile(name: 'b', size: 1, folder: 'B'),
+        ],
+      );
+
+      expect(folder.folderLocation, '/home/me/Ferret/Photos (2)');
+      expect(loose.folderLocation, isNull);
+      expect(mixed.isFolder, isFalse);
+    });
+
     test('says why a transfer failed', () {
       expect(
         texts.status(sampleTransfer(status: .failed, failure: .checksum)),
@@ -263,6 +429,16 @@ void main() {
           sampleTransfer(direction: .outgoing, status: .waiting),
         ),
         'Waiting for Pixel to accept…',
+      );
+      expect(
+        texts.status(
+          sampleTransfer(
+            direction: .outgoing,
+            status: .failed,
+            failure: .foldersUnsupported,
+          ),
+        ),
+        "Pixel's Ferret is too old for folders. Update it, or send the files.",
       );
     });
   });

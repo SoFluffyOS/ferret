@@ -15,7 +15,9 @@ class IncomingJob {
     required this.files,
     required this.names,
     required this.parts,
-  }) : written = List.filled(files.length, 0),
+    List<String?>? folders,
+  }) : folders = folders ?? List.filled(files.length, null),
+       written = List.filled(files.length, 0),
        saved = List.filled(files.length, null);
 
   final String id;
@@ -24,6 +26,10 @@ class IncomingJob {
 
   /// Safe local names, one per file.
   final List<String> names;
+
+  /// The folder each file goes to inside the receive folder, null for a
+  /// file sent on its own.
+  final List<String?> folders;
   final Directory parts;
 
   /// Bytes written to each part file.

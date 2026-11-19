@@ -159,5 +159,12 @@
   "filesNone": "Tệp bạn gửi đến {device} và tệp thiết bị đó gửi cho bạn sẽ hiện ở đây.",
   "back": "Quay lại",
   "progressWeak": "Kết nối yếu · {progress}",
-  "actionTryAll": "Thử lại tất cả"
+  "actionTryAll": "Thử lại tất cả",
+  "failureFoldersUnsupported": "Ferret trên {device} quá cũ để nhận thư mục. Hãy cập nhật, hoặc gửi các tệp.",
+  "actionSendLoose": "Gửi các tệp",
+  "filesChooseFolder": "Chọn thư mục…",
+  "sendFolder": "Gửi thư mục",
+  "folderFilesDone": "{done} trên {total} tệp",
+  "folderProgressDone": "{files} · {size}",
+  "folderSkipped": "Đã bỏ qua {count} liên kết hoặc tệp đặc biệt"
 }

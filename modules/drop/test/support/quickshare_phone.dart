@@ -52,6 +52,16 @@ QuickShareOutgoingFile phoneFile(String name, List<int> bytes) =>
       ]),
     );
 
+/// [file] as part of a shared folder.
+QuickShareOutgoingFile inFolder(QuickShareOutgoingFile file, String folder) =>
+    QuickShareOutgoingFile(
+      name: file.name,
+      size: file.size,
+      open: file.open,
+      mimeType: file.mimeType,
+      parentFolder: folder,
+    );
+
 /// A file that sends [first], then waits for [gate] before the [rest].
 QuickShareOutgoingFile gatedPhoneFile(
   String name,

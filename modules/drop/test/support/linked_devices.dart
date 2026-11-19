@@ -108,6 +108,10 @@ class LinkedDevice implements FeatureHost {
   LinkedSession? session;
   final StreamController<List<Session>> _sessionChanges = .broadcast();
 
+  /// The drop flags this device announces in place of its own, such as an
+  /// older Ferret's.
+  List<String>? announcedFlags;
+
   @override
   DeviceInfo get localDevice => DeviceInfo(
     id: id,
@@ -162,6 +166,12 @@ class LinkedSession implements Session {
 
   @override
   bool supports(String featureId) => featureId == DropFeature.featureId;
+
+  @override
+  FeatureSupport? remoteFeature(String featureId) => FeatureSupport(
+    id: DropFeature.featureId,
+    flags: to.announcedFlags ?? to.feature.flags,
+  );
 
   @override
   Future<void> send(String feature, GeneratedMessage message) async {

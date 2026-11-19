@@ -43,6 +43,8 @@ class OutgoingJob {
     run?.complete();
   }
 
+  bool get hasFolders => files.any((file) => file.folder != null);
+
   /// Bytes of every file before [fileIndex].
   int bytesBefore(int fileIndex) =>
       files.take(fileIndex).fold(0, (sum, file) => sum + file.size);

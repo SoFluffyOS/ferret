@@ -694,4 +694,33 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String get actionTryAll => 'Thử lại tất cả';
+
+  @override
+  String failureFoldersUnsupported(String device) {
+    return 'Ferret trên $device quá cũ để nhận thư mục. Hãy cập nhật, hoặc gửi các tệp.';
+  }
+
+  @override
+  String get actionSendLoose => 'Gửi các tệp';
+
+  @override
+  String get filesChooseFolder => 'Chọn thư mục…';
+
+  @override
+  String get sendFolder => 'Gửi thư mục';
+
+  @override
+  String folderFilesDone(int done, int total) {
+    return '$done trên $total tệp';
+  }
+
+  @override
+  String folderProgressDone(String files, String size) {
+    return '$files · $size';
+  }
+
+  @override
+  String folderSkipped(int count) {
+    return 'Đã bỏ qua $count liên kết hoặc tệp đặc biệt';
+  }
 }

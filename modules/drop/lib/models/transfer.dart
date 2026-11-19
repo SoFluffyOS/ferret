@@ -23,6 +23,7 @@ class Transfer {
     this.needsAnswer = false,
     this.localSend,
     this.quickShare,
+    this.skipped = 0,
   });
 
   final String id;
@@ -49,6 +50,9 @@ class Transfer {
   /// Set when the other side is a phone sending with Quick Share.
   final QuickShareOrigin? quickShare;
 
+  /// Links and special files in a sent folder that were left out.
+  final int skipped;
+
   bool get isLocalSend => localSend != null;
 
   bool get isQuickShare => quickShare != null;
@@ -58,6 +62,72 @@ class Transfer {
   bool get isUnpaired => isLocalSend || isQuickShare;
 
   int get totalBytes => files.fold(0, (sum, file) => sum + file.size);
+
+  /// The folder every file sits in, when a single folder travels, so the
+  /// transfer reads as that folder. Null for loose files or a mix.
+  String? get folderName {
+    final roots = {for (final file in files) file.rootFolder}.toList();
+    if (roots case [final String root]) {
+      return root;
+    }
+
+    return null;
+  }
+
+  bool get isFolder => folderName != null;
+
+  /// Where the folder that travelled is on this device, as a path: the
+  /// source when sending, the new folder once something was saved. Null
+  /// for loose files and for `content://` locations, which have no folder
+  /// path.
+  String? get folderLocation {
+    if (folderName == null) {
+      return null;
+    }
+
+    for (final file in files) {
+      final location = file.location;
+      final folder = file.folder;
+      if (location == null || folder == null || location.contains('://')) {
+        continue;
+      }
+
+      final separator = switch (location.contains(r'\')) {
+        true => r'\',
+        false => '/',
+      };
+      final parts = location.split(separator);
+      final depth = folder.split('/').length;
+      if (parts.length <= depth + 1) {
+        continue;
+      }
+
+      return parts.take(parts.length - depth).join(separator);
+    }
+
+    return null;
+  }
+
+  /// Files fully across, counted from [bytesDone]: files go one after the
+  /// other, so every file that ends before it is done.
+  int get filesDone {
+    if (status == TransferStatus.done) {
+      return files.length;
+    }
+
+    var end = 0;
+    var done = 0;
+    for (final file in files) {
+      end += file.size;
+      if (end > bytesDone || (file.size == 0 && end == bytesDone)) {
+        return done;
+      }
+
+      done++;
+    }
+
+    return done;
+  }
 
   bool get isText => files.isEmpty;
 
@@ -103,6 +173,7 @@ class Transfer {
     TransferStatus.failed => switch (failure) {
       TransferFailure.declined ||
       TransferFailure.unsupported ||
+      TransferFailure.foldersUnsupported ||
       TransferFailure.cancelledByPeer ||
       TransferFailure.pinRequired ||
       TransferFailure.tooManyAttempts ||
@@ -141,5 +212,6 @@ class Transfer {
     needsAnswer: needsAnswer ?? this.needsAnswer,
     localSend: localSend,
     quickShare: quickShare,
+    skipped: skipped,
   );
 }

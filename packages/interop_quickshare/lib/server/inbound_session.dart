@@ -352,6 +352,7 @@ class InboundSession {
           payloadId: file.payloadId.toInt(),
           name: file.name,
           size: file.size.toInt(),
+          parentFolder: file.parentFolder,
           mimeType: switch (file.mimeType.isEmpty) {
             true => 'application/octet-stream',
             false => file.mimeType,

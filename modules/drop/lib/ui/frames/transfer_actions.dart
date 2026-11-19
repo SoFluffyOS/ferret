@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/ui/widgets/widgets.dart';
@@ -47,7 +49,7 @@ List<TransferAction> transferActions(
       ),
     ],
     (TransferStatus.done, false, false) => [
-      if (transfer.files.length == 1)
+      if (transfer.files.length == 1 || transfer.isFolder)
         TransferAction(
           label: l10n.actionOpen,
           icon: LucideIcons.externalLink,
@@ -55,7 +57,7 @@ List<TransferAction> transferActions(
           onPressed: () => viewModel.open(transfer),
         ),
       TransferAction(
-        label: l10n.actionReveal,
+        label: TransferTexts(l10n).revealLabel(),
         icon: LucideIcons.folderOpen,
         onPressed: () => viewModel.reveal(transfer),
       ),
@@ -70,6 +72,19 @@ List<TransferAction> transferActions(
           onPressed: () => onEnterPin(transfer),
         ),
       ],
+    (TransferStatus.failed, _, _) when viewModel.canSendLoose(transfer) => [
+      TransferAction(
+        label: l10n.actionSendLoose,
+        icon: LucideIcons.files,
+        primary: true,
+        onPressed: () => unawaited(viewModel.sendLoose(transfer)),
+      ),
+      TransferAction(
+        label: l10n.actionRetry,
+        icon: LucideIcons.rotateCw,
+        onPressed: () => viewModel.retry(transfer),
+      ),
+    ],
     (TransferStatus.failed, _, _) when transfer.isPaused => [
       TransferAction(
         label: l10n.actionCancel,

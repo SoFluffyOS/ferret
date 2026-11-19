@@ -201,6 +201,48 @@ void main() {
       );
     });
 
+    test('a shared folder arrives as a folder of its own', () async {
+      await Directory(p.join(inbox.path, 'Camera')).create();
+      await laptop.quickShare.receiveForAWhile();
+
+      final sending = phone.send(
+        files: [
+          inFolder(phoneFile('a.jpg', _bytes(10, 1)), 'Camera'),
+          inFolder(phoneFile('b.jpg', _bytes(20, 2)), 'Camera/2024'),
+        ],
+      );
+      final waiting = await offer();
+      expect(waiting.folderName, 'Camera');
+      laptop.feature.answer(waiting.id, accept: true);
+      await sending;
+      await until(() => onLaptop()?.status == TransferStatus.done);
+
+      expect(onLaptop()?.folderName, 'Camera (2)');
+      expect(
+        await File(
+          p.join(inbox.path, 'Camera (2)', '2024', 'b.jpg'),
+        ).readAsBytes(),
+        _bytes(20, 2),
+      );
+    });
+
+    test('a folder that climbs out is refused', () async {
+      await laptop.quickShare.receiveForAWhile();
+
+      await phone
+          .send(
+            files: [inFolder(phoneFile('a.sh', _bytes(10, 1)), '../../bin')],
+          )
+          .timeout(const Duration(seconds: 5), onTimeout: () => fail('hung'))
+          .then((_) {}, onError: (Object _) {});
+
+      expect(laptop.transfers, isEmpty);
+      expect(
+        File(p.join(inbox.parent.path, 'bin', 'a.sh')).existsSync(),
+        isFalse,
+      );
+    });
+
     test('a text stays hidden until it is accepted', () async {
       await laptop.quickShare.receiveForAWhile();
 

@@ -6,6 +6,7 @@ import 'package:drop/models/models.dart';
 import 'package:drop/services/failure_codes.dart';
 import 'package:drop/services/file_hasher.dart';
 import 'package:drop/services/file_names.dart';
+import 'package:drop/services/folder_plan.dart';
 import 'package:drop/services/incoming_job.dart';
 import 'package:drop/services/progress_throttle.dart';
 import 'package:drop/services/receive_store.dart';
@@ -54,7 +55,10 @@ class DropReceiver {
   Future<TransferAnswer> onOffer(Session session, TransferOffer offer) async {
     final id = offer.transferId;
     final deviceId = session.remoteDeviceId;
-    if (!_isValidOffer(offer)) {
+    final plan = FolderPlan.parse([
+      for (final file in offer.files) file.folder,
+    ]);
+    if (!_isValidOffer(offer) || plan == null) {
       return _decline(id, .DECLINE_REASON_INVALID);
     }
 
@@ -96,11 +100,13 @@ class DropReceiver {
       deviceId: deviceId,
       deviceName: deviceName(deviceId),
       files: [
-        for (final file in offer.files)
+        for (final (index, file) in offer.files.indexed)
           TransferFile(
             name: FileNames.safe(file.name),
             size: file.size.toInt(),
             mime: file.mime,
+            folder: plan.remote[index],
+            modified: _modifiedOf(file),
           ),
       ],
       text: switch (offer.text.isEmpty) {
@@ -124,8 +130,10 @@ class DropReceiver {
     }
 
     final Directory parts;
+    final List<String?> folders;
     try {
       parts = await store.partsDirectory();
+      folders = await plan.place(store);
     } on Object catch (error) {
       printWarning(
         'Drop could not prepare the receive folder: ${error.runtimeType}',
@@ -145,12 +153,20 @@ class DropReceiver {
       deviceId: deviceId,
       files: offer.files,
       names: [for (final file in transfer.files) file.name],
+      folders: folders,
       parts: parts,
     );
     await job.discard();
     _jobs[id] = job;
     registry.put(
-      transfer.copyWith(status: .transferring, needsAnswer: false),
+      transfer.copyWith(
+        status: .transferring,
+        needsAnswer: false,
+        files: [
+          for (final (index, file) in transfer.files.indexed)
+            file.copyWith(folder: folders[index]),
+        ],
+      ),
     );
     return TransferAnswer(transferId: id, accepted: true);
   }
@@ -501,6 +517,8 @@ class DropReceiver {
         part,
         name: job.names[index],
         mime: job.files[index].mime,
+        folder: job.folders[index],
+        modified: _modifiedOf(job.files[index]),
       );
       job.saved[index] = saved;
       _set(
@@ -686,6 +704,13 @@ class DropReceiver {
       (file) => file.name.trim().isNotEmpty && file.size >= 0,
     );
   }
+
+  DateTime? _modifiedOf(FileInfo file) => switch (file.modifiedMs.toInt()) {
+    final millis when millis > 0 => DateTime.fromMillisecondsSinceEpoch(
+      millis,
+    ),
+    _ => null,
+  };
 
   TransferAnswer _decline(String id, DeclineReason reason) =>
       TransferAnswer(transferId: id, reason: reason);

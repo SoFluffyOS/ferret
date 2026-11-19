@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/file_names.dart';
+import 'package:drop/services/folder_plan.dart';
 import 'package:drop/services/progress_throttle.dart';
 import 'package:drop/services/quickshare/quickshare_ids.dart';
 import 'package:drop/services/receive_store.dart';
@@ -80,17 +81,26 @@ class QuickShareReceiver implements QuickShareReceiveDelegate {
   @override
   Future<bool> onOffer(QuickShareOffer offer) async {
     final transferId = TransferIds.next();
+    final plan = FolderPlan.parse([
+      for (final file in offer.files) file.parentFolder,
+    ]);
+    if (plan == null) {
+      printWarning('Drop refused a Quick Share offer with unsafe folders');
+      return false;
+    }
+
     final transfer = Transfer(
       id: transferId,
       direction: .incoming,
       deviceId: QuickShareIds.deviceId(offer.sessionId),
       deviceName: QuickShareIds.label(offer.senderName),
       files: [
-        for (final file in offer.files)
+        for (final (index, file) in offer.files.indexed)
           TransferFile(
             name: FileNames.safe(file.name),
             size: file.size,
             mime: file.mimeType,
+            folder: plan.remote[index],
           ),
       ],
       status: .waiting,
@@ -119,7 +129,9 @@ class QuickShareReceiver implements QuickShareReceiveDelegate {
     }
 
     try {
-      incoming.parts = await store.partsDirectory();
+      incoming
+        ..parts = await store.partsDirectory()
+        ..folders = await plan.place(store);
     } on Object catch (error) {
       printWarning(
         'Drop could not prepare the receive folder: ${error.runtimeType}',
@@ -138,7 +150,14 @@ class QuickShareReceiver implements QuickShareReceiveDelegate {
 
     registry.update(
       transferId,
-      (current) => current.copyWith(status: .transferring, needsAnswer: false),
+      (current) => current.copyWith(
+        status: .transferring,
+        needsAnswer: false,
+        files: [
+          for (final (index, file) in current.files.indexed)
+            file.copyWith(folder: incoming.folders.elementAtOrNull(index)),
+        ],
+      ),
     );
     return true;
   }
@@ -192,6 +211,7 @@ class QuickShareReceiver implements QuickShareReceiveDelegate {
       part,
       name: FileNames.safe(file.name),
       mime: file.mimeType,
+      folder: incoming.folders.elementAtOrNull(index),
     );
     registry.update(
       incoming.transferId,
@@ -367,4 +387,7 @@ class _Incoming {
   final ProgressThrottle throttle = ProgressThrottle();
   final List<String> texts = [];
   Directory? parts;
+
+  /// The folder each file goes to here, null for loose files.
+  List<String?> folders = const [];
 }

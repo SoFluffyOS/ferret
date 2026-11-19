@@ -59,7 +59,12 @@ class DropFeature extends Feature {
   String get id => featureId;
 
   @override
-  List<String> get flags => const ['send', 'receive', 'resume'];
+  List<String> get flags => const [
+    'send',
+    'receive',
+    'resume',
+    DropSender.foldersFlag,
+  ];
 
   /// Newest first.
   List<Transfer> get transfers => registry.all;
@@ -126,26 +131,55 @@ class DropFeature extends Feature {
     await _receiver.dispose();
   }
 
-  /// Sends the files at [paths] to [deviceId]. Folders and missing files
-  /// are skipped; returns null when nothing is left to send. [temporary]
-  /// files are deleted once the transfer ends.
+  /// Sends the files at [paths] to [deviceId]. A folder sends its whole
+  /// tree; missing files are skipped. Returns null when nothing is left to
+  /// send. [temporary] files are deleted once the transfer ends.
   Future<Transfer?> sendFiles(
     String deviceId,
     List<String> paths, {
     bool temporary = false,
   }) async {
+    final outgoing = await OutgoingFiles.fromPaths(paths);
+    if (outgoing.isEmpty) {
+      return null;
+    }
+
+    if (LocalSendIds.isLocalSend(deviceId)) {
+      return localSend.sendFiles(
+        deviceId,
+        outgoing.files,
+        temporary: temporary,
+      );
+    }
+
+    return _sender.sendFiles(
+      deviceId,
+      outgoing.files,
+      temporary: temporary,
+      skipped: outgoing.skipped,
+    );
+  }
+
+  /// Sends the files of the folder transfer [id] on their own, without
+  /// their folders, for a device too old to take folders, and drops the
+  /// stopped one from the list.
+  Future<Transfer?> sendLoose(String id) async {
+    final transfer = registry[id];
+    if (transfer == null || !transfer.isOutgoing || !_sender.owns(id)) {
+      return null;
+    }
+
     final files = [
-      for (final path in paths) ?await OutgoingFile.fromPath(path),
+      for (final file in transfer.files)
+        if (file.location case final path?) ?await OutgoingFile.fromPath(path),
     ];
     if (files.isEmpty) {
       return null;
     }
 
-    if (LocalSendIds.isLocalSend(deviceId)) {
-      return localSend.sendFiles(deviceId, files, temporary: temporary);
-    }
-
-    return _sender.sendFiles(deviceId, files, temporary: temporary);
+    await _sender.cancel(id);
+    registry.remove(id);
+    return _sender.sendFiles(transfer.deviceId, files);
   }
 
   /// Sends [text] to the paired device [deviceId]. Text for a LocalSend

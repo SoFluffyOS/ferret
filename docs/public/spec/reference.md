@@ -216,6 +216,8 @@ One file in a transfer offer.
 | `size` | `uint64` | 2 |  |
 | `mime` | `string` | 3 |  |
 | `sha256` | `bytes` | 4 | SHA-256 of the whole file when the sender knows it up front. The authoritative hash always arrives in FileComplete. |
+| `folder` | `string` | 5 | The folder the file sits in when a whole folder is sent, relative and separated by "/": "Photos" or "Photos/2024". The first part is the folder that was sent. Empty for a file sent on its own. Senders only fill it for receivers whose drop FeatureSupport has the "folders" flag; receivers clean every part and never write outside their receive folder. |
+| `modified_ms` | `int64` | 6 | When the file was last modified, in milliseconds since the Unix epoch, or 0 when unknown. Receivers keep it where the platform allows. |
 
 ### message `TransferOffer`
 

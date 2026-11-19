@@ -49,6 +49,16 @@ abstract final class FileNames {
     return '$stem ($attempt)$extension';
   }
 
+  /// The [attempt]th alternative to the folder [name]: `Photos`, then
+  /// `Photos (2)`, `Photos (3)`, as Finder and Explorer name copies.
+  static String numberedFolder(String name, int attempt) {
+    if (attempt == 0) {
+      return name;
+    }
+
+    return '$name (${attempt + 1})';
+  }
+
   static String _extension(String name) {
     final dot = name.lastIndexOf('.');
     if (dot <= 0) {

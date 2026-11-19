@@ -15,6 +15,10 @@ enum TransferFailure {
   /// The device doesn't offer Drop, such as an old version.
   unsupported,
 
+  /// The device's Ferret is too old to receive folders. Updating it, or
+  /// sending the files themselves, works.
+  foldersUnsupported,
+
   /// Reading or writing a file failed, such as a full disk.
   storage,
 

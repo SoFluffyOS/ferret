@@ -192,8 +192,12 @@ class LocalSendSender {
         LocalSendOutgoingFile(
           file: LocalSendFile(
             id: '${job.id}-$index',
-            fileName: file.name,
+            fileName: switch (file.folder) {
+              final folder? => '$folder/${file.name}',
+              null => file.name,
+            },
             size: file.size,
+            modified: file.modified,
             fileType: switch (file.mime.isEmpty) {
               true => LocalSendFile.defaultType,
               false => file.mime,
@@ -263,7 +267,8 @@ class LocalSendSender {
       return;
     }
 
-    for (final file in job.files) {
+    // A sent folder is always the person's own, never a copy to clean up.
+    for (final file in job.files.where((file) => file.folder == null)) {
       try {
         await File(file.path).delete();
       } on FileSystemException {

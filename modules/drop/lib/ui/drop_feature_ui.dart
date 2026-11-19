@@ -380,6 +380,15 @@ class DropFeatureUi extends FeatureUi {
           _dropViewModel.pickAndSend(device.device.id),
         ),
       ),
+      if (_dropViewModel.canPickFolder)
+        FeatureAction(
+          id: 'drop.send_folder',
+          label: context.dropL10n.sendFolder,
+          icon: LucideIcons.folderUp,
+          onPressed: () => unawaited(
+            _dropViewModel.pickFolderAndSend(device.device.id),
+          ),
+        ),
     ];
   }
 

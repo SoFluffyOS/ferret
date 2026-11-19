@@ -50,6 +50,10 @@ List<String> _savedFiles(Transfer transfer) {
     return const [];
   }
 
+  if (transfer.folderLocation case final folder?) {
+    return [folder];
+  }
+
   return [
     for (final file in transfer.files)
       if (file.location case final location? when !location.contains('://'))
@@ -107,9 +111,11 @@ ActivityItem _offer(
 IconData _icon(Transfer transfer) => switch (transfer.status) {
   .failed when transfer.isPaused => LucideIcons.pause,
   .failed => LucideIcons.triangleAlert,
-  _ => switch (transfer.isOutgoing) {
-    true => LucideIcons.arrowUp,
-    false => LucideIcons.arrowDown,
+  _ => switch ((transfer.isOutgoing, transfer.isFolder)) {
+    (true, true) => LucideIcons.folderUp,
+    (true, false) => LucideIcons.arrowUp,
+    (false, true) => LucideIcons.folderDown,
+    (false, false) => LucideIcons.arrowDown,
   },
 };
 
@@ -204,7 +210,7 @@ List<ActivityAction> _actions(
       ),
     ],
     (.done, false, false) => [
-      if (transfer.files.length == 1)
+      if (transfer.files.length == 1 || transfer.isFolder)
         ActivityAction(
           label: l10n.actionOpen,
           onPressed: () => unawaited(viewModel.open(transfer)),
@@ -212,6 +218,17 @@ List<ActivityAction> _actions(
       ActivityAction(
         label: texts.revealLabel(),
         onPressed: () => unawaited(viewModel.reveal(transfer)),
+      ),
+    ],
+    (.failed, _, _) when viewModel.canSendLoose(transfer) => [
+      ActivityAction(
+        label: l10n.actionRetry,
+        onPressed: () => unawaited(viewModel.retry(transfer)),
+      ),
+      ActivityAction(
+        label: l10n.actionSendLoose,
+        primary: true,
+        onPressed: () => unawaited(viewModel.sendLoose(transfer)),
       ),
     ],
     (.failed, _, _) when viewModel.canRetry(transfer) => [

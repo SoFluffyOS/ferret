@@ -197,6 +197,29 @@ void main() {
       expect(laptop.feature.canRetry(received ?? fail('no transfer')), isFalse);
     });
 
+    test('a folder goes as its tree, into a new folder', () async {
+      final target = await connect();
+      final album = await Directory(
+        p.join(outbox.path, 'Album', 'Day 1'),
+      ).create(recursive: true);
+      final photo = await randomFile(album, 'a.jpg', 3000);
+      await Directory(p.join(inbox.path, 'Album')).create();
+
+      await phone.feature.sendFiles(target, [p.dirname(album.path)]);
+      await until(() => onLaptop()?.needsAnswer ?? false);
+      expect(onLaptop()?.folderName, 'Album');
+      laptop.feature.answer(onLaptop()?.id ?? '', accept: true);
+      await until(() => onLaptop()?.status == .done);
+
+      final saved = File(p.join(inbox.path, 'Album (2)', 'Day 1', 'a.jpg'));
+      expect(onLaptop()?.folderName, 'Album (2)');
+      expect(await saved.readAsBytes(), await photo.readAsBytes());
+      expect(
+        saved.lastModifiedSync().difference(photo.lastModifiedSync()).abs(),
+        lessThan(const Duration(seconds: 1)),
+      );
+    });
+
     test('a declined offer saves nothing, and the sender is told', () async {
       final target = await connect();
       final photo = await randomFile(outbox, 'photo.jpg', 4096);

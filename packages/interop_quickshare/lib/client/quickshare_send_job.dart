@@ -293,6 +293,7 @@ class QuickShareSendJob {
             payloadId: Int64(fileIds[index]),
             size: Int64(file.size),
             mimeType: file.mimeType,
+            parentFolder: file.parentFolder,
             type: _kindOf(file.mimeType),
           ),
       ],

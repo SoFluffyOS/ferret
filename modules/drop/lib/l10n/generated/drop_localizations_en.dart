@@ -693,4 +693,45 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get actionTryAll => 'Try all again';
+
+  @override
+  String failureFoldersUnsupported(String device) {
+    return '$device\'s Ferret is too old for folders. Update it, or send the files.';
+  }
+
+  @override
+  String get actionSendLoose => 'Send the files';
+
+  @override
+  String get filesChooseFolder => 'Choose a folder…';
+
+  @override
+  String get sendFolder => 'Send a folder';
+
+  @override
+  String folderFilesDone(int done, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total files',
+      one: '1 file',
+    );
+    return '$done of $_temp0';
+  }
+
+  @override
+  String folderProgressDone(String files, String size) {
+    return '$files · $size';
+  }
+
+  @override
+  String folderSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count links or special files left out',
+      one: '1 link or special file left out',
+    );
+    return '$_temp0';
+  }
 }

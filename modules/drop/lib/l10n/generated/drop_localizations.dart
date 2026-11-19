@@ -1051,6 +1051,48 @@ abstract class DropLocalizations {
   /// In en, this message translates to:
   /// **'Try all again'**
   String get actionTryAll;
+
+  /// No description provided for @failureFoldersUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}\'s Ferret is too old for folders. Update it, or send the files.'**
+  String failureFoldersUnsupported(String device);
+
+  /// Sends a folder's files on their own, without the folder, to a device whose Ferret can't take folders
+  ///
+  /// In en, this message translates to:
+  /// **'Send the files'**
+  String get actionSendLoose;
+
+  /// Button that picks a folder to send with everything in it
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder…'**
+  String get filesChooseFolder;
+
+  /// Device action that picks a folder to send
+  ///
+  /// In en, this message translates to:
+  /// **'Send a folder'**
+  String get sendFolder;
+
+  /// No description provided for @folderFilesDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total, plural, =1{1 file} other{{total} files}}'**
+  String folderFilesDone(int done, int total);
+
+  /// How far a folder is: '120 of 340 files · 1.2 GB', followed by 'of 3.4 GB'
+  ///
+  /// In en, this message translates to:
+  /// **'{files} · {size}'**
+  String folderProgressDone(String files, String size);
+
+  /// No description provided for @folderSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 link or special file left out} other{{count} links or special files left out}}'**
+  String folderSkipped(int count);
 }
 
 class _DropLocalizationsDelegate

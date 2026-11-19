@@ -38,6 +38,10 @@ class DropSender {
   /// waits for its answer, so at most two windows are in flight.
   static const defaultAckEvery = 8;
 
+  /// The flag a receiver's drop `FeatureSupport` carries when it can build
+  /// a sent folder's tree. Older receivers would flatten it.
+  static const foldersFlag = 'folders';
+
   final String featureId;
   final TransferRegistry registry;
   final Session? Function(String deviceId) sessionFor;
@@ -54,11 +58,13 @@ class DropSender {
 
   final Map<String, OutgoingJob> _jobs = {};
 
-  /// Offers [files] to [deviceId] and sends them once accepted.
+  /// Offers [files] to [deviceId] and sends them once accepted. [skipped]
+  /// counts what a sent folder held but can't travel, such as links.
   Transfer sendFiles(
     String deviceId,
     List<OutgoingFile> files, {
     bool temporary = false,
+    int skipped = 0,
   }) => _start(
     OutgoingJob(
       id: TransferIds.next(),
@@ -66,6 +72,7 @@ class DropSender {
       files: files,
       temporary: temporary,
     ),
+    skipped: skipped,
   );
 
   Transfer sendText(String deviceId, String text) => _start(
@@ -198,7 +205,7 @@ class DropSender {
     );
   }
 
-  Transfer _start(OutgoingJob job) {
+  Transfer _start(OutgoingJob job, {int skipped = 0}) {
     _jobs[job.id] = job;
     final transfer = Transfer(
       id: job.id,
@@ -212,11 +219,14 @@ class DropSender {
             size: file.size,
             mime: file.mime,
             location: file.path,
+            folder: file.folder,
+            modified: file.modified,
           ),
       ],
       text: job.text,
       status: .waiting,
       startedAt: DateTime.now(),
+      skipped: skipped,
     );
     registry.put(transfer);
     _run(job, offer: true);
@@ -258,6 +268,13 @@ class DropSender {
 
     if (!session.supports(featureId)) {
       _fail(job, .unsupported);
+      return;
+    }
+
+    final takesFolders =
+        session.remoteFeature(featureId)?.flags.contains(foldersFlag) ?? false;
+    if (job.hasFolders && !takesFolders) {
+      _fail(job, .foldersUnsupported);
       return;
     }
 
@@ -487,7 +504,16 @@ class DropSender {
     transferId: job.id,
     files: [
       for (final file in job.files)
-        FileInfo(name: file.name, size: Int64(file.size), mime: file.mime),
+        FileInfo(
+          name: file.name,
+          size: Int64(file.size),
+          mime: file.mime,
+          folder: file.folder,
+          modifiedMs: switch (file.modified) {
+            final modified? => Int64(modified.millisecondsSinceEpoch),
+            null => null,
+          },
+        ),
     ],
     text: job.text,
     chunkSize: chunkSize,
@@ -542,7 +568,8 @@ class DropSender {
       return;
     }
 
-    for (final file in job.files) {
+    // A sent folder is always the person's own, never a copy to clean up.
+    for (final file in job.files.where((file) => file.folder == null)) {
       try {
         await File(file.path).delete();
       } on FileSystemException {

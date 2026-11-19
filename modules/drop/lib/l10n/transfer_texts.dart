@@ -22,8 +22,32 @@ class TransferTexts {
       return preview(transfer.text ?? '');
     }
 
+    if (transfer.folderName case final folder?) {
+      return folder;
+    }
+
     return l10n.transferFiles(transfer.files.length, transfer.files.first.name);
   }
+
+  /// How much arrived: the bytes, and for a folder the files as well, as
+  /// in "120 of 340 files · 1.2 GB" before "of 3.4 GB".
+  String done(Transfer transfer) {
+    final bytes = size(transfer.bytesDone);
+    if (!transfer.isFolder) {
+      return bytes;
+    }
+
+    return l10n.folderProgressDone(
+      l10n.folderFilesDone(transfer.filesDone, transfer.files.length),
+      bytes,
+    );
+  }
+
+  /// What a sent folder left out, such as links, as a line under it.
+  List<String> folderDetails(Transfer transfer) => [
+    if (transfer.isFolder && transfer.skipped > 0)
+      l10n.folderSkipped(transfer.skipped),
+  ];
 
   /// The first line of [text], shortened.
   String preview(String text) {
@@ -49,12 +73,12 @@ class TransferTexts {
       .transferring => switch (transfer.isOutgoing) {
         true => l10n.statusSending(
           device,
-          size(transfer.bytesDone),
+          done(transfer),
           size(transfer.totalBytes),
         ),
         false => l10n.statusReceiving(
           device,
-          size(transfer.bytesDone),
+          done(transfer),
           size(transfer.totalBytes),
         ),
       },
@@ -86,12 +110,12 @@ class TransferTexts {
       .transferring => _weak(
         switch (transfer.eta) {
           final left? => l10n.activityProgressEta(
-            size(transfer.bytesDone),
+            done(transfer),
             size(transfer.totalBytes),
             eta(left),
           ),
           _ => l10n.activityProgress(
-            size(transfer.bytesDone),
+            done(transfer),
             size(transfer.totalBytes),
           ),
         },
@@ -144,6 +168,9 @@ class TransferTexts {
       },
       TransferFailure.notConnected => l10n.failureNotConnected(device),
       TransferFailure.unsupported => l10n.failureUnsupported(device),
+      TransferFailure.foldersUnsupported => l10n.failureFoldersUnsupported(
+        device,
+      ),
       TransferFailure.storage => switch (transfer.isOutgoing) {
         true => l10n.failureStorageSending(device),
         false => l10n.failureStorage,
@@ -174,7 +201,7 @@ class TransferTexts {
     }
 
     return l10n.statusPaused(
-      size(transfer.bytesDone),
+      done(transfer),
       size(transfer.totalBytes),
       device,
     );

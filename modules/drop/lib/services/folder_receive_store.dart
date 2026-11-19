@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/file_names.dart';
 import 'package:drop/services/receive_store.dart';
@@ -17,6 +18,10 @@ class FolderReceiveStore implements ReceiveStore {
   static const _partsFolder = '.ferret-partial';
   static const _maxAttempts = 10000;
 
+  /// Folders claimed by transfers under way, so two that arrive at once
+  /// never share one, even before either wrote a file.
+  final Set<String> _claimed = {};
+
   @override
   Future<Directory> partsDirectory() async {
     final parts = Directory(p.join(await folder(), _partsFolder));
@@ -25,12 +30,46 @@ class FolderReceiveStore implements ReceiveStore {
   }
 
   @override
+  Future<String> reserveFolder(String name) async {
+    final base = await folder();
+    await Directory(base).create(recursive: true);
+
+    for (var attempt = 0; attempt < _maxAttempts; attempt++) {
+      final candidate = FileNames.numberedFolder(name, attempt);
+      final path = p.join(base, candidate);
+      final taken =
+          candidate == _partsFolder ||
+          _claimed.contains(path) ||
+          await FileSystemEntity.type(path, followLinks: false) !=
+              FileSystemEntityType.notFound;
+      if (taken) {
+        continue;
+      }
+
+      _claimed.add(path);
+      await Directory(path).create();
+      return candidate;
+    }
+
+    throw FileSystemException('No free name for the received folder', name);
+  }
+
+  @override
   Future<ReceivedFile> save(
     File part, {
     required String name,
     required String mime,
+    String? folder,
+    DateTime? modified,
   }) async {
-    final target = Directory(await folder());
+    final base = await this.folder();
+    final target = Directory(
+      p.normalize(p.joinAll([base, ...?folder?.split('/')])),
+    );
+    if (folder != null && !p.isWithin(base, target.path)) {
+      throw FileSystemException('A received folder points outside', folder);
+    }
+
     await target.create(recursive: true);
 
     for (var attempt = 0; attempt < _maxAttempts; attempt++) {
@@ -41,6 +80,7 @@ class FolderReceiveStore implements ReceiveStore {
       }
 
       await _move(part, path);
+      await _touch(path, modified);
       return ReceivedFile(location: path, name: candidate);
     }
 
@@ -50,7 +90,8 @@ class FolderReceiveStore implements ReceiveStore {
   /// Creates an empty placeholder so two files saved at once never pick the
   /// same name. Returns false when the name is taken.
   Future<bool> _reserve(String path) async {
-    if (await FileSystemEntity.type(path) != FileSystemEntityType.notFound) {
+    if (await FileSystemEntity.type(path, followLinks: false) !=
+        FileSystemEntityType.notFound) {
       return false;
     }
 
@@ -68,6 +109,18 @@ class FolderReceiveStore implements ReceiveStore {
     } on FileSystemException {
       await part.copy(path);
       await part.delete();
+    }
+  }
+
+  Future<void> _touch(String path, DateTime? modified) async {
+    if (modified == null) {
+      return;
+    }
+
+    try {
+      await File(path).setLastModified(modified);
+    } on FileSystemException catch (error) {
+      printDebug('Drop kept the arrival time: ${error.osError?.message}');
     }
   }
 }

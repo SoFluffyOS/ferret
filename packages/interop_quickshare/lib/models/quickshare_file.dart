@@ -5,6 +5,7 @@ class QuickShareFile {
     required this.name,
     required this.size,
     this.mimeType = 'application/octet-stream',
+    this.parentFolder = '',
   });
 
   /// The id the file's chunks carry on the connection.
@@ -14,4 +15,8 @@ class QuickShareFile {
   final String name;
   final int size;
   final String mimeType;
+
+  /// The folder the file sits in when the sender shares a folder, relative
+  /// and as the sender wrote it, or empty. Never trusted as a path either.
+  final String parentFolder;
 }

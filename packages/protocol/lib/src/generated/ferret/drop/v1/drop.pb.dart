@@ -28,12 +28,16 @@ class FileInfo extends $pb.GeneratedMessage {
     $fixnum.Int64? size,
     $core.String? mime,
     $core.List<$core.int>? sha256,
+    $core.String? folder,
+    $fixnum.Int64? modifiedMs,
   }) {
     final result = FileInfo._();
     if (name != null) result.name = name;
     if (size != null) result.size = size;
     if (mime != null) result.mime = mime;
     if (sha256 != null) result.sha256 = sha256;
+    if (folder != null) result.folder = folder;
+    if (modifiedMs != null) result.modifiedMs = modifiedMs;
     return result;
   }
 
@@ -56,6 +60,8 @@ class FileInfo extends $pb.GeneratedMessage {
     ..aOS(3, _omitFieldNames ? '' : 'mime')
     ..a<$core.List<$core.int>>(
         4, _omitFieldNames ? '' : 'sha256', $pb.PbFieldType.OY)
+    ..aOS(5, _omitFieldNames ? '' : 'folder')
+    ..aInt64(6, _omitFieldNames ? '' : 'modifiedMs')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -116,6 +122,31 @@ class FileInfo extends $pb.GeneratedMessage {
   $core.bool hasSha256() => $_has(3);
   @$pb.TagNumber(4)
   void clearSha256() => $_clearField(4);
+
+  /// The folder the file sits in when a whole folder is sent, relative and
+  /// separated by "/": "Photos" or "Photos/2024". The first part is the
+  /// folder that was sent. Empty for a file sent on its own. Senders only
+  /// fill it for receivers whose drop FeatureSupport has the "folders" flag;
+  /// receivers clean every part and never write outside their receive folder.
+  @$pb.TagNumber(5)
+  $core.String get folder => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set folder($core.String value) => $_setString(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasFolder() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearFolder() => $_clearField(5);
+
+  /// When the file was last modified, in milliseconds since the Unix epoch,
+  /// or 0 when unknown. Receivers keep it where the platform allows.
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get modifiedMs => $_getI64(5);
+  @$pb.TagNumber(6)
+  set modifiedMs($fixnum.Int64 value) => $_setInt64(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasModifiedMs() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearModifiedMs() => $_clearField(6);
 }
 
 /// Asks to send files or text (a request, answered with TransferAnswer).

@@ -77,12 +77,28 @@ class DeviceFilesFrame extends StatelessWidget {
                 style: typography.base2.copyWith(color: palette.mutedText),
               ),
               Spacing.v16,
-              Button(
-                variant: .primary,
-                mainAxisSize: .min,
-                enable: isConnected,
-                label: l10n.filesChoose,
-                onPressed: () => unawaited(viewModel.pickAndSend(deviceId)),
+              Wrap(
+                alignment: .center,
+                spacing: Spacing.d8,
+                runSpacing: Spacing.d8,
+                children: [
+                  Button(
+                    variant: .primary,
+                    mainAxisSize: .min,
+                    enable: isConnected,
+                    label: l10n.filesChoose,
+                    onPressed: () => unawaited(viewModel.pickAndSend(deviceId)),
+                  ),
+                  if (viewModel.canPickFolder)
+                    Button(
+                      variant: .ghost,
+                      mainAxisSize: .min,
+                      enable: isConnected,
+                      label: l10n.filesChooseFolder,
+                      onPressed: () =>
+                          unawaited(viewModel.pickFolderAndSend(deviceId)),
+                    ),
+                ],
               ),
             ],
           ),
@@ -121,7 +137,10 @@ class DeviceFilesFrame extends StatelessWidget {
                       transfer,
                       isWeak: viewModel.isWeak(transfer),
                     ),
-                    details: texts.offerDetails(transfer),
+                    details: [
+                      ...texts.offerDetails(transfer),
+                      ...texts.folderDetails(transfer),
+                    ],
                     actions: transferActions(viewModel, transfer, l10n),
                     dismissLabel: l10n.actionDismiss,
                     onDismiss: switch (transfer.status.isActive) {
