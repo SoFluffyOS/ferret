@@ -18,6 +18,7 @@ workspace:
   - modules/messages
   - modules/mirroring
   - modules/notifications
+  - modules/phone_camera
   - modules/photos
   - modules/power
   - modules/remote_input
@@ -30,6 +31,7 @@ workspace:
   - packages/ferret_actions
   - packages/ferret_battery
   - packages/ferret_calls
+  - packages/ferret_camera
   - packages/ferret_clipboard
   - packages/ferret_drop
   - packages/ferret_find

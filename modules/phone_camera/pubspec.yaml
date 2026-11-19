@@ -1,0 +1,42 @@
+name: phone_camera
+description: Ferret's camera feature. Take a photo with the phone, or scan a document with an iPhone, straight onto the computer's clipboard.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  core:
+    path: ../../packages/core
+  engine:
+    path: ../../packages/engine
+  feature_kit:
+    path: ../../packages/feature_kit
+  ferret_camera:
+    path: ../../packages/ferret_camera
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
+  lucide_icons_flutter: ^4.0.3
+  path: ^1.9.1
+  protobuf: ^6.1.0
+  protocol:
+    path: ../../packages/protocol
+  provider: ^6.1.5+1
+  sofluffy_ui:
+    path: ../../packages/sofluffy_ui
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  transport:
+    path: ../../packages/transport
+
+flutter:
+  generate: true

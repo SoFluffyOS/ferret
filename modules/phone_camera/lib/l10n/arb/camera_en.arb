@@ -1,0 +1,175 @@
+{
+  "@@locale": "en",
+  "title": "Camera",
+  "@title": {
+    "description": "The feature's name."
+  },
+  "takePhoto": "Take a photo",
+  "@takePhoto": {
+    "description": "Button on a phone's page on a computer: asks the phone to take a photo for this computer."
+  },
+  "scanDocument": "Scan a document",
+  "@scanDocument": {
+    "description": "Button on an iPhone's page on a computer: asks it to scan a document for this computer."
+  },
+  "takePhotoWith": "Take a photo with {device}",
+  "@takePhotoWith": {
+    "description": "Menu entry on a computer, such as 'Take a photo with Pixel 7'.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "scanDocumentWith": "Scan a document with {device}",
+  "@scanDocumentWith": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askPhotoTitle": "{device} wants a photo",
+  "@askPhotoTitle": {
+    "description": "Card and notice on a phone when a computer asks for a photo.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askDocumentTitle": "{device} wants a document scan",
+  "@askDocumentTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askBody": "Nothing is taken until you press the shutter.",
+  "askCapturing": "The camera is open.",
+  "askTakePhoto": "Take photo",
+  "askScan": "Scan",
+  "askNotNow": "Not now",
+  "noticeBody": "Tap to answer on this phone.",
+  "activityWaiting": "Waiting for a photo from {device}",
+  "@activityWaiting": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityWaitingScan": "Waiting for a scan from {device}",
+  "@activityWaitingScan": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityWaitingDetail": "Take it on {device}.",
+  "@activityWaitingDetail": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityReceiving": "Getting the picture from {device}",
+  "@activityReceiving": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityPhoto": "Photo from {device}",
+  "@activityPhoto": {
+    "description": "Activity line on a computer once the photo arrived.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityScan": "Scan from {device}",
+  "@activityScan": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityOnClipboard": "On your clipboard",
+  "activityInFolder": "In your receive folder",
+  "copy": "Copy",
+  "cancel": "Cancel",
+  "tryAgain": "Try again",
+  "endDeclined": "{device} said not now",
+  "@endDeclined": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endCancelled": "No picture taken on {device}",
+  "@endCancelled": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endUnsupported": "{device} can't take that",
+  "@endUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endUnsupportedDetail": "It has no camera Ferret can open, or no document scanner.",
+  "endNoPermission": "{device} needs camera access for Ferret",
+  "@endNoPermission": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endNoPermissionDetail": "Allow the camera for Ferret in the phone's settings.",
+  "endBusy": "The camera on {device} is already open",
+  "@endBusy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endOffline": "{device} isn't connected",
+  "@endOffline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endFailed": "The picture from {device} didn't arrive",
+  "@endFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "endExpired": "Nobody took the photo on {device}",
+  "@endExpired": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
+}
