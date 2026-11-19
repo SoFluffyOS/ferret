@@ -48,6 +48,20 @@ sudo firewall-cmd --permanent --add-port=47640/tcp --add-port=47641/udp --add-se
 
 That's it. `47640/tcp` is Ferret itself, `47641/udp` and `5353/udp` (mDNS) are how your devices find each other.
 
+## On café, hotel or campus Wi-Fi
+
+Many public and guest networks keep devices apart on purpose (client isolation). Your laptop reaches the internet, your phone reaches the internet, but they can't see each other.
+
+Fix connection spots it: the router answers, your other device doesn't, and Ferret never heard anyone on this network. It says **This network keeps devices apart**. Nothing on your devices can fix that. Turn on your phone's hotspot and join it from the computer, or use a home network.
+
+**Check my network** says it too, as a "may", when Ferret hasn't heard any other device for a while.
+
+## Reconnecting… and weak connection
+
+A device whose connection just dropped, say the Wi-Fi hopped to another access point, says **Reconnecting…** and keeps its place in the list. Ferret dials it again after 1, 3, 10 and 30 seconds, then every few minutes. After that it reads **Last seen**.
+
+A device that answers slowly says **Connected · weak connection**. Things still work, just slower. Move closer to the Wi-Fi or use 5 GHz.
+
 ## Connect by address
 
 Some networks block devices from finding each other but still let them connect. Use **Connect by address** and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.

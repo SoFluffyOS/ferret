@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Added
+- 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**.
+- ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away.
+- 📋 **A copy waits for you**: copied with no device around? Activity says it's waiting, then **Sent to Pixel 7 when it came back**.
+- 🧭 **Café and hotel Wi-Fi**: Fix connection says when a network keeps devices apart, and what to do instead.
 - 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
 - 🪟 **A window on the Mac**: **Open Ferret window** gives you Ferret in a normal window, next to the menubar popover. Same app, live in both. Close the window and Ferret stays in the menubar.
 - 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications**, **Files** and **Screen** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.

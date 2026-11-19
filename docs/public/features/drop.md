@@ -47,6 +47,12 @@ On a Mac, drag text onto a device in the popover or the window: it lands on that
 
 Wi-Fi drops, a laptop goes to sleep, a phone walks out of range. Ferret keeps what already arrived. When the device is back, the transfer continues where it stopped, without starting over.
 
+While it waits, its line in **Activity** stays at the top and says so: **Paused at 620 MB of 1.8 GB. It goes on when Pixel 7 is back.** Nothing to press. **Cancel** stops it for good, **Try now** knocks right away.
+
+Sent something while the other device was away? Same thing: it waits, then goes as soon as the device is back.
+
+LocalSend and Quick Share can't pick up where they stopped, so those start over.
+
 If something fails for another reason, its line in **Activity** says why in plain words, with a **Retry** button.
 
 ## ⚙️ Settings

@@ -22,6 +22,8 @@ Want to send just a few words without copying them? On a Mac, select them and dr
 
 Copied while your other device was asleep? If it reconnects within 2 minutes, it still gets your last copy. Older copies are never replayed.
 
+**Activity** tells you which: **Waiting for a device to connect** while it waits, then **Sent to Pixel 7 when it came back**.
+
 ## 🤖 On Android: tap Send clipboard
 
 Android doesn't let apps read your clipboard in the background. No app can, not just Ferret.
