@@ -52,7 +52,7 @@
   "pairFailedUnreachable": "Couldn't reach that device. Put both on the same Wi-Fi, then try again.",
   "pairFailedUnreachableIphone": "Couldn't reach that computer. Check that both are on the same Wi-Fi, and that Ferret may use the local network in Settings.",
   "pairFailedRejected": "Your other device said not now.",
-  "pairFailedExpired": "That code expired.",
+  "pairFailedExpired": "That code expired. Tap New code on your computer, then scan again.",
   "pairFailedBadProof": "The codes didn't match, so nothing was paired. Try once more, close to the other device.",
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
   "pairFailedTimedOut": "Your other device didn't answer.",

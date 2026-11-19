@@ -130,7 +130,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairFailedRejected => 'Thiết bị kia đã chọn Để sau.';
 
   @override
-  String get pairFailedExpired => 'Mã đã hết hạn.';
+  String get pairFailedExpired =>
+      'Mã đã hết hạn. Bấm Mã mới trên máy tính rồi quét lại.';
 
   @override
   String get pairFailedBadProof =>

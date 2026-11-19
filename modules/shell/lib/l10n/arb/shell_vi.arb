@@ -36,7 +36,7 @@
   "pairFailedUnreachable": "Không kết nối được với thiết bị đó. Cho cả hai dùng chung Wi-Fi rồi thử lại.",
   "pairFailedUnreachableIphone": "Không kết nối được với máy tính đó. Kiểm tra cả hai đang dùng chung Wi-Fi và Ferret được phép dùng mạng cục bộ trong Cài đặt.",
   "pairFailedRejected": "Thiết bị kia đã chọn Để sau.",
-  "pairFailedExpired": "Mã đã hết hạn.",
+  "pairFailedExpired": "Mã đã hết hạn. Bấm Mã mới trên máy tính rồi quét lại.",
   "pairFailedBadProof": "Mã không khớp nên chưa ghép đôi. Hãy thử lại, ở gần thiết bị kia.",
   "pairFailedWrongDevice": "Một thiết bị khác đã phản hồi. Đã dừng ghép đôi để giữ an toàn cho bạn.",
   "pairFailedTimedOut": "Thiết bị kia không phản hồi.",

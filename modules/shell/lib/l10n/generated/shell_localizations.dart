@@ -311,7 +311,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairFailedExpired.
   ///
   /// In en, this message translates to:
-  /// **'That code expired.'**
+  /// **'That code expired. Tap New code on your computer, then scan again.'**
   String get pairFailedExpired;
 
   /// No description provided for @pairFailedBadProof.

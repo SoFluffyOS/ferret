@@ -129,7 +129,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairFailedRejected => 'Your other device said not now.';
 
   @override
-  String get pairFailedExpired => 'That code expired.';
+  String get pairFailedExpired =>
+      'That code expired. Tap New code on your computer, then scan again.';
 
   @override
   String get pairFailedBadProof =>
