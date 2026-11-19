@@ -23,6 +23,10 @@ class FakeClipboard implements ClipboardPlatform {
   bool watching = false;
   bool failWrites = false;
 
+  /// What the clipboard keeps in place of the next write, like Linux
+  /// keeping a JPEG as PNG.
+  ClipboardContent? storeAs;
+
   /// Someone copied [copied] in another app.
   void copy(ClipboardContent copied) {
     content = copied;
@@ -42,7 +46,8 @@ class FakeClipboard implements ClipboardPlatform {
     }
 
     writes.add(written);
-    content = written;
+    content = storeAs ?? written;
+    storeAs = null;
     _changes.add(null);
   }
 

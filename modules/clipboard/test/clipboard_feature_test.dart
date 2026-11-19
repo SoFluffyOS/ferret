@@ -302,6 +302,46 @@ void main() {
       expect(await feature.sendClipboard(), ClipSendResult.noDevices);
     });
 
+    test('put here by another feature go on the clipboard and stay '
+        'here', () async {
+      await start();
+      final photo = Uint8List.fromList(List.filled(64, 7));
+
+      expect(
+        await feature.putOnClipboard(.image(photo, imageMime: 'image/jpeg')),
+        isTrue,
+      );
+      await settle();
+
+      expect(clipboard.writes.single.image, photo);
+      expect(clipboard.writes.single.imageMime, 'image/jpeg');
+      expect(pixel.pushes, isEmpty);
+    });
+
+    test('a converted copy of a put image is not sent out either', () async {
+      final converted = Uint8List.fromList(List.filled(64, 9));
+      await start();
+      clipboard.storeAs = .image(converted, imageMime: 'image/png');
+
+      await feature.putOnClipboard(
+        .image(Uint8List.fromList(List.filled(64, 7)), imageMime: 'image/jpeg'),
+      );
+      await settle();
+
+      expect(clipboard.content?.image, converted);
+      expect(pixel.pushes, isEmpty);
+    });
+
+    test('a failed put says so', () async {
+      await start();
+      clipboard.failWrites = true;
+
+      expect(
+        await feature.putOnClipboard(.image(small, imageMime: 'image/png')),
+        isFalse,
+      );
+    });
+
     test('received over the limit are dropped', () async {
       await start(settings: {ClipboardSettings.maxImageBytesKey: 32});
       final push = pushOf('')

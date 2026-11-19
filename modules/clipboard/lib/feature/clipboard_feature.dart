@@ -63,6 +63,10 @@ class ClipboardFeature extends Feature {
   bool _reading = false;
   bool _readAgain = false;
 
+  /// Set while [putOnClipboard] writes, so the change it causes is read
+  /// only once its hash is known.
+  Future<void>? _putting;
+
   @override
   String get id => featureId;
 
@@ -263,6 +267,51 @@ class ClipboardFeature extends Feature {
     return true;
   }
 
+  /// Puts [content] on this device's clipboard for another feature, such as
+  /// a photo a phone just took for this computer. It came from a paired
+  /// device already, so it isn't sent back out as a new clip. False when
+  /// the write failed.
+  Future<bool> putOnClipboard(ClipboardContent content) async {
+    final clipboard = _clipboard;
+    if (clipboard == null) {
+      return false;
+    }
+
+    final putting = Completer<void>();
+    _putting = putting.future;
+    try {
+      return await _put(clipboard, content);
+    } finally {
+      putting.complete();
+      _putting = null;
+    }
+  }
+
+  Future<bool> _put(
+    ClipboardPlatform clipboard,
+    ClipboardContent content,
+  ) async {
+    try {
+      await clipboard.write(content);
+    } on Object catch (error) {
+      printWarning('Could not put content on the clipboard', error);
+      return false;
+    }
+
+    _currentHash = ClipCodec.hashOf(content);
+    // Some clipboards keep a converted copy, such as a JPEG as PNG on
+    // Linux: what reads back must not go out again either.
+    final stored = switch (clipboard.access) {
+      .always || .whileFocused => await _read(),
+      _ => null,
+    };
+    if (stored != null) {
+      _currentHash = ClipCodec.hashOf(stored);
+    }
+
+    return true;
+  }
+
   void clearHistory() {
     for (final timer in _expiryTimers.values) {
       timer.cancel();
@@ -389,6 +438,10 @@ class ClipboardFeature extends Feature {
     if (_reading) {
       _readAgain = true;
       return;
+    }
+
+    if (_putting case final putting?) {
+      await putting;
     }
 
     _reading = true;
