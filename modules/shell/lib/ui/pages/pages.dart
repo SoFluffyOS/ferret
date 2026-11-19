@@ -3,6 +3,7 @@ export 'package:shell/ui/pages/activity_page.dart';
 export 'package:shell/ui/pages/advanced_settings_page.dart';
 export 'package:shell/ui/pages/connect_page.dart';
 export 'package:shell/ui/pages/destination_page.dart';
+export 'package:shell/ui/pages/device_access_page.dart';
 export 'package:shell/ui/pages/device_page.dart';
 export 'package:shell/ui/pages/device_section_page.dart';
 export 'package:shell/ui/pages/doctor_page.dart';

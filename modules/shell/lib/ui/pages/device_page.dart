@@ -4,6 +4,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
@@ -11,6 +12,7 @@ import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/device_now_frame.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/offers_card.dart';
+import 'package:shell/ui/pages/device_access_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -38,19 +40,25 @@ class DevicePage extends StatelessWidget {
     final engine = scope.featureContext.engine;
     final device = status.device;
 
-    final preferences = context.read<EngineHost>().preferences;
     final details = [
-      DeviceNameCard(
-        ownName: device.ownName,
-        nickname: device.nickname,
-        hasNamesake: device.sameNameTag != null,
-        here: l10n.here(engine.device),
-        isPinned: context.select<EngineHost, bool>(
-          (host) => host.preferences.isPinned(deviceId),
-        ),
-        onRename: (name) => unawaited(engine.renameDevice(deviceId, name)),
-        onPin: (pinned) =>
-            unawaited(preferences.setPinned(deviceId, pinned: pinned)),
+      Spacing.v8,
+      GroupedCard(
+        separatorIndent: NavRow.placeIndent,
+        children: [
+          NavRow(
+            title: l10n.accessTitle(device.name),
+            value: DeviceAccessPage.summary(
+              context,
+              scope.features,
+              engine,
+              deviceId,
+            ),
+            place: (icon: LucideIcons.shieldCheck, color: .green),
+            onTap: () => Navigator.of(context).push(
+              ferretRoute<void>(DeviceAccessPage(deviceId: deviceId)),
+            ),
+          ),
+        ],
       ),
       Spacing.v8,
       Disclosure(
@@ -85,8 +93,11 @@ class DevicePage extends StatelessWidget {
                 variant: .primary,
                 titleExpand: .shrink,
                 label: l10n.deviceWhyLong,
-                onPressed: () => Navigator.of(context)
-                    .push(ferretRoute<void>(DoctorPage(deviceId: deviceId))),
+                onPressed: () => Navigator.of(context).push(
+                  ferretRoute<void>(
+                    DoctorPage(deviceId: deviceId),
+                  ),
+                ),
               ),
             ],
             trailing: [...offers, ...details],
@@ -116,7 +127,6 @@ class DevicePage extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
 
     return [
-      if (device.nickname != null) l10n.deviceOwnName(device.ownName),
       '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
       if ((device.lastHost, device.lastPort) case (final host?, final port?))
         l10n.settingsAddress('$host:$port'),
@@ -142,10 +152,7 @@ class DevicePage extends StatelessWidget {
     final engine = ShellScope.read(context).featureContext.engine;
     final navigator = Navigator.of(context);
 
-    final preferences = context.read<EngineHost>().preferences;
-
     await engine.unpair(deviceId, everywhere: scope == .everywhere);
-    await preferences.forget(deviceId);
     // In a window this page is the pane's first one, and the device list
     // moves on to another device by itself.
     if (navigator.canPop()) {

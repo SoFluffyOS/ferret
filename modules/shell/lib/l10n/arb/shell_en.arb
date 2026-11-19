@@ -940,121 +940,6 @@
     }
   },
   "devicesShow": "Show",
-  "devicesPin": "Pin to Top",
-  "devicesUnpin": "Unpin",
-  "devicesStale": "{count, plural, =1{1 not seen in 30 days} other{{count} not seen in 30 days}}",
-  "@devicesStale": {
-    "description": "Under Home's device list: offline devices nobody has seen for a month, offered for removal.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "devicesStaleReview": "Remove…",
-  "devicesStaleConfirm": "Remove {names} from {here}?",
-  "@devicesStaleConfirm": {
-    "placeholders": {
-      "names": {
-        "type": "String"
-      },
-      "here": {
-        "type": "String"
-      }
-    }
-  },
-  "devicesStaleConfirmBody": "Not seen in 30 days. Your other devices keep them, and you can pair them again any time.",
-  "devicesStaleRemove": "Remove",
-  "deviceRename": "Rename…",
-  "deviceRenameTitle": "Name on {here}",
-  "@deviceRenameTitle": {
-    "placeholders": {
-      "here": {
-        "type": "String"
-      }
-    }
-  },
-  "deviceRenameBody": "Only {here} uses this name. {device} keeps its own.",
-  "@deviceRenameBody": {
-    "placeholders": {
-      "here": {
-        "type": "String"
-      },
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "deviceRenameSave": "Save",
-  "deviceRenameReset": "Use its own name",
-  "deviceSameName": "Another of your devices is also called {name}. Give this one a name you'll recognise.",
-  "@deviceSameName": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "deviceOwnName": "Calls itself {name}",
-  "@deviceOwnName": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "activityFilterAll": "All",
-  "activityFilterEmpty": "Nothing from {device} lately.",
-  "@activityFilterEmpty": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "joinedManyNotice": "{count} devices joined your devices",
-  "@joinedManyNotice": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "joinedManyBanner": "{names} joined your devices",
-  "@joinedManyBanner": {
-    "placeholders": {
-      "names": {
-        "type": "String"
-      }
-    }
-  },
-  "joinedManyAddedBy": "Added by {introducer}",
-  "@joinedManyAddedBy": {
-    "placeholders": {
-      "introducer": {
-        "type": "String"
-      }
-    }
-  },
-  "joinedReview": "Review",
-  "joinedKeepAll": "Keep all",
-  "sidebarFind": "Find a device",
-  "sidebarNoMatch": "No device called “{query}”",
-  "@sidebarNoMatch": {
-    "placeholders": {
-      "query": {
-        "type": "String"
-      }
-    }
-  },
-  "dropOfflineCount": "{count, plural, =1{1 offline} other{{count} offline}}",
-  "@dropOfflineCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
   "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
   "emptyCantSee": "Can't see it?",
@@ -1221,5 +1106,65 @@
   "shortcutsTitle": "Keyboard shortcuts",
   "shortcutSections": "Sections of the selected device",
   "shortcutSidebar": "Show or hide the device list",
-  "shortcutActivityPane": "Show or hide the Activity pane"
+  "shortcutActivityPane": "Show or hide the Activity pane",
+  "accessTitle": "What {device} can use",
+  "@accessTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "accessIntro": "{device} reaches {here} only through what's on here, directly on your network. Turn one off and it stops right away, on both devices.",
+  "@accessIntro": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "accessOffline": "{device} is offline. What you change applies before it can use anything again.",
+  "@accessOffline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "accessSummaryAll": "Everything on",
+  "accessSummaryNone": "Everything off",
+  "accessSummarySome": "{off} of {total} off",
+  "@accessSummarySome": {
+    "placeholders": {
+      "off": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "accessTurnAllOff": "Turn everything off",
+  "accessTurnAllOn": "Turn everything back on",
+  "accessForgetHint": "Turning everything off keeps {device} paired. To stop it connecting at all, forget it at the bottom of its page.",
+  "@accessForgetHint": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "accessClipboard": "What you copy, both ways",
+  "accessDrop": "Files and links you send, both ways",
+  "accessNotifications": "A phone's notifications, and the replies and actions you send back",
+  "accessMessages": "A phone's texts and contacts' names, and texts you send from a computer",
+  "accessCalls": "Who is calling, recent calls, answering and placing calls",
+  "accessHandoff": "The page or thing you were on, to continue it on the other device",
+  "accessMedia": "What's playing, and play, pause and skip from the other device",
+  "accessMirroring": "Showing a phone's screen, each time only after the phone says yes",
+  "accessRemoteInput": "Moving the pointer and typing, only after you allow it",
+  "accessFind": "Ringing a device to find it"
 }

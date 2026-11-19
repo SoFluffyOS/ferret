@@ -1,5 +1,6 @@
 export 'package:shell/models/drop_kind.dart';
 export 'package:shell/models/drop_phase.dart';
+export 'package:shell/models/feature_access.dart';
 export 'package:shell/models/files_drop_target.dart';
 export 'package:shell/models/settings_pick.dart';
 export 'package:shell/models/settings_place.dart';

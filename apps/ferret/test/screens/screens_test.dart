@@ -259,6 +259,23 @@ final screens = <Screen>[
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
     await rig.tapText(tester, 'Forget Pixel 9');
   }),
+  Screen('device_access', (tester, rig) async {
+    final phoneId = await rig.pairConnectedPhone(
+      tester,
+      phoneFeatures: appFeatures(),
+    );
+    if (phoneId == null) {
+      return;
+    }
+
+    await rig.engine.access.setAllowed(phoneId, 'clipboard', allowed: false);
+    await rig.open(tester, DeviceAccessPage(deviceId: phoneId));
+  }, tall: true),
+  Screen('device_access_offline', (tester, rig) async {
+    await rig.addOfflinePhone(tester);
+    await rig.engine.access.blockAll(_offlineId, ['mirroring', 'messages']);
+    await rig.open(tester, const DeviceAccessPage(deviceId: _offlineId));
+  }),
   Screen(
     'phone_device_connected',
     (tester, rig) async {
