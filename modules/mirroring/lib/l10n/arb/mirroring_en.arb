@@ -1113,7 +1113,18 @@
       }
     }
   },
-  "controlAskBody": "{computer} can tap, swipe and type here until you stop it, or until the screen stops being shown.",
+  "controlAskCardTitle": "Let {computer} control {phone}?",
+  "@controlAskCardTitle": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "controlAskBody": "While it shows this screen, {computer} can tap, swipe and type here, until you stop it.",
   "@controlAskBody": {
     "placeholders": {
       "computer": {
@@ -1165,6 +1176,6 @@
   "controlDisclosureTitle": "Turn on Ferret control?",
   "controlDisclosureBody": "Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.",
   "controlDisclosureSteps": "Next, in Accessibility, tap Ferret control and turn it on.",
-  "controlDisclosureOpen": "Open Accessibility settings",
+  "controlDisclosureOpen": "Open settings",
   "notNow": "Not now"
 }

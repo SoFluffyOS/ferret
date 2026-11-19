@@ -1084,8 +1084,13 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
+  String controlAskCardTitle(String computer, String phone) {
+    return 'Let $computer control $phone?';
+  }
+
+  @override
   String controlAskBody(String computer) {
-    return '$computer can tap, swipe and type here until you stop it, or until the screen stops being shown.';
+    return 'While it shows this screen, $computer can tap, swipe and type here, until you stop it.';
   }
 
   @override
@@ -1159,7 +1164,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       'Next, in Accessibility, tap Ferret control and turn it on.';
 
   @override
-  String get controlDisclosureOpen => 'Open Accessibility settings';
+  String get controlDisclosureOpen => 'Open settings';
 
   @override
   String get notNow => 'Not now';

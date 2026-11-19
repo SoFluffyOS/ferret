@@ -455,7 +455,7 @@ void main() {
       await pumpCard(tester);
 
       expect(
-        find.text('Let MacBook control This device while showing its screen?'),
+        find.text('Let MacBook control This device?'),
         findsOneWidget,
       );
       expect(find.text('Always'), findsOneWidget);
@@ -496,7 +496,7 @@ void main() {
       );
       expect(service.settingsOpened, 0, reason: 'explained first');
 
-      await tester.tap(find.text('Open Accessibility settings'));
+      await tester.tap(find.text('Open settings'));
       await tester.pumpAndSettle();
       expect(service.settingsOpened, 1);
     });

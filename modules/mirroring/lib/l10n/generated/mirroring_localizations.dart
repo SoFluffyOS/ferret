@@ -1703,10 +1703,16 @@ abstract class MirroringLocalizations {
   /// **'Let {computer} control {phone} while showing its screen?'**
   String controlAskTitle(String computer, String phone);
 
+  /// No description provided for @controlAskCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let {computer} control {phone}?'**
+  String controlAskCardTitle(String computer, String phone);
+
   /// No description provided for @controlAskBody.
   ///
   /// In en, this message translates to:
-  /// **'{computer} can tap, swipe and type here until you stop it, or until the screen stops being shown.'**
+  /// **'While it shows this screen, {computer} can tap, swipe and type here, until you stop it.'**
   String controlAskBody(String computer);
 
   /// Answer: let this computer control the phone now and every time after
@@ -1820,7 +1826,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @controlDisclosureOpen.
   ///
   /// In en, this message translates to:
-  /// **'Open Accessibility settings'**
+  /// **'Open settings'**
   String get controlDisclosureOpen;
 
   /// No description provided for @notNow.

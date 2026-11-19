@@ -40,16 +40,16 @@ class ShareCardFrame extends StatelessWidget {
       return FeatureCard(
         icon: LucideIcons.mousePointerClick,
         iconTone: .accent,
-        title: l10n.controlAskTitle(
+        title: l10n.controlAskCardTitle(
           controlPending.deviceName,
           viewModel.phoneName,
         ),
         subtitle: l10n.controlAskBody(controlPending.deviceName),
         actions: [
           Button(
-            variant: .ghost,
-            label: l10n.controlNo,
-            onPressed: () => unawaited(viewModel.answerControl(.no)),
+            variant: .primary,
+            label: l10n.controlOnce,
+            onPressed: () => unawaited(viewModel.answerControl(.once)),
           ),
           Button(
             variant: .ghost,
@@ -57,9 +57,9 @@ class ShareCardFrame extends StatelessWidget {
             onPressed: () => unawaited(viewModel.answerControl(.always)),
           ),
           Button(
-            variant: .primary,
-            label: l10n.controlOnce,
-            onPressed: () => unawaited(viewModel.answerControl(.once)),
+            variant: .ghost,
+            label: l10n.controlNo,
+            onPressed: () => unawaited(viewModel.answerControl(.no)),
           ),
         ],
       );
@@ -73,14 +73,14 @@ class ShareCardFrame extends StatelessWidget {
         subtitle: l10n.controlledBody,
         actions: [
           Button(
-            variant: .ghost,
-            label: l10n.stop,
-            onPressed: () => unawaited(viewModel.stop()),
-          ),
-          Button(
             variant: .primary,
             label: l10n.controlStop,
             onPressed: () => unawaited(viewModel.stopControl()),
+          ),
+          Button(
+            variant: .ghost,
+            label: l10n.stop,
+            onPressed: () => unawaited(viewModel.stop()),
           ),
         ],
       );
