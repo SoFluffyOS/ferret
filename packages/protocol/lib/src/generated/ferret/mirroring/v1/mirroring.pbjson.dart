@@ -30,6 +30,38 @@ final $typed_data.Uint8List codecDescriptor = $convert.base64Decode(
     'CgVDb2RlYxIVChFDT0RFQ19VTlNQRUNJRklFRBAAEg4KCkNPREVDX0gyNjQQARIOCgpDT0RFQ1'
     '9KUEVHEAI=');
 
+@$core.Deprecated('Use audioCodecDescriptor instead')
+const AudioCodec$json = {
+  '1': 'AudioCodec',
+  '2': [
+    {'1': 'AUDIO_CODEC_UNSPECIFIED', '2': 0},
+    {'1': 'AUDIO_CODEC_OPUS', '2': 1},
+    {'1': 'AUDIO_CODEC_PCM_S16LE', '2': 2},
+  ],
+};
+
+/// Descriptor for `AudioCodec`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List audioCodecDescriptor = $convert.base64Decode(
+    'CgpBdWRpb0NvZGVjEhsKF0FVRElPX0NPREVDX1VOU1BFQ0lGSUVEEAASFAoQQVVESU9fQ09ERU'
+    'NfT1BVUxABEhkKFUFVRElPX0NPREVDX1BDTV9TMTZMRRAC');
+
+@$core.Deprecated('Use audioAnswerDescriptor instead')
+const AudioAnswer$json = {
+  '1': 'AudioAnswer',
+  '2': [
+    {'1': 'AUDIO_ANSWER_UNSPECIFIED', '2': 0},
+    {'1': 'AUDIO_ANSWER_SENDING', '2': 1},
+    {'1': 'AUDIO_ANSWER_OFF', '2': 2},
+    {'1': 'AUDIO_ANSWER_UNSUPPORTED', '2': 3},
+  ],
+};
+
+/// Descriptor for `AudioAnswer`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List audioAnswerDescriptor = $convert.base64Decode(
+    'CgtBdWRpb0Fuc3dlchIcChhBVURJT19BTlNXRVJfVU5TUEVDSUZJRUQQABIYChRBVURJT19BTl'
+    'NXRVJfU0VORElORxABEhQKEEFVRElPX0FOU1dFUl9PRkYQAhIcChhBVURJT19BTlNXRVJfVU5T'
+    'VVBQT1JURUQQAw==');
+
 @$core.Deprecated('Use denyReasonDescriptor instead')
 const DenyReason$json = {
   '1': 'DenyReason',
@@ -92,6 +124,14 @@ const StartRequest$json = {
     {'1': 'max_width', '3': 3, '4': 1, '5': 13, '10': 'maxWidth'},
     {'1': 'max_height', '3': 4, '4': 1, '5': 13, '10': 'maxHeight'},
     {'1': 'max_fps', '3': 5, '4': 1, '5': 13, '10': 'maxFps'},
+    {
+      '1': 'audio_codecs',
+      '3': 6,
+      '4': 3,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.AudioCodec',
+      '10': 'audioCodecs'
+    },
   ],
 };
 
@@ -100,7 +140,8 @@ final $typed_data.Uint8List startRequestDescriptor = $convert.base64Decode(
     'CgxTdGFydFJlcXVlc3QSGAoHdmVyc2lvbhgBIAEoDVIHdmVyc2lvbhIyCgZjb2RlY3MYAiADKA'
     '4yGi5mZXJyZXQubWlycm9yaW5nLnYxLkNvZGVjUgZjb2RlY3MSGwoJbWF4X3dpZHRoGAMgASgN'
     'UghtYXhXaWR0aBIdCgptYXhfaGVpZ2h0GAQgASgNUgltYXhIZWlnaHQSFwoHbWF4X2ZwcxgFIA'
-    'EoDVIGbWF4RnBz');
+    'EoDVIGbWF4RnBzEkIKDGF1ZGlvX2NvZGVjcxgGIAMoDjIfLmZlcnJldC5taXJyb3JpbmcudjEu'
+    'QXVkaW9Db2RlY1ILYXVkaW9Db2RlY3M=');
 
 @$core.Deprecated('Use startPendingDescriptor instead')
 const StartPending$json = {
@@ -128,13 +169,31 @@ const StartAccept$json = {
       '6': '.ferret.mirroring.v1.Codec',
       '10': 'codec'
     },
+    {
+      '1': 'audio',
+      '3': 3,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.AudioAnswer',
+      '10': 'audio'
+    },
+    {
+      '1': 'audio_codec',
+      '3': 4,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.AudioCodec',
+      '10': 'audioCodec'
+    },
   ],
 };
 
 /// Descriptor for `StartAccept`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List startAcceptDescriptor = $convert.base64Decode(
     'CgtTdGFydEFjY2VwdBIYCgd2ZXJzaW9uGAEgASgNUgd2ZXJzaW9uEjAKBWNvZGVjGAIgASgOMh'
-    'ouZmVycmV0Lm1pcnJvcmluZy52MS5Db2RlY1IFY29kZWM=');
+    'ouZmVycmV0Lm1pcnJvcmluZy52MS5Db2RlY1IFY29kZWMSNgoFYXVkaW8YAyABKA4yIC5mZXJy'
+    'ZXQubWlycm9yaW5nLnYxLkF1ZGlvQW5zd2VyUgVhdWRpbxJACgthdWRpb19jb2RlYxgEIAEoDj'
+    'IfLmZlcnJldC5taXJyb3JpbmcudjEuQXVkaW9Db2RlY1IKYXVkaW9Db2RlYw==');
 
 @$core.Deprecated('Use startDenyDescriptor instead')
 const StartDeny$json = {
@@ -202,6 +261,53 @@ final $typed_data.Uint8List frameDescriptor = $convert.base64Decode(
     'CgVGcmFtZRIbCgljb25maWdfaWQYASABKA1SCGNvbmZpZ0lkEhoKCHNlcXVlbmNlGAIgASgEUg'
     'hzZXF1ZW5jZRIVCgZwdHNfdXMYAyABKANSBXB0c1VzEhoKCGtleWZyYW1lGAQgASgIUghrZXlm'
     'cmFtZRISCgRkYXRhGAUgASgMUgRkYXRh');
+
+@$core.Deprecated('Use audioConfigDescriptor instead')
+const AudioConfig$json = {
+  '1': 'AudioConfig',
+  '2': [
+    {
+      '1': 'codec',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.AudioCodec',
+      '10': 'codec'
+    },
+    {'1': 'sample_rate', '3': 2, '4': 1, '5': 13, '10': 'sampleRate'},
+    {'1': 'channels', '3': 3, '4': 1, '5': 13, '10': 'channels'},
+  ],
+};
+
+/// Descriptor for `AudioConfig`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List audioConfigDescriptor = $convert.base64Decode(
+    'CgtBdWRpb0NvbmZpZxI1CgVjb2RlYxgBIAEoDjIfLmZlcnJldC5taXJyb3JpbmcudjEuQXVkaW'
+    '9Db2RlY1IFY29kZWMSHwoLc2FtcGxlX3JhdGUYAiABKA1SCnNhbXBsZVJhdGUSGgoIY2hhbm5l'
+    'bHMYAyABKA1SCGNoYW5uZWxz');
+
+@$core.Deprecated('Use audioFrameDescriptor instead')
+const AudioFrame$json = {
+  '1': 'AudioFrame',
+  '2': [
+    {'1': 'sequence', '3': 1, '4': 1, '5': 4, '10': 'sequence'},
+    {'1': 'pts_us', '3': 2, '4': 1, '5': 3, '10': 'ptsUs'},
+    {'1': 'data', '3': 3, '4': 1, '5': 12, '10': 'data'},
+  ],
+};
+
+/// Descriptor for `AudioFrame`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List audioFrameDescriptor = $convert.base64Decode(
+    'CgpBdWRpb0ZyYW1lEhoKCHNlcXVlbmNlGAEgASgEUghzZXF1ZW5jZRIVCgZwdHNfdXMYAiABKA'
+    'NSBXB0c1VzEhIKBGRhdGEYAyABKAxSBGRhdGE=');
+
+@$core.Deprecated('Use audioEndedDescriptor instead')
+const AudioEnded$json = {
+  '1': 'AudioEnded',
+};
+
+/// Descriptor for `AudioEnded`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List audioEndedDescriptor =
+    $convert.base64Decode('CgpBdWRpb0VuZGVk');
 
 @$core.Deprecated('Use keyframeRequestDescriptor instead')
 const KeyframeRequest$json = {

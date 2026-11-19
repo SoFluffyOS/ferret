@@ -31,6 +31,7 @@ class StartRequest extends $pb.GeneratedMessage {
     $core.int? maxWidth,
     $core.int? maxHeight,
     $core.int? maxFps,
+    $core.Iterable<AudioCodec>? audioCodecs,
   }) {
     final result = StartRequest._();
     if (version != null) result.version = version;
@@ -38,6 +39,7 @@ class StartRequest extends $pb.GeneratedMessage {
     if (maxWidth != null) result.maxWidth = maxWidth;
     if (maxHeight != null) result.maxHeight = maxHeight;
     if (maxFps != null) result.maxFps = maxFps;
+    if (audioCodecs != null) result.audioCodecs.addAll(audioCodecs);
     return result;
   }
 
@@ -63,6 +65,11 @@ class StartRequest extends $pb.GeneratedMessage {
     ..aI(3, _omitFieldNames ? '' : 'maxWidth', fieldType: $pb.PbFieldType.OU3)
     ..aI(4, _omitFieldNames ? '' : 'maxHeight', fieldType: $pb.PbFieldType.OU3)
     ..aI(5, _omitFieldNames ? '' : 'maxFps', fieldType: $pb.PbFieldType.OU3)
+    ..pc<AudioCodec>(
+        6, _omitFieldNames ? '' : 'audioCodecs', $pb.PbFieldType.KE,
+        valueOf: AudioCodec.valueOf,
+        enumValues: AudioCodec.values,
+        defaultEnumValue: AudioCodec.AUDIO_CODEC_UNSPECIFIED)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -130,6 +137,11 @@ class StartRequest extends $pb.GeneratedMessage {
   $core.bool hasMaxFps() => $_has(4);
   @$pb.TagNumber(5)
   void clearMaxFps() => $_clearField(5);
+
+  /// What the viewer can play of the source's sound, best first. Empty asks
+  /// for pictures only.
+  @$pb.TagNumber(6)
+  $pb.PbList<AudioCodec> get audioCodecs => $_getList(5);
 }
 
 /// The source is asking its owner. The answer follows as `StartAccept` or
@@ -201,10 +213,14 @@ class StartAccept extends $pb.GeneratedMessage {
   factory StartAccept({
     $core.int? version,
     Codec? codec,
+    AudioAnswer? audio,
+    AudioCodec? audioCodec,
   }) {
     final result = StartAccept._();
     if (version != null) result.version = version;
     if (codec != null) result.codec = codec;
+    if (audio != null) result.audio = audio;
+    if (audioCodec != null) result.audioCodec = audioCodec;
     return result;
   }
 
@@ -224,6 +240,10 @@ class StartAccept extends $pb.GeneratedMessage {
       createEmptyInstance: StartAccept.$_createMessage)
     ..aI(1, _omitFieldNames ? '' : 'version', fieldType: $pb.PbFieldType.OU3)
     ..aE<Codec>(2, _omitFieldNames ? '' : 'codec', enumValues: Codec.values)
+    ..aE<AudioAnswer>(3, _omitFieldNames ? '' : 'audio',
+        enumValues: AudioAnswer.values)
+    ..aE<AudioCodec>(4, _omitFieldNames ? '' : 'audioCodec',
+        enumValues: AudioCodec.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -267,6 +287,27 @@ class StartAccept extends $pb.GeneratedMessage {
   $core.bool hasCodec() => $_has(1);
   @$pb.TagNumber(2)
   void clearCodec() => $_clearField(2);
+
+  /// Whether sound comes with the pictures, for a viewer that asked.
+  @$pb.TagNumber(3)
+  AudioAnswer get audio => $_getN(2);
+  @$pb.TagNumber(3)
+  set audio(AudioAnswer value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAudio() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAudio() => $_clearField(3);
+
+  /// With `AUDIO_ANSWER_SENDING`: the codec the source picked from
+  /// `StartRequest.audio_codecs`.
+  @$pb.TagNumber(4)
+  AudioCodec get audioCodec => $_getN(3);
+  @$pb.TagNumber(4)
+  set audioCodec(AudioCodec value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasAudioCodec() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAudioCodec() => $_clearField(4);
 }
 
 class StartDeny extends $pb.GeneratedMessage {
@@ -594,6 +635,227 @@ class Frame extends $pb.GeneratedMessage {
   $core.bool hasData() => $_has(4);
   @$pb.TagNumber(5)
   void clearData() => $_clearField(5);
+}
+
+/// How to play the sound that follows. The source sends it before the first
+/// `AudioFrame`, and again after a viewer came back from a dropped
+/// connection.
+class AudioConfig extends $pb.GeneratedMessage {
+  factory AudioConfig({
+    AudioCodec? codec,
+    $core.int? sampleRate,
+    $core.int? channels,
+  }) {
+    final result = AudioConfig._();
+    if (codec != null) result.codec = codec;
+    if (sampleRate != null) result.sampleRate = sampleRate;
+    if (channels != null) result.channels = channels;
+    return result;
+  }
+
+  AudioConfig._();
+
+  factory AudioConfig.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioConfig()..mergeFromBuffer(data, registry);
+  factory AudioConfig.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioConfig()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'AudioConfig',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: AudioConfig.$_createMessage)
+    ..aE<AudioCodec>(1, _omitFieldNames ? '' : 'codec',
+        enumValues: AudioCodec.values)
+    ..aI(2, _omitFieldNames ? '' : 'sampleRate', fieldType: $pb.PbFieldType.OU3)
+    ..aI(3, _omitFieldNames ? '' : 'channels', fieldType: $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioConfig clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioConfig copyWith(void Function(AudioConfig) updates) =>
+      super.copyWith((message) => updates(message as AudioConfig))
+          as AudioConfig;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use AudioConfig() / AudioConfig.new instead')
+  static AudioConfig create() => AudioConfig._();
+  static $pb.GeneratedMessage $_createMessage() => AudioConfig._();
+  @$core.override
+  AudioConfig createEmptyInstance() => AudioConfig._();
+  @$core.pragma('dart2js:noInline')
+  static AudioConfig getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AudioConfig>(
+          AudioConfig.$_createMessage);
+  static AudioConfig? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  AudioCodec get codec => $_getN(0);
+  @$pb.TagNumber(1)
+  set codec(AudioCodec value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasCodec() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCodec() => $_clearField(1);
+
+  /// Samples per second of each channel.
+  @$pb.TagNumber(2)
+  $core.int get sampleRate => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set sampleRate($core.int value) => $_setUnsignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasSampleRate() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSampleRate() => $_clearField(2);
+
+  /// 1 or 2. With two, samples are interleaved left then right.
+  @$pb.TagNumber(3)
+  $core.int get channels => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set channels($core.int value) => $_setUnsignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasChannels() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearChannels() => $_clearField(3);
+}
+
+/// A few milliseconds of what plays on the source. Sent without expecting a
+/// reply. Apps on the source that don't allow their sound to be captured are
+/// simply not in it, and nothing is sent while the source is silent.
+class AudioFrame extends $pb.GeneratedMessage {
+  factory AudioFrame({
+    $fixnum.Int64? sequence,
+    $fixnum.Int64? ptsUs,
+    $core.List<$core.int>? data,
+  }) {
+    final result = AudioFrame._();
+    if (sequence != null) result.sequence = sequence;
+    if (ptsUs != null) result.ptsUs = ptsUs;
+    if (data != null) result.data = data;
+    return result;
+  }
+
+  AudioFrame._();
+
+  factory AudioFrame.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioFrame()..mergeFromBuffer(data, registry);
+  factory AudioFrame.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioFrame()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'AudioFrame',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: AudioFrame.$_createMessage)
+    ..a<$fixnum.Int64>(
+        1, _omitFieldNames ? '' : 'sequence', $pb.PbFieldType.OU6,
+        defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aInt64(2, _omitFieldNames ? '' : 'ptsUs')
+    ..a<$core.List<$core.int>>(
+        3, _omitFieldNames ? '' : 'data', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioFrame clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioFrame copyWith(void Function(AudioFrame) updates) =>
+      super.copyWith((message) => updates(message as AudioFrame)) as AudioFrame;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use AudioFrame() / AudioFrame.new instead')
+  static AudioFrame create() => AudioFrame._();
+  static $pb.GeneratedMessage $_createMessage() => AudioFrame._();
+  @$core.override
+  AudioFrame createEmptyInstance() => AudioFrame._();
+  @$core.pragma('dart2js:noInline')
+  static AudioFrame getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<AudioFrame>(AudioFrame.$_createMessage);
+  static AudioFrame? _defaultInstance;
+
+  /// Goes up by one with every frame the source produced, including those it
+  /// dropped because the connection backed up.
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get sequence => $_getI64(0);
+  @$pb.TagNumber(1)
+  set sequence($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSequence() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSequence() => $_clearField(1);
+
+  /// When the sound was captured, in microseconds on the same clock as
+  /// `Frame.pts_us`, so a viewer can keep sound and picture together.
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get ptsUs => $_getI64(1);
+  @$pb.TagNumber(2)
+  set ptsUs($fixnum.Int64 value) => $_setInt64(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPtsUs() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPtsUs() => $_clearField(2);
+
+  /// Opus: one packet. PCM: whole samples for every channel.
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get data => $_getN(2);
+  @$pb.TagNumber(3)
+  set data($core.List<$core.int> value) => $_setBytes(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasData() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearData() => $_clearField(3);
+}
+
+/// The source's sound stopped, such as when capturing it failed. The
+/// pictures go on. Sent without expecting a reply.
+class AudioEnded extends $pb.GeneratedMessage {
+  factory AudioEnded() => AudioEnded._();
+
+  AudioEnded._();
+
+  factory AudioEnded.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioEnded()..mergeFromBuffer(data, registry);
+  factory AudioEnded.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      AudioEnded()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'AudioEnded',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: AudioEnded.$_createMessage)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioEnded clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  AudioEnded copyWith(void Function(AudioEnded) updates) =>
+      super.copyWith((message) => updates(message as AudioEnded)) as AudioEnded;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use AudioEnded() / AudioEnded.new instead')
+  static AudioEnded create() => AudioEnded._();
+  static $pb.GeneratedMessage $_createMessage() => AudioEnded._();
+  @$core.override
+  AudioEnded createEmptyInstance() => AudioEnded._();
+  @$core.pragma('dart2js:noInline')
+  static AudioEnded getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<AudioEnded>(AudioEnded.$_createMessage);
+  static AudioEnded? _defaultInstance;
 }
 
 /// The viewer lost its place, such as after a decoding error, and asks for a

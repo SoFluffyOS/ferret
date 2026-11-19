@@ -12,6 +12,11 @@ package ferret.mirroring.v1;
 // any viewer whose version is not newer than its own and answers with its
 // own. Fields and enum values added later in the same version are optional:
 // a receiver ignores what it doesn't know.
+//
+// Sound came later in version 1. A viewer asks for it with
+// `StartRequest.audio_codecs`; a source that doesn't know the field sends
+// pictures only and leaves `StartAccept.audio` unset. A source never sends
+// `AudioConfig` or `AudioFrame` to a viewer that didn't ask.
 
 // How the pictures are encoded.
 enum Codec {
@@ -21,6 +26,16 @@ enum Codec {
   // A JPEG picture per frame, for viewers without a video decoder. Fewer
   // frames per second and a smaller picture.
   CODEC_JPEG = 2;
+}
+
+// How the source's sound is encoded.
+enum AudioCodec {
+  AUDIO_CODEC_UNSPECIFIED = 0;
+  // Opus, timed at 48 kHz. `AudioFrame.data` is one Opus packet.
+  AUDIO_CODEC_OPUS = 1;
+  // Signed 16-bit little-endian samples, channels interleaved, for viewers
+  // without an Opus decoder.
+  AUDIO_CODEC_PCM_S16LE = 2;
 }
 
 // Asks the source to show its screen. Expects a `StartPending` or
@@ -37,6 +52,9 @@ message StartRequest {
   uint32 max_height = 4;
   // 0 leaves it to the source.
   uint32 max_fps = 5;
+  // What the viewer can play of the source's sound, best first. Empty asks
+  // for pictures only.
+  repeated AudioCodec audio_codecs = 6;
 }
 
 // The source is asking its owner. The answer follows as `StartAccept` or
@@ -54,6 +72,26 @@ message StartAccept {
   uint32 version = 1;
   // The codec the source picked from `StartRequest.codecs`.
   Codec codec = 2;
+  // Whether sound comes with the pictures, for a viewer that asked.
+  AudioAnswer audio = 3;
+  // With `AUDIO_ANSWER_SENDING`: the codec the source picked from
+  // `StartRequest.audio_codecs`.
+  AudioCodec audio_codec = 4;
+}
+
+// What a source says to a viewer that asked for sound. Only what plays on
+// the source is ever sent, never its microphone, and only while its screen
+// is shown.
+enum AudioAnswer {
+  // The source doesn't know about sound (an older build), or wasn't asked.
+  AUDIO_ANSWER_UNSPECIFIED = 0;
+  // An `AudioConfig` and `AudioFrame`s follow.
+  AUDIO_ANSWER_SENDING = 1;
+  // The source's owner hasn't turned sending sound on.
+  AUDIO_ANSWER_OFF = 2;
+  // The source can't capture what it plays, or can't encode any of
+  // `StartRequest.audio_codecs`.
+  AUDIO_ANSWER_UNSUPPORTED = 3;
 }
 
 // Why a source said no.
@@ -122,6 +160,35 @@ message Frame {
   // H.264: one access unit in Annex-B form. JPEG: the picture.
   bytes data = 5;
 }
+
+// How to play the sound that follows. The source sends it before the first
+// `AudioFrame`, and again after a viewer came back from a dropped
+// connection.
+message AudioConfig {
+  AudioCodec codec = 1;
+  // Samples per second of each channel.
+  uint32 sample_rate = 2;
+  // 1 or 2. With two, samples are interleaved left then right.
+  uint32 channels = 3;
+}
+
+// A few milliseconds of what plays on the source. Sent without expecting a
+// reply. Apps on the source that don't allow their sound to be captured are
+// simply not in it, and nothing is sent while the source is silent.
+message AudioFrame {
+  // Goes up by one with every frame the source produced, including those it
+  // dropped because the connection backed up.
+  uint64 sequence = 1;
+  // When the sound was captured, in microseconds on the same clock as
+  // `Frame.pts_us`, so a viewer can keep sound and picture together.
+  int64 pts_us = 2;
+  // Opus: one packet. PCM: whole samples for every channel.
+  bytes data = 3;
+}
+
+// The source's sound stopped, such as when capturing it failed. The
+// pictures go on. Sent without expecting a reply.
+message AudioEnded {}
 
 // The viewer lost its place, such as after a decoding error, and asks for a
 // frame that decodes on its own. Sent without expecting a reply.

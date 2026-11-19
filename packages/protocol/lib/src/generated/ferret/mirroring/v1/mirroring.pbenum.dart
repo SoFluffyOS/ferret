@@ -42,6 +42,70 @@ class Codec extends $pb.ProtobufEnum {
   const Codec._(super.value, super.name);
 }
 
+/// How the source's sound is encoded.
+class AudioCodec extends $pb.ProtobufEnum {
+  static const AudioCodec AUDIO_CODEC_UNSPECIFIED =
+      AudioCodec._(0, _omitEnumNames ? '' : 'AUDIO_CODEC_UNSPECIFIED');
+
+  /// Opus, timed at 48 kHz. `AudioFrame.data` is one Opus packet.
+  static const AudioCodec AUDIO_CODEC_OPUS =
+      AudioCodec._(1, _omitEnumNames ? '' : 'AUDIO_CODEC_OPUS');
+
+  /// Signed 16-bit little-endian samples, channels interleaved, for viewers
+  /// without an Opus decoder.
+  static const AudioCodec AUDIO_CODEC_PCM_S16LE =
+      AudioCodec._(2, _omitEnumNames ? '' : 'AUDIO_CODEC_PCM_S16LE');
+
+  static const $core.List<AudioCodec> values = <AudioCodec>[
+    AUDIO_CODEC_UNSPECIFIED,
+    AUDIO_CODEC_OPUS,
+    AUDIO_CODEC_PCM_S16LE,
+  ];
+
+  static final $core.List<AudioCodec?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
+  static AudioCodec? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const AudioCodec._(super.value, super.name);
+}
+
+/// What a source says to a viewer that asked for sound. Only what plays on
+/// the source is ever sent, never its microphone, and only while its screen
+/// is shown.
+class AudioAnswer extends $pb.ProtobufEnum {
+  /// The source doesn't know about sound (an older build), or wasn't asked.
+  static const AudioAnswer AUDIO_ANSWER_UNSPECIFIED =
+      AudioAnswer._(0, _omitEnumNames ? '' : 'AUDIO_ANSWER_UNSPECIFIED');
+
+  /// An `AudioConfig` and `AudioFrame`s follow.
+  static const AudioAnswer AUDIO_ANSWER_SENDING =
+      AudioAnswer._(1, _omitEnumNames ? '' : 'AUDIO_ANSWER_SENDING');
+
+  /// The source's owner hasn't turned sending sound on.
+  static const AudioAnswer AUDIO_ANSWER_OFF =
+      AudioAnswer._(2, _omitEnumNames ? '' : 'AUDIO_ANSWER_OFF');
+
+  /// The source can't capture what it plays, or can't encode any of
+  /// `StartRequest.audio_codecs`.
+  static const AudioAnswer AUDIO_ANSWER_UNSUPPORTED =
+      AudioAnswer._(3, _omitEnumNames ? '' : 'AUDIO_ANSWER_UNSUPPORTED');
+
+  static const $core.List<AudioAnswer> values = <AudioAnswer>[
+    AUDIO_ANSWER_UNSPECIFIED,
+    AUDIO_ANSWER_SENDING,
+    AUDIO_ANSWER_OFF,
+    AUDIO_ANSWER_UNSUPPORTED,
+  ];
+
+  static final $core.List<AudioAnswer?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 3);
+  static AudioAnswer? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const AudioAnswer._(super.value, super.name);
+}
+
 /// Why a source said no.
 class DenyReason extends $pb.ProtobufEnum {
   static const DenyReason DENY_REASON_UNSPECIFIED =
