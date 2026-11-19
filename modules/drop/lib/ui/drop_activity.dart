@@ -144,7 +144,7 @@ String _detail(
   Transfer transfer,
 ) {
   if (transfer.status.isActive) {
-    return texts.progress(transfer);
+    return texts.progress(transfer, isWeak: viewModel.isWeak(transfer));
   }
 
   if (transfer.status != .done) {

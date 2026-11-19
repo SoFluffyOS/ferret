@@ -1045,6 +1045,18 @@ abstract class DropLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// A transfer's progress line while the link to the device is slow, such as: Weak connection · 620 MB of 1.8 GB · 12 min left
+  ///
+  /// In en, this message translates to:
+  /// **'Weak connection · {progress}'**
+  String progressWeak(String progress);
+
+  /// Link above a device's transfers when several stopped and can be tried again
+  ///
+  /// In en, this message translates to:
+  /// **'Try all again'**
+  String get actionTryAll;
 }
 
 class _DropLocalizationsDelegate

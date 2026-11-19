@@ -213,6 +213,29 @@ class DropViewModel extends ChangeNotifier {
 
   bool canRetry(Transfer transfer) => feature.canRetry(transfer);
 
+  /// Whether the link to the transfer's device is slow right now, which
+  /// is why its bytes crawl.
+  bool isWeak(Transfer transfer) =>
+      feature.host.sessionFor(transfer.deviceId)?.isWeak ?? false;
+
+  /// The transfers with [deviceId] that stopped and can be tried again,
+  /// paused ones too.
+  List<Transfer> retryableWith(String deviceId) => [
+    for (final transfer in _transfers)
+      if (transfer.deviceId == deviceId &&
+          transfer.status == .failed &&
+          canRetry(transfer))
+        transfer,
+  ];
+
+  /// Tries every stopped transfer with [deviceId] again, oldest first, so
+  /// they go in the order they were sent.
+  Future<void> retryAllWith(String deviceId) async {
+    for (final transfer in retryableWith(deviceId).reversed) {
+      await retry(transfer);
+    }
+  }
+
   Future<void> setAutoAccept(bool value) async {
     await feature.setAutoAccept(value);
     notifyListeners();

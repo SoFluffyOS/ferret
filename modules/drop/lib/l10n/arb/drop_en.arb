@@ -781,5 +781,18 @@
       }
     }
   },
-  "back": "Back"
+  "back": "Back",
+  "progressWeak": "Weak connection · {progress}",
+  "@progressWeak": {
+    "description": "A transfer's progress line while the link to the device is slow, such as: Weak connection · 620 MB of 1.8 GB · 12 min left",
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "actionTryAll": "Try all again",
+  "@actionTryAll": {
+    "description": "Link above a device's transfers when several stopped and can be tried again"
+  }
 }

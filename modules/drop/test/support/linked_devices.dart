@@ -147,6 +147,10 @@ class LinkedSession implements Session {
   bool closedByTest = false;
   final List<GeneratedMessage> sent = [];
 
+  /// Set by a test to stand in for a slow link.
+  @override
+  bool isWeak = false;
+
   @override
   String get remoteDeviceId => to.id;
 

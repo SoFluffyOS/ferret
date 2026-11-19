@@ -158,5 +158,7 @@
   "filesOffline": "{device} chưa kết nối. Bạn có thể gửi tệp khi thiết bị kết nối lại.",
   "filesRecent": "Đã gửi và đã nhận",
   "filesNone": "Tệp bạn gửi đến {device} và tệp thiết bị đó gửi cho bạn sẽ hiện ở đây.",
-  "back": "Quay lại"
+  "back": "Quay lại",
+  "progressWeak": "Kết nối yếu · {progress}",
+  "actionTryAll": "Thử lại tất cả"
 }

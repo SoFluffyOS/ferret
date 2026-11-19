@@ -12,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The Files section of one device: a place to drop or choose files, and
-/// every transfer with that device under it.
+/// every transfer with that device under it. When several stopped, one
+/// link tries them all again.
 class DeviceFilesFrame extends StatelessWidget {
   const DeviceFilesFrame({
     super.key,
@@ -24,6 +25,10 @@ class DeviceFilesFrame extends StatelessWidget {
   final String deviceId;
   final String deviceName;
   final bool isConnected;
+
+  /// One stopped transfer has its own Try again; from two on, one link
+  /// tries them all.
+  static const _retryAllFrom = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,9 @@ class DeviceFilesFrame extends StatelessWidget {
           if (transfer.deviceId == deviceId)
             (transfer.status, transfer.progress),
       ]),
+    );
+    final retryableCount = context.select<DropViewModel, int>(
+      (model) => model.retryableWith(deviceId).length,
     );
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -79,7 +87,16 @@ class DeviceFilesFrame extends StatelessWidget {
             ],
           ),
         ),
-        SectionTitle(l10n.filesRecent),
+        SectionTitle(
+          l10n.filesRecent,
+          trailing: switch (retryableCount >= _retryAllFrom) {
+            true => TextLink(
+              label: l10n.actionTryAll,
+              onTap: () => unawaited(viewModel.retryAllWith(deviceId)),
+            ),
+            false => null,
+          },
+        ),
         if (transfers.isEmpty)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
@@ -100,7 +117,10 @@ class DeviceFilesFrame extends StatelessWidget {
                     transfer: transfer,
                     title: texts.title(transfer),
                     status: texts.status(transfer),
-                    speed: texts.speed(transfer),
+                    speed: texts.speed(
+                      transfer,
+                      isWeak: viewModel.isWeak(transfer),
+                    ),
                     details: texts.offerDetails(transfer),
                     actions: transferActions(viewModel, transfer, l10n),
                     dismissLabel: l10n.actionDismiss,

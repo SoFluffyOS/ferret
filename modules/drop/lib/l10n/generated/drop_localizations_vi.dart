@@ -691,4 +691,12 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String get back => 'Quay lại';
+
+  @override
+  String progressWeak(String progress) {
+    return 'Kết nối yếu · $progress';
+  }
+
+  @override
+  String get actionTryAll => 'Thử lại tất cả';
 }

@@ -205,6 +205,35 @@ void main() {
       expect(texts.eta(const Duration(hours: 1, minutes: 5)), '1 h 5 min');
     });
 
+    test('over a weak connection a transfer says why it crawls', () {
+      final transfer = sampleTransfer(
+        direction: .outgoing,
+        bytesDone: 1024 * 1024,
+        bytesPerSecond: 1024 * 1024,
+      );
+
+      expect(texts.progress(transfer), '1 MB of 4 MB · 3 s left');
+      expect(
+        texts.progress(transfer, isWeak: true),
+        'Weak connection · 1 MB of 4 MB · 3 s left',
+      );
+      expect(
+        texts.speed(transfer, isWeak: true),
+        'Weak connection · 1 MB/s · 3 s left',
+      );
+    });
+
+    test('a weak connection is only named while bytes move', () {
+      final waiting = sampleTransfer(direction: .outgoing, status: .waiting);
+      final done = sampleTransfer(status: .done, bytesDone: 4 * 1024 * 1024);
+
+      expect(
+        texts.progress(waiting, isWeak: true),
+        texts.progress(waiting),
+      );
+      expect(texts.progress(done, isWeak: true), texts.progress(done));
+    });
+
     test('names one file, many files, or the first line of text', () {
       expect(texts.title(sampleTransfer()), 'photo.jpg');
       expect(

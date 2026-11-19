@@ -690,4 +690,12 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String progressWeak(String progress) {
+    return 'Weak connection · $progress';
+  }
+
+  @override
+  String get actionTryAll => 'Try all again';
 }

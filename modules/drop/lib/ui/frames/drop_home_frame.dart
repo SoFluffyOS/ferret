@@ -95,7 +95,10 @@ class DropHomeFrame extends StatelessWidget {
             transfer: transfer,
             title: texts.title(transfer),
             status: texts.status(transfer),
-            speed: texts.speed(transfer),
+            speed: texts.speed(
+              transfer,
+              isWeak: viewModel.isWeak(transfer),
+            ),
             details: texts.offerDetails(transfer),
             actions: transferActions(
               viewModel,

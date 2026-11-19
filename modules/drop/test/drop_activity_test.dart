@@ -66,6 +66,20 @@ void main() {
     expect(rows.single.detail, '1 MB of 4 MB · 3 s left');
   });
 
+  test('over a weak connection a running send says so first', () async {
+    link.laptop.session?.isWeak = true;
+
+    final rows = await rowsAfter(
+      sampleTransfer(
+        direction: .outgoing,
+        bytesDone: 1024 * 1024,
+        bytesPerSecond: 1024 * 1024,
+      ),
+    );
+
+    expect(rows.single.detail, 'Weak connection · 1 MB of 4 MB · 3 s left');
+  });
+
   test('a received file says where it was saved and offers Open', () async {
     await Future<void>.delayed(const Duration(milliseconds: 50));
     final rows = await rowsAfter(

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:drop/l10n/generated/drop_localizations.dart';
 import 'package:drop/models/models.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:interop_localsend/interop_localsend.dart' show Fingerprints;
 import 'package:intl/intl.dart';
@@ -74,27 +75,36 @@ class TransferTexts {
 
   /// How far a transfer under way is, without the device its line already
   /// names: "26 MB of 42 MB · 1 min left", the time once the speed is
-  /// known. Waiting and checking say so in a few words.
-  String progress(Transfer transfer) {
+  /// known. Waiting and checking say so in a few words. Over a slow link
+  /// ([isWeak]) it says why it crawls, first, where a short line keeps it.
+  String progress(Transfer transfer, {bool isWeak = false}) {
     return switch (transfer.status) {
       .waiting => switch (transfer.isOutgoing) {
         true => l10n.activityWaiting,
         false => status(transfer),
       },
-      .transferring => switch (transfer.eta) {
-        final left? => l10n.activityProgressEta(
-          size(transfer.bytesDone),
-          size(transfer.totalBytes),
-          eta(left),
-        ),
-        _ => l10n.activityProgress(
-          size(transfer.bytesDone),
-          size(transfer.totalBytes),
-        ),
-      },
+      .transferring => _weak(
+        switch (transfer.eta) {
+          final left? => l10n.activityProgressEta(
+            size(transfer.bytesDone),
+            size(transfer.totalBytes),
+            eta(left),
+          ),
+          _ => l10n.activityProgress(
+            size(transfer.bytesDone),
+            size(transfer.totalBytes),
+          ),
+        },
+        isWeak: isWeak,
+      ),
       _ => status(transfer),
     };
   }
+
+  String _weak(String line, {required bool isWeak}) => switch (isWeak) {
+    true => l10n.progressWeak(line),
+    false => line,
+  };
 
   /// "Show in Finder" on a Mac, where people know Finder by name, "Show in
   /// folder" elsewhere.
@@ -104,18 +114,19 @@ class TransferTexts {
         _ => l10n.actionReveal,
       };
 
-  /// Speed and time left while bytes move, or null.
-  String? speed(Transfer transfer) {
+  /// Speed and time left while bytes move, or null. Over a slow link
+  /// ([isWeak]) it says so.
+  String? speed(Transfer transfer, {bool isWeak = false}) {
     if (transfer.status != .transferring || transfer.bytesPerSecond <= 0) {
       return null;
     }
 
     final perSecond = size(transfer.bytesPerSecond.round());
     if (transfer.eta case final left?) {
-      return l10n.statusSpeedEta(perSecond, eta(left));
+      return _weak(l10n.statusSpeedEta(perSecond, eta(left)), isWeak: isWeak);
     }
 
-    return l10n.statusSpeed(perSecond);
+    return _weak(l10n.statusSpeed(perSecond), isWeak: isWeak);
   }
 
   String failure(Transfer transfer) {
@@ -194,13 +205,16 @@ class TransferTexts {
         l10n.offerPin(origin.pin, transfer.deviceName),
         origin.address,
       ],
-      if (more > 0) l10n.offerFilesMore(names.join(', '), more),
-      if (more <= 0 && names.length > 1) l10n.offerFiles(names.join(', ')),
+      if (more > 0) l10n.offerFilesMore(_list(names), more),
+      if (more <= 0 && names.length > 1) l10n.offerFiles(_list(names)),
       if (transfer.files.isNotEmpty)
         l10n.offerTotal(transfer.files.length, size(transfer.totalBytes)),
       l10n.offerWarning(transfer.deviceName),
     ];
   }
+
+  String _list(List<String> names) =>
+      ListText.join(names, localeName: l10n.localeName);
 
   /// Time left in a receive window, as `9:41`.
   String countdown(Duration left) {
