@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:clipboard/feature/clipboard_feature.dart';
 import 'package:clipboard/l10n/l10n.dart';
 import 'package:clipboard/ui/clip_activity.dart';
+import 'package:clipboard/ui/clip_send_report.dart';
 import 'package:clipboard/ui/clipboard_health.dart';
 import 'package:clipboard/ui/frames/frames.dart';
 import 'package:clipboard/ui/pages/pages.dart';
@@ -106,10 +107,18 @@ class ClipboardFeatureUi extends FeatureUi {
         label: context.clipboardL10n.sendClipboard,
         icon: LucideIcons.clipboardCopy,
         homeOrder: 20,
-        onPressed: () =>
-            unawaited(viewModel.sendClipboard(toDeviceId: device.device.id)),
+        onPressed: () => unawaited(_sendTo(context, device)),
       ),
     ];
+  }
+
+  Future<void> _sendTo(BuildContext context, DeviceStatus device) async {
+    final result = await viewModel.sendClipboard(toDeviceId: device.device.id);
+    if (result == null || !context.mounted) {
+      return;
+    }
+
+    reportClipSend(context, result, device.device.name);
   }
 
   @override

@@ -1,5 +1,6 @@
 // The quick wins from temp/research/feature_gaps.md: Recent clips, battery
-// on device rows, Lock this computer and the presentation remote. Renders
+// on device rows, Lock this computer and the presentation remote; and what
+// Send clipboard says where it was pressed. Renders
 // into temp/screens as `quick_<name>_*.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/quick_wins_screens_test.dart
@@ -11,11 +12,13 @@ import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_clipboard/ferret_clipboard.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:protocol/clipboard.dart';
 import 'package:protocol/protocol.dart';
 import 'package:remote_input/remote_input.dart';
@@ -79,6 +82,43 @@ List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
     },
 ];
 
+/// A clipboard that always holds the same words and never touches this
+/// Mac's own.
+class _CopiedText implements ClipboardPlatform {
+  @override
+  ClipboardAccess get access => .always;
+
+  @override
+  Stream<void> get changes => const Stream.empty();
+
+  @override
+  Future<ClipboardContent?> read() async =>
+      const .text('Meet at the north entrance, 7:30');
+
+  @override
+  Future<void> write(ClipboardContent content) async {}
+
+  @override
+  Future<void> startWatching() async {}
+
+  @override
+  Future<void> stopWatching() async {}
+}
+
+/// [_safeFeatures] with a clipboard that has something to send.
+List<FeatureUi> _withCopiedText() => [
+  for (final feature in _safeFeatures())
+    switch (feature) {
+      ClipboardFeatureUi() => ClipboardFeatureUi(
+        feature: ClipboardFeature(clipboard: _CopiedText.new),
+      ),
+      _ => feature,
+    },
+];
+
+/// Screens whose clipboard holds something to send.
+const _clipboardScreens = {'send_clipboard', 'send_clipboard_home'};
+
 /// Screens that run as a phone paired with a Mac.
 const _phoneScreens = {'lock_row', 'presentation'};
 
@@ -116,6 +156,32 @@ final _screens = <String, _Script>{
     final home = tester.element(find.byType(HomePage));
     clipboard.appActions(home, rig.featureContext).single.onPressed?.call();
     await rig.settle(tester);
+  },
+  'send_clipboard': (tester, rig, features) async {
+    final phoneId =
+        await rig.pairConnectedPhone(
+          tester,
+          phoneFeatures: phoneFeatures(),
+          name: 'Pixel 7',
+        ) ??
+        '';
+    await rig.open(tester, DevicePage(deviceId: phoneId));
+    await tester.tap(find.text('Send clipboard').last);
+    await rig.settle(tester);
+    expect(find.text('Sent to Pixel 7'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 600));
+  },
+  'send_clipboard_home': (tester, rig, features) async {
+    await rig.pairConnectedPhone(
+      tester,
+      phoneFeatures: phoneFeatures(),
+      name: 'Pixel 7',
+    );
+    await rig.settle(tester);
+    await tester.tap(find.text('Send clipboard').first);
+    await rig.settle(tester);
+    expect(find.text('Sent to Pixel 7'), findsWidgets);
+    await tester.pump(const Duration(milliseconds: 600));
   },
   'webcam_row': (tester, rig, features) async {
     final phoneId =
@@ -251,7 +317,10 @@ Envelope _clip(int index, String text, String from, {bool sensitive = false}) {
 }
 
 void main() {
-  setUpAll(loadScreenFonts);
+  setUpAll(() async {
+    await loadScreenFonts();
+    await initializeDateFormatting();
+  });
 
   for (final MapEntry(key: name, value: script) in _screens.entries) {
     for (final size in const [popover, phone]) {
@@ -277,7 +346,10 @@ void main() {
           };
           try {
             final asPhone = _phoneScreens.contains(name);
-            final features = _safeFeatures(asPhone: asPhone);
+            final features = switch (_clipboardScreens.contains(name)) {
+              true => _withCopiedText(),
+              false => _safeFeatures(asPhone: asPhone),
+            };
             final rig = await ScreenRig.create(
               tester,
               features: features,
@@ -288,6 +360,9 @@ void main() {
             await rig.show(tester);
             await script(tester, rig, features);
             await rig.capture(tester, 'quick_$name', size, brightness);
+            // Lets a toast go before the test ends.
+            await tester.pump(const Duration(seconds: 4));
+            await tester.pump(const Duration(seconds: 1));
             await rig.dispose(tester);
           } finally {
             FlutterError.onError = reportError;

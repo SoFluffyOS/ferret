@@ -92,9 +92,11 @@ class ClipboardViewModel extends ChangeNotifier {
     _ => 1,
   };
 
-  Future<void> sendClipboard({String? toDeviceId}) async {
+  /// Sends what is on this device's clipboard, and says how it went. Null
+  /// while an earlier send is still under way.
+  Future<ClipSendResult?> sendClipboard({String? toDeviceId}) async {
     if (_isSending) {
-      return;
+      return null;
     }
 
     _isSending = true;
@@ -102,8 +104,10 @@ class ClipboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _lastResult = await feature.sendClipboard(toDeviceId: toDeviceId);
+      final result = await feature.sendClipboard(toDeviceId: toDeviceId);
+      _lastResult = result;
       _lastResultAt = DateTime.now();
+      return result;
     } finally {
       _isSending = false;
       notifyListeners();
