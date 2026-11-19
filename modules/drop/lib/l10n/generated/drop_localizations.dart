@@ -476,12 +476,6 @@ abstract class DropLocalizations {
   /// **'Sent to {device}'**
   String noticeSent(String device);
 
-  /// No description provided for @noticeReceived.
-  ///
-  /// In en, this message translates to:
-  /// **'Received from {device}'**
-  String noticeReceived(String device);
-
   /// No description provided for @noticeText.
   ///
   /// In en, this message translates to:

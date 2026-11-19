@@ -415,17 +415,6 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get tryAgain => 'Thử lại';
 
   @override
-  String controllingTitle(String device) {
-    return 'Đang điều khiển $device';
-  }
-
-  @override
-  String get controllingBody => 'Điện thoại này là bàn di chuột của máy.';
-
-  @override
-  String get openTouchpad => 'Mở bàn di chuột';
-
-  @override
   String healthAsksFirst(String device) {
     return 'Hỏi trên $device trước';
   }

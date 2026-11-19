@@ -852,10 +852,6 @@
       }
     }
   },
-  "airplayListening": "Listening…",
-  "@airplayListening": {
-    "description": "This computer waits for an AirPlay connection (not audio)"
-  },
   "airplayListeningLeft": "Listening… {time}",
   "@airplayListeningLeft": {
     "description": "While this computer waits for an AirPlay connection; the time left, \"4:59\"",

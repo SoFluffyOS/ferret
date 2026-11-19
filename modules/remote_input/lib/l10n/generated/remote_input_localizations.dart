@@ -701,24 +701,6 @@ abstract class RemoteInputLocalizations {
   /// **'Try again'**
   String get tryAgain;
 
-  /// No description provided for @controllingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Controlling {device}'**
-  String controllingTitle(String device);
-
-  /// No description provided for @controllingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'This phone is its touchpad.'**
-  String get controllingBody;
-
-  /// No description provided for @openTouchpad.
-  ///
-  /// In en, this message translates to:
-  /// **'Open touchpad'**
-  String get openTouchpad;
-
   /// No description provided for @healthAsksFirst.
   ///
   /// In en, this message translates to:

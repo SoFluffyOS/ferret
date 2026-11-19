@@ -276,11 +276,6 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
-  String noticeReceived(String device) {
-    return 'Received from $device';
-  }
-
-  @override
   String noticeText(String device) {
     return 'Text from $device';
   }

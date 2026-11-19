@@ -19,13 +19,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get homeNearby => 'Lân cận';
 
   @override
-  String get homeNoDevicesTitle => 'Chưa có thiết bị nào';
-
-  @override
-  String get homeNoDevicesBody =>
-      'Ghép đôi điện thoại và máy tính để bắt đầu chuyển mọi thứ qua lại.';
-
-  @override
   String get homePairDevice => 'Thêm thiết bị';
 
   @override
@@ -61,14 +54,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   @override
   String get deviceConnectsWhenOpen =>
       'Kết nối khi Ferret đang mở trên thiết bị đó';
-
-  @override
-  String deviceLastSeen(String time) {
-    return 'Thấy lần cuối $time';
-  }
-
-  @override
-  String get nearbyPairHint => 'Chạm để ghép đôi';
 
   @override
   String get pairTitle => 'Thêm thiết bị';
@@ -122,16 +107,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairAddressHint => 'VD: 192.168.1.20:47640';
 
   @override
-  String get pairConnect => 'Ghép đôi';
-
-  @override
   String get pairCompareTitle =>
       'Kiểm tra thiết bị kia có hiện đúng mã này, rồi chạm Ghép đôi trên đó.';
-
-  @override
-  String pairCompareBody(String device) {
-    return 'Đảm bảo $device hiện cùng mã này, rồi xác nhận trên đó.';
-  }
 
   @override
   String get pairWaiting => 'Đang chờ thiết bị kia…';
@@ -191,9 +168,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get promptReject => 'Để sau';
 
   @override
-  String get deviceTitleId => 'ID thiết bị';
-
-  @override
   String deviceIdLine(String id) {
     return 'ID thiết bị $id';
   }
@@ -202,32 +176,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceActions => 'Thao tác';
 
   @override
-  String get deviceUnpair => 'Huỷ ghép đôi';
-
-  @override
-  String deviceUnpairConfirmTitle(String device) {
-    return 'Huỷ ghép đôi $device?';
-  }
-
-  @override
-  String get deviceUnpairConfirmBody =>
-      'Hai thiết bị sẽ quên nhau. Bạn có thể ghép đôi lại bất cứ lúc nào.';
-
-  @override
   String get settingsTitle => 'Cài đặt';
 
   @override
   String get settingsThisDevice => 'Thiết bị này';
-
-  @override
-  String settingsDeviceId(String id) {
-    return 'ID $id';
-  }
-
-  @override
-  String settingsPort(int port) {
-    return 'Đang nghe ở cổng $port';
-  }
 
   @override
   String get settingsPrivacy => 'Quyền riêng tư';
@@ -337,10 +289,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get welcomeTitle => 'Các thiết bị của bạn, phối hợp cùng nhau';
 
   @override
-  String get welcomeBody =>
-      'Ghép đôi điện thoại và máy tính để chuyển trang web, nội dung đang phát, tệp và bảng nhớ tạm qua lại.';
-
-  @override
   String get welcomePrivacy =>
       'Không tài khoản. Không đám mây. Chỉ trong mạng của bạn.';
 
@@ -379,20 +327,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
     );
     return 'Thấy lần cuối $_temp0 trước';
   }
-
-  @override
-  String get deviceWhy => 'Vì sao?';
-
-  @override
-  String get pausedTitle => 'Ferret đang tạm dừng';
-
-  @override
-  String pausedUntil(String time) {
-    return 'Đến $time';
-  }
-
-  @override
-  String get pausedUntilResume => 'Đến khi bạn cho chạy tiếp';
 
   @override
   String get resume => 'Tiếp tục chạy';
@@ -531,21 +465,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get doctorFixCopy => 'Sao chép chẩn đoán';
 
   @override
-  String get doctorCopied =>
-      'Đã sao chép chẩn đoán. Không chứa tên hay nội dung nào.';
-
-  @override
   String get connectTitle => 'Kết nối bằng địa chỉ';
 
   @override
   String get connectBody =>
       'Trên thiết bị kia, mở Ferret, vào Cài đặt rồi Nâng cao. Nhập địa chỉ hiện ở đó.';
-
-  @override
-  String get featureChipOff => 'Tắt';
-
-  @override
-  String get settingsPause => 'Tạm dừng';
 
   @override
   String get stayTitle => 'Giữ kết nối';
@@ -753,9 +677,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get scanButton => 'Quét mã trên máy tính';
 
   @override
-  String get scanSection => 'Quét';
-
-  @override
   String get scanNotFerret =>
       'Đây không phải mã của Ferret. Trên máy tính, mở Ferret và bấm +, rồi chọn Ghép đôi bằng mã QR.';
 
@@ -767,115 +688,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Các tính năng bổ sung bạn có thể bật. Đều không bắt buộc.';
 
   @override
-  String get onboardWelcomeTitle => 'Các thiết bị của bạn, phối hợp cùng nhau';
-
-  @override
-  String get onboardWelcomeBody =>
-      'Ferret chuyển việc bạn đang làm giữa điện thoại và máy tính.';
-
-  @override
-  String get onboardPointContinue =>
-      'Tiếp tục trang web hoặc bài hát trên thiết bị khác';
-
-  @override
-  String get onboardPointClipboard => 'Sao chép ở máy này, dán ở máy kia';
-
-  @override
-  String get onboardPointFiles => 'Gửi tệp và ảnh trong tích tắc';
-
-  @override
-  String get onboardPointPhone =>
-      'Xem cuộc gọi, tin nhắn và thông báo của điện thoại';
-
-  @override
-  String get onboardStart => 'Bắt đầu';
-
-  @override
-  String onboardStep(int step, int total) {
-    return 'Bước $step/$total';
-  }
-
-  @override
-  String get onboardNameTitle => 'Đặt tên cho thiết bị này';
-
-  @override
-  String get onboardNameBody =>
-      'Các thiết bị khác của bạn sẽ hiển thị nó bằng tên này.';
-
-  @override
   String get onboardNameLabel => 'Tên thiết bị';
-
-  @override
-  String get onboardContinue => 'Tiếp tục';
-
-  @override
-  String get onboardPairTitle => 'Ghép đôi thiết bị kia';
-
-  @override
-  String get onboardPairBodyComputer =>
-      'Mở Ferret trên điện thoại, dùng chung Wi-Fi. Điện thoại sẽ hiện ở đây.';
-
-  @override
-  String get onboardPairBodyPhone =>
-      'Mở Ferret trên máy tính, dùng chung Wi-Fi. Máy tính sẽ hiện ở đây.';
-
-  @override
-  String get onboardPairWaiting => 'Đang chờ thiết bị kia…';
-
-  @override
-  String onboardPairDone(String device) {
-    return 'Đã ghép đôi với $device';
-  }
-
-  @override
-  String get onboardShowMyCode => 'Hiện mã của tôi';
-
-  @override
-  String get onboardMoreWays => 'Cách ghép đôi khác';
-
-  @override
-  String get onboardLater => 'Để sau';
-
-  @override
-  String get onboardReadyTitle => 'Đã sẵn sàng';
-
-  @override
-  String onboardReadyBodyPaired(String device) {
-    return '$device và thiết bị này đã kết nối.';
-  }
-
-  @override
-  String get onboardReadyBodyLater =>
-      'Ghép đôi thiết bị bất cứ lúc nào bằng nút +.';
-
-  @override
-  String get onboardTipCopy =>
-      'Sao chép gì đó ở đây, rồi dán trên thiết bị kia.';
-
-  @override
-  String get onboardTipDropComputer => 'Thả tệp vào Ferret để gửi.';
-
-  @override
-  String get onboardTipSharePhone =>
-      'Dùng Chia sẻ → Gửi bằng Ferret để gửi tệp và liên kết.';
-
-  @override
-  String get onboardTipMenubar =>
-      'Ferret nằm trên thanh menu. Bấm ⇆ ở đầu màn hình.';
-
-  @override
-  String get onboardTipTray => 'Ferret nằm trong khay hệ thống, cạnh đồng hồ.';
-
-  @override
-  String get onboardTipAndroid =>
-      'Ferret giữ một thông báo im lặng để luôn kết nối.';
-
-  @override
-  String get onboardTipMore =>
-      'Bật thêm tính năng (cuộc gọi, tin nhắn, thông báo) từ màn hình chính.';
-
-  @override
-  String get onboardFinish => 'Bắt đầu dùng Ferret';
 
   @override
   String get settingsRename => 'Đổi tên';
@@ -955,9 +768,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get chipOff => 'Tắt';
-
-  @override
   String get doctorTryAgainPrimary => 'Thử lại';
 
   @override
@@ -973,16 +783,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
     );
     return 'Hãy thử:\n1. Trên $device, mở Ferret.\n2. Cho $device và $_temp0 dùng chung Wi-Fi.\n3. Wi-Fi khách và Wi-Fi văn phòng thường tách các thiết bị khỏi nhau. Hãy thử Wi-Fi ở nhà hoặc điểm phát sóng của điện thoại.';
   }
-
-  @override
-  String get pauseTitle => 'Tạm dừng Ferret?';
-
-  @override
-  String get pauseBody =>
-      'Các thiết bị của bạn sẽ không kết nối hay đồng bộ cho đến khi bạn cho chạy tiếp.';
-
-  @override
-  String get settingsConnectByHand => 'Kết nối thủ công';
 
   @override
   String get nearbyLooking => 'Đang tìm…';
@@ -1046,9 +846,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get nearbyOpenSettings => 'Mở Cài đặt';
-
-  @override
-  String get pairCantSee => 'Không thấy thiết bị của bạn?';
 
   @override
   String get pairCantSeeSteps =>
@@ -1283,9 +1080,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsAddressLabel => 'Địa chỉ';
 
   @override
-  String get settingsCopy => 'Sao chép';
-
-  @override
   String get settingsCheckNetwork => 'Kiểm tra mạng của tôi';
 
   @override
@@ -1352,9 +1146,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get qrWaiting => 'Đang chờ điện thoại của bạn…';
-
-  @override
-  String get qrScanRow => 'Quét mã QR';
 
   @override
   String get otherShowQr => 'Hiện mã QR';
@@ -1497,11 +1288,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get activityFilterAll => 'Tất cả';
 
   @override
-  String activityFilterEmpty(String device) {
-    return 'Gần đây không có gì từ $device.';
-  }
-
-  @override
   String joinedManyNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1555,12 +1341,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get emptyCantSee => 'Không thấy thiết bị?';
-
-  @override
-  String get emptyGetFerretPhone => 'Tải Ferret cho điện thoại';
-
-  @override
-  String get emptyGetFerretComputer => 'Tải Ferret cho máy tính';
 
   @override
   String get welcomeNearbyBody =>

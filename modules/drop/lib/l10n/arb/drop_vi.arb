@@ -64,7 +64,6 @@
   "noticeSending": "Đang gửi đến {device}",
   "noticeReceiving": "Đang nhận từ {device}",
   "noticeSent": "Đã gửi đến {device}",
-  "noticeReceived": "Đã nhận từ {device}",
   "noticeText": "Văn bản từ {device}",
   "noticeFailed": "Lượt truyền với {device} đã dừng",
   "noticeOffer": "{device} muốn gửi cho bạn",

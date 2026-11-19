@@ -1379,12 +1379,6 @@ abstract class MirroringLocalizations {
   /// **'Pick “{computer}”'**
   String airplayStep3(String computer);
 
-  /// This computer waits for an AirPlay connection (not audio)
-  ///
-  /// In en, this message translates to:
-  /// **'Listening…'**
-  String get airplayListening;
-
   /// While this computer waits for an AirPlay connection; the time left, "4:59"
   ///
   /// In en, this message translates to:

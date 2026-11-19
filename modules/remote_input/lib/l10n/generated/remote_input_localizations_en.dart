@@ -413,17 +413,6 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get tryAgain => 'Try again';
 
   @override
-  String controllingTitle(String device) {
-    return 'Controlling $device';
-  }
-
-  @override
-  String get controllingBody => 'This phone is its touchpad.';
-
-  @override
-  String get openTouchpad => 'Open touchpad';
-
-  @override
   String healthAsksFirst(String device) {
     return 'Asks on $device first';
   }

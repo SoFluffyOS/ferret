@@ -19,13 +19,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get homeNearby => 'Nearby';
 
   @override
-  String get homeNoDevicesTitle => 'No devices yet';
-
-  @override
-  String get homeNoDevicesBody =>
-      'Pair your phone and your computer to start passing things between them.';
-
-  @override
   String get homePairDevice => 'Add a device';
 
   @override
@@ -60,14 +53,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get deviceConnectsWhenOpen => 'Connects when Ferret is open on it';
-
-  @override
-  String deviceLastSeen(String time) {
-    return 'Last seen $time';
-  }
-
-  @override
-  String get nearbyPairHint => 'Tap to pair';
 
   @override
   String get pairTitle => 'Add a device';
@@ -121,16 +106,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairAddressHint => 'e.g. 192.168.1.20:47640';
 
   @override
-  String get pairConnect => 'Pair';
-
-  @override
   String get pairCompareTitle =>
       'Check that your other device shows this code, then tap Pair there.';
-
-  @override
-  String pairCompareBody(String device) {
-    return 'Make sure $device shows the same code, then confirm there.';
-  }
 
   @override
   String get pairWaiting => 'Waiting for your other device…';
@@ -191,9 +168,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get promptReject => 'Not now';
 
   @override
-  String get deviceTitleId => 'Device ID';
-
-  @override
   String deviceIdLine(String id) {
     return 'Device ID $id';
   }
@@ -202,32 +176,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceActions => 'Actions';
 
   @override
-  String get deviceUnpair => 'Unpair';
-
-  @override
-  String deviceUnpairConfirmTitle(String device) {
-    return 'Unpair $device?';
-  }
-
-  @override
-  String get deviceUnpairConfirmBody =>
-      'Both devices forget each other. You can pair again any time.';
-
-  @override
   String get settingsTitle => 'Settings';
 
   @override
   String get settingsThisDevice => 'This device';
-
-  @override
-  String settingsDeviceId(String id) {
-    return 'ID $id';
-  }
-
-  @override
-  String settingsPort(int port) {
-    return 'Listening on port $port';
-  }
 
   @override
   String get settingsPrivacy => 'Privacy';
@@ -339,10 +291,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get welcomeTitle => 'Your devices, working together';
 
   @override
-  String get welcomeBody =>
-      'Pair your phone and computer to pass pages, media, files and your clipboard between them.';
-
-  @override
   String get welcomePrivacy => 'No account. No cloud. Stays on your network.';
 
   @override
@@ -380,20 +328,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
     );
     return 'Last seen $_temp0 ago';
   }
-
-  @override
-  String get deviceWhy => 'Why?';
-
-  @override
-  String get pausedTitle => 'Ferret is paused';
-
-  @override
-  String pausedUntil(String time) {
-    return 'Until $time';
-  }
-
-  @override
-  String get pausedUntilResume => 'Until you resume';
 
   @override
   String get resume => 'Resume';
@@ -532,21 +466,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get doctorFixCopy => 'Copy diagnostics';
 
   @override
-  String get doctorCopied =>
-      'Diagnostics copied. They contain no names or content.';
-
-  @override
   String get connectTitle => 'Connect by address';
 
   @override
   String get connectBody =>
       'On the other device, open Ferret, then Settings and Advanced. Type the address it shows.';
-
-  @override
-  String get featureChipOff => 'Off';
-
-  @override
-  String get settingsPause => 'Pause';
 
   @override
   String get stayTitle => 'Stay connected';
@@ -758,9 +682,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get scanButton => 'Scan the code on your computer';
 
   @override
-  String get scanSection => 'Scan';
-
-  @override
   String get scanNotFerret =>
       'That\'s not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.';
 
@@ -771,114 +692,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get offersSubtitle => 'Extras you can turn on. All optional.';
 
   @override
-  String get onboardWelcomeTitle => 'Your devices, working together';
-
-  @override
-  String get onboardWelcomeBody =>
-      'Ferret passes what you\'re doing between your phone and your computer.';
-
-  @override
-  String get onboardPointContinue =>
-      'Continue a page or song on another device';
-
-  @override
-  String get onboardPointClipboard => 'Copy on one, paste on the other';
-
-  @override
-  String get onboardPointFiles => 'Send files and photos in a second';
-
-  @override
-  String get onboardPointPhone =>
-      'See your phone\'s calls, texts and notifications';
-
-  @override
-  String get onboardStart => 'Get started';
-
-  @override
-  String onboardStep(int step, int total) {
-    return 'Step $step of $total';
-  }
-
-  @override
-  String get onboardNameTitle => 'Name this device';
-
-  @override
-  String get onboardNameBody => 'Your other devices will show it by this name.';
-
-  @override
   String get onboardNameLabel => 'Device name';
-
-  @override
-  String get onboardContinue => 'Continue';
-
-  @override
-  String get onboardPairTitle => 'Pair your other device';
-
-  @override
-  String get onboardPairBodyComputer =>
-      'Open Ferret on your phone, on the same Wi-Fi. It shows up here.';
-
-  @override
-  String get onboardPairBodyPhone =>
-      'Open Ferret on your computer, on the same Wi-Fi. It shows up here.';
-
-  @override
-  String get onboardPairWaiting => 'Waiting for your other device…';
-
-  @override
-  String onboardPairDone(String device) {
-    return 'Paired with $device';
-  }
-
-  @override
-  String get onboardShowMyCode => 'Show my code instead';
-
-  @override
-  String get onboardMoreWays => 'More ways to pair';
-
-  @override
-  String get onboardLater => 'Do this later';
-
-  @override
-  String get onboardReadyTitle => 'You\'re all set';
-
-  @override
-  String onboardReadyBodyPaired(String device) {
-    return '$device and this device are connected.';
-  }
-
-  @override
-  String get onboardReadyBodyLater =>
-      'Pair a device any time with the + button.';
-
-  @override
-  String get onboardTipCopy =>
-      'Copy something here, then paste it on your other device.';
-
-  @override
-  String get onboardTipDropComputer => 'Drop files on Ferret to send them.';
-
-  @override
-  String get onboardTipSharePhone =>
-      'Use Share → Send with Ferret to send files and links.';
-
-  @override
-  String get onboardTipMenubar =>
-      'Ferret lives in the menubar. Click ⇆ at the top of the screen.';
-
-  @override
-  String get onboardTipTray => 'Ferret lives in the tray, next to the clock.';
-
-  @override
-  String get onboardTipAndroid =>
-      'Ferret keeps a quiet notification so it stays connected.';
-
-  @override
-  String get onboardTipMore =>
-      'Turn on more (calls, texts, notifications) from the home screen.';
-
-  @override
-  String get onboardFinish => 'Start using Ferret';
 
   @override
   String get settingsRename => 'Rename';
@@ -958,9 +772,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get chipOff => 'Off';
-
-  @override
   String get doctorTryAgainPrimary => 'Try again';
 
   @override
@@ -976,16 +787,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
     );
     return 'Try this:\n1. On $device, open Ferret.\n2. Put $device and $_temp0 on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
   }
-
-  @override
-  String get pauseTitle => 'Pause Ferret?';
-
-  @override
-  String get pauseBody =>
-      'Your devices won\'t connect or sync until you resume.';
-
-  @override
-  String get settingsConnectByHand => 'Connect by hand';
 
   @override
   String get nearbyLooking => 'Looking…';
@@ -1049,9 +850,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get nearbyOpenSettings => 'Open Settings';
-
-  @override
-  String get pairCantSee => 'Can\'t see your device?';
 
   @override
   String get pairCantSeeSteps =>
@@ -1285,9 +1083,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsAddressLabel => 'Address';
 
   @override
-  String get settingsCopy => 'Copy';
-
-  @override
   String get settingsCheckNetwork => 'Check my network';
 
   @override
@@ -1354,9 +1149,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get qrWaiting => 'Waiting for your phone…';
-
-  @override
-  String get qrScanRow => 'Scan a QR code';
 
   @override
   String get otherShowQr => 'Show a QR code';
@@ -1500,11 +1292,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get activityFilterAll => 'All';
 
   @override
-  String activityFilterEmpty(String device) {
-    return 'Nothing from $device lately.';
-  }
-
-  @override
   String joinedManyNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1560,12 +1347,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get emptyCantSee => 'Can\'t see it?';
-
-  @override
-  String get emptyGetFerretPhone => 'Get Ferret for your phone';
-
-  @override
-  String get emptyGetFerretComputer => 'Get Ferret for your computer';
 
   @override
   String get welcomeNearbyBody =>

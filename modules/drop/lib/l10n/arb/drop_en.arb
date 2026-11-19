@@ -348,14 +348,6 @@
       }
     }
   },
-  "noticeReceived": "Received from {device}",
-  "@noticeReceived": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
   "noticeText": "Text from {device}",
   "@noticeText": {
     "placeholders": {

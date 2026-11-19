@@ -54,7 +54,6 @@
   "composerGroup": "Tin nhắn nhóm cần MMS, mà chỉ ứng dụng nhắn tin của {name} mới gửi được. Hãy trả lời trên {name}.",
   "composerNoSend": "Tính năng gửi đang tắt trên {name}. Trên {name}: mở Ferret và cho phép SMS để trả lời từ đây.",
   "sending": "Đang gửi…",
-  "notSent": "Chưa gửi được",
   "notSentBecause": "Chưa gửi được. {reason}",
   "outcomeOffline": "{name} chưa kết nối.",
   "outcomeNoAccess": "Ferret chưa được phép gửi tin nhắn trên {name}. Trên {name}: mở Ferret và cho phép SMS.",

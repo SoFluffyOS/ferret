@@ -862,9 +862,6 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String get airplayListening => 'Đang chờ…';
-
-  @override
   String airplayListeningLeft(String time) {
     return 'Đang chờ… $time';
   }

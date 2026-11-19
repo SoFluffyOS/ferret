@@ -862,9 +862,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get airplayListening => 'Listening…';
-
-  @override
   String airplayListeningLeft(String time) {
     return 'Listening… $time';
   }

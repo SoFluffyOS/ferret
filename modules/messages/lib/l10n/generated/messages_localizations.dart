@@ -419,12 +419,6 @@ abstract class MessagesLocalizations {
   /// **'Sending…'**
   String get sending;
 
-  /// No description provided for @notSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Not sent'**
-  String get notSent;
-
   /// Under a text that failed to send. The reason is a full sentence
   ///
   /// In en, this message translates to:

@@ -276,11 +276,6 @@ class DropLocalizationsVi extends DropLocalizations {
   }
 
   @override
-  String noticeReceived(String device) {
-    return 'Đã nhận từ $device';
-  }
-
-  @override
   String noticeText(String device) {
     return 'Văn bản từ $device';
   }

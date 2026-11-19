@@ -312,16 +312,6 @@
     }
   },
   "tryAgain": "Try again",
-  "controllingTitle": "Controlling {device}",
-  "@controllingTitle": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "controllingBody": "This phone is its touchpad.",
-  "openTouchpad": "Open touchpad",
   "healthAsksFirst": "Asks on {device} first",
   "@healthAsksFirst": {
     "placeholders": {

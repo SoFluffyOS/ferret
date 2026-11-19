@@ -181,7 +181,6 @@
     }
   },
   "sending": "Sending…",
-  "notSent": "Not sent",
   "notSentBecause": "Not sent. {reason}",
   "@notSentBecause": {
     "description": "Under a text that failed to send. The reason is a full sentence",

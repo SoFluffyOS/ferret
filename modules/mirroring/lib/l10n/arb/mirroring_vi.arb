@@ -214,7 +214,6 @@
   "airplayStep1": "Mở Trung tâm điều khiển (vuốt xuống từ góc trên bên phải)",
   "airplayStep2": "Nhấn Phản chiếu màn hình",
   "airplayStep3": "Chọn “{computer}”",
-  "airplayListening": "Đang chờ…",
   "airplayListeningLeft": "Đang chờ… {time}",
   "setupStepNumbered": "{number}. {step}",
   "airplayNote": "Chỉ xem. Không có âm thanh. Thử nghiệm: một bản cập nhật iOS có thể làm hỏng tính năng này.",

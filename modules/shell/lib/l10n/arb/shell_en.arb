@@ -3,8 +3,6 @@
   "appName": "Ferret",
   "homeYourDevices": "Your devices",
   "homeNearby": "Nearby",
-  "homeNoDevicesTitle": "No devices yet",
-  "homeNoDevicesBody": "Pair your phone and your computer to start passing things between them.",
   "homePairDevice": "Add a device",
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
@@ -20,16 +18,6 @@
   "spokenProblem": "Problem",
   "spokenChecking": "Checking",
   "deviceConnectsWhenOpen": "Connects when Ferret is open on it",
-  "deviceLastSeen": "Last seen {time}",
-  "@deviceLastSeen": {
-    "description": "time is a clock time or a date, such as 14:05 or Nov 3",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "nearbyPairHint": "Tap to pair",
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
   "pairEnterCode": "Other ways",
@@ -51,16 +39,7 @@
   "pairLinkInvalid": "That isn't a Ferret pairing link.",
   "pairAddressLabel": "Address of the other device",
   "pairAddressHint": "e.g. 192.168.1.20:47640",
-  "pairConnect": "Pair",
   "pairCompareTitle": "Check that your other device shows this code, then tap Pair there.",
-  "pairCompareBody": "Make sure {device} shows the same code, then confirm there.",
-  "@pairCompareBody": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
   "pairWaiting": "Waiting for your other device…",
   "pairSuccess": "Paired with {device}",
   "@pairSuccess": {
@@ -105,7 +84,6 @@
   },
   "promptAccept": "Pair",
   "promptReject": "Not now",
-  "deviceTitleId": "Device ID",
   "deviceIdLine": "Device ID {id}",
   "@deviceIdLine": {
     "description": "On a device page, under its name. The ID is a short code like 3F2A 0718",
@@ -116,34 +94,8 @@
     }
   },
   "deviceActions": "Actions",
-  "deviceUnpair": "Unpair",
-  "deviceUnpairConfirmTitle": "Unpair {device}?",
-  "@deviceUnpairConfirmTitle": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "deviceUnpairConfirmBody": "Both devices forget each other. You can pair again any time.",
   "settingsTitle": "Settings",
   "settingsThisDevice": "This device",
-  "settingsDeviceId": "ID {id}",
-  "@settingsDeviceId": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsPort": "Listening on port {port}",
-  "@settingsPort": {
-    "placeholders": {
-      "port": {
-        "type": "int"
-      }
-    }
-  },
   "settingsPrivacy": "Privacy",
   "settingsPrivacyBody": "Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.",
   "settingsQuit": "Quit Ferret",
@@ -220,7 +172,6 @@
   },
   "menubarTipPaused": "Ferret · Paused",
   "welcomeTitle": "Your devices, working together",
-  "welcomeBody": "Pair your phone and computer to pass pages, media, files and your clipboard between them.",
   "welcomePrivacy": "No account. No cloud. Stays on your network.",
   "welcomePlatforms": "Android · iPhone · Mac · Windows · Linux",
   "deviceLastSeenJustNow": "Last seen just now",
@@ -248,18 +199,6 @@
       }
     }
   },
-  "deviceWhy": "Why?",
-  "pausedTitle": "Ferret is paused",
-  "pausedUntil": "Until {time}",
-  "@pausedUntil": {
-    "description": "time is a clock time, such as 14:05",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "pausedUntilResume": "Until you resume",
   "resume": "Resume",
   "@resume": {
     "description": "Button: Ferret runs again after a pause (not the Continue feature)"
@@ -375,11 +314,8 @@
   "doctorFixConnectByAddress": "Connect by address",
   "doctorFixPairAgain": "Pair again",
   "doctorFixCopy": "Copy diagnostics",
-  "doctorCopied": "Diagnostics copied. They contain no names or content.",
   "connectTitle": "Connect by address",
   "connectBody": "On the other device, open Ferret, then Settings and Advanced. Type the address it shows.",
-  "featureChipOff": "Off",
-  "settingsPause": "Pause",
   "stayTitle": "Stay connected",
   "stayBody": "Android stops apps in the background to save battery. These steps keep Ferret connected. It uses about 1% battery a day.",
   "stayNotifications": "Allow Ferret's notification, so Android lets it keep running.",
@@ -502,68 +438,13 @@
   "scanTitle": "Scan the code",
   "scanBody": "On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.",
   "scanButton": "Scan the code on your computer",
-  "scanSection": "Scan",
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",
   "offersTitle": "Do more",
   "@offersTitle": {
     "description": "Title of the Home card that suggests features to turn on"
   },
   "offersSubtitle": "Extras you can turn on. All optional.",
-  "onboardWelcomeTitle": "Your devices, working together",
-  "onboardWelcomeBody": "Ferret passes what you're doing between your phone and your computer.",
-  "onboardPointContinue": "Continue a page or song on another device",
-  "onboardPointClipboard": "Copy on one, paste on the other",
-  "onboardPointFiles": "Send files and photos in a second",
-  "onboardPointPhone": "See your phone's calls, texts and notifications",
-  "onboardStart": "Get started",
-  "onboardStep": "Step {step} of {total}",
-  "@onboardStep": {
-    "placeholders": {
-      "step": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "onboardNameTitle": "Name this device",
-  "onboardNameBody": "Your other devices will show it by this name.",
   "onboardNameLabel": "Device name",
-  "onboardContinue": "Continue",
-  "onboardPairTitle": "Pair your other device",
-  "onboardPairBodyComputer": "Open Ferret on your phone, on the same Wi-Fi. It shows up here.",
-  "onboardPairBodyPhone": "Open Ferret on your computer, on the same Wi-Fi. It shows up here.",
-  "onboardPairWaiting": "Waiting for your other device…",
-  "onboardPairDone": "Paired with {device}",
-  "@onboardPairDone": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "onboardShowMyCode": "Show my code instead",
-  "onboardMoreWays": "More ways to pair",
-  "onboardLater": "Do this later",
-  "onboardReadyTitle": "You're all set",
-  "onboardReadyBodyPaired": "{device} and this device are connected.",
-  "@onboardReadyBodyPaired": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "onboardReadyBodyLater": "Pair a device any time with the + button.",
-  "onboardTipCopy": "Copy something here, then paste it on your other device.",
-  "onboardTipDropComputer": "Drop files on Ferret to send them.",
-  "onboardTipSharePhone": "Use Share → Send with Ferret to send files and links.",
-  "onboardTipMenubar": "Ferret lives in the menubar. Click ⇆ at the top of the screen.",
-  "onboardTipTray": "Ferret lives in the tray, next to the clock.",
-  "onboardTipAndroid": "Ferret keeps a quiet notification so it stays connected.",
-  "onboardTipMore": "Turn on more (calls, texts, notifications) from the home screen.",
-  "onboardFinish": "Start using Ferret",
   "settingsRename": "Rename",
   "settingsRenameTitle": "Name this device",
   "thisDeviceShared": "Other accounts on this computer use Ferret too. Each one has its own devices.",
@@ -648,7 +529,6 @@
       }
     }
   },
-  "chipOff": "Off",
   "doctorTryAgainPrimary": "Try again",
   "doctorNotAnsweringSteps": "Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
   "@doctorNotAnsweringSteps": {
@@ -661,9 +541,6 @@
       }
     }
   },
-  "pauseTitle": "Pause Ferret?",
-  "pauseBody": "Your devices won't connect or sync until you resume.",
-  "settingsConnectByHand": "Connect by hand",
   "nearbyLooking": "Looking…",
   "nearbyNone": "No devices found yet.",
   "nearbyLookAgain": "Look again",
@@ -729,7 +606,6 @@
   "nearbyBlockedTitle": "Ferret can't look for your devices",
   "nearbyBlockedBody": "Your system needs your OK. Allow Ferret under Privacy & Security, Local Network.",
   "nearbyOpenSettings": "Open Settings",
-  "pairCantSee": "Can't see your device?",
   "pairCantSeeSteps": "1. Open Ferret on the other device.\n2. Put both on the same Wi-Fi.\n3. Still nothing? Check my network tells you why.",
   "promptAlsoOne": "You'll also be connected to {first}.",
   "@promptAlsoOne": {
@@ -930,7 +806,6 @@
   "settingsLicense": "Free software under GPL-3.0. The protocol is open too, under MIT.",
   "settingsDeviceIdLabel": "Device ID",
   "settingsAddressLabel": "Address",
-  "settingsCopy": "Copy",
   "settingsCheckNetwork": "Check my network",
   "settingsNothingHere": "Nothing to set here yet. Pair a device first.",
   "settingsShortcutTitle": "Open Ferret from anywhere",
@@ -983,7 +858,6 @@
   },
   "qrScanEnough": "Scanning is enough. No code to compare.",
   "qrWaiting": "Waiting for your phone…",
-  "qrScanRow": "Scan a QR code",
   "otherShowQr": "Show a QR code",
   "otherLinkTitle": "With a link",
   "otherLinkBody": "Copy this device's link and open it on the other one, or paste the other one's link here.",
@@ -1085,14 +959,6 @@
     }
   },
   "activityFilterAll": "All",
-  "activityFilterEmpty": "Nothing from {device} lately.",
-  "@activityFilterEmpty": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
   "joinedManyNotice": "{count, plural, =1{1 device joined your devices} other{{count} devices joined your devices}}",
   "@joinedManyNotice": {
     "placeholders": {
@@ -1139,8 +1005,6 @@
   "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
   "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
   "emptyCantSee": "Can't see it?",
-  "emptyGetFerretPhone": "Get Ferret for your phone",
-  "emptyGetFerretComputer": "Get Ferret for your computer",
   "welcomeNearbyBody": "Tap Pair next to your other device. You only do it once.",
   "nearbyNotTheOne": "Not the one you want? Open Ferret on your other device.",
   "activityTitle": "Activity",

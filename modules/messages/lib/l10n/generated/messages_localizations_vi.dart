@@ -218,9 +218,6 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
   String get sending => 'Đang gửi…';
 
   @override
-  String get notSent => 'Chưa gửi được';
-
-  @override
   String notSentBecause(String reason) {
     return 'Chưa gửi được. $reason';
   }

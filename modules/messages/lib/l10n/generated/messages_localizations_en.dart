@@ -219,9 +219,6 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get sending => 'Sending…';
 
   @override
-  String get notSent => 'Not sent';
-
-  @override
   String notSentBecause(String reason) {
     return 'Not sent. $reason';
   }
