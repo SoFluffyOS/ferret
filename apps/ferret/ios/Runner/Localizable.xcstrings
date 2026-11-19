@@ -1,0 +1,237 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ is ringing.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đang đổ chuông."
+          }
+        }
+      }
+    },
+    "%@ isn't connected right now. Open Ferret on both and try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hiện chưa kết nối. Hãy mở Ferret trên cả hai thiết bị rồi thử lại."
+          }
+        }
+      }
+    },
+    "Device": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết bị"
+          }
+        }
+      }
+    },
+    "Ferret didn't start in time. Try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret chưa khởi động kịp. Hãy thử lại."
+          }
+        }
+      }
+    },
+    "Ferret on %@ can't do that. Update it there.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret trên %@ chưa làm được việc này. Hãy cập nhật Ferret ở đó."
+          }
+        }
+      }
+    },
+    "File": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp"
+          }
+        }
+      }
+    },
+    "It didn't work.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thành công."
+          }
+        }
+      }
+    },
+    "Link": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liên kết"
+          }
+        }
+      }
+    },
+    "No paired device has that name.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có thiết bị đã ghép nối nào tên như vậy."
+          }
+        }
+      }
+    },
+    "Open Link on Device": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở liên kết trên thiết bị"
+          }
+        }
+      }
+    },
+    "Opened on %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã mở trên %@."
+          }
+        }
+      }
+    },
+    "Opens a web page or a map link on one of your devices.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở một trang web hoặc liên kết bản đồ trên một thiết bị của bạn."
+          }
+        }
+      }
+    },
+    "Ring Device": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đổ chuông thiết bị"
+          }
+        }
+      }
+    },
+    "Rings one of your devices so you can find it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đổ chuông một thiết bị của bạn để bạn tìm thấy nó."
+          }
+        }
+      }
+    },
+    "Send Clipboard": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi bộ nhớ tạm"
+          }
+        }
+      }
+    },
+    "Send File": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi tệp"
+          }
+        }
+      }
+    },
+    "Sending to %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang gửi tới %@."
+          }
+        }
+      }
+    },
+    "Sends a file to one of your devices.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi một tệp tới một thiết bị của bạn."
+          }
+        }
+      }
+    },
+    "Sends what you copied to one of your devices, or to every connected one.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi nội dung bạn đã sao chép tới một thiết bị của bạn, hoặc tới mọi thiết bị đang kết nối."
+          }
+        }
+      }
+    },
+    "Sent.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã gửi."
+          }
+        }
+      }
+    },
+    "There is nothing to send.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì để gửi."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
