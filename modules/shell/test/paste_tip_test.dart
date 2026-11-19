@@ -135,4 +135,65 @@ void main() {
 
     expect(find.text(_tip), findsNothing);
   });
+
+  group('Show tips again', () {
+    testWidgets('brings a waved-off tip back without a restart', (
+      tester,
+    ) async {
+      await start(tester);
+      await tester.runAsync(() => settings.set(TipsFrame.dragDoneKey, true));
+      await showTips(tester);
+      expect(find.textContaining('Try it:'), findsNothing);
+
+      await tester.runAsync(() => Tips(settings).showAgain());
+      await tester.pump();
+
+      expect(find.textContaining('Try it:'), findsOneWidget);
+      expect(settings.get<bool>(TipsFrame.copyDoneKey), isFalse);
+      expect(settings.get<bool>(TipsFrame.dragDoneKey), isFalse);
+    });
+
+    test('only what happens after it counts as trying a tip', () async {
+      final store = MemorySettingsStore();
+      final tips = Tips(store);
+      final asked = DateTime(2026, 11, 19, 12);
+      expect(tips.countsAsTried(DateTime(2026)), isTrue);
+      expect(tips.countsAsTried(null), isTrue);
+
+      await tips.showAgain(now: asked);
+
+      expect(tips.isCopyDone, isFalse);
+      expect(
+        tips.countsAsTried(asked.subtract(const Duration(days: 1))),
+        isFalse,
+      );
+      expect(tips.countsAsTried(null), isFalse);
+      expect(tips.countsAsTried(asked.add(const Duration(seconds: 5))), isTrue);
+    });
+
+    testWidgets('the row in About says the tips are back', (tester) async {
+      await start(tester);
+      await tester.pumpWidget(
+        testApp(
+          ShellScope(
+            features: const [],
+            featureContext: FeatureContext(
+              engine: engine,
+              navigatorKey: GlobalKey<NavigatorState>(),
+              notifier: _QuietNotifier(),
+            ),
+            child: const TipsAgainRow(),
+          ),
+        ),
+      );
+      expect(settings.get<bool>(TipsFrame.copyDoneKey), isTrue);
+
+      await tester.tap(find.text('Show tips again'));
+      await tester.pump();
+
+      expect(find.text('Tips are back, one at a time.'), findsOneWidget);
+      expect(settings.get<bool>(TipsFrame.copyDoneKey), isFalse);
+      expect(settings.get<int>(Tips.againSinceKey), isNotNull);
+    });
+  });
 }

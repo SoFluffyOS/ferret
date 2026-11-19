@@ -14,8 +14,8 @@ import 'package:url_launcher/url_launcher.dart';
 /// The things worth trying first, one at a time, each shown once: copy and
 /// paste across, then (on a Mac) dragging files onto the menubar icon. On
 /// an iPhone, the first Send clipboard brings up how to stop iOS asking
-/// "Allow Paste" every time. A tip goes away for good when the person does
-/// the thing or waves it off.
+/// "Allow Paste" every time. A tip goes away when the person does the
+/// thing or waves it off, until Settings → About brings the tips back.
 class TipsFrame extends StatefulWidget {
   const TipsFrame({super.key, required this.device});
 
@@ -23,9 +23,9 @@ class TipsFrame extends StatefulWidget {
   final DeviceStatus device;
 
   /// Settings keys that remember a tip was shown.
-  static const copyDoneKey = 'shell.tip_copy_done';
-  static const dragDoneKey = 'shell.tip_drag_done';
-  static const pasteDoneKey = 'shell.tip_paste_done';
+  static const copyDoneKey = Tips.copyDoneKey;
+  static const dragDoneKey = Tips.dragDoneKey;
+  static const pasteDoneKey = Tips.pasteDoneKey;
 
   @override
   State<TipsFrame> createState() => _TipsFrameState();
@@ -53,13 +53,9 @@ class _TipsFrameState extends State<TipsFrame> {
     super.initState();
     final scope = ShellScope.read(context);
     _settings = scope.featureContext.engine.settings;
-    _copyDone = _settings.get<bool>(TipsFrame.copyDoneKey) ?? false;
-    _dragDone = _settings.get<bool>(TipsFrame.dragDoneKey) ?? false;
-    _pasteDone = _settings.get<bool>(TipsFrame.pasteDoneKey) ?? false;
+    _readDone();
     _hasReadClipboard = _sentClipboardBefore(scope);
-    if (_asksBeforePaste && !_pasteDone && !_hasReadClipboard) {
-      _settingChanges = _settings.changes.listen(_onSettingChanged);
-    }
+    _settingChanges = _settings.changes.listen(_onSettingChanged);
     _changes = Listenable.merge([
       for (final feature in scope.features) ?feature.uiChanges,
     ])..addListener(_onActivity);
@@ -83,9 +79,27 @@ class _TipsFrameState extends State<TipsFrame> {
     );
   }
 
+  void _readDone() {
+    final tips = Tips(_settings);
+    _copyDone = tips.isCopyDone;
+    _dragDone = tips.isDragDone;
+    _pasteDone = tips.isPasteDone;
+  }
+
   /// Send clipboard counts its use when pressed, which is when iOS asks.
+  /// The tips' own keys change under this frame when Settings brings them
+  /// back.
   void _onSettingChanged(String key) {
-    if (!mounted || !key.startsWith(DeviceActionUsage.keyPrefix)) {
+    if (!mounted) {
+      return;
+    }
+
+    if (Tips.doneKeys.contains(key)) {
+      setState(_readDone);
+      return;
+    }
+
+    if (_hasReadClipboard || !key.startsWith(DeviceActionUsage.keyPrefix)) {
       return;
     }
 
@@ -95,8 +109,6 @@ class _TipsFrameState extends State<TipsFrame> {
       return;
     }
 
-    unawaited(_settingChanges?.cancel());
-    _settingChanges = null;
     setState(() => _hasReadClipboard = true);
   }
 
@@ -128,10 +140,13 @@ class _TipsFrameState extends State<TipsFrame> {
 
   bool _hasTrace(String featureId) {
     final scope = ShellScope.read(context);
+    final tips = Tips(_settings);
     return scope.features.any(
       (feature) =>
           feature.featureId == featureId &&
-          feature.activity(context, scope.featureContext).isNotEmpty,
+          feature
+              .activity(context, scope.featureContext)
+              .any((item) => tips.countsAsTried(item.at)),
     );
   }
 

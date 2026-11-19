@@ -20,6 +20,9 @@ import 'support/screen_harness.dart';
 
 const _oldPixelId = '99aa88bb77cc3f2a';
 
+/// The window, where the line about an update sits under the device list.
+const _window = CaptureSize('window', 1000, 720);
+
 /// The Pixel 7 from before the reset: paired ten months ago, gone for four.
 Future<void> _addOldPixel(WidgetTester tester, ScreenRig rig) async {
   await tester.runAsync(() async {
@@ -116,7 +119,7 @@ void main() {
   setUpAll(loadScreenFonts);
 
   for (final MapEntry(key: name, value: script) in _screens.entries) {
-    for (final size in const [popover, phone]) {
+    for (final size in [popover, phone, if (name == 'home') _window]) {
       for (final brightness in Brightness.values) {
         if (brightness == .dark && !size.darkToo) {
           continue;

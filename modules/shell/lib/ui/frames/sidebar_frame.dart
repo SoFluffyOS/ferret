@@ -12,6 +12,7 @@ import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/sidebar_nearby_frame.dart';
+import 'package:shell/ui/frames/whats_new_frame.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -20,7 +21,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A window's device list: your devices, the selected one opened to its
 /// sections, who is nearby, then Activity and Settings. What is selected
-/// here is what the pane next to it shows.
+/// here is what the pane next to it shows. After an update, one line under
+/// the list says so.
 class SidebarFrame extends StatefulWidget {
   const SidebarFrame({super.key});
 
@@ -185,6 +187,7 @@ class _SidebarFrameState extends State<SidebarFrame> {
                     ),
                   ),
                 ),
+                const WhatsNewFrame(),
               ],
             ),
           ),

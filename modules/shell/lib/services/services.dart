@@ -27,6 +27,7 @@ export 'package:shell/services/secret_store_factory.dart';
 export 'package:shell/services/settled_use.dart';
 export 'package:shell/services/shared_computer.dart';
 export 'package:shell/services/system_notifier.dart';
+export 'package:shell/services/tips.dart';
 export 'package:shell/services/whats_new.dart';
 export 'package:shell/services/window_commands.dart';
 export 'package:shell/services/window_drop_targets.dart';

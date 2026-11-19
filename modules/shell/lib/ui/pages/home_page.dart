@@ -78,7 +78,9 @@ class HomePage extends StatelessWidget {
           const NeedsYouFrame(),
           const JoinedNoticesFrame(),
           const SuccessorsFrame(),
-          const WhatsNewFrame(),
+          // Where there is a device list, the line sits under it, so it
+          // shows whatever the pane is on.
+          if (!WindowLayout.splits(context)) const WhatsNewFrame(),
           if (hasDevices)
             for (final feature in scope.features)
               FeatureCardSlot(

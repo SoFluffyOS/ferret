@@ -35,6 +35,7 @@ export 'package:shell/ui/frames/sidebar_nearby_frame.dart';
 export 'package:shell/ui/frames/stay_connected_card.dart';
 export 'package:shell/ui/frames/successors_frame.dart';
 export 'package:shell/ui/frames/this_device_card.dart';
+export 'package:shell/ui/frames/tips_again_row.dart';
 export 'package:shell/ui/frames/tips_frame.dart';
 export 'package:shell/ui/frames/whats_new_frame.dart';
 export 'package:shell/ui/frames/window_menu_frame.dart';

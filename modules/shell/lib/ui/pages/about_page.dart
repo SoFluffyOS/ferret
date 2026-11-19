@@ -2,9 +2,11 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/frames/tips_again_row.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The privacy promise, the version and the licence.
+/// The privacy promise, a way to see the tips again, the version and the
+/// licence.
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
@@ -22,11 +24,20 @@ class AboutPage extends StatelessWidget {
       children: [
         SectionTitle(l10n.settingsPrivacy),
         SurfaceCard(
-          child: Text(
-            l10n.settingsPrivacyBody,
-            style: typography.body2.copyWith(color: palette.text),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              Text(
+                l10n.settingsPrivacyBody,
+                style: typography.body2.copyWith(color: palette.text),
+              ),
+              Spacing.v8,
+              Text(l10n.settingsPrivacyPerDevice, style: muted),
+            ],
           ),
         ),
+        Spacing.v24,
+        const GroupedCard(children: [TipsAgainRow()]),
         Spacing.v16,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
