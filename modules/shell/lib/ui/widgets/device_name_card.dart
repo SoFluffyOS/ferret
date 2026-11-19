@@ -42,17 +42,25 @@ class DeviceNameCard extends StatefulWidget {
 
 class _DeviceNameCardState extends State<DeviceNameCard> {
   final TextEditingController _name = TextEditingController();
+  final FocusNode _focus = FocusNode();
   bool _editing = false;
 
   @override
   void dispose() {
     _name.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
   void _edit() {
-    _name.text = widget.nickname ?? widget.ownName;
+    _name
+      ..text = widget.nickname ?? widget.ownName
+      ..selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: _name.text.length,
+      );
     setState(() => _editing = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _focus.requestFocus());
   }
 
   void _save(String? name) {
@@ -86,6 +94,7 @@ class _DeviceNameCardState extends State<DeviceNameCard> {
               Spacing.v12,
               InputText(
                 controller: _name,
+                focusNode: _focus,
                 hintText: widget.ownName,
                 maxLength: 40,
                 onSubmitted: _save,

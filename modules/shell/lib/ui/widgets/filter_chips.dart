@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A row of capsules to narrow a list down, one of them picked, such as
-/// "All", "Pixel 7", "iPhone" over Activity. Scrolls sideways when they
-/// don't fit.
+/// "All", "Pixel 7", "iPhone" over Activity. Wraps onto a second line when
+/// they don't fit.
 class FilterChips extends StatelessWidget {
   const FilterChips({
     super.key,
@@ -24,13 +24,13 @@ class FilterChips extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return SingleChildScrollView(
-      scrollDirection: .horizontal,
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: Spacing.d8),
-      child: Row(
+      child: Wrap(
+        spacing: Spacing.d8,
+        runSpacing: Spacing.d8,
         children: [
-          for (final (index, label) in labels.indexed) ...[
-            if (index > 0) Spacing.h8,
+          for (final (index, label) in labels.indexed)
             Semantics(
               selected: index == selected,
               button: true,
@@ -63,7 +63,6 @@ class FilterChips extends StatelessWidget {
                 ),
               ),
             ),
-          ],
         ],
       ),
     );
