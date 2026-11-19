@@ -540,9 +540,13 @@ class ScreenRig {
 void mockPlugins(WidgetTester tester) {
   final folder = Directory.systemTemp.createTempSync('ferret_screens');
   AppPaths.use(FerretPaths(folder.path));
+  final downloads = Directory('${folder.path}/Downloads')..createSync();
   tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/path_provider'),
-    (call) async => folder.path,
+    (call) async => switch (call.method) {
+      'getDownloadsDirectory' => downloads.path,
+      _ => folder.path,
+    },
   );
   addTearDown(() {
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
