@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:iphone/iphone.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:media/media.dart';
@@ -449,7 +450,10 @@ final screens = <Screen>[
 // to `temp/screens/overflows.txt` instead of failing the run: with real fonts
 // they are findings, not harness bugs.
 void main() {
-  setUpAll(loadScreenFonts);
+  setUpAll(() async {
+    await loadScreenFonts();
+    await initializeDateFormatting();
+  });
   tearDownAll(() async {
     await screensDirectory.create(recursive: true);
     await File('${screensDirectory.path}/overflows.txt').writeAsString(
