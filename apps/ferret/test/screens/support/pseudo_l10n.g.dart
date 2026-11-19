@@ -218,6 +218,9 @@ class PseudoCallsLocalizations extends CallsLocalizationsEn {
   String noticeIncomingBody(String device) =>
       pseudo(super.noticeIncomingBody(device));
   @override
+  String privateCallCover(String device) =>
+      pseudo(super.privateCallCover(device));
+  @override
   String noticeMissedBody(String caller, String device) =>
       pseudo(super.noticeMissedBody(caller, device));
   @override
@@ -544,6 +547,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get back => pseudo(super.back);
   @override
+  String get actionTryAll => pseudo(super.actionTryAll);
+  @override
   String activityFrom(String what, String device) =>
       pseudo(super.activityFrom(what, device));
   @override
@@ -746,6 +751,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   String filesOffline(String device) => pseudo(super.filesOffline(device));
   @override
   String filesNone(String device) => pseudo(super.filesNone(device));
+  @override
+  String progressWeak(String progress) => pseudo(super.progressWeak(progress));
 }
 
 class PseudoFindLocalizations extends FindLocalizationsEn {
@@ -3055,22 +3062,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get connectAction => pseudo(super.connectAction);
   @override
-  String get thisMac => pseudo(super.thisMac);
-  @override
-  String get thisPhone => pseudo(super.thisPhone);
-  @override
-  String get thisTablet => pseudo(super.thisTablet);
-  @override
-  String get thisComputer => pseudo(super.thisComputer);
-  @override
-  String get thisMacStart => pseudo(super.thisMacStart);
-  @override
-  String get thisPhoneStart => pseudo(super.thisPhoneStart);
-  @override
-  String get thisTabletStart => pseudo(super.thisTabletStart);
-  @override
-  String get thisComputerStart => pseudo(super.thisComputerStart);
-  @override
   String get settingsGroupClipboard => pseudo(super.settingsGroupClipboard);
   @override
   String get settingsGroupFiles => pseudo(super.settingsGroupFiles);
@@ -3364,6 +3355,16 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get replaceKeepBoth => pseudo(super.replaceKeepBoth);
   @override
   String get whatsNewAction => pseudo(super.whatsNewAction);
+  @override
+  String get settingsTipsAgain => pseudo(super.settingsTipsAgain);
+  @override
+  String get settingsTipsAgainDetail => pseudo(super.settingsTipsAgainDetail);
+  @override
+  String get settingsTipsAgainDone => pseudo(super.settingsTipsAgainDone);
+  @override
+  String get settingsPrivacyPerDevice => pseudo(super.settingsPrivacyPerDevice);
+  @override
+  String get deviceAway => pseudo(super.deviceAway);
   @override
   String deviceLastSeen(String time) => pseudo(super.deviceLastSeen(time));
   @override
