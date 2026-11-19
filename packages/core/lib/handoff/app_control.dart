@@ -13,6 +13,12 @@ typedef AppControlHandler = Future<Map<String, Object?>> Function(
   Map<String, Object?> arguments,
 );
 
+/// Streams what happens in the running app to `ferret-cli watch`, one JSON
+/// object per event, for as long as the command keeps listening.
+typedef AppControlWatcher = Stream<Map<String, Object?>> Function(
+  Map<String, Object?> arguments,
+);
+
 /// Lets `ferret-cli` ask the running app to do something and wait for the
 /// answer, such as ringing a device or reading the last clip that arrived.
 ///
@@ -24,6 +30,9 @@ class AppControl {
     : _file = File(p.join(directory, _fileName));
 
   static const String _fileName = 'app_control.json';
+
+  /// The command that keeps the connection open and streams events.
+  static const String watchCommand = 'watch';
   static const Duration _connectPatience = Duration(seconds: 2);
 
   /// How long a command may take, such as waiting for a phone to ring.
@@ -37,10 +46,14 @@ class AppControl {
   ServerSocket? _server;
   String _secret = '';
   AppControlHandler? _handler;
+  AppControlWatcher? _watcher;
 
-  /// Starts answering commands with [handler]. Quietly does nothing when
-  /// this computer won't let it listen.
-  Future<void> listen(AppControlHandler handler) async {
+  /// Starts answering commands with [handler], and [watchCommand] with
+  /// [watch]. Quietly does nothing when this computer won't let it listen.
+  Future<void> listen(
+    AppControlHandler handler, {
+    AppControlWatcher? watch,
+  }) async {
     if (_server != null) {
       return;
     }
@@ -49,6 +62,7 @@ class AppControl {
       final server = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
       _secret = _newSecret();
       _handler = handler;
+      _watcher = watch;
       await _file.parent.create(recursive: true);
       await _file.writeAsString('');
       await _keepPrivate(_file);
@@ -69,43 +83,102 @@ class AppControl {
     Map<String, Object?> arguments = const {},
   ]) async {
     try {
-      final address = jsonDecode(await _file.readAsString());
-      if (address case {
-        'port': final int port,
-        'secret': final String secret,
-      }) {
-        final socket = await Socket.connect(
-          InternetAddress.loopbackIPv4,
-          port,
-          timeout: _connectPatience,
-        );
-        socket.writeln(
-          jsonEncode({
-            'secret': secret,
-            'command': command,
-            'arguments': arguments,
-          }),
-        );
-        await socket.flush();
-        final line = await _firstLine(socket).timeout(patience);
-        socket.destroy();
-
-        return switch (jsonDecode(line)) {
-          final Map<String, Object?> answer => answer,
-          _ => null,
-        };
+      final socket = await _send(command, arguments);
+      if (socket == null) {
+        return null;
       }
 
-      return null;
+      final line = await _firstLine(socket).timeout(patience);
+      socket.destroy();
+
+      return switch (jsonDecode(line)) {
+        final Map<String, Object?> answer => answer,
+        _ => null,
+      };
     } on Object {
       return null;
     }
+  }
+
+  /// What happens in the running app from now on, one JSON object per
+  /// event, until the returned stream's listener cancels or the app quits.
+  /// Null when no app is running.
+  Future<Stream<Map<String, Object?>>?> watch([
+    Map<String, Object?> arguments = const {},
+  ]) async {
+    final Socket? socket;
+    try {
+      socket = await _send(watchCommand, arguments);
+    } on Object {
+      return null;
+    }
+
+    if (socket == null) {
+      return null;
+    }
+
+    final controller = StreamController<Map<String, Object?>>();
+    final lines = utf8.decoder.bind(socket).transform(const LineSplitter());
+    StreamSubscription<String>? subscription;
+    controller
+      ..onListen = () {
+        subscription = lines.listen(
+          (line) => _addEvent(controller, line),
+          onError: (Object _) => unawaited(controller.close()),
+          onDone: () => unawaited(controller.close()),
+        );
+      }
+      ..onCancel = () async {
+        await subscription?.cancel();
+        socket?.destroy();
+      };
+
+    return controller.stream;
+  }
+
+  static void _addEvent(
+    StreamController<Map<String, Object?>> controller,
+    String line,
+  ) {
+    try {
+      if (jsonDecode(line) case final Map<String, Object?> event) {
+        controller.add(event);
+      }
+    } on FormatException {
+      return;
+    }
+  }
+
+  Future<Socket?> _send(String command, Map<String, Object?> arguments) async {
+    final address = jsonDecode(await _file.readAsString());
+    if (address case {
+      'port': final int port,
+      'secret': final String secret,
+    }) {
+      final socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        port,
+        timeout: _connectPatience,
+      );
+      socket.writeln(
+        jsonEncode({
+          'secret': secret,
+          'command': command,
+          'arguments': arguments,
+        }),
+      );
+      await socket.flush();
+      return socket;
+    }
+
+    return null;
   }
 
   Future<void> dispose() async {
     final server = _server;
     _server = null;
     _handler = null;
+    _watcher = null;
     await server?.close();
     if (server == null) {
       return;
@@ -119,9 +192,16 @@ class AppControl {
   }
 
   Future<void> _answer(Socket socket) async {
+    unawaited(socket.done.then<void>((_) {}, onError: (Object _) {}));
+    final lines = StreamIterator(
+      utf8.decoder.bind(socket).transform(const LineSplitter()),
+    );
     try {
-      final line = await _firstLine(socket).timeout(_connectPatience);
-      final request = jsonDecode(line);
+      if (!await lines.moveNext().timeout(_connectPatience)) {
+        return;
+      }
+
+      final request = jsonDecode(lines.current);
       if (request
           case {
             'secret': final String secret,
@@ -129,6 +209,11 @@ class AppControl {
             'arguments': final Map<String, Object?> arguments,
           }
           when secret == _secret) {
+        if (command == watchCommand) {
+          await _stream(socket, lines, arguments);
+          return;
+        }
+
         final handler = _handler;
         if (handler == null) {
           return;
@@ -141,7 +226,31 @@ class AppControl {
     } on Object catch (error) {
       printWarning('App control request failed: ${error.runtimeType}');
     } finally {
+      await lines.cancel();
       socket.destroy();
+    }
+  }
+
+  /// Writes each event to [socket] until the other end hangs up.
+  Future<void> _stream(
+    Socket socket,
+    StreamIterator<String> lines,
+    Map<String, Object?> arguments,
+  ) async {
+    final watcher = _watcher;
+    if (watcher == null) {
+      socket.writeln(jsonEncode({'ok': false, 'error': 'not_supported'}));
+      await socket.flush();
+      return;
+    }
+
+    final events = watcher(arguments).listen(
+      (event) => socket.writeln(jsonEncode(event)),
+    );
+    try {
+      while (await lines.moveNext()) {}
+    } finally {
+      await events.cancel();
     }
   }
 
