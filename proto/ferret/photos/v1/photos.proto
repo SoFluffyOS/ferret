@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package ferret.photos.v1;
+
+// Lets a computer browse a phone's recent photos and screenshots. The phone
+// answers only devices its owner allowed (off by default) and never deletes
+// anything. Full files travel through drop's transfer path.
+
+// What a photo is.
+enum PhotoKind {
+  PHOTO_KIND_UNSPECIFIED = 0;
+  PHOTO_KIND_PHOTO = 1;
+  // A screenshot or screen recording still, as the phone files it.
+  PHOTO_KIND_SCREENSHOT = 2;
+  PHOTO_KIND_VIDEO = 3;
+}
+
+// How much the asking device may see right now.
+enum PhotoAccess {
+  PHOTO_ACCESS_UNSPECIFIED = 0;
+  // The phone's owner hasn't let the asking device see photos.
+  PHOTO_ACCESS_NOT_ALLOWED = 1;
+  // The phone's system hasn't given Ferret photo access yet, or it was
+  // turned off.
+  PHOTO_ACCESS_NO_PERMISSION = 2;
+  // Only the photos the owner picked: Android 14's "Selected photos" or the
+  // iPhone's limited library.
+  PHOTO_ACCESS_LIMITED = 3;
+  PHOTO_ACCESS_FULL = 4;
+  // The phone can't read photos right now, such as an iPhone with Ferret
+  // in the background.
+  PHOTO_ACCESS_UNAVAILABLE = 5;
+}
+
+// One photo or video on the phone. Ids are opaque and only mean something
+// to the phone that sent them.
+message PhotoItem {
+  string id = 1;
+  // When it was taken (or added), in milliseconds since the Unix epoch.
+  int64 taken_at_ms = 2;
+  uint32 width = 3;
+  uint32 height = 4;
+  PhotoKind kind = 5;
+  // Bytes, or 0 when unknown.
+  uint64 size = 6;
+  // The file name on the phone, such as "IMG_2041.jpg".
+  string name = 7;
+  // Videos only.
+  uint32 duration_ms = 8;
+}
+
+// Asks for a page of photos, newest first (a request, answered with
+// PhotoList).
+message PhotoListRequest {
+  // Empty for the first page, else the previous page's next_cursor.
+  string cursor = 1;
+  // At most this many; the phone may send fewer and caps it at 200.
+  uint32 limit = 2;
+}
+
+message PhotoList {
+  repeated PhotoItem items = 1;
+  // Empty when this was the last page.
+  string next_cursor = 2;
+  PhotoAccess access = 3;
+  // How many photos the asking device can see in all, or 0 when unknown.
+  uint32 total = 4;
+}
+
+// Asks for a small JPEG of one photo (a request, answered with Thumbnail).
+message ThumbnailRequest {
+  string id = 1;
+  // The longest side, in pixels. The phone caps it at 2048.
+  uint32 max_px = 2;
+}
+
+message Thumbnail {
+  string id = 1;
+  // Empty when the photo is gone or the access changed; see access.
+  bytes jpeg = 2;
+  PhotoAccess access = 3;
+}
+
+// Asks the phone to send these photos' full files through drop (a request,
+// answered with PhotoFetchReply). The asking device accepts that transfer
+// on its own: it asked for it.
+message PhotoFetchRequest {
+  repeated string ids = 1;
+}
+
+message PhotoFetchReply {
+  // The drop transfer that carries the files, or empty when none could be
+  // sent.
+  string transfer_id = 1;
+  PhotoAccess access = 2;
+  // How many of the asked ids weren't found any more.
+  uint32 missing = 3;
+}
+
+// Tells the phone whether the sender wants new screenshots sent to it as
+// soon as they are taken, while Ferret runs. Sent again after each
+// reconnect; the phone forgets it when the session ends. No reply.
+message ScreenshotSubscription {
+  bool enabled = 1;
+}
+
+// The phone is sending a new screenshot through drop. Sent just before that
+// transfer's offer. No reply.
+message ScreenshotSent {
+  string transfer_id = 1;
+  PhotoItem item = 2;
+}
+
+// Asks the phone's owner to share photos with the sender, or more of them.
+// The phone shows a notice; nothing changes until its owner acts. No reply.
+message PhotoAccessPrompt {}
