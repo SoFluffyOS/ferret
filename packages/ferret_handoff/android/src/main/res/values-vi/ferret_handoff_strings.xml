@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ferret_handoff_share_label">Tiếp tục trên…</string>
+    <string name="ferret_handoff_assistant_label">Ferret</string>
+    <string name="ferret_handoff_choose_device">Tiếp tục trên</string>
+    <string name="ferret_handoff_nothing_to_send">Ở đây không có gì để tiếp tục.</string>
+    <string name="ferret_handoff_nothing_on_screen">Màn hình này không chia sẻ trang hay liên kết nào. Hãy kiểm tra \"Sử dụng văn bản từ màn hình\" đã bật trong cài đặt trợ lý.</string>
+    <string name="ferret_handoff_no_devices">Chưa có thiết bị nào được ghép đôi. Mở Ferret để ghép đôi.</string>
+    <string name="ferret_handoff_open_app">Mở Ferret</string>
+    <string name="ferret_handoff_cancel">Huỷ</string>
+    <string name="ferret_handoff_sent">Đã gửi tới %1$s</string>
+    <string name="ferret_handoff_sending">Đang gửi tới %1$s…</string>
+    <string name="ferret_handoff_not_sent">Không liên lạc được với %1$s. Thiết bị đã bật và ở cùng mạng chưa?</string>
+    <string name="ferret_handoff_queued">Đang mở Ferret để gửi</string>
+</resources>

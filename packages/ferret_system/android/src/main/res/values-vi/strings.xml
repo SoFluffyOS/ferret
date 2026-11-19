@@ -1,0 +1,24 @@
+<resources>
+    <string name="ferret_system_channel_name">Luôn kết nối</string>
+    <string name="ferret_system_channel_description">Giữ Ferret kết nối với thiết bị của bạn. Bạn có thể ẩn thông báo này ở đây, Ferret vẫn chạy.</string>
+    <string name="ferret_system_waiting_title">Đang chờ thiết bị của bạn</string>
+    <string name="ferret_system_waiting_text">Ferret kết nối ngay khi có một thiết bị trong cùng mạng.</string>
+    <string name="ferret_system_connected_one">Đã kết nối với %1$s</string>
+    <plurals name="ferret_system_connected_many">
+        <item quantity="other">Đã kết nối với %1$s và %2$d thiết bị khác</item>
+    </plurals>
+    <string name="ferret_system_connected_text">Sao chép gì đó, rồi chạm Gửi bảng nhớ tạm.</string>
+    <string name="ferret_system_paused_title">Ferret đang tạm dừng</string>
+    <string name="ferret_system_paused_until">Chạy lại lúc %1$s</string>
+    <string name="ferret_system_paused_until_resumed">Đến khi bạn cho chạy tiếp</string>
+    <string name="ferret_system_action_send_clipboard">Gửi bảng nhớ tạm</string>
+    <string name="ferret_system_action_pause">Tạm dừng 1 giờ</string>
+    <string name="ferret_system_action_resume">Tiếp tục chạy</string>
+    <string name="ferret_system_tile_label">Ferret</string>
+    <string name="ferret_system_tile_not_connected">Chưa kết nối</string>
+    <string name="ferret_system_tile_paused">Đã tạm dừng</string>
+    <plurals name="ferret_system_tile_devices">
+        <item quantity="other">%d thiết bị</item>
+    </plurals>
+    <string name="ferret_system_clipboard_empty">Bảng nhớ tạm đang trống</string>
+</resources>

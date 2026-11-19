@@ -1,0 +1,30 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSCameraUsageDescription": {
+      "comment": "Info.plist NSCameraUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret chỉ dùng camera để quét mã ghép đôi trên thiết bị kia của bạn."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription": {
+      "comment": "Info.plist NSLocalNetworkUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret kết nối với máy tính và điện thoại của chính bạn trên Wi-Fi này để đồng bộ, và với thiết bị bạn chọn để chia sẻ tệp."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

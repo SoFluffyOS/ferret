@@ -15,7 +15,7 @@ enum SharePhase: Equatable {
 
 /// The picker's state, which the view controller drives.
 final class ShareModel: ObservableObject {
-  @Published var title = "Send with Ferret"
+  @Published var title = String(localized: "Send with Ferret")
   @Published var devices: [ShareDevice] = []
   @Published var phase: SharePhase = .choosing
 
@@ -53,13 +53,13 @@ struct SharePickerView: View {
       notice(message, symbol: "exclamationmark.triangle")
     case .openFerret:
       notice(
-        "Ready to send. Open Ferret and it sends right away.",
+        String(localized: "Ready to send. Open Ferret and it sends right away."),
         symbol: "arrow.up.forward.app")
     case .opening:
-      busy("Opening Ferret…")
+      busy(String(localized: "Opening Ferret…"))
     case .choosing:
       if model.isWaiting {
-        busy("Getting your files ready…")
+        busy(String(localized: "Getting your files ready…"))
       } else if model.devices.isEmpty {
         noDevices
       } else {
@@ -77,7 +77,7 @@ struct SharePickerView: View {
           }
         }
         if model.devices.count > 1 {
-          row(symbol: "square.grid.2x2", label: "All my devices") {
+          row(symbol: "square.grid.2x2", label: String(localized: "All my devices")) {
             onPick(.everyDevice)
           }
         }

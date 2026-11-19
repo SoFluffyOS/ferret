@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		FF1B9778EC661A88D0AECAAC /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7E76D2AA8E45A17C727A2FDB /* InfoPlist.xcstrings */; };
+		70760C59A19343513C7E5276 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0B5CEA12E2E86B47073D24E0 /* Localizable.xcstrings */; };
 		2B0159BE90CE22093991E41B /* ShareHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA08FAAA2393A5734E58E1F6 /* ShareHandoff.swift */; };
 		331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C80D7294CF71000263BE5 /* RunnerTests.swift */; };
 		335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */; };
@@ -85,6 +87,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7E76D2AA8E45A17C727A2FDB /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		0B5CEA12E2E86B47073D24E0 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		0F6EB5445FB1711EFE1B2F28 /* Share.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = Share.entitlements; sourceTree = "<group>"; };
 		331C80D5294CF71000263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
@@ -209,6 +213,7 @@
 		33FAB671232836740065AC1E /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				7E76D2AA8E45A17C727A2FDB /* InfoPlist.xcstrings */,
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
@@ -222,6 +227,7 @@
 		5B3121637A0346515E249F01 /* Share */ = {
 			isa = PBXGroup;
 			children = (
+				0B5CEA12E2E86B47073D24E0 /* Localizable.xcstrings */,
 				78B09327A2A34039543E2919 /* ShareViewController.swift */,
 				A87E9B9AF0F70DEC268816CD /* SharePickerView.swift */,
 				85B0312959F1398944DD962C /* SharedContent.swift */,
@@ -345,6 +351,7 @@
 			knownRegions = (
 				en,
 				Base,
+				vi,
 			);
 			mainGroup = 33CC10E42044A3C60003C045;
 			packageReferences = (
@@ -367,6 +374,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70760C59A19343513C7E5276 /* Localizable.xcstrings in Resources */,
 				6BA361AD649902160D2A0BF6 /* BuildFile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,6 +390,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF1B9778EC661A88D0AECAAC /* InfoPlist.xcstrings in Resources */,
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
 			);

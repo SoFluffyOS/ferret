@@ -41,7 +41,6 @@ internal object FindAlarm {
     const val REASON_TIMEOUT = "timeout"
 
     /** Same name the app gives this channel elsewhere. */
-    private const val CHANNEL_NAME = "Find my device"
     private const val NOTIFICATION_ID = 0x46494e44
     private const val VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION"
     private val VIBRATION = longArrayOf(0, 700, 500)
@@ -250,7 +249,7 @@ internal object FindAlarm {
     private fun postNotification(context: Context, alert: PlatformAlert) {
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ensureChannel(manager)
+            ensureChannel(context, manager)
             Notification.Builder(context, CHANNEL_ID)
                 .setTimeoutAfter((alert.maxSeconds + 5) * 1000L)
         } else {
@@ -293,13 +292,18 @@ internal object FindAlarm {
         runCatching { manager.notify(NOTIFICATION_ID, builder.build()) }
     }
 
-    /** No channel sound: the plugin plays its own tone on the alarm stream. */
-    private fun ensureChannel(manager: NotificationManager) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || manager.getNotificationChannel(CHANNEL_ID) != null) {
+    /**
+     * No channel sound: the plugin plays its own tone on the alarm stream.
+     * Created every time so its name follows the phone's language; Android
+     * keeps what the person changed on an existing channel.
+     */
+    private fun ensureChannel(context: Context, manager: NotificationManager) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
         }
 
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
+        val name = context.getString(R.string.ferret_find_channel_name)
+        val channel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH).apply {
             setSound(null, null)
             enableVibration(false)
             setBypassDnd(true)

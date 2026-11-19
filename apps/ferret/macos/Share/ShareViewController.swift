@@ -42,7 +42,7 @@ class ShareViewController: NSViewController {
     self.content = content
     isReady = true
     if content.isEmpty {
-      problem = "Ferret couldn't read what you shared."
+      problem = String(localized: "Ferret couldn't read what you shared.")
     }
     refresh()
 
@@ -80,7 +80,7 @@ class ShareViewController: NSViewController {
     guard taken else {
       isSending = false
       pending = nil
-      problem = "Ferret couldn't take the files. Open Ferret and drag them onto its icon instead."
+      problem = String(localized: "Ferret couldn't take the files. Open Ferret and drag them onto its icon instead.")
       refresh()
       return
     }
@@ -110,17 +110,17 @@ class ShareViewController: NSViewController {
 
   private func title() -> String {
     guard isReady else {
-      return "Send with Ferret"
+      return String(localized: "Send with Ferret")
     }
 
     if content.paths.isEmpty {
-      return "Send text to…"
+      return String(localized: "Send text to…")
     }
 
     if content.names.count == 1, let name = content.names.first {
-      return "Send \(name) to…"
+      return String(localized: "Send \(name) to…")
     }
 
-    return "Send \(content.paths.count) files to…"
+    return String(localized: "Send \(content.paths.count) files to…")
   }
 }

@@ -1,0 +1,54 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSAccessibilityUsageDescription": {
+      "comment": "Info.plist NSAccessibilityUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret di chuyển con trỏ và gõ phím cho chiếc điện thoại bạn đã cho phép, chỉ khi dòng “… đang điều khiển máy tính này” hiện trên màn hình."
+          }
+        }
+      }
+    },
+    "NSAppleEventsUsageDescription": {
+      "comment": "Info.plist NSAppleEventsUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret đọc trang đang mở trong trình duyệt và bài Music hoặc Spotify đang phát, chỉ khi bạn gửi hoặc bật chia sẻ, để thiết bị khác của bạn tiếp tục được."
+          }
+        }
+      }
+    },
+    "NSBluetoothAlwaysUsageDescription": {
+      "comment": "Info.plist NSBluetoothAlwaysUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret kết nối với iPhone của bạn qua Bluetooth để hiện thông báo và nội dung đang phát của iPhone trên Mac này, chỉ sau khi bạn bật tính năng đó."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription": {
+      "comment": "Info.plist NSLocalNetworkUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret tìm thiết bị của chính bạn trên mạng này, và cho điện thoại thấy máy tính này khi bạn gửi tệp bằng Quick Share hoặc LocalSend."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -1,0 +1,138 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "All my devices": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi thiết bị của tôi"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huỷ"
+          }
+        }
+      }
+    },
+    "Ferret couldn't read what you shared.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret không đọc được nội dung bạn chia sẻ."
+          }
+        }
+      }
+    },
+    "Ferret couldn't take the files. Open Ferret and drag them onto its icon instead.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret không nhận được tệp. Hãy mở Ferret rồi kéo tệp vào biểu tượng của nó."
+          }
+        }
+      }
+    },
+    "Handing over to Ferret…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chuyển cho Ferret…"
+          }
+        }
+      }
+    },
+    "No device is connected right now. Ferret can open and send as soon as it finds one.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện chưa kết nối thiết bị nào. Ferret có thể mở và gửi ngay khi tìm thấy một thiết bị."
+          }
+        }
+      }
+    },
+    "Open Ferret": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Ferret"
+          }
+        }
+      }
+    },
+    "Send %@ to…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi %@ tới…"
+          }
+        }
+      }
+    },
+    "Send %lld files to…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi %lld tệp tới…"
+          }
+        }
+      }
+    },
+    "Send link to…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi liên kết tới…"
+          }
+        }
+      }
+    },
+    "Send text to…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi văn bản tới…"
+          }
+        }
+      }
+    },
+    "Send with Ferret": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi bằng Ferret"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

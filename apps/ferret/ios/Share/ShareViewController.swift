@@ -33,7 +33,7 @@ class ShareViewController: UIViewController {
 
     guard handoff.isReachable else {
       model.phase = .problem(
-        "Ferret can't reach its shared folder. Open Ferret once, then share again.")
+        String(localized: "Ferret can't reach its shared folder. Open Ferret once, then share again."))
       return
     }
 
@@ -49,7 +49,7 @@ class ShareViewController: UIViewController {
     model.title = title(for: content)
     if content.isEmpty {
       model.isWaiting = false
-      model.phase = .problem("Ferret couldn't read what you shared.")
+      model.phase = .problem(String(localized: "Ferret couldn't read what you shared."))
       return
     }
 
@@ -77,7 +77,7 @@ class ShareViewController: UIViewController {
 
     model.isWaiting = false
     guard handoff.leave(content, for: choice, devices: model.devices) else {
-      model.phase = .problem("Ferret couldn't keep what you shared. Try again.")
+      model.phase = .problem(String(localized: "Ferret couldn't keep what you shared. Try again."))
       return
     }
 
@@ -148,16 +148,16 @@ class ShareViewController: UIViewController {
   private func title(for content: SharedContent) -> String {
     if content.paths.isEmpty {
       if content.isLink {
-        return "Send link to…"
+        return String(localized: "Send link to…")
       }
 
-      return "Send text to…"
+      return String(localized: "Send text to…")
     }
 
     if content.names.count == 1, let name = content.names.first {
-      return "Send \(name) to…"
+      return String(localized: "Send \(name) to…")
     }
 
-    return "Send \(content.paths.count) files to…"
+    return String(localized: "Send \(content.paths.count) files to…")
   }
 }

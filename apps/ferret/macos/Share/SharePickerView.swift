@@ -54,7 +54,7 @@ struct SharePickerView: View {
           }
         }
         if devices.count > 1 {
-          ShareRow(symbol: "circle.grid.2x2", label: "All my devices") {
+          ShareRow(symbol: "circle.grid.2x2", label: String(localized: "All my devices")) {
             onPick(.everyDevice)
           }
         }
