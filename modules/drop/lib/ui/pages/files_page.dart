@@ -1,5 +1,5 @@
 import 'package:drop/l10n/l10n.dart';
-import 'package:drop/ui/frames/device_files_frame.dart';
+import 'package:drop/ui/frames/frames.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
