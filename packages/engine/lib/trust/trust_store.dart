@@ -46,14 +46,56 @@ class TrustStore {
   final Map<String, ForgottenDevice> _forgotten;
   final StreamController<List<TrustedDevice>> _changes = .broadcast();
 
-  List<TrustedDevice> get devices => List.unmodifiable(_devices.values);
+  List<TrustedDevice> get devices => List.unmodifiable([
+    for (final device in _devices.values) _labelled(device),
+  ]);
 
   /// Devices the user removed, newest decision per device.
   List<ForgottenDevice> get forgotten => List.unmodifiable(_forgotten.values);
 
   Stream<List<TrustedDevice>> get changes => _changes.stream;
 
-  TrustedDevice? operator [](String deviceId) => _devices[deviceId];
+  TrustedDevice? operator [](String deviceId) => switch (_devices[deviceId]) {
+    final device? => _labelled(device),
+    null => null,
+  };
+
+  /// Gives [deviceId] a name on this device only, or takes it away when
+  /// [nickname] is null or blank.
+  Future<void> rename(String deviceId, String? nickname) async {
+    final device = _devices[deviceId];
+    if (device == null) {
+      return;
+    }
+
+    await save(device.withNickname(nickname));
+  }
+
+  /// [device] with the end of its id added to its name while another
+  /// device without a nickname has the same name.
+  TrustedDevice _labelled(TrustedDevice device) {
+    if (device.nickname != null) {
+      return device;
+    }
+
+    final ownName = device.ownName.toLowerCase();
+    final hasNamesake = _devices.values.any(
+      (other) =>
+          other.id != device.id &&
+          other.nickname == null &&
+          other.ownName.toLowerCase() == ownName,
+    );
+    if (!hasNamesake) {
+      return device;
+    }
+
+    final id = device.id.toUpperCase();
+    final tagLength = switch (id.length) {
+      < 4 => id.length,
+      _ => 4,
+    };
+    return device.withSameNameTag(id.substring(id.length - tagLength));
+  }
 
   bool isTrusted(String deviceId) => _devices.containsKey(deviceId);
 
@@ -61,7 +103,7 @@ class TrustStore {
   ForgottenDevice? forgottenOf(String deviceId) => _forgotten[deviceId];
 
   Future<void> save(TrustedDevice device) async {
-    _devices[device.id] = device;
+    _devices[device.id] = device.withSameNameTag(null);
     await _persist();
   }
 

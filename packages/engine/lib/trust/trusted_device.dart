@@ -7,7 +7,7 @@ import 'package:protocol/protocol.dart';
 class TrustedDevice {
   const TrustedDevice({
     required this.id,
-    required this.name,
+    required String name,
     required this.platform,
     required this.formFactor,
     required this.publicKey,
@@ -16,7 +16,9 @@ class TrustedDevice {
     this.lastHost,
     this.lastPort,
     this.introducedBy,
-  });
+    this.nickname,
+    this.sameNameTag,
+  }) : ownName = name;
 
   factory TrustedDevice.fromJson(Map<String, dynamic> json) => TrustedDevice(
     id: json['id'] as String,
@@ -35,10 +37,15 @@ class TrustedDevice {
     lastHost: json['last_host'] as String?,
     lastPort: json['last_port'] as int?,
     introducedBy: json['introduced_by'] as String?,
+    nickname: json['nickname'] as String?,
   );
 
   final String id;
-  final String name;
+
+  /// What the device calls itself, as its owner set it. This is what other
+  /// devices are told; [name] is what this one shows.
+  final String ownName;
+
   final Platform platform;
   final FormFactor formFactor;
   final Uint8List publicKey;
@@ -51,6 +58,28 @@ class TrustedDevice {
   /// through another of the user's devices instead of being paired here.
   final String? introducedBy;
 
+  /// A name the user gave it on this device only, such as "Work iPhone".
+  /// Never sent to other devices.
+  final String? nickname;
+
+  /// The end of its id, set by the trust store while another paired device
+  /// without a nickname has the same [ownName], so two "Pixel 7" read as
+  /// "Pixel 7 (0718)" and "Pixel 7 (3F2A)". Never stored.
+  final String? sameNameTag;
+
+  /// What to call it on screen: the user's nickname, else its own name,
+  /// told apart from a namesake by the end of its id.
+  String get name {
+    if (nickname case final nickname?) {
+      return nickname;
+    }
+
+    return switch (sameNameTag) {
+      final tag? => '$ownName ($tag)',
+      null => ownName,
+    };
+  }
+
   TrustedDevice copyWith({
     String? name,
     Platform? platform,
@@ -60,7 +89,7 @@ class TrustedDevice {
     int? lastPort,
   }) => TrustedDevice(
     id: id,
-    name: name ?? this.name,
+    name: name ?? ownName,
     platform: platform ?? this.platform,
     formFactor: formFactor ?? this.formFactor,
     publicKey: publicKey,
@@ -69,11 +98,47 @@ class TrustedDevice {
     lastHost: lastHost ?? this.lastHost,
     lastPort: lastPort ?? this.lastPort,
     introducedBy: introducedBy,
+    nickname: nickname,
+  );
+
+  /// The same device with [nickname] as its name here, or its own name
+  /// again when [nickname] is null or blank.
+  TrustedDevice withNickname(String? nickname) => TrustedDevice(
+    id: id,
+    name: ownName,
+    platform: platform,
+    formFactor: formFactor,
+    publicKey: publicKey,
+    pairedAt: pairedAt,
+    lastSeen: lastSeen,
+    lastHost: lastHost,
+    lastPort: lastPort,
+    introducedBy: introducedBy,
+    nickname: switch (nickname?.trim()) {
+      final trimmed? when trimmed.isNotEmpty && trimmed != ownName => trimmed,
+      _ => null,
+    },
+  );
+
+  /// The same device told apart from a namesake by [tag].
+  TrustedDevice withSameNameTag(String? tag) => TrustedDevice(
+    id: id,
+    name: ownName,
+    platform: platform,
+    formFactor: formFactor,
+    publicKey: publicKey,
+    pairedAt: pairedAt,
+    lastSeen: lastSeen,
+    lastHost: lastHost,
+    lastPort: lastPort,
+    introducedBy: introducedBy,
+    nickname: nickname,
+    sameNameTag: tag,
   );
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'name': name,
+    'name': ownName,
     'platform': platform.value,
     'form_factor': formFactor.value,
     'public_key': base64Encode(publicKey),
@@ -82,5 +147,6 @@ class TrustedDevice {
     'last_host': ?lastHost,
     'last_port': ?lastPort,
     'introduced_by': ?introducedBy,
+    'nickname': ?nickname,
   };
 }

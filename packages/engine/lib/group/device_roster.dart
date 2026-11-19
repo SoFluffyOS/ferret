@@ -40,7 +40,7 @@ class DeviceRoster {
         if (device.id != recipientId)
           IntroducedDevice(
             id: device.id,
-            name: device.name,
+            name: device.ownName,
             platform: device.platform,
             formFactor: device.formFactor,
             staticPublicKey: device.publicKey,
@@ -61,7 +61,7 @@ class DeviceRoster {
 
   /// The names [introductionFor] would carry, for a pairing prompt.
   List<String> get names => [
-    for (final device in _trustStore.devices) device.name,
+    for (final device in _trustStore.devices) device.ownName,
   ];
 
   /// Takes in what the trusted device [introducer] says. Forgetting goes

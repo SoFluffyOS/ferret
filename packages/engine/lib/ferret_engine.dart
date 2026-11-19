@@ -539,6 +539,12 @@ class FerretEngine implements FeatureHost {
     _emitDevices();
   }
 
+  /// Gives the paired [deviceId] a name on this device only, such as
+  /// "Work iPhone", or takes it away when [nickname] is null or blank. The
+  /// device itself and the user's other devices keep its own name.
+  Future<void> renameDevice(String deviceId, String? nickname) =>
+      trustStore.rename(deviceId, nickname);
+
   Future<void> _reconnectWhileAsked(Duration probeTimeout) async {
     try {
       do {
@@ -1189,6 +1195,7 @@ class FerretEngine implements FeatureHost {
         lastSeen: DateTime.now(),
         lastHost: host,
         lastPort: port ?? existing?.lastPort,
+        nickname: existing?.nickname,
       ),
     );
     _nearby.remove(info.id);
