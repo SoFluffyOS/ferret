@@ -287,4 +287,112 @@ void main() {
       });
     });
   });
+
+  group('open', () {
+    test('opens a link on the named device', () async {
+      final opened = <(String, String)>[];
+      final control = CliControl(
+        devices: () => devices,
+        openLink: (deviceId, link) async {
+          opened.add((deviceId, link));
+          return 'opened';
+        },
+      );
+
+      final answer = await control.handle('open', {
+        'device': 'pixel 7',
+        'link': 'https://example.com',
+      });
+
+      expect(opened, [('aaaa-1111', 'https://example.com')]);
+      expect(answer, {'ok': true, 'device': 'Pixel 7', 'result': 'opened'});
+    });
+
+    test('says when it is not a link', () async {
+      final control = CliControl(
+        devices: () => devices,
+        openLink: (_, _) async => 'not_a_link',
+      );
+
+      final answer = await control.handle('open', {
+        'device': 'Pixel 7',
+        'link': 'hello',
+      });
+
+      expect(answer['ok'], isFalse);
+      expect(answer['error'], 'not_a_link');
+    });
+  });
+
+  group('notify', () {
+    test('sends the title and body to the named device', () async {
+      final sent = <(String, String, String)>[];
+      final control = CliControl(
+        devices: () => devices,
+        notify: (deviceId, title, body) async {
+          sent.add((deviceId, title, body));
+          return 'shown';
+        },
+      );
+
+      final answer = await control.handle('notify', {
+        'device': 'Pixel 7',
+        'title': 'Build done',
+        'body': 'All green',
+      });
+
+      expect(sent, [('aaaa-1111', 'Build done', 'All green')]);
+      expect(answer['ok'], isTrue);
+    });
+
+    test('passes on that the device has not allowed it', () async {
+      final control = CliControl(
+        devices: () => devices,
+        notify: (_, _, _) async => 'not_allowed',
+      );
+
+      final answer = await control.handle('notify', {
+        'device': 'Pixel 7',
+        'title': 'Hi',
+      });
+
+      expect(answer, {
+        'ok': false,
+        'device': 'Pixel 7',
+        'result': 'not_allowed',
+      });
+    });
+
+    test('an empty notice is not sent', () async {
+      final control = CliControl(
+        devices: () => devices,
+        notify: (_, _, _) async => fail('should not send'),
+      );
+
+      final answer = await control.handle('notify', {'device': 'Pixel 7'});
+
+      expect(answer['error'], 'nothing_to_send');
+    });
+  });
+
+  group('send files', () {
+    test('sends the paths to the named device', () async {
+      final sent = <(String, List<String>)>[];
+      final control = CliControl(
+        devices: () => devices,
+        sendFiles: (deviceId, paths) async {
+          sent.add((deviceId, paths));
+          return 'sending';
+        },
+      );
+
+      final answer = await control.handle('send_files', {
+        'device': 'Family PC',
+        'paths': ['/tmp/a.txt'],
+      });
+
+      expect(sent.single.$1, 'cccc-3333');
+      expect(answer['ok'], isTrue);
+    });
+  });
 }

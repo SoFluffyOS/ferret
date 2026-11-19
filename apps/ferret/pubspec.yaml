@@ -18,6 +18,8 @@ dependencies:
     path: ../../modules/mirroring
   remote_input:
     path: ../../modules/remote_input
+  scripting:
+    path: ../../modules/scripting
   actions:
     path: ../../modules/actions
   iphone:

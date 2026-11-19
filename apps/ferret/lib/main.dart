@@ -14,6 +14,7 @@ import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
+import 'package:scripting/scripting.dart';
 import 'package:shell/shell.dart';
 import 'package:wake/wake.dart';
 
@@ -35,6 +36,7 @@ Future<void> main(List<String> arguments) async {
       NotificationsFeatureUi(),
       PowerFeatureUi(),
       RemoteInputFeatureUi(),
+      ScriptingFeatureUi(),
       WakeFeatureUi(),
     ],
     appVersion: '0.1.0',

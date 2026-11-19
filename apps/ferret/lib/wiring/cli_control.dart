@@ -1,9 +1,13 @@
 import 'package:actions/actions.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:core/core.dart';
+import 'package:drop/drop.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret/wiring/script_events.dart';
 import 'package:find/find.dart';
+import 'package:handoff/handoff.dart';
+import 'package:scripting/scripting.dart';
 import 'package:wake/wake.dart';
 
 /// A paired device as `ferret-cli` names it.
@@ -20,9 +24,10 @@ typedef CliAction = ({String id, String title});
 /// and how a command of its owner's ended.
 typedef CliActionResult = ({String result, int? exitCode});
 
-/// Answers `ferret-cli ring`, `ferret-cli clipboard`, `ferret-cli action`
-/// and `ferret-cli wake` from the running app. Features never import each other, so the
-/// app joins them here.
+/// Answers `ferret-cli` commands (`ring`, `clipboard`, `action`, `wake`,
+/// `open`, `notify`, `watch`) from the running app, and the same commands
+/// from Tasker and Shortcuts on a phone. Features never import each other,
+/// so the app joins them here.
 class CliControl {
   CliControl({
     required List<CliDevice> Function() devices,
@@ -33,13 +38,19 @@ class CliControl {
     Future<CliActionResult> Function(String deviceId, String actionId)?
     runAction,
     Future<String> Function(String deviceId)? wake,
+    Future<String> Function(String deviceId, String link)? openLink,
+    Future<String> Function(String deviceId, String title, String body)? notify,
+    Future<String> Function(String deviceId, List<String> paths)? sendFiles,
   }) : _devices = devices,
        _ring = ring,
        _latestClip = latestClip,
        _sendText = sendText,
        _actionsOf = actionsOf,
        _runAction = runAction,
-       _wake = wake;
+       _wake = wake,
+       _openLink = openLink,
+       _notify = notify,
+       _sendFiles = sendFiles;
 
   final List<CliDevice> Function() _devices;
   final Future<String> Function(String deviceId)? _ring;
@@ -49,6 +60,11 @@ class CliControl {
   final Future<CliActionResult> Function(String deviceId, String actionId)?
   _runAction;
   final Future<String> Function(String deviceId)? _wake;
+  final Future<String> Function(String deviceId, String link)? _openLink;
+  final Future<String> Function(String deviceId, String title, String body)?
+  _notify;
+  final Future<String> Function(String deviceId, List<String> paths)?
+  _sendFiles;
 
   static const String ringCommand = 'ring';
   static const String clipboardGetCommand = 'clipboard_get';
@@ -56,6 +72,9 @@ class CliControl {
   static const String actionListCommand = 'action_list';
   static const String actionRunCommand = 'action_run';
   static const String wakeCommand = 'wake';
+  static const String openCommand = 'open';
+  static const String notifyCommand = 'notify';
+  static const String sendFilesCommand = 'send_files';
 
   /// Starts answering on this computer, or returns null on phones, where
   /// there is no command line.
@@ -70,7 +89,18 @@ class CliControl {
     final control = CliControl.forEngine(engine);
     final paths = await AppPaths.get();
     final server = AppControl(paths.root);
-    await server.listen(control.handle);
+    final hub = engine.feature<ScriptingFeature>()?.events;
+    final events = ScriptEvents.attach(engine);
+    await server.listen(
+      control.handle,
+      watch: switch ((hub, events)) {
+        (final hub?, final events?) => (arguments) => hub.watch(
+          arguments,
+          devices: events.devices,
+        ),
+        _ => null,
+      },
+    );
     return server;
   }
 
@@ -79,6 +109,9 @@ class CliControl {
     final clipboard = engine.feature<ClipboardFeature>();
     final actions = engine.feature<ActionsFeature>();
     final wake = engine.feature<WakeFeature>();
+    final handoff = engine.feature<HandoffFeature>();
+    final scripting = engine.feature<ScriptingFeature>();
+    final drop = engine.feature<DropFeature>();
 
     return CliControl(
       devices: () => [
@@ -125,6 +158,28 @@ class CliControl {
         final wake? => (deviceId) => _wakeWith(wake, engine, deviceId),
         null => null,
       },
+      openLink: switch (handoff) {
+        final handoff? => (deviceId, link) => _openWith(
+          handoff,
+          deviceId,
+          link,
+        ),
+        null => null,
+      },
+      notify: switch (scripting) {
+        final scripting? => scripting.notify,
+        null => null,
+      },
+      sendFiles: switch (drop) {
+        final drop? => (deviceId, paths) async => switch (await drop.sendFiles(
+          deviceId,
+          paths,
+        )) {
+          final _? => 'sending',
+          null => 'nothing_to_send',
+        },
+        null => null,
+      },
     );
   }
 
@@ -138,6 +193,9 @@ class CliControl {
     actionListCommand => _actionList(arguments),
     actionRunCommand => _actionRun(arguments),
     wakeCommand => _wakeDevice(arguments),
+    openCommand => _open(arguments),
+    notifyCommand => _notifyDevice(arguments),
+    sendFilesCommand => _sendFilesTo(arguments),
     _ => _failure('unknown_command'),
   };
 
@@ -282,6 +340,90 @@ class CliControl {
     };
   }
 
+  Future<Map<String, Object?>> _open(Map<String, Object?> arguments) async {
+    final openLink = _openLink;
+    if (openLink == null) {
+      return _failure('not_supported');
+    }
+
+    final link = '${arguments['link'] ?? ''}'.trim();
+    if (link.isEmpty) {
+      return _failure('not_a_link');
+    }
+
+    final device = _connected(arguments['device']);
+    if (device case {'ok': false}) {
+      return device;
+    }
+
+    final result = await openLink('${device['id']}', link);
+    return {
+      'ok': result == 'opened' || result == 'suggested',
+      'device': device['device'],
+      'result': result,
+      if (result == 'not_a_link') 'error': result,
+    };
+  }
+
+  Future<Map<String, Object?>> _notifyDevice(
+    Map<String, Object?> arguments,
+  ) async {
+    final notify = _notify;
+    if (notify == null) {
+      return _failure('not_supported');
+    }
+
+    final title = '${arguments['title'] ?? ''}'.trim();
+    final body = '${arguments['body'] ?? ''}'.trim();
+    if (title.isEmpty && body.isEmpty) {
+      return _failure('nothing_to_send');
+    }
+
+    final device = _connected(arguments['device']);
+    if (device case {'ok': false}) {
+      return device;
+    }
+
+    final result = await notify('${device['id']}', title, body);
+    return {
+      'ok': result == 'shown',
+      'device': device['device'],
+      'result': result,
+    };
+  }
+
+  Future<Map<String, Object?>> _sendFilesTo(
+    Map<String, Object?> arguments,
+  ) async {
+    final sendFiles = _sendFiles;
+    if (sendFiles == null) {
+      return _failure('not_supported');
+    }
+
+    final paths = switch (arguments['paths']) {
+      final List<Object?> list => [
+        for (final path in list)
+          if (path case final String text when text.isNotEmpty) text,
+      ],
+      _ => const <String>[],
+    };
+    if (paths.isEmpty) {
+      return _failure('nothing_to_send');
+    }
+
+    final device = _connected(arguments['device']);
+    if (device case {'ok': false}) {
+      return device;
+    }
+
+    final result = await sendFiles('${device['id']}', paths);
+    if (result != 'sending') {
+      return _failure(result, device: '${device['device']}');
+    }
+
+    return {'ok': true, 'device': device['device'], 'result': result};
+  }
+
   /// The connected device named [query] as `{ok, id, device}`, or why not.
   Map<String, Object?> _connected(Object? query) {
     final match = _match(query);
@@ -389,6 +531,21 @@ class CliControl {
       .waking => 'waking',
       _ => 'not_sent',
     };
+  }
+
+  /// Asks [deviceId] to open [link]: `opened`, `suggested`, `failed`,
+  /// `unreachable`, or `not_a_link` when it isn't a web or map link.
+  static Future<String> _openWith(
+    HandoffFeature handoff,
+    String deviceId,
+    String link,
+  ) async {
+    final activity = ActivityFactory.fromText(link);
+    if (activity == null || activity.uri.isEmpty) {
+      return 'not_a_link';
+    }
+
+    return (await handoff.sendTo(deviceId, activity)).name;
   }
 
   static Map<String, Object?> _failure(String error, {String? device}) => {
