@@ -140,5 +140,14 @@
   "lockTurnedOffDetail": "Bật lại trên máy đó trong Cài đặt → Điều khiển.",
   "lockFailed": "{device} không khoá được",
   "permissionLock": "Khoá {host, select, mac{Mac này} windows{PC này} other{máy tính này}} mà không cần hỏi",
-  "permissionLockDetail": "Khoá từ điện thoại, không cần hỏi ở đây."
+  "permissionLockDetail": "Khoá từ điện thoại, không cần hỏi ở đây.",
+  "presentOn": "Trình chiếu trên {device}",
+  "presentTitle": "Trình chiếu",
+  "presentNext": "Tiếp",
+  "presentPrevious": "Trước",
+  "presentBlackScreen": "Màn hình đen",
+  "presentShowSlides": "Hiện trang chiếu",
+  "presentTimerHint": "Đồng hồ bắt đầu từ trang chiếu đầu tiên",
+  "presentRestartTimer": "Chạm vào thời gian để đếm lại",
+  "presentWorksWith": "Dùng được với PowerPoint, Keynote, Google Slides và PDF ở chế độ toàn màn hình, như một bút trình chiếu."
 }

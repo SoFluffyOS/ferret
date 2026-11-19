@@ -30,6 +30,16 @@ Under it: Esc, Tab, the arrows, Backspace and Enter. Then **Ctrl**, **Alt**, **S
 
 Next to them sit the media keys: previous, play or pause, next, and the volume. A row that doesn't fit slides sideways.
 
+## 🎤 Present from your phone
+
+Giving a talk and the clicker is at home? On your phone, open the computer and tap **Present on MacBook Air** (under **More**).
+
+- 👉 A huge **Next**, plus **Previous**. They press Page Down and Page Up, like a clicker, so they work in PowerPoint, Keynote, Google Slides and PDFs in full screen.
+- ⬛ **Black screen** blacks the slides out (the `B` key), and **Show slides** brings them back.
+- ⏱️ A timer starts with the first slide. Tap the time to start over.
+
+It asks for control like the touchpad does, and lets go when you close the page.
+
 ## 🔒 Lock this computer
 
 Walked away from your desk and forgot to lock it? On your phone, open the computer and tap **Lock MacBook Air** (under **More**).

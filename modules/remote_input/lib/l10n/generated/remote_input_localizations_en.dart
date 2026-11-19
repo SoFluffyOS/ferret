@@ -654,4 +654,34 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   @override
   String get permissionLockDetail =>
       'Lock from the phone, with no question here.';
+
+  @override
+  String presentOn(String device) {
+    return 'Present on $device';
+  }
+
+  @override
+  String get presentTitle => 'Presentation';
+
+  @override
+  String get presentNext => 'Next';
+
+  @override
+  String get presentPrevious => 'Previous';
+
+  @override
+  String get presentBlackScreen => 'Black screen';
+
+  @override
+  String get presentShowSlides => 'Show slides';
+
+  @override
+  String get presentTimerHint => 'The timer starts with the first slide';
+
+  @override
+  String get presentRestartTimer => 'Tap the time to start over';
+
+  @override
+  String get presentWorksWith =>
+      'Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker.';
 }

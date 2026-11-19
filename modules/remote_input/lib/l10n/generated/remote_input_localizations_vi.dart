@@ -656,4 +656,34 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String get permissionLockDetail => 'Khoá từ điện thoại, không cần hỏi ở đây.';
+
+  @override
+  String presentOn(String device) {
+    return 'Trình chiếu trên $device';
+  }
+
+  @override
+  String get presentTitle => 'Trình chiếu';
+
+  @override
+  String get presentNext => 'Tiếp';
+
+  @override
+  String get presentPrevious => 'Trước';
+
+  @override
+  String get presentBlackScreen => 'Màn hình đen';
+
+  @override
+  String get presentShowSlides => 'Hiện trang chiếu';
+
+  @override
+  String get presentTimerHint => 'Đồng hồ bắt đầu từ trang chiếu đầu tiên';
+
+  @override
+  String get presentRestartTimer => 'Chạm vào thời gian để đếm lại';
+
+  @override
+  String get presentWorksWith =>
+      'Dùng được với PowerPoint, Keynote, Google Slides và PDF ở chế độ toàn màn hình, như một bút trình chiếu.';
 }

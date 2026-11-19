@@ -40,6 +40,28 @@ class _NoLock implements ScreenLocker {
   Future<bool> lock() async => false;
 }
 
+/// Takes input and does nothing with it, so a render never moves this
+/// Mac's pointer.
+class _NoInput implements InputInjector {
+  @override
+  Future<InjectorStatus> status() async => const .ready(.quartz);
+
+  @override
+  Future<InjectorStatus> requestAccess() => status();
+
+  @override
+  Future<void> openAccessSettings() async {}
+
+  @override
+  Future<void> inject(List<InputAction> actions) async {}
+
+  @override
+  Future<void> releaseAll() async {}
+
+  @override
+  Future<void> dispose() async {}
+}
+
 /// The app's features with a remote input that can't lock for real, as a
 /// computer ([asPhone] false) or a phone.
 List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
@@ -47,6 +69,7 @@ List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
     switch (feature) {
       RemoteInputFeatureUi() => RemoteInputFeatureUi(
         feature: RemoteInputFeature(
+          injector: _NoInput.new,
           locker: _NoLock(),
           canBeControlled: !asPhone,
           canControl: asPhone,
@@ -57,7 +80,7 @@ List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
 ];
 
 /// Screens that run as a phone paired with a Mac.
-const _phoneScreens = {'lock_row'};
+const _phoneScreens = {'lock_row', 'presentation'};
 
 final _screens = <String, _Script>{
   'recent_clips': (tester, rig, features) async {
@@ -139,6 +162,33 @@ final _screens = <String, _Script>{
     final remote = features.whereType<RemoteInputFeatureUi>().single;
     unawaited(remote.feature.lockDevice(computerId));
     await rig.open(tester, DevicePage(deviceId: computerId));
+  },
+  'presentation': (tester, rig, features) async {
+    final computerFeatures = _safeFeatures();
+    final computer = computerFeatures.whereType<RemoteInputFeatureUi>().single;
+    final computerId =
+        await rig.pairConnectedComputer(
+          tester,
+          computerFeatures: computerFeatures,
+        ) ??
+        '';
+    await tester.runAsync(
+      () => computer.feature.settings.allow(rig.engine.identity.deviceId),
+    );
+    final remote = features.whereType<RemoteInputFeatureUi>().single;
+    final home = tester.element(find.byType(HomePage));
+    final status = rig.engine.devices.firstWhere(
+      (status) => status.device.id == computerId,
+    );
+    remote
+        .deviceActions(home, rig.featureContext, status)
+        .firstWhere((action) => action.id == 'remote_input.present')
+        .onPressed
+        ?.call();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 300)),
+    );
+    await rig.settle(tester);
   },
   'webcam_help': (tester, rig, features) async {
     await rig.open(

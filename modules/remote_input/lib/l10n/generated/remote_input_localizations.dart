@@ -940,6 +940,60 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Lock from the phone, with no question here.'**
   String get permissionLockDetail;
+
+  /// No description provided for @presentOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Present on {device}'**
+  String presentOn(String device);
+
+  /// No description provided for @presentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Presentation'**
+  String get presentTitle;
+
+  /// No description provided for @presentNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get presentNext;
+
+  /// No description provided for @presentPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get presentPrevious;
+
+  /// No description provided for @presentBlackScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Black screen'**
+  String get presentBlackScreen;
+
+  /// No description provided for @presentShowSlides.
+  ///
+  /// In en, this message translates to:
+  /// **'Show slides'**
+  String get presentShowSlides;
+
+  /// No description provided for @presentTimerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The timer starts with the first slide'**
+  String get presentTimerHint;
+
+  /// No description provided for @presentRestartTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the time to start over'**
+  String get presentRestartTimer;
+
+  /// No description provided for @presentWorksWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker.'**
+  String get presentWorksWith;
 }
 
 class _RemoteInputLocalizationsDelegate

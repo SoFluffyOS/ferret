@@ -172,6 +172,12 @@ class RemoteInputFeatureUi extends FeatureUi {
         icon: LucideIcons.mousePointer2,
         onPressed: () => unawaited(_openTouchpad(feature, device)),
       ),
+      FeatureAction(
+        id: 'remote_input.present',
+        label: l10n.presentOn(device.device.name),
+        icon: LucideIcons.presentation,
+        onPressed: () => unawaited(_openPresentation(feature, device)),
+      ),
       if (this.feature.canLockDevice(session))
         FeatureAction(
           id: 'remote_input.lock',
@@ -314,6 +320,30 @@ class RemoteInputFeatureUi extends FeatureUi {
         ),
       ),
     );
+  }
+
+  /// Each talk starts with its own timer and slides showing.
+  Future<void> _openPresentation(
+    FeatureContext context,
+    DeviceStatus device,
+  ) async {
+    final deviceId = device.device.id;
+    final presentation = PresentationViewModel(feature);
+    unawaited(touchpadViewModel.start(deviceId));
+    await context.push<void>(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: touchpadViewModel),
+          ChangeNotifierProvider.value(value: presentation),
+        ],
+        child: PresentationPage(
+          deviceId: deviceId,
+          deviceName: device.device.name,
+          hostKind: _hostKindOf(device.device.platform),
+        ),
+      ),
+    );
+    presentation.dispose();
   }
 
   Widget _hostSettings() => ChangeNotifierProvider.value(

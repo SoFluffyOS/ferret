@@ -20,11 +20,16 @@ class TouchpadFrame extends StatelessWidget {
     required this.deviceId,
     required this.deviceName,
     required this.hostKind,
+    this.whileActive,
   });
 
   final String deviceId;
   final String deviceName;
   final HostKind hostKind;
+
+  /// What shows once in control, such as the presentation remote. The
+  /// touchpad and keyboard when left out.
+  final Widget? whileActive;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +54,17 @@ class TouchpadFrame extends StatelessWidget {
         actionLabel: l10n.cancel,
         onAction: () => unawaited(Navigator.of(context).maybePop()),
       ),
-      .active => TouchpadControlsFrame(hostKind: hostKind),
+      .active => whileActive ?? TouchpadControlsFrame(hostKind: hostKind),
       _ => NoticeBlock(
         title: l10n.outcome(current) ?? l10n.unreachable(deviceName),
         actionLabel: l10n.tryAgain,
         onAction: () => unawaited(viewModel.start(deviceId)),
       ),
     };
+    if (current.phase == .active && whileActive != null) {
+      return message;
+    }
+
     return Align(alignment: .topCenter, child: message);
   }
 }

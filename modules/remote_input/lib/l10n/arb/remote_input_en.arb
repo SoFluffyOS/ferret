@@ -578,5 +578,21 @@
       }
     }
   },
-  "permissionLockDetail": "Lock from the phone, with no question here."
+  "permissionLockDetail": "Lock from the phone, with no question here.",
+  "presentOn": "Present on {device}",
+  "@presentOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "presentTitle": "Presentation",
+  "presentNext": "Next",
+  "presentPrevious": "Previous",
+  "presentBlackScreen": "Black screen",
+  "presentShowSlides": "Show slides",
+  "presentTimerHint": "The timer starts with the first slide",
+  "presentRestartTimer": "Tap the time to start over",
+  "presentWorksWith": "Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker."
 }
