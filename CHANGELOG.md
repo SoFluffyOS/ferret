@@ -8,7 +8,7 @@
 - 🟢 **Watched? You know**: on a Mac, the menubar icon keeps a dot while a device sees your screen or controls your computer, and says who.
 - 🧹 **Less kept around**: Continue's history lasts 30 days at most, with **Clear** in Settings. Unpairing a phone deletes its saved texts from your computer.
 - 📡 **What leaves this device**: the privacy page lists every byte that goes anywhere, and how long Ferret keeps things.
-- 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only.
+- 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only. Every feature uses that same name, a small pin marks a pinned device, and a row you just used waits a moment before it moves up.
 - 🧹 **Clean up old devices**: Home offers to remove the ones not seen in 30 days. Activity filters by device, several devices joining make one card, and the window's list gets a search field from 9 devices.
 - 🎨 **Settings you can scan**: every row has its own coloured icon, with what it's set to right under its name. Rows sit in groups with a thin line between them. Same list in the popover, on the phone and in the window.
 - 🧰 **A toolbar in the window**: it says where you are, and its buttons hide or show the device list and the Activity pane. The list slides away. **+** sits on **Your devices**, and **Nearby** folds with a click.

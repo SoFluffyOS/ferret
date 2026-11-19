@@ -50,8 +50,8 @@ Prefer to pair each device by hand? Turn off **Settings → Advanced → Pair on
 
 Two phones, a tablet and three computers? The list stays easy to read.
 
-- 🕒 **Recently used first**: connected devices on top, then the ones you used last. Offline ones fold into one line from 4 devices on.
-- 📌 **Pin to Top**: open a device and tap **Pin to Top**, or right-click it in the window. Pinned devices lead their group.
+- 🕒 **Recently used first**: connected devices on top, then the ones you used last. A device you just used moves up after half a minute, or when you close the list, so it never slides away under your pointer. Offline ones fold into one line from 4 devices on.
+- 📌 **Pin to Top**: open a device and tap **Pin to Top**, or right-click it in the window. Pinned devices lead their group, with a small pin by their name.
 - 🏷️ **Two called Pixel 7?** Ferret adds the end of each one's id: **Pixel 7 (0718)** and **Pixel 7 (3F2A)**. Open one and tap **Rename…** to call it **Old Pixel** on this device only. The phone keeps its own name everywhere else.
 - 🧹 **Not seen in 30 days**: Home offers **Remove…** for the devices nobody has seen in a month. Pinned ones stay. Your other devices keep them.
 - 🔎 **Find a device**: with 9 or more, the window's list gets a search field.
