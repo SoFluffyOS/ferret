@@ -1,5 +1,5 @@
-import 'package:feature_kit/services/private_content.dart';
-import 'package:feature_kit/widgets/feature_card.dart';
+import 'package:feature_kit/services/services.dart';
+import 'package:feature_kit/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 
 /// One line in Home's Activity list: something that just happened with a

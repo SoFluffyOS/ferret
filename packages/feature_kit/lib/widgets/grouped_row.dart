@@ -1,6 +1,4 @@
-import 'package:feature_kit/layout/corners.dart';
-import 'package:feature_kit/layout/page_insets.dart';
-import 'package:feature_kit/layout/text_size_context.dart';
+import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';

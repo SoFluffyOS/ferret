@@ -1,4 +1,4 @@
-import 'package:feature_kit/layout/page_insets.dart';
+import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:feature_kit/widgets/text_link.dart';
 import 'package:flutter/widgets.dart';
