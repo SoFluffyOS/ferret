@@ -81,12 +81,17 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
               if (needsTool) _toolStep(context, setup?.help ?? .none),
               if (needsOk)
                 SetupStepRow(
-                  title: l10n.setupPermissionTitle,
+                  title: l10n.setupPermissionTitle(MirrorHere.name),
                   state: .now,
-                  children: [Text(l10n.setupPermissionBody, style: caption)],
+                  children: [
+                    Text(
+                      l10n.setupPermissionBody(MirrorHere.name),
+                      style: caption,
+                    ),
+                  ],
                 ),
               SetupStepRow(
-                title: l10n.stepPlug,
+                title: l10n.stepPlug(MirrorHere.name),
                 state: _stateOf(done: found, waits: beforePhone),
               ),
               SetupStepRow(
@@ -152,7 +157,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
                 ),
               ],
               Spacing.v12,
-              Text(l10n.setupPrivacy, style: caption),
+              Text(l10n.setupPrivacy(MirrorHere.name), style: caption),
               Spacing.v16,
               Align(
                 alignment: AlignmentDirectional.centerStart,
@@ -203,15 +208,15 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
         Text(
           switch (help) {
             .download => l10n.setupDownloadToolBody,
-            .startTool => l10n.setupStartToolBody,
-            .none => l10n.setupInstallToolBody,
+            .startTool => l10n.setupStartToolBody(MirrorHere.name),
+            .none => l10n.setupInstallToolBody(MirrorHere.name),
           },
           style: caption.copyWith(color: palette.mutedText),
         ),
         if (download == .failed) ...[
           Spacing.v4,
           Text(
-            l10n.setupDownloadFailed,
+            l10n.setupDownloadFailed(MirrorHere.name),
             style: caption.copyWith(color: palette.danger),
           ),
         ],

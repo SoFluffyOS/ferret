@@ -29,8 +29,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get bringToFront => 'Đưa lên trước';
 
   @override
-  String launcherTitle(String device) {
-    return 'Xem màn hình của $device trên máy tính này';
+  String launcherTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Xem màn hình của $device trên $_temp0';
   }
 
   @override
@@ -136,8 +144,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String endTurnedOffBody(String device) {
-    return 'Trên $device: mở Ferret → Cài đặt → Đến máy tính của bạn và bật “Cho máy tính của tôi hỏi xem màn hình này”. Sau đó mở máy tính này ở đó và kiểm tra xem nó có được phép hỏi không.';
+  String endTurnedOffBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device: mở Ferret → Cài đặt → Đến máy tính của bạn và bật “Cho máy tính của tôi hỏi xem màn hình này”. Sau đó mở $_temp0 ở đó và kiểm tra xem nó có được phép hỏi không.';
   }
 
   @override
@@ -161,13 +177,29 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String endNoCodecTitle(String device) {
-    return '$device không gửi được hình ảnh mà máy tính này hiển thị được';
+  String endNoCodecTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device không gửi được hình ảnh mà $_temp0 hiển thị được';
   }
 
   @override
-  String endNoCodecBody(String device) {
-    return 'Cập nhật Ferret trên $device và trên máy tính này rồi thử lại.';
+  String endNoCodecBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cập nhật Ferret trên $device và trên $_temp0 rồi thử lại.';
   }
 
   @override
@@ -176,8 +208,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String endNotConnectedBody(String device) {
-    return 'Trên $device: mở Ferret. Đã cùng Wi-Fi với máy tính này chưa?';
+  String endNotConnectedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device: mở Ferret. Đã cùng Wi-Fi với $_temp0 chưa?';
   }
 
   @override
@@ -216,8 +256,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String endLostConnectionBody(String device) {
-    return 'Kiểm tra xem $device có đang bật và cùng Wi-Fi với máy tính này không.';
+  String endLostConnectionBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Kiểm tra xem $device có đang bật và cùng Wi-Fi với $_temp0 không.';
   }
 
   @override
@@ -489,8 +537,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get targetWireless => 'Gỡ lỗi qua Wi-Fi';
 
   @override
-  String get setupInstallToolBody =>
-      'Cài bộ platform tools của Android (có sẵn adb) trên máy tính này. Trang này sẽ tự chuyển tiếp.';
+  String setupInstallToolBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cài bộ platform tools của Android (có sẵn adb) trên $_temp0. Trang này sẽ tự chuyển tiếp.';
+  }
 
   @override
   String get setupDownloadToolTitle => 'Tải công cụ hỗ trợ của Android';
@@ -506,23 +563,59 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get downloading => 'Đang tải về…';
 
   @override
-  String get setupDownloadFailed =>
-      'Chưa tải xong. Kiểm tra kết nối internet của máy tính này rồi thử lại.';
+  String setupDownloadFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chưa tải xong. Kiểm tra kết nối internet của $_temp0 rồi thử lại.';
+  }
 
   @override
   String get setupStartToolTitle => 'Khởi động công cụ hỗ trợ của Android';
 
   @override
-  String get setupStartToolBody =>
-      'Ferret không được phép khởi động adb trên máy tính này. Mở Android Studio hoặc chạy adb start-server trong Terminal. Trang này sẽ tự chuyển tiếp.';
+  String setupStartToolBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ferret không được phép khởi động adb trên $_temp0. Mở Android Studio hoặc chạy adb start-server trong Terminal. Trang này sẽ tự chuyển tiếp.';
+  }
 
   @override
-  String get setupPermissionTitle =>
-      'Ferret cần bạn cho phép trên máy tính này';
+  String setupPermissionTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ferret cần bạn cho phép trên $_temp0';
+  }
 
   @override
-  String get setupPermissionBody =>
-      'Cho phép Ferret trong mục Mạng cục bộ ở cài đặt quyền riêng tư của máy tính này.';
+  String setupPermissionBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho phép Ferret trong mục Mạng cục bộ ở cài đặt quyền riêng tư của $_temp0.';
+  }
 
   @override
   String get buttonBack => 'Quay lại';
@@ -634,8 +727,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get orDivider => 'hoặc';
 
   @override
-  String plugInTitle(String device) {
-    return 'Cắm $device vào máy tính này';
+  String plugInTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cắm $device vào $_temp0';
   }
 
   @override
@@ -724,7 +825,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get soundDetailNone => 'Không';
 
   @override
-  String get soundHere => 'Trên máy tính này';
+  String soundHere(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $_temp0';
+  }
 
   @override
   String soundThere(String device) {
@@ -827,8 +938,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get presetAirplay => 'iPhone tự chọn chất lượng.';
 
   @override
-  String get basicPicture =>
-      'Hiện tại máy tính này chỉ có hình ảnh cơ bản (khoảng 10 khung mỗi giây).';
+  String basicPicture(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Hiện tại $_temp0 chỉ có hình ảnh cơ bản (khoảng 10 khung mỗi giây).';
+  }
 
   @override
   String get details => 'Chi tiết';
@@ -899,7 +1019,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get setupSubtitle => 'Không cần cài ứng dụng trên điện thoại.';
 
   @override
-  String get stepPlug => 'Cắm điện thoại vào máy tính này';
+  String stepPlug(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cắm điện thoại vào $_temp0';
+  }
 
   @override
   String get stepDebugging => 'Bật Gỡ lỗi qua USB';
@@ -939,8 +1069,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get setupCables => 'Nhiều loại cáp chỉ sạc được. Hãy thử cáp khác.';
 
   @override
-  String get setupPrivacy =>
-      'Sau khi cho phép, máy tính này có thể xem và điều khiển điện thoại mà không cần hỏi. Chỉ làm vậy với điện thoại của chính bạn.';
+  String setupPrivacy(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Sau khi cho phép, $_temp0 có thể xem và điều khiển điện thoại mà không cần hỏi. Chỉ làm vậy với điện thoại của chính bạn.';
+  }
 
   @override
   String get setupUnsupported =>
@@ -998,7 +1137,17 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       'Đây là tên mà thiết bị tự đặt. Chỉ đồng ý nếu đó là thiết bị của bạn.';
 
   @override
-  String get airplayTimedOutTitle => 'Không ai chọn máy tính này';
+  String airplayTimedOutTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Không ai chọn $_temp0';
+  }
 
   @override
   String get airplayTimedOutBody => 'Ferret đã chờ hai phút rồi dừng.';
@@ -1049,8 +1198,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get controlAsking => 'Đang hỏi…';
 
   @override
-  String noticeControlAsking(String device) {
-    return 'Trên $device, chạm Một lần hoặc Luôn luôn để máy tính này có thể nhấp và gõ ở đó.';
+  String noticeControlAsking(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device, chạm Một lần hoặc Luôn luôn để $_temp0 có thể nhấp và gõ ở đó.';
   }
 
   @override

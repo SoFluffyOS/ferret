@@ -518,7 +518,7 @@ class MirroringFeatureUi extends FeatureUi {
       .turnedOff => FeatureHealth(
         .off,
         reason: l10n.healthTurnedOff(name),
-        help: l10n.endTurnedOffBody(name),
+        help: l10n.endTurnedOffBody(name, MirrorHere.name),
       ),
       .unsupported => FeatureHealth(.off, reason: l10n.healthUnsupported(name)),
       .cannotAsk => FeatureHealth(

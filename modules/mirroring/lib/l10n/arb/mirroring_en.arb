@@ -22,10 +22,13 @@
     }
   },
   "bringToFront": "Bring to front",
-  "launcherTitle": "See {device}'s screen on this computer",
+  "launcherTitle": "See {device}'s screen on {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@launcherTitle": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -152,10 +155,13 @@
       }
     }
   },
-  "endTurnedOffBody": "On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.",
+  "endTurnedOffBody": "On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open {here, select, macOS{this Mac} windows{this PC} other{this computer}} there and check that it may ask.",
   "@endTurnedOffBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -192,18 +198,24 @@
       }
     }
   },
-  "endNoCodecTitle": "{device} can't send a picture this computer can show",
+  "endNoCodecTitle": "{device} can't send a picture {here, select, macOS{this Mac} windows{this PC} other{this computer}} can show",
   "@endNoCodecTitle": {
     "placeholders": {
       "device": {
         "type": "String"
+      },
+      "here": {
+        "type": "String"
       }
     }
   },
-  "endNoCodecBody": "Update Ferret on {device} and on this computer, then try again.",
+  "endNoCodecBody": "Update Ferret on {device} and on {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.",
   "@endNoCodecBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -216,10 +228,13 @@
       }
     }
   },
-  "endNotConnectedBody": "On {device}: open Ferret. Same Wi-Fi as this computer?",
+  "endNotConnectedBody": "On {device}: open Ferret. Same Wi-Fi as {here, select, macOS{this Mac} windows{this PC} other{this computer}}?",
   "@endNotConnectedBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -280,10 +295,13 @@
       }
     }
   },
-  "endLostConnectionBody": "Check that {device} is on, and on the same Wi-Fi as this computer.",
+  "endLostConnectionBody": "Check that {device} is on, and on the same Wi-Fi as {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
   "@endLostConnectionBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -542,16 +560,51 @@
   "experimental": "Experimental",
   "targetCable": "Cable",
   "targetWireless": "Wi-Fi debugging",
-  "setupInstallToolBody": "Install Android's platform tools (they include adb) on this computer. This page moves on by itself.",
+  "setupInstallToolBody": "Install Android's platform tools (they include adb) on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. This page moves on by itself.",
+  "@setupInstallToolBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "setupDownloadToolTitle": "Get Android's helper tool",
   "setupDownloadToolBody": "Ferret downloads Android's platform tools from Google, about 16 MB, once.",
   "download": "Download",
   "downloading": "Downloading…",
-  "setupDownloadFailed": "The download didn't finish. Check this computer's internet connection and try again.",
+  "setupDownloadFailed": "The download didn't finish. Check {here, select, macOS{this Mac's} windows{this PC's} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}'s}} internet connection and try again.",
+  "@setupDownloadFailed": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "setupStartToolTitle": "Start Android's helper tool",
-  "setupStartToolBody": "Ferret isn't allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.",
-  "setupPermissionTitle": "Ferret needs your OK on this computer",
-  "setupPermissionBody": "Allow Ferret under Local Network in this computer's privacy settings.",
+  "setupStartToolBody": "Ferret isn't allowed to start adb on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.",
+  "@setupStartToolBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "setupPermissionTitle": "Ferret needs your OK on {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@setupPermissionTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "setupPermissionBody": "Allow Ferret under Local Network in {here, select, macOS{this Mac's} windows{this PC's} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}'s}} privacy settings.",
+  "@setupPermissionBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "buttonBack": "Back",
   "@buttonBack": {
     "description": "Android navigation button, sent to the mirrored phone"
@@ -672,10 +725,13 @@
     }
   },
   "orDivider": "or",
-  "plugInTitle": "Plug {device} into this computer",
+  "plugInTitle": "Plug {device} into {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@plugInTitle": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -745,9 +801,14 @@
   "@soundDetailNone": {
     "description": "Short state next to Sound in a menu: no sound arrives"
   },
-  "soundHere": "On this computer",
+  "soundHere": "On {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@soundHere": {
-    "description": "Choice: play the shown phone's sound on this computer"
+    "description": "Choice: play the shown phone's sound on this computer",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "soundThere": "On {device}",
   "@soundThere": {
@@ -852,7 +913,14 @@
     }
   },
   "presetAirplay": "The iPhone picks the quality.",
-  "basicPicture": "Basic picture on this computer for now (about 10 a second).",
+  "basicPicture": "Basic picture on {here, select, macOS{this Mac} windows{this PC} other{this computer}} for now (about 10 a second).",
+  "@basicPicture": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "details": "Details",
   "wayWifi": "Wi-Fi",
   "wayCable": "Cable",
@@ -923,7 +991,14 @@
     }
   },
   "setupSubtitle": "No app needed on the phone.",
-  "stepPlug": "Plug the phone into this computer",
+  "stepPlug": "Plug the phone into {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@stepPlug": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "stepDebugging": "Turn on USB debugging",
   "stepDebuggingOn": "On the phone:",
   "stepDebugging1": "Settings → About phone",
@@ -942,7 +1017,14 @@
   },
   "setupWaiting": "Waiting for the phone…",
   "setupCables": "Many cables only charge. Try another one.",
-  "setupPrivacy": "Once allowed, this computer can see and control the phone without asking. Only do this with your own phone.",
+  "setupPrivacy": "Once allowed, {here, select, macOS{this Mac} windows{this PC} other{this computer}} can see and control the phone without asking. Only do this with your own phone.",
+  "@setupPrivacy": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "setupUnsupported": "This computer can't show a phone over a cable.",
   "airplayOn": "On {device}:",
   "@airplayOn": {
@@ -1003,7 +1085,14 @@
     }
   },
   "airplayConnectingBody": "The name is what the device calls itself. Say yes only if it is yours.",
-  "airplayTimedOutTitle": "Nobody picked this computer",
+  "airplayTimedOutTitle": "Nobody picked {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@airplayTimedOutTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "airplayTimedOutBody": "Ferret listened for two minutes, then stopped.",
   "listenAgain": "Listen again",
   "viewingDetail": "Since {time} · {way}",
@@ -1054,10 +1143,13 @@
   "@controlAsking": {
     "description": "The Control chip while the phone's owner is being asked"
   },
-  "noticeControlAsking": "On {device}, tap Once or Always to let this computer click and type there.",
+  "noticeControlAsking": "On {device}, tap Once or Always to let {here, select, macOS{this Mac} windows{this PC} other{this computer}} click and type there.",
   "@noticeControlAsking": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }

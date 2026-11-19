@@ -29,8 +29,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get bringToFront => 'Bring to front';
 
   @override
-  String launcherTitle(String device) {
-    return 'See $device\'s screen on this computer';
+  String launcherTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'See $device\'s screen on $_temp0';
   }
 
   @override
@@ -136,8 +144,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String endTurnedOffBody(String device) {
-    return 'On $device: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.';
+  String endTurnedOffBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open $_temp0 there and check that it may ask.';
   }
 
   @override
@@ -161,13 +177,29 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String endNoCodecTitle(String device) {
-    return '$device can\'t send a picture this computer can show';
+  String endNoCodecTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device can\'t send a picture $_temp0 can show';
   }
 
   @override
-  String endNoCodecBody(String device) {
-    return 'Update Ferret on $device and on this computer, then try again.';
+  String endNoCodecBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Update Ferret on $device and on $_temp0, then try again.';
   }
 
   @override
@@ -176,8 +208,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String endNotConnectedBody(String device) {
-    return 'On $device: open Ferret. Same Wi-Fi as this computer?';
+  String endNotConnectedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device: open Ferret. Same Wi-Fi as $_temp0?';
   }
 
   @override
@@ -216,8 +256,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String endLostConnectionBody(String device) {
-    return 'Check that $device is on, and on the same Wi-Fi as this computer.';
+  String endLostConnectionBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Check that $device is on, and on the same Wi-Fi as $_temp0.';
   }
 
   @override
@@ -490,8 +538,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get targetWireless => 'Wi-Fi debugging';
 
   @override
-  String get setupInstallToolBody =>
-      'Install Android\'s platform tools (they include adb) on this computer. This page moves on by itself.';
+  String setupInstallToolBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Install Android\'s platform tools (they include adb) on $_temp0. This page moves on by itself.';
+  }
 
   @override
   String get setupDownloadToolTitle => 'Get Android\'s helper tool';
@@ -507,22 +564,75 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get downloading => 'Downloading…';
 
   @override
-  String get setupDownloadFailed =>
-      'The download didn\'t finish. Check this computer\'s internet connection and try again.';
+  String setupDownloadFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': '$_temp0\'s',
+      },
+    );
+    return 'The download didn\'t finish. Check $_temp1 internet connection and try again.';
+  }
 
   @override
   String get setupStartToolTitle => 'Start Android\'s helper tool';
 
   @override
-  String get setupStartToolBody =>
-      'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.';
+  String setupStartToolBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Ferret isn\'t allowed to start adb on $_temp0. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.';
+  }
 
   @override
-  String get setupPermissionTitle => 'Ferret needs your OK on this computer';
+  String setupPermissionTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Ferret needs your OK on $_temp0';
+  }
 
   @override
-  String get setupPermissionBody =>
-      'Allow Ferret under Local Network in this computer\'s privacy settings.';
+  String setupPermissionBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': '$_temp0\'s',
+      },
+    );
+    return 'Allow Ferret under Local Network in $_temp1 privacy settings.';
+  }
 
   @override
   String get buttonBack => 'Back';
@@ -634,8 +744,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get orDivider => 'or';
 
   @override
-  String plugInTitle(String device) {
-    return 'Plug $device into this computer';
+  String plugInTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Plug $device into $_temp0';
   }
 
   @override
@@ -724,7 +842,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get soundDetailNone => 'None';
 
   @override
-  String get soundHere => 'On this computer';
+  String soundHere(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $_temp0';
+  }
 
   @override
   String soundThere(String device) {
@@ -827,8 +955,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get presetAirplay => 'The iPhone picks the quality.';
 
   @override
-  String get basicPicture =>
-      'Basic picture on this computer for now (about 10 a second).';
+  String basicPicture(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Basic picture on $_temp0 for now (about 10 a second).';
+  }
 
   @override
   String get details => 'Details';
@@ -899,7 +1036,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get setupSubtitle => 'No app needed on the phone.';
 
   @override
-  String get stepPlug => 'Plug the phone into this computer';
+  String stepPlug(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Plug the phone into $_temp0';
+  }
 
   @override
   String get stepDebugging => 'Turn on USB debugging';
@@ -939,8 +1086,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get setupCables => 'Many cables only charge. Try another one.';
 
   @override
-  String get setupPrivacy =>
-      'Once allowed, this computer can see and control the phone without asking. Only do this with your own phone.';
+  String setupPrivacy(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Once allowed, $_temp0 can see and control the phone without asking. Only do this with your own phone.';
+  }
 
   @override
   String get setupUnsupported =>
@@ -998,7 +1154,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'The name is what the device calls itself. Say yes only if it is yours.';
 
   @override
-  String get airplayTimedOutTitle => 'Nobody picked this computer';
+  String airplayTimedOutTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Nobody picked $_temp0';
+  }
 
   @override
   String get airplayTimedOutBody =>
@@ -1050,8 +1216,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get controlAsking => 'Asking…';
 
   @override
-  String noticeControlAsking(String device) {
-    return 'On $device, tap Once or Always to let this computer click and type there.';
+  String noticeControlAsking(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device, tap Once or Always to let $_temp0 click and type there.';
   }
 
   @override

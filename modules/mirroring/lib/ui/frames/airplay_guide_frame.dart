@@ -84,7 +84,7 @@ class AirplayGuideFrame extends StatelessWidget {
     if (timedOut) {
       return MirrorMessage(
         icon: LucideIcons.airplay,
-        title: l10n.airplayTimedOutTitle,
+        title: l10n.airplayTimedOutTitle(MirrorHere.name),
         body: l10n.airplayTimedOutBody,
         actions: [
           MessageAction(label: l10n.close, onPressed: onCancel),

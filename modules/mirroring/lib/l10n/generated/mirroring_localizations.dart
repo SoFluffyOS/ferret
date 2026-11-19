@@ -134,8 +134,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @launcherTitle.
   ///
   /// In en, this message translates to:
-  /// **'See {device}\'s screen on this computer'**
-  String launcherTitle(String device);
+  /// **'See {device}\'s screen on {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String launcherTitle(String device, String here);
 
   /// No description provided for @launcherBody.
   ///
@@ -284,8 +284,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endTurnedOffBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open this computer there and check that it may ask.'**
-  String endTurnedOffBody(String device);
+  /// **'On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to see this screen. Then open {here, select, macOS{this Mac} windows{this PC} other{this computer}} there and check that it may ask.'**
+  String endTurnedOffBody(String device, String here);
 
   /// No description provided for @endCannotAskTitle.
   ///
@@ -314,14 +314,14 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNoCodecTitle.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t send a picture this computer can show'**
-  String endNoCodecTitle(String device);
+  /// **'{device} can\'t send a picture {here, select, macOS{this Mac} windows{this PC} other{this computer}} can show'**
+  String endNoCodecTitle(String device, String here);
 
   /// No description provided for @endNoCodecBody.
   ///
   /// In en, this message translates to:
-  /// **'Update Ferret on {device} and on this computer, then try again.'**
-  String endNoCodecBody(String device);
+  /// **'Update Ferret on {device} and on {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.'**
+  String endNoCodecBody(String device, String here);
 
   /// No description provided for @endNotConnectedTitle.
   ///
@@ -332,8 +332,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endNotConnectedBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret. Same Wi-Fi as this computer?'**
-  String endNotConnectedBody(String device);
+  /// **'On {device}: open Ferret. Same Wi-Fi as {here, select, macOS{this Mac} windows{this PC} other{this computer}}?'**
+  String endNotConnectedBody(String device, String here);
 
   /// No description provided for @endNoAnswerTitle.
   ///
@@ -380,8 +380,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @endLostConnectionBody.
   ///
   /// In en, this message translates to:
-  /// **'Check that {device} is on, and on the same Wi-Fi as this computer.'**
-  String endLostConnectionBody(String device);
+  /// **'Check that {device} is on, and on the same Wi-Fi as {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String endLostConnectionBody(String device, String here);
 
   /// No description provided for @endFailedTitle.
   ///
@@ -752,8 +752,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupInstallToolBody.
   ///
   /// In en, this message translates to:
-  /// **'Install Android\'s platform tools (they include adb) on this computer. This page moves on by itself.'**
-  String get setupInstallToolBody;
+  /// **'Install Android\'s platform tools (they include adb) on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. This page moves on by itself.'**
+  String setupInstallToolBody(String here);
 
   /// No description provided for @setupDownloadToolTitle.
   ///
@@ -782,8 +782,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupDownloadFailed.
   ///
   /// In en, this message translates to:
-  /// **'The download didn\'t finish. Check this computer\'s internet connection and try again.'**
-  String get setupDownloadFailed;
+  /// **'The download didn\'t finish. Check {here, select, macOS{this Mac\'s} windows{this PC\'s} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}\'s}} internet connection and try again.'**
+  String setupDownloadFailed(String here);
 
   /// No description provided for @setupStartToolTitle.
   ///
@@ -794,20 +794,20 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupStartToolBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret isn\'t allowed to start adb on this computer. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.'**
-  String get setupStartToolBody;
+  /// **'Ferret isn\'t allowed to start adb on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Open Android Studio, or run adb start-server in Terminal. This page moves on by itself.'**
+  String setupStartToolBody(String here);
 
   /// No description provided for @setupPermissionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ferret needs your OK on this computer'**
-  String get setupPermissionTitle;
+  /// **'Ferret needs your OK on {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String setupPermissionTitle(String here);
 
   /// No description provided for @setupPermissionBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow Ferret under Local Network in this computer\'s privacy settings.'**
-  String get setupPermissionBody;
+  /// **'Allow Ferret under Local Network in {here, select, macOS{this Mac\'s} windows{this PC\'s} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}\'s}} privacy settings.'**
+  String setupPermissionBody(String here);
 
   /// Android navigation button, sent to the mirrored phone
   ///
@@ -986,8 +986,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @plugInTitle.
   ///
   /// In en, this message translates to:
-  /// **'Plug {device} into this computer'**
-  String plugInTitle(String device);
+  /// **'Plug {device} into {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String plugInTitle(String device, String here);
 
   /// No description provided for @plugInBody.
   ///
@@ -1148,8 +1148,8 @@ abstract class MirroringLocalizations {
   /// Choice: play the shown phone's sound on this computer
   ///
   /// In en, this message translates to:
-  /// **'On this computer'**
-  String get soundHere;
+  /// **'On {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String soundHere(String here);
 
   /// No description provided for @soundThere.
   ///
@@ -1310,8 +1310,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @basicPicture.
   ///
   /// In en, this message translates to:
-  /// **'Basic picture on this computer for now (about 10 a second).'**
-  String get basicPicture;
+  /// **'Basic picture on {here, select, macOS{this Mac} windows{this PC} other{this computer}} for now (about 10 a second).'**
+  String basicPicture(String here);
 
   /// No description provided for @details.
   ///
@@ -1424,8 +1424,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @stepPlug.
   ///
   /// In en, this message translates to:
-  /// **'Plug the phone into this computer'**
-  String get stepPlug;
+  /// **'Plug the phone into {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String stepPlug(String here);
 
   /// No description provided for @stepDebugging.
   ///
@@ -1496,8 +1496,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @setupPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'Once allowed, this computer can see and control the phone without asking. Only do this with your own phone.'**
-  String get setupPrivacy;
+  /// **'Once allowed, {here, select, macOS{this Mac} windows{this PC} other{this computer}} can see and control the phone without asking. Only do this with your own phone.'**
+  String setupPrivacy(String here);
 
   /// No description provided for @setupUnsupported.
   ///
@@ -1580,8 +1580,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @airplayTimedOutTitle.
   ///
   /// In en, this message translates to:
-  /// **'Nobody picked this computer'**
-  String get airplayTimedOutTitle;
+  /// **'Nobody picked {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String airplayTimedOutTitle(String here);
 
   /// No description provided for @airplayTimedOutBody.
   ///
@@ -1664,8 +1664,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @noticeControlAsking.
   ///
   /// In en, this message translates to:
-  /// **'On {device}, tap Once or Always to let this computer click and type there.'**
-  String noticeControlAsking(String device);
+  /// **'On {device}, tap Once or Always to let {here, select, macOS{this Mac} windows{this PC} other{this computer}} click and type there.'**
+  String noticeControlAsking(String device, String here);
 
   /// No description provided for @noticeControlAllowed.
   ///

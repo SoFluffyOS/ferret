@@ -21,7 +21,7 @@ class ScreenLauncherFrame extends StatelessWidget {
 
     return MirrorMessage(
       icon: LucideIcons.smartphone,
-      title: l10n.launcherTitle(deviceName),
+      title: l10n.launcherTitle(deviceName, MirrorHere.name),
       body: l10n.launcherBody(deviceName),
       actions: [
         MessageAction(label: l10n.showScreen, primary: true, onPressed: onShow),
