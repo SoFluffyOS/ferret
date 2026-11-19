@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Renders the app icons for macOS, iOS, Android and Windows from the docs logo
-# (apps/ferret_docs/web/images/logo.svg). Needs python3, rsvg-convert (librsvg)
-# and ImageMagick 7. The Linux hicolor set has its own packaging/linux/icons/generate.sh.
+# Renders every icon from the logo sources in branding/: macOS, iOS (light,
+# dark, tinted), Android (adaptive, themed, legacy), Windows, Linux (through
+# packaging/linux/icons/generate.sh), the macOS menubar glyph and the docs
+# logo and favicon. Needs python3, rsvg-convert (librsvg) and ImageMagick 7.
 #
 #   scripts/generate_icons.sh            # write every platform's icons
 #   scripts/generate_icons.sh --sheet    # also render temp/icons_contact_sheet.png
@@ -19,130 +20,152 @@ app="$root/apps/ferret"
 macos="$app/macos/Runner/Assets.xcassets/AppIcon.appiconset"
 ios="$app/ios/Runner/Assets.xcassets/AppIcon.appiconset"
 res="$app/android/app/src/main/res"
-windows="$app/windows/runner/resources"
+ico="$app/windows/runner/resources/app_icon.ico"
+docs="$root/apps/ferret_docs/web"
+menubar="$root/packages/ferret_menubar/macos/ferret_menubar/Sources/ferret_menubar/FerretGlyph.swift"
 
-python3 - "$root/apps/ferret_docs/web/images/logo.svg" "$work" "$res" <<'PY'
-import math, re, sys
-logo_path, work, res = sys.argv[1:4]
-src = open(logo_path).read()
-inner = src[src.index('>', src.index('<svg')) + 1:src.rindex('</svg>')].strip()
-LOGO_W, LOGO_H = 210, 274
-NAVY = '#09387E'
+python3 - "$root/branding" "$work" "$res" "$docs" "$menubar" <<'PY'
+import re, sys
+import xml.etree.ElementTree as ET
 
-def squircle(x, y, size, n=5.0, steps=720):
-    r = size / 2
-    cx, cy = x + r, y + r
-    pts = []
-    for i in range(steps):
-        t = 2 * math.pi * i / steps
-        c, s = math.cos(t), math.sin(t)
-        pts.append((cx + r * math.copysign(abs(c) ** (2 / n), c),
-                    cy + r * math.copysign(abs(s) ** (2 / n), s)))
-    return 'M' + ' L'.join(f'{px:.2f},{py:.2f}' for px, py in pts) + ' Z'
+branding, work, res, docs, menubar = sys.argv[1:6]
+NS = 'http://www.w3.org/2000/svg'
+ET.register_namespace('', NS)
 
-def logo(cx, cy, height, recolor=None):
-    s = height / LOGO_H
-    body = inner
-    for old, new in (recolor or {}).items():
-        body = body.replace(old, new)
-    return (f'<g transform="translate({cx - LOGO_W / 2 * s:.2f} {cy - LOGO_H / 2 * s:.2f}) '
-            f'scale({s:.4f})">{body}</g>')
 
-DEFS = '''<defs>
-<linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCE8F7"/>
-</linearGradient>
-<linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
-</linearGradient>
-<filter id="drop" x="-20%" y="-20%" width="140%" height="140%">
-  <feGaussianBlur in="SourceAlpha" stdDeviation="14"/><feOffset dy="12"/>
-  <feComponentTransfer><feFuncA type="linear" slope="0.30"/></feComponentTransfer>
-  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-</filter>
-<filter id="lift" x="-20%" y="-20%" width="140%" height="140%">
-  <feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="10"/>
-  <feColorMatrix values="0 0 0 0 0.035  0 0 0 0 0.22  0 0 0 0 0.49  0 0 0 0.28 0"/>
-  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-</filter>
-</defs>'''
+def load(name):
+    return ET.parse(f'{branding}/{name}.svg').getroot()
 
-def svg(body):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" '
-            f'viewBox="0 0 1024 1024">{DEFS}{body}</svg>')
 
-def plated(x, size, shadow):
-    plate = squircle(x, x, size)
-    edge = squircle(x + size * 0.004, x + size * 0.004, size * 0.992)
-    filt = ' filter="url(#drop)"' if shadow else ''
-    return (f'<path d="{plate}" fill="url(#plate)"{filt}/>'
-            f'<path d="{edge}" fill="none" stroke="url(#sheen)" stroke-width="{size * 0.006:.2f}"/>'
-            f'<g filter="url(#lift)">{logo(512, 512 + size * 0.01, size * 0.70)}</g>')
+def by_id(tree, ident):
+    return next(e for e in tree.iter() if e.get('id') == ident)
 
-def write(name, text):
-    open(f'{work}/{name}', 'w').write(text)
 
-# macOS: Apple's template grid, an 824 squircle centred on 1024 with a soft drop shadow.
-write('macos.svg', svg(plated(100, 824, True)))
-# Windows and legacy Android: the same plate, nearly edge to edge.
-write('plate.svg', svg(plated(24, 976, False)))
-# iOS masks the corners itself: full-bleed, opaque.
-write('ios.svg', svg('<rect width="1024" height="1024" fill="url(#plate)"/>'
-                     f'<g filter="url(#lift)">{logo(512, 520, 690)}</g>'))
-# iOS 18 dark: transparent so the system draws its dark backdrop; the navy outline
-# would vanish on it, so it turns into a lighter blue.
-write('ios_dark.svg', svg(logo(512, 520, 690, {NAVY: '#1E5BB0'})))
-write('logo_only.svg', svg(logo(512, 520, 690)))
+def text(element):
+    return ET.tostring(element, encoding='unicode').replace(f' xmlns="{NS}"', '')
 
-# Android adaptive icon: 108dp canvas, the logo inside the 66dp safe circle.
-def attrs(tag):
-    return dict(re.findall(r'([\w-]+)="([^"]*)"', tag))
 
-def color(value):
-    return '#000000' if value == 'black' else value
+def svg(view_box, body, size=1024):
+    return (f'<svg xmlns="{NS}" width="{size}" height="{size}" viewBox="{view_box}">{body}</svg>\n')
 
-def circle_path(a):
-    cx, cy, r = float(a['cx']), float(a['cy']), float(a['r'])
-    return f'M{cx - r},{cy}a{r},{r} 0 1,0 {2 * r},0a{r},{r} 0 1,0 {-2 * r},0Z'
 
-shapes = []
-for tag in re.findall(r'<(?:path|circle)\b[^>]*>', inner):
-    a = attrs(tag)
-    d = a['d'] if tag.startswith('<path') else circle_path(a)
-    shapes.append((d, a))
+def write(name, content):
+    open(f'{work}/{name}', 'w').write(content)
 
-height = 56
-s = height / LOGO_H
-group = (f'<group android:translateX="{54 - LOGO_W / 2 * s:.3f}" '
-         f'android:translateY="{54 - LOGO_H / 2 * s:.3f}" android:scaleX="{s:.5f}" android:scaleY="{s:.5f}">')
-head = ('<?xml version="1.0" encoding="utf-8"?>\n'
-        '<vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
-        '    android:width="108dp" android:height="108dp"\n'
-        '    android:viewportWidth="108" android:viewportHeight="108">\n    ' + group + '\n')
-tail = '    </group>\n</vector>\n'
 
-fg = []
-for d, a in shapes:
-    line = f'        <path android:pathData="{d}"'
-    if 'fill' in a:
-        line += f' android:fillColor="{color(a["fill"])}"'
-    if 'fill-opacity' in a:
-        line += f' android:fillAlpha="{a["fill-opacity"]}"'
-    if 'stroke' in a:
-        line += f' android:strokeColor="{color(a["stroke"])}" android:strokeWidth="1"'
-    fg.append(line + '/>')
-open(f'{res}/drawable/ic_launcher_foreground.xml', 'w').write(head + '\n'.join(fg) + '\n' + tail)
+icon, dark, glyph, template = (load(n) for n in ('ferret-icon', 'ferret-icon-dark', 'ferret-glyph', 'ferret-template'))
+PLATE_BOX = '100 100 824 824'
 
-# Monochrome (themed icons): the silhouette with the light muzzle and the eyes
-# cut out, nose and pupils put back.
-silhouette = shapes[0][0]
-navy = [d for d, a in shapes if a.get('fill') == NAVY and 'stroke' not in a and d != silhouette]
-cutouts = [d for d, a in shapes if a.get('fill') == '#40C4FF'] + navy[-2:]
-pupils = [navy[0]] + [d for d, a in shapes if a.get('fill') == '#0066B4'][-2:]
-mono = [f'        <path android:pathData="{" ".join([silhouette] + cutouts)}" '
-        'android:fillColor="#FFFFFFFF" android:fillType="evenOdd"/>']
-mono += [f'        <path android:pathData="{d}" android:fillColor="#FFFFFFFF"/>' for d in pupils]
-open(f'{res}/drawable/ic_launcher_monochrome.xml', 'w').write(head + '\n'.join(mono) + '\n' + tail)
+
+def defs(tree):
+    return text(tree.find(f'{{{NS}}}defs'))
+
+
+def plate_colour(tree):
+    return by_id(tree, 'plate-fill').findall(f'{{{NS}}}stop')[-1].get('stop-color')
+
+
+def flat(tree, view_box, size=1024):
+    """The plated icon without its shadow, cropped to view_box."""
+    return svg(view_box, defs(tree) + f'<path d="{by_id(tree, "plate").get("d")}" fill="url(#plate-fill)"/>'
+               + text(by_id(tree, 'ferret')) + text(by_id(tree, 'rim')), size)
+
+
+def full_bleed(tree):
+    """iOS draws its own corners: an opaque square, the plate's art scaled to fill it."""
+    return svg(PLATE_BOX, defs(tree) + '<rect width="1024" height="1024" fill="url(#plate-fill)"/>'
+               + ''.join(text(child) for child in by_id(tree, 'ferret')))
+
+
+write('macos.svg', open(f'{branding}/ferret-icon.svg').read())
+write('plate.svg', flat(icon, PLATE_BOX))
+write('windows.svg', flat(icon, '84 84 856 856'))
+write('ios.svg', full_bleed(icon))
+write('ios_dark.svg', full_bleed(dark))
+write('template.svg', open(f'{branding}/ferret-template.svg').read())
+open(f'{docs}/images/logo.svg', 'w').write(flat(icon, PLATE_BOX, size=64))
+
+# Android adaptive icon: 108dp canvas. The plate's 824 maps onto the 72dp the
+# launcher shows, which keeps the head and ears inside the 66dp safe circle.
+# The body runs on past the bottom edge, as it does off the plate.
+SCALE = 72 / 824
+SHIFT = 54 - 512 * SCALE
+fur = by_id(glyph, 'body').get('fill')
+bleed = ET.Element(f'{{{NS}}}rect', x='316', y='900', width='392', height='380', fill=fur)
+shapes = list(glyph)
+body = next(i for i, e in enumerate(shapes) if e.get('id') == 'body')
+foreground = shapes[:body] + [bleed] + shapes[body:]
+silhouette = by_id(template, 'silhouette')
+
+
+def path_data(element):
+    tag = element.tag.removeprefix(f'{{{NS}}}')
+    if tag == 'circle':
+        cx, cy, r = (float(element.get(key)) for key in ('cx', 'cy', 'r'))
+        return f'M{cx - r:g},{cy:g}a{r:g},{r:g} 0 1,0 {2 * r:g},0a{r:g},{r:g} 0 1,0 {-2 * r:g},0Z'
+    if tag == 'rect':
+        return 'M{x},{y}h{width}v{height}h-{width}Z'.format(**element.attrib)
+    return element.get('d')
+
+
+def vector(elements, colour=None):
+    lines = []
+    for element in elements:
+        rule = ' android:fillType="evenOdd"' if element.get('fill-rule') == 'evenodd' else ''
+        lines.append(f'        <path android:fillColor="{colour or element.get("fill")}"{rule}\n'
+                     f'            android:pathData="{path_data(element)}"/>')
+    return ('<?xml version="1.0" encoding="utf-8"?>\n'
+            '<!-- Generated by scripts/generate_icons.sh from branding/. Do not edit. -->\n'
+            '<vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
+            '    android:width="108dp" android:height="108dp"\n'
+            '    android:viewportWidth="108" android:viewportHeight="108">\n'
+            f'    <group android:scaleX="{SCALE:.6f}" android:scaleY="{SCALE:.6f}"\n'
+            f'        android:translateX="{SHIFT:.4f}" android:translateY="{SHIFT:.4f}">\n'
+            + '\n'.join(lines) + '\n    </group>\n</vector>\n')
+
+
+open(f'{res}/drawable/ic_launcher_foreground.xml', 'w').write(vector(foreground))
+open(f'{res}/drawable/ic_launcher_monochrome.xml', 'w').write(vector([silhouette, bleed], '#FFFFFFFF'))
+open(f'{res}/values/ic_launcher_background.xml', 'w').write(
+    '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
+    f'    <color name="ic_launcher_background">{plate_colour(icon)}</color>\n</resources>\n')
+
+# The same layers as SVG, for the legacy PNGs and the contact sheet.
+group = f'<g transform="translate({SHIFT} {SHIFT}) scale({SCALE})">'
+write('android.svg', svg('0 0 108 108', f'<rect width="108" height="108" fill="{plate_colour(icon)}"/>'
+                         + group + ''.join(text(e) for e in foreground) + '</g>'))
+write('android_mono.svg', svg('0 0 108 108', group + f'<path fill="#FFFFFF" fill-rule="evenodd" '
+                              f'd="{silhouette.get("d")}"/>' + text(bleed).replace(fur, '#FFFFFF') + '</g>'))
+
+# The menubar glyph: the template's path as Swift, so it stays sharp at any scale.
+box = [float(v) for v in template.get('viewBox').split()]
+swift = []
+for command, args in re.findall(r'([MLCZ])([^MLCZ]*)', silhouette.get('d')):
+    numbers = re.findall(r'-?[\d.]+', args)
+    points = [f'NSPoint(x: {x}, y: {y})' for x, y in zip(numbers[::2], numbers[1::2])]
+    if command == 'M':
+        swift.append(f'        path.move(to: {points[0]})')
+    if command == 'L':
+        swift.append(f'        path.line(to: {points[0]})')
+    if command == 'C':
+        swift.append(f'        path.curve(to: {points[2]}, controlPoint1: {points[0]}, controlPoint2: {points[1]})')
+    if command == 'Z':
+        swift.append('        path.close()')
+
+open(menubar, 'w').write(
+    '// Generated by scripts/generate_icons.sh from branding/ferret-template.svg. Do not edit.\n'
+    'import Cocoa\n\n'
+    '/// The one-colour ferret: head and body, with the mask and the nose cut out.\n'
+    'enum FerretGlyph {\n'
+    '    /// The box the path was drawn in, in its own coordinates (y grows downwards).\n'
+    f'    static let bounds = NSRect(x: {box[0]:g}, y: {box[1]:g}, width: {box[2]:g}, height: {box[3]:g})\n\n'
+    '    static func path() -> NSBezierPath {\n'
+    '        let path = NSBezierPath()\n'
+    '        path.windingRule = .evenOdd\n'
+    + '\n'.join(swift) + '\n'
+    '        return path\n'
+    '    }\n'
+    '}\n')
 PY
 
 render() { rsvg-convert -w "$2" -h "$2" "$work/$1.svg" -o "$3"; }
@@ -151,53 +174,89 @@ for size in 16 32 64 128 256 512 1024; do
   render macos "$size" "$macos/app_icon_$size.png"
 done
 
+# No time stamps in the PNGs, so running the script again changes nothing.
+still=(-define png:exclude-chunk=date,time)
 render ios 1024 "$work/ios.png"
-magick "$work/ios.png" -background white -alpha remove -alpha off "PNG24:$ios/Icon-App-1024x1024@1x.png"
-render ios_dark 1024 "$ios/Icon-App-1024x1024@1x-dark.png"
-render logo_only 1024 "$work/tinted.png"
-magick "$work/tinted.png" -colorspace gray -auto-level -gamma 1.8 -background black -alpha remove -alpha off \
-  "PNG24:$ios/Icon-App-1024x1024@1x-tinted.png"
+magick "$work/ios.png" -alpha remove -alpha off "${still[@]}" "PNG24:$ios/Icon-App-1024x1024@1x.png"
+render ios_dark 1024 "$work/ios_dark.png"
+magick "$work/ios_dark.png" -alpha remove -alpha off "${still[@]}" "PNG24:$ios/Icon-App-1024x1024@1x-dark.png"
+# Tinted: grayscale on black, which iOS colours by brightness.
+magick "$work/ios_dark.png" -alpha off -colorspace gray -level 9%,96% "${still[@]}" "$ios/Icon-App-1024x1024@1x-tinted.png"
 
 for density in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
   render plate "${density#*:}" "$res/mipmap-${density%%:*}/ic_launcher.png"
 done
 
 for size in 16 24 32 48 64 256; do
-  render plate "$size" "$work/win_$size.png"
+  render windows "$size" "$work/win_$size.png"
 done
-magick "$work"/win_{16,24,32,48,64,256}.png "$windows/app_icon.ico"
+magick "$work"/win_{16,24,32,48,64,256}.png "$ico"
+
+for size in 16 32 48; do
+  render plate "$size" "$work/fav_$size.png"
+done
+magick "$work"/fav_{16,32,48}.png "$docs/favicon.ico"
+
+"$root/packaging/linux/icons/generate.sh"
 
 if [[ "${1:-}" == "--sheet" ]]; then
   sheet="$root/temp/icons_contact_sheet.png"
   mkdir -p "$root/temp"
-  for size in 16 32 64 128 256; do
-    for bg in '#FFFFFF' '#1E1E1E'; do
-      rsvg-convert -w "$size" -h "$size" "$work/macos.svg" |
-        magick - -background "$bg" -gravity center -extent 272x272 "$work/sheet_mac_${size}_${bg#\#}.png"
-    done
+  cell() { magick "$1" -background "$2" -gravity center -extent 200x200 "$3"; }
+  zoom() { magick "$1" -filter point -resize "$2" "$3"; }
+  rounded() {
+    magick "$1" \( +clone -alpha off -fill black -colorize 100 -fill white \
+      -draw "roundrectangle 0,0,179,179,40,40" \) -alpha off -compose CopyOpacity -composite "$2"
+  }
+  # The launcher shows the middle 72 of the adaptive icon's 108dp, here in a circle.
+  circle() {
+    magick "$1" \( +clone -alpha off -fill black -colorize 100 -fill white -draw "circle 90,90 90,30" \) \
+      -alpha off -compose CopyOpacity -composite -gravity center -crop 120x120+0+0 +repage "$2"
+  }
+
+  for size in 16 32 64 128; do
+    render macos "$size" "$work/m_$size.png"
+    zoom "$work/m_$size.png" "$((128 / size * 100))%" "$work/z_$size.png"
+    cell "$work/z_$size.png" '#FFFFFF' "$work/sheet_mac_${size}_light.png"
+    cell "$work/z_$size.png" '#1E1E1E' "$work/sheet_mac_${size}_dark.png"
   done
-  render ios 256 "$work/s_ios.png"
-  magick "$work/s_ios.png" \( -size 256x256 xc:black -fill white -draw "roundrectangle 0,0,255,255,58,58" \) \
-    -alpha off -compose CopyOpacity -composite -compose Over \
-    -background '#E9E9EE' -gravity center -extent 272x272 "$work/sheet_ios.png"
-  render ios_dark 256 "$work/s_dark.png"
-  magick -size 256x256 gradient:'#3A3A3C'-'#111111' "$work/s_dark.png" -composite \
-    \( -size 256x256 xc:black -fill white -draw "roundrectangle 0,0,255,255,58,58" \) \
-    -alpha off -compose CopyOpacity -composite -compose Over -background '#000000' -gravity center -extent 272x272 \
-    "$work/sheet_ios_dark.png"
-  magick "$ios/Icon-App-1024x1024@1x-tinted.png" -resize 256x256 \
-    \( +clone -fill '#7FB2FF' -colorize 100 \) -compose Multiply -composite \
-    \( -size 256x256 xc:black -fill white -draw "roundrectangle 0,0,255,255,58,58" \) \
-    -alpha off -compose CopyOpacity -composite -compose Over -background '#000000' -gravity center -extent 272x272 \
-    "$work/sheet_ios_tinted.png"
-  magick "$res/mipmap-xxxhdpi/ic_launcher.png" -background '#F2F2F2' -gravity center -extent 272x272 \
-    "$work/sheet_legacy.png"
-  magick "$windows/app_icon.ico[0]" -filter point -resize 800% -background '#202020' -gravity center \
-    -extent 272x272 "$work/sheet_win16.png"
+  magick "$ios/Icon-App-1024x1024@1x.png" -resize 180x180 "$work/s_ios.png"
+  magick "$ios/Icon-App-1024x1024@1x-dark.png" -resize 180x180 "$work/s_ios_dark.png"
+  magick "$ios/Icon-App-1024x1024@1x-tinted.png" -resize 180x180 -colorspace sRGB \
+    \( +clone -fill '#E8A867' -colorize 100 \) -compose Multiply -composite "$work/s_ios_tinted.png"
+  for name in ios ios_dark ios_tinted; do
+    rounded "$work/s_$name.png" "$work/r_$name.png"
+  done
+  cell "$work/r_ios.png" '#E9E9EE' "$work/sheet_ios.png"
+  cell "$work/r_ios_dark.png" '#000000' "$work/sheet_ios_dark.png"
+  cell "$work/r_ios_tinted.png" '#000000' "$work/sheet_ios_tinted.png"
+  render android 180 "$work/s_android.png"
+  circle "$work/s_android.png" "$work/c_android.png"
+  cell "$work/c_android.png" '#F2F2F2' "$work/sheet_android.png"
+  render android_mono 180 "$work/s_mono_mask.png"
+  magick -size 180x180 xc:'#22364D' \( "$work/s_mono_mask.png" -fill '#D5E3F7' -colorize 100 \) -composite \
+    "$work/s_mono.png"
+  circle "$work/s_mono.png" "$work/c_mono.png"
+  cell "$work/c_mono.png" '#F2F2F2' "$work/sheet_mono.png"
+  cell "$res/mipmap-xxxhdpi/ic_launcher.png" '#F2F2F2' "$work/sheet_legacy.png"
+  zoom "$ico[0]" 800% "$work/z_win16.png"
+  cell "$work/z_win16.png" '#202020' "$work/sheet_win16.png"
+  zoom "$ico[2]" 400% "$work/z_win32.png"
+  cell "$work/z_win32.png" '#F3F3F3' "$work/sheet_win32.png"
+  zoom "$root/packaging/linux/icons/hicolor/48x48/apps/io.sofluffy.ferret.png" 300% "$work/z_linux.png"
+  cell "$work/z_linux.png" '#3C3C3C' "$work/sheet_linux.png"
+  zoom "$docs/favicon.ico[0]" 800% "$work/z_fav.png"
+  cell "$work/z_fav.png" '#FFFFFF' "$work/sheet_favicon.png"
+  rsvg-convert -h 32 "$work/template.svg" -o "$work/s_menubar.png"
+  zoom "$work/s_menubar.png" 400% "$work/z_menubar.png"
+  magick "$work/z_menubar.png" -fill '#000000' -colorize 100 "$work/z_menubar_light.png"
+  magick "$work/z_menubar.png" -fill '#FFFFFF' -colorize 100 "$work/z_menubar_dark.png"
+  cell "$work/z_menubar_light.png" '#F6F6F6' "$work/sheet_menubar_light.png"
+  cell "$work/z_menubar_dark.png" '#2B2B2B' "$work/sheet_menubar_dark.png"
   magick -background '#888888' \
-    \( "$work"/sheet_mac_{16,32,64,128,256}_FFFFFF.png +append \) \
-    \( "$work"/sheet_mac_{16,32,64,128,256}_1E1E1E.png +append \) \
-    \( "$work"/sheet_{ios,ios_dark,ios_tinted,legacy,win16}.png +append \) \
-    -append "$sheet"
+    \( "$work"/sheet_mac_{16,32,64,128}_light.png "$work"/sheet_mac_{16,32,64,128}_dark.png +append \) \
+    \( "$work"/sheet_{ios,ios_dark,ios_tinted,android,mono,legacy,win16,win32}.png +append \) \
+    \( "$work"/sheet_{linux,favicon,menubar_light,menubar_dark}.png +append \) \
+    -gravity west -append "$sheet"
   echo "$sheet"
 fi
