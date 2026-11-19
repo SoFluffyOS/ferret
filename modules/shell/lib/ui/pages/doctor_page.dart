@@ -8,6 +8,7 @@ import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/connect_page.dart';
+import 'package:shell/ui/pages/device_vpn_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -198,6 +199,13 @@ class _DoctorPageState extends State<DoctorPage> {
         await _copyFirewallCommand();
       case .copyDiagnostics:
         await _copy();
+      case .reachOverVpn:
+        if (widget.deviceId case final deviceId?) {
+          await Navigator.of(context).push(
+            ferretRoute<void>(DeviceVpnPage(deviceId: deviceId)),
+          );
+          _run();
+        }
     }
   }
 
@@ -234,6 +242,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .openFirewall => l10n.doctorFixOpenFirewall,
     .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
     .copyDiagnostics => l10n.doctorFixCopy,
+    .reachOverVpn => l10n.doctorFixReachOverVpn,
   };
 
   /// Ferret never heard where this device is, so there was nothing to
@@ -303,6 +312,8 @@ class _DoctorPageState extends State<DoctorPage> {
       (.network, .problem) => l10n.doctorNetworkProblem(here),
       (.network, _) => l10n.doctorNetworkOk(here),
       (.vpn, _) => l10n.doctorVpn(check.detail),
+      (.vpnReach, .ok) => l10n.doctorVpnReachOn(device),
+      (.vpnReach, _) => l10n.doctorVpnReachOff(device),
       (.port, _) => l10n.doctorPort(check.detail),
       (.firewall, _) when check.detail == LinuxFirewallKind.ufw.name =>
         l10n.doctorFirewallLinux('ufw'),

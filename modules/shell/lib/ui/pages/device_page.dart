@@ -12,6 +12,7 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/device_access_page.dart';
+import 'package:shell/ui/pages/device_vpn_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/pages/webcam_help_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
@@ -72,6 +73,14 @@ class DevicePage extends StatelessWidget {
               ferretRoute<void>(DeviceAccessPage(deviceId: deviceId)),
             ),
           ),
+          NavRow(
+            title: l10n.vpnRow,
+            value: DeviceVpnPage.summary(context, device),
+            place: (icon: LucideIcons.globe, color: .blue),
+            onTap: () => Navigator.of(context).push(
+              ferretRoute<void>(DeviceVpnPage(deviceId: deviceId)),
+            ),
+          ),
           if (WebcamHelpPage.fits(device, engine.device))
             NavRow(
               title: l10n.webcamRow(device.name),
@@ -91,7 +100,7 @@ class DevicePage extends StatelessWidget {
       Disclosure(
         title: l10n.deviceDetails,
         children: [
-          for (final line in _details(context, device)) _DetailLine(line),
+          for (final line in _details(context, status)) _DetailLine(line),
         ],
       ),
       ForgetDeviceCard(
@@ -169,7 +178,8 @@ class DevicePage extends StatelessWidget {
     _ => null,
   };
 
-  List<String> _details(BuildContext context, TrustedDevice device) {
+  List<String> _details(BuildContext context, DeviceStatus status) {
+    final device = status.device;
     final l10n = context.shellL10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
 
@@ -178,6 +188,7 @@ class DevicePage extends StatelessWidget {
       l10n.deviceIdLine(DeviceIdentity.format(device.id)),
       if ((device.lastHost, device.lastPort) case (final host?, final port?))
         l10n.settingsAddress('$host:$port'),
+      if (status.reachedOverVpn) l10n.deviceReachedOverVpn,
       l10n.devicePairedOn(DateFormat.yMMMd(locale).format(device.pairedAt)),
       if (_introducerName(context, device) case final introducer?)
         l10n.devicePairedThrough(introducer),

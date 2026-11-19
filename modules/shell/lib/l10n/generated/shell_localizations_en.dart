@@ -1945,4 +1945,78 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get settingsLowBatteryBody =>
       'Says once when one of your devices drops to 15%.';
+
+  @override
+  String get vpnRow => 'Reach away from home';
+
+  @override
+  String vpnTitle(String device) {
+    return 'Reach $device away from home';
+  }
+
+  @override
+  String vpnIntro(String device) {
+    return 'Not on the same Wi-Fi? If $device and this device are both on your own VPN, such as Tailscale, ZeroTier or WireGuard, Ferret can reach it there. No Ferret account, no Ferret server: the VPN is yours.';
+  }
+
+  @override
+  String vpnSwitch(String device) {
+    return 'Also reach $device over your VPN';
+  }
+
+  @override
+  String get vpnSwitchHint =>
+      'Ferret tries your local network first, every time. Off, it never leaves it.';
+
+  @override
+  String get vpnReachAt => 'Reach at';
+
+  @override
+  String get vpnReachAtHint => '100.101.102.103 or pixel.tail1234.ts.net';
+
+  @override
+  String get vpnSaveAddress => 'Save address';
+
+  @override
+  String vpnAddresses(String device, String addresses) {
+    return '$device shared its VPN addresses: $addresses. The address above is optional.';
+  }
+
+  @override
+  String vpnNoAddresses(String device) {
+    return '$device hasn\'t shared its VPN addresses yet. It does the next time it connects, if it\'s on a VPN. Or type its address above.';
+  }
+
+  @override
+  String get vpnSlow => 'Large files may take longer than at home.';
+
+  @override
+  String vpnPrivacy(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac\'s',
+        'phone': 'This phone\'s',
+        'tablet': 'This tablet\'s',
+        'other': 'This computer\'s',
+      },
+    );
+    return 'This asks $device for its VPN addresses. $_temp0 own go only to devices that have this switch on for it.';
+  }
+
+  @override
+  String get deviceReachedOverVpn => 'Reached over your VPN';
+
+  @override
+  String doctorVpnReachOn(String device) {
+    return 'Ferret also tries $device over your VPN. Make sure the VPN is on, on both devices.';
+  }
+
+  @override
+  String doctorVpnReachOff(String device) {
+    return 'Away from home? If $device is on your VPN too, Ferret can reach it there.';
+  }
+
+  @override
+  String get doctorFixReachOverVpn => 'Reach over your VPN';
 }

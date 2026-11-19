@@ -154,4 +154,25 @@ void main() {
 
     expect(find.textContaining('hotspot'), findsNothing);
   });
+
+  testWidgets('on a VPN, Reach over your VPN is offered and explained', (
+    tester,
+  ) async {
+    await open(tester, const [
+      DoctorCheck(
+        kind: .vpnReach,
+        status: .warning,
+        fixes: [.reachOverVpn],
+      ),
+    ]);
+
+    expect(variantOf(tester, 'Reach over your VPN'), ButtonVariant.primary);
+    expect(
+      find.text(
+        'Away from home? If Pixel 9 is on your VPN too, Ferret can reach it '
+        'there.',
+      ),
+      findsOneWidget,
+    );
+  });
 }

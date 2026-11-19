@@ -1938,4 +1938,78 @@ class ShellLocalizationsVi extends ShellLocalizations {
   @override
   String get settingsLowBatteryBody =>
       'Báo một lần khi một thiết bị của bạn còn 15%.';
+
+  @override
+  String get vpnRow => 'Kết nối khi ở xa';
+
+  @override
+  String vpnTitle(String device) {
+    return 'Kết nối $device khi ở xa';
+  }
+
+  @override
+  String vpnIntro(String device) {
+    return 'Không cùng Wi-Fi? Nếu $device và thiết bị này cùng ở trong VPN của riêng bạn, như Tailscale, ZeroTier hoặc WireGuard, Ferret có thể kết nối qua đó. Không cần tài khoản Ferret, không có máy chủ Ferret: VPN là của bạn.';
+  }
+
+  @override
+  String vpnSwitch(String device) {
+    return 'Kết nối $device qua VPN của bạn';
+  }
+
+  @override
+  String get vpnSwitchHint =>
+      'Ferret luôn thử mạng cục bộ trước. Khi tắt, Ferret không bao giờ ra khỏi mạng đó.';
+
+  @override
+  String get vpnReachAt => 'Địa chỉ';
+
+  @override
+  String get vpnReachAtHint => '100.101.102.103 hoặc pixel.tail1234.ts.net';
+
+  @override
+  String get vpnSaveAddress => 'Lưu địa chỉ';
+
+  @override
+  String vpnAddresses(String device, String addresses) {
+    return '$device đã chia sẻ địa chỉ VPN: $addresses. Địa chỉ ở trên là tùy chọn.';
+  }
+
+  @override
+  String vpnNoAddresses(String device) {
+    return '$device chưa chia sẻ địa chỉ VPN. Nó sẽ chia sẻ ở lần kết nối tới, nếu đang dùng VPN. Hoặc nhập địa chỉ ở trên.';
+  }
+
+  @override
+  String get vpnSlow => 'Tệp lớn có thể chậm hơn khi ở nhà.';
+
+  @override
+  String vpnPrivacy(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Việc này hỏi $device địa chỉ VPN của nó. Địa chỉ của $_temp0 chỉ gửi tới thiết bị đã bật công tắc này cho nó.';
+  }
+
+  @override
+  String get deviceReachedOverVpn => 'Đang kết nối qua VPN của bạn';
+
+  @override
+  String doctorVpnReachOn(String device) {
+    return 'Ferret cũng thử kết nối $device qua VPN của bạn. Hãy chắc VPN đang bật trên cả hai thiết bị.';
+  }
+
+  @override
+  String doctorVpnReachOff(String device) {
+    return 'Đang ở xa? Nếu $device cũng ở trong VPN của bạn, Ferret có thể kết nối qua đó.';
+  }
+
+  @override
+  String get doctorFixReachOverVpn => 'Kết nối qua VPN';
 }

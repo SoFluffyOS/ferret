@@ -439,5 +439,21 @@
   "lowBatteryTitle": "{device} còn {percent}%",
   "lowBatteryBody": "Hãy sạc sớm để thiết bị vẫn kết nối.",
   "settingsLowBattery": "Báo pin yếu",
-  "settingsLowBatteryBody": "Báo một lần khi một thiết bị của bạn còn 15%."
+  "settingsLowBatteryBody": "Báo một lần khi một thiết bị của bạn còn 15%.",
+  "vpnRow": "Kết nối khi ở xa",
+  "vpnTitle": "Kết nối {device} khi ở xa",
+  "vpnIntro": "Không cùng Wi-Fi? Nếu {device} và thiết bị này cùng ở trong VPN của riêng bạn, như Tailscale, ZeroTier hoặc WireGuard, Ferret có thể kết nối qua đó. Không cần tài khoản Ferret, không có máy chủ Ferret: VPN là của bạn.",
+  "vpnSwitch": "Kết nối {device} qua VPN của bạn",
+  "vpnSwitchHint": "Ferret luôn thử mạng cục bộ trước. Khi tắt, Ferret không bao giờ ra khỏi mạng đó.",
+  "vpnReachAt": "Địa chỉ",
+  "vpnReachAtHint": "100.101.102.103 hoặc pixel.tail1234.ts.net",
+  "vpnSaveAddress": "Lưu địa chỉ",
+  "vpnAddresses": "{device} đã chia sẻ địa chỉ VPN: {addresses}. Địa chỉ ở trên là tùy chọn.",
+  "vpnNoAddresses": "{device} chưa chia sẻ địa chỉ VPN. Nó sẽ chia sẻ ở lần kết nối tới, nếu đang dùng VPN. Hoặc nhập địa chỉ ở trên.",
+  "vpnSlow": "Tệp lớn có thể chậm hơn so với khi ở nhà.",
+  "vpnPrivacy": "Việc này hỏi {device} địa chỉ VPN của nó. Địa chỉ của {here, select, mac{Mac này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} chỉ gửi tới thiết bị đã bật công tắc này cho nó.",
+  "deviceReachedOverVpn": "Đang kết nối qua VPN của bạn",
+  "doctorVpnReachOn": "Ferret cũng thử kết nối {device} qua VPN của bạn. Hãy chắc VPN đang bật trên cả hai thiết bị.",
+  "doctorVpnReachOff": "Đang ở xa? Nếu {device} cũng ở trong VPN của bạn, Ferret có thể kết nối qua đó.",
+  "doctorFixReachOverVpn": "Kết nối qua VPN"
 }

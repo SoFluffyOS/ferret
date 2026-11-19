@@ -296,4 +296,55 @@ void main() {
       expect(tooSoon.where((check) => check.kind == .isolated), isEmpty);
     });
   });
+
+  group('your own VPN', () {
+    Future<void> trustPhone({required bool reachOverVpn}) =>
+        engine.trustStore.save(
+          TrustedDevice(
+            id: 'phonephonephonep',
+            name: 'Pixel 7',
+            platform: .PLATFORM_ANDROID,
+            formFactor: .FORM_FACTOR_PHONE,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime(2026),
+            lastHost: '192.168.1.20',
+            lastPort: 47640,
+            reachOverVpn: reachOverVpn,
+            vpnAddresses: const ['100.101.102.103'],
+          ),
+        );
+
+    Future<List<DoctorCheck>> diagnoseWithTailscale() => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      interfaces: () async => [
+        (name: 'en0', address: '192.168.1.5'),
+        (name: 'tailscale0', address: '100.64.0.2'),
+      ],
+      probe: (host, port, timeout) async => Reach.silent,
+    ).diagnose('phonephonephonep').last;
+
+    test('offers to reach the device over it when it is off', () async {
+      await trustPhone(reachOverVpn: false);
+
+      final checks = await diagnoseWithTailscale();
+
+      final reach = checks.singleWhere((check) => check.kind == .vpnReach);
+      expect(reach.status, DoctorStatus.warning);
+      expect(reach.fixes, [DoctorFix.reachOverVpn]);
+      expect(checks.where((check) => check.kind == .vpn), hasLength(1));
+    });
+
+    test('says the VPN is tried, without blaming it, when it is on', () async {
+      await trustPhone(reachOverVpn: true);
+
+      final checks = await diagnoseWithTailscale();
+
+      final reach = checks.singleWhere((check) => check.kind == .vpnReach);
+      expect(reach.status, DoctorStatus.ok);
+      expect(reach.detail, '100.101.102.103');
+      expect(checks.where((check) => check.kind == .vpn), isEmpty);
+    });
+  });
 }

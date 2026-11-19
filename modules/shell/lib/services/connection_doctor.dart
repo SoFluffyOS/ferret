@@ -17,6 +17,9 @@ enum DoctorFix {
   openFirewall,
   copyFirewallCommand,
   copyDiagnostics,
+
+  /// Opens the device's "Reach away from home" page.
+  reachOverVpn,
 }
 
 /// One line of Fix connection: what was checked and what it found.
@@ -44,6 +47,10 @@ enum DoctorCheckKind {
   accepted,
   port,
   firewall,
+
+  /// Reaching the device over the user's own VPN: on, or worth turning on
+  /// because this device is on a VPN.
+  vpnReach,
 
   /// The network keeps its devices from talking to each other (client or
   /// AP isolation), as café, hotel, campus and guest Wi-Fi often do. A
@@ -175,9 +182,28 @@ class ConnectionDoctor {
         .where((entry) => _isVpn(entry.name))
         .map((entry) => entry.name)
         .toSet();
-    if (vpn.isNotEmpty) {
+    final reachesOverVpn = device?.reachOverVpn ?? false;
+    if (vpn.isNotEmpty && !reachesOverVpn) {
       checks.add(
         DoctorCheck(kind: .vpn, status: .warning, detail: vpn.join(', ')),
+      );
+      yield [...checks];
+    }
+
+    if (device != null && (reachesOverVpn || vpn.isNotEmpty)) {
+      checks.add(
+        DoctorCheck(
+          kind: .vpnReach,
+          status: switch (reachesOverVpn) {
+            true => DoctorStatus.ok,
+            false => DoctorStatus.warning,
+          },
+          detail: device.vpnAddresses.join(', '),
+          fixes: switch (reachesOverVpn) {
+            true => const [],
+            false => const [DoctorFix.reachOverVpn],
+          },
+        ),
       );
       yield [...checks];
     }

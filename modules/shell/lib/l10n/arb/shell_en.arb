@@ -1491,5 +1491,83 @@
   },
   "lowBatteryBody": "Plug it in soon to keep it connected.",
   "settingsLowBattery": "Low battery notice",
-  "settingsLowBatteryBody": "Says once when one of your devices drops to 15%."
+  "settingsLowBatteryBody": "Says once when one of your devices drops to 15%.",
+  "vpnRow": "Reach away from home",
+  "vpnTitle": "Reach {device} away from home",
+  "@vpnTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnIntro": "Not on the same Wi-Fi? If {device} and this device are both on your own VPN, such as Tailscale, ZeroTier or WireGuard, Ferret can reach it there. No Ferret account, no Ferret server: the VPN is yours.",
+  "@vpnIntro": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnSwitch": "Also reach {device} over your VPN",
+  "@vpnSwitch": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnSwitchHint": "Ferret tries your local network first, every time. Off, it never leaves it.",
+  "vpnReachAt": "Reach at",
+  "vpnReachAtHint": "100.101.102.103 or pixel.tail1234.ts.net",
+  "vpnSaveAddress": "Save address",
+  "vpnAddresses": "{device} shared its VPN addresses: {addresses}. The address above is optional.",
+  "@vpnAddresses": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "addresses": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnNoAddresses": "{device} hasn't shared its VPN addresses yet. It does the next time it connects, if it's on a VPN. Or type its address above.",
+  "@vpnNoAddresses": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "vpnSlow": "Large files may take longer than at home.",
+  "vpnPrivacy": "This asks {device} for its VPN addresses. {here, select, mac{This Mac's} phone{This phone's} tablet{This tablet's} other{This computer's}} own go only to devices that have this switch on for it.",
+  "@vpnPrivacy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceReachedOverVpn": "Reached over your VPN",
+  "doctorVpnReachOn": "Ferret also tries {device} over your VPN. Make sure the VPN is on, on both devices.",
+  "@doctorVpnReachOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorVpnReachOff": "Away from home? If {device} is on your VPN too, Ferret can reach it there.",
+  "@doctorVpnReachOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorFixReachOverVpn": "Reach over your VPN"
 }

@@ -2731,6 +2731,102 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Says once when one of your devices drops to 15%.'**
   String get settingsLowBatteryBody;
+
+  /// No description provided for @vpnRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach away from home'**
+  String get vpnRow;
+
+  /// No description provided for @vpnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach {device} away from home'**
+  String vpnTitle(String device);
+
+  /// No description provided for @vpnIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on the same Wi-Fi? If {device} and this device are both on your own VPN, such as Tailscale, ZeroTier or WireGuard, Ferret can reach it there. No Ferret account, no Ferret server: the VPN is yours.'**
+  String vpnIntro(String device);
+
+  /// No description provided for @vpnSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Also reach {device} over your VPN'**
+  String vpnSwitch(String device);
+
+  /// No description provided for @vpnSwitchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret tries your local network first, every time. Off, it never leaves it.'**
+  String get vpnSwitchHint;
+
+  /// No description provided for @vpnReachAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach at'**
+  String get vpnReachAt;
+
+  /// No description provided for @vpnReachAtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'100.101.102.103 or pixel.tail1234.ts.net'**
+  String get vpnReachAtHint;
+
+  /// No description provided for @vpnSaveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Save address'**
+  String get vpnSaveAddress;
+
+  /// No description provided for @vpnAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} shared its VPN addresses: {addresses}. The address above is optional.'**
+  String vpnAddresses(String device, String addresses);
+
+  /// No description provided for @vpnNoAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} hasn\'t shared its VPN addresses yet. It does the next time it connects, if it\'s on a VPN. Or type its address above.'**
+  String vpnNoAddresses(String device);
+
+  /// No description provided for @vpnSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Large files may take longer than at home.'**
+  String get vpnSlow;
+
+  /// No description provided for @vpnPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'This asks {device} for its VPN addresses. {here, select, mac{This Mac\'s} phone{This phone\'s} tablet{This tablet\'s} other{This computer\'s}} own go only to devices that have this switch on for it.'**
+  String vpnPrivacy(String device, String here);
+
+  /// No description provided for @deviceReachedOverVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached over your VPN'**
+  String get deviceReachedOverVpn;
+
+  /// No description provided for @doctorVpnReachOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret also tries {device} over your VPN. Make sure the VPN is on, on both devices.'**
+  String doctorVpnReachOn(String device);
+
+  /// No description provided for @doctorVpnReachOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from home? If {device} is on your VPN too, Ferret can reach it there.'**
+  String doctorVpnReachOff(String device);
+
+  /// No description provided for @doctorFixReachOverVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach over your VPN'**
+  String get doctorFixReachOverVpn;
 }
 
 class _ShellLocalizationsDelegate
