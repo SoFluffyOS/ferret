@@ -358,36 +358,36 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String sharingTitleSound(String device) {
-    return 'Sharing screen and sound with $device';
+    return 'Đang chia sẻ màn hình và âm thanh với $device';
   }
 
   @override
   String sharingBodySound(String time) {
-    return 'Everything on this screen is visible there, with sound. Since $time.';
+    return 'Mọi thứ trên màn hình này đều hiện ở đó, kèm âm thanh. Từ $time.';
   }
 
   @override
   String get noticeSharingBodySound =>
-      'Everything on this screen is visible there, with sound';
+      'Mọi thứ trên màn hình này đều hiện ở đó, kèm âm thanh';
 
   @override
-  String get settingsSendSound => 'Send sound too';
+  String get settingsSendSound => 'Gửi cả âm thanh';
 
   @override
   String get settingsSendSoundBody =>
-      'Computers that show this screen also hear what it plays: music, videos, games. Only while the screen is shared, and never the microphone. Some apps block this and stay silent.';
+      'Máy tính đang xem màn hình này cũng nghe được những gì điện thoại phát: nhạc, video, trò chơi. Chỉ khi đang chia sẻ màn hình, và không bao giờ dùng micrô. Một số ứng dụng chặn việc này nên sẽ im lặng.';
 
   @override
   String get settingsSendSoundPermission =>
-      'Android calls this permission \"record audio\" and files it under Microphone. Ferret only captures what the phone plays.';
+      'Android gọi quyền này là \"ghi âm\" và xếp nó vào mục Micrô. Ferret chỉ ghi lại những gì điện thoại phát ra.';
 
   @override
   String get settingsSendSoundDenied =>
-      'Android didn\'t allow it. To change that, open Ferret in Android\'s app settings, then Permissions → Microphone.';
+      'Android chưa cho phép. Để đổi, hãy mở Ferret trong phần cài đặt ứng dụng của Android, rồi Quyền → Micrô.';
 
   @override
   String get settingsSendSoundUnsupported =>
-      'Sending sound takes Android 10 or newer.';
+      'Gửi âm thanh cần Android 10 trở lên.';
 
   @override
   String get settingsUnsupported =>
@@ -712,73 +712,73 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get keepToolbar => 'Luôn hiện thanh công cụ';
 
   @override
-  String get soundTitle => 'Sound';
+  String get soundTitle => 'Âm thanh';
 
   @override
-  String get soundDetailHere => 'Here';
+  String get soundDetailHere => 'Tại đây';
 
   @override
-  String get soundDetailThere => 'On the phone';
+  String get soundDetailThere => 'Trên điện thoại';
 
   @override
-  String get soundDetailNone => 'None';
+  String get soundDetailNone => 'Không';
 
   @override
-  String get soundHere => 'On this computer';
+  String get soundHere => 'Trên máy tính này';
 
   @override
   String soundThere(String device) {
-    return 'On $device';
+    return 'Trên $device';
   }
 
   @override
-  String get soundVolume => 'Volume';
+  String get soundVolume => 'Âm lượng';
 
   @override
   String soundMovesNote(String device) {
-    return '$device goes quiet while its sound plays here. Changing it restarts the picture.';
+    return '$device sẽ im lặng khi âm thanh của nó phát ở đây. Đổi cài đặt này sẽ khởi động lại hình ảnh.';
   }
 
   @override
   String soundCopiesNote(String device) {
-    return '$device keeps playing too: turn its volume down to hear it only here. Apps that block capture, like some video apps, stay silent.';
+    return '$device vẫn tiếp tục phát: hãy giảm âm lượng trên đó để chỉ nghe ở đây. Các ứng dụng chặn ghi lại, như một số ứng dụng video, sẽ im lặng.';
   }
 
   @override
   String soundNextTime(String device) {
-    return '$device has to say yes again, so sound starts next time.';
+    return '$device cần đồng ý lại, nên âm thanh sẽ bắt đầu từ lần sau.';
   }
 
   @override
   String soundNotAllowed(String device) {
-    return '$device isn\'t sending its sound. On the phone, open Ferret, then Settings → Screen, and turn on Send sound too.';
+    return '$device chưa gửi âm thanh. Trên điện thoại, mở Ferret, rồi Cài đặt → Màn hình, và bật Gửi cả âm thanh.';
   }
 
   @override
   String soundUnsupportedCable(String device) {
-    return '$device can\'t send its sound. That takes Android 11 or newer, and an unlocked screen when the picture starts.';
+    return '$device không gửi được âm thanh. Việc này cần Android 11 trở lên và màn hình đã mở khóa khi bắt đầu hiển thị.';
   }
 
   @override
   String soundUnsupportedWifi(String device) {
-    return '$device can\'t send its sound. That takes Android 10 or newer and the latest Ferret on it.';
+    return '$device không gửi được âm thanh. Việc này cần Android 10 trở lên và Ferret phiên bản mới nhất trên đó.';
   }
 
   @override
   String soundFailed(String device) {
-    return '$device couldn\'t capture its sound. Stop, then show the screen again.';
+    return '$device không ghi lại được âm thanh. Hãy dừng, rồi hiển thị màn hình lại.';
   }
 
   @override
   String get soundNoOutput =>
-      'This computer couldn\'t play the sound. Check its sound output.';
+      'Máy tính này không phát được âm thanh. Hãy kiểm tra đầu ra âm thanh.';
 
   @override
   String get soundAirplay =>
-      'Sound over AirPlay isn\'t here yet. It stays on the iPhone.';
+      'Âm thanh qua AirPlay chưa có. Âm thanh vẫn phát trên iPhone.';
 
   @override
-  String get soundWaiting => 'Waiting for sound…';
+  String get soundWaiting => 'Đang chờ âm thanh…';
 
   @override
   String get qualityGood => 'Tốt';
@@ -1043,129 +1043,128 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get allowNoticeBody => 'Chỉ đồng ý nếu đó là thiết bị của bạn.';
 
   @override
-  String get controlAsk => 'Control';
+  String get controlAsk => 'Điều khiển';
 
   @override
-  String get controlAsking => 'Asking…';
+  String get controlAsking => 'Đang hỏi…';
 
   @override
   String noticeControlAsking(String device) {
-    return 'On $device, tap Once or Always to let this computer click and type there.';
+    return 'Trên $device, chạm Một lần hoặc Luôn luôn để máy tính này có thể nhấp và gõ ở đó.';
   }
 
   @override
   String noticeControlAllowed(String device) {
-    return 'You can click and type on $device now.';
+    return 'Bây giờ bạn có thể nhấp và gõ trên $device.';
   }
 
   @override
   String noticeControlDenied(String device) {
-    return '$device said no to control. You can still watch.';
+    return '$device đã từ chối điều khiển. Bạn vẫn có thể xem.';
   }
 
   @override
   String noticeControlTimedOut(String device) {
-    return 'Nobody answered on $device. Click Control to ask again.';
+    return 'Không ai trả lời trên $device. Nhấp Điều khiển để hỏi lại.';
   }
 
   @override
   String noticeControlStopped(String device) {
-    return '$device stopped control. You can still watch.';
+    return '$device đã dừng điều khiển. Bạn vẫn có thể xem.';
   }
 
   @override
   String viewOnlySetupBody(String device) {
-    return 'To click and type over Wi-Fi, turn on Ferret control on $device: open Ferret there, then Settings → To your computer.';
+    return 'Để nhấp và gõ qua Wi-Fi, hãy bật Điều khiển Ferret trên $device: mở Ferret ở đó, rồi Cài đặt → Đến máy tính của bạn.';
   }
 
   @override
   String controlAskTitle(String computer, String phone) {
-    return 'Let $computer control $phone while showing its screen?';
+    return 'Cho $computer điều khiển $phone khi đang hiển thị màn hình?';
   }
 
   @override
   String controlAskCardTitle(String computer, String phone) {
-    return 'Let $computer control $phone?';
+    return 'Cho $computer điều khiển $phone?';
   }
 
   @override
   String controlAskBody(String computer) {
-    return 'While it shows this screen, $computer can tap, swipe and type here, until you stop it.';
+    return 'Khi đang hiển thị màn hình này, $computer có thể chạm, vuốt và gõ ở đây, cho đến khi bạn dừng lại.';
   }
 
   @override
-  String get controlAlways => 'Always';
+  String get controlAlways => 'Luôn luôn';
 
   @override
-  String get controlOnce => 'Once';
+  String get controlOnce => 'Một lần';
 
   @override
-  String get controlNo => 'No';
+  String get controlNo => 'Không';
 
   @override
   String controlledTitle(String computer) {
-    return 'Being controlled by $computer';
+    return 'Đang được điều khiển bởi $computer';
   }
 
   @override
   String get controlledBody =>
-      'It can tap and type here while it shows this screen.';
+      'Máy tính đó có thể chạm và gõ ở đây khi đang hiển thị màn hình này.';
 
   @override
-  String get controlStop => 'Stop control';
+  String get controlStop => 'Dừng điều khiển';
 
   @override
-  String get noticeControlChannel => 'Control from a computer';
+  String get noticeControlChannel => 'Điều khiển từ máy tính';
 
   @override
-  String get settingsControlTitle => 'Control from a computer';
+  String get settingsControlTitle => 'Điều khiển từ máy tính';
 
   @override
   String get settingsControlPowerUps =>
-      'A computer that shows this screen can tap and type here, through Power-ups. It asks you first.';
+      'Máy tính đang hiển thị màn hình này có thể chạm và gõ ở đây, thông qua Tăng cường. Nó sẽ hỏi bạn trước.';
 
   @override
   String get settingsControlService =>
-      'Ferret control is on. A computer that shows this screen can tap and type here after it asks you.';
+      'Điều khiển Ferret đang bật. Máy tính đang hiển thị màn hình này có thể chạm và gõ ở đây sau khi hỏi bạn.';
 
   @override
   String get settingsControlOff =>
-      'To let a computer that shows this screen tap and type here, turn on Ferret control in Android\'s Accessibility settings.';
+      'Để máy tính đang hiển thị màn hình này chạm và gõ ở đây, hãy bật Điều khiển Ferret trong phần cài đặt Hỗ trợ tiếp cận của Android.';
 
   @override
-  String get settingsControlTurnOn => 'Turn on Ferret control…';
+  String get settingsControlTurnOn => 'Bật Điều khiển Ferret…';
 
   @override
-  String get settingsControlOpen => 'Accessibility settings';
+  String get settingsControlOpen => 'Cài đặt Hỗ trợ tiếp cận';
 
   @override
   String settingsControlAlwaysCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count computers control this phone without asking.',
-      one: '1 computer controls this phone without asking.',
+      other: '$count máy tính điều khiển điện thoại này mà không cần hỏi.',
     );
     return '$_temp0';
   }
 
   @override
-  String get settingsControlAskAgain => 'Ask every time';
+  String get settingsControlAskAgain => 'Hỏi mỗi lần';
 
   @override
-  String get controlDisclosureTitle => 'Turn on Ferret control?';
+  String get controlDisclosureTitle => 'Bật Điều khiển Ferret?';
 
   @override
   String get controlDisclosureBody =>
-      'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.';
+      'Điều khiển Ferret là một dịch vụ hỗ trợ tiếp cận của Android. Khi bật, máy tính bạn đã ghép đôi có thể chạm, vuốt, nhấn Quay lại và Màn hình chính, và gõ trên điện thoại này.\n\nNó chỉ hoạt động khi bạn đang hiển thị màn hình này cho máy tính đó và đã đồng ý cho điều khiển. Một thông báo luôn hiện suốt thời gian đó, kèm nút Dừng.\n\nĐể gõ, nó đọc ô văn bản bạn đang gõ vào. Nó không đọc gì khác, không lưu gì, và không gửi gì đi đâu.';
 
   @override
   String get controlDisclosureSteps =>
-      'Next, in Accessibility, tap Ferret control and turn it on.';
+      'Tiếp theo, trong Hỗ trợ tiếp cận, chạm Điều khiển Ferret và bật nó lên.';
 
   @override
-  String get controlDisclosureOpen => 'Open settings';
+  String get controlDisclosureOpen => 'Mở cài đặt';
 
   @override
-  String get notNow => 'Not now';
+  String get notNow => 'Để sau';
 }
