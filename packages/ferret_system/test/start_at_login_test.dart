@@ -107,6 +107,31 @@ void main() {
     expect(enabled, isTrue);
   });
 
+  test('an MSIX install starts through its app execution alias', () async {
+    final commands = <List<String>>[];
+    final login = StartAtLogin(
+      operatingSystem: 'windows',
+      environment: const {'LOCALAPPDATA': r'C:\Users\sam\AppData\Local'},
+      executable:
+          r'C:\Program Files\WindowsApps\io.sofluffy.ferret_0.1.0.0_x64__abc'
+          r'\ferret.exe',
+      run: (executable, arguments) async {
+        commands.add([executable, ...arguments]);
+        return ProcessResult(0, 0, '', '');
+      },
+    );
+
+    await login.setEnabled(true);
+
+    expect(
+      commands.single,
+      contains(
+        r'"C:\Users\sam\AppData\Local\Microsoft\WindowsApps\ferret.exe" '
+        '--hidden',
+      ),
+    );
+  });
+
   test('a Mac has none of this', () async {
     final login = StartAtLogin(operatingSystem: 'macos');
 

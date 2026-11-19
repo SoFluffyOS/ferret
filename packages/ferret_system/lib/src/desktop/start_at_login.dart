@@ -74,6 +74,19 @@ class StartAtLogin {
     _ => _executable,
   };
 
+  /// What the Run key starts. An MSIX install lives in a folder named
+  /// after its version, gone after the next update, so the Run key points
+  /// at its `ferret.exe` app execution alias, which follows updates.
+  String get _windowsLauncher {
+    final localAppData = _environment['LOCALAPPDATA'] ?? '';
+    final packaged = _executable.toLowerCase().contains(r'\windowsapps\');
+    if (!packaged || localAppData.isEmpty) {
+      return _executable;
+    }
+
+    return '$localAppData\\Microsoft\\WindowsApps\\ferret.exe';
+  }
+
   /// Whether Ferret starts at login. Inside a Flatpak the portal keeps
   /// this, so [remembered] answers.
   Future<bool> isEnabled({bool remembered = false}) async {
@@ -139,7 +152,7 @@ class StartAtLogin {
       '/t',
       'REG_SZ',
       '/d',
-      '"$_executable" $hiddenArgument',
+      '"$_windowsLauncher" $hiddenArgument',
       '/f',
     ]);
   }
