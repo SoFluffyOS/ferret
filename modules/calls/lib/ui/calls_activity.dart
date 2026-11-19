@@ -12,7 +12,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// Calls' lines on a computer: one per call that is ringing or going on on a
 /// connected phone, with the caller's photo or initials. A ringing call
 /// waits under Needs you with Answer, Decline and Silence; once answered it
-/// is pinned in Activity with a running timer and Hang up.
+/// is pinned in Activity with a running timer and Hang up. Who is calling
+/// is private: where previews are hidden, the line keeps its buttons and
+/// says only that the phone has a call.
 List<ActivityItem> callsActivity(
   CallsLocalizations l10n,
   ActiveCallsViewModel viewModel,
@@ -78,6 +80,13 @@ ActivityItem _line(
         ),
       ],
     },
+    private: PrivateContent(
+      call.deviceId,
+      cover: switch (call.isRinging) {
+        true => l10n.noticeIncomingBody(call.deviceName),
+        false => l10n.privateCallCover(call.deviceName),
+      },
+    ),
   );
 }
 

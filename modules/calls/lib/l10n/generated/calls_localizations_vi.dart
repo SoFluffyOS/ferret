@@ -115,6 +115,11 @@ class CallsLocalizationsVi extends CallsLocalizations {
   }
 
   @override
+  String privateCallCover(String device) {
+    return 'Cuộc gọi trên $device';
+  }
+
+  @override
   String get noticeMissedTitle => 'Cuộc gọi nhỡ';
 
   @override

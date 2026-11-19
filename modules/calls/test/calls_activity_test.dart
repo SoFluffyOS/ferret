@@ -105,6 +105,35 @@ void main() {
     expect(control.endedCalls, ['call-1']);
   });
 
+  test('with previews hidden, a ringing call keeps its buttons and names '
+      'only the phone', () {
+    control.emit(remoteCall());
+
+    final line = activity().single;
+    final covered = line.covered('Hidden on this computer');
+
+    expect(line.private?.deviceId, 'phone');
+    expect(covered.title, 'Incoming call · Pixel');
+    expect(covered.detail, 'Hidden on this computer');
+    expect(covered.leading, isNull);
+    expect(covered.needsYou, isTrue);
+    expect(covered.actions.map((action) => action.label), [
+      'Answer',
+      'Decline',
+      'Silence',
+    ]);
+  });
+
+  test('with previews hidden, a call going on names only the phone', () {
+    control.emit(remoteCall(state: .CALL_STATE_ACTIVE));
+
+    final covered = activity().single.covered('Hidden on this computer');
+
+    expect(covered.title, 'Call on Pixel');
+    expect(covered.title, isNot(contains('Alex')));
+    expect(covered.actions.single.label, 'Hang up');
+  });
+
   test('initials stand in for a missing photo', () {
     expect(CallerAvatar.initialsOf('Ana Bell'), 'AB');
     expect(CallerAvatar.initialsOf('alex'), 'A');

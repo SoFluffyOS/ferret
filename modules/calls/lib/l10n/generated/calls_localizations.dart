@@ -248,6 +248,12 @@ abstract class CallsLocalizations {
   /// **'Incoming call · {device}'**
   String noticeIncomingBody(String device);
 
+  /// Activity row for a call that is going on, shown instead of the caller when previews are hidden on this computer
+  ///
+  /// In en, this message translates to:
+  /// **'Call on {device}'**
+  String privateCallCover(String device);
+
   /// No description provided for @noticeMissedTitle.
   ///
   /// In en, this message translates to:

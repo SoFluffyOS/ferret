@@ -138,6 +138,15 @@
       }
     }
   },
+  "privateCallCover": "Call on {device}",
+  "@privateCallCover": {
+    "description": "Activity row for a call that is going on, shown instead of the caller when previews are hidden on this computer",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeMissedTitle": "Missed call",
   "noticeMissedBody": "{caller} · {device}",
   "@noticeMissedBody": {

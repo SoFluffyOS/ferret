@@ -26,6 +26,7 @@
   "outcomeFailed": "{device} không làm được việc đó. Hãy thử trên {device}.",
   "outcomeUnreachable": "{device} không phản hồi. Hãy kiểm tra xem máy đã kết nối chưa.",
   "noticeIncomingBody": "Cuộc gọi đến · {device}",
+  "privateCallCover": "Cuộc gọi trên {device}",
   "noticeMissedTitle": "Cuộc gọi nhỡ",
   "noticeMissedBody": "{caller} · {device}",
   "callAction": "Gọi…",

@@ -115,6 +115,11 @@ class CallsLocalizationsEn extends CallsLocalizations {
   }
 
   @override
+  String privateCallCover(String device) {
+    return 'Call on $device';
+  }
+
+  @override
   String get noticeMissedTitle => 'Missed call';
 
   @override
