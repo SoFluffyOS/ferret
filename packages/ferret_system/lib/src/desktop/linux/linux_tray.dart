@@ -18,21 +18,30 @@ class LinuxTray implements DesktopTray {
     DBusClient Function()? connect,
     Map<String, String>? environment,
     Future<bool> Function(String path)? fileExists,
+    String? executable,
   }) : _connect = connect ?? DBusClient.session,
        _environment = environment ?? Platform.environment,
-       _fileExists = fileExists ?? ((path) => File(path).exists());
+       _fileExists = fileExists ?? ((path) => File(path).exists()),
+       _executable = executable ?? Platform.resolvedExecutable;
 
   static const watcherName = 'org.kde.StatusNotifierWatcher';
   static const _watcherPath = '/StatusNotifierWatcher';
   static const appIcon = 'io.sofluffy.ferret';
 
-  /// Shown when the app's own icon isn't installed in the icon theme, as
-  /// when Ferret runs from a build folder.
+  /// Shown when the app's icon is neither installed nor next to the
+  /// binary.
   static const fallbackIcon = 'phone-symbolic';
+
+  static final _iconFiles = [
+    'scalable/apps/$appIcon.svg',
+    for (final size in [512, 256, 128, 64, 48, 32, 24, 16])
+      '${size}x$size/apps/$appIcon.png',
+  ];
 
   final DBusClient Function() _connect;
   final Map<String, String> _environment;
   final Future<bool> Function(String path) _fileExists;
+  final String _executable;
   final DBusMenu _menu = DBusMenu();
   final StreamController<void> _activations = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
@@ -63,7 +72,8 @@ class LinuxTray implements DesktopTray {
       return false;
     }
 
-    final item = StatusNotifierItem(iconName: await _iconName());
+    final (:name, :themePath) = await _icon();
+    final item = StatusNotifierItem(iconName: name, iconThemePath: themePath);
     await item.setTooltip(tooltip);
     try {
       final busName = 'org.kde.StatusNotifierItem-$pid-1';
@@ -137,29 +147,41 @@ class LinuxTray implements DesktopTray {
     }
   }
 
-  /// The app's icon when its theme has it, so the tray matches the
-  /// launcher; otherwise a phone from the user's own icon theme.
-  Future<String> _iconName() async {
+  /// The installed `io.sofluffy.ferret` icon, so the tray matches the
+  /// launcher. A bundle that isn't installed (a build folder, an AppImage)
+  /// carries the same icons in `data/icons`, and the panel is told to look
+  /// there. Otherwise a phone from the user's own icon theme.
+  Future<({String name, String themePath})> _icon() async {
     final home = _environment['HOME'] ?? '';
     final dataDirs =
         (_environment['XDG_DATA_DIRS'] ?? '/usr/local/share:/usr/share')
             .split(':')
             .where((directory) => directory.isNotEmpty);
-    final candidates = [
-      '${_environment['XDG_DATA_HOME'] ?? '$home/.local/share'}/icons/hicolor',
-      for (final directory in dataDirs) '$directory/icons/hicolor',
+    final installed = [
+      '${_environment['XDG_DATA_HOME'] ?? '$home/.local/share'}/icons',
+      for (final directory in dataDirs) '$directory/icons',
     ];
-    for (final theme in candidates) {
-      for (final file in [
-        'scalable/apps/$appIcon.svg',
-        '256x256/apps/$appIcon.png',
-      ]) {
-        if (await _fileExists('$theme/$file')) {
-          return appIcon;
-        }
+    for (final icons in installed) {
+      if (await _hasAppIcon(icons)) {
+        return (name: appIcon, themePath: '');
       }
     }
 
-    return fallbackIcon;
+    final bundled = '${File(_executable).parent.path}/data/icons';
+    if (await _hasAppIcon(bundled)) {
+      return (name: appIcon, themePath: bundled);
+    }
+
+    return (name: fallbackIcon, themePath: '');
+  }
+
+  Future<bool> _hasAppIcon(String icons) async {
+    for (final file in _iconFiles) {
+      if (await _fileExists('$icons/hicolor/$file')) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

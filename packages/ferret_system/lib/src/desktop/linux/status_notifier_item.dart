@@ -6,7 +6,7 @@ import 'package:ferret_system/src/desktop/linux/dbus_menu.dart';
 /// The tray icon as `org.kde.StatusNotifierItem`, the protocol KDE Plasma,
 /// Xfce, Cinnamon, MATE, waybar and GNOME's AppIndicator extension show.
 class StatusNotifierItem extends DBusObject {
-  StatusNotifierItem({required this.iconName})
+  StatusNotifierItem({required this.iconName, this.iconThemePath = ''})
     : super(DBusObjectPath(objectPath));
 
   static const objectPath = '/StatusNotifierItem';
@@ -14,6 +14,10 @@ class StatusNotifierItem extends DBusObject {
 
   /// A name from the icon theme.
   final String iconName;
+
+  /// A folder the panel searches for [iconName] before the icon theme, for
+  /// a bundle whose icons aren't installed. Empty when they are.
+  final String iconThemePath;
 
   final StreamController<void> _activations = .broadcast();
   String _tooltip = '';
@@ -43,6 +47,7 @@ class StatusNotifierItem extends DBusObject {
     'Status': const DBusString('Active'),
     'WindowId': const DBusInt32(0),
     'IconName': DBusString(iconName),
+    'IconThemePath': DBusString(iconThemePath),
     'IconPixmap': DBusArray(DBusSignature('(iiay)'), const []),
     'OverlayIconName': const DBusString(''),
     'AttentionIconName': const DBusString(''),
@@ -63,6 +68,7 @@ class StatusNotifierItem extends DBusObject {
     'Status': 's',
     'WindowId': 'i',
     'IconName': 's',
+    'IconThemePath': 's',
     'IconPixmap': 'a(iiay)',
     'OverlayIconName': 's',
     'AttentionIconName': 's',

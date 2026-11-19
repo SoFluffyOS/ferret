@@ -56,10 +56,11 @@ void main() {
     TrayMenuItem(id: 'quit', title: 'Quit'),
   ];
 
-  LinuxTray tray() => LinuxTray(
+  LinuxTray tray({Set<String> files = const {}}) => LinuxTray(
     connect: client,
     environment: const {'HOME': '/home/someone'},
-    fileExists: (_) async => false,
+    fileExists: (path) async => files.contains(path),
+    executable: '/opt/ferret/ferret',
   );
 
   test('without a watcher, as on stock GNOME, there is no tray', () async {
@@ -111,6 +112,53 @@ void main() {
         const [DBusInt32(0), DBusInt32(0)],
       );
       await clicks;
+    });
+
+    Future<(String, String)> iconOf(LinuxTray linux) async {
+      await linux.show(tooltip: 'Ferret', items: items);
+      final properties = await panel.callMethod(
+        destination: watcher.registered.single,
+        path: DBusObjectPath(StatusNotifierItem.objectPath),
+        interface: 'org.freedesktop.DBus.Properties',
+        name: 'GetAll',
+        values: const [DBusString(StatusNotifierItem.interface)],
+      );
+      final values = properties.returnValues.single.asStringVariantDict();
+      return (
+        values['IconName']?.asString() ?? '',
+        values['IconThemePath']?.asString() ?? '',
+      );
+    }
+
+    test('an installed icon is shown by its name', () async {
+      final linux = tray(
+        files: {'/usr/share/icons/hicolor/48x48/apps/io.sofluffy.ferret.png'},
+      );
+      addTearDown(linux.dispose);
+
+      expect(await iconOf(linux), ('io.sofluffy.ferret', ''));
+    });
+
+    test('a bundle that is not installed points the panel at its own '
+        'icons', () async {
+      final linux = tray(
+        files: {
+          '/opt/ferret/data/icons/hicolor/scalable/apps/io.sofluffy.ferret.svg',
+        },
+      );
+      addTearDown(linux.dispose);
+
+      expect(await iconOf(linux), (
+        'io.sofluffy.ferret',
+        '/opt/ferret/data/icons',
+      ));
+    });
+
+    test('with no icon anywhere, a phone from the theme stands in', () async {
+      final linux = tray();
+      addTearDown(linux.dispose);
+
+      expect(await iconOf(linux), ('phone-symbolic', ''));
     });
 
     test('the panel reads the menu, and a click names the line', () async {
