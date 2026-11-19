@@ -515,6 +515,29 @@ class FerretEngine implements FeatureHost {
     }
   }
 
+  /// Lets [newId] take the place of [oldId], such as a phone that was reset
+  /// or replaced and paired again with a new identity: it keeps the old
+  /// one's nickname here and what it may use, and the old one is forgotten
+  /// on every device of the user's.
+  Future<void> replace(String oldId, {required String newId}) async {
+    final old = trustStore[oldId];
+    final replacement = trustStore[newId];
+    if (old == null || replacement == null || oldId == newId) {
+      return;
+    }
+
+    if ((old.nickname, replacement.nickname) case (final nickname?, null)) {
+      await trustStore.rename(newId, nickname);
+    }
+
+    final blocked = access.blockedFor(oldId);
+    if (blocked.isNotEmpty) {
+      await access.blockAll(newId, blocked);
+    }
+
+    await unpair(oldId, everywhere: true);
+  }
+
   /// Now, but never before the pairing it undoes: clocks of two devices
   /// differ, and a forgetting dated before the pairing would not hold.
   DateTime _afterPairing(TrustedDevice? trusted) {

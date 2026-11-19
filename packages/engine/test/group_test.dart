@@ -186,6 +186,33 @@ void main() {
     expect(tablet.sessions, isEmpty);
   });
 
+  test('a new phone takes the old one\'s place everywhere', () async {
+    final mac = await startEngine('MacBook Pro');
+    final tablet = await startEngine('Tablet');
+    final oldPixel = await startEngine('Pixel 7');
+    final oldId = oldPixel.identity.deviceId;
+    await pair(tablet, mac);
+    await _until(() => connected(mac, [tablet]));
+    await pair(oldPixel, mac);
+    await _until(() => tablet.trustStore.isTrusted(oldId));
+    await mac.renameDevice(oldId, 'My Pixel');
+    await mac.access.setAllowed(oldId, 'copy', allowed: false);
+    await oldPixel.stop();
+
+    final newPixel = await startEngine('Pixel 7');
+    final newId = newPixel.identity.deviceId;
+    await pair(newPixel, mac);
+    await _until(() => connected(mac, [newPixel]));
+    await mac.replace(oldId, newId: newId);
+
+    expect(mac.trustStore.isTrusted(oldId), isFalse);
+    expect(mac.trustStore[newId]?.name, 'My Pixel');
+    expect(mac.access.blockedFor(newId), {'copy'});
+    expect(mac.access.blockedFor(oldId), isEmpty);
+    await _until(() => !tablet.trustStore.isTrusted(oldId));
+    expect(tablet.trustStore.isTrusted(newId), isTrue);
+  });
+
   test('forgetting a device here only keeps it on the others', () async {
     final mac = await startEngine('MacBook Pro');
     final pixel = await startEngine('Pixel 7');
