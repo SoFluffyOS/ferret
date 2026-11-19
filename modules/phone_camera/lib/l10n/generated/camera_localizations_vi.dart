@@ -19,16 +19,6 @@ class CameraLocalizationsVi extends CameraLocalizations {
   String get scanDocument => 'Quét tài liệu';
 
   @override
-  String takePhotoWith(String device) {
-    return 'Chụp ảnh bằng $device';
-  }
-
-  @override
-  String scanDocumentWith(String device) {
-    return 'Quét tài liệu bằng $device';
-  }
-
-  @override
   String askPhotoTitle(String device) {
     return '$device muốn một tấm ảnh';
   }

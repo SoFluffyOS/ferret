@@ -116,18 +116,6 @@ abstract class CameraLocalizations {
   /// **'Scan a document'**
   String get scanDocument;
 
-  /// Menu entry on a computer, such as 'Take a photo with Pixel 7'.
-  ///
-  /// In en, this message translates to:
-  /// **'Take a photo with {device}'**
-  String takePhotoWith(String device);
-
-  /// No description provided for @scanDocumentWith.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan a document with {device}'**
-  String scanDocumentWith(String device);
-
   /// Card and notice on a phone when a computer asks for a photo.
   ///
   /// In en, this message translates to:

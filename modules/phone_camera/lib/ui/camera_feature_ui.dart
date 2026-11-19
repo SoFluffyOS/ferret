@@ -13,9 +13,10 @@ import 'package:phone_camera/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 
 /// The app side of the camera. On a computer: Take a photo (and Scan a
-/// document for an iPhone) on each phone's page, in the ••• and File
-/// menus and on ⌃⌘P, with Activity lines for each request. On a phone: a
-/// card and a notice for each request, with Take photo and Not now.
+/// document for an iPhone) on each phone's page, which the window's Device
+/// menu, ••• and ⌃⌘P run too, and an Activity line for each request. On a
+/// phone: a card and a notice for each request, with Take photo and Not
+/// now.
 class CameraFeatureUi extends FeatureUi {
   CameraFeatureUi({CameraFeature? feature})
     : feature = feature ?? CameraFeature();
@@ -122,46 +123,6 @@ class CameraFeatureUi extends FeatureUi {
             this.feature.request(deviceId, kind: .document),
           ),
         ),
-    ];
-  }
-
-  @override
-  List<FeatureAction> appActions(
-    BuildContext context,
-    FeatureContext feature,
-  ) {
-    if (this.feature.isPhone) {
-      return const [];
-    }
-
-    final l10n = context.cameraL10n;
-    final host = this.feature.host;
-
-    return [
-      for (final session in host.sessions)
-        if (CameraFeature.takesPhotos(session))
-          FeatureAction(
-            id: photoActionId,
-            label: l10n.takePhotoWith(
-              host.displayNameOf(session.remoteDeviceId),
-            ),
-            icon: LucideIcons.camera,
-            onPressed: () => unawaited(
-              this.feature.request(session.remoteDeviceId),
-            ),
-          ),
-      for (final session in host.sessions)
-        if (CameraFeature.scansDocuments(session))
-          FeatureAction(
-            id: scanActionId,
-            label: l10n.scanDocumentWith(
-              host.displayNameOf(session.remoteDeviceId),
-            ),
-            icon: LucideIcons.scanLine,
-            onPressed: () => unawaited(
-              this.feature.request(session.remoteDeviceId, kind: .document),
-            ),
-          ),
     ];
   }
 

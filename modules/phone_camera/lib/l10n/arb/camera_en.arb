@@ -12,23 +12,6 @@
   "@scanDocument": {
     "description": "Button on an iPhone's page on a computer: asks it to scan a document for this computer."
   },
-  "takePhotoWith": "Take a photo with {device}",
-  "@takePhotoWith": {
-    "description": "Menu entry on a computer, such as 'Take a photo with Pixel 7'.",
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
-  "scanDocumentWith": "Scan a document with {device}",
-  "@scanDocumentWith": {
-    "placeholders": {
-      "device": {
-        "type": "String"
-      }
-    }
-  },
   "askPhotoTitle": "{device} wants a photo",
   "@askPhotoTitle": {
     "description": "Card and notice on a phone when a computer asks for a photo.",

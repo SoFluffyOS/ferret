@@ -4,8 +4,6 @@
   "title": "Máy ảnh",
   "takePhoto": "Chụp ảnh",
   "scanDocument": "Quét tài liệu",
-  "takePhotoWith": "Chụp ảnh bằng {device}",
-  "scanDocumentWith": "Quét tài liệu bằng {device}",
   "askPhotoTitle": "{device} muốn một tấm ảnh",
   "askDocumentTitle": "{device} muốn quét một tài liệu",
   "askBody": "Không có gì được chụp cho đến khi bạn bấm nút chụp.",

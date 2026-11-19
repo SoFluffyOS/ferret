@@ -19,16 +19,6 @@ class CameraLocalizationsEn extends CameraLocalizations {
   String get scanDocument => 'Scan a document';
 
   @override
-  String takePhotoWith(String device) {
-    return 'Take a photo with $device';
-  }
-
-  @override
-  String scanDocumentWith(String device) {
-    return 'Scan a document with $device';
-  }
-
-  @override
   String askPhotoTitle(String device) {
     return '$device wants a photo';
   }
