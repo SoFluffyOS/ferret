@@ -1,5 +1,8 @@
 export 'package:shell/ui/widgets/action_pair.dart';
+export 'package:shell/ui/widgets/activity_focusable_line.dart';
+export 'package:shell/ui/widgets/activity_icon_action.dart';
 export 'package:shell/ui/widgets/activity_row.dart';
+export 'package:shell/ui/widgets/activity_text_action.dart';
 export 'package:shell/ui/widgets/arrow_key_stops.dart';
 export 'package:shell/ui/widgets/battery_badge.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
@@ -28,6 +31,7 @@ export 'package:shell/ui/widgets/pin_marker.dart';
 export 'package:shell/ui/widgets/privacy_line.dart';
 export 'package:shell/ui/widgets/qr_code_view.dart';
 export 'package:shell/ui/widgets/replace_device_card.dart';
+export 'package:shell/ui/widgets/reveal_on_pointer_or_focus.dart';
 export 'package:shell/ui/widgets/row_action_button.dart';
 export 'package:shell/ui/widgets/sidebar_badge.dart';
 export 'package:shell/ui/widgets/sidebar_device_row.dart';

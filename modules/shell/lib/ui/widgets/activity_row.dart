@@ -8,8 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/activity_focusable_line.dart';
+import 'package:shell/ui/widgets/activity_icon_action.dart';
+import 'package:shell/ui/widgets/activity_text_action.dart';
 import 'package:shell/ui/widgets/keyboard_line.dart';
-import 'package:shell/ui/widgets/row_action_button.dart';
+import 'package:shell/ui/widgets/reveal_on_pointer_or_focus.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One line of Activity: what happened and with which device, when, a
@@ -50,7 +53,7 @@ class ActivityRow extends StatelessWidget {
       return _line(context, showsLinks: true);
     }
 
-    return _RevealOnPointerOrFocus(
+    return RevealOnPointerOrFocus(
       builder: (context, isRevealed) => _line(context, showsLinks: isRevealed),
     );
   }
@@ -112,7 +115,7 @@ class ActivityRow extends StatelessWidget {
               // icons reach up.
               padding: EdgeInsets.only(
                 top: switch (hasIcons) {
-                  true => _iconActionRise,
+                  true => ActivityIconAction.rise,
                   false => Spacing.d2,
                 },
               ),
@@ -155,9 +158,9 @@ class ActivityRow extends StatelessWidget {
                       ),
                     ],
                     for (final action in iconActions)
-                      _IconAction(action: action, reachesUp: hasIcons),
+                      ActivityIconAction(action: action, reachesUp: hasIcons),
                     if (onDismiss != null)
-                      _IconAction(
+                      ActivityIconAction(
                         action: ActivityAction(
                           label: context.shellL10n.activityDismiss,
                           icon: LucideIcons.x,
@@ -193,7 +196,7 @@ class ActivityRow extends StatelessWidget {
                       if (!actionsOwnLine)
                         for (final action in textActions) ...[
                           Spacing.h8,
-                          _TextAction(
+                          ActivityTextAction(
                             action: action,
                             filled: holdsPrimary,
                             isShown: showsLinks,
@@ -211,7 +214,7 @@ class ActivityRow extends StatelessWidget {
                     crossAxisAlignment: .center,
                     children: [
                       for (final action in textActions)
-                        _TextAction(
+                        ActivityTextAction(
                           action: action,
                           filled: holdsPrimary,
                           isShown: showsLinks,
@@ -250,7 +253,7 @@ class ActivityRow extends StatelessWidget {
             focusNode: focusNode,
             child: row,
           ),
-          null => _FocusableLine(focusNode: focusNode, child: row),
+          null => ActivityFocusableLine(focusNode: focusNode, child: row),
         },
       ),
     );
@@ -334,165 +337,4 @@ class ActivityRow extends StatelessWidget {
     .warning => palette.warning,
     .danger => palette.danger,
   };
-}
-
-/// A line that opens nothing by itself still takes the keyboard, and
-/// shows it has it the way a tappable line does.
-class _FocusableLine extends StatefulWidget {
-  const _FocusableLine({required this.focusNode, required this.child});
-
-  final FocusNode focusNode;
-  final Widget child;
-
-  @override
-  State<_FocusableLine> createState() => _FocusableLineState();
-}
-
-class _FocusableLineState extends State<_FocusableLine> {
-  bool _showsFocus = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return FocusableActionDetector(
-      focusNode: widget.focusNode,
-      onShowFocusHighlight: (shows) => setState(() => _showsFocus = shows),
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          color: switch (_showsFocus) {
-            true => context.palette.surface,
-            false => null,
-          },
-          shape: Corners.shape(Corners.row),
-        ),
-        child: widget.child,
-      ),
-    );
-  }
-}
-
-/// Tells [builder] whether the pointer is over what it builds or the
-/// keyboard's focus is inside it.
-class _RevealOnPointerOrFocus extends StatefulWidget {
-  const _RevealOnPointerOrFocus({required this.builder});
-
-  final Widget Function(BuildContext context, bool isRevealed) builder;
-
-  @override
-  State<_RevealOnPointerOrFocus> createState() =>
-      _RevealOnPointerOrFocusState();
-}
-
-class _RevealOnPointerOrFocusState extends State<_RevealOnPointerOrFocus> {
-  bool _isHovered = false;
-  bool _hasFocus = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: Focus(
-        canRequestFocus: false,
-        skipTraversal: true,
-        onFocusChange: (hasFocus) => setState(() => _hasFocus = hasFocus),
-        child: widget.builder(context, _isHovered || _hasFocus),
-      ),
-    );
-  }
-}
-
-class _TextAction extends StatelessWidget {
-  const _TextAction({
-    required this.action,
-    required this.filled,
-    required this.isShown,
-    this.reachesDown = false,
-  });
-
-  final ActivityAction action;
-  final bool filled;
-
-  /// A link that isn't shown keeps its place and can still be reached.
-  final bool isShown;
-
-  /// Next to the detail, the link's words line up with it and its target
-  /// goes on below them. Among buttons it is centred like they are.
-  final bool reachesDown;
-
-  @override
-  Widget build(BuildContext context) {
-    if (action.primary) {
-      return RowActionButton(
-        label: action.label,
-        isPrimary: filled,
-        onPressed: action.onPressed,
-      );
-    }
-
-    return Opacity(
-      opacity: switch (isShown) {
-        true => 1,
-        false => 0,
-      },
-      alwaysIncludeSemantics: true,
-      child: TextLink(
-        label: action.label,
-        onTap: action.onPressed,
-        alignment: switch (reachesDown) {
-          true => Alignment.topCenter,
-          false => Alignment.center,
-        },
-      ),
-    );
-  }
-}
-
-/// What a 16-point glyph lacks to be a target as high as a [TextLink].
-double get _iconActionRise => Spacing.d8;
-
-class _IconAction extends StatelessWidget {
-  const _IconAction({
-    required this.action,
-    required this.reachesUp,
-    this.muted = false,
-  });
-
-  final ActivityAction action;
-
-  /// On the title's line the glyph sits at the bottom of its target, level
-  /// with the title, and the target goes on above it. With text set large
-  /// it is centred.
-  final bool reachesUp;
-
-  /// Drawn quieter, for the ✕ that only tidies up.
-  final bool muted;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tappable(
-      tooltip: action.label,
-      onTap: action.onPressed,
-      child: Padding(
-        padding: switch (reachesUp) {
-          true => EdgeInsets.only(
-            left: Spacing.d6,
-            right: Spacing.d6,
-            top: _iconActionRise,
-          ),
-          false => EdgeInsets.symmetric(
-            horizontal: Spacing.d6,
-            vertical: _iconActionRise / 2,
-          ),
-        },
-        child: Icon(
-          action.icon,
-          size: Spacing.d16,
-          color: switch (muted) {
-            true => context.palette.mutedText,
-            false => context.palette.text,
-          },
-        ),
-      ),
-    );
-  }
 }
