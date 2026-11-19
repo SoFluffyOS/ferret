@@ -6,6 +6,7 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/bootstrap/bootstrap.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/login_settings.dart';
 
 /// Android: keep running in the background, and start with the phone.
@@ -28,8 +29,7 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
     super.initState();
     _keepRunning =
         widget.settings.get<bool>(SystemBinding.backgroundServiceKey) ?? true;
-    _startOnBoot =
-        widget.settings.get<bool>(SystemBinding.startOnBootKey) ?? true;
+    _startOnBoot = BootChoice(widget.settings).startsOnBoot;
   }
 
   @override
@@ -59,11 +59,10 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
             SettingSwitchRow(
               title: l10n.settingsStartOnBoot,
               value: _startOnBoot,
-              onChanged: (value) => _set(
-                SystemBinding.startOnBootKey,
-                value,
-                () => _startOnBoot = value,
-              ),
+              onChanged: (value) {
+                setState(() => _startOnBoot = value);
+                unawaited(BootChoice(widget.settings).answer(start: value));
+              },
             ),
           ],
         ),

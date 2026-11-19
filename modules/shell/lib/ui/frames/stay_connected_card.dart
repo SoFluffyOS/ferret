@@ -5,6 +5,7 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -12,7 +13,10 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// On Android: the steps that keep Ferret connected, each explained first
 /// with its fix as a button. Hides itself once everything is set.
 class StayConnectedCard extends StatefulWidget {
-  const StayConnectedCard({super.key});
+  const StayConnectedCard({super.key, this.system});
+
+  /// Where the card reads what Android allows. Left out, this phone.
+  final FerretSystem? system;
 
   @override
   State<StayConnectedCard> createState() => _StayConnectedCardState();
@@ -20,7 +24,10 @@ class StayConnectedCard extends StatefulWidget {
 
 class _StayConnectedCardState extends State<StayConnectedCard>
     with WidgetsBindingObserver {
-  final StayConnectedViewModel _viewModel = .new();
+  late final StayConnectedViewModel _viewModel = .new(
+    system: widget.system,
+    settings: ShellScope.read(context).featureContext.engine.settings,
+  );
 
   @override
   void initState() {
@@ -69,6 +76,7 @@ class _Steps extends StatelessWidget {
       :maker,
       :stopsToday,
       :canAddTile,
+      :asksAboutBoot,
       :allSet,
     ) = context.select(
       (StayConnectedViewModel viewModel) => (
@@ -79,6 +87,7 @@ class _Steps extends StatelessWidget {
         maker: viewModel.maker,
         stopsToday: viewModel.stopsToday,
         canAddTile: viewModel.canAddTile,
+        asksAboutBoot: viewModel.asksAboutBoot,
         allSet: viewModel.allSet,
       ),
     );
@@ -126,6 +135,14 @@ class _Steps extends StatelessWidget {
                 style: typography.caption1.copyWith(color: palette.danger),
               ),
             ],
+            if (asksAboutBoot)
+              _BootAsk(
+                question: l10n.stayBootAsk(
+                  ShellScope.of(context).featureContext.engine.device.name,
+                ),
+                onAnswer: (start) =>
+                    unawaited(viewModel.answerBoot(start: start)),
+              ),
             if (!notificationsAllowed)
               _Step(
                 text: l10n.stayNotifications,
@@ -185,6 +202,54 @@ class _Steps extends StatelessWidget {
         .vivo => l10n.stayStepsVivo,
         .other => null,
       };
+}
+
+/// "Start Ferret when Pixel 7 restarts?" with Yes and Not now. Either
+/// answer is kept, and the question never comes back.
+class _BootAsk extends StatelessWidget {
+  const _BootAsk({required this.question, required this.onAnswer});
+
+  final String question;
+  final ValueChanged<bool> onAnswer;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.shellL10n;
+
+    return Padding(
+      padding: EdgeInsets.only(top: Spacing.d12),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            question,
+            style: context.fluffyTheme.typography.body2.copyWith(
+              color: context.palette.text,
+            ),
+          ),
+          Spacing.v8,
+          Wrap(
+            spacing: Spacing.d8,
+            runSpacing: Spacing.d8,
+            children: [
+              Button(
+                mainAxisSize: .min,
+                variant: .primary,
+                label: l10n.stayBootYes,
+                onPressed: () => onAnswer(true),
+              ),
+              Button(
+                mainAxisSize: .min,
+                variant: .ghost,
+                label: l10n.stayBootNotNow,
+                onPressed: () => onAnswer(false),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Step extends StatelessWidget {

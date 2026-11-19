@@ -553,6 +553,17 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get stayTileFix => 'Thêm ô';
 
   @override
+  String stayBootAsk(String device) {
+    return 'Khởi động Ferret khi $device khởi động lại? Nếu không, Ferret chỉ kết nối lại khi bạn mở ứng dụng.';
+  }
+
+  @override
+  String get stayBootYes => 'Có';
+
+  @override
+  String get stayBootNotNow => 'Để sau';
+
+  @override
   String get settingsBackground => 'Chạy nền';
 
   @override

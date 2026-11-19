@@ -350,6 +350,17 @@
   },
   "stayTile": "Add the Ferret tile to Quick Settings to send your clipboard in one tap.",
   "stayTileFix": "Add tile",
+  "stayBootAsk": "Start Ferret when {device} restarts? Otherwise it reconnects only when you open it.",
+  "@stayBootAsk": {
+    "description": "device is this phone's own name, such as Pixel 7.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "stayBootYes": "Yes",
+  "stayBootNotNow": "Not now",
   "settingsBackground": "Background",
   "settingsKeepRunning": "Keep running in the background",
   "settingsKeepRunningBody": "Stays connected when Ferret is closed. Shows a quiet notification.",

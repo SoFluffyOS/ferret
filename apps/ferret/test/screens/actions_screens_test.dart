@@ -10,6 +10,7 @@ import 'dart:async';
 
 import 'package:actions/actions.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +29,31 @@ typedef _Script = Future<void> Function(
 
 /// Screens that run as a phone paired with a Mac.
 const _phoneScreens = {'phone_group', 'phone_confirm', 'boot_ask'};
+
+/// An Android phone that already lets Ferret run in the background, so the
+/// card holds only its question.
+class _AllowedPhone extends Fake implements FerretSystem {
+  @override
+  bool get isAndroid => true;
+
+  @override
+  Future<bool> areNotificationsAllowed() async => true;
+
+  @override
+  Future<bool> isIgnoringBatteryOptimizations() async => true;
+
+  @override
+  Future<bool> isBackgroundRestricted() async => false;
+
+  @override
+  Future<DeviceMaker> deviceMaker() async => .other;
+
+  @override
+  Future<int> serviceStopsToday({DateTime? now}) async => 0;
+
+  @override
+  Future<bool> canRequestAddTile() async => false;
+}
 
 ActionsHost? _hostOf(List<FeatureUi> features) =>
     features.whereType<ActionsFeatureUi>().single.feature.actionsHost;
@@ -194,6 +220,19 @@ final _screens = <String, _Script>{
     );
     await tester.tap(find.text('Shut down…'));
     await rig.settle(tester);
+  },
+  'boot_ask': (tester, rig, features) async {
+    await tester.runAsync(
+      () => rig.engine.settings.set(BootChoice.answeredKey, false),
+    );
+    await rig.open(
+      tester,
+      FerretPage(
+        title: 'Ferret',
+        backLabel: 'Back',
+        children: [StayConnectedCard(system: _AllowedPhone())],
+      ),
+    );
   },
 };
 

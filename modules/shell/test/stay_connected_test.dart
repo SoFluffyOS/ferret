@@ -58,6 +58,119 @@ void main() {
     });
   });
 
+  group('starting with the phone', () {
+    test('a new install starts off and is asked once', () async {
+      final settings = MemorySettingsStore();
+      final boot = BootChoice(settings);
+
+      await boot.adopt(hadDevices: false);
+
+      expect(boot.startsOnBoot, isFalse);
+      expect(boot.needsAnswer, isTrue);
+
+      await boot.adopt(hadDevices: true);
+
+      expect(boot.startsOnBoot, isFalse);
+      expect(boot.needsAnswer, isTrue);
+    });
+
+    test(
+      'an install from before the question keeps starting, unasked',
+      () async {
+        final settings = MemorySettingsStore();
+        final boot = BootChoice(settings);
+
+        await boot.adopt(hadDevices: true);
+
+        expect(boot.startsOnBoot, isTrue);
+        expect(boot.needsAnswer, isFalse);
+      },
+    );
+
+    test('an install that had turned it off keeps it off, unasked', () async {
+      final settings = MemorySettingsStore({BootChoice.startKey: false});
+      final boot = BootChoice(settings);
+
+      await boot.adopt(hadDevices: true);
+
+      expect(boot.startsOnBoot, isFalse);
+      expect(boot.needsAnswer, isFalse);
+    });
+
+    test('nothing is asked before the install was sorted out', () {
+      expect(BootChoice(MemorySettingsStore()).needsAnswer, isFalse);
+    });
+
+    test('Yes turns it on and the question is gone', () async {
+      final settings = MemorySettingsStore();
+      await BootChoice(settings).adopt(hadDevices: false);
+      final viewModel = StayConnectedViewModel(
+        system: _FakeSystem(),
+        settings: settings,
+      );
+      await viewModel.refresh();
+      expect(viewModel.asksAboutBoot, isTrue);
+      expect(viewModel.allSet, isFalse);
+
+      await viewModel.answerBoot(start: true);
+
+      expect(BootChoice(settings).startsOnBoot, isTrue);
+      expect(viewModel.asksAboutBoot, isFalse);
+      expect(viewModel.allSet, isTrue);
+    });
+
+    test('Not now keeps it off and is remembered', () async {
+      final settings = MemorySettingsStore();
+      await BootChoice(settings).adopt(hadDevices: false);
+      final viewModel = StayConnectedViewModel(
+        system: _FakeSystem(),
+        settings: settings,
+      );
+
+      await viewModel.answerBoot(start: false);
+      await BootChoice(settings).adopt(hadDevices: true);
+
+      expect(BootChoice(settings).startsOnBoot, isFalse);
+      expect(
+        StayConnectedViewModel(
+          system: _FakeSystem(),
+          settings: settings,
+        ).asksAboutBoot,
+        isFalse,
+      );
+    });
+
+    testWidgets('the phone follows the answer', (tester) async {
+      final system = _FakeSystem();
+      late FerretEngine engine;
+      late SystemBinding binding;
+      await tester.runAsync(() async {
+        engine = await _engine();
+        binding = SystemBinding(
+          engine: engine,
+          host: EngineHost(engine),
+          pause: PauseController(engine),
+          system: system,
+        );
+        await binding.start();
+      });
+      expect(system.startOnBoot, isFalse);
+      expect(BootChoice(engine.settings).needsAnswer, isTrue);
+
+      await tester.runAsync(() async {
+        await BootChoice(engine.settings).answer(start: true);
+        await Future<void>.delayed(Duration.zero);
+      });
+
+      expect(system.startOnBoot, isTrue);
+
+      await tester.runAsync(() async {
+        await binding.dispose();
+        await engine.stop();
+      });
+    });
+  });
+
   group('SystemBinding', () {
     testWidgets('coming back to the app starts a service Android took down', (
       tester,
@@ -76,7 +189,7 @@ void main() {
         await binding.start();
       });
       expect(system.starts, 1);
-      expect(system.startOnBoot, isTrue);
+      expect(system.startOnBoot, isFalse);
 
       system.running = false;
       tester.binding.handleAppLifecycleStateChanged(.resumed);

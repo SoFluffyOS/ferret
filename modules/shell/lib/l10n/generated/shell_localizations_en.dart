@@ -555,6 +555,17 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get stayTileFix => 'Add tile';
 
   @override
+  String stayBootAsk(String device) {
+    return 'Start Ferret when $device restarts? Otherwise it reconnects only when you open it.';
+  }
+
+  @override
+  String get stayBootYes => 'Yes';
+
+  @override
+  String get stayBootNotNow => 'Not now';
+
+  @override
   String get settingsBackground => 'Background';
 
   @override

@@ -1,15 +1,22 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shell/services/services.dart';
 
 /// What's still in the way of Ferret staying connected on Android, re-checked
 /// whenever the user comes back from a settings screen.
 class StayConnectedViewModel extends ChangeNotifier {
-  StayConnectedViewModel({FerretSystem? system})
-    : _system = system ?? FerretSystem();
+  StayConnectedViewModel({FerretSystem? system, SettingsStore? settings})
+    : _system = system ?? FerretSystem(),
+      _boot = switch (settings) {
+        final settings? => BootChoice(settings),
+        null => null,
+      };
 
   final FerretSystem _system;
+  final BootChoice? _boot;
   bool _disposed = false;
 
   bool notificationsAllowed = true;
@@ -24,13 +31,18 @@ class StayConnectedViewModel extends ChangeNotifier {
 
   bool get isAndroid => _system.isAndroid;
 
+  /// Whether to ask "Start Ferret when the phone restarts?": until it is
+  /// answered once, here or with the switch in Settings.
+  bool get asksAboutBoot => _boot?.needsAnswer ?? false;
+
   /// Nothing left to do, so the card can hide.
   bool get allSet =>
       notificationsAllowed &&
       batteryExempt &&
       !backgroundRestricted &&
       stopsToday == 0 &&
-      !canAddTile;
+      !canAddTile &&
+      !asksAboutBoot;
 
   /// Whether to show the maker's own steps: its killer can't be read, so
   /// they show while something else says Ferret is being stopped.
@@ -60,6 +72,13 @@ class StayConnectedViewModel extends ChangeNotifier {
   Future<void> allowBackground() async {
     await _system.requestIgnoreBatteryOptimizations();
     await refresh();
+  }
+
+  /// Keeps the answer; the system binding turns the boot start on or off
+  /// from the setting.
+  Future<void> answerBoot({required bool start}) async {
+    await _boot?.answer(start: start);
+    _notify();
   }
 
   Future<void> openAppSettings() => _system.openAppSettings();

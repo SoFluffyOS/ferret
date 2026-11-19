@@ -860,6 +860,24 @@ abstract class ShellLocalizations {
   /// **'Add tile'**
   String get stayTileFix;
 
+  /// device is this phone's own name, such as Pixel 7.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Ferret when {device} restarts? Otherwise it reconnects only when you open it.'**
+  String stayBootAsk(String device);
+
+  /// No description provided for @stayBootYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get stayBootYes;
+
+  /// No description provided for @stayBootNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get stayBootNotNow;
+
   /// No description provided for @settingsBackground.
   ///
   /// In en, this message translates to:

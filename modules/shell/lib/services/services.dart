@@ -2,6 +2,7 @@ export 'package:shell/services/active_navigator_key.dart';
 export 'package:shell/services/activity_feed.dart';
 export 'package:shell/services/app_quit.dart';
 export 'package:shell/services/app_views.dart';
+export 'package:shell/services/boot_choice.dart';
 export 'package:shell/services/connection_doctor.dart';
 export 'package:shell/services/device_action_order.dart';
 export 'package:shell/services/device_action_usage.dart';

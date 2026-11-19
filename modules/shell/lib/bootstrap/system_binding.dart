@@ -21,8 +21,9 @@ class SystemBinding with WidgetsBindingObserver {
   /// Keep Ferret running in the background on Android (default on).
   static const backgroundServiceKey = 'system.background_service';
 
-  /// Start Ferret when the phone starts (default on).
-  static const startOnBootKey = 'system.start_on_boot';
+  /// Start Ferret when the phone starts. Off until the person says yes to
+  /// the Stay connected card's question; see [BootChoice].
+  static const startOnBootKey = BootChoice.startKey;
 
   /// Network callbacks come in bursts; one reconnect covers them.
   static const _settle = Duration(milliseconds: 500);
@@ -50,6 +51,9 @@ class SystemBinding with WidgetsBindingObserver {
       return;
     }
 
+    await BootChoice(
+      engine.settings,
+    ).adopt(hadDevices: engine.trustStore.devices.isNotEmpty);
     await _applyServiceSettings();
     await _restorePause();
     await _showDevices();
@@ -181,7 +185,7 @@ class SystemBinding with WidgetsBindingObserver {
   Future<void> _applyServiceSettings() async {
     final settings = engine.settings;
     final background = settings.get<bool>(backgroundServiceKey) ?? true;
-    final onBoot = settings.get<bool>(startOnBootKey) ?? true;
+    final onBoot = BootChoice(settings).startsOnBoot;
 
     await _system.setStartOnBoot(onBoot);
     if (!background) {
