@@ -1,10 +1,6 @@
 import 'dart:io';
 
-import 'package:lan_discovery/dns/dns_message.dart';
-import 'package:lan_discovery/dns/dns_question.dart';
-import 'package:lan_discovery/dns/dns_record.dart';
-import 'package:lan_discovery/dns/dns_type.dart';
-import 'package:lan_discovery/dns/dns_wire.dart';
+import 'package:lan_discovery/dns/dns.dart';
 import 'package:lan_discovery/mdns/mdns_service.dart';
 
 /// Builds the mDNS and DNS-SD answers for one service (RFC 6762, 6763).
