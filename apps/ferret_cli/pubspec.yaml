@@ -1,5 +1,5 @@
 name: ferret_cli
-description: The ferret command line and headless daemon.
+description: The ferret-cli command line and headless daemon.
 version: 0.1.0
 publish_to: none
 resolution: workspace
@@ -8,7 +8,7 @@ environment:
   sdk: ^3.14.0
 
 executables:
-  ferret: ferret
+  ferret-cli: ferret
 
 dependencies:
   args: ^2.7.0

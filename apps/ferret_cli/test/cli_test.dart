@@ -118,7 +118,7 @@ void main() {
       final exit = await buildRunner(environment).run(['--version']);
 
       expect(exit, ExitCodes.ok);
-      expect(out.toString().trim(), 'ferret $cliVersion');
+      expect(out.toString().trim(), 'ferret-cli $cliVersion');
     });
 
     test('help lists the exit codes', () {

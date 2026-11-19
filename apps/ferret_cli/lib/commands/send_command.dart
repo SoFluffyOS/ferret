@@ -5,7 +5,7 @@ import 'package:core/core.dart';
 import 'package:ferret_cli/cli_environment.dart';
 import 'package:ferret_cli/exit_codes.dart';
 
-/// `ferret send <file>…`: hands the files to the Ferret app running on this
+/// `ferret-cli send <file>…`: hands the files to the Ferret app running on this
 /// computer, which sends them to your device (or asks which one).
 class SendCommand extends Command<int> {
   SendCommand(this._environment);
@@ -20,7 +20,7 @@ class SendCommand extends Command<int> {
       'Send files with the Ferret app running on this computer.';
 
   @override
-  String get invocation => 'ferret send <file>…';
+  String get invocation => 'ferret-cli send <file>…';
 
   @override
   Future<int> run() async {

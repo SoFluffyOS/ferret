@@ -37,7 +37,7 @@ class OfferCommand extends Command<int> {
       stdout.writeln('Paired with ${device.name}.');
       return 0;
     } on TimeoutException {
-      stderr.writeln('The link expired. Run "ferret offer" again.');
+      stderr.writeln('The link expired. Run "ferret-cli offer" again.');
       return 1;
     } finally {
       await engine.stop();

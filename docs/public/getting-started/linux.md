@@ -66,11 +66,13 @@ A firewall is the usual reason. **Add a device → Check my network** says when 
 ## 💻 The terminal
 
 ```sh
-ferret send ~/Pictures/photo.jpg   # hands it to the Ferret app, which sends it
-ferret devices --json              # paired devices, for scripts and jq
-ferret daemon                      # Ferret without a window, until Ctrl-C
-ferret --help                      # everything else
+ferret send ~/Pictures/photo.jpg       # hands it to the Ferret app, which sends it
+ferret-cli devices --json              # paired devices, for scripts and jq
+ferret-cli daemon                      # Ferret without a window, until Ctrl-C
+ferret-cli --help                      # everything else
 ```
+
+`ferret` is the app. `ferret-cli` is the command line, with its own identity, so it can run on a server with no desktop. Both take `send`.
 
 `ferret send` needs the app running. It exits with `69` when it isn't, `66` when a file is missing, `64` on wrong usage and `0` when the app took the files. That makes it easy to bind to a key in your window manager.
 

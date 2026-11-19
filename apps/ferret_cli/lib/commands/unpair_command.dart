@@ -23,7 +23,7 @@ class UnpairCommand extends Command<int> {
 
   @override
   String get description =>
-      'Forget a paired device: ferret unpair <name or id>.';
+      'Forget a paired device: ferret-cli unpair <name or id>.';
 
   @override
   Future<int> run() async {
@@ -41,7 +41,7 @@ class UnpairCommand extends Command<int> {
     final device = matches.firstOrNull;
     if (device == null) {
       stderr.writeln(
-        'No paired device called "$query". Run "ferret devices" to see them.',
+        'No paired device called "$query". Run "ferret-cli devices" to see them.',
       );
       return 1;
     }

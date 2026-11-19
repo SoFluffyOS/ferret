@@ -1,4 +1,4 @@
-/// The `ferret` command line.
+/// The `ferret-cli` command line. The app binary is `ferret`.
 library;
 
 import 'package:args/args.dart';
@@ -24,7 +24,7 @@ CommandRunner<int> buildRunner(CliEnvironment environment) =>
 class _FerretRunner extends CommandRunner<int> {
   _FerretRunner(this._environment)
     : super(
-        'ferret',
+        'ferret-cli',
         'Continue what you were doing on any of your devices.\n\n'
             'Keeps its identity, pairings and settings in '
             '~/.sofluffy/ferret/cli (%USERPROFILE%\\.sofluffy\\ferret\\cli on '
@@ -46,7 +46,7 @@ class _FerretRunner extends CommandRunner<int> {
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     if (topLevelResults['version'] == true) {
-      _environment.out.writeln('ferret $cliVersion');
+      _environment.out.writeln('ferret-cli $cliVersion');
       return ExitCodes.ok;
     }
 

@@ -15,10 +15,10 @@ class PairCommand extends Command<int> {
 
   @override
   String get description =>
-      'Pair with a device: ferret pair <ferret://pair link> or ferret pair <host[:port]>.';
+      'Pair with a device: ferret-cli pair <ferret://pair link> or ferret-cli pair <host[:port]>.';
 
   @override
-  String get invocation => 'ferret pair <link or host[:port]>';
+  String get invocation => 'ferret-cli pair <link or host[:port]>';
 
   @override
   Future<int> run() async {

@@ -83,14 +83,16 @@ The first time Ferret looks for devices, macOS asks whether it may find devices 
 ## 💻 From the command line
 
 ```sh
-ferret daemon                # shows who is nearby, asks before pairing
-ferret offer                 # shows a link
-ferret pair "ferret://pair?o=..."
-ferret pair 192.168.1.20     # compare codes instead
-ferret unpair "Pixel 7" --everywhere
-ferret devices --json        # for scripts
-ferret send report.pdf       # hands files to the running Ferret app
+ferret-cli daemon                # shows who is nearby, asks before pairing
+ferret-cli offer                 # shows a link
+ferret-cli pair "ferret://pair?o=..."
+ferret-cli pair 192.168.1.20     # compare codes instead
+ferret-cli unpair "Pixel 7" --everywhere
+ferret-cli devices --json        # for scripts
+ferret-cli send report.pdf       # hands files to the running Ferret app
 ```
+
+`ferret` is the app itself. `ferret-cli` is the command line, so both can sit on your `PATH`. `ferret send` works with either one.
 
 The command line is its own device, named after your computer with **· Terminal**. It keeps its key and pairings in `~/.sofluffy/ferret/cli`. Set `FERRET_HOME` to move Ferret's whole folder somewhere else.
 

@@ -41,7 +41,7 @@ class DevicesCommand extends Command<int> {
     out.writeln('This device: ${DeviceIdentity.format(identity.deviceId)}');
     if (devices.isEmpty) {
       out.writeln(
-        'No paired devices yet. Run "ferret offer" or "ferret pair".',
+        'No paired devices yet. Run "ferret-cli offer" or "ferret-cli pair".',
       );
       return 0;
     }

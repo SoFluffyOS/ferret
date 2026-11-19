@@ -36,7 +36,7 @@ On a computer, everything Ferret saves sits in **one folder**: `~/.sofluffy/ferr
 | `features` | What features save, such as your saved texts |
 | `tools` | Android's platform tools, if you downloaded them |
 | `cache` | Things Ferret can rebuild |
-| `cli` | The `ferret` command line's own key, pairings and settings |
+| `cli` | The `ferret-cli` command line's own key, pairings and settings |
 
 On phones, Ferret keeps its data in its own app storage, and its key in the system keychain.
 

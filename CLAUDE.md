@@ -26,7 +26,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 | Directory | Purpose |
 |---|---|
 | `apps/ferret/` | The Flutter app for every platform: `main.dart`, wiring, platform folders. Entry point only |
-| `apps/ferret_cli/` | `ferret` command line and headless daemon (pure Dart) |
+| `apps/ferret_cli/` | `ferret-cli` command line and headless daemon (pure Dart). The app binary is `ferret` |
 | `apps/ferret_docs/` | Docs site (Jaspr, pinned to its own Flutter in `.fvmrc`). Reads `docs/public` in place, builds the sidebar from its folders; holds layout, components and the docs tools only |
 | `modules/<feature>/` | One feature each: its `Feature` (engine side) and its UI. Features never import each other |
 | `modules/shell/` | App shell: onboarding, devices, pairing, settings, tier detection; hosts feature UIs |
