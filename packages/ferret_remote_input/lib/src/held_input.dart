@@ -9,8 +9,6 @@ class HeldInput {
 
   bool get isEmpty => _buttons.isEmpty && _keys.isEmpty;
 
-  bool isPressed(PointerButton button) => _buttons.contains(button);
-
   /// Records [action]. Returns false when it changes nothing, such as a
   /// release of a button that isn't down, so injectors can skip it.
   bool track(InputAction action) {

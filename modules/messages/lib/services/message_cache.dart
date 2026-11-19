@@ -48,9 +48,6 @@ class MessageCache {
     return thread.messages.values.toList()..sort(_oldestFirst);
   }
 
-  bool hasMessages(int threadId) =>
-      _threads[threadId]?.messages.isNotEmpty ?? false;
-
   /// Older texts may exist on the phone for [threadId].
   bool hasOlderMessages(int threadId) => _threads[threadId]?.hasOlder ?? true;
 

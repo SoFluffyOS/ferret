@@ -139,8 +139,6 @@ class PowerViewModel extends ChangeNotifier {
     return _noticeUnless(opened, .settingsNotOpened);
   });
 
-  Future<void> dismissCard() => feature.settings.setCardDismissed(true);
-
   @override
   void dispose() {
     _disposed = true;
