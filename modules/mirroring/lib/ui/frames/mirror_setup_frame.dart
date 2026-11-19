@@ -81,17 +81,17 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
               if (needsTool) _toolStep(context, setup?.help ?? .none),
               if (needsOk)
                 SetupStepRow(
-                  title: l10n.setupPermissionTitle(MirrorHere.name),
+                  title: l10n.setupPermissionTitle(ThisComputer.here),
                   state: .now,
                   children: [
                     Text(
-                      l10n.setupPermissionBody(MirrorHere.name),
+                      l10n.setupPermissionBody(ThisComputer.here),
                       style: caption,
                     ),
                   ],
                 ),
               SetupStepRow(
-                title: l10n.stepPlug(MirrorHere.name),
+                title: l10n.stepPlug(ThisComputer.here),
                 state: _stateOf(done: found, waits: beforePhone),
               ),
               SetupStepRow(
@@ -157,7 +157,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
                 ),
               ],
               Spacing.v12,
-              Text(l10n.setupPrivacy(MirrorHere.name), style: caption),
+              Text(l10n.setupPrivacy(ThisComputer.here), style: caption),
               Spacing.v16,
               Align(
                 alignment: AlignmentDirectional.centerStart,
@@ -208,15 +208,15 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
         Text(
           switch (help) {
             .download => l10n.setupDownloadToolBody,
-            .startTool => l10n.setupStartToolBody(MirrorHere.name),
-            .none => l10n.setupInstallToolBody(MirrorHere.name),
+            .startTool => l10n.setupStartToolBody(ThisComputer.here),
+            .none => l10n.setupInstallToolBody(ThisComputer.here),
           },
           style: caption.copyWith(color: palette.mutedText),
         ),
         if (download == .failed) ...[
           Spacing.v4,
           Text(
-            l10n.setupDownloadFailed(MirrorHere.name),
+            l10n.setupDownloadFailed(ThisComputer.here),
             style: caption.copyWith(color: palette.danger),
           ),
         ],

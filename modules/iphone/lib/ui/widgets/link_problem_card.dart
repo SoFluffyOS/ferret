@@ -50,25 +50,25 @@ class LinkProblemCard extends StatelessWidget {
       .bluetoothOff => (
         LucideIcons.bluetoothOff,
         l10n.problemBluetoothOffTitle,
-        l10n.problemBluetoothOffBody,
+        l10n.problemBluetoothOffBody(ThisComputer.here),
         [openBluetooth, tryAgain],
       ),
       .unauthorized => (
         LucideIcons.bluetoothOff,
         l10n.problemUnauthorizedTitle,
-        l10n.problemUnauthorizedBody,
+        l10n.problemUnauthorizedBody(ThisComputer.here),
         [tryAgain],
       ),
       .notShared => (
         LucideIcons.smartphone,
-        l10n.problemNotSharedTitle(device),
-        l10n.problemNotSharedBody(device),
+        l10n.problemNotSharedTitle(device, ThisComputer.here),
+        l10n.problemNotSharedBody(device, ThisComputer.here),
         [setUp, tryAgain],
       ),
       _ => (
         LucideIcons.smartphone,
         l10n.problemNoDeviceTitle,
-        l10n.problemNoDeviceBody,
+        l10n.problemNoDeviceBody(ThisComputer.here),
         [setUp],
       ),
     };

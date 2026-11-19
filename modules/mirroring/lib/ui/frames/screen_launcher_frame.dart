@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mirroring/l10n/l10n.dart';
@@ -21,7 +22,7 @@ class ScreenLauncherFrame extends StatelessWidget {
 
     return MirrorMessage(
       icon: LucideIcons.smartphone,
-      title: l10n.launcherTitle(deviceName, MirrorHere.name),
+      title: l10n.launcherTitle(deviceName, ThisComputer.here),
       body: l10n.launcherBody(deviceName),
       actions: [
         MessageAction(label: l10n.showScreen, primary: true, onPressed: onShow),

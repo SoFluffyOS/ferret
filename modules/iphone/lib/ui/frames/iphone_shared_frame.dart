@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iphone/l10n/l10n.dart';
 import 'package:iphone/ui/widgets/widgets.dart';
@@ -32,11 +33,13 @@ class IphoneSharedFrame extends StatelessWidget {
       children: [
         if (notificationsNotShared) ...[
           Spacing.v8,
-          NoticeBlock(title: l10n.notificationsNotShared(device)),
+          NoticeBlock(
+            title: l10n.notificationsNotShared(device, ThisComputer.here),
+          ),
         ],
         if (mediaNotShared) ...[
           Spacing.v8,
-          NoticeBlock(title: l10n.mediaNotShared(device)),
+          NoticeBlock(title: l10n.mediaNotShared(device, ThisComputer.here)),
         ],
       ],
     );

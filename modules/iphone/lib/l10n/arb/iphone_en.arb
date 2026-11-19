@@ -29,32 +29,62 @@
   },
   "volumeUp": "Volume up",
   "volumeDown": "Volume down",
-  "commandFailed": "{device} didn't answer. Keep it near this computer, then try again.",
+  "commandFailed": "{device} didn't answer. Keep it near {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.",
   "@commandFailed": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
   },
   "problemBluetoothOffTitle": "Bluetooth is off",
-  "problemBluetoothOffBody": "Turn on Bluetooth on this computer to get your iPhone's notifications and media here.",
-  "problemUnauthorizedTitle": "Ferret can't use Bluetooth",
-  "problemUnauthorizedBody": "Allow Bluetooth for Ferret in this computer's privacy settings, then try again.",
-  "problemNoDeviceTitle": "Pick your iPhone",
-  "problemNoDeviceBody": "Pair it with this computer, then choose it in Ferret.",
-  "problemNotSharedTitle": "{device} isn't sharing with this computer",
-  "@problemNotSharedTitle": {
+  "problemBluetoothOffBody": "Turn on Bluetooth on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to get your iPhone's notifications and media here.",
+  "@problemBluetoothOffBody": {
     "placeholders": {
-      "device": {
+      "here": {
         "type": "String"
       }
     }
   },
-  "problemNotSharedBody": "On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.",
+  "problemUnauthorizedTitle": "Ferret can't use Bluetooth",
+  "problemUnauthorizedBody": "Allow Bluetooth for Ferret in {here, select, macOS{this Mac's} windows{this PC's} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}'s}} privacy settings, then try again.",
+  "@problemUnauthorizedBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "problemNoDeviceTitle": "Pick your iPhone",
+  "problemNoDeviceBody": "Pair it with {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then choose it in Ferret.",
+  "@problemNoDeviceBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "problemNotSharedTitle": "{device} isn't sharing with {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@problemNotSharedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "problemNotSharedBody": "On {device}: Settings → Bluetooth, tap ⓘ next to {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then turn on Share System Notifications. Not listed there? Pair it again.",
   "@problemNotSharedBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -69,7 +99,14 @@
   "worksTitle": "What works with an iPhone",
   "worksBody": "Notifications as they arrive, with Clear, Answer and Decline. Play, pause, skip and volume for whatever the iPhone plays.",
   "limitsTitle": "Not yet",
-  "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.",
+  "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and handoff to its own devices.",
+  "@limitsBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "macNoteTitle": "Experimental on a Mac",
   "macNote": "It only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone's notifications to itself.",
   "statusUnsupported": "This computer has no Bluetooth LE, which the iPhone link needs.",
@@ -106,9 +143,14 @@
       }
     }
   },
-  "summaryUnavailable": "Not available on this computer",
+  "summaryUnavailable": "Not available on {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@summaryUnavailable": {
-    "description": "Settings row value when this computer can't use Bluetooth LE."
+    "description": "Settings row value when this computer can't use Bluetooth LE.",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "summaryOutOfReach": "{device} is out of reach",
   "@summaryOutOfReach": {
@@ -128,18 +170,24 @@
       }
     }
   },
-  "notificationsNotShared": "{device} isn't sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.",
+  "notificationsNotShared": "{device} isn't sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then turn on Share System Notifications.",
   "@notificationsNotShared": {
     "placeholders": {
       "device": {
         "type": "String"
+      },
+      "here": {
+        "type": "String"
       }
     }
   },
-  "mediaNotShared": "{device} isn't sharing what it plays with this computer.",
+  "mediaNotShared": "{device} isn't sharing what it plays with {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
   "@mediaNotShared": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -149,7 +197,14 @@
   "setupStepPairWindows": "On this PC, open Bluetooth settings, choose Add device → Bluetooth and pick the iPhone. Confirm the code on both.",
   "setupStepPairMac": "Keep the iPhone signed in and near this Mac with Bluetooth on, so macOS connects to it.",
   "setupStepPairLinux": "This computer now shows up on the iPhone under Other Devices. Tap it there, and confirm the code on both.",
-  "setupStepAllow": "When the iPhone asks, allow it to show notifications on this computer.",
+  "setupStepAllow": "When the iPhone asks, allow it to show notifications on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
+  "@setupStepAllow": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "setupStepChoose": "Choose the iPhone below.",
   "devicesTitle": "Paired devices",
   "devicesEmpty": "No paired iPhone found yet.",
@@ -190,10 +245,13 @@
       }
     }
   },
-  "actionFailedBody": "That didn't reach {device}. Keep it near this computer, then try again.",
+  "actionFailedBody": "That didn't reach {device}. Keep it near {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.",
   "@actionFailedBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }

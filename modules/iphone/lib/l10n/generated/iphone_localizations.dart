@@ -155,8 +155,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @commandFailed.
   ///
   /// In en, this message translates to:
-  /// **'{device} didn\'t answer. Keep it near this computer, then try again.'**
-  String commandFailed(String device);
+  /// **'{device} didn\'t answer. Keep it near {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.'**
+  String commandFailed(String device, String here);
 
   /// No description provided for @problemBluetoothOffTitle.
   ///
@@ -167,8 +167,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemBluetoothOffBody.
   ///
   /// In en, this message translates to:
-  /// **'Turn on Bluetooth on this computer to get your iPhone\'s notifications and media here.'**
-  String get problemBluetoothOffBody;
+  /// **'Turn on Bluetooth on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to get your iPhone\'s notifications and media here.'**
+  String problemBluetoothOffBody(String here);
 
   /// No description provided for @problemUnauthorizedTitle.
   ///
@@ -179,8 +179,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemUnauthorizedBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow Bluetooth for Ferret in this computer\'s privacy settings, then try again.'**
-  String get problemUnauthorizedBody;
+  /// **'Allow Bluetooth for Ferret in {here, select, macOS{this Mac\'s} windows{this PC\'s} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}\'s}} privacy settings, then try again.'**
+  String problemUnauthorizedBody(String here);
 
   /// No description provided for @problemNoDeviceTitle.
   ///
@@ -191,20 +191,20 @@ abstract class IphoneLocalizations {
   /// No description provided for @problemNoDeviceBody.
   ///
   /// In en, this message translates to:
-  /// **'Pair it with this computer, then choose it in Ferret.'**
-  String get problemNoDeviceBody;
+  /// **'Pair it with {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then choose it in Ferret.'**
+  String problemNoDeviceBody(String here);
 
   /// No description provided for @problemNotSharedTitle.
   ///
   /// In en, this message translates to:
-  /// **'{device} isn\'t sharing with this computer'**
-  String problemNotSharedTitle(String device);
+  /// **'{device} isn\'t sharing with {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String problemNotSharedTitle(String device, String here);
 
   /// No description provided for @problemNotSharedBody.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.'**
-  String problemNotSharedBody(String device);
+  /// **'On {device}: Settings → Bluetooth, tap ⓘ next to {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then turn on Share System Notifications. Not listed there? Pair it again.'**
+  String problemNotSharedBody(String device, String here);
 
   /// No description provided for @yourIphone.
   ///
@@ -269,8 +269,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @limitsBody.
   ///
   /// In en, this message translates to:
-  /// **'Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.'**
-  String get limitsBody;
+  /// **'Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and handoff to its own devices.'**
+  String limitsBody(String here);
 
   /// No description provided for @macNoteTitle.
   ///
@@ -323,8 +323,8 @@ abstract class IphoneLocalizations {
   /// Settings row value when this computer can't use Bluetooth LE.
   ///
   /// In en, this message translates to:
-  /// **'Not available on this computer'**
-  String get summaryUnavailable;
+  /// **'Not available on {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String summaryUnavailable(String here);
 
   /// Settings row value.
   ///
@@ -341,14 +341,14 @@ abstract class IphoneLocalizations {
   /// No description provided for @notificationsNotShared.
   ///
   /// In en, this message translates to:
-  /// **'{device} isn\'t sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.'**
-  String notificationsNotShared(String device);
+  /// **'{device} isn\'t sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then turn on Share System Notifications.'**
+  String notificationsNotShared(String device, String here);
 
   /// No description provided for @mediaNotShared.
   ///
   /// In en, this message translates to:
-  /// **'{device} isn\'t sharing what it plays with this computer.'**
-  String mediaNotShared(String device);
+  /// **'{device} isn\'t sharing what it plays with {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String mediaNotShared(String device, String here);
 
   /// No description provided for @setupTitle.
   ///
@@ -383,8 +383,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @setupStepAllow.
   ///
   /// In en, this message translates to:
-  /// **'When the iPhone asks, allow it to show notifications on this computer.'**
-  String get setupStepAllow;
+  /// **'When the iPhone asks, allow it to show notifications on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String setupStepAllow(String here);
 
   /// No description provided for @setupStepChoose.
   ///
@@ -527,8 +527,8 @@ abstract class IphoneLocalizations {
   /// No description provided for @actionFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'That didn\'t reach {device}. Keep it near this computer, then try again.'**
-  String actionFailedBody(String device);
+  /// **'That didn\'t reach {device}. Keep it near {here, select, macOS{this Mac} windows{this PC} other{this computer}}, then try again.'**
+  String actionFailedBody(String device, String here);
 }
 
 class _IphoneLocalizationsDelegate

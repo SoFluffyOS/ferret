@@ -90,7 +90,7 @@ class QualityPanelFrame extends StatelessWidget {
                   Text(presetNote, style: caption),
                   if (config?.codec == .jpeg) ...[
                     Spacing.v4,
-                    Text(l10n.basicPicture(MirrorHere.name), style: caption),
+                    Text(l10n.basicPicture(ThisComputer.here), style: caption),
                   ],
                   if (config != null) ...[
                     Spacing.v8,

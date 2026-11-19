@@ -102,7 +102,7 @@ class NowPlayingCard extends StatelessWidget {
         if (commandFailed) ...[
           Spacing.v8,
           Text(
-            l10n.commandFailed(device),
+            l10n.commandFailed(device, ThisComputer.here),
             style: context.fluffyTheme.typography.caption1.copyWith(
               color: palette.danger,
             ),

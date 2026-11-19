@@ -337,7 +337,7 @@ class _NoticeFrame extends StatelessWidget {
     final (text, actionLabel, onAction) = switch (notice) {
       .viaCable => (l10n.noticeViaCable, null, null),
       .cableNoAsk => (l10n.noticeCableNoAsk(deviceName), null, null),
-      .basicPicture => (l10n.basicPicture(MirrorHere.name), null, null),
+      .basicPicture => (l10n.basicPicture(ThisComputer.here), null, null),
       .slow when canGoFaster => (
         l10n.noticeSlow(deviceName),
         l10n.useFast,
@@ -360,7 +360,7 @@ class _NoticeFrame extends StatelessWidget {
       ),
       .screenshotFailed => (l10n.screenshotFailed, null, null),
       .controlAsking => (
-        l10n.noticeControlAsking(deviceName, MirrorHere.name),
+        l10n.noticeControlAsking(deviceName, ThisComputer.here),
         null,
         null,
       ),

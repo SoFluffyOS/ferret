@@ -67,7 +67,7 @@ class SoundPanelFrame extends StatelessWidget {
             ),
             if (offers) ...[
               PopupRow(
-                label: l10n.soundHere(MirrorHere.name),
+                label: l10n.soundHere(ThisComputer.here),
                 checked: on,
                 onTap: () => unawaited(viewModel.setSound(true)),
               ),

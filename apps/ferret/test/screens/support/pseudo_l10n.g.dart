@@ -1396,15 +1396,9 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   @override
   String get problemBluetoothOffTitle => pseudo(super.problemBluetoothOffTitle);
   @override
-  String get problemBluetoothOffBody => pseudo(super.problemBluetoothOffBody);
-  @override
   String get problemUnauthorizedTitle => pseudo(super.problemUnauthorizedTitle);
   @override
-  String get problemUnauthorizedBody => pseudo(super.problemUnauthorizedBody);
-  @override
   String get problemNoDeviceTitle => pseudo(super.problemNoDeviceTitle);
-  @override
-  String get problemNoDeviceBody => pseudo(super.problemNoDeviceBody);
   @override
   String get yourIphone => pseudo(super.yourIphone);
   @override
@@ -1426,8 +1420,6 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   @override
   String get limitsTitle => pseudo(super.limitsTitle);
   @override
-  String get limitsBody => pseudo(super.limitsBody);
-  @override
   String get macNoteTitle => pseudo(super.macNoteTitle);
   @override
   String get macNote => pseudo(super.macNote);
@@ -1435,8 +1427,6 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   String get statusUnsupported => pseudo(super.statusUnsupported);
   @override
   String get statusNotConfigured => pseudo(super.statusNotConfigured);
-  @override
-  String get summaryUnavailable => pseudo(super.summaryUnavailable);
   @override
   String get setupTitle => pseudo(super.setupTitle);
   @override
@@ -1447,8 +1437,6 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   String get setupStepPairMac => pseudo(super.setupStepPairMac);
   @override
   String get setupStepPairLinux => pseudo(super.setupStepPairLinux);
-  @override
-  String get setupStepAllow => pseudo(super.setupStepAllow);
   @override
   String get setupStepChoose => pseudo(super.setupStepChoose);
   @override
@@ -1497,13 +1485,25 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   @override
   String pausedOn(String device) => pseudo(super.pausedOn(device));
   @override
-  String commandFailed(String device) => pseudo(super.commandFailed(device));
+  String commandFailed(String device, String here) =>
+      pseudo(super.commandFailed(device, here));
   @override
-  String problemNotSharedTitle(String device) =>
-      pseudo(super.problemNotSharedTitle(device));
+  String problemBluetoothOffBody(String here) =>
+      pseudo(super.problemBluetoothOffBody(here));
   @override
-  String problemNotSharedBody(String device) =>
-      pseudo(super.problemNotSharedBody(device));
+  String problemUnauthorizedBody(String here) =>
+      pseudo(super.problemUnauthorizedBody(here));
+  @override
+  String problemNoDeviceBody(String here) =>
+      pseudo(super.problemNoDeviceBody(here));
+  @override
+  String problemNotSharedTitle(String device, String here) =>
+      pseudo(super.problemNotSharedTitle(device, here));
+  @override
+  String problemNotSharedBody(String device, String here) =>
+      pseudo(super.problemNotSharedBody(device, here));
+  @override
+  String limitsBody(String here) => pseudo(super.limitsBody(here));
   @override
   String statusConnecting(String device) =>
       pseudo(super.statusConnecting(device));
@@ -1516,16 +1516,22 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   @override
   String statusFailed(String device) => pseudo(super.statusFailed(device));
   @override
+  String summaryUnavailable(String here) =>
+      pseudo(super.summaryUnavailable(here));
+  @override
   String summaryOutOfReach(String device) =>
       pseudo(super.summaryOutOfReach(device));
   @override
   String summaryNotShared(String device) =>
       pseudo(super.summaryNotShared(device));
   @override
-  String notificationsNotShared(String device) =>
-      pseudo(super.notificationsNotShared(device));
+  String notificationsNotShared(String device, String here) =>
+      pseudo(super.notificationsNotShared(device, here));
   @override
-  String mediaNotShared(String device) => pseudo(super.mediaNotShared(device));
+  String mediaNotShared(String device, String here) =>
+      pseudo(super.mediaNotShared(device, here));
+  @override
+  String setupStepAllow(String here) => pseudo(super.setupStepAllow(here));
   @override
   String noticeTitle(String app, String title) =>
       pseudo(super.noticeTitle(app, title));
@@ -1533,8 +1539,8 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   String actionFailedTitle(String device) =>
       pseudo(super.actionFailedTitle(device));
   @override
-  String actionFailedBody(String device) =>
-      pseudo(super.actionFailedBody(device));
+  String actionFailedBody(String device, String here) =>
+      pseudo(super.actionFailedBody(device, here));
 }
 
 class PseudoMediaLocalizations extends MediaLocalizationsEn {

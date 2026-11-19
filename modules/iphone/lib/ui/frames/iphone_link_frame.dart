@@ -41,7 +41,7 @@ class IphoneLinkFrame extends StatelessWidget {
       .bluetoothOff => [
         NoticeBlock(
           title: l10n.problemBluetoothOffTitle,
-          body: l10n.problemBluetoothOffBody,
+          body: l10n.problemBluetoothOffBody(ThisComputer.here),
           actionLabel: l10n.openBluetoothSettings,
           onAction: openBluetooth,
         ),
@@ -49,7 +49,7 @@ class IphoneLinkFrame extends StatelessWidget {
       .unauthorized => [
         NoticeBlock(
           title: l10n.problemUnauthorizedTitle,
-          body: l10n.problemUnauthorizedBody,
+          body: l10n.problemUnauthorizedBody(ThisComputer.here),
           actionLabel: l10n.tryAgain,
           onAction: retry,
         ),
@@ -79,8 +79,8 @@ class IphoneLinkFrame extends StatelessWidget {
       ],
       .notShared => [
         NoticeBlock(
-          title: l10n.problemNotSharedTitle(device),
-          body: l10n.problemNotSharedBody(device),
+          title: l10n.problemNotSharedTitle(device, ThisComputer.here),
+          body: l10n.problemNotSharedBody(device, ThisComputer.here),
           actionLabel: l10n.openBluetoothSettings,
           onAction: openBluetooth,
         ),

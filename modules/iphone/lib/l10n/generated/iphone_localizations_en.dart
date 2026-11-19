@@ -41,39 +41,98 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get volumeDown => 'Volume down';
 
   @override
-  String commandFailed(String device) {
-    return '$device didn\'t answer. Keep it near this computer, then try again.';
+  String commandFailed(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device didn\'t answer. Keep it near $_temp0, then try again.';
   }
 
   @override
   String get problemBluetoothOffTitle => 'Bluetooth is off';
 
   @override
-  String get problemBluetoothOffBody =>
-      'Turn on Bluetooth on this computer to get your iPhone\'s notifications and media here.';
+  String problemBluetoothOffBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Turn on Bluetooth on $_temp0 to get your iPhone\'s notifications and media here.';
+  }
 
   @override
   String get problemUnauthorizedTitle => 'Ferret can\'t use Bluetooth';
 
   @override
-  String get problemUnauthorizedBody =>
-      'Allow Bluetooth for Ferret in this computer\'s privacy settings, then try again.';
+  String problemUnauthorizedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': '$_temp0\'s',
+      },
+    );
+    return 'Allow Bluetooth for Ferret in $_temp1 privacy settings, then try again.';
+  }
 
   @override
   String get problemNoDeviceTitle => 'Pick your iPhone';
 
   @override
-  String get problemNoDeviceBody =>
-      'Pair it with this computer, then choose it in Ferret.';
-
-  @override
-  String problemNotSharedTitle(String device) {
-    return '$device isn\'t sharing with this computer';
+  String problemNoDeviceBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Pair it with $_temp0, then choose it in Ferret.';
   }
 
   @override
-  String problemNotSharedBody(String device) {
-    return 'On $device: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.';
+  String problemNotSharedTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device isn\'t sharing with $_temp0';
+  }
+
+  @override
+  String problemNotSharedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device: Settings → Bluetooth, tap ⓘ next to $_temp0, then turn on Share System Notifications. Not listed there? Pair it again.';
   }
 
   @override
@@ -110,8 +169,17 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get limitsTitle => 'Not yet';
 
   @override
-  String get limitsBody =>
-      'Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.';
+  String limitsBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Reading and sending texts (SMS and iMessage) and taking calls on $_temp0. Apple keeps files, clipboard and handoff to its own devices.';
+  }
 
   @override
   String get macNoteTitle => 'Experimental on a Mac';
@@ -149,7 +217,17 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String get summaryUnavailable => 'Not available on this computer';
+  String summaryUnavailable(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Not available on $_temp0';
+  }
 
   @override
   String summaryOutOfReach(String device) {
@@ -162,13 +240,29 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String notificationsNotShared(String device) {
-    return '$device isn\'t sharing its notifications. On $device: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.';
+  String notificationsNotShared(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device isn\'t sharing its notifications. On $device: Settings → Bluetooth, tap ⓘ next to $_temp0, then turn on Share System Notifications.';
   }
 
   @override
-  String mediaNotShared(String device) {
-    return '$device isn\'t sharing what it plays with this computer.';
+  String mediaNotShared(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device isn\'t sharing what it plays with $_temp0.';
   }
 
   @override
@@ -191,8 +285,17 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
       'This computer now shows up on the iPhone under Other Devices. Tap it there, and confirm the code on both.';
 
   @override
-  String get setupStepAllow =>
-      'When the iPhone asks, allow it to show notifications on this computer.';
+  String setupStepAllow(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'When the iPhone asks, allow it to show notifications on $_temp0.';
+  }
 
   @override
   String get setupStepChoose => 'Choose the iPhone below.';
@@ -271,7 +374,15 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String actionFailedBody(String device) {
-    return 'That didn\'t reach $device. Keep it near this computer, then try again.';
+  String actionFailedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'That didn\'t reach $device. Keep it near $_temp0, then try again.';
   }
 }

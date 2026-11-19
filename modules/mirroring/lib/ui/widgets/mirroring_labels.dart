@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:intl/intl.dart';
 import 'package:mirroring/l10n/l10n.dart';
@@ -94,7 +95,7 @@ extension MirroringLabels on MirroringLocalizations {
     .turnedOff => endTurnedOffTitle(device),
     .cannotAsk => endCannotAskTitle(device),
     .version => endVersionTitle(device),
-    .noCodec => endNoCodecTitle(device, MirrorHere.name),
+    .noCodec => endNoCodecTitle(device, ThisComputer.here),
     .notConnected => endNotConnectedTitle(device),
     .noAnswer => endNoAnswerTitle(device),
     .stoppedHere => endStoppedHereTitle,
@@ -111,16 +112,16 @@ extension MirroringLabels on MirroringLocalizations {
     .timedOut => endTimedOutBody(device),
     .busy => endBusyBody,
     .unsupported => endUnsupportedBody,
-    .turnedOff => endTurnedOffBody(device, MirrorHere.name),
+    .turnedOff => endTurnedOffBody(device, ThisComputer.here),
     .cannotAsk => endCannotAskBody(device),
     .version => endVersionBody(device),
-    .noCodec => endNoCodecBody(device, MirrorHere.name),
-    .notConnected => endNotConnectedBody(device, MirrorHere.name),
+    .noCodec => endNoCodecBody(device, ThisComputer.here),
+    .notConnected => endNotConnectedBody(device, ThisComputer.here),
     .noAnswer => endNoAnswerBody(device),
     .stoppedHere => endStoppedHereBody(device),
     .stoppedOnPhone => endStoppedOnPhoneBody(device),
     .systemEnded => endSystemEndedBody(device),
-    .lostConnection => endLostConnectionBody(device, MirrorHere.name),
+    .lostConnection => endLostConnectionBody(device, ThisComputer.here),
     .failed || .needsSetup => endFailedBody(device),
     .decoderFailed => endDecoderFailedBody(device),
   };

@@ -140,7 +140,8 @@ class IphoneFeatureUi extends FeatureUi {
 
     return switch (link.phase) {
       .off => '',
-      .unsupported || .notConfigured => l10n.summaryUnavailable,
+      .unsupported ||
+      .notConfigured => l10n.summaryUnavailable(ThisComputer.here),
       .bluetoothOff => l10n.problemBluetoothOffTitle,
       .unauthorized => l10n.problemUnauthorizedTitle,
       .noDevice => l10n.problemNoDeviceTitle,

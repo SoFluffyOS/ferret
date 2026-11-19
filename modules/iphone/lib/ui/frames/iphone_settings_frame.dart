@@ -108,7 +108,7 @@ class _IphoneSettingsFrameState extends State<IphoneSettingsFrame> {
         GroupedCell(
           child: NoticeBlock(
             title: l10n.limitsTitle,
-            body: l10n.limitsBody,
+            body: l10n.limitsBody(ThisComputer.here),
             isProblem: false,
           ),
         ),

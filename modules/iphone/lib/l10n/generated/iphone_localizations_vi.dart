@@ -41,39 +41,90 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   String get volumeDown => 'Giảm âm lượng';
 
   @override
-  String commandFailed(String device) {
-    return '$device không phản hồi. Hãy để máy gần máy tính này rồi thử lại.';
+  String commandFailed(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device không phản hồi. Hãy để máy gần $_temp0 rồi thử lại.';
   }
 
   @override
   String get problemBluetoothOffTitle => 'Bluetooth đang tắt';
 
   @override
-  String get problemBluetoothOffBody =>
-      'Bật Bluetooth trên máy tính này để nhận thông báo và nội dung đang phát của iPhone tại đây.';
+  String problemBluetoothOffBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Bật Bluetooth trên $_temp0 để nhận thông báo và nội dung đang phát của iPhone tại đây.';
+  }
 
   @override
   String get problemUnauthorizedTitle => 'Ferret không dùng được Bluetooth';
 
   @override
-  String get problemUnauthorizedBody =>
-      'Cho phép Ferret dùng Bluetooth trong cài đặt quyền riêng tư của máy tính này, rồi thử lại.';
+  String problemUnauthorizedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho phép Ferret dùng Bluetooth trong cài đặt quyền riêng tư của $_temp0, rồi thử lại.';
+  }
 
   @override
   String get problemNoDeviceTitle => 'Chọn iPhone của bạn';
 
   @override
-  String get problemNoDeviceBody =>
-      'Ghép đôi iPhone với máy tính này, rồi chọn nó trong Ferret.';
-
-  @override
-  String problemNotSharedTitle(String device) {
-    return '$device chưa chia sẻ với máy tính này';
+  String problemNoDeviceBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ghép đôi iPhone với $_temp0, rồi chọn nó trong Ferret.';
   }
 
   @override
-  String problemNotSharedBody(String device) {
-    return 'Trên $device: Cài đặt → Bluetooth, nhấn ⓘ bên cạnh máy tính này, rồi bật Chia sẻ thông báo hệ thống. Không thấy trong danh sách? Hãy ghép đôi lại.';
+  String problemNotSharedTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device chưa chia sẻ với $_temp0';
+  }
+
+  @override
+  String problemNotSharedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device: Cài đặt → Bluetooth, nhấn ⓘ bên cạnh $_temp0, rồi bật Chia sẻ thông báo hệ thống. Không thấy trong danh sách? Hãy ghép đôi lại.';
   }
 
   @override
@@ -110,8 +161,17 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   String get limitsTitle => 'Chưa có';
 
   @override
-  String get limitsBody =>
-      'Đọc và gửi tin nhắn (SMS và iMessage) và nghe gọi trên máy tính này. Apple chỉ cho tệp, bảng nhớ tạm và Handoff hoạt động giữa các thiết bị của hãng.';
+  String limitsBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Đọc và gửi tin nhắn (SMS và iMessage) và nghe gọi trên $_temp0. Apple chỉ cho tệp, bảng nhớ tạm và Handoff hoạt động giữa các thiết bị của hãng.';
+  }
 
   @override
   String get macNoteTitle => 'Thử nghiệm trên Mac';
@@ -149,7 +209,17 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   }
 
   @override
-  String get summaryUnavailable => 'Không dùng được trên máy tính này';
+  String summaryUnavailable(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Không dùng được trên $_temp0';
+  }
 
   @override
   String summaryOutOfReach(String device) {
@@ -162,13 +232,29 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   }
 
   @override
-  String notificationsNotShared(String device) {
-    return '$device chưa chia sẻ thông báo. Trên $device: Cài đặt → Bluetooth, nhấn ⓘ bên cạnh máy tính này, rồi bật Chia sẻ thông báo hệ thống.';
+  String notificationsNotShared(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device chưa chia sẻ thông báo. Trên $device: Cài đặt → Bluetooth, nhấn ⓘ bên cạnh $_temp0, rồi bật Chia sẻ thông báo hệ thống.';
   }
 
   @override
-  String mediaNotShared(String device) {
-    return '$device chưa chia sẻ nội dung đang phát với máy tính này.';
+  String mediaNotShared(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device chưa chia sẻ nội dung đang phát với $_temp0.';
   }
 
   @override
@@ -191,8 +277,17 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
       'Máy tính này giờ hiện trên iPhone trong mục Thiết bị khác. Nhấn vào đó, rồi xác nhận mã trên cả hai máy.';
 
   @override
-  String get setupStepAllow =>
-      'Khi iPhone hỏi, hãy cho phép hiện thông báo trên máy tính này.';
+  String setupStepAllow(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Khi iPhone hỏi, hãy cho phép hiện thông báo trên $_temp0.';
+  }
 
   @override
   String get setupStepChoose => 'Chọn iPhone bên dưới.';
@@ -271,7 +366,15 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   }
 
   @override
-  String actionFailedBody(String device) {
-    return 'Thao tác đó không đến được $device. Hãy để máy gần máy tính này rồi thử lại.';
+  String actionFailedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Thao tác đó không đến được $device. Hãy để máy gần $_temp0 rồi thử lại.';
   }
 }

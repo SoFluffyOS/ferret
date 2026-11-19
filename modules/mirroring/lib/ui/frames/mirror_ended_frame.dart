@@ -57,7 +57,7 @@ class MirrorEndedFrame extends StatelessWidget {
       return MirrorMessage(
         icon: LucideIcons.wifiOff,
         title: l10n.endNotConnectedTitle(deviceName),
-        body: l10n.endNotConnectedBody(deviceName, MirrorHere.name),
+        body: l10n.endNotConnectedBody(deviceName, ThisComputer.here),
         actions: [
           ...close,
           if (hasCable)
@@ -74,7 +74,7 @@ class MirrorEndedFrame extends StatelessWidget {
             _caption(context, l10n.orDivider),
             Spacing.v16,
             Text(
-              l10n.plugInTitle(deviceName, MirrorHere.name),
+              l10n.plugInTitle(deviceName, ThisComputer.here),
               textAlign: .center,
               style: context.fluffyTheme.typography.base1.copyWith(
                 color: context.palette.text,

@@ -39,7 +39,7 @@ class IphonePairingFrame extends StatelessWidget {
           steps: [
             l10n.setupStepUnlock,
             pairStep,
-            l10n.setupStepAllow,
+            l10n.setupStepAllow(ThisComputer.here),
             l10n.setupStepChoose,
           ],
         ),

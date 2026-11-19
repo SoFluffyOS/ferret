@@ -186,7 +186,7 @@ class IphoneNotices {
         id: failedNoticeId,
         channel: .problems,
         title: l10n.actionFailedTitle(device),
-        body: l10n.actionFailedBody(device),
+        body: l10n.actionFailedBody(device, ThisComputer.here),
       ),
     );
   }
