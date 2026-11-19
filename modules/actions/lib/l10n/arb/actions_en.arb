@@ -184,14 +184,9 @@
     }
   },
   "recordNotStarted": "It couldn't start. Check the command in Settings.",
-  "groupTitle": "{computer, select, mac{This Mac} windows{This PC} other{This computer}}",
+  "groupTitle": "Power and sound",
   "@groupTitle": {
-    "description": "computer is mac, windows or linux.",
-    "placeholders": {
-      "computer": {
-        "type": "String"
-      }
-    }
+    "description": "Title over a computer's Sleep, Restart, Shut down and Volume on its page."
   },
   "groupHint": "The first time, {device} asks on its own screen.",
   "@groupHint": {

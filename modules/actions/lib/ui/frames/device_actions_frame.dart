@@ -67,7 +67,7 @@ class DeviceActionsFrame extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         if (power.isNotEmpty || sound.isNotEmpty) ...[
-          SectionTitle(l10n.groupTitle(computer.name)),
+          SectionTitle(l10n.groupTitle),
           GroupedCard(
             separatorIndent: separatorIndent,
             children: [

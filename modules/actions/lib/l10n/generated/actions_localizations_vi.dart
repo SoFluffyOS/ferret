@@ -236,17 +236,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
       'Không khởi chạy được. Hãy kiểm tra lệnh trong Cài đặt.';
 
   @override
-  String groupTitle(String computer) {
-    String _temp0 = intl.Intl.selectLogic(
-      computer,
-      {
-        'mac': 'Mac này',
-        'windows': 'PC này',
-        'other': 'Máy tính này',
-      },
-    );
-    return '$_temp0';
-  }
+  String get groupTitle => 'Nguồn và âm thanh';
 
   @override
   String groupHint(String device) {

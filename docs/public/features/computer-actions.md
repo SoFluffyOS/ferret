@@ -3,7 +3,7 @@
 > **TL;DR**
 >
 > 1. On your phone, open your computer in Ferret.
-> 2. Under **This Mac**, tap **Sleep**, **Restart…**, **Shut down…**, a volume button, or one of your own actions.
+> 2. Under **Power and sound**, tap **Sleep**, **Restart…**, **Shut down…** or a volume button. Your own actions are under **Your actions**.
 > 3. The first time, click **Always allow** or **Allow once** on the computer. That's it.
 
 You're in bed. The computer in the other room is still on, playing music to nobody.
@@ -12,7 +12,7 @@ With Ferret, your phone puts it to sleep, turns the volume down, or runs that ba
 
 ## 💻 What a computer offers
 
-Open a computer in Ferret on another device. Under **This Mac** (or **This PC**, **This computer**):
+Open a computer in Ferret on another device. Under **Power and sound**:
 
 - 🌙 **Sleep**
 - 🔄 **Restart…**

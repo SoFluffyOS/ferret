@@ -38,7 +38,7 @@
   "recordExitCode": "Kết thúc với mã {code}.",
   "recordTimedOut": "Đã dừng: chạy lâu hơn {seconds} giây.",
   "recordNotStarted": "Không khởi chạy được. Hãy kiểm tra lệnh trong Cài đặt.",
-  "groupTitle": "{computer, select, mac{Mac này} windows{PC này} other{Máy tính này}}",
+  "groupTitle": "Nguồn và âm thanh",
   "groupHint": "Lần đầu, {device} sẽ hỏi trên màn hình của nó.",
   "groupYourActions": "Thao tác của bạn",
   "restartEllipsis": "Khởi động lại…",

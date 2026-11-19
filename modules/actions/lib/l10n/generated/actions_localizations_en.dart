@@ -238,17 +238,7 @@ class ActionsLocalizationsEn extends ActionsLocalizations {
       'It couldn\'t start. Check the command in Settings.';
 
   @override
-  String groupTitle(String computer) {
-    String _temp0 = intl.Intl.selectLogic(
-      computer,
-      {
-        'mac': 'This Mac',
-        'windows': 'This PC',
-        'other': 'This computer',
-      },
-    );
-    return '$_temp0';
-  }
+  String get groupTitle => 'Power and sound';
 
   @override
   String groupHint(String device) {

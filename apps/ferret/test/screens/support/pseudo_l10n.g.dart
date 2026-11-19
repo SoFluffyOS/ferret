@@ -127,6 +127,8 @@ class PseudoActionsLocalizations extends ActionsLocalizationsEn {
   @override
   String get recordNotStarted => pseudo(super.recordNotStarted);
   @override
+  String get groupTitle => pseudo(super.groupTitle);
+  @override
   String get groupYourActions => pseudo(super.groupYourActions);
   @override
   String get restartEllipsis => pseudo(super.restartEllipsis);
@@ -233,8 +235,6 @@ class PseudoActionsLocalizations extends ActionsLocalizationsEn {
   String recordExitCode(int code) => pseudo(super.recordExitCode(code));
   @override
   String recordTimedOut(int seconds) => pseudo(super.recordTimedOut(seconds));
-  @override
-  String groupTitle(String computer) => pseudo(super.groupTitle(computer));
   @override
   String groupHint(String device) => pseudo(super.groupHint(device));
   @override

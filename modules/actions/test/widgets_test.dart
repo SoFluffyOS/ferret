@@ -188,10 +188,12 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('lists the computer\'s actions under This Mac', (tester) async {
+    testWidgets('lists the computer\'s actions under Power and sound', (
+      tester,
+    ) async {
       await setUpPhone(tester);
 
-      expect(find.text('This Mac'), findsOneWidget);
+      expect(find.text('Power and sound'), findsOneWidget);
       expect(find.text('Sleep'), findsOneWidget);
       expect(find.text('Restart…'), findsOneWidget);
       expect(find.text('Shut down…'), findsOneWidget);
@@ -271,7 +273,7 @@ void main() {
       expect(viewModel.outgoing, isEmpty);
     });
 
-    testWidgets('own actions alone come without the This Mac title', (
+    testWidgets('own actions alone come without the Power and sound title', (
       tester,
     ) async {
       await setUpPhone(
@@ -281,7 +283,7 @@ void main() {
         ],
       );
 
-      expect(find.text('This Mac'), findsNothing);
+      expect(find.text('Power and sound'), findsNothing);
       expect(find.text('Volume'), findsNothing);
       expect(find.text('Your actions'), findsOneWidget);
       expect(find.text('Say hi'), findsOneWidget);
@@ -293,7 +295,7 @@ void main() {
       await tester.runAsync(settle);
       await tester.pumpAndSettle();
 
-      expect(find.text('This Mac'), findsNothing);
+      expect(find.text('Power and sound'), findsNothing);
     });
   });
 

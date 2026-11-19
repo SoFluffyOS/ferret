@@ -323,11 +323,11 @@ abstract class ActionsLocalizations {
   /// **'It couldn\'t start. Check the command in Settings.'**
   String get recordNotStarted;
 
-  /// computer is mac, windows or linux.
+  /// Title over a computer's Sleep, Restart, Shut down and Volume on its page.
   ///
   /// In en, this message translates to:
-  /// **'{computer, select, mac{This Mac} windows{This PC} other{This computer}}'**
-  String groupTitle(String computer);
+  /// **'Power and sound'**
+  String get groupTitle;
 
   /// No description provided for @groupHint.
   ///
