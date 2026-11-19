@@ -38,6 +38,8 @@ dependencies:
     path: ../../modules/media
   notifications:
     path: ../../modules/notifications
+  phone_camera:
+    path: ../../modules/phone_camera
   photos:
     path: ../../modules/photos
   drop:

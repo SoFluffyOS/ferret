@@ -12,6 +12,7 @@ import 'package:iphone/iphone.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
+import 'package:phone_camera/phone_camera.dart';
 import 'package:photos/photos.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
@@ -26,6 +27,7 @@ Future<void> main(List<String> arguments) async {
     features: [
       ActionsFeatureUi(),
       CallsFeatureUi(),
+      CameraFeatureUi(),
       ClipboardFeatureUi(),
       DropFeatureUi(filesToSend: send.files, handoff: send.handoff),
       FindFeatureUi(),
@@ -44,6 +46,7 @@ Future<void> main(List<String> arguments) async {
     appVersion: '0.1.0',
     onStarted: (engine) {
       CallMediaPause.attach(engine);
+      CameraLinks.attach(engine);
       DropPhotoTransfers.attach(engine);
       ScriptRequests.attach(engine);
       unawaited(
