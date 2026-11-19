@@ -1699,6 +1699,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get accessFind => 'Đổ chuông thiết bị để tìm';
 
   @override
+  String get accessActions =>
+      'Ngủ, khởi động lại, tắt máy, âm lượng và các thao tác của riêng bạn, chỉ sau khi bạn cho phép';
+
+  @override
   String menubarTipControlled(String device) {
     return '$device đang điều khiển máy tính này';
   }

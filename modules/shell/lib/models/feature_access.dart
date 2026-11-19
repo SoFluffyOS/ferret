@@ -19,6 +19,7 @@ abstract final class FeatureAccess {
         'mirroring' => l10n.accessMirroring,
         'remote_input' => l10n.accessRemoteInput,
         'find' => l10n.accessFind,
+        'actions' => l10n.accessActions,
         _ => null,
       };
 }

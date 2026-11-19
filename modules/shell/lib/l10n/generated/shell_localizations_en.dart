@@ -1706,6 +1706,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get accessFind => 'Ringing a device to find it';
 
   @override
+  String get accessActions =>
+      'Sleep, restart, shut down, volume and your own actions, each only after you allow it';
+
+  @override
   String menubarTipControlled(String device) {
     return '$device is controlling this computer';
   }

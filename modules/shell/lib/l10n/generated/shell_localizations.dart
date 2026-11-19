@@ -2456,6 +2456,12 @@ abstract class ShellLocalizations {
   /// **'Ringing a device to find it'**
   String get accessFind;
 
+  /// No description provided for @accessActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep, restart, shut down, volume and your own actions, each only after you allow it'**
+  String get accessActions;
+
   /// No description provided for @menubarTipControlled.
   ///
   /// In en, this message translates to:

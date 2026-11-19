@@ -394,6 +394,7 @@
   "accessMirroring": "Xem màn hình điện thoại, mỗi lần đều phải được điện thoại đồng ý",
   "accessRemoteInput": "Di chuyển con trỏ và gõ phím, chỉ sau khi bạn cho phép",
   "accessFind": "Đổ chuông thiết bị để tìm",
+  "accessActions": "Ngủ, khởi động lại, tắt máy, âm lượng và các thao tác của riêng bạn, chỉ sau khi bạn cho phép",
   "menubarTipControlled": "{device} đang điều khiển máy tính này",
   "menubarTipScreenSeen": "{device} có thể thấy màn hình này",
   "deviceUpdateThere": "Cần Ferret mới hơn",

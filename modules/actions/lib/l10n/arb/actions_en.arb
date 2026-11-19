@@ -1,0 +1,508 @@
+{
+  "@@locale": "en",
+  "title": "Computer actions",
+  "dismiss": "Dismiss",
+  "cancel": "Cancel",
+  "allowOnce": "Allow once",
+  "allowAlways": "Always allow",
+  "dontAllow": "Don't allow",
+  "actionSleep": "Sleep",
+  "actionRestart": "Restart",
+  "actionShutDown": "Shut down",
+  "actionMute": "Mute or unmute",
+  "actionVolumeUp": "Volume up",
+  "actionVolumeDown": "Volume down",
+  "actionVolume": "Volume",
+  "consentSleep": "Let {device} put {computer, select, mac{this Mac} windows{this PC} other{this computer}} to sleep?",
+  "@consentSleep": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "consentRestart": "Let {device} restart {computer, select, mac{this Mac} windows{this PC} other{this computer}}?",
+  "@consentRestart": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "consentShutDown": "Let {device} shut down {computer, select, mac{this Mac} windows{this PC} other{this computer}}?",
+  "@consentShutDown": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "consentSound": "Let {device} change the volume of {computer, select, mac{this Mac} windows{this PC} other{this computer}}?",
+  "@consentSound": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "consentCustom": "Let {device} run “{name}” on {computer, select, mac{this Mac} windows{this PC} other{this computer}}?",
+  "@consentCustom": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "consentBody": "Always allow, and {device} does this without asking next time. You can take that back on its page.",
+  "@consentBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "consentCountsDown": "You get 10 seconds to cancel before it happens.",
+  "consentCommandLabel": "It runs exactly this:",
+  "consentCommandNotice": "Runs: {command}",
+  "@consentCommandNotice": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "countdownRestart": "Restarting {computer, select, mac{this Mac} windows{this PC} other{this computer}} in {seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@countdownRestart": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "countdownShutDown": "Shutting down {computer, select, mac{this Mac} windows{this PC} other{this computer}} in {seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@countdownShutDown": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "countdownBody": "{device} asked for it. Save your work, or cancel.",
+  "@countdownBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "countdownNoticeRestart": "{device} is restarting {computer, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@countdownNoticeRestart": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "countdownNoticeShutDown": "{device} is shutting down {computer, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@countdownNoticeShutDown": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "countdownNoticeBody": "It happens in 10 seconds. Cancel to stop it.",
+  "recordTitle": "{action}, asked by {device}",
+  "@recordTitle": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDone": "Done",
+  "recordDenied": "You said no.",
+  "recordNotAnswered": "Nobody answered here.",
+  "recordCancelled": "Cancelled here.",
+  "recordFailed": "It didn't work.",
+  "recordExitCode": "Ended with code {code}.",
+  "@recordExitCode": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "recordTimedOut": "Stopped: it ran longer than {seconds} seconds.",
+  "@recordTimedOut": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNotStarted": "It couldn't start. Check the command in Settings.",
+  "groupTitle": "{computer, select, mac{This Mac} windows{This PC} other{This computer}}",
+  "@groupTitle": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "groupHint": "The first time, {device} asks on its own screen.",
+  "@groupHint": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "groupYourActions": "Your actions",
+  "restartEllipsis": "Restart…",
+  "shutDownEllipsis": "Shut down…",
+  "confirmRestartTitle": "Restart {device}?",
+  "@confirmRestartTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmRestartBody": "It counts down 10 seconds first, and anyone at {device} can cancel. Ferret reconnects once it's back.",
+  "@confirmRestartBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmShutDownTitle": "Shut down {device}?",
+  "@confirmShutDownTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmShutDownBody": "It counts down 10 seconds first, and anyone at {device} can cancel. After it's off, Ferret can't reach it until someone turns it on.",
+  "@confirmShutDownBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outAsking": "Asking {device}: {action}…",
+  "@outAsking": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "outAskingDetail": "If it asks, answer on {device}.",
+  "@outAskingDetail": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outCountingDown": "{device} counts down 10 seconds first.",
+  "@outCountingDown": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outSleep": "{device} is going to sleep",
+  "@outSleep": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outRestart": "{device} is restarting",
+  "@outRestart": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outShutDown": "{device} is shutting down",
+  "@outShutDown": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outCustom": "{device} ran “{name}”",
+  "@outCustom": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "outDenied": "{device} said no",
+  "@outDenied": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outNotAnswered": "Nobody answered on {device}",
+  "@outNotAnswered": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outNotAnsweredDetail": "The question stays on its screen for a minute. Try again when someone is there.",
+  "outBusy": "{device} is busy with another request",
+  "@outBusy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outTurnedOff": "Actions are off on {device}",
+  "@outTurnedOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outTurnedOffDetail": "Turn them on there: Settings → Control.",
+  "outUnknown": "{device} no longer has that action",
+  "@outUnknown": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outFailed": "It didn't work on {device}",
+  "@outFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outFailedCode": "“{name}” ended with code {code} there.",
+  "@outFailedCode": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "outCancelled": "Cancelled on {device}",
+  "@outCancelled": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outTimedOut": "“{name}” ran too long on {device}",
+  "@outTimedOut": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "outTimedOutDetail": "It was stopped there.",
+  "settingsEnabled": "Let your devices run actions on {computer, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@settingsEnabled": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsEnabledBody": "Sleep, restart, shut down, volume, and your own actions. Each device asks here the first time.",
+  "settingsPerDevice": "What a device may do without asking is on its page.",
+  "yourActionsTitle": "Your actions",
+  "yourActionsEmpty": "A command, a script or a shortcut of yours, under a name. Your devices only ever see the name.",
+  "addAction": "Add action",
+  "editAction": "Edit",
+  "editNewTitle": "New action",
+  "editTitle": "Edit action",
+  "editName": "Name",
+  "editNameHint": "Good night",
+  "editCommand": "Command, script or shortcut",
+  "editCommandHelp": "It runs as you, without a shell: no pipes, no &&. Put those in a script and give its path. It's stopped after {seconds} seconds.",
+  "@editCommandHelp": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "editCommandChanged": "A new command asks every device again.",
+  "save": "Save",
+  "remove": "Remove",
+  "historyTitle": "History",
+  "historyEmpty": "Nothing ran yet.",
+  "clearHistory": "Clear history",
+  "summaryOff": "Off",
+  "summaryOn": "Asks first",
+  "summaryOwn": "{count, plural, =1{1 of your own} other{{count} of your own}}",
+  "@summaryOwn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionSleep": "Put {computer, select, mac{this Mac} windows{this PC} other{this computer}} to sleep without asking",
+  "@permissionSleep": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionRestart": "Restart {computer, select, mac{this Mac} windows{this PC} other{this computer}} without asking",
+  "@permissionRestart": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionShutDown": "Shut down {computer, select, mac{this Mac} windows{this PC} other{this computer}} without asking",
+  "@permissionShutDown": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionSound": "Change the volume of {computer, select, mac{this Mac} windows{this PC} other{this computer}} without asking",
+  "@permissionSound": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionCustom": "Run “{name}” without asking",
+  "@permissionCustom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthOffers": "{count, plural, =1{1 action} other{{count} actions}}. {device} asks the first time.",
+  "@healthOffers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthRemoteOff": "Actions are off on {device}",
+  "@healthRemoteOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthRemoteOffHelp": "On {device}, open Settings → Control and turn on Computer actions.",
+  "@healthRemoteOffHelp": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthHostAsks": "Asks you here the first time",
+  "healthHostOff": "Actions are off on {computer, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "@healthHostOff": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "healthHostOffHelp": "Turn on Computer actions in Settings → Control."
+}
