@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/app/app.dart';
@@ -50,20 +51,28 @@ class LanguageSettings extends StatelessWidget {
               row(LanguagePreference.endonymOf(locale), locale),
           ],
         ),
-        Padding(
-          padding: EdgeInsetsDirectional.only(
-            start: PageInsets.row,
-            end: PageInsets.row,
-            top: Spacing.d8,
-          ),
-          child: Text(
-            l10n.settingsLanguageNote,
-            style: context.fluffyTheme.typography.caption1.copyWith(
-              color: palette.mutedText,
+        // Phones have no menus or tray, and Android switches its own
+        // notices right away.
+        if (_hasMenus)
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              start: PageInsets.row,
+              end: PageInsets.row,
+              top: Spacing.d8,
+            ),
+            child: Text(
+              l10n.settingsLanguageNote,
+              style: context.fluffyTheme.typography.caption1.copyWith(
+                color: palette.mutedText,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
+
+  static bool get _hasMenus => switch (defaultTargetPlatform) {
+    .macOS || .windows || .linux => true,
+    _ => false,
+  };
 }
