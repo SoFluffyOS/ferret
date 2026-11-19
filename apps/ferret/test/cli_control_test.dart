@@ -138,4 +138,105 @@ void main() {
       expect(answer['error'], 'nothing_to_send');
     });
   });
+
+  group('action', () {
+    const offered = <CliAction>[
+      (id: 'sleep', title: ''),
+      (id: 'restart', title: ''),
+      (id: 'custom.1a2b', title: 'Backup'),
+    ];
+
+    test('runs the action with that id on the named computer', () async {
+      final ran = <(String, String)>[];
+      final control = CliControl(
+        devices: () => devices,
+        actionsOf: (_) => offered,
+        runAction: (deviceId, actionId) async {
+          ran.add((deviceId, actionId));
+          return (result: 'done', exitCode: null);
+        },
+      );
+
+      final answer = await control.handle('action_run', {
+        'device': 'family',
+        'action': 'sleep',
+      });
+
+      expect(ran, [('cccc-3333', 'sleep')]);
+      expect(answer, {
+        'ok': true,
+        'device': 'Family PC',
+        'action': 'sleep',
+        'result': 'done',
+      });
+    });
+
+    test('one of its owner\'s actions goes by its name too', () async {
+      final ran = <String>[];
+      final control = CliControl(
+        devices: () => devices,
+        actionsOf: (_) => offered,
+        runAction: (_, actionId) async {
+          ran.add(actionId);
+          return (result: 'failed', exitCode: 2);
+        },
+      );
+
+      final answer = await control.handle('action_run', {
+        'device': 'Family PC',
+        'action': 'backup',
+      });
+
+      expect(ran, ['custom.1a2b']);
+      expect(answer['ok'], isFalse);
+      expect(answer['exit_code'], 2);
+    });
+
+    test('never passes on a name the computer does not offer', () async {
+      final control = CliControl(
+        devices: () => devices,
+        actionsOf: (_) => offered,
+        runAction: (_, _) async => fail('should not run'),
+      );
+
+      final answer = await control.handle('action_run', {
+        'device': 'Family PC',
+        'action': 'rm -rf /',
+      });
+
+      expect(answer['error'], 'unknown_action');
+      expect(answer['actions'], ['sleep', 'restart', 'custom.1a2b']);
+    });
+
+    test('lists what a connected computer offers', () async {
+      final control = CliControl(
+        devices: () => devices,
+        actionsOf: (_) => offered,
+        runAction: (_, _) async => fail('should not run'),
+      );
+
+      final answer = await control.handle('action_list', {'device': 'family'});
+
+      expect(answer['actions'], [
+        {'id': 'sleep'},
+        {'id': 'restart'},
+        {'id': 'custom.1a2b', 'title': 'Backup'},
+      ]);
+    });
+
+    test('an offline computer is not asked', () async {
+      final control = CliControl(
+        devices: () => devices,
+        actionsOf: (_) => offered,
+        runAction: (_, _) async => fail('should not run'),
+      );
+
+      final answer = await control.handle('action_run', {
+        'device': 'Pixel Tablet',
+        'action': 'sleep',
+      });
+
+      expect(answer['error'], 'not_connected');
+    });
+  });
 }

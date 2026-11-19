@@ -69,6 +69,17 @@ abstract final class AppAnswer {
       ('no_clip', _) => 'No clip has arrived from your devices yet.',
       ('nothing_to_send', _) => 'There is no text to send.',
       ('not_supported', _) => "This Ferret can't do that.",
+      ('unknown_action', _) =>
+        '$device has no action by that name. '
+            '"ferret-cli action <computer>" lists them.',
+      (_, 'denied') => 'Someone at $device said no.',
+      (_, 'not_answered') => 'Nobody answered on $device.',
+      (_, 'busy') => '$device is busy with another request.',
+      (_, 'turned_off') => 'Actions are turned off on $device.',
+      (_, 'cancelled') => 'Someone at $device cancelled it.',
+      (_, 'timed_out') => 'It ran too long on $device and was stopped.',
+      (_, 'failed') when answer['exit_code'] != null =>
+        'It ended with code ${answer['exit_code']} on $device.',
       (_, 'notSupported') => "Ferret on $device can't ring. Update it there.",
       (_, 'noSound') => "$device couldn't play a sound.",
       (_, 'noDevices') => 'No connected device takes clipboard items.',

@@ -12,6 +12,7 @@ library;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:actions/actions.dart';
 import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
@@ -31,6 +32,7 @@ import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
+import 'support/action_fakes.dart';
 import 'support/phone_fakes.dart';
 import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
@@ -38,6 +40,7 @@ import 'support/screen_harness.dart';
 
 /// The same list as `lib/main.dart`.
 List<FeatureUi> appFeatures() => [
+  ActionsFeatureUi(feature: safeActionsFeature()),
   CallsFeatureUi(),
   ClipboardFeatureUi(),
   DropFeatureUi(),

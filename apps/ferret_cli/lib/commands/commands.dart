@@ -1,3 +1,4 @@
+export 'package:ferret_cli/commands/action_command.dart';
 export 'package:ferret_cli/commands/app_answer.dart';
 export 'package:ferret_cli/commands/clipboard_command.dart';
 export 'package:ferret_cli/commands/daemon_command.dart';

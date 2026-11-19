@@ -20,13 +20,18 @@ typedef AppControlHandler = Future<Map<String, Object?>> Function(
 /// and a one-time secret to a file in its own folder, so only the same user
 /// can ask.
 class AppControl {
-  AppControl(String directory) : _file = File(p.join(directory, _fileName));
+  AppControl(String directory, {this.patience = answerPatience})
+    : _file = File(p.join(directory, _fileName));
 
   static const String _fileName = 'app_control.json';
   static const Duration _connectPatience = Duration(seconds: 2);
 
   /// How long a command may take, such as waiting for a phone to ring.
   static const Duration answerPatience = Duration(seconds: 20);
+
+  /// How long [ask] waits for the app's answer. Longer for a command that
+  /// waits on a person, such as an action another computer asks about.
+  final Duration patience;
 
   final File _file;
   ServerSocket? _server;
@@ -82,7 +87,7 @@ class AppControl {
           }),
         );
         await socket.flush();
-        final line = await _firstLine(socket).timeout(answerPatience);
+        final line = await _firstLine(socket).timeout(patience);
         socket.destroy();
 
         return switch (jsonDecode(line)) {

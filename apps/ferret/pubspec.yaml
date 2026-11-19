@@ -18,6 +18,8 @@ dependencies:
     path: ../../modules/mirroring
   remote_input:
     path: ../../modules/remote_input
+  actions:
+    path: ../../modules/actions
   iphone:
     path: ../../modules/iphone
   power:
@@ -56,6 +58,8 @@ dev_dependencies:
     path: ../../packages/ferret_mirroring
   ferret_notifications:
     path: ../../packages/ferret_notifications
+  ferret_actions:
+    path: ../../packages/ferret_actions
   ferret_remote_input:
     path: ../../packages/ferret_remote_input
   fixnum: ^1.1.1

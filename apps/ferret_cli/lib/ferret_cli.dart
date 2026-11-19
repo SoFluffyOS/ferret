@@ -14,6 +14,7 @@ const String cliVersion = '0.1.0';
 
 CommandRunner<int> buildRunner(CliEnvironment environment) =>
     _FerretRunner(environment)
+      ..addCommand(ActionCommand(environment))
       ..addCommand(ClipboardCommand(environment))
       ..addCommand(DaemonCommand(environment))
       ..addCommand(DevicesCommand(environment))

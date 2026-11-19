@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:actions/actions.dart';
 import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
@@ -21,6 +22,7 @@ Future<void> main(List<String> arguments) async {
 
   await runFerret(
     features: [
+      ActionsFeatureUi(),
       CallsFeatureUi(),
       ClipboardFeatureUi(),
       DropFeatureUi(filesToSend: send.files, handoff: send.handoff),

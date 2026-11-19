@@ -220,6 +220,71 @@ void main() {
       expect(out.toString(), contains('Sent to Pixel 7.'));
     });
 
+    test('action hands the computer and the action id to the app', () async {
+      final running = AppControl(home.path);
+      final asked = <Map<String, Object?>>[];
+      await running.listen((command, arguments) async {
+        asked.add({'command': command, ...arguments});
+        return {
+          'ok': true,
+          'device': 'Family PC',
+          'action': 'sleep',
+          'result': 'done',
+        };
+      });
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['action', 'Family', 'PC', 'sleep']);
+
+      expect(exit, ExitCodes.ok);
+      expect(asked, [
+        {'command': 'action_run', 'device': 'Family PC', 'action': 'sleep'},
+      ]);
+      expect(out.toString(), contains('Done on Family PC.'));
+    });
+
+    test('action with only a computer lists what it offers', () async {
+      final running = AppControl(home.path);
+      await running.listen(
+        (command, _) async => {
+          'ok': command == 'action_list',
+          'device': 'Family PC',
+          'actions': [
+            {'id': 'sleep'},
+            {'id': 'custom.1a2b', 'title': 'Backup'},
+          ],
+        },
+      );
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(environment).run(['action', 'Family']);
+
+      expect(exit, ExitCodes.ok);
+      expect(out.toString(), 'sleep\ncustom.1a2b  Backup\n');
+    });
+
+    test('action says why when the owner said no', () async {
+      final running = AppControl(home.path);
+      await running.listen(
+        (_, _) async => {
+          'ok': false,
+          'device': 'Family PC',
+          'action': 'restart',
+          'result': 'denied',
+        },
+      );
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['action', 'Family', 'restart']);
+
+      expect(exit, ExitCodes.failed);
+      expect(err.toString(), contains('Someone at Family PC said no.'));
+    });
+
     test('--version prints the version', () async {
       final exit = await buildRunner(environment).run(['--version']);
 

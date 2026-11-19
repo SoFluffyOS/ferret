@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' as io;
 
 import 'package:actions/models/models.dart';
 import 'package:actions/services/services.dart';
@@ -57,10 +56,9 @@ class ActionsFeature extends Feature {
   @override
   List<String> get flags => [if (offersActions) runFlag];
 
-  /// This device runs actions for others: computers.
-  bool get offersActions =>
-      _offersActions ??
-      (io.Platform.isMacOS || io.Platform.isWindows || io.Platform.isLinux);
+  /// This device runs actions for others: a computer whose platform can.
+  /// False until the feature started.
+  bool get offersActions => _actionsHost != null;
 
   ActionsSettings get settings => ActionsSettings(host.settings);
 
@@ -79,7 +77,7 @@ class ActionsFeature extends Feature {
 
   @override
   Future<void> onStart() async {
-    if (offersActions) {
+    if (_offersActions ?? _isComputer) {
       final actionsHost = ActionsHost(
         host: host,
         featureId: featureId,
@@ -105,6 +103,13 @@ class ActionsFeature extends Feature {
     _client = client;
     _subscriptions.add(client.changes.listen((_) => _emit()));
   }
+
+  bool get _isComputer => switch (host.localDevice.platform) {
+    .PLATFORM_MACOS ||
+    .PLATFORM_WINDOWS ||
+    .PLATFORM_LINUX => _computer.supported.isNotEmpty,
+    _ => false,
+  };
 
   @override
   Future<void> stop() async {
