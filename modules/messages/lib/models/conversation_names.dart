@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:protocol/messages.dart';
 
 /// How people in a conversation are called on screen.
@@ -5,7 +6,7 @@ extension ConversationNames on Conversation {
   /// Contact names, or the numbers of people who aren't contacts, joined.
   String get title {
     final names = [for (final participant in participants) participant.label];
-    return names.where((name) => name.isNotEmpty).join(', ');
+    return ListText.join(names.where((name) => name.isNotEmpty));
   }
 
   /// The person with [address], matching numbers loosely since the phone

@@ -79,7 +79,10 @@ String _title(
   ClipEntry entry, {
   required bool waiting,
 }) {
-  final devices = entry.deviceNames.join(', ');
+  final devices = ListText.join(
+    entry.deviceNames,
+    localeName: l10n.localeName,
+  );
   if (waiting) {
     return l10n.sentWaiting;
   }

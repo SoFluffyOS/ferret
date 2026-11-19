@@ -201,7 +201,7 @@ class InboxViewModel extends ChangeNotifier {
       true => strings.whileAway(event.missedCount),
       false => strings.whileAwayFrom(
         event.missedCount,
-        event.missedAppNames.join(', '),
+        ListText.join(event.missedAppNames, localeName: strings.localeName),
       ),
     };
     final noticeId = '$_noticePrefix$deviceId/catch-up';

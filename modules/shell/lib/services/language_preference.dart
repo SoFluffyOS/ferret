@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:shell/l10n/l10n.dart';
 
 /// The language picked in Settings → Advanced, kept in settings and
 /// applied through [AppLocale].
@@ -15,6 +16,7 @@ abstract final class LanguagePreference {
 
   /// Applies the stored choice. Call once at start, before the first frame.
   static void load(SettingsStore settings) {
+    AppLocale.supported = ShellLocalizations.supportedLocales;
     AppLocale.chosen.value = AppLocale.parse(settings.get<String>(key));
   }
 

@@ -46,6 +46,7 @@ Copy `shell_en.arb` to `shell_de.arb` and start it like this:
 
 - Your language needs more forms (`few`, `many`)? Add them. No plural at all? Keep only `other`.
 - `{here, select, macos{this Mac} ...}` picks the name of this device. Translate each branch, keep `other`.
+- Names in a row ("Pixel 7, iPad") are joined in code with your language's comma: `、` for Japanese and Chinese, `،` for Arabic, Persian and Urdu, `, ` otherwise. Yours differs? Add it to `ListText` in `packages/feature_kit/lib/services/list_text.dart`.
 - Used a machine to help? Say so in `@@x-translation`. The Vietnamese files do.
 
 Then generate the Dart code for each module:

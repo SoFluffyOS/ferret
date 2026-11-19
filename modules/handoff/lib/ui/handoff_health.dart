@@ -59,5 +59,8 @@ String browserSummaryOf(
     return l10n.summaryNoBrowser;
   }
 
-  return clients.map((client) => client.name).join(', ');
+  return ListText.join(
+    clients.map((client) => client.name),
+    localeName: l10n.localeName,
+  );
 }

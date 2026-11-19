@@ -17,6 +17,15 @@ abstract final class AppLocale {
   static Locale get wanted =>
       chosen.value ?? PlatformDispatcher.instance.locale;
 
+  /// The languages the app has strings for, English first. The app says
+  /// so once at start.
+  static List<Locale> supported = const [Locale('en')];
+
+  /// The language Ferret's strings are in right now: [wanted] when the app
+  /// has it, else English. For text put together outside any module's
+  /// strings, such as the comma between names.
+  static Locale get shown => pick(supported);
+
   /// The first of [supported] in the [wanted] language, else the first one
   /// (English).
   static Locale pick(List<Locale> supported) {

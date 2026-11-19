@@ -35,7 +35,10 @@ class StaleDevicesCard extends StatelessWidget {
           crossAxisAlignment: .stretch,
           children: [
             Text(
-              l10n.devicesStaleConfirm(names.join(', '), here),
+              l10n.devicesStaleConfirm(
+                ListText.join(names, localeName: l10n.localeName),
+                here,
+              ),
               style: typography.base1.copyWith(color: palette.text),
             ),
             Spacing.v4,

@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:shell/l10n/generated/shell_localizations.dart';
 import 'package:shell/models/settings_row.dart';
 
@@ -23,7 +24,9 @@ extension SettingsValues on ShellLocalizations {
     }
 
     if (row.group == .otherApps) {
-      return settingsNamedOn(on.map((part) => part.title).join(', '));
+      return settingsNamedOn(
+        ListText.join(on.map((part) => part.title), localeName: localeName),
+      );
     }
 
     if (on.length == switchable.length) {

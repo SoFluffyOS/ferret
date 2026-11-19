@@ -178,10 +178,10 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final numbers = [
+    final numbers = ListText.join([
       for (final participant in conversation.participants)
         if (participant.name.isNotEmpty) participant.address,
-    ].join(', ');
+    ]);
 
     return Padding(
       padding: EdgeInsets.symmetric(
