@@ -163,7 +163,7 @@ class MirrorService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val builder = MirrorNotices.builder(this, CHANNEL)
-            .setSmallIcon(R.drawable.ferret_mirroring_cast)
+            .setSmallIcon(R.drawable.ferret_mirroring_status)
             .setContentTitle(title)
             .setContentText(body)
             .setOngoing(true)

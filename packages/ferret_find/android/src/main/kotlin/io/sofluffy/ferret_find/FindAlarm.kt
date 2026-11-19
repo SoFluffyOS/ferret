@@ -261,7 +261,7 @@ internal object FindAlarm {
 
         val found = broadcast(context, ACTION_FOUND, 1)
         builder
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setSmallIcon(R.drawable.ferret_find_status)
             .setContentTitle(alert.title)
             .setContentText(alert.body)
             .setCategory(Notification.CATEGORY_ALARM)

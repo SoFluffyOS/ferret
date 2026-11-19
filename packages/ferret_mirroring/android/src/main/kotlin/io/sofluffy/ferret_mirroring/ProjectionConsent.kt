@@ -112,7 +112,7 @@ internal object ProjectionConsent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val notice = MirrorNotices.builder(context, ASK_CHANNEL)
-            .setSmallIcon(R.drawable.ferret_mirroring_cast)
+            .setSmallIcon(R.drawable.ferret_mirroring_status)
             .setContentTitle(texts.askTitle)
             .setContentText(texts.askBody)
             .setContentIntent(open)
