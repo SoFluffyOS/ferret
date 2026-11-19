@@ -12,6 +12,7 @@ import 'package:iphone/iphone.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
+import 'package:photos/photos.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:scripting/scripting.dart';
@@ -34,6 +35,7 @@ Future<void> main(List<String> arguments) async {
       MessagesFeatureUi(),
       MirroringWays.create(),
       NotificationsFeatureUi(),
+      PhotosFeatureUi(),
       PowerFeatureUi(),
       RemoteInputFeatureUi(),
       ScriptingFeatureUi(),
@@ -42,6 +44,7 @@ Future<void> main(List<String> arguments) async {
     appVersion: '0.1.0',
     onStarted: (engine) {
       CallMediaPause.attach(engine);
+      DropPhotoTransfers.attach(engine);
       ScriptRequests.attach(engine);
       unawaited(
         CliControl.attach(

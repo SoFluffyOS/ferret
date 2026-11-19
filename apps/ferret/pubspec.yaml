@@ -38,6 +38,8 @@ dependencies:
     path: ../../modules/media
   notifications:
     path: ../../modules/notifications
+  photos:
+    path: ../../modules/photos
   drop:
     path: ../../modules/drop
   engine:
