@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 🔁 **New phone? Replace the old one**: pair the new phone and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings, and the old one goes from all your devices.
+- 🆙 **Says who needs an update**: when two devices no longer speak the same Ferret, the device says **Needs a newer Ferret** or **Update Ferret here to connect** instead of staying offline. After an update, one quiet **What's new** line shows up once.
 - 👀 **What a device can use**: open a device and see every feature it can reach here, with a switch each. Turn one off and it stops right away, on both devices. **Turn everything off** keeps it paired.
 - 🔑 **Codes stay on your phone**: sign-in and bank codes in notifications show up on your computer as **Code hidden**. Turn off **Hide one-time codes** on the phone if you want them.
 - 🟢 **Watched? You know**: on a Mac, the menubar icon keeps a dot while a device sees your screen or controls your computer, and says who.
