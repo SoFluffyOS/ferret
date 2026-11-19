@@ -40,7 +40,7 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 | **From your phone** | [Notifications](../features/notifications.md), [messages](../features/messages.md), [calls](../features/calls.md) and the phone's [screen](../features/mirroring.md). On the phone itself this row is **To your computer**. |
 | **Control** | [Control](../features/remote-input.md) a computer from your phone, [find](../features/find.md) a device, and Power-ups on Android. |
 | **Other apps** | [LocalSend](../interop/localsend.md), [Quick Share](../interop/quick-share.md), the [browser extension](browser.md) and an [iPhone](../iphone/index.md). |
-| **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Check my network** and **Quit Ferret**. |
+| **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Check my network** and **Quit Ferret**. |
 | **About · Privacy** | The [privacy](../privacy.md) promise, the version and the licence. |
 
 A row that can't apply to your device isn't there. No Power-ups on a Mac.
@@ -48,3 +48,9 @@ A row that can't apply to your device isn't there. No Power-ups on a Mac.
 A small orange dot on a row means something you turned on isn't working. Open the row to see what. A feature you never set up stays quiet.
 
 Switches about **one device** are not in Settings. They live on that device's page.
+
+## 🌐 Language
+
+Ferret follows your system's language. Want another one for Ferret only? Open **Settings → Advanced → Language** and pick it: **English** or **Tiếng Việt**. The app switches right away; menus, the tray icon and notifications follow the next time Ferret starts. On Android 13+ and on iPhone and Mac, Ferret also shows up in the system's per-app language settings.
+
+Want Ferret in your language? See [Translate Ferret](../contributing/translating.md).

@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 🇻🇳 **Ferret in Vietnamese**: the whole app, the share sheets, permission prompts and Android notices. Pick a language in **Settings → Advanced → Language**, or let Ferret follow the system. Want your language? [Translate Ferret](docs/public/contributing/translating.md).
+- 🌐 **Ready for every language**: counts read right (**1 device**, not **1 devices**), times and numbers follow your region, and layouts mirror for right-to-left languages.
 - 🔁 **New phone? Replace the old one**: pair the new phone and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings, and the old one goes from all your devices.
 - 🆙 **Says who needs an update**: when two devices no longer speak the same Ferret, the device says **Needs a newer Ferret** or **Update Ferret here to connect** instead of staying offline. After an update, one quiet **What's new** line shows up once.
 - 👀 **What a device can use**: open a device and see every feature it can reach here, with a switch each. Turn one off and it stops right away, on both devices. **Turn everything off** keeps it paired.
