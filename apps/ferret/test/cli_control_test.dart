@@ -239,4 +239,52 @@ void main() {
       expect(answer['error'], 'not_connected');
     });
   });
+
+  group('wake', () {
+    test('wakes an offline computer by name', () async {
+      final woken = <String>[];
+      final control = CliControl(
+        devices: () => devices,
+        wake: (deviceId) async {
+          woken.add(deviceId);
+          return 'waking';
+        },
+      );
+
+      final answer = await control.handle('wake', {'device': 'pixel tab'});
+
+      expect(woken, ['bbbb-2222']);
+      expect(answer, {
+        'ok': true,
+        'device': 'Pixel Tablet',
+        'result': 'waking',
+      });
+    });
+
+    test('a connected computer is already awake', () async {
+      final control = CliControl(
+        devices: () => devices,
+        wake: (_) async => fail('should not wake'),
+      );
+
+      final answer = await control.handle('wake', {'device': 'Family PC'});
+
+      expect(answer['error'], 'already_connected');
+    });
+
+    test('says when the computer never told how to wake it', () async {
+      final control = CliControl(
+        devices: () => devices,
+        wake: (_) async => 'no_wake_info',
+      );
+
+      final answer = await control.handle('wake', {'device': 'Pixel Tablet'});
+
+      expect(answer, {
+        'ok': false,
+        'error': 'no_wake_info',
+        'device': 'Pixel Tablet',
+      });
+    });
+  });
 }

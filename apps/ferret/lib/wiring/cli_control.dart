@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:find/find.dart';
+import 'package:wake/wake.dart';
 
 /// A paired device as `ferret-cli` names it.
 typedef CliDevice = ({String id, String name, bool isConnected});
@@ -19,8 +20,8 @@ typedef CliAction = ({String id, String title});
 /// and how a command of its owner's ended.
 typedef CliActionResult = ({String result, int? exitCode});
 
-/// Answers `ferret-cli ring`, `ferret-cli clipboard` and `ferret-cli
-/// action` from the running app. Features never import each other, so the
+/// Answers `ferret-cli ring`, `ferret-cli clipboard`, `ferret-cli action`
+/// and `ferret-cli wake` from the running app. Features never import each other, so the
 /// app joins them here.
 class CliControl {
   CliControl({
@@ -31,12 +32,14 @@ class CliControl {
     List<CliAction> Function(String deviceId)? actionsOf,
     Future<CliActionResult> Function(String deviceId, String actionId)?
     runAction,
+    Future<String> Function(String deviceId)? wake,
   }) : _devices = devices,
        _ring = ring,
        _latestClip = latestClip,
        _sendText = sendText,
        _actionsOf = actionsOf,
-       _runAction = runAction;
+       _runAction = runAction,
+       _wake = wake;
 
   final List<CliDevice> Function() _devices;
   final Future<String> Function(String deviceId)? _ring;
@@ -45,12 +48,14 @@ class CliControl {
   final List<CliAction> Function(String deviceId)? _actionsOf;
   final Future<CliActionResult> Function(String deviceId, String actionId)?
   _runAction;
+  final Future<String> Function(String deviceId)? _wake;
 
   static const String ringCommand = 'ring';
   static const String clipboardGetCommand = 'clipboard_get';
   static const String clipboardSendCommand = 'clipboard_send';
   static const String actionListCommand = 'action_list';
   static const String actionRunCommand = 'action_run';
+  static const String wakeCommand = 'wake';
 
   /// Starts answering on this computer, or returns null on phones, where
   /// there is no command line.
@@ -73,6 +78,7 @@ class CliControl {
     final find = engine.feature<FindFeature>();
     final clipboard = engine.feature<ClipboardFeature>();
     final actions = engine.feature<ActionsFeature>();
+    final wake = engine.feature<WakeFeature>();
 
     return CliControl(
       devices: () => [
@@ -115,6 +121,10 @@ class CliControl {
         ),
         null => null,
       },
+      wake: switch (wake) {
+        final wake? => (deviceId) => _wakeWith(wake, engine, deviceId),
+        null => null,
+      },
     );
   }
 
@@ -127,6 +137,7 @@ class CliControl {
     clipboardSendCommand => _clipboardSend(arguments),
     actionListCommand => _actionList(arguments),
     actionRunCommand => _actionRun(arguments),
+    wakeCommand => _wakeDevice(arguments),
     _ => _failure('unknown_command'),
   };
 
@@ -329,6 +340,55 @@ class CliControl {
   CliDevice? _deviceOf(Map<String, Object?> match) {
     final id = match['id'];
     return _devices().where((device) => device.id == id).firstOrNull;
+  }
+
+  Future<Map<String, Object?>> _wakeDevice(
+    Map<String, Object?> arguments,
+  ) async {
+    final wake = _wake;
+    if (wake == null) {
+      return _failure('not_supported');
+    }
+
+    final match = _match(arguments['device']);
+    if (match case {'ok': false}) {
+      return match;
+    }
+
+    final device = _deviceOf(match);
+    if (device == null) {
+      return _failure('unknown_device');
+    }
+
+    if (device.isConnected) {
+      return _failure('already_connected', device: device.name);
+    }
+
+    final result = await wake(device.id);
+    if (result != 'waking') {
+      return _failure(result, device: device.name);
+    }
+
+    return {'ok': true, 'device': device.name, 'result': result};
+  }
+
+  /// Sends the magic packet for [deviceId]: `waking`, `no_wake_info` when
+  /// it never said how to wake it, or `not_sent`.
+  static Future<String> _wakeWith(
+    WakeFeature wake,
+    FerretEngine engine,
+    String deviceId,
+  ) async {
+    final device = engine.trustStore[deviceId];
+    if (device == null || !wake.canWake(device)) {
+      return 'no_wake_info';
+    }
+
+    final attempt = await wake.wake(deviceId);
+    return switch (attempt.phase) {
+      .waking => 'waking',
+      _ => 'not_sent',
+    };
   }
 
   static Map<String, Object?> _failure(String error, {String? device}) => {
