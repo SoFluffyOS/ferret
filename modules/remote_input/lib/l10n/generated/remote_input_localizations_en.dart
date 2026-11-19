@@ -567,4 +567,91 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String healthTurnedOff(String device) {
     return 'Off on $device';
   }
+
+  @override
+  String lockConsentTitle(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Let $device lock $_temp0?';
+  }
+
+  @override
+  String lockConsentBody(String device) {
+    return '$device asks to lock the screen now. Always allow, and it locks right away next time.';
+  }
+
+  @override
+  String lockDevice(String device) {
+    return 'Lock $device';
+  }
+
+  @override
+  String lockAsking(String device) {
+    return 'Locking $device…';
+  }
+
+  @override
+  String lockAskingDetail(String device) {
+    return 'If it asks, answer on $device.';
+  }
+
+  @override
+  String lockLocked(String device) {
+    return 'Locked $device';
+  }
+
+  @override
+  String lockDenied(String device) {
+    return '$device said no to locking';
+  }
+
+  @override
+  String lockTimedOut(String device) {
+    return '$device didn\'t answer';
+  }
+
+  @override
+  String get lockTimedOutDetail =>
+      'Nobody said yes on it in time, or it went offline.';
+
+  @override
+  String lockBusy(String device) {
+    return '$device is asking about another device';
+  }
+
+  @override
+  String lockTurnedOff(String device) {
+    return 'Control is off on $device';
+  }
+
+  @override
+  String get lockTurnedOffDetail => 'Turn it on there in Settings → Control.';
+
+  @override
+  String lockFailed(String device) {
+    return '$device couldn\'t lock';
+  }
+
+  @override
+  String permissionLock(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Lock $_temp0 without asking';
+  }
+
+  @override
+  String get permissionLockDetail =>
+      'Lock from the phone, with no question here.';
 }

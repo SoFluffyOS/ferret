@@ -101,8 +101,8 @@ class ControlNotices {
       LocalNotice(
         id: consentNotice,
         channel: .incoming,
-        title: l10n.consentTitle(pending.deviceName),
-        body: l10n.consentBody(pending.deviceName),
+        title: l10n.consentTitleOf(pending, HostKind.here),
+        body: l10n.consentBodyOf(pending),
         category: consentNotice,
       ),
     );

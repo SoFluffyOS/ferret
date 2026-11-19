@@ -349,5 +349,52 @@ class Modifier extends $pb.ProtobufEnum {
   const Modifier._(super.value, super.name);
 }
 
+/// What came of a `LockRequest`.
+class LockResult extends $pb.ProtobufEnum {
+  static const LockResult LOCK_RESULT_UNSPECIFIED =
+      LockResult._(0, _omitEnumNames ? '' : 'LOCK_RESULT_UNSPECIFIED');
+
+  /// The screen is locked.
+  static const LockResult LOCK_RESULT_LOCKED =
+      LockResult._(1, _omitEnumNames ? '' : 'LOCK_RESULT_LOCKED');
+
+  /// Its owner said no.
+  static const LockResult LOCK_RESULT_DENIED =
+      LockResult._(2, _omitEnumNames ? '' : 'LOCK_RESULT_DENIED');
+
+  /// Nobody answered on the computer in time.
+  static const LockResult LOCK_RESULT_TIMEOUT =
+      LockResult._(3, _omitEnumNames ? '' : 'LOCK_RESULT_TIMEOUT');
+
+  /// The computer is asking its owner about another device right now.
+  static const LockResult LOCK_RESULT_BUSY =
+      LockResult._(4, _omitEnumNames ? '' : 'LOCK_RESULT_BUSY');
+
+  /// Its owner turned remote input off.
+  static const LockResult LOCK_RESULT_TURNED_OFF =
+      LockResult._(5, _omitEnumNames ? '' : 'LOCK_RESULT_TURNED_OFF');
+
+  /// The computer tried and couldn't lock.
+  static const LockResult LOCK_RESULT_FAILED =
+      LockResult._(6, _omitEnumNames ? '' : 'LOCK_RESULT_FAILED');
+
+  static const $core.List<LockResult> values = <LockResult>[
+    LOCK_RESULT_UNSPECIFIED,
+    LOCK_RESULT_LOCKED,
+    LOCK_RESULT_DENIED,
+    LOCK_RESULT_TIMEOUT,
+    LOCK_RESULT_BUSY,
+    LOCK_RESULT_TURNED_OFF,
+    LOCK_RESULT_FAILED,
+  ];
+
+  static final $core.List<LockResult?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 6);
+  static LockResult? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const LockResult._(super.value, super.name);
+}
+
 const $core.bool _omitEnumNames =
     $core.bool.fromEnvironment('protobuf.omit_enum_names');

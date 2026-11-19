@@ -55,7 +55,7 @@ class ConsentPrompter {
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       pageBuilder: (_, _, _) => ConsentDialog(
-        deviceName: pending.deviceName,
+        request: pending,
         onAnswer: _answer,
       ),
     );

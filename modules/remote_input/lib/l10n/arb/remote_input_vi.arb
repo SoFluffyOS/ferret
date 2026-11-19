@@ -125,5 +125,20 @@
   "healthHostUnavailableHelp": "Mở Cài đặt → Điều khiển để xem còn thiếu gì.",
   "healthNeedsPermission": "Cần quyền Trợ năng trên {device}",
   "healthUnsupported": "Không thể điều khiển {device}",
-  "healthTurnedOff": "Đang tắt trên {device}"
+  "healthTurnedOff": "Đang tắt trên {device}",
+  "lockConsentTitle": "Cho phép {device} khoá {host, select, mac{Mac này} windows{PC này} other{máy tính này}}?",
+  "lockConsentBody": "{device} muốn khoá màn hình ngay. Chọn Luôn cho phép thì lần sau sẽ khoá ngay.",
+  "lockDevice": "Khoá {device}",
+  "lockAsking": "Đang khoá {device}…",
+  "lockAskingDetail": "Nếu được hỏi, hãy trả lời trên {device}.",
+  "lockLocked": "Đã khoá {device}",
+  "lockDenied": "{device} không cho khoá",
+  "lockTimedOut": "{device} không trả lời",
+  "lockTimedOutDetail": "Không ai đồng ý trên máy đó kịp lúc, hoặc máy đã ngoại tuyến.",
+  "lockBusy": "{device} đang hỏi về một thiết bị khác",
+  "lockTurnedOff": "Điều khiển đang tắt trên {device}",
+  "lockTurnedOffDetail": "Bật lại trên máy đó trong Cài đặt → Điều khiển.",
+  "lockFailed": "{device} không khoá được",
+  "permissionLock": "Khoá {host, select, mac{Mac này} windows{PC này} other{máy tính này}} mà không cần hỏi",
+  "permissionLockDetail": "Khoá từ điện thoại, không cần hỏi ở đây."
 }

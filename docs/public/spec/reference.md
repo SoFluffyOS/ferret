@@ -1300,6 +1300,31 @@ Input from the controller, in order, without expecting a reply. The controller s
 |---|---|---|---|
 | `events` | `repeated InputEvent` | 1 |  |
 
+### message `LockRequest`
+
+Asks the computer to lock its screen now, as its own Lock Screen command does. Send it only to a computer whose `FeatureSupport` flags for this feature include "lock"; older computers don't know it. Expects a `LockReply`. The first time per device the computer asks its owner, so the reply can take as long as its consent timeout (60 seconds).
+
+
+### enum `LockRequest.LockResult`
+
+What came of a `LockRequest`.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `LOCK_RESULT_UNSPECIFIED` | 0 |  |
+| `LOCK_RESULT_LOCKED` | 1 | The screen is locked. |
+| `LOCK_RESULT_DENIED` | 2 | Its owner said no. |
+| `LOCK_RESULT_TIMEOUT` | 3 | Nobody answered on the computer in time. |
+| `LOCK_RESULT_BUSY` | 4 | The computer is asking its owner about another device right now. |
+| `LOCK_RESULT_TURNED_OFF` | 5 | Its owner turned remote input off. |
+| `LOCK_RESULT_FAILED` | 6 | The computer tried and couldn't lock. |
+
+### message `LockRequest.LockReply`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `result` | `LockResult` | 1 |  |
+
 ## `ferret.v1`
 
 ### enum `Platform`

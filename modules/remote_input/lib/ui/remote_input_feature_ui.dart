@@ -13,6 +13,7 @@ import 'package:remote_input/models/models.dart';
 import 'package:remote_input/services/services.dart';
 import 'package:remote_input/ui/consent_prompter.dart';
 import 'package:remote_input/ui/frames/frames.dart';
+import 'package:remote_input/ui/lock_activity.dart';
 import 'package:remote_input/ui/pages/pages.dart';
 import 'package:remote_input/ui/remote_input_activity.dart';
 import 'package:remote_input/view_models/view_models.dart';
@@ -97,16 +98,22 @@ class RemoteInputFeatureUi extends FeatureUi {
   bool hasHomeCard(FeatureContext feature) => hostViewModel.hasCard;
 
   @override
-  List<ActivityItem> activity(BuildContext context, FeatureContext feature) =>
-      remoteInputActivity(
-        context.remoteInputL10n,
-        hostViewModel,
-        thisComputer: switch (defaultTargetPlatform) {
-          .macOS => .mac,
-          .windows => .windows,
-          _ => .linux,
-        },
-      );
+  List<ActivityItem> activity(BuildContext context, FeatureContext feature) => [
+    ...remoteInputActivity(
+      context.remoteInputL10n,
+      hostViewModel,
+      thisComputer: switch (defaultTargetPlatform) {
+        .macOS => .mac,
+        .windows => .windows,
+        _ => .linux,
+      },
+    ),
+    ...lockActivity(
+      context.remoteInputL10n,
+      this.feature.locks,
+      onDismiss: this.feature.dismissLock,
+    ),
+  ];
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -152,13 +159,30 @@ class RemoteInputFeatureUi extends FeatureUi {
       return const [];
     }
 
+    final l10n = context.remoteInputL10n;
+    final deviceId = device.device.id;
+    final isLocking = this.feature.locks.any(
+      (lock) => lock.deviceId == deviceId && lock.isWaiting,
+    );
+
     return [
       FeatureAction(
         id: 'remote_input.touchpad',
-        label: context.remoteInputL10n.useAsTouchpad,
+        label: l10n.useAsTouchpad,
         icon: LucideIcons.mousePointer2,
         onPressed: () => unawaited(_openTouchpad(feature, device)),
       ),
+      if (this.feature.canLockDevice(session))
+        FeatureAction(
+          id: 'remote_input.lock',
+          label: l10n.lockDevice(device.device.name),
+          icon: LucideIcons.lock,
+          homeOrder: 40,
+          onPressed: switch (isLocking) {
+            true => null,
+            false => () => unawaited(this.feature.lockDevice(deviceId)),
+          },
+        ),
     ];
   }
 
@@ -228,6 +252,7 @@ class RemoteInputFeatureUi extends FeatureUi {
     }
 
     final l10n = context.remoteInputL10n;
+    final mayLock = settings.lockDevices.contains(deviceId);
     return [
       DevicePermission(
         label: l10n.permissionAlways(_thisComputer.name),
@@ -238,6 +263,13 @@ class RemoteInputFeatureUi extends FeatureUi {
         value: allowed,
         onChanged: (value) => unawaited(_setAlwaysAllowed(deviceId, value)),
       ),
+      if (this.feature.flags.contains(RemoteInputFeature.lockFlag) && !allowed)
+        DevicePermission(
+          label: l10n.permissionLock(_thisComputer.name),
+          detail: l10n.permissionLockDetail,
+          value: mayLock,
+          onChanged: (value) => unawaited(_setMayLock(deviceId, value)),
+        ),
     ];
   }
 
@@ -330,6 +362,15 @@ class RemoteInputFeatureUi extends FeatureUi {
     }
 
     await hostViewModel.revoke(deviceId);
+  }
+
+  Future<void> _setMayLock(String deviceId, bool allowed) async {
+    if (allowed) {
+      await feature.settings.allowLock(deviceId);
+      return;
+    }
+
+    await feature.settings.revokeLock(deviceId);
   }
 
   FeatureHealth _touchpadHealth(

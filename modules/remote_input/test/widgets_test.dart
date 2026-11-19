@@ -46,7 +46,11 @@ void main() {
         await tester.pumpWidget(
           testApp(
             ConsentDialog(
-              deviceName: 'Pixel',
+              request: ConsentRequest(
+                deviceId: 'pixel',
+                deviceName: 'Pixel',
+                askedAt: DateTime(2026, 11, 19),
+              ),
               onAnswer: (choice) => answered = choice,
             ),
           ),

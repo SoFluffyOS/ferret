@@ -17,6 +17,7 @@ class ControlHost {
     required String featureId,
     required InputInjector injector,
     required RemoteInputSettings settings,
+    ScreenLocker? locker,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.idleTimeout = const Duration(minutes: 10),
@@ -24,6 +25,7 @@ class ControlHost {
   }) : _host = host,
        _featureId = featureId,
        _injector = injector,
+       _locker = locker ?? const UnsupportedScreenLocker(),
        _settings = settings,
        _clock = clock ?? DateTime.now;
 
@@ -43,6 +45,7 @@ class ControlHost {
   final FeatureHost _host;
   final String _featureId;
   final InputInjector _injector;
+  final ScreenLocker _locker;
   final RemoteInputSettings _settings;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
@@ -51,6 +54,7 @@ class ControlHost {
 
   InjectorStatus _status = const .unavailable(.failed);
   ConsentRequest? _pending;
+  Completer<LockResult>? _lockAnswer;
   ActiveControl? _active;
   PermissionAsk? _permissionAsk;
   ControlRecord? _lastRecord;
@@ -58,6 +62,9 @@ class ControlHost {
   Timer? _idleTimer;
   DateTime _lastInputAt = DateTime.fromMillisecondsSinceEpoch(0);
   Future<void> _injecting = Future.value();
+
+  /// Whether this computer can lock its screen for another device.
+  bool get canLock => _locker.isSupported;
 
   /// Whether input can be injected, as last checked.
   InjectorStatus get status => _status;
@@ -172,7 +179,7 @@ class ControlHost {
     }
 
     if (_pending case final pending?) {
-      if (pending.deviceId == deviceId) {
+      if (pending.deviceId == deviceId && pending.kind == .control) {
         return ControlPending(timeoutSeconds: _secondsLeft(pending));
       }
 
@@ -207,6 +214,11 @@ class ControlHost {
       return;
     }
 
+    if (pending.kind == .lock) {
+      await _answerLock(pending, choice);
+      return;
+    }
+
     _clearPending();
     final deviceId = pending.deviceId;
     switch (choice) {
@@ -228,6 +240,79 @@ class ControlHost {
           ControlGrant(version: InputCodec.protocolVersion, always: true),
         );
     }
+  }
+
+  /// Locks this computer for [session]'s device: right away when its owner
+  /// allowed that device before, otherwise after asking.
+  Future<LockReply> onLockRequest(Session session) async {
+    final deviceId = session.remoteDeviceId;
+
+    if (!_settings.enabled) {
+      return LockReply(result: .LOCK_RESULT_TURNED_OFF);
+    }
+
+    if (!_locker.isSupported) {
+      return LockReply(result: .LOCK_RESULT_FAILED);
+    }
+
+    if (_settings.mayLock(deviceId)) {
+      return LockReply(result: await _lockNow());
+    }
+
+    if (_pending != null) {
+      return LockReply(result: .LOCK_RESULT_BUSY);
+    }
+
+    final deniedUntil = _deniedUntil[deviceId];
+    if (deniedUntil != null && _clock().isBefore(deniedUntil)) {
+      return LockReply(result: .LOCK_RESULT_DENIED);
+    }
+
+    final pending = ConsentRequest(
+      deviceId: deviceId,
+      deviceName: _host.displayNameOf(deviceId),
+      askedAt: _clock(),
+      kind: .lock,
+    );
+    final answer = Completer<LockResult>();
+    _pending = pending;
+    _lockAnswer = answer;
+    _consentTimer = Timer(consentTimeout, () => _onConsentTimeout(pending));
+    _emit();
+    return LockReply(result: await answer.future);
+  }
+
+  Future<void> _answerLock(ConsentRequest pending, ConsentChoice choice) async {
+    final answer = _takeLockAnswer();
+    _clearPending();
+    _emit();
+    final result = switch (choice) {
+      .deny => LockResult.LOCK_RESULT_DENIED,
+      .allowOnce || .always => null,
+    };
+    if (result != null) {
+      _deniedUntil[pending.deviceId] = _clock().add(denyCooldown);
+      answer?.complete(result);
+      return;
+    }
+
+    if (choice == .always) {
+      await _settings.allowLock(pending.deviceId);
+    }
+
+    answer?.complete(await _lockNow());
+  }
+
+  Future<LockResult> _lockNow() async {
+    try {
+      if (await _locker.lock()) {
+        return .LOCK_RESULT_LOCKED;
+      }
+    } on Object catch (error) {
+      printWarning('Locking the screen failed', error);
+    }
+
+    return .LOCK_RESULT_FAILED;
   }
 
   /// Input from [session]: injected when it is the controlling device.
@@ -302,11 +387,15 @@ class ControlHost {
     }
 
     if (_pending case final pending?) {
+      final lockAnswer = _takeLockAnswer();
       _clearPending();
-      await _send(
-        pending.deviceId,
-        ControlDeny(reason: .DENY_REASON_TURNED_OFF),
-      );
+      lockAnswer?.complete(.LOCK_RESULT_TURNED_OFF);
+      if (pending.kind == .control) {
+        await _send(
+          pending.deviceId,
+          ControlDeny(reason: .DENY_REASON_TURNED_OFF),
+        );
+      }
     }
 
     if (_active != null) {
@@ -424,8 +513,14 @@ class ControlHost {
       return;
     }
 
+    final lockAnswer = _takeLockAnswer();
     _clearPending();
     _emit();
+    if (pending.kind == .lock) {
+      lockAnswer?.complete(.LOCK_RESULT_TIMEOUT);
+      return;
+    }
+
     unawaited(
       _send(pending.deviceId, ControlDeny(reason: .DENY_REASON_TIMEOUT)),
     );
@@ -465,10 +560,23 @@ class ControlHost {
     );
   }
 
+  Completer<LockResult>? _takeLockAnswer() {
+    final answer = _lockAnswer;
+    _lockAnswer = null;
+    return answer;
+  }
+
+  /// A lock still waiting for an answer reads as timed out, so its device
+  /// never waits for nothing.
   void _clearPending() {
     _consentTimer?.cancel();
     _consentTimer = null;
     _pending = null;
+    final lockAnswer = _lockAnswer;
+    _lockAnswer = null;
+    if (lockAnswer != null && !lockAnswer.isCompleted) {
+      lockAnswer.complete(.LOCK_RESULT_TIMEOUT);
+    }
   }
 
   int _secondsLeft(ConsentRequest pending) {

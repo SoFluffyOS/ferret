@@ -7,14 +7,18 @@
 @Tags(['screens'])
 library;
 
+import 'dart:async';
+
 import 'package:clipboard/clipboard.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/clipboard.dart';
 import 'package:protocol/protocol.dart';
+import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
@@ -26,6 +30,34 @@ typedef _Script = Future<void> Function(
   ScreenRig rig,
   List<FeatureUi> features,
 );
+
+/// Never the real screen locker: a render must not lock this Mac.
+class _NoLock implements ScreenLocker {
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<bool> lock() async => false;
+}
+
+/// The app's features with a remote input that can't lock for real, as a
+/// computer ([asPhone] false) or a phone.
+List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
+  for (final feature in appFeatures())
+    switch (feature) {
+      RemoteInputFeatureUi() => RemoteInputFeatureUi(
+        feature: RemoteInputFeature(
+          locker: _NoLock(),
+          canBeControlled: !asPhone,
+          canControl: asPhone,
+        ),
+      ),
+      _ => feature,
+    },
+];
+
+/// Screens that run as a phone paired with a Mac.
+const _phoneScreens = {'lock_row'};
 
 final _screens = <String, _Script>{
   'recent_clips': (tester, rig, features) async {
@@ -77,6 +109,36 @@ final _screens = <String, _Script>{
       scrollable: find.byType(Scrollable).first,
     );
     await rig.settle(tester);
+  },
+  'lock_consent': (tester, rig, features) async {
+    final phoneId =
+        await rig.pairConnectedPhone(
+          tester,
+          phoneFeatures: phoneFeatures(),
+          name: 'Pixel 7',
+        ) ??
+        '';
+    final session = rig.engine.sessionFor(phoneId);
+    final host = features
+        .whereType<RemoteInputFeatureUi>()
+        .single
+        .feature
+        .controlHost;
+    if (session != null) {
+      unawaited(host?.onLockRequest(session));
+    }
+    await rig.settle(tester);
+  },
+  'lock_row': (tester, rig, features) async {
+    final computerId =
+        await rig.pairConnectedComputer(
+          tester,
+          computerFeatures: _safeFeatures(),
+        ) ??
+        '';
+    final remote = features.whereType<RemoteInputFeatureUi>().single;
+    unawaited(remote.feature.lockDevice(computerId));
+    await rig.open(tester, DevicePage(deviceId: computerId));
   },
   'webcam_help': (tester, rig, features) async {
     await rig.open(
@@ -136,12 +198,14 @@ void main() {
             reportError?.call(details);
           };
           try {
-            final features = appFeatures();
+            final asPhone = _phoneScreens.contains(name);
+            final features = _safeFeatures(asPhone: asPhone);
             final rig = await ScreenRig.create(
               tester,
               features: features,
               name: 'MacBook Air',
               tipsDone: true,
+              asPhone: asPhone,
             );
             await rig.show(tester);
             await script(tester, rig, features);

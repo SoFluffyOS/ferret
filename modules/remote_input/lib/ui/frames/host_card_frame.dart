@@ -54,10 +54,13 @@ class _PendingCard extends StatelessWidget {
     final viewModel = context.read<HostViewModel>();
 
     return FeatureCard(
-      icon: LucideIcons.mousePointerClick,
+      icon: switch (pending.kind) {
+        .control => LucideIcons.mousePointerClick,
+        .lock => LucideIcons.lock,
+      },
       iconTone: .accent,
-      title: l10n.consentTitle(pending.deviceName),
-      subtitle: l10n.consentBody(pending.deviceName),
+      title: l10n.consentTitleOf(pending, HostKind.here),
+      subtitle: l10n.consentBodyOf(pending),
       actions: [
         Button(
           mainAxisSize: .min,

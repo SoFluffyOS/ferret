@@ -7,6 +7,9 @@ class RemoteInputSettings {
 
   static const enabledKey = 'remote_input.enabled';
   static const allowedDevicesKey = 'remote_input.allowed_devices';
+
+  /// Devices that may lock this computer without asking.
+  static const lockDevicesKey = 'remote_input.lock_devices';
   static const historyKey = 'remote_input.history';
   static const touchpadSpeedKey = 'remote_input.touchpad_speed';
   static const naturalScrollKey = 'remote_input.natural_scroll';
@@ -36,6 +39,16 @@ class RemoteInputSettings {
   bool get hadAccess => _store.get<bool>(hadAccessKey) ?? false;
 
   bool isAlwaysAllowed(String deviceId) => allowedDevices.contains(deviceId);
+
+  /// Devices the owner let lock this computer for good.
+  List<String> get lockDevices => [
+    for (final id in _store.get<List<Object?>>(lockDevicesKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  /// A device that may control this computer for good may lock it too.
+  bool mayLock(String deviceId) =>
+      lockDevices.contains(deviceId) || isAlwaysAllowed(deviceId);
 
   /// Past times of being controlled, newest first.
   List<ControlRecord> get history => [
@@ -67,6 +80,20 @@ class RemoteInputSettings {
 
   Future<void> revoke(String deviceId) => _store.set(allowedDevicesKey, [
     for (final id in allowedDevices)
+      if (id != deviceId) id,
+  ]);
+
+  Future<void> allowLock(String deviceId) async {
+    final allowed = lockDevices;
+    if (allowed.contains(deviceId)) {
+      return;
+    }
+
+    await _store.set(lockDevicesKey, [...allowed, deviceId]);
+  }
+
+  Future<void> revokeLock(String deviceId) => _store.set(lockDevicesKey, [
+    for (final id in lockDevices)
       if (id != deviceId) id,
   ]);
 

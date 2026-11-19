@@ -850,6 +850,96 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Off on {device}'**
   String healthTurnedOff(String device);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Let {device} lock {host, select, mac{this Mac} windows{this PC} other{this computer}}?'**
+  String lockConsentTitle(String device, String host);
+
+  /// No description provided for @lockConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} asks to lock the screen now. Always allow, and it locks right away next time.'**
+  String lockConsentBody(String device);
+
+  /// No description provided for @lockDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock {device}'**
+  String lockDevice(String device);
+
+  /// No description provided for @lockAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'Locking {device}…'**
+  String lockAsking(String device);
+
+  /// No description provided for @lockAskingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'If it asks, answer on {device}.'**
+  String lockAskingDetail(String device);
+
+  /// No description provided for @lockLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked {device}'**
+  String lockLocked(String device);
+
+  /// No description provided for @lockDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} said no to locking'**
+  String lockDenied(String device);
+
+  /// No description provided for @lockTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t answer'**
+  String lockTimedOut(String device);
+
+  /// No description provided for @lockTimedOutDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody said yes on it in time, or it went offline.'**
+  String get lockTimedOutDetail;
+
+  /// No description provided for @lockBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is asking about another device'**
+  String lockBusy(String device);
+
+  /// No description provided for @lockTurnedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Control is off on {device}'**
+  String lockTurnedOff(String device);
+
+  /// No description provided for @lockTurnedOffDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn it on there in Settings → Control.'**
+  String get lockTurnedOffDetail;
+
+  /// No description provided for @lockFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t lock'**
+  String lockFailed(String device);
+
+  /// host is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock {host, select, mac{this Mac} windows{this PC} other{this computer}} without asking'**
+  String permissionLock(String host);
+
+  /// No description provided for @permissionLockDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock from the phone, with no question here.'**
+  String get permissionLockDetail;
 }
 
 class _RemoteInputLocalizationsDelegate

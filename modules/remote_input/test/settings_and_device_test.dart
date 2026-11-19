@@ -27,6 +27,7 @@ void main() {
       ui = RemoteInputFeatureUi(
         feature: RemoteInputFeature(
           injector: () => injector,
+          locker: const UnsupportedScreenLocker(),
           canBeControlled: computer,
           canControl: !computer,
           requestTimeout: const Duration(milliseconds: 10),

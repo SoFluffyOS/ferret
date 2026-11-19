@@ -887,6 +887,110 @@ class InputBatch extends $pb.GeneratedMessage {
   $pb.PbList<InputEvent> get events => $_getList(0);
 }
 
+/// Asks the computer to lock its screen now, as its own Lock Screen command
+/// does. Send it only to a computer whose `FeatureSupport` flags for this
+/// feature include "lock"; older computers don't know it. Expects a
+/// `LockReply`. The first time per device the computer asks its owner, so
+/// the reply can take as long as its consent timeout (60 seconds).
+class LockRequest extends $pb.GeneratedMessage {
+  factory LockRequest() => LockRequest._();
+
+  LockRequest._();
+
+  factory LockRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LockRequest()..mergeFromBuffer(data, registry);
+  factory LockRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LockRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LockRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'ferret.remote_input.v1'),
+      createEmptyInstance: LockRequest.$_createMessage)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LockRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LockRequest copyWith(void Function(LockRequest) updates) =>
+      super.copyWith((message) => updates(message as LockRequest))
+          as LockRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LockRequest() / LockRequest.new instead')
+  static LockRequest create() => LockRequest._();
+  static $pb.GeneratedMessage $_createMessage() => LockRequest._();
+  @$core.override
+  LockRequest createEmptyInstance() => LockRequest._();
+  @$core.pragma('dart2js:noInline')
+  static LockRequest getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LockRequest>(
+          LockRequest.$_createMessage);
+  static LockRequest? _defaultInstance;
+}
+
+class LockReply extends $pb.GeneratedMessage {
+  factory LockReply({
+    LockResult? result,
+  }) {
+    final result$ = LockReply._();
+    if (result != null) result$.result = result;
+    return result$;
+  }
+
+  LockReply._();
+
+  factory LockReply.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LockReply()..mergeFromBuffer(data, registry);
+  factory LockReply.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LockReply()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LockReply',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'ferret.remote_input.v1'),
+      createEmptyInstance: LockReply.$_createMessage)
+    ..aE<LockResult>(1, _omitFieldNames ? '' : 'result',
+        enumValues: LockResult.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LockReply clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LockReply copyWith(void Function(LockReply) updates) =>
+      super.copyWith((message) => updates(message as LockReply)) as LockReply;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LockReply() / LockReply.new instead')
+  static LockReply create() => LockReply._();
+  static $pb.GeneratedMessage $_createMessage() => LockReply._();
+  @$core.override
+  LockReply createEmptyInstance() => LockReply._();
+  @$core.pragma('dart2js:noInline')
+  static LockReply getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LockReply>(LockReply.$_createMessage);
+  static LockReply? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  LockResult get result => $_getN(0);
+  @$pb.TagNumber(1)
+  set result(LockResult value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasResult() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearResult() => $_clearField(1);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

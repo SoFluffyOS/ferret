@@ -191,6 +191,27 @@ final $typed_data.Uint8List modifierDescriptor = $convert.base64Decode(
     'ESFAoQTU9ESUZJRVJfQ09OVFJPTBACEhAKDE1PRElGSUVSX0FMVBADEhEKDU1PRElGSUVSX01F'
     'VEEQBA==');
 
+@$core.Deprecated('Use lockResultDescriptor instead')
+const LockResult$json = {
+  '1': 'LockResult',
+  '2': [
+    {'1': 'LOCK_RESULT_UNSPECIFIED', '2': 0},
+    {'1': 'LOCK_RESULT_LOCKED', '2': 1},
+    {'1': 'LOCK_RESULT_DENIED', '2': 2},
+    {'1': 'LOCK_RESULT_TIMEOUT', '2': 3},
+    {'1': 'LOCK_RESULT_BUSY', '2': 4},
+    {'1': 'LOCK_RESULT_TURNED_OFF', '2': 5},
+    {'1': 'LOCK_RESULT_FAILED', '2': 6},
+  ],
+};
+
+/// Descriptor for `LockResult`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List lockResultDescriptor = $convert.base64Decode(
+    'CgpMb2NrUmVzdWx0EhsKF0xPQ0tfUkVTVUxUX1VOU1BFQ0lGSUVEEAASFgoSTE9DS19SRVNVTF'
+    'RfTE9DS0VEEAESFgoSTE9DS19SRVNVTFRfREVOSUVEEAISFwoTTE9DS19SRVNVTFRfVElNRU9V'
+    'VBADEhQKEExPQ0tfUkVTVUxUX0JVU1kQBBIaChZMT0NLX1JFU1VMVF9UVVJORURfT0ZGEAUSFg'
+    'oSTE9DS19SRVNVTFRfRkFJTEVEEAY=');
+
 @$core.Deprecated('Use controlRequestDescriptor instead')
 const ControlRequest$json = {
   '1': 'ControlRequest',
@@ -442,3 +463,32 @@ const InputBatch$json = {
 final $typed_data.Uint8List inputBatchDescriptor = $convert.base64Decode(
     'CgpJbnB1dEJhdGNoEjoKBmV2ZW50cxgBIAMoCzIiLmZlcnJldC5yZW1vdGVfaW5wdXQudjEuSW'
     '5wdXRFdmVudFIGZXZlbnRz');
+
+@$core.Deprecated('Use lockRequestDescriptor instead')
+const LockRequest$json = {
+  '1': 'LockRequest',
+};
+
+/// Descriptor for `LockRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lockRequestDescriptor =
+    $convert.base64Decode('CgtMb2NrUmVxdWVzdA==');
+
+@$core.Deprecated('Use lockReplyDescriptor instead')
+const LockReply$json = {
+  '1': 'LockReply',
+  '2': [
+    {
+      '1': 'result',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.remote_input.v1.LockResult',
+      '10': 'result'
+    },
+  ],
+};
+
+/// Descriptor for `LockReply`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lockReplyDescriptor = $convert.base64Decode(
+    'CglMb2NrUmVwbHkSOgoGcmVzdWx0GAEgASgOMiIuZmVycmV0LnJlbW90ZV9pbnB1dC52MS5Mb2'
+    'NrUmVzdWx0UgZyZXN1bHQ=');

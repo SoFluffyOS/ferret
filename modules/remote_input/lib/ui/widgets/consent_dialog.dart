@@ -3,17 +3,17 @@ import 'package:remote_input/l10n/l10n.dart';
 import 'package:remote_input/models/models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// "Let Pixel control this computer?" with Always, Allow once and Don't
+/// "Let Pixel control this computer?" (or lock it) with Always, Allow once and Don't
 /// allow. Answers by calling [onAnswer]; closing it answers nothing, and
 /// the home card still asks.
 class ConsentDialog extends StatelessWidget {
   const ConsentDialog({
     super.key,
-    required this.deviceName,
+    required this.request,
     required this.onAnswer,
   });
 
-  final String deviceName;
+  final ConsentRequest request;
   final ValueChanged<ConsentChoice> onAnswer;
 
   @override
@@ -21,8 +21,8 @@ class ConsentDialog extends StatelessWidget {
     final l10n = context.remoteInputL10n;
 
     return DialogCard(
-      title: Text(l10n.consentTitle(deviceName)),
-      content: Text(l10n.consentBody(deviceName)),
+      title: Text(l10n.consentTitleOf(request, HostKind.here)),
+      content: Text(l10n.consentBodyOf(request)),
       actions: [
         Button(
           mainAxisSize: .min,

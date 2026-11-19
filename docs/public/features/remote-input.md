@@ -30,6 +30,18 @@ Under it: Esc, Tab, the arrows, Backspace and Enter. Then **Ctrl**, **Alt**, **S
 
 Next to them sit the media keys: previous, play or pause, next, and the volume. A row that doesn't fit slides sideways.
 
+## 🔒 Lock this computer
+
+Walked away from your desk and forgot to lock it? On your phone, open the computer and tap **Lock MacBook Air** (under **More**).
+
+The first time, the computer asks: **Let Pixel 7 lock this Mac?** Pick **Always allow** and next time it locks right away, with no question. A phone you always allow to control the computer may lock it too.
+
+- 🍎 macOS: the same lock as **Apple menu → Lock Screen**. No Accessibility access needed.
+- 🪟 Windows: the same as Windows+L.
+- 🐧 Linux: `loginctl lock-session`, which GNOME, KDE Plasma and most desktops follow. Falls back to `xdg-screensaver lock`.
+
+Only locking, never unlocking. Change your mind in the computer's **What Pixel 7 can use → Lock this Mac without asking**.
+
 ## 🔐 You stay in charge
 
 Nobody takes over your computer without you knowing.

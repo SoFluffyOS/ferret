@@ -1,3 +1,4 @@
+import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/remote_input.dart';
 import 'package:remote_input/remote_input.dart';
@@ -14,6 +15,7 @@ void main() {
 
   test('a computer offers control, a phone offers to be a touchpad', () {
     final computer = RemoteInputFeature(
+      locker: const UnsupportedScreenLocker(),
       canBeControlled: true,
       canControl: false,
     );

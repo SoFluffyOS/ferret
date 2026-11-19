@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:protobuf/protobuf.dart';
@@ -15,6 +16,7 @@ import 'package:remote_input/services/services.dart';
 class RemoteInputFeature extends Feature {
   RemoteInputFeature({
     InputInjector Function()? injector,
+    ScreenLocker? locker,
     bool? canBeControlled,
     bool? canControl,
     DateTime Function()? clock,
@@ -22,6 +24,7 @@ class RemoteInputFeature extends Feature {
     this.idleTimeout = const Duration(minutes: 10),
     this.requestTimeout = const Duration(seconds: 10),
   }) : _createInjector = injector ?? InputInjector.current,
+       _locker = locker ?? ScreenLocker.current(),
        canBeControlled = canBeControlled ?? InputInjector.isSupportedPlatform,
        canControl = canControl ?? (io.Platform.isAndroid || io.Platform.isIOS),
        _clock = clock ?? DateTime.now;
@@ -34,6 +37,14 @@ class RemoteInputFeature extends Feature {
   /// Flag in [FeatureSupport]: this device can act as a touchpad.
   static const controllerFlag = 'controller';
 
+  /// Flag in [FeatureSupport]: this computer locks its screen when asked
+  /// with a `LockRequest`.
+  static const lockFlag = 'lock';
+
+  /// How long a phone waits for a lock: the computer may ask its owner
+  /// first.
+  Duration get lockTimeout => consentTimeout + requestTimeout;
+
   /// This device injects input for others: computers.
   final bool canBeControlled;
 
@@ -45,6 +56,8 @@ class RemoteInputFeature extends Feature {
   final Duration requestTimeout;
 
   final InputInjector Function() _createInjector;
+  final ScreenLocker _locker;
+  final Map<String, OutgoingLock> _locks = {};
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final List<StreamSubscription<void>> _subscriptions = [];
@@ -58,6 +71,7 @@ class RemoteInputFeature extends Feature {
   @override
   List<String> get flags => [
     if (canBeControlled) controlFlag,
+    if (canBeControlled && _locker.isSupported) lockFlag,
     if (canControl) controllerFlag,
   ];
 
@@ -72,6 +86,16 @@ class RemoteInputFeature extends Feature {
   /// Fires when anything the UI shows may have changed.
   Stream<void> get changes => _changes.stream;
 
+  /// The last lock this phone asked of each computer, newest first.
+  List<OutgoingLock> get locks =>
+      [..._locks.values]
+        ..sort((first, second) => second.at.compareTo(first.at));
+
+  /// Whether [session]'s device can be locked from here.
+  bool canLockDevice(Session session) =>
+      canControl &&
+      (session.remoteFeature(featureId)?.flags.contains(lockFlag) ?? false);
+
   /// Whether [session]'s device can be controlled from here.
   bool canControlDevice(Session session) =>
       canControl &&
@@ -84,6 +108,7 @@ class RemoteInputFeature extends Feature {
         host: host,
         featureId: featureId,
         injector: _createInjector(),
+        locker: _locker,
         settings: settings,
         clock: _clock,
         consentTimeout: consentTimeout,
@@ -136,6 +161,15 @@ class RemoteInputFeature extends Feature {
       return null;
     }
 
+    if (payloadOf(envelope, LockRequest.new) != null) {
+      final controlHost = _controlHost;
+      if (controlHost == null) {
+        return LockReply(result: .LOCK_RESULT_FAILED);
+      }
+
+      return controlHost.onLockRequest(session);
+    }
+
     if (payloadOf(envelope, ControlRequest.new) case final request?) {
       final controlHost = _controlHost;
       if (controlHost == null) {
@@ -166,6 +200,52 @@ class RemoteInputFeature extends Feature {
   /// Asks [deviceId] for control; the touchpad page follows [client].
   Future<OutgoingControl?> control(String deviceId) async =>
       _client?.start(deviceId);
+
+  /// Asks [deviceId] to lock its screen. Its owner may be asked first, so
+  /// this can take up to [lockTimeout].
+  Future<LockResult> lockDevice(String deviceId) async {
+    final deviceName = host.displayNameOf(deviceId);
+    _locks[deviceId] = OutgoingLock(
+      deviceId: deviceId,
+      deviceName: deviceName,
+      at: _clock(),
+    );
+    _emit();
+
+    final result = await _askToLock(deviceId);
+    _locks[deviceId] = OutgoingLock(
+      deviceId: deviceId,
+      deviceName: deviceName,
+      at: _clock(),
+      result: result,
+    );
+    _emit();
+    return result;
+  }
+
+  void dismissLock(String deviceId) {
+    _locks.remove(deviceId);
+    _emit();
+  }
+
+  Future<LockResult> _askToLock(String deviceId) async {
+    final session = host.sessionFor(deviceId);
+    if (session == null) {
+      return .LOCK_RESULT_FAILED;
+    }
+
+    try {
+      final reply = await session.request(
+        featureId,
+        LockRequest(),
+        timeout: lockTimeout,
+      );
+      return payloadOf(reply, LockReply.new)?.result ?? .LOCK_RESULT_FAILED;
+    } on Object catch (error) {
+      printWarning('Locking $deviceId failed', error);
+      return .LOCK_RESULT_TIMEOUT;
+    }
+  }
 
   void _emit() {
     if (!_changes.isClosed) {

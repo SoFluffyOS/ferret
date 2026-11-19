@@ -5,5 +5,6 @@ export 'package:remote_input/models/control_end.dart';
 export 'package:remote_input/models/control_record.dart';
 export 'package:remote_input/models/host_kind.dart';
 export 'package:remote_input/models/outgoing_control.dart';
+export 'package:remote_input/models/outgoing_lock.dart';
 export 'package:remote_input/models/permission_ask.dart';
 export 'package:remote_input/models/remote_input_settings.dart';

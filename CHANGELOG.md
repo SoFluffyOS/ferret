@@ -99,3 +99,4 @@
 - 🕘 **Recent clips**: the last 20 things you copied, here or on your devices, with **Copy** on each. In the **•••** menu. Private clips never show up.
 - 📶 **No shared Wi-Fi? Use the hotspot**: when a network keeps your devices apart, Fix connection names your phone and says to join its hotspot. Ferret works over it, with no mobile data between your devices.
 - 📷 **Your phone as a webcam**: open an Android phone on your computer and **Use Pixel 7 as a webcam** shows how to turn on the phone's own USB webcam mode (Android 14 and later).
+- 🔒 **Lock this computer from your phone**: tap **Lock MacBook Air**. The computer asks once (**Let Pixel 7 lock this Mac?**), then locks right away on macOS, Windows and Linux.

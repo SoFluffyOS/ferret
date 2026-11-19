@@ -569,4 +569,91 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String healthTurnedOff(String device) {
     return 'Đang tắt trên $device';
   }
+
+  @override
+  String lockConsentTitle(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho phép $device khoá $_temp0?';
+  }
+
+  @override
+  String lockConsentBody(String device) {
+    return '$device muốn khoá màn hình ngay. Chọn Luôn cho phép thì lần sau sẽ khoá ngay.';
+  }
+
+  @override
+  String lockDevice(String device) {
+    return 'Khoá $device';
+  }
+
+  @override
+  String lockAsking(String device) {
+    return 'Đang khoá $device…';
+  }
+
+  @override
+  String lockAskingDetail(String device) {
+    return 'Nếu được hỏi, hãy trả lời trên $device.';
+  }
+
+  @override
+  String lockLocked(String device) {
+    return 'Đã khoá $device';
+  }
+
+  @override
+  String lockDenied(String device) {
+    return '$device không cho khoá';
+  }
+
+  @override
+  String lockTimedOut(String device) {
+    return '$device không trả lời';
+  }
+
+  @override
+  String get lockTimedOutDetail =>
+      'Không ai đồng ý trên máy đó kịp lúc, hoặc máy đã ngoại tuyến.';
+
+  @override
+  String lockBusy(String device) {
+    return '$device đang hỏi về một thiết bị khác';
+  }
+
+  @override
+  String lockTurnedOff(String device) {
+    return 'Điều khiển đang tắt trên $device';
+  }
+
+  @override
+  String get lockTurnedOffDetail =>
+      'Bật lại trên máy đó trong Cài đặt → Điều khiển.';
+
+  @override
+  String lockFailed(String device) {
+    return '$device không khoá được';
+  }
+
+  @override
+  String permissionLock(String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Khoá $_temp0 mà không cần hỏi';
+  }
+
+  @override
+  String get permissionLockDetail => 'Khoá từ điện thoại, không cần hỏi ở đây.';
 }

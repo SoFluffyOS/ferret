@@ -474,5 +474,109 @@
         "type": "String"
       }
     }
-  }
+  },
+  "lockConsentTitle": "Let {device} lock {host, select, mac{this Mac} windows{this PC} other{this computer}}?",
+  "@lockConsentTitle": {
+    "description": "host is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "lockConsentBody": "{device} asks to lock the screen now. Always allow, and it locks right away next time.",
+  "@lockConsentBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockDevice": "Lock {device}",
+  "@lockDevice": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockAsking": "Locking {device}…",
+  "@lockAsking": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockAskingDetail": "If it asks, answer on {device}.",
+  "@lockAskingDetail": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockLocked": "Locked {device}",
+  "@lockLocked": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockDenied": "{device} said no to locking",
+  "@lockDenied": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockTimedOut": "{device} didn't answer",
+  "@lockTimedOut": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockTimedOutDetail": "Nobody said yes on it in time, or it went offline.",
+  "lockBusy": "{device} is asking about another device",
+  "@lockBusy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockTurnedOff": "Control is off on {device}",
+  "@lockTurnedOff": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "lockTurnedOffDetail": "Turn it on there in Settings → Control.",
+  "lockFailed": "{device} couldn't lock",
+  "@lockFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionLock": "Lock {host, select, mac{this Mac} windows{this PC} other{this computer}} without asking",
+  "@permissionLock": {
+    "description": "host is mac, windows or linux.",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionLockDetail": "Lock from the phone, with no question here."
 }
