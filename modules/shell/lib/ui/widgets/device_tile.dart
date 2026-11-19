@@ -47,6 +47,8 @@ class DeviceTile extends StatelessWidget {
   /// The row's keyboard focus, for moving between rows with the arrows.
   final FocusNode? focusNode;
 
+  static const _waitingOpacity = 0.5;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -132,17 +134,24 @@ class DeviceTile extends StatelessWidget {
             ),
             if (showsActions && actions.isNotEmpty) ...[
               Spacing.v12,
-              Wrap(
-                spacing: Spacing.d8,
-                runSpacing: Spacing.d8,
-                children: [
-                  for (final (index, action) in actions.indexed)
-                    RowActionButton(
-                      label: action.label,
-                      isPrimary: hasPrimary && index == 0,
-                      onPressed: action.onPressed,
-                    ),
-                ],
+              Opacity(
+                opacity: switch (status.isConnected) {
+                  true => 1,
+                  false => _waitingOpacity,
+                },
+                child: Wrap(
+                  spacing: Spacing.d8,
+                  runSpacing: Spacing.d8,
+                  children: [
+                    for (final (index, action) in actions.indexed)
+                      RowActionButton(
+                        label: action.label,
+                        isPrimary:
+                            hasPrimary && index == 0 && status.isConnected,
+                        onPressed: action.onPressed,
+                      ),
+                  ],
+                ),
               ),
             ],
           ],

@@ -6,7 +6,7 @@
     "placeholders": {"devices": {"type": "String"}}
   },
   "sentNowhere": "Copied here, no device connected",
-  "sentWaiting": "Waiting for a device. It goes to the first one that connects",
+  "sentWaiting": "Waiting for a device to connect",
   "sentWhenBack": "Sent to {devices} when it came back",
   "@sentWhenBack": {"placeholders": {"devices": {"type": "String"}}},
   "skippedSensitive": "Not synced: marked as private",

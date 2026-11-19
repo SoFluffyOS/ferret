@@ -121,6 +121,53 @@ final screens = <Screen>[
     await rig.addOfflinePhone(tester, name: 'iPhone', platform: .PLATFORM_IOS);
     await rig.settle(tester);
   }),
+  Screen('home_reconnecting', (tester, rig) async {
+    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+    await rig.settle(tester);
+    await rig.dropOthers(tester);
+  }, tipsDone: true),
+  Screen('activity_flaky_wifi', (tester, rig) async {
+    await rig.addOfflinePhone(tester, name: 'Pixel 7');
+    await tester.runAsync(() async {
+      await rig.engine.feature<ClipboardFeature>()?.sendText('Gate B12');
+      rig.engine.feature<DropFeature>()?.registry.put(
+        Transfer(
+          id: 'paused',
+          direction: .outgoing,
+          deviceId: _offlineId,
+          deviceName: 'Pixel 7',
+          files: const [
+            TransferFile(name: 'holiday.mov', size: 1800 * 1024 * 1024),
+          ],
+          status: .failed,
+          failure: .disconnected,
+          bytesDone: 620 * 1024 * 1024,
+          startedAt: DateTime.now().subtract(const Duration(minutes: 4)),
+        ),
+      );
+    });
+    await rig.open(tester, const ActivityPage());
+  }),
+  Screen('doctor_isolated', (tester, rig) async {
+    await rig.addPhoneLastSeenAt(tester, host: '192.168.1.20');
+    await rig.open(
+      tester,
+      DoctorPage(
+        deviceId: _offlineId,
+        doctorFor: (engine) => ConnectionDoctor(
+          engine,
+          isWindows: false,
+          isLinux: false,
+          interfaces: () async => [(name: 'en0', address: '192.168.1.5')],
+          probe: (host, port, timeout) async => switch (host) {
+            '192.168.1.1' => Reach.refused,
+            _ => Reach.silent,
+          },
+        ),
+      ),
+    );
+    await rig.settle(tester, real: const Duration(seconds: 1));
+  }, tall: true),
   Screen('home_connected', (tester, rig) async {
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);

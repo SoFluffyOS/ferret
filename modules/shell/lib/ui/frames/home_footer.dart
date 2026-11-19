@@ -26,6 +26,9 @@ class HomeFooter extends StatelessWidget {
     final hasConnected = context.select<EngineHost, bool>(
       (host) => host.connectedCount > 0,
     );
+    final isReconnecting = context.select<EngineHost, bool>(
+      (host) => host.devices.any((status) => status.isReconnecting),
+    );
     final l10n = context.shellL10n;
 
     if (isPaused) {
@@ -40,6 +43,10 @@ class HomeFooter extends StatelessWidget {
     }
 
     if (!hasDevices) {
+      return const SizedBox.shrink();
+    }
+
+    if (!hasConnected && isReconnecting) {
       return const SizedBox.shrink();
     }
 

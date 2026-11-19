@@ -118,7 +118,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @sentWaiting.
   ///
   /// In en, this message translates to:
-  /// **'Waiting for a device. It goes to the first one that connects'**
+  /// **'Waiting for a device to connect'**
   String get sentWaiting;
 
   /// No description provided for @sentWhenBack.

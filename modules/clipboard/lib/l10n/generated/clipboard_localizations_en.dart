@@ -21,8 +21,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   String get sentNowhere => 'Copied here, no device connected';
 
   @override
-  String get sentWaiting =>
-      'Waiting for a device. It goes to the first one that connects';
+  String get sentWaiting => 'Waiting for a device to connect';
 
   @override
   String sentWhenBack(String devices) {

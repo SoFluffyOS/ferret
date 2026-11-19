@@ -96,7 +96,7 @@ void main() {
     });
     expect(
       activity().last.title,
-      'Waiting for a device. It goes to the first one that connects',
+      'Waiting for a device to connect',
     );
 
     await tester.runAsync(() async {

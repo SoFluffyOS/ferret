@@ -164,6 +164,33 @@ class ScreenRig {
         .then((_) {});
   }
 
+  /// Adds an offline paired phone last seen at [host], on this device's
+  /// Wi-Fi, for Fix connection to knock on.
+  Future<void> addPhoneLastSeenAt(
+    WidgetTester tester, {
+    required String host,
+    String name = 'Pixel 7',
+    String id = 'a1b2c3d4e5f60718',
+  }) {
+    return tester
+        .runAsync(() async {
+          await engine.trustStore.save(
+            TrustedDevice(
+              id: id,
+              name: name,
+              platform: .PLATFORM_ANDROID,
+              formFactor: .FORM_FACTOR_PHONE,
+              publicKey: Uint8List(32),
+              pairedAt: DateTime.now().subtract(const Duration(days: 2)),
+              lastSeen: DateTime.now().subtract(const Duration(minutes: 3)),
+              lastHost: host,
+              lastPort: 47640,
+            ),
+          );
+        })
+        .then((_) {});
+  }
+
   /// Pairs a second engine (an Android phone) over loopback with a QR offer,
   /// so the app shows a real connected device with a live session.
   Future<String?> pairConnectedPhone(
@@ -468,6 +495,25 @@ class ScreenRig {
         await other.stop();
       }
       await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await settle(tester);
+  }
+
+  /// Cuts every paired device off without a goodbye, as when the Wi-Fi
+  /// hops to another access point, and keeps them away: this device is
+  /// left reconnecting.
+  Future<void> dropOthers(WidgetTester tester) async {
+    await tester.runAsync(() async {
+      for (final other in _others) {
+        for (final session in other.sessions) {
+          await session.channel.connection.close();
+        }
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      for (final other in _others) {
+        await other.stop();
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 100));
     });
     await settle(tester);
   }

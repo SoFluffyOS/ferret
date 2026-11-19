@@ -16,9 +16,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// as buttons. With no device, it checks this device's own network, for
 /// when the device to pair doesn't show up.
 class DoctorPage extends StatefulWidget {
-  const DoctorPage({super.key, this.deviceId});
+  const DoctorPage({super.key, this.deviceId, this.doctorFor});
 
   final String? deviceId;
+
+  /// Builds the checks for an engine; the real network when null. Lets a
+  /// test stand in for a network that keeps devices apart.
+  final ConnectionDoctor Function(FerretEngine engine)? doctorFor;
 
   @override
   State<DoctorPage> createState() => _DoctorPageState();
@@ -32,7 +36,11 @@ class _DoctorPageState extends State<DoctorPage> {
   @override
   void initState() {
     super.initState();
-    _doctor = ConnectionDoctor(ShellScope.read(context).featureContext.engine);
+    final engine = ShellScope.read(context).featureContext.engine;
+    _doctor = switch (widget.doctorFor) {
+      final doctorFor? => doctorFor(engine),
+      null => ConnectionDoctor(engine),
+    };
     _run();
   }
 
@@ -85,7 +93,13 @@ class _DoctorPageState extends State<DoctorPage> {
                     true => DoctorStatus.warning,
                     false => check.status,
                   },
-                  message: _describe(l10n, check, name ?? '', engine.device),
+                  message: _describe(
+                    l10n,
+                    check,
+                    name ?? '',
+                    engine.device,
+                    isolated: _checks.any((check) => check.kind == .isolated),
+                  ),
                 ),
               if (name == null && networkIsFine && _checks.isNotEmpty)
                 DoctorCheckRow(
@@ -206,8 +220,9 @@ class _DoctorPageState extends State<DoctorPage> {
     ShellLocalizations l10n,
     DoctorCheck check,
     String device,
-    LocalDevice local,
-  ) {
+    LocalDevice local, {
+    required bool isolated,
+  }) {
     final here = l10n.here(local);
 
     return switch ((check.kind, check.status)) {
@@ -232,13 +247,17 @@ class _DoctorPageState extends State<DoctorPage> {
         here,
         device,
       ),
+      (.reachable, _) when isolated => l10n.doctorReachableProblem(device),
       (.reachable, _) =>
         '${l10n.doctorReachableProblem(device)}\n\n'
             '${l10n.doctorNotAnsweringSteps(device, here)}',
       (.accepted, .running) => l10n.doctorAcceptedRunning,
       (.accepted, .ok) => l10n.doctorAcceptedOk,
       (.accepted, _) => l10n.doctorAcceptedProblem(device, here),
-      (.isolated, .problem) => l10n.doctorIsolated(device, here),
+      (.isolated, .problem) => l10n.doctorIsolated(
+        device,
+        l10n.hereStart(local),
+      ),
       (.isolated, _) => l10n.doctorIsolatedMaybe,
     };
   }
