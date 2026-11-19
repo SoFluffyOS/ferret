@@ -38,7 +38,7 @@ Open a device and tap **What Pixel 7 can use**. You see every feature that devic
 | Calls | Who is calling, recent calls, answering and placing calls |
 | Continue | The page or thing you were on |
 | Media | What's playing, and play, pause and skip |
-| Screen | Showing a phone's screen, each time only after it says yes, and its sound when you turn on **Send sound too** there |
+| Screen | Showing a phone's screen, each time only after it says yes, its sound when you turn on **Send sound too** there, and clicks and typing on it after it says yes to control |
 | Control | Moving the pointer and typing, only after you allow it |
 | Find | Ringing a device to find it |
 | Computer actions | Which action to run (sleep, restart, shut down, volume, or one of yours by name), and whether it worked. Never a command line, never what it printed |
@@ -60,6 +60,8 @@ Notifications, texts, callers and copied text from a phone hide while the screen
 
 - While another device **sees your screen**, your phone shows Android's own recording icon and Ferret's "Sharing screen with…" notification with **Stop**.
 - With **Send sound too** on, that notification says "Sharing screen and sound with…". Only what the phone plays is sent, never its microphone.
+- While a computer **controls your phone** over Wi-Fi, the phone says "Being controlled by…" with **Stop control**, on Home and in a notice you can't swipe away. It only starts after you tap **Once** or **Always**, and ends with the picture.
+- **Ferret control**, the accessibility service that carries those clicks, is off until you turn it on. It hears nothing about your screen until control starts. To type, it reads the one text field you type into, and keeps nothing.
 - While a phone **controls your computer**, Ferret shows "Pixel 7 is controlling this computer" until it stops.
 - On a Mac, the menubar icon keeps a dot for as long as either lasts, and its tooltip says who.
 

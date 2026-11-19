@@ -16,7 +16,7 @@ With Ferret, the phone's screen shows up on your computer. Over your own Wi-Fi, 
 
 Ferret picks the way by itself:
 
-1. **Ferret on the phone**, over your Wi-Fi. The phone asks you every time. You can look.
+1. **Ferret on the phone**, over your Wi-Fi. The phone asks you every time. You can look, and click and type once the phone says yes. See **Control over Wi-Fi** below.
 2. **A cable**, when Ferret can't reach the phone. You can look, click and type. See [Show a phone with a cable](mirroring-with-a-cable.md).
 3. **An iPhone or iPad** gets three steps to do on the iPhone. See [Show an iPhone's screen](mirroring-from-iphone.md).
 
@@ -85,7 +85,7 @@ One small toolbar, and it NEVER covers the phone's screen.
 
 On Windows and Linux the keys use `Ctrl`.
 
-The phone's own buttons only show when you can press them, which is over a cable. Over Wi-Fi you get one chip instead: **View only**. Click it and it says why. Phone already plugged in? It offers **Control with the cable**.
+The phone's own buttons only show when you can press them. Over Wi-Fi you first get one chip: **Control**. Click it and the phone asks. Phone without Ferret control set up? The chip says **View only**, and a click on it says how to turn it on. Phone already plugged in? It offers **Control with the cable** too.
 
 Too narrow for all of it? The toolbar folds what you use least behind **•••**.
 
@@ -120,7 +120,7 @@ Ferret keeps sound and picture together. A late bit of sound is dropped, never p
 
 ## 🖱️ The mouse is a finger
 
-This is for a phone on a cable:
+This is for a phone on a cable, or one that let you control it over Wi-Fi:
 
 - **Click** is a touch. **Drag** is a swipe. Click and hold is a long press.
 - **Right-click** is Back. **Middle-click** is Home.
@@ -128,6 +128,31 @@ This is for a phone on a cable:
 - **Typing types.** Letters go as text, so your keyboard layout holds.
 - `⌘V` pastes your computer's clipboard on the phone. `⌘C`, `⌘X`, `⌘A` and `⌘Z` do on the phone what they do here.
 - Accents and emoji go through the phone's clipboard. You don't have to think about it.
+
+## 🕹️ Control over Wi-Fi
+
+No cable on the desk? Click and type on your phone over Wi-Fi anyway.
+
+1. Show the phone's screen, then click **Control** in the toolbar.
+2. The phone asks: **Let MacBook Air control Pixel 7?** Tap **Once**, **Always** or **No**.
+3. That's it. Back, Home and Recents show up, and the mouse is a finger.
+
+Your phone needs a way to take the clicks. Ferret picks it by itself:
+
+- **Power-ups** (Shizuku or root) when you turned them on. See [Shizuku](../android-modes/shizuku.md) and [Root](../android-modes/root-magisk.md).
+- Otherwise **Ferret control**, an accessibility service. It is OFF until you turn it on: on the phone, open Ferret, then **Settings → To your computer → Turn on Ferret control…**. Ferret says what it does, then opens Android's Accessibility settings. Tap **Ferret control** and turn it on.
+
+While it lasts, the phone says **Being controlled by MacBook Air** with **Stop control**, on Home and in a notice you can't swipe away. Control ends with the picture, always.
+
+**Always** skips the question next time for that computer. Changed your mind? **Ask every time** in the same settings.
+
+A few things work differently with Ferret control than with a cable or power-ups:
+
+- A drag lands on the phone once you let go of the mouse button. Taps, long presses and the wheel feel the same.
+- Typing goes into the text field that has the cursor. Arrow up and down, and keys outside a text field, do nothing.
+- `⌘C`, `⌘X`, `⌘V` and `⌘A` work in text fields. `⌘Z` doesn't.
+
+An iPhone can't be controlled from a computer. iOS doesn't let any app do that, so Ferret can't either.
 
 ## 📶 Good, Slow, Poor
 
