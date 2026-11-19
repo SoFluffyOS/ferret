@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package ferret.camera.v1;
+
+// Lets a computer ask a phone for a photo, or an iPhone for a document
+// scan. The phone always shows the request first and then its own camera:
+// nothing is captured until its owner presses the shutter. The picture
+// travels through drop's transfer path.
+
+// What the computer asks for.
+enum CaptureKind {
+  CAPTURE_KIND_UNSPECIFIED = 0;
+  CAPTURE_KIND_PHOTO = 1;
+  // A scanned document: a JPEG for one page, a PDF for several. iPhone only.
+  CAPTURE_KIND_DOCUMENT = 2;
+}
+
+// Where a request stands.
+enum CaptureStatus {
+  CAPTURE_STATUS_UNSPECIFIED = 0;
+  // The phone shows the request and waits for its owner.
+  CAPTURE_STATUS_ASKING = 1;
+  // A picture was taken; transfer_id names the drop transfer carrying it.
+  CAPTURE_STATUS_TAKEN = 2;
+  // The owner answered "Not now".
+  CAPTURE_STATUS_DECLINED = 3;
+  // The camera closed without a picture.
+  CAPTURE_STATUS_CANCELLED = 4;
+  // This phone can't take that kind of picture, such as a document scan on
+  // Android.
+  CAPTURE_STATUS_UNSUPPORTED = 5;
+  // The phone's system didn't let Ferret use the camera.
+  CAPTURE_STATUS_NO_PERMISSION = 6;
+  // The camera is already open for another request.
+  CAPTURE_STATUS_BUSY = 7;
+  CAPTURE_STATUS_FAILED = 8;
+  // Nobody answered on the phone in time.
+  CAPTURE_STATUS_EXPIRED = 9;
+}
+
+// Asks the phone for a picture (a request, answered with CaptureReply right
+// away; the picture comes later with CaptureResult).
+message CaptureRequest {
+  // Chosen by the asking device; unique among its requests.
+  string request_id = 1;
+  CaptureKind kind = 2;
+}
+
+message CaptureReply {
+  string request_id = 1;
+  // ASKING when the phone shows the request, else why it can't.
+  CaptureStatus status = 2;
+}
+
+// How a request ended, sent by the phone. No reply.
+message CaptureResult {
+  string request_id = 1;
+  CaptureStatus status = 2;
+  // The drop transfer carrying the picture, when status is TAKEN. The
+  // asking device accepts it on its own: it asked for it.
+  string transfer_id = 3;
+  // Such as "image/jpeg" or "application/pdf".
+  string mime_type = 4;
+}
+
+// The asking device doesn't want the picture any more: the phone takes the
+// request away. A picture taken after this is thrown away. No reply.
+message CaptureCancel {
+  string request_id = 1;
+}
