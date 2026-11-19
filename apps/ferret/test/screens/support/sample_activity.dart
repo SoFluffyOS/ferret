@@ -58,6 +58,7 @@ class SampleActivityFeatureUi extends FeatureUi {
         title: 'Ana Bell is calling Pixel 9',
         detail: '+1 555 0100',
         pinned: true,
+        needsYou: true,
         actions: [
           ActivityAction(label: 'Answer', primary: true, onPressed: () {}),
           ActivityAction(label: 'Decline', onPressed: () {}),
