@@ -4,6 +4,76 @@ Generated from `proto/` by `scripts/docs.sh reference`. Do not edit by hand.
 
 Every message travels inside an `Envelope` (see `ferret.v1`), whose `feature` field names the feature and whose `type` field is the full message name below.
 
+## `ferret.actions.v1`
+
+### enum `ActionKind`
+
+What an action does on the computer that offers it.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `ACTION_KIND_UNSPECIFIED` | 0 |  |
+| `ACTION_KIND_SLEEP` | 1 | Puts the computer to sleep. |
+| `ACTION_KIND_RESTART` | 2 | Restarts the computer, after a countdown its owner can cancel. |
+| `ACTION_KIND_SHUT_DOWN` | 3 | Turns the computer off, after a countdown its owner can cancel. |
+| `ACTION_KIND_MUTE` | 4 | Mutes the sound, or brings it back when it is muted. |
+| `ACTION_KIND_VOLUME_UP` | 5 |  |
+| `ACTION_KIND_VOLUME_DOWN` | 6 |  |
+| `ACTION_KIND_CUSTOM` | 7 | A command its owner defined on the computer. The command line never leaves that computer: only `id` and `title` do. |
+
+### message `Action`
+
+Something a computer can do when a paired device asks.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 | Stays the same for as long as the action exists: `sleep`, `restart`, `shut_down`, `mute`, `volume_up`, `volume_down`, or `custom.<random>` for the owner's own. |
+| `kind` | `ActionKind` | 2 |  |
+| `title` | `string` | 3 | The owner's name for a custom action. Empty for the others: the asking device words those itself, in its own language. |
+| `confirm` | `bool` | 4 | The asking device should confirm with its user before sending `RunAction`, because the computer is out of reach afterwards. |
+
+### message `ActionList`
+
+Every action a computer offers the receiver right now. Sent without expecting a reply when a session opens and whenever the list changes. A device that never got one shows no actions.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `actions` | `repeated Action` | 1 |  |
+
+### message `RunAction`
+
+Asks the computer to run one of its actions. Expects a `RunActionReply`, which can take a minute: the computer may ask its owner first, and counts down before it restarts or shuts down.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 | An `Action.id` from the computer's `ActionList`. Never a command line. |
+
+### enum `RunResult`
+
+How a `RunAction` went.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `RUN_RESULT_UNSPECIFIED` | 0 |  |
+| `RUN_RESULT_DONE` | 1 | It ran. For sleep, restart and shut down: it is about to. |
+| `RUN_RESULT_DENIED` | 2 | The owner said no on the computer. |
+| `RUN_RESULT_NOT_ANSWERED` | 3 | Nobody answered the question on the computer in time. |
+| `RUN_RESULT_BUSY` | 4 | The computer is asking about, or counting down, another request. |
+| `RUN_RESULT_TURNED_OFF` | 5 | Actions are turned off on the computer. |
+| `RUN_RESULT_UNKNOWN_ACTION` | 6 | No action has that id, such as one its owner removed. |
+| `RUN_RESULT_FAILED` | 7 | It was tried and didn't work. For a custom action: it couldn't start, or ended with a non-zero `exit_code`. |
+| `RUN_RESULT_CANCELLED` | 8 | Someone cancelled the countdown on the computer. |
+| `RUN_RESULT_TIMED_OUT` | 9 | A custom action ran longer than the computer allows and was stopped. |
+
+### message `RunActionReply`
+
+The reply to `RunAction`. What a custom action printed stays on the computer.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `result` | `RunResult` | 1 |  |
+| `exit_code` | `optional sint32` | 2 | How a custom action's command ended. Only set when it ran to its end. |
+
 ## `ferret.calls.v1`
 
 ### enum `CallDirection`
@@ -1586,3 +1656,74 @@ Sent before a side closes on purpose, so the other one doesn't reconnect.
 | `GOODBYE_REASON_SHUTDOWN` | 1 |  |
 | `GOODBYE_REASON_UNPAIRED` | 2 |  |
 | `GOODBYE_REASON_DUPLICATE` | 3 |  |
+
+### message `WakeInfo`
+
+How to wake a computer from sleep with a Wake-on-LAN magic packet. A computer shares it only with its paired devices (feature "wake"), when a session opens and again when its network cards change. A MAC address identifies the computer, so it never goes anywhere else.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `interfaces` | `repeated WakeInterface` | 1 | Its wired and Wi-Fi network cards that have an IPv4 address, wired first. Virtual cards (VPNs, bridges, containers) are left out. |
+
+### message `WakeInterface`
+
+One network card a computer can be woken through.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `mac` | `bytes` | 1 | Hardware (MAC) address, 6 bytes. |
+| `address` | `string` | 2 | Its IPv4 address on that network, such as "192.168.1.20". |
+| `broadcast` | `string` | 3 | That network's broadcast address, such as "192.168.1.255". |
+| `link` | `WakeLink` | 4 |  |
+| `setting` | `WakeSetting` | 5 | Whether the card is set to wake on a magic packet, when the computer can tell. |
+
+### enum `WakeLink`
+
+How a network card is connected. Wired cards wake reliably once Wake-on-LAN is on; few Wi-Fi cards wake at all.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `WAKE_LINK_UNSPECIFIED` | 0 |  |
+| `WAKE_LINK_WIRED` | 1 |  |
+| `WAKE_LINK_WIFI` | 2 |  |
+
+### enum `WakeSetting`
+
+What the computer's own settings say about waking on a magic packet.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `WAKE_SETTING_UNSPECIFIED` | 0 | It couldn't tell, such as without permission to ask the driver. |
+| `WAKE_SETTING_ON` | 1 |  |
+| `WAKE_SETTING_OFF` | 2 |  |
+
+## `ferret.wake.v1`
+
+### message `WakeRequest`
+
+Asks a device that is on to send the magic packet for another of the user's devices, for when the asking one can't reach that network itself (an iPhone may not broadcast, a phone may be on mobile data). Expects a `WakeReply`. The receiver acts only for a device it is paired with too.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `device_id` | `string` | 1 | The device to wake. |
+| `info` | `ferret.v1.WakeInfo` | 2 | What the asking device knows about how to wake it. The receiver uses its own copy first. |
+| `last_address` | `string` | 3 | The address the asking device last reached it at, such as "192.168.1.20". |
+
+### message `WakeReply`
+
+What came of a `WakeRequest`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `result` | `WakeResult` | 1 |  |
+
+### enum `WakeResult`
+
+| Value | Number | Meaning |
+|---|---|---|
+| `WAKE_RESULT_UNSPECIFIED` | 0 |  |
+| `WAKE_RESULT_SENT` | 1 | The magic packet went out. Whether the device wakes shows when it connects. |
+| `WAKE_RESULT_NOT_PAIRED` | 2 | The receiver isn't paired with that device, so it won't wake it. |
+| `WAKE_RESULT_RELAY_OFF` | 3 | Its owner turned off waking devices for others on the receiver. |
+| `WAKE_RESULT_NO_INFO` | 4 | Neither side knows the device's network card. |
+| `WAKE_RESULT_FAILED` | 5 | Sending failed, such as with no network. |

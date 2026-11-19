@@ -41,6 +41,7 @@ Open a device and tap **What Pixel 7 can use**. You see every feature that devic
 | Screen | Showing a phone's screen, each time only after it says yes |
 | Control | Moving the pointer and typing, only after you allow it |
 | Find | Ringing a device to find it |
+| Wake-on-LAN | A computer's network card (MAC) addresses, and asking a computer to wake another |
 
 Turn one off and it stops RIGHT AWAY, on both devices: Ferret reconnects, the other device no longer sees the feature, and anything it still sends for it is refused. **Turn everything off** does all of them in one tap and keeps the device paired. To stop it connecting at all, forget it.
 
@@ -68,6 +69,8 @@ Checked against the code, line by line:
 | Your device's name and kind | Your Wi-Fi only (mDNS and a broadcast), so your devices find each other | While Ferret runs and isn't paused |
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
 | Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
+| A computer's network card (MAC) addresses and network, so your devices can wake it | Only to devices you paired, end-to-end encrypted. Turn it off with **Let my devices wake this computer** | When a device connects, and when the cards change |
+| A Wake-on-LAN magic packet (only the MAC address, repeated) | Your network, as a broadcast and to the computer's last address | Only when you tap **Wake**, or a phone of yours asks this computer to |
 | Files and links | Phones you share with through Quick Share or LocalSend, on your Wi-Fi | Only when you turn that on in Drop |
 | A download of Android's platform tools | `dl.google.com` | Only when you click **Download**, for [mirroring with a cable](features/mirroring-with-a-cable.md) |
 
