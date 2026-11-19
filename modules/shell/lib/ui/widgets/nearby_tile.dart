@@ -5,7 +5,7 @@ import 'package:protocol/protocol.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/action_pair.dart';
 import 'package:shell/ui/widgets/comparison_code.dart';
-import 'package:shell/view_models/nearby_view_model.dart';
+import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:transport/transport.dart';
 

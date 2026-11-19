@@ -2,10 +2,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/ui/frames/settings_list_frame.dart';
-import 'package:shell/ui/pages/about_page.dart';
-import 'package:shell/ui/pages/advanced_settings_page.dart';
-import 'package:shell/ui/pages/settings_group_page.dart';
-import 'package:shell/ui/pages/this_device_settings_page.dart';
+import 'package:shell/ui/pages/pages.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 

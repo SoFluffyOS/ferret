@@ -4,7 +4,7 @@ import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shell/bootstrap/system_binding.dart';
+import 'package:shell/bootstrap/bootstrap.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/frames/login_settings.dart';
 

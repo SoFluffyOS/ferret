@@ -1,6 +1,6 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:shell/l10n/generated/shell_localizations.dart';
-import 'package:shell/models/settings_row.dart';
+import 'package:shell/models/models.dart';
 
 extension SettingsValues on ShellLocalizations {
   /// A Settings row's state in a few words. One part speaks for itself;

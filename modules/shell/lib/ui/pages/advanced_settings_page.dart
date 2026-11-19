@@ -1,15 +1,11 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shell/app/shell_scope.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
-import 'package:shell/ui/frames/battery_settings.dart';
-import 'package:shell/ui/frames/connect_by_hand_card.dart';
-import 'package:shell/ui/frames/global_shortcut_settings.dart';
-import 'package:shell/ui/frames/language_settings.dart';
-import 'package:shell/ui/frames/pairing_settings.dart';
+import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
-import 'package:shell/ui/widgets/nav_row.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What few people need: this device's ID and address, whether pairings

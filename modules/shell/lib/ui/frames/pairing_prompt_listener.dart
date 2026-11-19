@@ -4,7 +4,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:shell/app/shell_scope.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/dialogs/dialogs.dart';

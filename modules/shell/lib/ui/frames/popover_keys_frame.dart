@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
-import 'package:shell/ui/pages/pair_page.dart';
+import 'package:shell/ui/pages/pages.dart';
 
 /// The menubar popover's keys, on every page in it: ⌘N adds a device, ⌘,
 /// opens Settings, and Esc goes back a page, or closes the popover from

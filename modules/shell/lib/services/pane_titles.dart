@@ -1,7 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:shell/app/shell_scope.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/device_sections.dart';

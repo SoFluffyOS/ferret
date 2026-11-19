@@ -7,13 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:shell/app/shell_scope.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
-import 'package:shell/ui/pages/doctor_page.dart';
-import 'package:shell/ui/pages/keyboard_shortcuts_page.dart';
-import 'package:shell/ui/pages/pair_page.dart';
+import 'package:shell/ui/pages/pages.dart';
 import 'package:shell/view_models/view_models.dart';
 
 /// The window's keyboard shortcuts and, on a Mac, its menu bar. Both run

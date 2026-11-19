@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:shell/app/feature_window_view.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/services/services.dart';
 
 /// Draws the app once per view Ferret has: the main one, and the desktop

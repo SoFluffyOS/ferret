@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/app_views.dart';
-import 'package:shell/view_models/window_nav_view_model.dart';
+import 'package:shell/view_models/view_models.dart';
 
 /// Every view's navigation, so something that happens outside a view (a
 /// feature opening its page, a notification, the menubar's Settings) lands
