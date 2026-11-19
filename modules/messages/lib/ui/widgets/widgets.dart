@@ -5,6 +5,8 @@ export 'package:messages/ui/widgets/conversation_row.dart';
 export 'package:messages/ui/widgets/day_divider.dart';
 export 'package:messages/ui/widgets/message_bubble.dart';
 export 'package:messages/ui/widgets/pending_bubble.dart';
+export 'package:messages/ui/widgets/phone_setup_unsupported.dart';
+export 'package:messages/ui/widgets/rcs_note.dart';
 export 'package:messages/ui/widgets/status_banner.dart';
 export 'package:messages/ui/widgets/status_line.dart';
 export 'package:messages/ui/widgets/time_labels.dart';
