@@ -1,0 +1,27 @@
+name: ferret_camera
+description: Takes one photo with the phone's own camera app (Android's system camera, the iPhone camera) or scans a document on an iPhone, and hands back a file. Platform code for Ferret's Camera, reusable on its own.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_camera
+        pluginClass: FerretCameraPlugin
+      ios:
+        pluginClass: FerretCameraPlugin
