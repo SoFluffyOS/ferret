@@ -35,6 +35,7 @@ A phone is tall. A window is wide. Put one in the other and you get a small pict
 So on a Mac the phone gets its OWN window. Click **Show screen** anywhere, the menubar popover included, and it opens.
 
 - **It has the phone's shape.** Drag any edge or corner: the shape holds, so there are never bars around the picture.
+- **A slim bar on top** holds the phone's name and its controls, next to the window's own buttons. The picture sits whole under it. Drag the bar to move the window.
 - **Turn the phone** and the window turns with it.
 - **Each phone gets its size and place back** next time.
 - The title says whose screen it is: "Pixel — Screen".
@@ -43,7 +44,7 @@ Three sizes on the usual keys:
 
 | Keys | Size |
 |---|---|
-| `⌘0` | Actual size: one phone pixel per screen pixel |
+| `⌘0` | Actual size: one phone pixel per screen pixel, bar not counted |
 | `⌘+` | Larger |
 | `⌘−` | Smaller |
 
@@ -65,7 +66,10 @@ Android asks every time. Ferret can't skip it, and wouldn't.
 
 ## 🧰 The toolbar
 
-One small toolbar sits over the bottom of the picture. Stop moving the pointer and it hides. Move, and it is back. It never hides while the pointer is on it.
+One small toolbar, and it NEVER covers the phone's screen.
+
+- **In the phone's own window** it sits in the bar on top: Back, Home, Recents, ••• and Stop. The rest waits behind •••. Stop moving the pointer and the buttons go quiet. Move, and they are back. Their room stays, so the picture never jumps.
+- **Everywhere else** it sits under the picture, or beside it with words when that leaves the picture bigger. Short on room? The picture gets smaller, never covered.
 
 | Button | Does | Keys |
 |---|---|---|
@@ -83,15 +87,15 @@ On Windows and Linux the keys use `Ctrl`.
 
 The phone's own buttons only show when you can press them, which is over a cable. Over Wi-Fi you get one chip instead: **View only**. Click it and it says why. Phone already plugged in? It offers **Control with the cable**.
 
-Too narrow for all of it? The toolbar folds what you use least behind **•••**. In a wide window it stands beside the picture, with words.
+Too narrow for all of it? The toolbar folds what you use least behind **•••**.
 
-Want it to stay? **••• → Keep toolbar visible** puts it under the picture for good.
+Want the window's buttons to stay lit? **••• → Keep toolbar visible**.
 
 ## 📸 Screenshot
 
 Click the camera, or press `⇧⌘S`. Ferret saves the phone's screen as a PNG in **Downloads › Ferret**, at the phone's full size, whatever size the window has.
 
-A line over the picture says "Saved to Downloads › Ferret", with **Show in Finder**. Easy, right?
+A line above the picture says "Saved to Downloads › Ferret", with **Show in Finder**. Easy, right?
 
 It works over Wi-Fi too. You can't click a phone that is **View only**, but you can keep what you see.
 
@@ -150,7 +154,7 @@ Nobody sees your screen without you knowing.
 
 - **Every time**, Android asks you with its own prompt. Ferret never remembers a yes. There is no "Always".
 - **While it happens**, a notice you can't swipe away says "Sharing screen with MacBook" with **Stop**. The home card says it too, and Android shows its own icon in the status bar.
-- **Over a cable it is different.** A phone that allowed your computer for debugging doesn't ask each time, and shows no notice. Ferret says so the first time, right over the picture. Only do this with your own phone.
+- **Over a cable it is different.** A phone that allowed your computer for debugging doesn't ask each time, and shows no notice. Ferret says so the first time, right above the picture. Only do this with your own phone.
 - **Afterwards**, both devices keep a line such as "MacBook saw this phone's screen for 12 min at 21:10". The last 20 are under **Screen**: in **Settings → To your computer** on the phone, in **Settings → From your phone** on the computer.
 - Don't want it at all? On the phone, turn off **Let my computers ask to see this screen** in **Settings → To your computer**.
 - Only one computer you'd rather keep out? On the phone, open that computer in Ferret and turn off **Ask to see this phone's screen**. It can't even ask anymore.
