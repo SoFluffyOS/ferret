@@ -1,5 +1,6 @@
 import Flutter
 import Photos
+import PhotosUI
 import UIKit
 
 /// Reads the photo library with PhotoKit for Dart: pages newest first,
