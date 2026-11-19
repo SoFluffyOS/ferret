@@ -42,6 +42,7 @@ Future<void> main(List<String> arguments) async {
     appVersion: '0.1.0',
     onStarted: (engine) {
       CallMediaPause.attach(engine);
+      ScriptRequests.attach(engine);
       unawaited(
         CliControl.attach(
           engine,

@@ -17,6 +17,8 @@
 		6EBF0D0F61B4C032F13ECA9A /* SharedContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FADEDE8F0704AC59965864 /* SharedContent.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
+		F3A1C0D2E4B6A8C0D2E4F602 /* ShortcutsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A1C0D2E4B6A8C0D2E4F601 /* ShortcutsBridge.swift */; };
+		F3A1C0D2E4B6A8C0D2E4F604 /* FerretIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A1C0D2E4B6A8C0D2E4F603 /* FerretIntents.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		7A408DA2B5B793AF94A76737 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6A4A1ADCD8DFF32ED8A71F /* ShareViewController.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -82,6 +84,8 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		F3A1C0D2E4B6A8C0D2E4F601 /* ShortcutsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsBridge.swift; sourceTree = "<group>"; };
+		F3A1C0D2E4B6A8C0D2E4F603 /* FerretIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FerretIntents.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7A8C51110EA259F53B1AAE53 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -190,6 +194,8 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
+				F3A1C0D2E4B6A8C0D2E4F601 /* ShortcutsBridge.swift */,
+				F3A1C0D2E4B6A8C0D2E4F603 /* FerretIntents.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				2CE93286709C7E74FE985617 /* ShareGroup.xcconfig */,
 				BE96CB3868768B2D02F5DBA9 /* Runner.entitlements */,
@@ -402,6 +408,8 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
+				F3A1C0D2E4B6A8C0D2E4F602 /* ShortcutsBridge.swift in Sources */,
+				F3A1C0D2E4B6A8C0D2E4F604 /* FerretIntents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
