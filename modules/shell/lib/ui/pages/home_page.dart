@@ -77,6 +77,8 @@ class HomePage extends StatelessWidget {
         children: [
           const NeedsYouFrame(),
           const JoinedNoticesFrame(),
+          const SuccessorsFrame(),
+          const WhatsNewFrame(),
           if (hasDevices)
             for (final feature in scope.features)
               FeatureCardSlot(

@@ -58,12 +58,14 @@ class DeviceTile extends StatelessWidget {
     final needsAttention = status.isConnected && attention != null;
     final dotColor = switch ((status.isConnected, needsAttention)) {
       (false, _) when status.isReconnecting => palette.warning,
+      (false, _) when status.versionMismatch != null => palette.warning,
       (false, _) => palette.mutedText,
       (true, true) => palette.warning,
       (true, false) => palette.success,
     };
     final showsActions = status.isConnected || status.isReconnecting;
-    final statusColor = switch (needsAttention) {
+    final statusColor = switch (needsAttention ||
+        status.versionMismatch != null) {
       true => palette.warning,
       false => palette.mutedText,
     };
@@ -118,7 +120,9 @@ class DeviceTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (!showsActions && onFix != null) ...[
+                if (!showsActions &&
+                    status.versionMismatch == null &&
+                    onFix != null) ...[
                   Spacing.h8,
                   RowActionButton(label: l10n.deviceFix, onPressed: onFix),
                 ],
@@ -171,6 +175,13 @@ class DeviceTile extends StatelessWidget {
 
     if (status.isReconnecting) {
       return l10n.deviceReconnecting;
+    }
+
+    if (status.versionMismatch case final mismatch?) {
+      return switch (mismatch.update) {
+        .otherDevice => l10n.deviceUpdateThere,
+        .thisDevice => l10n.deviceUpdateHere,
+      };
     }
 
     if (status.device.platform == .PLATFORM_IOS) {

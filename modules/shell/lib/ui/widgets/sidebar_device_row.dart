@@ -46,6 +46,7 @@ class SidebarDeviceRow extends StatelessWidget {
     final device = status.device;
     final dotColor = switch ((status.isConnected, needsAttention)) {
       (false, _) when status.isReconnecting => palette.warning,
+      (false, _) when status.versionMismatch != null => palette.warning,
       (false, _) => palette.mutedText.withValues(alpha: 0.5),
       (true, true) => palette.warning,
       (true, false) => palette.success,
@@ -56,7 +57,11 @@ class SidebarDeviceRow extends StatelessWidget {
     final l10n = context.shellL10n;
     final dotInWords = switch ((status.isConnected, needsAttention)) {
       (false, _) when status.isReconnecting => l10n.deviceReconnecting,
-      (false, _) => l10n.deviceOffline,
+      (false, _) => switch (status.versionMismatch?.update) {
+        .otherDevice => l10n.deviceUpdateThere,
+        .thisDevice => l10n.deviceUpdateHere,
+        null => l10n.deviceOffline,
+      },
       (true, true) => l10n.deviceNeedsAttention,
       (true, false) => l10n.deviceConnected,
     };

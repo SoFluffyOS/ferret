@@ -63,6 +63,20 @@ class DevicePreferences {
     await _settings.set(lastUsedKey, {...stored}..remove(deviceId));
   }
 
+  /// Gives [newId] the pin and last use of [oldId], such as a phone that
+  /// replaces an old one.
+  Future<void> inherit(String oldId, {required String newId}) async {
+    if (isPinned(oldId)) {
+      await setPinned(newId, pinned: true);
+    }
+
+    if (lastUsed(oldId) case final used?) {
+      await markUsed(newId, at: used);
+    }
+
+    await forget(oldId);
+  }
+
   /// Whether a key one of these settings is stored under changed.
   static bool isOwnKey(String key) => key == pinnedKey || key == lastUsedKey;
 

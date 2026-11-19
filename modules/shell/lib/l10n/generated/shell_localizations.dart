@@ -2721,6 +2721,84 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'{device} can see this screen'**
   String menubarTipScreenSeen(String device);
+
+  /// No description provided for @deviceUpdateThere.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a newer Ferret'**
+  String get deviceUpdateThere;
+
+  /// No description provided for @deviceUpdateHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Ferret here to connect'**
+  String get deviceUpdateHere;
+
+  /// No description provided for @updateThereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Ferret on {name}'**
+  String updateThereTitle(String name);
+
+  /// No description provided for @updateThereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has an older Ferret ({version}) that {here} can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.'**
+  String updateThereBody(String name, String version, String here);
+
+  /// No description provided for @updateHereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Ferret on {here}'**
+  String updateHereTitle(String here);
+
+  /// No description provided for @updateHereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has a newer Ferret that {here} can\'t talk to yet. Update Ferret here, and they connect again by themselves.'**
+  String updateHereBody(String name, String here);
+
+  /// No description provided for @updateGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the update'**
+  String get updateGet;
+
+  /// No description provided for @replaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your new {name}?'**
+  String replaceTitle(String name);
+
+  /// No description provided for @replaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{old} hasn\'t been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.'**
+  String replaceBody(String old);
+
+  /// No description provided for @replaceAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace the old one'**
+  String get replaceAction;
+
+  /// No description provided for @replaceKeepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get replaceKeepBoth;
+
+  /// No description provided for @whatsNewLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated to Ferret {version}'**
+  String whatsNewLine(String version);
+
+  /// No description provided for @whatsNewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewAction;
 }
 
 class _ShellLocalizationsDelegate

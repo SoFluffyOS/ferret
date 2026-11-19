@@ -19,6 +19,7 @@ class DeviceHeader extends StatelessWidget {
     final dotColor = switch (status.isConnected) {
       true => palette.success,
       false when status.isReconnecting => palette.warning,
+      false when status.versionMismatch != null => palette.warning,
       false => palette.mutedText,
     };
 
@@ -95,6 +96,13 @@ class DeviceHeader extends StatelessWidget {
 
     if (status.isReconnecting) {
       return l10n.deviceReconnecting;
+    }
+
+    if (status.versionMismatch case final mismatch?) {
+      return switch (mismatch.update) {
+        .otherDevice => l10n.deviceUpdateThere,
+        .thisDevice => l10n.deviceUpdateHere,
+      };
     }
 
     final lastSeen = status.device.lastSeen;

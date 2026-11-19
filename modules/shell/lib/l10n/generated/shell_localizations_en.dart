@@ -1650,4 +1650,57 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String menubarTipScreenSeen(String device) {
     return '$device can see this screen';
   }
+
+  @override
+  String get deviceUpdateThere => 'Needs a newer Ferret';
+
+  @override
+  String get deviceUpdateHere => 'Update Ferret here to connect';
+
+  @override
+  String updateThereTitle(String name) {
+    return 'Update Ferret on $name';
+  }
+
+  @override
+  String updateThereBody(String name, String version, String here) {
+    return '$name has an older Ferret ($version) that $here can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.';
+  }
+
+  @override
+  String updateHereTitle(String here) {
+    return 'Update Ferret on $here';
+  }
+
+  @override
+  String updateHereBody(String name, String here) {
+    return '$name has a newer Ferret that $here can\'t talk to yet. Update Ferret here, and they connect again by themselves.';
+  }
+
+  @override
+  String get updateGet => 'Get the update';
+
+  @override
+  String replaceTitle(String name) {
+    return 'Is this your new $name?';
+  }
+
+  @override
+  String replaceBody(String old) {
+    return '$old hasn\'t been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.';
+  }
+
+  @override
+  String get replaceAction => 'Replace the old one';
+
+  @override
+  String get replaceKeepBoth => 'Keep both';
+
+  @override
+  String whatsNewLine(String version) {
+    return 'Updated to Ferret $version';
+  }
+
+  @override
+  String get whatsNewAction => 'What\'s new';
 }

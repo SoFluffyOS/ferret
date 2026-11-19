@@ -1297,5 +1297,76 @@
         "type": "String"
       }
     }
-  }
+  },
+  "deviceUpdateThere": "Needs a newer Ferret",
+  "deviceUpdateHere": "Update Ferret here to connect",
+  "updateThereTitle": "Update Ferret on {name}",
+  "@updateThereTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "updateThereBody": "{name} has an older Ferret ({version}) that {here} can't talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.",
+  "@updateThereBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "updateHereTitle": "Update Ferret on {here}",
+  "@updateHereTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "updateHereBody": "{name} has a newer Ferret that {here} can't talk to yet. Update Ferret here, and they connect again by themselves.",
+  "@updateHereBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "updateGet": "Get the update",
+  "replaceTitle": "Is this your new {name}?",
+  "@replaceTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "replaceBody": "{old} hasn't been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.",
+  "@replaceBody": {
+    "placeholders": {
+      "old": {
+        "type": "String"
+      }
+    }
+  },
+  "replaceAction": "Replace the old one",
+  "replaceKeepBoth": "Keep both",
+  "whatsNewLine": "Updated to Ferret {version}",
+  "@whatsNewLine": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsNewAction": "What's new"
 }

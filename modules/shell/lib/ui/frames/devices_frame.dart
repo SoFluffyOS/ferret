@@ -69,11 +69,16 @@ class _DevicesFrameState extends State<DevicesFrame> {
     };
     final firstConnected = devices.where((status) => status.isConnected);
     final preferences = context.read<EngineHost>().preferences;
+    final replaced = context.select<EngineHost, Set<String>>(
+      (host) => {for (final successor in host.successors) successor.old.id},
+    );
     final stale = switch (folds) {
       true => const <DeviceStatus>[],
       false => [
         for (final status in devices)
-          if (preferences.isStale(status)) status,
+          if (preferences.isStale(status) &&
+              !replaced.contains(status.device.id))
+            status,
       ],
     };
 

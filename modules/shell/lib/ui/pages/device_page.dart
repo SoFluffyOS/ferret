@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -12,10 +13,12 @@ import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/device_now_frame.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/frames/offers_card.dart';
+import 'package:shell/ui/frames/successors_frame.dart';
 import 'package:shell/ui/pages/device_access_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// One paired device: whether it's connected, what to do with it, what
 /// works with it (and what is off or broken), what it may do here, and
@@ -98,7 +101,21 @@ class DevicePage extends StatelessWidget {
       backLabel: l10n.back,
       children: [
         DeviceNowFrame(deviceId: deviceId),
-        if (!status.isConnected)
+        SuccessorsFrame(deviceId: deviceId),
+        if (status.versionMismatch case final mismatch?)
+          TwoColumns(
+            leading: [
+              DeviceHeader(status: status),
+              UpdateNeededCard(
+                mismatch: mismatch,
+                deviceName: device.name,
+                here: l10n.here(engine.device),
+                onGetUpdate: _updateSource(),
+              ),
+            ],
+            trailing: [...offers, ...details],
+          ),
+        if (!status.isConnected && status.versionMismatch == null)
           TwoColumns(
             leading: [
               DeviceHeader(status: status),
@@ -134,6 +151,15 @@ class DevicePage extends StatelessWidget {
       ],
     );
   }
+
+  /// Desktop builds come from the release page; phones update from their
+  /// store, so there is nothing to open there.
+  VoidCallback? _updateSource() => switch (defaultTargetPlatform) {
+    .macOS || .windows || .linux => () => unawaited(
+      launchUrl(WhatsNew.releases),
+    ),
+    _ => null,
+  };
 
   List<String> _details(BuildContext context, TrustedDevice device) {
     final l10n = context.shellL10n;
