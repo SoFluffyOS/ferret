@@ -77,7 +77,13 @@ class MenubarBinding {
       GlobalShortcut.read(featureContext.engine.settings),
     );
 
-    _subscriptions.add(_menubar.menuSelections.listen(_onMenu));
+    _subscriptions
+      ..add(_menubar.menuSelections.listen(_onMenu))
+      ..add(
+        _menubar.visibility
+            .where((shown) => !shown)
+            .listen((_) => host.settleOrder()),
+      );
     _listened
       ..add(host)
       ..add(pause)

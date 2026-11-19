@@ -82,10 +82,15 @@ class DevicePreferences {
 
   /// Connected devices first (one reconnecting keeps its place among them),
   /// then in each group the pinned ones, then the one used last, then, for
-  /// offline ones, the one seen last, then by name.
-  List<DeviceStatus> arrange(List<DeviceStatus> devices) {
+  /// offline ones, the one seen last, then by name. [lastUsed] replaces
+  /// the stored last uses, such as ones that wait to move a row.
+  List<DeviceStatus> arrange(
+    List<DeviceStatus> devices, {
+    Map<String, dynamic>? lastUsed,
+  }) {
     final pinned = this.pinned;
-    final stored = _settings.get<Map<String, dynamic>>(lastUsedKey) ?? {};
+    final stored =
+        lastUsed ?? _settings.get<Map<String, dynamic>>(lastUsedKey) ?? {};
 
     int lastUsedOf(DeviceStatus status) => switch (stored[status.device.id]) {
       final int millis => millis,

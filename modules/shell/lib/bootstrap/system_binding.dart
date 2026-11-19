@@ -67,6 +67,10 @@ class SystemBinding with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == .hidden) {
+      host.settleOrder();
+    }
+
     if (state == .resumed) {
       _scheduleReconnect();
     }

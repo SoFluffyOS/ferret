@@ -100,4 +100,55 @@ void main() {
 
     expect(preferences.lastUsed('a'), isNotNull);
   });
+
+  group('a device just used', () {
+    late int settled;
+    late SettledUse use;
+
+    setUp(() {
+      settled = 0;
+      use = SettledUse(
+        settings,
+        onSettled: () => settled++,
+        delay: const Duration(milliseconds: 20),
+      );
+    });
+
+    tearDown(() => use.dispose());
+
+    List<String> arranged() => _names(
+      preferences.arrange([
+        _offline('a', 'iPad', away: const Duration(hours: 1)),
+        _offline('b', 'Pixel', away: const Duration(hours: 2)),
+      ], lastUsed: use.lastUsed),
+    );
+
+    test('keeps its place until the list has been still a while', () async {
+      await preferences.markUsed('b');
+      use.used();
+
+      expect(arranged(), ['iPad', 'Pixel']);
+
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+
+      expect(settled, 1);
+      expect(arranged(), ['Pixel', 'iPad']);
+    });
+
+    test('moves at once when the list is put away', () async {
+      await preferences.markUsed('b');
+      use
+        ..used()
+        ..settle();
+
+      expect(settled, 1);
+      expect(arranged(), ['Pixel', 'iPad']);
+    });
+
+    test('nothing new used, nothing redrawn', () {
+      use.settle();
+
+      expect(settled, 0);
+    });
+  });
 }

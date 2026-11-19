@@ -4,6 +4,7 @@ import 'package:engine/engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shell/services/device_preferences.dart';
 import 'package:shell/services/device_successors.dart';
+import 'package:shell/services/settled_use.dart';
 import 'package:shell/services/whats_new.dart';
 import 'package:transport/transport.dart';
 
@@ -23,17 +24,31 @@ class EngineHost extends ChangeNotifier {
                   key == DeviceSuccessors.keptKey,
             )
             .listen((_) => notifyListeners()),
+      )
+      ..add(
+        engine.settings.changes
+            .where((key) => key == DevicePreferences.lastUsedKey)
+            .listen((_) => _use.used()),
       );
   }
 
   final FerretEngine engine;
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final List<PairingPrompt> _prompts = [];
+  late final SettledUse _use = SettledUse(
+    engine.settings,
+    onSettled: notifyListeners,
+  );
 
   /// Connected devices first. One that is reconnecting keeps its place
   /// among them, so a Wi-Fi hiccup doesn't make the list jump. Then pinned
-  /// ones, then the one used last (see [DevicePreferences.arrange]).
-  List<DeviceStatus> get devices => preferences.arrange(engine.devices);
+  /// ones, then the one used last (see [DevicePreferences.arrange]). A
+  /// device just used moves up a little later (see [SettledUse]).
+  List<DeviceStatus> get devices =>
+      preferences.arrange(engine.devices, lastUsed: _use.lastUsed);
+
+  /// Moves recently used devices up now, such as when the list is put away.
+  void settleOrder() => _use.settle();
 
   DevicePreferences get preferences => DevicePreferences(engine.settings);
 
@@ -95,6 +110,7 @@ class EngineHost extends ChangeNotifier {
 
   @override
   void dispose() {
+    _use.dispose();
     for (final subscription in _subscriptions) {
       unawaited(subscription.cancel());
     }

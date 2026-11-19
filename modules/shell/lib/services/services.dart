@@ -21,6 +21,7 @@ export 'package:shell/services/pane_titles.dart';
 export 'package:shell/services/pause_controller.dart';
 export 'package:shell/services/presence_reporter.dart';
 export 'package:shell/services/secret_store_factory.dart';
+export 'package:shell/services/settled_use.dart';
 export 'package:shell/services/system_notifier.dart';
 export 'package:shell/services/whats_new.dart';
 export 'package:shell/services/window_commands.dart';
