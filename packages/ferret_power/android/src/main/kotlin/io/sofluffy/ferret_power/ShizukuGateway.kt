@@ -196,7 +196,7 @@ internal class ShizukuGateway(
     companion object {
         const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
         private const val PERMISSION_REQUEST = 0x4645
-        private const val SERVICE_VERSION = 1
+        private const val SERVICE_VERSION = 2
         private const val CONNECT_TIMEOUT_MS = 10_000L
     }
 }

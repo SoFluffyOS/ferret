@@ -1,6 +1,7 @@
 package io.sofluffy.ferret_power.shell
 
 import android.content.ClipData
+import android.content.ClipDescription
 import android.content.IOnPrimaryClipChangedListener
 import android.os.Bundle
 import android.os.IBinder
@@ -35,6 +36,33 @@ internal class ShellClipboard {
 
         val sensitive = clip.description?.extras?.getBoolean(EXTRA_IS_SENSITIVE, false) == true
         return ShellClip(text, sensitive)
+    }
+
+    /**
+     * The clip of [userId] after a change, or null when the watcher has no
+     * reason to read it: Ferret wrote it, or it holds no text. Decided from
+     * the description, which Android hands out without the "pasted" toast.
+     */
+    fun readChange(userId: Int): ShellClip? {
+        val description = description(userId)
+        if (description != null && !shouldRead(description)) {
+            return null
+        }
+        return read(userId)
+    }
+
+    private fun description(userId: Int): ClipDescription? {
+        val service = service ?: return null
+        val method = method(service, "getPrimaryClipDescription") ?: return null
+        val arguments = ShellArguments.fill(method.parameterTypes, userId, null)
+        return runCatching { method.invoke(service, *arguments) as? ClipDescription }.getOrNull()
+    }
+
+    private fun shouldRead(description: ClipDescription): Boolean {
+        val writtenAt = runCatching { description.extras?.getLong(ShellClipFilter.EXTRA_WRITTEN_AT, 0L) }
+            .getOrNull() ?: 0L
+        val mimeTypes = List(description.mimeTypeCount) { index -> description.getMimeType(index) }
+        return ShellClipFilter.shouldRead(description.label, writtenAt, mimeTypes, System.currentTimeMillis())
     }
 
     /** Calls [onChanged] after every copy. False when the service refused. */

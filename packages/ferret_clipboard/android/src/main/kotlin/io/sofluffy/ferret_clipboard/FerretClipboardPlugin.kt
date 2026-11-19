@@ -27,6 +27,9 @@ class FerretClipboardPlugin : FlutterPlugin, ClipboardHostApi {
 
     private val listener = ClipboardManager.OnPrimaryClipChangedListener {
         val api = flutterApi ?: return@OnPrimaryClipChangedListener
+        if (isOwnClip()) {
+            return@OnPrimaryClipChangedListener
+        }
         scope.launch { runCatching { api.onChanged() } }
     }
 
@@ -86,17 +89,18 @@ class FerretClipboardPlugin : FlutterPlugin, ClipboardHostApi {
         val text = clip.text
         val image = clip.image
         val data = when {
-            text != null -> ClipData.newPlainText(LABEL, text)
+            text != null -> ClipData.newPlainText(OwnClip.LABEL, text)
             image != null -> {
                 val mime = clip.imageMime ?: "image/png"
                 val uri = ClipImageProvider.store(context, image, mime)
-                ClipData(LABEL, arrayOf(mime), ClipData.Item(uri))
+                ClipData(OwnClip.LABEL, arrayOf(mime), ClipData.Item(uri))
             }
             else -> return
         }
 
-        if (clip.sensitive) {
-            data.description.extras = PersistableBundle().apply {
+        data.description.extras = PersistableBundle().apply {
+            putLong(OwnClip.EXTRA_WRITTEN_AT, System.currentTimeMillis())
+            if (clip.sensitive) {
                 putBoolean(EXTRA_IS_SENSITIVE, true)
             }
         }
@@ -120,6 +124,13 @@ class FerretClipboardPlugin : FlutterPlugin, ClipboardHostApi {
 
         clipboard?.removePrimaryClipChangedListener(listener)
         watching = false
+    }
+
+    /** Ferret's own write needs no read: Dart already knows what it put there. */
+    private fun isOwnClip(): Boolean {
+        val description = runCatching { clipboard?.primaryClipDescription }.getOrNull() ?: return false
+        val writtenAt = description.extras?.getLong(OwnClip.EXTRA_WRITTEN_AT, 0L) ?: 0L
+        return OwnClip.isOwn(description.label, writtenAt, System.currentTimeMillis())
     }
 
     private fun imageMimeOf(description: ClipDescription): String? {
@@ -153,8 +164,6 @@ class FerretClipboardPlugin : FlutterPlugin, ClipboardHostApi {
     }
 
     companion object {
-        private const val LABEL = "Ferret"
-
         /** ClipDescription.EXTRA_IS_SENSITIVE, public from Android 13. */
         const val EXTRA_IS_SENSITIVE = "android.content.extra.IS_SENSITIVE"
 

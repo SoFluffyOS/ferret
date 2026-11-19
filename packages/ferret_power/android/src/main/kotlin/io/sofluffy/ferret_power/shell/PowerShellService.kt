@@ -25,7 +25,7 @@ class PowerShellService : IPowerShellService.Stub() {
         }
 
         return clipboard.watch(userId) {
-            val clip = clipboard.read(userId) ?: return@watch
+            val clip = clipboard.readChange(userId) ?: return@watch
             listener.onClipChanged(ShellClipboard.bundleOf(clip))
         }
     }

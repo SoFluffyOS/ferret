@@ -179,6 +179,33 @@ void main() {
       expect(laptop.pushes, isEmpty);
     });
 
+    test('a received clip read back late is still not sent back', () async {
+      await start(settings: backgroundOn);
+
+      await feature.onEnvelope(laptop, envelopeOf(pushOf('from the laptop')));
+      phone.copy('from the laptop');
+      await settle();
+      phone.copy('from the laptop');
+      await settle();
+
+      expect(laptop.pushes, isEmpty);
+    });
+
+    test('a received clip copied again after another copy is sent', () async {
+      await start(settings: backgroundOn);
+
+      await feature.onEnvelope(laptop, envelopeOf(pushOf('from the laptop')));
+      phone.copy('copied in the browser');
+      await settle();
+      phone.copy('from the laptop');
+      await settle();
+
+      expect(
+        [for (final push in laptop.pushes) push.item.text],
+        ['copied in the browser', 'from the laptop'],
+      );
+    });
+
     test('text over the size limit is not sent', () async {
       await start(settings: backgroundOn);
 

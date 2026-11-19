@@ -47,7 +47,7 @@ object ShellMain {
 
         if (command == ShellLines.WATCH) {
             val watching = clipboard.watch(options.userId) {
-                val clip = clipboard.read(options.userId) ?: return@watch
+                val clip = clipboard.readChange(options.userId) ?: return@watch
                 send(ShellLines.clipLine(ShellLines.CHANGE, clip))
             }
             return if (watching) ShellLines.OK else ShellLines.FAIL
