@@ -601,6 +601,80 @@ final _screens = <_Screen>[
     after: _openSound,
     windows: _uprightWindows,
   ),
+  _Screen(
+    'mirror_48_control_ask',
+    before: (rig) async {
+      await rig.streamOverFerret();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(status: .CONTROL_STATUS_CAN_ASK),
+      );
+    },
+  ),
+  _Screen(
+    'mirror_49_control_asking',
+    before: (rig) async {
+      await rig.streamOverFerret();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(status: .CONTROL_STATUS_CAN_ASK),
+      );
+    },
+    after: (tester, rig) async {
+      await tester.pump();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(status: .CONTROL_STATUS_ASKING, timeoutSeconds: 60),
+      );
+      await tester.pump();
+    },
+  ),
+  _Screen(
+    'mirror_50_control_allowed',
+    before: (rig) async {
+      await rig.streamOverFerret();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(status: .CONTROL_STATUS_CAN_ASK),
+      );
+    },
+    after: (tester, rig) async {
+      await tester.pump();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(
+          status: .CONTROL_STATUS_ALLOWED,
+          kinds: const [
+            .CONTROL_KIND_POINTER,
+            .CONTROL_KIND_KEYS,
+            .CONTROL_KIND_TEXT,
+            .CONTROL_KIND_BUTTONS,
+          ],
+          buttons: const [
+            .CONTROL_BUTTON_BACK,
+            .CONTROL_BUTTON_HOME,
+            .CONTROL_BUTTON_RECENTS,
+            .CONTROL_BUTTON_NOTIFICATIONS,
+            .CONTROL_BUTTON_POWER,
+            .CONTROL_BUTTON_VOLUME_UP,
+            .CONTROL_BUTTON_VOLUME_DOWN,
+          ],
+        ),
+      );
+      await tester.pump();
+    },
+  ),
+  _Screen(
+    'mirror_51_control_needs_setup',
+    before: (rig) async {
+      await rig.streamOverFerret();
+      rig.ferret.onControlState(
+        rig.pixel,
+        ControlState(status: .CONTROL_STATUS_NEEDS_SETUP),
+      );
+    },
+    after: (tester, rig) => _tap(tester, find.text('View only')),
+  ),
 ];
 
 /// More, then Sound.
