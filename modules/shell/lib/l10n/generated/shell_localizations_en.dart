@@ -1640,4 +1640,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get accessFind => 'Ringing a device to find it';
+
+  @override
+  String menubarTipControlled(String device) {
+    return '$device is controlling this computer';
+  }
+
+  @override
+  String menubarTipScreenSeen(String device) {
+    return '$device can see this screen';
+  }
 }

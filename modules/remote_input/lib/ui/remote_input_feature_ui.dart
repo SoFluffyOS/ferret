@@ -83,6 +83,14 @@ class RemoteInputFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => hostViewModel;
 
+  /// While a device controls this computer, the menubar icon says so.
+  @override
+  FeatureBusy? busyState(FeatureContext feature) =>
+      switch (hostViewModel.active) {
+        final active? => FeatureBusy(controlledBy: active.deviceName),
+        null => null,
+      };
+
   /// Only while a device asks, or couldn't control this computer for a
   /// missing permission. Being controlled is a line in [activity].
   @override

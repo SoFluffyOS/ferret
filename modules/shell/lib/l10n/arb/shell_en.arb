@@ -1281,5 +1281,21 @@
   "accessMedia": "What's playing, and play, pause and skip from the other device",
   "accessMirroring": "Showing a phone's screen, each time only after the phone says yes",
   "accessRemoteInput": "Moving the pointer and typing, only after you allow it",
-  "accessFind": "Ringing a device to find it"
+  "accessFind": "Ringing a device to find it",
+  "menubarTipControlled": "{device} is controlling this computer",
+  "@menubarTipControlled": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "menubarTipScreenSeen": "{device} can see this screen",
+  "@menubarTipScreenSeen": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -125,6 +125,14 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _changes;
 
+  /// While a device sees this screen, the menubar icon says so.
+  @override
+  FeatureBusy? busyState(FeatureContext feature) =>
+      switch (shareViewModel.active) {
+        final active? => FeatureBusy(screenSeenBy: active.deviceName),
+        null => null,
+      };
+
   /// A phone's card while its screen is asked for or shared, or just
   /// was. A computer has none: what it can show is on its devices.
   @override

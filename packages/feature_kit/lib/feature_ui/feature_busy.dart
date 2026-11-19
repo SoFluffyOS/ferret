@@ -8,6 +8,8 @@ class FeatureBusy {
     this.waitingCount = 0,
     this.waitingName = '',
     this.finishedCount = 0,
+    this.screenSeenBy = '',
+    this.controlledBy = '',
   });
 
   /// How far the running transfers got together, 0 to 1, or null when
@@ -31,4 +33,12 @@ class FeatureBusy {
   /// up, and never for one that failed or was cancelled: the icon shows a
   /// check each time it does.
   final int finishedCount;
+
+  /// The device that sees this device's screen right now, or empty. The
+  /// icon keeps a dot for as long as it does.
+  final String screenSeenBy;
+
+  /// The device that moves the pointer and types here right now, or
+  /// empty. The icon keeps a dot for as long as it does.
+  final String controlledBy;
 }

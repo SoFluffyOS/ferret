@@ -13,6 +13,8 @@ class MenubarIconInputs {
     this.peerName = '',
     this.isSending = true,
     this.finishedCount = 0,
+    this.screenSeenBy = '',
+    this.controlledBy = '',
   });
 
   /// Sums up the app: [connectedNames] of the devices connected now,
@@ -58,6 +60,12 @@ class MenubarIconInputs {
         0,
         (sum, feature) => sum + feature.finishedCount,
       ),
+      screenSeenBy: busy
+          .map((feature) => feature.screenSeenBy)
+          .firstWhere((name) => name.isNotEmpty, orElse: () => ''),
+      controlledBy: busy
+          .map((feature) => feature.controlledBy)
+          .firstWhere((name) => name.isNotEmpty, orElse: () => ''),
     );
   }
 
@@ -88,6 +96,15 @@ class MenubarIconInputs {
 
   /// Transfers that went through since the app started. Only goes up.
   final int finishedCount;
+
+  /// The device that sees this screen right now, or empty.
+  final String screenSeenBy;
+
+  /// The device that controls this computer right now, or empty.
+  final String controlledBy;
+
+  /// Whether another device sees or controls this one right now.
+  bool get isWatched => screenSeenBy.isNotEmpty || controlledBy.isNotEmpty;
 
   static double? _average(List<double> fractions) {
     if (fractions.isEmpty) {

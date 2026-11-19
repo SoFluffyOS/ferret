@@ -2709,6 +2709,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Ringing a device to find it'**
   String get accessFind;
+
+  /// No description provided for @menubarTipControlled.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is controlling this computer'**
+  String menubarTipControlled(String device);
+
+  /// No description provided for @menubarTipScreenSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} can see this screen'**
+  String menubarTipScreenSeen(String device);
 }
 
 class _ShellLocalizationsDelegate

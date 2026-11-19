@@ -85,6 +85,21 @@ void main() {
       expect(resolver.resolve(inputs), MenubarIconState.needsYou);
     });
 
+    test('a device seeing or controlling this one keeps the dot', () {
+      expect(
+        resolver.resolve(
+          const MenubarIconInputs(connectedCount: 1, controlledBy: 'Pixel 7'),
+        ),
+        MenubarIconState.needsYou,
+      );
+      expect(
+        resolver.resolve(
+          const MenubarIconInputs(progress: 0.5, screenSeenBy: 'Pixel 7'),
+        ),
+        MenubarIconState.needsYou,
+      );
+    });
+
     test('never asks for the drag-over state, which is the icon\'s own', () {
       const all = [
         MenubarIconInputs(),
@@ -262,6 +277,38 @@ void main() {
     final tooltips = MenubarTooltips(
       lookupShellLocalizations(const Locale('en')),
     );
+
+    test('names who sees or controls this device', () {
+      expect(
+        tooltips.of(
+          .needsYou,
+          const MenubarIconInputs(controlledBy: 'Pixel 7'),
+        ),
+        'Pixel 7 is controlling this computer',
+      );
+      expect(
+        tooltips.of(
+          .needsYou,
+          const MenubarIconInputs(screenSeenBy: 'MacBook'),
+        ),
+        'MacBook can see this screen',
+      );
+    });
+
+    test('gathers the watcher from the features', () {
+      final inputs = MenubarIconInputs.gather(
+        connectedNames: const ['Pixel 7'],
+        isPaused: false,
+        pairingName: null,
+        busy: const [
+          FeatureBusy(),
+          FeatureBusy(controlledBy: 'Pixel 7'),
+        ],
+      );
+
+      expect(inputs.isWatched, isTrue);
+      expect(inputs.controlledBy, 'Pixel 7');
+    });
 
     test('says who is connected', () {
       expect(

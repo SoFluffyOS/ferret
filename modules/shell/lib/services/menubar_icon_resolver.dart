@@ -4,7 +4,8 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:shell/services/menubar_icon_inputs.dart';
 
 /// Picks the one state the menubar icon shows. Something waiting for the
-/// person wins, then a running transfer, then paused; the check shows for
+/// person wins, then another device seeing or controlling this one (the
+/// dot stays as long as it does), then a running transfer, then paused; the check shows for
 /// [doneHold] after the last running transfer went through, and otherwise
 /// the icon says whether any device is connected.
 ///
@@ -37,7 +38,7 @@ class MenubarIconResolver {
       _holdDone();
     }
 
-    if (inputs.waitingCount > 0) {
+    if (inputs.waitingCount > 0 || inputs.isWatched) {
       return .needsYou;
     }
 

@@ -44,6 +44,14 @@ class MenubarTooltips {
   }
 
   String _needsYou(MenubarIconInputs inputs) {
+    if (inputs.waitingCount == 0 && inputs.controlledBy.isNotEmpty) {
+      return _l10n.menubarTipControlled(inputs.controlledBy);
+    }
+
+    if (inputs.waitingCount == 0 && inputs.screenSeenBy.isNotEmpty) {
+      return _l10n.menubarTipScreenSeen(inputs.screenSeenBy);
+    }
+
     final name = inputs.waitingName;
     if (inputs.waitingCount > 1 || name.isEmpty) {
       return _l10n.menubarTipWaiting(inputs.waitingCount);
