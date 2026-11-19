@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/menu_case.dart';
 import 'package:shell/services/window_intents.dart';
 
 /// What each window command does right now, for the menus that sit outside
@@ -16,10 +17,22 @@ class WindowCommands {
   /// The command's name in a menu right now, such as "Take Photo with
   /// Pixel 7" when it acts on one device.
   String labelOf(ShellLocalizations l10n, WindowCommand command) =>
-      _labels[command] ?? label(l10n, command);
+      switch (_labels[command]) {
+        final label? => inCase(l10n, label),
+        null => WindowCommands.label(l10n, command),
+      };
+
+  /// [label] in the case menus use on this platform.
+  static String inCase(ShellLocalizations l10n, String label) => MenuCase.of(
+    label,
+    languageCode: l10n.localeName.split(RegExp('[_-]')).first,
+  );
 
   /// The command's name in menus and the shortcuts list.
   static String label(ShellLocalizations l10n, WindowCommand command) =>
+      inCase(l10n, _label(l10n, command));
+
+  static String _label(ShellLocalizations l10n, WindowCommand command) =>
       switch (command) {
         .addDevice => l10n.menuPair,
         .sendFiles => l10n.menuSendFiles,

@@ -177,12 +177,12 @@ class SidebarDeviceGroup extends StatelessWidget {
             unawaited(preferences.setPinned(deviceId, pinned: !isPinned)),
       ),
       MenuEntry(
-        label: l10n.menuFixConnection,
+        label: WindowCommands.inCase(l10n, l10n.menuFixConnection),
         icon: LucideIcons.wrench,
         onSelected: () => nav.show(DoctorPage(deviceId: deviceId)),
       ),
       MenuEntry(
-        label: l10n.menuForgetDevice,
+        label: WindowCommands.inCase(l10n, l10n.menuForgetDevice),
         icon: LucideIcons.trash2,
         onSelected: () => onSelect(DeviceDestination(deviceId)),
       ),

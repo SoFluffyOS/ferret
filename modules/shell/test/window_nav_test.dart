@@ -552,13 +552,13 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Fix Connection…'), findsOneWidget);
+      expect(find.text('Fix connection…'), findsOneWidget);
 
-      await tester.tap(find.text('Forget This Device…'));
+      await tester.tap(find.text('Forget this device…'));
       await tester.pump();
 
       expect(find.byType(DevicePage), findsOneWidget);
-      expect(find.text('Forget This Device…'), findsNothing);
+      expect(find.text('Forget this device…'), findsNothing);
     });
 
     testWidgets('an offline device keeps its section, under a line that says '

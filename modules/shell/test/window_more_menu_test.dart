@@ -78,16 +78,16 @@ void main() {
     await tester.tap(find.byType(MenuButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('Add a Device…'), findsOneWidget);
+    expect(find.text('Add a device…'), findsOneWidget);
     expect(find.text('Ctrl+N'), findsOneWidget);
-    expect(find.text('Keyboard Shortcuts'), findsOneWidget);
+    expect(find.text('Keyboard shortcuts'), findsWidgets);
     expect(find.text('Ctrl+?'), findsOneWidget);
     expect(find.text('Quit Ferret'), findsOneWidget);
     expect(find.text('Sponsor Ferret…'), findsOneWidget);
-    expect(find.text('Take Photo with Pixel 7'), findsOneWidget);
+    expect(find.text('Take photo with Pixel 7'), findsOneWidget);
     expect(find.text('Ctrl+Alt+P'), findsOneWidget);
-    expect(find.text('Send Files…'), findsNothing);
-    expect(find.text('Fix Connection…'), findsNothing);
+    expect(find.text('Send files…'), findsNothing);
+    expect(find.text('Fix connection…'), findsNothing);
 
     await tester.tap(find.text('Quit Ferret'));
     await tester.pumpAndSettle();
@@ -100,10 +100,10 @@ void main() {
 
     await tester.pumpWidget(testApp(const KeyboardShortcutsPage()));
 
-    expect(find.text('Keyboard shortcuts'), findsOneWidget);
+    expect(find.text('Keyboard shortcuts'), findsWidgets);
     expect(find.text('Ctrl+1 … Ctrl+6'), findsOneWidget);
     expect(find.text('Ctrl+B'), findsOneWidget);
     expect(find.text('Ctrl+Q'), findsOneWidget);
-    expect(find.text('Send Clipboard'), findsOneWidget);
+    expect(find.text('Send clipboard'), findsOneWidget);
   });
 }
