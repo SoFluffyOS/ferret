@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/directional_icon.dart';
 import 'package:feature_kit/widgets/pane_toolbar_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -62,7 +63,7 @@ class FerretPage extends StatelessWidget {
           children: [
             if (hasBar)
               Padding(
-                padding: EdgeInsets.fromLTRB(
+                padding: EdgeInsetsDirectional.fromSTEB(
                   side,
                   Spacing.d12,
                   side,
@@ -82,7 +83,7 @@ class FerretPage extends StatelessWidget {
                             onTap: () => Navigator.of(context).maybePop(),
                             child: Padding(
                               padding: EdgeInsets.all(Spacing.d4),
-                              child: Icon(
+                              child: DirectionalIcon(
                                 LucideIcons.chevronLeft,
                                 size: Spacing.d20,
                                 color: palette.text,
@@ -127,7 +128,7 @@ class FerretPage extends StatelessWidget {
                   );
 
                   return ListView(
-                    padding: EdgeInsets.fromLTRB(
+                    padding: EdgeInsetsDirectional.fromSTEB(
                       side + margin,
                       switch ((hasBar, isUnderToolbar)) {
                         (true, _) => Spacing.d4,

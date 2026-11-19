@@ -19,7 +19,7 @@ class SectionTitle extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         PageInsets.row,
         Spacing.d16,
         PageInsets.row,
