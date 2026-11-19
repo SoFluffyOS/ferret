@@ -102,10 +102,15 @@ class _Rig {
   }
 
   /// The owner said yes and the first picture arrived over Ferret.
-  Future<void> streamOverFerret() async {
+  Future<void> streamOverFerret({
+    AudioAnswer sound = .AUDIO_ANSWER_UNSPECIFIED,
+  }) async {
     await ask();
     ferret
-      ..onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264))
+      ..onAccept(
+        pixel,
+        StartAccept(version: 1, codec: .CODEC_H264, audio: sound),
+      )
       ..onConfig(
         pixel,
         StreamConfig(
@@ -538,7 +543,71 @@ final _screens = <_Screen>[
     before: (rig) => rig.streamOverFerret(),
     turned: true,
   ),
+  _Screen(
+    'mirror_42_sound_cable',
+    before: (rig) async {
+      await rig.streamOverCable();
+      rig.cable.feeds.last.emit(
+        const FeedAudioConfigured(MirrorAudioConfig(codec: .opus)),
+      );
+    },
+    after: _openSound,
+  ),
+  _Screen(
+    'mirror_43_sound_on_phone',
+    before: (rig) async {
+      await rig.feature.settings.setSound(false);
+      await rig.streamOverCable();
+    },
+    after: _openSound,
+  ),
+  _Screen(
+    'mirror_44_sound_wifi',
+    before: (rig) async {
+      await rig.streamOverFerret(sound: .AUDIO_ANSWER_SENDING);
+      rig.ferret.onAudioConfig(
+        rig.pixel,
+        AudioConfig(
+          codec: .AUDIO_CODEC_OPUS,
+          sampleRate: 48000,
+          channels: 2,
+        ),
+      );
+    },
+    after: _openSound,
+  ),
+  _Screen(
+    'mirror_45_sound_wifi_not_sent',
+    before: (rig) => rig.streamOverFerret(sound: .AUDIO_ANSWER_OFF),
+    after: _openSound,
+  ),
+  _Screen(
+    'mirror_46_sound_too_old',
+    before: (rig) async {
+      await rig.streamOverCable();
+      rig.cable.feeds.last.emit(const FeedAudioUnavailable(.unsupported));
+    },
+    after: _openSound,
+  ),
+  _Screen(
+    'mirror_47_sound_own_window',
+    body: _ownWindow,
+    before: (rig) async {
+      await rig.streamOverCable();
+      rig.cable.feeds.last.emit(
+        const FeedAudioConfigured(MirrorAudioConfig(codec: .opus)),
+      );
+    },
+    after: _openSound,
+    windows: _uprightWindows,
+  ),
 ];
+
+/// More, then Sound.
+Future<void> _openSound(WidgetTester tester, _Rig rig) async {
+  await _tap(tester, _tool(LucideIcons.ellipsis));
+  await _tap(tester, find.text('Sound'));
+}
 
 /// The phone's own window as a Mac draws it: the bar on top, the picture
 /// in its own shape under it.
@@ -757,6 +826,8 @@ Future<_Rig> _startRig(
   final feature = MirroringFeature(
     decoder: () => StillDecoder(phoneScreen),
     codecs: const [.h264, .jpeg],
+    audioSink: QuietSpeaker.new,
+    audioCodecs: const [.opus, .pcm],
     routes: [cable],
     receivers: [receiver],
     canShare: false,

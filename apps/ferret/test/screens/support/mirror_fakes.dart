@@ -228,6 +228,30 @@ class CableFeed implements MirrorFeed {
   Future<void> stop() async {}
 }
 
+/// A speaker that takes any sound and plays none.
+class QuietSpeaker implements AudioSink {
+  @override
+  Future<void> configure(
+    MirrorAudioConfig config, {
+    bool silent = false,
+  }) async {}
+
+  @override
+  void play(MirrorAudioPacket packet) {}
+
+  @override
+  void flush() {}
+
+  @override
+  void setVolume(double volume) {}
+
+  @override
+  Future<AudioSinkStats> stats() async => const AudioSinkStats();
+
+  @override
+  Future<void> dispose() async {}
+}
+
 /// The cable in memory: the screen says where it stands and what it finds.
 class CableRoute implements ToolInstaller {
   final StreamController<List<MirrorTarget>> _targets = .broadcast(sync: true);
