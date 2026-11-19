@@ -1,6 +1,8 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/window_commands.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What to do with a device, as a few buttons: the first [shown] of
@@ -52,7 +54,10 @@ class DeviceActions extends StatelessWidget {
               for (final action in behindMore)
                 if (action.onPressed case final onPressed?)
                   MenuEntry(
-                    label: action.label,
+                    label: WindowCommands.buttonInMenu(
+                      context.shellL10n,
+                      action.label,
+                    ),
                     icon: action.icon,
                     onSelected: onPressed,
                   ),

@@ -25,8 +25,16 @@ class WindowCommands {
   /// [label] in the case menus use on this platform.
   static String inCase(ShellLocalizations l10n, String label) => MenuCase.of(
     label,
-    languageCode: l10n.localeName.split(RegExp('[_-]')).first,
+    languageCode: _language(l10n),
   );
+
+  /// A label written for a button, such as a feature's action, in the case
+  /// menus use on this platform.
+  static String buttonInMenu(ShellLocalizations l10n, String label) =>
+      MenuCase.ofButton(label, languageCode: _language(l10n));
+
+  static String _language(ShellLocalizations l10n) =>
+      l10n.localeName.split(RegExp('[_-]')).first;
 
   /// The command's name in menus and the shortcuts list.
   static String label(ShellLocalizations l10n, WindowCommand command) =>

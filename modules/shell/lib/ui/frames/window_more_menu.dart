@@ -95,7 +95,7 @@ class WindowMoreMenu extends StatelessWidget {
     return [
       for (final (index, action) in actions.indexed)
         MenuEntry(
-          label: action.label,
+          label: WindowCommands.buttonInMenu(context.shellL10n, action.label),
           startsGroup: index == 0,
           onSelected: action.onPressed ?? () {},
         ),

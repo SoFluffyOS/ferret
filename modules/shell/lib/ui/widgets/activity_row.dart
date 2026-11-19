@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/window_commands.dart';
 import 'package:shell/ui/widgets/activity_focusable_line.dart';
 import 'package:shell/ui/widgets/activity_icon_action.dart';
 import 'package:shell/ui/widgets/activity_text_action.dart';
@@ -298,7 +299,7 @@ class ActivityRow extends StatelessWidget {
       ),
     for (final action in item.actions)
       MenuEntry(
-        label: action.label,
+        label: WindowCommands.buttonInMenu(l10n, action.label),
         icon: action.icon,
         onSelected: action.onPressed,
       ),

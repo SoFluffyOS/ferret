@@ -30,4 +30,21 @@ void main() {
   test('other languages are left alone', () {
     expect(on(.windows, 'Sửa Kết Nối', language: 'vi'), 'Sửa Kết Nối');
   });
+
+  test('button labels in a Mac menu are titles', () {
+    String mac(String label) =>
+        MenuCase.ofButton(label, languageCode: 'en', platform: .macOS);
+
+    expect(mac('Send a folder'), 'Send a Folder');
+    expect(mac('Send a link…'), 'Send a Link…');
+    expect(mac('Use Pixel 9 as a webcam'), 'Use Pixel 9 as a Webcam');
+    expect(
+      MenuCase.ofButton('Send files', languageCode: 'en', platform: .linux),
+      'Send files',
+    );
+    expect(
+      MenuCase.ofButton('Gửi tệp', languageCode: 'vi', platform: .macOS),
+      'Gửi tệp',
+    );
+  });
 }
