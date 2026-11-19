@@ -47,7 +47,14 @@ class FeatureCard extends StatelessWidget {
   /// Such as accent for an unread count, or danger for missing access.
   final FeatureTone subtitleTone;
 
-  static double get _iconSize => Spacing.d18;
+  /// Grows with the text, up to twice its size, so the icon still reads
+  /// next to a large title.
+  static double _iconSize(BuildContext context) =>
+      MediaQuery.textScalerOf(context)
+          .clamp(maxScaleFactor: 2)
+          .scale(
+            Spacing.d18,
+          );
 
   static double get _iconGap => Spacing.d12;
 
@@ -55,6 +62,7 @@ class FeatureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+    final iconSize = _iconSize(context);
 
     return SurfaceCard(
       onTap: onTap,
@@ -68,7 +76,7 @@ class FeatureCard extends StatelessWidget {
                 padding: EdgeInsets.only(top: Spacing.d1),
                 child: Icon(
                   icon,
-                  size: _iconSize,
+                  size: iconSize,
                   color: _color(palette, iconTone),
                 ),
               ),
@@ -101,7 +109,7 @@ class FeatureCard extends StatelessWidget {
           // not under the icon.
           if (children.isNotEmpty || actions.isNotEmpty)
             Padding(
-              padding: EdgeInsetsDirectional.only(start: _iconSize + _iconGap),
+              padding: EdgeInsetsDirectional.only(start: iconSize + _iconGap),
               child: Column(
                 crossAxisAlignment: .stretch,
                 children: [
