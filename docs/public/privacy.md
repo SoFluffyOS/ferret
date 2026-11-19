@@ -44,6 +44,10 @@ Open a device and tap **What Pixel 7 can use**. You see every feature that devic
 
 Turn one off and it stops RIGHT AWAY, on both devices: Ferret reconnects, the other device no longer sees the feature, and anything it still sends for it is refused. **Turn everything off** does all of them in one tap and keeps the device paired. To stop it connecting at all, forget it.
 
+## 🙈 On a computer you share
+
+Notifications, texts, callers and copied text from a phone hide while the screen is locked or another account is in front. **Show previews on this computer**, at the bottom of **What Pixel 7 can use**, covers them all the time; it starts off on a computer where other accounts run Ferret. See [A computer the family shares](getting-started/shared-computer.md).
+
 ## 🔑 Passwords and codes
 
 - **Passwords you copy** stay here. Password managers mark them as private (`org.nspasteboard.ConcealedType` on a Mac, "sensitive" on Android 13 and later, the KeePassXC and KDE hints on Linux), and Ferret skips them unless you turn on **Include passwords**. See [Clipboard](features/clipboard.md).

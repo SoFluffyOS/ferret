@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Added
+- 👪 **A computer the family shares**: Ferret in each account goes by its account, such as **Family PC (Anna)**, and moves to the next free port when another account has the usual one. See [A computer the family shares](docs/public/getting-started/shared-computer.md).
+- 🙈 **Private previews**: a phone's notifications, texts, callers and copied text hide while the screen is locked or another account is in front. **Show previews on this computer** turns them off for one phone, and starts off on a shared computer.
+- 🎟️ **Receive a file from a guest**: **Allow once** lets a phone without Ferret send one file with Quick Share or LocalSend, then closes again.
 - 🇻🇳 **Ferret in Vietnamese**: the whole app, the share sheets, permission prompts and Android notices. Pick a language in **Settings → Advanced → Language**, or let Ferret follow the system. Want your language? [Translate Ferret](docs/public/contributing/translating.md).
 - 🌐 **Ready for every language**: counts read right (**1 device**, not **1 devices**), times and numbers follow your region, and layouts mirror for right-to-left languages.
 - 🔁 **New phone? Replace the old one**: pair the new phone and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings, and the old one goes from all your devices.

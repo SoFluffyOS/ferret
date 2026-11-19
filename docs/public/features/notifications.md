@@ -59,6 +59,10 @@ If your phone's screen is on and unlocked, you already see the notification ther
 
 Turn **Pause while I'm using the phone** off if you want them on your computer anyway. On your computer, the same switch is on the phone's page: **Hold them back while it's in use**.
 
+## 🔒 Not while the screen is locked
+
+While your computer's screen is locked, or another account is in front, notices say **New notification from Pixel 7** and nothing more. On a computer you share, turn off **Show previews on this computer** for a phone to keep it that way. See [A computer the family shares](../getting-started/shared-computer.md).
+
 ## 🔕 Not from this phone
 
 Don't want one phone's notifications on one computer? On that computer, open the phone from Home and turn off **Show its notifications here**. Your other computers keep getting them.

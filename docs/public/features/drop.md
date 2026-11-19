@@ -90,3 +90,7 @@ Ferret also talks to [LocalSend](../interop/localsend.md), so you can send files
 ## Receive from any Android phone
 
 No Ferret on that phone? Make your computer visible to [Quick Share](../interop/quick-share.md) for 10 minutes and send from the phone's share menu.
+
+## Receive one file from a guest
+
+A friend without Ferret wants to send you something? On Home, tap **Allow once** next to **Receive a file from a guest**. Your computer shows up in Quick Share and LocalSend for 10 minutes, and closes again once the first file arrives. See [A computer the family shares](../getting-started/shared-computer.md).
