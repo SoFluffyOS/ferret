@@ -130,6 +130,17 @@ void main() {
       );
     }
 
+    test('when the well-known name is taken, the item registers under its '
+        'unique name', () async {
+      final other = client();
+      await other.requestName('org.kde.StatusNotifierItem-$pid-1');
+      final linux = tray();
+      addTearDown(linux.dispose);
+
+      expect(await linux.show(tooltip: 'Ferret', items: items), isTrue);
+      expect(watcher.registered.single, startsWith(':'));
+    });
+
     test('an installed icon is shown by its name', () async {
       final linux = tray(
         files: {'/usr/share/icons/hicolor/48x48/apps/io.sofluffy.ferret.png'},

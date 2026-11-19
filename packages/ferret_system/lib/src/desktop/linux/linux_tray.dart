@@ -76,9 +76,7 @@ class LinuxTray implements DesktopTray {
     final item = StatusNotifierItem(iconName: name, iconThemePath: themePath);
     await item.setTooltip(tooltip);
     try {
-      final busName = 'org.kde.StatusNotifierItem-$pid-1';
-      _busName = busName;
-      await client.requestName(busName);
+      _busName = await _claimName(client);
       await client.registerObject(item);
       await client.registerObject(_menu);
       _item = item;
@@ -121,6 +119,25 @@ class LinuxTray implements DesktopTray {
     } on Object {
       return null;
     }
+  }
+
+  /// The well-known name the spec suggests. A Flatpak may not own it, and
+  /// the watcher takes the connection's unique name just as well.
+  Future<String> _claimName(DBusClient client) async {
+    final wellKnown = 'org.kde.StatusNotifierItem-$pid-1';
+    try {
+      final reply = await client.requestName(
+        wellKnown,
+        flags: {.doNotQueue},
+      );
+      if (reply == .primaryOwner || reply == .alreadyOwner) {
+        return wellKnown;
+      }
+    } on Object {
+      return client.uniqueName;
+    }
+
+    return client.uniqueName;
   }
 
   Future<bool> _hasWatcher(DBusClient client) async {
