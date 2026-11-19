@@ -1,0 +1,27 @@
+name: ferret_photos
+description: Lists a phone's recent photos and screenshots, makes small thumbnails, copies a photo out for sending and watches for new screenshots, on Android (MediaStore) and iOS (PhotoKit). Platform code for Ferret's Photos, reusable on its own.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_photos
+        pluginClass: FerretPhotosPlugin
+      ios:
+        pluginClass: FerretPhotosPlugin
