@@ -1304,9 +1304,6 @@ class PseudoHandoffLocalizations extends HandoffLocalizationsEn {
   @override
   String get settingsBrowserBridge => pseudo(super.settingsBrowserBridge);
   @override
-  String get settingsBrowserBridgeBody =>
-      pseudo(super.settingsBrowserBridgeBody);
-  @override
   String get browserBridgeListening => pseudo(super.browserBridgeListening);
   @override
   String get browserBridgeFailed => pseudo(super.browserBridgeFailed);
@@ -1373,6 +1370,9 @@ class PseudoHandoffLocalizations extends HandoffLocalizationsEn {
   @override
   String noticeBrowserPairBody(String code) =>
       pseudo(super.noticeBrowserPairBody(code));
+  @override
+  String settingsBrowserBridgeBody(String here) =>
+      pseudo(super.settingsBrowserBridgeBody(here));
   @override
   String continueUntitledFrom(String device) =>
       pseudo(super.continueUntitledFrom(device));
@@ -1771,11 +1771,7 @@ class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
   @override
   String get forgetHistory => pseudo(super.forgetHistory);
   @override
-  String get forgetDetail => pseudo(super.forgetDetail);
-  @override
   String get forgetConfirmTitle => pseudo(super.forgetConfirmTitle);
-  @override
-  String get forgetConfirmBody => pseudo(super.forgetConfirmBody);
   @override
   String get forgetConfirm => pseudo(super.forgetConfirm);
   @override
@@ -1848,6 +1844,11 @@ class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
   @override
   String noticeGroupBody(String sender, String text) =>
       pseudo(super.noticeGroupBody(sender, text));
+  @override
+  String forgetDetail(String here) => pseudo(super.forgetDetail(here));
+  @override
+  String forgetConfirmBody(String here) =>
+      pseudo(super.forgetConfirmBody(here));
 }
 
 class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
@@ -2850,7 +2851,8 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   String notAllowedTitle(String device) =>
       pseudo(super.notAllowedTitle(device));
   @override
-  String notAllowedBody(String device) => pseudo(super.notAllowedBody(device));
+  String notAllowedBody(String device, String here) =>
+      pseudo(super.notAllowedBody(device, here));
   @override
   String noPermissionTitle(String device) =>
       pseudo(super.noPermissionTitle(device));
@@ -2867,7 +2869,8 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   @override
   String empty(String device) => pseudo(super.empty(device));
   @override
-  String hidden(String device) => pseudo(super.hidden(device));
+  String hidden(String device, String here) =>
+      pseudo(super.hidden(device, here));
   @override
   String kindPhoto(String date) => pseudo(super.kindPhoto(date));
   @override
@@ -2888,7 +2891,8 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   @override
   String failOffline(String device) => pseudo(super.failOffline(device));
   @override
-  String failNotAllowed(String device) => pseudo(super.failNotAllowed(device));
+  String failNotAllowed(String device, String here) =>
+      pseudo(super.failNotAllowed(device, here));
   @override
   String failNoPermission(String device) =>
       pseudo(super.failNoPermission(device));
@@ -3083,13 +3087,9 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get activityStop => pseudo(super.activityStop);
   @override
-  String get activeNoticeBody => pseudo(super.activeNoticeBody);
-  @override
   String get openSettings => pseudo(super.openSettings);
   @override
   String get dismiss => pseudo(super.dismiss);
-  @override
-  String get settingsEnabled => pseudo(super.settingsEnabled);
   @override
   String get settingsEnabledBody => pseudo(super.settingsEnabledBody);
   @override
@@ -3121,11 +3121,7 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get statusFailed => pseudo(super.statusFailed);
   @override
-  String get statusFailedBody => pseudo(super.statusFailedBody);
-  @override
   String get checkAgain => pseudo(super.checkAgain);
-  @override
-  String get settingsPerDevice => pseudo(super.settingsPerDevice);
   @override
   String get settingsHostTitle => pseudo(super.settingsHostTitle);
   @override
@@ -3144,8 +3140,6 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String get permissionAlwaysOff => pseudo(super.permissionAlwaysOff);
   @override
   String get settingsHistoryTitle => pseudo(super.settingsHistoryTitle);
-  @override
-  String get settingsHistoryEmpty => pseudo(super.settingsHistoryEmpty);
   @override
   String get clearHistory => pseudo(super.clearHistory);
   @override
@@ -3218,8 +3212,6 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get tryAgain => pseudo(super.tryAgain);
   @override
-  String get healthHostOffHelp => pseudo(super.healthHostOffHelp);
-  @override
   String get healthHostNeedsAccessHelp =>
       pseudo(super.healthHostNeedsAccessHelp);
   @override
@@ -3250,11 +3242,13 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get presentWorksWith => pseudo(super.presentWorksWith);
   @override
-  String consentTitle(String device) => pseudo(super.consentTitle(device));
+  String consentTitle(String device, String here) =>
+      pseudo(super.consentTitle(device, here));
   @override
   String consentBody(String device) => pseudo(super.consentBody(device));
   @override
-  String controlledBy(String device) => pseudo(super.controlledBy(device));
+  String controlledBy(String device, String here) =>
+      pseudo(super.controlledBy(device, here));
   @override
   String controlledSince(String time) => pseudo(super.controlledSince(time));
   @override
@@ -3267,15 +3261,27 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String activityControlledFor(int minutes) =>
       pseudo(super.activityControlledFor(minutes));
   @override
-  String permissionTitle(String device) =>
-      pseudo(super.permissionTitle(device));
+  String activeNoticeBody(String here) => pseudo(super.activeNoticeBody(here));
+  @override
+  String permissionTitle(String device, String here) =>
+      pseudo(super.permissionTitle(device, here));
   @override
   String permissionBody(String device) => pseudo(super.permissionBody(device));
   @override
-  String auditLine(String device, int minutes, String time) =>
-      pseudo(super.auditLine(device, minutes, time));
+  String auditLine(String device, int minutes, String time, String here) =>
+      pseudo(super.auditLine(device, minutes, time, here));
+  @override
+  String settingsEnabled(String here) => pseudo(super.settingsEnabled(here));
+  @override
+  String statusFailedBody(String here) => pseudo(super.statusFailedBody(here));
+  @override
+  String settingsPerDevice(String here) =>
+      pseudo(super.settingsPerDevice(here));
   @override
   String permissionAlways(String host) => pseudo(super.permissionAlways(host));
+  @override
+  String settingsHistoryEmpty(String here) =>
+      pseudo(super.settingsHistoryEmpty(here));
   @override
   String requesting(String device) => pseudo(super.requesting(device));
   @override
@@ -3324,8 +3330,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String healthUnsupportedHelp(String device) =>
       pseudo(super.healthUnsupportedHelp(device));
   @override
-  String healthTurnedOffHelp(String device) =>
-      pseudo(super.healthTurnedOffHelp(device));
+  String healthTurnedOffHelp(String device, String host) =>
+      pseudo(super.healthTurnedOffHelp(device, host));
   @override
   String healthVersion(String device) => pseudo(super.healthVersion(device));
   @override
@@ -3346,6 +3352,9 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
       pseudo(super.healthHostControlling(host));
   @override
   String healthHostOff(String host) => pseudo(super.healthHostOff(host));
+  @override
+  String healthHostOffHelp(String here) =>
+      pseudo(super.healthHostOffHelp(here));
   @override
   String healthHostNeedsAccess(String host) =>
       pseudo(super.healthHostNeedsAccess(host));
@@ -3395,8 +3404,6 @@ class PseudoScriptingLocalizations extends ScriptingLocalizationsEn {
   @override
   String get permissionDetail => pseudo(super.permissionDetail);
   @override
-  String get settingsIntro => pseudo(super.settingsIntro);
-  @override
   String get hooksFolder => pseudo(super.hooksFolder);
   @override
   String get hooksNone => pseudo(super.hooksNone);
@@ -3416,6 +3423,8 @@ class PseudoScriptingLocalizations extends ScriptingLocalizationsEn {
   @override
   String permissionLabel(String device) =>
       pseudo(super.permissionLabel(device));
+  @override
+  String settingsIntro(String here) => pseudo(super.settingsIntro(here));
   @override
   String hooksActive(String events) => pseudo(super.hooksActive(events));
   @override
@@ -4513,13 +4522,7 @@ class PseudoWakeLocalizations extends WakeLocalizationsEn {
   @override
   String get helpIphone => pseudo(super.helpIphone);
   @override
-  String get settingsShare => pseudo(super.settingsShare);
-  @override
-  String get settingsShareBody => pseudo(super.settingsShareBody);
-  @override
   String get settingsRelay => pseudo(super.settingsRelay);
-  @override
-  String get settingsRelayBody => pseudo(super.settingsRelayBody);
   @override
   String get settingsReady => pseudo(super.settingsReady);
   @override
@@ -4534,4 +4537,12 @@ class PseudoWakeLocalizations extends WakeLocalizationsEn {
   String healthHelp(String name) => pseudo(super.healthHelp(name));
   @override
   String helpToldTitle(String name) => pseudo(super.helpToldTitle(name));
+  @override
+  String settingsShare(String here) => pseudo(super.settingsShare(here));
+  @override
+  String settingsShareBody(String here) =>
+      pseudo(super.settingsShareBody(here));
+  @override
+  String settingsRelayBody(String here) =>
+      pseudo(super.settingsRelayBody(here));
 }

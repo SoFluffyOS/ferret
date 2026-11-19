@@ -239,8 +239,8 @@ abstract class PhotosLocalizations {
   /// No description provided for @notAllowedBody.
   ///
   /// In en, this message translates to:
-  /// **'Your photos stay on the phone until you allow it. On {device}, open this computer in Ferret and turn on the photos switch under What it can use.'**
-  String notAllowedBody(String device);
+  /// **'Your photos stay on the phone until you allow it. On {device}, open {here, select, macOS{this Mac} windows{this PC} other{this computer}} in Ferret and turn on the photos switch under What it can use.'**
+  String notAllowedBody(String device, String here);
 
   /// No description provided for @noPermissionTitle.
   ///
@@ -287,8 +287,8 @@ abstract class PhotosLocalizations {
   /// Shown while previews from that phone are off here, the screen is locked, or another account is in front.
   ///
   /// In en, this message translates to:
-  /// **'Photos from {device} are hidden on this computer right now.'**
-  String hidden(String device);
+  /// **'Photos from {device} are hidden on {here, select, macOS{this Mac} windows{this PC} other{this computer}} right now.'**
+  String hidden(String device, String here);
 
   /// Read by screen readers for a tile.
   ///
@@ -347,8 +347,8 @@ abstract class PhotosLocalizations {
   /// No description provided for @failNotAllowed.
   ///
   /// In en, this message translates to:
-  /// **'{device} doesn\'t share photos with this computer.'**
-  String failNotAllowed(String device);
+  /// **'{device} doesn\'t share photos with {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String failNotAllowed(String device, String here);
 
   /// No description provided for @failNoPermission.
   ///

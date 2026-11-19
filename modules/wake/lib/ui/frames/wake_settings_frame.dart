@@ -46,14 +46,14 @@ class WakeSettingsFrame extends StatelessWidget {
             child: CardLine(link: card.link, setting: card.setting),
           ),
         SettingSwitchRow(
-          title: l10n.settingsShare,
-          body: l10n.settingsShareBody,
+          title: l10n.settingsShare(ThisComputer.here),
+          body: l10n.settingsShareBody(ThisComputer.here),
           value: shares,
           onChanged: (value) => unawaited(viewModel.setShares(value)),
         ),
         SettingSwitchRow(
           title: l10n.settingsRelay,
-          body: l10n.settingsRelayBody,
+          body: l10n.settingsRelayBody(ThisComputer.here),
           value: relays,
           onChanged: (value) => unawaited(viewModel.setRelays(value)),
         ),

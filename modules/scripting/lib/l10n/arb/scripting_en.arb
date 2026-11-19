@@ -32,7 +32,14 @@
     }
   },
   "permissionDetail": "For ferret-cli notify. Off until you turn it on.",
-  "settingsIntro": "Scripts on this computer can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.",
+  "settingsIntro": "Scripts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.",
+  "@settingsIntro": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "hooksFolder": "Hooks folder",
   "hooksNone": "No hooks yet.",
   "hooksActive": "Hooks that run: {events}",

@@ -23,7 +23,7 @@ class HostPermissionCard extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.shieldAlert,
       iconTone: .danger,
-      title: l10n.permissionTitle(ask.deviceName),
+      title: l10n.permissionTitle(ask.deviceName, ThisComputer.here),
       subtitle: l10n.permissionBody(ask.deviceName),
       trailing: HostDismissButton(
         label: l10n.dismiss,

@@ -32,8 +32,17 @@ class ScriptingLocalizationsVi extends ScriptingLocalizations {
       'Dành cho ferret-cli notify. Tắt cho đến khi bạn bật.';
 
   @override
-  String get settingsIntro =>
-      'Tập lệnh trên máy tính này có thể theo dõi Ferret bằng ferret-cli watch, và phản hồi bằng hook: một tệp chạy được mang tên một sự kiện, như device.connected, trong thư mục bên dưới.';
+  String settingsIntro(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Tập lệnh trên $_temp0 có thể theo dõi Ferret bằng ferret-cli watch, và phản hồi bằng hook: một tệp chạy được mang tên một sự kiện, như device.connected, trong thư mục bên dưới.';
+  }
 
   @override
   String get hooksFolder => 'Thư mục hook';

@@ -237,8 +237,17 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
   String get settingsBrowserBridge => 'Browser extension';
 
   @override
-  String get settingsBrowserBridgeBody =>
-      'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.';
+  String settingsBrowserBridgeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on $_temp0.';
+  }
 
   @override
   String get browserBridgeListening =>

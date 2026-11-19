@@ -458,8 +458,8 @@ abstract class HandoffLocalizations {
   /// No description provided for @settingsBrowserBridgeBody.
   ///
   /// In en, this message translates to:
-  /// **'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.'**
-  String get settingsBrowserBridgeBody;
+  /// **'Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String settingsBrowserBridgeBody(String here);
 
   /// No description provided for @browserBridgeListening.
   ///

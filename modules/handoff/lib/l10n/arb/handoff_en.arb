@@ -201,7 +201,14 @@
     }
   },
   "settingsBrowserBridge": "Browser extension",
-  "settingsBrowserBridgeBody": "Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on this computer.",
+  "settingsBrowserBridgeBody": "Lets the Ferret extension in Chrome, Edge, Brave or Firefox send tabs and open pages from your devices. It only listens on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
+  "@settingsBrowserBridgeBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "browserBridgeListening": "To add another browser, pair from the extension's settings page.",
   "browserBridgeFailed": "Ferret couldn't start the browser connection. Another copy of Ferret may be running: quit it, then try again.",
   "browserBridgeRetry": "Try again",

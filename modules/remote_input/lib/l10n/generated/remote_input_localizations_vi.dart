@@ -19,8 +19,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get back => 'Quay lại';
 
   @override
-  String consentTitle(String device) {
-    return 'Cho $device điều khiển máy tính này?';
+  String consentTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho $device điều khiển $_temp0?';
   }
 
   @override
@@ -38,8 +46,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get dontAllow => 'Không cho phép';
 
   @override
-  String controlledBy(String device) {
-    return '$device đang điều khiển máy tính này';
+  String controlledBy(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device đang điều khiển $_temp0';
   }
 
   @override
@@ -91,12 +107,29 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String get activeNoticeBody =>
-      'Chạm Dừng điều khiển để lấy lại máy tính này.';
+  String activeNoticeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chạm Dừng điều khiển để lấy lại $_temp0.';
+  }
 
   @override
-  String permissionTitle(String device) {
-    return '$device chưa thể điều khiển máy tính này';
+  String permissionTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device chưa thể điều khiển $_temp0';
   }
 
   @override
@@ -111,19 +144,36 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get dismiss => 'Bỏ qua';
 
   @override
-  String auditLine(String device, int minutes, String time) {
-    String _temp0 = intl.Intl.pluralLogic(
+  String auditLine(String device, int minutes, String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    String _temp1 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
       other: 'trong $minutes phút',
       zero: 'chưa đến 1 phút',
     );
-    return '$device đã điều khiển máy tính này $_temp0 lúc $time';
+    return '$device đã điều khiển $_temp0 $_temp1 lúc $time';
   }
 
   @override
-  String get settingsEnabled =>
-      'Cho điện thoại của tôi điều khiển máy tính này';
+  String settingsEnabled(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho điện thoại của tôi điều khiển $_temp0';
+  }
 
   @override
   String get settingsEnabledBody =>
@@ -175,15 +225,33 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get statusFailed => 'Chưa kiểm tra';
 
   @override
-  String get statusFailedBody =>
-      'Ferret chưa biết mình có được điều khiển máy tính này hay không. Hãy kiểm tra lại.';
+  String statusFailedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ferret chưa biết mình có được điều khiển $_temp0 hay không. Hãy kiểm tra lại.';
+  }
 
   @override
   String get checkAgain => 'Kiểm tra lại';
 
   @override
-  String get settingsPerDevice =>
-      'Để một điện thoại điều khiển máy tính này mà không cần hỏi, mở điện thoại đó từ Trang chủ.';
+  String settingsPerDevice(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Để một điện thoại điều khiển $_temp0 mà không cần hỏi, mở điện thoại đó từ Trang chủ.';
+  }
 
   @override
   String get settingsHostTitle => 'Con trỏ và bàn phím';
@@ -228,8 +296,17 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get settingsHistoryTitle => 'Lịch sử';
 
   @override
-  String get settingsHistoryEmpty =>
-      'Chưa có thiết bị nào điều khiển máy tính này.';
+  String settingsHistoryEmpty(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chưa có thiết bị nào điều khiển $_temp0.';
+  }
 
   @override
   String get clearHistory => 'Xoá lịch sử';
@@ -440,8 +517,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String healthTurnedOffHelp(String device) {
-    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển máy tính này.';
+  String healthTurnedOffHelp(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển $_temp0.';
   }
 
   @override
@@ -517,8 +602,17 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String get healthHostOffHelp =>
-      'Mở Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển máy tính này.';
+  String healthHostOffHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Mở Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển $_temp0.';
+  }
 
   @override
   String healthHostNeedsAccess(String host) {

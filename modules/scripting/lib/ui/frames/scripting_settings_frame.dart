@@ -30,7 +30,12 @@ class ScriptingSettingsFrame extends StatelessWidget {
 
     return GroupedCard(
       children: [
-        GroupedCell(child: Text(l10n.settingsIntro, style: typography.base2)),
+        GroupedCell(
+          child: Text(
+            l10n.settingsIntro(ThisComputer.here),
+            style: typography.base2,
+          ),
+        ),
         GroupedCell(
           child: Column(
             crossAxisAlignment: .start,

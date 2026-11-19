@@ -305,14 +305,14 @@ abstract class WakeLocalizations {
   /// No description provided for @settingsShare.
   ///
   /// In en, this message translates to:
-  /// **'Let my devices wake this computer'**
-  String get settingsShare;
+  /// **'Let my devices wake {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String settingsShare(String here);
 
   /// No description provided for @settingsShareBody.
   ///
   /// In en, this message translates to:
-  /// **'Tells your paired devices, and only them, this computer\'s network card address (MAC), so they can wake it.'**
-  String get settingsShareBody;
+  /// **'Tells your paired devices, and only them, {here, select, macOS{this Mac\'s} windows{this PC\'s} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}\'s}} network card address (MAC), so they can wake it.'**
+  String settingsShareBody(String here);
 
   /// No description provided for @settingsRelay.
   ///
@@ -323,8 +323,8 @@ abstract class WakeLocalizations {
   /// No description provided for @settingsRelayBody.
   ///
   /// In en, this message translates to:
-  /// **'When one of your phones asks, this computer sends the wake signal to another of your computers on this network.'**
-  String get settingsRelayBody;
+  /// **'When one of your phones asks, {here, select, macOS{this Mac} windows{this PC} other{this computer}} sends the wake signal to another of your computers on this network.'**
+  String settingsRelayBody(String here);
 
   /// No description provided for @settingsReady.
   ///

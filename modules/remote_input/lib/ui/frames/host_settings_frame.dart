@@ -58,7 +58,7 @@ class _HostSettingsFrameState extends State<HostSettingsFrame> {
         GroupedCard(
           children: [
             SettingSwitchRow(
-              title: l10n.settingsEnabled,
+              title: l10n.settingsEnabled(ThisComputer.here),
               body: l10n.settingsEnabledBody,
               value: enabled,
               onChanged: (value) => unawaited(viewModel.setEnabled(value)),
@@ -67,7 +67,7 @@ class _HostSettingsFrameState extends State<HostSettingsFrame> {
               GroupedCell(child: _Status(status: status)),
             GroupedCell(
               child: Text(
-                l10n.settingsPerDevice,
+                l10n.settingsPerDevice(ThisComputer.here),
                 style: context.fluffyTheme.typography.caption1.copyWith(
                   color: context.palette.mutedText,
                 ),
@@ -139,7 +139,7 @@ class _History extends StatelessWidget {
             if (history.isEmpty)
               GroupedCell(
                 child: Text(
-                  l10n.settingsHistoryEmpty,
+                  l10n.settingsHistoryEmpty(ThisComputer.here),
                   style: typography.caption1.copyWith(
                     color: palette.mutedText,
                   ),

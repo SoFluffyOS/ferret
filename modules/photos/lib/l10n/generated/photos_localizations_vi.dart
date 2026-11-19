@@ -100,8 +100,16 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String notAllowedBody(String device) {
-    return 'Ảnh của bạn ở lại trên điện thoại cho đến khi bạn cho phép. Trên $device, mở máy tính này trong Ferret và bật công tắc ảnh trong mục Những gì thiết bị được dùng.';
+  String notAllowedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ảnh của bạn ở lại trên điện thoại cho đến khi bạn cho phép. Trên $device, mở $_temp0 trong Ferret và bật công tắc ảnh trong mục Những gì thiết bị được dùng.';
   }
 
   @override
@@ -139,8 +147,16 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String hidden(String device) {
-    return 'Ảnh từ $device đang bị ẩn trên máy này.';
+  String hidden(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy này',
+      },
+    );
+    return 'Ảnh từ $device đang bị ẩn trên $_temp0.';
   }
 
   @override
@@ -197,8 +213,16 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String failNotAllowed(String device) {
-    return '$device không chia sẻ ảnh với máy này.';
+  String failNotAllowed(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy này',
+      },
+    );
+    return '$device không chia sẻ ảnh với $_temp0.';
   }
 
   @override

@@ -92,10 +92,13 @@
       }
     }
   },
-  "notAllowedBody": "Your photos stay on the phone until you allow it. On {device}, open this computer in Ferret and turn on the photos switch under What it can use.",
+  "notAllowedBody": "Your photos stay on the phone until you allow it. On {device}, open {here, select, macOS{this Mac} windows{this PC} other{this computer}} in Ferret and turn on the photos switch under What it can use.",
   "@notAllowedBody": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -150,11 +153,14 @@
       }
     }
   },
-  "hidden": "Photos from {device} are hidden on this computer right now.",
+  "hidden": "Photos from {device} are hidden on {here, select, macOS{this Mac} windows{this PC} other{this computer}} right now.",
   "@hidden": {
     "description": "Shown while previews from that phone are off here, the screen is locked, or another account is in front.",
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -231,10 +237,13 @@
       }
     }
   },
-  "failNotAllowed": "{device} doesn't share photos with this computer.",
+  "failNotAllowed": "{device} doesn't share photos with {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
   "@failNotAllowed": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }

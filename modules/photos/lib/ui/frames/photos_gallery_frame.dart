@@ -80,7 +80,7 @@ class PhotosGalleryFrame extends StatelessWidget {
         if (!showsPreviews)
           GalleryMessage(
             icon: LucideIcons.eyeOff,
-            title: l10n.hidden(deviceName),
+            title: l10n.hidden(deviceName, ThisComputer.here),
           ),
         if (showsPreviews && state != .photos)
           _message(context, state, viewModel),
@@ -193,7 +193,7 @@ class PhotosGalleryFrame extends StatelessWidget {
       .notAllowed => GalleryMessage(
         icon: LucideIcons.lock,
         title: l10n.notAllowedTitle(deviceName),
-        body: l10n.notAllowedBody(deviceName),
+        body: l10n.notAllowedBody(deviceName, ThisComputer.here),
         action: askButton,
         note: askedNote,
       ),

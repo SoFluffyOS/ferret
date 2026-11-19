@@ -632,8 +632,8 @@ abstract class MessagesLocalizations {
   /// No description provided for @forgetDetail.
   ///
   /// In en, this message translates to:
-  /// **'Ferret keeps recent texts on this computer so they show while the phone is offline.'**
-  String get forgetDetail;
+  /// **'Ferret keeps recent texts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} so they show while the phone is offline.'**
+  String forgetDetail(String here);
 
   /// No description provided for @forgetConfirmTitle.
   ///
@@ -644,8 +644,8 @@ abstract class MessagesLocalizations {
   /// No description provided for @forgetConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'This deletes the texts saved on this computer. Your phone keeps them all.'**
-  String get forgetConfirmBody;
+  /// **'This deletes the texts saved on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Your phone keeps them all.'**
+  String forgetConfirmBody(String here);
 
   /// No description provided for @forgetConfirm.
   ///

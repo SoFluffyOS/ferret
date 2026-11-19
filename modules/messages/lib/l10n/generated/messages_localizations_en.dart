@@ -359,15 +359,33 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get forgetHistory => 'Forget saved texts';
 
   @override
-  String get forgetDetail =>
-      'Ferret keeps recent texts on this computer so they show while the phone is offline.';
+  String forgetDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Ferret keeps recent texts on $_temp0 so they show while the phone is offline.';
+  }
 
   @override
   String get forgetConfirmTitle => 'Forget saved texts?';
 
   @override
-  String get forgetConfirmBody =>
-      'This deletes the texts saved on this computer. Your phone keeps them all.';
+  String forgetConfirmBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'This deletes the texts saved on $_temp0. Your phone keeps them all.';
+  }
 
   @override
   String get forgetConfirm => 'Forget';

@@ -358,15 +358,33 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
   String get forgetHistory => 'Xoá tin nhắn đã lưu';
 
   @override
-  String get forgetDetail =>
-      'Ferret lưu các tin nhắn gần đây trên máy tính này để vẫn xem được khi điện thoại ngoại tuyến.';
+  String forgetDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ferret lưu các tin nhắn gần đây trên $_temp0 để vẫn xem được khi điện thoại ngoại tuyến.';
+  }
 
   @override
   String get forgetConfirmTitle => 'Xoá tin nhắn đã lưu?';
 
   @override
-  String get forgetConfirmBody =>
-      'Thao tác này xoá các tin nhắn đã lưu trên máy tính này. Điện thoại của bạn vẫn giữ nguyên tất cả.';
+  String forgetConfirmBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Thao tác này xoá các tin nhắn đã lưu trên $_temp0. Điện thoại của bạn vẫn giữ nguyên tất cả.';
+  }
 
   @override
   String get forgetConfirm => 'Xoá';

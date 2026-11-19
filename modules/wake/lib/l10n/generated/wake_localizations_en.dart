@@ -129,18 +129,54 @@ class WakeLocalizationsEn extends WakeLocalizations {
       'iOS doesn\'t let apps broadcast on the network, so an iPhone can\'t send the magic packet by itself. Ferret asks another of your devices that is on, such as a Mac, a PC or ferret-cli on a home server, to send it for you.';
 
   @override
-  String get settingsShare => 'Let my devices wake this computer';
+  String settingsShare(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Let my devices wake $_temp0';
+  }
 
   @override
-  String get settingsShareBody =>
-      'Tells your paired devices, and only them, this computer\'s network card address (MAC), so they can wake it.';
+  String settingsShareBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': '$_temp0\'s',
+      },
+    );
+    return 'Tells your paired devices, and only them, $_temp1 network card address (MAC), so they can wake it.';
+  }
 
   @override
   String get settingsRelay => 'Wake computers for my phones';
 
   @override
-  String get settingsRelayBody =>
-      'When one of your phones asks, this computer sends the wake signal to another of your computers on this network.';
+  String settingsRelayBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'When one of your phones asks, $_temp0 sends the wake signal to another of your computers on this network.';
+  }
 
   @override
   String get settingsReady => 'Ready';

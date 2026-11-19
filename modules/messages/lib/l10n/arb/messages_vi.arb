@@ -89,9 +89,9 @@
   "notifySetting": "Hiện tin nhắn mới dưới dạng thông báo",
   "notifyDetail": "Kèm nút Trả lời, trừ khi cuộc trò chuyện đang mở sẵn ở đây.",
   "forgetHistory": "Xoá tin nhắn đã lưu",
-  "forgetDetail": "Ferret lưu các tin nhắn gần đây trên máy tính này để vẫn xem được khi điện thoại ngoại tuyến.",
+  "forgetDetail": "Ferret lưu các tin nhắn gần đây trên {here, select, macOS{Mac này} windows{PC này} other{máy tính này}} để vẫn xem được khi điện thoại ngoại tuyến.",
   "forgetConfirmTitle": "Xoá tin nhắn đã lưu?",
-  "forgetConfirmBody": "Thao tác này xoá các tin nhắn đã lưu trên máy tính này. Điện thoại của bạn vẫn giữ nguyên tất cả.",
+  "forgetConfirmBody": "Thao tác này xoá các tin nhắn đã lưu trên {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}. Điện thoại của bạn vẫn giữ nguyên tất cả.",
   "forgetConfirm": "Xoá",
   "cancel": "Huỷ"
 }

@@ -37,7 +37,7 @@ class BrowserSettingsFrame extends StatelessWidget {
       children: [
         SettingSwitchRow(
           title: l10n.settingsBrowserBridge,
-          body: l10n.settingsBrowserBridgeBody,
+          body: l10n.settingsBrowserBridgeBody(ThisComputer.here),
           value: enabled,
           onChanged: viewModel.setBrowserBridgeEnabled,
         ),

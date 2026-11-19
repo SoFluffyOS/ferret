@@ -32,8 +32,17 @@ class ScriptingLocalizationsEn extends ScriptingLocalizations {
       'For ferret-cli notify. Off until you turn it on.';
 
   @override
-  String get settingsIntro =>
-      'Scripts on this computer can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.';
+  String settingsIntro(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Scripts on $_temp0 can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.';
+  }
 
   @override
   String get hooksFolder => 'Hooks folder';

@@ -78,10 +78,31 @@
   "helpFirmware": "Press F2, Del or F12 while the PC starts. Turn on “Wake on LAN”, “Power On by PCI-E” or a setting like it, and turn off “ErP” or “Deep Sleep”, which cut power to the network card.",
   "helpIphoneTitle": "From an iPhone",
   "helpIphone": "iOS doesn't let apps broadcast on the network, so an iPhone can't send the magic packet by itself. Ferret asks another of your devices that is on, such as a Mac, a PC or ferret-cli on a home server, to send it for you.",
-  "settingsShare": "Let my devices wake this computer",
-  "settingsShareBody": "Tells your paired devices, and only them, this computer's network card address (MAC), so they can wake it.",
+  "settingsShare": "Let my devices wake {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@settingsShare": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsShareBody": "Tells your paired devices, and only them, {here, select, macOS{this Mac's} windows{this PC's} other{{here, select, macOS{this Mac} windows{this PC} other{this computer}}'s}} network card address (MAC), so they can wake it.",
+  "@settingsShareBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsRelay": "Wake computers for my phones",
-  "settingsRelayBody": "When one of your phones asks, this computer sends the wake signal to another of your computers on this network.",
+  "settingsRelayBody": "When one of your phones asks, {here, select, macOS{this Mac} windows{this PC} other{this computer}} sends the wake signal to another of your computers on this network.",
+  "@settingsRelayBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsReady": "Ready",
   "settingsNotReady": "Off",
   "settingsWifiOnly": "Wi-Fi only"

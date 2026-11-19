@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:intl/intl.dart';
 import 'package:remote_input/l10n/l10n.dart';
@@ -40,6 +41,7 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     record.deviceName,
     record.duration.inMinutes,
     _time(record.startedAt),
+    ThisComputer.here,
   );
 
   String since(DateTime startedAt) => controlledSince(_time(startedAt));
@@ -72,7 +74,7 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     InjectorStatus(state: .needsPermission) => statusNeedsPermissionBody,
     InjectorStatus(reason: .noLinuxBackend) => statusNoLinuxBackendBody,
     InjectorStatus(reason: .ydotoolNotRunning) => statusYdotoolNotRunningBody,
-    InjectorStatus(state: .unavailable) => statusFailedBody,
+    InjectorStatus(state: .unavailable) => statusFailedBody(ThisComputer.here),
     _ => null,
   };
 

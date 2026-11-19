@@ -6,10 +6,13 @@
     "description": "Button on the phone that opens the touchpad to control that computer"
   },
   "back": "Back",
-  "consentTitle": "Let {device} control this computer?",
+  "consentTitle": "Let {device} control {here, select, macOS{this Mac} windows{this PC} other{this computer}}?",
   "@consentTitle": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -25,10 +28,13 @@
   "allowOnce": "Allow once",
   "allowAlways": "Always allow",
   "dontAllow": "Don't allow",
-  "controlledBy": "{device} is controlling this computer",
+  "controlledBy": "{device} is controlling {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@controlledBy": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -78,11 +84,21 @@
       }
     }
   },
-  "activeNoticeBody": "Tap Stop control to take this computer back.",
-  "permissionTitle": "{device} can't control this computer yet",
+  "activeNoticeBody": "Tap Stop control to take {here, select, macOS{this Mac} windows{this PC} other{this computer}} back.",
+  "@activeNoticeBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionTitle": "{device} can't control {here, select, macOS{this Mac} windows{this PC} other{this computer}} yet",
   "@permissionTitle": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -97,7 +113,7 @@
   },
   "openSettings": "Open Settings",
   "dismiss": "Dismiss",
-  "auditLine": "{device} controlled this computer for {minutes, plural, =0{less than a minute} =1{1 min} other{{minutes} min}} at {time}",
+  "auditLine": "{device} controlled {here, select, macOS{this Mac} windows{this PC} other{this computer}} for {minutes, plural, =0{less than a minute} =1{1 min} other{{minutes} min}} at {time}",
   "@auditLine": {
     "placeholders": {
       "device": {
@@ -108,10 +124,20 @@
       },
       "time": {
         "type": "String"
+      },
+      "here": {
+        "type": "String"
       }
     }
   },
-  "settingsEnabled": "Let my phones control this computer",
+  "settingsEnabled": "Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@settingsEnabled": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsEnabledBody": "A phone becomes its touchpad and keyboard. Each phone asks you first.",
   "statusReadyQuartz": "On. Uses Accessibility access.",
   "statusReadySendInput": "On. Apps running as administrator can't be controlled.",
@@ -126,9 +152,23 @@
   "statusYdotoolNotRunning": "ydotool is installed, but its service isn't running",
   "statusYdotoolNotRunningBody": "Start the ydotoold service, then check again.",
   "statusFailed": "Not checked yet",
-  "statusFailedBody": "Ferret doesn't know yet whether it may control this computer. Check again.",
+  "statusFailedBody": "Ferret doesn't know yet whether it may control {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Check again.",
+  "@statusFailedBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "checkAgain": "Check again",
-  "settingsPerDevice": "To let one phone control this computer without asking, open the phone from Home.",
+  "settingsPerDevice": "To let one phone control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open the phone from Home.",
+  "@settingsPerDevice": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsHostTitle": "Pointer and keyboard",
   "settingsTouchpadTitle": "Touchpad",
   "summaryOn": "On",
@@ -147,7 +187,14 @@
   "permissionAlwaysDetail": "You still see it the whole time, with Stop control.",
   "permissionAlwaysOff": "Control is off. Turn it on in Settings → Control.",
   "settingsHistoryTitle": "History",
-  "settingsHistoryEmpty": "No device controlled this computer yet.",
+  "settingsHistoryEmpty": "No device controlled {here, select, macOS{this Mac} windows{this PC} other{this computer}} yet.",
+  "@settingsHistoryEmpty": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "clearHistory": "Clear history",
   "settingsSpeed": "Touchpad speed",
   "settingsSpeedBody": "How far the pointer moves for the same finger move.",
@@ -352,10 +399,13 @@
       }
     }
   },
-  "healthTurnedOffHelp": "On {device}: open Ferret → Settings → Control and turn on Let my phones control this computer.",
+  "healthTurnedOffHelp": "On {device}: open Ferret → Settings → Control and turn on Let my phones control {host, select, mac{this Mac} windows{this PC} other{this computer}}.",
   "@healthTurnedOffHelp": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "host": {
         "type": "String"
       }
     }
@@ -428,7 +478,14 @@
       }
     }
   },
-  "healthHostOffHelp": "Open Settings → Control and turn on Let my phones control this computer.",
+  "healthHostOffHelp": "Open Settings → Control and turn on Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
+  "@healthHostOffHelp": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "healthHostNeedsAccess": "Needs Accessibility access on {host, select, mac{this Mac} windows{this PC} other{this computer}}",
   "@healthHostNeedsAccess": {
     "description": "host is mac, windows or linux.",

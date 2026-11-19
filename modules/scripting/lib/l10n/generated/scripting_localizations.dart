@@ -134,8 +134,8 @@ abstract class ScriptingLocalizations {
   /// No description provided for @settingsIntro.
   ///
   /// In en, this message translates to:
-  /// **'Scripts on this computer can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.'**
-  String get settingsIntro;
+  /// **'Scripts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.'**
+  String settingsIntro(String here);
 
   /// No description provided for @hooksFolder.
   ///

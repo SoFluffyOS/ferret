@@ -129,8 +129,8 @@ class ControlNotices {
       LocalNotice(
         id: activeNotice,
         channel: .incoming,
-        title: l10n.controlledBy(active.deviceName),
-        body: l10n.activeNoticeBody,
+        title: l10n.controlledBy(active.deviceName, ThisComputer.here),
+        body: l10n.activeNoticeBody(ThisComputer.here),
         category: activeNotice,
         silent: true,
         ongoing: true,
@@ -159,7 +159,7 @@ class ControlNotices {
       LocalNotice(
         id: permissionNotice,
         channel: .problems,
-        title: l10n.permissionTitle(ask.deviceName),
+        title: l10n.permissionTitle(ask.deviceName, ThisComputer.here),
         body: l10n.permissionBody(ask.deviceName),
         category: permissionNotice,
       ),

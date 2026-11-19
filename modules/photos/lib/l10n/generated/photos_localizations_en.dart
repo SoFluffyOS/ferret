@@ -101,8 +101,16 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
-  String notAllowedBody(String device) {
-    return 'Your photos stay on the phone until you allow it. On $device, open this computer in Ferret and turn on the photos switch under What it can use.';
+  String notAllowedBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Your photos stay on the phone until you allow it. On $device, open $_temp0 in Ferret and turn on the photos switch under What it can use.';
   }
 
   @override
@@ -140,8 +148,16 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
-  String hidden(String device) {
-    return 'Photos from $device are hidden on this computer right now.';
+  String hidden(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Photos from $device are hidden on $_temp0 right now.';
   }
 
   @override
@@ -200,8 +216,16 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
-  String failNotAllowed(String device) {
-    return '$device doesn\'t share photos with this computer.';
+  String failNotAllowed(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device doesn\'t share photos with $_temp0.';
   }
 
   @override

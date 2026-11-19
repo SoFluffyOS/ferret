@@ -280,7 +280,7 @@ class PhotosFeatureUi extends FeatureUi {
         title: l10n.activityFailed(device),
         detail: switch (save.problem) {
           .offline => l10n.failOffline(device),
-          .notAllowed => l10n.failNotAllowed(device),
+          .notAllowed => l10n.failNotAllowed(device, ThisComputer.here),
           .noPermission => l10n.failNoPermission(device),
           .missing => l10n.failMissing(device),
           .failed || null => l10n.failOther,

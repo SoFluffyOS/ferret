@@ -237,8 +237,17 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
   String get settingsBrowserBridge => 'Tiện ích trình duyệt';
 
   @override
-  String get settingsBrowserBridgeBody =>
-      'Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Tiện ích chỉ kết nối trong máy tính này.';
+  String settingsBrowserBridgeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Tiện ích chỉ kết nối trong $_temp0.';
+  }
 
   @override
   String get browserBridgeListening =>

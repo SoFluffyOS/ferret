@@ -60,7 +60,7 @@
   "browserPairDeny": "Không cho phép",
   "noticeBrowserPairBody": "Mã {code}. Mở Ferret để cho phép.",
   "settingsBrowserBridge": "Tiện ích trình duyệt",
-  "settingsBrowserBridgeBody": "Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Tiện ích chỉ kết nối trong máy tính này.",
+  "settingsBrowserBridgeBody": "Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Tiện ích chỉ kết nối trong {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}.",
   "browserBridgeListening": "Để thêm trình duyệt khác, hãy ghép đôi từ trang cài đặt của tiện ích.",
   "browserBridgeFailed": "Ferret không khởi động được kết nối với trình duyệt. Có thể một bản Ferret khác đang chạy: thoát bản đó, rồi thử lại.",
   "browserBridgeRetry": "Thử lại",

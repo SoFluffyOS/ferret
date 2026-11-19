@@ -429,7 +429,10 @@ class RemoteInputFeatureUi extends FeatureUi {
       OutgoingControl(phase: .denied, denial: .turnedOff) => FeatureHealth(
         .off,
         reason: l10n.healthTurnedOff(name),
-        help: l10n.healthTurnedOffHelp(name),
+        help: l10n.healthTurnedOffHelp(
+          name,
+          _hostKindOf(device.platform).name,
+        ),
       ),
       OutgoingControl(phase: .denied, denial: .version) => FeatureHealth(
         .off,
@@ -455,7 +458,7 @@ class RemoteInputFeatureUi extends FeatureUi {
       return FeatureHealth(
         .off,
         reason: l10n.healthHostOff(host),
-        help: l10n.healthHostOffHelp,
+        help: l10n.healthHostOffHelp(ThisComputer.here),
       );
     }
 

@@ -39,7 +39,7 @@ class ComputerSettingsFrame extends StatelessWidget {
             mainAxisSize: .min,
             children: [
               Text(
-                l10n.forgetDetail,
+                l10n.forgetDetail(ThisComputer.here),
                 style: typography.caption1.copyWith(color: palette.mutedText),
               ),
               if (hasSaved) ...[
@@ -71,7 +71,7 @@ class ComputerSettingsFrame extends StatelessWidget {
     final answer = await ConfirmDialog.show(
       context,
       title: l10n.forgetConfirmTitle,
-      message: l10n.forgetConfirmBody,
+      message: l10n.forgetConfirmBody(ThisComputer.here),
       negativeText: l10n.cancel,
       positiveText: l10n.forgetConfirm,
     );

@@ -122,8 +122,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @consentTitle.
   ///
   /// In en, this message translates to:
-  /// **'Let {device} control this computer?'**
-  String consentTitle(String device);
+  /// **'Let {device} control {here, select, macOS{this Mac} windows{this PC} other{this computer}}?'**
+  String consentTitle(String device, String here);
 
   /// No description provided for @consentBody.
   ///
@@ -152,8 +152,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @controlledBy.
   ///
   /// In en, this message translates to:
-  /// **'{device} is controlling this computer'**
-  String controlledBy(String device);
+  /// **'{device} is controlling {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String controlledBy(String device, String here);
 
   /// No description provided for @controlledSince.
   ///
@@ -194,14 +194,14 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @activeNoticeBody.
   ///
   /// In en, this message translates to:
-  /// **'Tap Stop control to take this computer back.'**
-  String get activeNoticeBody;
+  /// **'Tap Stop control to take {here, select, macOS{this Mac} windows{this PC} other{this computer}} back.'**
+  String activeNoticeBody(String here);
 
   /// No description provided for @permissionTitle.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t control this computer yet'**
-  String permissionTitle(String device);
+  /// **'{device} can\'t control {here, select, macOS{this Mac} windows{this PC} other{this computer}} yet'**
+  String permissionTitle(String device, String here);
 
   /// No description provided for @permissionBody.
   ///
@@ -224,14 +224,14 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @auditLine.
   ///
   /// In en, this message translates to:
-  /// **'{device} controlled this computer for {minutes, plural, =0{less than a minute} =1{1 min} other{{minutes} min}} at {time}'**
-  String auditLine(String device, int minutes, String time);
+  /// **'{device} controlled {here, select, macOS{this Mac} windows{this PC} other{this computer}} for {minutes, plural, =0{less than a minute} =1{1 min} other{{minutes} min}} at {time}'**
+  String auditLine(String device, int minutes, String time, String here);
 
   /// No description provided for @settingsEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Let my phones control this computer'**
-  String get settingsEnabled;
+  /// **'Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String settingsEnabled(String here);
 
   /// No description provided for @settingsEnabledBody.
   ///
@@ -320,8 +320,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @statusFailedBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret doesn\'t know yet whether it may control this computer. Check again.'**
-  String get statusFailedBody;
+  /// **'Ferret doesn\'t know yet whether it may control {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Check again.'**
+  String statusFailedBody(String here);
 
   /// No description provided for @checkAgain.
   ///
@@ -332,8 +332,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsPerDevice.
   ///
   /// In en, this message translates to:
-  /// **'To let one phone control this computer without asking, open the phone from Home.'**
-  String get settingsPerDevice;
+  /// **'To let one phone control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open the phone from Home.'**
+  String settingsPerDevice(String here);
 
   /// No description provided for @settingsHostTitle.
   ///
@@ -398,8 +398,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsHistoryEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No device controlled this computer yet.'**
-  String get settingsHistoryEmpty;
+  /// **'No device controlled {here, select, macOS{this Mac} windows{this PC} other{this computer}} yet.'**
+  String settingsHistoryEmpty(String here);
 
   /// No description provided for @clearHistory.
   ///
@@ -734,8 +734,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthTurnedOffHelp.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret → Settings → Control and turn on Let my phones control this computer.'**
-  String healthTurnedOffHelp(String device);
+  /// **'On {device}: open Ferret → Settings → Control and turn on Let my phones control {host, select, mac{this Mac} windows{this PC} other{this computer}}.'**
+  String healthTurnedOffHelp(String device, String host);
 
   /// No description provided for @healthVersion.
   ///
@@ -788,8 +788,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthHostOffHelp.
   ///
   /// In en, this message translates to:
-  /// **'Open Settings → Control and turn on Let my phones control this computer.'**
-  String get healthHostOffHelp;
+  /// **'Open Settings → Control and turn on Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String healthHostOffHelp(String here);
 
   /// host is mac, windows or linux.
   ///

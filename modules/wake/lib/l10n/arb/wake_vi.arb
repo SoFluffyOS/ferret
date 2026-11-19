@@ -35,10 +35,10 @@
   "helpFirmware": "Nhấn F2, Del hoặc F12 khi PC khởi động. Bật “Wake on LAN”, “Power On by PCI-E” hoặc mục tương tự, và tắt “ErP” hoặc “Deep Sleep”, vì chúng ngắt điện card mạng.",
   "helpIphoneTitle": "Từ iPhone",
   "helpIphone": "iOS không cho ứng dụng phát gói tin ra toàn mạng, nên iPhone không tự gửi được gói tin ma thuật. Ferret nhờ một thiết bị khác của bạn đang bật, như Mac, PC hoặc ferret-cli trên máy chủ ở nhà, gửi giúp.",
-  "settingsShare": "Cho thiết bị của tôi đánh thức máy tính này",
-  "settingsShareBody": "Cho các thiết bị đã ghép đôi, và chỉ chúng, biết địa chỉ card mạng (MAC) của máy tính này để đánh thức nó.",
+  "settingsShare": "Cho thiết bị của tôi đánh thức {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}",
+  "settingsShareBody": "Cho các thiết bị đã ghép đôi, và chỉ chúng, biết địa chỉ card mạng (MAC) của {here, select, macOS{Mac này} windows{PC này} other{máy tính này}} để đánh thức nó.",
   "settingsRelay": "Đánh thức máy tính giúp điện thoại của tôi",
-  "settingsRelayBody": "Khi một điện thoại của bạn yêu cầu, máy tính này gửi tín hiệu đánh thức tới máy tính khác của bạn trong mạng này.",
+  "settingsRelayBody": "Khi một điện thoại của bạn yêu cầu, {here, select, macOS{Mac này} windows{PC này} other{máy tính này}} gửi tín hiệu đánh thức tới máy tính khác của bạn trong mạng này.",
   "settingsReady": "Sẵn sàng",
   "settingsNotReady": "Tắt",
   "settingsWifiOnly": "Chỉ Wi-Fi"

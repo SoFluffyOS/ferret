@@ -19,8 +19,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get back => 'Back';
 
   @override
-  String consentTitle(String device) {
-    return 'Let $device control this computer?';
+  String consentTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Let $device control $_temp0?';
   }
 
   @override
@@ -38,8 +46,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get dontAllow => 'Don\'t allow';
 
   @override
-  String controlledBy(String device) {
-    return '$device is controlling this computer';
+  String controlledBy(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device is controlling $_temp0';
   }
 
   @override
@@ -92,11 +108,29 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String get activeNoticeBody => 'Tap Stop control to take this computer back.';
+  String activeNoticeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Tap Stop control to take $_temp0 back.';
+  }
 
   @override
-  String permissionTitle(String device) {
-    return '$device can\'t control this computer yet';
+  String permissionTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device can\'t control $_temp0 yet';
   }
 
   @override
@@ -111,19 +145,37 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get dismiss => 'Dismiss';
 
   @override
-  String auditLine(String device, int minutes, String time) {
-    String _temp0 = intl.Intl.pluralLogic(
+  String auditLine(String device, int minutes, String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
       other: '$minutes min',
       one: '1 min',
       zero: 'less than a minute',
     );
-    return '$device controlled this computer for $_temp0 at $time';
+    return '$device controlled $_temp0 for $_temp1 at $time';
   }
 
   @override
-  String get settingsEnabled => 'Let my phones control this computer';
+  String settingsEnabled(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Let my phones control $_temp0';
+  }
 
   @override
   String get settingsEnabledBody =>
@@ -174,15 +226,33 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get statusFailed => 'Not checked yet';
 
   @override
-  String get statusFailedBody =>
-      'Ferret doesn\'t know yet whether it may control this computer. Check again.';
+  String statusFailedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Ferret doesn\'t know yet whether it may control $_temp0. Check again.';
+  }
 
   @override
   String get checkAgain => 'Check again';
 
   @override
-  String get settingsPerDevice =>
-      'To let one phone control this computer without asking, open the phone from Home.';
+  String settingsPerDevice(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'To let one phone control $_temp0 without asking, open the phone from Home.';
+  }
 
   @override
   String get settingsHostTitle => 'Pointer and keyboard';
@@ -227,7 +297,17 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get settingsHistoryTitle => 'History';
 
   @override
-  String get settingsHistoryEmpty => 'No device controlled this computer yet.';
+  String settingsHistoryEmpty(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'No device controlled $_temp0 yet.';
+  }
 
   @override
   String get clearHistory => 'Clear history';
@@ -438,8 +518,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String healthTurnedOffHelp(String device) {
-    return 'On $device: open Ferret → Settings → Control and turn on Let my phones control this computer.';
+  String healthTurnedOffHelp(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device: open Ferret → Settings → Control and turn on Let my phones control $_temp0.';
   }
 
   @override
@@ -515,8 +603,17 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String get healthHostOffHelp =>
-      'Open Settings → Control and turn on Let my phones control this computer.';
+  String healthHostOffHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Open Settings → Control and turn on Let my phones control $_temp0.';
+  }
 
   @override
   String healthHostNeedsAccess(String host) {

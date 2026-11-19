@@ -128,18 +128,46 @@ class WakeLocalizationsVi extends WakeLocalizations {
       'iOS không cho ứng dụng phát gói tin ra toàn mạng, nên iPhone không tự gửi được gói tin ma thuật. Ferret nhờ một thiết bị khác của bạn đang bật, như Mac, PC hoặc ferret-cli trên máy chủ ở nhà, gửi giúp.';
 
   @override
-  String get settingsShare => 'Cho thiết bị của tôi đánh thức máy tính này';
+  String settingsShare(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho thiết bị của tôi đánh thức $_temp0';
+  }
 
   @override
-  String get settingsShareBody =>
-      'Cho các thiết bị đã ghép đôi, và chỉ chúng, biết địa chỉ card mạng (MAC) của máy tính này để đánh thức nó.';
+  String settingsShareBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho các thiết bị đã ghép đôi, và chỉ chúng, biết địa chỉ card mạng (MAC) của $_temp0 để đánh thức nó.';
+  }
 
   @override
   String get settingsRelay => 'Đánh thức máy tính giúp điện thoại của tôi';
 
   @override
-  String get settingsRelayBody =>
-      'Khi một điện thoại của bạn yêu cầu, máy tính này gửi tín hiệu đánh thức tới máy tính khác của bạn trong mạng này.';
+  String settingsRelayBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Khi một điện thoại của bạn yêu cầu, $_temp0 gửi tín hiệu đánh thức tới máy tính khác của bạn trong mạng này.';
+  }
 
   @override
   String get settingsReady => 'Sẵn sàng';
