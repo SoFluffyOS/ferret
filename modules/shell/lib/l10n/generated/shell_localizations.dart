@@ -1712,6 +1712,12 @@ abstract class ShellLocalizations {
   /// **'Fix'**
   String get deviceFix;
 
+  /// What a screen reader says for How? or Fix on a feature's line, such as "How? Messages".
+  ///
+  /// In en, this message translates to:
+  /// **'{action} {feature}'**
+  String healthActionFor(String action, String feature);
+
   /// date is a full date, such as Nov 3, 2026
   ///
   /// In en, this message translates to:

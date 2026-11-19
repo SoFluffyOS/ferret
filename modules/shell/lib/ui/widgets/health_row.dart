@@ -82,6 +82,8 @@ class _HealthRowState extends State<HealthRow> {
           if (_action case (final label, final onTap)?)
             Tappable(
               onTap: onTap,
+              // Several rows have the same "How?": it says which one.
+              semanticLabel: l10n.healthActionFor(label, widget.title),
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(
                   Spacing.d12,
@@ -89,9 +91,11 @@ class _HealthRowState extends State<HealthRow> {
                   Spacing.d4,
                   Spacing.d8,
                 ),
-                child: Text(
-                  label,
-                  style: typography.base2.copyWith(color: palette.link),
+                child: ExcludeSemantics(
+                  child: Text(
+                    label,
+                    style: typography.base2.copyWith(color: palette.link),
+                  ),
                 ),
               ),
             ),

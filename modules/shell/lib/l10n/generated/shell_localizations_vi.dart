@@ -1220,6 +1220,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceFix => 'Sửa';
 
   @override
+  String healthActionFor(String action, String feature) {
+    return '$action $feature';
+  }
+
+  @override
   String devicePairedOn(String date) {
     return 'Đã ghép đôi vào $date';
   }

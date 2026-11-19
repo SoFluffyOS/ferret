@@ -1224,6 +1224,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceFix => 'Fix';
 
   @override
+  String healthActionFor(String action, String feature) {
+    return '$action $feature';
+  }
+
+  @override
   String devicePairedOn(String date) {
     return 'Paired on $date';
   }

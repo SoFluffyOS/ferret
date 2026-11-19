@@ -926,6 +926,18 @@
     "description": "Link on a health row that opens the steps to fix it"
   },
   "deviceFix": "Fix",
+  "healthActionFor": "{action} {feature}",
+  "@healthActionFor": {
+    "description": "What a screen reader says for How? or Fix on a feature's line, such as \"How? Messages\".",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "devicePairedOn": "Paired on {date}",
   "@devicePairedOn": {
     "description": "date is a full date, such as Nov 3, 2026",
