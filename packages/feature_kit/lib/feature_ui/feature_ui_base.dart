@@ -86,8 +86,10 @@ abstract class FeatureUi {
 
   /// What this feature offers apart from any one device, such as "Recent
   /// clips…". The shell lists them in the ••• menu and the File menu.
-  List<FeatureAction> appActions(BuildContext context, FeatureContext feature) =>
-      const [];
+  List<FeatureAction> appActions(
+    BuildContext context,
+    FeatureContext feature,
+  ) => const [];
 
   /// The pages this feature has for [device], such as its texts, or empty.
   /// The device list shows them under the device in a window; on a phone
