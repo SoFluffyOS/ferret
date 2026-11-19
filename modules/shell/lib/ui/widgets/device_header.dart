@@ -112,17 +112,6 @@ class DeviceHeader extends StatelessWidget {
       };
     }
 
-    final lastSeen = status.device.lastSeen;
-    if (lastSeen == null) {
-      return l10n.deviceOffline;
-    }
-
-    final elapsed = DateTime.now().difference(lastSeen);
-    return switch (elapsed) {
-      Duration(inMinutes: < 1) => l10n.deviceLastSeenJustNow,
-      Duration(inHours: < 1) => l10n.deviceLastSeenMinutes(elapsed.inMinutes),
-      Duration(inDays: < 1) => l10n.deviceLastSeenHours(elapsed.inHours),
-      _ => l10n.deviceLastSeenDays(elapsed.inDays),
-    };
+    return l10n.lastSeen(status.device.lastSeen);
   }
 }
