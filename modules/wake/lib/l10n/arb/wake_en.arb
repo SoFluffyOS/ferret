@@ -1,0 +1,84 @@
+{
+  "@@locale": "en",
+  "title": "Wake-on-LAN",
+  "@title": {
+    "description": "Name of the feature that wakes a sleeping computer over the network."
+  },
+  "wake": "Wake",
+  "@wake": {
+    "description": "Action on an offline computer: wakes it from sleep."
+  },
+  "tryAgain": "Try again",
+  "waking": "Waking {name}… (up to a minute)",
+  "@waking": {
+    "description": "Status line while waiting for a woken computer to connect.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "didntWake": "Didn't wake",
+  "@didntWake": {
+    "description": "Status line when a computer didn't connect within about 90 seconds of the wake signal."
+  },
+  "couldntSend": "Couldn't send the wake signal",
+  "@couldntSend": {
+    "description": "Status line when no device could send the magic packet."
+  },
+  "howToTurnOn": "How to turn on Wake-on-LAN",
+  "healthReady": "Can wake it from sleep",
+  "healthWiredUnknown": "Can try to wake it over its cable",
+  "healthWiredOff": "Wake-on-LAN is off on {name}",
+  "@healthWiredOff": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWifiOnly": "Wi-Fi only: it may not wake",
+  "healthHelp": "On {name}: Ferret → Settings → Control → Wake-on-LAN shows what to turn on.",
+  "@healthHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "helpTitle": "Wake-on-LAN",
+  "helpIntro": "Wake-on-LAN starts a sleeping computer when another device sends it a “magic packet” over the network. Ferret sends one when you tap Wake. The computer has to allow it first, once.",
+  "helpToldTitle": "What {name} told Ferret",
+  "@helpToldTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "helpThisComputer": "This computer",
+  "cardWiredOn": "Cable · Wake-on-LAN is on",
+  "cardWiredOff": "Cable · Wake-on-LAN is off",
+  "cardWiredUnknown": "Cable · can't tell whether Wake-on-LAN is on",
+  "cardWifi": "Wi-Fi · few computers wake over Wi-Fi",
+  "cardNone": "No network card to wake it by yet. Open Ferret on it once.",
+  "helpBestTitle": "What works",
+  "helpBest": "A cable to the router, asleep rather than shut down, and another of your devices on the same network. Over Wi-Fi most computers don't wake at all: a cable makes it reliable.",
+  "helpMacTitle": "Mac",
+  "helpMac": "System Settings → Battery → Options → Wake for network access (on a desktop Mac: System Settings → Energy). A Mac on Wi-Fi wakes only through a Bonjour Sleep Proxy, such as an Apple TV or HomePod on the same network.",
+  "helpWindowsTitle": "Windows",
+  "helpWindows": "1. Device Manager → Network adapters → your Ethernet card → Properties.\n2. Power Management: turn on “Allow this device to wake the computer” and “Only allow a magic packet to wake the computer”.\n3. Advanced: set “Wake on Magic Packet” to Enabled.\n4. To wake it from shut down, turn off Fast startup: Control Panel → Power Options → Choose what the power buttons do.",
+  "helpLinuxTitle": "Linux",
+  "helpLinux": "Turn it on for the card: sudo ethtool -s enp3s0 wol g (use your card's name from “ip link”).\nKeep it after a restart: nmcli connection modify \"Wired connection 1\" 802-3-ethernet.wake-on-lan magic.",
+  "helpFirmwareTitle": "BIOS or UEFI (Windows and Linux PCs)",
+  "helpFirmware": "Press F2, Del or F12 while the PC starts. Turn on “Wake on LAN”, “Power On by PCI-E” or a setting like it, and turn off “ErP” or “Deep Sleep”, which cut power to the network card.",
+  "helpIphoneTitle": "From an iPhone",
+  "helpIphone": "iOS doesn't let apps broadcast on the network, so an iPhone can't send the magic packet by itself. Ferret asks another of your devices that is on, such as a Mac, a PC or ferret-cli on a home server, to send it for you.",
+  "settingsShare": "Let my devices wake this computer",
+  "settingsShareBody": "Tells your paired devices, and only them, this computer's network card address (MAC), so they can wake it.",
+  "settingsRelay": "Wake computers for my phones",
+  "settingsRelayBody": "When one of your phones asks, this computer sends the wake signal to another of your computers on this network.",
+  "settingsReady": "Ready",
+  "settingsNotReady": "Off",
+  "settingsWifiOnly": "Wi-Fi only"
+}

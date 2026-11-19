@@ -1,0 +1,38 @@
+name: wake
+description: Ferret's Wake-on-LAN feature.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  engine:
+    path: ../../packages/engine
+  feature_kit:
+    path: ../../packages/feature_kit
+  ferret_wake:
+    path: ../../packages/ferret_wake
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
+  lucide_icons_flutter: ^4.0.3
+  protocol:
+    path: ../../packages/protocol
+  provider: ^6.1.5+1
+  sofluffy_ui:
+    path: ../../packages/sofluffy_ui
+
+dev_dependencies:
+  core:
+    path: ../../packages/core
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  generate: true

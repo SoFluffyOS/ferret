@@ -46,6 +46,8 @@ dependencies:
     sdk: flutter
   shell:
     path: ../../modules/shell
+  wake:
+    path: ../../modules/wake
 
 dev_dependencies:
   ferret_calls:

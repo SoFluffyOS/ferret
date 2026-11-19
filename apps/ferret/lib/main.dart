@@ -14,6 +14,7 @@ import 'package:notifications/notifications.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
+import 'package:wake/wake.dart';
 
 Future<void> main(List<String> arguments) async {
   final send = await SendCommand.read(arguments);
@@ -32,6 +33,7 @@ Future<void> main(List<String> arguments) async {
       NotificationsFeatureUi(),
       PowerFeatureUi(),
       RemoteInputFeatureUi(),
+      WakeFeatureUi(),
     ],
     appVersion: '0.1.0',
     onStarted: (engine) {

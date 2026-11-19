@@ -20,6 +20,7 @@ workspace:
   - modules/power
   - modules/remote_input
   - modules/shell
+  - modules/wake
   - packages/core
   - packages/engine
   - packages/feature_kit
