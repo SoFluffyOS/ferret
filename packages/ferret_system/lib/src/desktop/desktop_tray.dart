@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ferret_system/src/desktop/desktop_window.dart';
-import 'package:ferret_system/src/desktop/linux/linux_tray.dart';
+import 'package:ferret_system/src/desktop/linux/linux.dart';
 import 'package:ferret_system/src/desktop/tray_menu_item.dart';
 
 /// The icon next to the clock on Windows and Linux, with its menu.
