@@ -87,6 +87,9 @@ class MirrorSession implements Session {
   DeviceInfo? get remoteDevice => DeviceInfo(id: remoteDeviceId, name: name);
 
   @override
+  bool get isWeak => false;
+
+  @override
   bool supports(String featureId) => featureId == MirroringFeature.featureId;
 
   @override

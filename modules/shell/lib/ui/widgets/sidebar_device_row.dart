@@ -45,6 +45,7 @@ class SidebarDeviceRow extends StatelessWidget {
     final palette = context.palette;
     final device = status.device;
     final dotColor = switch ((status.isConnected, needsAttention)) {
+      (false, _) when status.isReconnecting => palette.warning,
       (false, _) => palette.mutedText.withValues(alpha: 0.5),
       (true, true) => palette.warning,
       (true, false) => palette.success,
@@ -54,6 +55,7 @@ class SidebarDeviceRow extends StatelessWidget {
     // anyone who can't tell the colours apart, on hover.
     final l10n = context.shellL10n;
     final dotInWords = switch ((status.isConnected, needsAttention)) {
+      (false, _) when status.isReconnecting => l10n.deviceReconnecting,
       (false, _) => l10n.deviceOffline,
       (true, true) => l10n.deviceNeedsAttention,
       (true, false) => l10n.deviceConnected,
@@ -69,7 +71,7 @@ class SidebarDeviceRow extends StatelessWidget {
       },
       icon: deviceIconFor(device.formFactor, device.platform),
       isSelected: isSelected,
-      isDimmed: !status.isConnected,
+      isDimmed: !status.isConnected && !status.isReconnecting,
       isDropTarget: takesDrop,
       tooltip: tooltip ?? dotInWords,
       onTap: onTap,

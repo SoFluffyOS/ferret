@@ -10,7 +10,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// connection, and what to do with it right there. Connected, that is up
 /// to three actions; offline, a way to fix it. An iPhone that isn't
 /// connected says it connects while Ferret is open on it: iOS stops Ferret
-/// in the background, and "Last seen" would read like a fault.
+/// in the background, and "Last seen" would read like a fault. While a
+/// dropped link redials it says "Reconnecting…" and keeps its buttons,
+/// greyed out, so the row doesn't jump on a flaky Wi-Fi.
 class DeviceTile extends StatelessWidget {
   const DeviceTile({
     super.key,
@@ -53,10 +55,12 @@ class DeviceTile extends StatelessWidget {
     final device = status.device;
     final needsAttention = status.isConnected && attention != null;
     final dotColor = switch ((status.isConnected, needsAttention)) {
+      (false, _) when status.isReconnecting => palette.warning,
       (false, _) => palette.mutedText,
       (true, true) => palette.warning,
       (true, false) => palette.success,
     };
+    final showsActions = status.isConnected || status.isReconnecting;
     final statusColor = switch (needsAttention) {
       true => palette.warning,
       false => palette.mutedText,
@@ -112,7 +116,7 @@ class DeviceTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (!status.isConnected && onFix != null) ...[
+                if (!showsActions && onFix != null) ...[
                   Spacing.h8,
                   RowActionButton(label: l10n.deviceFix, onPressed: onFix),
                 ],
@@ -126,7 +130,7 @@ class DeviceTile extends StatelessWidget {
                 ],
               ],
             ),
-            if (status.isConnected && actions.isNotEmpty) ...[
+            if (showsActions && actions.isNotEmpty) ...[
               Spacing.v12,
               Wrap(
                 spacing: Spacing.d8,
@@ -149,10 +153,15 @@ class DeviceTile extends StatelessWidget {
 
   String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
-      return switch (attention) {
-        final feature? => l10n.deviceAttention(feature),
-        null => l10n.deviceConnected,
+      return switch ((attention, status.isWeak)) {
+        (final feature?, _) => l10n.deviceAttention(feature),
+        (null, true) => l10n.deviceWeak,
+        (null, false) => l10n.deviceConnected,
       };
+    }
+
+    if (status.isReconnecting) {
+      return l10n.deviceReconnecting;
     }
 
     if (status.device.platform == .PLATFORM_IOS) {

@@ -18,11 +18,16 @@ class EngineHost extends ChangeNotifier {
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final List<PairingPrompt> _prompts = [];
 
+  /// Connected devices first. One that is reconnecting keeps its place
+  /// among them, so a Wi-Fi hiccup doesn't make the list jump.
   List<DeviceStatus> get devices {
+    bool isUp(DeviceStatus status) =>
+        status.isConnected || status.isReconnecting;
+
     final devices = engine.devices
       ..sort((a, b) {
-        if (a.isConnected != b.isConnected) {
-          return switch (a.isConnected) {
+        if (isUp(a) != isUp(b)) {
+          return switch (isUp(a)) {
             true => -1,
             false => 1,
           };

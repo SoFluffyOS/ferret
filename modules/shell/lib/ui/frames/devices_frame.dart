@@ -35,6 +35,10 @@ class DevicesFrame extends StatefulWidget {
 class _DevicesFrameState extends State<DevicesFrame> {
   bool _showsOffline = false;
 
+  /// Each device's buttons the last time it was connected, shown greyed
+  /// out while it reconnects so the row keeps its height.
+  final Map<String, List<FeatureAction>> _lastActions = {};
+
   @override
   Widget build(BuildContext context) {
     final devices = context.select<EngineHost, List<DeviceStatus>>(
@@ -46,7 +50,9 @@ class _DevicesFrameState extends State<DevicesFrame> {
 
     final scope = ShellScope.of(context);
     final l10n = context.shellL10n;
-    final offlineCount = devices.where((status) => !status.isConnected).length;
+    final offlineCount = devices
+        .where((status) => !status.isConnected && !status.isReconnecting)
+        .length;
     final folds =
         devices.length >= DevicesFrame.foldsFrom &&
         offlineCount > 1 &&
@@ -54,7 +60,7 @@ class _DevicesFrameState extends State<DevicesFrame> {
     final shown = switch (folds) {
       true => [
         for (final status in devices)
-          if (status.isConnected) status,
+          if (status.isConnected || status.isReconnecting) status,
       ],
       false => devices,
     };
@@ -150,6 +156,18 @@ class _DevicesFrameState extends State<DevicesFrame> {
     ShellScope scope,
     DeviceStatus status,
   ) {
+    if (status.isReconnecting) {
+      return [
+        for (final action in _lastActions[status.device.id] ?? const [])
+          FeatureAction(
+            id: action.id,
+            label: action.label,
+            icon: action.icon,
+            onPressed: null,
+          ),
+      ];
+    }
+
     if (!status.isConnected) {
       return const [];
     }
@@ -169,7 +187,9 @@ class _DevicesFrameState extends State<DevicesFrame> {
       for (final (_, action) in ordered) action,
     ]);
 
-    return arranged.take(DevicesFrame.actionsShown).toList();
+    final shown = arranged.take(DevicesFrame.actionsShown).toList();
+    _lastActions[status.device.id] = shown;
+    return shown;
   }
 
   /// The first feature that is on and not working with this device.

@@ -142,6 +142,18 @@ abstract class ShellLocalizations {
   /// **'Not connected'**
   String get deviceOffline;
 
+  /// No description provided for @deviceReconnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting…'**
+  String get deviceReconnecting;
+
+  /// No description provided for @deviceWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · weak connection'**
+  String get deviceWeak;
+
   /// No description provided for @deviceNeedsAttention.
   ///
   /// In en, this message translates to:

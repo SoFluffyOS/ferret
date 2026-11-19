@@ -21,6 +21,11 @@ TrustedDevice _device({DateTime? lastSeen}) => TrustedDevice(
 );
 
 class _FakeSession implements Session {
+  _FakeSession({this.isWeak = false});
+
+  @override
+  final bool isWeak;
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -53,6 +58,40 @@ void main() {
     expect(find.text('Send files'), findsNothing);
     await tester.tap(find.text('Fix'));
     expect(fixes, 1);
+  });
+
+  testWidgets('a device that dropped says Reconnecting and keeps its row', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      testApp(
+        DeviceTile(
+          status: DeviceStatus(_device(), null, isReconnecting: true),
+          actions: const [
+            FeatureAction(
+              label: 'Send files',
+              icon: LucideIcons.upload,
+              onPressed: null,
+            ),
+          ],
+          onFix: () {},
+        ),
+      ),
+    );
+
+    expect(find.text('Reconnecting…'), findsOneWidget);
+    expect(find.text('Send files'), findsOneWidget);
+    expect(find.text('Fix'), findsNothing);
+  });
+
+  testWidgets('a slow link says so on the row', (tester) async {
+    await tester.pumpWidget(
+      testApp(
+        DeviceTile(status: DeviceStatus(_device(), _FakeSession(isWeak: true))),
+      ),
+    );
+
+    expect(find.text('Connected · weak connection'), findsOneWidget);
   });
 
   testWidgets('a connected device has its actions on the row, one primary', (

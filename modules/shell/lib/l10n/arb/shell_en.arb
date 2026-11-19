@@ -8,6 +8,8 @@
   "homePairDevice": "Add a device",
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
+  "deviceReconnecting": "Reconnecting…",
+  "deviceWeak": "Connected · weak connection",
   "deviceNeedsAttention": "Connected, needs attention",
   "spokenOk": "OK",
   "@spokenOk": {

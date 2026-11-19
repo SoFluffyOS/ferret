@@ -18,6 +18,7 @@ class DeviceHeader extends StatelessWidget {
     final device = status.device;
     final dotColor = switch (status.isConnected) {
       true => palette.success,
+      false when status.isReconnecting => palette.warning,
       false => palette.mutedText,
     };
 
@@ -86,7 +87,14 @@ class DeviceHeader extends StatelessWidget {
 
   String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
-      return l10n.deviceConnected;
+      return switch (status.isWeak) {
+        true => l10n.deviceWeak,
+        false => l10n.deviceConnected,
+      };
+    }
+
+    if (status.isReconnecting) {
+      return l10n.deviceReconnecting;
     }
 
     final lastSeen = status.device.lastSeen;

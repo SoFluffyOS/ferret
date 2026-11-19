@@ -35,6 +35,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceOffline => 'Not connected';
 
   @override
+  String get deviceReconnecting => 'Reconnecting…';
+
+  @override
+  String get deviceWeak => 'Connected · weak connection';
+
+  @override
   String get deviceNeedsAttention => 'Connected, needs attention';
 
   @override
