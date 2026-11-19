@@ -1486,5 +1486,32 @@
   "deviceAway": "Connected · locked",
   "@deviceAway": {
     "description": "Status of a connected computer whose screen is locked or showing another account. Short: it sits under the device's name"
+  },
+  "doctorHotspot": "No shared Wi-Fi? Turn on {phone}'s hotspot and join it from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.",
+  "@doctorHotspot": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorHotspotAny": "No shared Wi-Fi? Turn on your phone's hotspot and join it from {here, select, mac{this Mac} phone{your other device} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.",
+  "@doctorHotspotAny": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorHotspotHere": "No shared Wi-Fi? Turn on this phone's hotspot and join it from {device}. Ferret works over it, and what goes between your devices uses no mobile data.",
+  "@doctorHotspotHere": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   }
 }

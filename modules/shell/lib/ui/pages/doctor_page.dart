@@ -113,6 +113,13 @@ class _DoctorPageState extends State<DoctorPage> {
             ],
           ),
         ),
+        if (_checks.any((check) => check.kind == .isolated)) ...[
+          Spacing.v12,
+          Text(
+            _hotspotLine(l10n, engine),
+            style: typography.base2.copyWith(color: palette.mutedText),
+          ),
+        ],
         Spacing.v16,
         for (final (index, fix) in realFixes.indexed)
           Padding(
@@ -257,6 +264,30 @@ class _DoctorPageState extends State<DoctorPage> {
     }
 
     return engine.trustStore[deviceId]?.name;
+  }
+
+  /// A phone's hotspot is a network that never keeps devices apart, so it
+  /// names the phone to turn it on, when there is one.
+  String _hotspotLine(ShellLocalizations l10n, FerretEngine engine) {
+    final here = l10n.here(engine.device);
+    final target = switch (widget.deviceId) {
+      final deviceId? => engine.trustStore[deviceId],
+      null => null,
+    };
+    final isPhoneHere = here == LocalNames.herePhone;
+    if (isPhoneHere && target != null) {
+      return l10n.doctorHotspotHere(engine.displayNameOf(target.id));
+    }
+
+    final phones = [
+      ?target,
+      for (final status in engine.devices) status.device,
+    ].where((device) => device.formFactor == .FORM_FACTOR_PHONE);
+    if (isPhoneHere || phones.isEmpty) {
+      return l10n.doctorHotspotAny(here);
+    }
+
+    return l10n.doctorHotspot(engine.displayNameOf(phones.first.id), here);
   }
 
   String _describe(

@@ -130,4 +130,28 @@ void main() {
     );
     expect(find.text('Connect by address'), findsOneWidget);
   });
+
+  testWidgets('a network that keeps devices apart suggests the phone\'s '
+      'hotspot', (tester) async {
+    await open(tester, const [
+      DoctorCheck(kind: .isolated, status: .problem),
+    ]);
+
+    expect(
+      find.textContaining(
+        "Turn on Pixel 9's hotspot and join it from this Mac",
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('no hotspot line when the network is not the problem', (
+    tester,
+  ) async {
+    await open(tester, const [
+      DoctorCheck(kind: .accepted, status: .problem, fixes: [.pairAgain]),
+    ]);
+
+    expect(find.textContaining('hotspot'), findsNothing);
+  });
 }

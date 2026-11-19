@@ -1988,4 +1988,37 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get deviceAway => 'Đã kết nối · đang khoá';
+
+  @override
+  String doctorHotspot(String phone, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Không có Wi-Fi chung? Bật điểm phát sóng của $phone rồi kết nối $_temp0 vào đó. Ferret hoạt động qua điểm phát sóng, và dữ liệu giữa các thiết bị của bạn không dùng dữ liệu di động.';
+  }
+
+  @override
+  String doctorHotspotAny(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'thiết bị kia',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Không có Wi-Fi chung? Bật điểm phát sóng của điện thoại rồi kết nối $_temp0 vào đó. Ferret hoạt động qua điểm phát sóng, và dữ liệu giữa các thiết bị của bạn không dùng dữ liệu di động.';
+  }
+
+  @override
+  String doctorHotspotHere(String device) {
+    return 'Không có Wi-Fi chung? Bật điểm phát sóng của điện thoại này rồi kết nối $device vào đó. Ferret hoạt động qua điểm phát sóng, và dữ liệu giữa các thiết bị của bạn không dùng dữ liệu di động.';
+  }
 }

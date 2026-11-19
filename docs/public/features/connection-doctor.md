@@ -53,7 +53,7 @@ That's it. `47640/tcp` is Ferret itself (`47642`–`47649` when another account 
 
 Many public and guest networks keep devices apart on purpose (client isolation). Your laptop reaches the internet, your phone reaches the internet, but they can't see each other.
 
-Fix connection spots it: the router answers, your other device doesn't, and Ferret never heard anyone on this network. It says **This network keeps devices apart**. Nothing on your devices can fix that. Turn on your phone's hotspot and join it from the computer, or use a home network.
+Fix connection spots it: the router answers, your other device doesn't, and Ferret never heard anyone on this network. It says **This network keeps devices apart**. Nothing on your devices can fix that. So it names your phone: **Turn on Pixel 7's hotspot and join it from this Mac.** Ferret works over a hotspot like over any Wi-Fi, and what goes between your devices never touches mobile data. Or use a home network.
 
 **Check my network** says it too, as a "may", when Ferret hasn't heard any other device for a while.
 

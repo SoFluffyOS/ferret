@@ -2887,6 +2887,24 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Connected · locked'**
   String get deviceAway;
+
+  /// No description provided for @doctorHotspot.
+  ///
+  /// In en, this message translates to:
+  /// **'No shared Wi-Fi? Turn on {phone}\'s hotspot and join it from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
+  String doctorHotspot(String phone, String here);
+
+  /// No description provided for @doctorHotspotAny.
+  ///
+  /// In en, this message translates to:
+  /// **'No shared Wi-Fi? Turn on your phone\'s hotspot and join it from {here, select, mac{this Mac} phone{your other device} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
+  String doctorHotspotAny(String here);
+
+  /// No description provided for @doctorHotspotHere.
+  ///
+  /// In en, this message translates to:
+  /// **'No shared Wi-Fi? Turn on this phone\'s hotspot and join it from {device}. Ferret works over it, and what goes between your devices uses no mobile data.'**
+  String doctorHotspotHere(String device);
 }
 
 class _ShellLocalizationsDelegate

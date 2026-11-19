@@ -1994,4 +1994,37 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get deviceAway => 'Connected · locked';
+
+  @override
+  String doctorHotspot(String phone, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'No shared Wi-Fi? Turn on $phone\'s hotspot and join it from $_temp0. Ferret works over it, and what goes between your devices uses no mobile data.';
+  }
+
+  @override
+  String doctorHotspotAny(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'your other device',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'No shared Wi-Fi? Turn on your phone\'s hotspot and join it from $_temp0. Ferret works over it, and what goes between your devices uses no mobile data.';
+  }
+
+  @override
+  String doctorHotspotHere(String device) {
+    return 'No shared Wi-Fi? Turn on this phone\'s hotspot and join it from $device. Ferret works over it, and what goes between your devices uses no mobile data.';
+  }
 }
