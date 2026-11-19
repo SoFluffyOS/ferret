@@ -1,33 +1,34 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Shows [overlay] over [child] while the pointer moves, and fades it out
-/// once the pointer rests somewhere else: chrome that gets out of the way
-/// of a picture, and never leaves while the pointer is on it.
+/// Builds a space whose chrome shows while the pointer moves over it,
+/// and fades once the pointer rests or leaves: chrome that gets quiet
+/// beside a picture. [builder] gets whether the chrome shows, and a
+/// callback to say the pointer is on the chrome itself, which keeps it.
 class IdleFade extends StatefulWidget {
   const IdleFade({
     super.key,
-    required this.child,
-    required this.overlay,
-    this.alignment = Alignment.bottomCenter,
+    required this.builder,
     this.idleAfter = const Duration(seconds: 2),
     this.firstShown = const Duration(seconds: 3),
     this.keepShown = false,
   });
 
-  final Widget child;
-  final Widget overlay;
-  final Alignment alignment;
+  final Widget Function(
+    BuildContext context,
+    bool shown,
+    ValueChanged<bool> onChrome,
+  )
+  builder;
 
-  /// How long the pointer rests before the overlay goes.
+  /// How long the pointer rests before the chrome goes quiet.
   final Duration idleAfter;
 
-  /// How long the overlay stays when it first appears, so it is seen once.
+  /// How long the chrome stays when it first appears, so it is seen once.
   final Duration firstShown;
 
-  /// Holds the overlay, such as while one of its menus is open.
+  /// Holds the chrome, such as while one of its menus is open.
   final bool keepShown;
 
   @override
@@ -37,7 +38,7 @@ class IdleFade extends StatefulWidget {
 class _IdleFadeState extends State<IdleFade> {
   Timer? _timer;
   bool _shown = true;
-  bool _onOverlay = false;
+  bool _onChrome = false;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _IdleFadeState extends State<IdleFade> {
   }
 
   void _hide() {
-    if (!mounted || _onOverlay || widget.keepShown) {
+    if (!mounted || _onChrome || widget.keepShown) {
       return;
     }
 
@@ -73,45 +74,23 @@ class _IdleFadeState extends State<IdleFade> {
     setState(() => _shown = true);
   }
 
-  void _setOnOverlay(bool onOverlay) {
-    _onOverlay = onOverlay;
+  void _setOnChrome(bool onChrome) {
+    _onChrome = onChrome;
     _onMoved();
   }
 
   @override
   Widget build(BuildContext context) {
-    final visible = _shown || widget.keepShown;
+    final shown = _shown || widget.keepShown;
 
     return MouseRegion(
       onHover: (_) => _onMoved(),
       onEnter: (_) => _onMoved(),
+      onExit: (_) => _hideAfter(widget.idleAfter),
       child: Listener(
         behavior: .translucent,
         onPointerDown: (_) => _onMoved(),
-        child: Stack(
-          fit: .expand,
-          children: [
-            widget.child,
-            Align(
-              alignment: widget.alignment,
-              child: MouseRegion(
-                onEnter: (_) => _setOnOverlay(true),
-                onExit: (_) => _setOnOverlay(false),
-                child: IgnorePointer(
-                  ignoring: !visible,
-                  child: AnimatedOpacity(
-                    opacity: switch (visible) {
-                      true => 1,
-                      false => 0,
-                    },
-                    duration: FluffyDurations.normal,
-                    child: widget.overlay,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: widget.builder(context, shown, _setOnChrome),
       ),
     );
   }

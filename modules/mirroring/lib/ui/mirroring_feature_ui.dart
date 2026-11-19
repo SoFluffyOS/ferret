@@ -725,6 +725,7 @@ class MirroringFeatureUi extends FeatureUi {
     return stageWindow.open(
       deviceId: deviceId,
       title: platformMirroringL10n().windowTitle(deviceName),
+      barHeight: MirrorWindowBar.height,
       builder: (_) => _withViewModels(
         MirrorWindowPage(
           deviceId: deviceId,

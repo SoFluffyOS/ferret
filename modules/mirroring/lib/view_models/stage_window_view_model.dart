@@ -6,8 +6,8 @@ import 'package:mirroring/view_models/viewer_view_model.dart';
 
 /// The mirror stage's own window, where this computer has one to give:
 /// which device's stage is in it, and the shape it keeps. The window is
-/// the picture: it takes the picture's shape, and turns when the phone
-/// does.
+/// the picture with a bar on top: it takes the picture's shape, and turns
+/// when the phone does.
 class StageWindowViewModel extends ChangeNotifier {
   StageWindowViewModel(this._viewer);
 
@@ -45,6 +45,7 @@ class StageWindowViewModel extends ChangeNotifier {
     required String deviceId,
     required String title,
     required WidgetBuilder builder,
+    double barHeight = 0,
   }) async {
     final windows = _windows;
     if (windows == null || !windows.canOpen) {
@@ -61,6 +62,7 @@ class StageWindowViewModel extends ChangeNotifier {
         id: _windowId(deviceId),
         title: title,
         contentSize: shape,
+        barHeight: barHeight,
         builder: builder,
       ),
     );
@@ -75,6 +77,9 @@ class StageWindowViewModel extends ChangeNotifier {
   }
 
   Future<void> bringToFront() async => _windows?.bringToFront();
+
+  /// Moves the window with the pointer, from a press on its bar.
+  Future<void> startDrag() async => _windows?.startDrag();
 
   /// Closes the window, which stops what it showed.
   Future<void> close() async => _windows?.close();

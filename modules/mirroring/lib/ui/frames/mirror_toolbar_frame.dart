@@ -18,9 +18,8 @@ class MirrorToolbarFrame extends StatelessWidget {
     super.key,
     required this.deviceId,
     required this.deviceName,
-    required this.axis,
+    required this.place,
     required this.onStop,
-    this.canPin = false,
     this.onPopup,
   });
 
@@ -33,11 +32,8 @@ class MirrorToolbarFrame extends StatelessWidget {
 
   final String deviceId;
   final String deviceName;
-  final Axis axis;
+  final ToolbarPlace place;
   final VoidCallback onStop;
-
-  /// Whether this toolbar can hide, so "Keep toolbar visible" is a choice.
-  final bool canPin;
   final ValueChanged<bool>? onPopup;
 
   @override
@@ -64,10 +60,12 @@ class MirrorToolbarFrame extends StatelessWidget {
       (viewModel) => viewModel.current?.stats.quality ?? .good,
     );
     final viewModel = context.read<ViewerViewModel>();
-    final hasMore = canPin || canPress || axis == .horizontal;
+    // Only the window's bar fades, so only there is keeping it a choice.
+    final canPin = place == .bar;
+    final hasMore = canPress || place != .beside;
 
     return MirrorToolbar(
-      axis: axis,
+      place: place,
       quality: quality,
       isFullScreen: isFullScreen,
       pinned: switch (canPin) {

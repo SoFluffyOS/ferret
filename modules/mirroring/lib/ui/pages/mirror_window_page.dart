@@ -6,9 +6,9 @@ import 'package:mirroring/ui/frames/frames.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 
-/// The mirror stage in a window of its own: the window is the picture, so
-/// there is nothing around it. Closing the window stops sharing, like
-/// leaving the stage anywhere else.
+/// The mirror stage in a window of its own: a slim bar on top, beside the
+/// title bar's buttons, and the picture filling the rest in its own shape.
+/// Closing the window stops sharing, like leaving the stage anywhere else.
 class MirrorWindowPage extends StatefulWidget {
   const MirrorWindowPage({
     super.key,
@@ -54,6 +54,8 @@ class _MirrorWindowPageState extends State<MirrorWindowPage> {
         onClose: widget.onClose,
         clock: widget.clock,
         fillsWindow: true,
+        onDragWindow: () =>
+            unawaited(context.read<StageWindowViewModel>().startDrag()),
       ),
     );
   }

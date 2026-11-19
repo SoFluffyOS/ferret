@@ -13,10 +13,12 @@ import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The picture with its chrome. The toolbar floats over the bottom of the
-/// picture and hides when the pointer rests; it stays under the picture
-/// when the person asked to keep it; and it stands beside the picture,
-/// with words, where the space is wider than tall.
+/// The picture with its chrome, none of it on the picture. In the
+/// picture's own window the toolbar sits in the window's top bar and goes
+/// quiet when the pointer rests; elsewhere it stands under the picture or
+/// beside it, whichever leaves the picture bigger. A notice comes above
+/// the picture and the keyboard field under it: the picture gets smaller
+/// for them rather than being covered.
 class MirrorLiveFrame extends StatefulWidget {
   const MirrorLiveFrame({
     super.key,
@@ -24,7 +26,8 @@ class MirrorLiveFrame extends StatefulWidget {
     required this.deviceName,
     required this.picture,
     required this.onStop,
-    this.floats = false,
+    this.inWindow = false,
+    this.onDragWindow,
   });
 
   final String deviceId;
@@ -32,9 +35,12 @@ class MirrorLiveFrame extends StatefulWidget {
   final MirrorPicture picture;
   final VoidCallback onStop;
 
-  /// The toolbar always floats over the picture: for a window in the
-  /// picture's own shape, where anything beside it would leave bars.
-  final bool floats;
+  /// The stage is the picture's own window, which keeps a bar above the
+  /// picture for the toolbar.
+  final bool inWindow;
+
+  /// Moves that window, from a press on its bar.
+  final VoidCallback? onDragWindow;
 
   @override
   State<MirrorLiveFrame> createState() => _MirrorLiveFrameState();
@@ -60,25 +66,31 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
 
   @override
   Widget build(BuildContext context) {
-    final pinned = context.select<ViewerViewModel, bool>(
-      (viewModel) => viewModel.toolbarPinned,
-    );
     final textFieldOpen = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.textFieldOpen,
     );
+    if (widget.inWindow) {
+      return _window(context, textFieldOpen);
+    }
+
     final isSmall = context.screenSize == .small;
+    final picture = Size(
+      widget.picture.width.toDouble(),
+      widget.picture.height.toDouble(),
+    );
+    final aspect = picture.width / picture.height;
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final beside =
-            !widget.floats &&
-            !isSmall &&
-            constraints.maxWidth > constraints.maxHeight;
-        if (beside) {
-          final toolbar = _toolbar(.vertical);
-          final aspect = widget.picture.width / widget.picture.height;
-          final height = constraints.maxHeight - Spacing.d12;
-
+        final place = StageLayout.placeFor(
+          space: constraints.biggest,
+          picture: picture,
+          belowExtent: Spacing.d56,
+          besideExtent: Spacing.d200,
+          isSmall: isSmall,
+        );
+        final stage = _stage(context, textFieldOpen);
+        if (place == .beside) {
           return Padding(
             padding: EdgeInsets.only(bottom: Spacing.d12),
             child: Row(
@@ -86,63 +98,105 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
               children: [
                 Flexible(
                   child: SizedBox(
-                    width: height * aspect,
-                    child: _picture(context, textFieldOpen),
+                    width: (constraints.maxHeight - Spacing.d12) * aspect,
+                    child: stage,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Spacing.d16),
-                  child: Center(child: SingleChildScrollView(child: toolbar)),
+                  child: Center(
+                    child: SingleChildScrollView(child: _toolbar(.beside)),
+                  ),
                 ),
               ],
             ),
           );
         }
 
-        if (pinned && !widget.floats) {
-          return Column(
-            children: [
-              Expanded(child: _picture(context, textFieldOpen)),
-              Padding(
-                padding: EdgeInsets.all(Spacing.d8),
-                child: _toolbar(.horizontal, canPin: true),
+        return Column(
+          mainAxisAlignment: .center,
+          children: [
+            Flexible(
+              child: SizedBox(
+                height: constraints.maxWidth / aspect,
+                child: stage,
               ),
-            ],
-          );
-        }
-
-        return IdleFade(
-          keepShown: _popupOpen || textFieldOpen,
-          overlay: Padding(
-            padding: EdgeInsets.all(Spacing.d12),
-            child: _toolbar(.horizontal, canPin: true),
-          ),
-          child: _picture(
-            context,
-            textFieldOpen,
-            fieldInset: Spacing.d64,
-          ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(Spacing.d8),
+              child: _toolbar(.below),
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _toolbar(Axis axis, {bool canPin = false}) => MirrorToolbarFrame(
+  /// The window's bar on top with the toolbar in it, the picture filling
+  /// the rest. The toolbar fades when the pointer rests, unless it is
+  /// kept; its room stays either way.
+  Widget _window(BuildContext context, bool textFieldOpen) {
+    final pinned = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.toolbarPinned,
+    );
+
+    return IdleFade(
+      keepShown: pinned || _popupOpen || textFieldOpen,
+      builder: (context, shown, onChrome) => Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          MirrorWindowBar(
+            title: widget.deviceName,
+            onDragStart: widget.onDragWindow,
+            trailing: MouseRegion(
+              onEnter: (_) => onChrome(true),
+              onExit: (_) => onChrome(false),
+              child: IgnorePointer(
+                ignoring: !shown,
+                child: AnimatedOpacity(
+                  opacity: switch (shown) {
+                    true => 1,
+                    false => 0,
+                  },
+                  duration: FluffyDurations.normal,
+                  child: _toolbar(.bar),
+                ),
+              ),
+            ),
+          ),
+          Expanded(child: _stage(context, textFieldOpen)),
+        ],
+      ),
+    );
+  }
+
+  Widget _toolbar(ToolbarPlace place) => MirrorToolbarFrame(
     deviceId: widget.deviceId,
     deviceName: widget.deviceName,
-    axis: axis,
-    canPin: canPin,
+    place: place,
     onStop: widget.onStop,
     onPopup: _setPopupOpen,
   );
 
-  /// The picture, what is said over it, and the field for composed text.
-  /// [fieldInset] lifts the field over a toolbar that floats there.
-  Widget _picture(
-    BuildContext context,
-    bool textFieldOpen, {
-    double fieldInset = 0,
-  }) {
+  /// The notice above the picture, the picture, and the field for
+  /// composed text under it.
+  Widget _stage(BuildContext context, bool textFieldOpen) => Column(
+    crossAxisAlignment: .stretch,
+    children: [
+      _NoticeFrame(deviceId: widget.deviceId, deviceName: widget.deviceName),
+      Expanded(child: _picture(context)),
+      if (textFieldOpen)
+        Padding(
+          padding: EdgeInsets.all(Spacing.d8),
+          child: Center(
+            child: MirrorTextFieldFrame(onClosed: _pictureFocus.requestFocus),
+          ),
+        ),
+    ],
+  );
+
+  /// The picture and what is said over it while it stands still.
+  Widget _picture(BuildContext context) {
     final abilities = context.select<ViewerViewModel, Set<ControlAbility>>(
       (viewModel) => viewModel.abilities,
     );
@@ -195,31 +249,6 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
               false => null,
             },
             onAction: () => viewModel.press(.power),
-          ),
-        Align(
-          alignment: .topCenter,
-          child: Padding(
-            padding: EdgeInsets.all(Spacing.d12),
-            child: _NoticeFrame(
-              deviceId: widget.deviceId,
-              deviceName: widget.deviceName,
-            ),
-          ),
-        ),
-        if (textFieldOpen)
-          Align(
-            alignment: .bottomCenter,
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(
-                Spacing.d12,
-                Spacing.d12,
-                Spacing.d12,
-                Spacing.d12 + fieldInset,
-              ),
-              child: MirrorTextFieldFrame(
-                onClosed: _pictureFocus.requestFocus,
-              ),
-            ),
           ),
       ],
     );
@@ -281,7 +310,7 @@ class _Standing extends StatelessWidget {
   }
 }
 
-/// The one line the stage has to say over the picture right now.
+/// The one line the stage has to say right now, above the picture.
 class _NoticeFrame extends StatelessWidget {
   const _NoticeFrame({required this.deviceId, required this.deviceName});
 
@@ -332,12 +361,17 @@ class _NoticeFrame extends StatelessWidget {
       .screenshotFailed => (l10n.screenshotFailed, null, null),
     };
 
-    return StageNoticeBar(
-      text: text,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      dismissLabel: l10n.dismiss,
-      onDismiss: viewModel.dismissNotice,
+    return Padding(
+      padding: EdgeInsets.all(Spacing.d8),
+      child: Center(
+        child: StageNoticeBar(
+          text: text,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          dismissLabel: l10n.dismiss,
+          onDismiss: viewModel.dismissNotice,
+        ),
+      ),
     );
   }
 }

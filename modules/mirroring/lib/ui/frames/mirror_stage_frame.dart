@@ -26,14 +26,19 @@ class MirrorStageFrame extends StatelessWidget {
     this.onClose,
     this.clock,
     this.fillsWindow = false,
+    this.onDragWindow,
   });
 
   final String deviceId;
   final String deviceName;
 
   /// The stage is all its window shows, and the window has the picture's
-  /// shape: the toolbar floats over the picture, never beside it.
+  /// shape with a bar on top: the bar holds the device's name and, once
+  /// there is a picture, its toolbar.
   final bool fillsWindow;
+
+  /// Moves that window, from a press on its bar.
+  final VoidCallback? onDragWindow;
 
   /// Closes what hosts the stage: Stop, Cancel and Close all end there.
   /// Null where the host stays, such as a pane.
@@ -42,6 +47,22 @@ class MirrorStageFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = _content(context);
+    // The live picture puts its toolbar in the bar, so it draws its own.
+    if (!fillsWindow || content is MirrorLiveFrame) {
+      return content;
+    }
+
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        MirrorWindowBar(title: deviceName, onDragStart: onDragWindow),
+        Expanded(child: content),
+      ],
+    );
+  }
+
+  Widget _content(BuildContext context) {
     final pending = context.select<ViewerViewModel, PendingShow?>(
       (viewModel) => viewModel.pendingShow,
     );
@@ -130,7 +151,8 @@ class MirrorStageFrame extends StatelessWidget {
         deviceName: deviceName,
         picture: picture,
         onStop: stop,
-        floats: fillsWindow,
+        inWindow: fillsWindow,
+        onDragWindow: onDragWindow,
       );
     }
 

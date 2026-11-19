@@ -154,6 +154,8 @@ void main() {
     WidgetTester tester, {
     String deviceId = 'pixel',
     String deviceName = 'Pixel',
+    bool fillsWindow = false,
+    VoidCallback? onDragWindow,
   }) async {
     viewModel.openStage(deviceId);
     await tester.pumpWidget(
@@ -165,6 +167,8 @@ void main() {
             deviceName: deviceName,
             onClose: () => closed++,
             clock: () => now,
+            fillsWindow: fillsWindow,
+            onDragWindow: onDragWindow,
           ),
         ),
         scroll: false,
@@ -180,26 +184,36 @@ void main() {
     await tester.pump();
   }
 
-  Future<void> streamOverFerret(WidgetTester tester) async {
-    await viewModel.show('pixel', 'Pixel');
+  /// The phone's picture is [size] now, such as after it was turned.
+  Future<void> turn(WidgetTester tester, Size size, {int configId = 2}) async {
     ferret()
-      ..onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264))
       ..onConfig(
         pixel,
         StreamConfig(
-          configId: 1,
+          configId: configId,
           codec: .CODEC_H264,
-          width: 1080,
-          height: 2400,
+          width: size.width.toInt(),
+          height: size.height.toInt(),
           sps: [0x67],
           pps: [0x68],
         ),
       )
       ..onFrame(
         pixel,
-        Frame(configId: 1, sequence: Int64(0), keyframe: true, data: [1]),
+        Frame(
+          configId: configId,
+          sequence: Int64(configId),
+          keyframe: true,
+          data: [1],
+        ),
       );
     await tester.pump();
+  }
+
+  Future<void> streamOverFerret(WidgetTester tester) async {
+    await viewModel.show('pixel', 'Pixel');
+    ferret().onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264));
+    await turn(tester, const Size(1080, 2400), configId: 1);
   }
 
   /// A phone on a cable with debugging on, shown.
@@ -966,17 +980,106 @@ void main() {
   });
 
   group('the toolbar', () {
-    testWidgets('floats over the picture and hides when the pointer rests, '
-        'but never while the pointer is on it', (tester) async {
+    testWidgets('never covers the picture: under it or beside it, at every '
+        'size, with the phone upright or turned', (tester) async {
       await start(tester);
       await streamOverFerret(tester);
       await pumpStage(tester);
-      double opacity() =>
-          tester.widget<AnimatedOpacity>(find.byType(AnimatedOpacity)).opacity;
+      const spaces = [
+        Size(390, 844),
+        Size(380, 560),
+        Size(1000, 640),
+        Size(640, 1000),
+        Size(900, 360),
+        Size(320, 320),
+        Size(1400, 500),
+      ];
+      const pictures = [Size(1080, 2400), Size(2400, 1080)];
+
+      for (final (index, picture) in pictures.indexed) {
+        await turn(tester, picture, configId: index + 2);
+        for (final space in spaces) {
+          tester.view.physicalSize = space;
+          await tester.pump();
+
+          final shown = tester.getRect(find.byType(Texture));
+          final toolbar = tester.getRect(find.byType(MirrorToolbar));
+          final screen = Offset.zero & space;
+          final where = '$picture in $space';
+          expect(shown.overlaps(toolbar), isFalse, reason: where);
+          expect(screen.intersect(shown), shown, reason: where);
+          expect(screen.intersect(toolbar), toolbar, reason: where);
+          expect(
+            shown.width / shown.height,
+            moreOrLessEquals(picture.width / picture.height, epsilon: 0.01),
+            reason: where,
+          );
+        }
+      }
+    });
+
+    testWidgets('in the picture\'s own window it sits in the bar on top: the '
+        'picture fills the rest whole, upright or turned', (tester) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      await pumpStage(tester, fillsWindow: true);
+      final bar = MirrorWindowBar.height;
+      const widths = [240.0, 360.0, 520.0];
+      const pictures = [Size(1080, 2400), Size(2400, 1080)];
+
+      for (final (index, picture) in pictures.indexed) {
+        await turn(tester, picture, configId: index + 2);
+        for (final width in widths) {
+          final window = Size(
+            width,
+            width * picture.height / picture.width + bar,
+          );
+          tester.view.physicalSize = window;
+          await tester.pump();
+
+          final shown = tester.getRect(find.byType(Texture));
+          final toolbar = tester.getRect(find.byType(MirrorToolbar));
+          final where = '$picture in $window';
+          expect(shown.left, moreOrLessEquals(0, epsilon: 0.5), reason: where);
+          expect(shown.top, moreOrLessEquals(bar, epsilon: 0.5), reason: where);
+          expect(
+            shown.width,
+            moreOrLessEquals(width, epsilon: 0.5),
+            reason: where,
+          );
+          expect(
+            shown.bottom,
+            moreOrLessEquals(window.height, epsilon: 0.5),
+            reason: where,
+          );
+          expect(toolbar.bottom, lessThanOrEqualTo(shown.top), reason: where);
+          expect(toolbar.overlaps(shown), isFalse, reason: where);
+        }
+      }
+    });
+
+    testWidgets('in the window, the bar\'s buttons go quiet when the pointer '
+        'rests, never while it is on them, and their room stays', (
+      tester,
+    ) async {
+      await start(tester, size: const Size(400, 921));
+      await streamOverFerret(tester);
+      await pumpStage(tester, fillsWindow: true);
+      double opacity() => tester
+          .widget<AnimatedOpacity>(
+            find.descendant(
+              of: find.byType(MirrorWindowBar),
+              matching: find.byType(AnimatedOpacity),
+            ),
+          )
+          .opacity;
+      final picture = tester.getRect(find.byType(Texture));
       expect(opacity(), 1, reason: 'seen once when the picture appears');
 
       await tester.pump(const Duration(seconds: 4));
       expect(opacity(), 0);
+      expect(find.text('Pixel'), findsOneWidget, reason: 'the name stays');
+      expect(tester.getRect(find.byType(Texture)), picture);
 
       final mouse = await tester.createGesture(kind: .mouse);
       await mouse.addPointer(location: const Offset(200, 300));
@@ -993,25 +1096,90 @@ void main() {
       expect(opacity(), 0);
     });
 
-    testWidgets('"Keep toolbar visible" docks it under the picture for '
-        'good', (tester) async {
-      await start(tester);
+    testWidgets('"Keep toolbar visible" keeps the window\'s bar from going '
+        'quiet', (tester) async {
+      await start(tester, size: const Size(400, 921));
       await streamOverFerret(tester);
-      await pumpStage(tester);
-      final floating = tester.getRect(find.byType(Texture));
+      await pumpStage(tester, fillsWindow: true);
 
       await tester.tap(tool(LucideIcons.ellipsis));
       await tester.pump();
       await tester.tap(find.text('Keep toolbar visible'));
       await tester.pump();
-      await tester.pump();
+      await tester.pump(const Duration(seconds: 6));
 
       expect(MirroringSettings(host.settings).toolbarPinned, isTrue);
+      expect(
+        tester
+            .widget<AnimatedOpacity>(
+              find.descendant(
+                of: find.byType(MirrorWindowBar),
+                matching: find.byType(AnimatedOpacity),
+              ),
+            )
+            .opacity,
+        1,
+      );
+    });
+
+    testWidgets('away from the window it never fades, so there is nothing '
+        'to keep', (tester) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      await pumpStage(tester);
+
+      await tester.tap(tool(LucideIcons.ellipsis));
+      await tester.pump();
+
+      expect(find.text('Keep toolbar visible'), findsNothing);
       expect(find.byType(IdleFade), findsNothing);
-      final docked = tester.getRect(find.byType(Texture));
-      final toolbar = tester.getRect(find.byType(MirrorToolbar));
-      expect(docked.height, lessThan(floating.height));
-      expect(toolbar.top, greaterThanOrEqualTo(docked.bottom));
+    });
+
+    testWidgets('a press on the window\'s bar moves the window', (
+      tester,
+    ) async {
+      var drags = 0;
+      await start(tester, size: const Size(400, 921));
+      await viewModel.show('pixel', 'Pixel');
+      await pumpStage(tester, fillsWindow: true, onDragWindow: () => drags++);
+      expect(find.byType(MirrorWindowBar), findsOneWidget);
+
+      await tester.drag(find.text('Pixel').first, const Offset(40, 40));
+      await tester.pump();
+
+      expect(drags, 1);
+    });
+
+    testWidgets('the notice comes above the picture and the keyboard field '
+        'under it: the picture gives way to both', (tester) async {
+      await start(tester, lookForCable: true, size: const Size(400, 921));
+      final target = await streamOverCable(tester);
+      await pumpStage(
+        tester,
+        deviceId: ViewSession.deviceIdOf(target),
+        deviceName: 'Old tablet',
+        fillsWindow: true,
+      );
+      final whole = tester.getRect(find.byType(Texture));
+
+      await tester.tap(tool(LucideIcons.ellipsis));
+      await tester.pump();
+      await tester.tap(find.text('Screenshot'));
+      await tester.pump();
+      await tester.pump();
+      viewModel.openTextField();
+      await tester.pump();
+
+      final shown = tester.getRect(find.byType(Texture));
+      final notice = tester.getRect(find.byType(StageNoticeBar));
+      final field = tester.getRect(find.byType(MirrorTextFieldFrame));
+      expect(shown.height, lessThan(whole.height));
+      expect(notice.bottom, lessThanOrEqualTo(shown.top));
+      expect(field.top, greaterThanOrEqualTo(shown.bottom));
+      expect(
+        tester.getRect(find.byType(MirrorToolbar)).bottom,
+        lessThanOrEqualTo(notice.top),
+      );
     });
 
     testWidgets('stands beside the picture with words where the stage is '

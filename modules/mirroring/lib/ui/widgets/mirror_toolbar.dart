@@ -13,15 +13,16 @@ import 'package:mirroring/ui/widgets/toolbar_popup.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The mirror's one toolbar: the device's own keys, what this computer
-/// adds, the quality mark, and Stop set apart at the end. Icons with
-/// tooltips along the bottom of the picture, where it folds what is used
-/// least behind More as it gets narrow; icons with their names when it
-/// stands beside the picture.
+/// adds, the quality mark, and Stop set apart at the end. It always sits
+/// next to the picture, never on it: icons with tooltips in a pill under
+/// the picture, folding what is used least behind More as it gets narrow;
+/// icons with their names beside the picture; and only the essentials,
+/// flat, in the top bar of the picture's own window.
 class MirrorToolbar extends StatefulWidget {
   const MirrorToolbar({
     super.key,
     required this.items,
-    required this.axis,
+    required this.place,
     required this.onItem,
     required this.onButton,
     required this.qualityPanel,
@@ -37,7 +38,7 @@ class MirrorToolbar extends StatefulWidget {
   /// Everything the toolbar has for this device, in order. What doesn't
   /// fit goes behind More.
   final List<ToolbarItem> items;
-  final Axis axis;
+  final ToolbarPlace place;
 
   /// A button that acts at once. Quality, More and the view-only chip
   /// open their own popups instead.
@@ -54,8 +55,8 @@ class MirrorToolbar extends StatefulWidget {
   final List<DeviceButton> moreButtons;
   final bool isFullScreen;
 
-  /// Whether the toolbar stays visible. Null where it always does, so
-  /// there is nothing to choose.
+  /// Whether the toolbar stays visible in the window's bar. Null where it
+  /// never fades, so there is nothing to choose.
   final bool? pinned;
   final ValueChanged<bool>? onPinned;
 
@@ -102,25 +103,40 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.axis == .vertical) {
+    if (widget.place == .beside) {
       return _column(context);
     }
 
+    if (widget.place == .bar) {
+      return LayoutBuilder(
+        builder: (context, constraints) =>
+            _fittingBar(context, constraints.maxWidth),
+      );
+    }
+
     return LayoutBuilder(
-      builder: (context, constraints) => _pill(
-        context,
-        ToolbarFold.of(
+      builder: (context, constraints) {
+        final fold = ToolbarFold.of(
           widget.items,
           constraints.maxWidth,
           measure: (shown) => _widthOf(context, shown),
-        ),
-      ),
+        );
+        final names = _widthOf(context, fold.shown) <= constraints.maxWidth;
+
+        return _pill(context, fold, names: names);
+      },
     );
   }
 
   /// How wide the pill is with [shown] in it: its buttons, the names two
-  /// of them carry, and the lines between its groups.
-  double _widthOf(BuildContext context, List<ToolbarItem> shown) {
+  /// of them carry unless [names] is off, and the lines between its
+  /// groups. The bar has no padding of its own, and Stop has no name
+  /// there.
+  double _widthOf(
+    BuildContext context,
+    List<ToolbarItem> shown, {
+    bool names = true,
+  }) {
     final l10n = context.mirroringL10n;
     final style = context.fluffyTheme.typography.base2;
     final scaler = MediaQuery.textScalerOf(context);
@@ -136,15 +152,19 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       return Spacing.d28 + Spacing.d4 + width + Spacing.d8;
     }
 
-    var width = Spacing.d6 * 2;
+    final inBar = widget.place == .bar;
+    var width = switch (inBar) {
+      true => 0.0,
+      false => Spacing.d6 * 2,
+    };
     for (final (index, item) in shown.indexed) {
       if (index > 0 && item.startsGroup) {
         width += Spacing.d4 * 2 + Spacing.d1;
       }
 
       width += switch (item) {
-        .viewOnly => named(l10n.viewOnly),
-        .stop => named(l10n.stop),
+        .viewOnly when names => named(l10n.viewOnly),
+        .stop when names && !inBar => named(l10n.stop),
         _ => Spacing.d28,
       };
     }
@@ -152,7 +172,9 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     return width;
   }
 
-  Widget _pill(BuildContext context, ToolbarFold fold) {
+  /// The pill under the picture. Where even the folded pill is too wide,
+  /// the view-only chip and Stop drop their names.
+  Widget _pill(BuildContext context, ToolbarFold fold, {required bool names}) {
     final palette = context.palette;
 
     return DecoratedBox(
@@ -176,7 +198,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
             children: [
               for (final (index, item) in fold.shown.indexed) ...[
                 if (index > 0 && item.startsGroup) _divider(context),
-                _item(context, item, fold),
+                _item(context, item, fold, names: names),
               ],
             ],
           ),
@@ -184,6 +206,43 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       ),
     );
   }
+
+  /// The most the window's bar can hold in [width]: the quality mark
+  /// while the picture is not good, then the view-only chip's name, then
+  /// just the essential icons.
+  Widget _fittingBar(BuildContext context, double width) {
+    final withQuality = ToolbarFold.forBar(
+      widget.items,
+      showsQuality: widget.quality != .good,
+    );
+    final plain = ToolbarFold.forBar(widget.items);
+    for (final (fold, names) in [
+      (withQuality, true),
+      (plain, true),
+    ]) {
+      if (_widthOf(context, fold.shown, names: names) <= width) {
+        return _bar(context, fold, names: names);
+      }
+    }
+
+    return _bar(context, plain, names: false);
+  }
+
+  /// Flat icons in the window's bar, the same height as its title bar
+  /// buttons.
+  Widget _bar(
+    BuildContext context,
+    ToolbarFold fold, {
+    required bool names,
+  }) => Row(
+    mainAxisSize: .min,
+    children: [
+      for (final (index, item) in fold.shown.indexed) ...[
+        if (index > 0 && item.startsGroup) _divider(context),
+        _item(context, item, fold, names: names),
+      ],
+    ],
+  );
 
   Widget _column(BuildContext context) {
     final fold = ToolbarFold(shown: widget.items, folded: const []);
@@ -208,14 +267,14 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   Widget _divider(BuildContext context) {
     final line = ColoredBox(
       color: context.palette.mutedText.withValues(alpha: 0.25),
-      child: switch (widget.axis) {
+      child: switch (widget.place.axis) {
         .horizontal => SizedBox(width: Spacing.d1, height: Spacing.d20),
         .vertical => SizedBox(height: Spacing.d1),
       },
     );
 
     return Padding(
-      padding: switch (widget.axis) {
+      padding: switch (widget.place.axis) {
         .horizontal => EdgeInsets.symmetric(horizontal: Spacing.d4),
         .vertical => EdgeInsets.symmetric(vertical: Spacing.d6),
       },
@@ -228,26 +287,27 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     ToolbarItem item,
     ToolbarFold fold, {
     bool showName = false,
+    bool names = true,
   }) {
     final l10n = context.mirroringL10n;
 
     return switch (item) {
       .viewOnly => ToolbarPopup(
         controller: _viewOnly,
-        axis: widget.axis,
+        place: widget.place,
         onClosed: () => widget.onPopup?.call(false),
         builder: widget.viewOnlyPanel,
         child: ToolbarButton(
           icon: LucideIcons.eye,
           name: l10n.viewOnly,
-          showName: true,
+          showName: names,
           tone: .muted,
           onTap: () => _open(_viewOnly),
         ),
       ),
       .quality => ToolbarPopup(
         controller: _quality,
-        axis: widget.axis,
+        place: widget.place,
         onClosed: () => widget.onPopup?.call(false),
         builder: widget.qualityPanel,
         child: ToolbarButton(
@@ -261,7 +321,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       ),
       .more => ToolbarPopup(
         controller: _more,
-        axis: widget.axis,
+        place: widget.place,
         onClosed: () => widget.onPopup?.call(false),
         builder: (context) => _moreMenu(context, fold),
         child: ToolbarButton(
@@ -274,7 +334,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       .stop => ToolbarButton(
         icon: LucideIcons.circleStop,
         name: l10n.stop,
-        showName: true,
+        showName: names && widget.place != .bar,
         tone: .danger,
         onTap: () => _act(.stop),
       ),

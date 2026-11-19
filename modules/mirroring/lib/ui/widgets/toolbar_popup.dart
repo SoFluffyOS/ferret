@@ -3,17 +3,18 @@ import 'dart:math' as math;
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mirroring/models/models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A small card that opens from a toolbar button: upward from a toolbar
-/// that lies along the bottom, sideways from one that stands beside the
-/// picture, and always inside the window. A click anywhere else, or
+/// under the picture, sideways from one beside it, downward from the
+/// window's top bar, and always inside the window. A click anywhere else, or
 /// Escape, closes it.
 class ToolbarPopup extends StatefulWidget {
   const ToolbarPopup({
     super.key,
     required this.controller,
-    required this.axis,
+    required this.place,
     required this.builder,
     required this.child,
     this.onClosed,
@@ -21,8 +22,8 @@ class ToolbarPopup extends StatefulWidget {
 
   final OverlayPortalController controller;
 
-  /// The way the toolbar runs.
-  final Axis axis;
+  /// Where the toolbar is.
+  final ToolbarPlace place;
   final WidgetBuilder builder;
   final Widget child;
   final VoidCallback? onClosed;
@@ -67,7 +68,7 @@ class _ToolbarPopupState extends State<ToolbarPopup> {
                 child: CustomSingleChildLayout(
                   delegate: _PopupLayout(
                     button: _buttonIn(overlayContext),
-                    axis: widget.axis,
+                    place: widget.place,
                     gap: Spacing.d8,
                   ),
                   child: DecoratedBox(
@@ -99,12 +100,12 @@ class _ToolbarPopupState extends State<ToolbarPopup> {
 class _PopupLayout extends SingleChildLayoutDelegate {
   const _PopupLayout({
     required this.button,
-    required this.axis,
+    required this.place,
     required this.gap,
   });
 
   final Rect button;
-  final Axis axis;
+  final ToolbarPlace place;
   final double gap;
 
   @override
@@ -120,15 +121,16 @@ class _PopupLayout extends SingleChildLayoutDelegate {
   Offset getPositionForChild(Size size, Size childSize) {
     final mostLeft = math.max(gap, size.width - gap - childSize.width);
     final mostTop = math.max(gap, size.height - gap - childSize.height);
-    final wanted = switch (axis) {
-      .horizontal => Offset(
+    final wanted = switch (place) {
+      .below => Offset(
         button.right - childSize.width,
         button.top - gap - childSize.height,
       ),
-      .vertical => Offset(
+      .beside => Offset(
         button.left - gap - childSize.width,
         button.bottom - childSize.height,
       ),
+      .bar => Offset(button.right - childSize.width, button.bottom + gap),
     };
 
     return Offset(
@@ -140,6 +142,6 @@ class _PopupLayout extends SingleChildLayoutDelegate {
   @override
   bool shouldRelayout(_PopupLayout oldDelegate) =>
       oldDelegate.button != button ||
-      oldDelegate.axis != axis ||
+      oldDelegate.place != place ||
       oldDelegate.gap != gap;
 }

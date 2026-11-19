@@ -1,4 +1,5 @@
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mirroring/mirroring.dart';
 
@@ -164,6 +165,60 @@ void main() {
       expect(QualityPreset.named(null), QualityPreset.auto);
       expect(QualityPreset.named('ultra'), QualityPreset.auto);
       expect(QualityPreset.named('fast'), QualityPreset.fast);
+    });
+  });
+
+  test('the window\'s bar keeps the phone\'s keys, More and Stop, and the '
+      'quality mark only while the picture is not good', () {
+    expect(ToolbarFold.forBar(control).shown, const <ToolbarItem>[
+      .back,
+      .home,
+      .recents,
+      .more,
+      .stop,
+    ]);
+    expect(ToolbarFold.forBar(control, showsQuality: true).shown, const [
+      ToolbarItem.back,
+      ToolbarItem.home,
+      ToolbarItem.recents,
+      ToolbarItem.quality,
+      ToolbarItem.more,
+      ToolbarItem.stop,
+    ]);
+    expect(ToolbarFold.forBar(viewOnly).shown, const <ToolbarItem>[
+      .viewOnly,
+      .more,
+      .stop,
+    ]);
+  });
+
+  group('away from its own window, the toolbar goes where the picture is '
+      'bigger', () {
+    const upright = Size(1080, 2400);
+    const turned = Size(2400, 1080);
+    ToolbarPlace placeOf(Size space, Size picture, {bool isSmall = false}) =>
+        StageLayout.placeFor(
+          space: space,
+          picture: picture,
+          belowExtent: 56,
+          besideExtent: 200,
+          isSmall: isSmall,
+        );
+
+    test('beside an upright phone in a wide pane', () {
+      expect(placeOf(const Size(1000, 700), upright), ToolbarPlace.beside);
+    });
+
+    test('under a turned phone in the same pane', () {
+      expect(placeOf(const Size(1000, 700), turned), ToolbarPlace.below);
+    });
+
+    test('under the picture in a tall window, and always on a phone', () {
+      expect(placeOf(const Size(390, 844), upright), ToolbarPlace.below);
+      expect(
+        placeOf(const Size(900, 400), upright, isSmall: true),
+        ToolbarPlace.below,
+      );
     });
   });
 }

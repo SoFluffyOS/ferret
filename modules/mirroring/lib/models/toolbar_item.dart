@@ -58,6 +58,7 @@ class ToolbarFold {
     .keyboard,
     .rotate,
     .fullScreen,
+    .quality,
   ];
 
   /// Folds [items] for a toolbar [width] wide. It goes by the toolbar's
@@ -98,6 +99,28 @@ class ToolbarFold {
       folded: [
         for (final item in items)
           if (folded.contains(item)) item,
+      ],
+    );
+  }
+
+  /// The slim bar of the picture's own window: the device's own keys, the
+  /// view-only chip, More and Stop. The quality mark joins them while the
+  /// picture is not good, so it is seen; the rest waits behind More.
+  factory ToolbarFold.forBar(
+    List<ToolbarItem> items, {
+    bool showsQuality = false,
+  }) {
+    bool stays(ToolbarItem item) =>
+        _alwaysShown.contains(item) || (showsQuality && item == .quality);
+
+    return ToolbarFold(
+      shown: [
+        for (final item in items)
+          if (stays(item)) item,
+      ],
+      folded: [
+        for (final item in items)
+          if (!stays(item)) item,
       ],
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// One line over the picture that says something once: what it is, a
+/// One line above the picture that says something once: what it is, a
 /// link for what to do about it, and a way to send it off.
 class StageNoticeBar extends StatelessWidget {
   const StageNoticeBar({
@@ -56,13 +56,15 @@ class StageNoticeBar extends StatelessWidget {
             ),
             if ((actionLabel, onAction) case (final label?, final action?)) ...[
               Spacing.h8,
-              Tappable(
-                onTap: action,
-                child: Padding(
-                  padding: EdgeInsets.all(Spacing.d4),
-                  child: Text(
-                    label,
-                    style: typography.caption1.copyWith(color: palette.link),
+              Flexible(
+                child: Tappable(
+                  onTap: action,
+                  child: Padding(
+                    padding: EdgeInsets.all(Spacing.d4),
+                    child: Text(
+                      label,
+                      style: typography.caption1.copyWith(color: palette.link),
+                    ),
                   ),
                 ),
               ),
