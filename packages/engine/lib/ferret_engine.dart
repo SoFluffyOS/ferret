@@ -26,10 +26,17 @@ class FerretEngine implements FeatureHost {
     required List<Feature> features,
     required Discovery discovery,
     required this.preferredPort,
+    required VpnAddresses vpnFilter,
+    required Future<List<String>> Function() vpnAddressSource,
+    required List<Duration> vpnDelays,
   }) : _device = device,
+       _vpnFilter = vpnFilter,
+       _vpnAddressSource = vpnAddressSource,
        _features = {for (final feature in features) feature.id: feature},
        _discovery = discovery,
-       _roster = DeviceRoster(trustStore, identity.deviceId);
+       _roster = DeviceRoster(trustStore, identity.deviceId) {
+    _vpnReacher = VpnReacher(attempt: _reachOverVpn, delays: vpnDelays);
+  }
 
   static const defaultPort = 47640;
 
@@ -65,6 +72,10 @@ class FerretEngine implements FeatureHost {
     List<Feature> features = const [],
     Discovery? discovery,
     int port = defaultPort,
+    VpnAddresses vpnFilter = const VpnAddresses(),
+    Future<List<String>> Function() vpnAddressSource =
+        VpnAddresses.ofThisDevice,
+    List<Duration> vpnDelays = VpnReacher.defaultDelays,
   }) async {
     final identity = await DeviceIdentity.loadOrCreate(secrets);
     final trustStore = await TrustStore.open(secrets);
@@ -76,6 +87,9 @@ class FerretEngine implements FeatureHost {
       features: features,
       discovery: discovery ?? CombinedDiscovery.standard(),
       preferredPort: port,
+      vpnFilter: vpnFilter,
+      vpnAddressSource: vpnAddressSource,
+      vpnDelays: vpnDelays,
     );
   }
 
@@ -98,6 +112,9 @@ class FerretEngine implements FeatureHost {
   final int preferredPort;
 
   final Map<String, Feature> _features;
+  final VpnAddresses _vpnFilter;
+  final Future<List<String>> Function() _vpnAddressSource;
+  late final VpnReacher _vpnReacher;
   final Discovery _discovery;
   final DeviceRoster _roster;
   final StreamController<DeviceJoined> _joins = .broadcast();
@@ -192,8 +209,56 @@ class FerretEngine implements FeatureHost {
         isReconnecting:
             _ready[device.id] == null && _droppedRecently.contains(device.id),
         versionMismatch: _mismatches[device.id],
+        reachedOverVpn: _isOverVpn(device, _ready[device.id]),
       ),
   ];
+
+  /// Turns "Also reach it over my VPN" on or off for the paired
+  /// [deviceId]. On, it is dialed at its VPN addresses when the local
+  /// network doesn't find it, and it is asked for them. Off, they are
+  /// forgotten, and a session running over the VPN ends.
+  Future<void> setReachOverVpn(String deviceId, {required bool reach}) async {
+    final trusted = trustStore[deviceId];
+    if (trusted == null || trusted.reachOverVpn == reach) {
+      return;
+    }
+
+    final session = _ready[deviceId];
+    final wasOverVpn = _isOverVpn(trusted, session);
+    await trustStore.save(switch (reach) {
+      true => trusted.copyWith(reachOverVpn: true),
+      false => trusted.copyWith(reachOverVpn: false, vpnAddresses: const []),
+    });
+    await _tellVpnReach(deviceId);
+
+    if (!reach) {
+      _vpnReacher.stop(deviceId);
+      if (wasOverVpn) {
+        await session?.close();
+      }
+
+      return;
+    }
+
+    if (_running && !_sessions.containsKey(deviceId)) {
+      _vpnReacher.reach(deviceId);
+    }
+  }
+
+  /// Sets the address [deviceId] is also tried at over the VPN, such as
+  /// "100.101.102.103" or a MagicDNS name, or clears it when [address] is
+  /// null or blank. Kept on this device only.
+  Future<void> setReachAt(String deviceId, String? address) async {
+    final trusted = trustStore[deviceId];
+    if (trusted == null) {
+      return;
+    }
+
+    await trustStore.save(trusted.withReachAt(address));
+    if (trusted.reachOverVpn && _running && !_sessions.containsKey(deviceId)) {
+      _vpnReacher.reach(deviceId);
+    }
+  }
 
   /// When this engine last started, or null while it never ran.
   DateTime? get startedAt => _startedAt;
@@ -302,6 +367,10 @@ class FerretEngine implements FeatureHost {
       )) {
         unawaited(_dial(host, port, expectedDeviceId: trusted.id));
       }
+
+      if (trusted.reachOverVpn) {
+        _vpnReacher.reach(trusted.id);
+      }
     }
   }
 
@@ -314,6 +383,7 @@ class FerretEngine implements FeatureHost {
 
     _running = false;
     _droppedRecently.clear();
+    _vpnReacher.stopAll();
     await _discovery.stop();
     for (final subscription in _subscriptions) {
       await subscription.cancel();
@@ -641,6 +711,10 @@ class FerretEngine implements FeatureHost {
       )) {
         dials.add(_dial(host, port, expectedDeviceId: trusted.id));
       }
+
+      if (trusted.reachOverVpn) {
+        _vpnReacher.reach(trusted.id);
+      }
     }
 
     await Future.wait(dials);
@@ -705,15 +779,125 @@ class FerretEngine implements FeatureHost {
     port: port,
   );
 
-  Hello _hello(String remoteId) => Hello(
-    device: localDevice,
-    features: [
-      for (final feature in _features.values)
-        if (feature.isAvailable && !access.isBlocked(remoteId, feature.id))
-          feature.support,
-    ],
-    listenPort: port,
-  );
+  Future<Hello> _hello(String remoteId) async {
+    final trusted = trustStore[remoteId];
+    final sharesVpn = trusted?.sharesVpn ?? false;
+
+    return Hello(
+      device: localDevice,
+      features: [
+        for (final feature in _features.values)
+          if (feature.isAvailable && !access.isBlocked(remoteId, feature.id))
+            feature.support,
+      ],
+      listenPort: port,
+      wantsVpnAddresses: trusted?.reachOverVpn ?? false,
+      vpnAddresses: [if (sharesVpn) ...await _vpnAddressSource()],
+    );
+  }
+
+  /// Tells [deviceId] whether this device wants its VPN addresses, and
+  /// this device's own when it asked for them.
+  Future<void> _tellVpnReach(String deviceId) async {
+    final session = _ready[deviceId];
+    final trusted = trustStore[deviceId];
+    if (session == null || trusted == null) {
+      return;
+    }
+
+    final reach = VpnReach(
+      wantsAddresses: trusted.reachOverVpn,
+      includesAddresses: trusted.sharesVpn,
+      addresses: [if (trusted.sharesVpn) ...await _vpnAddressSource()],
+    );
+    await session.send(sessionFeature, reach).catchError((Object _) {});
+  }
+
+  Future<void> _onVpnReach(Session session, VpnReach reach) async {
+    final trusted = trustStore[session.remoteDeviceId];
+    if (trusted == null) {
+      return;
+    }
+
+    final askedNow = reach.wantsAddresses && !trusted.sharesVpn;
+    final learned = switch (trusted.reachOverVpn && reach.includesAddresses) {
+      true => _vpnFilter.accept(reach.addresses),
+      false => null,
+    };
+    await trustStore.save(
+      trusted.copyWith(sharesVpn: reach.wantsAddresses, vpnAddresses: learned),
+    );
+
+    if (askedNow) {
+      await _tellVpnReach(session.remoteDeviceId);
+    }
+  }
+
+  /// One try at reaching [deviceId] when the local network didn't find
+  /// it: its last local address first, then the address typed for it,
+  /// then its VPN addresses. Says whether there is nothing left to try.
+  Future<bool> _reachOverVpn(String deviceId) async {
+    final trusted = trustStore[deviceId];
+    if (!_running || trusted == null || !trusted.reachOverVpn) {
+      return true;
+    }
+
+    if (_ready.containsKey(deviceId) || _mismatches.containsKey(deviceId)) {
+      return true;
+    }
+
+    if (_sessions.containsKey(deviceId)) {
+      return false;
+    }
+
+    for (final (host, port) in _dialOrder(trusted)) {
+      await _dial(host, port, expectedDeviceId: deviceId);
+      if (_ready.containsKey(deviceId)) {
+        printLog('Reached $deviceId over the VPN or its last address');
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  List<(String, int)> _dialOrder(TrustedDevice trusted) {
+    final port = trusted.lastPort ?? defaultPort;
+    final order = <(String, int)>[
+      if (trusted.lastHost case final host?) (host, port),
+      if (trusted.reachAt case final typed?)
+        VpnAddresses.parseTyped(typed, port),
+      for (final address in trusted.vpnAddresses) (address, port),
+    ];
+
+    final seen = <(String, int)>{};
+    return [
+      for (final target in order)
+        if (seen.add(target)) target,
+    ];
+  }
+
+  /// The hosts a session with [device] counts as over the VPN for.
+  List<String> _vpnHostsOf(TrustedDevice device) => [
+    ...device.vpnAddresses,
+    if (device.reachAt case final typed?)
+      VpnAddresses.parseTyped(typed, defaultPort).$1,
+  ];
+
+  bool _isOverVpn(TrustedDevice device, Session? session) {
+    final host = session?.remoteHost;
+    if (host == null) {
+      return false;
+    }
+
+    return VpnAddresses.isVpnHost(host, _vpnHostsOf(device));
+  }
+
+  /// Whether a new connection this device opens to [deviceId] would win
+  /// over its current session, so dialing it isn't wasted.
+  bool _wouldReplace(Session session) =>
+      session.initiatorDeviceId == identity.deviceId ||
+      identity.deviceId.compareTo(session.initiatorDeviceId) < 0;
 
   Future<List<String>> _localAddresses() async {
     final interfaces = await NetworkInterface.list(
@@ -761,7 +945,8 @@ class FerretEngine implements FeatureHost {
         return;
       }
 
-      if (!_sessions.containsKey(peer.deviceId)) {
+      if (!_sessions.containsKey(peer.deviceId) ||
+          _movesOffVpn(peer.deviceId, peer.host)) {
         unawaited(_dial(peer.host, peer.port, expectedDeviceId: peer.deviceId));
       }
 
@@ -771,6 +956,21 @@ class FerretEngine implements FeatureHost {
     _nearby[peer.deviceId] = (peer: peer, seen: DateTime.now());
     _dropStaleNearby();
     _nearbyChanges.add(nearby);
+  }
+
+  /// A device reached over the VPN showed up on the local network: the
+  /// session moves there, where it is faster.
+  bool _movesOffVpn(String deviceId, String host) {
+    final session = _ready[deviceId];
+    final trusted = trustStore[deviceId];
+    if (session == null || trusted == null) {
+      return false;
+    }
+
+    final hosts = _vpnHostsOf(trusted);
+    return _isOverVpn(trusted, session) &&
+        !VpnAddresses.isVpnHost(host, hosts) &&
+        _wouldReplace(session);
   }
 
   Future<void> _noteOtherAccount(DiscoveredPeer peer) async {
@@ -1354,6 +1554,7 @@ class FerretEngine implements FeatureHost {
       remoteDeviceId: remoteId,
       initiatedByLocal: initiatedByLocal,
       initiatorDeviceId: initiatorId,
+      remoteHost: host,
       isBlocked: (feature) => access.isBlocked(remoteId, feature),
     );
     _sessions[remoteId] = session;
@@ -1373,7 +1574,7 @@ class FerretEngine implements FeatureHost {
     session.incoming.listen((envelope) => unawaited(_route(session, envelope)));
 
     try {
-      await session.sendHello(_hello(remoteId));
+      await session.sendHello(await _hello(remoteId));
       await session.sendPresence(_presence);
       final remoteHello = await hello;
       if (remoteHello == null) {
@@ -1395,14 +1596,26 @@ class FerretEngine implements FeatureHost {
 
     final trusted = trustStore[session.remoteDeviceId];
     if (trusted != null) {
+      // A VPN address is kept apart from the local one, so the local
+      // network is still tried first next time.
+      final overVpn = _isOverVpn(trusted, session);
+      final learned = hello.vpnAddresses.isNotEmpty && trusted.reachOverVpn;
       await trustStore.save(
         trusted.copyWith(
           name: hello.device.name,
           platform: hello.device.platform,
           formFactor: hello.device.formFactor,
           lastSeen: DateTime.now(),
-          lastHost: host,
+          lastHost: switch (overVpn) {
+            true => null,
+            false => host,
+          },
           lastPort: hello.listenPort,
+          sharesVpn: hello.wantsVpnAddresses,
+          vpnAddresses: switch (learned) {
+            true => _vpnFilter.accept(hello.vpnAddresses),
+            false => null,
+          },
         ),
       );
     }
@@ -1425,6 +1638,7 @@ class FerretEngine implements FeatureHost {
     }
 
     _ready[session.remoteDeviceId] = session;
+    _vpnReacher.stop(session.remoteDeviceId);
     _droppedRecently.remove(session.remoteDeviceId);
     _watchWeak(session);
     printLog('Connected to ${hello.device.name}');
@@ -1439,6 +1653,12 @@ class FerretEngine implements FeatureHost {
 
     _emitSessions();
     await _introduceEveryone();
+
+    final askedForVpn =
+        hello.wantsVpnAddresses && !(trusted?.sharesVpn ?? false);
+    if (askedForVpn) {
+      await _tellVpnReach(session.remoteDeviceId);
+    }
   }
 
   /// Tells every connected device which other devices this one trusts. It
@@ -1498,6 +1718,10 @@ class FerretEngine implements FeatureHost {
 
   Future<void> _route(Session session, Envelope envelope) async {
     if (envelope.feature == sessionFeature) {
+      if (payloadOf(envelope, VpnReach.new) case final reach?) {
+        await _onVpnReach(session, reach);
+      }
+
       return;
     }
 
@@ -1573,6 +1797,9 @@ class FerretEngine implements FeatureHost {
     }
 
     unawaited(_reconnect(session.remoteDeviceId));
+    if (trustStore[session.remoteDeviceId]?.reachOverVpn ?? false) {
+      _vpnReacher.reach(session.remoteDeviceId);
+    }
   }
 
   /// Starts the session with [deviceId] again, so both sides learn what it

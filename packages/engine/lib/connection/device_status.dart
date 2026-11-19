@@ -9,6 +9,7 @@ class DeviceStatus {
     this.session, {
     this.isReconnecting = false,
     this.versionMismatch,
+    this.reachedOverVpn = false,
   });
 
   final TrustedDevice device;
@@ -22,6 +23,10 @@ class DeviceStatus {
   /// It answered, but its Ferret and this one no longer speak the same
   /// protocol: one of them needs an update before they connect again.
   final VersionMismatch? versionMismatch;
+
+  /// The session runs over the user's VPN rather than the local network,
+  /// such as with a phone away from home. Large transfers may be slower.
+  final bool reachedOverVpn;
 
   bool get isConnected => session != null;
 

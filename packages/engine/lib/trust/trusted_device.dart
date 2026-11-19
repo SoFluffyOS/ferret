@@ -19,6 +19,10 @@ class TrustedDevice {
     this.nickname,
     this.sameNameTag,
     this.wake,
+    this.reachOverVpn = false,
+    this.reachAt,
+    this.vpnAddresses = const [],
+    this.sharesVpn = false,
   }) : ownName = name;
 
   factory TrustedDevice.fromJson(Map<String, dynamic> json) => TrustedDevice(
@@ -43,6 +47,13 @@ class TrustedDevice {
       final String encoded => WakeInfo.fromBuffer(base64Decode(encoded)),
       _ => null,
     },
+    reachOverVpn: json['reach_over_vpn'] as bool? ?? false,
+    reachAt: json['reach_at'] as String?,
+    vpnAddresses: switch (json['vpn_addresses']) {
+      final List<dynamic> addresses => addresses.whereType<String>().toList(),
+      _ => const [],
+    },
+    sharesVpn: json['shares_vpn'] as bool? ?? false,
   );
 
   final String id;
@@ -77,6 +88,24 @@ class TrustedDevice {
   /// with their paired devices.
   final WakeInfo? wake;
 
+  /// The user turned on "Also reach it over my VPN" here: when the local
+  /// network doesn't find it, it is dialed at [reachAt] and
+  /// [vpnAddresses]. Off by default, so nothing leaves the local network
+  /// by surprise.
+  final bool reachOverVpn;
+
+  /// An address the user typed for it, such as "100.101.102.103", a
+  /// MagicDNS name, or either with ":port". Kept on this device only.
+  final String? reachAt;
+
+  /// Its addresses on the user's VPN, as it last told this device. It only
+  /// tells a device that has [reachOverVpn] on for it.
+  final List<String> vpnAddresses;
+
+  /// It has "Also reach this device over my VPN" on, so this device's own
+  /// VPN addresses go to it, and to no other device.
+  final bool sharesVpn;
+
   /// What to call it on screen: the user's nickname, else its own name,
   /// told apart from a namesake by the end of its id.
   String get name {
@@ -98,6 +127,9 @@ class TrustedDevice {
     String? lastHost,
     int? lastPort,
     WakeInfo? wake,
+    bool? reachOverVpn,
+    List<String>? vpnAddresses,
+    bool? sharesVpn,
   }) => TrustedDevice(
     id: id,
     name: name ?? ownName,
@@ -111,6 +143,35 @@ class TrustedDevice {
     introducedBy: introducedBy,
     nickname: nickname,
     wake: wake ?? this.wake,
+    reachOverVpn: reachOverVpn ?? this.reachOverVpn,
+    reachAt: reachAt,
+    vpnAddresses: vpnAddresses ?? this.vpnAddresses,
+    sharesVpn: sharesVpn ?? this.sharesVpn,
+  );
+
+  /// The same device reached at [address] when the local network doesn't
+  /// find it, or at its reported VPN addresses only when [address] is null
+  /// or blank.
+  TrustedDevice withReachAt(String? address) => TrustedDevice(
+    id: id,
+    name: ownName,
+    platform: platform,
+    formFactor: formFactor,
+    publicKey: publicKey,
+    pairedAt: pairedAt,
+    lastSeen: lastSeen,
+    lastHost: lastHost,
+    lastPort: lastPort,
+    introducedBy: introducedBy,
+    nickname: nickname,
+    wake: wake,
+    reachOverVpn: reachOverVpn,
+    reachAt: switch (address?.trim()) {
+      final trimmed? when trimmed.isNotEmpty => trimmed,
+      _ => null,
+    },
+    vpnAddresses: vpnAddresses,
+    sharesVpn: sharesVpn,
   );
 
   /// The same device with [nickname] as its name here, or its own name
@@ -131,6 +192,10 @@ class TrustedDevice {
       _ => null,
     },
     wake: wake,
+    reachOverVpn: reachOverVpn,
+    reachAt: reachAt,
+    vpnAddresses: vpnAddresses,
+    sharesVpn: sharesVpn,
   );
 
   /// The same device told apart from a namesake by [tag].
@@ -148,6 +213,10 @@ class TrustedDevice {
     nickname: nickname,
     sameNameTag: tag,
     wake: wake,
+    reachOverVpn: reachOverVpn,
+    reachAt: reachAt,
+    vpnAddresses: vpnAddresses,
+    sharesVpn: sharesVpn,
   );
 
   Map<String, dynamic> toJson() => {
@@ -163,5 +232,9 @@ class TrustedDevice {
     'introduced_by': ?introducedBy,
     'nickname': ?nickname,
     if (wake case final wake?) 'wake': base64Encode(wake.writeToBuffer()),
+    if (reachOverVpn) 'reach_over_vpn': true,
+    'reach_at': ?reachAt,
+    if (vpnAddresses.isNotEmpty) 'vpn_addresses': vpnAddresses,
+    if (sharesVpn) 'shares_vpn': true,
   };
 }

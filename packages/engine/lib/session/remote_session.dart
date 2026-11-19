@@ -18,6 +18,7 @@ class Session {
     required this.remoteDeviceId,
     required this.initiatedByLocal,
     required this.initiatorDeviceId,
+    this.remoteHost,
     this.keepAlive = const Duration(seconds: 20),
     this.idleTimeout = const Duration(seconds: 65),
     bool Function(String feature)? isBlocked,
@@ -40,6 +41,10 @@ class Session {
   /// The device id of the side that opened the connection, used to keep one
   /// session when both sides connect at the same time.
   final String initiatorDeviceId;
+
+  /// The address the other device is connected from or at, such as
+  /// "192.168.1.20" or a VPN address.
+  final String? remoteHost;
 
   final Duration keepAlive;
   final Duration idleTimeout;
