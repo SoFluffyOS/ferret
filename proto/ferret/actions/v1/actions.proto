@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package ferret.actions.v1;
+
+// What an action does on the computer that offers it.
+enum ActionKind {
+  ACTION_KIND_UNSPECIFIED = 0;
+  // Puts the computer to sleep.
+  ACTION_KIND_SLEEP = 1;
+  // Restarts the computer, after a countdown its owner can cancel.
+  ACTION_KIND_RESTART = 2;
+  // Turns the computer off, after a countdown its owner can cancel.
+  ACTION_KIND_SHUT_DOWN = 3;
+  // Mutes the sound, or brings it back when it is muted.
+  ACTION_KIND_MUTE = 4;
+  ACTION_KIND_VOLUME_UP = 5;
+  ACTION_KIND_VOLUME_DOWN = 6;
+  // A command its owner defined on the computer. The command line never
+  // leaves that computer: only `id` and `title` do.
+  ACTION_KIND_CUSTOM = 7;
+}
+
+// Something a computer can do when a paired device asks.
+message Action {
+  // Stays the same for as long as the action exists: `sleep`, `restart`,
+  // `shut_down`, `mute`, `volume_up`, `volume_down`, or `custom.<random>`
+  // for the owner's own.
+  string id = 1;
+  ActionKind kind = 2;
+  // The owner's name for a custom action. Empty for the others: the asking
+  // device words those itself, in its own language.
+  string title = 3;
+  // The asking device should confirm with its user before sending
+  // `RunAction`, because the computer is out of reach afterwards.
+  bool confirm = 4;
+}
+
+// Every action a computer offers the receiver right now. Sent without
+// expecting a reply when a session opens and whenever the list changes. A
+// device that never got one shows no actions.
+message ActionList {
+  repeated Action actions = 1;
+}
+
+// Asks the computer to run one of its actions. Expects a `RunActionReply`,
+// which can take a minute: the computer may ask its owner first, and counts
+// down before it restarts or shuts down.
+message RunAction {
+  // An `Action.id` from the computer's `ActionList`. Never a command line.
+  string id = 1;
+}
+
+// How a `RunAction` went.
+enum RunResult {
+  RUN_RESULT_UNSPECIFIED = 0;
+  // It ran. For sleep, restart and shut down: it is about to.
+  RUN_RESULT_DONE = 1;
+  // The owner said no on the computer.
+  RUN_RESULT_DENIED = 2;
+  // Nobody answered the question on the computer in time.
+  RUN_RESULT_NOT_ANSWERED = 3;
+  // The computer is asking about, or counting down, another request.
+  RUN_RESULT_BUSY = 4;
+  // Actions are turned off on the computer.
+  RUN_RESULT_TURNED_OFF = 5;
+  // No action has that id, such as one its owner removed.
+  RUN_RESULT_UNKNOWN_ACTION = 6;
+  // It was tried and didn't work. For a custom action: it couldn't start,
+  // or ended with a non-zero `exit_code`.
+  RUN_RESULT_FAILED = 7;
+  // Someone cancelled the countdown on the computer.
+  RUN_RESULT_CANCELLED = 8;
+  // A custom action ran longer than the computer allows and was stopped.
+  RUN_RESULT_TIMED_OUT = 9;
+}
+
+// The reply to `RunAction`. What a custom action printed stays on the
+// computer.
+message RunActionReply {
+  RunResult result = 1;
+  // How a custom action's command ended. Only set when it ran to its end.
+  optional sint32 exit_code = 2;
+}
