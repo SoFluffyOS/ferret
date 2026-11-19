@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
@@ -34,7 +35,7 @@ class HomeFooter extends StatelessWidget {
     if (isPaused) {
       return FooterHint(
         text: switch (until) {
-          final until? => l10n.footerPausedUntil(_time(until)),
+          final until? => l10n.footerPausedUntil(_time(l10n.localeName, until)),
           null => l10n.footerPaused,
         },
         actionLabel: l10n.resume,
@@ -69,7 +70,13 @@ class HomeFooter extends StatelessWidget {
     return FooterHint(text: l10n.footerDrag);
   }
 
-  String _time(DateTime time) =>
-      '${time.hour.toString().padLeft(2, '0')}:'
-      '${time.minute.toString().padLeft(2, '0')}';
+  /// intl throws for a locale whose date symbols were never loaded; the
+  /// default format beats no time at all.
+  static String _time(String locale, DateTime at) {
+    try {
+      return DateFormat.jm(locale).format(at);
+    } on Object {
+      return DateFormat.Hm().format(at);
+    }
+  }
 }

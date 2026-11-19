@@ -50,10 +50,11 @@ FeatureHealth? mediaHealthOf(
 
   return FeatureHealth(
     .ok,
-    reason: [
-      if (showsPlaying) l10n.healthShowsTheirs,
-      if (model.isSharing) l10n.healthSharesMine(name, here),
-    ].join(' '),
+    reason: switch ((showsPlaying, model.isSharing)) {
+      (true, true) => l10n.healthShowsAndShares(name, here),
+      (true, false) => l10n.healthShowsTheirs,
+      _ => l10n.healthSharesMine(name, here),
+    },
   );
 }
 

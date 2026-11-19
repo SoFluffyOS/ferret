@@ -39,7 +39,7 @@ class StageNoticeBar extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
+        padding: EdgeInsetsDirectional.fromSTEB(
           Spacing.d12,
           Spacing.d6,
           Spacing.d6,

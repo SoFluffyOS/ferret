@@ -132,7 +132,7 @@ class _Pane extends StatelessWidget {
       child: SafeArea(
         left: false,
         child: ListView(
-          padding: EdgeInsets.fromLTRB(
+          padding: EdgeInsetsDirectional.fromSTEB(
             Spacing.d8,
             Spacing.d8,
             Spacing.d8,

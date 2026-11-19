@@ -15,6 +15,7 @@ export 'package:shell/ui/frames/global_shortcut_settings.dart';
 export 'package:shell/ui/frames/home_footer.dart';
 export 'package:shell/ui/frames/home_menu.dart';
 export 'package:shell/ui/frames/joined_notices_frame.dart';
+export 'package:shell/ui/frames/language_settings.dart';
 export 'package:shell/ui/frames/login_settings.dart';
 export 'package:shell/ui/frames/nearby_frame.dart';
 export 'package:shell/ui/frames/needs_you_frame.dart';

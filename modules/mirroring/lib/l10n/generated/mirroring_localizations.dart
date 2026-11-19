@@ -424,7 +424,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @statusDropped.
   ///
   /// In en, this message translates to:
-  /// **'{count} dropped'**
+  /// **'{count, plural, other{{count} dropped}}'**
   String statusDropped(int count);
 
   /// No description provided for @codecH264.
@@ -496,7 +496,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @durationHours.
   ///
   /// In en, this message translates to:
-  /// **'{hours} h {minutes} min'**
+  /// **'{hours, plural, other{{hours} h}} {minutes, plural, other{{minutes} min}}'**
   String durationHours(int hours, int minutes);
 
   /// No description provided for @noticeAskBody.
@@ -1093,6 +1093,12 @@ abstract class MirroringLocalizations {
   /// **'Picture'**
   String get pictureTitle;
 
+  /// Tooltip of the toolbar button that picks the picture quality
+  ///
+  /// In en, this message translates to:
+  /// **'Picture: {quality}'**
+  String pictureTooltip(String quality);
+
   /// No description provided for @presetAuto.
   ///
   /// In en, this message translates to:
@@ -1374,6 +1380,18 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Listening…'**
   String get airplayListening;
+
+  /// While this computer waits for an AirPlay connection; the time left, "4:59"
+  ///
+  /// In en, this message translates to:
+  /// **'Listening… {time}'**
+  String airplayListeningLeft(String time);
+
+  /// One numbered step of a setup guide
+  ///
+  /// In en, this message translates to:
+  /// **'{number}. {step}'**
+  String setupStepNumbered(int number, String step);
 
   /// No description provided for @airplayNote.
   ///

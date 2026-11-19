@@ -197,19 +197,9 @@ class ClipboardFeatureUi extends FeatureUi {
     });
   }
 
-  ClipboardLocalizations _localizations() {
-    final locale = WidgetsBinding.instance.platformDispatcher.locale;
-    final supported = ClipboardLocalizations.supportedLocales.any(
-      (candidate) => candidate.languageCode == locale.languageCode,
-    );
-    if (supported) {
-      return lookupClipboardLocalizations(Locale(locale.languageCode));
-    }
-
-    return lookupClipboardLocalizations(
-      ClipboardLocalizations.supportedLocales.first,
-    );
-  }
+  ClipboardLocalizations _localizations() => lookupClipboardLocalizations(
+    AppLocale.pick(ClipboardLocalizations.supportedLocales),
+  );
 
   /// Stops listening for the Android tile and releases the view model.
   Future<void> dispose() async {

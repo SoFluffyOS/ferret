@@ -47,9 +47,9 @@ class PendingBubble extends StatelessWidget {
             ),
             child: switch (message.outcome) {
               final SendOutcome outcome when message.failed => _Failed(
-                reason:
-                    '${l10n.notSent}. '
-                    '${l10n.outcomeText(outcome, phoneName)}',
+                reason: l10n.notSentBecause(
+                  l10n.outcomeText(outcome, phoneName),
+                ),
                 onRetry: onRetry,
                 onDiscard: onDiscard,
               ),

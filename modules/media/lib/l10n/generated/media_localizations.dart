@@ -292,6 +292,12 @@ abstract class MediaLocalizations {
   /// **'{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.'**
   String healthSharesMine(String name, String here);
 
+  /// No description provided for @healthShowsAndShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Shares what\'s playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.'**
+  String healthShowsAndShares(String name, String here);
+
   /// No description provided for @healthLostAccess.
   ///
   /// In en, this message translates to:

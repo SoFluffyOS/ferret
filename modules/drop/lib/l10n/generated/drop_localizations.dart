@@ -628,10 +628,10 @@ abstract class DropLocalizations {
   /// **'{names}'**
   String offerFiles(String names);
 
-  /// No description provided for @offerFilesMore.
+  /// Files offered to you: the first names, then how many more. "photo.jpg, notes.pdf and 3 more"
   ///
   /// In en, this message translates to:
-  /// **'{names} and {count} more'**
+  /// **'{names} and {count, plural, other{{count} more}}'**
   String offerFilesMore(String names, int count);
 
   /// No description provided for @offerTotal.
@@ -979,19 +979,19 @@ abstract class DropLocalizations {
   /// No description provided for @etaSeconds.
   ///
   /// In en, this message translates to:
-  /// **'{seconds} s'**
+  /// **'{seconds, plural, other{{seconds} s}}'**
   String etaSeconds(int seconds);
 
   /// No description provided for @etaMinutes.
   ///
   /// In en, this message translates to:
-  /// **'{minutes} min'**
+  /// **'{minutes, plural, other{{minutes} min}}'**
   String etaMinutes(int minutes);
 
   /// No description provided for @etaHours.
   ///
   /// In en, this message translates to:
-  /// **'{hours} h {minutes} min'**
+  /// **'{hours, plural, other{{hours} h}} {minutes, plural, other{{minutes} min}}'**
   String etaHours(int hours, int minutes);
 
   /// No description provided for @filesDropHere.

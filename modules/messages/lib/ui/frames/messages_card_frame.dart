@@ -34,7 +34,7 @@ class MessagesCardFrame extends StatelessWidget {
           if (index > 0) Spacing.v8,
           FeatureCard(
             icon: LucideIcons.messageSquare,
-            title: '${l10n.title} · ${phone.name}',
+            title: l10n.cardTitle(phone.name),
             subtitle: switch (phone.readiness) {
               .offline => l10n.statusOffline(phone.name),
               _ => l10n.unreadCount(phone.unread),
@@ -49,8 +49,8 @@ class MessagesCardFrame extends StatelessWidget {
               if (phone.latest case final latest?)
                 Text(
                   switch (latest.snippet.isEmpty) {
-                    true => '${latest.title}: ${l10n.attachment}',
-                    false => '${latest.title}: ${latest.snippet}',
+                    true => l10n.attachmentFrom(latest.title),
+                    false => l10n.latestFrom(latest.title, latest.snippet),
                   },
                   style: typography.body2.copyWith(color: palette.text),
                   maxLines: 1,

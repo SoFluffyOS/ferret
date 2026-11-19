@@ -93,7 +93,7 @@ class PowerRootFrame extends StatelessWidget {
               ],
               Spacing.v8,
               Align(
-                alignment: .centerLeft,
+                alignment: AlignmentDirectional.centerStart,
                 child: switch (usesRoot) {
                   true => Button(
                     mainAxisSize: .min,

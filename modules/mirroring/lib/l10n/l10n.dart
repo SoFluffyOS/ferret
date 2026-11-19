@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mirroring/l10n/generated/mirroring_localizations.dart';
 
@@ -7,18 +8,8 @@ extension MirroringL10n on BuildContext {
   MirroringLocalizations get mirroringL10n => MirroringLocalizations.of(this);
 }
 
-/// The strings in the system language, for places without a [BuildContext]
-/// such as the phone's notices and device health.
-MirroringLocalizations platformMirroringL10n() {
-  final locale = WidgetsBinding.instance.platformDispatcher.locale;
-  final supported = MirroringLocalizations.supportedLocales.any(
-    (candidate) => candidate.languageCode == locale.languageCode,
-  );
-  if (supported) {
-    return lookupMirroringLocalizations(Locale(locale.languageCode));
-  }
-
-  return lookupMirroringLocalizations(
-    MirroringLocalizations.supportedLocales.first,
-  );
-}
+/// The strings in the language Ferret shows (Settings → Advanced, else the
+/// system's), for notices and health built outside any widget.
+MirroringLocalizations platformMirroringL10n() => lookupMirroringLocalizations(
+  AppLocale.pick(MirroringLocalizations.supportedLocales),
+);

@@ -36,7 +36,7 @@
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Copied",
-  "pairExpiresIn": "Expires in {minutes} min",
+  "pairExpiresIn": "Expires in {minutes, plural, other{{minutes} min}}",
   "@pairExpiresIn": {
     "placeholders": {
       "minutes": {
@@ -105,6 +105,15 @@
   "promptAccept": "Pair",
   "promptReject": "Not now",
   "deviceTitleId": "Device ID",
+  "deviceIdLine": "Device ID {id}",
+  "@deviceIdLine": {
+    "description": "On a device page, under its name. The ID is a short code like 3F2A 0718",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "deviceActions": "Actions",
   "deviceUnpair": "Unpair",
   "deviceUnpairConfirmTitle": "Unpair {device}?",
@@ -156,7 +165,7 @@
       }
     }
   },
-  "menubarTipConnected": "Ferret · {count} devices connected",
+  "menubarTipConnected": "Ferret · {count, plural, =1{1 device connected} other{{count} devices connected}}",
   "@menubarTipConnected": {
     "placeholders": {
       "count": {
@@ -214,7 +223,7 @@
   "welcomePrivacy": "No account. No cloud. Stays on your network.",
   "welcomePlatforms": "Android · iPhone · Mac · Windows · Linux",
   "deviceLastSeenJustNow": "Last seen just now",
-  "deviceLastSeenMinutes": "Last seen {minutes} min ago",
+  "deviceLastSeenMinutes": "Last seen {minutes, plural, other{{minutes} min}} ago",
   "@deviceLastSeenMinutes": {
     "placeholders": {
       "minutes": {
@@ -222,7 +231,7 @@
       }
     }
   },
-  "deviceLastSeenHours": "Last seen {hours} h ago",
+  "deviceLastSeenHours": "Last seen {hours, plural, other{{hours} h}} ago",
   "@deviceLastSeenHours": {
     "placeholders": {
       "hours": {
@@ -230,7 +239,7 @@
       }
     }
   },
-  "deviceLastSeenDays": "Last seen {days} d ago",
+  "deviceLastSeenDays": "Last seen {days, plural, other{{days} d}} ago",
   "@deviceLastSeenDays": {
     "placeholders": {
       "days": {
@@ -459,7 +468,7 @@
       }
     }
   },
-  "dropSendToAll": "Send to all {count} devices",
+  "dropSendToAll": "Send to all {count, plural, other{{count} devices}}",
   "@dropSendToAll": {
     "description": "On the window's pane while files are dragged over it and several devices are connected",
     "placeholders": {
@@ -688,7 +697,7 @@
       }
     }
   },
-  "promptAlsoMore": "You'll also be connected to {first}, {second} and {count} more.",
+  "promptAlsoMore": "You'll also be connected to {first}, {second} and {count, plural, other{{count} more}}.",
   "@promptAlsoMore": {
     "placeholders": {
       "first": {
@@ -702,7 +711,7 @@
       }
     }
   },
-  "promptSecondsLeft": "{seconds} s",
+  "promptSecondsLeft": "{seconds, plural, other{{seconds} s}}",
   "@promptSecondsLeft": {
     "placeholders": {
       "seconds": {
@@ -834,6 +843,7 @@
   "settingsOff": "Off",
   "settingsCountOn": "{on} of {total} on",
   "@settingsCountOn": {
+    "description": "On a Settings row: how many of its switches are on, \"3 of 5 on\"",
     "placeholders": {
       "on": {
         "type": "int"
@@ -853,6 +863,15 @@
   },
   "settingsNeedsAttention": "Needs attention",
   "settingsAdvanced": "Advanced",
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Settings → Advanced: the language Ferret shows"
+  },
+  "settingsLanguageSystem": "Same as the system",
+  "@settingsLanguageSystem": {
+    "description": "The default choice for Language: follow the language of the operating system"
+  },
+  "settingsLanguageNote": "Menus, the tray icon and notifications switch the next time Ferret starts.",
   "settingsAbout": "About · Privacy",
   "settingsVersion": "Ferret {version}",
   "@settingsVersion": {
@@ -1016,7 +1035,7 @@
       }
     }
   },
-  "joinedManyNotice": "{count} devices joined your devices",
+  "joinedManyNotice": "{count, plural, =1{1 device joined your devices} other{{count} devices joined your devices}}",
   "@joinedManyNotice": {
     "placeholders": {
       "count": {
@@ -1073,24 +1092,27 @@
   "needsYouTitle": "Needs you",
   "activityEmpty": "Nothing yet. Copy something or send a file.",
   "activityNow": "now",
-  "activityMinutes": "{count} min",
+  "activityMinutes": "{count, plural, other{{count} min}}",
   "@activityMinutes": {
+    "description": "How long ago, short, on an Activity row: \"5 min\"",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "activityHours": "{count} h",
+  "activityHours": "{count, plural, other{{count} h}}",
   "@activityHours": {
+    "description": "How long ago, short, on an Activity row: \"3 h\"",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "activityDays": "{count} d",
+  "activityDays": "{count, plural, other{{count} d}}",
   "@activityDays": {
+    "description": "How long ago, short, on an Activity row: \"2 d\"",
     "placeholders": {
       "count": {
         "type": "int"
@@ -1217,6 +1239,26 @@
   "traySendClipboard": "Send clipboard to my devices",
   "trayStillRunningTitle": "Ferret is still running",
   "trayStillRunningBody": "Find it in the tray, next to the clock. Quit from its menu.",
+  "noticeChannelTransfers": "Transfers",
+  "@noticeChannelTransfers": {
+    "description": "The name of a notification category, shown in the system notification settings"
+  },
+  "noticeChannelIncoming": "From your devices",
+  "@noticeChannelIncoming": {
+    "description": "The name of a notification category, shown in the system notification settings"
+  },
+  "noticeChannelSuggestions": "Continue suggestions",
+  "@noticeChannelSuggestions": {
+    "description": "The name of a notification category, shown in the system notification settings. Pages and media another device offers to continue here"
+  },
+  "noticeChannelFind": "Find",
+  "@noticeChannelFind": {
+    "description": "The name of a notification category, shown in the system notification settings. A device ringing so you can find it"
+  },
+  "noticeChannelProblems": "Connection problems",
+  "@noticeChannelProblems": {
+    "description": "The name of a notification category, shown in the system notification settings"
+  },
   "settingsStartAtLogin": "Start Ferret when I log in",
   "settingsStartAtLoginBody": "It starts in the tray, so your devices connect before you need them.",
   "menuHelp": "Help",
@@ -1257,6 +1299,7 @@
   "accessSummaryNone": "Everything off",
   "accessSummarySome": "{off} of {total} off",
   "@accessSummarySome": {
+    "description": "On a device page: how many features this device may not use, \"2 of 10 off\"",
     "placeholders": {
       "off": {
         "type": "int"

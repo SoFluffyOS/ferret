@@ -81,12 +81,12 @@ class SidebarRow extends StatelessWidget {
             horizontal: margin,
             vertical: Spacing.d1,
           ),
-          padding: EdgeInsets.only(
-            left: switch (isIndented) {
+          padding: EdgeInsetsDirectional.only(
+            start: switch (isIndented) {
               true => Spacing.d32,
               false => inset,
             },
-            right: inset,
+            end: inset,
           ),
           decoration: ShapeDecoration(
             color: _fill(palette, state),

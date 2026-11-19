@@ -81,7 +81,7 @@ class DropSettingsFrame extends StatelessWidget {
         if (customFolder)
           GroupedCell(
             child: Align(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Button(
                 mainAxisSize: .min,
                 variant: .ghost,

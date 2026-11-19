@@ -36,7 +36,7 @@ class PhonesSettingsFrame extends StatelessWidget {
           children: [for (final phone in phones) _PhoneRow(phone: phone)],
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(
+          padding: EdgeInsetsDirectional.fromSTEB(
             PageInsets.row,
             Spacing.d8,
             PageInsets.row,

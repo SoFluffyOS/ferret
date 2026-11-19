@@ -25,7 +25,7 @@ class TransferProgressBar extends StatelessWidget {
           children: [
             ColoredBox(color: context.palette.background),
             FractionallySizedBox(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               widthFactor: progress.clamp(0, 1).toDouble(),
               child: ColoredBox(color: color),
             ),

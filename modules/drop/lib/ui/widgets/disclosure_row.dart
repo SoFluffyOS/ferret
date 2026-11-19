@@ -68,7 +68,11 @@ class _DisclosureRowState extends State<DisclosureRow> {
                     style: typography.base2.copyWith(color: palette.mutedText),
                   ),
                 ),
-                Icon(chevron, size: Spacing.d16, color: palette.mutedText),
+                DirectionalIcon(
+                  chevron,
+                  size: Spacing.d16,
+                  color: palette.mutedText,
+                ),
               ],
             ),
           ),

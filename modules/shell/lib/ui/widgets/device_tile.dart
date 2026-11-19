@@ -142,7 +142,7 @@ class DeviceTile extends StatelessWidget {
                 ],
                 if (status.isConnected && onTap != null) ...[
                   Spacing.h8,
-                  Icon(
+                  DirectionalIcon(
                     LucideIcons.chevronRight,
                     size: Spacing.d16,
                     color: palette.mutedText,

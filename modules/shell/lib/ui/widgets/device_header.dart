@@ -24,7 +24,7 @@ class DeviceHeader extends StatelessWidget {
     };
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d0,
         Spacing.d8,
         Spacing.d0,

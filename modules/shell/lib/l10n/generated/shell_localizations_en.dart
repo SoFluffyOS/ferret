@@ -94,7 +94,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String pairExpiresIn(int minutes) {
-    return 'Expires in $minutes min';
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return 'Expires in $_temp0';
   }
 
   @override
@@ -189,6 +194,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceTitleId => 'Device ID';
 
   @override
+  String deviceIdLine(String id) {
+    return 'Device ID $id';
+  }
+
+  @override
   String get deviceActions => 'Actions';
 
   @override
@@ -270,7 +280,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String menubarTipConnected(int count) {
-    return 'Ferret · $count devices connected';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices connected',
+      one: '1 device connected',
+    );
+    return 'Ferret · $_temp0';
   }
 
   @override
@@ -337,17 +353,32 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String deviceLastSeenMinutes(int minutes) {
-    return 'Last seen $minutes min ago';
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return 'Last seen $_temp0 ago';
   }
 
   @override
   String deviceLastSeenHours(int hours) {
-    return 'Last seen $hours h ago';
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours h',
+    );
+    return 'Last seen $_temp0 ago';
   }
 
   @override
   String deviceLastSeenDays(int days) {
-    return 'Last seen $days d ago';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days d',
+    );
+    return 'Last seen $_temp0 ago';
   }
 
   @override
@@ -622,7 +653,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String dropSendToAll(int count) {
-    return 'Send to all $count devices';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices',
+    );
+    return 'Send to all $_temp0';
   }
 
   @override
@@ -907,12 +943,22 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String promptAlsoMore(String first, String second, int count) {
-    return 'You\'ll also be connected to $first, $second and $count more.';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more',
+    );
+    return 'You\'ll also be connected to $first, $second and $_temp0.';
   }
 
   @override
   String promptSecondsLeft(int seconds) {
-    return '$seconds s';
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds s',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1062,6 +1108,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsAdvanced => 'Advanced';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguageSystem => 'Same as the system';
+
+  @override
+  String get settingsLanguageNote =>
+      'Menus, the tray icon and notifications switch the next time Ferret starts.';
 
   @override
   String get settingsAbout => 'About · Privacy';
@@ -1271,7 +1327,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String joinedManyNotice(int count) {
-    return '$count devices joined your devices';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices joined your devices',
+      one: '1 device joined your devices',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1357,17 +1419,32 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String activityMinutes(int count) {
-    return '$count min';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min',
+    );
+    return '$_temp0';
   }
 
   @override
   String activityHours(int count) {
-    return '$count h';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count h',
+    );
+    return '$_temp0';
   }
 
   @override
   String activityDays(int count) {
-    return '$count d';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count d',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1541,6 +1618,21 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get trayStillRunningBody =>
       'Find it in the tray, next to the clock. Quit from its menu.';
+
+  @override
+  String get noticeChannelTransfers => 'Transfers';
+
+  @override
+  String get noticeChannelIncoming => 'From your devices';
+
+  @override
+  String get noticeChannelSuggestions => 'Continue suggestions';
+
+  @override
+  String get noticeChannelFind => 'Find';
+
+  @override
+  String get noticeChannelProblems => 'Connection problems';
 
   @override
   String get settingsStartAtLogin => 'Start Ferret when I log in';

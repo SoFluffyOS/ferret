@@ -57,7 +57,7 @@ class LocalSendSettingsFrame extends StatelessWidget {
                 ),
                 Spacing.v8,
                 Align(
-                  alignment: .centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Button(
                     mainAxisSize: .min,
                     variant: .ghost,

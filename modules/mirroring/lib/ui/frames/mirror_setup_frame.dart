@@ -99,7 +99,10 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
                     l10n.stepDebugging2,
                     l10n.stepDebugging3,
                   ].indexed)
-                    Text('${index + 1}. $line', style: caption),
+                    Text(
+                      l10n.setupStepNumbered(index + 1, line),
+                      style: caption,
+                    ),
                   Spacing.v4,
                   Tappable(
                     onTap: () => setState(() => _showsBrands = !_showsBrands),
@@ -110,7 +113,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
                           l10n.brandsToggle,
                           style: caption.copyWith(color: palette.link),
                         ),
-                        Icon(
+                        DirectionalIcon(
                           switch (_showsBrands) {
                             true => LucideIcons.chevronDown,
                             false => LucideIcons.chevronRight,
@@ -152,7 +155,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
               Text(l10n.setupPrivacy, style: caption),
               Spacing.v16,
               Align(
-                alignment: .centerLeft,
+                alignment: AlignmentDirectional.centerStart,
                 child: Button(
                   variant: .ghost,
                   mainAxisSize: .min,

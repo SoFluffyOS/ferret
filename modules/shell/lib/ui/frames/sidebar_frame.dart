@@ -113,7 +113,7 @@ class _SidebarFrameState extends State<SidebarFrame> {
                       ),
                       if (searches)
                         Padding(
-                          padding: EdgeInsets.fromLTRB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                             Spacing.d16,
                             0,
                             Spacing.d16,

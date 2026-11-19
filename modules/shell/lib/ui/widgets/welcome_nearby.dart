@@ -18,7 +18,7 @@ class WelcomeNearby extends StatelessWidget {
     final l10n = context.shellL10n;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d16,
         Spacing.d16,
         Spacing.d16,

@@ -196,7 +196,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
           for (final (index, item) in fold.shown.indexed) ...[
             if (index > 0 && item.startsGroup) _divider(context),
             Align(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: _item(context, item, fold, showName: true),
             ),
           ],
@@ -253,7 +253,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
         child: ToolbarButton(
           icon: LucideIcons.signal,
           name: l10n.qualityName(widget.quality),
-          tooltip: '${l10n.pictureTitle}: ${l10n.qualityName(widget.quality)}',
+          tooltip: l10n.pictureTooltip(l10n.qualityName(widget.quality)),
           showName: showName,
           onTap: () => _open(_quality),
           child: QualityMark(quality: widget.quality),

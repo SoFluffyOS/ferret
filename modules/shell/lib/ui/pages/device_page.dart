@@ -167,7 +167,7 @@ class DevicePage extends StatelessWidget {
 
     return [
       if (device.nickname != null) l10n.deviceOwnName(device.ownName),
-      '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
+      l10n.deviceIdLine(DeviceIdentity.format(device.id)),
       if ((device.lastHost, device.lastPort) case (final host?, final port?))
         l10n.settingsAddress('$host:$port'),
       l10n.devicePairedOn(DateFormat.yMMMd(locale).format(device.pairedAt)),

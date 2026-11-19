@@ -55,9 +55,9 @@ class _DisclosureState extends State<Disclosure> {
         ),
         if (_open)
           Padding(
-            padding: EdgeInsets.only(
-              left: Spacing.d4,
-              right: Spacing.d4,
+            padding: EdgeInsetsDirectional.only(
+              start: Spacing.d4,
+              end: Spacing.d4,
               bottom: Spacing.d8,
             ),
             child: Column(

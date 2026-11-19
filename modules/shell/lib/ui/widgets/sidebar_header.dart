@@ -49,7 +49,7 @@ class SidebarHeader extends StatelessWidget {
           ),
           if (isCollapsed != null) ...[
             Spacing.h4,
-            Icon(
+            DirectionalIcon(
               switch (isCollapsed) {
                 true => LucideIcons.chevronRight,
                 false => LucideIcons.chevronDown,
@@ -63,7 +63,7 @@ class SidebarHeader extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         SidebarRow.margin + SidebarRow.inset,
         Spacing.d8,
         SidebarRow.margin,
@@ -73,7 +73,7 @@ class SidebarHeader extends StatelessWidget {
         children: [
           Expanded(
             child: Align(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: switch (isCollapsed) {
                 null => label,
                 final isCollapsed => Semantics(

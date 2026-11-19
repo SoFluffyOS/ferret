@@ -174,14 +174,6 @@ class MenubarBinding {
     }
   }
 
-  Locale _supportedLocale() {
-    final wanted = PlatformDispatcher.instance.locale;
-    for (final locale in ShellLocalizations.supportedLocales) {
-      if (locale.languageCode == wanted.languageCode) {
-        return locale;
-      }
-    }
-
-    return ShellLocalizations.supportedLocales.first;
-  }
+  Locale _supportedLocale() =>
+      AppLocale.pick(ShellLocalizations.supportedLocales);
 }

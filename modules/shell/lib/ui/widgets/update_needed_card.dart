@@ -82,7 +82,7 @@ class UpdateNeededCard extends StatelessWidget {
           if (getsUpdate != null) ...[
             Spacing.v12,
             Align(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Button(
                 variant: .primary,
                 mainAxisSize: .min,

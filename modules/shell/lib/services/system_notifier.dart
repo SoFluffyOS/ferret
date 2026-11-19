@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shell/l10n/l10n.dart';
 
 /// The app's one [LocalNotifier], on the platform notification centre.
 class SystemNotifier implements LocalNotifier {
@@ -23,7 +24,9 @@ class SystemNotifier implements LocalNotifier {
           android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
           iOS: notifier._darwinSettings(),
           macOS: notifier._darwinSettings(),
-          linux: const LinuxInitializationSettings(defaultActionName: 'Open'),
+          linux: LinuxInitializationSettings(
+            defaultActionName: _l10n().menuOpen,
+          ),
           windows: const WindowsInitializationSettings(
             appName: 'Ferret',
             appUserModelId: 'io.sofluffy.ferret',
@@ -208,13 +211,20 @@ class SystemNotifier implements LocalNotifier {
         presentSound: !notice.silent,
       );
 
-  String _channelName(NoticeChannel channel) => switch (channel) {
-    .transfers => 'Transfers',
-    .incoming => 'From your devices',
-    .suggestions => 'Continue suggestions',
-    .find => 'Find',
-    .problems => 'Connection problems',
-  };
+  String _channelName(NoticeChannel channel) {
+    final l10n = _l10n();
+    return switch (channel) {
+      .transfers => l10n.noticeChannelTransfers,
+      .incoming => l10n.noticeChannelIncoming,
+      .suggestions => l10n.noticeChannelSuggestions,
+      .find => l10n.noticeChannelFind,
+      .problems => l10n.noticeChannelProblems,
+    };
+  }
+
+  static ShellLocalizations _l10n() => lookupShellLocalizations(
+    AppLocale.pick(ShellLocalizations.supportedLocales),
+  );
 
   String? _inputIdFor(NoticeAction action) => switch (action.isReply) {
     true => action.id,

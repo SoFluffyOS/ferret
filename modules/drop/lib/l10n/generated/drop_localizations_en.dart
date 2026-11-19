@@ -383,7 +383,12 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String offerFilesMore(String names, int count) {
-    return '$names and $count more';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more',
+    );
+    return '$names and $_temp0';
   }
 
   @override
@@ -622,17 +627,37 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String etaSeconds(int seconds) {
-    return '$seconds s';
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds s',
+    );
+    return '$_temp0';
   }
 
   @override
   String etaMinutes(int minutes) {
-    return '$minutes min';
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return '$_temp0';
   }
 
   @override
   String etaHours(int hours, int minutes) {
-    return '$hours h $minutes min';
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours h',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return '$_temp0 $_temp1';
   }
 
   @override

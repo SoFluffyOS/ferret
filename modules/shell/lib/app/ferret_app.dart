@@ -51,6 +51,9 @@ class FerretApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: host),
         ChangeNotifierProvider.value(value: pause),
+        ChangeNotifierProvider<ValueNotifier<Locale?>>.value(
+          value: AppLocale.chosen,
+        ),
         if (views case final views?) ChangeNotifierProvider.value(value: views),
         if (menubar case final menubar?) Provider.value(value: menubar),
         if (featureWindows case final featureWindows?)

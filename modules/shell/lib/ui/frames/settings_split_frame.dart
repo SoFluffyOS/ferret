@@ -36,7 +36,7 @@ class _SettingsSplitFrameState extends State<SettingsSplitFrame> {
               right: false,
               child: FocusTraversalGroup(
                 child: ListView(
-                  padding: EdgeInsets.fromLTRB(
+                  padding: EdgeInsetsDirectional.fromSTEB(
                     side,
                     Spacing.d12,
                     Spacing.d0,

@@ -254,7 +254,12 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String statusDropped(int count) {
-    return '$count dropped';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dropped',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -321,7 +326,17 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String durationHours(int hours, int minutes) {
-    return '$hours h $minutes min';
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours h',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return '$_temp0 $_temp1';
   }
 
   @override
@@ -676,6 +691,11 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get pictureTitle => 'Picture';
 
   @override
+  String pictureTooltip(String quality) {
+    return 'Picture: $quality';
+  }
+
+  @override
   String get presetAuto => 'Auto';
 
   @override
@@ -843,6 +863,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get airplayListening => 'Listening…';
+
+  @override
+  String airplayListeningLeft(String time) {
+    return 'Listening… $time';
+  }
+
+  @override
+  String setupStepNumbered(int number, String step) {
+    return '$number. $step';
+  }
 
   @override
   String get airplayNote =>

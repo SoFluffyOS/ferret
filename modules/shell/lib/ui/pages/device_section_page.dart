@@ -83,7 +83,7 @@ class _Section extends StatelessWidget {
             SafeArea(
               bottom: false,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
+                padding: EdgeInsetsDirectional.fromSTEB(
                   Spacing.d12,
                   Spacing.d12,
                   Spacing.d12,

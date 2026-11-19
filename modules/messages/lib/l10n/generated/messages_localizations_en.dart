@@ -13,6 +13,11 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get title => 'Messages';
 
   @override
+  String cardTitle(String phone) {
+    return 'Messages · $phone';
+  }
+
+  @override
   String get back => 'Back';
 
   @override
@@ -217,6 +222,11 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get notSent => 'Not sent';
 
   @override
+  String notSentBecause(String reason) {
+    return 'Not sent. $reason';
+  }
+
+  @override
   String outcomeOffline(String name) {
     return '$name isn\'t connected.';
   }
@@ -280,6 +290,16 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   String get attachment => 'Attachment';
 
   @override
+  String attachmentFrom(String name) {
+    return '$name: Attachment';
+  }
+
+  @override
+  String latestFrom(String name, String text) {
+    return '$name: $text';
+  }
+
+  @override
   String get today => 'Today';
 
   @override
@@ -313,7 +333,12 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String noticeTitleCount(String name, int count) {
-    return '$name · $count new';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new',
+    );
+    return '$name · $_temp0';
   }
 
   @override

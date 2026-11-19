@@ -96,7 +96,7 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
                   Text(l10n.pickerNoLocalSend, style: hint),
                 if (localSend && !scanning)
                   Align(
-                    alignment: .centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: Button(
                       mainAxisSize: .min,
                       variant: .ghost,

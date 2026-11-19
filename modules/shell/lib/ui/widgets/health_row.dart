@@ -83,7 +83,7 @@ class _HealthRowState extends State<HealthRow> {
             Tappable(
               onTap: onTap,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
+                padding: EdgeInsetsDirectional.fromSTEB(
                   Spacing.d12,
                   Spacing.d2,
                   Spacing.d4,

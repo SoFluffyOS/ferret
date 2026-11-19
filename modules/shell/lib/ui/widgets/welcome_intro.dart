@@ -15,7 +15,7 @@ class WelcomeIntro extends StatelessWidget {
     final l10n = context.shellL10n;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         PageInsets.row,
         Spacing.d12,
         PageInsets.row,

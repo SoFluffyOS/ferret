@@ -3,27 +3,49 @@
   "title": "Clipboard",
   "sentTo": "Sent to {devices}",
   "@sentTo": {
-    "placeholders": {"devices": {"type": "String"}}
+    "placeholders": {
+      "devices": {
+        "type": "String"
+      }
+    }
   },
   "sentNowhere": "Copied here, no device connected",
   "sentWaiting": "Waiting for a device to connect",
   "sentWhenBack": "Sent to {devices} when it came back",
-  "@sentWhenBack": {"placeholders": {"devices": {"type": "String"}}},
+  "@sentWhenBack": {
+    "placeholders": {
+      "devices": {
+        "type": "String"
+      }
+    }
+  },
   "skippedSensitive": "Not synced: marked as private",
   "skippedImagesOff": "Not synced: images are off",
   "skippedTooLarge": "Not synced: too large",
   "writeFailed": "From {device}, not on this clipboard yet. Tap Copy.",
   "@writeFailed": {
-    "placeholders": {"device": {"type": "String"}}
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   },
   "activityCopiedOn": "Copied on {device}",
   "@activityCopiedOn": {
-    "placeholders": {"device": {"type": "String"}}
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   },
   "activityNotSent": "Clipboard not sent",
   "activityQuote": "“{text}”",
   "@activityQuote": {
-    "placeholders": {"text": {"type": "String"}}
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
   },
   "imageLabel": "Image",
   "privateCleared": "Private item, cleared from memory",
@@ -48,15 +70,27 @@
   "healthByHand": "Send by hand",
   "healthOnlyHereSends": "Sends by itself. {name} sends by hand.",
   "@healthOnlyHereSends": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthOnlyTheySend": "{name} sends by itself. Send by hand from here.",
   "@healthOnlyTheySend": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthUnsupported": "Needs a Ferret update on {name}",
   "@healthUnsupported": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "settingsBackgroundSendLost": "Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.",
   "settingsAutoSend": "Send automatically",
@@ -73,16 +107,28 @@
   "settingsImages": "Images",
   "settingsImagesBody": "Sync copied images up to {megabytes} MB.",
   "@settingsImagesBody": {
-    "placeholders": {"megabytes": {"type": "int"}}
+    "placeholders": {
+      "megabytes": {
+        "type": "int"
+      }
+    }
   },
   "settingsSensitive": "Include passwords",
-  "settingsSensitiveBody": "Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes} min.",
+  "settingsSensitiveBody": "Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes, plural, other{{minutes} min}}.",
   "@settingsSensitiveBody": {
-    "placeholders": {"minutes": {"type": "int"}}
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   },
   "settingsHistory": "{count, plural, =0{History is empty. It stays in memory, never on disk.} =1{1 item in history, in memory only.} other{{count} items in history, in memory only.}}",
   "@settingsHistory": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "settingsClearHistory": "Clear history",
   "settingsWhyManualWayland": "On Wayland, only the window in front hears about a new copy. GNOME has no way around that, so Ferret sends what you copied once its window is in front again, or when you pick Send clipboard on a device or in the tray. On KDE Plasma and Sway, install wl-clipboard and Ferret watches by itself.",

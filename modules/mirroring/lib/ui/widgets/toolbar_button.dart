@@ -54,7 +54,7 @@ class ToolbarButton extends StatelessWidget {
       child: switch (showName) {
         false => mark,
         true => Padding(
-          padding: EdgeInsets.only(right: Spacing.d8),
+          padding: EdgeInsetsDirectional.only(end: Spacing.d8),
           child: Row(
             mainAxisSize: .min,
             children: [

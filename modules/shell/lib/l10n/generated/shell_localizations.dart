@@ -253,7 +253,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairExpiresIn.
   ///
   /// In en, this message translates to:
-  /// **'Expires in {minutes} min'**
+  /// **'Expires in {minutes, plural, other{{minutes} min}}'**
   String pairExpiresIn(int minutes);
 
   /// No description provided for @pairNewCode.
@@ -406,6 +406,12 @@ abstract class ShellLocalizations {
   /// **'Device ID'**
   String get deviceTitleId;
 
+  /// On a device page, under its name. The ID is a short code like 3F2A 0718
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID {id}'**
+  String deviceIdLine(String id);
+
   /// No description provided for @deviceActions.
   ///
   /// In en, this message translates to:
@@ -547,7 +553,7 @@ abstract class ShellLocalizations {
   /// No description provided for @menubarTipConnected.
   ///
   /// In en, this message translates to:
-  /// **'Ferret · {count} devices connected'**
+  /// **'Ferret · {count, plural, =1{1 device connected} other{{count} devices connected}}'**
   String menubarTipConnected(int count);
 
   /// No description provided for @menubarTipAlone.
@@ -643,19 +649,19 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceLastSeenMinutes.
   ///
   /// In en, this message translates to:
-  /// **'Last seen {minutes} min ago'**
+  /// **'Last seen {minutes, plural, other{{minutes} min}} ago'**
   String deviceLastSeenMinutes(int minutes);
 
   /// No description provided for @deviceLastSeenHours.
   ///
   /// In en, this message translates to:
-  /// **'Last seen {hours} h ago'**
+  /// **'Last seen {hours, plural, other{{hours} h}} ago'**
   String deviceLastSeenHours(int hours);
 
   /// No description provided for @deviceLastSeenDays.
   ///
   /// In en, this message translates to:
-  /// **'Last seen {days} d ago'**
+  /// **'Last seen {days, plural, other{{days} d}} ago'**
   String deviceLastSeenDays(int days);
 
   /// No description provided for @deviceWhy.
@@ -1069,7 +1075,7 @@ abstract class ShellLocalizations {
   /// On the window's pane while files are dragged over it and several devices are connected
   ///
   /// In en, this message translates to:
-  /// **'Send to all {count} devices'**
+  /// **'Send to all {count, plural, other{{count} devices}}'**
   String dropSendToAll(int count);
 
   /// No description provided for @dropDeviceOffline.
@@ -1525,13 +1531,13 @@ abstract class ShellLocalizations {
   /// No description provided for @promptAlsoMore.
   ///
   /// In en, this message translates to:
-  /// **'You\'ll also be connected to {first}, {second} and {count} more.'**
+  /// **'You\'ll also be connected to {first}, {second} and {count, plural, other{{count} more}}.'**
   String promptAlsoMore(String first, String second, int count);
 
   /// No description provided for @promptSecondsLeft.
   ///
   /// In en, this message translates to:
-  /// **'{seconds} s'**
+  /// **'{seconds, plural, other{{seconds} s}}'**
   String promptSecondsLeft(int seconds);
 
   /// No description provided for @promptNotice.
@@ -1750,7 +1756,7 @@ abstract class ShellLocalizations {
   /// **'Off'**
   String get settingsOff;
 
-  /// No description provided for @settingsCountOn.
+  /// On a Settings row: how many of its switches are on, "3 of 5 on"
   ///
   /// In en, this message translates to:
   /// **'{on} of {total} on'**
@@ -1773,6 +1779,24 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Advanced'**
   String get settingsAdvanced;
+
+  /// Settings → Advanced: the language Ferret shows
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// The default choice for Language: follow the language of the operating system
+  ///
+  /// In en, this message translates to:
+  /// **'Same as the system'**
+  String get settingsLanguageSystem;
+
+  /// No description provided for @settingsLanguageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Menus, the tray icon and notifications switch the next time Ferret starts.'**
+  String get settingsLanguageNote;
 
   /// No description provided for @settingsAbout.
   ///
@@ -2107,7 +2131,7 @@ abstract class ShellLocalizations {
   /// No description provided for @joinedManyNotice.
   ///
   /// In en, this message translates to:
-  /// **'{count} devices joined your devices'**
+  /// **'{count, plural, =1{1 device joined your devices} other{{count} devices joined your devices}}'**
   String joinedManyNotice(int count);
 
   /// No description provided for @joinedManyBanner.
@@ -2236,22 +2260,22 @@ abstract class ShellLocalizations {
   /// **'now'**
   String get activityNow;
 
-  /// No description provided for @activityMinutes.
+  /// How long ago, short, on an Activity row: "5 min"
   ///
   /// In en, this message translates to:
-  /// **'{count} min'**
+  /// **'{count, plural, other{{count} min}}'**
   String activityMinutes(int count);
 
-  /// No description provided for @activityHours.
+  /// How long ago, short, on an Activity row: "3 h"
   ///
   /// In en, this message translates to:
-  /// **'{count} h'**
+  /// **'{count, plural, other{{count} h}}'**
   String activityHours(int count);
 
-  /// No description provided for @activityDays.
+  /// How long ago, short, on an Activity row: "2 d"
   ///
   /// In en, this message translates to:
-  /// **'{count} d'**
+  /// **'{count, plural, other{{count} d}}'**
   String activityDays(int count);
 
   /// No description provided for @footerDrag.
@@ -2548,6 +2572,36 @@ abstract class ShellLocalizations {
   /// **'Find it in the tray, next to the clock. Quit from its menu.'**
   String get trayStillRunningBody;
 
+  /// The name of a notification category, shown in the system notification settings
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers'**
+  String get noticeChannelTransfers;
+
+  /// The name of a notification category, shown in the system notification settings
+  ///
+  /// In en, this message translates to:
+  /// **'From your devices'**
+  String get noticeChannelIncoming;
+
+  /// The name of a notification category, shown in the system notification settings. Pages and media another device offers to continue here
+  ///
+  /// In en, this message translates to:
+  /// **'Continue suggestions'**
+  String get noticeChannelSuggestions;
+
+  /// The name of a notification category, shown in the system notification settings. A device ringing so you can find it
+  ///
+  /// In en, this message translates to:
+  /// **'Find'**
+  String get noticeChannelFind;
+
+  /// The name of a notification category, shown in the system notification settings
+  ///
+  /// In en, this message translates to:
+  /// **'Connection problems'**
+  String get noticeChannelProblems;
+
   /// No description provided for @settingsStartAtLogin.
   ///
   /// In en, this message translates to:
@@ -2632,7 +2686,7 @@ abstract class ShellLocalizations {
   /// **'Everything off'**
   String get accessSummaryNone;
 
-  /// No description provided for @accessSummarySome.
+  /// On a device page: how many features this device may not use, "2 of 10 off"
   ///
   /// In en, this message translates to:
   /// **'{off} of {total} off'**

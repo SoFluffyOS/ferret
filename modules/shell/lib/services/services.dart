@@ -12,6 +12,7 @@ export 'package:shell/services/engine_host.dart';
 export 'package:shell/services/feature_window_host.dart';
 export 'package:shell/services/global_shortcut.dart';
 export 'package:shell/services/joined_summary.dart';
+export 'package:shell/services/language_preference.dart';
 export 'package:shell/services/linux_firewall.dart';
 export 'package:shell/services/local_device_factory.dart';
 export 'package:shell/services/menubar_icon_inputs.dart';

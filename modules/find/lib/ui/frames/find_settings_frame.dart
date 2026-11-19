@@ -179,9 +179,9 @@ class _RingOnSilent extends StatelessWidget {
         ),
         for (final note in notes)
           Padding(
-            padding: EdgeInsets.only(
-              left: PageInsets.row,
-              right: PageInsets.row,
+            padding: EdgeInsetsDirectional.only(
+              start: PageInsets.row,
+              end: PageInsets.row,
               bottom: Spacing.d12,
             ),
             child: note,

@@ -81,7 +81,7 @@ class PowerLadderFrame extends StatelessWidget {
                 NoticeText(l10n.messagesHint),
                 Spacing.v8,
                 Align(
-                  alignment: .centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Button(
                     mainAxisSize: .min,
                     variant: .ghost,

@@ -58,7 +58,7 @@ class BrowserSettingsFrame extends StatelessWidget {
                 ),
                 Spacing.v8,
                 Align(
-                  alignment: .centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Button(
                     variant: .ghost,
                     label: l10n.browserBridgeRetry,

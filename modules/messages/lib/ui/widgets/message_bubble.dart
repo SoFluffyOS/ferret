@@ -54,7 +54,10 @@ class MessageBubble extends StatelessWidget {
         children: [
           if (senderName case final name?)
             Padding(
-              padding: EdgeInsets.only(left: Spacing.d12, bottom: Spacing.d2),
+              padding: EdgeInsetsDirectional.only(
+                start: Spacing.d12,
+                bottom: Spacing.d2,
+              ),
               child: Text(
                 name,
                 style: typography.caption2.copyWith(color: palette.mutedText),

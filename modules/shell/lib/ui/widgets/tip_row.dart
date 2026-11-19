@@ -32,7 +32,7 @@ class TipRow extends StatelessWidget {
     final palette = context.palette;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d12,
         Spacing.d2,
         Spacing.d8,

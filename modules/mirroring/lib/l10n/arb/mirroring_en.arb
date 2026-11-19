@@ -336,7 +336,7 @@
       }
     }
   },
-  "statusDropped": "{count} dropped",
+  "statusDropped": "{count, plural, other{{count} dropped}}",
   "@statusDropped": {
     "placeholders": {
       "count": {
@@ -423,7 +423,7 @@
       }
     }
   },
-  "durationHours": "{hours} h {minutes} min",
+  "durationHours": "{hours, plural, other{{hours} h}} {minutes, plural, other{{minutes} min}}",
   "@durationHours": {
     "placeholders": {
       "hours": {
@@ -683,6 +683,15 @@
   "qualitySlow": "Slow",
   "qualityPoor": "Poor",
   "pictureTitle": "Picture",
+  "pictureTooltip": "Picture: {quality}",
+  "@pictureTooltip": {
+    "description": "Tooltip of the toolbar button that picks the picture quality",
+    "placeholders": {
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
   "presetAuto": "Auto",
   "presetAutoBody": "Ferret adapts",
   "presetSharp": "Sharp",
@@ -810,6 +819,27 @@
     }
   },
   "airplayListening": "Listening…",
+  "airplayListeningLeft": "Listening… {time}",
+  "@airplayListeningLeft": {
+    "description": "While this computer waits for an AirPlay connection; the time left, \"4:59\"",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "setupStepNumbered": "{number}. {step}",
+  "@setupStepNumbered": {
+    "description": "One numbered step of a setup guide",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "step": {
+        "type": "String"
+      }
+    }
+  },
   "airplayNote": "View only. No sound. Experimental: an iOS update can break it.",
   "airplayMacTitle": "Macs already do this",
   "airplayMacBody": "On {device}, pick this Mac under Screen Mirroring, or use iPhone Mirroring.",

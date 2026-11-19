@@ -406,7 +406,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsSensitiveBody.
   ///
   /// In en, this message translates to:
-  /// **'Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes} min.'**
+  /// **'Off by default: copied passwords are skipped. On, they sync and are wiped after {minutes, plural, other{{minutes} min}}.'**
   String settingsSensitiveBody(int minutes);
 
   /// No description provided for @settingsHistory.

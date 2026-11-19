@@ -23,7 +23,10 @@ class NotificationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final time = DateFormat.Hm().format(notification.postedAt);
+    final time = _time(
+      Localizations.localeOf(context).toLanguageTag(),
+      notification.postedAt,
+    );
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Spacing.d4),
@@ -69,5 +72,15 @@ class NotificationRow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// intl throws for a locale whose date symbols were never loaded; the
+  /// default format beats no time at all.
+  static String _time(String locale, DateTime at) {
+    try {
+      return DateFormat.jm(locale).format(at);
+    } on Object {
+      return DateFormat.Hm().format(at);
+    }
   }
 }

@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notifications/l10n/generated/notifications_localizations.dart';
 import 'package:protocol/notifications.dart';
@@ -21,16 +20,9 @@ extension AppsSummary on NotificationsLocalizations {
   };
 }
 
-/// The strings in the system language, for notices shown outside any
-/// widget, falling back to English.
-NotificationsLocalizations platformNotificationsL10n() {
-  final locale = PlatformDispatcher.instance.locale;
-  final supported = NotificationsLocalizations.supportedLocales.any(
-    (candidate) => candidate.languageCode == locale.languageCode,
-  );
-  if (!supported) {
-    return lookupNotificationsLocalizations(const Locale('en'));
-  }
-
-  return lookupNotificationsLocalizations(locale);
-}
+/// The strings in the language Ferret shows (Settings → Advanced, else the
+/// system's), for notices and health built outside any widget.
+NotificationsLocalizations platformNotificationsL10n() =>
+    lookupNotificationsLocalizations(
+      AppLocale.pick(NotificationsLocalizations.supportedLocales),
+    );

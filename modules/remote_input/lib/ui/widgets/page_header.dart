@@ -25,7 +25,7 @@ class PageHeader extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d12,
         Spacing.d12,
         Spacing.d12,
@@ -38,7 +38,7 @@ class PageHeader extends StatelessWidget {
             onTap: onBack,
             child: Padding(
               padding: EdgeInsets.all(Spacing.d4),
-              child: Icon(
+              child: DirectionalIcon(
                 LucideIcons.chevronLeft,
                 size: Spacing.d20,
                 color: palette.text,

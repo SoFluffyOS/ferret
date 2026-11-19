@@ -22,7 +22,7 @@ class FooterHint extends StatelessWidget {
     final style = context.fluffyTheme.typography.caption1;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d16,
         Spacing.d8,
         Spacing.d16,

@@ -196,7 +196,12 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String settingsSensitiveBody(int minutes) {
-    return 'Off by default: copied passwords are skipped. On, they sync and are wiped after $minutes min.';
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+    );
+    return 'Off by default: copied passwords are skipped. On, they sync and are wiped after $_temp0.';
   }
 
   @override

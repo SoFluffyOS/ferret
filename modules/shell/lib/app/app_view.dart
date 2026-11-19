@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/app/app_localizations.dart';
 import 'package:shell/app/ferret_theme.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
@@ -57,12 +57,9 @@ class _AppViewState extends State<AppView> {
       title: 'Ferret',
       color: const Color(0xFFE8833A),
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        ShellLocalizations.delegate,
-        for (final feature in features) ...feature.localizationsDelegates,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: appLocalizationsDelegates(features),
       supportedLocales: ShellLocalizations.supportedLocales,
+      locale: chosenLocale(context),
       pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
         settings: settings,
         pageBuilder: (context, _, _) => builder(context),

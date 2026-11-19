@@ -70,7 +70,7 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
     final isIphone = defaultTargetPlatform == .iOS;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         Spacing.d16,
         Spacing.d32,
         Spacing.d16,

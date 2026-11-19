@@ -85,7 +85,7 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
                 children: [
                   ColoredBox(color: palette.background),
                   FractionallySizedBox(
-                    alignment: .centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     widthFactor: fraction,
                     child: ColoredBox(color: palette.accent),
                   ),

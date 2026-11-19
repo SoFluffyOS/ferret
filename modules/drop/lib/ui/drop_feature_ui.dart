@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:core/core.dart';
 import 'package:drop/feature/drop_feature.dart';
@@ -739,14 +738,7 @@ class DropFeatureUi extends FeatureUi {
   DropViewModel get _dropViewModel =>
       _viewModel ??= DropViewModel(feature: feature, plugin: _plugin);
 
-  DropLocalizations _l10n() {
-    final wanted = PlatformDispatcher.instance.locale;
-    for (final locale in DropLocalizations.supportedLocales) {
-      if (locale.languageCode == wanted.languageCode) {
-        return lookupDropLocalizations(locale);
-      }
-    }
-
-    return lookupDropLocalizations(DropLocalizations.supportedLocales.first);
-  }
+  DropLocalizations _l10n() => lookupDropLocalizations(
+    AppLocale.pick(DropLocalizations.supportedLocales),
+  );
 }

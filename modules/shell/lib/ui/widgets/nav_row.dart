@@ -80,7 +80,7 @@ class NavRow extends StatelessWidget {
               ),
             if (attentionLabel != null && showsChevron) Spacing.h6,
             if (showsChevron)
-              Icon(
+              DirectionalIcon(
                 LucideIcons.chevronRight,
                 size: Spacing.d16,
                 color: palette.mutedText,

@@ -35,6 +35,7 @@ Future<void> runFerret({
   final paths = await AppPaths.get();
   final settingsDirectory = await paths.create(paths.settings);
   final settings = await JsonFileSettingsStore.open(settingsDirectory.path);
+  LanguagePreference.load(settings);
   final secrets = await createSecretStore(paths);
   final device = await describeThisDevice(
     name: settings.get<String>('device.name'),

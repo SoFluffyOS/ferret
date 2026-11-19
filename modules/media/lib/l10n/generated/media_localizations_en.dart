@@ -144,6 +144,21 @@ class MediaLocalizationsEn extends MediaLocalizations {
   }
 
   @override
+  String healthShowsAndShares(String name, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macos': 'this Mac',
+        'android': 'this phone',
+        'ios': 'this iPhone',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Shares what\'s playing. $name sees what plays on $_temp0.';
+  }
+
+  @override
   String healthLostAccess(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,

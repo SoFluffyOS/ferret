@@ -27,7 +27,7 @@ class StatusBanner extends StatelessWidget {
         if (actionLabel case final label?) ...[
           Spacing.v8,
           Align(
-            alignment: .centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: Button(
               mainAxisSize: .min,
               variant: .ghost,

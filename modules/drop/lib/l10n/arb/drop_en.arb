@@ -7,35 +7,81 @@
   "sendFiles": "Send files",
   "activityFrom": "{what} from {device}",
   "@activityFrom": {
-    "placeholders": {"what": {"type": "String"}, "device": {"type": "String"}}
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
   },
   "activityTo": "{what} to {device}",
   "@activityTo": {
-    "placeholders": {"what": {"type": "String"}, "device": {"type": "String"}}
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
   },
   "activityText": "Text",
   "activitySavedTo": "Saved to {folder}",
   "@activitySavedTo": {
-    "placeholders": {"folder": {"type": "String"}}
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
   },
   "activitySaved": "Saved",
   "activitySent": "Sent",
   "activityProgress": "{done} of {total}",
   "@activityProgress": {
-    "placeholders": {"done": {"type": "String"}, "total": {"type": "String"}}
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
   },
   "activityProgressEta": "{done} of {total} · {eta} left",
   "@activityProgressEta": {
-    "placeholders": {"done": {"type": "String"}, "total": {"type": "String"}, "eta": {"type": "String"}}
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
+    }
   },
   "activityWaiting": "Waiting for an answer…",
   "activityOffer": "{device} wants to send",
   "@activityOffer": {
-    "placeholders": {"device": {"type": "String"}}
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   },
   "activityOfferSize": "{what} · {size}",
   "@activityOfferSize": {
-    "placeholders": {"what": {"type": "String"}, "size": {"type": "String"}}
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
   },
   "actionRevealFinder": "Show in Finder",
   "offerOtherPhonesBody": "Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.",
@@ -44,78 +90,218 @@
   "transferFiles": "{count, plural, =1{{name}} other{{count} files}}",
   "@transferFiles": {
     "placeholders": {
-      "count": {"type": "int"},
-      "name": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "transferText": "Text",
   "statusWaitingOutgoing": "Waiting for {device} to accept…",
-  "@statusWaitingOutgoing": {"placeholders": {"device": {"type": "String"}}},
+  "@statusWaitingOutgoing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusWaitingIncoming": "{device} wants to send this",
-  "@statusWaitingIncoming": {"placeholders": {"device": {"type": "String"}}},
+  "@statusWaitingIncoming": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusSending": "To {device} · {done} of {total}",
   "@statusSending": {
     "placeholders": {
-      "device": {"type": "String"},
-      "done": {"type": "String"},
-      "total": {"type": "String"}
+      "device": {
+        "type": "String"
+      },
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
     }
   },
   "statusReceiving": "From {device} · {done} of {total}",
   "@statusReceiving": {
     "placeholders": {
-      "device": {"type": "String"},
-      "done": {"type": "String"},
-      "total": {"type": "String"}
+      "device": {
+        "type": "String"
+      },
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
     }
   },
   "statusSpeed": "{speed}/s",
-  "@statusSpeed": {"placeholders": {"speed": {"type": "String"}}},
+  "@statusSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "statusSpeedEta": "{speed}/s · {eta} left",
   "@statusSpeedEta": {
     "placeholders": {
-      "speed": {"type": "String"},
-      "eta": {"type": "String"}
+      "speed": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
     }
   },
   "statusVerifying": "Checking the file…",
   "statusSent": "Sent to {device} ✓",
-  "@statusSent": {"placeholders": {"device": {"type": "String"}}},
+  "@statusSent": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusReceived": "Saved ✓ · from {device}",
-  "@statusReceived": {"placeholders": {"device": {"type": "String"}}},
+  "@statusReceived": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusTextReceived": "From {device}",
-  "@statusTextReceived": {"placeholders": {"device": {"type": "String"}}},
+  "@statusTextReceived": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusCancelled": "Cancelled",
   "failureDeclined": "{device} declined.",
-  "@failureDeclined": {"placeholders": {"device": {"type": "String"}}},
+  "@failureDeclined": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureTimedOut": "{device} didn't answer in time.",
-  "@failureTimedOut": {"placeholders": {"device": {"type": "String"}}},
+  "@failureTimedOut": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureDisconnected": "{device} went offline. It continues when {device} is back.",
-  "@failureDisconnected": {"placeholders": {"device": {"type": "String"}}},
+  "@failureDisconnected": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureDisconnectedSending": "{device} went offline. It goes on when {device} is back.",
   "statusPaused": "Paused at {done} of {total}. It goes on when {device} is back.",
-  "@statusPaused": {"placeholders": {"done": {"type": "String"}, "total": {"type": "String"}, "device": {"type": "String"}}},
+  "@statusPaused": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusWaitingForDevice": "Waiting for {device}. It goes as soon as {device} is back.",
-  "@statusWaitingForDevice": {"placeholders": {"device": {"type": "String"}}},
+  "@statusWaitingForDevice": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticePaused": "Paused with {device}",
-  "@noticePaused": {"placeholders": {"device": {"type": "String"}}},
+  "@noticePaused": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "actionTryNow": "Try now",
-  "@failureDisconnectedSending": {"placeholders": {"device": {"type": "String"}}},
+  "@failureDisconnectedSending": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureNotConnected": "{device} isn't connected. On {device}: open Ferret, then try again here.",
-  "@failureNotConnected": {"placeholders": {"device": {"type": "String"}}},
+  "@failureNotConnected": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureUnsupported": "{device} needs a newer Ferret to receive files.",
-  "@failureUnsupported": {"placeholders": {"device": {"type": "String"}}},
+  "@failureUnsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureStorage": "Couldn't save the file. Check free space and the receive folder.",
   "failureStorageSending": "{device} couldn't save the file. It may be out of space.",
-  "@failureStorageSending": {"placeholders": {"device": {"type": "String"}}},
+  "@failureStorageSending": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureChecksum": "The file arrived damaged. Try again to send it once more.",
   "failureSourceChanged": "The file changed or moved while it was being sent. Send it again.",
   "failureCancelledByPeer": "{device} cancelled.",
-  "@failureCancelledByPeer": {"placeholders": {"device": {"type": "String"}}},
+  "@failureCancelledByPeer": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureUnknownTransfer": "{device} lost track of this transfer. Send it again.",
-  "@failureUnknownTransfer": {"placeholders": {"device": {"type": "String"}}},
+  "@failureUnknownTransfer": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureProtocol": "Something went wrong with {device}. Try again to continue.",
-  "@failureProtocol": {"placeholders": {"device": {"type": "String"}}},
+  "@failureProtocol": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "actionOpen": "Open",
   "actionReveal": "Show in folder",
   "actionRetry": "Try again",
@@ -125,19 +311,61 @@
   "actionCopy": "Copy",
   "actionDismiss": "Dismiss",
   "noticeSending": "Sending to {device}",
-  "@noticeSending": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeSending": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeReceiving": "Receiving from {device}",
-  "@noticeReceiving": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeReceiving": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeSent": "Sent to {device}",
-  "@noticeSent": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeSent": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeReceived": "Received from {device}",
-  "@noticeReceived": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeReceived": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeText": "Text from {device}",
-  "@noticeText": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeText": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeFailed": "Transfer with {device} stopped",
-  "@noticeFailed": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeOffer": "{device} wants to send you something",
-  "@noticeOffer": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeOffer": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeNoDevice": "No device to send to",
   "noticeNoDeviceBody": "Open Ferret on one of your devices, then try again.",
   "noticeNothing": "Nothing to send",
@@ -151,50 +379,165 @@
   "settingsAutoAccept": "Accept from my devices",
   "settingsAutoAcceptBody": "Files from your paired devices go straight to the receive folder. Turn this off to approve each one.",
   "failurePinRequired": "{device} asks for a PIN. Enter the one it shows.",
-  "@failurePinRequired": {"placeholders": {"device": {"type": "String"}}},
+  "@failurePinRequired": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureTooManyAttempts": "Too many wrong PINs for {device}. Wait a moment, then try again.",
-  "@failureTooManyAttempts": {"placeholders": {"device": {"type": "String"}}},
+  "@failureTooManyAttempts": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureBusy": "{device} is busy with another transfer. Try again when it's done.",
-  "@failureBusy": {"placeholders": {"device": {"type": "String"}}},
+  "@failureBusy": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureUnreachable": "Couldn't reach {device}. On {device}: keep LocalSend open, on the same Wi-Fi.",
-  "@failureUnreachable": {"placeholders": {"device": {"type": "String"}}},
+  "@failureUnreachable": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureUntrusted": "{device} isn't the device it said it was. Nothing was sent.",
-  "@failureUntrusted": {"placeholders": {"device": {"type": "String"}}},
+  "@failureUntrusted": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "actionEnterPin": "Enter PIN",
   "pinTitle": "PIN for {device}",
-  "@pinTitle": {"placeholders": {"device": {"type": "String"}}},
+  "@pinTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "pinLabel": "PIN",
   "pinSend": "Send",
   "offerFrom": "{model} · {address}",
-  "@offerFrom": {"placeholders": {"model": {"type": "String"}, "address": {"type": "String"}}},
+  "@offerFrom": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      },
+      "address": {
+        "type": "String"
+      }
+    }
+  },
   "offerFingerprint": "Fingerprint {fingerprint}",
-  "@offerFingerprint": {"placeholders": {"fingerprint": {"type": "String"}}},
+  "@offerFingerprint": {
+    "placeholders": {
+      "fingerprint": {
+        "type": "String"
+      }
+    }
+  },
   "offerFiles": "{names}",
-  "@offerFiles": {"placeholders": {"names": {"type": "String"}}},
-  "offerFilesMore": "{names} and {count} more",
-  "@offerFilesMore": {"placeholders": {"names": {"type": "String"}, "count": {"type": "int"}}},
+  "@offerFiles": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "offerFilesMore": "{names} and {count, plural, other{{count} more}}",
+  "@offerFilesMore": {
+    "description": "Files offered to you: the first names, then how many more. \"photo.jpg, notes.pdf and 3 more\"",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "offerTotal": "{count, plural, =1{1 file} other{{count} files}} · {size}",
-  "@offerTotal": {"placeholders": {"count": {"type": "int"}, "size": {"type": "String"}}},
+  "@offerTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "offerWarning": "{device} isn't paired with Ferret. Accept only if you expect it.",
-  "@offerWarning": {"placeholders": {"device": {"type": "String"}}},
+  "@offerWarning": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "pickerLocalSend": "LocalSend",
   "pickerLocalSendModel": "LocalSend · {model}",
-  "@pickerLocalSendModel": {"placeholders": {"model": {"type": "String"}}},
+  "@pickerLocalSendModel": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
   "pickerScanning": "Looking for LocalSend devices…",
   "pickerNoLocalSend": "No LocalSend devices found. On the other device: open LocalSend, on the same Wi-Fi.",
   "pickerNoDevices": "None of your devices is connected.",
   "pickerSearchAgain": "Search again",
   "noticeGone": "Couldn't find {device}",
-  "@noticeGone": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeGone": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeGoneBody": "On {device}: open LocalSend, then send again.",
-  "@noticeGoneBody": {"placeholders": {"device": {"type": "String"}}},
+  "@noticeGoneBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "receiveTitle": "LocalSend",
   "receiveOff": "Let devices with the LocalSend app send here.",
   "receiveStarting": "Turning on…",
   "receiveTimed": "Visible as {alias} · {time} left",
-  "@receiveTimed": {"placeholders": {"alias": {"type": "String"}, "time": {"type": "String"}}},
+  "@receiveTimed": {
+    "placeholders": {
+      "alias": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "receiveAlwaysOn": "Visible as {alias} · stays on",
-  "@receiveAlwaysOn": {"placeholders": {"alias": {"type": "String"}}},
+  "@receiveAlwaysOn": {
+    "placeholders": {
+      "alias": {
+        "type": "String"
+      }
+    }
+  },
   "receiveCannotListen": "Couldn't start. A firewall or another app may be blocking it.",
   "receiveNoIdentity": "Couldn't prepare this device for LocalSend.",
   "receiveTurnOn": "Allow 10 min",
@@ -205,13 +548,40 @@
   "settingsReceiveAlways": "Always receive from LocalSend",
   "settingsReceiveAlwaysBody": "Keeps this device visible to LocalSend devices on your network, also after a restart. Off, it's visible for 10 minutes when you ask.",
   "failureConnectionLost": "The connection to {device} dropped. On {device}: send it again.",
-  "@failureConnectionLost": {"placeholders": {"device": {"type": "String"}}},
+  "@failureConnectionLost": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "failureQuickShare": "Something went wrong with {device}. On {device}: send it again.",
-  "@failureQuickShare": {"placeholders": {"device": {"type": "String"}}},
+  "@failureQuickShare": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "offerPin": "PIN {pin}. It must match the one on {device}.",
-  "@offerPin": {"placeholders": {"pin": {"type": "String"}, "device": {"type": "String"}}},
+  "@offerPin": {
+    "placeholders": {
+      "pin": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticePin": "PIN {pin}",
-  "@noticePin": {"placeholders": {"pin": {"type": "String"}}},
+  "@noticePin": {
+    "placeholders": {
+      "pin": {
+        "type": "String"
+      }
+    }
+  },
   "quickShareTitle": "Quick Share",
   "quickShareOff": "Let Android phones without Ferret send here.",
   "quickShareFinishing": "No longer visible. Finishing a transfer…",
@@ -221,49 +591,149 @@
   "settingsQuickShareBody": "Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.",
   "healthOk": "Nothing sent yet",
   "healthArrive": "Arrive in {folder}",
-  "@healthArrive": {"placeholders": {"folder": {"type": "String"}}},
+  "@healthArrive": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
   "healthLastSent": "{name} got the last thing you sent",
-  "@healthLastSent": {"placeholders": {"name": {"type": "String"}}},
+  "@healthLastSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthLastReceived": "The last thing {name} sent arrived",
-  "@healthLastReceived": {"placeholders": {"name": {"type": "String"}}},
+  "@healthLastReceived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthDeclinedThere": "{name} declined the last thing you sent",
-  "@healthDeclinedThere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthDeclinedThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthDeclinedHere": "You declined the last thing {name} sent",
-  "@healthDeclinedHere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthDeclinedHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthCancelledThere": "{name} cancelled the last transfer",
-  "@healthCancelledThere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthCancelledThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthCancelledHere": "You cancelled the last transfer",
   "healthNoAnswerThere": "{name} didn't answer the last time you sent",
-  "@healthNoAnswerThere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthNoAnswerThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthNoAnswerHere": "The last thing {name} sent wasn't accepted in time",
-  "@healthNoAnswerHere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthNoAnswerHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthSendAgain": "Send the files again from here.",
   "healthSendAgainThere": "On {name}: send the files again.",
-  "@healthSendAgainThere": {"placeholders": {"name": {"type": "String"}}},
+  "@healthSendAgainThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "summaryFolder": "To {folder}",
-  "@summaryFolder": {"placeholders": {"folder": {"type": "String"}}},
+  "@summaryFolder": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
   "summaryOff": "Off",
   "summaryAlwaysReceives": "Always receives",
   "summaryReceivingNow": "Receiving now",
   "summaryReceivesOnAsk": "Receives when you allow it",
   "summaryCannotReceive": "Can't receive right now",
   "sizeBytes": "{value} B",
-  "@sizeBytes": {"placeholders": {"value": {"type": "String"}}},
+  "@sizeBytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "sizeKilobytes": "{value} KB",
-  "@sizeKilobytes": {"placeholders": {"value": {"type": "String"}}},
+  "@sizeKilobytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "sizeMegabytes": "{value} MB",
-  "@sizeMegabytes": {"placeholders": {"value": {"type": "String"}}},
+  "@sizeMegabytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "sizeGigabytes": "{value} GB",
-  "@sizeGigabytes": {"placeholders": {"value": {"type": "String"}}},
-  "etaSeconds": "{seconds} s",
-  "@etaSeconds": {"placeholders": {"seconds": {"type": "int"}}},
-  "etaMinutes": "{minutes} min",
-  "@etaMinutes": {"placeholders": {"minutes": {"type": "int"}}},
-  "etaHours": "{hours} h {minutes} min",
+  "@sizeGigabytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "etaSeconds": "{seconds, plural, other{{seconds} s}}",
+  "@etaSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "etaMinutes": "{minutes, plural, other{{minutes} min}}",
+  "@etaMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "etaHours": "{hours, plural, other{{hours} h}} {minutes, plural, other{{minutes} min}}",
   "@etaHours": {
     "placeholders": {
-      "hours": {"type": "int"},
-      "minutes": {"type": "int"}
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "filesDropHere": "Drop files here to send them to {device}.",

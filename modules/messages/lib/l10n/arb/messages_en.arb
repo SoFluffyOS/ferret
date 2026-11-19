@@ -1,8 +1,16 @@
 {
   "@@locale": "en",
   "title": "Messages",
+  "cardTitle": "Messages · {phone}",
+  "@cardTitle": {
+    "description": "Title of the Messages card and page: the feature, then the phone the texts come from",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "back": "Back",
-
   "explainer": "Read and reply to your texts from your computer.",
   "explainerDetail": "Ferret reads the texts on this phone and shows them only on your own computers. Nothing leaves your network. Contacts give conversations names and photos.",
   "rcsNote": "Chats in Google Messages (RCS, the ones with typing dots) can't be read by other apps. They still reach your computer as notifications, and you can answer them there.",
@@ -23,27 +31,73 @@
   "phoneCardNeedsAccess": "Messages are on, but Ferret can't read this phone's texts yet.",
   "fix": "Fix",
   "setUp": "Set up",
-
   "unreadCount": "{count, plural, =0{No unread texts} =1{1 unread text} other{{count} unread texts}}",
-  "@unreadCount": {"placeholders": {"count": {"type": "int"}}},
+  "@unreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "open": "Open",
   "conversationsEmpty": "No conversations yet.",
   "statusOffline": "{name} is offline. You can read saved texts and reply once it's back.",
-  "@statusOffline": {"placeholders": {"name": {"type": "String"}}},
+  "@statusOffline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "statusChecking": "Connecting to {name}…",
-  "@statusChecking": {"placeholders": {"name": {"type": "String"}}},
+  "@statusChecking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "statusOff": "Messages are off on {name}. On {name}: Ferret → Do more → Messages.",
-  "@statusOff": {"placeholders": {"name": {"type": "String"}}},
+  "@statusOff": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "statusNoAccess": "Ferret on {name} can't read texts yet. On {name}: open Ferret and allow SMS.",
-  "@statusNoAccess": {"placeholders": {"name": {"type": "String"}}},
+  "@statusNoAccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "statusUnreachable": "{name} didn't answer. On {name}: open Ferret, then try again.",
-  "@statusUnreachable": {"placeholders": {"name": {"type": "String"}}},
+  "@statusUnreachable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthOk": "Texts and replies",
-  "@healthOk": {"description": "Device page, next to Messages, while it works."},
+  "@healthOk": {
+    "description": "Device page, next to Messages, while it works."
+  },
   "healthOff": "Off on {name}",
-  "@healthOff": {"description": "Device page, next to Messages.", "placeholders": {"name": {"type": "String"}}},
+  "@healthOff": {
+    "description": "Device page, next to Messages.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "healthNoAccess": "Android turned off Ferret's access",
-  "@healthNoAccess": {"description": "Device page, next to Messages."},
+  "@healthNoAccess": {
+    "description": "Device page, next to Messages."
+  },
   "healthChecking": "Checking…",
   "healthOffHelp": "On {name}: Ferret → Do more → Messages.",
   "@healthOffHelp": {
@@ -77,36 +131,112 @@
     }
   },
   "healthUnreachable": "{name} didn't answer",
-  "@healthUnreachable": {"description": "Device page, next to Messages.", "placeholders": {"name": {"type": "String"}}},
+  "@healthUnreachable": {
+    "description": "Device page, next to Messages.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "retry": "Try again",
   "syncing": "Syncing recent conversations…",
   "loadingOlder": "Loading older texts…",
   "loadFailed": "Couldn't load texts from {name}.",
-  "@loadFailed": {"placeholders": {"name": {"type": "String"}}},
+  "@loadFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "pickConversation": "Pick a conversation",
   "composerHint": "Text message",
   "send": "Send",
   "composerOffline": "Reply once {name} is back.",
-  "@composerOffline": {"placeholders": {"name": {"type": "String"}}},
+  "@composerOffline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "composerGroup": "Group texts need MMS, which only {name}'s messaging app can send. Reply on {name}.",
-  "@composerGroup": {"placeholders": {"name": {"type": "String"}}},
+  "@composerGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "composerNoSend": "Sending is off on {name}. On {name}: open Ferret and allow SMS to reply from here.",
-  "@composerNoSend": {"placeholders": {"name": {"type": "String"}}},
+  "@composerNoSend": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "sending": "Sending…",
   "notSent": "Not sent",
+  "notSentBecause": "Not sent. {reason}",
+  "@notSentBecause": {
+    "description": "Under a text that failed to send. The reason is a full sentence",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeOffline": "{name} isn't connected.",
-  "@outcomeOffline": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeOffline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeNoAccess": "Ferret isn't allowed to send texts on {name}. On {name}: open Ferret and allow SMS.",
-  "@outcomeNoAccess": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeNoAccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeNoRecipient": "This conversation has no one to send to.",
   "outcomeGroup": "Group texts can only be sent from {name}.",
-  "@outcomeGroup": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeNoService": "{name} has no signal.",
-  "@outcomeNoService": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeNoService": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeTimeout": "{name} didn't confirm in time. Check the conversation on {name} before sending again.",
-  "@outcomeTimeout": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeTimeout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "outcomeFailed": "{name} couldn't send it. Send again, or send it from {name}.",
-  "@outcomeFailed": {"placeholders": {"name": {"type": "String"}}},
+  "@outcomeFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "retrySend": "Send again",
   "discard": "Discard",
   "kindFailed": "Not delivered",
@@ -117,23 +247,76 @@
   "audio": "Audio",
   "contactCard": "Contact",
   "attachment": "Attachment",
+  "attachmentFrom": "{name}: Attachment",
+  "@attachmentFrom": {
+    "description": "Preview of the latest text when it is a photo or file: who sent it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "latestFrom": "{name}: {text}",
+  "@latestFrom": {
+    "description": "Preview of the latest text on the Messages card: who sent it, then the start of the text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
   "today": "Today",
   "yesterday": "Yesterday",
   "you": "You",
   "imageFailed": "Couldn't load the picture from {name}.",
-  "@imageFailed": {"placeholders": {"name": {"type": "String"}}},
+  "@imageFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "rcsComputerNote": "RCS chats don't show here. They arrive with your phone's notifications, where you can answer them.",
-
   "replyAction": "Reply",
   "activityTitle": "{sender} · {device}",
-  "@activityTitle": {"description": "Activity row for an unread text: who wrote, then the phone it arrived on", "placeholders": {"sender": {"type": "String"}, "device": {"type": "String"}}},
+  "@activityTitle": {
+    "description": "Activity row for an unread text: who wrote, then the phone it arrived on",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "markReadAction": "Mark as read",
   "replyFailedTitle": "Reply not sent",
-  "noticeTitleCount": "{name} · {count} new",
-  "@noticeTitleCount": {"placeholders": {"name": {"type": "String"}, "count": {"type": "int"}}},
+  "noticeTitleCount": "{name} · {count, plural, other{{count} new}}",
+  "@noticeTitleCount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noticeGroupBody": "{sender}: {text}",
-  "@noticeGroupBody": {"placeholders": {"sender": {"type": "String"}, "text": {"type": "String"}}},
-
+  "@noticeGroupBody": {
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
   "notifySetting": "Show new texts as notifications",
   "notifyDetail": "With Reply, unless the conversation is already open here.",
   "forgetHistory": "Forget saved texts",

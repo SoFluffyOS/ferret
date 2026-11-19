@@ -254,7 +254,7 @@ class _SlidingSidebarState extends State<_SlidingSidebar>
       animation: _shown,
       builder: (context, child) => ClipRect(
         child: Align(
-          alignment: .centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           widthFactor: _shown.value,
           child: child,
         ),

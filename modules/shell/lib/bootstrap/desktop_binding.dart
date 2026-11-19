@@ -190,15 +190,15 @@ class DesktopBinding {
     return true;
   }
 
+  /// [wanted] is for tests; the app shows the language picked in Settings.
   static Locale _supported(Locale? wanted) {
-    final language =
-        (wanted ?? PlatformDispatcher.instance.locale).languageCode;
-    for (final locale in ShellLocalizations.supportedLocales) {
-      if (locale.languageCode == language) {
-        return locale;
-      }
+    if (wanted == null) {
+      return AppLocale.pick(ShellLocalizations.supportedLocales);
     }
 
-    return ShellLocalizations.supportedLocales.first;
+    return ShellLocalizations.supportedLocales.firstWhere(
+      (locale) => locale.languageCode == wanted.languageCode,
+      orElse: () => ShellLocalizations.supportedLocales.first,
+    );
   }
 }

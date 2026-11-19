@@ -103,6 +103,12 @@ abstract class MessagesLocalizations {
   /// **'Messages'**
   String get title;
 
+  /// Title of the Messages card and page: the feature, then the phone the texts come from
+  ///
+  /// In en, this message translates to:
+  /// **'Messages · {phone}'**
+  String cardTitle(String phone);
+
   /// No description provided for @back.
   ///
   /// In en, this message translates to:
@@ -415,6 +421,12 @@ abstract class MessagesLocalizations {
   /// **'Not sent'**
   String get notSent;
 
+  /// Under a text that failed to send. The reason is a full sentence
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. {reason}'**
+  String notSentBecause(String reason);
+
   /// No description provided for @outcomeOffline.
   ///
   /// In en, this message translates to:
@@ -517,6 +529,18 @@ abstract class MessagesLocalizations {
   /// **'Attachment'**
   String get attachment;
 
+  /// Preview of the latest text when it is a photo or file: who sent it
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: Attachment'**
+  String attachmentFrom(String name);
+
+  /// Preview of the latest text on the Messages card: who sent it, then the start of the text
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {text}'**
+  String latestFrom(String name, String text);
+
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -574,7 +598,7 @@ abstract class MessagesLocalizations {
   /// No description provided for @noticeTitleCount.
   ///
   /// In en, this message translates to:
-  /// **'{name} · {count} new'**
+  /// **'{name} · {count, plural, other{{count} new}}'**
   String noticeTitleCount(String name, int count);
 
   /// No description provided for @noticeGroupBody.

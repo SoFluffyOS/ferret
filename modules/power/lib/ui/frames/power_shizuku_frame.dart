@@ -114,7 +114,7 @@ class PowerShizukuFrame extends StatelessWidget {
           ),
           GroupedCell(
             child: Align(
-              alignment: .centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Button(
                 mainAxisSize: .min,
                 variant: .ghost,

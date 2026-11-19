@@ -78,7 +78,7 @@ class QualityPanelFrame extends StatelessWidget {
                   onTap: () => unawaited(viewModel.setPreset(choice)),
                 ),
             Padding(
-              padding: EdgeInsets.fromLTRB(
+              padding: EdgeInsetsDirectional.fromSTEB(
                 Spacing.d12,
                 Spacing.d4,
                 Spacing.d12,

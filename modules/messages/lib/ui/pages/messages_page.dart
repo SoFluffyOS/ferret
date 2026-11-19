@@ -77,7 +77,7 @@ class _MessagesLayout extends StatelessWidget {
               crossAxisAlignment: .stretch,
               children: [
                 PageHeader(
-                  title: '${l10n.title} · ${viewModel.phoneName}',
+                  title: l10n.cardTitle(viewModel.phoneName),
                   backLabel: l10n.back,
                   onBack: onBack,
                 ),

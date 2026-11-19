@@ -131,7 +131,7 @@ class AirplayGuideFrame extends StatelessWidget {
             until: armedUntil,
             clock: clock,
             builder: (context, left) => Text(
-              '${l10n.airplayListening} ${Countdown.clockText(left)}',
+              l10n.airplayListeningLeft(Countdown.clockText(left)),
               style: caption,
             ),
           ),

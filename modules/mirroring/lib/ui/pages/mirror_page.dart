@@ -106,7 +106,7 @@ class _MirrorPageState extends State<MirrorPage> {
           children: [
             if (hasBar)
               Padding(
-                padding: EdgeInsets.fromLTRB(
+                padding: EdgeInsetsDirectional.fromSTEB(
                   Spacing.d12,
                   Spacing.d12,
                   Spacing.d12,
@@ -119,7 +119,7 @@ class _MirrorPageState extends State<MirrorPage> {
                       onTap: () => unawaited(_back()),
                       child: Padding(
                         padding: EdgeInsets.all(Spacing.d4),
-                        child: Icon(
+                        child: DirectionalIcon(
                           LucideIcons.chevronLeft,
                           size: Spacing.d20,
                           color: palette.text,

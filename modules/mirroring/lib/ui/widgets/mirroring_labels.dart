@@ -148,7 +148,9 @@ extension MirroringLabels on MirroringLocalizations {
     ),
     if (stats.latencyMs case final latencyMs?) statusLatency(latencyMs),
     if (stats.bitrateKbps > 0)
-      statusBitrate((stats.bitrateKbps / 1000).toStringAsFixed(1)),
+      statusBitrate(
+        NumberFormat('0.0', localeName).format(stats.bitrateKbps / 1000),
+      ),
     if (stats.droppedFrames > 0) statusDropped(stats.droppedFrames),
   ].join(' · ');
 }

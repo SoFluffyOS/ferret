@@ -65,7 +65,7 @@ class _CornerCard extends StatelessWidget {
     final palette = context.palette;
 
     return Align(
-      alignment: .bottomRight,
+      alignment: AlignmentDirectional.bottomEnd,
       child: Padding(
         padding: EdgeInsets.all(Spacing.d16),
         child: ConstrainedBox(

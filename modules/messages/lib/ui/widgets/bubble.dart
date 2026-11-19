@@ -23,8 +23,8 @@ class Bubble extends StatelessWidget {
 
     return Align(
       alignment: switch (mine) {
-        true => .centerRight,
-        false => .centerLeft,
+        true => AlignmentDirectional.centerEnd,
+        false => AlignmentDirectional.centerStart,
       },
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Spacing.d440),
@@ -40,14 +40,14 @@ class Bubble extends StatelessWidget {
                 false => palette.surface,
               },
               shape: RoundedSuperellipseBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: radius,
-                  topRight: radius,
-                  bottomLeft: switch (mine) {
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: radius,
+                  topEnd: radius,
+                  bottomStart: switch (mine) {
                     true => radius,
                     false => tail,
                   },
-                  bottomRight: switch (mine) {
+                  bottomEnd: switch (mine) {
                     true => tail,
                     false => radius,
                   },

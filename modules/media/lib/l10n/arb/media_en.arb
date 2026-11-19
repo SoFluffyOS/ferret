@@ -97,25 +97,59 @@
   "summaryOff": "Off",
   "healthUnsupported": "Needs a Ferret update on {name}",
   "@healthUnsupported": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthShowsTheirs": "Shares what's playing.",
   "healthNothingPlaying": "Nothing playing right now",
   "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
   "@healthSharesMine": {
-    "placeholders": {"name": {"type": "String"}, "here": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "healthShowsAndShares": "Shares what's playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
+  "@healthShowsAndShares": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "healthLostAccess": "Ferret can't see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
   "@healthLostAccess": {
-    "placeholders": {"here": {"type": "String"}}
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "healthOffHere": "Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
   "@healthOffHere": {
-    "placeholders": {"here": {"type": "String"}}
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "healthNotShared": "Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
   "@healthNotShared": {
-    "placeholders": {"here": {"type": "String"}}
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "healthShowHelp": "Settings → Continue & media → Show media from other devices",
   "healthShareHelp": "Settings → Continue & media → Share my media",
