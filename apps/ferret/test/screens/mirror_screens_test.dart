@@ -145,6 +145,8 @@ class _Screen {
     this.connected = true,
     this.systemMirrors = false,
     this.body,
+    this.windows = _windows,
+    this.turned = false,
   });
 
   final String name;
@@ -157,6 +159,12 @@ class _Screen {
 
   /// Shown in place of the mirror page, such as the settings.
   final Widget Function(_Rig rig)? body;
+
+  /// The windows it is rendered in.
+  final List<_Window> windows;
+
+  /// The phone is turned on its side.
+  final bool turned;
 }
 
 Finder _tool(IconData icon) => find.widgetWithIcon(ToolbarButton, icon);
@@ -471,14 +479,86 @@ final _screens = <_Screen>[
   ),
   _Screen(
     'mirror_33_own_window',
-    body: (rig) => MirrorWindowPage(
-      deviceId: 'pixel',
-      deviceName: 'Pixel 9',
-      onClose: () {},
-      clock: () => rig.now,
-    ),
+    body: _ownWindow,
     before: (rig) => rig.streamOverFerret(),
+    windows: _uprightWindows,
   ),
+  _Screen(
+    'mirror_34_own_window_control',
+    body: _ownWindow,
+    before: (rig) => rig.streamOverCable(),
+    windows: _uprightWindows,
+  ),
+  _Screen(
+    'mirror_35_own_window_turned',
+    body: _ownWindow,
+    before: (rig) => rig.streamOverCable(),
+    windows: _turnedWindows,
+    turned: true,
+  ),
+  _Screen(
+    'mirror_36_own_window_quiet',
+    body: _ownWindow,
+    before: (rig) => rig.streamOverCable(),
+    after: (tester, rig) => tester.pump(const Duration(seconds: 4)),
+    windows: _uprightWindows,
+  ),
+  _Screen(
+    'mirror_37_own_window_notice',
+    body: _ownWindow,
+    before: (rig) async {
+      await rig.streamOverCable();
+      await rig.viewModel.screenshot();
+    },
+    windows: _uprightWindows,
+  ),
+  _Screen(
+    'mirror_38_own_window_keyboard',
+    body: _ownWindow,
+    before: (rig) async {
+      await rig.streamOverCable();
+      rig.viewModel.openTextField();
+    },
+    windows: _uprightWindows,
+  ),
+  _Screen(
+    'mirror_39_own_window_more',
+    body: _ownWindow,
+    before: (rig) => rig.streamOverCable(),
+    after: (tester, rig) => _tap(tester, _tool(LucideIcons.ellipsis)),
+    windows: _uprightWindows,
+  ),
+  _Screen(
+    'mirror_40_turned',
+    before: (rig) => rig.streamOverCable(),
+    turned: true,
+  ),
+  _Screen(
+    'mirror_41_turned_view_only',
+    before: (rig) => rig.streamOverFerret(),
+    turned: true,
+  ),
+];
+
+/// The phone's own window as a Mac draws it: the bar on top, the picture
+/// in its own shape under it.
+Widget _ownWindow(_Rig rig) => MirrorWindowPage(
+  deviceId: 'pixel',
+  deviceName: 'Pixel 9',
+  onClose: () {},
+  clock: () => rig.now,
+);
+
+const _bar = 32.0;
+
+/// The phone's window at the size it opens at, and at its smallest.
+const _uprightWindows = [
+  _Window('upright', 360, 360 * 2400 / 1080 + _bar),
+  _Window('upright_small', 240, 240 * 2400 / 1080 + _bar),
+];
+
+const _turnedWindows = [
+  _Window('turned', 800, 800 * 540 / 1200 + _bar),
 ];
 
 /// The app's windows for features, as a Mac has them: one opens, and
@@ -506,6 +586,9 @@ class _Windows extends ChangeNotifier implements FeatureWindows {
   Future<void> bringToFront() async {}
 
   @override
+  Future<void> startDrag() async {}
+
+  @override
   Future<void> close() async {
     _window = null;
     notifyListeners();
@@ -528,11 +611,12 @@ class _Listed extends StatelessWidget {
 
 void main() {
   ui.Image? drawn;
+  ui.Image? drawnTurned;
 
   setUpAll(loadScreenFonts);
 
   for (final screen in _screens) {
-    for (final window in _windows) {
+    for (final window in screen.windows) {
       for (final brightness in Brightness.values) {
         testWidgets('${screen.name} ${window.name} ${brightness.name}', (
           tester,
@@ -557,11 +641,21 @@ void main() {
             reportError?.call(details);
           };
           try {
-            final phoneScreen = drawn ??= await tester.runAsync(
+            final upright = drawn ??= await tester.runAsync(
               _drawPhoneScreen,
             );
-            if (phoneScreen == null) {
+            if (upright == null) {
               fail('The phone screen should be drawn.');
+            }
+
+            final phoneScreen = switch (screen.turned) {
+              false => upright,
+              true => drawnTurned ??= await tester.runAsync(
+                () => _turn(upright),
+              ),
+            };
+            if (phoneScreen == null) {
+              fail('The turned phone screen should be drawn.');
             }
 
             await _run(tester, screen, window, brightness, phoneScreen);
@@ -759,6 +853,17 @@ Future<void> _capture(
       '${_directory.path}/$name.png',
     ).writeAsBytes(bytes.buffer.asUint8List());
   });
+}
+
+/// [upright] on its side, as a phone turned to landscape shows it.
+Future<ui.Image> _turn(ui.Image upright) async {
+  final recorder = ui.PictureRecorder();
+  Canvas(recorder)
+    ..translate(upright.height.toDouble(), 0)
+    ..rotate(1.5707963267948966)
+    ..drawImage(upright, Offset.zero, Paint());
+
+  return recorder.endRecording().toImage(upright.height, upright.width);
 }
 
 /// A stand-in for a phone's home screen: a wallpaper, a status bar, rows

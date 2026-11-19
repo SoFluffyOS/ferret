@@ -9,6 +9,7 @@ class FeatureWindow {
     required this.title,
     required this.contentSize,
     required this.builder,
+    this.barHeight = 0,
   });
 
   /// What the remembered size and place go by, such as a device's id.
@@ -20,6 +21,12 @@ class FeatureWindow {
   /// The picture's size in its own pixels. The window takes its shape, and
   /// is never bigger than this unless the person makes it so.
   final Size contentSize;
+
+  /// A bar this many logical pixels tall along the window's top edge,
+  /// beside the title bar's own buttons, for the feature's controls. The
+  /// window adds it above the picture, so the picture keeps its shape and
+  /// nothing is drawn over it. Zero for a plain title bar.
+  final double barHeight;
 
   /// What fills the window. It sits under the app's theme and strings,
   /// with a navigator of its own.
@@ -45,6 +52,10 @@ abstract interface class FeatureWindows implements Listenable {
   Future<void> setContentSize(Size contentSize);
 
   Future<void> bringToFront();
+
+  /// Moves the window with the pointer, from a press on its bar: the
+  /// feature draws the bar, so it says where the window may be held.
+  Future<void> startDrag();
 
   /// Closes the window. Its content is disposed like after the person
   /// closed it.

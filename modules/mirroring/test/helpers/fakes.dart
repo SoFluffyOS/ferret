@@ -175,6 +175,7 @@ class FakeWindows extends ChangeNotifier implements FeatureWindows {
   FeatureWindow? window;
   final List<Size> shapes = [];
   int broughtToFront = 0;
+  int drags = 0;
 
   @override
   String? get openId => window?.id;
@@ -202,6 +203,9 @@ class FakeWindows extends ChangeNotifier implements FeatureWindows {
 
   @override
   Future<void> bringToFront() async => broughtToFront++;
+
+  @override
+  Future<void> startDrag() async => drags++;
 
   @override
   Future<void> close() async {

@@ -103,6 +103,15 @@ class FeatureWindowHost extends ChangeNotifier
   Future<void> bringToFront() => _menubar.focusPictureWindow();
 
   @override
+  Future<void> startDrag() async {
+    if (_window == null) {
+      return;
+    }
+
+    await _menubar.dragPictureWindow();
+  }
+
+  @override
   Future<void> close() async {
     if (_window == null) {
       return;
@@ -123,6 +132,7 @@ class FeatureWindowHost extends ChangeNotifier
         id: window.id,
         title: window.title,
         size: window.contentSize,
+        barHeight: window.barHeight,
       );
     } on PlatformException {
       return null;

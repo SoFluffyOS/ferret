@@ -190,11 +190,13 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         Self.windowController?.setTitle(title)
     }
 
-    func openPictureWindow(id: String, title: String, width: Double, height: Double) throws
-        -> Int64
-    {
+    func openPictureWindow(
+        id: String, title: String, width: Double, height: Double, barHeight: Double
+    ) throws -> Int64 {
         let picture = NSSize(width: width, height: height)
-        guard let viewId = Self.pictureController?.open(id: id, title: title, picture: picture)
+        guard
+            let viewId = Self.pictureController?.open(
+                id: id, title: title, picture: picture, bar: CGFloat(barHeight))
         else {
             throw PigeonError(
                 code: "window-unsupported",
@@ -211,6 +213,10 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func focusPictureWindow() throws {
         Self.pictureController?.focus()
+    }
+
+    func dragPictureWindow() throws {
+        Self.pictureController?.drag()
     }
 
     func closePictureWindow() throws {

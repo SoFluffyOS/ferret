@@ -611,12 +611,16 @@ class MenubarHostApi {
   /// such as a phone's screen, and returns the id of its Flutter view. It
   /// keeps that shape while it is resized and remembers its size and place
   /// for each [id]. Asked again for the [id] that is open, it comes to the
-  /// front; another [id] takes its place.
+  /// front; another [id] takes its place. A [barHeight] above zero adds a
+  /// bar that many points tall along the top edge, under the traffic
+  /// lights, where Flutter draws its controls: the picture keeps its shape
+  /// below it.
   Future<int> openPictureWindow(
     String id,
     String title,
     double width,
     double height,
+    double barHeight,
   ) async {
     final pigeonVar_channelName =
         'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow$pigeonVar_messageChannelSuffix';
@@ -626,7 +630,7 @@ class MenubarHostApi {
       binaryMessenger: pigeonVar_binaryMessenger,
     );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[id, title, width, height],
+      <Object?>[id, title, width, height, barHeight],
     );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
@@ -661,6 +665,24 @@ class MenubarHostApi {
   Future<void> focusPictureWindow() async {
     final pigeonVar_channelName =
         'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.focusPictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
+  /// Moves the picture window with the pointer, from a press on its bar.
+  Future<void> dragPictureWindow() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.dragPictureWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,

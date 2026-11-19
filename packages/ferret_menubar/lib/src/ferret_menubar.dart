@@ -114,17 +114,26 @@ class FerretMenubar implements MenubarFlutterApi {
   /// that shape while it is resized, and gets back the size and place it
   /// had for [id]. Asked again for the [id] that is open, it comes to the
   /// front; another [id] takes its place. Gives the id of its Flutter
-  /// view, or null where there is no such window.
+  /// view, or null where there is no such window. A [barHeight] adds a
+  /// bar that many points tall along the top edge, beside the traffic
+  /// lights, for controls that must never cover the picture.
   Future<int?> openPictureWindow({
     required String id,
     required String title,
     required Size size,
+    double barHeight = 0,
   }) async {
     if (!await isWindowSupported()) {
       return null;
     }
 
-    return _api.openPictureWindow(id, title, size.width, size.height);
+    return _api.openPictureWindow(
+      id,
+      title,
+      size.width,
+      size.height,
+      barHeight,
+    );
   }
 
   /// The picture has [size] pixels now, such as after the phone was
@@ -133,6 +142,9 @@ class FerretMenubar implements MenubarFlutterApi {
       _call(() => _api.setPictureWindowSize(size.width, size.height));
 
   Future<void> focusPictureWindow() => _call(_api.focusPictureWindow);
+
+  /// Moves the picture window with the pointer, from a press on its bar.
+  Future<void> dragPictureWindow() => _call(_api.dragPictureWindow);
 
   /// Closes the picture window and removes its Flutter view.
   Future<void> closePictureWindow() => _call(_api.closePictureWindow);

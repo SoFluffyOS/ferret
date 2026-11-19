@@ -5,6 +5,11 @@ import FlutterMacOS
 /// in a window that has the shape of what it shows, such as a phone's
 /// screen. The shape is locked while it is resized, the window turns when
 /// the picture does, and each id gets its size and place back.
+///
+/// With a bar, the Flutter view also runs under the transparent title bar:
+/// the top `bar` points hold the traffic lights and Flutter's controls, and
+/// the picture fills everything below in its own shape. Sizes here are
+/// the picture's, and the bar is added on top.
 final class PictureWindowController: NSObject, NSWindowDelegate {
     private let engine: FlutterEngine
     private let dock: DockPresence
@@ -13,6 +18,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
     private var viewController: FlutterViewController?
     private var id: String?
     private var picture = NSSize(width: 9, height: 16)
+    private var bar: CGFloat = 0
     private lazy var canAddViews = MultiView.enable(on: engine)
 
     /// The short side never gets smaller than this.
@@ -36,7 +42,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
     /// Opens the window for `id`, or brings it to the front when it is the
     /// one open. Another id takes the open window's place. Returns the id
     /// of its Flutter view, or nil when this Flutter can't draw one more.
-    func open(id: String, title: String, picture: NSSize) -> Int64? {
+    func open(id: String, title: String, picture: NSSize, bar: CGFloat = 0) -> Int64? {
         if let viewController, self.id == id {
             window?.title = title
             bringToFront()
@@ -48,12 +54,22 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
 
         self.id = id
         self.picture = picture
+        self.bar = max(0, bar)
+        var style: NSWindow.StyleMask = [.titled, .closable, .miniaturizable, .resizable]
+        if self.bar > 0 {
+            style.insert(.fullSizeContentView)
+        }
         let window = PictureWindow(
             contentRect: NSRect(origin: .zero, size: picture),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            styleMask: style,
             backing: .buffered,
             defer: true)
+        // The title stays set: VoiceOver and the Window menu read it.
         window.title = title
+        if self.bar > 0 {
+            window.titleVisibility = .hidden
+            window.titlebarAppearsTransparent = true
+        }
         window.isReleasedWhenClosed = false
         window.tabbingMode = .disallowed
         window.collectionBehavior = [.fullScreenNone]
@@ -81,7 +97,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
             return
         }
 
-        let longSide = Self.longSide(of: contentSize(of: window))
+        let longSide = pictureLongSide(of: window)
         self.picture = picture
         applyShape()
         setContent(size(longSide: longSide), of: window, animated: true)
@@ -94,6 +110,16 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
         bringToFront()
     }
 
+    /// Moves the window with the pointer, from a press Flutter saw on the
+    /// bar. Flutter's view takes every click there, so it asks.
+    func drag() {
+        guard let window, let event = window.currentEvent ?? NSApp.currentEvent,
+            event.type == .leftMouseDown || event.type == .leftMouseDragged
+        else { return }
+
+        window.performDrag(with: event)
+    }
+
     func close() {
         window?.close()
     }
@@ -102,7 +128,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
         guard let window else { return }
 
         let scale = window.backingScaleFactor
-        let current = Self.longSide(of: contentSize(of: window))
+        let current = pictureLongSide(of: window)
         let longSide: CGFloat
         switch step {
         case .actual: longSide = max(picture.width, picture.height) / scale
@@ -114,26 +140,33 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
         remember()
     }
 
+    /// The shape is kept in `windowWillResize`, as the bar on top is a
+    /// fixed height that a plain aspect ratio can't add.
     private func applyShape() {
         guard let window else { return }
 
-        window.contentAspectRatio = picture
         window.contentMinSize = size(longSide: 0)
     }
 
-    /// The content size with this long side in the picture's shape, never
-    /// under the minimum.
+    /// The content size for a picture with this long side, never under the
+    /// minimum: the picture in its own shape, and the bar on top.
     private func size(longSide: CGFloat) -> NSSize {
-        let aspect = picture.width / picture.height
-        let shortShare = min(aspect, 1 / aspect)
-        let long = max(longSide, Self.minimumShortSide / shortShare)
-        return aspect >= 1
-            ? NSSize(width: long, height: long / aspect)
-            : NSSize(width: long * aspect, height: long)
+        let picture = PictureShape.size(
+            of: self.picture, longSide: longSide, minimumShortSide: Self.minimumShortSide)
+        return NSSize(width: picture.width, height: picture.height + bar)
     }
 
     private static func longSide(of size: NSSize) -> CGFloat {
         max(size.width, size.height)
+    }
+
+    /// The long side of the picture a content of this size shows.
+    private func pictureLongSide(ofContent content: NSSize) -> CGFloat {
+        Self.longSide(of: NSSize(width: content.width, height: max(0, content.height - bar)))
+    }
+
+    private func pictureLongSide(of window: NSWindow) -> CGFloat {
+        pictureLongSide(ofContent: contentSize(of: window))
     }
 
     private func contentSize(of window: NSWindow) -> NSSize {
@@ -163,7 +196,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
         let actual = NSSize(width: picture.width / scale, height: picture.height / scale)
         let room = NSSize(
             width: visible.width * Self.firstShare,
-            height: visible.height * Self.firstShare - chrome)
+            height: visible.height * Self.firstShare - chrome - bar)
         let shrink = min(1, room.width / actual.width, room.height / actual.height)
         let content = size(longSide: Self.longSide(of: actual) * shrink)
         window.setContentSize(content)
@@ -188,9 +221,11 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
 
         var content = window.contentRect(forFrameRect: frame).size
         let chrome = frame.height - content.height
-        let shrink = min(1, visible.width / content.width, (visible.height - chrome) / content.height)
+        let pictureHeight = max(1, content.height - bar)
+        let shrink = min(
+            1, visible.width / content.width, (visible.height - chrome - bar) / pictureHeight)
         if shrink < 1 {
-            content = size(longSide: Self.longSide(of: content) * shrink)
+            content = size(longSide: pictureLongSide(ofContent: content) * shrink)
         }
 
         var fitted = window.frameRect(forContentRect: NSRect(origin: .zero, size: content))
@@ -207,7 +242,7 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
 
         defaults.set(
             [
-                "long": Double(Self.longSide(of: contentSize(of: window))),
+                "long": Double(pictureLongSide(of: window)),
                 "x": Double(window.frame.minX),
                 "y": Double(window.frame.minY),
             ],
@@ -226,6 +261,27 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
     }
 
     // MARK: - NSWindowDelegate
+
+    /// Keeps the picture's shape under the bar: the side the person moved
+    /// most leads, and the other follows.
+    func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
+        let chrome = sender.frame.height - contentSize(of: sender).height
+        let proposed = NSSize(width: frameSize.width, height: frameSize.height - chrome)
+        let current = contentSize(of: sender)
+        let content = PictureShape.content(
+            proposed: proposed, current: current, picture: picture, bar: bar,
+            minimum: size(longSide: 0))
+        return NSSize(width: content.width, height: content.height + chrome)
+    }
+
+    /// The green button makes the window as big as the screen allows, in
+    /// the picture's shape.
+    func windowWillUseStandardFrame(_ window: NSWindow, defaultFrame newFrame: NSRect) -> NSRect {
+        let largest = size(longSide: .greatestFiniteMagnitude / 4)
+        var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: largest))
+        frame.origin = NSPoint(x: window.frame.midX, y: window.frame.midY)
+        return fitted(frame, to: window.screen)
+    }
 
     func windowDidEndLiveResize(_ notification: Notification) {
         remember()

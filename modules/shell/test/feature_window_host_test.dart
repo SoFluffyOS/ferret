@@ -16,6 +16,7 @@ class _FakeMenubarApi implements MenubarHostApi {
   final List<String> opened = [];
   final List<Size> sizes = [];
   int focused = 0;
+  int dragged = 0;
   int closed = 0;
 
   @override
@@ -27,8 +28,11 @@ class _FakeMenubarApi implements MenubarHostApi {
     String title,
     double width,
     double height,
+    double barHeight,
   ) async {
-    opened.add('$id: $title, ${width.round()} × ${height.round()}');
+    opened.add(
+      '$id: $title, ${width.round()} × ${height.round()}, bar ${barHeight.round()}',
+    );
     return viewId;
   }
 
@@ -38,6 +42,9 @@ class _FakeMenubarApi implements MenubarHostApi {
 
   @override
   Future<void> focusPictureWindow() async => focused++;
+
+  @override
+  Future<void> dragPictureWindow() async => dragged++;
 
   @override
   Future<void> closePictureWindow() async => closed++;
@@ -50,6 +57,7 @@ FeatureWindow _screenOf(String id, String name) => FeatureWindow(
   id: id,
   title: '$name — Screen',
   contentSize: const Size(1080, 2400),
+  barHeight: 32,
   builder: (_) => Text(name),
 );
 
@@ -76,15 +84,17 @@ void main() {
     expect(api.closed, 1);
   }, skip: !Platform.isMacOS);
 
-  testWidgets('a feature\'s window opens in its shape, with a view to draw '
-      'in, and asking again only brings it forward', (tester) async {
+  testWidgets('a feature\'s window opens in its shape with its bar, with a '
+      'view to draw in, and asking again only brings it forward', (
+    tester,
+  ) async {
     await start(tester);
     var changes = 0;
     host.addListener(() => changes++);
 
     expect(await host.open(_screenOf('pixel', 'Pixel 9')), isTrue);
 
-    expect(api.opened, ['pixel: Pixel 9 — Screen, 1080 × 2400']);
+    expect(api.opened, ['pixel: Pixel 9 — Screen, 1080 × 2400, bar 32']);
     expect(host.openId, 'pixel');
     expect(host.view?.viewId, tester.view.viewId);
     expect(changes, greaterThan(0));
@@ -95,6 +105,9 @@ void main() {
 
     await host.setContentSize(const Size(2400, 1080));
     expect(api.sizes, [const Size(2400, 1080)]);
+
+    await host.startDrag();
+    expect(api.dragged, 1);
   }, skip: !Platform.isMacOS);
 
   testWidgets('another device takes the window\'s place, and the first '

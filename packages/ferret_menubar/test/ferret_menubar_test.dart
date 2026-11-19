@@ -15,7 +15,8 @@ class _RecordingApi implements MenubarHostApi {
     String tooltip,
   ) async => icons.add((state, progress, tooltip));
 
-  final List<(String, String, double, double)> pictureWindows = [];
+  final List<(String, String, double, double, double)> pictureWindows = [];
+  int drags = 0;
   final List<(double, double)> pictureSizes = [];
 
   @override
@@ -27,14 +28,18 @@ class _RecordingApi implements MenubarHostApi {
     String title,
     double width,
     double height,
+    double barHeight,
   ) async {
-    pictureWindows.add((id, title, width, height));
+    pictureWindows.add((id, title, width, height, barHeight));
     return 3;
   }
 
   @override
   Future<void> setPictureWindowSize(double width, double height) async =>
       pictureSizes.add((width, height));
+
+  @override
+  Future<void> dragPictureWindow() async => drags++;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -63,8 +68,8 @@ void main() {
   );
 
   test(
-    'a picture window opens in the picture\'s shape, turns with it, and '
-    'says when it closed',
+    'a picture window opens in the picture\'s shape with its bar, turns '
+    'with it, moves from the bar, and says when it closed',
     () async {
       final api = _RecordingApi();
       final menubar = FerretMenubar(api: api);
@@ -75,16 +80,19 @@ void main() {
         id: 'pixel',
         title: 'Pixel 9 — Screen',
         size: const Size(1080, 2400),
+        barHeight: 32,
       );
       await menubar.setPictureWindowSize(const Size(2400, 1080));
+      await menubar.dragPictureWindow();
       menubar.onPictureWindowClosed(3);
       await pumpEventQueue();
 
       expect(viewId, 3);
       expect(api.pictureWindows, [
-        ('pixel', 'Pixel 9 — Screen', 1080.0, 2400.0),
+        ('pixel', 'Pixel 9 — Screen', 1080.0, 2400.0, 32.0),
       ]);
       expect(api.pictureSizes, [(2400.0, 1080.0)]);
+      expect(api.drags, 1);
       expect(closed, [3]);
       await subscription.cancel();
     },

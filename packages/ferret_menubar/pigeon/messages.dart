@@ -134,14 +134,26 @@ abstract class MenubarHostApi {
   /// such as a phone's screen, and returns the id of its Flutter view. It
   /// keeps that shape while it is resized and remembers its size and place
   /// for each [id]. Asked again for the [id] that is open, it comes to the
-  /// front; another [id] takes its place.
-  int openPictureWindow(String id, String title, double width, double height);
+  /// front; another [id] takes its place. A [barHeight] above zero adds a
+  /// bar that many points tall along the top edge, under the traffic
+  /// lights, where Flutter draws its controls: the picture keeps its shape
+  /// below it.
+  int openPictureWindow(
+    String id,
+    String title,
+    double width,
+    double height,
+    double barHeight,
+  );
 
   /// The picture is [width] by [height] pixels now, such as after the
   /// phone was turned: the window turns with it and keeps its long side.
   void setPictureWindowSize(double width, double height);
 
   void focusPictureWindow();
+
+  /// Moves the picture window with the pointer, from a press on its bar.
+  void dragPictureWindow();
 
   /// Closes the picture window and removes its Flutter view.
   void closePictureWindow();

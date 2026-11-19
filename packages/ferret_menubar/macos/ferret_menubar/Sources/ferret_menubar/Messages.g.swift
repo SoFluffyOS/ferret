@@ -444,12 +444,17 @@ protocol MenubarHostApi {
   /// such as a phone's screen, and returns the id of its Flutter view. It
   /// keeps that shape while it is resized and remembers its size and place
   /// for each [id]. Asked again for the [id] that is open, it comes to the
-  /// front; another [id] takes its place.
-  func openPictureWindow(id: String, title: String, width: Double, height: Double) throws -> Int64
+  /// front; another [id] takes its place. A [barHeight] above zero adds a
+  /// bar that many points tall along the top edge, under the traffic
+  /// lights, where Flutter draws its controls: the picture keeps its shape
+  /// below it.
+  func openPictureWindow(id: String, title: String, width: Double, height: Double, barHeight: Double) throws -> Int64
   /// The picture is [width] by [height] pixels now, such as after the
   /// phone was turned: the window turns with it and keeps its long side.
   func setPictureWindowSize(width: Double, height: Double) throws
   func focusPictureWindow() throws
+  /// Moves the picture window with the pointer, from a press on its bar.
+  func dragPictureWindow() throws
   /// Closes the picture window and removes its Flutter view.
   func closePictureWindow() throws
   /// Lets people drag the popover off into its own window.
@@ -668,7 +673,10 @@ class MenubarHostApiSetup {
     /// such as a phone's screen, and returns the id of its Flutter view. It
     /// keeps that shape while it is resized and remembers its size and place
     /// for each [id]. Asked again for the [id] that is open, it comes to the
-    /// front; another [id] takes its place.
+    /// front; another [id] takes its place. A [barHeight] above zero adds a
+    /// bar that many points tall along the top edge, under the traffic
+    /// lights, where Flutter draws its controls: the picture keeps its shape
+    /// below it.
     let openPictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       openPictureWindowChannel.setMessageHandler { message, reply in
@@ -677,8 +685,9 @@ class MenubarHostApiSetup {
         let titleArg = args[1] as! String
         let widthArg = args[2] as! Double
         let heightArg = args[3] as! Double
+        let barHeightArg = args[4] as! Double
         do {
-          let result = try api.openPictureWindow(id: idArg, title: titleArg, width: widthArg, height: heightArg)
+          let result = try api.openPictureWindow(id: idArg, title: titleArg, width: widthArg, height: heightArg, barHeight: barHeightArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -717,6 +726,20 @@ class MenubarHostApiSetup {
       }
     } else {
       focusPictureWindowChannel.setMessageHandler(nil)
+    }
+    /// Moves the picture window with the pointer, from a press on its bar.
+    let dragPictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.dragPictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      dragPictureWindowChannel.setMessageHandler { _, reply in
+        do {
+          try api.dragPictureWindow()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      dragPictureWindowChannel.setMessageHandler(nil)
     }
     /// Closes the picture window and removes its Flutter view.
     let closePictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closePictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
