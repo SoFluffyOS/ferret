@@ -103,6 +103,11 @@ abstract class SystemHostApi {
 
   @async
   bool requestNotificationPermission();
+
+  /// Whether the person is at this computer: the screen is unlocked and
+  /// this account is the one in front (not switched away from). Always true
+  /// where there is no such thing.
+  bool isScreenSessionActive();
 }
 
 @FlutterApi()
@@ -113,4 +118,8 @@ abstract class SystemFlutterApi {
 
   /// The user paused or resumed from the notification, or a pause ran out.
   void onPauseChanged(PauseMessage pause);
+
+  /// The screen locked or unlocked, or another account took over the
+  /// screen or gave it back.
+  void onScreenSessionChanged(bool active);
 }

@@ -389,6 +389,10 @@ protocol SystemHostApi {
   func requestAddTile() async throws -> AddTileResult
   func areNotificationsAllowed() throws -> Bool
   func requestNotificationPermission() async throws -> Bool
+  /// Whether the person is at this computer: the screen is unlocked and
+  /// this account is the one in front (not switched away from). Always true
+  /// where there is no such thing.
+  func isScreenSessionActive() throws -> Bool
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -695,6 +699,22 @@ class SystemHostApiSetup {
     } else {
       requestNotificationPermissionChannel.setMessageHandler(nil)
     }
+    /// Whether the person is at this computer: the screen is unlocked and
+    /// this account is the one in front (not switched away from). Always true
+    /// where there is no such thing.
+    let isScreenSessionActiveChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.isScreenSessionActive\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isScreenSessionActiveChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isScreenSessionActive()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isScreenSessionActiveChannel.setMessageHandler(nil)
+    }
   }
 }
 
@@ -704,6 +724,9 @@ protocol SystemFlutterApiProtocol {
   @MainActor func onNetworkChange(change changeArg: NetworkChange) async throws
   /// The user paused or resumed from the notification, or a pause ran out.
   @MainActor func onPauseChanged(pause pauseArg: PauseMessage) async throws
+  /// The screen locked or unlocked, or another account took over the
+  /// screen or gave it back.
+  @MainActor func onScreenSessionChanged(active activeArg: Bool) async throws
 }
 class SystemFlutterApi: SystemFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -761,6 +784,28 @@ class SystemFlutterApi: SystemFlutterApiProtocol {
       let channelName: String = "dev.flutter.pigeon.ferret_system.SystemFlutterApi.onPauseChanged\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([pauseArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The screen locked or unlocked, or another account took over the
+  /// screen or gave it back.
+  @MainActor func onScreenSessionChanged(active activeArg: Bool) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_system.SystemFlutterApi.onScreenSessionChanged\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([activeArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

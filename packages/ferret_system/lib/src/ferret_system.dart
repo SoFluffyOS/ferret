@@ -53,6 +53,7 @@ class FerretSystem implements SystemFlutterApi {
   final SystemPlatform platform;
   final SystemHostApi _api;
   final StreamController<PauseState> _pauseChanges = .broadcast();
+  final StreamController<bool> _screenSessionChanges = .broadcast();
   late final StreamController<SystemAction> _actions;
   late final StreamController<NetworkChange> _networkChanges;
   PollingNetworkWatcher? _pollingWatcher;
@@ -75,6 +76,20 @@ class FerretSystem implements SystemFlutterApi {
   /// Pauses and resumes chosen outside the app, such as the notification's
   /// Pause action, or a pause that ran out.
   Stream<PauseState> get pauseChanges => _pauseChanges.stream;
+
+  /// On macOS: true when the screen unlocks or this account comes back in
+  /// front, false when it locks or another account takes over.
+  Stream<bool> get screenSessionChanges => _screenSessionChanges.stream;
+
+  /// Whether the screen is unlocked with this account in front, on macOS.
+  /// True elsewhere: see `ScreenSession` for Windows and Linux.
+  Future<bool> isScreenSessionActive() async {
+    if (platform != .macos) {
+      return true;
+    }
+
+    return _api.isScreenSessionActive();
+  }
 
   /// Android drops multicast packets unless an app holds this lock, which
   /// discovery needs. Release it when Ferret stops listening.
@@ -188,6 +203,9 @@ class FerretSystem implements SystemFlutterApi {
 
   @override
   void onNetworkChange(NetworkChange change) => _networkChanges.add(change);
+
+  @override
+  void onScreenSessionChanged(bool active) => _screenSessionChanges.add(active);
 
   @override
   void onPauseChanged(PauseMessage pause) =>

@@ -3,20 +3,66 @@ import FlutterMacOS
 import Network
 
 /// Reports wake from sleep and network changes on macOS, so Ferret reconnects
-/// right away. The Android-only calls do nothing here.
+/// right away, and when the screen locks or another account takes over the
+/// screen, so private things stop showing. The Android-only calls do nothing
+/// here.
 public class FerretSystemPlugin: NSObject, FlutterPlugin, SystemHostApi {
     private let flutterApi: SystemFlutterApi
     private var monitor: NWPathMonitor?
     private var lastPath: PathSnapshot?
     private var wakeObserver: NSObjectProtocol?
+    private var sessionObservers: [NSObjectProtocol] = []
+    private var screenLocked = false
+    private var sessionInFront = true
 
     init(flutterApi: SystemFlutterApi) {
         self.flutterApi = flutterApi
+        super.init()
+        let session = CGSessionCopyCurrentDictionary() as? [String: Any]
+        screenLocked = session?["CGSSessionScreenIsLocked"] as? Bool ?? false
+        sessionInFront = session?[kCGSessionOnConsoleKey as String] as? Bool ?? true
+        watchSession()
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = FerretSystemPlugin(flutterApi: SystemFlutterApi(binaryMessenger: registrar.messenger))
         SystemHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: instance)
+    }
+
+    func isScreenSessionActive() throws -> Bool {
+        !screenLocked && sessionInFront
+    }
+
+    /// The screen lock comes as a distributed notification; fast user
+    /// switching as the workspace's session notifications.
+    private func watchSession() {
+        let distributed = DistributedNotificationCenter.default()
+        let workspace = NSWorkspace.shared.notificationCenter
+        sessionObservers = [
+            distributed.addObserver(forName: NSNotification.Name("com.apple.screenIsLocked"), object: nil, queue: .main) { [weak self] _ in
+                self?.screenLocked = true
+                self?.sendSession()
+            },
+            distributed.addObserver(forName: NSNotification.Name("com.apple.screenIsUnlocked"), object: nil, queue: .main) { [weak self] _ in
+                self?.screenLocked = false
+                self?.sendSession()
+            },
+            workspace.addObserver(forName: NSWorkspace.sessionDidResignActiveNotification, object: nil, queue: .main) { [weak self] _ in
+                self?.sessionInFront = false
+                self?.sendSession()
+            },
+            workspace.addObserver(forName: NSWorkspace.sessionDidBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in
+                self?.sessionInFront = true
+                self?.sendSession()
+            },
+        ]
+    }
+
+    private func sendSession() {
+        let active = !screenLocked && sessionInFront
+        Task { @MainActor in
+            try? await flutterApi.onScreenSessionChanged(active: active)
+        }
     }
 
     func setNetworkWatching(watching: Bool) throws {

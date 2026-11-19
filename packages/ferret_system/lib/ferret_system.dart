@@ -9,5 +9,6 @@ export 'package:ferret_system/src/messages.g.dart'
     show AddTileResult, NetworkChange;
 export 'package:ferret_system/src/pause_state.dart';
 export 'package:ferret_system/src/polling_network_watcher.dart';
+export 'package:ferret_system/src/session/session.dart';
 export 'package:ferret_system/src/system_action.dart';
 export 'package:ferret_system/src/system_platform.dart';

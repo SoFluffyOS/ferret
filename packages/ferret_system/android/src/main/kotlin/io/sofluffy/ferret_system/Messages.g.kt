@@ -421,6 +421,12 @@ interface SystemHostApi {
   suspend fun requestAddTile(): AddTileResult
   fun areNotificationsAllowed(): Boolean
   suspend fun requestNotificationPermission(): Boolean
+  /**
+   * Whether the person is at this computer: the screen is unlocked and
+   * this account is the one in front (not switched away from). Always true
+   * where there is no such thing.
+   */
+  fun isScreenSessionActive(): Boolean
 
   companion object {
     /** The codec used by SystemHostApi. */
@@ -767,6 +773,21 @@ interface SystemHostApi {
           channel.setMessageHandler(null)
         }
       }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.isScreenSessionActive$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.isScreenSessionActive())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
     }
   }
 }
@@ -824,6 +845,29 @@ class SystemFlutterApi(private val binaryMessenger: BinaryMessenger, private val
       val channelName = "dev.flutter.pigeon.ferret_system.SystemFlutterApi.onPauseChanged$separatedMessageChannelSuffix"
       val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
       channel.send(listOf(pauseArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /**
+   * The screen locked or unlocked, or another account took over the
+   * screen or gave it back.
+   */
+  suspend fun onScreenSessionChanged(activeArg: Boolean)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_system.SystemFlutterApi.onScreenSessionChanged$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(activeArg)) {
         if (it is List<*>) {
           if (it.size > 1) {
             continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))

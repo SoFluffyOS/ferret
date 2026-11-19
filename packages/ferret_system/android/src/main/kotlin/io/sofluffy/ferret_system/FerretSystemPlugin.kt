@@ -228,6 +228,9 @@ class FerretSystemPlugin :
         }
     }
 
+    /** A phone in someone's hand has no other account in front; computers ask. */
+    override fun isScreenSessionActive(): Boolean = true
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

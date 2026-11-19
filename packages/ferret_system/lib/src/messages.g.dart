@@ -672,6 +672,27 @@ class SystemHostApi {
     ;
     return pigeonVar_replyValue! as bool;
   }
+
+  /// Whether the person is at this computer: the screen is unlocked and
+  /// this account is the one in front (not switched away from). Always true
+  /// where there is no such thing.
+  Future<bool> isScreenSessionActive() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_system.SystemHostApi.isScreenSessionActive$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
 }
 
 abstract class SystemFlutterApi {
@@ -683,6 +704,10 @@ abstract class SystemFlutterApi {
 
   /// The user paused or resumed from the notification, or a pause ran out.
   void onPauseChanged(PauseMessage pause);
+
+  /// The screen locked or unlocked, or another account took over the
+  /// screen or gave it back.
+  void onScreenSessionChanged(bool active);
 
   static void setUp(SystemFlutterApi? api, {
     BinaryMessenger? binaryMessenger, 
@@ -744,6 +769,27 @@ abstract class SystemFlutterApi {
           final PauseMessage arg_pause = args[0]! as PauseMessage;
           try {
             api.onPauseChanged(arg_pause);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_system.SystemFlutterApi.onScreenSessionChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final bool arg_active = args[0]! as bool;
+          try {
+            api.onScreenSessionChanged(arg_active);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
