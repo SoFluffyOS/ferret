@@ -90,7 +90,9 @@ class SidebarHeader extends StatelessWidget {
               },
             ),
           ),
-          ?action,
+          // A stop of its own for a screen reader, not part of the heading.
+          if (action case final action?)
+            Semantics(container: true, child: action),
         ],
       ),
     );

@@ -397,6 +397,17 @@ void main() {
       expect(find.widgetWithText(SidebarRow, 'Old tablet'), findsOneWidget);
     });
 
+    testWidgets('the + on Your devices is a button of its own', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await start(tester, const Size(1000, 720));
+
+      expect(
+        tester.getSemantics(find.byIcon(LucideIcons.plus)),
+        containsSemantics(label: 'Add a device', isButton: true),
+      );
+      semantics.dispose();
+    });
+
     testWidgets('the pane has a toolbar that names it and hides the list', (
       tester,
     ) async {
