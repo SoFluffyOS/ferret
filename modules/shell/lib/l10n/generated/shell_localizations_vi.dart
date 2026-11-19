@@ -1095,7 +1095,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsOpenSource => 'Ferret miễn phí và mã nguồn mở.';
 
   @override
-  String get settingsSponsorLink => 'Tài trợ ❤️';
+  String get settingsSponsorLink => 'Tài trợ';
 
   @override
   String get settingsDeviceIdLabel => 'ID thiết bị';

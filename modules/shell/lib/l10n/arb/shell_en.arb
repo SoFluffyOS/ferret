@@ -822,9 +822,9 @@
   "settingsSponsorDetail": "Ferret is free. If it saves you time, you can sponsor its work on GitHub.",
   "settingsOpenSource": "Ferret is free and open source.",
   "@settingsOpenSource": {
-    "description": "Settings, About: a quiet line at the bottom, followed by the settingsSponsorLink link"
+    "description": "Settings, About: a quiet line at the bottom, followed by the settingsSponsorLink link and a heart"
   },
-  "settingsSponsorLink": "Sponsor ❤️",
+  "settingsSponsorLink": "Sponsor",
   "settingsDeviceIdLabel": "Device ID",
   "settingsAddressLabel": "Address",
   "settingsCheckNetwork": "Check my network",

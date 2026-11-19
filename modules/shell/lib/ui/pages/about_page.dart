@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
@@ -61,6 +62,13 @@ class AboutPage extends StatelessWidget {
                   TextLink(
                     label: l10n.settingsSponsorLink,
                     onTap: () => unawaited(Sponsor.open()),
+                  ),
+                  ExcludeSemantics(
+                    child: Icon(
+                      LucideIcons.heart,
+                      size: Spacing.d12,
+                      color: PlaceColor.pink.fill,
+                    ),
                   ),
                 ],
               ),
