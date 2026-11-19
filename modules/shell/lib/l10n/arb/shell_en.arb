@@ -1009,7 +1009,7 @@
   "tipDone": "That's it.",
   "tipDrag": "Drag files onto the Ferret icon in the menubar to send them.",
   "tipDismiss": "Got it",
-  "doctorFirewall": "Windows Firewall may be blocking Ferret.\n1. Tap Open Windows Firewall, then Change settings.\n2. Tick Ferret, under both Private and Public.\n3. Select OK, then Try again.",
+  "doctorFirewall": "Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.",
   "doctorFixOpenFirewall": "Open Windows Firewall",
   "sidebarHide": "Hide sidebar",
   "sidebarShow": "Show sidebar",
@@ -1091,6 +1091,8 @@
     }
   },
   "doctorFixCopyFirewallCommand": "Copy the command",
+  "doctorFirewallAllowed": "Windows Firewall lets Ferret in on private networks. Still hidden? Make sure this network is set to Private: Settings → Network & internet → your Wi-Fi.",
+  "doctorFixAllowFirewall": "Allow through firewall",
   "traySendClipboard": "Send clipboard to my devices",
   "trayStillRunningTitle": "Ferret is still running",
   "trayStillRunningBody": "Find it in the tray, next to the clock. Quit from its menu.",

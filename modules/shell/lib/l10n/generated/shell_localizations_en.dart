@@ -1299,7 +1299,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFirewall =>
-      'Windows Firewall may be blocking Ferret.\n1. Tap Open Windows Firewall, then Change settings.\n2. Tick Ferret, under both Private and Public.\n3. Select OK, then Try again.';
+      'Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.';
 
   @override
   String get doctorFixOpenFirewall => 'Open Windows Firewall';
@@ -1405,6 +1405,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixCopyFirewallCommand => 'Copy the command';
+
+  @override
+  String get doctorFirewallAllowed =>
+      'Windows Firewall lets Ferret in on private networks. Still hidden? Make sure this network is set to Private: Settings → Network & internet → your Wi-Fi.';
+
+  @override
+  String get doctorFixAllowFirewall => 'Allow through firewall';
 
   @override
   String get traySendClipboard => 'Send clipboard to my devices';

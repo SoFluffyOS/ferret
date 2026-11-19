@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shell/shell.dart';
 
@@ -28,13 +29,39 @@ void main() {
 
   tearDown(() => engine.stop());
 
+  WindowsFirewallRules windowsRules({
+    required bool installed,
+    List<String>? elevated,
+  }) {
+    var present = installed;
+    return WindowsFirewallRules(
+      run: (executable, arguments) async {
+        if (executable == 'powershell.exe') {
+          elevated?.add(executable);
+          present = true;
+        }
+        return ProcessResult(
+          0,
+          switch (present) {
+            true => 0,
+            false => 1,
+          },
+          '',
+          '',
+        );
+      },
+    );
+  }
+
   Future<List<DoctorCheck>> diagnose(
     String? deviceId, {
     required bool isWindows,
+    bool rulesInstalled = false,
   }) => ConnectionDoctor(
     engine,
     isWindows: isWindows,
     isLinux: false,
+    windowsFirewallRules: windowsRules(installed: rulesInstalled),
   ).diagnose(deviceId).last;
 
   Future<List<DoctorCheck>> diagnoseOnLinux({
@@ -69,9 +96,47 @@ void main() {
     expect(firewall, hasLength(isOnline(checks) ? 1 : 0));
     for (final check in firewall) {
       expect(check.status, DoctorStatus.warning);
-      expect(check.fixes, [DoctorFix.openFirewall]);
+      expect(check.fixes, [DoctorFix.allowFirewall, DoctorFix.openFirewall]);
     }
   });
+
+  test('on Windows with the installer\'s rules in place, the firewall line '
+      'says so and offers nothing', () async {
+    final checks = await diagnose(null, isWindows: true, rulesInstalled: true);
+
+    final firewall = checks.where((check) => check.kind == .firewall);
+    expect(firewall, hasLength(isOnline(checks) ? 1 : 0));
+    for (final check in firewall) {
+      expect(check.status, DoctorStatus.ok);
+      expect(check.detail, ConnectionDoctor.windowsRulesInstalled);
+      expect(check.fixes, isEmpty);
+    }
+  });
+
+  test(
+    'Allow through firewall elevates once, then the line turns green',
+    () async {
+      final elevated = <String>[];
+      final doctor = ConnectionDoctor(
+        engine,
+        isWindows: true,
+        isLinux: false,
+        windowsFirewallRules: windowsRules(
+          installed: false,
+          elevated: elevated,
+        ),
+      );
+
+      final allowed = await doctor.allowThroughFirewall();
+      final checks = await doctor.diagnose(null).last;
+
+      expect(allowed, isTrue);
+      expect(elevated, ['powershell.exe']);
+      for (final check in checks.where((check) => check.kind == .firewall)) {
+        expect(check.status, DoctorStatus.ok);
+      }
+    },
+  );
 
   test('a device that was never reached gets the firewall hint on Windows '
       'too', () async {
@@ -95,7 +160,11 @@ void main() {
   });
 
   test('the copied report says the firewall was named', () async {
-    final doctor = ConnectionDoctor(engine, isWindows: true);
+    final doctor = ConnectionDoctor(
+      engine,
+      isWindows: true,
+      windowsFirewallRules: windowsRules(installed: false),
+    );
     final checks = await doctor.diagnose(null).last;
 
     final report = doctor.diagnostics(checks);

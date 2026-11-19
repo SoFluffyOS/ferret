@@ -143,6 +143,11 @@ class _DoctorPageState extends State<DoctorPage> {
         await Navigator.of(context).push(
           ferretRoute<void>(const PairPage()),
         );
+      case .allowFirewall:
+        await _doctor.allowThroughFirewall();
+        if (mounted) {
+          _run();
+        }
       case .openFirewall:
         await WindowsFirewall.openAllowedApps();
       case .copyFirewallCommand:
@@ -181,6 +186,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .tryAgain => l10n.doctorFixTryAgain,
     .connectByAddress => l10n.doctorFixConnectByAddress,
     .pairAgain => l10n.doctorFixPairAgain,
+    .allowFirewall => l10n.doctorFixAllowFirewall,
     .openFirewall => l10n.doctorFixOpenFirewall,
     .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
     .copyDiagnostics => l10n.doctorFixCopy,
@@ -234,6 +240,7 @@ class _DoctorPageState extends State<DoctorPage> {
         l10n.doctorFirewallLinux('ufw'),
       (.firewall, _) when check.detail == LinuxFirewallKind.firewalld.name =>
         l10n.doctorFirewallLinux('firewalld'),
+      (.firewall, .ok) => l10n.doctorFirewallAllowed,
       (.firewall, _) => l10n.doctorFirewall,
       (.sameNetwork, .ok) => l10n.doctorSameNetworkOk(device, here),
       (.sameNetwork, _) => l10n.doctorSameNetworkWarning(

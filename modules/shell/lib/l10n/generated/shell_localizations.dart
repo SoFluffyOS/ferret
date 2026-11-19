@@ -2167,7 +2167,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorFirewall.
   ///
   /// In en, this message translates to:
-  /// **'Windows Firewall may be blocking Ferret.\n1. Tap Open Windows Firewall, then Change settings.\n2. Tick Ferret, under both Private and Public.\n3. Select OK, then Try again.'**
+  /// **'Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.'**
   String get doctorFirewall;
 
   /// No description provided for @doctorFixOpenFirewall.
@@ -2355,6 +2355,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Copy the command'**
   String get doctorFixCopyFirewallCommand;
+
+  /// No description provided for @doctorFirewallAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows Firewall lets Ferret in on private networks. Still hidden? Make sure this network is set to Private: Settings → Network & internet → your Wi-Fi.'**
+  String get doctorFirewallAllowed;
+
+  /// No description provided for @doctorFixAllowFirewall.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow through firewall'**
+  String get doctorFixAllowFirewall;
 
   /// No description provided for @traySendClipboard.
   ///

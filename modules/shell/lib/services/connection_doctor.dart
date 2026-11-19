@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:engine/engine.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:shell/services/linux_firewall.dart';
 
 /// How one check came out.
@@ -12,6 +13,7 @@ enum DoctorFix {
   tryAgain,
   connectByAddress,
   pairAgain,
+  allowFirewall,
   openFirewall,
   copyFirewallCommand,
   copyDiagnostics,
@@ -80,12 +82,14 @@ class ConnectionDoctor {
     bool? isWindows,
     bool? isLinux,
     LinuxFirewall? linuxFirewall,
+    WindowsFirewallRules? windowsFirewallRules,
     NetworkInterfaces? interfaces,
     ReachProbe? probe,
     DateTime Function()? clock,
   }) : _isWindows = isWindows ?? Platform.isWindows,
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
+       _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
        _listInterfaces = interfaces ?? _systemInterfaces,
        _probe = probe ?? _knock,
        _clock = clock ?? DateTime.now;
@@ -102,6 +106,10 @@ class ConnectionDoctor {
   /// Linux nothing ever asks. Named only when one of them is on.
   final bool _isLinux;
   final LinuxFirewall _linuxFirewall;
+
+  /// The rules the installer, or [allowThroughFirewall], adds. With them
+  /// in place the firewall line turns green.
+  final WindowsFirewallRules _windowsFirewallRules;
   final NetworkInterfaces _listInterfaces;
   final ReachProbe _probe;
   final DateTime Function() _clock;
@@ -120,8 +128,12 @@ class ConnectionDoctor {
   static const _windowsFirewall = DoctorCheck(
     kind: .firewall,
     status: .warning,
-    fixes: [.openFirewall],
+    fixes: [.allowFirewall, .openFirewall],
   );
+
+  /// [DoctorCheck.detail] of the firewall line once Ferret's Windows rules
+  /// are in place.
+  static const windowsRulesInstalled = 'windows-rules';
 
   static const _vpnPrefixes = [
     'utun',
@@ -345,6 +357,13 @@ class ConnectionDoctor {
   /// firewall when one is on, with its name in [DoctorCheck.detail].
   Future<DoctorCheck?> _firewallHint() async {
     if (_isWindows) {
+      if (await _windowsFirewallRules.areInstalled()) {
+        return const DoctorCheck(
+          kind: .firewall,
+          status: .ok,
+          detail: windowsRulesInstalled,
+        );
+      }
       return _windowsFirewall;
     }
 
@@ -364,6 +383,10 @@ class ConnectionDoctor {
       fixes: const [.copyFirewallCommand],
     );
   }
+
+  /// Adds Ferret's Windows Firewall rules behind a UAC prompt. False when
+  /// the prompt was declined or the rules still aren't there.
+  Future<bool> allowThroughFirewall() => _windowsFirewallRules.allow();
 
   /// A report to paste into an issue: no names, addresses only by their kind.
   /// It says what kind of device was checked and when it was last seen, so
