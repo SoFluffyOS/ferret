@@ -236,6 +236,70 @@ Request. The phone replies with CallLog.
 | `permission_missing` | `bool` | 2 | The phone may not read its call history, so `entries` is empty. |
 | `disabled` | `bool` | 3 | Calls are turned off on the phone, so `entries` is empty. |
 
+## `ferret.camera.v1`
+
+### enum `CaptureKind`
+
+What the computer asks for.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CAPTURE_KIND_UNSPECIFIED` | 0 |  |
+| `CAPTURE_KIND_PHOTO` | 1 |  |
+| `CAPTURE_KIND_DOCUMENT` | 2 | A scanned document: a JPEG for one page, a PDF for several. iPhone only. |
+
+### enum `CaptureStatus`
+
+Where a request stands.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CAPTURE_STATUS_UNSPECIFIED` | 0 |  |
+| `CAPTURE_STATUS_ASKING` | 1 | The phone shows the request and waits for its owner. |
+| `CAPTURE_STATUS_TAKEN` | 2 | A picture was taken; transfer_id names the drop transfer carrying it. |
+| `CAPTURE_STATUS_DECLINED` | 3 | The owner answered "Not now". |
+| `CAPTURE_STATUS_CANCELLED` | 4 | The camera closed without a picture. |
+| `CAPTURE_STATUS_UNSUPPORTED` | 5 | This phone can't take that kind of picture, such as a document scan on Android. |
+| `CAPTURE_STATUS_NO_PERMISSION` | 6 | The phone's system didn't let Ferret use the camera. |
+| `CAPTURE_STATUS_BUSY` | 7 | The camera is already open for another request. |
+| `CAPTURE_STATUS_FAILED` | 8 |  |
+| `CAPTURE_STATUS_EXPIRED` | 9 | Nobody answered on the phone in time. |
+
+### message `CaptureRequest`
+
+Asks the phone for a picture (a request, answered with CaptureReply right away; the picture comes later with CaptureResult).
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `request_id` | `string` | 1 | Chosen by the asking device; unique among its requests. |
+| `kind` | `CaptureKind` | 2 |  |
+
+### message `CaptureReply`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `request_id` | `string` | 1 |  |
+| `status` | `CaptureStatus` | 2 | ASKING when the phone shows the request, else why it can't. |
+
+### message `CaptureResult`
+
+How a request ended, sent by the phone. No reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `request_id` | `string` | 1 |  |
+| `status` | `CaptureStatus` | 2 |  |
+| `transfer_id` | `string` | 3 | The drop transfer carrying the picture, when status is TAKEN. The asking device accepts it on its own: it asked for it. |
+| `mime_type` | `string` | 4 | Such as "image/jpeg" or "application/pdf". |
+
+### message `CaptureCancel`
+
+The asking device doesn't want the picture any more: the phone takes the request away. A picture taken after this is thrown away. No reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `request_id` | `string` | 1 |  |
+
 ## `ferret.clipboard.v1`
 
 ### enum `ClipKind`
