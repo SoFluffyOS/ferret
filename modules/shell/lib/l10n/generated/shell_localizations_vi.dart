@@ -419,12 +419,30 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorNetworkOk(String here) {
-    return '$here đang có mạng';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 đang có mạng';
   }
 
   @override
   String doctorNetworkProblem(String here) {
-    return '$here chưa có mạng. Hãy kết nối Wi-Fi hoặc Ethernet.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 chưa có mạng. Hãy kết nối Wi-Fi hoặc Ethernet.';
   }
 
   @override
@@ -439,12 +457,30 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorSameNetworkOk(String device, String here) {
-    return '$device và $here từng ở cùng một mạng';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device và $_temp0 từng ở cùng một mạng';
   }
 
   @override
   String doctorSameNetworkWarning(String device, String address, String here) {
-    return 'Lần cuối, $device ở một mạng khác ($address). Cho $device và $here dùng chung Wi-Fi.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Lần cuối, $device ở một mạng khác ($address). Cho $device và $_temp0 dùng chung Wi-Fi.';
   }
 
   @override
@@ -470,7 +506,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorAcceptedProblem(String device, String here) {
-    return '$device có phản hồi nhưng không còn nhận ra $here. Có thể thiết bị đã được đặt lại hoặc cài lại. Hãy ghép đôi lại.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device có phản hồi nhưng không còn nhận ra $_temp0. Có thể thiết bị đã được đặt lại hoặc cài lại. Hãy ghép đôi lại.';
   }
 
   @override
@@ -861,7 +906,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String deviceForgetConfirmBody(String device, String here) {
-    return '$device và $here sẽ quên nhau. Bạn có thể ghép đôi lại bất cứ lúc nào.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device và $_temp0 sẽ quên nhau. Bạn có thể ghép đôi lại bất cứ lúc nào.';
   }
 
   @override
@@ -872,7 +926,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorNotAnsweringSteps(String device, String here) {
-    return 'Hãy thử:\n1. Trên $device, mở Ferret.\n2. Cho $device và $here dùng chung Wi-Fi.\n3. Wi-Fi khách và Wi-Fi văn phòng thường tách các thiết bị khỏi nhau. Hãy thử Wi-Fi ở nhà hoặc điểm phát sóng của điện thoại.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Hãy thử:\n1. Trên $device, mở Ferret.\n2. Cho $device và $_temp0 dùng chung Wi-Fi.\n3. Wi-Fi khách và Wi-Fi văn phòng thường tách các thiết bị khỏi nhau. Hãy thử Wi-Fi ở nhà hoặc điểm phát sóng của điện thoại.';
   }
 
   @override
@@ -1029,7 +1092,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String deviceForgetHere(String here) {
-    return 'Chỉ quên trên $here';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chỉ quên trên $_temp0';
   }
 
   @override
@@ -1042,7 +1114,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorIsolated(String device, String here) {
-    return 'Mạng này tách các thiết bị khỏi nhau. $here tới được bộ định tuyến nhưng không tới được $device. Wi-Fi quán cà phê, khách sạn, trường học và Wi-Fi khách thường như vậy. Hãy cho cả hai dùng điểm phát sóng của điện thoại hoặc mạng ở nhà.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return 'Mạng này tách các thiết bị khỏi nhau. $_temp0 tới được bộ định tuyến nhưng không tới được $device. Wi-Fi quán cà phê, khách sạn, trường học và Wi-Fi khách thường như vậy. Hãy cho cả hai dùng điểm phát sóng của điện thoại hoặc mạng ở nhà.';
   }
 
   @override
@@ -1051,45 +1132,48 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorNothingWrong(String here, String device) {
-    return 'Mọi thứ trên $here đều ổn. Trên $device, hãy mở Ferret.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Mọi thứ trên $_temp0 đều ổn. Trên $device, hãy mở Ferret.';
   }
 
   @override
   String doctorNetworkIntro(String here) {
-    return 'Đang kiểm tra mạng trên $here.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Đang kiểm tra mạng trên $_temp0.';
   }
 
   @override
   String doctorNetworkAllGood(String here) {
-    return 'Mọi thứ trên $here đều ổn. Hãy mở Ferret trên thiết bị kia, dùng chung Wi-Fi.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Mọi thứ trên $_temp0 đều ổn. Hãy mở Ferret trên thiết bị kia, dùng chung Wi-Fi.';
   }
 
   @override
   String get connectAction => 'Thử địa chỉ này';
-
-  @override
-  String get thisMac => 'Mac này';
-
-  @override
-  String get thisPhone => 'điện thoại này';
-
-  @override
-  String get thisTablet => 'máy tính bảng này';
-
-  @override
-  String get thisComputer => 'máy tính này';
-
-  @override
-  String get thisMacStart => 'Mac này';
-
-  @override
-  String get thisPhoneStart => 'Điện thoại này';
-
-  @override
-  String get thisTabletStart => 'Máy tính bảng này';
-
-  @override
-  String get thisComputerStart => 'Máy tính này';
 
   @override
   String get settingsGroupClipboard => 'Bảng nhớ tạm';
@@ -1307,7 +1391,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String devicesStaleConfirm(String names, String here) {
-    return 'Gỡ $names khỏi $here?';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Gỡ $names khỏi $_temp0?';
   }
 
   @override
@@ -1322,12 +1415,30 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String deviceRenameTitle(String here) {
-    return 'Tên trên $here';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Tên trên $_temp0';
   }
 
   @override
   String deviceRenameBody(String here, String device) {
-    return 'Chỉ $here dùng tên này. $device vẫn giữ tên riêng.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chỉ $_temp0 dùng tên này. $device vẫn giữ tên riêng.';
   }
 
   @override
@@ -1696,7 +1807,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String accessIntro(String device, String here) {
-    return '$device chỉ tiếp cận $here qua những mục đang bật ở đây, trực tiếp trong mạng của bạn. Tắt mục nào, mục đó dừng ngay trên cả hai thiết bị.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device chỉ tiếp cận $_temp0 qua những mục đang bật ở đây, trực tiếp trong mạng của bạn. Tắt mục nào, mục đó dừng ngay trên cả hai thiết bị.';
   }
 
   @override
@@ -1785,17 +1905,44 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String updateThereBody(String name, String version, String here) {
-    return '$name đang dùng Ferret cũ ($version) mà $here không còn kết nối được. Hãy cập nhật từ nơi bạn đã cài, rồi mở lên một lần. Hai thiết bị sẽ tự kết nối lại.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$name đang dùng Ferret cũ ($version) mà $_temp0 không còn kết nối được. Hãy cập nhật từ nơi bạn đã cài, rồi mở lên một lần. Hai thiết bị sẽ tự kết nối lại.';
   }
 
   @override
   String updateHereTitle(String here) {
-    return 'Cập nhật Ferret trên $here';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cập nhật Ferret trên $_temp0';
   }
 
   @override
   String updateHereBody(String name, String here) {
-    return '$name đang dùng Ferret mới hơn mà $here chưa kết nối được. Hãy cập nhật Ferret ở đây, hai thiết bị sẽ tự kết nối lại.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$name đang dùng Ferret mới hơn mà $_temp0 chưa kết nối được. Hãy cập nhật Ferret ở đây, hai thiết bị sẽ tự kết nối lại.';
   }
 
   @override

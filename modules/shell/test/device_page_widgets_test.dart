@@ -83,7 +83,7 @@ void main() {
       testApp(
         ForgetDeviceCard(
           deviceName: 'Pixel 9',
-          here: 'this Mac',
+          here: LocalNames.hereMac,
           sharedWithOthers: false,
           onForget: scopes.add,
         ),
@@ -109,7 +109,7 @@ void main() {
       testApp(
         ForgetDeviceCard(
           deviceName: 'Pixel 9',
-          here: 'this Mac',
+          here: LocalNames.hereMac,
           sharedWithOthers: true,
           onForget: scopes.add,
         ),
@@ -129,7 +129,7 @@ void main() {
       testApp(
         ForgetDeviceCard(
           deviceName: 'Pixel 9',
-          here: 'this Mac',
+          here: LocalNames.hereMac,
           sharedWithOthers: true,
           onForget: (_) {},
         ),

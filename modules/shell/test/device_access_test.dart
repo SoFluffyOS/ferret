@@ -75,7 +75,7 @@ void main() {
           child: SingleChildScrollView(
             child: DeviceAccessFrame(
               deviceName: 'Pixel 7',
-              here: 'this Mac',
+              here: LocalNames.hereMac,
               isConnected: false,
               features: [
                 _Ui('clipboard', 'Clipboard'),

@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/protocol.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 
@@ -176,7 +177,7 @@ void main() {
               remoteAppVersion: '0.1.0',
             ),
             deviceName: 'Pixel 7',
-            here: 'this Mac',
+            here: LocalNames.hereMac,
           ),
         ),
       );
@@ -198,7 +199,7 @@ void main() {
               remoteProtocol: 2,
             ),
             deviceName: 'Galaxy S24',
-            here: 'this Mac',
+            here: LocalNames.hereMac,
             onGetUpdate: () => opened = true,
           ),
         ),

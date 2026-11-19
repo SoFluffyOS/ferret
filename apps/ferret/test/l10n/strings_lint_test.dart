@@ -210,4 +210,35 @@ void main() {
 
     expect(problems, isEmpty, reason: 'Wrap {count} in an ICU plural.');
   });
+
+  test('"this Mac" is spelled inside each sentence, never dropped in', () {
+    final problems = <String>[];
+    for (final module in Directory('${_repo.path}/modules').listSync()) {
+      final folder = Directory('${module.path}/lib/l10n/arb');
+      if (!folder.existsSync()) {
+        continue;
+      }
+
+      for (final file in folder.listSync().whereType<File>()) {
+        if (!file.path.endsWith('.arb')) {
+          continue;
+        }
+
+        for (final MapEntry(:key, :value) in _arb(file).entries) {
+          if (value is String && value.contains('{here}')) {
+            problems.add('${file.uri.pathSegments.last}: $key');
+          }
+        }
+      }
+    }
+
+    expect(
+      problems,
+      isEmpty,
+      reason:
+          'Use {here, select, mac{this Mac} phone{this phone} '
+          'tablet{this tablet} other{this computer}}, so a language with '
+          'cases can inflect it per sentence.',
+    );
+  });
 }

@@ -5,29 +5,26 @@ import 'package:shell/l10n/generated/shell_localizations.dart';
 /// What to call the device Ferret runs on: "this Mac", "this phone". Never
 /// "this device" when its kind is known.
 extension LocalNames on ShellLocalizations {
-  /// For the middle of a sentence: "this Mac".
+  /// The kind of device this is, for a string's `{here, select, …}`: each
+  /// string spells "this Mac" its own way, so a language with cases can
+  /// say "diesen Mac" in one sentence and "diesem Mac" in the next.
   String here(LocalDevice device) => switch ((
     device.platform,
     device.formFactor,
   )) {
-    (.PLATFORM_MACOS, _) => thisMac,
-    (_, .FORM_FACTOR_PHONE) => thisPhone,
-    (_, .FORM_FACTOR_TABLET) => thisTablet,
-    (.PLATFORM_ANDROID || .PLATFORM_IOS, _) => thisPhone,
-    _ => thisComputer,
+    (.PLATFORM_MACOS, _) => hereMac,
+    (_, .FORM_FACTOR_PHONE) => herePhone,
+    (_, .FORM_FACTOR_TABLET) => hereTablet,
+    (.PLATFORM_ANDROID || .PLATFORM_IOS, _) => herePhone,
+    _ => hereComputer,
   };
 
-  /// For the start of a sentence: "This Mac".
-  String hereStart(LocalDevice device) => switch ((
-    device.platform,
-    device.formFactor,
-  )) {
-    (.PLATFORM_MACOS, _) => thisMacStart,
-    (_, .FORM_FACTOR_PHONE) => thisPhoneStart,
-    (_, .FORM_FACTOR_TABLET) => thisTabletStart,
-    (.PLATFORM_ANDROID || .PLATFORM_IOS, _) => thisPhoneStart,
-    _ => thisComputerStart,
-  };
+  /// The values [here] takes. Strings name the first three and keep
+  /// `other` for a computer.
+  static const hereMac = 'mac';
+  static const herePhone = 'phone';
+  static const hereTablet = 'tablet';
+  static const hereComputer = 'computer';
 
   /// The name of a Settings row. What a phone shares is "From your phone"
   /// on a computer and "To your computer" on the phone itself.

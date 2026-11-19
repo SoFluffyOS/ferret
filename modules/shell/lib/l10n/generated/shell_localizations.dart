@@ -737,13 +737,13 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{here} is on a network'**
+  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on a network'**
   String doctorNetworkOk(String here);
 
   /// No description provided for @doctorNetworkProblem.
   ///
   /// In en, this message translates to:
-  /// **'{here} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
+  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
   String doctorNetworkProblem(String here);
 
   /// No description provided for @doctorVpn.
@@ -761,13 +761,13 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorSameNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{device} and {here} were on the same network'**
+  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same network'**
   String doctorSameNetworkOk(String device, String here);
 
   /// No description provided for @doctorSameNetworkWarning.
   ///
   /// In en, this message translates to:
-  /// **'{device} was last seen on a different network ({address}). Put {device} and {here} on the same Wi-Fi.'**
+  /// **'{device} was last seen on a different network ({address}). Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.'**
   String doctorSameNetworkWarning(String device, String address, String here);
 
   /// No description provided for @doctorReachableRunning.
@@ -803,7 +803,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorAcceptedProblem.
   ///
   /// In en, this message translates to:
-  /// **'{device} answered but doesn\'t know {here} any more. It may have been reset or reinstalled. Pair them again.'**
+  /// **'{device} answered but doesn\'t know {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} any more. It may have been reset or reinstalled. Pair them again.'**
   String doctorAcceptedProblem(String device, String here);
 
   /// No description provided for @doctorFixTryAgain.
@@ -1415,7 +1415,7 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'{device} and {here} forget each other. You can pair them again any time.'**
+  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} forget each other. You can pair them again any time.'**
   String deviceForgetConfirmBody(String device, String here);
 
   /// No description provided for @chipOff.
@@ -1433,7 +1433,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNotAnsweringSteps.
   ///
   /// In en, this message translates to:
-  /// **'Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
+  /// **'Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
   String doctorNotAnsweringSteps(String device, String here);
 
   /// No description provided for @pauseTitle.
@@ -1649,7 +1649,7 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetHere.
   ///
   /// In en, this message translates to:
-  /// **'Forget on {here} only'**
+  /// **'Forget on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only'**
   String deviceForgetHere(String here);
 
   /// No description provided for @settingsSharePairings.
@@ -1667,7 +1667,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorIsolated.
   ///
   /// In en, this message translates to:
-  /// **'This network keeps devices apart. {here} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.'**
+  /// **'This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.'**
   String doctorIsolated(String device, String here);
 
   /// No description provided for @doctorIsolatedMaybe.
@@ -1679,19 +1679,19 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNothingWrong.
   ///
   /// In en, this message translates to:
-  /// **'Everything looks right on {here}. On {device}, open Ferret.'**
+  /// **'Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. On {device}, open Ferret.'**
   String doctorNothingWrong(String here, String device);
 
   /// No description provided for @doctorNetworkIntro.
   ///
   /// In en, this message translates to:
-  /// **'Checking the network on {here}.'**
+  /// **'Checking the network on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.'**
   String doctorNetworkIntro(String here);
 
   /// No description provided for @doctorNetworkAllGood.
   ///
   /// In en, this message translates to:
-  /// **'Everything looks right on {here}. Open Ferret on your other device, on the same Wi-Fi.'**
+  /// **'Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Open Ferret on your other device, on the same Wi-Fi.'**
   String doctorNetworkAllGood(String here);
 
   /// No description provided for @connectAction.
@@ -1699,54 +1699,6 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Try this address'**
   String get connectAction;
-
-  /// No description provided for @thisMac.
-  ///
-  /// In en, this message translates to:
-  /// **'this Mac'**
-  String get thisMac;
-
-  /// No description provided for @thisPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'this phone'**
-  String get thisPhone;
-
-  /// No description provided for @thisTablet.
-  ///
-  /// In en, this message translates to:
-  /// **'this tablet'**
-  String get thisTablet;
-
-  /// No description provided for @thisComputer.
-  ///
-  /// In en, this message translates to:
-  /// **'this computer'**
-  String get thisComputer;
-
-  /// No description provided for @thisMacStart.
-  ///
-  /// In en, this message translates to:
-  /// **'This Mac'**
-  String get thisMacStart;
-
-  /// No description provided for @thisPhoneStart.
-  ///
-  /// In en, this message translates to:
-  /// **'This phone'**
-  String get thisPhoneStart;
-
-  /// No description provided for @thisTabletStart.
-  ///
-  /// In en, this message translates to:
-  /// **'This tablet'**
-  String get thisTabletStart;
-
-  /// No description provided for @thisComputerStart.
-  ///
-  /// In en, this message translates to:
-  /// **'This computer'**
-  String get thisComputerStart;
 
   /// No description provided for @settingsGroupClipboard.
   ///
@@ -2105,7 +2057,7 @@ abstract class ShellLocalizations {
   /// No description provided for @devicesStaleConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Remove {names} from {here}?'**
+  /// **'Remove {names} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}?'**
   String devicesStaleConfirm(String names, String here);
 
   /// No description provided for @devicesStaleConfirmBody.
@@ -2129,13 +2081,13 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceRenameTitle.
   ///
   /// In en, this message translates to:
-  /// **'Name on {here}'**
+  /// **'Name on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
   String deviceRenameTitle(String here);
 
   /// No description provided for @deviceRenameBody.
   ///
   /// In en, this message translates to:
-  /// **'Only {here} uses this name. {device} keeps its own.'**
+  /// **'Only {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} uses this name. {device} keeps its own.'**
   String deviceRenameBody(String here, String device);
 
   /// No description provided for @deviceRenameSave.
@@ -2711,7 +2663,7 @@ abstract class ShellLocalizations {
   /// No description provided for @accessIntro.
   ///
   /// In en, this message translates to:
-  /// **'{device} reaches {here} only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.'**
+  /// **'{device} reaches {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.'**
   String accessIntro(String device, String here);
 
   /// No description provided for @accessOffline.
@@ -2849,19 +2801,19 @@ abstract class ShellLocalizations {
   /// No description provided for @updateThereBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} has an older Ferret ({version}) that {here} can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.'**
+  /// **'{name} has an older Ferret ({version}) that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.'**
   String updateThereBody(String name, String version, String here);
 
   /// No description provided for @updateHereTitle.
   ///
   /// In en, this message translates to:
-  /// **'Update Ferret on {here}'**
+  /// **'Update Ferret on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
   String updateHereTitle(String here);
 
   /// No description provided for @updateHereBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} has a newer Ferret that {here} can\'t talk to yet. Update Ferret here, and they connect again by themselves.'**
+  /// **'{name} has a newer Ferret that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to yet. Update Ferret here, and they connect again by themselves.'**
   String updateHereBody(String name, String here);
 
   /// No description provided for @updateGet.

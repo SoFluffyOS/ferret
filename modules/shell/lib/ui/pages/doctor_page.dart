@@ -269,8 +269,8 @@ class _DoctorPageState extends State<DoctorPage> {
     final here = l10n.here(local);
 
     return switch ((check.kind, check.status)) {
-      (.network, .problem) => l10n.doctorNetworkProblem(l10n.hereStart(local)),
-      (.network, _) => l10n.doctorNetworkOk(l10n.hereStart(local)),
+      (.network, .problem) => l10n.doctorNetworkProblem(here),
+      (.network, _) => l10n.doctorNetworkOk(here),
       (.vpn, _) => l10n.doctorVpn(check.detail),
       (.port, _) => l10n.doctorPort(check.detail),
       (.firewall, _) when check.detail == LinuxFirewallKind.ufw.name =>
@@ -300,7 +300,7 @@ class _DoctorPageState extends State<DoctorPage> {
       (.accepted, _) => l10n.doctorAcceptedProblem(device, here),
       (.isolated, .problem) => l10n.doctorIsolated(
         device,
-        l10n.hereStart(local),
+        here,
       ),
       (.isolated, _) => l10n.doctorIsolatedMaybe,
     };

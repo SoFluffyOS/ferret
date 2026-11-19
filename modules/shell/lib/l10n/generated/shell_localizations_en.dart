@@ -420,12 +420,30 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorNetworkOk(String here) {
-    return '$here is on a network';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is on a network';
   }
 
   @override
   String doctorNetworkProblem(String here) {
-    return '$here isn\'t on a network. Connect to Wi-Fi or Ethernet.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 isn\'t on a network. Connect to Wi-Fi or Ethernet.';
   }
 
   @override
@@ -440,12 +458,30 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorSameNetworkOk(String device, String here) {
-    return '$device and $here were on the same network';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$device and $_temp0 were on the same network';
   }
 
   @override
   String doctorSameNetworkWarning(String device, String address, String here) {
-    return '$device was last seen on a different network ($address). Put $device and $here on the same Wi-Fi.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$device was last seen on a different network ($address). Put $device and $_temp0 on the same Wi-Fi.';
   }
 
   @override
@@ -471,7 +507,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorAcceptedProblem(String device, String here) {
-    return '$device answered but doesn\'t know $here any more. It may have been reset or reinstalled. Pair them again.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$device answered but doesn\'t know $_temp0 any more. It may have been reset or reinstalled. Pair them again.';
   }
 
   @override
@@ -864,7 +909,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String deviceForgetConfirmBody(String device, String here) {
-    return '$device and $here forget each other. You can pair them again any time.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$device and $_temp0 forget each other. You can pair them again any time.';
   }
 
   @override
@@ -875,7 +929,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorNotAnsweringSteps(String device, String here) {
-    return 'Try this:\n1. On $device, open Ferret.\n2. Put $device and $here on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Try this:\n1. On $device, open Ferret.\n2. Put $device and $_temp0 on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.';
   }
 
   @override
@@ -1032,7 +1095,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String deviceForgetHere(String here) {
-    return 'Forget on $here only';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Forget on $_temp0 only';
   }
 
   @override
@@ -1044,7 +1116,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorIsolated(String device, String here) {
-    return 'This network keeps devices apart. $here reaches the router but not $device. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return 'This network keeps devices apart. $_temp0 reaches the router but not $device. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.';
   }
 
   @override
@@ -1053,45 +1134,48 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorNothingWrong(String here, String device) {
-    return 'Everything looks right on $here. On $device, open Ferret.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Everything looks right on $_temp0. On $device, open Ferret.';
   }
 
   @override
   String doctorNetworkIntro(String here) {
-    return 'Checking the network on $here.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Checking the network on $_temp0.';
   }
 
   @override
   String doctorNetworkAllGood(String here) {
-    return 'Everything looks right on $here. Open Ferret on your other device, on the same Wi-Fi.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Everything looks right on $_temp0. Open Ferret on your other device, on the same Wi-Fi.';
   }
 
   @override
   String get connectAction => 'Try this address';
-
-  @override
-  String get thisMac => 'this Mac';
-
-  @override
-  String get thisPhone => 'this phone';
-
-  @override
-  String get thisTablet => 'this tablet';
-
-  @override
-  String get thisComputer => 'this computer';
-
-  @override
-  String get thisMacStart => 'This Mac';
-
-  @override
-  String get thisPhoneStart => 'This phone';
-
-  @override
-  String get thisTabletStart => 'This tablet';
-
-  @override
-  String get thisComputerStart => 'This computer';
 
   @override
   String get settingsGroupClipboard => 'Clipboard';
@@ -1310,7 +1394,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String devicesStaleConfirm(String names, String here) {
-    return 'Remove $names from $here?';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Remove $names from $_temp0?';
   }
 
   @override
@@ -1325,12 +1418,30 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String deviceRenameTitle(String here) {
-    return 'Name on $here';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Name on $_temp0';
   }
 
   @override
   String deviceRenameBody(String here, String device) {
-    return 'Only $here uses this name. $device keeps its own.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Only $_temp0 uses this name. $device keeps its own.';
   }
 
   @override
@@ -1701,7 +1812,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String accessIntro(String device, String here) {
-    return '$device reaches $here only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$device reaches $_temp0 only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.';
   }
 
   @override
@@ -1791,17 +1911,44 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String updateThereBody(String name, String version, String here) {
-    return '$name has an older Ferret ($version) that $here can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$name has an older Ferret ($version) that $_temp0 can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.';
   }
 
   @override
   String updateHereTitle(String here) {
-    return 'Update Ferret on $here';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Update Ferret on $_temp0';
   }
 
   @override
   String updateHereBody(String name, String here) {
-    return '$name has a newer Ferret that $here can\'t talk to yet. Update Ferret here, and they connect again by themselves.';
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$name has a newer Ferret that $_temp0 can\'t talk to yet. Update Ferret here, and they connect again by themselves.';
   }
 
   @override

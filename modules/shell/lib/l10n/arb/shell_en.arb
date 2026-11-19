@@ -277,7 +277,7 @@
       }
     }
   },
-  "doctorNetworkOk": "{here} is on a network",
+  "doctorNetworkOk": "{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on a network",
   "@doctorNetworkOk": {
     "placeholders": {
       "here": {
@@ -285,7 +285,7 @@
       }
     }
   },
-  "doctorNetworkProblem": "{here} isn't on a network. Connect to Wi-Fi or Ethernet.",
+  "doctorNetworkProblem": "{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} isn't on a network. Connect to Wi-Fi or Ethernet.",
   "@doctorNetworkProblem": {
     "placeholders": {
       "here": {
@@ -309,7 +309,7 @@
       }
     }
   },
-  "doctorSameNetworkOk": "{device} and {here} were on the same network",
+  "doctorSameNetworkOk": "{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same network",
   "@doctorSameNetworkOk": {
     "placeholders": {
       "device": {
@@ -320,7 +320,7 @@
       }
     }
   },
-  "doctorSameNetworkWarning": "{device} was last seen on a different network ({address}). Put {device} and {here} on the same Wi-Fi.",
+  "doctorSameNetworkWarning": "{device} was last seen on a different network ({address}). Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.",
   "@doctorSameNetworkWarning": {
     "placeholders": {
       "device": {
@@ -360,7 +360,7 @@
   },
   "doctorAcceptedRunning": "Connecting…",
   "doctorAcceptedOk": "Connected. All good.",
-  "doctorAcceptedProblem": "{device} answered but doesn't know {here} any more. It may have been reset or reinstalled. Pair them again.",
+  "doctorAcceptedProblem": "{device} answered but doesn't know {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} any more. It may have been reset or reinstalled. Pair them again.",
   "@doctorAcceptedProblem": {
     "placeholders": {
       "device": {
@@ -628,7 +628,7 @@
       }
     }
   },
-  "deviceForgetConfirmBody": "{device} and {here} forget each other. You can pair them again any time.",
+  "deviceForgetConfirmBody": "{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} forget each other. You can pair them again any time.",
   "@deviceForgetConfirmBody": {
     "placeholders": {
       "device": {
@@ -641,7 +641,7 @@
   },
   "chipOff": "Off",
   "doctorTryAgainPrimary": "Try again",
-  "doctorNotAnsweringSteps": "Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
+  "doctorNotAnsweringSteps": "Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.",
   "@doctorNotAnsweringSteps": {
     "placeholders": {
       "device": {
@@ -818,7 +818,7 @@
     }
   },
   "deviceForgetEverywhere": "Remove from all my devices",
-  "deviceForgetHere": "Forget on {here} only",
+  "deviceForgetHere": "Forget on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only",
   "@deviceForgetHere": {
     "placeholders": {
       "here": {
@@ -828,7 +828,7 @@
   },
   "settingsSharePairings": "Pair once for all my devices",
   "settingsSharePairingsBody": "A device you pair here joins all your devices. Remove it once and it leaves them all.",
-  "doctorIsolated": "This network keeps devices apart. {here} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
+  "doctorIsolated": "This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
   "@doctorIsolated": {
     "placeholders": {
       "device": {
@@ -840,7 +840,7 @@
     }
   },
   "doctorIsolatedMaybe": "Ferret hasn't heard any other device on this network. If the other device is on the same Wi-Fi, this network may keep devices apart, as café, hotel and guest Wi-Fi often do. Put both on your phone's hotspot or a home network.",
-  "doctorNothingWrong": "Everything looks right on {here}. On {device}, open Ferret.",
+  "doctorNothingWrong": "Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. On {device}, open Ferret.",
   "@doctorNothingWrong": {
     "placeholders": {
       "here": {
@@ -851,7 +851,7 @@
       }
     }
   },
-  "doctorNetworkIntro": "Checking the network on {here}.",
+  "doctorNetworkIntro": "Checking the network on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.",
   "@doctorNetworkIntro": {
     "placeholders": {
       "here": {
@@ -859,7 +859,7 @@
       }
     }
   },
-  "doctorNetworkAllGood": "Everything looks right on {here}. Open Ferret on your other device, on the same Wi-Fi.",
+  "doctorNetworkAllGood": "Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Open Ferret on your other device, on the same Wi-Fi.",
   "@doctorNetworkAllGood": {
     "placeholders": {
       "here": {
@@ -868,14 +868,6 @@
     }
   },
   "connectAction": "Try this address",
-  "thisMac": "this Mac",
-  "thisPhone": "this phone",
-  "thisTablet": "this tablet",
-  "thisComputer": "this computer",
-  "thisMacStart": "This Mac",
-  "thisPhoneStart": "This phone",
-  "thisTabletStart": "This tablet",
-  "thisComputerStart": "This computer",
   "settingsGroupClipboard": "Clipboard",
   "settingsGroupFiles": "Files",
   "settingsGroupContinue": "Continue & media",
@@ -1031,7 +1023,7 @@
     }
   },
   "devicesStaleReview": "Remove…",
-  "devicesStaleConfirm": "Remove {names} from {here}?",
+  "devicesStaleConfirm": "Remove {names} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}?",
   "@devicesStaleConfirm": {
     "placeholders": {
       "names": {
@@ -1045,7 +1037,7 @@
   "devicesStaleConfirmBody": "Not seen in 30 days. Your other devices keep them, and you can pair them again any time.",
   "devicesStaleRemove": "Remove",
   "deviceRename": "Rename…",
-  "deviceRenameTitle": "Name on {here}",
+  "deviceRenameTitle": "Name on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
   "@deviceRenameTitle": {
     "placeholders": {
       "here": {
@@ -1053,7 +1045,7 @@
       }
     }
   },
-  "deviceRenameBody": "Only {here} uses this name. {device} keeps its own.",
+  "deviceRenameBody": "Only {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} uses this name. {device} keeps its own.",
   "@deviceRenameBody": {
     "placeholders": {
       "here": {
@@ -1340,7 +1332,7 @@
       }
     }
   },
-  "accessIntro": "{device} reaches {here} only through what's on here, directly on your network. Turn one off and it stops right away, on both devices.",
+  "accessIntro": "{device} reaches {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only through what's on here, directly on your network. Turn one off and it stops right away, on both devices.",
   "@accessIntro": {
     "placeholders": {
       "device": {
@@ -1419,7 +1411,7 @@
       }
     }
   },
-  "updateThereBody": "{name} has an older Ferret ({version}) that {here} can't talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.",
+  "updateThereBody": "{name} has an older Ferret ({version}) that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can't talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.",
   "@updateThereBody": {
     "placeholders": {
       "name": {
@@ -1433,7 +1425,7 @@
       }
     }
   },
-  "updateHereTitle": "Update Ferret on {here}",
+  "updateHereTitle": "Update Ferret on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
   "@updateHereTitle": {
     "placeholders": {
       "here": {
@@ -1441,7 +1433,7 @@
       }
     }
   },
-  "updateHereBody": "{name} has a newer Ferret that {here} can't talk to yet. Update Ferret here, and they connect again by themselves.",
+  "updateHereBody": "{name} has a newer Ferret that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can't talk to yet. Update Ferret here, and they connect again by themselves.",
   "@updateHereBody": {
     "placeholders": {
       "name": {
