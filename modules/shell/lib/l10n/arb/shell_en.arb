@@ -775,6 +775,18 @@
   },
   "settingsSharePairings": "Pair once for all my devices",
   "settingsSharePairingsBody": "A device you pair here joins all your devices. Remove it once and it leaves them all.",
+  "doctorIsolated": "This network keeps devices apart. {here} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
+  "@doctorIsolated": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "doctorIsolatedMaybe": "Ferret hasn't heard any other device on this network. If the other device is on the same Wi-Fi, this network may keep devices apart, as café, hotel and guest Wi-Fi often do. Put both on your phone's hotspot or a home network.",
   "doctorNothingWrong": "Everything looks right on {here}. On {device}, open Ferret.",
   "@doctorNothingWrong": {
     "placeholders": {

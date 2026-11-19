@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -136,5 +137,94 @@ void main() {
       expect(kind.allowCommand, contains('47641/udp'));
       expect(kind.allowCommand, anyOf(contains('5353/udp'), contains('mdns')));
     }
+  });
+
+  group('a network that keeps devices apart', () {
+    const peer = '192.168.1.20';
+    const router = '192.168.1.1';
+
+    Future<void> trustPhone() => engine.trustStore.save(
+      TrustedDevice(
+        id: 'phonephonephonep',
+        name: 'Pixel 7',
+        platform: .PLATFORM_ANDROID,
+        formFactor: .FORM_FACTOR_PHONE,
+        publicKey: Uint8List(32),
+        pairedAt: DateTime(2026),
+        lastHost: peer,
+        lastPort: 47640,
+      ),
+    );
+
+    ConnectionDoctor doctorWith({
+      required Reach phone,
+      required Reach routerAnswer,
+      Duration since = const Duration(minutes: 1),
+    }) => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      interfaces: () async => [(name: 'en0', address: '192.168.1.5')],
+      probe: (host, port, timeout) async => switch (host) {
+        peer => phone,
+        router => routerAnswer,
+        _ => Reach.silent,
+      },
+      clock: () => (engine.startedAt ?? DateTime.now()).add(since),
+    );
+
+    test('says so when the router answers and the device is silent', () async {
+      await trustPhone();
+
+      final checks = await doctorWith(
+        phone: .silent,
+        routerAnswer: .refused,
+      ).diagnose('phonephonephonep').last;
+
+      final isolated = checks.where((check) => check.kind == .isolated);
+      expect(isolated.single.status, DoctorStatus.problem);
+      final reachable = checks.singleWhere((c) => c.kind == .reachable);
+      expect(reachable.fixes, [DoctorFix.tryAgain]);
+    });
+
+    test('is not blamed when the router is silent too', () async {
+      await trustPhone();
+
+      final checks = await doctorWith(
+        phone: .silent,
+        routerAnswer: .silent,
+      ).diagnose('phonephonephonep').last;
+
+      expect(checks.where((check) => check.kind == .isolated), isEmpty);
+    });
+
+    test('is not blamed when the device refuses: it is reachable', () async {
+      await trustPhone();
+
+      final checks = await doctorWith(
+        phone: .refused,
+        routerAnswer: .answered,
+      ).diagnose('phonephonephonep').last;
+
+      expect(checks.where((check) => check.kind == .isolated), isEmpty);
+    });
+
+    test('Check my network says it may, after a quiet while', () async {
+      final quiet = await doctorWith(
+        phone: .silent,
+        routerAnswer: .answered,
+      ).diagnose(null).last;
+      final tooSoon = await doctorWith(
+        phone: .silent,
+        routerAnswer: .answered,
+        since: const Duration(seconds: 5),
+      ).diagnose(null).last;
+
+      expect(
+        quiet.singleWhere((check) => check.kind == .isolated).status,
+        DoctorStatus.warning,
+      );
+      expect(tooSoon.where((check) => check.kind == .isolated), isEmpty);
+    });
   });
 }

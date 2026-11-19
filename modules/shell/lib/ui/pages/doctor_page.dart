@@ -238,6 +238,8 @@ class _DoctorPageState extends State<DoctorPage> {
       (.accepted, .running) => l10n.doctorAcceptedRunning,
       (.accepted, .ok) => l10n.doctorAcceptedOk,
       (.accepted, _) => l10n.doctorAcceptedProblem(device, here),
+      (.isolated, .problem) => l10n.doctorIsolated(device, here),
+      (.isolated, _) => l10n.doctorIsolatedMaybe,
     };
   }
 }

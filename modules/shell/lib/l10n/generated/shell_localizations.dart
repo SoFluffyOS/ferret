@@ -1612,6 +1612,18 @@ abstract class ShellLocalizations {
   /// **'A device you pair here joins all your devices. Remove it once and it leaves them all.'**
   String get settingsSharePairingsBody;
 
+  /// No description provided for @doctorIsolated.
+  ///
+  /// In en, this message translates to:
+  /// **'This network keeps devices apart. {here} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.'**
+  String doctorIsolated(String device, String here);
+
+  /// No description provided for @doctorIsolatedMaybe.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret hasn\'t heard any other device on this network. If the other device is on the same Wi-Fi, this network may keep devices apart, as café, hotel and guest Wi-Fi often do. Put both on your phone\'s hotspot or a home network.'**
+  String get doctorIsolatedMaybe;
+
   /// No description provided for @doctorNothingWrong.
   ///
   /// In en, this message translates to:

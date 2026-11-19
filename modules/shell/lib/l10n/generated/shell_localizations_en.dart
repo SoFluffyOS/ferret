@@ -970,6 +970,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'A device you pair here joins all your devices. Remove it once and it leaves them all.';
 
   @override
+  String doctorIsolated(String device, String here) {
+    return 'This network keeps devices apart. $here reaches the router but not $device. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.';
+  }
+
+  @override
+  String get doctorIsolatedMaybe =>
+      'Ferret hasn\'t heard any other device on this network. If the other device is on the same Wi-Fi, this network may keep devices apart, as café, hotel and guest Wi-Fi often do. Put both on your phone\'s hotspot or a home network.';
+
+  @override
   String doctorNothingWrong(String here, String device) {
     return 'Everything looks right on $here. On $device, open Ferret.';
   }
