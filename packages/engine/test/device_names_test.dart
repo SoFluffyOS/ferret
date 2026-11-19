@@ -4,6 +4,19 @@ import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:test/test.dart';
 
+class _NamesHost implements FeatureHost {
+  _NamesHost(this.trustStore);
+
+  @override
+  final TrustStore trustStore;
+
+  @override
+  Session? sessionFor(String deviceId) => null;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
+}
+
 TrustedDevice _device(String id, String name, {String? nickname}) =>
     TrustedDevice(
       id: id,
@@ -100,5 +113,17 @@ void main() {
       [for (final device in introduce.devices) device.name],
       ['Pixel 7', 'Pixel 7'],
     );
+  });
+
+  test('features read the same name the device list shows', () async {
+    await store.save(_device('a1b2c3d4e5f60718', 'Pixel 7'));
+    await store.save(_device('99aa88bb77cc3f2a', 'Pixel 7'));
+    await store.save(_device('1111222233334444', 'iPhone'));
+    await store.rename('1111222233334444', 'Work iPhone');
+    final host = _NamesHost(store);
+
+    expect(host.displayNameOf('a1b2c3d4e5f60718'), 'Pixel 7 (0718)');
+    expect(host.displayNameOf('1111222233334444'), 'Work iPhone');
+    expect(host.displayNameOf('unknown'), 'unknown');
   });
 }

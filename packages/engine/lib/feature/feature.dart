@@ -35,6 +35,25 @@ abstract interface class FeatureHost {
   Stream<Presence> get localPresenceChanges;
 }
 
+/// Names for other devices, the same on every screen.
+extension FeatureHostNames on FeatureHost {
+  /// What to call [deviceId] on screen: its nickname here, or its name with
+  /// a tag while another paired device shares it. A device that isn't
+  /// paired goes by the name it announced, then by its id.
+  String displayNameOf(String deviceId) {
+    if (trustStore[deviceId]?.name case final name? when name.isNotEmpty) {
+      return name;
+    }
+
+    if (sessionFor(deviceId)?.remoteDevice?.name case final name?
+        when name.isNotEmpty) {
+      return name;
+    }
+
+    return deviceId;
+  }
+}
+
 /// One capability of Ferret, such as handoff or clipboard sync. Features own
 /// their messages (`proto/ferret/<id>/v1`) and never talk to each other.
 abstract class Feature {
