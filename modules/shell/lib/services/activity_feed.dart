@@ -34,6 +34,22 @@ class ActivityFeed {
     ]);
   }
 
+  /// Whether something above the devices already shows the screen's one
+  /// filled button: a feature's home card, or a line waiting for an
+  /// answer. Devices then outline all of theirs.
+  static bool holdsPrimary(
+    BuildContext context,
+    List<FeatureUi> features,
+    FeatureContext featureContext,
+  ) =>
+      features.any(
+        (feature) =>
+            feature.hasHomeCard(featureContext) &&
+            feature.homeCardHoldsPrimary(featureContext),
+      ) ||
+      ActivityFeed.gather(context, features, featureContext).primaryItem !=
+          null;
+
   /// Sorts [items] into Needs you, what is going on now and what happened.
   factory ActivityFeed.of(List<ActivityItem> items) {
     return ActivityFeed(

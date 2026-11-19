@@ -306,9 +306,14 @@ class _Actions extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    // In a window Needs you sits above every page, and may hold the
+    // filled button already.
     return DeviceActions(
       actions: actions,
       moreLabel: context.shellL10n.homeMore,
+      hasPrimary:
+          !WindowLayout.splits(context) ||
+          !ActivityFeed.holdsPrimary(context, scope.features, featureContext),
       shown: switch (context.screenSize) {
         .small => 3,
         _ => 4,

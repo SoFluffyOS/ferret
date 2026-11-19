@@ -14,12 +14,16 @@ class DeviceActions extends StatelessWidget {
     required this.actions,
     required this.moreLabel,
     this.shown = 3,
+    this.hasPrimary = true,
   });
 
   /// Most wanted first.
   final List<FeatureAction> actions;
   final String moreLabel;
   final int shown;
+
+  /// Whether the first action is the screen's one filled button.
+  final bool hasPrimary;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +41,9 @@ class DeviceActions extends StatelessWidget {
         for (final (position, action) in buttons.indexed)
           Button(
             mainAxisSize: .min,
-            variant: switch (position) {
-              0 => .primary,
-              _ => .ghost,
+            variant: switch (position == 0 && hasPrimary) {
+              true => .primary,
+              false => .ghost,
             },
             label: action.label,
             icon: Icon(action.icon, size: Spacing.d16),
