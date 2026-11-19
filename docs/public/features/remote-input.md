@@ -50,7 +50,7 @@ The first time, the computer asks: **Let Pixel 7 lock this Mac?** Pick **Always 
 - 🪟 Windows: the same as Windows+L.
 - 🐧 Linux: `loginctl lock-session`, which GNOME, KDE Plasma and most desktops follow. Falls back to `xdg-screensaver lock`.
 
-Only locking, never unlocking. Sleep, restart, shut down and your own commands are [Computer actions](computer-actions.md). Change your mind in the computer's **What Pixel 7 can use → Lock this Mac without asking**.
+Only locking, never unlocking. Sleep, restart, shut down and your own commands are [Computer actions](computer-actions.md). Want it to lock by itself when you walk off with your phone? See **Lock when your phone leaves** in [Computer actions](computer-actions.md). Change your mind in the computer's **What Pixel 7 can use → Lock this Mac without asking**.
 
 ## 🔐 You stay in charge
 

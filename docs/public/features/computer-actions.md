@@ -19,7 +19,7 @@ Open a computer in Ferret on another device. Under **This Mac** (or **This PC**,
 - ⏻ **Shut down…**
 - 🔊 **Volume**: mute or unmute, down, up.
 
-Locking is one tap away too: **Lock MacBook Air**, under **More** at the top. See [Control](remote-input.md).
+Locking is one tap away too: **Lock MacBook Air**, under **More** at the top. See [Control](remote-input.md). Or let it lock by itself when your phone leaves: see **Lock when your phone leaves** below.
 
 **Restart…** and **Shut down…** ask "are you sure" on your phone first. Fair warning: once it's off, Ferret can't reach it until someone turns it on. Then the computer counts down **10 seconds** with a **Cancel** button, as a notice and on top of Ferret. Anyone sitting there can stop it.
 
@@ -50,6 +50,36 @@ A few rules keep this safe and boring:
 - `.sh`, `.scpt`, `.app`, `.ps1`, `.bat` and `.lnk` files open with the right program.
 - It gets **30 seconds**. After that Ferret stops it and says so.
 - What it printed stays on the computer: its last line is in **Activity** there. Your phone only learns whether it worked.
+
+## 🔒 Lock when your phone leaves
+
+You walk off for a coffee. Your Mac stays open on the desk, for anyone passing by.
+
+Ferret already knows when your phone drops off the Wi-Fi. So it can lock the computer for you.
+
+On the computer, open **Settings → Control → Lock when your phone leaves** and turn on **Lock this Mac when Pixel 7 leaves**. The same switch sits on the phone's page in Ferret. Pick how long it waits under **Lock after**: 1 to 10 minutes, 2 by default.
+
+What happens then:
+
+1. Pixel 7 drops off the Wi-Fi and stays gone for those minutes.
+2. Ferret checks that nobody has touched the keyboard or mouse for at least a minute. Someone typing? It waits.
+3. **Locking this Mac in 10 seconds · Pixel 7 left**, with **Cancel**, on top of Ferret and as a notice.
+4. Locked. **Activity** says **Locked this Mac: Pixel 7 left**.
+
+That's it. It **NEVER** unlocks: you type your password like always.
+
+What doesn't count as leaving:
+
+- 📶 **Reconnecting…**: the Wi-Fi hopped and the phone is back within the wait.
+- ⏸️ **Pausing or quitting Ferret** on the phone: it says goodbye first.
+- 😴 **The phone's screen off, or Doze**: Ferret's background service keeps it connected.
+- 🪫 **A dead battery while you're at the desk**: you're using the keyboard, so it doesn't lock. Step away for a minute and it will, after the countdown.
+- **Cancel** keeps it unlocked until the phone comes back and leaves again.
+
+Be honest with yourself about what this is: it means "left the Wi-Fi", not "left the room". Your phone in the next room on the same Wi-Fi is still here.
+
+- 🤖 **Android only.** iOS stops Ferret in the background, so an iPhone would look gone all the time.
+- 🍎 **macOS** locks like **Lock Screen** in the Apple menu. 🪟 **Windows** like **Win+L**. 🐧 **Linux** through logind, then your desktop's screen saver. Idle time comes from `xprintidle` on X11, or logind on Wayland (that one only says idle after your desktop's own idle delay). When the system won't say, it still counts down, so you can cancel.
 
 ## 🔐 You stay in charge
 
