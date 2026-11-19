@@ -96,3 +96,4 @@
 - ⌨️ **Every key, written down**: a **Help** menu on the Mac, and on Windows and Linux a **•••** menu that shows each command's keys. **Keyboard Shortcuts** (Ctrl+?) lists them all.
 - 💻 **Scriptable `ferret-cli`**: `ferret-cli send <file>…` hands files to the running app, `ferret-cli devices --json` for scripts, `--version`, and exit codes `--help` explains. The app itself is `ferret`, and takes `ferret send` too.
 - 📟 **`ferret-cli ring` and `ferret-cli clipboard`**: ring your phone from a terminal, print the last text you copied on another device, or pipe text to them. `--json` and exit codes for scripts.
+- 🕘 **Recent clips**: the last 20 things you copied, here or on your devices, with **Copy** on each. In the **•••** menu. Private clips never show up.

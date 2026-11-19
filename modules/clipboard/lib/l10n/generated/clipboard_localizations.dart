@@ -436,6 +436,48 @@ abstract class ClipboardLocalizations {
   /// In en, this message translates to:
   /// **'On this desktop, copies go out while Ferret\'s window is in front. Use Send clipboard for the rest.'**
   String get settingsAutoSendBodyWayland;
+
+  /// No description provided for @recentClips.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent clips'**
+  String get recentClips;
+
+  /// No description provided for @recentClipsMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent clips…'**
+  String get recentClipsMenu;
+
+  /// No description provided for @recentClipsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing copied yet. What you copy here or on your devices shows up here.'**
+  String get recentClipsEmpty;
+
+  /// No description provided for @recentClipsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The last 20, kept in memory until Ferret quits. Private items never show up here.'**
+  String get recentClipsNote;
+
+  /// No description provided for @recentFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {device}'**
+  String recentFrom(String device);
+
+  /// No description provided for @recentCopiedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied here'**
+  String get recentCopiedHere;
+
+  /// No description provided for @recentHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Previews from this device are hidden here. Copy still works.'**
+  String get recentHidden;
 }
 
 class _ClipboardLocalizationsDelegate

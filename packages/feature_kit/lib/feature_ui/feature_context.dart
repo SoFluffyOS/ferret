@@ -12,7 +12,9 @@ class FeatureContext {
     required this.navigatorKey,
     required this.notifier,
     Future<void> Function()? onReveal,
-  }) : _onReveal = onReveal;
+    bool Function(String deviceId)? showsPreviewsFrom,
+  }) : _onReveal = onReveal,
+       _showsPreviewsFrom = showsPreviewsFrom;
 
   final FerretEngine engine;
 
@@ -21,6 +23,13 @@ class FeatureContext {
   final GlobalKey<NavigatorState> navigatorKey;
 
   final Future<void> Function()? _onReveal;
+  final bool Function(String deviceId)? _showsPreviewsFrom;
+
+  /// Whether private things from [deviceId], such as copied text, may show
+  /// on this screen right now: false while it's locked, another account is
+  /// in front, or the person hid that device's previews here.
+  bool showsPreviewsFrom(String deviceId) =>
+      _showsPreviewsFrom?.call(deviceId) ?? true;
 
   /// How [openSection] shows a section. The shell sets it once its views
   /// exist.

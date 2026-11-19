@@ -56,5 +56,12 @@
   "settingsHistory": "{count, plural, =0{Lịch sử đang trống. Lịch sử chỉ nằm trong bộ nhớ, không bao giờ ghi ra đĩa.} other{{count} mục trong lịch sử, chỉ lưu trong bộ nhớ.}}",
   "settingsClearHistory": "Xoá lịch sử",
   "settingsWhyManualWayland": "Trên Wayland, chỉ cửa sổ đang ở trên cùng mới biết khi có nội dung mới được sao chép. GNOME không có cách nào khác, nên Ferret sẽ gửi nội dung bạn đã sao chép khi cửa sổ của nó ở trên cùng trở lại, hoặc khi bạn chọn Gửi bảng nhớ tạm trên một thiết bị hay trong khay hệ thống. Trên KDE Plasma và Sway, hãy cài wl-clipboard để Ferret tự theo dõi.",
-  "settingsAutoSendBodyWayland": "Trên môi trường desktop này, nội dung sao chép được gửi đi khi cửa sổ Ferret ở trên cùng. Dùng Gửi bảng nhớ tạm cho phần còn lại."
+  "settingsAutoSendBodyWayland": "Trên môi trường desktop này, nội dung sao chép được gửi đi khi cửa sổ Ferret ở trên cùng. Dùng Gửi bảng nhớ tạm cho phần còn lại.",
+  "recentClips": "Mục đã sao chép gần đây",
+  "recentClipsMenu": "Mục đã sao chép gần đây…",
+  "recentClipsEmpty": "Chưa sao chép gì. Những gì bạn sao chép ở đây hoặc trên các thiết bị của bạn sẽ hiện ở đây.",
+  "recentClipsNote": "20 mục gần nhất, chỉ giữ trong bộ nhớ cho đến khi thoát Ferret. Mục riêng tư không bao giờ hiện ở đây.",
+  "recentFrom": "Từ {device}",
+  "recentCopiedHere": "Sao chép tại đây",
+  "recentHidden": "Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được."
 }

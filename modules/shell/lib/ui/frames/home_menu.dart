@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -28,6 +29,11 @@ class HomeMenu extends StatelessWidget {
     );
     final l10n = context.shellL10n;
     final canQuit = defaultTargetPlatform != .iOS;
+    final scope = ShellScope.of(context);
+    final featureActions = [
+      for (final feature in scope.features)
+        ...feature.appActions(context, scope.featureContext),
+    ];
 
     return MenuButton(
       icon: LucideIcons.ellipsis,
@@ -56,6 +62,13 @@ class HomeMenu extends StatelessWidget {
             onSelected: () => unawaited(pause.pause()),
           ),
         ],
+        for (final (index, action) in featureActions.indexed)
+          MenuEntry(
+            label: action.label,
+            icon: action.icon,
+            startsGroup: index == 0,
+            onSelected: action.onPressed ?? () {},
+          ),
         if (canOpenWindow)
           MenuEntry(
             label: l10n.homeOpenWindow,

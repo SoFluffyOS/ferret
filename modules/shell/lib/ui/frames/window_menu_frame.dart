@@ -193,6 +193,11 @@ class WindowMenuFrame extends StatelessWidget {
   }) {
     final l10n = context.shellL10n;
     final views = context.read<AppViews?>();
+    final scope = ShellScope.of(context);
+    final featureActions = [
+      for (final feature in scope.features)
+        ...feature.appActions(context, scope.featureContext),
+    ];
     PlatformMenuItem item(String label, WindowCommand command) =>
         PlatformMenuItem(
           label: label,
@@ -232,6 +237,16 @@ class WindowMenuFrame extends StatelessWidget {
               item(l10n.menuSendClipboard, .sendClipboard),
             ],
           ),
+          if (featureActions.isNotEmpty)
+            PlatformMenuItemGroup(
+              members: [
+                for (final action in featureActions)
+                  PlatformMenuItem(
+                    label: action.label,
+                    onSelected: action.onPressed,
+                  ),
+              ],
+            ),
           PlatformMenuItemGroup(
             members: [
               PlatformMenuItem(

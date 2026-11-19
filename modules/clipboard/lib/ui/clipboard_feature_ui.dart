@@ -6,6 +6,7 @@ import 'package:clipboard/l10n/l10n.dart';
 import 'package:clipboard/ui/clip_activity.dart';
 import 'package:clipboard/ui/clipboard_health.dart';
 import 'package:clipboard/ui/frames/frames.dart';
+import 'package:clipboard/ui/pages/pages.dart';
 import 'package:clipboard/ui/widgets/widgets.dart';
 import 'package:clipboard/view_models/clipboard_view_model.dart';
 import 'package:engine/engine.dart';
@@ -110,6 +111,26 @@ class ClipboardFeatureUi extends FeatureUi {
       ),
     ];
   }
+
+  @override
+  List<FeatureAction> appActions(
+    BuildContext context,
+    FeatureContext feature,
+  ) => [
+    FeatureAction(
+      id: 'clipboard.recent',
+      label: context.clipboardL10n.recentClipsMenu,
+      icon: LucideIcons.clipboardList,
+      onPressed: () => unawaited(_openRecentClips(feature)),
+    ),
+  ];
+
+  Future<void> _openRecentClips(FeatureContext feature) => feature.push<void>(
+    ChangeNotifierProvider.value(
+      value: viewModel,
+      child: RecentClipsPage(showsPreviewsFrom: feature.showsPreviewsFrom),
+    ),
+  );
 
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {

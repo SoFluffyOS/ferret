@@ -15,6 +15,7 @@ class ClipboardViewModel extends ChangeNotifier {
   late final StreamSubscription<void> _subscription;
 
   bool _isSending = false;
+  String? _copiedId;
   ClipSendResult? _lastResult;
   DateTime? _lastResultAt;
 
@@ -22,6 +23,16 @@ class ClipboardViewModel extends ChangeNotifier {
 
   /// Newest first.
   List<ClipEntry> get history => feature.history;
+
+  /// The clips that can be copied again, newest first. Private clips are
+  /// never listed, not even once they expired.
+  List<ClipEntry> get recentClips => [
+    for (final entry in feature.history)
+      if (entry.hasContent && !entry.isSensitive) entry,
+  ];
+
+  /// The clip last put back on the clipboard from Recent clips.
+  String? get copiedId => _copiedId;
 
   /// Whether [entry] waits for a device to connect.
   bool isWaiting(ClipEntry entry) => feature.isWaiting(entry);
@@ -100,6 +111,19 @@ class ClipboardViewModel extends ChangeNotifier {
   }
 
   Future<bool> copy(ClipEntry entry) => feature.copyToClipboard(entry);
+
+  /// Puts [entry] back on this device's clipboard from Recent clips, and
+  /// marks it as the one copied.
+  Future<bool> copyAgain(ClipEntry entry) async {
+    final copied = await feature.copyToClipboard(entry);
+    if (!copied) {
+      return false;
+    }
+
+    _copiedId = entry.id;
+    notifyListeners();
+    return true;
+  }
 
   Future<void> setAutoSend(bool value) => _settings.setAutoSend(value);
 

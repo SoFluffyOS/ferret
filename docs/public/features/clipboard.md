@@ -45,6 +45,14 @@ Tired of the **Allow Paste** question every time? Go to **Settings → Ferret �
 
 Receiving works while Ferret is open.
 
+## 🕘 Recent clips
+
+Copied something ten minutes ago and pasted over it since? Open **••• → Recent clips…** (on a Mac window: **File → Recent clips…**). You get the last 20 clips, from here and from your devices, each with **Copy**.
+
+- 🔑 Private clips (passwords, codes) are never listed.
+- 🙈 On a computer where a phone's previews are hidden, its clips show as **Copied on Pixel 7**, not what they hold. **Copy** still works.
+- 🧠 The list lives in memory only. Quit Ferret and it's gone.
+
 ## 🔑 Passwords stay put
 
 Password managers mark what they copy as private. Ferret skips those items by default.

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -64,6 +65,10 @@ class WindowMoreMenu extends StatelessWidget {
         );
         startsGroup = false;
       }
+
+      if (group == _groups.first) {
+        entries.addAll(_featureEntries(context));
+      }
     }
 
     return MenuButton(
@@ -72,5 +77,22 @@ class WindowMoreMenu extends StatelessWidget {
       opensRight: true,
       entries: entries,
     );
+  }
+
+  List<MenuEntry> _featureEntries(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final actions = [
+      for (final feature in scope.features)
+        ...feature.appActions(context, scope.featureContext),
+    ];
+
+    return [
+      for (final (index, action) in actions.indexed)
+        MenuEntry(
+          label: action.label,
+          startsGroup: index == 0,
+          onSelected: action.onPressed ?? () {},
+        ),
+    ];
   }
 }

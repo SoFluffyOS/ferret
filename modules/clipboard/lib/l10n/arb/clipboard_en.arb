@@ -132,5 +132,19 @@
   },
   "settingsClearHistory": "Clear history",
   "settingsWhyManualWayland": "On Wayland, only the window in front hears about a new copy. GNOME has no way around that, so Ferret sends what you copied once its window is in front again, or when you pick Send clipboard on a device or in the tray. On KDE Plasma and Sway, install wl-clipboard and Ferret watches by itself.",
-  "settingsAutoSendBodyWayland": "On this desktop, copies go out while Ferret's window is in front. Use Send clipboard for the rest."
+  "settingsAutoSendBodyWayland": "On this desktop, copies go out while Ferret's window is in front. Use Send clipboard for the rest.",
+  "recentClips": "Recent clips",
+  "recentClipsMenu": "Recent clips…",
+  "recentClipsEmpty": "Nothing copied yet. What you copy here or on your devices shows up here.",
+  "recentClipsNote": "The last 20, kept in memory until Ferret quits. Private items never show up here.",
+  "recentFrom": "From {device}",
+  "@recentFrom": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "recentCopiedHere": "Copied here",
+  "recentHidden": "Previews from this device are hidden here. Copy still works."
 }

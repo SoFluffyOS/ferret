@@ -99,6 +99,8 @@ Future<void> runFerret({
     },
     notifier: notifier,
     onReveal: views.reveal,
+    showsPreviewsFrom: (deviceId) =>
+        screen.isActive && PrivatePreviews(settings).showsFrom(deviceId),
   );
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
   featureContext.windows = featureWindows;

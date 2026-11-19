@@ -226,4 +226,30 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   @override
   String get settingsAutoSendBodyWayland =>
       'On this desktop, copies go out while Ferret\'s window is in front. Use Send clipboard for the rest.';
+
+  @override
+  String get recentClips => 'Recent clips';
+
+  @override
+  String get recentClipsMenu => 'Recent clips…';
+
+  @override
+  String get recentClipsEmpty =>
+      'Nothing copied yet. What you copy here or on your devices shows up here.';
+
+  @override
+  String get recentClipsNote =>
+      'The last 20, kept in memory until Ferret quits. Private items never show up here.';
+
+  @override
+  String recentFrom(String device) {
+    return 'From $device';
+  }
+
+  @override
+  String get recentCopiedHere => 'Copied here';
+
+  @override
+  String get recentHidden =>
+      'Previews from this device are hidden here. Copy still works.';
 }

@@ -225,4 +225,30 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   @override
   String get settingsAutoSendBodyWayland =>
       'Trên môi trường desktop này, nội dung sao chép được gửi đi khi cửa sổ Ferret ở trên cùng. Dùng Gửi bảng nhớ tạm cho phần còn lại.';
+
+  @override
+  String get recentClips => 'Mục đã sao chép gần đây';
+
+  @override
+  String get recentClipsMenu => 'Mục đã sao chép gần đây…';
+
+  @override
+  String get recentClipsEmpty =>
+      'Chưa sao chép gì. Những gì bạn sao chép ở đây hoặc trên các thiết bị của bạn sẽ hiện ở đây.';
+
+  @override
+  String get recentClipsNote =>
+      '20 mục gần nhất, chỉ giữ trong bộ nhớ cho đến khi thoát Ferret. Mục riêng tư không bao giờ hiện ở đây.';
+
+  @override
+  String recentFrom(String device) {
+    return 'Từ $device';
+  }
+
+  @override
+  String get recentCopiedHere => 'Sao chép tại đây';
+
+  @override
+  String get recentHidden =>
+      'Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được.';
 }
