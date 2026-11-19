@@ -43,6 +43,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 | `docs/public/` | The docs site, and the only copy of each page. `docs/public/spec/` is the protocol spec |
 | `extensions/browser/` | WebExtension (TypeScript) |
 | `magisk/`, `lsposed/` | Android root modules |
+| `branding/` | Logo sources (SVG): plated icon, dark icon, glyph, one-colour template. `scripts/generate_icons.sh` renders every app icon, the menubar glyph and the docs logo from them |
 
 Dependencies point one way: `apps` → `modules` → `packages`. Packages never import modules or apps.
 
