@@ -41,6 +41,7 @@ workspace:
   - packages/ferret_power
   - packages/ferret_remote_input
   - packages/ferret_system
+  - packages/ferret_wake
   - packages/interop_localsend
   - packages/interop_quickshare
   - packages/lan_discovery
