@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ferret/wiring/call_media_pause.dart';
+import 'package:ferret/wiring/wiring.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,4 +1,4 @@
-import 'package:ferret/wiring/cli_control.dart';
+import 'package:ferret/wiring/wiring.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
