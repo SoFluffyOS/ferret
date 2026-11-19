@@ -1830,4 +1830,21 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get whatsNewAction => 'What\'s new';
+
+  @override
+  String get settingsTipsAgain => 'Show tips again';
+
+  @override
+  String get settingsTipsAgainDetail =>
+      'The short hints at the top of Ferret, such as how to copy across.';
+
+  @override
+  String get settingsTipsAgainDone => 'Tips are back, one at a time.';
+
+  @override
+  String get settingsPrivacyPerDevice =>
+      'To choose what one device can use, open that device and look under What it can use.';
+
+  @override
+  String get deviceAway => 'Connected · locked';
 }

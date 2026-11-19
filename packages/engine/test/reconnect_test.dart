@@ -197,6 +197,27 @@ void main() {
     expect(session.isClosed, isFalse);
   });
 
+  test('a computer whose screen is locked reads as away, and back once '
+      'someone is at it', () async {
+    final laptop = await startEngine('Laptop', _CountingDiscovery());
+    final phone = await startEngine('Phone', _CountingDiscovery());
+    await pair(phone, laptop);
+    expect(phone.devices.single.isAway, isFalse);
+    var changes = 0;
+    final subscription = phone.deviceChanges.listen((_) => changes++);
+    addTearDown(subscription.cancel);
+
+    await laptop.updatePresence(Presence(batteryPercent: -1, away: true));
+    await _until(() => phone.devices.single.isAway);
+    expect(changes, greaterThan(0), reason: 'the list hears about it');
+    expect(phone.devices.single.isConnected, isTrue);
+
+    await laptop.updatePresence(
+      Presence(batteryPercent: -1, userActive: true),
+    );
+    await _until(() => !phone.devices.single.isAway);
+  });
+
   test('calls during a reconnect merge into one more run', () async {
     final discovery = _CountingDiscovery();
     final phone = await startEngine('Phone', discovery);

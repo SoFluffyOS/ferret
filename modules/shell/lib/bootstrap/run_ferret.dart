@@ -65,10 +65,13 @@ Future<void> runFerret({
   final pause = PauseController(engine);
   final system = SystemBinding(engine: engine, host: host, pause: pause);
   await system.start();
-  await PresenceReporter(engine).start();
-
   final screen = ScreenSession.forPlatform();
   await screen.start();
+  await PresenceReporter(
+    engine,
+    isAtScreen: () => screen.isActive,
+    atScreenChanges: screen.changes,
+  ).start();
   final notifier = PrivateNotifier(
     await SystemNotifier.create([
       for (final feature in features) ...feature.noticeCategories,

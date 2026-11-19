@@ -2905,6 +2905,36 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'What\'s new'**
   String get whatsNewAction;
+
+  /// Settings, About: a row that brings back the one-time hints on Home
+  ///
+  /// In en, this message translates to:
+  /// **'Show tips again'**
+  String get settingsTipsAgain;
+
+  /// No description provided for @settingsTipsAgainDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'The short hints at the top of Ferret, such as how to copy across.'**
+  String get settingsTipsAgainDetail;
+
+  /// No description provided for @settingsTipsAgainDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips are back, one at a time.'**
+  String get settingsTipsAgainDone;
+
+  /// Settings, About, under the privacy promise. Points at the per-device switches on each device's page
+  ///
+  /// In en, this message translates to:
+  /// **'To choose what one device can use, open that device and look under What it can use.'**
+  String get settingsPrivacyPerDevice;
+
+  /// Status of a connected computer whose screen is locked or showing another account. Short: it sits under the device's name
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · locked'**
+  String get deviceAway;
 }
 
 class _ShellLocalizationsDelegate

@@ -128,6 +128,7 @@ class FerretEngine implements FeatureHost {
   final Map<String, VersionMismatch> _mismatches = {};
   final Map<String, int> _drops = {};
   final Map<String, StreamSubscription<bool>> _weakWatches = {};
+  final Map<String, StreamSubscription<Presence>> _presenceWatches = {};
   DateTime? _startedAt;
   DateTime? _lastHeardOthers;
 
@@ -1545,6 +1546,7 @@ class FerretEngine implements FeatureHost {
     if (wasReady) {
       _ready.remove(session.remoteDeviceId);
       unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());
+      unawaited(_presenceWatches.remove(session.remoteDeviceId)?.cancel());
       if (_running && session.remoteGoodbye == null) {
         _droppedRecently.add(session.remoteDeviceId);
       }
@@ -1661,9 +1663,16 @@ class FerretEngine implements FeatureHost {
     _emitDevices();
   }
 
+  /// A device's line changes with its link (weak or steady) and with
+  /// whether someone is at it.
   void _watchWeak(Session session) {
-    unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());
-    _weakWatches[session.remoteDeviceId] = session.weakChanges.listen(
+    final deviceId = session.remoteDeviceId;
+    unawaited(_weakWatches.remove(deviceId)?.cancel());
+    unawaited(_presenceWatches.remove(deviceId)?.cancel());
+    _weakWatches[deviceId] = session.weakChanges.listen(
+      (_) => _emitDevices(),
+    );
+    _presenceWatches[deviceId] = session.presenceChanges.listen(
       (_) => _emitDevices(),
     );
   }

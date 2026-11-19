@@ -1480,5 +1480,19 @@
       }
     }
   },
-  "whatsNewAction": "What's new"
+  "whatsNewAction": "What's new",
+  "settingsTipsAgain": "Show tips again",
+  "@settingsTipsAgain": {
+    "description": "Settings, About: a row that brings back the one-time hints on Home"
+  },
+  "settingsTipsAgainDetail": "The short hints at the top of Ferret, such as how to copy across.",
+  "settingsTipsAgainDone": "Tips are back, one at a time.",
+  "settingsPrivacyPerDevice": "To choose what one device can use, open that device and look under What it can use.",
+  "@settingsPrivacyPerDevice": {
+    "description": "Settings, About, under the privacy promise. Points at the per-device switches on each device's page"
+  },
+  "deviceAway": "Connected · locked",
+  "@deviceAway": {
+    "description": "Status of a connected computer whose screen is locked or showing another account. Short: it sits under the device's name"
+  }
 }

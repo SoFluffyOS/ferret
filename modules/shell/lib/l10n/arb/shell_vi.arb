@@ -468,5 +468,10 @@
   "replaceAction": "Thay thiết bị cũ",
   "replaceKeepBoth": "Giữ cả hai",
   "whatsNewLine": "Đã cập nhật lên Ferret {version}",
-  "whatsNewAction": "Có gì mới"
+  "whatsNewAction": "Có gì mới",
+  "settingsTipsAgain": "Hiện lại mẹo",
+  "settingsTipsAgainDetail": "Những gợi ý ngắn ở màn hình chính, chẳng hạn cách sao chép qua lại.",
+  "settingsTipsAgainDone": "Mẹo đã trở lại, mỗi lần một mẹo.",
+  "settingsPrivacyPerDevice": "Để chọn một thiết bị được dùng những gì, hãy mở thiết bị đó và xem mục Những gì thiết bị được dùng.",
+  "deviceAway": "Đã kết nối · đang khoá"
 }

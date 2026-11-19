@@ -224,12 +224,14 @@ class Presence extends $pb.GeneratedMessage {
     $core.bool? screenOn,
     $core.int? batteryPercent,
     $core.bool? charging,
+    $core.bool? away,
   }) {
     final result = Presence._();
     if (userActive != null) result.userActive = userActive;
     if (screenOn != null) result.screenOn = screenOn;
     if (batteryPercent != null) result.batteryPercent = batteryPercent;
     if (charging != null) result.charging = charging;
+    if (away != null) result.away = away;
     return result;
   }
 
@@ -250,6 +252,7 @@ class Presence extends $pb.GeneratedMessage {
     ..aOB(2, _omitFieldNames ? '' : 'screenOn')
     ..aI(3, _omitFieldNames ? '' : 'batteryPercent')
     ..aOB(4, _omitFieldNames ? '' : 'charging')
+    ..aOB(5, _omitFieldNames ? '' : 'away')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -308,6 +311,17 @@ class Presence extends $pb.GeneratedMessage {
   $core.bool hasCharging() => $_has(3);
   @$pb.TagNumber(4)
   void clearCharging() => $_clearField(4);
+
+  /// A computer whose screen is locked or showing another account: this
+  /// device is connected, but nobody is at it to see what arrives.
+  @$pb.TagNumber(5)
+  $core.bool get away => $_getBF(4);
+  @$pb.TagNumber(5)
+  set away($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasAway() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearAway() => $_clearField(5);
 }
 
 /// Sent before a side closes on purpose, so the other one doesn't reconnect.

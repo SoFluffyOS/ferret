@@ -29,6 +29,9 @@ message Presence {
   // Battery level 0-100, or -1 when unknown or plugged desktop.
   int32 battery_percent = 3;
   bool charging = 4;
+  // A computer whose screen is locked or showing another account: this
+  // device is connected, but nobody is at it to see what arrives.
+  bool away = 5;
 }
 
 // Sent before a side closes on purpose, so the other one doesn't reconnect.

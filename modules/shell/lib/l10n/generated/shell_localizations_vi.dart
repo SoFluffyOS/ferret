@@ -1824,4 +1824,21 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get whatsNewAction => 'Có gì mới';
+
+  @override
+  String get settingsTipsAgain => 'Hiện lại mẹo';
+
+  @override
+  String get settingsTipsAgainDetail =>
+      'Những gợi ý ngắn ở màn hình chính, chẳng hạn cách sao chép qua lại.';
+
+  @override
+  String get settingsTipsAgainDone => 'Mẹo đã trở lại, mỗi lần một mẹo.';
+
+  @override
+  String get settingsPrivacyPerDevice =>
+      'Để chọn một thiết bị được dùng những gì, hãy mở thiết bị đó và xem mục Những gì thiết bị được dùng.';
+
+  @override
+  String get deviceAway => 'Đã kết nối · đang khoá';
 }

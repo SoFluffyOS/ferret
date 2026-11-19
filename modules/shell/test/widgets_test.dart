@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:protocol/protocol.dart' show Presence;
 import 'package:shell/shell.dart';
 
 import 'test_app.dart';
@@ -21,10 +22,14 @@ TrustedDevice _device({DateTime? lastSeen}) => TrustedDevice(
 );
 
 class _FakeSession implements Session {
-  _FakeSession({this.isWeak = false});
+  _FakeSession({this.isWeak = false, bool isAway = false})
+    : remotePresence = Presence(away: isAway);
 
   @override
   final bool isWeak;
+
+  @override
+  Presence remotePresence;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -112,6 +117,18 @@ void main() {
     );
 
     expect(find.text('Connected · weak connection'), findsOneWidget);
+  });
+
+  testWidgets('a computer whose screen is locked says so on the row', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      testApp(
+        DeviceTile(status: DeviceStatus(_device(), _FakeSession(isAway: true))),
+      ),
+    );
+
+    expect(find.text('Connected · locked'), findsOneWidget);
   });
 
   testWidgets('a connected device has its actions on the row, one primary', (

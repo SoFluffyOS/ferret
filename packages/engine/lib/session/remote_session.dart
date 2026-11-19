@@ -59,6 +59,7 @@ class Session {
 
   final StreamController<Envelope> _incoming = .broadcast(sync: true);
   final StreamController<bool> _weakChanges = .broadcast();
+  final StreamController<Presence> _presenceChanges = .broadcast();
   Duration? _roundTrip;
   bool _isWeak = false;
   final Map<int, Completer<Envelope>> _pending = {};
@@ -73,6 +74,9 @@ class Session {
   Hello? remoteHello;
 
   Presence remotePresence = Presence(batteryPercent: -1);
+
+  /// [remotePresence] each time the remote device reports it.
+  Stream<Presence> get presenceChanges => _presenceChanges.stream;
 
   /// Envelopes that are not replies to this side's requests.
   Stream<Envelope> get incoming => _incoming.stream;
@@ -342,6 +346,7 @@ class Session {
         )
         case final presence?) {
       remotePresence = presence;
+      _presenceChanges.add(presence);
     }
 
     _incoming.add(envelope);
@@ -418,5 +423,6 @@ class Session {
     await channel.close();
     await _incoming.close();
     await _weakChanges.close();
+    await _presenceChanges.close();
   }
 }

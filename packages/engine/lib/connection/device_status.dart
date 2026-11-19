@@ -27,4 +27,9 @@ class DeviceStatus {
 
   /// Connected over a slow link, such as far from the Wi-Fi.
   bool get isWeak => session?.isWeak ?? false;
+
+  /// Connected, but nobody is at it: a computer that said its screen is
+  /// locked or showing another account. What is sent there waits for the
+  /// person to come back.
+  bool get isAway => session?.remotePresence.away ?? false;
 }

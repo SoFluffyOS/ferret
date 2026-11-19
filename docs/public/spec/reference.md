@@ -1541,6 +1541,7 @@ Says the user is active on this device right now, so others know where to show s
 | `screen_on` | `bool` | 2 |  |
 | `battery_percent` | `int32` | 3 | Battery level 0-100, or -1 when unknown or plugged desktop. |
 | `charging` | `bool` | 4 |  |
+| `away` | `bool` | 5 | A computer whose screen is locked or showing another account: this device is connected, but nobody is at it to see what arrives. |
 
 ### message `Goodbye`
 

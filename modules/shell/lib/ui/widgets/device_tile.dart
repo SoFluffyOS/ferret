@@ -180,10 +180,11 @@ class DeviceTile extends StatelessWidget {
 
   String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
-      return switch ((attention, status.isWeak)) {
-        (final feature?, _) => l10n.deviceAttention(feature),
-        (null, true) => l10n.deviceWeak,
-        (null, false) => l10n.deviceConnected,
+      return switch ((attention, status.isWeak, status.isAway)) {
+        (final feature?, _, _) => l10n.deviceAttention(feature),
+        (null, true, _) => l10n.deviceWeak,
+        (null, false, true) => l10n.deviceAway,
+        (null, false, false) => l10n.deviceConnected,
       };
     }
 

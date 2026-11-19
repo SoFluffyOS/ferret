@@ -94,6 +94,7 @@ const Presence$json = {
     {'1': 'screen_on', '3': 2, '4': 1, '5': 8, '10': 'screenOn'},
     {'1': 'battery_percent', '3': 3, '4': 1, '5': 5, '10': 'batteryPercent'},
     {'1': 'charging', '3': 4, '4': 1, '5': 8, '10': 'charging'},
+    {'1': 'away', '3': 5, '4': 1, '5': 8, '10': 'away'},
   ],
 };
 
@@ -101,7 +102,7 @@ const Presence$json = {
 final $typed_data.Uint8List presenceDescriptor = $convert.base64Decode(
     'CghQcmVzZW5jZRIfCgt1c2VyX2FjdGl2ZRgBIAEoCFIKdXNlckFjdGl2ZRIbCglzY3JlZW5fb2'
     '4YAiABKAhSCHNjcmVlbk9uEicKD2JhdHRlcnlfcGVyY2VudBgDIAEoBVIOYmF0dGVyeVBlcmNl'
-    'bnQSGgoIY2hhcmdpbmcYBCABKAhSCGNoYXJnaW5n');
+    'bnQSGgoIY2hhcmdpbmcYBCABKAhSCGNoYXJnaW5nEhIKBGF3YXkYBSABKAhSBGF3YXk=');
 
 @$core.Deprecated('Use goodbyeDescriptor instead')
 const Goodbye$json = {

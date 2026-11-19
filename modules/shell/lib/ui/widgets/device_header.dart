@@ -88,9 +88,10 @@ class DeviceHeader extends StatelessWidget {
 
   String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
-      return switch (status.isWeak) {
-        true => l10n.deviceWeak,
-        false => l10n.deviceConnected,
+      return switch ((status.isWeak, status.isAway)) {
+        (true, _) => l10n.deviceWeak,
+        (false, true) => l10n.deviceAway,
+        (false, false) => l10n.deviceConnected,
       };
     }
 
