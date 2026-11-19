@@ -26,7 +26,12 @@ import android.view.accessibility.AccessibilityNodeInfo
  * logged. Call everything from the main thread.
  */
 class FerretControlService : AccessibilityService() {
-    private val planner = GesturePlanner(streaming = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+    /**
+     * Each touch is replayed once the far finger lifts. Chained strokes looked
+     * live but Android cancelled a held finger's link on the API 35 emulator,
+     * so taps never landed; a whole touch at once always does.
+     */
+    private val planner = GesturePlanner(streaming = false)
     private val main = Handler(Looper.getMainLooper())
     private var lastStroke: GestureDescription.StrokeDescription? = null
 
