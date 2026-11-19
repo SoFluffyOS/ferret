@@ -133,6 +133,7 @@ ferret-cli devices --json              # paired devices, for scripts and jq
 ferret-cli ring pixel                  # rings your phone, the start of its name is enough
 ferret-cli clipboard get               # the last text copied on another device
 ferret-cli clipboard send --to pixel   # sends what you pipe in
+ferret-cli action "Family PC" sleep    # sleep, restart, shut_down, mute, or one of its own actions
 ferret-cli daemon                      # Ferret without a window, until Ctrl-C
 ferret-cli --help                      # everything else
 ```

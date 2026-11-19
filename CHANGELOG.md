@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 💻 **Computer actions**: open a computer on your phone and tap **Sleep**, **Restart…**, **Shut down…** or a volume button under **This Mac**. The computer asks the first time, and counts down 10 seconds with **Cancel** before it restarts or shuts down. Add your own in **Settings → Control → Your actions**: a name and a command, script or shortcut. Your phone never sends a command, only which action to run. Also `ferret-cli action <computer> sleep`.
+- 🚀 **Android asks before it starts with your phone**: the **Stay connected** card asks **Start Ferret when Pixel 7 restarts?** once, instead of doing it on its own. Already using Ferret? Nothing changes for you.
 - ⚡ **Wake-on-LAN**: tap **Wake** on a sleeping computer's row and it says **Waking MacBook Pro…** until it's back. From an iPhone, another computer of yours sends the wake signal. **How to turn on Wake-on-LAN** has the steps for Mac, Windows and Linux, and `ferret-cli wake` does it from a script. See [Wake-on-LAN](docs/public/features/wake-on-lan.md).
 - 📁 **Send folders**: drop a folder, pick **Choose a folder…** or run `ferret-cli send <folder>`, and the whole tree arrives as **Photos**, or **Photos (2)** when you already have one. Progress counts files: **120 of 340 files · 1.2 GB of 3.4 GB**. Works with LocalSend and Quick Share too.
 - 👪 **A computer the family shares**: Ferret in each account goes by its account, such as **Family PC (Anna)**, and moves to the next free port when another account has the usual one. Your phone shows a locked or switched-away computer as **Connected · locked**. See [A computer the family shares](docs/public/getting-started/shared-computer.md).

@@ -57,7 +57,9 @@ Easy, right?
 
 ## 🚀 Start when the phone starts
 
-Ferret is back as soon as you unlock your phone after a restart, and right after an update. Don't want that? Turn off **Start when the phone starts** in **Settings → Background**.
+Ferret asks you once, on the **Stay connected** card: **Start Ferret when Pixel 7 restarts?** Tap **Yes** and it's back as soon as you unlock your phone after a restart. Tap **Not now** and it reconnects only when you open it.
+
+Either way, Ferret comes back by itself right after an update. Changed your mind? **Settings → Background → Start when the phone starts**.
 
 ## 🔄 After sleep and Wi-Fi changes
 

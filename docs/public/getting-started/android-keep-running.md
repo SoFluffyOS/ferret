@@ -5,7 +5,7 @@
 > 1. Open Ferret. The **Stay connected** card lists what is in the way, each with a **Fix** button.
 > 2. Set Ferret's battery use to **Unrestricted**.
 > 3. On Samsung, Xiaomi, OnePlus, Oppo, Huawei or Vivo, also allow Ferret in the maker's own battery screen (steps below).
-> 4. Leave **Start when the phone starts** on.
+> 4. Say **Yes** when the card asks **Start Ferret when Pixel 7 restarts?**
 
 "It worked, then it stopped after a few hours." That is the number one complaint about every app that links a phone to a computer. The app is rarely the one to blame: Android, and even more the phone maker, stops apps that run in the background.
 
@@ -77,7 +77,9 @@ Menus move between versions. When yours looks different, search Settings for the
 
 ## 🚀 After a restart or an update
 
-- **Restart:** Ferret starts again once you unlock the phone. That is **Start when the phone starts** in **Settings → Background**, on by default.
+- **Restart:** Ferret starts again once you unlock the phone, **if you said yes**. The **Stay connected** card asks once: **Start Ferret when Pixel 7 restarts?** Tap **Yes** and it does. Tap **Not now** and Ferret reconnects only when you open it. It's your phone, so it's your call, and Ferret never asks twice.
+- **Changed your mind?** **Settings → Background → Start when the phone starts**.
+- **Had Ferret before this question existed?** Nothing changes for you. It keeps starting with the phone, unless you had turned that off.
 - **Update:** Ferret starts again by itself right after it is updated.
 - **Swiped away:** closing Ferret in the recent apps view doesn't stop it on stock Android. Some makers stop it there, which is why you lock its card.
 - **Force stop:** Android keeps a force-stopped app off until you open it yourself. Nothing can start it, not even a restart.

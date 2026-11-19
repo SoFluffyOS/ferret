@@ -105,6 +105,7 @@ ferret-cli send report.pdf       # hands files (or a folder) to the running Ferr
 ferret-cli ring "Pixel 7"        # rings it, even on silent
 ferret-cli clipboard get         # the last text copied on another device
 ferret-cli clipboard send "hi"   # or pipe it in: date | ferret-cli clipboard send
+ferret-cli action "Family PC" sleep   # or restart, shut_down, mute, one of its own actions
 ```
 
 `ferret` is the app itself. `ferret-cli` is the command line, so both can sit on your `PATH`. `ferret send` works with either one.

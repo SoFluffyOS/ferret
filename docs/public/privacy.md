@@ -41,6 +41,7 @@ Open a device and tap **What Pixel 7 can use**. You see every feature that devic
 | Screen | Showing a phone's screen, each time only after it says yes |
 | Control | Moving the pointer and typing, only after you allow it |
 | Find | Ringing a device to find it |
+| Computer actions | Which action to run (sleep, restart, shut down, volume, or one of yours by name), and whether it worked. Never a command line, never what it printed |
 | Wake-on-LAN | A computer's network card (MAC) addresses, and asking a computer to wake another |
 
 Turn one off and it stops RIGHT AWAY, on both devices: Ferret reconnects, the other device no longer sees the feature, and anything it still sends for it is refused. **Turn everything off** does all of them in one tap and keeps the device paired. To stop it connecting at all, forget it.
@@ -100,6 +101,7 @@ On phones, Ferret keeps its data in its own app storage, and its key in the syst
 | A phone's texts, on a computer | Saved in `features/messages` so they show offline. **Forget saved texts** in Settings deletes them, and unpairing the phone does too |
 | What you continued between devices | The last 50, never older than 30 days. **Clear** in Settings → Continue & media |
 | Times a phone controlled this computer | The last few, with **Clear history** in Settings → Control |
+| Actions devices ran on this computer | The last 20: which action, which device, when. Not what it printed. **Clear history** in Settings → Control |
 
 Ferret writes no log file. Release builds print only short status lines to the system log (Console on a Mac, logcat on Android), never what you copy, send, read or type.
 
