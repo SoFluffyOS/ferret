@@ -61,10 +61,10 @@ class _MirrorTextFieldFrameState extends State<MirrorTextFieldFrame> {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Spacing.d360),
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: palette.surface,
-            borderRadius: BorderRadius.circular(Spacing.d12),
-            boxShadow: [
+            shape: Corners.shape(Corners.card),
+            shadows: [
               BoxShadow(
                 color: palette.text.withValues(alpha: 0.18),
                 blurRadius: Spacing.d16,

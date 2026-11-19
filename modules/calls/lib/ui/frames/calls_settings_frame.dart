@@ -1,5 +1,4 @@
 import 'package:calls/l10n/l10n.dart';
-import 'package:calls/ui/widgets/widgets.dart';
 import 'package:calls/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -20,23 +19,21 @@ class CallsSettingsFrame extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final l10n = context.callsL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          ToggleRow(
-            title: l10n.showIncoming,
-            detail: l10n.showIncomingDetail,
-            value: showIncoming,
-            onChanged: context.read<CallsSettingsViewModel>().setShowIncoming,
-          ),
-          Spacing.v12,
-          Text(
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.showIncoming,
+          body: l10n.showIncomingDetail,
+          value: showIncoming,
+          onChanged: context.read<CallsSettingsViewModel>().setShowIncoming,
+        ),
+        GroupedCell(
+          child: Text(
             l10n.settingsAudio,
             style: typography.caption1.copyWith(color: palette.mutedText),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

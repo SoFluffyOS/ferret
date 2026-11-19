@@ -82,7 +82,7 @@ class DeviceFilesFrame extends StatelessWidget {
         SectionTitle(l10n.filesRecent),
         if (transfers.isEmpty)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+            padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
             child: Text(
               l10n.filesNone(deviceName),
               style: typography.base2.copyWith(color: palette.mutedText),

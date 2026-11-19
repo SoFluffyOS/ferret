@@ -36,48 +36,42 @@ class MediaSettingsFrame extends StatelessWidget {
     final limit = _limit(l10n, model.platform);
     final needsAccess = canShare && share && access == .notGranted;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (canShare)
-            SettingSwitchRow(
-              title: l10n.settingsShare,
-              body: l10n.settingsShareBody,
-              value: share,
-              onChanged: model.setShare,
-            ),
-          if (needsAccess) ...[
-            Spacing.v8,
-            _accessPrompt(l10n, model, askedBefore: askedAccess),
-          ],
-          if (canShare) Spacing.v8,
+    return GroupedCard(
+      children: [
+        if (canShare)
           SettingSwitchRow(
-            title: l10n.settingsShowRemote,
-            body: l10n.settingsShowRemoteBody,
-            value: showRemote,
-            onChanged: model.setShowRemote,
+            title: l10n.settingsShare,
+            body: l10n.settingsShareBody,
+            value: share,
+            onChanged: model.setShare,
           ),
-          if (canShare) ...[
-            Spacing.v8,
-            SettingSwitchRow(
-              title: l10n.settingsPauseOnCall,
-              body: l10n.settingsPauseOnCallBody,
-              value: pauseOnCall,
-              onChanged: model.setPauseOnCall,
-            ),
-          ],
-          if (limit case final limit?) ...[
-            Spacing.v8,
-            Text(
+        if (needsAccess)
+          GroupedCell(
+            child: _accessPrompt(l10n, model, askedBefore: askedAccess),
+          ),
+        SettingSwitchRow(
+          title: l10n.settingsShowRemote,
+          body: l10n.settingsShowRemoteBody,
+          value: showRemote,
+          onChanged: model.setShowRemote,
+        ),
+        if (canShare)
+          SettingSwitchRow(
+            title: l10n.settingsPauseOnCall,
+            body: l10n.settingsPauseOnCallBody,
+            value: pauseOnCall,
+            onChanged: model.setPauseOnCall,
+          ),
+        if (limit case final limit?)
+          GroupedCell(
+            child: Text(
               limit,
               style: context.fluffyTheme.typography.caption1.copyWith(
                 color: context.palette.mutedText,
               ),
             ),
-          ],
-        ],
-      ),
+          ),
+      ],
     );
   }
 

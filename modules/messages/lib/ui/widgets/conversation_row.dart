@@ -50,12 +50,12 @@ class ConversationRow extends StatelessWidget {
           horizontal: Spacing.d8,
           vertical: Spacing.d8,
         ),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: switch (selected) {
             true => palette.surface,
             false => null,
           },
-          borderRadius: BorderRadius.circular(Spacing.d10),
+          shape: Corners.shape(Spacing.d10),
         ),
         child: Row(
           children: [
@@ -122,9 +122,9 @@ class _UnreadBadge extends StatelessWidget {
         horizontal: Spacing.d6,
         vertical: Spacing.d1,
       ),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: palette.accent,
-        borderRadius: BorderRadius.circular(Spacing.d10),
+        shape: const StadiumBorder(),
       ),
       alignment: .center,
       child: Text(

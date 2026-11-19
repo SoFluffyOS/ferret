@@ -5,7 +5,8 @@ import 'package:mirroring/models/models.dart';
 import 'package:mirroring/ui/widgets/mirroring_labels.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The audit lines of past mirroring, newest first, with Clear.
+/// The audit lines of past mirroring, newest first, with Clear: a heading
+/// and a card of their own under the settings.
 class HistoryList extends StatelessWidget {
   const HistoryList({
     super.key,
@@ -37,27 +38,29 @@ class HistoryList extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.settingsHistoryTitle),
-        if (emptyLine != null && history.isEmpty)
-          Text(
-            emptyLine,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-        for (final record in history.take(shown))
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.d2),
-            child: Text(
-              l10n.audit(record),
-              style: typography.body2.copyWith(color: palette.text),
-            ),
-          ),
-        if (history.isNotEmpty) ...[
-          Spacing.v8,
-          Button(
-            variant: .ghost,
-            label: l10n.clearHistory,
-            onPressed: onClear,
-          ),
-        ],
+        GroupedCard(
+          children: [
+            if (emptyLine != null && history.isEmpty)
+              GroupedCell(
+                child: Text(
+                  emptyLine,
+                  style: typography.caption1.copyWith(
+                    color: palette.mutedText,
+                  ),
+                ),
+              ),
+            for (final record in history.take(shown))
+              GroupedRow(title: l10n.audit(record)),
+            if (history.isNotEmpty)
+              GroupedCell(
+                child: Button(
+                  variant: .ghost,
+                  label: l10n.clearHistory,
+                  onPressed: onClear,
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }

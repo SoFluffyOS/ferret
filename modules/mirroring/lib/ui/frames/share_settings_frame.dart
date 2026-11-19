@@ -30,36 +30,39 @@ class ShareSettingsFrame extends StatelessWidget {
     final palette = context.palette;
     final caption = context.fluffyTheme.typography.caption1;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          SettingSwitchRow(
-            title: l10n.settingsAllow,
-            tag: l10n.experimental,
-            body: l10n.settingsAllowBody,
-            value: enabled,
-            onChanged: (value) => unawaited(viewModel.setEnabled(value)),
-          ),
-          if (!canCapture) ...[
-            Spacing.v4,
-            Text(
-              l10n.settingsUnsupported,
-              style: caption.copyWith(color: palette.mutedText),
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        GroupedCard(
+          children: [
+            SettingSwitchRow(
+              title: l10n.settingsAllow,
+              tag: l10n.experimental,
+              body: l10n.settingsAllowBody,
+              value: enabled,
+              onChanged: (value) => unawaited(viewModel.setEnabled(value)),
+            ),
+            if (!canCapture)
+              GroupedCell(
+                child: Text(
+                  l10n.settingsUnsupported,
+                  style: caption.copyWith(color: palette.mutedText),
+                ),
+              ),
+            GroupedCell(
+              child: Text(
+                l10n.settingsPerDevice,
+                style: caption.copyWith(color: palette.mutedText),
+              ),
             ),
           ],
-          Spacing.v4,
-          Text(
-            l10n.settingsPerDevice,
-            style: caption.copyWith(color: palette.mutedText),
-          ),
-          HistoryList(
-            history: history,
-            emptyText: l10n.settingsHistoryEmptyShared,
-            onClear: () => unawaited(viewModel.clearHistory()),
-          ),
-        ],
-      ),
+        ),
+        HistoryList(
+          history: history,
+          emptyText: l10n.settingsHistoryEmptyShared,
+          onClear: () => unawaited(viewModel.clearHistory()),
+        ),
+      ],
     );
   }
 }

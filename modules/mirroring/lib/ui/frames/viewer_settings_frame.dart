@@ -31,34 +31,36 @@ class ViewerSettingsFrame extends StatelessWidget {
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (hasCable)
-            SettingSwitchRow(
-              title: l10n.lookForCableTitle,
-              tag: l10n.experimental,
-              body: l10n.lookForCableBody,
-              value: lookForCable,
-              onChanged: (value) => unawaited(viewModel.setLookForCable(value)),
-            ),
-          for (final receiver in receivers)
-            SettingSwitchRow(
-              title: l10n.receiverTitle(receiver.receiverId),
-              tag: l10n.experimental,
-              body: l10n.receiverBody(receiver.receiverId),
-              value: receiver.on,
-              onChanged: (value) => unawaited(
-                viewModel.setReceiverOn(receiver.receiverId, value),
-              ),
-            ),
-          HistoryList(
-            history: history,
-            onClear: () => unawaited(viewModel.clearHistory()),
+    final switches = [
+      if (hasCable)
+        SettingSwitchRow(
+          title: l10n.lookForCableTitle,
+          tag: l10n.experimental,
+          body: l10n.lookForCableBody,
+          value: lookForCable,
+          onChanged: (value) => unawaited(viewModel.setLookForCable(value)),
+        ),
+      for (final receiver in receivers)
+        SettingSwitchRow(
+          title: l10n.receiverTitle(receiver.receiverId),
+          tag: l10n.experimental,
+          body: l10n.receiverBody(receiver.receiverId),
+          value: receiver.on,
+          onChanged: (value) => unawaited(
+            viewModel.setReceiverOn(receiver.receiverId, value),
           ),
-        ],
-      ),
+        ),
+    ];
+
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        if (switches.isNotEmpty) GroupedCard(children: switches),
+        HistoryList(
+          history: history,
+          onClear: () => unawaited(viewModel.clearHistory()),
+        ),
+      ],
     );
   }
 }

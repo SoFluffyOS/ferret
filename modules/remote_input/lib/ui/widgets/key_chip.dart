@@ -33,9 +33,9 @@ class KeyChip extends StatelessWidget {
       tooltip: tooltip,
       onTap: onTap,
       child: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(Spacing.d8),
+          shape: Corners.shape(Corners.row),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(

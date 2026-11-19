@@ -92,8 +92,8 @@ class _ProgressLineState extends State<ProgressLine> {
             },
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: Spacing.d4),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(Spacing.d2),
+              child: ClipRSuperellipse(
+                borderRadius: Corners.radius(Corners.capsule),
                 child: SizedBox(
                   height: Spacing.d4,
                   child: Stack(

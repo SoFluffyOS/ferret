@@ -7,6 +7,7 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 enum SetupStepState { done, current, later }
 
 /// One numbered step of a setup, with its button while it is the one to do.
+/// A cell of a `GroupedCard`.
 class SetupStepRow extends StatelessWidget {
   const SetupStepRow({
     super.key,
@@ -31,8 +32,7 @@ class SetupStepRow extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final isCurrent = state == .current;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d8),
+    return GroupedCell(
       child: Column(
         crossAxisAlignment: .start,
         children: [

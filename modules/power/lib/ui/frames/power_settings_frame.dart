@@ -31,20 +31,18 @@ class PowerSettingsFrame extends StatelessWidget {
       return SurfaceCard(child: Text(l10n.settingsUnsupported, style: style));
     }
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(l10n.tierSummary(tier), style: style),
-          Spacing.v12,
-          Button(
+    return GroupedCard(
+      children: [
+        GroupedRow(
+          title: l10n.tierSummary(tier),
+          trailing: Button(
             mainAxisSize: .min,
             variant: .ghost,
             label: l10n.settingsOpen,
             onPressed: onOpen,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

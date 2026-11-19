@@ -1,7 +1,6 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
-import 'package:handoff/ui/widgets/widgets.dart';
 import 'package:handoff/view_models/handoff_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -29,33 +28,31 @@ class HandoffSettingsFrame extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SurfaceCard(
-          child: Column(
-            children: [
+        GroupedCard(
+          children: [
+            SettingSwitchRow(
+              title: l10n.settingsPassive,
+              body: l10n.settingsPassiveBody,
+              value: passive,
+              onChanged: viewModel.setPassiveEnabled,
+            ),
+            SettingSwitchRow(
+              title: l10n.settingsOpenAutomatically,
+              body: l10n.settingsOpenAutomaticallyBody,
+              value: openAutomatically,
+              onChanged: viewModel.setOpensAutomatically,
+            ),
+            if (viewModel.supportsBrowserTab)
               SettingSwitchRow(
-                title: l10n.settingsPassive,
-                body: l10n.settingsPassiveBody,
-                value: passive,
-                onChanged: viewModel.setPassiveEnabled,
+                title: l10n.settingsBrowserTab,
+                body: l10n.settingsBrowserTabBody,
+                value: browserTab,
+                onChanged: viewModel.setBrowserTabEnabled,
               ),
-              SettingSwitchRow(
-                title: l10n.settingsOpenAutomatically,
-                body: l10n.settingsOpenAutomaticallyBody,
-                value: openAutomatically,
-                onChanged: viewModel.setOpensAutomatically,
-              ),
-              if (viewModel.supportsBrowserTab)
-                SettingSwitchRow(
-                  title: l10n.settingsBrowserTab,
-                  body: l10n.settingsBrowserTabBody,
-                  value: browserTab,
-                  onChanged: viewModel.setBrowserTabEnabled,
-                ),
-            ],
-          ),
+          ],
         ),
         if (viewModel.supportsAssistant) ...[
-          Spacing.v8,
+          Spacing.v24,
           const _AssistantSetup(),
         ],
       ],
@@ -85,40 +82,38 @@ class _AssistantSetup extends StatelessWidget {
       _ => palette.mutedText,
     };
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(
-            l10n.settingsAssistantTitle,
-            style: typography.base1.copyWith(color: palette.text),
-          ),
-          Spacing.v4,
-          Text(
-            l10n.settingsAssistantBody,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-          if (status.isNotEmpty) ...[
-            Spacing.v8,
-            Text(
-              status,
-              style: typography.caption1.copyWith(color: statusColor),
-            ),
-          ],
-          Spacing.v8,
-          Button(
+    return GroupedCard(
+      children: [
+        GroupedRow(
+          title: l10n.settingsAssistantTitle,
+          subtitle: l10n.settingsAssistantBody,
+          trailing: Button(
             variant: .ghost,
             label: l10n.settingsAssistantOpen,
             mainAxisSize: .min,
             onPressed: viewModel.openAssistantSettings,
           ),
-          Spacing.v8,
-          Text(
-            l10n.settingsShareHint,
-            style: typography.caption1.copyWith(color: palette.mutedText),
+        ),
+        GroupedCell(
+          child: Column(
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
+            children: [
+              if (status.isNotEmpty) ...[
+                Text(
+                  status,
+                  style: typography.caption1.copyWith(color: statusColor),
+                ),
+                Spacing.v8,
+              ],
+              Text(
+                l10n.settingsShareHint,
+                style: typography.caption1.copyWith(color: palette.mutedText),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -10,6 +10,9 @@ abstract final class PaneWidths {
   /// The Activity pane on the trailing side, from `larger` up.
   static const double activity = 320;
 
+  /// The rows of Settings, next to the page of the one that is picked.
+  static const double settingsList = 280;
+
   /// The widest a list or a form gets. Past it, the margins grow.
   static const double content = 720;
 

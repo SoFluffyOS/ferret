@@ -1,5 +1,4 @@
 import 'package:drop/l10n/l10n.dart';
-import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -17,13 +16,15 @@ class QuickShareSettingsFrame extends StatelessWidget {
     );
     final l10n = context.dropL10n;
 
-    return SurfaceCard(
-      child: SettingSwitch(
-        title: l10n.settingsQuickShare,
-        body: l10n.settingsQuickShareBody,
-        value: quickShare,
-        onChanged: viewModel.setQuickShareEnabled,
-      ),
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.settingsQuickShare,
+          body: l10n.settingsQuickShareBody,
+          value: quickShare,
+          onChanged: viewModel.setQuickShareEnabled,
+        ),
+      ],
     );
   }
 }

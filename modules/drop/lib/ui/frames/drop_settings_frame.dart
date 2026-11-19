@@ -1,5 +1,4 @@
 import 'package:drop/l10n/l10n.dart';
-import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -29,46 +28,59 @@ class DropSettingsFrame extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.dropL10n;
+    final titleStyle = GroupedRow.titleStyleOf(context);
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        mainAxisSize: .min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      l10n.settingsReceiveFolder,
-                      style: typography.base1.copyWith(color: palette.text),
-                    ),
-                    Spacing.vertical(Spacing.d2),
-                    Tappable(
-                      tooltip: folder,
-                      child: Text(
-                        folderLabel,
-                        style: typography.caption1.copyWith(
-                          color: palette.mutedText,
+    return GroupedCard(
+      children: [
+        // Not a GroupedRow: the folder line carries the full path as its
+        // tooltip, which a row's subtitle can't.
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: GroupedRow.minHeight),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: PageInsets.row,
+              vertical: Spacing.d8,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    mainAxisSize: .min,
+                    children: [
+                      Text(
+                        l10n.settingsReceiveFolder,
+                        style: titleStyle.copyWith(color: palette.text),
+                      ),
+                      Spacing.vertical(Spacing.d2),
+                      Tappable(
+                        tooltip: folder,
+                        child: Text(
+                          folderLabel,
+                          style: typography.caption1.copyWith(
+                            color: palette.mutedText,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              if (viewModel.canChangeFolder)
-                Button(
-                  mainAxisSize: .min,
-                  variant: .ghost,
-                  label: l10n.settingsChange,
-                  onPressed: () => _changeFolder(context, viewModel),
-                ),
-            ],
+                if (viewModel.canChangeFolder) ...[
+                  Spacing.h8,
+                  Button(
+                    mainAxisSize: .min,
+                    variant: .ghost,
+                    label: l10n.settingsChange,
+                    onPressed: () => _changeFolder(context, viewModel),
+                  ),
+                ],
+              ],
+            ),
           ),
-          if (customFolder)
-            Align(
+        ),
+        if (customFolder)
+          GroupedCell(
+            child: Align(
               alignment: .centerLeft,
               child: Button(
                 mainAxisSize: .min,
@@ -77,15 +89,14 @@ class DropSettingsFrame extends StatelessWidget {
                 onPressed: viewModel.resetReceiveFolder,
               ),
             ),
-          Spacing.v16,
-          SettingSwitch(
-            title: l10n.settingsAutoAccept,
-            body: l10n.settingsAutoAcceptBody,
-            value: autoAccept,
-            onChanged: viewModel.setAutoAccept,
           ),
-        ],
-      ),
+        SettingSwitchRow(
+          title: l10n.settingsAutoAccept,
+          body: l10n.settingsAutoAcceptBody,
+          value: autoAccept,
+          onChanged: viewModel.setAutoAccept,
+        ),
+      ],
     );
   }
 

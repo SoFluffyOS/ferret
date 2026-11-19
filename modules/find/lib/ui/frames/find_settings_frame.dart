@@ -54,37 +54,35 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
         platform == .android ||
         (platform == .macos && abilities.controlsVolume);
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (showsVolumeSwitch) _RingOnSilent(platform: platform),
-          if (abilities.hasTorch)
-            SettingSwitchRow(
-              title: l10n.settingsFlashTorch,
-              body: l10n.settingsFlashTorchBody,
-              value: flashTorch,
-              onChanged: (value) => unawaited(viewModel.setFlashTorch(value)),
-            ),
-          if (platform == .android && !abilities.fullScreenAllowed) ...[
-            Spacing.v8,
-            NoticeBlock(
+    return GroupedCard(
+      children: [
+        if (showsVolumeSwitch) _RingOnSilent(platform: platform),
+        if (abilities.hasTorch)
+          SettingSwitchRow(
+            title: l10n.settingsFlashTorch,
+            body: l10n.settingsFlashTorchBody,
+            value: flashTorch,
+            onChanged: (value) => unawaited(viewModel.setFlashTorch(value)),
+          ),
+        if (platform == .android && !abilities.fullScreenAllowed)
+          GroupedCell(
+            child: NoticeBlock(
               title: l10n.settingsFullScreenOff,
               body: l10n.settingsFullScreenHowTo,
               actionLabel: l10n.settingsAllow,
               onAction: () => unawaited(viewModel.openFullScreen()),
             ),
-          ],
-          ..._limits(l10n, platform, abilities),
-          Spacing.v12,
-          Button(
+          ),
+        ..._limits(l10n, platform, abilities),
+        GroupedCell(
+          child: Button(
             variant: .ghost,
             label: l10n.settingsTestRing,
             tooltip: l10n.settingsTestRingBody,
             onPressed: () => unawaited(viewModel.testRing()),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -94,7 +92,9 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
     RingAbilities abilities,
   ) {
     if (!abilities.canPlaySound) {
-      return [Spacing.v8, NoticeBlock(title: l10n.settingsLimitNoPlayer)];
+      return [
+        GroupedCell(child: NoticeBlock(title: l10n.settingsLimitNoPlayer)),
+      ];
     }
 
     final limit = switch (platform) {
@@ -106,7 +106,11 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
       return const [];
     }
 
-    return [Spacing.v8, NoticeBlock(title: limit, isProblem: false)];
+    return [
+      GroupedCell(
+        child: NoticeBlock(title: limit, isProblem: false),
+      ),
+    ];
   }
 }
 
@@ -143,8 +147,29 @@ class _RingOnSilent extends StatelessWidget {
       false => l10n.settingsDndOff,
     };
 
+    final notes = [
+      if (isAndroid && needsDndAccess)
+        NoticeBlock(
+          title: dndTitle,
+          body: l10n.settingsDndHowTo,
+          actionLabel: l10n.settingsAllow,
+          onAction: () => unawaited(viewModel.openDndAccess()),
+        ),
+      if (isAndroid && ringOnSilent && !needsDndAccess)
+        Text(
+          l10n.settingsDndOn,
+          style: typography.caption1.copyWith(color: palette.success),
+        ),
+      if (openFailed)
+        Text(
+          l10n.settingsOpenFailed,
+          style: typography.caption1.copyWith(color: palette.danger),
+        ),
+    ];
+
     return Column(
       crossAxisAlignment: .stretch,
+      mainAxisSize: .min,
       children: [
         SettingSwitchRow(
           title: l10n.settingsRingOnSilent,
@@ -152,27 +177,15 @@ class _RingOnSilent extends StatelessWidget {
           value: ringOnSilent,
           onChanged: (value) => unawaited(viewModel.setRingOnSilent(value)),
         ),
-        if (isAndroid && needsDndAccess) ...[
-          Spacing.v8,
-          NoticeBlock(
-            title: dndTitle,
-            body: l10n.settingsDndHowTo,
-            actionLabel: l10n.settingsAllow,
-            onAction: () => unawaited(viewModel.openDndAccess()),
+        for (final note in notes)
+          Padding(
+            padding: EdgeInsets.only(
+              left: PageInsets.row,
+              right: PageInsets.row,
+              bottom: Spacing.d12,
+            ),
+            child: note,
           ),
-        ],
-        if (isAndroid && ringOnSilent && !needsDndAccess)
-          Text(
-            l10n.settingsDndOn,
-            style: typography.caption1.copyWith(color: palette.success),
-          ),
-        if (openFailed) ...[
-          Spacing.v8,
-          Text(
-            l10n.settingsOpenFailed,
-            style: typography.caption1.copyWith(color: palette.danger),
-          ),
-        ],
       ],
     );
   }

@@ -34,6 +34,12 @@ class FerretPalette {
     false => const Color(0xFF6C6C70),
   };
 
+  /// The hairline between two rows of a card.
+  Color get separator => switch (_dark) {
+    true => text.withValues(alpha: 0.15),
+    false => text.withValues(alpha: 0.1),
+  };
+
   Color get accent => _theme.colors.primary;
 
   /// [accent] as text or a thin icon: links, "new" markers. On dark the

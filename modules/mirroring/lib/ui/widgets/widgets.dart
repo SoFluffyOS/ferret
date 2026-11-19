@@ -9,7 +9,6 @@ export 'package:mirroring/ui/widgets/mirror_toolbar.dart';
 export 'package:mirroring/ui/widgets/mirroring_labels.dart';
 export 'package:mirroring/ui/widgets/popup_row.dart';
 export 'package:mirroring/ui/widgets/quality_mark.dart';
-export 'package:mirroring/ui/widgets/setting_switch_row.dart';
 export 'package:mirroring/ui/widgets/setup_step_row.dart';
 export 'package:mirroring/ui/widgets/stage_notice_bar.dart';
 export 'package:mirroring/ui/widgets/toolbar_button.dart';

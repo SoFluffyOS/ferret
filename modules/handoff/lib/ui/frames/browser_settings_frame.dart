@@ -33,57 +33,61 @@ class BrowserSettingsFrame extends StatelessWidget {
       (viewModel) => viewModel.connectedBrowserIds,
     );
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          SettingSwitchRow(
-            title: l10n.settingsBrowserBridge,
-            body: l10n.settingsBrowserBridgeBody,
-            value: enabled,
-            onChanged: viewModel.setBrowserBridgeEnabled,
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.settingsBrowserBridge,
+          body: l10n.settingsBrowserBridgeBody,
+          value: enabled,
+          onChanged: viewModel.setBrowserBridgeEnabled,
+        ),
+        if (state.status == .failed)
+          GroupedCell(
+            child: Column(
+              crossAxisAlignment: .stretch,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  l10n.browserBridgeFailed,
+                  style: typography.caption1.copyWith(
+                    color: switch (clients.isEmpty) {
+                      true => palette.mutedText,
+                      false => palette.warning,
+                    },
+                  ),
+                ),
+                Spacing.v8,
+                Align(
+                  alignment: .centerLeft,
+                  child: Button(
+                    variant: .ghost,
+                    label: l10n.browserBridgeRetry,
+                    mainAxisSize: .min,
+                    onPressed: () => unawaited(viewModel.retryBrowserBridge()),
+                  ),
+                ),
+              ],
+            ),
           ),
-          if (state.status == .failed) ...[
-            Spacing.v8,
-            Text(
-              l10n.browserBridgeFailed,
-              style: typography.caption1.copyWith(
-                color: switch (clients.isEmpty) {
-                  true => palette.mutedText,
-                  false => palette.warning,
-                },
-              ),
-            ),
-            Spacing.v8,
-            Align(
-              alignment: .centerLeft,
-              child: Button(
-                variant: .ghost,
-                label: l10n.browserBridgeRetry,
-                mainAxisSize: .min,
-                onPressed: () => unawaited(viewModel.retryBrowserBridge()),
-              ),
-            ),
-          ],
-          if (state.status == .listening) ...[
-            Spacing.v8,
-            Text(
+        if (state.status == .listening) ...[
+          GroupedCell(
+            child: Text(
               switch (clients.isEmpty) {
                 true => l10n.browserClientsEmpty,
                 false => l10n.browserBridgeListening,
               },
               style: typography.caption1.copyWith(color: palette.mutedText),
             ),
-            for (final client in clients)
-              BrowserClientRow(
-                key: ValueKey(client.id),
-                name: client.name,
-                isConnected: connected.contains(client.id),
-                onRemove: () => unawaited(viewModel.removeBrowser(client)),
-              ),
-          ],
+          ),
+          for (final client in clients)
+            BrowserClientRow(
+              key: ValueKey(client.id),
+              name: client.name,
+              isConnected: connected.contains(client.id),
+              onRemove: () => unawaited(viewModel.removeBrowser(client)),
+            ),
         ],
-      ),
+      ],
     );
   }
 }

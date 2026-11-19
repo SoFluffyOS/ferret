@@ -4,6 +4,7 @@ import 'package:power/ui/widgets/perk_line.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One step of the ladder: its name, whether it is on, and what it adds.
+/// A cell of a `GroupedCard`.
 class LadderRungTile extends StatelessWidget {
   const LadderRungTile({
     super.key,
@@ -29,8 +30,7 @@ class LadderRungTile extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d8),
+    return GroupedCell(
       child: Column(
         crossAxisAlignment: .stretch,
         children: [

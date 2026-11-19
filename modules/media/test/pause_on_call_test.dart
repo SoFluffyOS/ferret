@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_media/ferret_media.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:media/media.dart';

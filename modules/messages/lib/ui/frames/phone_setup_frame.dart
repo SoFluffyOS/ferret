@@ -221,7 +221,7 @@ class _RcsNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
+    padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
     child: Text(
       context.messagesL10n.rcsNote,
       style: context.fluffyTheme.typography.caption1.copyWith(

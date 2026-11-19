@@ -1,6 +1,5 @@
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
-import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -26,50 +25,50 @@ class LocalSendSettingsFrame extends StatelessWidget {
     );
     final l10n = context.dropL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        mainAxisSize: .min,
-        children: [
-          SettingSwitch(
-            title: l10n.settingsLocalSend,
-            body: l10n.settingsLocalSendBody,
-            value: localSend,
-            onChanged: viewModel.setLocalSendEnabled,
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.settingsLocalSend,
+          body: l10n.settingsLocalSendBody,
+          value: localSend,
+          onChanged: viewModel.setLocalSendEnabled,
+        ),
+        if (localSend)
+          SettingSwitchRow(
+            title: l10n.settingsReceiveAlways,
+            body: l10n.settingsReceiveAlwaysBody,
+            value: receiveAlways,
+            onChanged: viewModel.setReceiveAlways,
           ),
-          if (localSend) ...[
-            Spacing.v16,
-            SettingSwitch(
-              title: l10n.settingsReceiveAlways,
-              body: l10n.settingsReceiveAlwaysBody,
-              value: receiveAlways,
-              onChanged: viewModel.setReceiveAlways,
+        if (problem case final problem? when localSend && receiveAlways)
+          GroupedCell(
+            child: Column(
+              crossAxisAlignment: .stretch,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  switch (problem) {
+                    .cannotListen => l10n.receiveCannotListen,
+                    .noIdentity => l10n.receiveNoIdentity,
+                  },
+                  style: context.fluffyTheme.typography.caption1.copyWith(
+                    color: context.palette.warning,
+                  ),
+                ),
+                Spacing.v8,
+                Align(
+                  alignment: .centerLeft,
+                  child: Button(
+                    mainAxisSize: .min,
+                    variant: .ghost,
+                    label: l10n.receiveTryAgain,
+                    onPressed: () => viewModel.setReceiveAlways(true),
+                  ),
+                ),
+              ],
             ),
-          ],
-          if (problem case final problem? when localSend && receiveAlways) ...[
-            Spacing.v8,
-            Text(
-              switch (problem) {
-                .cannotListen => l10n.receiveCannotListen,
-                .noIdentity => l10n.receiveNoIdentity,
-              },
-              style: context.fluffyTheme.typography.caption1.copyWith(
-                color: context.palette.warning,
-              ),
-            ),
-            Spacing.v8,
-            Align(
-              alignment: .centerLeft,
-              child: Button(
-                mainAxisSize: .min,
-                variant: .ghost,
-                label: l10n.receiveTryAgain,
-                onPressed: () => viewModel.setReceiveAlways(true),
-              ),
-            ),
-          ],
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

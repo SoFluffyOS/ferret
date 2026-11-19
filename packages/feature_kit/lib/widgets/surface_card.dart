@@ -1,8 +1,10 @@
+import 'package:feature_kit/layout/corners.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// A filled card with no border.
+/// A filled card with no border: the design system's `RoundCard` in
+/// Ferret's surface colour.
 class SurfaceCard extends StatelessWidget {
   const SurfaceCard({
     super.key,
@@ -21,15 +23,11 @@ class SurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.palette.surface,
-        borderRadius: BorderRadius.circular(Spacing.d12),
-      ),
-      child: Padding(
-        padding: padding ?? EdgeInsets.all(Spacing.d12),
-        child: child,
-      ),
+    final card = RoundCard(
+      color: context.palette.surface,
+      borderRadius: Corners.card,
+      padding: padding ?? EdgeInsets.all(Spacing.d12),
+      child: child,
     );
 
     if (onTap == null) {
@@ -40,6 +38,7 @@ class SurfaceCard extends StatelessWidget {
       semanticButton: true,
       onTap: onTap,
       focusNode: focusNode,
+      hoverOverlayBorderRadius: Corners.card,
       child: card,
     );
   }

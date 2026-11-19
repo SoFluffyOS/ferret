@@ -13,20 +13,17 @@ class NoticeText extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
 
-    return Padding(
-      padding: EdgeInsets.only(top: Spacing.d8),
-      child: Text(
-        text,
-        style: context.fluffyTheme.typography.caption1.copyWith(
-          color: switch (tone) {
-            .warning => palette.warning,
-            .danger => palette.danger,
-            .success => palette.success,
-            .accent => palette.link,
-            .normal => palette.text,
-            .muted => palette.mutedText,
-          },
-        ),
+    return Text(
+      text,
+      style: context.fluffyTheme.typography.caption1.copyWith(
+        color: switch (tone) {
+          .warning => palette.warning,
+          .danger => palette.danger,
+          .success => palette.success,
+          .accent => palette.link,
+          .normal => palette.text,
+          .muted => palette.mutedText,
+        },
       ),
     );
   }

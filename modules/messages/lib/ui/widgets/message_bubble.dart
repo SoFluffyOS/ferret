@@ -130,8 +130,8 @@ class _AttachmentView extends StatelessWidget {
             final open? => () => open(attachment),
             null => null,
           },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Spacing.d10),
+          child: ClipRSuperellipse(
+            borderRadius: Corners.radius(Spacing.d10),
             child: Image.memory(
               Uint8List.fromList(thumbnail),
               width: Spacing.d200,

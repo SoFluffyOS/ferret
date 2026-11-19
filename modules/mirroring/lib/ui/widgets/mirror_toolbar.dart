@@ -156,10 +156,10 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     final palette = context.palette;
 
     return DecoratedBox(
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: palette.surface,
-        borderRadius: BorderRadius.circular(Spacing.d20),
-        boxShadow: [
+        shape: const StadiumBorder(),
+        shadows: [
           BoxShadow(
             color: palette.text.withValues(alpha: 0.18),
             blurRadius: Spacing.d16,

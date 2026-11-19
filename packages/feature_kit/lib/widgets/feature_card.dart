@@ -47,6 +47,10 @@ class FeatureCard extends StatelessWidget {
   /// Such as accent for an unread count, or danger for missing access.
   final FeatureTone subtitleTone;
 
+  static double get _iconSize => Spacing.d18;
+
+  static double get _iconGap => Spacing.d12;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -64,11 +68,11 @@ class FeatureCard extends StatelessWidget {
                 padding: EdgeInsets.only(top: Spacing.d1),
                 child: Icon(
                   icon,
-                  size: Spacing.d18,
+                  size: _iconSize,
                   color: _color(palette, iconTone),
                 ),
               ),
-              Spacing.h12,
+              Spacing.horizontal(_iconGap),
               Expanded(
                 child: Column(
                   crossAxisAlignment: .start,
@@ -93,15 +97,26 @@ class FeatureCard extends StatelessWidget {
               if (trailing case final trailing?) ...[Spacing.h8, trailing],
             ],
           ),
-          if (children.isNotEmpty) ...[Spacing.v12, ...children],
-          if (actions.isNotEmpty) ...[
-            Spacing.v12,
-            Wrap(
-              spacing: Spacing.d8,
-              runSpacing: Spacing.d8,
-              children: actions,
+          // The content and the buttons start under the title's text,
+          // not under the icon.
+          if (children.isNotEmpty || actions.isNotEmpty)
+            Padding(
+              padding: EdgeInsetsDirectional.only(start: _iconSize + _iconGap),
+              child: Column(
+                crossAxisAlignment: .stretch,
+                children: [
+                  if (children.isNotEmpty) ...[Spacing.v12, ...children],
+                  if (actions.isNotEmpty) ...[
+                    Spacing.v12,
+                    Wrap(
+                      spacing: Spacing.d8,
+                      runSpacing: Spacing.d8,
+                      children: actions,
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ],
         ],
       ),
     );

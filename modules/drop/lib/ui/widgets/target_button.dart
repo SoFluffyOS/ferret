@@ -23,9 +23,9 @@ class TargetButton extends StatelessWidget {
       child: Tappable(
         onTap: () => Navigator.of(context).pop(target),
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: palette.background,
-            borderRadius: BorderRadius.circular(Spacing.d8),
+            shape: Corners.shape(Corners.row),
           ),
           child: Padding(
             padding: EdgeInsets.all(Spacing.d12),

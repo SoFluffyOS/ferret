@@ -50,7 +50,7 @@ class ToolbarButton extends StatelessWidget {
       onTap: onTap,
       enableHover: true,
       enableHoverOverlay: true,
-      hoverOverlayBorderRadius: Spacing.d8,
+      hoverOverlayBorderRadius: Corners.capsule,
       child: switch (showName) {
         false => mark,
         true => Padding(

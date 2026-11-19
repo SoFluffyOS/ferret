@@ -30,22 +30,22 @@ class AppPickerFrame extends StatelessWidget {
         SurfaceCard(child: Text(l10n.appPickerLoading, style: message)),
       ],
       .failed => [
-        SurfaceCard(
-          child: Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              StatusLine(
+        GroupedCard(
+          children: [
+            GroupedCell(
+              child: StatusLine(
                 text: l10n.appPickerFailed(deviceName),
                 tone: .warning,
               ),
-              Spacing.v12,
-              Button(
+            ),
+            GroupedCell(
+              child: Button(
                 variant: .ghost,
                 label: l10n.tryAgain,
                 onPressed: viewModel.reload,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
       .ready => [
@@ -75,40 +75,36 @@ class _FilterCard extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          FilterOptionRow(
-            filter: .APP_FILTER_ALL,
-            selected: filter,
-            title: l10n.filterAll,
-            detail: l10n.filterAllDetail,
-            onSelected: viewModel.setFilter,
-          ),
-          Spacing.v8,
-          FilterOptionRow(
-            filter: .APP_FILTER_ALL_EXCEPT,
-            selected: filter,
-            title: l10n.filterAllExcept,
-            detail: l10n.filterAllExceptDetail,
-            onSelected: viewModel.setFilter,
-          ),
-          Spacing.v8,
-          FilterOptionRow(
-            filter: .APP_FILTER_ONLY,
-            selected: filter,
-            title: l10n.filterOnly,
-            detail: l10n.filterOnlyDetail,
-            onSelected: viewModel.setFilter,
-          ),
-          Spacing.v12,
-          Text(
+    return GroupedCard(
+      children: [
+        FilterOptionRow(
+          filter: .APP_FILTER_ALL,
+          selected: filter,
+          title: l10n.filterAll,
+          detail: l10n.filterAllDetail,
+          onSelected: viewModel.setFilter,
+        ),
+        FilterOptionRow(
+          filter: .APP_FILTER_ALL_EXCEPT,
+          selected: filter,
+          title: l10n.filterAllExcept,
+          detail: l10n.filterAllExceptDetail,
+          onSelected: viewModel.setFilter,
+        ),
+        FilterOptionRow(
+          filter: .APP_FILTER_ONLY,
+          selected: filter,
+          title: l10n.filterOnly,
+          detail: l10n.filterOnlyDetail,
+          onSelected: viewModel.setFilter,
+        ),
+        GroupedCell(
+          child: Text(
             l10n.filterBuiltIn,
             style: typography.caption1.copyWith(color: palette.mutedText),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -139,18 +135,19 @@ class _AppList extends StatelessWidget {
       _ => null,
     };
 
+    final inset = EdgeInsets.symmetric(horizontal: PageInsets.row);
+    final saveNotice = Padding(
+      padding: inset.copyWith(top: Spacing.d8),
+      child: StatusLine(
+        text: l10n.appPickerSaveFailed(deviceName),
+        tone: .warning,
+      ),
+    );
+
     if (hint == null) {
       return Column(
         crossAxisAlignment: .stretch,
-        children: [
-          if (saveFailed) ...[
-            Spacing.v8,
-            StatusLine(
-              text: l10n.appPickerSaveFailed(deviceName),
-              tone: .warning,
-            ),
-          ],
-        ],
+        children: [if (saveFailed) saveNotice],
       );
     }
 
@@ -158,9 +155,12 @@ class _AppList extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.appPickerApps),
-        Text(
-          hint,
-          style: typography.caption1.copyWith(color: palette.mutedText),
+        Padding(
+          padding: inset,
+          child: Text(
+            hint,
+            style: typography.caption1.copyWith(color: palette.mutedText),
+          ),
         ),
         Spacing.v8,
         InputText(hintText: l10n.appPickerSearch, onChanged: viewModel.search),
@@ -183,37 +183,29 @@ class _AppList extends StatelessWidget {
             ),
           ],
         ),
-        if (saveFailed) ...[
-          Spacing.v8,
-          StatusLine(
-            text: l10n.appPickerSaveFailed(deviceName),
-            tone: .warning,
-          ),
-        ],
+        if (saveFailed) saveNotice,
         Spacing.v12,
         if (apps.isEmpty)
-          Text(
-            l10n.appPickerEmpty,
-            style: typography.body2.copyWith(color: palette.mutedText),
+          Padding(
+            padding: inset,
+            child: Text(
+              l10n.appPickerEmpty,
+              style: typography.body2.copyWith(color: palette.mutedText),
+            ),
           ),
         if (apps.isNotEmpty)
-          SurfaceCard(
-            padding: EdgeInsets.symmetric(
-              horizontal: Spacing.d12,
-              vertical: Spacing.d6,
-            ),
-            child: Column(
-              children: [
-                for (final (:app, :forwards) in apps)
-                  AppRow(
-                    key: ValueKey(app.package),
-                    app: app,
-                    value: forwards,
-                    onChanged: (allowed) =>
-                        viewModel.setAllowed(app.package, allowed),
-                  ),
-              ],
-            ),
+          GroupedCard(
+            separatorIndent: PageInsets.row + AppRow.iconSize + Spacing.d12,
+            children: [
+              for (final (:app, :forwards) in apps)
+                AppRow(
+                  key: ValueKey(app.package),
+                  app: app,
+                  value: forwards,
+                  onChanged: (allowed) =>
+                      viewModel.setAllowed(app.package, allowed),
+                ),
+            ],
           ),
       ],
     );

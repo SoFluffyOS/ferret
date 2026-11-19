@@ -16,10 +16,8 @@ class TransferProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(Spacing.d2);
-
-    return ClipRRect(
-      borderRadius: radius,
+    return ClipRSuperellipse(
+      borderRadius: Corners.radius(Corners.capsule),
       child: SizedBox(
         height: Spacing.d4,
         child: Stack(

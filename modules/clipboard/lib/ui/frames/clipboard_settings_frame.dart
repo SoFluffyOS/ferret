@@ -51,65 +51,63 @@ class ClipboardSettingsFrame extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          if (needsManualSend)
-            SettingInfoRow(
-              title: l10n.settingsWhyManual,
-              body: switch (access) {
-                .onRequest => l10n.settingsWhyManualIos,
-                .whileFocused => l10n.settingsWhyManualWayland,
-                _ => l10n.settingsWhyManualAndroid,
-              },
-              showLock: false,
-            ),
-          SettingSwitchRow(
-            title: l10n.settingsAutoSend,
-            body: switch ((needsManualSend, access)) {
-              (true, .whileFocused) => l10n.settingsAutoSendBodyWayland,
-              (true, _) => l10n.settingsAutoSendBodyManual,
-              (false, _) => l10n.settingsAutoSendBody,
+    return GroupedCard(
+      children: [
+        if (needsManualSend)
+          SettingInfoRow(
+            title: l10n.settingsWhyManual,
+            body: switch (access) {
+              .onRequest => l10n.settingsWhyManualIos,
+              .whileFocused => l10n.settingsWhyManualWayland,
+              _ => l10n.settingsWhyManualAndroid,
             },
-            value: autoSend,
-            onChanged: viewModel.setAutoSend,
+            showLock: false,
           ),
-          if (access == .foreground && canSendInBackground)
-            SettingSwitchRow(
-              title: l10n.settingsBackgroundSend,
-              body: l10n.settingsBackgroundSendBody,
-              value: backgroundSend,
-              onChanged: viewModel.setBackgroundSend,
-            ),
-          if (access == .foreground && !canSendInBackground)
-            SettingInfoRow(
-              title: l10n.settingsBackgroundSend,
-              body: switch (backgroundSend) {
-                true => l10n.settingsBackgroundSendLost,
-                false => l10n.settingsBackgroundSendLocked,
-              },
-            ),
+        SettingSwitchRow(
+          title: l10n.settingsAutoSend,
+          body: switch ((needsManualSend, access)) {
+            (true, .whileFocused) => l10n.settingsAutoSendBodyWayland,
+            (true, _) => l10n.settingsAutoSendBodyManual,
+            (false, _) => l10n.settingsAutoSendBody,
+          },
+          value: autoSend,
+          onChanged: viewModel.setAutoSend,
+        ),
+        if (access == .foreground && canSendInBackground)
           SettingSwitchRow(
-            title: l10n.settingsAutoReceive,
-            body: l10n.settingsAutoReceiveBody,
-            value: autoReceive,
-            onChanged: viewModel.setAutoReceive,
+            title: l10n.settingsBackgroundSend,
+            body: l10n.settingsBackgroundSendBody,
+            value: backgroundSend,
+            onChanged: viewModel.setBackgroundSend,
           ),
-          SettingSwitchRow(
-            title: l10n.settingsImages,
-            body: l10n.settingsImagesBody(megabytes),
-            value: syncImages,
-            onChanged: viewModel.setSyncImages,
+        if (access == .foreground && !canSendInBackground)
+          SettingInfoRow(
+            title: l10n.settingsBackgroundSend,
+            body: switch (backgroundSend) {
+              true => l10n.settingsBackgroundSendLost,
+              false => l10n.settingsBackgroundSendLocked,
+            },
           ),
-          SettingSwitchRow(
-            title: l10n.settingsSensitive,
-            body: l10n.settingsSensitiveBody(minutes),
-            value: syncSensitive,
-            onChanged: viewModel.setSyncSensitive,
-          ),
-          Spacing.v8,
-          Row(
+        SettingSwitchRow(
+          title: l10n.settingsAutoReceive,
+          body: l10n.settingsAutoReceiveBody,
+          value: autoReceive,
+          onChanged: viewModel.setAutoReceive,
+        ),
+        SettingSwitchRow(
+          title: l10n.settingsImages,
+          body: l10n.settingsImagesBody(megabytes),
+          value: syncImages,
+          onChanged: viewModel.setSyncImages,
+        ),
+        SettingSwitchRow(
+          title: l10n.settingsSensitive,
+          body: l10n.settingsSensitiveBody(minutes),
+          value: syncSensitive,
+          onChanged: viewModel.setSyncSensitive,
+        ),
+        GroupedCell(
+          child: Row(
             children: [
               Expanded(
                 child: Text(
@@ -129,8 +127,8 @@ class ClipboardSettingsFrame extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

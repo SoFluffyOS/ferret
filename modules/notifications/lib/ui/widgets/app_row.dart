@@ -4,7 +4,7 @@ import 'package:notifications/ui/widgets/app_icon.dart';
 import 'package:protocol/notifications.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// One app in the picker, with its switch.
+/// One app in the picker, with its switch: a row of a `GroupedCard`.
 class AppRow extends StatelessWidget {
   const AppRow({
     super.key,
@@ -19,29 +19,17 @@ class AppRow extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
+  /// How wide the icon is, for the card's lines to start after it.
+  static double get iconSize => Spacing.d32;
+
   @override
   Widget build(BuildContext context) {
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
-
     return MergeSemantics(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-        child: Row(
-          children: [
-            AppIcon(png: .fromList(app.iconPng), size: Spacing.d32),
-            Spacing.h12,
-            Expanded(
-              child: Text(
-                app.name,
-                style: typography.base1.copyWith(color: palette.text),
-                overflow: .ellipsis,
-              ),
-            ),
-            Spacing.h12,
-            SwitchToggle(value: value, onChanged: onChanged),
-          ],
-        ),
+      child: GroupedRow(
+        leading: AppIcon(png: .fromList(app.iconPng), size: iconSize),
+        title: app.name,
+        titleMaxLines: 1,
+        trailing: SwitchToggle(value: value, onChanged: onChanged),
       ),
     );
   }

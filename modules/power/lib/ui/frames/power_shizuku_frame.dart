@@ -48,77 +48,84 @@ class PowerShizukuFrame extends StatelessWidget {
         notice == .shizukuNotOpened ||
         notice == .linkFailed;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Text(
+    return GroupedCard(
+      children: [
+        GroupedCell(
+          child: Text(
             l10n.shizukuIntro,
             style: typography.caption1.copyWith(color: palette.mutedText),
           ),
-          SetupStepRow(
-            title: l10n.stepInstallTitle,
-            body: l10n.stepInstallBody,
-            state: _stateOf(0, current),
-            buttonLabel: l10n.stepInstallButton,
-            enabled: !isBusy,
-            onPressed: viewModel.getShizuku,
+        ),
+        SetupStepRow(
+          title: l10n.stepInstallTitle,
+          body: l10n.stepInstallBody,
+          state: _stateOf(0, current),
+          buttonLabel: l10n.stepInstallButton,
+          enabled: !isBusy,
+          onPressed: viewModel.getShizuku,
+        ),
+        SetupStepRow(
+          title: l10n.stepStartTitle,
+          body: l10n.stepStartBody,
+          state: _stateOf(1, current),
+          buttonLabel: l10n.stepStartButton,
+          enabled: !isBusy,
+          onPressed: viewModel.openShizuku,
+        ),
+        SetupStepRow(
+          title: l10n.stepAllowTitle,
+          body: l10n.stepAllowBody,
+          state: _stateOf(2, current),
+          buttonLabel: l10n.stepAllowButton,
+          enabled: !isBusy,
+          onPressed: viewModel.allowShizuku,
+        ),
+        if (notice != null && showsNotice)
+          GroupedCell(
+            child: NoticeText(l10n.noticeText(notice), tone: .danger),
           ),
-          SetupStepRow(
-            title: l10n.stepStartTitle,
-            body: l10n.stepStartBody,
-            state: _stateOf(1, current),
-            buttonLabel: l10n.stepStartButton,
-            enabled: !isBusy,
-            onPressed: viewModel.openShizuku,
-          ),
-          SetupStepRow(
-            title: l10n.stepAllowTitle,
-            body: l10n.stepAllowBody,
-            state: _stateOf(2, current),
-            buttonLabel: l10n.stepAllowButton,
-            enabled: !isBusy,
-            onPressed: viewModel.allowShizuku,
-          ),
-          if (notice != null && showsNotice)
-            NoticeText(l10n.noticeText(notice), tone: .danger),
-          if (usesShizuku) ...[
-            NoticeText(l10n.shizukuOn, tone: .success),
-            NoticeText(l10n.shizukuOnBody),
-            Spacing.v12,
-            Text(
-              l10n.batteryTitle,
-              style: typography.base1.copyWith(color: palette.text),
-            ),
-            NoticeText(switch (batteryUnrestricted) {
-              true => l10n.batteryOn,
-              false => l10n.batteryBody,
-            }),
-            Spacing.v8,
-            Wrap(
-              spacing: Spacing.d8,
-              runSpacing: Spacing.d8,
+        if (usesShizuku) ...[
+          GroupedCell(
+            child: Column(
+              crossAxisAlignment: .stretch,
               children: [
-                if (!batteryUnrestricted)
-                  Button(
-                    mainAxisSize: .min,
-                    variant: .ghost,
-                    label: l10n.turnOn,
-                    enable: !isBusy,
-                    onPressed: viewModel.allowBackgroundRunning,
-                  ),
-                Button(
-                  mainAxisSize: .min,
-                  variant: .ghost,
-                  label: l10n.stopUsingShizuku,
-                  enable: !isBusy,
-                  onPressed: viewModel.stopUsingShizuku,
-                ),
+                NoticeText(l10n.shizukuOn, tone: .success),
+                Spacing.v4,
+                NoticeText(l10n.shizukuOnBody),
               ],
             ),
-          ],
+          ),
+          GroupedRow(
+            title: l10n.batteryTitle,
+            subtitle: switch (batteryUnrestricted) {
+              true => l10n.batteryOn,
+              false => l10n.batteryBody,
+            },
+            trailing: switch (batteryUnrestricted) {
+              true => null,
+              false => Button(
+                mainAxisSize: .min,
+                variant: .ghost,
+                label: l10n.turnOn,
+                enable: !isBusy,
+                onPressed: viewModel.allowBackgroundRunning,
+              ),
+            },
+          ),
+          GroupedCell(
+            child: Align(
+              alignment: .centerLeft,
+              child: Button(
+                mainAxisSize: .min,
+                variant: .ghost,
+                label: l10n.stopUsingShizuku,
+                enable: !isBusy,
+                onPressed: viewModel.stopUsingShizuku,
+              ),
+            ),
+          ),
         ],
-      ),
+      ],
     );
   }
 

@@ -32,22 +32,28 @@ class PhonesSettingsFrame extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        for (final phone in phones)
-          Padding(
-            padding: EdgeInsets.only(bottom: Spacing.d8),
-            child: _PhoneCard(phone: phone),
+        GroupedCard(
+          children: [for (final phone in phones) _PhoneRow(phone: phone)],
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            PageInsets.row,
+            Spacing.d8,
+            PageInsets.row,
+            0,
           ),
-        Text(
-          l10n.settingsPerPhone,
-          style: typography.caption1.copyWith(color: palette.mutedText),
+          child: Text(
+            l10n.settingsPerPhone,
+            style: typography.caption1.copyWith(color: palette.mutedText),
+          ),
         ),
       ],
     );
   }
 }
 
-class _PhoneCard extends StatelessWidget {
-  const _PhoneCard({required this.phone});
+class _PhoneRow extends StatelessWidget {
+  const _PhoneRow({required this.phone});
 
   final PhoneStatus phone;
 
@@ -57,7 +63,8 @@ class _PhoneCard extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
-    return SurfaceCard(
+
+    return GroupedCell(
       child: Column(
         crossAxisAlignment: .stretch,
         children: [

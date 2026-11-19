@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/pane_toolbar_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -40,9 +41,18 @@ class FerretPage extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final canPop = Navigator.of(context).canPop();
     final screenSize = context.screenSize;
+    final side = PageInsets.side(screenSize);
     // A first page that names itself in its body, such as a device in a
-    // window's pane, has nothing to put in a title bar.
-    final hasBar = canPop || title.isNotEmpty || actions.isNotEmpty;
+    // window's pane, or that the pane's toolbar already names, has nothing
+    // to put in a title bar.
+    final toolbarTitle = PaneToolbarScope.titleOf(context);
+    final isUnderToolbar = toolbarTitle != null;
+    final isNamedAbove = !canPop && toolbarTitle == title;
+    final shownTitle = switch (isNamedAbove) {
+      true => '',
+      false => title,
+    };
+    final hasBar = canPop || shownTitle.isNotEmpty || actions.isNotEmpty;
 
     return ColoredBox(
       color: palette.background,
@@ -53,9 +63,9 @@ class FerretPage extends StatelessWidget {
             if (hasBar)
               Padding(
                 padding: EdgeInsets.fromLTRB(
+                  side,
                   Spacing.d12,
-                  Spacing.d12,
-                  Spacing.d12,
+                  side,
                   Spacing.d4,
                 ),
                 child: AdaptiveContent(
@@ -63,15 +73,20 @@ class FerretPage extends StatelessWidget {
                   child: Row(
                     children: [
                       if (canPop)
-                        Tappable(
-                          tooltip: backLabel,
-                          onTap: () => Navigator.of(context).maybePop(),
-                          child: Padding(
-                            padding: EdgeInsets.all(Spacing.d4),
-                            child: Icon(
-                              LucideIcons.chevronLeft,
-                              size: Spacing.d20,
-                              color: palette.text,
+                        // Its glyph, not the room around it, lines up with
+                        // the page's content.
+                        Transform.translate(
+                          offset: Offset(-Spacing.d4, 0),
+                          child: Tappable(
+                            tooltip: backLabel,
+                            onTap: () => Navigator.of(context).maybePop(),
+                            child: Padding(
+                              padding: EdgeInsets.all(Spacing.d4),
+                              child: Icon(
+                                LucideIcons.chevronLeft,
+                                size: Spacing.d20,
+                                color: palette.text,
+                              ),
                             ),
                           ),
                         ),
@@ -79,7 +94,7 @@ class FerretPage extends StatelessWidget {
                       Expanded(
                         child: Text.rich(
                           TextSpan(
-                            text: title,
+                            text: shownTitle,
                             children: [
                               if (status case final status?)
                                 TextSpan(
@@ -107,18 +122,19 @@ class FerretPage extends StatelessWidget {
                 builder: (context, constraints) {
                   final margin = AdaptiveContent.marginFor(
                     screenSize,
-                    constraints.maxWidth - Spacing.d12 * 2,
+                    constraints.maxWidth - side * 2,
                     width,
                   );
 
                   return ListView(
                     padding: EdgeInsets.fromLTRB(
-                      Spacing.d12 + margin,
-                      switch (hasBar) {
-                        true => Spacing.d4,
-                        false => Spacing.d24,
+                      side + margin,
+                      switch ((hasBar, isUnderToolbar)) {
+                        (true, _) => Spacing.d4,
+                        (false, true) => Spacing.d8,
+                        (false, false) => Spacing.d24,
                       },
-                      Spacing.d12 + margin,
+                      side + margin,
                       Spacing.d24,
                     ),
                     children: children,

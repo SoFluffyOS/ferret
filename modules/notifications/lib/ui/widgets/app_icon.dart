@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// An app's icon from its PNG bytes, or a bell when there is none.
 class AppIcon extends StatelessWidget {
@@ -26,8 +25,8 @@ class AppIcon extends StatelessWidget {
       );
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(Spacing.d6),
+    return ClipRSuperellipse(
+      borderRadius: Corners.radius(Corners.tile),
       child: Image.memory(
         bytes,
         width: size,

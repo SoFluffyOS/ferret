@@ -8,4 +8,3 @@ export 'package:messages/ui/widgets/pending_bubble.dart';
 export 'package:messages/ui/widgets/status_banner.dart';
 export 'package:messages/ui/widgets/status_line.dart';
 export 'package:messages/ui/widgets/time_labels.dart';
-export 'package:messages/ui/widgets/toggle_row.dart';

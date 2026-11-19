@@ -57,31 +57,19 @@ class _Explainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.palette;
-    final typography = context.fluffyTheme.typography;
     final l10n = context.notificationsL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Text(
-            l10n.explainer,
-            style: typography.base1.copyWith(color: palette.text),
-          ),
-          Spacing.v4,
-          Text(
-            l10n.explainerDetail,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-          Spacing.v12,
-          Button(
+    return GroupedCard(
+      children: [
+        GroupedRow(title: l10n.explainer, subtitle: l10n.explainerDetail),
+        GroupedCell(
+          child: Button(
             variant: .primary,
             label: l10n.turnOn,
             onPressed: context.read<MirrorSetupViewModel>().turnOn,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -109,41 +97,46 @@ class _NeedsAccess extends StatelessWidget {
       false => l10n.accessOff,
     };
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          StatusLine(text: status, tone: .warning),
-          Spacing.v4,
-          Text(
-            l10n.accessHowTo,
-            style: typography.caption1.copyWith(color: palette.mutedText),
+    return GroupedCard(
+      children: [
+        GroupedCell(
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              StatusLine(text: status, tone: .warning),
+              Spacing.v4,
+              Text(
+                l10n.accessHowTo,
+                style: typography.caption1.copyWith(color: palette.mutedText),
+              ),
+              if (openFailed) ...[
+                Spacing.v8,
+                Text(
+                  l10n.openSettingsFailed,
+                  style: typography.caption1.copyWith(color: palette.danger),
+                ),
+              ],
+              Spacing.v12,
+              Button(
+                variant: .primary,
+                label: l10n.openAccessSettings,
+                onPressed: viewModel.openAccessSettings,
+              ),
+            ],
           ),
-          if (openFailed) ...[
-            Spacing.v8,
-            Text(
-              l10n.openSettingsFailed,
-              style: typography.caption1.copyWith(color: palette.danger),
-            ),
-          ],
-          Spacing.v12,
-          Button(
-            variant: .primary,
-            label: l10n.openAccessSettings,
-            onPressed: viewModel.openAccessSettings,
+        ),
+        if (restricted)
+          GroupedCell(
+            child: RestrictedGuide(onOpenAppInfo: viewModel.openAppInfo),
           ),
-          if (restricted) ...[
-            Spacing.v16,
-            RestrictedGuide(onOpenAppInfo: viewModel.openAppInfo),
-          ],
-          Spacing.v8,
-          Button(
+        GroupedCell(
+          child: Button(
             variant: .ghost,
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -167,33 +160,33 @@ class _Ready extends StatelessWidget {
     final viewModel = context.read<MirrorSetupViewModel>();
     final l10n = context.notificationsL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          StatusLine(text: l10n.accessOn, tone: .good),
-          Spacing.v12,
-          ToggleRow(
-            title: l10n.skipWhileUsing,
-            detail: l10n.skipWhileUsingDetail,
-            value: skipWhileUsing,
-            onChanged: viewModel.setSkipWhileUsing,
-          ),
-          Spacing.v12,
-          Button(
+    return GroupedCard(
+      children: [
+        GroupedCell(
+          child: StatusLine(text: l10n.accessOn, tone: .good),
+        ),
+        SettingSwitchRow(
+          title: l10n.skipWhileUsing,
+          body: l10n.skipWhileUsingDetail,
+          value: skipWhileUsing,
+          onChanged: viewModel.setSkipWhileUsing,
+        ),
+        GroupedCell(
+          child: Button(
             variant: .ghost,
             label:
                 '${l10n.chooseApps} · ${l10n.appsSummary(appFilter, appCount)}',
             onPressed: onChooseApps,
           ),
-          Spacing.v8,
-          Button(
+        ),
+        GroupedCell(
+          child: Button(
             variant: .ghost,
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

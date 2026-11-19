@@ -45,61 +45,76 @@ class PowerRootFrame extends StatelessWidget {
       );
     }
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Text(
-            l10n.rootFoundText(manager),
-            style: typography.base1.copyWith(color: palette.text),
-          ),
-          Spacing.v8,
-          Row(
-            crossAxisAlignment: .start,
+    return GroupedCard(
+      children: [
+        GroupedCell(
+          child: Column(
+            crossAxisAlignment: .stretch,
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: Spacing.d2),
-                child: Icon(
-                  LucideIcons.triangleAlert,
-                  size: Spacing.d16,
-                  color: palette.warning,
-                ),
+              Text(
+                l10n.rootFoundText(manager),
+                style: typography.base1.copyWith(color: palette.text),
               ),
-              Spacing.h8,
-              Expanded(
-                child: Text(
-                  l10n.rootWarning,
-                  style: typography.caption1.copyWith(color: palette.warning),
-                ),
+              Spacing.v8,
+              Row(
+                crossAxisAlignment: .start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: Spacing.d2),
+                    child: Icon(
+                      LucideIcons.triangleAlert,
+                      size: Spacing.d16,
+                      color: palette.warning,
+                    ),
+                  ),
+                  Spacing.h8,
+                  Expanded(
+                    child: Text(
+                      l10n.rootWarning,
+                      style: typography.caption1.copyWith(
+                        color: palette.warning,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          if (usesRoot) NoticeText(l10n.rootOn, tone: .success),
-          if (!usesRoot) NoticeText(l10n.rootPromptHint),
-          if (notice == .rootRefused)
-            NoticeText(l10n.noticeRootRefused, tone: .danger),
-          Spacing.v8,
-          Align(
-            alignment: .centerLeft,
-            child: switch (usesRoot) {
-              true => Button(
-                mainAxisSize: .min,
-                variant: .ghost,
-                label: l10n.stopUsingRoot,
-                enable: !isBusy,
-                onPressed: viewModel.stopUsingRoot,
+        ),
+        GroupedCell(
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              if (usesRoot) NoticeText(l10n.rootOn, tone: .success),
+              if (!usesRoot) NoticeText(l10n.rootPromptHint),
+              if (notice == .rootRefused) ...[
+                Spacing.v8,
+                NoticeText(l10n.noticeRootRefused, tone: .danger),
+              ],
+              Spacing.v8,
+              Align(
+                alignment: .centerLeft,
+                child: switch (usesRoot) {
+                  true => Button(
+                    mainAxisSize: .min,
+                    variant: .ghost,
+                    label: l10n.stopUsingRoot,
+                    enable: !isBusy,
+                    onPressed: viewModel.stopUsingRoot,
+                  ),
+                  false => Button(
+                    mainAxisSize: .min,
+                    variant: .ghost,
+                    label: l10n.useRoot,
+                    enable: !isBusy,
+                    onPressed: viewModel.useRoot,
+                  ),
+                },
               ),
-              false => Button(
-                mainAxisSize: .min,
-                variant: .ghost,
-                label: l10n.useRoot,
-                enable: !isBusy,
-                onPressed: viewModel.useRoot,
-              ),
-            },
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

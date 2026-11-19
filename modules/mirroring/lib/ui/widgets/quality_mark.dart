@@ -27,12 +27,12 @@ class QualityMark extends StatelessWidget {
         for (var bar = 0; bar < _barCount; bar++) ...[
           if (bar > 0) Spacing.horizontal(Spacing.d2),
           DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: ShapeDecoration(
               color: switch (bar < quality.bars) {
                 true => filled,
                 false => palette.mutedText.withValues(alpha: 0.35),
               },
-              borderRadius: BorderRadius.circular(Spacing.d1),
+              shape: const StadiumBorder(),
             ),
             child: SizedBox(
               width: Spacing.d3,

@@ -6,5 +6,4 @@ export 'package:remote_input/ui/widgets/keyboard_field.dart';
 export 'package:remote_input/ui/widgets/notice_block.dart';
 export 'package:remote_input/ui/widgets/page_header.dart';
 export 'package:remote_input/ui/widgets/remote_input_labels.dart';
-export 'package:remote_input/ui/widgets/setting_switch_row.dart';
 export 'package:remote_input/ui/widgets/touchpad_surface.dart';

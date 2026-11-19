@@ -197,7 +197,7 @@ void main() {
     ) async {
       await pumpDialer(tester);
 
-      expect(find.text('Recent calls'.toUpperCase()), findsOneWidget);
+      expect(find.text('Recent calls'), findsOneWidget);
       expect(find.text('Alex'), findsOneWidget);
       expect(
         find.textContaining(RegExp(r'^Missed · \+15550100 · Nov 17 6:05\sPM$')),

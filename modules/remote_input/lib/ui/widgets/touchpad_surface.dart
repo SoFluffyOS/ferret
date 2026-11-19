@@ -67,9 +67,9 @@ class _TouchpadSurfaceState extends State<TouchpadSurface> {
         onPointerUp: (event) => _gestures.up(event.pointer, event.timeStamp),
         onPointerCancel: (event) => _gestures.cancel(event.pointer),
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: palette.surface,
-            borderRadius: BorderRadius.circular(Spacing.d16),
+            shape: Corners.shape(Corners.panel),
           ),
           child: Center(
             child: Padding(

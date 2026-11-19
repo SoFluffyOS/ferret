@@ -168,7 +168,7 @@ class RemoteInputFeatureUi extends FeatureUi {
       crossAxisAlignment: .stretch,
       children: [
         for (final (index, section) in sections.indexed) ...[
-          if (index > 0) Spacing.v8,
+          if (index > 0) Spacing.v24,
           section,
         ],
       ],

@@ -50,9 +50,9 @@ class _HoldButtonState extends State<HoldButton> {
         onPointerUp: (event) => _onUp(event.pointer),
         onPointerCancel: (event) => _onUp(event.pointer),
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(Spacing.d12),
+            shape: Corners.shape(Corners.card),
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: Spacing.d16),

@@ -34,22 +34,24 @@ class Bubble extends StatelessWidget {
             false => 1,
           },
           child: DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: ShapeDecoration(
               color: switch (mine) {
                 true => palette.accent,
                 false => palette.surface,
               },
-              borderRadius: BorderRadius.only(
-                topLeft: radius,
-                topRight: radius,
-                bottomLeft: switch (mine) {
-                  true => radius,
-                  false => tail,
-                },
-                bottomRight: switch (mine) {
-                  true => tail,
-                  false => radius,
-                },
+              shape: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: radius,
+                  topRight: radius,
+                  bottomLeft: switch (mine) {
+                    true => radius,
+                    false => tail,
+                  },
+                  bottomRight: switch (mine) {
+                    true => tail,
+                    false => radius,
+                  },
+                ),
               ),
             ),
             child: Padding(

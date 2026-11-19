@@ -30,10 +30,7 @@ class PlayerChip extends StatelessWidget {
     return Tappable(
       onTap: onTap,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: fill,
-          borderRadius: BorderRadius.circular(Spacing.d12),
-        ),
+        decoration: ShapeDecoration(color: fill, shape: const StadiumBorder()),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: Spacing.d10,

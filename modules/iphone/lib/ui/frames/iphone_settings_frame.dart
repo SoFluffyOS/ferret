@@ -47,46 +47,86 @@ class _IphoneSettingsFrameState extends State<IphoneSettingsFrame> {
     final host = context.select<IphoneSettingsViewModel, IphoneHostKind>(
       (viewModel) => viewModel.host,
     );
+    final phase = context.select<IphoneSettingsViewModel, LinkPhase>(
+      (viewModel) => viewModel.link.phase,
+    );
+    final openFailed = context.select<IphoneSettingsViewModel, bool>(
+      (viewModel) => viewModel.openFailed,
+    );
+    final showNotifications = context.select<IphoneSettingsViewModel, bool>(
+      (viewModel) => viewModel.showNotifications,
+    );
+    final showMedia = context.select<IphoneSettingsViewModel, bool>(
+      (viewModel) => viewModel.showMedia,
+    );
+    final hidePreviews = context.select<IphoneSettingsViewModel, bool>(
+      (viewModel) => viewModel.hidePreviews,
+    );
     final viewModel = context.read<IphoneSettingsViewModel>();
     final l10n = context.iphoneL10n;
+    final showsLink = enabled && (phase != .off || openFailed);
+    final showsOptions =
+        enabled && phase != .unsupported && phase != .notConfigured;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
+    return GroupedCard(
+      children: [
+        SettingSwitchRow(
+          title: l10n.settingsEnable,
+          body: l10n.settingsEnableBody,
+          value: enabled,
+          onChanged: (value) => unawaited(viewModel.setEnabled(value)),
+        ),
+        if (showsLink) const GroupedCell(child: _Link()),
+        if (showsOptions) ...[
           SettingSwitchRow(
-            title: l10n.settingsEnable,
-            body: l10n.settingsEnableBody,
-            value: enabled,
-            onChanged: (value) => unawaited(viewModel.setEnabled(value)),
+            title: l10n.settingsNotifications,
+            body: l10n.settingsNotificationsBody,
+            value: showNotifications,
+            onChanged: (value) =>
+                unawaited(viewModel.setShowNotifications(value)),
           ),
-          if (enabled) const _Link(),
-          Spacing.v8,
-          NoticeBlock(
+          if (showNotifications)
+            SettingSwitchRow(
+              title: l10n.settingsHidePreviews,
+              body: l10n.settingsHidePreviewsBody,
+              value: hidePreviews,
+              onChanged: (value) => unawaited(viewModel.setHidePreviews(value)),
+            ),
+          SettingSwitchRow(
+            title: l10n.settingsMedia,
+            body: l10n.settingsMediaBody,
+            value: showMedia,
+            onChanged: (value) => unawaited(viewModel.setShowMedia(value)),
+          ),
+        ],
+        GroupedCell(
+          child: NoticeBlock(
             title: l10n.worksTitle,
             body: l10n.worksBody,
             isProblem: false,
           ),
-          Spacing.v8,
-          NoticeBlock(
+        ),
+        GroupedCell(
+          child: NoticeBlock(
             title: l10n.limitsTitle,
             body: l10n.limitsBody,
             isProblem: false,
           ),
-          if (host == .macos) ...[
-            Spacing.v8,
-            NoticeBlock(
+        ),
+        if (host == .macos)
+          GroupedCell(
+            child: NoticeBlock(
               title: l10n.macNoteTitle,
               body: l10n.macNote,
               isProblem: false,
             ),
-          ],
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
 
+/// The link's state in words, with what to do about it.
 class _Link extends StatelessWidget {
   const _Link();
 
@@ -159,18 +199,16 @@ class _Link extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: .stretch,
+      mainAxisSize: .min,
       children: [
-        Spacing.v4,
         ...content,
         if (openFailed) ...[
-          Spacing.v8,
+          if (content.isNotEmpty) Spacing.v8,
           Text(
             l10n.openFailed,
             style: typography.caption1.copyWith(color: palette.danger),
           ),
         ],
-        if (link.phase != .unsupported && link.phase != .notConfigured)
-          const _Options(),
       ],
     );
   }
@@ -343,52 +381,6 @@ class _Pairing extends StatelessWidget {
             actionLabel: l10n.deviceUse,
             onAction: () => unawaited(viewModel.choose(device)),
           ),
-      ],
-    );
-  }
-}
-
-class _Options extends StatelessWidget {
-  const _Options();
-
-  @override
-  Widget build(BuildContext context) {
-    final showNotifications = context.select<IphoneSettingsViewModel, bool>(
-      (viewModel) => viewModel.showNotifications,
-    );
-    final showMedia = context.select<IphoneSettingsViewModel, bool>(
-      (viewModel) => viewModel.showMedia,
-    );
-    final hidePreviews = context.select<IphoneSettingsViewModel, bool>(
-      (viewModel) => viewModel.hidePreviews,
-    );
-    final viewModel = context.read<IphoneSettingsViewModel>();
-    final l10n = context.iphoneL10n;
-
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        Spacing.v8,
-        SettingSwitchRow(
-          title: l10n.settingsNotifications,
-          body: l10n.settingsNotificationsBody,
-          value: showNotifications,
-          onChanged: (value) =>
-              unawaited(viewModel.setShowNotifications(value)),
-        ),
-        if (showNotifications)
-          SettingSwitchRow(
-            title: l10n.settingsHidePreviews,
-            body: l10n.settingsHidePreviewsBody,
-            value: hidePreviews,
-            onChanged: (value) => unawaited(viewModel.setHidePreviews(value)),
-          ),
-        SettingSwitchRow(
-          title: l10n.settingsMedia,
-          body: l10n.settingsMediaBody,
-          value: showMedia,
-          onChanged: (value) => unawaited(viewModel.setShowMedia(value)),
-        ),
       ],
     );
   }

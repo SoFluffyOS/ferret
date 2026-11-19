@@ -24,7 +24,10 @@ class BrowserClientRow extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
 
     return Padding(
-      padding: EdgeInsets.only(top: Spacing.d8),
+      padding: EdgeInsets.symmetric(
+        horizontal: PageInsets.row,
+        vertical: Spacing.d8,
+      ),
       child: Row(
         children: [
           Icon(LucideIcons.globe, size: Spacing.d18, color: palette.mutedText),

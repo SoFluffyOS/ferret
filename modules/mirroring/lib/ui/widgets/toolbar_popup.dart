@@ -71,10 +71,10 @@ class _ToolbarPopupState extends State<ToolbarPopup> {
                     gap: Spacing.d8,
                   ),
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
+                    decoration: ShapeDecoration(
                       color: palette.surface,
-                      borderRadius: BorderRadius.circular(Spacing.d12),
-                      boxShadow: [
+                      shape: Corners.shape(Corners.card),
+                      shadows: [
                         BoxShadow(
                           color: palette.text.withValues(alpha: 0.2),
                           blurRadius: Spacing.d24,

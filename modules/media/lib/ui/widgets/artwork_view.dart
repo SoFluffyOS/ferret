@@ -35,8 +35,8 @@ class ArtworkView extends StatelessWidget {
       _ => placeholder,
     };
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(Spacing.d8),
+    return ClipRSuperellipse(
+      borderRadius: Corners.radius(Spacing.d8),
       child: SizedBox.square(dimension: size, child: image),
     );
   }

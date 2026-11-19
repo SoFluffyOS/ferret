@@ -52,30 +52,31 @@ class _HostSettingsFrameState extends State<HostSettingsFrame> {
     final viewModel = context.read<HostViewModel>();
     final l10n = context.remoteInputL10n;
 
-    return SurfaceCard(
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          SettingSwitchRow(
-            title: l10n.settingsEnabled,
-            body: l10n.settingsEnabledBody,
-            value: enabled,
-            onChanged: (value) => unawaited(viewModel.setEnabled(value)),
-          ),
-          if (enabled && status != null) ...[
-            Spacing.v8,
-            _Status(status: status),
-          ],
-          Spacing.v12,
-          Text(
-            l10n.settingsPerDevice,
-            style: context.fluffyTheme.typography.caption1.copyWith(
-              color: context.palette.mutedText,
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        GroupedCard(
+          children: [
+            SettingSwitchRow(
+              title: l10n.settingsEnabled,
+              body: l10n.settingsEnabledBody,
+              value: enabled,
+              onChanged: (value) => unawaited(viewModel.setEnabled(value)),
             ),
-          ),
-          const _History(),
-        ],
-      ),
+            if (enabled && status != null)
+              GroupedCell(child: _Status(status: status)),
+            GroupedCell(
+              child: Text(
+                l10n.settingsPerDevice,
+                style: context.fluffyTheme.typography.caption1.copyWith(
+                  color: context.palette.mutedText,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const _History(),
+      ],
     );
   }
 }
@@ -133,27 +134,29 @@ class _History extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         SectionTitle(l10n.settingsHistoryTitle),
-        if (history.isEmpty)
-          Text(
-            l10n.settingsHistoryEmpty,
-            style: typography.caption1.copyWith(color: palette.mutedText),
-          ),
-        for (final record in history.take(HostSettingsFrame.historyShown))
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.d2),
-            child: Text(
-              l10n.audit(record),
-              style: typography.body2.copyWith(color: palette.text),
-            ),
-          ),
-        if (history.isNotEmpty) ...[
-          Spacing.v8,
-          Button(
-            variant: .ghost,
-            label: l10n.clearHistory,
-            onPressed: () => unawaited(viewModel.clearHistory()),
-          ),
-        ],
+        GroupedCard(
+          children: [
+            if (history.isEmpty)
+              GroupedCell(
+                child: Text(
+                  l10n.settingsHistoryEmpty,
+                  style: typography.caption1.copyWith(
+                    color: palette.mutedText,
+                  ),
+                ),
+              ),
+            for (final record in history.take(HostSettingsFrame.historyShown))
+              GroupedRow(title: l10n.audit(record)),
+            if (history.isNotEmpty)
+              GroupedCell(
+                child: Button(
+                  variant: .ghost,
+                  label: l10n.clearHistory,
+                  onPressed: () => unawaited(viewModel.clearHistory()),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
