@@ -16,6 +16,7 @@ import 'package:shell/ui/frames/offers_card.dart';
 import 'package:shell/ui/frames/successors_frame.dart';
 import 'package:shell/ui/pages/device_access_page.dart';
 import 'package:shell/ui/pages/doctor_page.dart';
+import 'package:shell/ui/pages/webcam_help_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -74,6 +75,19 @@ class DevicePage extends StatelessWidget {
               ferretRoute<void>(DeviceAccessPage(deviceId: deviceId)),
             ),
           ),
+          if (WebcamHelpPage.fits(device, engine.device))
+            NavRow(
+              title: l10n.webcamRow(device.name),
+              place: (icon: LucideIcons.webcam, color: .orange),
+              onTap: () => Navigator.of(context).push(
+                ferretRoute<void>(
+                  WebcamHelpPage(
+                    deviceName: device.name,
+                    here: l10n.here(engine.device),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
       Spacing.v8,

@@ -2027,4 +2027,41 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String doctorHotspotHere(String device) {
     return 'No shared Wi-Fi? Turn on this phone\'s hotspot and join it from $device. Ferret works over it, and what goes between your devices uses no mobile data.';
   }
+
+  @override
+  String webcamRow(String device) {
+    return 'Use $device as a webcam';
+  }
+
+  @override
+  String webcamTitle(String device) {
+    return '$device as a webcam';
+  }
+
+  @override
+  String get webcamIntro =>
+      'Many Android phones with Android 14 or later can be a USB webcam all by themselves. No app, no driver.';
+
+  @override
+  String webcamSteps(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '1. Plug $device into $_temp0 with a USB cable.\n2. On $device, pull down from the top and tap the USB notification.\n3. Choose Webcam.\n4. In your video app, pick the phone as the camera.';
+  }
+
+  @override
+  String webcamMissing(String device) {
+    return 'No Webcam in that list? $device doesn\'t have it yet. Pixel phones from the Pixel 6 on do.';
+  }
+
+  @override
+  String get webcamNotOverWifi =>
+      'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.';
 }

@@ -2021,4 +2021,41 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String doctorHotspotHere(String device) {
     return 'Không có Wi-Fi chung? Bật điểm phát sóng của điện thoại này rồi kết nối $device vào đó. Ferret hoạt động qua điểm phát sóng, và dữ liệu giữa các thiết bị của bạn không dùng dữ liệu di động.';
   }
+
+  @override
+  String webcamRow(String device) {
+    return 'Dùng $device làm webcam';
+  }
+
+  @override
+  String webcamTitle(String device) {
+    return '$device làm webcam';
+  }
+
+  @override
+  String get webcamIntro =>
+      'Nhiều điện thoại Android chạy Android 14 trở lên tự làm webcam USB được. Không cần ứng dụng, không cần driver.';
+
+  @override
+  String webcamSteps(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '1. Cắm $device vào $_temp0 bằng cáp USB.\n2. Trên $device, vuốt từ trên xuống và chạm vào thông báo USB.\n3. Chọn Webcam.\n4. Trong ứng dụng gọi video, chọn điện thoại làm camera.';
+  }
+
+  @override
+  String webcamMissing(String device) {
+    return 'Không thấy Webcam trong danh sách? $device chưa có tính năng này. Điện thoại Pixel từ Pixel 6 trở đi đều có.';
+  }
+
+  @override
+  String get webcamNotOverWifi =>
+      'Ferret chưa gửi camera của điện thoại qua Wi-Fi.';
 }

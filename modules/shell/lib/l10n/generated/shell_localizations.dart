@@ -2905,6 +2905,42 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'No shared Wi-Fi? Turn on this phone\'s hotspot and join it from {device}. Ferret works over it, and what goes between your devices uses no mobile data.'**
   String doctorHotspotHere(String device);
+
+  /// No description provided for @webcamRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {device} as a webcam'**
+  String webcamRow(String device);
+
+  /// No description provided for @webcamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} as a webcam'**
+  String webcamTitle(String device);
+
+  /// No description provided for @webcamIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Many Android phones with Android 14 or later can be a USB webcam all by themselves. No app, no driver.'**
+  String get webcamIntro;
+
+  /// No description provided for @webcamSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Plug {device} into {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} with a USB cable.\n2. On {device}, pull down from the top and tap the USB notification.\n3. Choose Webcam.\n4. In your video app, pick the phone as the camera.'**
+  String webcamSteps(String device, String here);
+
+  /// No description provided for @webcamMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Webcam in that list? {device} doesn\'t have it yet. Pixel phones from the Pixel 6 on do.'**
+  String webcamMissing(String device);
+
+  /// No description provided for @webcamNotOverWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.'**
+  String get webcamNotOverWifi;
 }
 
 class _ShellLocalizationsDelegate

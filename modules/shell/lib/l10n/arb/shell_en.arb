@@ -1513,5 +1513,42 @@
         "type": "String"
       }
     }
-  }
+  },
+  "webcamRow": "Use {device} as a webcam",
+  "@webcamRow": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "webcamTitle": "{device} as a webcam",
+  "@webcamTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "webcamIntro": "Many Android phones with Android 14 or later can be a USB webcam all by themselves. No app, no driver.",
+  "webcamSteps": "1. Plug {device} into {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} with a USB cable.\n2. On {device}, pull down from the top and tap the USB notification.\n3. Choose Webcam.\n4. In your video app, pick the phone as the camera.",
+  "@webcamSteps": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "webcamMissing": "No Webcam in that list? {device} doesn't have it yet. Pixel phones from the Pixel 6 on do.",
+  "@webcamMissing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "webcamNotOverWifi": "Ferret doesn't send a phone's camera over Wi-Fi yet."
 }

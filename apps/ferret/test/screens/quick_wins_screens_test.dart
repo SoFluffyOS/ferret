@@ -62,6 +62,28 @@ final _screens = <String, _Script>{
     clipboard.appActions(home, rig.featureContext).single.onPressed?.call();
     await rig.settle(tester);
   },
+  'webcam_row': (tester, rig, features) async {
+    final phoneId =
+        await rig.pairConnectedPhone(
+          tester,
+          phoneFeatures: phoneFeatures(),
+          name: 'Pixel 7',
+        ) ??
+        '';
+    await rig.open(tester, DevicePage(deviceId: phoneId));
+    await tester.scrollUntilVisible(
+      find.text('Use Pixel 7 as a webcam'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await rig.settle(tester);
+  },
+  'webcam_help': (tester, rig, features) async {
+    await rig.open(
+      tester,
+      const WebcamHelpPage(deviceName: 'Pixel 7', here: 'mac'),
+    );
+  },
 };
 
 Envelope _clip(int index, String text, String from, {bool sensitive = false}) {
