@@ -1,0 +1,16 @@
+{
+  "@@locale": "vi",
+  "@@x-translation": "Machine-assisted (Claude), not yet reviewed by a native speaker",
+  "title": "Tập lệnh",
+  "noticeTitle": "{title} · {device}",
+  "noticeCover": "Thông báo từ một tập lệnh trên {device}",
+  "permissionLabel": "Cho phép tập lệnh trên {device} hiện thông báo ở đây",
+  "permissionDetail": "Dành cho ferret-cli notify. Tắt cho đến khi bạn bật.",
+  "settingsIntro": "Tập lệnh trên máy tính này có thể theo dõi Ferret bằng ferret-cli watch, và phản hồi bằng hook: một tệp chạy được mang tên một sự kiện, như device.connected, trong thư mục bên dưới.",
+  "hooksFolder": "Thư mục hook",
+  "hooksNone": "Chưa có hook nào.",
+  "hooksActive": "Hook đang chạy: {events}",
+  "hooksPrivacy": "Hook không bao giờ nhận văn bản đã sao chép hay nội dung thông báo, và không nhận tên khi bản xem trước từ thiết bị đó đang tắt.",
+  "copyPath": "Sao chép đường dẫn",
+  "checkAgain": "Kiểm tra lại"
+}

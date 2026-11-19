@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ferret.scripting.v1;
+
+// A short notice a script on the sending computer wants shown on the
+// receiving device, from `ferret-cli notify`. Expects a `ScriptNoticeReply`.
+// The receiver shows it only when its owner allowed scripts from the
+// sending device (off by default), and drops floods.
+message ScriptNotice {
+  // At most 120 characters; longer is cut.
+  string title = 1;
+  // At most 500 characters; longer is cut.
+  string body = 2;
+}
+
+// What came of a `ScriptNotice`.
+message ScriptNoticeReply {
+  ScriptNoticeResult result = 1;
+}
+
+enum ScriptNoticeResult {
+  SCRIPT_NOTICE_RESULT_UNSPECIFIED = 0;
+  // The receiver showed it.
+  SCRIPT_NOTICE_RESULT_SHOWN = 1;
+  // Its owner hasn't allowed scripts from the sending device to notify.
+  SCRIPT_NOTICE_RESULT_NOT_ALLOWED = 2;
+  // Too many notices came in a short time, so this one was dropped.
+  SCRIPT_NOTICE_RESULT_TOO_MANY = 3;
+  // It had no title and no body.
+  SCRIPT_NOTICE_RESULT_EMPTY = 4;
+}

@@ -1,0 +1,31 @@
+{
+  "@@locale": "en",
+  "title": "Scripts",
+  "noticeTitle": "{title} · {device}",
+  "@noticeTitle": {
+    "description": "A notice a script on another device sent. title is what the script wrote, device the computer it ran on.",
+    "placeholders": {"title": {"type": "String"}, "device": {"type": "String"}}
+  },
+  "noticeCover": "Notice from a script on {device}",
+  "@noticeCover": {
+    "description": "Shown instead of a script's notice while previews from that device are hidden.",
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "permissionLabel": "Let scripts on {device} show notices here",
+  "@permissionLabel": {
+    "description": "Switch on a device's page. Off by default.",
+    "placeholders": {"device": {"type": "String"}}
+  },
+  "permissionDetail": "For ferret-cli notify. Off until you turn it on.",
+  "settingsIntro": "Scripts on this computer can follow what Ferret does with ferret-cli watch, and react to it with hooks: an executable named after an event, such as device.connected, in the folder below.",
+  "hooksFolder": "Hooks folder",
+  "hooksNone": "No hooks yet.",
+  "hooksActive": "Hooks that run: {events}",
+  "@hooksActive": {
+    "description": "The list of events that have a hook script, such as 'device.connected, battery'.",
+    "placeholders": {"events": {"type": "String"}}
+  },
+  "hooksPrivacy": "Hooks never get copied text or notification text, and get no names while previews from that device are off.",
+  "copyPath": "Copy path",
+  "checkAgain": "Check again"
+}
