@@ -231,7 +231,8 @@ class AppControl {
     }
   }
 
-  /// Writes each event to [socket] until the other end hangs up.
+  /// Writes each event to [socket] until the other end hangs up or the
+  /// events end.
   Future<void> _stream(
     Socket socket,
     StreamIterator<String> lines,
@@ -244,13 +245,28 @@ class AppControl {
       return;
     }
 
+    final finished = Completer<void>();
+    void finish() {
+      if (!finished.isCompleted) {
+        finished.complete();
+      }
+    }
+
     final events = watcher(arguments).listen(
       (event) => socket.writeln(jsonEncode(event)),
+      onDone: finish,
     );
+    unawaited(_untilHungUp(lines).whenComplete(finish));
+    await finished.future;
+    await events.cancel();
+    await socket.flush();
+  }
+
+  static Future<void> _untilHungUp(StreamIterator<String> lines) async {
     try {
       while (await lines.moveNext()) {}
-    } finally {
-      await events.cancel();
+    } on Object {
+      return;
     }
   }
 

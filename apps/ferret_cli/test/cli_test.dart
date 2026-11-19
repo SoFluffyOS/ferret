@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -172,6 +173,124 @@ void main() {
 
     test('ring says when the app is not running', () async {
       final exit = await buildRunner(environment).run(['ring', 'Pixel']);
+
+      expect(exit, ExitCodes.unavailable);
+      expect(err.toString(), contains("isn't running"));
+    });
+
+    test('open asks the running app to open the link there', () async {
+      final running = AppControl(home.path);
+      final asked = <Map<String, Object?>>[];
+      await running.listen((command, arguments) async {
+        asked.add({'command': command, ...arguments});
+        return {'ok': true, 'device': 'Pixel 7', 'result': 'opened'};
+      });
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['open', 'Pixel', '7', 'https://example.com']);
+
+      expect(exit, ExitCodes.ok);
+      expect(asked, [
+        {
+          'command': 'open',
+          'device': 'Pixel 7',
+          'link': 'https://example.com',
+        },
+      ]);
+      expect(out.toString(), contains('Opened on Pixel 7.'));
+    });
+
+    test('notify says how to allow it when the device said no', () async {
+      final running = AppControl(home.path);
+      final asked = <Map<String, Object?>>[];
+      await running.listen((command, arguments) async {
+        asked.add({'command': command, ...arguments});
+        return {'ok': false, 'device': 'Pixel 7', 'result': 'not_allowed'};
+      });
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['notify', 'Pixel 7', 'Build done', 'All', 'green']);
+
+      expect(exit, ExitCodes.failed);
+      expect(asked.single, {
+        'command': 'notify',
+        'device': 'Pixel 7',
+        'title': 'Build done',
+        'body': 'All green',
+      });
+      expect(err.toString(), contains('show notices here'));
+    });
+
+    test('watch --json prints each event as one line of JSON', () async {
+      final running = AppControl(home.path);
+      final events = StreamController<Map<String, Object?>>();
+      final asked = <Map<String, Object?>>[];
+      await running.listen(
+        (_, _) async => {'ok': true},
+        watch: (arguments) {
+          asked.add(arguments);
+          return events.stream;
+        },
+      );
+      addTearDown(running.dispose);
+
+      final exit = buildRunner(
+        environment,
+      ).run(['watch', '--json', '--type', 'device,battery']);
+      events
+        ..add({'v': 1, 'type': 'ready', 'devices': <Object?>[]})
+        ..add({'v': 1, 'type': 'battery', 'percent': 42});
+      await events.close();
+
+      expect(await exit, ExitCodes.unavailable);
+      final lines = const LineSplitter().convert(out.toString());
+      expect(lines, hasLength(2));
+      expect(jsonDecode(lines.last), {
+        'v': 1,
+        'type': 'battery',
+        'percent': 42,
+      });
+      expect(asked.single, {
+        'include_content': false,
+        'types': ['device', 'battery'],
+      });
+    });
+
+    test('watch prints events in words and stops when asked', () async {
+      final running = AppControl(home.path);
+      final events = StreamController<Map<String, Object?>>.broadcast();
+      await running.listen(
+        (_, _) async => {'ok': true},
+        watch: (_) => events.stream,
+      );
+      addTearDown(running.dispose);
+      final stop = StreamController<Object?>();
+
+      final exit = buildRunner(environment, stop: stop.stream).run(['watch']);
+      for (var attempt = 0; attempt < 100 && !events.hasListener; attempt++) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      events.add({
+        'v': 1,
+        'type': 'device.connected',
+        'at': '2026-11-19T09:30:00.000Z',
+        'device': {'id': 'aaaa', 'name': 'Pixel 7'},
+      });
+      for (var attempt = 0; attempt < 100 && out.isEmpty; attempt++) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      stop.add(null);
+
+      expect(await exit, ExitCodes.ok);
+      expect(out.toString(), contains('Pixel 7 connected'));
+    });
+
+    test('watch says when the app is not running', () async {
+      final exit = await buildRunner(environment).run(['watch']);
 
       expect(exit, ExitCodes.unavailable);
       expect(err.toString(), contains("isn't running"));

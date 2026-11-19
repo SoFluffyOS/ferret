@@ -12,18 +12,23 @@ export 'package:ferret_cli/exit_codes.dart';
 
 const String cliVersion = '0.1.0';
 
-CommandRunner<int> buildRunner(CliEnvironment environment) =>
-    _FerretRunner(environment)
-      ..addCommand(ActionCommand(environment))
-      ..addCommand(ClipboardCommand(environment))
-      ..addCommand(DaemonCommand(environment))
-      ..addCommand(DevicesCommand(environment))
-      ..addCommand(OfferCommand(environment))
-      ..addCommand(PairCommand(environment))
-      ..addCommand(RingCommand(environment))
-      ..addCommand(SendCommand(environment))
-      ..addCommand(UnpairCommand(environment))
-      ..addCommand(WakeCommand(environment));
+CommandRunner<int> buildRunner(
+  CliEnvironment environment, {
+  Stream<Object?>? stop,
+}) => _FerretRunner(environment)
+  ..addCommand(ActionCommand(environment))
+  ..addCommand(ClipboardCommand(environment))
+  ..addCommand(DaemonCommand(environment))
+  ..addCommand(DevicesCommand(environment))
+  ..addCommand(NotifyCommand(environment))
+  ..addCommand(OfferCommand(environment))
+  ..addCommand(OpenCommand(environment))
+  ..addCommand(PairCommand(environment))
+  ..addCommand(RingCommand(environment))
+  ..addCommand(SendCommand(environment))
+  ..addCommand(UnpairCommand(environment))
+  ..addCommand(WakeCommand(environment))
+  ..addCommand(WatchCommand(environment, stop: stop));
 
 class _FerretRunner extends CommandRunner<int> {
   _FerretRunner(this._environment)

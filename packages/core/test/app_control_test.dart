@@ -70,6 +70,25 @@ void main() {
     expect(received.last, {'type': 'battery', 'percent': 79});
   });
 
+  test('watch ends when the app stops sending events', () async {
+    final running = AppControl(root.path);
+    final events = StreamController<Map<String, Object?>>();
+    await running.listen(
+      (_, _) async => {'ok': true},
+      watch: (_) => events.stream,
+    );
+    addTearDown(running.dispose);
+
+    final stream = await AppControl(root.path).watch();
+    final received = stream?.toList();
+    events.add({'type': 'ready'});
+    await events.close();
+
+    expect(await received, [
+      {'type': 'ready'},
+    ]);
+  });
+
   test('watching with no app running gives null', () async {
     expect(await AppControl(root.path).watch(), isNull);
   });

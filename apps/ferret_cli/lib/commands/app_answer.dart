@@ -69,6 +69,8 @@ abstract final class AppAnswer {
       ('no_clip', _) => 'No clip has arrived from your devices yet.',
       ('nothing_to_send', _) => 'There is no text to send.',
       ('not_supported', _) => "This Ferret can't do that.",
+      ('not_a_link', _) =>
+        "That isn't a web or map link. Start it with https:// or geo:.",
       ('unknown_action', _) =>
         '$device has no action by that name. '
             '"ferret-cli action <computer>" lists them.',
@@ -87,6 +89,14 @@ abstract final class AppAnswer {
       (_, 'tooLarge') => 'That text is over the size limit.',
       (_, 'sensitive') => 'That text is marked private, so it stays here.',
       (_, 'unreachable') => "$device didn't answer.",
+      (_, 'not_allowed') =>
+        "$device doesn't take notices from this computer's scripts yet. On "
+            "$device, open this computer's page and turn on Let scripts on "
+            'it show notices here.',
+      (_, 'too_many') =>
+        '$device got too many notices in a minute. Try again in a moment.',
+      (_, 'not_supported') =>
+        "Ferret on $device can't do that. Update it there.",
       _ => "It didn't work.",
     };
   }
