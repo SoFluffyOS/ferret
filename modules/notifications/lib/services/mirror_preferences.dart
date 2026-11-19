@@ -11,6 +11,7 @@ class MirrorPreferences {
   static const appFilterKey = 'notifications.app_filter';
   static const allowedAppsKey = 'notifications.allowed_apps';
   static const excludedAppsKey = 'notifications.excluded_apps';
+  static const hideCodesKey = 'notifications.hide_codes';
 
   final SettingsStore _settings;
 
@@ -19,6 +20,10 @@ class MirrorPreferences {
 
   /// Pause mirroring while the phone is in use. On by default.
   bool get skipWhileUsing => _settings.get<bool>(skipWhileUsingKey) ?? true;
+
+  /// Holds back the text of notifications that carry a one-time code, so
+  /// sign-in and bank codes stay on the phone. On by default.
+  bool get hideCodes => _settings.get<bool>(hideCodesKey) ?? true;
 
   /// Every app by default. Picks saved before the filter existed keep
   /// meaning "only these" until [migrate] looks at them.
@@ -50,6 +55,8 @@ class MirrorPreferences {
 
   Future<void> setSkipWhileUsing(bool value) =>
       _settings.set(skipWhileUsingKey, value);
+
+  Future<void> setHideCodes(bool value) => _settings.set(hideCodesKey, value);
 
   Future<void> setAppFilter(AppFilter filter) =>
       _settings.set(appFilterKey, filter.storedName);

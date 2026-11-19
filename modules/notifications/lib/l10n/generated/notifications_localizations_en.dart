@@ -357,4 +357,14 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get hideCodes => 'Hide one-time codes';
+
+  @override
+  String get hideCodesDetail =>
+      'Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".';
+
+  @override
+  String get codeHidden => 'Code hidden. Open it on the phone.';
 }

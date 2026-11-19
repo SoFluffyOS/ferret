@@ -129,7 +129,11 @@ class InboxViewModel extends ChangeNotifier {
     }
   }
 
-  void _onPosted(MirroredNotification notification) {
+  void _onPosted(MirroredNotification posted) {
+    final notification = switch (posted.textHidden) {
+      true => posted.withText(_strings().codeHidden),
+      false => posted,
+    };
     final deviceId = notification.deviceId;
     final noticeId = _noticeId(deviceId, notification.key);
     final items = _byDevice.putIfAbsent(deviceId, () => []);

@@ -118,6 +118,7 @@ class NotificationItem extends $pb.GeneratedMessage {
     $core.List<$core.int>? appIconPng,
     $core.bool? isConversation,
     $core.Iterable<NotificationAction>? actions,
+    $core.bool? textHidden,
   }) {
     final result = NotificationItem._();
     if (key != null) result.key = key;
@@ -129,6 +130,7 @@ class NotificationItem extends $pb.GeneratedMessage {
     if (appIconPng != null) result.appIconPng = appIconPng;
     if (isConversation != null) result.isConversation = isConversation;
     if (actions != null) result.actions.addAll(actions);
+    if (textHidden != null) result.textHidden = textHidden;
     return result;
   }
 
@@ -157,6 +159,7 @@ class NotificationItem extends $pb.GeneratedMessage {
     ..aOB(8, _omitFieldNames ? '' : 'isConversation')
     ..pPM<NotificationAction>(9, _omitFieldNames ? '' : 'actions',
         subBuilder: NotificationAction.$_createMessage)
+    ..aOB(10, _omitFieldNames ? '' : 'textHidden')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -261,6 +264,18 @@ class NotificationItem extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(9)
   $pb.PbList<NotificationAction> get actions => $_getList(8);
+
+  /// The source held back the text (and a title that carried it) because it
+  /// looks like a one-time code, such as a sign-in or bank code. Receivers
+  /// say so instead of showing an empty line.
+  @$pb.TagNumber(10)
+  $core.bool get textHidden => $_getBF(9);
+  @$pb.TagNumber(10)
+  set textHidden($core.bool value) => $_setBool(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasTextHidden() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearTextHidden() => $_clearField(10);
 }
 
 /// A new or updated notification. Sent without expecting a reply, only for

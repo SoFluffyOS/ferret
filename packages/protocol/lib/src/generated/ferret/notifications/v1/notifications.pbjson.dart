@@ -66,6 +66,7 @@ const NotificationItem$json = {
       '6': '.ferret.notifications.v1.NotificationAction',
       '10': 'actions'
     },
+    {'1': 'text_hidden', '3': 10, '4': 1, '5': 8, '10': 'textHidden'},
   ],
 };
 
@@ -76,7 +77,8 @@ final $typed_data.Uint8List notificationItemDescriptor = $convert.base64Decode(
     'UgV0aXRsZRISCgR0ZXh0GAUgASgJUgR0ZXh0EiAKDHBvc3RlZF9hdF9tcxgGIAEoA1IKcG9zdG'
     'VkQXRNcxIgCgxhcHBfaWNvbl9wbmcYByABKAxSCmFwcEljb25QbmcSJwoPaXNfY29udmVyc2F0'
     'aW9uGAggASgIUg5pc0NvbnZlcnNhdGlvbhJFCgdhY3Rpb25zGAkgAygLMisuZmVycmV0Lm5vdG'
-    'lmaWNhdGlvbnMudjEuTm90aWZpY2F0aW9uQWN0aW9uUgdhY3Rpb25z');
+    'lmaWNhdGlvbnMudjEuTm90aWZpY2F0aW9uQWN0aW9uUgdhY3Rpb25zEh8KC3RleHRfaGlkZGVu'
+    'GAogASgIUgp0ZXh0SGlkZGVu');
 
 @$core.Deprecated('Use notificationPostedDescriptor instead')
 const NotificationPosted$json = {

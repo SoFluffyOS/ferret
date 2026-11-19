@@ -151,6 +151,9 @@ class _Ready extends StatelessWidget {
     final skipWhileUsing = context.select<MirrorSetupViewModel, bool>(
       (viewModel) => viewModel.skipWhileUsing,
     );
+    final hideCodes = context.select<MirrorSetupViewModel, bool>(
+      (viewModel) => viewModel.hideCodes,
+    );
     final appFilter = context.select<MirrorSetupViewModel, AppFilter>(
       (viewModel) => viewModel.appFilter,
     );
@@ -170,6 +173,12 @@ class _Ready extends StatelessWidget {
           body: l10n.skipWhileUsingDetail,
           value: skipWhileUsing,
           onChanged: viewModel.setSkipWhileUsing,
+        ),
+        SettingSwitchRow(
+          title: l10n.hideCodes,
+          body: l10n.hideCodesDetail,
+          value: hideCodes,
+          onChanged: viewModel.setHideCodes,
         ),
         GroupedCell(
           child: Button(

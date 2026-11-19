@@ -264,5 +264,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "hideCodes": "Hide one-time codes",
+  "hideCodesDetail": "Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".",
+  "codeHidden": "Code hidden. Open it on the phone."
 }

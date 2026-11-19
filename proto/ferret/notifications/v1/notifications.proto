@@ -28,6 +28,10 @@ message NotificationItem {
   // A message in a conversation, such as a chat.
   bool is_conversation = 8;
   repeated NotificationAction actions = 9;
+  // The source held back the text (and a title that carried it) because it
+  // looks like a one-time code, such as a sign-in or bank code. Receivers
+  // say so instead of showing an empty line.
+  bool text_hidden = 10;
 }
 
 // A new or updated notification. Sent without expecting a reply, only for

@@ -606,6 +606,24 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 notification from {device}} other{{count} notifications from {device}}}'**
   String activityCount(int count, String device);
+
+  /// No description provided for @hideCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide one-time codes'**
+  String get hideCodes;
+
+  /// No description provided for @hideCodesDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".'**
+  String get hideCodesDetail;
+
+  /// No description provided for @codeHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Code hidden. Open it on the phone.'**
+  String get codeHidden;
 }
 
 class _NotificationsLocalizationsDelegate

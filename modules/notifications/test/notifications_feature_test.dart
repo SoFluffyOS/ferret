@@ -216,6 +216,40 @@ void main() {
       expect(posted().last.key, 'game-2');
     });
 
+    test('one-time codes arrive without their text', () async {
+      await connect();
+
+      source
+        ..post(
+          phoneNotification(
+            key: 'bank',
+            title: 'Your bank',
+            text: 'Your verification code is 482 913. Never share it.',
+          ),
+        )
+        ..post(phoneNotification(key: 'chat'));
+
+      await until(() => posted().length == 2);
+      final bank = posted().firstWhere((item) => item.key == 'bank');
+      expect(bank.textHidden, isTrue);
+      expect(bank.text, isEmpty);
+      expect(bank.title, 'Your bank');
+      expect(posted().last.textHidden, isFalse);
+    });
+
+    test('codes come through once the phone allows it', () async {
+      await connect();
+      await phone.settings.set(MirrorPreferences.hideCodesKey, false);
+
+      source.post(
+        phoneNotification(key: 'code', title: 'G-482913 is your code'),
+      );
+
+      await until(() => posted().isNotEmpty);
+      expect(posted().single.textHidden, isFalse);
+      expect(posted().single.title, 'G-482913 is your code');
+    });
+
     test('nothing is mirrored while the phone is in use', () async {
       await connect();
       source.deviceInUse = true;

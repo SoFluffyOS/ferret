@@ -26,6 +26,7 @@ class MirroredNotification {
     required this.isConversation,
     this.actions = const [],
     this.appIcon,
+    this.textHidden = false,
   });
 
   final String deviceId;
@@ -40,6 +41,24 @@ class MirroredNotification {
   final bool isConversation;
   final List<MirroredAction> actions;
   final Uint8List? appIcon;
+
+  /// The phone held the text back: it looked like a one-time code.
+  final bool textHidden;
+
+  /// The same notification with [text] in place of its own.
+  MirroredNotification withText(String text) => MirroredNotification(
+    deviceId: deviceId,
+    key: key,
+    appPackage: appPackage,
+    appName: appName,
+    title: title,
+    text: text,
+    postedAt: postedAt,
+    isConversation: isConversation,
+    actions: actions,
+    appIcon: appIcon,
+    textHidden: textHidden,
+  );
 
   /// The first action that takes typed text, if any.
   MirroredAction? get replyAction {

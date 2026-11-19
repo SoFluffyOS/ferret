@@ -498,6 +498,7 @@ class NotificationsFeature extends Feature implements MirrorControl {
           appName: item.appName,
           title: item.title,
           text: item.text,
+          textHidden: item.textHidden,
           postedAt: .fromMillisecondsSinceEpoch(item.postedAtMs.toInt()),
           isConversation: item.isConversation,
           actions: [
@@ -518,12 +519,22 @@ class NotificationsFeature extends Feature implements MirrorControl {
     PlatformNotification notification, {
     required bool withIcon,
   }) {
+    final hidesCode =
+        preferences.hideCodes &&
+        OneTimeCode.isIn('${notification.title}\n${notification.text}');
     final item = NotificationItem(
       key: notification.key,
       appPackage: notification.packageName,
       appName: notification.appName,
-      title: _clip(notification.title, _maxTitleLength),
-      text: _clip(notification.text, _maxTextLength),
+      title: switch (hidesCode && OneTimeCode.isIn(notification.title)) {
+        true => '',
+        false => _clip(notification.title, _maxTitleLength),
+      },
+      text: switch (hidesCode) {
+        true => '',
+        false => _clip(notification.text, _maxTextLength),
+      },
+      textHidden: hidesCode,
       postedAtMs: Int64(notification.postedAtMs),
       isConversation: notification.isConversation,
       actions: [

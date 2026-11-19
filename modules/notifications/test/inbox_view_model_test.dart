@@ -35,6 +35,27 @@ void main() {
     expect(inbox.byDevice['phone']?.single.key, 'k1');
   });
 
+  test('a held-back code says so instead of an empty line', () {
+    final code = MirroredNotification(
+      deviceId: 'phone',
+      key: 'bank',
+      appPackage: 'com.bank',
+      appName: 'Bank',
+      title: 'Your bank',
+      text: '',
+      postedAt: DateTime(2026, 11, 19),
+      isConversation: false,
+      textHidden: true,
+    );
+    control.emit(MirrorPosted('phone', code));
+
+    expect(
+      notifier.shown.values.single.body,
+      'Code hidden. Open it on the phone.',
+    );
+    expect(inbox.byDevice['phone']?.single.text, startsWith('Code hidden'));
+  });
+
   test('a notification without reply only offers Dismiss', () {
     control.emit(MirrorPosted('phone', mirrored(replyable: false)));
 

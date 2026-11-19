@@ -73,6 +73,8 @@ class MirrorSetupViewModel extends ChangeNotifier {
 
   bool get skipWhileUsing => _preferences.skipWhileUsing;
 
+  bool get hideCodes => _preferences.hideCodes;
+
   AppFilter get appFilter => _preferences.appFilter;
 
   /// How many apps the filter names: muted ones or picked ones.
@@ -118,6 +120,8 @@ class MirrorSetupViewModel extends ChangeNotifier {
 
   Future<void> setSkipWhileUsing(bool value) =>
       _preferences.setSkipWhileUsing(value);
+
+  Future<void> setHideCodes(bool value) => _preferences.setHideCodes(value);
 
   /// Call when the app comes back to the front.
   Future<void> onResumed() async {
