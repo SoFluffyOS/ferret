@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'calls_localizations_en.dart';
+import 'calls_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class CallsLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -118,7 +122,7 @@ abstract class CallsLocalizations {
   /// **'Incoming call on {device}'**
   String incomingOn(String device);
 
-  /// No description provided for @callingOn.
+  /// An outgoing call being dialled by that phone
   ///
   /// In en, this message translates to:
   /// **'Calling from {device}'**
@@ -178,7 +182,7 @@ abstract class CallsLocalizations {
   /// **'On hold with {caller}'**
   String activityOnHold(String caller);
 
-  /// No description provided for @silence.
+  /// Mutes the ringing phone without declining the call
   ///
   /// In en, this message translates to:
   /// **'Silence'**
@@ -340,19 +344,19 @@ abstract class CallsLocalizations {
   /// **'Try again'**
   String get retry;
 
-  /// No description provided for @typeIncoming.
+  /// Call log: type of the call
   ///
   /// In en, this message translates to:
   /// **'Incoming'**
   String get typeIncoming;
 
-  /// No description provided for @typeOutgoing.
+  /// Call log: type of the call
   ///
   /// In en, this message translates to:
   /// **'Outgoing'**
   String get typeOutgoing;
 
-  /// No description provided for @typeMissed.
+  /// Call log: type of the call
   ///
   /// In en, this message translates to:
   /// **'Missed'**
@@ -624,7 +628,7 @@ class _CallsLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_CallsLocalizationsDelegate old) => false;
@@ -635,6 +639,8 @@ CallsLocalizations lookupCallsLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return CallsLocalizationsEn();
+    case 'vi':
+      return CallsLocalizationsVi();
   }
 
   throw FlutterError(

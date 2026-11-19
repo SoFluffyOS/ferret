@@ -18,6 +18,9 @@
   "cancel": "Cancel",
   "openFailed": "This device can't open that. It may need an app that isn't installed here.",
   "openDeferred": "Open Ferret to continue it.",
+  "@openDeferred": {
+    "description": "The item opens once Ferret is in front again"
+  },
   "actionSendLink": "Send a link…",
   "actionSendCurrentPage": "Send current page",
   "sendLinkTitle": "Send to {device}",
@@ -68,6 +71,9 @@
   "currentPageDenied": "macOS blocked Ferret from reading your browser. Allow it in System Settings, Privacy & Security, Automation.",
   "currentPageFailed": "Couldn't read the browser page. Try again, or send the link with “Send a link…”.",
   "settingsPassive": "Suggest what I'm doing",
+  "@settingsPassive": {
+    "description": "Switch: offer the page I have open to my other devices"
+  },
   "settingsPassiveBody": "Your other devices quietly offer to continue the page you're on. Suggestions go away after 5 minutes.",
   "settingsOpenAutomatically": "Open sent links right away",
   "settingsOpenAutomaticallyBody": "When off, things sent here wait in a notification until you open them.",
@@ -85,23 +91,43 @@
   "summaryNoBrowser": "No browser yet",
   "healthUnsupported": "Needs a Ferret update on {name}",
   "@healthUnsupported": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthOpensRightAway": "Links from {name} open right away",
   "@healthOpensRightAway": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthWaits": "Links from {name} wait in a notification",
   "@healthWaits": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthLastSendFailed": "{name} didn't get the last link you sent",
   "@healthLastSendFailed": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "healthLastSendFailedHelp": "On {name}: open Ferret, then send the link again.",
   "@healthLastSendFailedHelp": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "noticeTitle": "Continue “{title}”",
   "@noticeTitle": {

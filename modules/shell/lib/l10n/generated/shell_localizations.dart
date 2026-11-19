@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'shell_localizations_en.dart';
+import 'shell_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class ShellLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @appName.
   ///
@@ -196,7 +200,7 @@ abstract class ShellLocalizations {
   /// **'Connects when Ferret is open on it'**
   String get deviceConnectsWhenOpen;
 
-  /// No description provided for @deviceLastSeen.
+  /// time is a clock time or a date, such as 14:05 or Nov 3
   ///
   /// In en, this message translates to:
   /// **'Last seen {time}'**
@@ -676,7 +680,7 @@ abstract class ShellLocalizations {
   /// **'Ferret is paused'**
   String get pausedTitle;
 
-  /// No description provided for @pausedUntil.
+  /// time is a clock time, such as 14:05
   ///
   /// In en, this message translates to:
   /// **'Until {time}'**
@@ -688,7 +692,7 @@ abstract class ShellLocalizations {
   /// **'Until you resume'**
   String get pausedUntilResume;
 
-  /// No description provided for @resume.
+  /// Button: Ferret runs again after a pause (not the Continue feature)
   ///
   /// In en, this message translates to:
   /// **'Resume'**
@@ -1114,7 +1118,7 @@ abstract class ShellLocalizations {
   /// **'That\'s not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.'**
   String get scanNotFerret;
 
-  /// No description provided for @offersTitle.
+  /// Title of the Home card that suggests features to turn on
   ///
   /// In en, this message translates to:
   /// **'Do more'**
@@ -1762,7 +1766,7 @@ abstract class ShellLocalizations {
   /// **'{on} of {total} on'**
   String settingsCountOn(int on, int total);
 
-  /// No description provided for @settingsNamedOn.
+  /// Settings row value: the names of the features that are on, "Clipboard, Files on"
   ///
   /// In en, this message translates to:
   /// **'{names} on'**
@@ -1894,13 +1898,13 @@ abstract class ShellLocalizations {
   /// **'macOS didn\'t take these keys. Try others.'**
   String get settingsShortcutTaken;
 
-  /// No description provided for @deviceMay.
+  /// Header above the list of features this device is allowed to use: "Pixel 7 may"
   ///
   /// In en, this message translates to:
   /// **'{device} may'**
   String deviceMay(String device);
 
-  /// No description provided for @deviceHow.
+  /// Link on a health row that opens the steps to fix it
   ///
   /// In en, this message translates to:
   /// **'How?'**
@@ -1912,7 +1916,7 @@ abstract class ShellLocalizations {
   /// **'Fix'**
   String get deviceFix;
 
-  /// No description provided for @devicePairedOn.
+  /// date is a full date, such as Nov 3, 2026
   ///
   /// In en, this message translates to:
   /// **'Paired on {date}'**
@@ -1996,7 +2000,7 @@ abstract class ShellLocalizations {
   /// **'Pair with address'**
   String get otherPairAddress;
 
-  /// No description provided for @homeMore.
+  /// Button that opens a menu with more actions (overflow menu)
   ///
   /// In en, this message translates to:
   /// **'More'**
@@ -2020,7 +2024,7 @@ abstract class ShellLocalizations {
   /// **'{count} offline'**
   String devicesOffline(int count);
 
-  /// No description provided for @devicesShow.
+  /// Button that shows the offline devices hidden under a summary line
   ///
   /// In en, this message translates to:
   /// **'Show'**
@@ -2110,7 +2114,7 @@ abstract class ShellLocalizations {
   /// **'Another of your devices is also called {name}. Give this one a name you\'ll recognise.'**
   String deviceSameName(String name);
 
-  /// No description provided for @deviceOwnName.
+  /// On a device page with a nickname: the name the device gives itself
   ///
   /// In en, this message translates to:
   /// **'Calls itself {name}'**
@@ -2254,7 +2258,7 @@ abstract class ShellLocalizations {
   /// **'Nothing yet. Copy something or send a file.'**
   String get activityEmpty;
 
-  /// No description provided for @activityNow.
+  /// Time of an Activity row that just happened
   ///
   /// In en, this message translates to:
   /// **'now'**
@@ -2296,7 +2300,7 @@ abstract class ShellLocalizations {
   /// **'Your devices are offline. Open Ferret on one to reach it.'**
   String get footerNobody;
 
-  /// No description provided for @footerPausedUntil.
+  /// time is a clock time, such as 14:05
   ///
   /// In en, this message translates to:
   /// **'Paused until {time}'**
@@ -2476,7 +2480,7 @@ abstract class ShellLocalizations {
   /// **'Fix Connection…'**
   String get menuFixConnection;
 
-  /// No description provided for @activityPaneNow.
+  /// Section header above what is happening right now (transfers in progress)
   ///
   /// In en, this message translates to:
   /// **'Now'**
@@ -2830,7 +2834,7 @@ abstract class ShellLocalizations {
   /// **'Is this your new {name}?'**
   String replaceTitle(String name);
 
-  /// No description provided for @replaceBody.
+  /// old is the old device name; "since" means since the date shown just above
   ///
   /// In en, this message translates to:
   /// **'{old} hasn\'t been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.'**
@@ -2874,7 +2878,7 @@ class _ShellLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ShellLocalizationsDelegate old) => false;
@@ -2885,6 +2889,8 @@ ShellLocalizations lookupShellLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return ShellLocalizationsEn();
+    case 'vi':
+      return ShellLocalizationsVi();
   }
 
   throw FlutterError(

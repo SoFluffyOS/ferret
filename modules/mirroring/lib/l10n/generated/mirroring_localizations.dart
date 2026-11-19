@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'mirroring_localizations_en.dart';
+import 'mirroring_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,9 +96,12 @@ abstract class MirroringLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
-  /// No description provided for @title.
+  /// Name of the screen mirroring feature (card and settings title)
   ///
   /// In en, this message translates to:
   /// **'Screen'**
@@ -421,7 +425,7 @@ abstract class MirroringLocalizations {
   /// **'{megabits} Mbps'**
   String statusBitrate(String megabits);
 
-  /// No description provided for @statusDropped.
+  /// Video frames dropped, in the stats line
   ///
   /// In en, this message translates to:
   /// **'{count, plural, other{{count} dropped}}'**
@@ -757,19 +761,19 @@ abstract class MirroringLocalizations {
   /// **'Allow Ferret under Local Network in this computer\'s privacy settings.'**
   String get setupPermissionBody;
 
-  /// No description provided for @buttonBack.
+  /// Android navigation button, sent to the mirrored phone
   ///
   /// In en, this message translates to:
   /// **'Back'**
   String get buttonBack;
 
-  /// No description provided for @buttonHome.
+  /// Android navigation button, sent to the mirrored phone
   ///
   /// In en, this message translates to:
   /// **'Home'**
   String get buttonHome;
 
-  /// No description provided for @buttonRecents.
+  /// Android navigation button, sent to the mirrored phone
   ///
   /// In en, this message translates to:
   /// **'Recents'**
@@ -805,7 +809,7 @@ abstract class MirroringLocalizations {
   /// **'{device} wants to show its screen here'**
   String allowTitle(String device);
 
-  /// No description provided for @allow.
+  /// Button that accepts another device's request to see this screen
   ///
   /// In en, this message translates to:
   /// **'Show'**
@@ -841,7 +845,7 @@ abstract class MirroringLocalizations {
   /// **'You can ask again in {time}.'**
   String askAgainIn(String time);
 
-  /// No description provided for @how.
+  /// Button that opens the steps to turn this on
   ///
   /// In en, this message translates to:
   /// **'How'**
@@ -853,13 +857,13 @@ abstract class MirroringLocalizations {
   /// **'Why?'**
   String get why;
 
-  /// No description provided for @wake.
+  /// Button that wakes the phone's screen over the cable
   ///
   /// In en, this message translates to:
   /// **'Wake'**
   String get wake;
 
-  /// No description provided for @notMine.
+  /// Rejects an AirPlay connection from a device that isn't yours
   ///
   /// In en, this message translates to:
   /// **'Not mine'**
@@ -1003,7 +1007,7 @@ abstract class MirroringLocalizations {
   /// **'Volume down'**
   String get buttonVolumeDown;
 
-  /// No description provided for @buttonPower.
+  /// Presses the phone's power button
   ///
   /// In en, this message translates to:
   /// **'Power'**
@@ -1075,7 +1079,7 @@ abstract class MirroringLocalizations {
   /// **'Good'**
   String get qualityGood;
 
-  /// No description provided for @qualitySlow.
+  /// Connection quality level, next to Good and Poor
   ///
   /// In en, this message translates to:
   /// **'Slow'**
@@ -1087,7 +1091,7 @@ abstract class MirroringLocalizations {
   /// **'Poor'**
   String get qualityPoor;
 
-  /// No description provided for @pictureTitle.
+  /// Heading of the video quality panel (the picture of the stream, not a photo)
   ///
   /// In en, this message translates to:
   /// **'Picture'**
@@ -1375,7 +1379,7 @@ abstract class MirroringLocalizations {
   /// **'Pick “{computer}”'**
   String airplayStep3(String computer);
 
-  /// No description provided for @airplayListening.
+  /// This computer waits for an AirPlay connection (not audio)
   ///
   /// In en, this message translates to:
   /// **'Listening…'**
@@ -1515,7 +1519,7 @@ class _MirroringLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_MirroringLocalizationsDelegate old) => false;
@@ -1526,6 +1530,8 @@ MirroringLocalizations lookupMirroringLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return MirroringLocalizationsEn();
+    case 'vi':
+      return MirroringLocalizationsVi();
   }
 
   throw FlutterError(

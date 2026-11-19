@@ -2,18 +2,41 @@
   "@@locale": "en",
   "title": "iPhone",
   "nowPlayingOn": "Now playing on {device}",
-  "@nowPlayingOn": {"placeholders": {"device": {"type": "String"}}},
+  "@nowPlayingOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "pausedOn": "Paused on {device}",
-  "@pausedOn": {"placeholders": {"device": {"type": "String"}}},
+  "@pausedOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "play": "Play",
   "pause": "Pause",
   "next": "Next",
+  "@next": {
+    "description": "Media control: next track"
+  },
   "previous": "Previous",
+  "@previous": {
+    "description": "Media control: previous track"
+  },
   "volumeUp": "Volume up",
   "volumeDown": "Volume down",
   "commandFailed": "{device} didn't answer. Keep it near this computer, then try again.",
-  "@commandFailed": {"placeholders": {"device": {"type": "String"}}},
-
+  "@commandFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "problemBluetoothOffTitle": "Bluetooth is off",
   "problemBluetoothOffBody": "Turn on Bluetooth on this computer to get your iPhone's notifications and media here.",
   "problemUnauthorizedTitle": "Ferret can't use Bluetooth",
@@ -21,15 +44,26 @@
   "problemNoDeviceTitle": "Pick your iPhone",
   "problemNoDeviceBody": "Pair it with this computer, then choose it in Ferret.",
   "problemNotSharedTitle": "{device} isn't sharing with this computer",
-  "@problemNotSharedTitle": {"placeholders": {"device": {"type": "String"}}},
+  "@problemNotSharedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "problemNotSharedBody": "On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications. Not listed there? Pair it again.",
-  "@problemNotSharedBody": {"placeholders": {"device": {"type": "String"}}},
+  "@problemNotSharedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "yourIphone": "iPhone",
   "openBluetoothSettings": "Open Bluetooth settings",
   "openFailed": "Couldn't open the Bluetooth settings. Open them from your system settings.",
   "setUp": "Set up",
   "tryAgain": "Try again",
-
   "settingsEnable": "Connect an iPhone",
   "settingsEnableBody": "Shows its notifications and what it plays, over Bluetooth. Nothing to install on the iPhone.",
   "worksTitle": "What works with an iPhone",
@@ -38,17 +72,40 @@
   "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on this computer. Apple keeps files, clipboard and handoff to its own devices.",
   "macNoteTitle": "Experimental on a Mac",
   "macNote": "It only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone's notifications to itself.",
-
   "statusUnsupported": "This computer has no Bluetooth LE, which the iPhone link needs.",
   "statusNotConfigured": "This build of Ferret isn't allowed to use Bluetooth.",
   "statusConnecting": "Connecting to {device}…",
-  "@statusConnecting": {"placeholders": {"device": {"type": "String"}}},
+  "@statusConnecting": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusConnected": "Connected to {device}",
-  "@statusConnected": {"placeholders": {"device": {"type": "String"}}},
+  "@statusConnected": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusOutOfReach": "{device} is out of reach. Ferret reconnects when it's back.",
-  "@statusOutOfReach": {"placeholders": {"device": {"type": "String"}}},
+  "@statusOutOfReach": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "statusFailed": "Couldn't talk to {device}. Trying again shortly.",
-  "@statusFailed": {"placeholders": {"device": {"type": "String"}}},
+  "@statusFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "summaryUnavailable": "Not available on this computer",
   "@summaryUnavailable": {
     "description": "Settings row value when this computer can't use Bluetooth LE."
@@ -72,10 +129,21 @@
     }
   },
   "notificationsNotShared": "{device} isn't sharing its notifications. On {device}: Settings → Bluetooth, tap ⓘ next to this computer, then turn on Share System Notifications.",
-  "@notificationsNotShared": {"placeholders": {"device": {"type": "String"}}},
+  "@notificationsNotShared": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "mediaNotShared": "{device} isn't sharing what it plays with this computer.",
-  "@mediaNotShared": {"placeholders": {"device": {"type": "String"}}},
-
+  "@mediaNotShared": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "setupTitle": "Pair your iPhone",
   "setupStepUnlock": "On the iPhone: unlock it and open Settings → Bluetooth. Keep that screen open.",
   "setupStepPairWindows": "On this PC, open Bluetooth settings, choose Add device → Bluetooth and pick the iPhone. Confirm the code on both.",
@@ -90,16 +158,23 @@
   "deviceConnected": "Connected",
   "deviceUnnamed": "Unnamed device",
   "forget": "Use another iPhone",
-
   "settingsNotifications": "Show notifications",
   "settingsNotificationsBody": "New ones only. What was already on the iPhone stays there.",
   "settingsMedia": "Media controls",
   "settingsMediaBody": "A card with what the iPhone plays, and its controls.",
   "settingsHidePreviews": "Hide what notifications say",
   "settingsHidePreviewsBody": "Show only which app it is, for when others can see your screen.",
-
   "noticeTitle": "{app}: {title}",
-  "@noticeTitle": {"placeholders": {"app": {"type": "String"}, "title": {"type": "String"}}},
+  "@noticeTitle": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "noticeHidden": "New notification",
   "noticeFromIphone": "iPhone",
   "actionClear": "Clear",
@@ -108,7 +183,19 @@
   "actionCallBack": "Call back",
   "actionAccept": "Accept",
   "actionFailedTitle": "{device} didn't answer",
-  "@actionFailedTitle": {"placeholders": {"device": {"type": "String"}}},
+  "@actionFailedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "actionFailedBody": "That didn't reach {device}. Keep it near this computer, then try again.",
-  "@actionFailedBody": {"placeholders": {"device": {"type": "String"}}}
+  "@actionFailedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

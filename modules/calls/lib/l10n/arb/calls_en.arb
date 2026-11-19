@@ -13,6 +13,7 @@
   },
   "callingOn": "Calling from {device}",
   "@callingOn": {
+    "description": "An outgoing call being dialled by that phone",
     "placeholders": {
       "device": {
         "type": "String"
@@ -75,6 +76,9 @@
     }
   },
   "silence": "Silence",
+  "@silence": {
+    "description": "Mutes the ringing phone without declining the call"
+  },
   "silenced": "Ringer silenced",
   "audioStays": "Audio stays on {device} for now. Talk on {device} or its headset.",
   "@audioStays": {
@@ -199,8 +203,17 @@
   },
   "retry": "Try again",
   "typeIncoming": "Incoming",
+  "@typeIncoming": {
+    "description": "Call log: type of the call"
+  },
   "typeOutgoing": "Outgoing",
+  "@typeOutgoing": {
+    "description": "Call log: type of the call"
+  },
   "typeMissed": "Missed",
+  "@typeMissed": {
+    "description": "Call log: type of the call"
+  },
   "typeRejected": "Declined",
   "privateNumber": "Private number",
   "explainer": "See who's calling and answer from your computer.",

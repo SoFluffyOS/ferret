@@ -2,6 +2,9 @@
   "@@locale": "en",
   "title": "Control",
   "useAsTouchpad": "Control",
+  "@useAsTouchpad": {
+    "description": "Button on the phone that opens the touchpad to control that computer"
+  },
   "back": "Back",
   "consentTitle": "Let {device} control this computer?",
   "@consentTitle": {
@@ -186,12 +189,21 @@
   "keyEnter": "Enter",
   "keyBackspace": "Backspace",
   "keyLeft": "Left",
+  "@keyLeft": {
+    "description": "Arrow key label, read by screen readers"
+  },
   "keyRight": "Right",
   "keyUp": "Up",
   "keyDown": "Down",
   "mediaPrevious": "Previous",
+  "@mediaPrevious": {
+    "description": "Media key: previous track"
+  },
   "mediaPlayPause": "Play or pause",
   "mediaNext": "Next",
+  "@mediaNext": {
+    "description": "Media key: next track"
+  },
   "volumeDown": "Volume down",
   "volumeMute": "Mute",
   "volumeUp": "Volume up",

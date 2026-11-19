@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'drop_localizations_en.dart';
+import 'drop_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +93,12 @@ abstract class DropLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
-  /// No description provided for @title.
+  /// Name of the file-transfer feature (card and settings title)
   ///
   /// In en, this message translates to:
   /// **'Files'**
@@ -172,7 +176,7 @@ abstract class DropLocalizations {
   /// **'{done} of {total} · {eta} left'**
   String activityProgressEta(String done, String total, String eta);
 
-  /// No description provided for @activityWaiting.
+  /// Outgoing transfer waiting for the other device to accept
   ///
   /// In en, this message translates to:
   /// **'Waiting for an answer…'**
@@ -208,7 +212,7 @@ abstract class DropLocalizations {
   /// **'Turn on'**
   String get offerOtherPhonesAction;
 
-  /// No description provided for @clearFinished.
+  /// Button: remove finished transfers from the list
   ///
   /// In en, this message translates to:
   /// **'Clear finished'**
@@ -616,7 +620,7 @@ abstract class DropLocalizations {
   /// **'{model} · {address}'**
   String offerFrom(String model, String address);
 
-  /// No description provided for @offerFingerprint.
+  /// Short code that identifies a LocalSend sender (a certificate fingerprint), not a biometric
   ///
   /// In en, this message translates to:
   /// **'Fingerprint {fingerprint}'**
@@ -844,7 +848,7 @@ abstract class DropLocalizations {
   /// **'Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.'**
   String get settingsQuickShareBody;
 
-  /// No description provided for @healthOk.
+  /// Health line when no transfer happened yet
   ///
   /// In en, this message translates to:
   /// **'Nothing sent yet'**
@@ -916,7 +920,7 @@ abstract class DropLocalizations {
   /// **'On {name}: send the files again.'**
   String healthSendAgainThere(String name);
 
-  /// No description provided for @summaryFolder.
+  /// Settings summary: received files go into this folder
   ///
   /// In en, this message translates to:
   /// **'To {folder}'**
@@ -1044,7 +1048,7 @@ class _DropLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_DropLocalizationsDelegate old) => false;
@@ -1055,6 +1059,8 @@ DropLocalizations lookupDropLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return DropLocalizationsEn();
+    case 'vi':
+      return DropLocalizationsVi();
   }
 
   throw FlutterError(

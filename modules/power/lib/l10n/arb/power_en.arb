@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "title": "Power-ups",
+  "@title": {
+    "description": "Name of the page with extra abilities for Android (Shizuku, root, LSPosed)"
+  },
   "back": "Back",
   "settingsUnsupported": "Power-ups are extra abilities for Android phones. There's nothing to set up here.",
   "settingsSummaryStandard": "Ferret runs as a normal app. With Shizuku or root it can also send your clipboard in the background.",
@@ -65,7 +68,11 @@
   "rootFound": "Root found on this phone.",
   "rootFoundWith": "Root found on this phone ({manager}).",
   "@rootFoundWith": {
-    "placeholders": {"manager": {"type": "String"}}
+    "placeholders": {
+      "manager": {
+        "type": "String"
+      }
+    }
   },
   "rootWarning": "Root gives an app full control of your phone. Turn this on only if you rooted the phone yourself. Ferret uses root for what's listed above and nothing else, and only while this is on.",
   "useRoot": "Use root",

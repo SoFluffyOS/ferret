@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'find_localizations_en.dart';
+import 'find_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +93,12 @@ abstract class FindLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
-  /// No description provided for @title.
+  /// Name of the ring-to-find feature
   ///
   /// In en, this message translates to:
   /// **'Find'**
@@ -124,7 +128,7 @@ abstract class FindLocalizations {
   /// **'Ring again'**
   String get ringAgain;
 
-  /// No description provided for @dismiss.
+  /// Closes the card about a ring you started
   ///
   /// In en, this message translates to:
   /// **'Dismiss'**
@@ -480,7 +484,7 @@ class _FindLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_FindLocalizationsDelegate old) => false;
@@ -491,6 +495,8 @@ FindLocalizations lookupFindLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return FindLocalizationsEn();
+    case 'vi':
+      return FindLocalizationsVi();
   }
 
   throw FlutterError(

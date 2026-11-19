@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "title": "Find",
+  "@title": {
+    "description": "Name of the ring-to-find feature"
+  },
   "ring": "Ring",
   "@ring": {
     "description": "Device action that makes another device ring."
@@ -12,6 +15,9 @@
   "stop": "Stop",
   "ringAgain": "Ring again",
   "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Closes the card about a ring you started"
+  },
   "done": "Done",
   "ringingTitle": "Ferret is ringing",
   "@ringingTitle": {

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'iphone_localizations_en.dart';
+import 'iphone_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class IphoneLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -124,13 +128,13 @@ abstract class IphoneLocalizations {
   /// **'Pause'**
   String get pause;
 
-  /// No description provided for @next.
+  /// Media control: next track
   ///
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
 
-  /// No description provided for @previous.
+  /// Media control: previous track
   ///
   /// In en, this message translates to:
   /// **'Previous'**
@@ -540,7 +544,7 @@ class _IphoneLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_IphoneLocalizationsDelegate old) => false;
@@ -551,6 +555,8 @@ IphoneLocalizations lookupIphoneLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return IphoneLocalizationsEn();
+    case 'vi':
+      return IphoneLocalizationsVi();
   }
 
   throw FlutterError(

@@ -22,6 +22,7 @@
   "deviceConnectsWhenOpen": "Connects when Ferret is open on it",
   "deviceLastSeen": "Last seen {time}",
   "@deviceLastSeen": {
+    "description": "time is a clock time or a date, such as 14:05 or Nov 3",
     "placeholders": {
       "time": {
         "type": "String"
@@ -251,6 +252,7 @@
   "pausedTitle": "Ferret is paused",
   "pausedUntil": "Until {time}",
   "@pausedUntil": {
+    "description": "time is a clock time, such as 14:05",
     "placeholders": {
       "time": {
         "type": "String"
@@ -259,6 +261,9 @@
   },
   "pausedUntilResume": "Until you resume",
   "resume": "Resume",
+  "@resume": {
+    "description": "Button: Ferret runs again after a pause (not the Continue feature)"
+  },
   "pause": "Pause",
   "pauseOneHour": "Pause syncing for 1 hour",
   "pauseUntilTomorrow": "Pause syncing until tomorrow",
@@ -491,6 +496,9 @@
   "scanSection": "Scan",
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",
   "offersTitle": "Do more",
+  "@offersTitle": {
+    "description": "Title of the Home card that suggests features to turn on"
+  },
   "offersSubtitle": "Extras you can turn on. All optional.",
   "onboardWelcomeTitle": "Your devices, working together",
   "onboardWelcomeBody": "Ferret passes what you're doing between your phone and your computer.",
@@ -855,6 +863,7 @@
   },
   "settingsNamedOn": "{names} on",
   "@settingsNamedOn": {
+    "description": "Settings row value: the names of the features that are on, \"Clipboard, Files on\"",
     "placeholders": {
       "names": {
         "type": "String"
@@ -897,6 +906,7 @@
   "settingsShortcutTaken": "macOS didn't take these keys. Try others.",
   "deviceMay": "{device} may",
   "@deviceMay": {
+    "description": "Header above the list of features this device is allowed to use: \"Pixel 7 may\"",
     "placeholders": {
       "device": {
         "type": "String"
@@ -904,9 +914,13 @@
     }
   },
   "deviceHow": "How?",
+  "@deviceHow": {
+    "description": "Link on a health row that opens the steps to fix it"
+  },
   "deviceFix": "Fix",
   "devicePairedOn": "Paired on {date}",
   "@devicePairedOn": {
+    "description": "date is a full date, such as Nov 3, 2026",
     "placeholders": {
       "date": {
         "type": "String"
@@ -941,6 +955,9 @@
   "otherPairLink": "Pair with link",
   "otherPairAddress": "Pair with address",
   "homeMore": "More",
+  "@homeMore": {
+    "description": "Button that opens a menu with more actions (overflow menu)"
+  },
   "homeStatusPaused": "Paused",
   "deviceAttention": "Connected · {feature}: needs attention",
   "@deviceAttention": {
@@ -959,6 +976,9 @@
     }
   },
   "devicesShow": "Show",
+  "@devicesShow": {
+    "description": "Button that shows the offline devices hidden under a summary line"
+  },
   "devicesPin": "Pin to Top",
   "devicesUnpin": "Unpin",
   "devicePinned": "Pinned",
@@ -1020,6 +1040,7 @@
   },
   "deviceOwnName": "Calls itself {name}",
   "@deviceOwnName": {
+    "description": "On a device page with a nickname: the name the device gives itself",
     "placeholders": {
       "name": {
         "type": "String"
@@ -1092,6 +1113,9 @@
   "needsYouTitle": "Needs you",
   "activityEmpty": "Nothing yet. Copy something or send a file.",
   "activityNow": "now",
+  "@activityNow": {
+    "description": "Time of an Activity row that just happened"
+  },
   "activityMinutes": "{count, plural, other{{count} min}}",
   "@activityMinutes": {
     "description": "How long ago, short, on an Activity row: \"5 min\"",
@@ -1124,6 +1148,7 @@
   "footerNobody": "Your devices are offline. Open Ferret on one to reach it.",
   "footerPausedUntil": "Paused until {time}",
   "@footerPausedUntil": {
+    "description": "time is a clock time, such as 14:05",
     "placeholders": {
       "time": {
         "type": "String"
@@ -1184,6 +1209,9 @@
   "menuPreviousDevice": "Previous Device",
   "menuFixConnection": "Fix Connection…",
   "activityPaneNow": "Now",
+  "@activityPaneNow": {
+    "description": "Section header above what is happening right now (transfers in progress)"
+  },
   "activityPaneRecent": "Recent with {device}",
   "@activityPaneRecent": {
     "placeholders": {
@@ -1399,6 +1427,7 @@
   },
   "replaceBody": "{old} hasn't been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.",
   "@replaceBody": {
+    "description": "old is the old device name; \"since\" means since the date shown just above",
     "placeholders": {
       "old": {
         "type": "String"

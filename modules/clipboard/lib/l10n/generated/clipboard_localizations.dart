@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'clipboard_localizations_en.dart';
+import 'clipboard_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +96,10 @@ abstract class ClipboardLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -447,7 +451,7 @@ class _ClipboardLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ClipboardLocalizationsDelegate old) => false;
@@ -458,6 +462,8 @@ ClipboardLocalizations lookupClipboardLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return ClipboardLocalizationsEn();
+    case 'vi':
+      return ClipboardLocalizationsVi();
   }
 
   throw FlutterError(

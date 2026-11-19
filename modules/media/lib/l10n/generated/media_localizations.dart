@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'media_localizations_en.dart';
+import 'media_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +93,12 @@ abstract class MediaLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
-  /// No description provided for @title.
+  /// Name of the feature that shows and controls what plays on your devices
   ///
   /// In en, this message translates to:
   /// **'Media'**
@@ -142,13 +146,13 @@ abstract class MediaLocalizations {
   /// **'Pause'**
   String get pause;
 
-  /// No description provided for @next.
+  /// Media control: next track
   ///
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
 
-  /// No description provided for @previous.
+  /// Media control: previous track
   ///
   /// In en, this message translates to:
   /// **'Previous'**
@@ -274,7 +278,7 @@ abstract class MediaLocalizations {
   /// **'Needs a Ferret update on {name}'**
   String healthUnsupported(String name);
 
-  /// No description provided for @healthShowsTheirs.
+  /// Health line: the other device shares what it plays with this one
   ///
   /// In en, this message translates to:
   /// **'Shares what\'s playing.'**
@@ -408,7 +412,7 @@ class _MediaLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_MediaLocalizationsDelegate old) => false;
@@ -419,6 +423,8 @@ MediaLocalizations lookupMediaLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return MediaLocalizationsEn();
+    case 'vi':
+      return MediaLocalizationsVi();
   }
 
   throw FlutterError(

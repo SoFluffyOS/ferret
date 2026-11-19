@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'remote_input_localizations_en.dart';
+import 'remote_input_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +96,10 @@ abstract class RemoteInputLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -103,7 +107,7 @@ abstract class RemoteInputLocalizations {
   /// **'Control'**
   String get title;
 
-  /// No description provided for @useAsTouchpad.
+  /// Button on the phone that opens the touchpad to control that computer
   ///
   /// In en, this message translates to:
   /// **'Control'**
@@ -511,7 +515,7 @@ abstract class RemoteInputLocalizations {
   /// **'Backspace'**
   String get keyBackspace;
 
-  /// No description provided for @keyLeft.
+  /// Arrow key label, read by screen readers
   ///
   /// In en, this message translates to:
   /// **'Left'**
@@ -535,7 +539,7 @@ abstract class RemoteInputLocalizations {
   /// **'Down'**
   String get keyDown;
 
-  /// No description provided for @mediaPrevious.
+  /// Media key: previous track
   ///
   /// In en, this message translates to:
   /// **'Previous'**
@@ -547,7 +551,7 @@ abstract class RemoteInputLocalizations {
   /// **'Play or pause'**
   String get mediaPlayPause;
 
-  /// No description provided for @mediaNext.
+  /// Media key: next track
   ///
   /// In en, this message translates to:
   /// **'Next'**
@@ -861,7 +865,7 @@ class _RemoteInputLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_RemoteInputLocalizationsDelegate old) => false;
@@ -872,6 +876,8 @@ RemoteInputLocalizations lookupRemoteInputLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return RemoteInputLocalizationsEn();
+    case 'vi':
+      return RemoteInputLocalizationsVi();
   }
 
   throw FlutterError(

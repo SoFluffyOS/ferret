@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "title": "Media",
+  "@title": {
+    "description": "Name of the feature that shows and controls what plays on your devices"
+  },
   "nowPlayingOn": "Now playing on {device}",
   "@nowPlayingOn": {
     "placeholders": {
@@ -33,7 +36,13 @@
   "play": "Play",
   "pause": "Pause",
   "next": "Next",
+  "@next": {
+    "description": "Media control: next track"
+  },
   "previous": "Previous",
+  "@previous": {
+    "description": "Media control: previous track"
+  },
   "continueHere": "Continue here",
   "continueOpening": "Opening…",
   "continueFromStart": "Opens from the start",
@@ -104,6 +113,9 @@
     }
   },
   "healthShowsTheirs": "Shares what's playing.",
+  "@healthShowsTheirs": {
+    "description": "Health line: the other device shares what it plays with this one"
+  },
   "healthNothingPlaying": "Nothing playing right now",
   "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
   "@healthSharesMine": {

@@ -152,6 +152,9 @@
   },
   "pickConversation": "Pick a conversation",
   "composerHint": "Text message",
+  "@composerHint": {
+    "description": "Placeholder in the field where you type a text message"
+  },
   "send": "Send",
   "composerOffline": "Reply once {name} is back.",
   "@composerOffline": {
@@ -239,13 +242,22 @@
   },
   "retrySend": "Send again",
   "discard": "Discard",
+  "@discard": {
+    "description": "Removes a text that failed to send"
+  },
   "kindFailed": "Not delivered",
+  "@kindFailed": {
+    "description": "The phone sent the text but it was not delivered"
+  },
   "kindQueued": "Waiting to send",
   "kindOutbox": "Sending…",
   "photo": "Photo",
   "video": "Video",
   "audio": "Audio",
   "contactCard": "Contact",
+  "@contactCard": {
+    "description": "Attachment type: a shared contact card"
+  },
   "attachment": "Attachment",
   "attachmentFrom": "{name}: Attachment",
   "@attachmentFrom": {

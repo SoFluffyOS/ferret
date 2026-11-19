@@ -6,6 +6,9 @@
   "explainerDetail": "Only new notifications. Nothing leaves your network.",
   "turnOn": "Turn on",
   "turnOff": "Turn off mirroring",
+  "@turnOff": {
+    "description": "Stops sending this phone's notifications to computers (not screen mirroring)"
+  },
   "accessOn": "Notification access is on",
   "accessOff": "Notification access is off",
   "accessStillOff": "Still off. Turn on Ferret on the Notification access screen, then come back.",
@@ -76,6 +79,9 @@
     }
   },
   "thisPhone": "this phone",
+  "@thisPhone": {
+    "description": "Stands in for a device name in the middle of other sentences"
+  },
   "tryAgain": "Try again",
   "back": "Back",
   "noPhone": "Connect your Android phone to see its notifications here.",
@@ -123,6 +129,9 @@
   "clearAll": "Clear all",
   "reply": "Reply",
   "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Dismisses the notification on the phone too"
+  },
   "offline": "offline",
   "whileAway": "{count, plural, =1{1 notification while away} other{{count} notifications while away}}",
   "@whileAway": {

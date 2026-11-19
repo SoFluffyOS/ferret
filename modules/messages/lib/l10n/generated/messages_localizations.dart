@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'messages_localizations_en.dart';
+import 'messages_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +96,10 @@ abstract class MessagesLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -379,7 +383,7 @@ abstract class MessagesLocalizations {
   /// **'Pick a conversation'**
   String get pickConversation;
 
-  /// No description provided for @composerHint.
+  /// Placeholder in the field where you type a text message
   ///
   /// In en, this message translates to:
   /// **'Text message'**
@@ -475,13 +479,13 @@ abstract class MessagesLocalizations {
   /// **'Send again'**
   String get retrySend;
 
-  /// No description provided for @discard.
+  /// Removes a text that failed to send
   ///
   /// In en, this message translates to:
   /// **'Discard'**
   String get discard;
 
-  /// No description provided for @kindFailed.
+  /// The phone sent the text but it was not delivered
   ///
   /// In en, this message translates to:
   /// **'Not delivered'**
@@ -517,7 +521,7 @@ abstract class MessagesLocalizations {
   /// **'Audio'**
   String get audio;
 
-  /// No description provided for @contactCard.
+  /// Attachment type: a shared contact card
   ///
   /// In en, this message translates to:
   /// **'Contact'**
@@ -669,7 +673,7 @@ class _MessagesLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_MessagesLocalizationsDelegate old) => false;
@@ -680,6 +684,8 @@ MessagesLocalizations lookupMessagesLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return MessagesLocalizationsEn();
+    case 'vi':
+      return MessagesLocalizationsVi();
   }
 
   throw FlutterError(

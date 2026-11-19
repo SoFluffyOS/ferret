@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "title": "Screen",
+  "@title": {
+    "description": "Name of the screen mirroring feature (card and settings title)"
+  },
   "showScreen": "Show screen",
   "windowTitle": "{device} — Screen",
   "@windowTitle": {
@@ -338,6 +341,7 @@
   },
   "statusDropped": "{count, plural, other{{count} dropped}}",
   "@statusDropped": {
+    "description": "Video frames dropped, in the stats line",
     "placeholders": {
       "count": {
         "type": "int"
@@ -527,8 +531,17 @@
   "setupPermissionTitle": "Ferret needs your OK on this computer",
   "setupPermissionBody": "Allow Ferret under Local Network in this computer's privacy settings.",
   "buttonBack": "Back",
+  "@buttonBack": {
+    "description": "Android navigation button, sent to the mirrored phone"
+  },
   "buttonHome": "Home",
+  "@buttonHome": {
+    "description": "Android navigation button, sent to the mirrored phone"
+  },
   "buttonRecents": "Recents",
+  "@buttonRecents": {
+    "description": "Android navigation button, sent to the mirrored phone"
+  },
   "receiverAirplayTitle": "Show iPhone and iPad screens here",
   "receiverAirplayBody": "This computer appears under Screen Mirroring in the iPhone's Control Center. You are asked before anything shows.",
   "receiverOtherTitle": "Let other devices send their screen here",
@@ -542,6 +555,9 @@
     }
   },
   "allow": "Show",
+  "@allow": {
+    "description": "Button that accepts another device's request to see this screen"
+  },
   "dontAllow": "Don't allow",
   "close": "Close",
   "showAgain": "Show again",
@@ -555,9 +571,18 @@
     }
   },
   "how": "How",
+  "@how": {
+    "description": "Button that opens the steps to turn this on"
+  },
   "why": "Why?",
   "wake": "Wake",
+  "@wake": {
+    "description": "Button that wakes the phone's screen over the cable"
+  },
   "notMine": "Not mine",
+  "@notMine": {
+    "description": "Rejects an AirPlay connection from a device that isn't yours"
+  },
   "showIt": "Show",
   "startingCableTitle": "Showing {device}…",
   "@startingCableTitle": {
@@ -652,6 +677,9 @@
   "buttonVolumeUp": "Volume up",
   "buttonVolumeDown": "Volume down",
   "buttonPower": "Power",
+  "@buttonPower": {
+    "description": "Presses the phone's power button"
+  },
   "more": "More",
   "tooltipWithKey": "{name} ({key})",
   "@tooltipWithKey": {
@@ -681,8 +709,14 @@
   "keepToolbar": "Keep toolbar visible",
   "qualityGood": "Good",
   "qualitySlow": "Slow",
+  "@qualitySlow": {
+    "description": "Connection quality level, next to Good and Poor"
+  },
   "qualityPoor": "Poor",
   "pictureTitle": "Picture",
+  "@pictureTitle": {
+    "description": "Heading of the video quality panel (the picture of the stream, not a photo)"
+  },
   "pictureTooltip": "Picture: {quality}",
   "@pictureTooltip": {
     "description": "Tooltip of the toolbar button that picks the picture quality",
@@ -819,6 +853,9 @@
     }
   },
   "airplayListening": "Listening…",
+  "@airplayListening": {
+    "description": "This computer waits for an AirPlay connection (not audio)"
+  },
   "airplayListeningLeft": "Listening… {time}",
   "@airplayListeningLeft": {
     "description": "While this computer waits for an AirPlay connection; the time left, \"4:59\"",

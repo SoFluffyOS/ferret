@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'handoff_localizations_en.dart';
+import 'handoff_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +96,10 @@ abstract class HandoffLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -139,7 +143,7 @@ abstract class HandoffLocalizations {
   /// **'This device can\'t open that. It may need an app that isn\'t installed here.'**
   String get openFailed;
 
-  /// No description provided for @openDeferred.
+  /// The item opens once Ferret is in front again
   ///
   /// In en, this message translates to:
   /// **'Open Ferret to continue it.'**
@@ -229,7 +233,7 @@ abstract class HandoffLocalizations {
   /// **'Couldn\'t read the browser page. Try again, or send the link with “Send a link…”.'**
   String get currentPageFailed;
 
-  /// No description provided for @settingsPassive.
+  /// Switch: offer the page I have open to my other devices
   ///
   /// In en, this message translates to:
   /// **'Suggest what I\'m doing'**
@@ -537,7 +541,7 @@ class _HandoffLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_HandoffLocalizationsDelegate old) => false;
@@ -548,6 +552,8 @@ HandoffLocalizations lookupHandoffLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return HandoffLocalizationsEn();
+    case 'vi':
+      return HandoffLocalizationsVi();
   }
 
   throw FlutterError(

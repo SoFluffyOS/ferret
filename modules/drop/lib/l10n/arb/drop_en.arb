@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "title": "Files",
+  "@title": {
+    "description": "Name of the file-transfer feature (card and settings title)"
+  },
   "cardEmpty": "Drop files here to send them to your devices.",
   "cardEmptyPhone": "Send photos and files to your other devices.",
   "otherApps": "Let other phones send you files",
@@ -64,6 +67,9 @@
     }
   },
   "activityWaiting": "Waiting for an answer…",
+  "@activityWaiting": {
+    "description": "Outgoing transfer waiting for the other device to accept"
+  },
   "activityOffer": "{device} wants to send",
   "@activityOffer": {
     "placeholders": {
@@ -87,6 +93,9 @@
   "offerOtherPhonesBody": "Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.",
   "offerOtherPhonesAction": "Turn on",
   "clearFinished": "Clear finished",
+  "@clearFinished": {
+    "description": "Button: remove finished transfers from the list"
+  },
   "transferFiles": "{count, plural, =1{{name}} other{{count} files}}",
   "@transferFiles": {
     "placeholders": {
@@ -442,6 +451,7 @@
   },
   "offerFingerprint": "Fingerprint {fingerprint}",
   "@offerFingerprint": {
+    "description": "Short code that identifies a LocalSend sender (a certificate fingerprint), not a biometric",
     "placeholders": {
       "fingerprint": {
         "type": "String"
@@ -590,6 +600,9 @@
   "settingsQuickShare": "Work with Quick Share",
   "settingsQuickShareBody": "Android phones can send files to this device with Quick Share while you make it visible. Each file asks first.",
   "healthOk": "Nothing sent yet",
+  "@healthOk": {
+    "description": "Health line when no transfer happened yet"
+  },
   "healthArrive": "Arrive in {folder}",
   "@healthArrive": {
     "placeholders": {
@@ -666,6 +679,7 @@
   },
   "summaryFolder": "To {folder}",
   "@summaryFolder": {
+    "description": "Settings summary: received files go into this folder",
     "placeholders": {
       "folder": {
         "type": "String"

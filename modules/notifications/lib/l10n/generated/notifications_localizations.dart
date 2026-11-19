@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'notifications_localizations_en.dart';
+import 'notifications_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +96,10 @@ abstract class NotificationsLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
   /// No description provided for @title.
   ///
@@ -127,7 +131,7 @@ abstract class NotificationsLocalizations {
   /// **'Turn on'**
   String get turnOn;
 
-  /// No description provided for @turnOff.
+  /// Stops sending this phone's notifications to computers (not screen mirroring)
   ///
   /// In en, this message translates to:
   /// **'Turn off mirroring'**
@@ -349,7 +353,7 @@ abstract class NotificationsLocalizations {
   /// **'Couldn\'t save that change on {device}.'**
   String appPickerSaveFailed(String device);
 
-  /// No description provided for @thisPhone.
+  /// Stands in for a device name in the middle of other sentences
   ///
   /// In en, this message translates to:
   /// **'this phone'**
@@ -427,7 +431,7 @@ abstract class NotificationsLocalizations {
   /// **'Reply'**
   String get reply;
 
-  /// No description provided for @dismiss.
+  /// Dismisses the notification on the phone too
   ///
   /// In en, this message translates to:
   /// **'Dismiss'**
@@ -639,7 +643,7 @@ class _NotificationsLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_NotificationsLocalizationsDelegate old) => false;
@@ -650,6 +654,8 @@ NotificationsLocalizations lookupNotificationsLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return NotificationsLocalizationsEn();
+    case 'vi':
+      return NotificationsLocalizationsVi();
   }
 
   throw FlutterError(

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'power_localizations_en.dart';
+import 'power_localizations_vi.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +93,12 @@ abstract class PowerLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('vi'),
+  ];
 
-  /// No description provided for @title.
+  /// Name of the page with extra abilities for Android (Shizuku, root, LSPosed)
   ///
   /// In en, this message translates to:
   /// **'Power-ups'**
@@ -570,7 +574,7 @@ class _PowerLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_PowerLocalizationsDelegate old) => false;
@@ -581,6 +585,8 @@ PowerLocalizations lookupPowerLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return PowerLocalizationsEn();
+    case 'vi':
+      return PowerLocalizationsVi();
   }
 
   throw FlutterError(
