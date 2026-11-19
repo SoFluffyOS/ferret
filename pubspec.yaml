@@ -44,6 +44,7 @@ workspace:
   - packages/ferret_mirror_scrcpy
   - packages/ferret_mirroring
   - packages/ferret_notifications
+  - packages/ferret_phone_control
   - packages/ferret_photos
   - packages/ferret_power
   - packages/ferret_remote_input

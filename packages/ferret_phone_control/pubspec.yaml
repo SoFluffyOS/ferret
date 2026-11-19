@@ -1,0 +1,28 @@
+name: ferret_phone_control
+description: Lets a paired computer tap, swipe and type on an Android phone, through Shizuku or root when they are on, or an accessibility service the owner turns on. Platform code for Ferret's screen mirroring, reusable on its own.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  ferret_power:
+    path: ../ferret_power
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+  pigeon: ^29.0.1
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_phone_control
+        pluginClass: FerretPhoneControlPlugin

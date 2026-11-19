@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <application>
+    <!-- Off until its owner turns it on in the system's Accessibility
+         settings. Only the system may bind it. -->
+    <service
+      android:name="io.sofluffy.ferret_phone_control.FerretControlService"
+      android:exported="true"
+      android:label="@string/ferret_control_service_label"
+      android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+      <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+      </intent-filter>
+      <meta-data
+        android:name="android.accessibilityservice"
+        android:resource="@xml/ferret_control_service" />
+    </service>
+  </application>
+</manifest>

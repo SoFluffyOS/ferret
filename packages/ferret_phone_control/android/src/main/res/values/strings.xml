@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="ferret_control_service_label">Ferret control</string>
+  <string name="ferret_control_service_summary">Lets your computer tap and type on this phone while you show it your screen.</string>
+  <string name="ferret_control_service_description">Ferret control lets a computer you paired tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you are showing this phone\'s screen to that computer through Ferret and you said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you are typing into. It reads nothing else, keeps nothing, and sends nothing anywhere: no account, no servers.\n\nYou can turn it off here at any time.</string>
+</resources>

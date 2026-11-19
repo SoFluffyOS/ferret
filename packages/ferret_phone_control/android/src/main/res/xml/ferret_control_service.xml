@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- No event types: the service is told nothing about what happens on the
+     screen until control starts, and again nothing once it ends. -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+  android:accessibilityFeedbackType="feedbackGeneric"
+  android:canPerformGestures="true"
+  android:canRetrieveWindowContent="true"
+  android:description="@string/ferret_control_service_description"
+  android:isAccessibilityTool="false"
+  android:notificationTimeout="100"
+  android:summary="@string/ferret_control_service_summary" />
