@@ -11,6 +11,22 @@ class SystemNotifier implements LocalNotifier {
   SystemNotifier._(this._plugin, this._categories);
 
   static const _windowsGuid = '5b8f9a4e-3c1d-4e2a-9f6b-7d0c1e2a3b4c';
+  static const _linuxIcon = 'io.sofluffy.ferret';
+
+  /// Windows reads a toast's icon from a file: the ferret the shell bundles
+  /// as an asset, next to the app.
+  static String _windowsIconPath() {
+    final folder = File(Platform.resolvedExecutable).parent.path;
+    return [
+      folder,
+      'data',
+      'flutter_assets',
+      'packages',
+      'shell',
+      'assets',
+      'notice_icon.png',
+    ].join(Platform.pathSeparator);
+  }
 
   static Future<SystemNotifier> create(List<NoticeCategory> categories) async {
     final plugin = FlutterLocalNotificationsPlugin();
@@ -21,16 +37,20 @@ class SystemNotifier implements LocalNotifier {
     try {
       await plugin.initialize(
         settings: InitializationSettings(
-          android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
+          android: const AndroidInitializationSettings(
+            '@drawable/ic_stat_ferret',
+          ),
           iOS: notifier._darwinSettings(),
           macOS: notifier._darwinSettings(),
           linux: LinuxInitializationSettings(
             defaultActionName: _l10n().menuOpen,
+            defaultIcon: ThemeLinuxIcon(_linuxIcon),
           ),
-          windows: const WindowsInitializationSettings(
+          windows: WindowsInitializationSettings(
             appName: 'Ferret',
             appUserModelId: 'io.sofluffy.ferret',
             guid: _windowsGuid,
+            iconPath: _windowsIconPath(),
           ),
         ),
         onDidReceiveNotificationResponse: notifier._onResponse,

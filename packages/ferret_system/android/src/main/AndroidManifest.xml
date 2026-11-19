@@ -52,7 +52,6 @@
         <activity
             android:name="io.sofluffy.ferret_system.TaskerEditActivity"
             android:exported="true"
-            android:icon="@drawable/ferret_system_status"
             android:label="@string/ferret_system_tasker_label"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog">
             <intent-filter>

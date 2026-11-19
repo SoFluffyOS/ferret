@@ -49,3 +49,5 @@ dev_dependencies:
 
 flutter:
   generate: true
+  assets:
+    - assets/notice_icon.png
