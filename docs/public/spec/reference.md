@@ -1397,6 +1397,35 @@ What came of a `LockRequest`.
 |---|---|---|---|
 | `result` | `LockResult` | 1 |  |
 
+## `ferret.scripting.v1`
+
+### message `ScriptNotice`
+
+A short notice a script on the sending computer wants shown on the receiving device, from `ferret-cli notify`. Expects a `ScriptNoticeReply`. The receiver shows it only when its owner allowed scripts from the sending device (off by default), and drops floods.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `title` | `string` | 1 | At most 120 characters; longer is cut. |
+| `body` | `string` | 2 | At most 500 characters; longer is cut. |
+
+### message `ScriptNoticeReply`
+
+What came of a `ScriptNotice`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `result` | `ScriptNoticeResult` | 1 |  |
+
+### enum `ScriptNoticeResult`
+
+| Value | Number | Meaning |
+|---|---|---|
+| `SCRIPT_NOTICE_RESULT_UNSPECIFIED` | 0 |  |
+| `SCRIPT_NOTICE_RESULT_SHOWN` | 1 | The receiver showed it. |
+| `SCRIPT_NOTICE_RESULT_NOT_ALLOWED` | 2 | Its owner hasn't allowed scripts from the sending device to notify. |
+| `SCRIPT_NOTICE_RESULT_TOO_MANY` | 3 | Too many notices came in a short time, so this one was dropped. |
+| `SCRIPT_NOTICE_RESULT_EMPTY` | 4 | It had no title and no body. |
+
 ## `ferret.v1`
 
 ### enum `Platform`

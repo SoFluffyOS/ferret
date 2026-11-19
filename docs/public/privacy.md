@@ -43,6 +43,7 @@ Open a device and tap **What Pixel 7 can use**. You see every feature that devic
 | Find | Ringing a device to find it |
 | Computer actions | Which action to run (sleep, restart, shut down, volume, or one of yours by name), and whether it worked. Never a command line, never what it printed |
 | Wake-on-LAN | A computer's network card (MAC) addresses, and asking a computer to wake another |
+| Scripts | A short notice a script on a computer sends with `ferret-cli notify`, shown only after you allowed that computer. See [Scripting](features/scripting.md) |
 
 Turn one off and it stops RIGHT AWAY, on both devices: Ferret reconnects, the other device no longer sees the feature, and anything it still sends for it is refused. **Turn everything off** does all of them in one tap and keeps the device paired. To stop it connecting at all, forget it.
 
@@ -89,6 +90,8 @@ On a computer, everything Ferret saves sits in **one folder**: `~/.sofluffy/ferr
 | `tools` | Android's platform tools, if you downloaded them |
 | `cache` | Things Ferret can rebuild |
 | `cli` | The `ferret-cli` command line's own key, pairings and settings |
+| `hooks` | Your own [hook scripts](features/scripting.md#-hooks), if you add any. Ferret never writes here |
+| `app_control.json` | While the app runs: the loopback port and one-time secret `ferret-cli` uses, readable only by you |
 
 On phones, Ferret keeps its data in its own app storage, and its key in the system keychain.
 
