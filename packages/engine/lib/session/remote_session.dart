@@ -20,7 +20,8 @@ class Session {
     required this.initiatorDeviceId,
     this.keepAlive = const Duration(seconds: 20),
     this.idleTimeout = const Duration(seconds: 65),
-  }) {
+    bool Function(String feature)? isBlocked,
+  }) : _isBlocked = isBlocked ?? _allowsAll {
     _subscription = messages.listen(
       _onMessage,
       onError: _onError,
@@ -42,6 +43,12 @@ class Session {
 
   final Duration keepAlive;
   final Duration idleTimeout;
+
+  /// Features the person turned off for this device: nothing goes out for
+  /// them, as if the other side didn't offer them.
+  final bool Function(String feature) _isBlocked;
+
+  static bool _allowsAll(String feature) => false;
 
   /// A link this slow or slower is called weak; it stops being weak once
   /// it is back under [_steadyRoundTrip]. Pings share the stream with
@@ -102,14 +109,22 @@ class Session {
   }
 
   /// Sends [message] for [feature] without waiting for an answer.
-  Future<void> send(String feature, GeneratedMessage message) => _write(
-    Envelope(
-      id: _takeId(),
-      feature: feature,
-      type: message.payloadType,
-      payload: message.toPayload(),
-    ),
-  );
+  Future<void> send(String feature, GeneratedMessage message) {
+    if (_isBlocked(feature)) {
+      return Future.error(
+        RemoteErrorException(.ERROR_CODE_UNSUPPORTED, feature),
+      );
+    }
+
+    return _write(
+      Envelope(
+        id: _takeId(),
+        feature: feature,
+        type: message.payloadType,
+        payload: message.toPayload(),
+      ),
+    );
+  }
 
   /// Sends [message] and waits for the reply envelope.
   Future<Envelope> request(
@@ -117,6 +132,10 @@ class Session {
     GeneratedMessage message, {
     Duration timeout = const Duration(seconds: 15),
   }) async {
+    if (_isBlocked(feature)) {
+      throw RemoteErrorException(.ERROR_CODE_UNSUPPORTED, feature);
+    }
+
     final id = _takeId();
     final reply = Completer<Envelope>();
     _pending[id.toInt()] = reply;

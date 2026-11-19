@@ -75,6 +75,86 @@ void main() {
     },
   );
 
+  group('per-device access', () {
+    test('a feature turned off for a device is gone on both sides', () async {
+      final laptopEcho = _EchoFeature();
+      final laptop = await startEngine('Laptop', features: [laptopEcho]);
+      final phone = await startEngine('Phone', features: [_EchoFeature()]);
+      await pairByOffer(phone, laptop);
+      await _until(
+        () => laptop.sessions.isNotEmpty && phone.sessions.isNotEmpty,
+      );
+      final phoneId = phone.identity.deviceId;
+
+      await laptop.access.setAllowed(phoneId, 'echo', allowed: false);
+      await _until(
+        () =>
+            phone.sessions.isNotEmpty &&
+            !phone.sessions.single.supports('echo') &&
+            laptop.sessions.isNotEmpty,
+      );
+
+      expect(laptopEcho.host.sessions, isEmpty);
+      expect(laptopEcho.host.sessionFor(phoneId), isNull);
+      await expectLater(
+        laptop.sessions.single.send('echo', Ping()),
+        throwsA(isA<RemoteErrorException>()),
+      );
+      await expectLater(
+        phone.sessions.single.request('echo', Ping()),
+        throwsA(
+          isA<RemoteErrorException>().having(
+            (error) => error.code,
+            'code',
+            ErrorCode.ERROR_CODE_UNSUPPORTED,
+          ),
+        ),
+      );
+    });
+
+    test('turning it back on brings it back', () async {
+      final laptopEcho = _EchoFeature();
+      final laptop = await startEngine('Laptop', features: [laptopEcho]);
+      final phone = await startEngine('Phone', features: [_EchoFeature()]);
+      await pairByOffer(phone, laptop);
+      await _until(() => phone.sessions.isNotEmpty);
+      final phoneId = phone.identity.deviceId;
+
+      await laptop.access.setAllowed(phoneId, 'echo', allowed: false);
+      await _until(
+        () =>
+            phone.sessions.isNotEmpty &&
+            !phone.sessions.single.supports('echo'),
+      );
+      await laptop.access.setAllowed(phoneId, 'echo', allowed: true);
+      await _until(
+        () =>
+            phone.sessions.isNotEmpty &&
+            phone.sessions.single.supports('echo') &&
+            laptopEcho.host.sessions.isNotEmpty,
+      );
+
+      final reply = await phone.sessions.single.call('echo', Ping(), Pong.new);
+      expect(reply, isA<Pong>());
+    });
+
+    test('forgetting a device drops what was chosen for it', () async {
+      final laptop = await startEngine('Laptop', features: [_EchoFeature()]);
+      final phone = await startEngine('Phone', features: [_EchoFeature()]);
+      await pairByOffer(phone, laptop);
+      final phoneId = phone.identity.deviceId;
+      await laptop.access.setAllowed(phoneId, 'echo', allowed: false);
+
+      await laptop.unpair(phoneId);
+      await _until(() => laptop.access.blockedFor(phoneId).isEmpty);
+
+      expect(
+        laptop.settings.get<Map<String, Object?>>(DeviceAccess.blockedKey),
+        isEmpty,
+      );
+    });
+  });
+
   test('an offer works only once', () async {
     final laptop = await startEngine('Laptop');
     final phone = await startEngine('Phone');

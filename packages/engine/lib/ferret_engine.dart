@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
+import 'package:engine/access/access.dart';
 import 'package:engine/connection/connection.dart';
 import 'package:engine/feature/feature.dart';
 import 'package:engine/group/group.dart';
@@ -74,6 +75,9 @@ class FerretEngine implements FeatureHost {
   @override
   final SettingsStore settings;
 
+  /// Which features each paired device may use with this one.
+  late final DeviceAccess access = DeviceAccess(settings);
+
   LocalDevice _device;
 
   /// What this device tells others about itself.
@@ -86,6 +90,7 @@ class FerretEngine implements FeatureHost {
   final StreamController<DeviceJoined> _joins = .broadcast();
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
+  final Map<Session, List<Feature>> _openedFeatures = {};
   final Set<String> _dialing = {};
   final Set<PairingExchange> _pairing = {};
   final Map<String, ({DiscoveredPeer peer, DateTime seen})> _nearby = {};
@@ -243,12 +248,14 @@ class FerretEngine implements FeatureHost {
       ..add(server.listen(_onIncomingSocket))
       ..add(_discovery.peers.listen(_onPeer))
       ..add(_departures.listen(_onDeparture))
-      ..add(trustStore.changes.listen((_) => _emitDevices()));
+      ..add(trustStore.changes.listen((_) => _emitDevices()))
+      ..add(trustStore.changes.listen((_) => unawaited(_forgetOldAccess())))
+      ..add(access.changes.listen((id) => unawaited(_applyAccess(id))));
 
     if (!_featuresStarted) {
       _featuresStarted = true;
       for (final feature in _features.values) {
-        await feature.start(this);
+        await feature.start(ScopedFeatureHost(this, access, feature.id));
       }
     }
 
@@ -347,7 +354,8 @@ class FerretEngine implements FeatureHost {
   @override
   Future<void> broadcast(String featureId, GeneratedMessage message) async {
     for (final session in sessions) {
-      if (!session.supports(featureId)) {
+      final blocked = access.isBlocked(session.remoteDeviceId, featureId);
+      if (!session.supports(featureId) || blocked) {
         continue;
       }
 
@@ -633,11 +641,12 @@ class FerretEngine implements FeatureHost {
     port: port,
   );
 
-  Hello _hello() => Hello(
+  Hello _hello(String remoteId) => Hello(
     device: localDevice,
     features: [
       for (final feature in _features.values)
-        if (feature.isAvailable) feature.support,
+        if (feature.isAvailable && !access.isBlocked(remoteId, feature.id))
+          feature.support,
     ],
     listenPort: port,
   );
@@ -1243,6 +1252,7 @@ class FerretEngine implements FeatureHost {
       remoteDeviceId: remoteId,
       initiatedByLocal: initiatedByLocal,
       initiatorDeviceId: initiatorId,
+      isBlocked: (feature) => access.isBlocked(remoteId, feature),
     );
     _sessions[remoteId] = session;
     unawaited(session.closed.then((_) => _onSessionClosed(session, host)));
@@ -1261,7 +1271,7 @@ class FerretEngine implements FeatureHost {
     session.incoming.listen((envelope) => unawaited(_route(session, envelope)));
 
     try {
-      await session.sendHello(_hello());
+      await session.sendHello(_hello(remoteId));
       await session.sendPresence(_presence);
       final remoteHello = await hello;
       if (remoteHello == null) {
@@ -1299,7 +1309,12 @@ class FerretEngine implements FeatureHost {
     _droppedRecently.remove(session.remoteDeviceId);
     _watchWeak(session);
     printLog('Connected to ${hello.device.name}');
-    for (final feature in _features.values) {
+    final opened = [
+      for (final feature in _features.values)
+        if (!access.isBlocked(session.remoteDeviceId, feature.id)) feature,
+    ];
+    _openedFeatures[session] = opened;
+    for (final feature in opened) {
       feature.onSessionOpened(session);
     }
 
@@ -1373,7 +1388,8 @@ class FerretEngine implements FeatureHost {
     }
 
     final feature = _features[envelope.feature];
-    if (feature == null || !feature.isAvailable) {
+    final blocked = access.isBlocked(session.remoteDeviceId, envelope.feature);
+    if (feature == null || !feature.isAvailable || blocked) {
       if (envelope.expectsReply) {
         await session
             .replyError(envelope, .ERROR_CODE_UNSUPPORTED, envelope.feature)
@@ -1415,7 +1431,7 @@ class FerretEngine implements FeatureHost {
         _droppedRecently.add(session.remoteDeviceId);
       }
 
-      for (final feature in _features.values) {
+      for (final feature in _openedFeatures.remove(session) ?? const []) {
         feature.onSessionClosed(session);
       }
 
@@ -1437,6 +1453,34 @@ class FerretEngine implements FeatureHost {
     }
 
     unawaited(_reconnect(session.remoteDeviceId));
+  }
+
+  /// Starts the session with [deviceId] again, so both sides learn what it
+  /// may use now: features it lost stop at once, on both ends.
+  Future<void> _applyAccess(String deviceId) async {
+    final session = _sessions[deviceId];
+    if (session == null) {
+      return;
+    }
+
+    // A session still saying hello sent the old list, so it goes too.
+    await session.close();
+    if (_running) {
+      unawaited(_reconnect(deviceId));
+    }
+  }
+
+  Future<void> _forgetOldAccess() async {
+    final deviceIds = switch (settings.get<Object?>(DeviceAccess.blockedKey)) {
+      final Map<String, Object?> stored => [...stored.keys],
+      _ => const <String>[],
+    };
+
+    for (final deviceId in deviceIds) {
+      if (trustStore[deviceId] == null) {
+        await access.forget(deviceId);
+      }
+    }
   }
 
   /// The other device forgot this one. Forgetting it back, here only, keeps
