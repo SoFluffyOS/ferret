@@ -22,6 +22,11 @@ class ShellScope extends InheritedWidget {
     return scope;
   }
 
+  /// The scope, or null where there is none, such as a menu shown on its
+  /// own.
+  static ShellScope? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ShellScope>();
+
   /// Reads the scope without depending on it, such as in `initState`.
   static ShellScope read(BuildContext context) {
     final scope = context.getInheritedWidgetOfExactType<ShellScope>();

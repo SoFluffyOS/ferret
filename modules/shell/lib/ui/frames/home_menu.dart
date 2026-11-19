@@ -29,10 +29,11 @@ class HomeMenu extends StatelessWidget {
     );
     final l10n = context.shellL10n;
     final canQuit = defaultTargetPlatform != .iOS;
-    final scope = ShellScope.of(context);
+    final scope = ShellScope.maybeOf(context);
     final featureActions = [
-      for (final feature in scope.features)
-        ...feature.appActions(context, scope.featureContext),
+      if (scope != null)
+        for (final feature in scope.features)
+          ...feature.appActions(context, scope.featureContext),
     ];
 
     return MenuButton(

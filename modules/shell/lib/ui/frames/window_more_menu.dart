@@ -80,10 +80,11 @@ class WindowMoreMenu extends StatelessWidget {
   }
 
   List<MenuEntry> _featureEntries(BuildContext context) {
-    final scope = ShellScope.of(context);
+    final scope = ShellScope.maybeOf(context);
     final actions = [
-      for (final feature in scope.features)
-        ...feature.appActions(context, scope.featureContext),
+      if (scope != null)
+        for (final feature in scope.features)
+          ...feature.appActions(context, scope.featureContext),
     ];
 
     return [
