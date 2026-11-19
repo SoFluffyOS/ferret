@@ -1,5 +1,6 @@
 import 'package:ferret_mirroring/src/route/mirror_control.dart';
 import 'package:ferret_mirroring/src/route/mirror_target.dart';
+import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
 import 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
 
@@ -11,7 +12,8 @@ abstract interface class MirrorFeed {
   /// [FeedAccepted] when it said yes, then a [FeedConfigured] before the
   /// first frame and on every size change, [FeedFrame]s, and one
   /// [FeedEnded] last. [FeedSourceState] and [FeedStats] come in between,
-  /// from routes that know them.
+  /// from routes that know them. A feed asked for sound adds a
+  /// [FeedAudioConfigured] and [FeedAudio]s, or one [FeedAudioUnavailable].
   Stream<FeedEvent> get events;
 
   /// Mouse, keyboard and buttons on the other device, when the route has
@@ -56,6 +58,26 @@ class FeedFrame extends FeedEvent {
 
   /// Frames the route knows went missing right before this one.
   final int lost;
+}
+
+/// Sound follows, encoded this way. Again whenever it changes.
+class FeedAudioConfigured extends FeedEvent {
+  const FeedAudioConfigured(this.config);
+
+  final MirrorAudioConfig config;
+}
+
+class FeedAudio extends FeedEvent {
+  const FeedAudio(this.packet);
+
+  final MirrorAudioPacket packet;
+}
+
+/// Sound was asked for and won't come. The pictures go on without it.
+class FeedAudioUnavailable extends FeedEvent {
+  const FeedAudioUnavailable(this.reason);
+
+  final AudioUnavailable reason;
 }
 
 /// The other device's screen went off or came back on. While it is off,

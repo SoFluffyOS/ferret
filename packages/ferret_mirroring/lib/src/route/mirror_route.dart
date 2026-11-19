@@ -1,5 +1,6 @@
 import 'package:ferret_mirroring/src/route/mirror_feed.dart';
 import 'package:ferret_mirroring/src/route/mirror_target.dart';
+import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
 import 'package:ferret_mirroring/src/stream/mirror_codec.dart';
 
 /// One way to show another device's screen on this one: Ferret's own
@@ -62,7 +63,7 @@ class FeedOptions {
     this.maxSize = 0,
     this.maxFps = 60,
     this.bitrate = 0,
-    this.audio = false,
+    this.audioCodecs = const [],
     this.control = false,
   });
 
@@ -76,8 +77,11 @@ class FeedOptions {
   /// Bits per second, 0 for the route's default.
   final int bitrate;
 
-  /// Ask for sound too, where the route has it.
-  final bool audio;
+  /// Ask for sound too, where the route has it: what this computer can
+  /// play, best first. Empty for pictures only.
+  final List<MirrorAudioCodec> audioCodecs;
+
+  bool get audio => audioCodecs.isNotEmpty;
 
   /// Ask for a way to control the device, where the route has one.
   final bool control;

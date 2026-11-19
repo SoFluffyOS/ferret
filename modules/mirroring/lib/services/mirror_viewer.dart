@@ -354,6 +354,8 @@ class MirrorViewer {
         _player?.add(frame, lost: lost);
       case FeedSourceState(:final screenOff):
         _onSourceState(screenOff);
+      case FeedAudioConfigured() || FeedAudio() || FeedAudioUnavailable():
+        break;
       case FeedStats():
         _onStats(event);
       case FeedEnded(:final reason):

@@ -9,6 +9,8 @@ environment:
   flutter: ">=3.50.0"
 
 dependencies:
+  # Calls Windows' waveOut from Dart, so sound needs no native build there.
+  ffi: ^2.2.0
   flutter:
     sdk: flutter
   sofluffy_texture:

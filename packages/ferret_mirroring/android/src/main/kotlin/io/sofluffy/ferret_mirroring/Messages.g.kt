@@ -255,6 +255,21 @@ enum class NativeCaptureEnd(val raw: Int) {
   }
 }
 
+enum class NativeAudioCodec(val raw: Int) {
+  /** Opus, one packet per call. */
+  OPUS(0),
+  /** Signed 16-bit little-endian samples, channels interleaved. */
+  PCM(1);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): NativeAudioCodec? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
 /**
  * What this device can capture with.
  *
@@ -531,6 +546,49 @@ data class NativeFrame (
     return "NativeFrame(data=${data.contentToString()}, ptsUs=$ptsUs, keyframe=$keyframe)"
   }
 }
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeAudioStats (
+  /** Samples per channel decoded since the last configure. */
+  val frames: Long,
+  /** The loudest decoded sample since then, from 0 to 1. */
+  val peak: Double
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeAudioStats {
+      val frames = pigeonVar_list[0] as Long
+      val peak = pigeonVar_list[1] as Double
+      return NativeAudioStats(frames, peak)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      frames,
+      peak,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeAudioStats
+    return MessagesPigeonUtils.deepEquals(this.frames, other.frames) && MessagesPigeonUtils.deepEquals(this.peak, other.peak)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.frames)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.peak)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeAudioStats(frames=$frames, peak=$peak)"
+  }
+}
 private open class MessagesPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
@@ -550,28 +608,38 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         }
       }
       132.toByte() -> {
-        (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureSupport.fromList(it)
+        (readValue(buffer) as Long?)?.let {
+          NativeAudioCodec.ofRaw(it.toInt())
         }
       }
       133.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeConsentTexts.fromList(it)
+          NativeCaptureSupport.fromList(it)
         }
       }
       134.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureOptions.fromList(it)
+          NativeConsentTexts.fromList(it)
         }
       }
       135.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeStreamConfig.fromList(it)
+          NativeCaptureOptions.fromList(it)
         }
       }
       136.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
+          NativeStreamConfig.fromList(it)
+        }
+      }
+      137.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
           NativeFrame.fromList(it)
+        }
+      }
+      138.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeAudioStats.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -591,24 +659,32 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(131)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeCaptureSupport -> {
+      is NativeAudioCodec -> {
         stream.write(132)
-        writeValue(stream, value.toList())
+        writeValue(stream, value.raw.toLong())
       }
-      is NativeConsentTexts -> {
+      is NativeCaptureSupport -> {
         stream.write(133)
         writeValue(stream, value.toList())
       }
-      is NativeCaptureOptions -> {
+      is NativeConsentTexts -> {
         stream.write(134)
         writeValue(stream, value.toList())
       }
-      is NativeStreamConfig -> {
+      is NativeCaptureOptions -> {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is NativeFrame -> {
+      is NativeStreamConfig -> {
         stream.write(136)
+        writeValue(stream, value.toList())
+      }
+      is NativeFrame -> {
+        stream.write(137)
+        writeValue(stream, value.toList())
+      }
+      is NativeAudioStats -> {
+        stream.write(138)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -1083,6 +1159,144 @@ class MirrorDecoderFlutterApi(private val binaryMessenger: BinaryMessenger, priv
         } else {
           continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
         } 
+      }
+    }
+  }
+}
+/**
+ * macOS: plays a mirrored device's sound through AVAudioEngine, decoding
+ * Opus with AudioToolbox.
+ *
+ * Generated interface from Pigeon that represents a handler of messages from Flutter.
+ */
+interface MirrorAudioHostApi {
+  /**
+   * Gets ready for a stream. With [silent], sound is decoded and measured
+   * but the speakers are never opened. Throws when the stream can't be
+   * played.
+   */
+  fun configure(codec: NativeAudioCodec, sampleRate: Long, channels: Long, silent: Boolean)
+  /** Decodes [data] and queues it right after what was queued before. */
+  fun play(data: ByteArray)
+  /** Drops what is queued and hasn't played yet. */
+  fun flush()
+  /** From 0 to 1. */
+  fun setVolume(volume: Double)
+  fun stats(): NativeAudioStats
+  fun close()
+
+  companion object {
+    /** The codec used by MirrorAudioHostApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+    /** Sets up an instance of `MirrorAudioHostApi` to handle messages through the `binaryMessenger`. */
+    @JvmOverloads
+    fun setUp(binaryMessenger: BinaryMessenger, api: MirrorAudioHostApi?, messageChannelSuffix: String = "") {
+      val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.configure$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val codecArg = args[0] as NativeAudioCodec
+            val sampleRateArg = args[1] as Long
+            val channelsArg = args[2] as Long
+            val silentArg = args[3] as Boolean
+            val wrapped: List<Any?> = try {
+              api.configure(codecArg, sampleRateArg, channelsArg, silentArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.play$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val dataArg = args[0] as ByteArray
+            val wrapped: List<Any?> = try {
+              api.play(dataArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.flush$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.flush()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.setVolume$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val volumeArg = args[0] as Double
+            val wrapped: List<Any?> = try {
+              api.setVolume(volumeArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.stats$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.stats())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.close$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.close()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
       }
     }
   }

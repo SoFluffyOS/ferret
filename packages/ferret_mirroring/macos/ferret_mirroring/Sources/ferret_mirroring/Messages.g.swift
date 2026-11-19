@@ -216,6 +216,13 @@ enum NativeCaptureEnd: Int, CaseIterable {
   case failed = 2
 }
 
+enum NativeAudioCodec: Int, CaseIterable {
+  /// Opus, one packet per call.
+  case opus = 0
+  /// Signed 16-bit little-endian samples, channels interleaved.
+  case pcm = 1
+}
+
 /// What this device can capture with.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
@@ -498,6 +505,48 @@ struct NativeFrame: Hashable, CustomStringConvertible {
   }
 }
 
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeAudioStats: Hashable, CustomStringConvertible {
+  /// Samples per channel decoded since the last configure.
+  var frames: Int64
+  /// The loudest decoded sample since then, from 0 to 1.
+  var peak: Double
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeAudioStats? {
+    let frames = pigeonVar_list[0] as! Int64
+    let peak = pigeonVar_list[1] as! Double
+
+    return NativeAudioStats(
+      frames: frames,
+      peak: peak
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      frames,
+      peak,
+    ]
+  }
+  static func == (lhs: NativeAudioStats, rhs: NativeAudioStats) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.frames, rhs.frames) && MessagesPigeonInternal.deepEquals(lhs.peak, rhs.peak)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeAudioStats")
+    MessagesPigeonInternal.deepHash(value: frames, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: peak, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeAudioStats(frames: \(String(describing: frames)), peak: \(String(describing: peak)))"
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -520,15 +569,23 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       }
       return nil
     case 132:
-      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeAudioCodec(rawValue: enumResultAsInt)
+      }
+      return nil
     case 133:
-      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
+      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
     case 134:
-      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
+      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
     case 135:
-      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
+      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
     case 136:
+      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
+    case 137:
       return NativeFrame.fromList(self.readValue() as! [Any?])
+    case 138:
+      return NativeAudioStats.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -546,20 +603,26 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? NativeCaptureEnd {
       super.writeByte(131)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeCaptureSupport {
+    } else if let value = value as? NativeAudioCodec {
       super.writeByte(132)
-      super.writeValue(value.toList())
-    } else if let value = value as? NativeConsentTexts {
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeCaptureSupport {
       super.writeByte(133)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeCaptureOptions {
+    } else if let value = value as? NativeConsentTexts {
       super.writeByte(134)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeStreamConfig {
+    } else if let value = value as? NativeCaptureOptions {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFrame {
+    } else if let value = value as? NativeStreamConfig {
       super.writeByte(136)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeFrame {
+      super.writeByte(137)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeAudioStats {
+      super.writeByte(138)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -1033,6 +1096,126 @@ class MirrorDecoderFlutterApi: MirrorDecoderFlutterApiProtocol {
           continuation.resume()
         }
       }
+    }
+  }
+}
+/// macOS: plays a mirrored device's sound through AVAudioEngine, decoding
+/// Opus with AudioToolbox.
+///
+/// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+protocol MirrorAudioHostApi {
+  /// Gets ready for a stream. With [silent], sound is decoded and measured
+  /// but the speakers are never opened. Throws when the stream can't be
+  /// played.
+  func configure(codec: NativeAudioCodec, sampleRate: Int64, channels: Int64, silent: Bool) throws
+  /// Decodes [data] and queues it right after what was queued before.
+  func play(data: FlutterStandardTypedData) throws
+  /// Drops what is queued and hasn't played yet.
+  func flush() throws
+  /// From 0 to 1.
+  func setVolume(volume: Double) throws
+  func stats() throws -> NativeAudioStats
+  func close() throws
+}
+
+/// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+class MirrorAudioHostApiSetup {
+  static var codec: FlutterStandardMessageCodec { MessagesPigeonCodec.shared }
+  /// Sets up an instance of `MirrorAudioHostApi` to handle messages through the `binaryMessenger`.
+  static func setUp(binaryMessenger: FlutterBinaryMessenger, api: MirrorAudioHostApi?, messageChannelSuffix: String = "") {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    /// Gets ready for a stream. With [silent], sound is decoded and measured
+    /// but the speakers are never opened. Throws when the stream can't be
+    /// played.
+    let configureChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.configure\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      configureChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let codecArg = args[0] as! NativeAudioCodec
+        let sampleRateArg = args[1] as! Int64
+        let channelsArg = args[2] as! Int64
+        let silentArg = args[3] as! Bool
+        do {
+          try api.configure(codec: codecArg, sampleRate: sampleRateArg, channels: channelsArg, silent: silentArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      configureChannel.setMessageHandler(nil)
+    }
+    /// Decodes [data] and queues it right after what was queued before.
+    let playChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.play\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      playChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let dataArg = args[0] as! FlutterStandardTypedData
+        do {
+          try api.play(data: dataArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      playChannel.setMessageHandler(nil)
+    }
+    /// Drops what is queued and hasn't played yet.
+    let flushChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.flush\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      flushChannel.setMessageHandler { _, reply in
+        do {
+          try api.flush()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      flushChannel.setMessageHandler(nil)
+    }
+    /// From 0 to 1.
+    let setVolumeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.setVolume\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setVolumeChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let volumeArg = args[0] as! Double
+        do {
+          try api.setVolume(volume: volumeArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setVolumeChannel.setMessageHandler(nil)
+    }
+    let statsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.stats\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      statsChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.stats()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      statsChannel.setMessageHandler(nil)
+    }
+    let closeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.close\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      closeChannel.setMessageHandler { _, reply in
+        do {
+          try api.close()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      closeChannel.setMessageHandler(nil)
     }
   }
 }

@@ -214,3 +214,49 @@ abstract class MirrorDecoderFlutterApi {
   /// A frame couldn't be decoded; the next one must be a keyframe.
   void onDecodeError(int status);
 }
+
+enum NativeAudioCodec {
+  /// Opus, one packet per call.
+  opus,
+
+  /// Signed 16-bit little-endian samples, channels interleaved.
+  pcm,
+}
+
+class NativeAudioStats {
+  NativeAudioStats({required this.frames, required this.peak});
+
+  /// Samples per channel decoded since the last configure.
+  int frames;
+
+  /// The loudest decoded sample since then, from 0 to 1.
+  double peak;
+}
+
+/// macOS: plays a mirrored device's sound through AVAudioEngine, decoding
+/// Opus with AudioToolbox.
+@HostApi()
+abstract class MirrorAudioHostApi {
+  /// Gets ready for a stream. With [silent], sound is decoded and measured
+  /// but the speakers are never opened. Throws when the stream can't be
+  /// played.
+  void configure(
+    NativeAudioCodec codec,
+    int sampleRate,
+    int channels,
+    bool silent,
+  );
+
+  /// Decodes [data] and queues it right after what was queued before.
+  void play(Uint8List data);
+
+  /// Drops what is queued and hasn't played yet.
+  void flush();
+
+  /// From 0 to 1.
+  void setVolume(double volume);
+
+  NativeAudioStats stats();
+
+  void close();
+}
