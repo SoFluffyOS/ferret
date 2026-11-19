@@ -16,6 +16,7 @@ dependencies:
     path: ../engine
   flutter:
     sdk: flutter
+  intl: ^0.20.3
   lucide_icons_flutter: ^4.0.3
   path_provider: ^2.1.6
   protocol:

@@ -96,22 +96,12 @@ class _PlaybackProgressState extends State<PlaybackProgress> {
         ),
         Row(
           children: [
-            Expanded(child: Text(_format(position), style: style)),
-            if (duration != null) Text(_format(duration), style: style),
+            Expanded(child: Text(ClockText.duration(position), style: style)),
+            if (duration != null)
+              Text(ClockText.duration(duration), style: style),
           ],
         ),
       ],
     );
-  }
-
-  static String _format(Duration time) {
-    final hours = time.inHours;
-    final minutes = time.inMinutes.remainder(60);
-    final seconds = time.inSeconds.remainder(60).toString().padLeft(2, '0');
-    if (hours > 0) {
-      return '$hours:${minutes.toString().padLeft(2, '0')}:$seconds';
-    }
-
-    return '$minutes:$seconds';
   }
 }

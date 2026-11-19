@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:calls/l10n/l10n.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 
 /// The time since [since] as `m:ss`, counting every second.
@@ -31,7 +31,7 @@ class _CallTimerState extends State<CallTimer> {
 
   @override
   Widget build(BuildContext context) => Text(
-    formatCallDuration(DateTime.now().difference(widget.since)),
+    ClockText.duration(DateTime.now().difference(widget.since)),
     style: widget.style,
   );
 }

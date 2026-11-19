@@ -37,7 +37,7 @@ class CallLogRow extends StatelessWidget {
       if (entry.name.isNotEmpty && entry.number.isNotEmpty) entry.number,
       _when(context),
       if (entry.durationS > 0)
-        formatCallDuration(Duration(seconds: entry.durationS.toInt())),
+        ClockText.duration(Duration(seconds: entry.durationS.toInt())),
     ].join(' · ');
 
     final row = Padding(

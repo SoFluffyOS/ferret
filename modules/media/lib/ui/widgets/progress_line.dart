@@ -114,23 +114,20 @@ class _ProgressLineState extends State<ProgressLine> {
         ),
         Row(
           children: [
-            Expanded(child: Text(_format(positionMs), style: style)),
-            if (durationMs > 0) Text(_format(durationMs), style: style),
+            Expanded(
+              child: Text(
+                ClockText.duration(Duration(milliseconds: positionMs)),
+                style: style,
+              ),
+            ),
+            if (durationMs > 0)
+              Text(
+                ClockText.duration(Duration(milliseconds: durationMs)),
+                style: style,
+              ),
           ],
         ),
       ],
     );
-  }
-
-  static String _format(int ms) {
-    final total = ms ~/ 1000;
-    final hours = total ~/ 3600;
-    final minutes = (total % 3600) ~/ 60;
-    final seconds = (total % 60).toString().padLeft(2, '0');
-    if (hours > 0) {
-      return '$hours:${minutes.toString().padLeft(2, '0')}:$seconds';
-    }
-
-    return '$minutes:$seconds';
   }
 }

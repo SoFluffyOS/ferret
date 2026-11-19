@@ -16,11 +16,4 @@ void main() {
     expect(PhoneNumbers.dialable('tel:5550100'), isNull);
     expect(PhoneNumbers.dialable('1' * 40), isNull);
   });
-
-  test('formats call lengths', () {
-    expect(formatCallDuration(const Duration(seconds: 5)), '0:05');
-    expect(formatCallDuration(const Duration(seconds: 125)), '2:05');
-    expect(formatCallDuration(const Duration(seconds: 3725)), '1:02:05');
-    expect(formatCallDuration(const Duration(seconds: -3)), '0:00');
-  });
 }

@@ -1,6 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:notifications/models/models.dart';
 import 'package:notifications/ui/widgets/app_icon.dart';
@@ -23,7 +22,7 @@ class NotificationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final time = _time(
+    final time = ClockText.timeOfDay(
       Localizations.localeOf(context).toLanguageTag(),
       notification.postedAt,
     );
@@ -72,15 +71,5 @@ class NotificationRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  /// intl throws for a locale whose date symbols were never loaded; the
-  /// default format beats no time at all.
-  static String _time(String locale, DateTime at) {
-    try {
-      return DateFormat.jm(locale).format(at);
-    } on Object {
-      return DateFormat.Hm().format(at);
-    }
   }
 }

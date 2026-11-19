@@ -65,18 +65,3 @@ extension CallLabels on CallsLocalizations {
     return privateNumber;
   }
 }
-
-/// A call's length as `m:ss`, or `h:mm:ss` from one hour.
-String formatCallDuration(Duration duration) {
-  final clamped = switch (duration.isNegative) {
-    true => Duration.zero,
-    false => duration,
-  };
-  final seconds = (clamped.inSeconds % 60).toString().padLeft(2, '0');
-  if (clamped.inHours == 0) {
-    return '${clamped.inMinutes}:$seconds';
-  }
-
-  final minutes = (clamped.inMinutes % 60).toString().padLeft(2, '0');
-  return '${clamped.inHours}:$minutes:$seconds';
-}
