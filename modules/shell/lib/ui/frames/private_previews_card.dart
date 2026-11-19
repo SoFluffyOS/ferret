@@ -29,13 +29,14 @@ class _PrivatePreviewsCardState extends State<PrivatePreviewsCard> {
     final hasChoice = previews.hasChoiceFor(widget.deviceId);
     final body = [
       l10n.previewsBody(widget.deviceName),
-      if (!hasChoice && !previews.shownByDefault) l10n.previewsSharedDefault,
+      if (!hasChoice && !previews.shownByDefault)
+        l10n.previewsSharedDefault(ThisComputer.here),
     ].join('\n');
 
     return GroupedCard(
       children: [
         SettingSwitchRow(
-          title: l10n.previewsTitle,
+          title: l10n.previewsTitle(ThisComputer.here),
           body: body,
           value: previews.showsFrom(widget.deviceId),
           onChanged: _set,

@@ -1139,8 +1139,8 @@ abstract class ShellLocalizations {
   /// Under this device name in Settings, when Ferret runs in several OS user accounts on one computer
   ///
   /// In en, this message translates to:
-  /// **'Other accounts on this computer use Ferret too. Each one has its own devices.'**
-  String get thisDeviceShared;
+  /// **'Other accounts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} use Ferret too. Each one has its own devices.'**
+  String thisDeviceShared(String here);
 
   /// No description provided for @thisDeviceOtherPort.
   ///
@@ -1157,14 +1157,14 @@ abstract class ShellLocalizations {
   /// Second line of an Activity line whose content is hidden because previews are off for that device
   ///
   /// In en, this message translates to:
-  /// **'Hidden on this computer'**
-  String get privateCoverDetail;
+  /// **'Hidden on {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String privateCoverDetail(String here);
 
   /// No description provided for @previewsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Show previews on this computer'**
-  String get previewsTitle;
+  /// **'Show previews on {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String previewsTitle(String here);
 
   /// No description provided for @previewsBody.
   ///
@@ -1175,8 +1175,8 @@ abstract class ShellLocalizations {
   /// Under the previews switch, on a computer several OS accounts run Ferret on, before the person chose
   ///
   /// In en, this message translates to:
-  /// **'Off at first here, because other accounts on this computer use Ferret.'**
-  String get previewsSharedDefault;
+  /// **'Off at first here, because other accounts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} use Ferret.'**
+  String previewsSharedDefault(String here);
 
   /// No description provided for @settingsAddress.
   ///
@@ -2585,8 +2585,8 @@ abstract class ShellLocalizations {
   /// No description provided for @menubarTipControlled.
   ///
   /// In en, this message translates to:
-  /// **'{device} is controlling this computer'**
-  String menubarTipControlled(String device);
+  /// **'{device} is controlling {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String menubarTipControlled(String device, String here);
 
   /// No description provided for @menubarTipScreenSeen.
   ///

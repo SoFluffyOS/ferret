@@ -21,7 +21,7 @@ class ActivityFeed {
     FeatureContext featureContext,
   ) {
     final previews = PrivatePreviews(featureContext.engine.settings);
-    final hidden = context.shellL10n.privateCoverDetail;
+    final hidden = context.shellL10n.privateCoverDetail(ThisComputer.here);
 
     return ActivityFeed.of([
       for (final feature in features)

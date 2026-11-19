@@ -775,8 +775,17 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsRenameTitle => 'Đặt tên cho thiết bị này';
 
   @override
-  String get thisDeviceShared =>
-      'Các tài khoản khác trên máy tính này cũng dùng Ferret. Mỗi tài khoản có thiết bị riêng.';
+  String thisDeviceShared(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Các tài khoản khác trên $_temp0 cũng dùng Ferret. Mỗi tài khoản có thiết bị riêng.';
+  }
 
   @override
   String thisDeviceOtherPort(String port, String usual) {
@@ -787,10 +796,30 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get privateCoverBody => 'Mở Ferret để xem.';
 
   @override
-  String get privateCoverDetail => 'Đã ẩn trên máy tính này';
+  String privateCoverDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Đã ẩn trên $_temp0';
+  }
 
   @override
-  String get previewsTitle => 'Hiện nội dung xem trước trên máy tính này';
+  String previewsTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Hiện nội dung xem trước trên $_temp0';
+  }
 
   @override
   String previewsBody(String device) {
@@ -798,8 +827,17 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get previewsSharedDefault =>
-      'Mặc định tắt ở đây, vì các tài khoản khác trên máy tính này cũng dùng Ferret.';
+  String previewsSharedDefault(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Mặc định tắt ở đây, vì các tài khoản khác trên $_temp0 cũng dùng Ferret.';
+  }
 
   @override
   String settingsAddress(String address) {
@@ -1820,8 +1858,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Ngủ, khởi động lại, tắt máy, âm lượng và các thao tác của riêng bạn, chỉ sau khi bạn cho phép';
 
   @override
-  String menubarTipControlled(String device) {
-    return '$device đang điều khiển máy tính này';
+  String menubarTipControlled(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device đang điều khiển $_temp0';
   }
 
   @override

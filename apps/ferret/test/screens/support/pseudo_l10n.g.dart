@@ -3706,15 +3706,7 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsRenameTitle => pseudo(super.settingsRenameTitle);
   @override
-  String get thisDeviceShared => pseudo(super.thisDeviceShared);
-  @override
   String get privateCoverBody => pseudo(super.privateCoverBody);
-  @override
-  String get privateCoverDetail => pseudo(super.privateCoverDetail);
-  @override
-  String get previewsTitle => pseudo(super.previewsTitle);
-  @override
-  String get previewsSharedDefault => pseudo(super.previewsSharedDefault);
   @override
   String get settingsAddressHint => pseudo(super.settingsAddressHint);
   @override
@@ -4208,10 +4200,20 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String dropDeviceOffline(String name) =>
       pseudo(super.dropDeviceOffline(name));
   @override
+  String thisDeviceShared(String here) => pseudo(super.thisDeviceShared(here));
+  @override
   String thisDeviceOtherPort(String port, String usual) =>
       pseudo(super.thisDeviceOtherPort(port, usual));
   @override
+  String privateCoverDetail(String here) =>
+      pseudo(super.privateCoverDetail(here));
+  @override
+  String previewsTitle(String here) => pseudo(super.previewsTitle(here));
+  @override
   String previewsBody(String device) => pseudo(super.previewsBody(device));
+  @override
+  String previewsSharedDefault(String here) =>
+      pseudo(super.previewsSharedDefault(here));
   @override
   String settingsAddress(String address) =>
       pseudo(super.settingsAddress(address));
@@ -4392,8 +4394,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String accessForgetHint(String device) =>
       pseudo(super.accessForgetHint(device));
   @override
-  String menubarTipControlled(String device) =>
-      pseudo(super.menubarTipControlled(device));
+  String menubarTipControlled(String device, String here) =>
+      pseudo(super.menubarTipControlled(device, here));
   @override
   String menubarTipScreenSeen(String device) =>
       pseudo(super.menubarTipScreenSeen(device));

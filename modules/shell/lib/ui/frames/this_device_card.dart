@@ -90,7 +90,7 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
     final isShared = SharedComputer(engine.settings).isShared;
 
     return [
-      if (isShared) l10n.thisDeviceShared,
+      if (isShared) l10n.thisDeviceShared(ThisComputer.here),
       if (engine.usesFallbackPort)
         l10n.thisDeviceOtherPort('${engine.port}', '${engine.preferredPort}'),
     ];

@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/menubar_icon_inputs.dart';
@@ -45,7 +46,7 @@ class MenubarTooltips {
 
   String _needsYou(MenubarIconInputs inputs) {
     if (inputs.waitingCount == 0 && inputs.controlledBy.isNotEmpty) {
-      return _l10n.menubarTipControlled(inputs.controlledBy);
+      return _l10n.menubarTipControlled(inputs.controlledBy, ThisComputer.here);
     }
 
     if (inputs.waitingCount == 0 && inputs.screenSeenBy.isNotEmpty) {

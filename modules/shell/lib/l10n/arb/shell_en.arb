@@ -524,9 +524,14 @@
   "onboardNameLabel": "Device name",
   "settingsRename": "Rename",
   "settingsRenameTitle": "Name this device",
-  "thisDeviceShared": "Other accounts on this computer use Ferret too. Each one has its own devices.",
+  "thisDeviceShared": "Other accounts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} use Ferret too. Each one has its own devices.",
   "@thisDeviceShared": {
-    "description": "Under this device name in Settings, when Ferret runs in several OS user accounts on one computer"
+    "description": "Under this device name in Settings, when Ferret runs in several OS user accounts on one computer",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "thisDeviceOtherPort": "Listening on port {port}: another account has {usual}.",
   "@thisDeviceOtherPort": {
@@ -543,11 +548,23 @@
   "@privateCoverBody": {
     "description": "Body of a notice whose content is hidden: previews are off for that device, or the screen is locked"
   },
-  "privateCoverDetail": "Hidden on this computer",
+  "privateCoverDetail": "Hidden on {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@privateCoverDetail": {
-    "description": "Second line of an Activity line whose content is hidden because previews are off for that device"
+    "description": "Second line of an Activity line whose content is hidden because previews are off for that device",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
-  "previewsTitle": "Show previews on this computer",
+  "previewsTitle": "Show previews on {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@previewsTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "previewsBody": "Notifications, texts, callers and copied text from {device} show on this screen. Off, Ferret only says that something arrived. They always hide while the screen is locked or another account is in front.",
   "@previewsBody": {
     "placeholders": {
@@ -556,9 +573,14 @@
       }
     }
   },
-  "previewsSharedDefault": "Off at first here, because other accounts on this computer use Ferret.",
+  "previewsSharedDefault": "Off at first here, because other accounts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} use Ferret.",
   "@previewsSharedDefault": {
-    "description": "Under the previews switch, on a computer several OS accounts run Ferret on, before the person chose"
+    "description": "Under the previews switch, on a computer several OS accounts run Ferret on, before the person chose",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "settingsAddress": "Address: {address}",
   "@settingsAddress": {
@@ -1395,10 +1417,13 @@
   "accessRemoteInput": "Moving the pointer and typing, only after you allow it",
   "accessFind": "Ringing a device to find it",
   "accessActions": "Sleep, restart, shut down, volume and your own actions, each only after you allow it",
-  "menubarTipControlled": "{device} is controlling this computer",
+  "menubarTipControlled": "{device} is controlling {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@menubarTipControlled": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }

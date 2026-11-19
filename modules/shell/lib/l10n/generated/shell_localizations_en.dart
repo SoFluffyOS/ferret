@@ -780,8 +780,17 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsRenameTitle => 'Name this device';
 
   @override
-  String get thisDeviceShared =>
-      'Other accounts on this computer use Ferret too. Each one has its own devices.';
+  String thisDeviceShared(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Other accounts on $_temp0 use Ferret too. Each one has its own devices.';
+  }
 
   @override
   String thisDeviceOtherPort(String port, String usual) {
@@ -792,10 +801,30 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get privateCoverBody => 'Open Ferret to see it.';
 
   @override
-  String get privateCoverDetail => 'Hidden on this computer';
+  String privateCoverDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Hidden on $_temp0';
+  }
 
   @override
-  String get previewsTitle => 'Show previews on this computer';
+  String previewsTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Show previews on $_temp0';
+  }
 
   @override
   String previewsBody(String device) {
@@ -803,8 +832,17 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get previewsSharedDefault =>
-      'Off at first here, because other accounts on this computer use Ferret.';
+  String previewsSharedDefault(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Off at first here, because other accounts on $_temp0 use Ferret.';
+  }
 
   @override
   String settingsAddress(String address) {
@@ -1828,8 +1866,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Sleep, restart, shut down, volume and your own actions, each only after you allow it';
 
   @override
-  String menubarTipControlled(String device) {
-    return '$device is controlling this computer';
+  String menubarTipControlled(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device is controlling $_temp0';
   }
 
   @override
