@@ -1,5 +1,9 @@
 export 'package:calls/ui/frames/call_card_frame.dart';
 export 'package:calls/ui/frames/calls_settings_frame.dart';
 export 'package:calls/ui/frames/dialer_frame.dart';
+export 'package:calls/ui/frames/open_settings_failed.dart';
 export 'package:calls/ui/frames/phone_home_frame.dart';
+export 'package:calls/ui/frames/phone_setup_explainer.dart';
 export 'package:calls/ui/frames/phone_setup_frame.dart';
+export 'package:calls/ui/frames/phone_setup_needs_permission.dart';
+export 'package:calls/ui/frames/phone_setup_ready.dart';
