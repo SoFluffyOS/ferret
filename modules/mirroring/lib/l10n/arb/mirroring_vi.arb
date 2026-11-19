@@ -276,6 +276,7 @@
   "controlledTitle": "Đang được điều khiển bởi {computer}",
   "controlledBody": "Máy tính đó có thể chạm và gõ ở đây khi đang hiển thị màn hình này.",
   "controlStop": "Dừng điều khiển",
+  "controlStopSharing": "Dừng chia sẻ màn hình",
   "noticeControlChannel": "Điều khiển từ máy tính",
   "settingsControlTitle": "Điều khiển từ máy tính",
   "settingsControlPowerUps": "Máy tính đang hiển thị màn hình này có thể chạm và gõ ở đây, thông qua Tăng cường. Nó sẽ hỏi bạn trước.",

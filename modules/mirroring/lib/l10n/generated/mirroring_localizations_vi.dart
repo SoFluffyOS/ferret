@@ -1272,6 +1272,9 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get controlStop => 'Dừng điều khiển';
 
   @override
+  String get controlStopSharing => 'Dừng chia sẻ màn hình';
+
+  @override
   String get noticeControlChannel => 'Điều khiển từ máy tính';
 
   @override

@@ -2168,6 +2168,8 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get controlStop => pseudo(super.controlStop);
   @override
+  String get controlStopSharing => pseudo(super.controlStopSharing);
+  @override
   String get noticeControlChannel => pseudo(super.noticeControlChannel);
   @override
   String get settingsControlTitle => pseudo(super.settingsControlTitle);

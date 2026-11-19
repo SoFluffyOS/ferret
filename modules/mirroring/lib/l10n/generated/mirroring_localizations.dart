@@ -1751,6 +1751,12 @@ abstract class MirroringLocalizations {
   /// **'Stop control'**
   String get controlStop;
 
+  /// While a computer controls the phone: ends both control and showing the screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing screen'**
+  String get controlStopSharing;
+
   /// Android notification channel name
   ///
   /// In en, this message translates to:

@@ -79,7 +79,7 @@ class ShareCardFrame extends StatelessWidget {
           ),
           Button(
             variant: .ghost,
-            label: l10n.stop,
+            label: l10n.controlStopSharing,
             onPressed: () => unawaited(viewModel.stop()),
           ),
         ],

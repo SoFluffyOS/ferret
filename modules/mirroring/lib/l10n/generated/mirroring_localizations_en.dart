@@ -1290,6 +1290,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get controlStop => 'Stop control';
 
   @override
+  String get controlStopSharing => 'Stop sharing screen';
+
+  @override
   String get noticeControlChannel => 'Control from a computer';
 
   @override
