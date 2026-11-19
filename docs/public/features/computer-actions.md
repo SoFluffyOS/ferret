@@ -19,7 +19,7 @@ Open a computer in Ferret on another device. Under **This Mac** (or **This PC**,
 - ⏻ **Shut down…**
 - 🔊 **Volume**: mute or unmute, down, up.
 
-Locking is right there too: **Lock MacBook Air**, among the buttons at the top. See [Control](remote-input.md).
+Locking is one tap away too: **Lock MacBook Air**, under **More** at the top. See [Control](remote-input.md).
 
 **Restart…** and **Shut down…** ask "are you sure" on your phone first. Fair warning: once it's off, Ferret can't reach it until someone turns it on. Then the computer counts down **10 seconds** with a **Cancel** button, as a notice and on top of Ferret. Anyone sitting there can stop it.
 
