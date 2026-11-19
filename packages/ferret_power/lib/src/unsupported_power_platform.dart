@@ -1,5 +1,6 @@
 import 'package:ferret_power/src/power_clip.dart';
 import 'package:ferret_power/src/power_grant.dart';
+import 'package:ferret_power/src/power_input.dart';
 import 'package:ferret_power/src/power_platform.dart';
 import 'package:ferret_power/src/power_status.dart';
 import 'package:ferret_power/src/power_tier.dart';
@@ -46,4 +47,10 @@ class UnsupportedPowerPlatform implements PowerPlatform {
 
   @override
   Future<bool> grant(PowerTier tier, PowerGrant grant) async => false;
+
+  @override
+  Future<bool> inject(PowerTier tier, PowerInput input) async => false;
+
+  @override
+  Future<void> releaseInput() async {}
 }

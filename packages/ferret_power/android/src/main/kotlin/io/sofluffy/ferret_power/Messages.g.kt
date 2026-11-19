@@ -246,6 +246,22 @@ enum class PlatformPowerGrant(val raw: Int) {
   }
 }
 
+/** What a finger does in an injected touch. */
+enum class PlatformTouchAction(val raw: Int) {
+  DOWN(0),
+  MOVE(1),
+  UP(2),
+  CANCEL(3);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): PlatformTouchAction? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
 /**
  * What this phone offers right now. Reading it never asks for anything.
  *
@@ -388,11 +404,16 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         }
       }
       132.toByte() -> {
+        (readValue(buffer) as Long?)?.let {
+          PlatformTouchAction.ofRaw(it.toInt())
+        }
+      }
+      133.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           PlatformPowerState.fromList(it)
         }
       }
-      133.toByte() -> {
+      134.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           PlatformPowerClip.fromList(it)
         }
@@ -414,12 +435,16 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(131)
         writeValue(stream, value.raw.toLong())
       }
-      is PlatformPowerState -> {
+      is PlatformTouchAction -> {
         stream.write(132)
+        writeValue(stream, value.raw.toLong())
+      }
+      is PlatformPowerState -> {
+        stream.write(133)
         writeValue(stream, value.toList())
       }
       is PlatformPowerClip -> {
-        stream.write(133)
+        stream.write(134)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -460,6 +485,25 @@ interface PowerHostApi {
   suspend fun stopClipboardWatch()
   /** Turns [grant] on for Ferret itself. False when the command failed. */
   suspend fun grant(backend: PlatformPowerBackend, grant: PlatformPowerGrant): Boolean
+  /**
+   * Injects a touch as the shell user. [x] and [y] are fractions of the
+   * screen as it is turned right now. False when the system refused.
+   */
+  suspend fun injectTouch(backend: PlatformPowerBackend, action: PlatformTouchAction, x: Double, y: Double): Boolean
+  /**
+   * Scrolls what is under ([x], [y]) by wheel notches: positive
+   * [horizontal] is right, positive [vertical] is up.
+   */
+  suspend fun injectScroll(backend: PlatformPowerBackend, x: Double, y: Double, horizontal: Double, vertical: Double): Boolean
+  /** Presses or releases the Android key [keyCode] with [metaState] held. */
+  suspend fun injectKey(backend: PlatformPowerBackend, keyCode: Long, down: Boolean, metaState: Long): Boolean
+  /**
+   * Types [text]. False when a character has no key on the phone's
+   * virtual keyboard; the others are still typed.
+   */
+  suspend fun injectText(backend: PlatformPowerBackend, text: String): Boolean
+  /** Lifts a finger that was left down, and lets the root helper go. */
+  suspend fun releaseInput()
 
   companion object {
     /** The codec used by PowerHostApi. */
@@ -631,6 +675,111 @@ interface PowerHostApi {
             CoroutineScope(Dispatchers.Main).launch {
               val wrapped: List<Any?> = try {
                 listOf(api.grant(backendArg, grantArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_power.PowerHostApi.injectTouch$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val backendArg = args[0] as PlatformPowerBackend
+            val actionArg = args[1] as PlatformTouchAction
+            val xArg = args[2] as Double
+            val yArg = args[3] as Double
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.injectTouch(backendArg, actionArg, xArg, yArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_power.PowerHostApi.injectScroll$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val backendArg = args[0] as PlatformPowerBackend
+            val xArg = args[1] as Double
+            val yArg = args[2] as Double
+            val horizontalArg = args[3] as Double
+            val verticalArg = args[4] as Double
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.injectScroll(backendArg, xArg, yArg, horizontalArg, verticalArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_power.PowerHostApi.injectKey$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val backendArg = args[0] as PlatformPowerBackend
+            val keyCodeArg = args[1] as Long
+            val downArg = args[2] as Boolean
+            val metaStateArg = args[3] as Long
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.injectKey(backendArg, keyCodeArg, downArg, metaStateArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_power.PowerHostApi.injectText$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val backendArg = args[0] as PlatformPowerBackend
+            val textArg = args[1] as String
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.injectText(backendArg, textArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_power.PowerHostApi.releaseInput$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                api.releaseInput()
+                listOf(null)
               } catch (exception: Throwable) {
                 MessagesPigeonUtils.wrapError(exception)
               }

@@ -11,6 +11,7 @@ import io.sofluffy.ferret_power.shell.IPowerShellService
 import io.sofluffy.ferret_power.shell.PowerShellService
 import io.sofluffy.ferret_power.shell.ShellClip
 import io.sofluffy.ferret_power.shell.ShellClipboard
+import io.sofluffy.ferret_power.shell.ShellInput
 import io.sofluffy.ferret_power.shell.ShellOptions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,10 @@ internal class ShizukuGateway(
     private var connecting: CompletableDeferred<IPowerShellService?>? = null
     private var permission: CompletableDeferred<Boolean>? = null
     private var watching = false
+
+    /** One thread, so a touch's down, moves and up reach the helper in order. */
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val inputThread = Dispatchers.IO.limitedParallelism(1)
 
     private val binderReceived = Shizuku.OnBinderReceivedListener { onStateChanged() }
 
@@ -155,6 +160,26 @@ internal class ShizukuGateway(
         } == true
     }
 
+    /** Injects [input] through the helper, in the order the calls are made. */
+    suspend fun inject(input: ShellInput): Boolean {
+        val service = connect() ?: return false
+        return withContext(inputThread) {
+            runCatching {
+                when (input) {
+                    is ShellInput.Touch -> service.injectTouch(input.action, input.x, input.y)
+                    is ShellInput.Scroll -> service.injectScroll(input.x, input.y, input.horizontal, input.vertical)
+                    is ShellInput.Key -> service.injectKey(input.keyCode, input.down, input.metaState)
+                    is ShellInput.Text -> service.injectText(input.text)
+                }
+            }.getOrDefault(false)
+        }
+    }
+
+    suspend fun releaseInput() {
+        val service = service ?: return
+        withContext(inputThread) { runCatching { service.releaseInput() } }
+    }
+
     private suspend fun connect(): IPowerShellService? {
         service?.let { bound -> if (bound.asBinder().pingBinder()) return bound }
         if (!granted) {
@@ -196,7 +221,7 @@ internal class ShizukuGateway(
     companion object {
         const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
         private const val PERMISSION_REQUEST = 0x4645
-        private const val SERVICE_VERSION = 2
+        private const val SERVICE_VERSION = 3
         private const val CONNECT_TIMEOUT_MS = 10_000L
     }
 }

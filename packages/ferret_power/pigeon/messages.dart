@@ -17,6 +17,9 @@ enum PlatformPowerBackend { shizuku, root }
 /// A setting Ferret may turn on for itself through a backend.
 enum PlatformPowerGrant { notificationAccess, batteryUnrestricted }
 
+/// What a finger does in an injected touch.
+enum PlatformTouchAction { down, move, up, cancel }
+
 /// What this phone offers right now. Reading it never asks for anything.
 class PlatformPowerState {
   PlatformPowerState({
@@ -101,6 +104,45 @@ abstract class PowerHostApi {
   /// Turns [grant] on for Ferret itself. False when the command failed.
   @async
   bool grant(PlatformPowerBackend backend, PlatformPowerGrant grant);
+
+  /// Injects a touch as the shell user. [x] and [y] are fractions of the
+  /// screen as it is turned right now. False when the system refused.
+  @async
+  bool injectTouch(
+    PlatformPowerBackend backend,
+    PlatformTouchAction action,
+    double x,
+    double y,
+  );
+
+  /// Scrolls what is under ([x], [y]) by wheel notches: positive
+  /// [horizontal] is right, positive [vertical] is up.
+  @async
+  bool injectScroll(
+    PlatformPowerBackend backend,
+    double x,
+    double y,
+    double horizontal,
+    double vertical,
+  );
+
+  /// Presses or releases the Android key [keyCode] with [metaState] held.
+  @async
+  bool injectKey(
+    PlatformPowerBackend backend,
+    int keyCode,
+    bool down,
+    int metaState,
+  );
+
+  /// Types [text]. False when a character has no key on the phone's
+  /// virtual keyboard; the others are still typed.
+  @async
+  bool injectText(PlatformPowerBackend backend, String text);
+
+  /// Lifts a finger that was left down, and lets the root helper go.
+  @async
+  void releaseInput();
 }
 
 @FlutterApi()

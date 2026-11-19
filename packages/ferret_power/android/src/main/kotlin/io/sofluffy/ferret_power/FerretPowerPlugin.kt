@@ -4,15 +4,19 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
+import android.util.DisplayMetrics
+import android.view.Display
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.sofluffy.ferret_power.shell.ShellClip
 import io.sofluffy.ferret_power.shell.ShellGrants
+import io.sofluffy.ferret_power.shell.ShellInput
 import io.sofluffy.ferret_power.shell.ShellOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +37,10 @@ class FerretPowerPlugin : FlutterPlugin, PowerHostApi {
     private var root: RootGateway? = null
     private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val main = Handler(Looper.getMainLooper())
+
+    /** One thread, so a touch's down, moves and up reach the root helper in order. */
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val rootInput = Dispatchers.IO.limitedParallelism(1)
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         val context = binding.applicationContext
@@ -140,6 +148,68 @@ class FerretPowerPlugin : FlutterPlugin, PowerHostApi {
             PlatformPowerBackend.SHIZUKU -> shizuku?.grant(name) == true
             PlatformPowerBackend.ROOT -> root?.let { gateway -> withContext(Dispatchers.IO) { gateway.grant(name) } } == true
         }
+    }
+
+    override suspend fun injectTouch(
+        backend: PlatformPowerBackend,
+        action: PlatformTouchAction,
+        x: Double,
+        y: Double,
+    ): Boolean {
+        val (pixelX, pixelY) = pixelsOf(x, y) ?: return false
+        val code = when (action) {
+            PlatformTouchAction.DOWN -> ShellInput.ACTION_DOWN
+            PlatformTouchAction.MOVE -> ShellInput.ACTION_MOVE
+            PlatformTouchAction.UP -> ShellInput.ACTION_UP
+            PlatformTouchAction.CANCEL -> ShellInput.ACTION_CANCEL
+        }
+        return inject(backend, ShellInput.Touch(code, pixelX, pixelY))
+    }
+
+    override suspend fun injectScroll(
+        backend: PlatformPowerBackend,
+        x: Double,
+        y: Double,
+        horizontal: Double,
+        vertical: Double,
+    ): Boolean {
+        val (pixelX, pixelY) = pixelsOf(x, y) ?: return false
+        return inject(backend, ShellInput.Scroll(pixelX, pixelY, horizontal.toFloat(), vertical.toFloat()))
+    }
+
+    override suspend fun injectKey(
+        backend: PlatformPowerBackend,
+        keyCode: Long,
+        down: Boolean,
+        metaState: Long,
+    ): Boolean = inject(backend, ShellInput.Key(keyCode.toInt(), down, metaState.toInt()))
+
+    override suspend fun injectText(backend: PlatformPowerBackend, text: String): Boolean =
+        inject(backend, ShellInput.Text(text))
+
+    override suspend fun releaseInput() {
+        shizuku?.releaseInput()
+        root?.let { gateway -> withContext(rootInput) { gateway.releaseInput() } }
+    }
+
+    private suspend fun inject(backend: PlatformPowerBackend, input: ShellInput): Boolean {
+        val checked = ShellInput.checked(input) ?: return false
+        return when (backend) {
+            PlatformPowerBackend.SHIZUKU -> shizuku?.inject(checked) == true
+            PlatformPowerBackend.ROOT -> root?.let { gateway -> withContext(rootInput) { gateway.inject(checked) } } == true
+        }
+    }
+
+    /** A place given as fractions of the screen, in pixels of the screen as it is turned right now. */
+    private fun pixelsOf(x: Double, y: Double): Pair<Float, Float>? {
+        val displays = context?.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager ?: return null
+        val display = displays.getDisplay(Display.DEFAULT_DISPLAY) ?: return null
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        display.getRealMetrics(metrics)
+        val pixelX = (x.coerceIn(0.0, 1.0) * (metrics.widthPixels - 1)).toFloat()
+        val pixelY = (y.coerceIn(0.0, 1.0) * (metrics.heightPixels - 1)).toFloat()
+        return pixelX to pixelY
     }
 
     private fun notifyState() = onMain { api -> api.onStateChanged(getState()) }

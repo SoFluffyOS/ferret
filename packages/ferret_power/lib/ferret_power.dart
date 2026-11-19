@@ -7,6 +7,7 @@ export 'package:ferret_power/src/pigeon_power_platform.dart';
 export 'package:ferret_power/src/power_capabilities.dart';
 export 'package:ferret_power/src/power_clip.dart';
 export 'package:ferret_power/src/power_grant.dart';
+export 'package:ferret_power/src/power_input.dart';
 export 'package:ferret_power/src/power_platform.dart';
 export 'package:ferret_power/src/power_status.dart';
 export 'package:ferret_power/src/power_tier.dart';

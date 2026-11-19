@@ -16,6 +16,7 @@ object ShellLines {
     const val WATCH = "watch"
     const val UNWATCH = "unwatch"
     const val GRANT = "grant"
+    const val RELEASE = "release"
     const val QUIT = "quit"
 
     fun clipLine(prefix: String, clip: ShellClip): String {

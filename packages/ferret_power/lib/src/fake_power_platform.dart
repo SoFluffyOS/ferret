@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ferret_power/src/power_clip.dart';
 import 'package:ferret_power/src/power_grant.dart';
+import 'package:ferret_power/src/power_input.dart';
 import 'package:ferret_power/src/power_platform.dart';
 import 'package:ferret_power/src/power_status.dart';
 import 'package:ferret_power/src/power_tier.dart';
@@ -26,6 +27,11 @@ class FakePowerPlatform implements PowerPlatform {
 
   bool failWatch = false;
   bool failGrants = false;
+  bool failInput = false;
+
+  /// Everything injected, in order, and how often input was released.
+  final List<PowerInput> injected = [];
+  int inputReleases = 0;
 
   /// The tier a watch runs on, or null when none does.
   PowerTier? watchedTier;
@@ -156,6 +162,19 @@ class FakePowerPlatform implements PowerPlatform {
     };
     return true;
   }
+
+  @override
+  Future<bool> inject(PowerTier tier, PowerInput input) async {
+    if (failInput) {
+      return false;
+    }
+
+    injected.add(input);
+    return true;
+  }
+
+  @override
+  Future<void> releaseInput() async => inputReleases++;
 
   PowerStatus _with({
     ShizukuStatus? shizuku,

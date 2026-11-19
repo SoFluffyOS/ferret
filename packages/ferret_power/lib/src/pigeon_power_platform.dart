@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ferret_power/src/messages.g.dart';
 import 'package:ferret_power/src/power_clip.dart';
 import 'package:ferret_power/src/power_grant.dart';
+import 'package:ferret_power/src/power_input.dart';
 import 'package:ferret_power/src/power_platform.dart';
 import 'package:ferret_power/src/power_status.dart';
 import 'package:ferret_power/src/power_tier.dart';
@@ -86,6 +87,40 @@ class PigeonPowerPlatform implements PowerPlatform, PowerFlutterApi {
       .batteryUnrestricted => PlatformPowerGrant.batteryUnrestricted,
     });
   }
+
+  @override
+  Future<bool> inject(PowerTier tier, PowerInput input) async {
+    final backend = _backendOf(tier);
+    if (backend == null) {
+      return false;
+    }
+
+    return switch (input) {
+      PowerTouch(:final action, :final x, :final y) => _api.injectTouch(
+        backend,
+        switch (action) {
+          .down => PlatformTouchAction.down,
+          .move => PlatformTouchAction.move,
+          .up => PlatformTouchAction.up,
+          .cancel => PlatformTouchAction.cancel,
+        },
+        x,
+        y,
+      ),
+      PowerScroll(:final x, :final y, :final horizontal, :final vertical) =>
+        _api.injectScroll(backend, x, y, horizontal, vertical),
+      PowerKey(:final keyCode, :final down, :final metaState) => _api.injectKey(
+        backend,
+        keyCode,
+        down,
+        metaState,
+      ),
+      PowerText(:final text) => _api.injectText(backend, text),
+    };
+  }
+
+  @override
+  Future<void> releaseInput() => _api.releaseInput();
 
   @override
   void onStateChanged(PlatformPowerState state) =>

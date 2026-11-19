@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ferret_power/src/power_clip.dart';
 import 'package:ferret_power/src/power_grant.dart';
+import 'package:ferret_power/src/power_input.dart';
 import 'package:ferret_power/src/power_platform.dart';
 import 'package:ferret_power/src/power_status.dart';
 import 'package:ferret_power/src/power_tier.dart';
@@ -156,6 +157,32 @@ class PowerCapabilities {
     final granted = await _guarded(() => _platform.grant(tier, grant));
     await _reload();
     return granted;
+  }
+
+  /// Whether [inject] can do anything right now: a tier is active.
+  bool get canInjectInput => _tier != .standard;
+
+  /// Does [input] on the phone through the active tier, as if its owner
+  /// did. Calls are carried out in the order they are made. False on the
+  /// standard tier, or when the system refused.
+  ///
+  /// The caller decides who may: this only carries it out.
+  Future<bool> inject(PowerInput input) async {
+    final tier = _tier;
+    if (tier == .standard) {
+      return false;
+    }
+
+    return _guarded(() => _platform.inject(tier, input));
+  }
+
+  /// Lifts a finger that was left down and lets the helper rest. Call it
+  /// when whoever was injecting is done.
+  Future<void> releaseInput() async {
+    await _guarded(() async {
+      await _platform.releaseInput();
+      return true;
+    });
   }
 
   @visibleForTesting

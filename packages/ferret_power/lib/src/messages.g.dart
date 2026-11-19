@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-  List<Object?>? replyList,
-  String channelName, {
-  required bool isNullValid,
+    List<Object?>? replyList,
+    String channelName, {
+    required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -34,11 +34,8 @@ Object? _extractReplyValueOrThrow(
   return replyList.firstOrNull;
 }
 
-List<Object?> wrapResponse({
-  Object? result,
-  PlatformException? error,
-  bool empty = false,
-}) {
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -47,7 +44,6 @@ List<Object?> wrapResponse({
   }
   return <Object?>[error.code, error.message, error.details];
 }
-
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -60,9 +56,8 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed.every(
-          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
-        );
+        a.indexed
+            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -111,14 +106,35 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
+
 /// The app that manages root on this phone, when one is installed.
-enum PlatformRootManager { none, magisk, kernelSu, aPatch, unknown }
+enum PlatformRootManager {
+  none,
+  magisk,
+  kernelSu,
+  aPatch,
+  unknown;
+}
 
 /// What runs a capability: the Shizuku service, or `su`.
-enum PlatformPowerBackend { shizuku, root }
+enum PlatformPowerBackend {
+  shizuku,
+  root;
+}
 
 /// A setting Ferret may turn on for itself through a backend.
-enum PlatformPowerGrant { notificationAccess, batteryUnrestricted }
+enum PlatformPowerGrant {
+  notificationAccess,
+  batteryUnrestricted;
+}
+
+/// What a finger does in an injected touch.
+enum PlatformTouchAction {
+  down,
+  move,
+  up,
+  cancel;
+}
 
 /// What this phone offers right now. Reading it never asks for anything.
 class PlatformPowerState {
@@ -172,8 +188,7 @@ class PlatformPowerState {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static PlatformPowerState decode(Object result) {
     result as List<Object?>;
@@ -199,15 +214,7 @@ class PlatformPowerState {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(shizukuInstalled, other.shizukuInstalled) &&
-        _deepEquals(shizukuRunning, other.shizukuRunning) &&
-        _deepEquals(shizukuGranted, other.shizukuGranted) &&
-        _deepEquals(rootFound, other.rootFound) &&
-        _deepEquals(rootGranted, other.rootGranted) &&
-        _deepEquals(rootManager, other.rootManager) &&
-        _deepEquals(notificationAccess, other.notificationAccess) &&
-        _deepEquals(messagesAndCalls, other.messagesAndCalls) &&
-        _deepEquals(batteryUnrestricted, other.batteryUnrestricted);
+    return _deepEquals(shizukuInstalled, other.shizukuInstalled) && _deepEquals(shizukuRunning, other.shizukuRunning) && _deepEquals(shizukuGranted, other.shizukuGranted) && _deepEquals(rootFound, other.rootFound) && _deepEquals(rootGranted, other.rootGranted) && _deepEquals(rootManager, other.rootManager) && _deepEquals(notificationAccess, other.notificationAccess) && _deepEquals(messagesAndCalls, other.messagesAndCalls) && _deepEquals(batteryUnrestricted, other.batteryUnrestricted);
   }
 
   @override
@@ -240,8 +247,7 @@ class PlatformPowerClip {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static PlatformPowerClip decode(Object result) {
     result as List<Object?>;
@@ -260,8 +266,7 @@ class PlatformPowerClip {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(text, other.text) &&
-        _deepEquals(sensitive, other.sensitive);
+    return _deepEquals(text, other.text) && _deepEquals(sensitive, other.sensitive);
   }
 
   @override
@@ -274,6 +279,7 @@ class PlatformPowerClip {
   }
 }
 
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -281,20 +287,23 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    } else if (value is PlatformRootManager) {
+    }    else if (value is PlatformRootManager) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is PlatformPowerBackend) {
+    }    else if (value is PlatformPowerBackend) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    } else if (value is PlatformPowerGrant) {
+    }    else if (value is PlatformPowerGrant) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    } else if (value is PlatformPowerState) {
+    }    else if (value is PlatformTouchAction) {
       buffer.putUint8(132);
-      writeValue(buffer, value.encode());
-    } else if (value is PlatformPowerClip) {
+      writeValue(buffer, value.index);
+    }    else if (value is PlatformPowerState) {
       buffer.putUint8(133);
+      writeValue(buffer, value.encode());
+    }    else if (value is PlatformPowerClip) {
+      buffer.putUint8(134);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -314,8 +323,11 @@ class _PigeonCodec extends StandardMessageCodec {
         final value = readValue(buffer) as int?;
         return value == null ? null : PlatformPowerGrant.values[value];
       case 132:
-        return PlatformPowerState.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : PlatformTouchAction.values[value];
       case 133:
+        return PlatformPowerState.decode(readValue(buffer)!);
+      case 134:
         return PlatformPowerClip.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -328,21 +340,20 @@ class PowerHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   PowerHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   Future<PlatformPowerState> getState() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.getState$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.getState$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -351,18 +362,18 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as PlatformPowerState;
   }
 
   /// Shows Shizuku's permission dialog. False when the user said no or
   /// Shizuku isn't running.
   Future<bool> requestShizukuPermission() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.requestShizukuPermission$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.requestShizukuPermission$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -371,17 +382,17 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Opens the Shizuku app. False when it isn't installed.
   Future<bool> openShizuku() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.openShizuku$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.openShizuku$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -390,16 +401,16 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   Future<bool> openNotificationAccessSettings() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.openNotificationAccessSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.openNotificationAccessSettings$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -408,17 +419,17 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Opens Ferret's page in the system settings.
   Future<bool> openAppSettings() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.openAppSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.openAppSettings$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -427,18 +438,18 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Runs `su -c id`, which makes the root manager ask the user. False when
   /// denied or when there is no `su`.
   Future<bool> requestRoot() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.requestRoot$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.requestRoot$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -447,32 +458,31 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// The clipboard text, read as the shell user. Null when it is empty or
   /// holds something other than text.
   Future<PlatformPowerClip?> readClipboard(PlatformPowerBackend backend) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.readClipboard$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.readClipboard$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[backend],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
     return pigeonVar_replyValue as PlatformPowerClip?;
   }
 
@@ -480,27 +490,24 @@ class PowerHostApi {
   /// [PowerFlutterApi.onClipboardChanged], also while Ferret is in the
   /// background.
   Future<void> startClipboardWatch(PlatformPowerBackend backend) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.startClipboardWatch$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.startClipboardWatch$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[backend],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> stopClipboardWatch() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.stopClipboardWatch$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.stopClipboardWatch$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -509,34 +516,127 @@ class PowerHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Turns [grant] on for Ferret itself. False when the command failed.
-  Future<bool> grant(
-    PlatformPowerBackend backend,
-    PlatformPowerGrant grant,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_power.PowerHostApi.grant$pigeonVar_messageChannelSuffix';
+  Future<bool> grant(PlatformPowerBackend backend, PlatformPowerGrant grant) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.grant$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[backend, grant],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend, grant]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
+  }
+
+  /// Injects a touch as the shell user. [x] and [y] are fractions of the
+  /// screen as it is turned right now. False when the system refused.
+  Future<bool> injectTouch(PlatformPowerBackend backend, PlatformTouchAction action, double x, double y) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.injectTouch$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend, action, x, y]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Scrolls what is under ([x], [y]) by wheel notches: positive
+  /// [horizontal] is right, positive [vertical] is up.
+  Future<bool> injectScroll(PlatformPowerBackend backend, double x, double y, double horizontal, double vertical) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.injectScroll$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend, x, y, horizontal, vertical]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Presses or releases the Android key [keyCode] with [metaState] held.
+  Future<bool> injectKey(PlatformPowerBackend backend, int keyCode, bool down, int metaState) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.injectKey$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend, keyCode, down, metaState]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Types [text]. False when a character has no key on the phone's
+  /// virtual keyboard; the others are still typed.
+  Future<bool> injectText(PlatformPowerBackend backend, String text) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.injectText$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[backend, text]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Lifts a finger that was left down, and lets the root helper go.
+  Future<void> releaseInput() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_power.PowerHostApi.releaseInput$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -551,20 +651,16 @@ abstract class PowerFlutterApi {
   /// The watcher ended on its own, such as when Shizuku stopped.
   void onClipboardWatchStopped();
 
-  static void setUp(
-    PowerFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(PowerFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onStateChanged$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onStateChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -576,20 +672,16 @@ abstract class PowerFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onClipboardChanged$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onClipboardChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -601,20 +693,16 @@ abstract class PowerFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onClipboardWatchStopped$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_power.PowerFlutterApi.onClipboardWatchStopped$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -624,10 +712,8 @@ abstract class PowerFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }

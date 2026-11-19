@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ferret_power/src/pigeon_power_platform.dart';
 import 'package:ferret_power/src/power_clip.dart';
 import 'package:ferret_power/src/power_grant.dart';
+import 'package:ferret_power/src/power_input.dart';
 import 'package:ferret_power/src/power_status.dart';
 import 'package:ferret_power/src/power_tier.dart';
 import 'package:ferret_power/src/unsupported_power_platform.dart';
@@ -48,4 +49,11 @@ abstract interface class PowerPlatform {
   Future<void> stopClipboardWatch();
 
   Future<bool> grant(PowerTier tier, PowerGrant grant);
+
+  /// Injects [input] through [tier]'s helper. Calls are carried out in the
+  /// order they are made. False when the system refused.
+  Future<bool> inject(PowerTier tier, PowerInput input);
+
+  /// Lifts a finger that was left down and lets the helper rest.
+  Future<void> releaseInput();
 }

@@ -291,6 +291,58 @@ void main() {
     });
   });
 
+  group('input', () {
+    test('the standard tier injects nothing', () async {
+      start(shizukuReady);
+      await power.configure(shizuku: false, root: false);
+
+      final injected = await power.inject(const PowerTouch(.down, 0.5, 0.5));
+
+      expect(power.canInjectInput, isFalse);
+      expect(injected, isFalse);
+      expect(phone.injected, isEmpty);
+    });
+
+    test('an active tier injects in the order asked', () async {
+      start(shizukuReady);
+      await power.configure(shizuku: true, root: false);
+      const tap = [
+        PowerTouch(.down, 0.25, 0.75),
+        PowerTouch(.up, 0.25, 0.75),
+        PowerKey(4, down: true),
+        PowerText('hi'),
+      ];
+
+      for (final input in tap) {
+        expect(await power.inject(input), isTrue);
+      }
+      await power.releaseInput();
+
+      expect(power.canInjectInput, isTrue);
+      expect(phone.injected, tap);
+      expect(phone.inputReleases, 1);
+    });
+
+    test('input stops the moment the tier goes away', () async {
+      start(shizukuReady);
+      await power.configure(shizuku: true, root: false);
+
+      phone.emit(shizukuStopped);
+      await settle();
+
+      expect(await power.inject(const PowerText('late')), isFalse);
+      expect(phone.injected, isEmpty);
+    });
+
+    test('a refusal by the system is a no, not an error', () async {
+      start(shizukuReady);
+      await power.configure(shizuku: true, root: false);
+      phone.failInput = true;
+
+      expect(await power.inject(const PowerScroll(0.5, 0.5)), isFalse);
+    });
+  });
+
   test('other platforms have nothing to offer and run nothing', () async {
     final desktop = PowerCapabilities.withPlatform(
       const UnsupportedPowerPlatform(),

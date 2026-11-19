@@ -18,4 +18,17 @@ interface IPowerShellService {
 
     // Runs one of the fixed commands in ShellGrants for `packageName`.
     boolean grant(String grant, String packageName, String listenerComponent) = 4;
+
+    // The four things the helper can inject, as typed values: see ShellInput.
+    // Positions are screen pixels. False when the system refused.
+    boolean injectTouch(int action, float x, float y) = 5;
+
+    boolean injectScroll(float x, float y, float horizontal, float vertical) = 6;
+
+    boolean injectKey(int keyCode, boolean down, int metaState) = 7;
+
+    boolean injectText(String text) = 8;
+
+    // Lifts a finger that was left down.
+    void releaseInput() = 9;
 }

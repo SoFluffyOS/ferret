@@ -3,6 +3,7 @@ package io.sofluffy.ferret_power
 import android.content.Context
 import android.content.pm.PackageManager
 import io.sofluffy.ferret_power.shell.ShellClip
+import io.sofluffy.ferret_power.shell.ShellInput
 import io.sofluffy.ferret_power.shell.ShellLines
 import io.sofluffy.ferret_power.shell.ShellOptions
 import java.io.File
@@ -23,6 +24,9 @@ internal class RootGateway(
 ) {
     private var session: RootSession? = null
     private var watching = false
+
+    /** Input is being injected: the helper stays up between events. */
+    private var injecting = false
 
     /** `su` answered as root since the app started. */
     @Volatile
@@ -79,6 +83,25 @@ internal class RootGateway(
         return reply == ShellLines.OK
     }
 
+    /** Injects [input]. The helper stays running until [releaseInput]. */
+    @Synchronized
+    fun inject(input: ShellInput): Boolean {
+        val session = open() ?: return false
+        injecting = true
+        return session.request(ShellInput.line(input)) == ShellLines.OK
+    }
+
+    @Synchronized
+    fun releaseInput() {
+        if (!injecting) {
+            return
+        }
+
+        injecting = false
+        session?.request(ShellLines.RELEASE)
+        closeUnlessWatching()
+    }
+
     private fun open(): RootSession? {
         session?.let { open -> if (open.isOpen) return open }
 
@@ -99,7 +122,7 @@ internal class RootGateway(
     }
 
     private fun closeUnlessWatching() {
-        if (watching) {
+        if (watching || injecting) {
             return
         }
 
@@ -116,6 +139,7 @@ internal class RootGateway(
             session = null
             val wasWatching = watching
             watching = false
+            injecting = false
             wasWatching
         }
         if (stoppedWatch) {

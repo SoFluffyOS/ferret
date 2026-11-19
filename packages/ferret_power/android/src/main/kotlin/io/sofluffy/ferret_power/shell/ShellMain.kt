@@ -16,20 +16,23 @@ object ShellMain {
     fun main(arguments: Array<String>) {
         val options = ShellOptions.parse(arguments)
         val clipboard = ShellClipboard()
+        val injector = ShellInjector()
         val output = PrintStream(FileOutputStream(FileDescriptor.out), true, "UTF-8")
         val send: (String) -> Unit = { line -> synchronized(output) { output.println(line) } }
 
         send(ShellLines.READY)
         FileInputStream(FileDescriptor.`in`).bufferedReader(Charsets.UTF_8).useLines { lines ->
             for (line in lines) {
-                val command = line.trim()
+                // What is typed may end in a space, so a text line stays whole.
+                val command = if (line.startsWith("${ShellInput.TEXT} ")) line else line.trim()
                 if (command == ShellLines.QUIT) {
                     break
                 }
-                send(answer(command, options, clipboard, send))
+                send(answer(command, options, clipboard, injector, send))
             }
         }
 
+        injector.release()
         clipboard.unwatch()
         exitProcess(0)
     }
@@ -38,6 +41,7 @@ object ShellMain {
         command: String,
         options: ShellOptions,
         clipboard: ShellClipboard,
+        injector: ShellInjector,
         send: (String) -> Unit,
     ): String {
         if (command == ShellLines.READ) {
@@ -64,6 +68,12 @@ object ShellMain {
             return if (granted) ShellLines.OK else ShellLines.FAIL
         }
 
-        return ShellLines.FAIL
+        if (command == ShellLines.RELEASE) {
+            injector.release()
+            return ShellLines.OK
+        }
+
+        val input = ShellInput.parse(line = command) ?: return ShellLines.FAIL
+        return if (injector.run(input)) ShellLines.OK else ShellLines.FAIL
     }
 }
