@@ -1,5 +1,6 @@
 {
   "@@locale": "vi",
+  "@@x-translation": "Machine-assisted (Claude), not yet reviewed by a native speaker",
   "title": "Wake-on-LAN",
   "wake": "Đánh thức",
   "tryAgain": "Thử lại",
