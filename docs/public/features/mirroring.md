@@ -80,7 +80,7 @@ One small toolbar, and it NEVER covers the phone's screen.
 | Screenshot | Saves the picture as it is right now | `⇧⌘S` |
 | Keyboard | A field for accents, emoji, another language | `⌘K` |
 | The three bars | How the picture is doing, and its presets | |
-| ••• | Keep toolbar visible, Notifications panel, Volume, Power | |
+| ••• | Sound, Keep toolbar visible, Notifications panel, Volume, Power | |
 | Stop | Ends it on both devices | |
 
 On Windows and Linux the keys use `Ctrl`.
@@ -98,6 +98,25 @@ Click the camera, or press `⇧⌘S`. Ferret saves the phone's screen as a PNG i
 A line above the picture says "Saved to Downloads › Ferret", with **Show in Finder**. Easy, right?
 
 It works over Wi-Fi too. You can't click a phone that is **View only**, but you can keep what you see.
+
+## 🔊 Sound
+
+A video on the phone, and the sound stays in your pocket. Not anymore.
+
+**Over Wi-Fi**, the phone decides. On the phone, open Ferret, then **Settings → To your computer**, and turn on **Send sound too**. Android asks for its "record audio" permission once. It files it under Microphone, but Ferret only captures what the phone PLAYS: music, videos, games. Never the microphone.
+
+From then on, the phone's question says so, and so does its notice: "Sharing screen and sound with MacBook". Sound goes only while the screen is shown.
+
+**Over a cable**, it just works on Android 11 and later.
+
+On the computer, open **••• → Sound**:
+
+- **On this computer**: the phone's sound plays here, with a volume slider.
+- **On Pixel**: it stays on the phone.
+
+Over Wi-Fi the phone keeps playing too. Turn its volume down to hear it only on your computer. Easy, right?
+
+Ferret keeps sound and picture together. A late bit of sound is dropped, never played behind the picture.
 
 ## 🖱️ The mouse is a finger
 
@@ -203,7 +222,7 @@ A Mac decodes it with its own hardware decoder. Windows and Linux get a JPEG pic
 | Windows | Yes | JPEG, about 10 fps | Not yet: in Ferret's window |
 | Linux | Yes | JPEG, about 10 fps | Not yet: in Ferret's window |
 
-- **No sound.** Only the picture is sent.
+- **Sound** needs Android 10 or later over Wi-Fi, Android 11 or later over a cable. Some apps (a few video and call apps) don't let their sound be captured: they stay silent on the computer.
 - **Protected screens stay black.** Banking apps, password fields and DRM video can tell Android to hide them from any capture. Ferret can't see them, and shouldn't.
 - **One app only**: on Android 14 and later the prompt lets you share a single app instead of the whole screen. Ferret shows whatever you pick.
 - **One phone at a time.** A second phone takes the first one's place, after asking.

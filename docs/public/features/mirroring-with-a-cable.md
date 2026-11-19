@@ -120,7 +120,7 @@ Nothing about you or your phone is sent anywhere. The picture goes from the phon
 | Android, iPhone | No. Showing a phone on a phone isn't offered |
 
 - **Android 5 and later** for the picture. Wireless debugging needs Android 11.
-- **No sound.** Only the picture is sent.
+- **Sound** needs Android 11 or later, and an unlocked phone when the picture starts. Pick where it plays in **••• → Sound**.
 - **Protected screens stay black**: banking apps, password fields, DRM video.
 - The picture quality is set when it starts. Pick **Fast** behind the three bars and Ferret restarts the picture with it.
 

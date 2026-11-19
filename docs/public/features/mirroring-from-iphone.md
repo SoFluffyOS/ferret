@@ -30,7 +30,7 @@ Want it to listen all the time? Turn on **Show iPhone and iPad screens here** in
 
 Ferret asks you on the computer first, on the same page: "Simon's iPhone is connecting", with **Show** and **Not mine**. Click **Show** and the iPhone's screen appears, right there.
 
-It is view only, with no sound.
+It is view only, and the sound stays on the iPhone for now.
 
 Rotate the iPhone and the picture follows. Lock it and the picture stands still until you unlock.
 
@@ -76,7 +76,7 @@ An iOS update can change that handshake. If it does, iPhones will stop connectin
 | macOS | Written, off by default. Use the Mac's own AirPlay Receiver |
 | Android, iPhone | No. Showing a phone on a phone isn't offered |
 
-- **No sound.** Only the picture is sent.
+- **No sound yet.** Only the picture is sent. AirPlay sound comes later.
 - **View only.** You can't click or type on the iPhone from the computer. AirPlay only sends the picture.
 - **Screen mirroring only.** Sending a video or a song with the AirPlay button isn't supported.
 - The iPhone picks the picture quality. Ferret can't change it.
