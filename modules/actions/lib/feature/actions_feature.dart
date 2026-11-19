@@ -4,6 +4,7 @@ import 'package:actions/models/models.dart';
 import 'package:actions/services/services.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_actions/ferret_actions.dart';
+import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/actions.dart';
 import 'package:protocol/protocol.dart';
@@ -12,11 +13,14 @@ import 'package:protocol/protocol.dart';
 /// down, sound, and commands its owner defined there. The computer asks
 /// its owner the first time per device and action, counts down before it
 /// restarts or shuts down, and keeps a line of each time. Only action ids
-/// travel, never a command line.
+/// travel, never a command line. A computer also locks itself when a
+/// phone its owner chose leaves ([LeaveLock]).
 class ActionsFeature extends Feature {
   ActionsFeature({
     ComputerActions? computer,
     CommandRunner? runner,
+    ScreenLocker? locker,
+    InputIdle? idle,
     bool? offersActions,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
@@ -24,8 +28,11 @@ class ActionsFeature extends Feature {
     this.commandTimeout = const Duration(seconds: 30),
     this.requestTimeout = const Duration(seconds: 10),
     this.leaveDelay = const Duration(milliseconds: 500),
+    this.idleBeforeLock = const Duration(minutes: 1),
   }) : _computer = computer ?? ComputerActions.current(),
        _runner = runner ?? CommandRunner(),
+       _locker = locker ?? ScreenLocker.current(),
+       _idle = idle ?? InputIdle.current(),
        _offersActions = offersActions,
        _clock = clock ?? DateTime.now;
 
@@ -40,14 +47,21 @@ class ActionsFeature extends Feature {
   final Duration requestTimeout;
   final Duration leaveDelay;
 
+  /// How long nobody may have touched this computer before a phone that
+  /// left locks it.
+  final Duration idleBeforeLock;
+
   final ComputerActions _computer;
   final CommandRunner _runner;
+  final ScreenLocker _locker;
+  final InputIdle _idle;
   final bool? _offersActions;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final List<StreamSubscription<void>> _subscriptions = [];
 
   ActionsHost? _actionsHost;
+  LeaveLock? _leaveLock;
   ActionsClient? _client;
 
   @override
@@ -64,6 +78,10 @@ class ActionsFeature extends Feature {
 
   /// This computer's side, or null on phones.
   ActionsHost? get actionsHost => _actionsHost;
+
+  /// Locking this computer when a phone leaves, or null on phones and
+  /// where the screen can't be locked.
+  LeaveLock? get leaveLock => _leaveLock;
 
   /// The asking side. Null only before the feature started.
   ActionsClient? get client => _client;
@@ -94,6 +112,20 @@ class ActionsFeature extends Feature {
       _subscriptions.add(actionsHost.changes.listen((_) => _emit()));
     }
 
+    if ((_offersActions ?? _isComputer) && _locker.isSupported) {
+      final leaveLock = LeaveLock(
+        host: host,
+        settings: settings,
+        locker: _locker,
+        idle: _idle,
+        clock: _clock,
+        idleNeeded: idleBeforeLock,
+        countdownLength: countdownLength,
+      )..start();
+      _leaveLock = leaveLock;
+      _subscriptions.add(leaveLock.changes.listen((_) => _emit()));
+    }
+
     final client = ActionsClient(
       host: host,
       featureId: featureId,
@@ -119,6 +151,7 @@ class ActionsFeature extends Feature {
 
     _subscriptions.clear();
     await _actionsHost?.dispose();
+    await _leaveLock?.dispose();
     await _client?.dispose();
     await _changes.close();
   }
@@ -126,6 +159,7 @@ class ActionsFeature extends Feature {
   @override
   void onSessionOpened(Session session) {
     unawaited(_actionsHost?.sendList(session));
+    _leaveLock?.onSessionOpened(session);
   }
 
   @override
@@ -133,6 +167,7 @@ class ActionsFeature extends Feature {
     final deviceId = session.remoteDeviceId;
     _actionsHost?.onSessionClosed(deviceId);
     _client?.onSessionClosed(deviceId);
+    _leaveLock?.onSessionClosed(session);
   }
 
   @override

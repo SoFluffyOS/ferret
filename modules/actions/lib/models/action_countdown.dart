@@ -1,4 +1,5 @@
 import 'package:actions/models/offered_action.dart';
+import 'package:actions/models/seconds_until.dart';
 
 /// This computer is about to restart or shut down because a device asked:
 /// the seconds its owner has to cancel.
@@ -18,12 +19,5 @@ class ActionCountdown {
   final DateTime endsAt;
 
   /// Whole seconds left at [now], never below zero.
-  int secondsLeft(DateTime now) {
-    final left = endsAt.difference(now);
-    if (left <= Duration.zero) {
-      return 0;
-    }
-
-    return (left.inMilliseconds / Duration.millisecondsPerSecond).ceil();
-  }
+  int secondsLeft(DateTime now) => secondsUntil(endsAt, now);
 }

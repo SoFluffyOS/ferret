@@ -17,6 +17,8 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_actions:
     path: ../../packages/ferret_actions
+  ferret_remote_input:
+    path: ../../packages/ferret_remote_input
   flutter:
     sdk: flutter
   flutter_localizations:

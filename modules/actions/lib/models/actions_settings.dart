@@ -13,6 +13,16 @@ class ActionsSettings {
   static const allowedKey = 'actions.allowed';
   static const historyKey = 'actions.history';
 
+  /// The phones whose leaving locks this computer, by device id.
+  static const lockWhenGoneKey = 'actions.lock_when_gone';
+
+  /// How many minutes a phone is gone before this computer locks.
+  static const lockAfterKey = 'actions.lock_after_minutes';
+
+  static const lockAfterDefault = 2;
+  static const lockAfterMin = 1;
+  static const lockAfterMax = 10;
+
   /// How many past runs the history keeps.
   static const historyLength = 20;
 
@@ -39,6 +49,23 @@ class ActionsSettings {
 
   bool isAllowed(String deviceId, String grantId) =>
       allowedFor(deviceId).contains(grantId);
+
+  /// The phones whose leaving locks this computer. Off for every phone
+  /// until the owner turns it on.
+  List<String> get lockWhenGone => [
+    for (final id in _store.get<List<Object?>>(lockWhenGoneKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  bool locksWhenGone(String deviceId) => lockWhenGone.contains(deviceId);
+
+  /// Minutes a phone must stay gone, from [lockAfterMin] to [lockAfterMax].
+  int get lockAfterMinutes => switch (_store.get<int>(lockAfterKey)) {
+    final int minutes => minutes.clamp(lockAfterMin, lockAfterMax),
+    null => lockAfterDefault,
+  };
+
+  Duration get lockAfter => Duration(minutes: lockAfterMinutes);
 
   /// Past runs, newest first.
   List<ActionRecord> get history => [
@@ -77,6 +104,16 @@ class ActionsSettings {
           case final left when left.isNotEmpty)
         deviceId: left,
   });
+
+  Future<void> setLocksWhenGone(String deviceId, {required bool locks}) =>
+      _store.set(lockWhenGoneKey, [
+        for (final id in lockWhenGone)
+          if (id != deviceId) id,
+        if (locks) deviceId,
+      ]);
+
+  Future<void> setLockAfterMinutes(int minutes) =>
+      _store.set(lockAfterKey, minutes.clamp(lockAfterMin, lockAfterMax));
 
   Future<void> addRecord(ActionRecord record) => _store.set(historyKey, [
     record.toJson(),

@@ -6,5 +6,8 @@ export 'package:actions/models/action_record.dart';
 export 'package:actions/models/actions_settings.dart';
 export 'package:actions/models/computer_kind.dart';
 export 'package:actions/models/custom_action.dart';
+export 'package:actions/models/leave_countdown.dart';
+export 'package:actions/models/leave_lock_record.dart';
 export 'package:actions/models/offered_action.dart';
 export 'package:actions/models/outgoing_action.dart';
+export 'package:actions/models/seconds_until.dart';

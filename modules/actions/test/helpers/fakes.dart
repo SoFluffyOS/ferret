@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:actions/actions.dart';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_actions/ferret_actions.dart';
+import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/protocol.dart';
@@ -75,6 +77,9 @@ class FakeSession implements Session {
     for (final message in sent)
       if (message case final T typed) typed,
   ];
+
+  @override
+  GoodbyeReason? remoteGoodbye;
 
   @override
   bool get isClosed => false;
@@ -150,6 +155,9 @@ class FakeHost implements FeatureHost {
   final List<GeneratedMessage> broadcasts = [];
 
   @override
+  Presence localPresence = Presence(batteryPercent: -1);
+
+  @override
   DeviceInfo get localDevice =>
       DeviceInfo(id: identity.deviceId, name: 'MacBook Air');
 
@@ -178,6 +186,49 @@ class FakeHost implements FeatureHost {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+/// Locks nothing: counts how often it was asked.
+class FakeLocker implements ScreenLocker {
+  FakeLocker({this.works = true});
+
+  bool works;
+  int locks = 0;
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<bool> lock() async {
+    locks++;
+    return works;
+  }
+}
+
+/// Says the keyboard and mouse sat untouched for [idle].
+class FakeIdle implements InputIdle {
+  FakeIdle([this.idle = const Duration(minutes: 5)]);
+
+  Duration? idle;
+
+  @override
+  Future<Duration?> idleTime() async => idle;
+}
+
+/// Saves [deviceId] as a paired Android phone.
+Future<void> pairPhone(
+  FakeHost host,
+  String deviceId, {
+  String name = 'Pixel 7',
+}) => host.trustStore.save(
+  TrustedDevice(
+    id: deviceId,
+    name: name,
+    platform: .PLATFORM_ANDROID,
+    formFactor: .FORM_FACTOR_PHONE,
+    publicKey: Uint8List(32),
+    pairedAt: DateTime(2026, 11, 19),
+  ),
+);
 
 /// [message] as it arrives in an envelope from another device.
 Envelope envelopeOf(GeneratedMessage message, {bool expectsReply = false}) =>
