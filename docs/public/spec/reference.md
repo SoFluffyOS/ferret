@@ -1138,6 +1138,120 @@ Changes the source's settings. Expects a `MirrorSettings` reply.
 | `skip_while_using` | `optional bool` | 2 | Left out to keep the current value. |
 | `app_filter` | `optional AppFilter` | 3 | Applied before `apps`. Left out to keep the current filter. |
 
+## `ferret.photos.v1`
+
+### enum `PhotoKind`
+
+What a photo is.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `PHOTO_KIND_UNSPECIFIED` | 0 |  |
+| `PHOTO_KIND_PHOTO` | 1 |  |
+| `PHOTO_KIND_SCREENSHOT` | 2 | A screenshot or screen recording still, as the phone files it. |
+| `PHOTO_KIND_VIDEO` | 3 |  |
+
+### enum `PhotoAccess`
+
+How much the asking device may see right now.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `PHOTO_ACCESS_UNSPECIFIED` | 0 |  |
+| `PHOTO_ACCESS_NOT_ALLOWED` | 1 | The phone's owner hasn't let the asking device see photos. |
+| `PHOTO_ACCESS_NO_PERMISSION` | 2 | The phone's system hasn't given Ferret photo access yet, or it was turned off. |
+| `PHOTO_ACCESS_LIMITED` | 3 | Only the photos the owner picked: Android 14's "Selected photos" or the iPhone's limited library. |
+| `PHOTO_ACCESS_FULL` | 4 |  |
+| `PHOTO_ACCESS_UNAVAILABLE` | 5 | The phone can't read photos right now, such as an iPhone with Ferret in the background. |
+
+### message `PhotoItem`
+
+One photo or video on the phone. Ids are opaque and only mean something to the phone that sent them.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 |  |
+| `taken_at_ms` | `int64` | 2 | When it was taken (or added), in milliseconds since the Unix epoch. |
+| `width` | `uint32` | 3 |  |
+| `height` | `uint32` | 4 |  |
+| `kind` | `PhotoKind` | 5 |  |
+| `size` | `uint64` | 6 | Bytes, or 0 when unknown. |
+| `name` | `string` | 7 | The file name on the phone, such as "IMG_2041.jpg". |
+| `duration_ms` | `uint32` | 8 | Videos only. |
+
+### message `PhotoListRequest`
+
+Asks for a page of photos, newest first (a request, answered with PhotoList).
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `cursor` | `string` | 1 | Empty for the first page, else the previous page's next_cursor. |
+| `limit` | `uint32` | 2 | At most this many; the phone may send fewer and caps it at 200. |
+
+### message `PhotoList`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `items` | `repeated PhotoItem` | 1 |  |
+| `next_cursor` | `string` | 2 | Empty when this was the last page. |
+| `access` | `PhotoAccess` | 3 |  |
+| `total` | `uint32` | 4 | How many photos the asking device can see in all, or 0 when unknown. |
+
+### message `ThumbnailRequest`
+
+Asks for a small JPEG of one photo (a request, answered with Thumbnail).
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 |  |
+| `max_px` | `uint32` | 2 | The longest side, in pixels. The phone caps it at 2048. |
+
+### message `Thumbnail`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `id` | `string` | 1 |  |
+| `jpeg` | `bytes` | 2 | Empty when the photo is gone or the access changed; see access. |
+| `access` | `PhotoAccess` | 3 |  |
+
+### message `PhotoFetchRequest`
+
+Asks the phone to send these photos' full files through drop (a request, answered with PhotoFetchReply). The asking device accepts that transfer on its own: it asked for it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `ids` | `repeated string` | 1 |  |
+
+### message `PhotoFetchReply`
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `transfer_id` | `string` | 1 | The drop transfer that carries the files, or empty when none could be sent. |
+| `access` | `PhotoAccess` | 2 |  |
+| `missing` | `uint32` | 3 | How many of the asked ids weren't found any more. |
+
+### message `ScreenshotSubscription`
+
+Tells the phone whether the sender wants new screenshots sent to it as soon as they are taken, while Ferret runs. Sent again after each reconnect; the phone forgets it when the session ends. No reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `enabled` | `bool` | 1 |  |
+
+### message `ScreenshotSent`
+
+The phone is sending a new screenshot through drop. Sent just before that transfer's offer. No reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `transfer_id` | `string` | 1 |  |
+| `item` | `PhotoItem` | 2 |  |
+
+### message `PhotoAccessPrompt`
+
+Asks the phone's owner to share photos with the sender, or more of them. The phone shows a notice; nothing changes until its owner acts. No reply.
+
+
 ## `ferret.remote_input.v1`
 
 ### message `ControlRequest`
