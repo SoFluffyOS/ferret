@@ -79,11 +79,12 @@ List<TransferAction> transferActions(
         primary: true,
         onPressed: () => unawaited(viewModel.sendLoose(transfer)),
       ),
-      TransferAction(
-        label: l10n.actionRetry,
-        icon: LucideIcons.rotateCw,
-        onPressed: () => viewModel.retry(transfer),
-      ),
+      if (viewModel.canRetry(transfer))
+        TransferAction(
+          label: l10n.actionRetry,
+          icon: LucideIcons.rotateCw,
+          onPressed: () => viewModel.retry(transfer),
+        ),
     ],
     (TransferStatus.failed, _, _) when transfer.isPaused => [
       TransferAction(

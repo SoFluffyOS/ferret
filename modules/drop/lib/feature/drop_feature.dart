@@ -165,7 +165,7 @@ class DropFeature extends Feature {
   /// stopped one from the list.
   Future<Transfer?> sendLoose(String id) async {
     final transfer = registry[id];
-    if (transfer == null || !transfer.isOutgoing || !_sender.owns(id)) {
+    if (transfer == null || !transfer.isOutgoing || transfer.isLocalSend) {
       return null;
     }
 
@@ -177,7 +177,10 @@ class DropFeature extends Feature {
       return null;
     }
 
-    await _sender.cancel(id);
+    if (_sender.owns(id)) {
+      await _sender.cancel(id);
+    }
+
     registry.remove(id);
     return _sender.sendFiles(transfer.deviceId, files);
   }

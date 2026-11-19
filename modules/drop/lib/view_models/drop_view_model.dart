@@ -257,8 +257,10 @@ class DropViewModel extends ChangeNotifier {
 
   /// Whether this platform's picker can choose a folder to send: the
   /// desktops. Phones share folders from their file manager instead.
-  bool get canPickFolder =>
-      Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+  bool get canPickFolder => switch (defaultTargetPlatform) {
+    .macOS || .windows || .linux => true,
+    _ => false,
+  };
 
   /// Asks for a folder to send. Null when none was picked.
   Future<String?> pickFolder() => _pickFolder();
@@ -277,7 +279,9 @@ class DropViewModel extends ChangeNotifier {
   /// Whether [transfer] is a folder that stopped because the other device
   /// can't take folders, so its files can go on their own.
   bool canSendLoose(Transfer transfer) =>
-      transfer.failure == .foldersUnsupported && feature.canRetry(transfer);
+      transfer.isOutgoing &&
+      transfer.status == .failed &&
+      transfer.failure == .foldersUnsupported;
 
   /// Sends a folder's files on their own, in place of [transfer].
   Future<Transfer?> sendLoose(Transfer transfer) =>

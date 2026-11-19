@@ -221,10 +221,11 @@ List<ActivityAction> _actions(
       ),
     ],
     (.failed, _, _) when viewModel.canSendLoose(transfer) => [
-      ActivityAction(
-        label: l10n.actionRetry,
-        onPressed: () => unawaited(viewModel.retry(transfer)),
-      ),
+      if (viewModel.canRetry(transfer))
+        ActivityAction(
+          label: l10n.actionRetry,
+          onPressed: () => unawaited(viewModel.retry(transfer)),
+        ),
       ActivityAction(
         label: l10n.actionSendLoose,
         primary: true,

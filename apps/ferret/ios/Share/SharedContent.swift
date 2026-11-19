@@ -117,6 +117,21 @@ struct SharedContent {
         continue
       }
 
+      // A folder from Files: the system hands over a copy that only lives
+      // until this block returns, so its whole tree is copied here and
+      // Ferret sends it as a folder.
+      if provider.hasItemConformingToTypeIdentifier(UTType.folder.identifier) {
+        provider.loadFileRepresentation(forTypeIdentifier: UTType.folder.identifier) { file, _ in
+          if let file = file {
+            copy(file: file, from: provider)
+          } else {
+            add(path: nil, name: "")
+          }
+          group.leave()
+        }
+        continue
+      }
+
       // A photo or a video, as Photos hands them over: the system writes a
       // file that only lives until this block returns, so it is copied here.
       let type = dataType(of: provider)

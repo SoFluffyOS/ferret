@@ -568,8 +568,7 @@ class DropSender {
       return;
     }
 
-    // A sent folder is always the person's own, never a copy to clean up.
-    for (final file in job.files.where((file) => file.folder == null)) {
+    for (final file in job.files) {
       try {
         await File(file.path).delete();
       } on FileSystemException {
