@@ -21,7 +21,7 @@
 - 🧰 **A toolbar in the window**: it says where you are, and its buttons hide or show the device list and the Activity pane. The list slides away. **+** sits on **Your devices**, and **Nearby** folds with a click.
 - ⌨️ **Keys where you need them**: rest the pointer on a toolbar button or a line of the device list and it tells you its shortcut.
 - 💎 **Calmer pages**: smooth corners EVERYWHERE, more room at the edges, headings in normal case instead of ALL CAPS, and Activity's links show up when you point at a line.
-- 🦊 **A real app icon**: Ferret has its own icon on macOS, iOS, Android and Windows. Dark and tinted on iOS, themed on Android.
+- 🦊 **A real app icon**: a cream ferret in its dark mask, popping up from a sable plate. On macOS, iOS, Android, Windows and Linux, dark and tinted on iOS, themed on Android, and the same ferret in the menubar.
 - 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**, on the device and on a transfer that crawls.
 - ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away. **Try all again** restarts every stopped transfer with a device.
 - 📋 **A copy waits for you**: copied with no device around? Activity says it's waiting, then **Sent to Pixel 7 when it came back**.
