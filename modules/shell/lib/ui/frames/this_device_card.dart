@@ -2,6 +2,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// This device as the others see it: its name, with Rename.
@@ -50,10 +51,24 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
           ),
           Spacing.h12,
           Expanded(
-            child: Text(
-              device.name,
-              style: typography.base1.copyWith(color: palette.text),
-              overflow: .ellipsis,
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(
+                  device.name,
+                  style: typography.base1.copyWith(color: palette.text),
+                  overflow: .ellipsis,
+                ),
+                for (final line in _sharingLines(l10n)) ...[
+                  Spacing.vertical(Spacing.d2),
+                  Text(
+                    line,
+                    style: typography.caption1.copyWith(
+                      color: palette.mutedText,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
           Spacing.h12,
@@ -66,6 +81,19 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
         ],
       ),
     );
+  }
+
+  /// Said only on a computer several accounts run Ferret on: why the
+  /// name carries the account, and the port when the usual one is taken.
+  List<String> _sharingLines(ShellLocalizations l10n) {
+    final engine = widget.engine;
+    final isShared = SharedComputer(engine.settings).isShared;
+
+    return [
+      if (isShared) l10n.thisDeviceShared,
+      if (engine.usesFallbackPort)
+        l10n.thisDeviceOtherPort('${engine.port}', '${engine.preferredPort}'),
+    ];
   }
 
   Future<void> _rename() async {

@@ -206,6 +206,8 @@
   "onboardFinish": "Bắt đầu dùng Ferret",
   "settingsRename": "Đổi tên",
   "settingsRenameTitle": "Đặt tên cho thiết bị này",
+  "thisDeviceShared": "Các tài khoản khác trên máy tính này cũng dùng Ferret. Mỗi tài khoản có thiết bị riêng.",
+  "thisDeviceOtherPort": "Đang dùng cổng {port}: một tài khoản khác đang dùng cổng {usual}.",
   "settingsAddress": "Địa chỉ: {address}",
   "settingsAddressHint": "Nếu thiết bị khác không tìm thấy thiết bị này: trên thiết bị đó, mở Thêm thiết bị, chọn Cách khác rồi nhập địa chỉ này.",
   "deviceWhyLong": "Vì sao không kết nối được?",

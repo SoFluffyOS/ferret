@@ -1328,6 +1328,18 @@ abstract class ShellLocalizations {
   /// **'Name this device'**
   String get settingsRenameTitle;
 
+  /// Under this device name in Settings, when Ferret runs in several OS user accounts on one computer
+  ///
+  /// In en, this message translates to:
+  /// **'Other accounts on this computer use Ferret too. Each one has its own devices.'**
+  String get thisDeviceShared;
+
+  /// No description provided for @thisDeviceOtherPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening on port {port}: another account has {usual}.'**
+  String thisDeviceOtherPort(String port, String usual);
+
   /// No description provided for @settingsAddress.
   ///
   /// In en, this message translates to:

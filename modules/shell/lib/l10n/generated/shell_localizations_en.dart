@@ -806,6 +806,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsRenameTitle => 'Name this device';
 
   @override
+  String get thisDeviceShared =>
+      'Other accounts on this computer use Ferret too. Each one has its own devices.';
+
+  @override
+  String thisDeviceOtherPort(String port, String usual) {
+    return 'Listening on port $port: another account has $usual.';
+  }
+
+  @override
   String settingsAddress(String address) {
     return 'Address: $address';
   }

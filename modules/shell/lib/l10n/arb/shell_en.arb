@@ -557,6 +557,21 @@
   "onboardFinish": "Start using Ferret",
   "settingsRename": "Rename",
   "settingsRenameTitle": "Name this device",
+  "thisDeviceShared": "Other accounts on this computer use Ferret too. Each one has its own devices.",
+  "@thisDeviceShared": {
+    "description": "Under this device name in Settings, when Ferret runs in several OS user accounts on one computer"
+  },
+  "thisDeviceOtherPort": "Listening on port {port}: another account has {usual}.",
+  "@thisDeviceOtherPort": {
+    "placeholders": {
+      "port": {
+        "type": "String"
+      },
+      "usual": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAddress": "Address: {address}",
   "@settingsAddress": {
     "placeholders": {

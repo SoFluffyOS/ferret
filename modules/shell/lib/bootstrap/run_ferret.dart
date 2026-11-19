@@ -37,10 +37,15 @@ Future<void> runFerret({
   final settings = await JsonFileSettingsStore.open(settingsDirectory.path);
   LanguagePreference.load(settings);
   final secrets = await createSecretStore(paths);
-  final device = await describeThisDevice(
-    name: settings.get<String>('device.name'),
+  final sharedComputer = SharedComputer(
+    settings,
+    environment: Platform.environment,
+  );
+  final described = await describeThisDevice(
+    name: settings.get<String>(SharedComputer.nameKey),
     appVersion: appVersion,
   );
+  final device = described.renamed(sharedComputer.nameFor(described.name));
 
   if (Platform.isAndroid) {
     await FerretSystem().acquireMulticastLock();
@@ -52,6 +57,7 @@ Future<void> runFerret({
     device: device,
     features: [for (final feature in features) feature.feature],
   );
+  sharedComputer.follow(engine, computerName: described.name);
   await engine.start();
 
   final host = EngineHost(engine);

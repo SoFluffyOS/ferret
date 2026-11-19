@@ -803,6 +803,15 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsRenameTitle => 'Đặt tên cho thiết bị này';
 
   @override
+  String get thisDeviceShared =>
+      'Các tài khoản khác trên máy tính này cũng dùng Ferret. Mỗi tài khoản có thiết bị riêng.';
+
+  @override
+  String thisDeviceOtherPort(String port, String usual) {
+    return 'Đang dùng cổng $port: một tài khoản khác đang dùng cổng $usual.';
+  }
+
+  @override
   String settingsAddress(String address) {
     return 'Địa chỉ: $address';
   }
