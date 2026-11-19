@@ -6,6 +6,7 @@ import 'package:shell/ui/pages/about_page.dart';
 import 'package:shell/ui/pages/advanced_settings_page.dart';
 import 'package:shell/ui/pages/settings_group_page.dart';
 import 'package:shell/ui/pages/this_device_settings_page.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Settings where there is room for two columns: the rows on the left, each
@@ -35,20 +36,22 @@ class _SettingsSplitFrameState extends State<SettingsSplitFrame> {
             child: SafeArea(
               right: false,
               child: FocusTraversalGroup(
-                child: ListView(
-                  padding: EdgeInsetsDirectional.fromSTEB(
-                    side,
-                    Spacing.d12,
-                    Spacing.d0,
-                    Spacing.d24,
-                  ),
-                  children: [
-                    SettingsListFrame(
-                      picked: _pick,
-                      showsThisDevice: true,
-                      onPick: (pick) => setState(() => _pick = pick),
+                child: ArrowKeyStops(
+                  child: ListView(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      side,
+                      Spacing.d12,
+                      Spacing.d0,
+                      Spacing.d24,
                     ),
-                  ],
+                    children: [
+                      SettingsListFrame(
+                        picked: _pick,
+                        showsThisDevice: true,
+                        onPick: (pick) => setState(() => _pick = pick),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

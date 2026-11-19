@@ -1,4 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/services/services.dart';
@@ -144,8 +145,44 @@ class _TabsOnwardState extends State<_TabsOnward> {
     });
   }
 
+  /// A page with nothing to press, such as an empty Activity, has no stop
+  /// for Tab to leave from: the keyboard sits on the page itself, and Tab
+  /// would come back to it for ever. From there Tab goes on as it does
+  /// after a page's last stop.
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent || event.logicalKey != LogicalKeyboardKey.tab) {
+      return .ignored;
+    }
+
+    final page = FocusManager.instance.primaryFocus;
+    if (page is! FocusScopeNode || page.traversalDescendants.isNotEmpty) {
+      return .ignored;
+    }
+
+    final around = page.enclosingScope;
+    if (around == null) {
+      return .ignored;
+    }
+
+    final moved = switch (HardwareKeyboard.instance.isShiftPressed) {
+      true => around.previousFocus(),
+      false => around.nextFocus(),
+    };
+    return switch (moved) {
+      true => .handled,
+      false => .ignored,
+    };
+  }
+
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onKeyEvent: _onKey,
+      child: widget.child,
+    );
+  }
 }
 
 /// A navigator around the whole window, above the pane's own. Dialogs go

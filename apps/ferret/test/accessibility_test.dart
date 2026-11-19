@@ -177,5 +177,81 @@ void main() {
         await rig.dispose(tester);
       });
     });
+
+    testWidgets('Tab leaves a page with nothing to press', (tester) async {
+      final emptyActivity = Screen('window_activity_empty', (
+        tester,
+        rig,
+      ) async {
+        await rig.addOfflinePhone(tester);
+        await rig.settle(tester);
+        await rig.tapText(tester, 'Activity');
+      }, tipsDone: true);
+
+      await _on(.macOS, () async {
+        final rig = await _show(tester, emptyActivity, _window, .light);
+        final stops = <Rect>[];
+        for (var press = 0; press < 12; press++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump(const Duration(milliseconds: 120));
+          final rect = FocusManager.instance.primaryFocus?.rect;
+          if (rect != null) {
+            stops.add(rect);
+          }
+        }
+
+        final inList = stops.where((rect) => rect.right <= 240);
+        expect(inList, isNotEmpty, reason: 'Tab never left the empty page');
+        expect(
+          inList.toSet().length,
+          greaterThan(1),
+          reason: 'Tab stopped at one line of the device list',
+        );
+
+        await rig.dispose(tester);
+      });
+    });
+
+    testWidgets('arrow keys walk the device list line by line', (
+      tester,
+    ) async {
+      await _on(.macOS, () async {
+        final rig = await _show(tester, overview, _window, .light);
+        Rect? focused() => FocusManager.instance.primaryFocus?.rect;
+
+        var presses = 0;
+        while ((focused()?.right ?? 1000) > 240 && presses < 60) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump(const Duration(milliseconds: 120));
+          presses++;
+        }
+        final first = focused();
+        expect(first, isNotNull);
+
+        final tops = <double>[first?.top ?? 0];
+        for (var press = 0; press < 3; press++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pump(const Duration(milliseconds: 120));
+          tops.add(focused()?.top ?? 0);
+        }
+
+        expect((focused()?.right ?? 1000) <= 240, isTrue);
+        expect(tops, orderedEquals([...tops]..sort()));
+        expect(tops.toSet().length, 4, reason: 'each ↓ is one line down');
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.pump(const Duration(milliseconds: 120));
+        expect(focused()?.top, tops[2]);
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.end);
+        await tester.pump(const Duration(milliseconds: 120));
+        final last = focused();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pump(const Duration(milliseconds: 120));
+        expect(focused(), last, reason: 'the list ends at its last line');
+
+        await rig.dispose(tester);
+      });
+    });
   });
 }

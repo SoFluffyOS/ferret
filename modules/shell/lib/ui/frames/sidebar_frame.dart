@@ -80,105 +80,113 @@ class _SidebarFrameState extends State<SidebarFrame> {
       child: SafeArea(
         right: false,
         child: FocusTraversalGroup(
-          child: Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              if (isPaused) const _PausedLine(),
-              Expanded(
-                child: _DropOnAll(
-                  devices: devices,
-                  child: ListView(
-                    padding: EdgeInsets.only(bottom: Spacing.d16),
-                    children: [
-                      SidebarHeader(
-                        title: l10n.homeYourDevices,
-                        action: Tappable(
-                          tooltip: WindowShortcuts.hint(
-                            l10n.homePairDevice,
-                            WindowShortcuts.activatorOf(.addDevice, platform),
-                            platform,
-                          ),
-                          semanticLabel: l10n.homePairDevice,
-                          hoverOverlayBorderRadius: Corners.tile,
-                          onTap: () => nav.show(const PairPage()),
-                          child: Padding(
-                            padding: EdgeInsets.all(Spacing.d4),
-                            child: Icon(
-                              LucideIcons.plus,
-                              size: Spacing.d16,
-                              color: context.palette.mutedText,
+          child: ArrowKeyStops(
+            child: Column(
+              crossAxisAlignment: .stretch,
+              children: [
+                if (isPaused) const _PausedLine(),
+                Expanded(
+                  child: _DropOnAll(
+                    devices: devices,
+                    child: ListView(
+                      padding: EdgeInsets.only(bottom: Spacing.d16),
+                      children: [
+                        SidebarHeader(
+                          title: l10n.homeYourDevices,
+                          action: Tappable(
+                            tooltip: WindowShortcuts.hint(
+                              l10n.homePairDevice,
+                              WindowShortcuts.activatorOf(.addDevice, platform),
+                              platform,
+                            ),
+                            semanticLabel: l10n.homePairDevice,
+                            hoverOverlayBorderRadius: Corners.tile,
+                            onTap: () => nav.show(const PairPage()),
+                            child: Padding(
+                              padding: EdgeInsets.all(Spacing.d4),
+                              child: Icon(
+                                LucideIcons.plus,
+                                size: Spacing.d16,
+                                color: context.palette.mutedText,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      if (searches)
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                            Spacing.d16,
-                            0,
-                            Spacing.d16,
-                            Spacing.d8,
+                        if (searches)
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                              Spacing.d16,
+                              0,
+                              Spacing.d16,
+                              Spacing.d8,
+                            ),
+                            child: InputText(
+                              controller: _search,
+                              hintText: l10n.sidebarFind,
+                              onChanged: (query) =>
+                                  setState(() => _query = query),
+                            ),
                           ),
-                          child: InputText(
-                            controller: _search,
-                            hintText: l10n.sidebarFind,
-                            onChanged: (query) =>
-                                setState(() => _query = query),
+                        if (searches && shown.isEmpty)
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Spacing.d16,
+                              vertical: Spacing.d8,
+                            ),
+                            child: Text(
+                              l10n.sidebarNoMatch(_query.trim()),
+                              style: context.fluffyTheme.typography.caption1
+                                  .copyWith(color: context.palette.mutedText),
+                            ),
                           ),
-                        ),
-                      if (searches && shown.isEmpty)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Spacing.d16,
-                            vertical: Spacing.d8,
+                        for (final status in shown)
+                          FeatureChangesListener(
+                            key: ValueKey(status.device.id),
+                            features: scope.features,
+                            builder: (context) => _DeviceGroup(
+                              status: status,
+                              selection: selection,
+                              onSelect: nav.select,
+                            ),
                           ),
-                          child: Text(
-                            l10n.sidebarNoMatch(_query.trim()),
-                            style: context.fluffyTheme.typography.caption1
-                                .copyWith(color: context.palette.mutedText),
+                        SidebarNearbyFrame(
+                          onPair: () => nav.show(const PairPage()),
+                        ),
+                        Spacing.v16,
+                        SidebarRow(
+                          label: l10n.activityTitle,
+                          icon: LucideIcons.history,
+                          tooltip: WindowShortcuts.hint(
+                            l10n.activityTitle,
+                            WindowShortcuts.activatorOf(
+                              .openActivity,
+                              platform,
+                            ),
+                            platform,
                           ),
+                          isSelected: selection is ActivityDestination,
+                          onTap: () => nav.select(const ActivityDestination()),
                         ),
-                      for (final status in shown)
-                        FeatureChangesListener(
-                          key: ValueKey(status.device.id),
-                          features: scope.features,
-                          builder: (context) => _DeviceGroup(
-                            status: status,
-                            selection: selection,
-                            onSelect: nav.select,
+                        SidebarRow(
+                          label: l10n.settingsTitle,
+                          icon: LucideIcons.settings,
+                          tooltip: WindowShortcuts.hint(
+                            l10n.settingsTitle,
+                            WindowShortcuts.activatorOf(
+                              .openSettings,
+                              platform,
+                            ),
+                            platform,
                           ),
+                          isSelected: selection is SettingsDestination,
+                          onTap: () => nav.select(const SettingsDestination()),
                         ),
-                      SidebarNearbyFrame(
-                        onPair: () => nav.show(const PairPage()),
-                      ),
-                      Spacing.v16,
-                      SidebarRow(
-                        label: l10n.activityTitle,
-                        icon: LucideIcons.history,
-                        tooltip: WindowShortcuts.hint(
-                          l10n.activityTitle,
-                          WindowShortcuts.activatorOf(.openActivity, platform),
-                          platform,
-                        ),
-                        isSelected: selection is ActivityDestination,
-                        onTap: () => nav.select(const ActivityDestination()),
-                      ),
-                      SidebarRow(
-                        label: l10n.settingsTitle,
-                        icon: LucideIcons.settings,
-                        tooltip: WindowShortcuts.hint(
-                          l10n.settingsTitle,
-                          WindowShortcuts.activatorOf(.openSettings, platform),
-                          platform,
-                        ),
-                        isSelected: selection is SettingsDestination,
-                        onTap: () => nav.select(const SettingsDestination()),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
