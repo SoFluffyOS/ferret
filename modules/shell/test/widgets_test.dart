@@ -60,6 +60,26 @@ void main() {
     expect(fixes, 1);
   });
 
+  testWidgets('a pinned device shows a pin by its name, in both lists', (
+    tester,
+  ) async {
+    final status = DeviceStatus(_device(), null);
+    await tester.pumpWidget(
+      testApp(
+        Column(
+          children: [
+            DeviceTile(status: status, isPinned: true),
+            SidebarDeviceRow(status: status, onTap: () {}, isPinned: true),
+            DeviceTile(status: status),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.byType(PinMarker), findsNWidgets(2));
+    expect(find.bySemanticsLabel(RegExp('Pinned')), findsNWidgets(2));
+  });
+
   testWidgets('a device that dropped says Reconnecting and keeps its row', (
     tester,
   ) async {

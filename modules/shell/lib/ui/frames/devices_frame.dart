@@ -100,6 +100,7 @@ class _DevicesFrameState extends State<DevicesFrame> {
                 attention: _attentionFor(context, scope, status),
                 onTap: () => widget.onOpen(status),
                 onFix: () => widget.onFix(status),
+                isPinned: preferences.isPinned(status.device.id),
               ),
             ),
           ),

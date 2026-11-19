@@ -2014,6 +2014,12 @@ abstract class ShellLocalizations {
   /// **'Unpin'**
   String get devicesUnpin;
 
+  /// Read by a screen reader for the small pin next to a pinned device's name.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get devicePinned;
+
   /// Under Home's device list: offline devices nobody has seen for a month, offered for removal.
   ///
   /// In en, this message translates to:

@@ -277,6 +277,9 @@ class _DeviceGroup extends StatelessWidget {
       0,
       (count, section) => count + (section.badge ?? 0),
     );
+    final isPinned = context.select<EngineHost, bool>(
+      (host) => host.preferences.isPinned(deviceId),
+    );
     final dropTarget = WindowDropTargets.device(status);
     final isDropHovered = context.select<OsDropViewModel, bool>(
       (drop) => drop.hovered == dropTarget,
@@ -297,6 +300,7 @@ class _DeviceGroup extends StatelessWidget {
                 isSelected: isOpen && sections.isEmpty,
                 needsAttention: _needsAttention(scope),
                 isDropHovered: isDropHovered,
+                isPinned: isPinned,
                 badge: switch (isOpen) {
                   true => 0,
                   false => waiting,

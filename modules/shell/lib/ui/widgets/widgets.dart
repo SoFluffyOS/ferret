@@ -22,6 +22,7 @@ export 'package:shell/ui/widgets/nearby_feature_tile.dart';
 export 'package:shell/ui/widgets/nearby_notice.dart';
 export 'package:shell/ui/widgets/nearby_tile.dart';
 export 'package:shell/ui/widgets/offline_line.dart';
+export 'package:shell/ui/widgets/pin_marker.dart';
 export 'package:shell/ui/widgets/privacy_line.dart';
 export 'package:shell/ui/widgets/qr_code_view.dart';
 export 'package:shell/ui/widgets/replace_device_card.dart';

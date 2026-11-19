@@ -2,6 +2,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/pin_marker.dart';
 import 'package:shell/ui/widgets/sidebar_badge.dart';
 import 'package:shell/ui/widgets/sidebar_row.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -18,6 +19,7 @@ class SidebarDeviceRow extends StatelessWidget {
     this.badge = 0,
     this.isDropHovered = false,
     this.tooltip,
+    this.isPinned = false,
   });
 
   final DeviceStatus status;
@@ -39,6 +41,9 @@ class SidebarDeviceRow extends StatelessWidget {
 
   /// Its connection in words, such as "Last seen 12 min ago".
   final String? tooltip;
+
+  /// Pinned to the top: a small pin before the dot.
+  final bool isPinned;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +88,7 @@ class SidebarDeviceRow extends StatelessWidget {
       trailing: Row(
         mainAxisSize: .min,
         children: [
+          if (isPinned) ...[const PinMarker(), Spacing.h8],
           if (badge > 0) ...[SidebarBadge(badge), Spacing.h8],
           if (refusesDrop)
             Text(

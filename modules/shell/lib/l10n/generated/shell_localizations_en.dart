@@ -1204,6 +1204,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get devicesUnpin => 'Unpin';
 
   @override
+  String get devicePinned => 'Pinned';
+
+  @override
   String devicesStale(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -942,6 +942,10 @@
   "devicesShow": "Show",
   "devicesPin": "Pin to Top",
   "devicesUnpin": "Unpin",
+  "devicePinned": "Pinned",
+  "@devicePinned": {
+    "description": "Read by a screen reader for the small pin next to a pinned device's name."
+  },
   "devicesStale": "{count, plural, =1{1 not seen in 30 days} other{{count} not seen in 30 days}}",
   "@devicesStale": {
     "description": "Under Home's device list: offline devices nobody has seen for a month, offered for removal.",

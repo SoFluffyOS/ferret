@@ -3,6 +3,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/pin_marker.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -23,6 +24,7 @@ class DeviceTile extends StatelessWidget {
     this.onTap,
     this.onFix,
     this.focusNode,
+    this.isPinned = false,
   });
 
   final DeviceStatus status;
@@ -46,6 +48,9 @@ class DeviceTile extends StatelessWidget {
 
   /// The row's keyboard focus, for moving between rows with the arrows.
   final FocusNode? focusNode;
+
+  /// Pinned to the top: a small pin follows the name.
+  final bool isPinned;
 
   static const _waitingOpacity = 0.5;
 
@@ -90,10 +95,19 @@ class DeviceTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      Text(
-                        device.name,
-                        style: typography.base1.copyWith(color: palette.text),
-                        overflow: .ellipsis,
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              device.name,
+                              style: typography.base1.copyWith(
+                                color: palette.text,
+                              ),
+                              overflow: .ellipsis,
+                            ),
+                          ),
+                          if (isPinned) ...[Spacing.h4, const PinMarker()],
+                        ],
                       ),
                       Spacing.vertical(Spacing.d2),
                       Row(
