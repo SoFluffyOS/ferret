@@ -74,15 +74,25 @@ Future<void> runFerret({
     atScreenChanges: screen.changes,
     battery: BatterySource.current(),
   ).start();
+  final systemNotifier = await SystemNotifier.create([
+    for (final feature in features) ...feature.noticeCategories,
+  ]);
   final notifier = PrivateNotifier(
-    await SystemNotifier.create([
-      for (final feature in features) ...feature.noticeCategories,
-    ]),
+    systemNotifier,
     previews: PrivatePreviews(settings),
     isAtScreen: () => screen.isActive,
     coverBody: () => lookupShellLocalizations(
       AppLocale.pick(ShellLocalizations.supportedLocales),
     ).privateCoverBody,
+  );
+  unawaited(
+    NotificationPermission(
+      devices: engine.deviceChanges,
+      hasDevices: () => engine.trustStore.devices.isNotEmpty,
+      settings: settings,
+      request: systemNotifier.requestPermission,
+      asksHere: !Platform.isAndroid,
+    ).start(),
   );
   LowBatteryNotices(
     devices: engine.deviceChanges,
