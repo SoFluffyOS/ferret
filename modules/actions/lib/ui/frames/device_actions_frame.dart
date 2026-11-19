@@ -14,7 +14,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// "This Mac" on a computer's page, as its other devices see it: Sleep,
 /// Restart, Shut down, the volume, then its owner's own actions. Restart
 /// and Shut down ask "are you sure" here first. Shows nothing for a device
-/// that offers no actions.
+/// that offers no actions, and no "This Mac" title over its own actions
+/// alone.
 class DeviceActionsFrame extends StatelessWidget {
   const DeviceActionsFrame({
     super.key,
@@ -65,14 +66,16 @@ class DeviceActionsFrame extends StatelessWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SectionTitle(l10n.groupTitle(computer.name)),
-        GroupedCard(
-          separatorIndent: separatorIndent,
-          children: [
-            for (final action in power) _ActionRow(this, action),
-            if (sound.isNotEmpty) _VolumeRow(this, sound),
-          ],
-        ),
+        if (power.isNotEmpty || sound.isNotEmpty) ...[
+          SectionTitle(l10n.groupTitle(computer.name)),
+          GroupedCard(
+            separatorIndent: separatorIndent,
+            children: [
+              for (final action in power) _ActionRow(this, action),
+              if (sound.isNotEmpty) _VolumeRow(this, sound),
+            ],
+          ),
+        ],
         if (own.isNotEmpty) ...[
           SectionTitle(l10n.groupYourActions),
           GroupedCard(

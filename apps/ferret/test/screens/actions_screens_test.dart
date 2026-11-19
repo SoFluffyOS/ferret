@@ -14,10 +14,12 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:protocol/actions.dart';
 import 'package:shell/shell.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
+import 'support/action_fakes.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
 
@@ -28,7 +30,12 @@ typedef _Script = Future<void> Function(
 );
 
 /// Screens that run as a phone paired with a Mac.
-const _phoneScreens = {'phone_group', 'phone_confirm', 'boot_ask'};
+const _phoneScreens = {
+  'phone_group',
+  'phone_own_only',
+  'phone_confirm',
+  'boot_ask',
+};
 
 /// An Android phone that already lets Ferret run in the background, so the
 /// card holds only its question.
@@ -84,6 +91,38 @@ Future<String> _pairMac(WidgetTester tester, ScreenRig rig) async {
     await host?.addCustom(
       name: 'Back up photos',
       commandLine: '~/bin/backup-photos.sh',
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+  });
+
+  return computerId;
+}
+
+/// Pairs a computer whose platform offers no built-in actions, with one
+/// action of its owner's.
+Future<String> _pairOwnOnly(WidgetTester tester, ScreenRig rig) async {
+  final computerFeatures = [
+    for (final feature in appFeatures())
+      switch (feature) {
+        ActionsFeatureUi() => ActionsFeatureUi(
+          feature: safeActionsFeature(
+            computer: const NothingBuiltIn(),
+            offersActions: true,
+          ),
+        ),
+        _ => feature,
+      },
+  ];
+  final computerId =
+      await rig.pairConnectedComputer(
+        tester,
+        computerFeatures: computerFeatures,
+      ) ??
+      '';
+  await tester.runAsync(() async {
+    await _hostOf(computerFeatures)?.addCustom(
+      name: 'Say hi',
+      commandLine: 'say hi',
     );
     await Future<void>.delayed(const Duration(milliseconds: 200));
   });
@@ -210,6 +249,17 @@ final _screens = <String, _Script>{
     );
     await rig.settle(tester);
   },
+  'phone_own_only': (tester, rig, features) async {
+    final computerId = await _pairOwnOnly(tester, rig);
+    await rig.open(tester, DevicePage(deviceId: computerId));
+    await tester.scrollUntilVisible(
+      find.text('Say hi'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('This Mac'), findsNothing);
+    await rig.settle(tester);
+  },
   'phone_confirm': (tester, rig, features) async {
     final computerId = await _pairMac(tester, rig);
     await rig.open(tester, DevicePage(deviceId: computerId));
@@ -237,7 +287,10 @@ final _screens = <String, _Script>{
 };
 
 void main() {
-  setUpAll(loadScreenFonts);
+  setUpAll(() async {
+    await loadScreenFonts();
+    await initializeDateFormatting();
+  });
 
   for (final MapEntry(key: name, value: script) in _screens.entries) {
     final asPhone = _phoneScreens.contains(name);

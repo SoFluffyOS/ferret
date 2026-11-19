@@ -14,6 +14,18 @@ class NoComputer implements ComputerActions {
   Future<bool> run(ComputerAction action) async => true;
 }
 
+/// A computer whose platform offers no built-in actions, so only its
+/// owner's own ones show.
+class NothingBuiltIn implements ComputerActions {
+  const NothingBuiltIn();
+
+  @override
+  Set<ComputerAction> get supported => const {};
+
+  @override
+  Future<bool> run(ComputerAction action) async => false;
+}
+
 /// Starts nothing, and says every command worked.
 class NoCommands implements CommandRunner {
   const NoCommands();
@@ -53,8 +65,11 @@ class AwayFromKeyboard implements InputIdle {
 ActionsFeature safeActionsFeature({
   Duration lockMinute = const Duration(minutes: 1),
   Duration countdownLength = const Duration(seconds: 10),
+  ComputerActions computer = const NoComputer(),
+  bool? offersActions,
 }) => ActionsFeature(
-  computer: const NoComputer(),
+  computer: computer,
+  offersActions: offersActions,
   runner: const NoCommands(),
   locker: const NoLocker(),
   idle: const AwayFromKeyboard(),

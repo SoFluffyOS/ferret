@@ -130,7 +130,28 @@ void main() {
     late ActionsFeature feature;
     late ActionsViewModel viewModel;
 
-    Future<void> setUpPhone(WidgetTester tester) async {
+    final everyAction = [
+      Action(id: ActionIds.sleep, kind: .ACTION_KIND_SLEEP),
+      Action(
+        id: ActionIds.restart,
+        kind: .ACTION_KIND_RESTART,
+        confirm: true,
+      ),
+      Action(
+        id: ActionIds.shutDown,
+        kind: .ACTION_KIND_SHUT_DOWN,
+        confirm: true,
+      ),
+      Action(id: ActionIds.mute, kind: .ACTION_KIND_MUTE),
+      Action(id: ActionIds.volumeUp, kind: .ACTION_KIND_VOLUME_UP),
+      Action(id: ActionIds.volumeDown, kind: .ACTION_KIND_VOLUME_DOWN),
+      Action(id: 'custom.1', kind: .ACTION_KIND_CUSTOM, title: 'Good night'),
+    ];
+
+    Future<void> setUpPhone(
+      WidgetTester tester, {
+      List<Action>? actions,
+    }) async {
       await tester.runAsync(() async {
         host = await FakeHost.create();
         mac = FakeSession(
@@ -146,32 +167,7 @@ void main() {
         await feature.onEnvelope(
           mac,
           envelopeOf(
-            ActionList(
-              actions: [
-                Action(id: ActionIds.sleep, kind: .ACTION_KIND_SLEEP),
-                Action(
-                  id: ActionIds.restart,
-                  kind: .ACTION_KIND_RESTART,
-                  confirm: true,
-                ),
-                Action(
-                  id: ActionIds.shutDown,
-                  kind: .ACTION_KIND_SHUT_DOWN,
-                  confirm: true,
-                ),
-                Action(id: ActionIds.mute, kind: .ACTION_KIND_MUTE),
-                Action(id: ActionIds.volumeUp, kind: .ACTION_KIND_VOLUME_UP),
-                Action(
-                  id: ActionIds.volumeDown,
-                  kind: .ACTION_KIND_VOLUME_DOWN,
-                ),
-                Action(
-                  id: 'custom.1',
-                  kind: .ACTION_KIND_CUSTOM,
-                  title: 'Good night',
-                ),
-              ],
-            ),
+            ActionList(actions: actions ?? everyAction),
           ),
         );
       });
@@ -273,6 +269,22 @@ void main() {
         ],
       );
       expect(viewModel.outgoing, isEmpty);
+    });
+
+    testWidgets('own actions alone come without the This Mac title', (
+      tester,
+    ) async {
+      await setUpPhone(
+        tester,
+        actions: [
+          Action(id: 'custom.1', kind: .ACTION_KIND_CUSTOM, title: 'Say hi'),
+        ],
+      );
+
+      expect(find.text('This Mac'), findsNothing);
+      expect(find.text('Volume'), findsNothing);
+      expect(find.text('Your actions'), findsOneWidget);
+      expect(find.text('Say hi'), findsOneWidget);
     });
 
     testWidgets('a device without actions shows nothing', (tester) async {
