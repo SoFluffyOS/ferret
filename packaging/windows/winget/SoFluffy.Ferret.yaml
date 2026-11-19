@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.9.0.schema.json
+# Template: replace {{VERSION}}, then submit the three files under
+# manifests/s/SoFluffy/Ferret/{{VERSION}}/ in microsoft/winget-pkgs.
+PackageIdentifier: SoFluffy.Ferret
+PackageVersion: "{{VERSION}}"
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.9.0

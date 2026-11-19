@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  MSIX manifest for Ferret. scripts/package_windows.ps1 fills in the
+  @VERSION@, @ARCH@ and @PUBLISHER@ tokens, then packs it with the release
+  bundle. The Publisher must match the subject of the certificate that signs
+  the package (or the one Partner Center gives you for the Store).
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
+  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap3 desktop desktop2 desktop6 rescap">
+
+  <Identity
+    Name="io.sofluffy.ferret"
+    Publisher="@PUBLISHER@"
+    Version="@VERSION@"
+    ProcessorArchitecture="@ARCH@" />
+
+  <Properties>
+    <DisplayName>Ferret</DisplayName>
+    <PublisherDisplayName>SoFluffy</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>Continue what you were doing on your other devices: pages, media, clipboard, files, notifications, texts and calls, over your own network.</Description>
+    <!-- Start at login writes the user's real Run key, and the window
+         remembers its place under HKCU\Software\SoFluffy\Ferret. -->
+    <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application
+      Id="Ferret"
+      Executable="ferret.exe"
+      EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Ferret"
+        Description="Continue what you were doing on your other devices"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+      </uap:VisualElements>
+
+      <Extensions>
+        <!-- ferret.exe on the PATH: `ferret send <file>`, and a path for the
+             Run key that survives updates (the install folder is versioned). -->
+        <uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication" Executable="ferret.exe">
+          <uap3:AppExecutionAlias>
+            <desktop:ExecutionAlias Alias="ferret.exe" />
+          </uap3:AppExecutionAlias>
+        </uap3:Extension>
+
+        <!-- The same three ports the installer and Fix connection open, on
+             Private networks only. Windows adds them at install, no prompt. -->
+        <desktop2:Extension Category="windows.firewallRules">
+          <desktop2:FirewallRules Executable="ferret.exe">
+            <desktop2:Rule Direction="in" IPProtocol="TCP" LocalPortMin="47640" LocalPortMax="47640" Profile="private" />
+            <desktop2:Rule Direction="in" IPProtocol="UDP" LocalPortMin="47641" LocalPortMax="47641" Profile="private" />
+            <desktop2:Rule Direction="in" IPProtocol="UDP" LocalPortMin="5353" LocalPortMax="5353" Profile="private" />
+          </desktop2:FirewallRules>
+        </desktop2:Extension>
+
+        <uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication" Executable="ferret-cli.exe">
+          <uap3:AppExecutionAlias>
+            <desktop:ExecutionAlias Alias="ferret-cli.exe" />
+          </uap3:AppExecutionAlias>
+        </uap3:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <Capability Name="privateNetworkClientServer" />
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+</Package>

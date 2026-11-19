@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.9.0.schema.json
+# Template: replace {{VERSION}}.
+PackageIdentifier: SoFluffy.Ferret
+PackageVersion: "{{VERSION}}"
+PackageLocale: en-US
+Publisher: SoFluffy
+PublisherUrl: https://github.com/simonpham
+PublisherSupportUrl: https://github.com/simonpham/ferret/issues
+PackageName: Ferret
+PackageUrl: https://github.com/simonpham/ferret
+License: GPL-3.0-only
+LicenseUrl: https://github.com/simonpham/ferret/blob/main/LICENSE
+ShortDescription: Continue what you were doing on your other devices, over your own network.
+Description: |-
+  Ferret carries what you are doing between your own devices: the page you are reading, the song at the same second,
+  your clipboard, files, notifications, texts and calls. It works on your local network, between Android, iOS, macOS,
+  Linux and Windows, end-to-end encrypted. No account, no cloud, no telemetry.
+Moniker: ferret
+Tags:
+  - clipboard
+  - file-transfer
+  - handoff
+  - local-network
+  - open-source
+ReleaseNotesUrl: https://github.com/simonpham/ferret/releases/tag/v{{VERSION}}
+ManifestType: defaultLocale
+ManifestVersion: 1.9.0

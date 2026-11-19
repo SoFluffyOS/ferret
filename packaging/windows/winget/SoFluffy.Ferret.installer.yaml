@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.9.0.schema.json
+# Template: replace {{VERSION}} and {{SHA256_X64}} (scripts/package_windows.ps1
+# prints the hash). Add an arm64 entry when that installer is built.
+PackageIdentifier: SoFluffy.Ferret
+PackageVersion: "{{VERSION}}"
+MinimumOSVersion: 10.0.17763.0
+InstallerType: inno
+Scope: user
+InstallModes:
+  - interactive
+  - silent
+  - silentWithProgress
+# A silent install skips the firewall task, which would pop up a UAC prompt
+# in the middle of `winget install`. Ferret offers it later, in
+# Fix connection.
+InstallerSwitches:
+  Custom: /TASKS="sendto"
+UpgradeBehavior: install
+Commands:
+  - ferret
+  - ferret-cli
+ReleaseDate: "{{RELEASE_DATE}}"
+AppsAndFeaturesEntries:
+  - DisplayName: Ferret
+    Publisher: SoFluffy
+    ProductCode: "{5B59C714-DD74-41F5-8B9E-1209ECA0CE73}_is1"
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/simonpham/ferret/releases/download/v{{VERSION}}/Ferret-{{VERSION}}-x64-setup.exe
+    InstallerSha256: "{{SHA256_X64}}"
+ManifestType: installer
+ManifestVersion: 1.9.0
