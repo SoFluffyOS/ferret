@@ -34,7 +34,8 @@ class SidebarHeader extends StatelessWidget {
     );
     final isCollapsed = this.isCollapsed;
     final label = Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.d4),
+      // Tall enough to press: 24 with the line of text.
+      padding: EdgeInsets.symmetric(vertical: Spacing.d6),
       child: Row(
         mainAxisSize: .min,
         children: [
@@ -64,9 +65,9 @@ class SidebarHeader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         SidebarRow.margin + SidebarRow.inset,
-        Spacing.d12,
+        Spacing.d8,
         SidebarRow.margin,
-        Spacing.d4,
+        Spacing.d2,
       ),
       child: Row(
         children: [

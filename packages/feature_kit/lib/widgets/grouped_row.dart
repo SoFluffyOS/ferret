@@ -56,10 +56,12 @@ class GroupedRow extends StatelessWidget {
     .macOS || .windows || .linux => false,
   };
 
-  /// Rows are a finger high on touch screens, and denser under a pointer.
-  static double get minHeight => switch (_isTouch) {
-    true => Spacing.d44,
-    false => Spacing.d36,
+  /// Rows are a finger high on touch screens (48 on Android, 44 on an
+  /// iPhone, as each asks), and denser under a pointer.
+  static double get minHeight => switch (defaultTargetPlatform) {
+    .android || .fuchsia => Spacing.d48,
+    .iOS => Spacing.d44,
+    .macOS || .windows || .linux => Spacing.d36,
   };
 
   /// A row's title: body text on touch screens, a size down under a
@@ -78,8 +80,13 @@ class GroupedRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final titleStyle = titleStyleOf(context).copyWith(color: palette.text);
-    final mutedStyle = typography.caption1.copyWith(color: palette.mutedText);
-    final valueStyle = typography.base2.copyWith(color: palette.mutedText);
+    // The grey of a detail line is too faint on the selected row's fill.
+    final detailColor = switch (isSelected) {
+      true => palette.text,
+      false => palette.mutedText,
+    };
+    final mutedStyle = typography.caption1.copyWith(color: detailColor);
+    final valueStyle = typography.base2.copyWith(color: detailColor);
     // Side by side, the value is cut to a few letters once text is set
     // large, so it goes under the title there.
     final stacksValue = context.hasLargeText || subtitle != null;
