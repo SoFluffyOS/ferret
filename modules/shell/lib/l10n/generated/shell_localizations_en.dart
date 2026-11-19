@@ -563,10 +563,46 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get stayNotificationsFix => 'Allow';
 
   @override
-  String get stayBattery => 'Let Ferret run in the background.';
+  String get stayBattery =>
+      'Android may stop Ferret in the background. Let it keep running.';
 
   @override
-  String get stayBatteryFix => 'Allow';
+  String get stayBatteryFix => 'Fix';
+
+  @override
+  String get stayRestricted =>
+      'Battery use for Ferret is set to Restricted, so Android stops Ferret each time you leave the app.';
+
+  @override
+  String get stayRestrictedSteps =>
+      'Open App battery usage and choose Unrestricted.';
+
+  @override
+  String get stayRestrictedFix => 'Fix';
+
+  @override
+  String get stayStepsXiaomi =>
+      'Settings → Apps → Manage apps → Ferret: turn on Autostart and set Battery saver to No restrictions.';
+
+  @override
+  String get stayStepsSamsung =>
+      'Settings → Battery → Background usage limits → Never sleeping apps: add Ferret.';
+
+  @override
+  String get stayStepsOneplus =>
+      'Settings → Apps → Ferret → Battery usage: turn on Allow background activity. Then lock Ferret in the recent apps view.';
+
+  @override
+  String get stayStepsHuawei =>
+      'Settings → Battery → App launch → Ferret: turn off Manage automatically and keep all three switches on.';
+
+  @override
+  String get stayStepsOppo =>
+      'Settings → Apps → Ferret → Battery usage: turn on Allow background activity and Allow auto launch.';
+
+  @override
+  String get stayStepsVivo =>
+      'Settings → Battery → Background power consumption management → Ferret: allow it. Turn on Autostart for Ferret too.';
 
   @override
   String stayMaker(String maker) {

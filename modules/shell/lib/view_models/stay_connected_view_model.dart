@@ -14,6 +14,10 @@ class StayConnectedViewModel extends ChangeNotifier {
 
   bool notificationsAllowed = true;
   bool batteryExempt = true;
+
+  /// Battery use set to Restricted: Android takes the service down whenever
+  /// the app leaves the screen, whatever else is allowed.
+  bool backgroundRestricted = false;
   DeviceMaker maker = .other;
   int stopsToday = 0;
   bool canAddTile = false;
@@ -22,7 +26,17 @@ class StayConnectedViewModel extends ChangeNotifier {
 
   /// Nothing left to do, so the card can hide.
   bool get allSet =>
-      notificationsAllowed && batteryExempt && stopsToday == 0 && !canAddTile;
+      notificationsAllowed &&
+      batteryExempt &&
+      !backgroundRestricted &&
+      stopsToday == 0 &&
+      !canAddTile;
+
+  /// Whether to show the maker's own steps: its killer can't be read, so
+  /// they show while something else says Ferret is being stopped.
+  bool get showsMakerSteps =>
+      maker.hasExtraKiller &&
+      (stopsToday > 0 || !batteryExempt || backgroundRestricted);
 
   Future<void> refresh() async {
     if (!isAndroid) {
@@ -31,6 +45,7 @@ class StayConnectedViewModel extends ChangeNotifier {
 
     notificationsAllowed = await _system.areNotificationsAllowed();
     batteryExempt = await _system.isIgnoringBatteryOptimizations();
+    backgroundRestricted = await _system.isBackgroundRestricted();
     maker = await _system.deviceMaker();
     stopsToday = await _system.serviceStopsToday();
     canAddTile = await _system.canRequestAddTile();
@@ -46,6 +61,8 @@ class StayConnectedViewModel extends ChangeNotifier {
     await _system.requestIgnoreBatteryOptimizations();
     await refresh();
   }
+
+  Future<void> openAppSettings() => _system.openAppSettings();
 
   Future<void> openMakerSettings() => _system.openMakerBatterySettings();
 

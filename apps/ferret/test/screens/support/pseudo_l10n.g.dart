@@ -2879,6 +2879,24 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get stayBatteryFix => pseudo(super.stayBatteryFix);
   @override
+  String get stayRestricted => pseudo(super.stayRestricted);
+  @override
+  String get stayRestrictedSteps => pseudo(super.stayRestrictedSteps);
+  @override
+  String get stayRestrictedFix => pseudo(super.stayRestrictedFix);
+  @override
+  String get stayStepsXiaomi => pseudo(super.stayStepsXiaomi);
+  @override
+  String get stayStepsSamsung => pseudo(super.stayStepsSamsung);
+  @override
+  String get stayStepsOneplus => pseudo(super.stayStepsOneplus);
+  @override
+  String get stayStepsHuawei => pseudo(super.stayStepsHuawei);
+  @override
+  String get stayStepsOppo => pseudo(super.stayStepsOppo);
+  @override
+  String get stayStepsVivo => pseudo(super.stayStepsVivo);
+  @override
   String get stayMakerFix => pseudo(super.stayMakerFix);
   @override
   String get stayTile => pseudo(super.stayTile);

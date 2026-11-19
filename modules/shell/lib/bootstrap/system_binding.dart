@@ -21,7 +21,7 @@ class SystemBinding with WidgetsBindingObserver {
   /// Keep Ferret running in the background on Android (default on).
   static const backgroundServiceKey = 'system.background_service';
 
-  /// Start Ferret when the phone starts (default off).
+  /// Start Ferret when the phone starts (default on).
   static const startOnBootKey = 'system.start_on_boot';
 
   /// Network callbacks come in bursts; one reconnect covers them.
@@ -73,7 +73,19 @@ class SystemBinding with WidgetsBindingObserver {
 
     if (state == .resumed) {
       _scheduleReconnect();
+      unawaited(_keepServiceRunning());
     }
+  }
+
+  /// Android may have taken the service down while Ferret was out of sight,
+  /// such as with battery use set to Restricted. Back on screen is the one
+  /// moment an app may start it again.
+  Future<void> _keepServiceRunning() async {
+    if (!_system.isAndroid) {
+      return;
+    }
+
+    await _applyServiceSettings();
   }
 
   void _onNetworkChange(NetworkChange change) {
@@ -169,7 +181,7 @@ class SystemBinding with WidgetsBindingObserver {
   Future<void> _applyServiceSettings() async {
     final settings = engine.settings;
     final background = settings.get<bool>(backgroundServiceKey) ?? true;
-    final onBoot = settings.get<bool>(startOnBootKey) ?? false;
+    final onBoot = settings.get<bool>(startOnBootKey) ?? true;
 
     await _system.setStartOnBoot(onBoot);
     if (!background) {

@@ -562,10 +562,46 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get stayNotificationsFix => 'Cho phép';
 
   @override
-  String get stayBattery => 'Cho phép Ferret chạy nền.';
+  String get stayBattery =>
+      'Android có thể dừng Ferret khi chạy nền. Hãy cho phép Ferret tiếp tục chạy.';
 
   @override
-  String get stayBatteryFix => 'Cho phép';
+  String get stayBatteryFix => 'Sửa';
+
+  @override
+  String get stayRestricted =>
+      'Mức dùng pin của Ferret đang là Bị hạn chế, nên Android dừng Ferret mỗi khi bạn rời ứng dụng.';
+
+  @override
+  String get stayRestrictedSteps =>
+      'Mở Mức sử dụng pin của ứng dụng và chọn Không hạn chế.';
+
+  @override
+  String get stayRestrictedFix => 'Sửa';
+
+  @override
+  String get stayStepsXiaomi =>
+      'Cài đặt → Ứng dụng → Quản lý ứng dụng → Ferret: bật Tự khởi chạy và đặt Tiết kiệm pin thành Không hạn chế.';
+
+  @override
+  String get stayStepsSamsung =>
+      'Cài đặt → Pin → Giới hạn sử dụng trong nền → Ứng dụng không bao giờ ngủ: thêm Ferret.';
+
+  @override
+  String get stayStepsOneplus =>
+      'Cài đặt → Ứng dụng → Ferret → Mức sử dụng pin: bật Cho phép hoạt động trong nền. Sau đó khoá Ferret trong màn hình ứng dụng gần đây.';
+
+  @override
+  String get stayStepsHuawei =>
+      'Cài đặt → Pin → Khởi chạy ứng dụng → Ferret: tắt Quản lý tự động và giữ cả ba công tắc bật.';
+
+  @override
+  String get stayStepsOppo =>
+      'Cài đặt → Ứng dụng → Ferret → Mức sử dụng pin: bật Cho phép hoạt động trong nền và Cho phép tự khởi chạy.';
+
+  @override
+  String get stayStepsVivo =>
+      'Cài đặt → Pin → Quản lý tiêu thụ pin trong nền → Ferret: cho phép. Bật cả Tự khởi chạy cho Ferret.';
 
   @override
   String stayMaker(String maker) {

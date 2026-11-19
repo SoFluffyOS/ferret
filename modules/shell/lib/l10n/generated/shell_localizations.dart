@@ -887,14 +887,68 @@ abstract class ShellLocalizations {
   /// No description provided for @stayBattery.
   ///
   /// In en, this message translates to:
-  /// **'Let Ferret run in the background.'**
+  /// **'Android may stop Ferret in the background. Let it keep running.'**
   String get stayBattery;
 
   /// No description provided for @stayBatteryFix.
   ///
   /// In en, this message translates to:
-  /// **'Allow'**
+  /// **'Fix'**
   String get stayBatteryFix;
+
+  /// No description provided for @stayRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery use for Ferret is set to Restricted, so Android stops Ferret each time you leave the app.'**
+  String get stayRestricted;
+
+  /// No description provided for @stayRestrictedSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open App battery usage and choose Unrestricted.'**
+  String get stayRestrictedSteps;
+
+  /// No description provided for @stayRestrictedFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get stayRestrictedFix;
+
+  /// No description provided for @stayStepsXiaomi.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Apps → Manage apps → Ferret: turn on Autostart and set Battery saver to No restrictions.'**
+  String get stayStepsXiaomi;
+
+  /// No description provided for @stayStepsSamsung.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Battery → Background usage limits → Never sleeping apps: add Ferret.'**
+  String get stayStepsSamsung;
+
+  /// No description provided for @stayStepsOneplus.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Apps → Ferret → Battery usage: turn on Allow background activity. Then lock Ferret in the recent apps view.'**
+  String get stayStepsOneplus;
+
+  /// No description provided for @stayStepsHuawei.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Battery → App launch → Ferret: turn off Manage automatically and keep all three switches on.'**
+  String get stayStepsHuawei;
+
+  /// No description provided for @stayStepsOppo.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Apps → Ferret → Battery usage: turn on Allow background activity and Allow auto launch.'**
+  String get stayStepsOppo;
+
+  /// No description provided for @stayStepsVivo.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings → Battery → Background power consumption management → Ferret: allow it. Turn on Autostart for Ferret too.'**
+  String get stayStepsVivo;
 
   /// No description provided for @stayMaker.
   ///

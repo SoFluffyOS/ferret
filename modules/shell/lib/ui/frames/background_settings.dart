@@ -29,7 +29,7 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
     _keepRunning =
         widget.settings.get<bool>(SystemBinding.backgroundServiceKey) ?? true;
     _startOnBoot =
-        widget.settings.get<bool>(SystemBinding.startOnBootKey) ?? false;
+        widget.settings.get<bool>(SystemBinding.startOnBootKey) ?? true;
   }
 
   @override

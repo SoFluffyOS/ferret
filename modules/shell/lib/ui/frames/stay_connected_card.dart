@@ -64,6 +64,8 @@ class _Steps extends StatelessWidget {
     final (
       :notificationsAllowed,
       :batteryExempt,
+      :backgroundRestricted,
+      :showsMakerSteps,
       :maker,
       :stopsToday,
       :canAddTile,
@@ -72,6 +74,8 @@ class _Steps extends StatelessWidget {
       (StayConnectedViewModel viewModel) => (
         notificationsAllowed: viewModel.notificationsAllowed,
         batteryExempt: viewModel.batteryExempt,
+        backgroundRestricted: viewModel.backgroundRestricted,
+        showsMakerSteps: viewModel.showsMakerSteps,
         maker: viewModel.maker,
         stopsToday: viewModel.stopsToday,
         canAddTile: viewModel.canAddTile,
@@ -128,15 +132,24 @@ class _Steps extends StatelessWidget {
                 fix: l10n.stayNotificationsFix,
                 onFix: viewModel.allowNotifications,
               ),
-            if (!batteryExempt)
+            if (backgroundRestricted)
+              _Step(
+                text: l10n.stayRestricted,
+                detail: l10n.stayRestrictedSteps,
+                isUrgent: true,
+                fix: l10n.stayRestrictedFix,
+                onFix: viewModel.openAppSettings,
+              ),
+            if (!batteryExempt && !backgroundRestricted)
               _Step(
                 text: l10n.stayBattery,
                 fix: l10n.stayBatteryFix,
                 onFix: viewModel.allowBackground,
               ),
-            if (maker.hasExtraKiller && (stopsToday > 0 || !batteryExempt))
+            if (showsMakerSteps)
               _Step(
                 text: l10n.stayMaker(_makerName(maker)),
+                detail: _makerSteps(l10n, maker),
                 fix: l10n.stayMakerFix,
                 onFix: viewModel.openMakerSettings,
               ),
@@ -161,35 +174,72 @@ class _Steps extends StatelessWidget {
     .vivo => 'vivo',
     .other => '',
   };
+
+  String? _makerSteps(ShellLocalizations l10n, DeviceMaker maker) =>
+      switch (maker) {
+        .xiaomi => l10n.stayStepsXiaomi,
+        .samsung => l10n.stayStepsSamsung,
+        .oneplus => l10n.stayStepsOneplus,
+        .huawei => l10n.stayStepsHuawei,
+        .oppo => l10n.stayStepsOppo,
+        .vivo => l10n.stayStepsVivo,
+        .other => null,
+      };
 }
 
 class _Step extends StatelessWidget {
-  const _Step({required this.text, required this.fix, required this.onFix});
+  const _Step({
+    required this.text,
+    required this.fix,
+    required this.onFix,
+    this.detail,
+    this.isUrgent = false,
+  });
 
   final String text;
+
+  /// Where to tap once the settings screen is open.
+  final String? detail;
+
+  /// Ferret is being stopped right now, not only at risk.
+  final bool isUrgent;
   final String fix;
   final Future<void> Function() onFix;
 
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
+    final typography = context.fluffyTheme.typography;
+    final textColor = switch (isUrgent) {
+      true => palette.danger,
+      false => palette.text,
+    };
 
     return Padding(
       padding: EdgeInsets.only(top: Spacing.d12),
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              text,
-              style: context.fluffyTheme.typography.body2.copyWith(
-                color: palette.text,
-              ),
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(text, style: typography.body2.copyWith(color: textColor)),
+                if (detail case final steps?) ...[
+                  Spacing.v4,
+                  Text(
+                    steps,
+                    style: typography.caption1.copyWith(
+                      color: palette.mutedText,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
           Spacing.h12,
           Button(
             mainAxisSize: .min,
-            variant: .secondary,
+            variant: .ghost,
             label: fix,
             onPressed: onFix,
           ),
