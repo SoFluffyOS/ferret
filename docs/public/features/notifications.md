@@ -27,6 +27,16 @@ The Notifications card on the home screen shows the last few from each phone. **
 - Ongoing ones (navigation, downloads), music controls, silent ones and group summaries stay on the phone. So do Ferret's own.
 - Your computer was asleep? When it reconnects you get **one** summary, "6 notifications while away, from Signal, WhatsApp", not six popups.
 
+## 🔑 Codes stay on your phone
+
+Sign-in, bank and delivery codes don't belong on every computer in the house.
+
+When a notification looks like a one-time code (a 4 to 8 digit number next to a word like "code", "OTP", "verification" or "PIN"), your phone sends the app and title only. Your computer shows **Code hidden. Open it on the phone.**
+
+Want the codes on your computer anyway? On your phone, turn off **Hide one-time codes** in the notification settings.
+
+Android 15 and later also hide these codes from apps like Ferret by themselves.
+
 ## 📱 All apps, or just some
 
 Every app comes through by default. Nothing to pick.

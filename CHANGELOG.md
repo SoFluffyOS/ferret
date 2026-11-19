@@ -3,6 +3,11 @@
 ## [Unreleased]
 
 ### Added
+- 👀 **What a device can use**: open a device and see every feature it can reach here, with a switch each. Turn one off and it stops right away, on both devices. **Turn everything off** keeps it paired.
+- 🔑 **Codes stay on your phone**: sign-in and bank codes in notifications show up on your computer as **Code hidden**. Turn off **Hide one-time codes** on the phone if you want them.
+- 🟢 **Watched? You know**: on a Mac, the menubar icon keeps a dot while a device sees your screen or controls your computer, and says who.
+- 🧹 **Less kept around**: Continue's history lasts 30 days at most, with **Clear** in Settings. Unpairing a phone deletes its saved texts from your computer.
+- 📡 **What leaves this device**: the privacy page lists every byte that goes anywhere, and how long Ferret keeps things.
 - 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only.
 - 🧹 **Clean up old devices**: Home offers to remove the ones not seen in 30 days. Activity filters by device, several devices joining make one card, and the window's list gets a search field from 9 devices.
 - 🎨 **Settings you can scan**: every row has its own coloured icon, with what it's set to right under its name. Rows sit in groups with a thin line between them. Same list in the popover, on the phone and in the window.

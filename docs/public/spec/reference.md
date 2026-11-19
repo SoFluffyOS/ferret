@@ -942,6 +942,7 @@ One notification shown on the source device (a phone).
 | `app_icon_png` | `bytes` | 7 | A small PNG of the app's icon. Empty when it was already sent for this app during the current session; receivers keep the last one per app. |
 | `is_conversation` | `bool` | 8 | A message in a conversation, such as a chat. |
 | `actions` | `repeated NotificationAction` | 9 |  |
+| `text_hidden` | `bool` | 10 | The source held back the text (and a title that carried it) because it looks like a one-time code, such as a sign-in or bank code. Receivers say so instead of showing an empty line. |
 
 ### message `NotificationPosted`
 
