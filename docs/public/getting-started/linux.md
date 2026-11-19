@@ -6,6 +6,61 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 > 2. From 600 wide: your devices on the left, the page you picked on the right.
 > 3. From 1200 wide: an Activity pane joins on the right.
 
+## 📦 Install
+
+Pick the one that fits your system. All three install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager.
+
+> 1. **Flatpak** (any distribution): `flatpak install --user ferret-0.1.0-x86_64.flatpak`
+> 2. **AppImage** (no install): `chmod +x Ferret-0.1.0-x86_64.AppImage`, then run it
+> 3. **.deb** (Debian, Ubuntu, Mint, Pop!_OS): `sudo apt install ./ferret_0.1.0_amd64.deb`
+
+### Flatpak
+
+```sh
+flatpak install --user ferret-0.1.0-x86_64.flatpak
+flatpak run io.sofluffy.ferret
+```
+
+The sandbox only lets Ferret reach the network, `Downloads/Ferret` for the files you receive, the tray, notifications and media players. Pick another folder for received files and the file chooser asks your desktop for it.
+
+- Ferret's folder is `~/.var/app/io.sofluffy.ferret/.sofluffy/ferret`, not `~/.sofluffy/ferret`.
+- The command line is inside too: `flatpak run --command=ferret-cli io.sofluffy.ferret devices`.
+- **Check my network** can't see your firewall from the sandbox. If your phone doesn't show up, use the firewall lines under **If your phone doesn't show up** below.
+- Showing an Android phone's screen over a USB cable needs `adb`, which the sandbox doesn't have. Use the `.deb` or the AppImage for that.
+
+### AppImage
+
+```sh
+chmod +x Ferret-0.1.0-x86_64.AppImage
+./Ferret-0.1.0-x86_64.AppImage
+```
+
+No `libfuse2` needed. Want the command line too? Link the AppImage as `ferret-cli` and it runs that instead:
+
+```sh
+ln -s ~/Apps/Ferret-0.1.0-x86_64.AppImage ~/.local/bin/ferret-cli
+```
+
+**Start at login** points at the AppImage file itself, so keep it where it is or turn the switch off and on again after moving it.
+
+### .deb
+
+```sh
+sudo apt install ./ferret_0.1.0_amd64.deb
+```
+
+You get `ferret` and `ferret-cli` on your `PATH`, and the firewall profiles: `sudo ufw allow Ferret`, or `sudo firewall-cmd --permanent --add-service=ferret && sudo firewall-cmd --reload`. It pulls in `wl-clipboard`, so copies on KDE Plasma and Sway sync by themselves.
+
+### Build them yourself
+
+On a Linux machine, from the source:
+
+```sh
+scripts/package_linux.sh          # or: deb, appimage, flatpak
+```
+
+The packages land in `build/linux-packages`. It doesn't run on macOS or Windows: Flutter only builds a Linux app on Linux.
+
 ## 🪟 The window
 
 - **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
@@ -63,6 +118,13 @@ There is no menu bar. The **•••** at the top of the device list holds the 
 
 A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. See [Fix connection](../features/connection-doctor.md).
 
+Ferret needs `47640/tcp`, `47641/udp` and mDNS (`5353/udp`). Installed the `.deb`? It ships profiles for both firewalls:
+
+```sh
+sudo ufw allow Ferret
+sudo firewall-cmd --permanent --add-service=ferret && sudo firewall-cmd --reload
+```
+
 ## 💻 The terminal
 
 ```sh
@@ -78,5 +140,5 @@ ferret-cli --help                      # everything else
 
 Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, pairings, and `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
 
-Not there yet: `ferret clip` to send text from a pipe, a Flatpak, an AppImage and a `.deb`.
+Not there yet: `ferret clip` to send text from a pipe.
 
