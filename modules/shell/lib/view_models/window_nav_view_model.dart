@@ -92,6 +92,7 @@ class WindowNavViewModel extends ChangeNotifier {
   /// opened on top of the last one.
   void select(WindowDestination destination) {
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    _clearShown();
     if (destination == selection) {
       return;
     }
@@ -152,10 +153,43 @@ class WindowNavViewModel extends ChangeNotifier {
     );
   }
 
-  /// Opens [page] over the selection, alone: such as Add a device.
-  void show(Widget page) {
+  /// The title of a page [show] opened that isn't about the selection,
+  /// such as Add a device, while it is open. The toolbar says it, and the
+  /// list stops pointing at a device the page has nothing to do with.
+  String? get shownTitle => _shownTitle;
+  String? _shownTitle;
+  int _shownRun = 0;
+
+  /// Opens [page] over the selection, alone: such as Add a device. With a
+  /// [title], the page stands on its own rather than in the selection.
+  void show(Widget page, {String? title}) {
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
-    _push(page);
+    _clearShown();
+    if (title == null) {
+      _push(page);
+      return;
+    }
+
+    final run = ++_shownRun;
+    _shownTitle = title;
+    notifyListeners();
+    unawaited(
+      navigatorKey.currentState?.push(ferretRoute<void>(page)).whenComplete(() {
+        if (run == _shownRun) {
+          _clearShown();
+        }
+      }),
+    );
+  }
+
+  void _clearShown() {
+    if (_shownTitle == null) {
+      return;
+    }
+
+    _shownTitle = null;
+    _shownRun++;
+    notifyListeners();
   }
 
   void toggleSidebar() {

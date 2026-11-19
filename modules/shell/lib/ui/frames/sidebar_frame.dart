@@ -61,7 +61,10 @@ class _SidebarFrameState extends State<SidebarFrame> {
       (host) => host.devices,
     );
     final selection = context.select<WindowNavViewModel, WindowDestination?>(
-      (viewModel) => viewModel.selection,
+      (viewModel) => switch (viewModel.shownTitle) {
+        null => viewModel.selection,
+        _ => null,
+      },
     );
     final isPaused = context.select<PauseController, bool>(
       (controller) => controller.isPaused,
@@ -102,7 +105,10 @@ class _SidebarFrameState extends State<SidebarFrame> {
                             ),
                             semanticLabel: l10n.homePairDevice,
                             hoverOverlayBorderRadius: Corners.tile,
-                            onTap: () => nav.show(const PairPage()),
+                            onTap: () => nav.show(
+                              const PairPage(),
+                              title: l10n.pairTitle,
+                            ),
                             child: Padding(
                               padding: EdgeInsets.all(Spacing.d4),
                               child: Icon(
@@ -151,7 +157,8 @@ class _SidebarFrameState extends State<SidebarFrame> {
                             ),
                           ),
                         SidebarNearbyFrame(
-                          onPair: () => nav.show(const PairPage()),
+                          onPair: () =>
+                              nav.show(const PairPage(), title: l10n.pairTitle),
                         ),
                         Spacing.v16,
                         SidebarRow(

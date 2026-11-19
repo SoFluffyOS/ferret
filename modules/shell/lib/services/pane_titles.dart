@@ -20,6 +20,13 @@ abstract final class PaneTitles {
     final selection = context.select<WindowNavViewModel, WindowDestination?>(
       (viewModel) => viewModel.selection,
     );
+    final shownTitle = context.select<WindowNavViewModel, String?>(
+      (viewModel) => viewModel.shownTitle,
+    );
+    if (shownTitle != null) {
+      return (place: shownTitle, deviceName: null, isOverview: false);
+    }
+
     final device = context.select<EngineHost, DeviceStatus?>(
       (host) => switch (selection) {
         DeviceDestination(:final deviceId) => host.statusOf(deviceId),

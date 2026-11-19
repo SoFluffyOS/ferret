@@ -408,6 +408,32 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('Add a device names itself, not the device it opened over', (
+      tester,
+    ) async {
+      await start(tester, const Size(1000, 720));
+      String toolbar() => tester
+          .widgetList<Text>(
+            find.descendant(
+              of: find.byType(PaneToolbarFrame),
+              matching: find.byType(Text),
+            ),
+          )
+          .map((text) => text.data ?? text.textSpan?.toPlainText() ?? '')
+          .join(' ');
+
+      await tester.tap(find.byIcon(LucideIcons.plus));
+      await tester.pumpAndSettle();
+
+      expect(toolbar(), contains('Add a device'));
+      expect(toolbar(), isNot(contains('Overview')));
+
+      await tester.tap(find.byIcon(LucideIcons.chevronLeft).last);
+      await tester.pumpAndSettle();
+
+      expect(toolbar(), contains('Overview'));
+    });
+
     testWidgets('the pane has a toolbar that names it and hides the list', (
       tester,
     ) async {

@@ -78,7 +78,8 @@ class WindowMenuFrame extends StatelessWidget {
       null => const <(String, String)>[],
     };
     final commands = <WindowCommand, VoidCallback?>{
-      .addDevice: () => nav.show(const PairPage()),
+      .addDevice: () =>
+          nav.show(const PairPage(), title: context.shellL10n.pairTitle),
       .sendFiles: _actionAt(context, scope, device, _sendFilesOrder),
       .sendClipboard: _actionAt(context, scope, device, _sendClipboardOrder),
       .takePhoto: photo?.$2,
@@ -95,7 +96,10 @@ class WindowMenuFrame extends StatelessWidget {
         ),
         null => null,
       },
-      .showShortcuts: () => nav.show(const KeyboardShortcutsPage()),
+      .showShortcuts: () => nav.show(
+        const KeyboardShortcutsPage(),
+        title: context.shellL10n.shortcutsTitle,
+      ),
       .sponsor: () => unawaited(Sponsor.open()),
       .quit: () => unawaited(context.read<AppQuit>().quit()),
     };
@@ -154,7 +158,10 @@ class WindowMenuFrame extends StatelessWidget {
           onSection: selectSection,
           isSidebarHidden: isSidebarHidden,
           isActivityPaneHidden: isActivityPaneHidden,
-          onCheckNetwork: () => nav.show(const DoctorPage()),
+          onCheckNetwork: () => nav.show(
+            const DoctorPage(),
+            title: context.shellL10n.doctorTitle,
+          ),
           takePhotoLabel: switch (photo) {
             (final name, _) => context.shellL10n.menuTakePhotoWith(name),
             null => context.shellL10n.menuTakePhoto,
