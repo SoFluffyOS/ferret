@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/page_insets.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/text_link.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -18,18 +19,24 @@ class SectionTitle extends StatelessWidget {
       fontWeight: .w600,
     );
 
+    // The line is as high as a link at its end, with or without one, so
+    // the title doesn't move when "See all" comes and goes. The space
+    // around it is that much less: 16 above the words, 8 below, as drawn.
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
         PageInsets.row,
-        Spacing.d16,
+        Spacing.d12,
         PageInsets.row,
-        Spacing.d8,
+        Spacing.d4,
       ),
-      child: Row(
-        children: [
-          Expanded(child: Text(text, style: style)),
-          ?trailing,
-        ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: TextLink.minHeight),
+        child: Row(
+          children: [
+            Expanded(child: Text(text, style: style)),
+            ?trailing,
+          ],
+        ),
       ),
     );
   }

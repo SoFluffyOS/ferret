@@ -39,16 +39,7 @@ class FooterHint extends StatelessWidget {
             ),
           ),
           if (actionLabel case final label?)
-            Tappable(
-              onTap: onAction,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Spacing.d4),
-                child: Text(
-                  label,
-                  style: style.copyWith(color: palette.link),
-                ),
-              ),
-            ),
+            TextLink(label: label, onTap: onAction),
         ],
       ),
     );

@@ -79,11 +79,28 @@ class ActivityRow extends StatelessWidget {
     };
     final actionsOwnLine =
         hasLargeText || textActions.length > _actionsBesideDetail;
+    // Links and icons take the pointer on more height than the words next
+    // to them. An icon's target reaches up and a link's reaches down, into
+    // the line's own spacing, so the words stay where they were.
+    final hasIcons =
+        !hasLargeText && (iconActions.isNotEmpty || onDismiss != null);
+    final hasLinksOnly =
+        textActions.isNotEmpty && !textActions.any((action) => action.primary);
+    final linksBesideDetail = hasLinksOnly && !actionsOwnLine;
+    final linksEndTheLine = hasLinksOnly && item.progress == null;
 
     final row = Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: PageInsets.row,
-        vertical: Spacing.d6,
+      padding: EdgeInsetsDirectional.fromSTEB(
+        PageInsets.row,
+        switch (hasIcons) {
+          true => 0,
+          false => Spacing.d6,
+        },
+        PageInsets.row,
+        switch (linksEndTheLine) {
+          true => 0,
+          false => Spacing.d6,
+        },
       ),
       child: Row(
         crossAxisAlignment: .start,
@@ -91,7 +108,14 @@ class ActivityRow extends StatelessWidget {
           switch (item.leading) {
             final leading? => leading,
             null => Padding(
-              padding: EdgeInsets.only(top: Spacing.d2),
+              // Level with the title, which sits lower on a line whose
+              // icons reach up.
+              padding: EdgeInsets.only(
+                top: switch (hasIcons) {
+                  true => _iconActionRise,
+                  false => Spacing.d2,
+                },
+              ),
               child: Icon(
                 item.icon,
                 size: Spacing.d16,
@@ -105,6 +129,10 @@ class ActivityRow extends StatelessWidget {
               crossAxisAlignment: .stretch,
               children: [
                 Row(
+                  crossAxisAlignment: switch (hasIcons) {
+                    true => .end,
+                    false => .center,
+                  },
                   children: [
                     Expanded(
                       child: Text(
@@ -127,7 +155,7 @@ class ActivityRow extends StatelessWidget {
                       ),
                     ],
                     for (final action in iconActions)
-                      _IconAction(action: action),
+                      _IconAction(action: action, reachesUp: hasIcons),
                     if (onDismiss != null)
                       _IconAction(
                         action: ActivityAction(
@@ -136,13 +164,21 @@ class ActivityRow extends StatelessWidget {
                           onPressed: onDismiss,
                         ),
                         muted: true,
+                        reachesUp: hasIcons,
                       ),
                   ],
                 ),
                 if (detail != null ||
                     (textActions.isNotEmpty && !actionsOwnLine)) ...[
-                  Spacing.vertical(Spacing.d2),
+                  Spacing.vertical(switch (linksBesideDetail) {
+                    true => Spacing.d4,
+                    false => Spacing.d2,
+                  }),
                   Row(
+                    crossAxisAlignment: switch (linksBesideDetail) {
+                      true => .start,
+                      false => .center,
+                    },
                     children: [
                       Expanded(
                         child: Text(
@@ -161,6 +197,7 @@ class ActivityRow extends StatelessWidget {
                             action: action,
                             filled: holdsPrimary,
                             isShown: showsLinks,
+                            reachesDown: linksBesideDetail,
                           ),
                         ],
                     ],
@@ -183,7 +220,8 @@ class ActivityRow extends StatelessWidget {
                   ),
                 ],
                 if (item.progress case final progress?) ...[
-                  Spacing.v6,
+                  // A link's target above already keeps the bar away.
+                  if (!linksBesideDetail) Spacing.v6,
                   FluffyProgressBar(
                     value: progress.clamp(0, 1).toDouble(),
                     color: palette.accent,
@@ -368,6 +406,7 @@ class _TextAction extends StatelessWidget {
     required this.action,
     required this.filled,
     required this.isShown,
+    this.reachesDown = false,
   });
 
   final ActivityAction action;
@@ -375,6 +414,10 @@ class _TextAction extends StatelessWidget {
 
   /// A link that isn't shown keeps its place and can still be reached.
   final bool isShown;
+
+  /// Next to the detail, the link's words line up with it and its target
+  /// goes on below them. Among buttons it is centred like they are.
+  final bool reachesDown;
 
   @override
   Widget build(BuildContext context) {
@@ -392,29 +435,34 @@ class _TextAction extends StatelessWidget {
         false => 0,
       },
       alwaysIncludeSemantics: true,
-      child: Tappable(
+      child: TextLink(
+        label: action.label,
         onTap: action.onPressed,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: Spacing.d4,
-            vertical: Spacing.d2,
-          ),
-          child: Text(
-            action.label,
-            style: context.fluffyTheme.typography.caption1.copyWith(
-              color: context.palette.link,
-            ),
-          ),
-        ),
+        alignment: switch (reachesDown) {
+          true => Alignment.topCenter,
+          false => Alignment.center,
+        },
       ),
     );
   }
 }
 
+/// What a 16-point glyph lacks to be a target as high as a [TextLink].
+double get _iconActionRise => Spacing.d8;
+
 class _IconAction extends StatelessWidget {
-  const _IconAction({required this.action, this.muted = false});
+  const _IconAction({
+    required this.action,
+    required this.reachesUp,
+    this.muted = false,
+  });
 
   final ActivityAction action;
+
+  /// On the title's line the glyph sits at the bottom of its target, level
+  /// with the title, and the target goes on above it. With text set large
+  /// it is centred.
+  final bool reachesUp;
 
   /// Drawn quieter, for the ✕ that only tidies up.
   final bool muted;
@@ -425,7 +473,17 @@ class _IconAction extends StatelessWidget {
       tooltip: action.label,
       onTap: action.onPressed,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Spacing.d6),
+        padding: switch (reachesUp) {
+          true => EdgeInsets.only(
+            left: Spacing.d6,
+            right: Spacing.d6,
+            top: _iconActionRise,
+          ),
+          false => EdgeInsets.symmetric(
+            horizontal: Spacing.d6,
+            vertical: _iconActionRise / 2,
+          ),
+        },
         child: Icon(
           action.icon,
           size: Spacing.d16,

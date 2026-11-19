@@ -141,15 +141,7 @@ class _SeeAll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      onTap: onTap,
-      child: Text(
-        context.shellL10n.activitySeeAll,
-        style: context.fluffyTheme.typography.caption1.copyWith(
-          color: context.palette.link,
-        ),
-      ),
-    );
+    return TextLink(label: context.shellL10n.activitySeeAll, onTap: onTap);
   }
 }
 

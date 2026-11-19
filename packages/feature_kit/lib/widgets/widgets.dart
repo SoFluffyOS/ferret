@@ -10,3 +10,4 @@ export 'package:feature_kit/widgets/pane_toolbar_scope.dart';
 export 'package:feature_kit/widgets/section_title.dart';
 export 'package:feature_kit/widgets/setting_switch_row.dart';
 export 'package:feature_kit/widgets/surface_card.dart';
+export 'package:feature_kit/widgets/text_link.dart';

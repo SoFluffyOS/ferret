@@ -150,12 +150,9 @@ class _Pane extends StatelessWidget {
             SectionTitle(
               l10n.activityPaneRecent(deviceName),
               trailing: switch (hidesSome) {
-                true => Tappable(
+                true => TextLink(
+                  label: l10n.activitySeeAll,
                   onTap: onSeeAll,
-                  child: Text(
-                    l10n.activitySeeAll,
-                    style: typography.caption1.copyWith(color: palette.link),
-                  ),
                 ),
                 false => null,
               },

@@ -90,12 +90,9 @@ class _PairPageState extends State<PairPage> {
             if (!isIphone) ...[
               SectionTitle(
                 l10n.addDontSee,
-                trailing: Tappable(
+                trailing: TextLink(
+                  label: l10n.settingsCheckNetwork,
                   onTap: () => _open(const DoctorPage()),
-                  child: Text(
-                    l10n.settingsCheckNetwork,
-                    style: typography.caption1.copyWith(color: palette.link),
-                  ),
                 ),
               ),
               Padding(
