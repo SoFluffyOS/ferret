@@ -32,6 +32,7 @@ You have a Mac and a tablet that already work together, and you get a new phone.
 
 - The device you pair on tells you first: **You'll also be connected to Tablet.**
 - Your other devices say **Pixel 7 joined your devices (added by MacBook Pro)**, with **Undo**. Undo forgets the phone on that device only.
+- Several at once? One card and one notification: **iPad, ThinkPad X1, DESKTOP joined your devices**, with **Keep all** or **Review** to undo just one.
 - A device that was off catches up the next time it connects.
 
 Copy something on any of them and it reaches all the others.
@@ -44,6 +45,17 @@ Removing works the same way. Open a device, tap **Forget Pixel 7** at the bottom
 The question opens right there on the page. Changed your mind? **Cancel**.
 
 Prefer to pair each device by hand? Turn off **Settings → Advanced → Pair once for all my devices**. A device with the switch off neither passes its pairings on nor takes any in.
+
+## 📱 Lots of devices
+
+Two phones, a tablet and three computers? The list stays easy to read.
+
+- 🕒 **Recently used first**: connected devices on top, then the ones you used last. Offline ones fold into one line from 4 devices on.
+- 📌 **Pin to Top**: open a device and tap **Pin to Top**, or right-click it in the window. Pinned devices lead their group.
+- 🏷️ **Two called Pixel 7?** Ferret adds the end of each one's id: **Pixel 7 (0718)** and **Pixel 7 (3F2A)**. Open one and tap **Rename…** to call it **Old Pixel** on this device only. The phone keeps its own name everywhere else.
+- 🧹 **Not seen in 30 days**: Home offers **Remove…** for the devices nobody has seen in a month. Pinned ones stay. Your other devices keep them.
+- 🔎 **Find a device**: with 9 or more, the window's list gets a search field.
+- 🗂️ **Activity by device**: on Activity, tap **Pixel 7** or **iPhone** to see only what came from it.
 
 ## 🙈 Don't see it?
 

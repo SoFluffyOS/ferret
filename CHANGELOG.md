@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only.
+- 🧹 **Clean up old devices**: Home offers to remove the ones not seen in 30 days. Activity filters by device, several devices joining make one card, and the window's list gets a search field from 9 devices.
 - 🎨 **Settings you can scan**: every row has its own coloured icon, with what it's set to right under its name. Rows sit in groups with a thin line between them. Same list in the popover, on the phone and in the window.
 - 🧰 **A toolbar in the window**: it says where you are, and its buttons hide or show the device list and the Activity pane. The list slides away. **+** sits on **Your devices**, and **Nearby** folds with a click.
 - ⌨️ **Keys where you need them**: rest the pointer on a toolbar button or a line of the device list and it tells you its shortcut.
