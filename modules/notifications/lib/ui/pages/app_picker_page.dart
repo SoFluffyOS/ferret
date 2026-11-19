@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:notifications/ui/frames/app_picker_frame.dart';
+import 'package:notifications/ui/frames/frames.dart';
 import 'package:notifications/view_models/view_models.dart';
 import 'package:protocol/notifications.dart';
 import 'package:provider/provider.dart';
