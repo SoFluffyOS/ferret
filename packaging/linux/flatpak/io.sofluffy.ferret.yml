@@ -1,0 +1,59 @@
+# Flatpak for Ferret. scripts/package_linux.sh flatpak builds the Flutter
+# bundle and ferret-cli first (build/linux-packages/stage), then runs
+# flatpak-builder on this file. Flutter needs the network to build, which
+# flatpak-builder doesn't allow, so the app comes in prebuilt.
+app-id: io.sofluffy.ferret
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+command: ferret
+
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  # Pairing, discovery (mDNS) and the encrypted link to your devices.
+  - --share=network
+  # The tray icon (StatusNotifierItem) and notifications.
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Notifications
+  # Media: what's playing here, to continue it on another device.
+  - --talk-name=org.mpris.MediaPlayer2.*
+  # Received files land in Downloads/Ferret. Other folders go through the
+  # file chooser portal.
+  - --filesystem=xdg-download/Ferret:create
+  # Settings, keys and pairings: ~/.sofluffy inside the sandbox is
+  # ~/.var/app/io.sofluffy.ferret/.sofluffy outside it.
+  - --persist=.sofluffy
+
+modules:
+  # wl-paste --watch sees copies made in other apps on KDE Plasma and Sway.
+  - name: wl-clipboard
+    buildsystem: meson
+    config-opts:
+      - -Dzshcompletiondir=no
+      - -Dfishcompletiondir=no
+    sources:
+      - type: git
+        url: https://github.com/bugaevc/wl-clipboard.git
+        tag: v2.2.1
+
+  - name: ferret
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/ferret /app/bin
+      - cp -r stage/bundle/. /app/lib/ferret/
+      - ln -s /app/lib/ferret/ferret /app/bin/ferret
+      - install -Dm755 stage/ferret-cli /app/bin/ferret-cli
+      - install -Dm644 linux/io.sofluffy.ferret.desktop -t /app/share/applications
+      - install -Dm644 linux/io.sofluffy.ferret.send.desktop -t /app/share/applications
+      - install -Dm644 linux/io.sofluffy.ferret.metainfo.xml -t /app/share/metainfo
+      - cp -r linux/icons/hicolor /app/share/icons/
+    sources:
+      - type: dir
+        path: ../../../build/linux-packages/stage
+        dest: stage
+      - type: dir
+        path: ..
+        dest: linux

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.sofluffy.ferret</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+
+  <name>Ferret</name>
+  <summary>Continue what you were doing on your other devices</summary>
+  <developer id="io.sofluffy">
+    <name>SoFluffy</name>
+  </developer>
+
+  <description>
+    <p>
+      Start something on your phone and pick it up on your computer. Ferret carries what you are doing between your own devices:
+      the page you are reading, the song or podcast at the same second, your clipboard, files, notifications, texts and calls.
+    </p>
+    <p>
+      It works on your local network, between Android, iOS, macOS, Linux and Windows. Devices talk to each other directly,
+      end-to-end encrypted. No account, no cloud, no telemetry.
+    </p>
+    <ul>
+      <li>Copy on one device, paste on another</li>
+      <li>Send files from the file manager with “Send with Ferret”, or drop them on a device</li>
+      <li>Read and answer your phone’s texts and notifications on your computer</li>
+      <li>Open the page you were reading on your phone, right where you left it</li>
+      <li>A tray icon, start at login, and a command line with JSON output for scripts</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.sofluffy.ferret.desktop</launchable>
+
+  <provides>
+    <binary>ferret</binary>
+    <binary>ferret-cli</binary>
+  </provides>
+
+  <url type="homepage">https://github.com/simonpham/ferret</url>
+  <url type="bugtracker">https://github.com/simonpham/ferret/issues</url>
+  <url type="vcs-browser">https://github.com/simonpham/ferret</url>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#40c4ff</color>
+    <color type="primary" scheme_preference="dark">#09387e</color>
+  </branding>
+
+  <categories>
+    <category>Network</category>
+    <category>FileTransfer</category>
+  </categories>
+
+  <keywords>
+    <keyword>phone</keyword>
+    <keyword>clipboard</keyword>
+    <keyword>continuity</keyword>
+    <keyword>handoff</keyword>
+    <keyword>file transfer</keyword>
+    <keyword>android</keyword>
+    <keyword>iphone</keyword>
+  </keywords>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+
+  <!-- Placeholders until Linux screenshots are taken. -->
+  <screenshots>
+    <screenshot type="default">
+      <caption>Your devices on the left, the one you picked on the right</caption>
+      <image>https://raw.githubusercontent.com/simonpham/ferret/main/docs/public/assets/screenshots/linux-devices.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Activity: what just happened, with the one thing to do about it</caption>
+      <image>https://raw.githubusercontent.com/simonpham/ferret/main/docs/public/assets/screenshots/linux-activity.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Pair a device by comparing six digits</caption>
+      <image>https://raw.githubusercontent.com/simonpham/ferret/main/docs/public/assets/screenshots/linux-pairing.png</image>
+    </screenshot>
+  </screenshots>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-11-19" type="development">
+      <description>
+        <p>The first build for Linux.</p>
+        <ul>
+          <li>Your devices are the home screen: send files, send the clipboard or ring a device from its row</li>
+          <li>Pair by comparing six digits. No QR code to scan, no account</li>
+          <li>Clipboard, files, notifications, texts, calls and media between your devices</li>
+          <li>Flaky Wi-Fi handled: transfers pause and go on by themselves</li>
+          <li>A tray icon, start at login, keyboard shortcuts, and ferret-cli for scripts</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>

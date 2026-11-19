@@ -1,9 +1,10 @@
-# "Send with Ferret" in the file manager's Open With menu.
-# Copy to ~/.local/share/applications/ (docs/public/features/share-menu.md).
-# If `ferret` isn't on your PATH, put its full path after Exec=.
+# "Send with Ferret" in the file manager's Open With menu. The Flatpak,
+# AppImage and .deb install it next to io.sofluffy.ferret.desktop. Running
+# Ferret from a build folder? Copy it to ~/.local/share/applications/ and,
+# if `ferret` isn't on your PATH, put its full path after Exec=.
 [Desktop Entry]
 Type=Application
-Version=1.0
+Version=1.5
 Name=Send with Ferret
 Comment=Send these files to one of your devices
 Exec=ferret send %F
@@ -11,5 +12,5 @@ Icon=io.sofluffy.ferret
 Terminal=false
 NoDisplay=true
 StartupNotify=false
-Categories=Utility;FileTransfer;
+Categories=Network;FileTransfer;
 MimeType=application/octet-stream;text/plain;image/jpeg;image/png;image/gif;image/webp;image/heic;video/mp4;video/quicktime;video/x-matroska;audio/mpeg;audio/flac;application/pdf;application/zip;

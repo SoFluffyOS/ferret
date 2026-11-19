@@ -1,0 +1,10 @@
+#!/bin/sh
+# Starts Ferret from the AppImage. A link to the AppImage named ferret-cli
+# runs the command line instead: ln -s Ferret-x86_64.AppImage ~/.local/bin/ferret-cli
+HERE="$(dirname "$(readlink -f "$0")")"
+
+case "$(basename "${ARGV0:-$0}")" in
+  ferret-cli*) exec "$HERE/usr/bin/ferret-cli" "$@" ;;
+esac
+
+exec "$HERE/usr/lib/ferret/ferret" "$@"

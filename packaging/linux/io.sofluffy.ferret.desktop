@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Ferret
+GenericName=Device Continuity
+Comment=Continue what you were doing on any of your devices
+Exec=ferret
+Icon=io.sofluffy.ferret
+Terminal=false
+Categories=Network;FileTransfer;
+Keywords=phone;clipboard;continuity;handoff;share;send;files;android;iphone;sync;
+StartupNotify=true
+StartupWMClass=io.sofluffy.ferret
+SingleMainWindow=true

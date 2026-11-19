@@ -66,7 +66,9 @@ Ferret understands `ferret send`, followed by files:
 ferret send ~/Pictures/photo.jpg ~/Documents/report.pdf
 ```
 
-To get it into your file manager, save this as `~/.local/share/applications/io.sofluffy.ferret.send.desktop`:
+Installed Ferret from the Flatpak, the AppImage or the `.deb`? **Send with Ferret** is already in the file manager's **Open With** menu. Skip to the last step.
+
+Running Ferret from a build? To get it into your file manager, save this as `~/.local/share/applications/io.sofluffy.ferret.send.desktop`:
 
 ```ini
 [Desktop Entry]
@@ -85,7 +87,7 @@ Then tell your desktop about it:
 update-desktop-database ~/.local/share/applications
 ```
 
-If `ferret` isn't on your `PATH`, put its full path after `Exec=`. The same file, with more file types, is in Ferret's source at `apps/ferret/linux/share`.
+If `ferret` isn't on your `PATH`, put its full path after `Exec=`. The same file, with more file types, is in Ferret's source at `packaging/linux`.
 
 Now right-click a file and pick **Open With → Send with Ferret**.
 
