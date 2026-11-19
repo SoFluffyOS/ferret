@@ -1,4 +1,5 @@
 import 'package:actions/actions.dart';
+import 'package:ferret_actions/ferret_actions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/actions.dart';
 
@@ -26,6 +27,18 @@ void main() {
   });
 
   tearDown(() => feature.stop());
+
+  test('a computer with no built-in actions still runs its own', () async {
+    final computer = await FakeHost.create();
+    computer.platform = .PLATFORM_LINUX;
+    final linux = ActionsFeature(computer: const UnsupportedComputerActions());
+    addTearDown(linux.stop);
+
+    await linux.start(computer);
+
+    expect(linux.flags, [ActionsFeature.runFlag]);
+    expect(linux.actionsHost, isNotNull);
+  });
 
   test('a phone offers nothing and runs nothing', () async {
     expect(feature.flags, isEmpty);

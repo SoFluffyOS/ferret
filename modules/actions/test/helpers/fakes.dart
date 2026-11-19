@@ -157,9 +157,15 @@ class FakeHost implements FeatureHost {
   @override
   Presence localPresence = Presence(batteryPercent: -1);
 
+  /// What this device is, for features that decide by platform.
+  Platform platform = .PLATFORM_UNSPECIFIED;
+
   @override
-  DeviceInfo get localDevice =>
-      DeviceInfo(id: identity.deviceId, name: 'MacBook Air');
+  DeviceInfo get localDevice => DeviceInfo(
+    id: identity.deviceId,
+    name: 'MacBook Air',
+    platform: platform,
+  );
 
   @override
   List<Session> sessions = [];

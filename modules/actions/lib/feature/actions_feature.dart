@@ -141,10 +141,10 @@ class ActionsFeature extends Feature {
     _subscriptions.add(client.changes.listen((_) => _emit()));
   }
 
+  /// Every computer runs its owner's own commands, even where none of the
+  /// built-in actions work; a phone hides a list that turns out empty.
   bool get _isComputer => switch (host.localDevice.platform) {
-    .PLATFORM_MACOS ||
-    .PLATFORM_WINDOWS ||
-    .PLATFORM_LINUX => _computer.supported.isNotEmpty,
+    .PLATFORM_MACOS || .PLATFORM_WINDOWS || .PLATFORM_LINUX => true,
     _ => false,
   };
 
