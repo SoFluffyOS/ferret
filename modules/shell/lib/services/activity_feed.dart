@@ -17,15 +17,20 @@ class ActivityFeed {
     List<FeatureUi> features,
     FeatureContext featureContext,
   ) {
-    final items = [
+    return ActivityFeed.of([
       for (final feature in features)
         ...feature.activity(context, featureContext),
-    ];
+    ]);
+  }
 
+  /// Sorts [items] into Needs you, what is going on now and what happened.
+  factory ActivityFeed.of(List<ActivityItem> items) {
     return ActivityFeed(
       needsYou: [
         for (final item in items)
-          if (item.needsYou) item,
+          if (item.needsYou && !item.pinned) item,
+        for (final item in items)
+          if (item.needsYou && item.pinned) item,
       ],
       pinned: [
         for (final item in items)
@@ -40,7 +45,9 @@ class ActivityFeed {
 
   static final _longAgo = DateTime.fromMillisecondsSinceEpoch(0);
 
-  /// Shown under "Needs you", not in Activity.
+  /// Shown under "Needs you", not in Activity. What waits quietly for an
+  /// answer, such as a file offer, comes before what is going on right now,
+  /// such as a ringing call, so it keeps the filled button.
   final List<ActivityItem> needsYou;
 
   final List<ActivityItem> pinned;
@@ -62,8 +69,9 @@ class ActivityFeed {
   }
 
   /// The line that holds Home's one filled button: the first thing waiting
-  /// for an answer, or else the first thing going on right now, such as a
-  /// call ringing. Null leaves it to the first device's first action.
+  /// for an answer (a file offer, then a ringing call), or else the first
+  /// thing going on right now. Null leaves it to the first device's first
+  /// action.
   ActivityItem? get primaryItem {
     for (final item in [...needsYou, ...pinned]) {
       if (item.actions.any((action) => action.primary)) {

@@ -43,7 +43,7 @@
 - 🔔 **Notifications**: your phone's notifications on your computer, from ALL your apps by default, with Reply and Dismiss synced both ways. Mute a few noisy apps, or pick only the ones you want.
 - 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second. Your music pauses while a call rings or goes on, and plays again after.
 - 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.
-- 📞 **Calls**: see who's calling on your computer, with their photo, then answer, decline, silence, hang up or start a call from there. A timer runs while you talk.
+- 📞 **Calls**: see who's calling on your computer, with their photo, at the top under **Needs you**. Answer, decline, silence, hang up or start a call from there. A timer runs while you talk.
 - 🔍 **Find**: ring a lost phone or computer from another device, even on silent, and stop it with one big **Found it**.
 - 🔁 **LocalSend**: send files to devices running LocalSend, and receive from them with one tap for 10 minutes.
 - 🧩 **Browser extension**: send the tab you're on to your phone from Chrome, Edge, Brave or Firefox, and open pages from your phone right in the browser you're using.

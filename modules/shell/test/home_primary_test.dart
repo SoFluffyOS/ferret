@@ -6,17 +6,22 @@ import 'package:shell/ui/widgets/widgets.dart';
 
 import 'test_app.dart';
 
-ActivityItem _item(String id, {bool primary = false, bool pinned = false}) =>
-    ActivityItem(
-      id: id,
-      icon: LucideIcons.download,
-      title: id,
-      pinned: pinned,
-      actions: [
-        ActivityAction(label: 'Go $id', primary: primary, onPressed: () {}),
-        ActivityAction(label: 'Decline $id', onPressed: () {}),
-      ],
-    );
+ActivityItem _item(
+  String id, {
+  bool primary = false,
+  bool pinned = false,
+  bool needsYou = false,
+}) => ActivityItem(
+  id: id,
+  icon: LucideIcons.download,
+  title: id,
+  pinned: pinned,
+  needsYou: needsYou,
+  actions: [
+    ActivityAction(label: 'Go $id', primary: primary, onPressed: () {}),
+    ActivityAction(label: 'Decline $id', onPressed: () {}),
+  ],
+);
 
 void main() {
   test('what needs an answer holds the primary before a ringing call', () {
@@ -26,6 +31,31 @@ void main() {
     final feed = ActivityFeed(needsYou: [offer], pinned: [call], recent: []);
 
     expect(feed.primaryItem, same(offer));
+  });
+
+  test('a ringing call waits under Needs you, after a file offer, and keeps '
+      'the primary from the devices', () {
+    final call = _item('call', primary: true, pinned: true, needsYou: true);
+    final offer = _item('offer', primary: true, needsYou: true);
+    final media = _item('media', pinned: true);
+
+    final ringing = ActivityFeed.of([media, call]);
+    final both = ActivityFeed.of([call, media, offer]);
+
+    expect(ringing.needsYou, [call]);
+    expect(ringing.pinned, [media]);
+    expect(ringing.primaryItem, same(call));
+    expect(both.needsYou, [offer, call]);
+    expect(both.primaryItem, same(offer));
+  });
+
+  test('an answered call leaves Needs you and stays pinned', () {
+    final call = _item('call', pinned: true);
+
+    final feed = ActivityFeed.of([call]);
+
+    expect(feed.needsYou, isEmpty);
+    expect(feed.pinned, [call]);
   });
 
   test('a ringing call holds the primary when nothing needs an answer', () {

@@ -9,10 +9,10 @@ import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Calls' lines in Activity on a computer: one pinned line per call that is
-/// ringing or going on on a connected phone, with the caller's photo or
-/// initials. Answer, Decline and Silence while it rings; a running timer
-/// and Hang up once it is answered.
+/// Calls' lines on a computer: one per call that is ringing or going on on a
+/// connected phone, with the caller's photo or initials. A ringing call
+/// waits under Needs you with Answer, Decline and Silence; once answered it
+/// is pinned in Activity with a running timer and Hang up.
 List<ActivityItem> callsActivity(
   CallsLocalizations l10n,
   ActiveCallsViewModel viewModel,
@@ -49,6 +49,7 @@ ActivityItem _line(
     },
     at: call.startedAt,
     pinned: true,
+    needsYou: call.isRinging,
     tone: switch (problem) {
       null => .normal,
       _ => .danger,

@@ -25,7 +25,7 @@ void main() {
     expect(activity(), isEmpty);
   });
 
-  test('a ringing call is pinned, names the phone and offers Answer and '
+  test('a ringing call needs you, names the phone and offers Answer and '
       'Silence', () {
     final startedAt = DateTime(2026, 11, 18, 21, 10);
     control.emit(remoteCall(startedAt: startedAt));
@@ -36,6 +36,7 @@ void main() {
     expect(line.title, 'Alex is calling Pixel');
     expect(line.detail, '+15550100');
     expect(line.pinned, isTrue);
+    expect(line.needsYou, isTrue);
     expect(line.at, startedAt);
     expect(line.tone, FeatureTone.normal);
     expect(line.actions.map((action) => action.label), [
@@ -97,6 +98,7 @@ void main() {
     expect(line.title, 'On a call with Alex');
     expect(line.detail, 'Pixel');
     expect(line.pinned, isTrue);
+    expect(line.needsYou, isFalse);
     expect(line.actions.single.label, 'Hang up');
     expect(line.actions.single.primary, isFalse);
     expect(line.trailing, isNotNull);
