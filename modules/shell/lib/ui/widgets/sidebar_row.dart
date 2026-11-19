@@ -54,6 +54,7 @@ class SidebarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
+    final textScaler = MediaQuery.textScalerOf(context);
     // The grey of a dimmed line is too faint on the selected line's fill.
     final textColor = switch ((isDimmed, isSelected)) {
       (true, false) => palette.mutedText,
@@ -104,7 +105,11 @@ class SidebarRow extends StatelessWidget {
           child: Row(
             children: [
               if (icon case final icon?) ...[
-                Icon(icon, size: Spacing.d16, color: textColor),
+                Icon(
+                  icon,
+                  size: textScaler.clamp(maxScaleFactor: 2).scale(Spacing.d16),
+                  color: textColor,
+                ),
                 Spacing.h8,
               ],
               Expanded(

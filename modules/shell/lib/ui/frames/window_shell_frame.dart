@@ -55,7 +55,10 @@ class WindowShellFrame extends StatelessWidget {
           children: [
             SlidingSidebar(
               isHidden: isSidebarHidden,
-              width: WindowLayout.sidebarWidth(context.screenSize),
+              width: WindowLayout.sidebarWidth(
+                context.screenSize,
+                textScaler: MediaQuery.textScalerOf(context),
+              ),
             ),
             Expanded(
               child: PaneDropFrame(

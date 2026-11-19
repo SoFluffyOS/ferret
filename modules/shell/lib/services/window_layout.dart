@@ -26,9 +26,18 @@ abstract final class WindowLayout {
   /// list reaches the top edge, and the traffic lights sit over it.
   static const double macTitleBarHeight = 28;
 
-  /// How wide the device list is on a [screenSize] view.
-  static double sidebarWidth(ScreenSize screenSize) => switch (screenSize) {
-    .small || .normal => PaneWidths.narrowSidebar,
-    .large || .larger || .extraLarge => PaneWidths.sidebar,
-  };
+  /// How wide the device list is on a [screenSize] view. Large text
+  /// widens it a quarter at most, so "Notifications" fits at 200%.
+  static double sidebarWidth(
+    ScreenSize screenSize, {
+    TextScaler textScaler = TextScaler.noScaling,
+  }) {
+    final base = switch (screenSize) {
+      .small || .normal => PaneWidths.narrowSidebar,
+      .large || .larger || .extraLarge => PaneWidths.sidebar,
+    };
+    final grow = ((textScaler.scale(1) - 1) / 4).clamp(0.0, 0.25);
+
+    return base * (1 + grow);
+  }
 }
