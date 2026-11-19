@@ -26,12 +26,14 @@ void main() {
       expect(describe(.openSettings, .linux), 'Ctrl+,');
       expect(describe(.showShortcuts, .linux), 'Ctrl+?');
       expect(describe(.quit, .windows), 'Ctrl+Q');
+      expect(describe(.takePhoto, .linux), 'Ctrl+Alt+P');
     });
 
     test('a Mac', () {
       expect(describe(.sendClipboard, .macOS), '⇧⌘V');
       expect(describe(.toggleSidebar, .macOS), '⌃⌘S');
       expect(describe(.quit, .macOS), '');
+      expect(describe(.takePhoto, .macOS), '⌃⌘P');
     });
   });
 
@@ -43,13 +45,16 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final picked = <WindowCommand>[];
-    final commands = WindowCommands({
-      for (final command in WindowCommand.values)
-        command: switch (command) {
-          .fixConnection || .sendFiles => null,
-          _ => () => picked.add(command),
-        },
-    });
+    final commands = WindowCommands(
+      {
+        for (final command in WindowCommand.values)
+          command: switch (command) {
+            .fixConnection || .sendFiles => null,
+            _ => () => picked.add(command),
+          },
+      },
+      labels: {WindowCommand.takePhoto: 'Take Photo with Pixel 7'},
+    );
 
     await tester.pumpWidget(
       testApp(
@@ -76,6 +81,8 @@ void main() {
     expect(find.text('Keyboard Shortcuts'), findsOneWidget);
     expect(find.text('Ctrl+?'), findsOneWidget);
     expect(find.text('Quit Ferret'), findsOneWidget);
+    expect(find.text('Take Photo with Pixel 7'), findsOneWidget);
+    expect(find.text('Ctrl+Alt+P'), findsOneWidget);
     expect(find.text('Send Files…'), findsNothing);
     expect(find.text('Fix Connection…'), findsNothing);
 

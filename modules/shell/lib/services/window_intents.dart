@@ -6,6 +6,7 @@ enum WindowCommand {
   addDevice,
   sendFiles,
   sendClipboard,
+  takePhoto,
   openSettings,
   openActivity,
   toggleSidebar,
@@ -64,6 +65,18 @@ abstract final class WindowShortcuts {
     .addDevice => _primary(LogicalKeyboardKey.keyN, platform),
     .sendFiles => _primary(LogicalKeyboardKey.keyO, platform),
     .sendClipboard => _primary(LogicalKeyboardKey.keyV, platform, shift: true),
+    .takePhoto => switch (platform) {
+      .macOS || .iOS => const SingleActivator(
+        LogicalKeyboardKey.keyP,
+        meta: true,
+        control: true,
+      ),
+      .windows || .linux || .android || .fuchsia => const SingleActivator(
+        LogicalKeyboardKey.keyP,
+        control: true,
+        alt: true,
+      ),
+    },
     .openSettings => _primary(LogicalKeyboardKey.comma, platform),
     .openActivity => _primary(LogicalKeyboardKey.keyA, platform, shift: true),
     .toggleSidebar => switch (platform) {

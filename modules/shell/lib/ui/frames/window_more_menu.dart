@@ -18,6 +18,7 @@ class WindowMoreMenu extends StatelessWidget {
       WindowCommand.addDevice,
       WindowCommand.sendFiles,
       WindowCommand.sendClipboard,
+      WindowCommand.takePhoto,
     ],
     [
       WindowCommand.openActivity,
@@ -51,7 +52,7 @@ class WindowMoreMenu extends StatelessWidget {
 
         entries.add(
           MenuEntry(
-            label: WindowCommands.label(l10n, command),
+            label: commands.labelOf(l10n, command),
             shortcut: switch (WindowShortcuts.activatorOf(command, platform)) {
               final SingleActivator key => WindowShortcuts.describe(
                 key,

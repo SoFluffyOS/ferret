@@ -1504,6 +1504,14 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get menuSendClipboard => 'Gửi bảng nhớ tạm';
 
   @override
+  String get menuTakePhoto => 'Chụp ảnh';
+
+  @override
+  String menuTakePhotoWith(String device) {
+    return 'Chụp ảnh bằng $device';
+  }
+
+  @override
   String get menuCloseWindow => 'Đóng cửa sổ';
 
   @override

@@ -2138,6 +2138,18 @@ abstract class ShellLocalizations {
   /// **'Send Clipboard'**
   String get menuSendClipboard;
 
+  /// Window command: asks a connected phone to take a photo for this computer (⌃⌘P).
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get menuTakePhoto;
+
+  /// No description provided for @menuTakePhotoWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo with {device}'**
+  String menuTakePhotoWith(String device);
+
   /// No description provided for @menuCloseWindow.
   ///
   /// In en, this message translates to:

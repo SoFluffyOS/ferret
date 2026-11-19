@@ -1113,6 +1113,18 @@
   "menuWindow": "Window",
   "menuSendFiles": "Send Files…",
   "menuSendClipboard": "Send Clipboard",
+  "menuTakePhoto": "Take Photo",
+  "@menuTakePhoto": {
+    "description": "Window command: asks a connected phone to take a photo for this computer (⌃⌘P)."
+  },
+  "menuTakePhotoWith": "Take Photo with {device}",
+  "@menuTakePhotoWith": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "menuCloseWindow": "Close Window",
   "menuShowSidebar": "Show Sidebar",
   "menuHideSidebar": "Hide Sidebar",

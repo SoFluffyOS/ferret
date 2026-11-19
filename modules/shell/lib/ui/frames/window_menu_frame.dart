@@ -26,6 +26,9 @@ class WindowMenuFrame extends StatelessWidget {
   static const _sendFilesOrder = 10;
   static const _sendClipboardOrder = 20;
 
+  /// The camera's Take a photo, which ⌃⌘P runs.
+  static const _takePhotoId = 'camera.photo';
+
   @override
   Widget build(BuildContext context) {
     final nav = context.read<WindowNavViewModel>();
@@ -52,6 +55,15 @@ class WindowMenuFrame extends StatelessWidget {
           (host) => host.devices.firstOrNull,
         );
     final scope = ShellScope.of(context);
+    // Rebuilds when a device connects or leaves, so ⌃⌘P finds a phone that
+    // just came online.
+    context.select<EngineHost, String>(
+      (host) => [
+        for (final device in host.devices)
+          if (device.isConnected) device.device.id,
+      ].join(','),
+    );
+    final photo = _photoTarget(context, scope, device);
     final sections = switch (sectionsDevice) {
       final DeviceStatus device => [
         (FeatureSection.overviewId, context.shellL10n.sectionOverview),
@@ -69,6 +81,7 @@ class WindowMenuFrame extends StatelessWidget {
       .addDevice: () => nav.show(const PairPage()),
       .sendFiles: _actionAt(context, scope, device, _sendFilesOrder),
       .sendClipboard: _actionAt(context, scope, device, _sendClipboardOrder),
+      .takePhoto: photo?.$2,
       .openSettings: () => nav.select(const SettingsDestination()),
       .openActivity: () => nav.select(const ActivityDestination()),
       .toggleSidebar: nav.toggleSidebar,
@@ -113,7 +126,15 @@ class WindowMenuFrame extends StatelessWidget {
           autofocus: true,
           skipTraversal: true,
           child: Provider<WindowCommands?>.value(
-            value: WindowCommands(commands),
+            value: WindowCommands(
+              commands,
+              labels: {
+                if (photo case (final name, _))
+                  WindowCommand.takePhoto: context.shellL10n.menuTakePhotoWith(
+                    name,
+                  ),
+              },
+            ),
             child: child,
           ),
         ),
@@ -133,6 +154,10 @@ class WindowMenuFrame extends StatelessWidget {
           isSidebarHidden: isSidebarHidden,
           isActivityPaneHidden: isActivityPaneHidden,
           onCheckNetwork: () => nav.show(const DoctorPage()),
+          takePhotoLabel: switch (photo) {
+            (final name, _) => context.shellL10n.menuTakePhotoWith(name),
+            null => context.shellL10n.menuTakePhoto,
+          },
         ),
         child: keyed,
       ),
@@ -166,6 +191,40 @@ class WindowMenuFrame extends StatelessWidget {
     return null;
   }
 
+  /// The phone ⌃⌘P asks for a photo: the selected device when it takes
+  /// photos, else the first connected one that does. Its name and what to
+  /// run, or null when none can.
+  (String, VoidCallback)? _photoTarget(
+    BuildContext context,
+    ShellScope scope,
+    DeviceStatus? selected,
+  ) {
+    final host = context.read<EngineHost>();
+    final candidates = [?selected, ...host.devices];
+    for (final device in candidates) {
+      if (!device.isConnected) {
+        continue;
+      }
+
+      for (final feature in scope.features) {
+        for (final action in feature.deviceActions(
+          context,
+          scope.featureContext,
+          device,
+        )) {
+          if ((action.id, action.onPressed) case (
+            _takePhotoId,
+            final run?,
+          )) {
+            return (device.device.name, run);
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   /// Apple's order: the app, File, View, the app's own menu, Window. An
   /// entry that can't apply right now is greyed, not removed.
   List<PlatformMenuItem> _menus(
@@ -176,6 +235,7 @@ class WindowMenuFrame extends StatelessWidget {
     required bool isSidebarHidden,
     required bool isActivityPaneHidden,
     required VoidCallback onCheckNetwork,
+    required String takePhotoLabel,
   }) {
     final l10n = context.shellL10n;
     final views = context.read<AppViews?>();
@@ -293,6 +353,7 @@ class WindowMenuFrame extends StatelessWidget {
               item(l10n.menuPreviousDevice, .previousDevice),
             ],
           ),
+          PlatformMenuItemGroup(members: [item(takePhotoLabel, .takePhoto)]),
           PlatformMenuItemGroup(
             members: [item(l10n.menuFixConnection, .fixConnection)],
           ),

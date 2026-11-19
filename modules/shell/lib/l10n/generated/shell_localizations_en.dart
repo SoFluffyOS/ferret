@@ -1510,6 +1510,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get menuSendClipboard => 'Send Clipboard';
 
   @override
+  String get menuTakePhoto => 'Take Photo';
+
+  @override
+  String menuTakePhotoWith(String device) {
+    return 'Take Photo with $device';
+  }
+
+  @override
   String get menuCloseWindow => 'Close Window';
 
   @override

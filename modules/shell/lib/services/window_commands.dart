@@ -5,11 +5,18 @@ import 'package:shell/services/window_intents.dart';
 /// What each window command does right now, for the menus that sit outside
 /// the window's key handling. A null action can't apply at the moment.
 class WindowCommands {
-  const WindowCommands(this._actions);
+  const WindowCommands(this._actions, {Map<WindowCommand, String>? labels})
+    : _labels = labels ?? const {};
 
   final Map<WindowCommand, VoidCallback?> _actions;
+  final Map<WindowCommand, String> _labels;
 
   VoidCallback? operator [](WindowCommand command) => _actions[command];
+
+  /// The command's name in a menu right now, such as "Take Photo with
+  /// Pixel 7" when it acts on one device.
+  String labelOf(ShellLocalizations l10n, WindowCommand command) =>
+      _labels[command] ?? label(l10n, command);
 
   /// The command's name in menus and the shortcuts list.
   static String label(ShellLocalizations l10n, WindowCommand command) =>
@@ -17,6 +24,7 @@ class WindowCommands {
         .addDevice => l10n.menuPair,
         .sendFiles => l10n.menuSendFiles,
         .sendClipboard => l10n.menuSendClipboard,
+        .takePhoto => l10n.menuTakePhoto,
         .openSettings => l10n.settingsTitle,
         .openActivity => l10n.activityTitle,
         .toggleSidebar => l10n.shortcutSidebar,
