@@ -2,6 +2,7 @@
 library;
 
 import 'package:ferret_docs/extensions/markdown_links_extension.dart';
+import 'package:ferret_docs/layouts/ferret_docs_layout.dart';
 import 'package:ferret_docs/main.server.options.dart';
 import 'package:ferret_docs/navigation/docs_sidebar.dart';
 import 'package:jaspr/dom.dart';
@@ -31,7 +32,7 @@ void main() {
       ],
       components: [Callout(), CodeBlock(), const Image(zoom: true)],
       layouts: [
-        DocsLayout(
+        FerretDocsLayout(
           header: const Header(
             title: 'Ferret',
             logo: '/images/logo.svg',
