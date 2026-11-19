@@ -9,13 +9,17 @@ abstract final class ExitCodes {
   /// The command was called the wrong way.
   static const usage = 64;
 
-  /// A file to send doesn't exist.
+  /// A file to send doesn't exist, or there is no clip to print.
   static const noInput = 66;
 
   /// The Ferret app isn't running, so there is nobody to hand files to.
   static const unavailable = 69;
 
+  /// The device is paired but not connected right now.
+  static const notConnected = 75;
+
   static const description =
-      'Exit codes: 0 done, 1 failed, 64 wrong usage, 66 a file to send is '
-      "missing, 69 the Ferret app isn't running.";
+      'Exit codes: 0 done, 1 failed, 64 wrong usage, 66 a file to send or a '
+      "clip is missing, 69 the Ferret app isn't running, 75 the device isn't "
+      'connected.';
 }

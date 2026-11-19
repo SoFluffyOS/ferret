@@ -95,3 +95,4 @@
 - 🚀 **Start at login on Windows and Linux**: one switch in Settings. Ferret starts in the tray (XDG autostart on Linux, the Background portal in a Flatpak, the Run key on Windows).
 - ⌨️ **Every key, written down**: a **Help** menu on the Mac, and on Windows and Linux a **•••** menu that shows each command's keys. **Keyboard Shortcuts** (Ctrl+?) lists them all.
 - 💻 **Scriptable `ferret-cli`**: `ferret-cli send <file>…` hands files to the running app, `ferret-cli devices --json` for scripts, `--version`, and exit codes `--help` explains. The app itself is `ferret`, and takes `ferret send` too.
+- 📟 **`ferret-cli ring` and `ferret-cli clipboard`**: ring your phone from a terminal, print the last text you copied on another device, or pipe text to them. `--json` and exit codes for scripts.

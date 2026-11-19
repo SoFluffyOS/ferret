@@ -1,6 +1,9 @@
+export 'package:ferret_cli/commands/app_answer.dart';
+export 'package:ferret_cli/commands/clipboard_command.dart';
 export 'package:ferret_cli/commands/daemon_command.dart';
 export 'package:ferret_cli/commands/devices_command.dart';
 export 'package:ferret_cli/commands/offer_command.dart';
 export 'package:ferret_cli/commands/pair_command.dart';
+export 'package:ferret_cli/commands/ring_command.dart';
 export 'package:ferret_cli/commands/send_command.dart';
 export 'package:ferret_cli/commands/unpair_command.dart';

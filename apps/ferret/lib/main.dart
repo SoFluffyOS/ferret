@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
 import 'package:ferret/wiring/call_media_pause.dart';
+import 'package:ferret/wiring/cli_control.dart';
 import 'package:ferret/wiring/mirroring_ways.dart';
 import 'package:ferret/wiring/send_command.dart';
 import 'package:find/find.dart';
@@ -33,6 +37,15 @@ Future<void> main(List<String> arguments) async {
       RemoteInputFeatureUi(),
     ],
     appVersion: '0.1.0',
-    onStarted: CallMediaPause.attach,
+    onStarted: (engine) {
+      CallMediaPause.attach(engine);
+      unawaited(
+        CliControl.attach(
+          engine,
+          isComputer:
+              Platform.isMacOS || Platform.isWindows || Platform.isLinux,
+        ),
+      );
+    },
   );
 }

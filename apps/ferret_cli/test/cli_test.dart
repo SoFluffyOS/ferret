@@ -114,6 +114,94 @@ void main() {
       expect(err.toString(), contains('No such file'));
     });
 
+    test('ring asks the running app and says it rings', () async {
+      final running = AppControl(home.path);
+      final asked = <Map<String, Object?>>[];
+      await running.listen((command, arguments) async {
+        asked.add({'command': command, ...arguments});
+        return {'ok': true, 'device': 'Pixel 7', 'result': 'ringing'};
+      });
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(environment).run(['ring', 'Pixel', '7']);
+
+      expect(exit, ExitCodes.ok);
+      expect(asked, [
+        {'command': 'ring', 'device': 'Pixel 7'},
+      ]);
+      expect(out.toString(), contains('Pixel 7 is ringing.'));
+    });
+
+    test('ring exits 75 when the device is not connected', () async {
+      final running = AppControl(home.path);
+      await running.listen(
+        (_, _) async => {
+          'ok': false,
+          'error': 'not_connected',
+          'device': 'Pixel 7',
+        },
+      );
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['ring', 'Pixel', '--json']);
+
+      final json = jsonDecode(out.toString()) as Map<String, Object?>;
+      expect(exit, ExitCodes.notConnected);
+      expect(json['error'], 'not_connected');
+    });
+
+    test('ring says when the app is not running', () async {
+      final exit = await buildRunner(environment).run(['ring', 'Pixel']);
+
+      expect(exit, ExitCodes.unavailable);
+      expect(err.toString(), contains("isn't running"));
+    });
+
+    test('clipboard get prints the last clip', () async {
+      final running = AppControl(home.path);
+      await running.listen(
+        (_, _) async => {'ok': true, 'text': 'hello', 'from': 'Pixel 7'},
+      );
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(environment).run(['clipboard', 'get']);
+
+      expect(exit, ExitCodes.ok);
+      expect(out.toString().trim(), 'hello');
+    });
+
+    test('clipboard get exits 66 when nothing arrived yet', () async {
+      final running = AppControl(home.path);
+      await running.listen((_, _) async => {'ok': false, 'error': 'no_clip'});
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(environment).run(['clipboard', 'get']);
+
+      expect(exit, ExitCodes.noInput);
+    });
+
+    test('clipboard send hands the text and the device over', () async {
+      final running = AppControl(home.path);
+      final asked = <Map<String, Object?>>[];
+      await running.listen((command, arguments) async {
+        asked.add({'command': command, ...arguments});
+        return {'ok': true, 'result': 'sent', 'device': 'Pixel 7'};
+      });
+      addTearDown(running.dispose);
+
+      final exit = await buildRunner(
+        environment,
+      ).run(['clipboard', 'send', 'hi', 'there', '--to', 'Pixel']);
+
+      expect(exit, ExitCodes.ok);
+      expect(asked, [
+        {'command': 'clipboard_send', 'text': 'hi there', 'device': 'Pixel'},
+      ]);
+      expect(out.toString(), contains('Sent to Pixel 7.'));
+    });
+
     test('--version prints the version', () async {
       final exit = await buildRunner(environment).run(['--version']);
 

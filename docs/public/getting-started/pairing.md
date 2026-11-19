@@ -102,6 +102,9 @@ ferret-cli pair 192.168.1.20     # compare codes instead
 ferret-cli unpair "Pixel 7" --everywhere
 ferret-cli devices --json        # for scripts
 ferret-cli send report.pdf       # hands files to the running Ferret app
+ferret-cli ring "Pixel 7"        # rings it, even on silent
+ferret-cli clipboard get         # the last text copied on another device
+ferret-cli clipboard send "hi"   # or pipe it in: date | ferret-cli clipboard send
 ```
 
 `ferret` is the app itself. `ferret-cli` is the command line, so both can sit on your `PATH`. `ferret send` works with either one.

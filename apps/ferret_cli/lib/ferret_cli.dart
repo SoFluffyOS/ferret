@@ -14,10 +14,12 @@ const String cliVersion = '0.1.0';
 
 CommandRunner<int> buildRunner(CliEnvironment environment) =>
     _FerretRunner(environment)
+      ..addCommand(ClipboardCommand(environment))
       ..addCommand(DaemonCommand(environment))
       ..addCommand(DevicesCommand(environment))
       ..addCommand(OfferCommand(environment))
       ..addCommand(PairCommand(environment))
+      ..addCommand(RingCommand(environment))
       ..addCommand(SendCommand(environment))
       ..addCommand(UnpairCommand(environment));
 

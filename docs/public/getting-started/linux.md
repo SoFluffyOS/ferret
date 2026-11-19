@@ -130,6 +130,9 @@ sudo firewall-cmd --permanent --add-service=ferret && sudo firewall-cmd --reload
 ```sh
 ferret send ~/Pictures/photo.jpg       # hands it to the Ferret app, which sends it
 ferret-cli devices --json              # paired devices, for scripts and jq
+ferret-cli ring pixel                  # rings your phone, the start of its name is enough
+ferret-cli clipboard get               # the last text copied on another device
+ferret-cli clipboard send --to pixel   # sends what you pipe in
 ferret-cli daemon                      # Ferret without a window, until Ctrl-C
 ferret-cli --help                      # everything else
 ```
@@ -137,6 +140,8 @@ ferret-cli --help                      # everything else
 `ferret` is the app. `ferret-cli` is the command line, with its own identity, so it can run on a server with no desktop. Both take `send`.
 
 `ferret send` needs the app running. It exits with `69` when it isn't, `66` when a file is missing, `64` on wrong usage and `0` when the app took the files. That makes it easy to bind to a key in your window manager.
+
+`ring` and `clipboard` go through the running app too, take `--json`, and exit with `75` when the device isn't connected right now. `clipboard get` never prints private clips or images.
 
 Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, pairings, and `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
 
