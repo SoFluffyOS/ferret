@@ -19,6 +19,9 @@ class WakeLocalizationsEn extends WakeLocalizations {
   String get tryAgain => 'Try again';
 
   @override
+  String get wakingButton => 'Waking…';
+
+  @override
   String waking(String name) {
     return 'Waking $name… (up to a minute)';
   }

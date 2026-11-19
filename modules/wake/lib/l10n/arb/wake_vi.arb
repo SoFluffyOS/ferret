@@ -3,6 +3,7 @@
   "title": "Wake-on-LAN",
   "wake": "Đánh thức",
   "tryAgain": "Thử lại",
+  "wakingButton": "Đang đánh thức…",
   "waking": "Đang đánh thức {name}… (tối đa một phút)",
   "didntWake": "Không thức dậy",
   "couldntSend": "Không gửi được tín hiệu đánh thức",

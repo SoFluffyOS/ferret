@@ -9,6 +9,10 @@
     "description": "Action on an offline computer: wakes it from sleep."
   },
   "tryAgain": "Try again",
+  "wakingButton": "Waking…",
+  "@wakingButton": {
+    "description": "The Wake button, greyed out, while waiting for the computer to connect."
+  },
   "waking": "Waking {name}… (up to a minute)",
   "@waking": {
     "description": "Status line while waiting for a woken computer to connect.",

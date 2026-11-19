@@ -19,6 +19,9 @@ class WakeLocalizationsVi extends WakeLocalizations {
   String get tryAgain => 'Thử lại';
 
   @override
+  String get wakingButton => 'Đang đánh thức…';
+
+  @override
   String waking(String name) {
     return 'Đang đánh thức $name… (tối đa một phút)';
   }

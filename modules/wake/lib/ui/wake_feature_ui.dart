@@ -132,7 +132,7 @@ class WakeFeatureUi extends FeatureUi {
       .waking => [
         FeatureAction(
           id: wakeActionId,
-          label: l10n.wake,
+          label: l10n.wakingButton,
           icon: LucideIcons.power,
           onPressed: null,
         ),

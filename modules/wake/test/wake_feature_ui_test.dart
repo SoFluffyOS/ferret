@@ -85,7 +85,7 @@ void main() {
       });
       await tester.pump();
       expect(find.text('Waking MacBook Pro… (up to a minute)'), findsOneWidget);
-      expect(find.text('Wake (off)'), findsOneWidget);
+      expect(find.text('Waking… (off)'), findsOneWidget);
       expect(sender.sends, hasLength(1));
 
       await tester.runAsync(

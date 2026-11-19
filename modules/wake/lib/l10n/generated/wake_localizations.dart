@@ -116,6 +116,12 @@ abstract class WakeLocalizations {
   /// **'Try again'**
   String get tryAgain;
 
+  /// The Wake button, greyed out, while waiting for the computer to connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Waking…'**
+  String get wakingButton;
+
   /// Status line while waiting for a woken computer to connect.
   ///
   /// In en, this message translates to:
