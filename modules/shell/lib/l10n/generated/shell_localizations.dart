@@ -2002,6 +2002,150 @@ abstract class ShellLocalizations {
   /// **'Show'**
   String get devicesShow;
 
+  /// No description provided for @devicesPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin to Top'**
+  String get devicesPin;
+
+  /// No description provided for @devicesUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get devicesUnpin;
+
+  /// Under Home's device list: offline devices nobody has seen for a month, offered for removal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 not seen in 30 days} other{{count} not seen in 30 days}}'**
+  String devicesStale(int count);
+
+  /// No description provided for @devicesStaleReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove…'**
+  String get devicesStaleReview;
+
+  /// No description provided for @devicesStaleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {names} from {here}?'**
+  String devicesStaleConfirm(String names, String here);
+
+  /// No description provided for @devicesStaleConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen in 30 days. Your other devices keep them, and you can pair them again any time.'**
+  String get devicesStaleConfirmBody;
+
+  /// No description provided for @devicesStaleRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get devicesStaleRemove;
+
+  /// No description provided for @deviceRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename…'**
+  String get deviceRename;
+
+  /// No description provided for @deviceRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name on {here}'**
+  String deviceRenameTitle(String here);
+
+  /// No description provided for @deviceRenameBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {here} uses this name. {device} keeps its own.'**
+  String deviceRenameBody(String here, String device);
+
+  /// No description provided for @deviceRenameSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get deviceRenameSave;
+
+  /// No description provided for @deviceRenameReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Use its own name'**
+  String get deviceRenameReset;
+
+  /// No description provided for @deviceSameName.
+  ///
+  /// In en, this message translates to:
+  /// **'Another of your devices is also called {name}. Give this one a name you\'ll recognise.'**
+  String deviceSameName(String name);
+
+  /// No description provided for @deviceOwnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls itself {name}'**
+  String deviceOwnName(String name);
+
+  /// No description provided for @activityFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get activityFilterAll;
+
+  /// No description provided for @activityFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing from {device} lately.'**
+  String activityFilterEmpty(String device);
+
+  /// No description provided for @joinedManyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} devices joined your devices'**
+  String joinedManyNotice(int count);
+
+  /// No description provided for @joinedManyBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} joined your devices'**
+  String joinedManyBanner(String names);
+
+  /// No description provided for @joinedManyAddedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by {introducer}'**
+  String joinedManyAddedBy(String introducer);
+
+  /// No description provided for @joinedReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get joinedReview;
+
+  /// No description provided for @joinedKeepAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep all'**
+  String get joinedKeepAll;
+
+  /// No description provided for @sidebarFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a device'**
+  String get sidebarFind;
+
+  /// No description provided for @sidebarNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No device called “{query}”'**
+  String sidebarNoMatch(String query);
+
+  /// No description provided for @dropOfflineCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 offline} other{{count} offline}}'**
+  String dropOfflineCount(int count);
+
   /// No description provided for @emptyBody.
   ///
   /// In en, this message translates to:
@@ -2451,6 +2595,120 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Show or hide the Activity pane'**
   String get shortcutActivityPane;
+
+  /// No description provided for @accessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What {device} can use'**
+  String accessTitle(String device);
+
+  /// No description provided for @accessIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} reaches {here} only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.'**
+  String accessIntro(String device, String here);
+
+  /// No description provided for @accessOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is offline. What you change applies before it can use anything again.'**
+  String accessOffline(String device);
+
+  /// No description provided for @accessSummaryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on'**
+  String get accessSummaryAll;
+
+  /// No description provided for @accessSummaryNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything off'**
+  String get accessSummaryNone;
+
+  /// No description provided for @accessSummarySome.
+  ///
+  /// In en, this message translates to:
+  /// **'{off} of {total} off'**
+  String accessSummarySome(int off, int total);
+
+  /// No description provided for @accessTurnAllOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn everything off'**
+  String get accessTurnAllOff;
+
+  /// No description provided for @accessTurnAllOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn everything back on'**
+  String get accessTurnAllOn;
+
+  /// No description provided for @accessForgetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning everything off keeps {device} paired. To stop it connecting at all, forget it at the bottom of its page.'**
+  String accessForgetHint(String device);
+
+  /// No description provided for @accessClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'What you copy, both ways'**
+  String get accessClipboard;
+
+  /// No description provided for @accessDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Files and links you send, both ways'**
+  String get accessDrop;
+
+  /// No description provided for @accessNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'A phone\'s notifications, and the replies and actions you send back'**
+  String get accessNotifications;
+
+  /// No description provided for @accessMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'A phone\'s texts and contacts\' names, and texts you send from a computer'**
+  String get accessMessages;
+
+  /// No description provided for @accessCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is calling, recent calls, answering and placing calls'**
+  String get accessCalls;
+
+  /// No description provided for @accessHandoff.
+  ///
+  /// In en, this message translates to:
+  /// **'The page or thing you were on, to continue it on the other device'**
+  String get accessHandoff;
+
+  /// No description provided for @accessMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s playing, and play, pause and skip from the other device'**
+  String get accessMedia;
+
+  /// No description provided for @accessMirroring.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing a phone\'s screen, each time only after the phone says yes'**
+  String get accessMirroring;
+
+  /// No description provided for @accessRemoteInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving the pointer and typing, only after you allow it'**
+  String get accessRemoteInput;
+
+  /// No description provided for @accessFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Ringing a device to find it'**
+  String get accessFind;
 }
 
 class _ShellLocalizationsDelegate

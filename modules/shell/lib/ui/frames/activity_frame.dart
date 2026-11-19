@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
@@ -29,6 +30,9 @@ class ActivityFrame extends StatefulWidget {
 class _ActivityFrameState extends State<ActivityFrame> {
   Timer? _minutes;
 
+  /// The device the full list is narrowed to, or null for all of them.
+  String? _deviceId;
+
   /// Keeps "2 min" honest while nothing else changes.
   @override
   void initState() {
@@ -52,12 +56,28 @@ class _ActivityFrameState extends State<ActivityFrame> {
     return FeatureChangesListener(
       features: scope.features,
       builder: (context) {
-        final feed = ActivityFeed.gather(
+        final everything = ActivityFeed.gather(
           context,
           scope.features,
           scope.featureContext,
         );
         final limit = widget.limit;
+        final host = context.read<EngineHost>();
+        final filterIds = switch (limit) {
+          null => [
+            for (final deviceId in everything.deviceIds)
+              if (host.statusOf(deviceId) != null) deviceId,
+          ],
+          _ => const <String>[],
+        };
+        final filtersBy = switch (_deviceId) {
+          final deviceId? when filterIds.contains(deviceId) => deviceId,
+          _ => null,
+        };
+        final feed = switch (filtersBy) {
+          final deviceId? => everything.fromDevice(deviceId),
+          null => everything,
+        };
         if (feed.isEmpty && limit != null) {
           return const SizedBox.shrink();
         }
@@ -80,6 +100,24 @@ class _ActivityFrameState extends State<ActivityFrame> {
                   true => _SeeAll(onTap: widget.onSeeAll),
                   false => null,
                 },
+              ),
+            if (filterIds.length > 1)
+              FilterChips(
+                labels: [
+                  l10n.activityFilterAll,
+                  for (final deviceId in filterIds)
+                    host.statusOf(deviceId)?.device.name ?? deviceId,
+                ],
+                selected: switch (filtersBy) {
+                  final deviceId? => filterIds.indexOf(deviceId) + 1,
+                  null => 0,
+                },
+                onSelected: (index) => setState(
+                  () => _deviceId = switch (index) {
+                    0 => null,
+                    _ => filterIds[index - 1],
+                  },
+                ),
               ),
             if (feed.isEmpty) _Empty(l10n.activityEmpty),
             for (final item in [...feed.pinned, ...recent])

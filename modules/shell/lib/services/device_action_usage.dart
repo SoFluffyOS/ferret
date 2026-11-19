@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:shell/services/device_preferences.dart';
 
 /// How often each action was used with each device, so the one used most
 /// moves first on that device's row once it has been used [learnsAfter]
@@ -38,6 +39,7 @@ class DeviceActionUsage {
     final updated = {...counts, actionId: (counts[actionId] ?? 0) + 1};
 
     await _settings.set(keyFor(deviceId), updated);
+    await DevicePreferences(_settings).markUsed(deviceId);
   }
 
   /// [actions] with the most used one first, once it was used

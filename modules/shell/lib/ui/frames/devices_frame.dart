@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
@@ -34,6 +36,7 @@ class DevicesFrame extends StatefulWidget {
 
 class _DevicesFrameState extends State<DevicesFrame> {
   bool _showsOffline = false;
+  bool _confirmsRemoval = false;
 
   /// Each device's buttons the last time it was connected, shown greyed
   /// out while it reconnects so the row keeps its height.
@@ -65,6 +68,14 @@ class _DevicesFrameState extends State<DevicesFrame> {
       false => devices,
     };
     final firstConnected = devices.where((status) => status.isConnected);
+    final preferences = context.read<EngineHost>().preferences;
+    final stale = switch (folds) {
+      true => const <DeviceStatus>[],
+      false => [
+        for (final status in devices)
+          if (preferences.isStale(status)) status,
+      ],
+    };
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -96,8 +107,34 @@ class _DevicesFrameState extends State<DevicesFrame> {
             actionLabel: l10n.devicesShow,
             onAction: () => setState(() => _showsOffline = true),
           ),
+        if (stale.isNotEmpty && !_confirmsRemoval)
+          FooterHint(
+            text: l10n.devicesStale(stale.length),
+            actionLabel: l10n.devicesStaleReview,
+            onAction: () => setState(() => _confirmsRemoval = true),
+          ),
+        if (stale.isNotEmpty && _confirmsRemoval)
+          StaleDevicesCard(
+            names: [for (final status in stale) status.device.name],
+            here: l10n.here(scope.featureContext.engine.device),
+            onRemove: () => unawaited(_remove(scope, stale)),
+            onCancel: () => setState(() => _confirmsRemoval = false),
+          ),
       ],
     );
+  }
+
+  /// Forgets [stale] on this device only: the user's other devices may
+  /// still use them.
+  Future<void> _remove(ShellScope scope, List<DeviceStatus> stale) async {
+    final engine = scope.featureContext.engine;
+    final preferences = context.read<EngineHost>().preferences;
+    setState(() => _confirmsRemoval = false);
+
+    for (final status in stale) {
+      await engine.unpair(status.device.id);
+      await preferences.forget(status.device.id);
+    }
   }
 
   /// Something waiting for an answer or going on right now, such as a call

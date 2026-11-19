@@ -96,6 +96,9 @@ class _CornerCard extends StatelessWidget {
 class _Choosing extends StatelessWidget {
   const _Choosing({required this.held});
 
+  /// Up to this many devices, offline ones keep a faded tile.
+  static const tilesBeforeFolding = 4;
+
   final bool held;
 
   @override
@@ -118,6 +121,18 @@ class _Choosing extends StatelessWidget {
     final palette = context.palette;
     final connectedCount = devices.where((status) => status.isConnected).length;
     const all = AllDevicesDropTarget();
+    // With many devices, offline tiles would push the ones that can take
+    // the files off screen: they fold into one line.
+    final foldsOffline =
+        devices.length > _Choosing.tilesBeforeFolding && connectedCount > 0;
+    final tiles = switch (foldsOffline) {
+      true => [
+        for (final status in devices)
+          if (status.isConnected || status.isReconnecting) status,
+      ],
+      false => devices,
+    };
+    final folded = devices.length - tiles.length;
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -147,9 +162,17 @@ class _Choosing extends StatelessWidget {
         Expanded(
           child: switch (connectedCount) {
             0 when devices.isEmpty => const _Nobody(),
-            _ => _TileGrid(devices: devices, hovered: hovered, held: held),
+            _ => _TileGrid(devices: tiles, hovered: hovered, held: held),
           },
         ),
+        if (folded > 0) ...[
+          Spacing.v8,
+          Text(
+            l10n.dropOfflineCount(folded),
+            textAlign: .center,
+            style: typography.caption1.copyWith(color: palette.mutedText),
+          ),
+        ],
         if (connectedCount == 0 && devices.isNotEmpty) ...[
           Spacing.v12,
           const _Nobody(),

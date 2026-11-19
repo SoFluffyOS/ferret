@@ -9,7 +9,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Says when a device joined through another of the user's devices, with a
 /// way to undo it here. Also sends a system notification, because nobody
-/// was looking at this device when it happened.
+/// was looking at this device when it happened. Several that join at once,
+/// as when a family of devices meets a new one, make one card and one
+/// notification, not one each.
 class JoinedNoticesFrame extends StatefulWidget {
   const JoinedNoticesFrame({super.key});
 
@@ -22,7 +24,11 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
   /// the user is in the middle of exactly that.
   static const _justPaired = Duration(minutes: 2);
 
+  /// The one system notification about who joined, updated as more do.
+  static const _noticeId = 'shell.joined';
+
   final List<DeviceJoined> _joined = [];
+  bool _reviewing = false;
   StreamSubscription<DeviceJoined>? _joins;
 
   @override
@@ -45,27 +51,57 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
     }
 
     setState(() => _joined.add(joined));
-    final l10n = context.shellL10n;
-    unawaited(
-      ShellScope.read(context).featureContext.notifier.show(
-        LocalNotice(
-          id: _noticeId(joined),
-          channel: .incoming,
-          title: l10n.joinedNotice(joined.device.name),
-          body: l10n.joinedNoticeBody(joined.introducer.name),
-        ),
-      ),
-    );
+    _notify();
   }
 
-  String _noticeId(DeviceJoined joined) => 'shell.joined.${joined.device.id}';
+  void _notify() {
+    final notifier = ShellScope.read(context).featureContext.notifier;
+    if (_joined.isEmpty) {
+      unawaited(notifier.cancel(_noticeId));
+      return;
+    }
+
+    final l10n = context.shellL10n;
+    final notice = switch (_joined) {
+      [final joined] => LocalNotice(
+        id: _noticeId,
+        channel: .incoming,
+        title: l10n.joinedNotice(joined.device.name),
+        body: l10n.joinedNoticeBody(joined.introducer.name),
+      ),
+      _ => LocalNotice(
+        id: _noticeId,
+        channel: .incoming,
+        title: l10n.joinedManyNotice(_joined.length),
+        body: _names(_joined),
+      ),
+    };
+    unawaited(notifier.show(notice));
+  }
+
+  String _names(List<DeviceJoined> joined) =>
+      [for (final each in joined) each.device.name].join(', ');
+
+  /// Who added them, when it was the same device for all of them.
+  String? _introducer(List<DeviceJoined> joined) {
+    final names = {for (final each in joined) each.introducer.name};
+    return switch (names.length) {
+      1 => names.first,
+      _ => null,
+    };
+  }
 
   void _keep(DeviceJoined joined) {
     setState(() => _joined.remove(joined));
-    unawaited(
-      ShellScope.read(context).featureContext.notifier
-          .cancel(_noticeId(joined)),
-    );
+    _notify();
+  }
+
+  void _keepAll() {
+    setState(() {
+      _joined.clear();
+      _reviewing = false;
+    });
+    _notify();
   }
 
   /// Forgets the device on this one only. The others keep it: whoever
@@ -82,6 +118,50 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
     final l10n = context.shellL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+
+    if (_joined.length > 1 && !_reviewing) {
+      return Padding(
+        padding: EdgeInsets.only(top: Spacing.d8),
+        child: SurfaceCard(
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      l10n.joinedManyBanner(_names(_joined)),
+                      style: typography.base2.copyWith(color: palette.text),
+                    ),
+                    if (_introducer(_joined) case final introducer?)
+                      Text(
+                        l10n.joinedManyAddedBy(introducer),
+                        style: typography.caption1.copyWith(
+                          color: palette.mutedText,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Spacing.h12,
+              Button(
+                mainAxisSize: .min,
+                variant: .ghost,
+                label: l10n.joinedReview,
+                onPressed: () => setState(() => _reviewing = true),
+              ),
+              Spacing.h8,
+              Button(
+                mainAxisSize: .min,
+                variant: .ghost,
+                label: l10n.joinedKeepAll,
+                onPressed: _keepAll,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Column(
       crossAxisAlignment: .stretch,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shell/services/device_preferences.dart';
 import 'package:transport/transport.dart';
 
 /// Wraps the running [FerretEngine] for the UI: the devices, who is nearby,
@@ -11,7 +12,12 @@ class EngineHost extends ChangeNotifier {
     _subscriptions
       ..add(engine.deviceChanges.listen((_) => notifyListeners()))
       ..add(engine.nearbyChanges.listen((_) => notifyListeners()))
-      ..add(engine.pairingPrompts.listen(_onPrompt));
+      ..add(engine.pairingPrompts.listen(_onPrompt))
+      ..add(
+        engine.settings.changes
+            .where(DevicePreferences.isOwnKey)
+            .listen((_) => notifyListeners()),
+      );
   }
 
   final FerretEngine engine;
@@ -19,26 +25,11 @@ class EngineHost extends ChangeNotifier {
   final List<PairingPrompt> _prompts = [];
 
   /// Connected devices first. One that is reconnecting keeps its place
-  /// among them, so a Wi-Fi hiccup doesn't make the list jump.
-  List<DeviceStatus> get devices {
-    bool isUp(DeviceStatus status) =>
-        status.isConnected || status.isReconnecting;
+  /// among them, so a Wi-Fi hiccup doesn't make the list jump. Then pinned
+  /// ones, then the one used last (see [DevicePreferences.arrange]).
+  List<DeviceStatus> get devices => preferences.arrange(engine.devices);
 
-    final devices = engine.devices
-      ..sort((a, b) {
-        if (isUp(a) != isUp(b)) {
-          return switch (isUp(a)) {
-            true => -1,
-            false => 1,
-          };
-        }
-
-        return a.device.name.toLowerCase().compareTo(
-          b.device.name.toLowerCase(),
-        );
-      });
-    return devices;
-  }
+  DevicePreferences get preferences => DevicePreferences(engine.settings);
 
   List<DiscoveredPeer> get nearby => engine.nearby;
 

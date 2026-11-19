@@ -68,6 +68,22 @@ class ActivityFeed {
     );
   }
 
+  /// Only the lines about [deviceId], for Activity's filter by device.
+  ActivityFeed fromDevice(String deviceId) {
+    bool concerns(ActivityItem item) => item.deviceId == deviceId;
+
+    return ActivityFeed(
+      needsYou: needsYou.where(concerns).toList(),
+      pinned: pinned.where(concerns).toList(),
+      recent: recent.where(concerns).toList(),
+    );
+  }
+
+  /// The devices the lines are about, the one with the newest line first.
+  List<String> get deviceIds => {
+    for (final item in [...pinned, ...recent]) ?item.deviceId,
+  }.toList();
+
   /// The line that holds Home's one filled button: the first thing waiting
   /// for an answer (a file offer, then a ringing call), or else the first
   /// thing going on right now. Null leaves it to the first device's first

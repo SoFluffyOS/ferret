@@ -1198,6 +1198,115 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get devicesShow => 'Show';
 
   @override
+  String get devicesPin => 'Pin to Top';
+
+  @override
+  String get devicesUnpin => 'Unpin';
+
+  @override
+  String devicesStale(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count not seen in 30 days',
+      one: '1 not seen in 30 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get devicesStaleReview => 'Remove…';
+
+  @override
+  String devicesStaleConfirm(String names, String here) {
+    return 'Remove $names from $here?';
+  }
+
+  @override
+  String get devicesStaleConfirmBody =>
+      'Not seen in 30 days. Your other devices keep them, and you can pair them again any time.';
+
+  @override
+  String get devicesStaleRemove => 'Remove';
+
+  @override
+  String get deviceRename => 'Rename…';
+
+  @override
+  String deviceRenameTitle(String here) {
+    return 'Name on $here';
+  }
+
+  @override
+  String deviceRenameBody(String here, String device) {
+    return 'Only $here uses this name. $device keeps its own.';
+  }
+
+  @override
+  String get deviceRenameSave => 'Save';
+
+  @override
+  String get deviceRenameReset => 'Use its own name';
+
+  @override
+  String deviceSameName(String name) {
+    return 'Another of your devices is also called $name. Give this one a name you\'ll recognise.';
+  }
+
+  @override
+  String deviceOwnName(String name) {
+    return 'Calls itself $name';
+  }
+
+  @override
+  String get activityFilterAll => 'All';
+
+  @override
+  String activityFilterEmpty(String device) {
+    return 'Nothing from $device lately.';
+  }
+
+  @override
+  String joinedManyNotice(int count) {
+    return '$count devices joined your devices';
+  }
+
+  @override
+  String joinedManyBanner(String names) {
+    return '$names joined your devices';
+  }
+
+  @override
+  String joinedManyAddedBy(String introducer) {
+    return 'Added by $introducer';
+  }
+
+  @override
+  String get joinedReview => 'Review';
+
+  @override
+  String get joinedKeepAll => 'Keep all';
+
+  @override
+  String get sidebarFind => 'Find a device';
+
+  @override
+  String sidebarNoMatch(String query) {
+    return 'No device called “$query”';
+  }
+
+  @override
+  String dropOfflineCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offline',
+      one: '1 offline',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get emptyBody =>
       'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.';
 
@@ -1457,4 +1566,78 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get shortcutActivityPane => 'Show or hide the Activity pane';
+
+  @override
+  String accessTitle(String device) {
+    return 'What $device can use';
+  }
+
+  @override
+  String accessIntro(String device, String here) {
+    return '$device reaches $here only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.';
+  }
+
+  @override
+  String accessOffline(String device) {
+    return '$device is offline. What you change applies before it can use anything again.';
+  }
+
+  @override
+  String get accessSummaryAll => 'Everything on';
+
+  @override
+  String get accessSummaryNone => 'Everything off';
+
+  @override
+  String accessSummarySome(int off, int total) {
+    return '$off of $total off';
+  }
+
+  @override
+  String get accessTurnAllOff => 'Turn everything off';
+
+  @override
+  String get accessTurnAllOn => 'Turn everything back on';
+
+  @override
+  String accessForgetHint(String device) {
+    return 'Turning everything off keeps $device paired. To stop it connecting at all, forget it at the bottom of its page.';
+  }
+
+  @override
+  String get accessClipboard => 'What you copy, both ways';
+
+  @override
+  String get accessDrop => 'Files and links you send, both ways';
+
+  @override
+  String get accessNotifications =>
+      'A phone\'s notifications, and the replies and actions you send back';
+
+  @override
+  String get accessMessages =>
+      'A phone\'s texts and contacts\' names, and texts you send from a computer';
+
+  @override
+  String get accessCalls =>
+      'Who is calling, recent calls, answering and placing calls';
+
+  @override
+  String get accessHandoff =>
+      'The page or thing you were on, to continue it on the other device';
+
+  @override
+  String get accessMedia =>
+      'What\'s playing, and play, pause and skip from the other device';
+
+  @override
+  String get accessMirroring =>
+      'Showing a phone\'s screen, each time only after the phone says yes';
+
+  @override
+  String get accessRemoteInput =>
+      'Moving the pointer and typing, only after you allow it';
+
+  @override
+  String get accessFind => 'Ringing a device to find it';
 }

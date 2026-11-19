@@ -21,8 +21,38 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// A window's device list: your devices, the selected one opened to its
 /// sections, who is nearby, then Activity and Settings. What is selected
 /// here is what the pane next to it shows.
-class SidebarFrame extends StatelessWidget {
+class SidebarFrame extends StatefulWidget {
   const SidebarFrame({super.key});
+
+  /// From this many devices on, the list gets a search field.
+  static const searchFrom = 9;
+
+  @override
+  State<SidebarFrame> createState() => _SidebarFrameState();
+}
+
+class _SidebarFrameState extends State<SidebarFrame> {
+  final TextEditingController _search = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  /// Whether [status] matches what was typed, by the name shown here or
+  /// the one the device gave itself.
+  bool _matches(DeviceStatus status) {
+    final query = _query.trim().toLowerCase();
+    if (query.isEmpty) {
+      return true;
+    }
+
+    final device = status.device;
+    return device.name.toLowerCase().contains(query) ||
+        device.ownName.toLowerCase().contains(query);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +69,11 @@ class SidebarFrame extends StatelessWidget {
     final scope = ShellScope.of(context);
     final l10n = context.shellL10n;
     final platform = defaultTargetPlatform;
+    final searches = devices.length >= SidebarFrame.searchFrom;
+    final shown = switch (searches) {
+      true => devices.where(_matches).toList(),
+      false => devices,
+    };
 
     return ColoredBox(
       color: context.palette.surface,
@@ -76,7 +111,34 @@ class SidebarFrame extends StatelessWidget {
                           ),
                         ),
                       ),
-                      for (final status in devices)
+                      if (searches)
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            Spacing.d16,
+                            0,
+                            Spacing.d16,
+                            Spacing.d8,
+                          ),
+                          child: InputText(
+                            controller: _search,
+                            hintText: l10n.sidebarFind,
+                            onChanged: (query) =>
+                                setState(() => _query = query),
+                          ),
+                        ),
+                      if (searches && shown.isEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Spacing.d16,
+                            vertical: Spacing.d8,
+                          ),
+                          child: Text(
+                            l10n.sidebarNoMatch(_query.trim()),
+                            style: context.fluffyTheme.typography.caption1
+                                .copyWith(color: context.palette.mutedText),
+                          ),
+                        ),
+                      for (final status in shown)
                         FeatureChangesListener(
                           key: ValueKey(status.device.id),
                           features: scope.features,
@@ -298,6 +360,8 @@ class _DeviceGroup extends StatelessWidget {
     final l10n = context.shellL10n;
     final nav = context.read<WindowNavViewModel>();
     final deviceId = status.device.id;
+    final preferences = context.read<EngineHost>().preferences;
+    final isPinned = preferences.isPinned(deviceId);
     final actions = switch (status.isConnected) {
       true => DeviceActionUsage(scope.featureContext.engine.settings).arrange(
         deviceId,
@@ -321,9 +385,21 @@ class _DeviceGroup extends StatelessWidget {
             onSelected: onPressed,
           ),
       MenuEntry(
+        label: switch (isPinned) {
+          true => l10n.devicesUnpin,
+          false => l10n.devicesPin,
+        },
+        icon: switch (isPinned) {
+          true => LucideIcons.pinOff,
+          false => LucideIcons.pin,
+        },
+        startsGroup: actions.isNotEmpty,
+        onSelected: () =>
+            unawaited(preferences.setPinned(deviceId, pinned: !isPinned)),
+      ),
+      MenuEntry(
         label: l10n.menuFixConnection,
         icon: LucideIcons.wrench,
-        startsGroup: actions.isNotEmpty,
         onSelected: () => nav.show(DoctorPage(deviceId: deviceId)),
       ),
       MenuEntry(
