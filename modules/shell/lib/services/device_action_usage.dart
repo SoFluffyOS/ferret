@@ -15,7 +15,10 @@ class DeviceActionUsage {
   /// Uses before an action may move first.
   static const learnsAfter = 3;
 
-  static String keyFor(String deviceId) => 'shell.device_actions.$deviceId';
+  /// What every device's settings key starts with.
+  static const keyPrefix = 'shell.device_actions.';
+
+  static String keyFor(String deviceId) => '$keyPrefix$deviceId';
 
   /// Uses of each action with [deviceId], by action id.
   Map<String, int> countsFor(String deviceId) {

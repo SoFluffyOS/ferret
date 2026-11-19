@@ -41,6 +41,8 @@ Want it automatic anyway? With [Shizuku or root](../android-modes/shizuku.md), t
 
 iOS asks before an app reads your clipboard, and only while it is open. Open Ferret, tap **Send clipboard**, and allow the paste.
 
+Tired of the **Allow Paste** question every time? Go to **Settings → Ferret → Paste from Other Apps** and pick **Allow**. Ferret shows this once, with an **Open Settings** link, the first time you send your clipboard. Ferret only reads the clipboard when you tap **Send clipboard**, never on its own.
+
 Receiving works while Ferret is open.
 
 ## 🔑 Passwords stay put

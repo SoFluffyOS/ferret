@@ -1009,6 +1009,8 @@
   "tipDone": "That's it.",
   "tipDrag": "Drag files onto the Ferret icon in the menubar to send them.",
   "tipDismiss": "Got it",
+  "tipPaste": "Tired of the Allow Paste question? Settings → Ferret → Paste from Other Apps → Allow",
+  "tipPasteOpen": "Open Settings",
   "doctorFirewall": "Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.",
   "doctorFixOpenFirewall": "Open Windows Firewall",
   "sidebarHide": "Hide sidebar",

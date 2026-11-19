@@ -1298,6 +1298,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get tipDismiss => 'Got it';
 
   @override
+  String get tipPaste =>
+      'Tired of the Allow Paste question? Settings → Ferret → Paste from Other Apps → Allow';
+
+  @override
+  String get tipPasteOpen => 'Open Settings';
+
+  @override
   String get doctorFirewall =>
       'Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.';
 

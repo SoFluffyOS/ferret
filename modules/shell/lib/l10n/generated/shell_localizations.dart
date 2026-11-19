@@ -2164,6 +2164,18 @@ abstract class ShellLocalizations {
   /// **'Got it'**
   String get tipDismiss;
 
+  /// No description provided for @tipPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Tired of the Allow Paste question? Settings → Ferret → Paste from Other Apps → Allow'**
+  String get tipPaste;
+
+  /// No description provided for @tipPasteOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get tipPasteOpen;
+
   /// No description provided for @doctorFirewall.
   ///
   /// In en, this message translates to:
