@@ -29,6 +29,7 @@ class ActionsFeature extends Feature {
     this.requestTimeout = const Duration(seconds: 10),
     this.leaveDelay = const Duration(milliseconds: 500),
     this.idleBeforeLock = const Duration(minutes: 1),
+    this.lockMinute = const Duration(minutes: 1),
   }) : _computer = computer ?? ComputerActions.current(),
        _runner = runner ?? CommandRunner(),
        _locker = locker ?? ScreenLocker.current(),
@@ -50,6 +51,9 @@ class ActionsFeature extends Feature {
   /// How long nobody may have touched this computer before a phone that
   /// left locks it.
   final Duration idleBeforeLock;
+
+  /// How long one minute of "Lock after" lasts. Renders shorten it.
+  final Duration lockMinute;
 
   final ComputerActions _computer;
   final CommandRunner _runner;
@@ -121,6 +125,7 @@ class ActionsFeature extends Feature {
         clock: _clock,
         idleNeeded: idleBeforeLock,
         countdownLength: countdownLength,
+        minute: lockMinute,
       )..start();
       _leaveLock = leaveLock;
       _subscriptions.add(leaveLock.changes.listen((_) => _emit()));

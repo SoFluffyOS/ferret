@@ -24,6 +24,7 @@ class LeaveLock {
     this.idleNeeded = const Duration(minutes: 1),
     this.countdownLength = const Duration(seconds: 10),
     this.recheckEvery = const Duration(seconds: 30),
+    this.minute = const Duration(minutes: 1),
   }) : _host = host,
        _settings = settings,
        _locker = locker,
@@ -43,6 +44,10 @@ class LeaveLock {
   /// How often a phone that is still gone is looked at again, while
   /// someone is at the computer or the phone is reconnecting.
   final Duration recheckEvery;
+
+  /// How long one minute of the wait in Settings lasts. Renders shorten
+  /// it.
+  final Duration minute;
 
   final FeatureHost _host;
   final ActionsSettings _settings;
@@ -115,7 +120,7 @@ class LeaveLock {
       return;
     }
 
-    _wait(deviceId, _settings.lockAfter);
+    _wait(deviceId, minute * _settings.lockAfterMinutes);
   }
 
   /// The owner said no: this computer stays unlocked until the phone

@@ -65,8 +65,6 @@ class ActionsSettings {
     null => lockAfterDefault,
   };
 
-  Duration get lockAfter => Duration(minutes: lockAfterMinutes);
-
   /// Past runs, newest first.
   List<ActionRecord> get history => [
     for (final json in _store.get<List<Object?>>(historyKey) ?? const [])
