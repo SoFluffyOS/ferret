@@ -32,8 +32,15 @@ class DialerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.callsL10n;
 
+    // In a window's pane the toolbar already says "Calls · Pixel 9";
+    // naming the page the same lets it leave the title out.
+    final isSection = PaneToolbarScope.titleOf(context) != null;
+
     return FerretPage(
-      title: l10n.dialerTitle(deviceName),
+      title: switch (isSection) {
+        true => l10n.title,
+        false => l10n.dialerTitle(deviceName),
+      },
       backLabel: l10n.back,
       children: [
         ChangeNotifierProvider(

@@ -59,6 +59,7 @@ class _MessagesLayout extends StatelessWidget {
     final viewModel = context.read<InboxViewModel>();
     final l10n = context.messagesL10n;
     final canPop = Navigator.of(context).canPop();
+    final isUnderToolbar = PaneToolbarScope.titleOf(context) != null;
 
     return ColoredBox(
       color: context.palette.background,
@@ -76,11 +77,13 @@ class _MessagesLayout extends StatelessWidget {
             return Column(
               crossAxisAlignment: .stretch,
               children: [
-                PageHeader(
-                  title: l10n.cardTitle(viewModel.phoneName),
-                  backLabel: l10n.back,
-                  onBack: onBack,
-                ),
+                // A window's toolbar already says "Messages · Pixel 9".
+                if (onBack != null || !isUnderToolbar)
+                  PageHeader(
+                    title: l10n.cardTitle(viewModel.phoneName),
+                    backLabel: l10n.back,
+                    onBack: onBack,
+                  ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Spacing.d12),
                   child: const StatusBannerFrame(),
@@ -135,6 +138,13 @@ class _ThreadPane extends StatelessWidget {
     final typography = context.fluffyTheme.typography;
     final l10n = context.messagesL10n;
     final current = threadId;
+
+    final hasConversations = context.select<InboxViewModel, bool>(
+      (inbox) => inbox.conversations.isNotEmpty,
+    );
+    if (current == null && !hasConversations) {
+      return const SizedBox.shrink();
+    }
 
     if (current == null) {
       return Center(
