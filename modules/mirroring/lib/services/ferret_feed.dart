@@ -18,12 +18,16 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
     required Future<void> Function(GeneratedMessage message) send,
     required DateTime Function() clock,
     required void Function(FerretFeed feed) onEnded,
+    this.wantsSound = false,
   }) : _send = send,
        _clock = clock,
        _onEnded = onEnded;
 
   @override
   final MirrorTarget target;
+
+  /// The phone was asked for its sound too.
+  final bool wantsSound;
 
   final Future<void> Function(GeneratedMessage message) _send;
   final DateTime Function() _clock;
@@ -59,14 +63,79 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
   /// False for a yes nobody waits for any more. A phone that kept its
   /// capture through a dropped connection says yes at once, sometimes
   /// before its answer to the request is read.
-  bool onAccept() {
+  bool onAccept(StartAccept accept) {
     if (_state != .waiting && _state != .requesting) {
       return false;
     }
 
     _state = .mirroring;
     _events.add(const FeedAccepted());
+    if (!wantsSound) {
+      return true;
+    }
+
+    // A phone that never heard of sound leaves the answer unset.
+    switch (accept.audio) {
+      case .AUDIO_ANSWER_SENDING:
+        break;
+      case .AUDIO_ANSWER_OFF:
+        _events.add(const FeedAudioUnavailable(.notAllowed));
+      default:
+        _events.add(const FeedAudioUnavailable(.unsupported));
+    }
+
     return true;
+  }
+
+  void onAudioConfig(AudioConfig config) {
+    if (_state != .mirroring || !wantsSound) {
+      return;
+    }
+
+    final codec = MirrorProtocol.audioFromProto(config.codec);
+    if (codec == null || config.sampleRate == 0 || config.channels == 0) {
+      _events.add(const FeedAudioUnavailable(.failed));
+      return;
+    }
+
+    _events.add(
+      FeedAudioConfigured(
+        MirrorAudioConfig(
+          codec: codec,
+          sampleRate: config.sampleRate,
+          channels: config.channels,
+        ),
+      ),
+    );
+  }
+
+  /// False for sound nobody listens to: the phone should stop sending.
+  bool onAudioFrame(AudioFrame frame) {
+    if (_state != .mirroring) {
+      return false;
+    }
+
+    if (!wantsSound) {
+      return true;
+    }
+
+    _events.add(
+      FeedAudio(
+        MirrorAudioPacket(
+          data: Uint8List.fromList(frame.data),
+          ptsUs: frame.ptsUs.toInt(),
+        ),
+      ),
+    );
+    return true;
+  }
+
+  void onAudioEnded() {
+    if (_state != .mirroring || !wantsSound) {
+      return;
+    }
+
+    _events.add(const FeedAudioUnavailable(.failed));
   }
 
   void onDeny(DenyReason reason) {

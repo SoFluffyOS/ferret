@@ -9,6 +9,17 @@ class FakeCaptureApi implements MirrorCaptureHostApi {
   int? timeoutSeconds;
   NativeCaptureOptions? options;
   final List<String> calls = [];
+  NativeAudioSupport sound = .needsPermission;
+
+  @override
+  Future<NativeAudioSupport> audioSupport() async => sound;
+
+  @override
+  Future<bool> requestAudioPermission() async {
+    calls.add('ask sound');
+    sound = .ready;
+    return true;
+  }
 
   @override
   Future<NativeCaptureSupport> support() async =>
@@ -106,6 +117,60 @@ void main() {
     expect(api.options?.codec, NativeCodec.h264);
     expect((api.options?.maxLongSide, api.options?.maxShortSide), (1920, 1080));
     expect((api.options?.fps, api.options?.bitrate), (60, 4000000));
+    expect(api.options?.audioCodec, isNull);
+  });
+
+  test('start asks for the sound too, in the codec wanted', () async {
+    for (final (codec, native) in [
+      (MirrorAudioCodec.opus, NativeAudioCodec.opus),
+      (MirrorAudioCodec.pcm, NativeAudioCodec.pcm),
+    ]) {
+      await capture.start(
+        CaptureOptions(
+          codec: .h264,
+          maxLongSide: 1920,
+          maxShortSide: 1080,
+          fps: 60,
+          bitrate: 4000000,
+          audioCodec: codec,
+        ),
+      );
+
+      expect(api.options?.audioCodec, native);
+    }
+  });
+
+  test(
+    'says whether sound can be captured, and asks for the permission',
+    () async {
+      expect(await capture.audioSupport(), AudioCaptureSupport.needsPermission);
+      expect(await capture.requestAudioPermission(), isTrue);
+      expect(await capture.audioSupport(), AudioCaptureSupport.ready);
+      expect(api.calls, ['ask sound']);
+
+      api.sound = .unsupported;
+      expect(await capture.audioSupport(), AudioCaptureSupport.unsupported);
+    },
+  );
+
+  test('sound from the platform becomes capture events', () async {
+    final events = <CaptureEvent>[];
+    final subscription = capture.events.listen(events.add);
+
+    capture
+      ..onAudioConfig(.opus, 48000, 2)
+      ..onAudioFrame(Uint8List.fromList([0xFC, 1]), 20000)
+      ..onAudioEnded();
+    await subscription.cancel();
+
+    expect(
+      (events[0] as CaptureAudioConfigured).config,
+      const MirrorAudioConfig(codec: .opus),
+    );
+    final packet = (events[1] as CaptureAudio).packet;
+    expect(packet.data, [0xFC, 1]);
+    expect(packet.ptsUs, 20000);
+    expect(events[2], isA<CaptureAudioEnded>());
   });
 
   test('what the service reports arrives as events, in order', () async {

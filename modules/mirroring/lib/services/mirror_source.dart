@@ -21,7 +21,7 @@ class MirrorSource {
     required String featureId,
     required ScreenCapture capture,
     required MirroringSettings settings,
-    required ConsentTexts Function(String deviceName) texts,
+    required ConsentTexts Function(String deviceName, {bool withSound}) texts,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.denyCooldown = const Duration(seconds: 30),
@@ -49,7 +49,7 @@ class MirrorSource {
   final String _featureId;
   final ScreenCapture _capture;
   final MirroringSettings _settings;
-  final ConsentTexts Function(String deviceName) _texts;
+  final ConsentTexts Function(String deviceName, {bool withSound}) _texts;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final Map<String, DateTime> _deniedUntil = {};
@@ -62,11 +62,25 @@ class MirrorSource {
   FrameSender? _sender;
   BitrateController? _bitrate;
   MirrorStreamConfig? _lastConfig;
+  MirrorAudioConfig? _lastAudioConfig;
+  AudioCaptureSupport _soundSupport = .unsupported;
   Timer? _graceTimer;
   int _configId = 0;
+  int _soundSequence = 0;
+  int _pendingSound = 0;
+
+  /// Sound on its way at which more is dropped: half a second of it.
+  static const _maxPendingSound = 25;
 
   /// What this phone can capture with, as checked at start.
   CaptureSupport get support => _support;
+
+  /// Whether this phone can send what it plays, as last checked.
+  AudioCaptureSupport get soundSupport => _soundSupport;
+
+  /// Sound goes along with the screen: the owner turned it on, and
+  /// Android allows capturing it.
+  bool get sendsSound => _settings.sendSound && _soundSupport == .ready;
 
   /// A computer waiting for the owner's answer.
   ShareRequest? get pending => _pending;
@@ -87,7 +101,64 @@ class MirrorSource {
       printWarning('Could not check screen capture support', error);
     }
 
+    await _checkSound();
     _events = _capture.events.listen(_onCaptureEvent);
+  }
+
+  /// Turns sending sound on or off. Turning it on asks Android for the
+  /// permission it wants first, once. False when sound stays off: the
+  /// owner said no, or this phone can't capture what it plays.
+  Future<bool> setSendSound(bool on) async {
+    if (!on) {
+      await _settings.setSendSound(false);
+      _emit();
+      return true;
+    }
+
+    if (await _checkSound() == .needsPermission) {
+      try {
+        await _capture.requestAudioPermission();
+      } on Object catch (error) {
+        printWarning('Asking to capture sound failed', error);
+      }
+    }
+
+    final ready = await _checkSound() == .ready;
+    await _settings.setSendSound(ready);
+    _emit();
+    return ready;
+  }
+
+  Future<AudioCaptureSupport> _checkSound() async {
+    try {
+      _soundSupport = await _capture.audioSupport();
+    } on Object catch (error) {
+      printWarning('Could not check sound capture support', error);
+      _soundSupport = .unsupported;
+    }
+
+    return _soundSupport;
+  }
+
+  /// What a viewer that asked for sound gets: a codec, or why not.
+  Future<(AudioAnswer, MirrorAudioCodec?)> _soundFor(
+    StartRequest request,
+  ) async {
+    if (request.audioCodecs.isEmpty) {
+      return (AudioAnswer.AUDIO_ANSWER_UNSPECIFIED, null);
+    }
+
+    final support = await _checkSound();
+    final codec = MirrorProtocol.pickAudio(request.audioCodecs);
+    if (support == .unsupported || codec == null) {
+      return (AudioAnswer.AUDIO_ANSWER_UNSUPPORTED, null);
+    }
+
+    if (!_settings.sendSound || support != .ready) {
+      return (AudioAnswer.AUDIO_ANSWER_OFF, null);
+    }
+
+    return (AudioAnswer.AUDIO_ANSWER_SENDING, codec);
   }
 
   /// Answers a computer asking to see the screen: no with a reason, or
@@ -304,7 +375,15 @@ class MirrorSource {
     MirrorCodec codec,
     StartRequest request,
   ) async {
-    final result = await _requestConsent(pending);
+    final (soundAnswer, soundCodec) = await _soundFor(request);
+    if (!identical(_pending, pending)) {
+      return;
+    }
+
+    final result = await _requestConsent(
+      pending,
+      withSound: soundCodec != null,
+    );
     if (!identical(_pending, pending)) {
       if (result == .granted) {
         await _capture.stop();
@@ -331,26 +410,35 @@ class MirrorSource {
       deviceName: pending.deviceName,
       startedAt: _clock(),
       codec: codec,
+      audioCodec: soundCodec,
     );
     _begin(active);
-    await _send(
-      deviceId,
-      StartAccept(
-        version: MirrorProtocol.version,
-        codec: MirrorProtocol.toProto(codec),
-      ),
-    );
+    await _send(deviceId, _acceptFor(active, soundAnswer));
 
-    final started = await _startCapture(codec, request);
+    final started = await _startCapture(active, request);
     if (!started && identical(_active, active)) {
       await _end(.failed, notify: .STOP_REASON_FAILED);
     }
   }
 
-  Future<ConsentResult> _requestConsent(ShareRequest pending) async {
+  StartAccept _acceptFor(ActiveShare active, AudioAnswer soundAnswer) =>
+      StartAccept(
+        version: MirrorProtocol.version,
+        codec: MirrorProtocol.toProto(active.codec),
+        audio: soundAnswer,
+        audioCodec: switch (active.audioCodec) {
+          final codec? => MirrorProtocol.audioToProto(codec),
+          null => null,
+        },
+      );
+
+  Future<ConsentResult> _requestConsent(
+    ShareRequest pending, {
+    required bool withSound,
+  }) async {
     try {
       return await _capture.requestConsent(
-        _texts(pending.deviceName),
+        _texts(pending.deviceName, withSound: withSound),
         consentTimeout,
       );
     } on Object catch (error) {
@@ -363,6 +451,9 @@ class MirrorSource {
     final deviceId = active.deviceId;
     _active = active;
     _configId = 0;
+    _soundSequence = 0;
+    _pendingSound = 0;
+    _lastAudioConfig = null;
     _bitrate = BitrateController();
     _sender = FrameSender(
       send: (frame) => _sendFrame(deviceId, frame),
@@ -375,7 +466,8 @@ class MirrorSource {
     _emit();
   }
 
-  Future<bool> _startCapture(MirrorCodec codec, StartRequest request) async {
+  Future<bool> _startCapture(ActiveShare active, StartRequest request) async {
+    final codec = active.codec;
     final (mostLong, mostShort) = switch (codec) {
       .h264 => (MirrorProtocol.maxLongSide, MirrorProtocol.maxShortSide),
       .jpeg => (
@@ -400,6 +492,7 @@ class MirrorSource {
           maxShortSide: MirrorProtocol.sideFor(wantedShort, mostShort),
           fps: MirrorProtocol.fpsFor(codec, request.maxFps),
           bitrate: MirrorProtocol.startBitrate,
+          audioCodec: active.audioCodec,
         ),
       );
     } on Object catch (error) {
@@ -421,6 +514,13 @@ class MirrorSource {
         _onConfig(active, config);
       case CaptureScreenOff(:final off):
         unawaited(_send(active.deviceId, SourceState(screenOff: off)));
+      case CaptureAudioConfigured(:final config):
+        _onAudioConfig(active, config);
+      case CaptureAudio(:final packet):
+        _offerSound(active, packet);
+      case CaptureAudioEnded():
+        _lastAudioConfig = null;
+        unawaited(_send(active.deviceId, AudioEnded()));
       case CaptureEnded(:final end):
         unawaited(_onCaptureEnded(end));
     }
@@ -444,13 +544,17 @@ class MirrorSource {
 
     await _send(
       resumed.deviceId,
-      StartAccept(
-        version: MirrorProtocol.version,
-        codec: MirrorProtocol.toProto(resumed.codec),
-      ),
+      _acceptFor(resumed, switch (resumed.withSound) {
+        true => .AUDIO_ANSWER_SENDING,
+        false => .AUDIO_ANSWER_UNSPECIFIED,
+      }),
     );
     if (_lastConfig case final config?) {
       _onConfig(resumed, config);
+    }
+
+    if (_lastAudioConfig case final config?) {
+      _onAudioConfig(resumed, config);
     }
 
     await _capture.requestKeyframe();
@@ -477,6 +581,50 @@ class MirrorSource {
     );
   }
 
+  /// Only a share its owner said yes to with sound ever sends any.
+  void _onAudioConfig(ActiveShare active, MirrorAudioConfig config) {
+    if (!active.withSound) {
+      return;
+    }
+
+    _lastAudioConfig = config;
+    unawaited(
+      _send(
+        active.deviceId,
+        AudioConfig(
+          codec: MirrorProtocol.audioToProto(config.codec),
+          sampleRate: config.sampleRate,
+          channels: config.channels,
+        ),
+      ),
+    );
+  }
+
+  /// Sends sound without letting it pile up: what the connection has no
+  /// room for is dropped, and the viewer hears a short gap.
+  void _offerSound(ActiveShare active, MirrorAudioPacket packet) {
+    final sequence = _soundSequence++;
+    final waits = _pendingSound >= _maxPendingSound;
+    if (!active.withSound ||
+        active.reconnecting ||
+        _lastAudioConfig == null ||
+        waits) {
+      return;
+    }
+
+    _pendingSound++;
+    unawaited(
+      _send(
+        active.deviceId,
+        AudioFrame(
+          sequence: Int64(sequence),
+          ptsUs: Int64(packet.ptsUs),
+          data: packet.data,
+        ),
+      ).whenComplete(() => _pendingSound--),
+    );
+  }
+
   Future<void> _onCaptureEnded(CaptureEnd end) => switch (end) {
     .stoppedByUser => _end(
       .stoppedOnPhone,
@@ -499,6 +647,7 @@ class MirrorSource {
     _sender = null;
     _bitrate = null;
     _lastConfig = null;
+    _lastAudioConfig = null;
     final record = MirrorRecord(
       deviceId: active.deviceId,
       deviceName: active.deviceName,

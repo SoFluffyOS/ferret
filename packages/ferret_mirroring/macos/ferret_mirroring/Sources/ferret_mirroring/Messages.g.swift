@@ -207,6 +207,16 @@ enum NativeConsentResult: Int, CaseIterable {
   case failed = 4
 }
 
+/// Whether this device can capture what it plays.
+enum NativeAudioSupport: Int, CaseIterable {
+  /// Android 9 or older.
+  case unsupported = 0
+  /// Android wants its "record audio" permission first, though only what
+  /// the device plays is captured, never the microphone.
+  case needsPermission = 1
+  case ready = 2
+}
+
 enum NativeCaptureEnd: Int, CaseIterable {
   /// Stop on the ongoing notice.
   case stoppedByUser = 0
@@ -344,6 +354,9 @@ struct NativeCaptureOptions: Hashable, CustomStringConvertible {
   var fps: Int64
   /// Bits per second the H.264 encoder starts with.
   var bitrate: Int64
+  /// Also capture what the device plays, encoded this way. Null for
+  /// pictures only.
+  var audioCodec: NativeAudioCodec? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -353,13 +366,15 @@ struct NativeCaptureOptions: Hashable, CustomStringConvertible {
     let maxShortSide = pigeonVar_list[2] as! Int64
     let fps = pigeonVar_list[3] as! Int64
     let bitrate = pigeonVar_list[4] as! Int64
+    let audioCodec: NativeAudioCodec? = nilOrValue(pigeonVar_list[5])
 
     return NativeCaptureOptions(
       codec: codec,
       maxLongSide: maxLongSide,
       maxShortSide: maxShortSide,
       fps: fps,
-      bitrate: bitrate
+      bitrate: bitrate,
+      audioCodec: audioCodec
     )
   }
   func toList() -> [Any?] {
@@ -369,13 +384,14 @@ struct NativeCaptureOptions: Hashable, CustomStringConvertible {
       maxShortSide,
       fps,
       bitrate,
+      audioCodec,
     ]
   }
   static func == (lhs: NativeCaptureOptions, rhs: NativeCaptureOptions) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return MessagesPigeonInternal.deepEquals(lhs.codec, rhs.codec) && MessagesPigeonInternal.deepEquals(lhs.maxLongSide, rhs.maxLongSide) && MessagesPigeonInternal.deepEquals(lhs.maxShortSide, rhs.maxShortSide) && MessagesPigeonInternal.deepEquals(lhs.fps, rhs.fps) && MessagesPigeonInternal.deepEquals(lhs.bitrate, rhs.bitrate)
+    return MessagesPigeonInternal.deepEquals(lhs.codec, rhs.codec) && MessagesPigeonInternal.deepEquals(lhs.maxLongSide, rhs.maxLongSide) && MessagesPigeonInternal.deepEquals(lhs.maxShortSide, rhs.maxShortSide) && MessagesPigeonInternal.deepEquals(lhs.fps, rhs.fps) && MessagesPigeonInternal.deepEquals(lhs.bitrate, rhs.bitrate) && MessagesPigeonInternal.deepEquals(lhs.audioCodec, rhs.audioCodec)
   }
 
   func hash(into hasher: inout Hasher) {
@@ -385,10 +401,11 @@ struct NativeCaptureOptions: Hashable, CustomStringConvertible {
     MessagesPigeonInternal.deepHash(value: maxShortSide, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: fps, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: bitrate, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: audioCodec, hasher: &hasher)
   }
 
   public var description: String {
-    return "NativeCaptureOptions(codec: \(String(describing: codec)), maxLongSide: \(String(describing: maxLongSide)), maxShortSide: \(String(describing: maxShortSide)), fps: \(String(describing: fps)), bitrate: \(String(describing: bitrate)))"
+    return "NativeCaptureOptions(codec: \(String(describing: codec)), maxLongSide: \(String(describing: maxLongSide)), maxShortSide: \(String(describing: maxShortSide)), fps: \(String(describing: fps)), bitrate: \(String(describing: bitrate)), audioCodec: \(String(describing: audioCodec)))"
   }
 }
 
@@ -565,26 +582,32 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 131:
       let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
       if let enumResultAsInt = enumResultAsInt {
-        return NativeCaptureEnd(rawValue: enumResultAsInt)
+        return NativeAudioSupport(rawValue: enumResultAsInt)
       }
       return nil
     case 132:
       let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
       if let enumResultAsInt = enumResultAsInt {
-        return NativeAudioCodec(rawValue: enumResultAsInt)
+        return NativeCaptureEnd(rawValue: enumResultAsInt)
       }
       return nil
     case 133:
-      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeAudioCodec(rawValue: enumResultAsInt)
+      }
+      return nil
     case 134:
-      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
+      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
     case 135:
-      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
+      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
     case 136:
-      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
+      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
     case 137:
-      return NativeFrame.fromList(self.readValue() as! [Any?])
+      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
     case 138:
+      return NativeFrame.fromList(self.readValue() as! [Any?])
+    case 139:
       return NativeAudioStats.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -600,29 +623,32 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? NativeConsentResult {
       super.writeByte(130)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeCaptureEnd {
+    } else if let value = value as? NativeAudioSupport {
       super.writeByte(131)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeAudioCodec {
+    } else if let value = value as? NativeCaptureEnd {
       super.writeByte(132)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeCaptureSupport {
+    } else if let value = value as? NativeAudioCodec {
       super.writeByte(133)
-      super.writeValue(value.toList())
-    } else if let value = value as? NativeConsentTexts {
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeCaptureSupport {
       super.writeByte(134)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeCaptureOptions {
+    } else if let value = value as? NativeConsentTexts {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeStreamConfig {
+    } else if let value = value as? NativeCaptureOptions {
       super.writeByte(136)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFrame {
+    } else if let value = value as? NativeStreamConfig {
       super.writeByte(137)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeAudioStats {
+    } else if let value = value as? NativeFrame {
       super.writeByte(138)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeAudioStats {
+      super.writeByte(139)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -655,6 +681,10 @@ protocol MirrorCaptureHostApi {
   /// service with its ongoing notice; the grant is used once by [start]
   /// and never kept.
   func requestConsent(texts: NativeConsentTexts, timeoutSeconds: Int64) async throws -> NativeConsentResult
+  func audioSupport() throws -> NativeAudioSupport
+  /// Shows Android's permission prompt for capturing sound. False when
+  /// the owner said no, or no screen of the app is open to ask from.
+  func requestAudioPermission() async throws -> Bool
   /// Takes back a [requestConsent] that hasn't been answered.
   func cancelConsent() throws
   /// Starts the capture and the encoder with the grant from
@@ -705,6 +735,36 @@ class MirrorCaptureHostApiSetup {
       }
     } else {
       requestConsentChannel.setMessageHandler(nil)
+    }
+    let audioSupportChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.audioSupport\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      audioSupportChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.audioSupport()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      audioSupportChannel.setMessageHandler(nil)
+    }
+    /// Shows Android's permission prompt for capturing sound. False when
+    /// the owner said no, or no screen of the app is open to ask from.
+    let requestAudioPermissionChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestAudioPermission\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      requestAudioPermissionChannel.setMessageHandler { _, reply in
+        Task { @MainActor in
+          do {
+            let result = try await api.requestAudioPermission()
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      requestAudioPermissionChannel.setMessageHandler(nil)
     }
     /// Takes back a [requestConsent] that hasn't been answered.
     let cancelConsentChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.cancelConsent\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
@@ -788,6 +848,12 @@ protocol MirrorCaptureFlutterApiProtocol {
   @MainActor func onConfig(config configArg: NativeStreamConfig) async throws
   @MainActor func onFrame(frame frameArg: NativeFrame) async throws
   @MainActor func onScreenOff(off offArg: Bool) async throws
+  /// Sound follows, encoded this way.
+  @MainActor func onAudioConfig(codec codecArg: NativeAudioCodec, sampleRate sampleRateArg: Int64, channels channelsArg: Int64) async throws
+  /// Opus: one packet. PCM: whole samples for every channel.
+  @MainActor func onAudioFrame(data dataArg: FlutterStandardTypedData, ptsUs ptsUsArg: Int64) async throws
+  /// Capturing the sound stopped working; the pictures go on.
+  @MainActor func onAudioEnded() async throws
   @MainActor func onEnded(end endArg: NativeCaptureEnd) async throws
 }
 class MirrorCaptureFlutterApi: MirrorCaptureFlutterApiProtocol {
@@ -845,6 +911,69 @@ class MirrorCaptureFlutterApi: MirrorCaptureFlutterApiProtocol {
       let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onScreenOff\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([offArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Sound follows, encoded this way.
+  @MainActor func onAudioConfig(codec codecArg: NativeAudioCodec, sampleRate sampleRateArg: Int64, channels channelsArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioConfig\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([codecArg, sampleRateArg, channelsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Opus: one packet. PCM: whole samples for every channel.
+  @MainActor func onAudioFrame(data dataArg: FlutterStandardTypedData, ptsUs ptsUsArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioFrame\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([dataArg, ptsUsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Capturing the sound stopped working; the pictures go on.
+  @MainActor func onAudioEnded() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioEnded\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

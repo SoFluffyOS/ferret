@@ -126,6 +126,16 @@ enum NativeConsentResult {
   failed;
 }
 
+/// Whether this device can capture what it plays.
+enum NativeAudioSupport {
+  /// Android 9 or older.
+  unsupported,
+  /// Android wants its "record audio" permission first, though only what
+  /// the device plays is captured, never the microphone.
+  needsPermission,
+  ready;
+}
+
 enum NativeCaptureEnd {
   /// Stop on the ongoing notice.
   stoppedByUser,
@@ -280,6 +290,7 @@ class NativeCaptureOptions {
     required this.maxShortSide,
     required this.fps,
     required this.bitrate,
+    this.audioCodec,
   });
 
   NativeCodec codec;
@@ -293,6 +304,10 @@ class NativeCaptureOptions {
   /// Bits per second the H.264 encoder starts with.
   int bitrate;
 
+  /// Also capture what the device plays, encoded this way. Null for
+  /// pictures only.
+  NativeAudioCodec? audioCodec;
+
   List<Object?> _toList() {
     return <Object?>[
       codec,
@@ -300,6 +315,7 @@ class NativeCaptureOptions {
       maxShortSide,
       fps,
       bitrate,
+      audioCodec,
     ];
   }
 
@@ -314,6 +330,7 @@ class NativeCaptureOptions {
       maxShortSide: result[2]! as int,
       fps: result[3]! as int,
       bitrate: result[4]! as int,
+      audioCodec: result[5] as NativeAudioCodec?,
     );
   }
 
@@ -326,7 +343,7 @@ class NativeCaptureOptions {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(codec, other.codec) && _deepEquals(maxLongSide, other.maxLongSide) && _deepEquals(maxShortSide, other.maxShortSide) && _deepEquals(fps, other.fps) && _deepEquals(bitrate, other.bitrate);
+    return _deepEquals(codec, other.codec) && _deepEquals(maxLongSide, other.maxLongSide) && _deepEquals(maxShortSide, other.maxShortSide) && _deepEquals(fps, other.fps) && _deepEquals(bitrate, other.bitrate) && _deepEquals(audioCodec, other.audioCodec);
   }
 
   @override
@@ -335,7 +352,7 @@ class NativeCaptureOptions {
 
   @override
   String toString() {
-    return 'NativeCaptureOptions(codec: $codec, maxLongSide: $maxLongSide, maxShortSide: $maxShortSide, fps: $fps, bitrate: $bitrate)';
+    return 'NativeCaptureOptions(codec: $codec, maxLongSide: $maxLongSide, maxShortSide: $maxShortSide, fps: $fps, bitrate: $bitrate, audioCodec: $audioCodec)';
   }
 }
 
@@ -538,29 +555,32 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is NativeConsentResult) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    }    else if (value is NativeCaptureEnd) {
+    }    else if (value is NativeAudioSupport) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    }    else if (value is NativeAudioCodec) {
+    }    else if (value is NativeCaptureEnd) {
       buffer.putUint8(132);
       writeValue(buffer, value.index);
-    }    else if (value is NativeCaptureSupport) {
+    }    else if (value is NativeAudioCodec) {
       buffer.putUint8(133);
-      writeValue(buffer, value.encode());
-    }    else if (value is NativeConsentTexts) {
+      writeValue(buffer, value.index);
+    }    else if (value is NativeCaptureSupport) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCaptureOptions) {
+    }    else if (value is NativeConsentTexts) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeStreamConfig) {
+    }    else if (value is NativeCaptureOptions) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeFrame) {
+    }    else if (value is NativeStreamConfig) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeAudioStats) {
+    }    else if (value is NativeFrame) {
       buffer.putUint8(138);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeAudioStats) {
+      buffer.putUint8(139);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -578,21 +598,24 @@ class _PigeonCodec extends StandardMessageCodec {
         return value == null ? null : NativeConsentResult.values[value];
       case 131:
         final value = readValue(buffer) as int?;
-        return value == null ? null : NativeCaptureEnd.values[value];
+        return value == null ? null : NativeAudioSupport.values[value];
       case 132:
         final value = readValue(buffer) as int?;
-        return value == null ? null : NativeAudioCodec.values[value];
+        return value == null ? null : NativeCaptureEnd.values[value];
       case 133:
-        return NativeCaptureSupport.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativeAudioCodec.values[value];
       case 134:
-        return NativeConsentTexts.decode(readValue(buffer)!);
+        return NativeCaptureSupport.decode(readValue(buffer)!);
       case 135:
-        return NativeCaptureOptions.decode(readValue(buffer)!);
+        return NativeConsentTexts.decode(readValue(buffer)!);
       case 136:
-        return NativeStreamConfig.decode(readValue(buffer)!);
+        return NativeCaptureOptions.decode(readValue(buffer)!);
       case 137:
-        return NativeFrame.decode(readValue(buffer)!);
+        return NativeStreamConfig.decode(readValue(buffer)!);
       case 138:
+        return NativeFrame.decode(readValue(buffer)!);
+      case 139:
         return NativeAudioStats.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -656,6 +679,44 @@ class MirrorCaptureHostApi {
     )
     ;
     return pigeonVar_replyValue! as NativeConsentResult;
+  }
+
+  Future<NativeAudioSupport> audioSupport() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.audioSupport$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as NativeAudioSupport;
+  }
+
+  /// Shows Android's permission prompt for capturing sound. False when
+  /// the owner said no, or no screen of the app is open to ask from.
+  Future<bool> requestAudioPermission() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestAudioPermission$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
   }
 
   /// Takes back a [requestConsent] that hasn't been answered.
@@ -757,6 +818,15 @@ abstract class MirrorCaptureFlutterApi {
 
   void onScreenOff(bool off);
 
+  /// Sound follows, encoded this way.
+  void onAudioConfig(NativeAudioCodec codec, int sampleRate, int channels);
+
+  /// Opus: one packet. PCM: whole samples for every channel.
+  void onAudioFrame(Uint8List data, int ptsUs);
+
+  /// Capturing the sound stopped working; the pictures go on.
+  void onAudioEnded();
+
   void onEnded(NativeCaptureEnd end);
 
   static void setUp(MirrorCaptureFlutterApi? api, {
@@ -819,6 +889,70 @@ abstract class MirrorCaptureFlutterApi {
           final bool arg_off = args[0]! as bool;
           try {
             api.onScreenOff(arg_off);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeAudioCodec arg_codec = args[0]! as NativeAudioCodec;
+          final int arg_sampleRate = args[1]! as int;
+          final int arg_channels = args[2]! as int;
+          try {
+            api.onAudioConfig(arg_codec, arg_sampleRate, arg_channels);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final Uint8List arg_data = args[0]! as Uint8List;
+          final int arg_ptsUs = args[1]! as int;
+          try {
+            api.onAudioFrame(arg_data, arg_ptsUs);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          try {
+            api.onAudioEnded();
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

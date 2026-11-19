@@ -539,6 +539,54 @@ abstract class MirroringLocalizations {
   /// **'Android asks you every time. Nothing is shared before you say yes.'**
   String get settingsAllowBody;
 
+  /// No description provided for @sharingTitleSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing screen and sound with {device}'**
+  String sharingTitleSound(String device);
+
+  /// No description provided for @sharingBodySound.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on this screen is visible there, with sound. Since {time}.'**
+  String sharingBodySound(String time);
+
+  /// No description provided for @noticeSharingBodySound.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on this screen is visible there, with sound'**
+  String get noticeSharingBodySound;
+
+  /// No description provided for @settingsSendSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Send sound too'**
+  String get settingsSendSound;
+
+  /// No description provided for @settingsSendSoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Computers that show this screen also hear what it plays: music, videos, games. Only while the screen is shared, and never the microphone. Some apps block this and stay silent.'**
+  String get settingsSendSoundBody;
+
+  /// No description provided for @settingsSendSoundPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Android calls this permission \"record audio\" and files it under Microphone. Ferret only captures what the phone plays.'**
+  String get settingsSendSoundPermission;
+
+  /// No description provided for @settingsSendSoundDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Android didn\'t allow it. To change that, open Ferret in Android\'s app settings, then Permissions → Microphone.'**
+  String get settingsSendSoundDenied;
+
+  /// No description provided for @settingsSendSoundUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending sound takes Android 10 or newer.'**
+  String get settingsSendSoundUnsupported;
+
   /// No description provided for @settingsUnsupported.
   ///
   /// In en, this message translates to:

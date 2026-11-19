@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mirroring/feature/mirroring_feature.dart';
 import 'package:mirroring/models/models.dart';
@@ -14,6 +15,7 @@ class ShareViewModel extends ChangeNotifier {
 
   final MirroringFeature feature;
   late final StreamSubscription<void> _subscription;
+  bool _soundDenied = false;
 
   MirrorSource? get _source => feature.source;
 
@@ -21,6 +23,25 @@ class ShareViewModel extends ChangeNotifier {
 
   /// Whether this phone can capture its screen at all.
   bool get canCapture => _source?.support.canCapture ?? false;
+
+  /// Whether this phone can send what it plays at all: Android 10 and
+  /// newer.
+  bool get canSendSound =>
+      (_source?.soundSupport ?? AudioCaptureSupport.unsupported) !=
+      AudioCaptureSupport.unsupported;
+
+  /// Sound goes along with the screen.
+  bool get sendSound => _source?.sendsSound ?? false;
+
+  /// The owner just turned sound on and Android said no.
+  bool get soundDenied => _soundDenied;
+
+  /// Turning it on is when Android asks for its permission.
+  Future<void> setSendSound(bool value) async {
+    final applied = await _source?.setSendSound(value) ?? false;
+    _soundDenied = value && !applied;
+    notifyListeners();
+  }
 
   ShareRequest? get pending => _source?.pending;
 

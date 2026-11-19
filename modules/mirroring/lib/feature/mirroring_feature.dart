@@ -23,7 +23,7 @@ class MirroringFeature extends Feature {
     List<MirrorReceiver> receivers = const [],
     bool? canShare,
     bool? canView,
-    ConsentTexts Function(String deviceName)? texts,
+    ConsentTexts Function(String deviceName, {bool withSound})? texts,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.requestTimeout = const Duration(seconds: 10),
@@ -67,7 +67,8 @@ class MirroringFeature extends Feature {
 
   /// The words on the phone's own notices. The app sets them in the
   /// owner's language before any request can arrive.
-  ConsentTexts Function(String deviceName) texts = _plainTexts;
+  ConsentTexts Function(String deviceName, {bool withSound}) texts =
+      _plainTexts;
 
   final ScreenCapture Function() _createCapture;
   final MirrorDecoder Function() _createDecoder;
@@ -118,7 +119,8 @@ class MirroringFeature extends Feature {
         featureId: featureId,
         capture: _createCapture(),
         settings: settings,
-        texts: (deviceName) => texts(deviceName),
+        texts: (deviceName, {withSound = false}) =>
+            texts(deviceName, withSound: withSound),
         clock: _clock,
         consentTimeout: consentTimeout,
       );
@@ -198,6 +200,11 @@ class MirroringFeature extends Feature {
       return null;
     }
 
+    if (payloadOf(envelope, AudioFrame.new) case final frame?) {
+      _routes?.ferret.onAudioFrame(session, frame);
+      return null;
+    }
+
     if (payloadOf(envelope, StartRequest.new) case final request?) {
       final source = _source;
       if (source == null) {
@@ -209,6 +216,16 @@ class MirroringFeature extends Feature {
 
     if (payloadOf(envelope, StreamConfig.new) case final config?) {
       _routes?.ferret.onConfig(session, config);
+      return null;
+    }
+
+    if (payloadOf(envelope, AudioConfig.new) case final config?) {
+      _routes?.ferret.onAudioConfig(session, config);
+      return null;
+    }
+
+    if (payloadOf(envelope, AudioEnded.new) != null) {
+      _routes?.ferret.onAudioEnded(session);
       return null;
     }
 
@@ -252,12 +269,21 @@ class MirroringFeature extends Feature {
       if (device.platform == .PLATFORM_ANDROID) device.id: device.name,
   };
 
-  static ConsentTexts _plainTexts(String deviceName) => ConsentTexts(
+  static ConsentTexts _plainTexts(
+    String deviceName, {
+    bool withSound = false,
+  }) => ConsentTexts(
     askTitle: '$deviceName wants to see this screen',
     askBody: 'Tap to answer',
     askChannelName: 'Screen sharing requests',
-    sharingTitle: 'Sharing screen with $deviceName',
-    sharingBody: 'Everything on this screen is visible there',
+    sharingTitle: switch (withSound) {
+      true => 'Sharing screen and sound with $deviceName',
+      false => 'Sharing screen with $deviceName',
+    },
+    sharingBody: switch (withSound) {
+      true => 'Everything on this screen is visible there, with sound',
+      false => 'Everything on this screen is visible there',
+    },
     stopLabel: 'Stop',
     sharingChannelName: 'Screen sharing',
   );

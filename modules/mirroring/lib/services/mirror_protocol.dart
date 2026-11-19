@@ -40,6 +40,30 @@ abstract final class MirrorProtocol {
     _ => null,
   };
 
+  static AudioCodec audioToProto(MirrorAudioCodec codec) => switch (codec) {
+    .opus => .AUDIO_CODEC_OPUS,
+    .pcm => .AUDIO_CODEC_PCM_S16LE,
+  };
+
+  /// Null for a codec this build doesn't know.
+  static MirrorAudioCodec? audioFromProto(AudioCodec codec) => switch (codec) {
+    .AUDIO_CODEC_OPUS => .opus,
+    .AUDIO_CODEC_PCM_S16LE => .pcm,
+    _ => null,
+  };
+
+  /// The first of the viewer's [wanted] sound codecs this build knows.
+  /// A phone encodes both.
+  static MirrorAudioCodec? pickAudio(Iterable<AudioCodec> wanted) {
+    for (final codec in wanted) {
+      if (audioFromProto(codec) case final known?) {
+        return known;
+      }
+    }
+
+    return null;
+  }
+
   /// The first of the viewer's [wanted] codecs the source [canEncode].
   static MirrorCodec? pick(
     Iterable<Codec> wanted,

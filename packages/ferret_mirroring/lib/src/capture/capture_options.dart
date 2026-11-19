@@ -1,3 +1,4 @@
+import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
 import 'package:ferret_mirroring/src/stream/mirror_codec.dart';
 
 /// What this device can capture its screen with.
@@ -15,6 +16,20 @@ class CaptureSupport {
     .h264 => h264,
     .jpeg => jpeg,
   };
+}
+
+/// Whether this device can capture what it plays, to send along with its
+/// screen.
+enum AudioCaptureSupport {
+  /// It can't: an Android older than 10, or not Android.
+  unsupported,
+
+  /// The system wants a permission first. Android calls it "record
+  /// audio", though only what the device plays is captured, never its
+  /// microphone.
+  needsPermission,
+
+  ready,
 }
 
 /// How the owner answered the system's screen capture prompt.
@@ -66,6 +81,7 @@ class CaptureOptions {
     required this.maxShortSide,
     required this.fps,
     required this.bitrate,
+    this.audioCodec,
   });
 
   final MirrorCodec codec;
@@ -75,4 +91,8 @@ class CaptureOptions {
 
   /// Bits per second the video encoder starts with.
   final int bitrate;
+
+  /// Capture what the device plays too, encoded this way. Null for
+  /// pictures only.
+  final MirrorAudioCodec? audioCodec;
 }

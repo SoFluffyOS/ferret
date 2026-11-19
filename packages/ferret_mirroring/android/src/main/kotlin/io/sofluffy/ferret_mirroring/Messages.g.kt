@@ -238,6 +238,26 @@ enum class NativeConsentResult(val raw: Int) {
   }
 }
 
+/** Whether this device can capture what it plays. */
+enum class NativeAudioSupport(val raw: Int) {
+  /** Android 9 or older. */
+  UNSUPPORTED(0),
+  /**
+   * Android wants its "record audio" permission first, though only what
+   * the device plays is captured, never the microphone.
+   */
+  NEEDS_PERMISSION(1),
+  READY(2);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): NativeAudioSupport? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
 enum class NativeCaptureEnd(val raw: Int) {
   /** Stop on the ongoing notice. */
   STOPPED_BY_USER(0),
@@ -391,7 +411,12 @@ data class NativeCaptureOptions (
   val maxShortSide: Long,
   val fps: Long,
   /** Bits per second the H.264 encoder starts with. */
-  val bitrate: Long
+  val bitrate: Long,
+  /**
+   * Also capture what the device plays, encoded this way. Null for
+   * pictures only.
+   */
+  val audioCodec: NativeAudioCodec? = null
 )
  {
   companion object {
@@ -401,7 +426,8 @@ data class NativeCaptureOptions (
       val maxShortSide = pigeonVar_list[2] as Long
       val fps = pigeonVar_list[3] as Long
       val bitrate = pigeonVar_list[4] as Long
-      return NativeCaptureOptions(codec, maxLongSide, maxShortSide, fps, bitrate)
+      val audioCodec = pigeonVar_list[5] as NativeAudioCodec?
+      return NativeCaptureOptions(codec, maxLongSide, maxShortSide, fps, bitrate, audioCodec)
     }
   }
   fun toList(): List<Any?> {
@@ -411,6 +437,7 @@ data class NativeCaptureOptions (
       maxShortSide,
       fps,
       bitrate,
+      audioCodec,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -421,7 +448,7 @@ data class NativeCaptureOptions (
       return true
     }
     val other = other as NativeCaptureOptions
-    return MessagesPigeonUtils.deepEquals(this.codec, other.codec) && MessagesPigeonUtils.deepEquals(this.maxLongSide, other.maxLongSide) && MessagesPigeonUtils.deepEquals(this.maxShortSide, other.maxShortSide) && MessagesPigeonUtils.deepEquals(this.fps, other.fps) && MessagesPigeonUtils.deepEquals(this.bitrate, other.bitrate)
+    return MessagesPigeonUtils.deepEquals(this.codec, other.codec) && MessagesPigeonUtils.deepEquals(this.maxLongSide, other.maxLongSide) && MessagesPigeonUtils.deepEquals(this.maxShortSide, other.maxShortSide) && MessagesPigeonUtils.deepEquals(this.fps, other.fps) && MessagesPigeonUtils.deepEquals(this.bitrate, other.bitrate) && MessagesPigeonUtils.deepEquals(this.audioCodec, other.audioCodec)
   }
 
   override fun hashCode(): Int {
@@ -431,10 +458,11 @@ data class NativeCaptureOptions (
     result = 31 * result + MessagesPigeonUtils.deepHash(this.maxShortSide)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.fps)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.bitrate)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.audioCodec)
     return result
   }
   override fun toString(): String {
-    return "NativeCaptureOptions(codec=$codec, maxLongSide=$maxLongSide, maxShortSide=$maxShortSide, fps=$fps, bitrate=$bitrate)"
+    return "NativeCaptureOptions(codec=$codec, maxLongSide=$maxLongSide, maxShortSide=$maxShortSide, fps=$fps, bitrate=$bitrate, audioCodec=$audioCodec)"
   }
 }
 
@@ -604,40 +632,45 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       131.toByte() -> {
         (readValue(buffer) as Long?)?.let {
-          NativeCaptureEnd.ofRaw(it.toInt())
+          NativeAudioSupport.ofRaw(it.toInt())
         }
       }
       132.toByte() -> {
         (readValue(buffer) as Long?)?.let {
-          NativeAudioCodec.ofRaw(it.toInt())
+          NativeCaptureEnd.ofRaw(it.toInt())
         }
       }
       133.toByte() -> {
-        (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureSupport.fromList(it)
+        (readValue(buffer) as Long?)?.let {
+          NativeAudioCodec.ofRaw(it.toInt())
         }
       }
       134.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeConsentTexts.fromList(it)
+          NativeCaptureSupport.fromList(it)
         }
       }
       135.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureOptions.fromList(it)
+          NativeConsentTexts.fromList(it)
         }
       }
       136.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeStreamConfig.fromList(it)
+          NativeCaptureOptions.fromList(it)
         }
       }
       137.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeFrame.fromList(it)
+          NativeStreamConfig.fromList(it)
         }
       }
       138.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeFrame.fromList(it)
+        }
+      }
+      139.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           NativeAudioStats.fromList(it)
         }
@@ -655,36 +688,40 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(130)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeCaptureEnd -> {
+      is NativeAudioSupport -> {
         stream.write(131)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeAudioCodec -> {
+      is NativeCaptureEnd -> {
         stream.write(132)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeCaptureSupport -> {
+      is NativeAudioCodec -> {
         stream.write(133)
-        writeValue(stream, value.toList())
+        writeValue(stream, value.raw.toLong())
       }
-      is NativeConsentTexts -> {
+      is NativeCaptureSupport -> {
         stream.write(134)
         writeValue(stream, value.toList())
       }
-      is NativeCaptureOptions -> {
+      is NativeConsentTexts -> {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is NativeStreamConfig -> {
+      is NativeCaptureOptions -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is NativeFrame -> {
+      is NativeStreamConfig -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
-      is NativeAudioStats -> {
+      is NativeFrame -> {
         stream.write(138)
+        writeValue(stream, value.toList())
+      }
+      is NativeAudioStats -> {
+        stream.write(139)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -707,6 +744,12 @@ interface MirrorCaptureHostApi {
    * and never kept.
    */
   suspend fun requestConsent(texts: NativeConsentTexts, timeoutSeconds: Long): NativeConsentResult
+  fun audioSupport(): NativeAudioSupport
+  /**
+   * Shows Android's permission prompt for capturing sound. False when
+   * the owner said no, or no screen of the app is open to ask from.
+   */
+  suspend fun requestAudioPermission(): Boolean
   /** Takes back a [requestConsent] that hasn't been answered. */
   fun cancelConsent()
   /**
@@ -752,6 +795,38 @@ interface MirrorCaptureHostApi {
             CoroutineScope(Dispatchers.Main).launch {
               val wrapped: List<Any?> = try {
                 listOf(api.requestConsent(textsArg, timeoutSecondsArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.audioSupport$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.audioSupport())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestAudioPermission$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.requestAudioPermission())
               } catch (exception: Throwable) {
                 MessagesPigeonUtils.wrapError(exception)
               }
@@ -903,6 +978,66 @@ class MirrorCaptureFlutterApi(private val binaryMessenger: BinaryMessenger, priv
       val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onScreenOff$separatedMessageChannelSuffix"
       val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
       channel.send(listOf(offArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** Sound follows, encoded this way. */
+  suspend fun onAudioConfig(codecArg: NativeAudioCodec, sampleRateArg: Long, channelsArg: Long)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioConfig$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(codecArg, sampleRateArg, channelsArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** Opus: one packet. PCM: whole samples for every channel. */
+  suspend fun onAudioFrame(dataArg: ByteArray, ptsUsArg: Long)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioFrame$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(dataArg, ptsUsArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** Capturing the sound stopped working; the pictures go on. */
+  suspend fun onAudioEnded()
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioEnded$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(null) {
         if (it is List<*>) {
           if (it.size > 1) {
             continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))

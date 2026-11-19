@@ -86,6 +86,7 @@ void main() {
   Future<void> startPhone(
     WidgetTester tester, {
     CaptureSupport support = const CaptureSupport(h264: true, jpeg: true),
+    AudioCaptureSupport sound = .unsupported,
   }) async {
     final created = await tester.runAsync(FakeHost.create);
     if (created == null) {
@@ -95,7 +96,7 @@ void main() {
     host = created;
     mac = FakeSession('mac', name: 'MacBook', flags: const ['view']);
     host.sessions = [mac];
-    capture = FakeCapture(supportNow: support);
+    capture = FakeCapture(supportNow: support)..soundNow = sound;
     now = DateTime(2026, 11, 18, 21, 10);
     feature = MirroringFeature(
       capture: () => capture,
@@ -317,6 +318,97 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(find.text('Nobody has seen this screen yet.'), findsOneWidget);
+    });
+
+    Future<void> pumpPhoneSettings(WidgetTester tester) => tester.pumpWidget(
+      testApp(
+        Builder(
+          builder: (context) =>
+              ui.buildSettings(context, featureContext()) ??
+              const SizedBox.shrink(),
+        ),
+      ),
+    );
+
+    testWidgets('"Send sound too" is off, says what it sends, and asks '
+        'Android when it is turned on', (tester) async {
+      await startPhone(tester, sound: .needsPermission);
+      await pumpPhoneSettings(tester);
+
+      expect(find.text('Send sound too'), findsOneWidget);
+      expect(find.textContaining('never the microphone'), findsOneWidget);
+      expect(find.textContaining('files it under Microphone'), findsOneWidget);
+      expect(
+        tester.widget<SwitchToggle>(find.byType(SwitchToggle).last).value,
+        isFalse,
+      );
+      expect(capture.soundAsks, 0, reason: 'nothing is asked up front');
+
+      await tester.tap(find.byType(SwitchToggle).last);
+      await tester.pumpAndSettle();
+
+      expect(capture.soundAsks, 1);
+      expect(MirroringSettings(host.settings).sendSound, isTrue);
+      expect(
+        tester.widget<SwitchToggle>(find.byType(SwitchToggle).last).value,
+        isTrue,
+      );
+    });
+
+    testWidgets('a no from Android keeps it off and says where to change '
+        'that', (tester) async {
+      await startPhone(tester, sound: .needsPermission);
+      capture.grantsSound = false;
+      await pumpPhoneSettings(tester);
+
+      await tester.tap(find.byType(SwitchToggle).last);
+      await tester.pumpAndSettle();
+
+      expect(MirroringSettings(host.settings).sendSound, isFalse);
+      expect(find.textContaining('Android didn\'t allow it'), findsOneWidget);
+    });
+
+    testWidgets('an older Android says sound takes Android 10', (tester) async {
+      await startPhone(tester);
+      await pumpPhoneSettings(tester);
+
+      expect(find.text('Send sound too'), findsNothing);
+      expect(
+        find.text('Sending sound takes Android 10 or newer.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the card says when sound goes along', (tester) async {
+      await startPhone(tester, sound: .ready);
+      await feature.source?.setSendSound(true);
+      await feature.source?.onRequest(
+        mac,
+        StartRequest(
+          version: 1,
+          codecs: const [.CODEC_H264],
+          audioCodecs: const [.AUDIO_CODEC_OPUS],
+        ),
+      );
+      await tester.pump();
+      capture.answer(.granted);
+      await tester.pump();
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) =>
+                ui.buildHomeCard(context, featureContext()) ??
+                const SizedBox.shrink(),
+          ),
+        ),
+      );
+
+      expect(
+        find.text('Sharing screen and sound with MacBook'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('visible there, with sound'), findsOneWidget);
+      await feature.source?.stop();
     });
 
     Future<void> pumpComputerSettings(

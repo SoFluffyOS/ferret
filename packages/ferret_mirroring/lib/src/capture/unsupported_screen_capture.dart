@@ -10,6 +10,12 @@ class UnsupportedScreenCapture implements ScreenCapture {
   Future<CaptureSupport> support() async => const .none();
 
   @override
+  Future<AudioCaptureSupport> audioSupport() async => .unsupported;
+
+  @override
+  Future<bool> requestAudioPermission() async => false;
+
+  @override
   Future<ConsentResult> requestConsent(
     ConsentTexts texts,
     Duration timeout,

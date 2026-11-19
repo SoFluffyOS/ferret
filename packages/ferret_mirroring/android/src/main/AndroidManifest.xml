@@ -2,6 +2,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Android asks for this to capture what the phone plays along with its
+         screen (AudioPlaybackCapture). The microphone is never opened. Asked
+         only when the owner turns on "Send sound too". -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
         <service

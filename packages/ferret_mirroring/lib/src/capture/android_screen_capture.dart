@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:ferret_mirroring/src/capture/capture_event.dart';
 import 'package:ferret_mirroring/src/capture/capture_options.dart';
 import 'package:ferret_mirroring/src/capture/screen_capture.dart';
 import 'package:ferret_mirroring/src/messages.g.dart';
+import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
 import 'package:ferret_mirroring/src/stream/mirror_codec.dart';
 import 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
@@ -27,6 +29,17 @@ class AndroidScreenCapture implements ScreenCapture, MirrorCaptureFlutterApi {
     final support = await _api.support();
     return CaptureSupport(h264: support.h264, jpeg: support.jpeg);
   }
+
+  @override
+  Future<AudioCaptureSupport> audioSupport() async =>
+      switch (await _api.audioSupport()) {
+        .unsupported => .unsupported,
+        .needsPermission => .needsPermission,
+        .ready => .ready,
+      };
+
+  @override
+  Future<bool> requestAudioPermission() => _api.requestAudioPermission();
 
   @override
   Future<ConsentResult> requestConsent(
@@ -69,6 +82,11 @@ class AndroidScreenCapture implements ScreenCapture, MirrorCaptureFlutterApi {
       maxShortSide: options.maxShortSide,
       fps: options.fps,
       bitrate: options.bitrate,
+      audioCodec: switch (options.audioCodec) {
+        null => null,
+        .opus => .opus,
+        .pcm => .pcm,
+      },
     ),
   );
 
@@ -115,6 +133,28 @@ class AndroidScreenCapture implements ScreenCapture, MirrorCaptureFlutterApi {
 
   @override
   void onScreenOff(bool off) => _add(CaptureScreenOff(off: off));
+
+  @override
+  void onAudioConfig(NativeAudioCodec codec, int sampleRate, int channels) =>
+      _add(
+        CaptureAudioConfigured(
+          MirrorAudioConfig(
+            codec: switch (codec) {
+              .opus => .opus,
+              .pcm => .pcm,
+            },
+            sampleRate: sampleRate,
+            channels: channels,
+          ),
+        ),
+      );
+
+  @override
+  void onAudioFrame(Uint8List data, int ptsUs) =>
+      _add(CaptureAudio(MirrorAudioPacket(data: data, ptsUs: ptsUs)));
+
+  @override
+  void onAudioEnded() => _add(const CaptureAudioEnded());
 
   @override
   void onEnded(NativeCaptureEnd end) => _add(

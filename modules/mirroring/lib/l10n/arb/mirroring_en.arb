@@ -444,6 +444,28 @@
   "noticeSharingChannel": "Screen sharing",
   "settingsAllow": "Let my computers ask to see this screen",
   "settingsAllowBody": "Android asks you every time. Nothing is shared before you say yes.",
+  "sharingTitleSound": "Sharing screen and sound with {device}",
+  "@sharingTitleSound": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "sharingBodySound": "Everything on this screen is visible there, with sound. Since {time}.",
+  "@sharingBodySound": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeSharingBodySound": "Everything on this screen is visible there, with sound",
+  "settingsSendSound": "Send sound too",
+  "settingsSendSoundBody": "Computers that show this screen also hear what it plays: music, videos, games. Only while the screen is shared, and never the microphone. Some apps block this and stay silent.",
+  "settingsSendSoundPermission": "Android calls this permission \"record audio\" and files it under Microphone. Ferret only captures what the phone plays.",
+  "settingsSendSoundDenied": "Android didn't allow it. To change that, open Ferret in Android's app settings, then Permissions → Microphone.",
+  "settingsSendSoundUnsupported": "Sending sound takes Android 10 or newer.",
   "settingsUnsupported": "This phone can't capture its screen",
   "settingsHistoryTitle": "History",
   "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",

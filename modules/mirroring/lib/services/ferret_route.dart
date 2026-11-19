@@ -85,6 +85,7 @@ class FerretRoute implements MirrorRoute {
       send: (message) => _send(deviceId, message),
       clock: _clock,
       onEnded: _forget,
+      wantsSound: options.audio,
     );
     if (session == null) {
       feed.end(.notConnected);
@@ -106,6 +107,7 @@ class FerretRoute implements MirrorRoute {
           maxWidth: longSide,
           maxHeight: longSide,
           maxFps: options.maxFps,
+          audioCodecs: options.audioCodecs.map(MirrorProtocol.audioToProto),
         ),
         timeout: requestTimeout,
       );
@@ -133,7 +135,7 @@ class FerretRoute implements MirrorRoute {
   }
 
   void onAccept(Session session, StartAccept accept) {
-    final accepted = _feeds[session.remoteDeviceId]?.onAccept() ?? false;
+    final accepted = _feeds[session.remoteDeviceId]?.onAccept(accept) ?? false;
     if (!accepted) {
       _answerStray(session);
     }
@@ -151,6 +153,19 @@ class FerretRoute implements MirrorRoute {
       _answerStray(session);
     }
   }
+
+  void onAudioConfig(Session session, AudioConfig config) =>
+      _feeds[session.remoteDeviceId]?.onAudioConfig(config);
+
+  void onAudioFrame(Session session, AudioFrame frame) {
+    final heard = _feeds[session.remoteDeviceId]?.onAudioFrame(frame) ?? false;
+    if (!heard) {
+      _answerStray(session);
+    }
+  }
+
+  void onAudioEnded(Session session) =>
+      _feeds[session.remoteDeviceId]?.onAudioEnded();
 
   void onSourceState(Session session, SourceState state) =>
       _feeds[session.remoteDeviceId]?.onSourceState(state);

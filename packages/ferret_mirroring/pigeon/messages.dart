@@ -76,6 +76,7 @@ class NativeCaptureOptions {
     required this.maxShortSide,
     required this.fps,
     required this.bitrate,
+    this.audioCodec,
   });
 
   NativeCodec codec;
@@ -85,6 +86,22 @@ class NativeCaptureOptions {
 
   /// Bits per second the H.264 encoder starts with.
   int bitrate;
+
+  /// Also capture what the device plays, encoded this way. Null for
+  /// pictures only.
+  NativeAudioCodec? audioCodec;
+}
+
+/// Whether this device can capture what it plays.
+enum NativeAudioSupport {
+  /// Android 9 or older.
+  unsupported,
+
+  /// Android wants its "record audio" permission first, though only what
+  /// the device plays is captured, never the microphone.
+  needsPermission,
+
+  ready,
 }
 
 class NativeStreamConfig {
@@ -150,6 +167,13 @@ abstract class MirrorCaptureHostApi {
     int timeoutSeconds,
   );
 
+  NativeAudioSupport audioSupport();
+
+  /// Shows Android's permission prompt for capturing sound. False when
+  /// the owner said no, or no screen of the app is open to ask from.
+  @async
+  bool requestAudioPermission();
+
   /// Takes back a [requestConsent] that hasn't been answered.
   void cancelConsent();
 
@@ -172,6 +196,15 @@ abstract class MirrorCaptureFlutterApi {
   void onFrame(NativeFrame frame);
 
   void onScreenOff(bool off);
+
+  /// Sound follows, encoded this way.
+  void onAudioConfig(NativeAudioCodec codec, int sampleRate, int channels);
+
+  /// Opus: one packet. PCM: whole samples for every channel.
+  void onAudioFrame(Uint8List data, int ptsUs);
+
+  /// Capturing the sound stopped working; the pictures go on.
+  void onAudioEnded();
 
   void onEnded(NativeCaptureEnd end);
 }

@@ -359,6 +359,39 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'Android asks you every time. Nothing is shared before you say yes.';
 
   @override
+  String sharingTitleSound(String device) {
+    return 'Sharing screen and sound with $device';
+  }
+
+  @override
+  String sharingBodySound(String time) {
+    return 'Everything on this screen is visible there, with sound. Since $time.';
+  }
+
+  @override
+  String get noticeSharingBodySound =>
+      'Everything on this screen is visible there, with sound';
+
+  @override
+  String get settingsSendSound => 'Send sound too';
+
+  @override
+  String get settingsSendSoundBody =>
+      'Computers that show this screen also hear what it plays: music, videos, games. Only while the screen is shared, and never the microphone. Some apps block this and stay silent.';
+
+  @override
+  String get settingsSendSoundPermission =>
+      'Android calls this permission \"record audio\" and files it under Microphone. Ferret only captures what the phone plays.';
+
+  @override
+  String get settingsSendSoundDenied =>
+      'Android didn\'t allow it. To change that, open Ferret in Android\'s app settings, then Permissions → Microphone.';
+
+  @override
+  String get settingsSendSoundUnsupported =>
+      'Sending sound takes Android 10 or newer.';
+
+  @override
   String get settingsUnsupported => 'This phone can\'t capture its screen';
 
   @override

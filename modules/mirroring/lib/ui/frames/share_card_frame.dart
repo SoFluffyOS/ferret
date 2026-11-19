@@ -34,10 +34,14 @@ class ShareCardFrame extends StatelessWidget {
       return FeatureCard(
         icon: LucideIcons.screenShare,
         iconTone: .warning,
-        title: l10n.sharingTitle(active.deviceName),
-        subtitle: switch (active.reconnecting) {
-          true => l10n.sharingReconnecting(active.deviceName),
-          false => l10n.sharingBody(l10n.time(active.startedAt)),
+        title: switch (active.withSound) {
+          true => l10n.sharingTitleSound(active.deviceName),
+          false => l10n.sharingTitle(active.deviceName),
+        },
+        subtitle: switch ((active.reconnecting, active.withSound)) {
+          (true, _) => l10n.sharingReconnecting(active.deviceName),
+          (false, true) => l10n.sharingBodySound(l10n.time(active.startedAt)),
+          (false, false) => l10n.sharingBody(l10n.time(active.startedAt)),
         },
         actions: [
           Button(

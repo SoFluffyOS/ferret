@@ -1,3 +1,4 @@
+import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
 import 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
 
@@ -27,6 +28,24 @@ class CaptureFrame extends CaptureEvent {
   const CaptureFrame(this.frame);
 
   final MirrorFrame frame;
+}
+
+/// Sound follows, encoded this way.
+class CaptureAudioConfigured extends CaptureEvent {
+  const CaptureAudioConfigured(this.config);
+
+  final MirrorAudioConfig config;
+}
+
+class CaptureAudio extends CaptureEvent {
+  const CaptureAudio(this.packet);
+
+  final MirrorAudioPacket packet;
+}
+
+/// Capturing the sound stopped working. The pictures go on.
+class CaptureAudioEnded extends CaptureEvent {
+  const CaptureAudioEnded();
 }
 
 class CaptureScreenOff extends CaptureEvent {

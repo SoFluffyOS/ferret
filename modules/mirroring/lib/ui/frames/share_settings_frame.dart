@@ -22,6 +22,15 @@ class ShareSettingsFrame extends StatelessWidget {
     final canCapture = context.select<ShareViewModel, bool>(
       (viewModel) => viewModel.canCapture,
     );
+    final canSendSound = context.select<ShareViewModel, bool>(
+      (viewModel) => viewModel.canSendSound,
+    );
+    final sendSound = context.select<ShareViewModel, bool>(
+      (viewModel) => viewModel.sendSound,
+    );
+    final soundDenied = context.select<ShareViewModel, bool>(
+      (viewModel) => viewModel.soundDenied,
+    );
     final history = context.select<ShareViewModel, List<MirrorRecord>>(
       (viewModel) => viewModel.history,
     );
@@ -46,6 +55,35 @@ class ShareSettingsFrame extends StatelessWidget {
               GroupedCell(
                 child: Text(
                   l10n.settingsUnsupported,
+                  style: caption.copyWith(color: palette.mutedText),
+                ),
+              ),
+            if (canCapture && canSendSound) ...[
+              SettingSwitchRow(
+                title: l10n.settingsSendSound,
+                body: l10n.settingsSendSoundBody,
+                value: sendSound,
+                onChanged: (value) => unawaited(viewModel.setSendSound(value)),
+              ),
+              GroupedCell(
+                child: Text(
+                  switch (soundDenied) {
+                    true => l10n.settingsSendSoundDenied,
+                    false => l10n.settingsSendSoundPermission,
+                  },
+                  style: caption.copyWith(
+                    color: switch (soundDenied) {
+                      true => palette.warning,
+                      false => palette.mutedText,
+                    },
+                  ),
+                ),
+              ),
+            ],
+            if (canCapture && !canSendSound)
+              GroupedCell(
+                child: Text(
+                  l10n.settingsSendSoundUnsupported,
                   style: caption.copyWith(color: palette.mutedText),
                 ),
               ),

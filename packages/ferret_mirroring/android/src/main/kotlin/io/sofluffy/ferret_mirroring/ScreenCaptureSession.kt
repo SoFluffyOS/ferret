@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.projection.MediaProjection
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.PowerManager
@@ -17,19 +18,21 @@ import android.view.Display
 /**
  * One capture: mirrors the screen into an encoder's surface, follows
  * rotation and size changes with a new encoder and a new config, and
- * reports the screen going off and the system ending the capture.
+ * reports the screen going off and the system ending the capture. When
+ * asked, what the phone plays is captured with it, and never longer.
  */
 internal class ScreenCaptureSession(
     private val context: Context,
     private val projection: MediaProjection,
     private val options: NativeCaptureOptions,
     private val listener: MirrorBridge.Listener,
-) : EncoderOutput {
+) : EncoderOutput, AudioCapture.Output {
     private val thread = HandlerThread("ferret-mirror").apply { start() }
     private val handler = Handler(thread.looper)
     private val displayManager = context.getSystemService(DisplayManager::class.java)
     private var virtualDisplay: VirtualDisplay? = null
     private var encoder: FrameEncoder? = null
+    private var audio: AudioCapture? = null
     private var size = CaptureSize(0, 0)
     private var rotation = 0
 
@@ -102,6 +105,8 @@ internal class ScreenCaptureSession(
         if (power != null && !power.isInteractive) {
             listener.onScreenOff(true)
         }
+
+        startAudio()
     }
 
     /**
@@ -131,6 +136,11 @@ internal class ScreenCaptureSession(
 
         displayManager.unregisterDisplayListener(displayListener)
         projection.unregisterCallback(projectionCallback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            audio?.release()
+        }
+
+        audio = null
         handler.post {
             virtualDisplay?.release()
             virtualDisplay = null
@@ -150,6 +160,42 @@ internal class ScreenCaptureSession(
     override fun onFrame(data: ByteArray, ptsUs: Long, keyframe: Boolean) {
         if (!released) {
             listener.onFrame(data, ptsUs, keyframe)
+        }
+    }
+
+    override fun onAudioConfig(codec: NativeAudioCodec, sampleRate: Int, channels: Int) {
+        if (!released) {
+            listener.onAudioConfig(codec, sampleRate, channels)
+        }
+    }
+
+    override fun onAudioFrame(data: ByteArray, ptsUs: Long) {
+        if (!released) {
+            listener.onAudioFrame(data, ptsUs)
+        }
+    }
+
+    override fun onAudioEnded() {
+        if (!released) {
+            listener.onAudioEnded()
+        }
+    }
+
+    /** Sound that can't be captured never stops the pictures. */
+    private fun startAudio() {
+        val codec = options.audioCodec ?: return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            listener.onAudioEnded()
+            return
+        }
+
+        try {
+            val created = AudioCapture(projection, codec, this)
+            created.start()
+            audio = created
+        } catch (error: Exception) {
+            Log.w(TAG, "The phone's sound could not be captured", error)
+            listener.onAudioEnded()
         }
     }
 

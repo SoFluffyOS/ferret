@@ -736,14 +736,20 @@ class MirroringFeatureUi extends FeatureUi {
     );
   }
 
-  ConsentTexts _noticeTexts(String deviceName) {
+  ConsentTexts _noticeTexts(String deviceName, {bool withSound = false}) {
     final l10n = platformMirroringL10n();
     return ConsentTexts(
       askTitle: l10n.askingTitle(deviceName),
       askBody: l10n.noticeAskBody,
       askChannelName: l10n.noticeAskChannel,
-      sharingTitle: l10n.sharingTitle(deviceName),
-      sharingBody: l10n.noticeSharingBody,
+      sharingTitle: switch (withSound) {
+        true => l10n.sharingTitleSound(deviceName),
+        false => l10n.sharingTitle(deviceName),
+      },
+      sharingBody: switch (withSound) {
+        true => l10n.noticeSharingBodySound,
+        false => l10n.noticeSharingBody,
+      },
       stopLabel: l10n.stop,
       sharingChannelName: l10n.noticeSharingChannel,
     );

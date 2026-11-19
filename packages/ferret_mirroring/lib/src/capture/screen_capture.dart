@@ -21,6 +21,15 @@ abstract interface class ScreenCapture {
 
   Future<CaptureSupport> support();
 
+  /// Whether what this device plays can be captured along with its
+  /// screen, as things stand right now.
+  Future<AudioCaptureSupport> audioSupport();
+
+  /// Asks the owner for the permission [AudioCaptureSupport.needsPermission]
+  /// is about. Call it from a switch the owner just flipped, after saying
+  /// what it is for. False when they said no.
+  Future<bool> requestAudioPermission();
+
   /// Shows the system prompt, every time; nothing is remembered. A yes puts
   /// up the ongoing "sharing" notice and must be followed by [start] or
   /// [stop].

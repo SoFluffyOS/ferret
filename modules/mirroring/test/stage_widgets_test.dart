@@ -1367,16 +1367,70 @@ void main() {
       );
     });
 
-    testWidgets('over Ferret it waits for the phone to send any', (
-      tester,
-    ) async {
+    testWidgets('over Ferret, a phone with an older Ferret says what it '
+        'takes', (tester) async {
       await start(tester);
       await streamOverFerret(tester);
       await pumpStage(tester);
       await openSound(tester);
 
       expect(find.text('On Pixel'), findsOneWidget);
-      expect(find.text('Waiting for sound…'), findsOneWidget);
+      expect(
+        find.textContaining('That takes Android 10 or newer'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('over Ferret, a phone that keeps its sound says where to '
+        'turn it on', (tester) async {
+      await start(tester);
+      await viewModel.show('pixel', 'Pixel');
+      ferret().onAccept(
+        pixel,
+        StartAccept(
+          version: 1,
+          codec: .CODEC_H264,
+          audio: .AUDIO_ANSWER_OFF,
+        ),
+      );
+      await turn(tester, const Size(1080, 2400), configId: 1);
+      await pumpStage(tester);
+      await openSound(tester);
+
+      expect(
+        find.textContaining('turn on Send sound too'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('over Ferret, sound plays here while the phone keeps '
+        'playing too', (tester) async {
+      await start(tester);
+      await viewModel.show('pixel', 'Pixel');
+      ferret().onAccept(
+        pixel,
+        StartAccept(
+          version: 1,
+          codec: .CODEC_H264,
+          audio: .AUDIO_ANSWER_SENDING,
+          audioCodec: .AUDIO_CODEC_OPUS,
+        ),
+      );
+      await turn(tester, const Size(1080, 2400), configId: 1);
+      ferret().onAudioConfig(
+        pixel,
+        AudioConfig(
+          codec: .AUDIO_CODEC_OPUS,
+          sampleRate: 48000,
+          channels: 2,
+        ),
+      );
+      await pumpStage(tester);
+      await openSound(tester);
+
+      expect(speaker.configs, const [MirrorAudioConfig(codec: .opus)]);
+      expect(find.byType(FluffySlider), findsOneWidget);
+      expect(find.textContaining('Pixel keeps playing too'), findsOneWidget);
     });
   });
 

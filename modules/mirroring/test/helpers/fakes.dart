@@ -17,6 +17,11 @@ class FakeCapture implements ScreenCapture {
   FakeCapture({this.supportNow = const CaptureSupport(h264: true, jpeg: true)});
 
   CaptureSupport supportNow;
+  AudioCaptureSupport soundNow = .unsupported;
+
+  /// What the owner answers when Android asks to capture sound.
+  bool grantsSound = true;
+  int soundAsks = 0;
   bool startResult = true;
 
   /// False keeps the prompt open after a cancel, as when the owner taps
@@ -49,6 +54,19 @@ class FakeCapture implements ScreenCapture {
 
   @override
   Future<CaptureSupport> support() async => supportNow;
+
+  @override
+  Future<AudioCaptureSupport> audioSupport() async => soundNow;
+
+  @override
+  Future<bool> requestAudioPermission() async {
+    soundAsks++;
+    if (grantsSound && soundNow == .needsPermission) {
+      soundNow = .ready;
+    }
+
+    return soundNow == .ready;
+  }
 
   @override
   Future<ConsentResult> requestConsent(ConsentTexts texts, Duration timeout) {
@@ -384,15 +402,19 @@ Envelope envelopeOf(GeneratedMessage message, {bool expectsReply = false}) =>
     );
 
 /// The words a test phone puts on its notices.
-ConsentTexts textsFor(String deviceName) => ConsentTexts(
-  askTitle: '$deviceName wants to see this screen',
-  askBody: 'Tap to answer',
-  askChannelName: 'Requests',
-  sharingTitle: 'Sharing screen with $deviceName',
-  sharingBody: 'Visible there',
-  stopLabel: 'Stop',
-  sharingChannelName: 'Sharing',
-);
+ConsentTexts textsFor(String deviceName, {bool withSound = false}) =>
+    ConsentTexts(
+      askTitle: '$deviceName wants to see this screen',
+      askBody: 'Tap to answer',
+      askChannelName: 'Requests',
+      sharingTitle: switch (withSound) {
+        true => 'Sharing screen and sound with $deviceName',
+        false => 'Sharing screen with $deviceName',
+      },
+      sharingBody: 'Visible there',
+      stopLabel: 'Stop',
+      sharingChannelName: 'Sharing',
+    );
 
 /// Lets queued stream events and futures run.
 Future<void> settle() async {

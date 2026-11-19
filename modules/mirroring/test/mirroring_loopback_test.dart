@@ -165,6 +165,67 @@ void main() {
     expect(macFeature.settings.history.single.role, MirrorRole.viewed);
   });
 
+  test('with Send sound too on, what the phone plays reaches the '
+      'computer\'s speaker along with the screen', () async {
+    final capture = FakeCapture()..soundNow = .ready;
+    final speaker = FakeAudioSink();
+    final phoneFeature = MirroringFeature(
+      capture: () => capture,
+      canShare: true,
+      canView: false,
+      texts: textsFor,
+    );
+    final macFeature = MirroringFeature(
+      decoder: FakeDecoder.new,
+      codecs: const [.h264],
+      audioSink: () => speaker,
+      audioCodecs: const [.opus],
+      canShare: false,
+      canView: true,
+    );
+    final mac = await startEngine('MacBook', macFeature);
+    final phone = await startEngine('Pixel', phoneFeature);
+    final phoneId = await pair(mac, phone);
+    final viewer = macFeature.viewer;
+    final source = phoneFeature.source;
+    if (viewer == null || source == null) {
+      fail('Both sides should be set up');
+    }
+
+    expect(await source.setSendSound(true), isTrue);
+    await viewer.show(phoneId);
+    await until(() => capture.asked.isNotEmpty);
+    expect(
+      capture.asked.single.sharingTitle,
+      'Sharing screen and sound with MacBook',
+    );
+
+    capture.answer(.granted);
+    await until(() => capture.started.isNotEmpty);
+    expect(capture.started.single.audioCodec, MirrorAudioCodec.opus);
+
+    capture.emit(const CaptureAudioConfigured(MirrorAudioConfig(codec: .opus)));
+    await until(() => viewer.current?.sound == .playing);
+    for (var index = 0; index < 5; index++) {
+      capture.emit(
+        CaptureAudio(
+          MirrorAudioPacket(
+            data: Uint8List.fromList([0xFC, index]),
+            ptsUs: index * 20000,
+          ),
+        ),
+      );
+    }
+
+    await until(() => speaker.played.length == 5);
+    expect(speaker.played.last.data, [0xFC, 4]);
+    expect(speaker.played.last.ptsUs, 80000);
+
+    await viewer.stop();
+    await until(() => capture.stops == 1);
+    expect(speaker.disposed, isTrue);
+  });
+
   test('JPEG fallback: a computer without a video decoder gets pictures '
       'through the Dart decoder, and its Stop ends the capture', () async {
     final capture = FakeCapture();

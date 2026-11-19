@@ -1,7 +1,13 @@
 package io.sofluffy.ferret_mirroring
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.PluginRegistry
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.resume
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +20,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 /** Captures this phone's screen for Dart: consent, the service, and the frames. */
 class FerretMirroringPlugin :
     FlutterPlugin,
+    ActivityAware,
+    PluginRegistry.RequestPermissionsResultListener,
     MirrorCaptureHostApi,
     MirrorBridge.Listener {
     private var context: Context? = null
@@ -25,6 +33,11 @@ class FerretMirroringPlugin :
 
     @Volatile
     private var skippingToKeyframe = false
+
+    /** Sound handed to Dart that it hasn't taken yet. */
+    private val soundWaitingForDart = AtomicInteger(0)
+    private var activity: ActivityPluginBinding? = null
+    private var permissionAnswer: ((Boolean) -> Unit)? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
@@ -44,6 +57,70 @@ class FerretMirroringPlugin :
         scope.cancel()
         flutterApi = null
         context = null
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activity = binding
+        binding.addRequestPermissionsResultListener(this)
+    }
+
+    override fun onDetachedFromActivity() {
+        activity?.removeRequestPermissionsResultListener(this)
+        activity = null
+        answerPermission(false)
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) = onAttachedToActivity(binding)
+
+    override fun onDetachedFromActivityForConfigChanges() = onDetachedFromActivity()
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ): Boolean {
+        if (requestCode != REQUEST_SOUND) {
+            return false
+        }
+
+        answerPermission(grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
+        return true
+    }
+
+    override fun audioSupport(): NativeAudioSupport {
+        val appContext = context ?: return NativeAudioSupport.UNSUPPORTED
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return NativeAudioSupport.UNSUPPORTED
+        }
+
+        return AudioCapture.support(appContext)
+    }
+
+    override suspend fun requestAudioPermission(): Boolean {
+        if (audioSupport() == NativeAudioSupport.READY) {
+            return true
+        }
+
+        val screen = activity?.activity
+        if (screen == null || audioSupport() == NativeAudioSupport.UNSUPPORTED) {
+            return false
+        }
+
+        return suspendCancellableCoroutine { continuation ->
+            answerPermission(false)
+            permissionAnswer = { granted ->
+                if (continuation.isActive) {
+                    continuation.resume(granted)
+                }
+            }
+            screen.requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_SOUND)
+        }
+    }
+
+    private fun answerPermission(granted: Boolean) {
+        val answer = permissionAnswer
+        permissionAnswer = null
+        answer?.invoke(granted)
     }
 
     override fun support(): NativeCaptureSupport = NativeCaptureSupport(h264 = H264Encoder.isSupported(), jpeg = true)
@@ -69,6 +146,7 @@ class FerretMirroringPlugin :
     override suspend fun start(options: NativeCaptureOptions): Boolean {
         val service = MirrorBridge.service ?: return false
         waitingForDart.set(0)
+        soundWaitingForDart.set(0)
         skippingToKeyframe = false
         return service.begin(options, this)
     }
@@ -128,6 +206,32 @@ class FerretMirroringPlugin :
         toDart { api -> api.onScreenOff(off) }
     }
 
+    override fun onAudioConfig(codec: NativeAudioCodec, sampleRate: Int, channels: Int) {
+        toDart { api -> api.onAudioConfig(codec, sampleRate.toLong(), channels.toLong()) }
+    }
+
+    /** Called on the sound thread. Sound Dart has no time for is dropped, not kept. */
+    override fun onAudioFrame(data: ByteArray, ptsUs: Long) {
+        if (soundWaitingForDart.get() >= MAX_WAITING_SOUND) {
+            return
+        }
+
+        soundWaitingForDart.incrementAndGet()
+        scope.launch {
+            try {
+                flutterApi?.onAudioFrame(data, ptsUs)
+            } catch (error: Throwable) {
+                android.util.Log.w(TAG, "Dart did not take the sound", error)
+            } finally {
+                soundWaitingForDart.decrementAndGet()
+            }
+        }
+    }
+
+    override fun onAudioEnded() {
+        toDart { api -> api.onAudioEnded() }
+    }
+
     override fun onEnded(end: NativeCaptureEnd) {
         scope.launch {
             MirrorBridge.service?.finish()
@@ -153,5 +257,9 @@ class FerretMirroringPlugin :
     companion object {
         private const val TAG = "FerretMirroring"
         private const val MAX_WAITING_FRAMES = 8
+
+        /** Half a second of 20 ms packets. */
+        private const val MAX_WAITING_SOUND = 25
+        private const val REQUEST_SOUND = 7403
     }
 }
