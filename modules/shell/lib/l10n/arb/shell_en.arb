@@ -405,6 +405,26 @@
   },
   "dropFailedDetail": "The files weren't sent. Try again in a moment.",
   "dropAllDevicesName": "all my devices",
+  "dropFolderCount": "{count, plural, =1{1 folder} other{{count} folders}}",
+  "@dropFolderCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropFilesAndFolders": "{files} and {folders}",
+  "@dropFilesAndFolders": {
+    "description": "What was dropped, e.g. \"2 files and 1 folder\".",
+    "placeholders": {
+      "files": {
+        "type": "String"
+      },
+      "folders": {
+        "type": "String"
+      }
+    }
+  },
   "dropFileCount": "{count, plural, =1{1 file} other{{count} files}}",
   "@dropFileCount": {
     "placeholders": {

@@ -627,6 +627,21 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get dropAllDevicesName => 'tất cả thiết bị của tôi';
 
   @override
+  String dropFolderCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count thư mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dropFilesAndFolders(String files, String folders) {
+    return '$files và $folders';
+  }
+
+  @override
   String dropFileCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1981,7 +1996,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get vpnSlow => 'Tệp lớn có thể chậm hơn khi ở nhà.';
+  String get vpnSlow => 'Tệp lớn có thể chậm hơn so với khi ở nhà.';
 
   @override
   String vpnPrivacy(String device, String here) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -119,6 +120,19 @@ void main() {
     expect(sent.single.$2, 'pixel-id');
     expect(viewModel.phase, isA<DropSending>());
     expect(viewModel.sendTarget, _pixel);
+  });
+
+  test('a dropped folder counts as a folder, not a file', () async {
+    final temp = Directory.systemTemp.createTempSync('ferret_drop_');
+    addTearDown(() => temp.deleteSync(recursive: true));
+    final folder = Directory('${temp.path}/Photos')..createSync();
+    final file = File('${temp.path}/notes.txt')..writeAsStringSync('hi');
+
+    viewModel.enter(_overPixel, fileCount: 2);
+    await viewModel.drop([folder.path, file.path], _overPixel);
+
+    expect(viewModel.fileCount, 2);
+    expect(viewModel.folderCount, 1);
   });
 
   test('a drop on "All my devices" sends to every device', () async {

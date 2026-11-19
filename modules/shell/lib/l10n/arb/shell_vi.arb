@@ -147,6 +147,8 @@
   "dropFailedTo": "Không gửi được đến {name}",
   "dropFailedDetail": "Tệp chưa được gửi. Hãy thử lại sau giây lát.",
   "dropAllDevicesName": "tất cả thiết bị của tôi",
+  "dropFolderCount": "{count, plural, other{{count} thư mục}}",
+  "dropFilesAndFolders": "{files} và {folders}",
   "dropFileCount": "{count, plural, other{{count} tệp}}",
   "dropTitleText": "Gửi văn bản đến…",
   "dropTitleLink": "Mở liên kết trên…",

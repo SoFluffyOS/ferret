@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -69,6 +70,7 @@ class OsDropViewModel extends ChangeNotifier {
 
   DropPhase _phase = const DropIdle();
   int _fileCount = 0;
+  int _folderCount = 0;
   FilesDropTarget? _hovered;
   FilesDropTarget? _sendTarget;
   List<String> _paths = const [];
@@ -82,6 +84,9 @@ class OsDropViewModel extends ChangeNotifier {
 
   /// How many files are dragged, or 0 when the platform doesn't say.
   int get fileCount => _fileCount;
+
+  /// How many of the dropped items are folders, known once dropped.
+  int get folderCount => _folderCount;
 
   /// What is dragged, or was dropped.
   DropKind get kind => _kind;
@@ -256,6 +261,7 @@ class OsDropViewModel extends ChangeNotifier {
 
     _phase = const DropIdle();
     _fileCount = 0;
+    _folderCount = 0;
     _hovered = null;
     _sendTarget = null;
     _paths = const [];
@@ -277,6 +283,10 @@ class OsDropViewModel extends ChangeNotifier {
     _fileCount = switch (_kind) {
       .files => _paths.length,
       .text || .link => 1,
+    };
+    _folderCount = switch (_kind) {
+      .files => _paths.where(FileSystemEntity.isDirectorySync).length,
+      .text || .link => 0,
     };
     _hovered = null;
     _sendTarget = target;

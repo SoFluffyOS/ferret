@@ -25,6 +25,9 @@ class DropSendingStatus extends StatelessWidget {
     final fileCount = context.select<OsDropViewModel, int>(
       (drop) => drop.fileCount,
     );
+    final folderCount = context.select<OsDropViewModel, int>(
+      (drop) => drop.folderCount,
+    );
     final kind = context.select<OsDropViewModel, DropKind>(
       (drop) => drop.kind,
     );
@@ -62,6 +65,7 @@ class DropSendingStatus extends StatelessWidget {
           icon: icon,
           name: cardName,
           fileCount: fileCount,
+          folderCount: folderCount,
           kind: kind,
           phase: phase,
         ),

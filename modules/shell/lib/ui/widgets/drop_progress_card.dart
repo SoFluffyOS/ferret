@@ -14,12 +14,18 @@ class DropProgressCard extends StatelessWidget {
     required this.name,
     required this.fileCount,
     required this.phase,
+    this.folderCount = 0,
     this.kind = .files,
   });
 
   final IconData icon;
   final String name;
+
+  /// Everything dropped, folders included.
   final int fileCount;
+
+  /// How many of [fileCount] are folders.
+  final int folderCount;
 
   /// What was dropped: files, text or a link.
   final DropKind kind;
@@ -32,7 +38,7 @@ class DropProgressCard extends StatelessWidget {
       DropFailed(:final reason) when reason.isNotEmpty => reason,
       DropFailed() => l10n.dropFailedDetail,
       _ => switch (kind) {
-        .files => l10n.dropFileCount(fileCount),
+        .files => _items(l10n),
         .text => l10n.dropKindText,
         .link => l10n.dropKindLink,
       },
@@ -43,6 +49,20 @@ class DropProgressCard extends StatelessWidget {
       liveRegion: true,
       child: _card(context, detail),
     );
+  }
+
+  /// "3 files", "1 folder" or "2 files and 1 folder".
+  String _items(ShellLocalizations l10n) {
+    final files = fileCount - folderCount;
+
+    return switch ((files, folderCount)) {
+      (_, 0) => l10n.dropFileCount(files),
+      (0, _) => l10n.dropFolderCount(folderCount),
+      _ => l10n.dropFilesAndFolders(
+        l10n.dropFileCount(files),
+        l10n.dropFolderCount(folderCount),
+      ),
+    };
   }
 
   Widget _card(BuildContext context, String detail) {

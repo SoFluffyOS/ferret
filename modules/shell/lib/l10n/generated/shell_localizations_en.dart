@@ -631,6 +631,22 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get dropAllDevicesName => 'all my devices';
 
   @override
+  String dropFolderCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count folders',
+      one: '1 folder',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dropFilesAndFolders(String files, String folders) {
+    return '$files and $folders';
+  }
+
+  @override
   String dropFileCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -974,6 +974,18 @@ abstract class ShellLocalizations {
   /// **'all my devices'**
   String get dropAllDevicesName;
 
+  /// No description provided for @dropFolderCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 folder} other{{count} folders}}'**
+  String dropFolderCount(int count);
+
+  /// What was dropped, e.g. "2 files and 1 folder".
+  ///
+  /// In en, this message translates to:
+  /// **'{files} and {folders}'**
+  String dropFilesAndFolders(String files, String folders);
+
   /// No description provided for @dropFileCount.
   ///
   /// In en, this message translates to:
