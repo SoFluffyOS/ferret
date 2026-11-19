@@ -1245,7 +1245,12 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String devicesOffline(int count) {
-    return '$count ngoại tuyến';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ngoại tuyến',
+    );
+    return '$_temp0';
   }
 
   @override

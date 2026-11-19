@@ -110,7 +110,7 @@ class FerretPage extends StatelessWidget {
                             color: palette.text,
                           ),
                           overflow: .ellipsis,
-                          maxLines: 1,
+                          maxLines: 2,
                         ),
                       ),
                       ...actions,

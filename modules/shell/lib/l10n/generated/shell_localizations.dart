@@ -2021,7 +2021,7 @@ abstract class ShellLocalizations {
   /// No description provided for @devicesOffline.
   ///
   /// In en, this message translates to:
-  /// **'{count} offline'**
+  /// **'{count, plural, other{{count} offline}}'**
   String devicesOffline(int count);
 
   /// Button that shows the offline devices hidden under a summary line

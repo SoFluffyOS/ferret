@@ -1247,7 +1247,12 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String devicesOffline(int count) {
-    return '$count offline';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offline',
+    );
+    return '$_temp0';
   }
 
   @override

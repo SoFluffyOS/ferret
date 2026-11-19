@@ -967,7 +967,7 @@
       }
     }
   },
-  "devicesOffline": "{count} offline",
+  "devicesOffline": "{count, plural, other{{count} offline}}",
   "@devicesOffline": {
     "placeholders": {
       "count": {

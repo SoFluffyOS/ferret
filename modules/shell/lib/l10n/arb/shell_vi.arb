@@ -321,7 +321,7 @@
   "homeMore": "Khác",
   "homeStatusPaused": "Đã tạm dừng",
   "deviceAttention": "Đã kết nối · {feature}: cần chú ý",
-  "devicesOffline": "{count} ngoại tuyến",
+  "devicesOffline": "{count, plural, other{{count} ngoại tuyến}}",
   "devicesShow": "Hiện",
   "devicesPin": "Ghim lên đầu",
   "devicesUnpin": "Bỏ ghim",
