@@ -1,6 +1,6 @@
 # ferret_actions
 
-Puts this computer to sleep, restarts it, shuts it down, changes its volume, and runs a command line with a timeout. Part of [Ferret](../../README.md), usable on its own. Pure Dart: no plugin to register, so it works in a command-line tool too.
+Puts this computer to sleep, restarts it, shuts it down, changes its volume, runs a command line with a timeout, and tells how long nobody touched it. Part of [Ferret](../../README.md), usable on its own. Pure Dart: no plugin to register, so it works in a command-line tool too.
 
 ```dart
 final computer = ComputerActions.current();
@@ -21,6 +21,8 @@ print(outcome.exitCode); // null when it timed out or couldn't start
 | Restart | System Events `restart` | `ExitWindowsEx` with `SeShutdownPrivilege` | logind `Reboot`, then `systemctl reboot` |
 | Shut down | System Events `shut down` | `ExitWindowsEx` with `SeShutdownPrivilege` | logind `PowerOff`, then `systemctl poweroff` |
 | Mute, volume | `set volume` (AppleScript) | the volume keys (`keybd_event`) | `wpctl`, then `pactl`, then `amixer` |
+
+`InputIdle.current().idleTime()` says how long nobody touched the keyboard or mouse: `CGEventSourceSecondsSinceLastEventType` on macOS, `GetLastInputInfo` on Windows, and `xprintidle` (X11) or logind's `IdleHint` on Linux. Null when the system won't say.
 
 On macOS, restart and shut down go through System Events: the app needs `NSAppleEventsUsageDescription` in its `Info.plist` (and the `com.apple.security.automation.apple-events` entitlement under the hardened runtime), and macOS asks once.
 

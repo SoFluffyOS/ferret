@@ -1,5 +1,5 @@
 name: ferret_actions
-description: Puts a computer to sleep, restarts it, shuts it down, changes its volume and runs a command line with a timeout, on macOS, Windows and Linux. Platform code for Ferret's computer actions, reusable on its own.
+description: Puts a computer to sleep, restarts it, shuts it down, changes its volume, runs a command line with a timeout and reads how long the keyboard and mouse sat untouched, on macOS, Windows and Linux. Platform code for Ferret's computer actions, reusable on its own.
 version: 0.1.0
 publish_to: none
 resolution: workspace
