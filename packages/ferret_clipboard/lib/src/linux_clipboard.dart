@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:ferret_clipboard/src/clipboard_access.dart';
 import 'package:ferret_clipboard/src/clipboard_content.dart';
@@ -36,12 +37,14 @@ class LinuxClipboard implements ClipboardPlatform {
     StartCommand? start,
     Future<String?> Function()? readText,
     Future<void> Function(String text)? writeText,
+    Future<Uint8List?> Function(Uint8List image)? toPng,
     this.pollInterval = const Duration(seconds: 1),
   }) : _environment = environment ?? Platform.environment,
        _run = run ?? _runForBytes,
        _start = start ?? Process.start,
        _readText = readText ?? _flutterReadText,
-       _writeText = writeText ?? _flutterWriteText;
+       _writeText = writeText ?? _flutterWriteText,
+       _toPng = toPng ?? _flutterToPng;
 
   /// KDE's hint that a password manager put a secret on the clipboard;
   /// KeePassXC and others set it.
@@ -55,6 +58,7 @@ class LinuxClipboard implements ClipboardPlatform {
   final StartCommand _start;
   final Future<String?> Function() _readText;
   final Future<void> Function(String text) _writeText;
+  final Future<Uint8List?> Function(Uint8List image) _toPng;
 
   /// How often to look for changes when the compositor can't report them.
   final Duration pollInterval;
@@ -111,7 +115,8 @@ class LinuxClipboard implements ClipboardPlatform {
     }
 
     if ((content.image, content.imageMime) case (final image?, final mime?)) {
-      await _writeImage(image, mime);
+      final (bytes, type) = await _pasteable(image, mime);
+      await _writeImage(bytes, type);
     }
   }
 
@@ -240,6 +245,36 @@ class LinuxClipboard implements ClipboardPlatform {
     true => ('wl-paste', ['--no-newline', '--type', type]),
     false => ('xclip', ['-selection', 'clipboard', '-t', type, '-o']),
   });
+
+  /// Linux offers one type per copy, and most apps paste only PNG, so
+  /// another image (such as a JPEG photo) goes on as PNG when it can.
+  Future<(Uint8List, String)> _pasteable(Uint8List image, String mime) async {
+    if (mime == 'image/png') {
+      return (image, mime);
+    }
+
+    final png = await _toPng(image);
+    if (png == null) {
+      return (image, mime);
+    }
+
+    return (png, 'image/png');
+  }
+
+  static Future<Uint8List?> _flutterToPng(Uint8List image) async {
+    try {
+      final codec = await ui.instantiateImageCodec(image);
+      final frame = await codec.getNextFrame();
+      final bytes = await frame.image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+      frame.image.dispose();
+      codec.dispose();
+      return bytes?.buffer.asUint8List();
+    } on Object {
+      return null;
+    }
+  }
 
   Future<void> _writeImage(Uint8List image, String mime) async {
     final (executable, arguments) = switch (_isWayland) {

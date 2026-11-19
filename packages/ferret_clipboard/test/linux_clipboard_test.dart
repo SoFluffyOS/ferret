@@ -78,6 +78,45 @@ void main() {
     );
   });
 
+  test('a JPEG goes on as PNG, which most apps paste', () async {
+    final types = <String>[];
+    final png = Uint8List.fromList([137, 80, 78, 71]);
+    final clipboard = LinuxClipboard(
+      environment: const {'WAYLAND_DISPLAY': 'wayland-0'},
+      toPng: (_) async => png,
+      start: (_, arguments) {
+        types.add(arguments.last);
+        throw const ProcessException('wl-copy', []);
+      },
+    );
+
+    await expectLater(
+      clipboard.write(.image(Uint8List(4), imageMime: 'image/jpeg')),
+      throwsA(isA<ClipboardToolMissingException>()),
+    );
+
+    expect(types, ['image/png']);
+  });
+
+  test("a JPEG that can't be turned into PNG goes on as it is", () async {
+    final types = <String>[];
+    final clipboard = LinuxClipboard(
+      environment: const {'WAYLAND_DISPLAY': 'wayland-0'},
+      toPng: (_) async => null,
+      start: (_, arguments) {
+        types.add(arguments.last);
+        throw const ProcessException('wl-copy', []);
+      },
+    );
+
+    await expectLater(
+      clipboard.write(.image(Uint8List(4), imageMime: 'image/jpeg')),
+      throwsA(isA<ClipboardToolMissingException>()),
+    );
+
+    expect(types, ['image/jpeg']);
+  });
+
   test('polling reports a change once per new content', () async {
     var text = 'one';
     final clipboard = LinuxClipboard(
