@@ -347,4 +347,65 @@ void main() {
       expect(checks.where((check) => check.kind == .vpn), isEmpty);
     });
   });
+
+  group('mobile data only', () {
+    Future<void> trustMac({bool reachOverVpn = false}) =>
+        engine.trustStore.save(
+          TrustedDevice(
+            id: 'macmacmacmacmacm',
+            name: 'MacBook',
+            platform: .PLATFORM_MACOS,
+            formFactor: .FORM_FACTOR_LAPTOP,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime(2026),
+            reachOverVpn: reachOverVpn,
+          ),
+        );
+
+    ConnectionDoctor onMobileData() => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      interfaces: () async => [(name: 'rmnet_data0', address: '100.70.1.2')],
+      probe: (host, port, timeout) async => Reach.silent,
+    );
+
+    test('says the phone is on mobile data and offers the VPN', () async {
+      await trustMac();
+
+      final checks = await onMobileData().diagnose('macmacmacmacmacm').last;
+      final line = checks.first;
+
+      expect(line.kind, DoctorCheckKind.mobileData);
+      expect(line.status, DoctorStatus.problem);
+      expect(line.fixes, [DoctorFix.reachOverVpn]);
+      expect(checks.where((check) => check.kind == .network), isEmpty);
+      expect(checks.where((check) => check.kind == .vpnReach), isEmpty);
+    });
+
+    test('with the VPN on it is only a heads-up', () async {
+      await trustMac(reachOverVpn: true);
+
+      final checks = await onMobileData().diagnose('macmacmacmacmacm').last;
+
+      expect(checks.first.kind, DoctorCheckKind.mobileData);
+      expect(checks.first.status, DoctorStatus.warning);
+      expect(checks.first.fixes, isEmpty);
+    });
+
+    test('Wi-Fi next to mobile data is a normal network', () async {
+      final checks = await ConnectionDoctor(
+        engine,
+        isWindows: false,
+        isLinux: false,
+        interfaces: () async => [
+          (name: 'rmnet_data0', address: '100.70.1.2'),
+          (name: 'wlan0', address: '192.168.1.9'),
+        ],
+      ).diagnose(null).last;
+
+      expect(checks.first.kind, DoctorCheckKind.network);
+      expect(checks.first.detail, '192.168.1.9');
+    });
+  });
 }

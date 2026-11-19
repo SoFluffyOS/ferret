@@ -256,7 +256,9 @@ class _DoctorPageState extends State<DoctorPage> {
   /// the other device" is no help while this device has no network.
   List<DoctorCheck> _shown(List<DoctorCheck> checks) {
     final offline = checks.any(
-      (check) => check.kind == .network && check.status == .problem,
+      (check) =>
+          (check.kind == .network || check.kind == .mobileData) &&
+          check.status == .problem,
     );
 
     return [
@@ -311,6 +313,9 @@ class _DoctorPageState extends State<DoctorPage> {
     return switch ((check.kind, check.status)) {
       (.network, .problem) => l10n.doctorNetworkProblem(here),
       (.network, _) => l10n.doctorNetworkOk(here),
+      (.mobileData, _) when device.isEmpty => l10n.doctorMobileDataAny(here),
+      (.mobileData, .problem) => l10n.doctorMobileData(here, device),
+      (.mobileData, _) => l10n.doctorMobileDataVpn(here, device),
       (.vpn, _) => l10n.doctorVpn(check.detail),
       (.vpnReach, .ok) => l10n.doctorVpnReachOn(device),
       (.vpnReach, _) => l10n.doctorVpnReachOff(device),

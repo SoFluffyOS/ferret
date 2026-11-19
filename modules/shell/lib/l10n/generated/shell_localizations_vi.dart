@@ -380,6 +380,48 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String doctorMobileDataAny(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 đang dùng dữ liệu di động, mà Ferret cần Wi-Fi để tìm thiết bị của bạn. Hãy vào cùng Wi-Fi với chúng.';
+  }
+
+  @override
+  String doctorMobileData(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 đang dùng dữ liệu di động, mà Ferret cần Wi-Fi để tìm $device. Hãy vào cùng Wi-Fi, hoặc kết nối $device qua VPN của bạn.';
+  }
+
+  @override
+  String doctorMobileDataVpn(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Mac này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 đang dùng dữ liệu di động. Ferret sẽ thử kết nối $device qua VPN của bạn.';
+  }
+
+  @override
   String doctorVpn(String name) {
     return 'Đang bật VPN ($name). VPN có thể che các thiết bị trong mạng của bạn. Hãy cho phép truy cập mạng cục bộ trong VPN, hoặc tắt VPN.';
   }

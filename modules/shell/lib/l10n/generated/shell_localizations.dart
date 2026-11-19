@@ -644,6 +644,24 @@ abstract class ShellLocalizations {
   /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
   String doctorNetworkProblem(String here);
 
+  /// No description provided for @doctorMobileDataAny.
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find your devices. Join the same Wi-Fi as them.'**
+  String doctorMobileDataAny(String here);
+
+  /// No description provided for @doctorMobileData.
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find {device}. Join the same Wi-Fi, or reach {device} over your own VPN.'**
+  String doctorMobileData(String here, String device);
+
+  /// No description provided for @doctorMobileDataVpn.
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data. Ferret will try {device} over your VPN.'**
+  String doctorMobileDataVpn(String here, String device);
+
   /// No description provided for @doctorVpn.
   ///
   /// In en, this message translates to:

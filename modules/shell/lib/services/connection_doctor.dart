@@ -52,6 +52,11 @@ enum DoctorCheckKind {
   /// because this device is on a VPN.
   vpnReach,
 
+  /// This device has mobile data and no Wi-Fi or Ethernet, so nothing
+  /// nearby can be reached. Comes with the "Reach over your VPN" fix when
+  /// that is still off for the device.
+  mobileData,
+
   /// The network keeps its devices from talking to each other (client or
   /// AP isolation), as café, hotel, campus and guest Wi-Fi often do. A
   /// problem when a device on the same network didn't answer; a warning
@@ -165,16 +170,40 @@ class ConnectionDoctor {
     final firewall = await _firewallHint();
 
     final interfaces = await _interfaces();
-    final local = interfaces.where((entry) => !_isVpn(entry.name)).toList();
+    final cellular = interfaces.any(
+      (entry) => VpnAddresses.isCellularInterface(entry.name),
+    );
+    final local = interfaces
+        .where(
+          (entry) =>
+              !_isVpn(entry.name) &&
+              !VpnAddresses.isCellularInterface(entry.name),
+        )
+        .toList();
+    final reachesOverVpn = device?.reachOverVpn ?? false;
+    final onMobileData = local.isEmpty && cellular;
     checks.add(
-      DoctorCheck(
-        kind: .network,
-        status: switch (local.isEmpty) {
-          true => DoctorStatus.problem,
-          false => DoctorStatus.ok,
-        },
-        detail: local.map((entry) => entry.address).join(', '),
-      ),
+      switch (onMobileData) {
+        true => DoctorCheck(
+          kind: .mobileData,
+          status: switch (reachesOverVpn) {
+            true => DoctorStatus.warning,
+            false => DoctorStatus.problem,
+          },
+          fixes: switch (device != null && !reachesOverVpn) {
+            true => const [DoctorFix.reachOverVpn],
+            false => const [],
+          },
+        ),
+        false => DoctorCheck(
+          kind: .network,
+          status: switch (local.isEmpty) {
+            true => DoctorStatus.problem,
+            false => DoctorStatus.ok,
+          },
+          detail: local.map((entry) => entry.address).join(', '),
+        ),
+      },
     );
     yield [...checks];
 
@@ -182,7 +211,6 @@ class ConnectionDoctor {
         .where((entry) => _isVpn(entry.name))
         .map((entry) => entry.name)
         .toSet();
-    final reachesOverVpn = device?.reachOverVpn ?? false;
     if (vpn.isNotEmpty && !reachesOverVpn) {
       checks.add(
         DoctorCheck(kind: .vpn, status: .warning, detail: vpn.join(', ')),
@@ -190,7 +218,9 @@ class ConnectionDoctor {
       yield [...checks];
     }
 
-    if (device != null && (reachesOverVpn || vpn.isNotEmpty)) {
+    if (device != null &&
+        !(onMobileData && !reachesOverVpn) &&
+        (reachesOverVpn || vpn.isNotEmpty)) {
       checks.add(
         DoctorCheck(
           kind: .vpnReach,

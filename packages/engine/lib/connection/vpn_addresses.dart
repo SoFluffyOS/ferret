@@ -33,7 +33,9 @@ class VpnAddresses {
     return _vpnInterfacePrefixes.any(lower.startsWith);
   }
 
-  static bool _isCellularInterface(String name) {
+  /// Whether [name] is a mobile data interface, such as `rmnet_data0` on
+  /// Android or `pdp_ip0` on iOS.
+  static bool isCellularInterface(String name) {
     final lower = name.toLowerCase();
     return _cellularPrefixes.any(lower.startsWith);
   }
@@ -63,7 +65,7 @@ class VpnAddresses {
   ) {
     final found = <String>[];
     for (final interface in interfaces) {
-      if (_isCellularInterface(interface.name)) {
+      if (isCellularInterface(interface.name)) {
         continue;
       }
 

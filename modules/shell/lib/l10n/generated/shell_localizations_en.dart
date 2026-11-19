@@ -381,6 +381,48 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String doctorMobileDataAny(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is on mobile data, and Ferret needs Wi-Fi to find your devices. Join the same Wi-Fi as them.';
+  }
+
+  @override
+  String doctorMobileData(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is on mobile data, and Ferret needs Wi-Fi to find $device. Join the same Wi-Fi, or reach $device over your own VPN.';
+  }
+
+  @override
+  String doctorMobileDataVpn(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is on mobile data. Ferret will try $device over your VPN.';
+  }
+
+  @override
   String doctorVpn(String name) {
     return 'A VPN is on ($name). It can hide devices on your network. Allow local network access in the VPN, or turn it off.';
   }
