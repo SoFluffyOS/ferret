@@ -24,6 +24,9 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
+  String get recent => 'Gần đây';
+
+  @override
   String get select => 'Chọn';
 
   @override
@@ -89,7 +92,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
 
   @override
   String notAllowedBody(String device) {
-    return 'Ảnh của bạn ở lại trên điện thoại cho đến khi bạn cho phép. Trên $device, mở máy tính này và bật Ảnh trong mục Những gì thiết bị được dùng.';
+    return 'Ảnh của bạn ở lại trên điện thoại cho đến khi bạn cho phép. Trên $device, mở máy tính này trong Ferret và bật công tắc ảnh trong mục Những gì thiết bị được dùng.';
   }
 
   @override

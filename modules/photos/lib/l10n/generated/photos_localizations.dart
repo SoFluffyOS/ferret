@@ -122,6 +122,12 @@ abstract class PhotosLocalizations {
   /// **'Each screenshot you take on {device} lands here while Ferret runs on both.'**
   String autoScreenshotsBody(String device);
 
+  /// Heading over the grid of a phone's photos, newest first.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
   /// No description provided for @select.
   ///
   /// In en, this message translates to:
@@ -215,7 +221,7 @@ abstract class PhotosLocalizations {
   /// No description provided for @notAllowedBody.
   ///
   /// In en, this message translates to:
-  /// **'Your photos stay on the phone until you allow it. On {device}, open this computer and turn on Photos under What it can use.'**
+  /// **'Your photos stay on the phone until you allow it. On {device}, open this computer in Ferret and turn on the photos switch under What it can use.'**
   String notAllowedBody(String device);
 
   /// No description provided for @noPermissionTitle.

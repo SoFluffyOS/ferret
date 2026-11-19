@@ -24,6 +24,9 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
+  String get recent => 'Recent';
+
+  @override
   String get select => 'Select';
 
   @override
@@ -90,7 +93,7 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
 
   @override
   String notAllowedBody(String device) {
-    return 'Your photos stay on the phone until you allow it. On $device, open this computer and turn on Photos under What it can use.';
+    return 'Your photos stay on the phone until you allow it. On $device, open this computer in Ferret and turn on the photos switch under What it can use.';
   }
 
   @override

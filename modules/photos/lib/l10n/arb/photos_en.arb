@@ -17,6 +17,10 @@
       }
     }
   },
+  "recent": "Recent",
+  "@recent": {
+    "description": "Heading over the grid of a phone's photos, newest first."
+  },
   "select": "Select",
   "cancel": "Cancel",
   "saveCount": "{count, plural, =1{Save 1 photo} other{Save {count} photos}}",
@@ -82,7 +86,7 @@
       }
     }
   },
-  "notAllowedBody": "Your photos stay on the phone until you allow it. On {device}, open this computer and turn on Photos under What it can use.",
+  "notAllowedBody": "Your photos stay on the phone until you allow it. On {device}, open this computer in Ferret and turn on the photos switch under What it can use.",
   "@notAllowedBody": {
     "placeholders": {
       "device": {

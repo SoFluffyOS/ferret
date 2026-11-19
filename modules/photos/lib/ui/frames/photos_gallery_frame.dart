@@ -64,9 +64,6 @@ class PhotosGalleryFrame extends StatelessWidget {
     return FerretPage(
       title: l10n.title,
       backLabel: l10n.back,
-      actions: [
-        if (showsGrid) ..._selectionActions(context, isSelecting, selected),
-      ],
       children: [
         GroupedCard(
           children: [
@@ -88,6 +85,14 @@ class PhotosGalleryFrame extends StatelessWidget {
         if (showsPreviews && state != .photos)
           _message(context, state, viewModel),
         if (showsGrid && isLimited) _LimitedBanner(deviceName: deviceName),
+        if (showsGrid)
+          SectionTitle(
+            l10n.recent,
+            trailing: Row(
+              mainAxisSize: .min,
+              children: _selectionActions(context, isSelecting, selected),
+            ),
+          ),
         if (showsGrid)
           for (var start = 0; start < items.length; start += columns)
             Padding(
@@ -118,23 +123,19 @@ class PhotosGalleryFrame extends StatelessWidget {
     final viewModel = context.read<PhotoGalleryViewModel>();
     if (!isSelecting) {
       return [
-        Button(
-          variant: .ghost,
-          mainAxisSize: .min,
+        TextLink(
           label: l10n.select,
-          onPressed: () => viewModel.setSelecting(true),
+          onTap: () => viewModel.setSelecting(true),
         ),
       ];
     }
 
     return [
-      Button(
-        variant: .ghost,
-        mainAxisSize: .min,
+      TextLink(
         label: l10n.cancel,
-        onPressed: () => viewModel.setSelecting(false),
+        onTap: () => viewModel.setSelecting(false),
       ),
-      Spacing.h8,
+      Spacing.h12,
       Button(
         variant: .primary,
         mainAxisSize: .min,
