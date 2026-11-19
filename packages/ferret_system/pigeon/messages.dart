@@ -116,6 +116,11 @@ abstract class SystemHostApi {
   /// this account is the one in front (not switched away from). Always true
   /// where there is no such thing.
   bool isScreenSessionActive();
+
+  /// Tells Android 13 and later the language picked in the app, such as
+  /// `vi`, so its own notices and the system's per-app language agree.
+  /// Empty follows the system again.
+  void setAppLanguage(String languageTag);
 }
 
 @FlutterApi()

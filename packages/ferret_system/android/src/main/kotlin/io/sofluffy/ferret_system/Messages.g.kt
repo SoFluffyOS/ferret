@@ -437,6 +437,12 @@ interface SystemHostApi {
    * where there is no such thing.
    */
   fun isScreenSessionActive(): Boolean
+  /**
+   * Tells Android 13 and later the language picked in the app, such as
+   * `vi`, so its own notices and the system's per-app language agree.
+   * Empty follows the system again.
+   */
+  fun setAppLanguage(languageTag: String)
 
   companion object {
     /** The codec used by SystemHostApi. */
@@ -819,6 +825,24 @@ interface SystemHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               listOf(api.isScreenSessionActive())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.setAppLanguage$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val languageTagArg = args[0] as String
+            val wrapped: List<Any?> = try {
+              api.setAppLanguage(languageTagArg)
+              listOf(null)
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

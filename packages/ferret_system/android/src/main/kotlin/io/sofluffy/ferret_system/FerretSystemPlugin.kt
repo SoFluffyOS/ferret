@@ -2,6 +2,7 @@ package io.sofluffy.ferret_system
 
 import android.Manifest
 import android.app.Activity
+import android.app.LocaleManager
 import android.app.NotificationManager
 import android.app.StatusBarManager
 import android.content.Context
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Icon
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.LocaleList
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -179,6 +181,21 @@ class FerretSystemPlugin :
     override fun recentServiceStops(): List<Long> {
         val appContext = context ?: return emptyList()
         return ServiceStops.recent(appContext)
+    }
+
+    override fun setAppLanguage(languageTag: String) {
+        val appContext = context ?: return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return
+        }
+
+        val manager = appContext.getSystemService(LocaleManager::class.java) ?: return
+        val wanted = LocaleList.forLanguageTags(languageTag)
+        if (manager.applicationLocales == wanted) {
+            return
+        }
+
+        manager.applicationLocales = wanted
     }
 
     override fun canRequestAddTile(): Boolean =

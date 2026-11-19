@@ -170,6 +170,8 @@ public class FerretSystemPlugin: NSObject, FlutterPlugin, SystemHostApi {
 
     func canRequestAddTile() throws -> Bool { false }
 
+    func setAppLanguage(languageTag: String) throws {}
+
     func requestAddTile() async throws -> AddTileResult { .unsupported }
 
     func areNotificationsAllowed() throws -> Bool { true }

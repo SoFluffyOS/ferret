@@ -399,6 +399,10 @@ protocol SystemHostApi {
   /// this account is the one in front (not switched away from). Always true
   /// where there is no such thing.
   func isScreenSessionActive() throws -> Bool
+  /// Tells Android 13 and later the language picked in the app, such as
+  /// `vi`, so its own notices and the system's per-app language agree.
+  /// Empty follows the system again.
+  func setAppLanguage(languageTag: String) throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -750,6 +754,24 @@ class SystemHostApiSetup {
       }
     } else {
       isScreenSessionActiveChannel.setMessageHandler(nil)
+    }
+    /// Tells Android 13 and later the language picked in the app, such as
+    /// `vi`, so its own notices and the system's per-app language agree.
+    /// Empty follows the system again.
+    let setAppLanguageChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.setAppLanguage\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setAppLanguageChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let languageTagArg = args[0] as! String
+        do {
+          try api.setAppLanguage(languageTag: languageTagArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setAppLanguageChannel.setMessageHandler(nil)
     }
   }
 }

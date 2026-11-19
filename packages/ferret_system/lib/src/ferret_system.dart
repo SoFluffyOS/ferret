@@ -111,6 +111,12 @@ class FerretSystem implements SystemFlutterApi {
   Future<void> setStartOnBoot(bool enabled) =>
       _android(() => _api.setStartOnBoot(enabled));
 
+  /// Tells Android 13 and later the language picked in the app, such as
+  /// `vi`, so the service notification and other notices use it too. Null
+  /// follows the system again.
+  Future<void> setAppLanguage(String? languageTag) =>
+      _android(() => _api.setAppLanguage(languageTag ?? ''));
+
   /// Shows [connectedDevices] in the service notification and the tile.
   Future<void> updateStatus(List<String> connectedDevices) =>
       _android(() => _api.updateStatus(connectedDevices));

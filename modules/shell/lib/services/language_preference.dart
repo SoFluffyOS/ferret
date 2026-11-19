@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:shell/l10n/l10n.dart';
 
 /// The language picked in Settings → Advanced, kept in settings and
@@ -21,9 +22,22 @@ abstract final class LanguagePreference {
   }
 
   /// Shows Ferret in [locale] from now on; null follows the system again.
-  static Future<void> choose(SettingsStore settings, Locale? locale) async {
+  /// Android hears it too, so its notices match. Going back to the system
+  /// only clears Android's per-app language when Ferret set it, never one
+  /// picked in Android's own settings.
+  static Future<void> choose(
+    SettingsStore settings,
+    Locale? locale, {
+    FerretSystem? system,
+  }) async {
+    final hadChoice = settings.get<String>(key) != null;
     AppLocale.chosen.value = locale;
     await settings.set(key, locale?.toLanguageTag());
+    if (locale == null && !hadChoice) {
+      return;
+    }
+
+    await (system ?? FerretSystem()).setAppLanguage(locale?.toLanguageTag());
   }
 
   /// The name of [locale] in its own language, or its tag when unknown.
