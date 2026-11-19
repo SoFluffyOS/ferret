@@ -5,8 +5,9 @@ import 'package:core/core.dart';
 import 'package:ferret_cli/cli_environment.dart';
 import 'package:ferret_cli/exit_codes.dart';
 
-/// `ferret-cli send <file>…`: hands the files to the Ferret app running on this
-/// computer, which sends them to your device (or asks which one).
+/// `ferret-cli send <file or folder>…`: hands the files to the Ferret app
+/// running on this computer, which sends them to your device (or asks which
+/// one). A folder goes with everything inside it.
 class SendCommand extends Command<int> {
   SendCommand(this._environment);
 
@@ -17,24 +18,30 @@ class SendCommand extends Command<int> {
 
   @override
   String get description =>
-      'Send files with the Ferret app running on this computer.';
+      'Send files or folders with the Ferret app running on this computer.';
 
   @override
-  String get invocation => 'ferret-cli send <file>…';
+  String get invocation => 'ferret-cli send <file or folder>…';
 
   @override
   Future<int> run() async {
     final files = argResults?.rest ?? const [];
     if (files.isEmpty) {
-      usageException('Name at least one file to send.');
+      usageException('Name at least one file or folder to send.');
     }
 
     final paths = <String>[];
+    var folders = 0;
     for (final file in files) {
       final entity = File(file).absolute;
-      if (!entity.existsSync() && !Directory(entity.path).existsSync()) {
-        _environment.err.writeln('No such file: $file');
+      final isFolder = Directory(entity.path).existsSync();
+      if (!entity.existsSync() && !isFolder) {
+        _environment.err.writeln('No such file or folder: $file');
         return ExitCodes.noInput;
+      }
+
+      if (isFolder) {
+        folders++;
       }
       paths.add(entity.path);
     }
@@ -50,9 +57,11 @@ class SendCommand extends Command<int> {
       return ExitCodes.unavailable;
     }
 
-    _environment.out.writeln(switch (paths.length) {
-      1 => 'Handed 1 file to Ferret.',
-      final count => 'Handed $count files to Ferret.',
+    _environment.out.writeln(switch ((paths.length, folders)) {
+      (1, 1) => 'Handed 1 folder to Ferret.',
+      (1, _) => 'Handed 1 file to Ferret.',
+      (final count, 0) => 'Handed $count files to Ferret.',
+      (final count, _) => 'Handed $count files and folders to Ferret.',
     });
     return ExitCodes.ok;
   }

@@ -96,6 +96,24 @@ void main() {
       expect(out.toString(), contains('Handed 1 file'));
     });
 
+    test('send hands a folder over whole', () async {
+      final running = SendHandoff(home.path);
+      final received = <List<String>>[];
+      running.requests.listen(received.add);
+      await running.listen();
+      addTearDown(running.dispose);
+      final folder = Directory('${home.path}/Photos')..createSync();
+      File('${folder.path}/a.jpg').writeAsStringSync('x');
+
+      final exit = await buildRunner(environment).run(['send', folder.path]);
+
+      expect(exit, ExitCodes.ok);
+      expect(received, [
+        [folder.path],
+      ]);
+      expect(out.toString(), contains('Handed 1 folder'));
+    });
+
     test('send says when the app is not running', () async {
       final file = File('${home.path}/photo.jpg')..writeAsStringSync('x');
 
