@@ -93,7 +93,7 @@ BEGIN
             VALUE "FileDescription", "ferret" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "ferret" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 io.sofluffy. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 SoFluffy. Free software under the GPL-3.0." "\0"
             VALUE "OriginalFilename", "ferret.exe" "\0"
             VALUE "ProductName", "ferret" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

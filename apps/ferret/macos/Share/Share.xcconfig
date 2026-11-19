@@ -5,4 +5,4 @@
 
 PRODUCT_NAME = Share
 PRODUCT_BUNDLE_IDENTIFIER = io.sofluffy.ferret.Share
-PRODUCT_COPYRIGHT = Copyright © 2026 io.sofluffy. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 SoFluffy. Free software under the GPL-3.0.

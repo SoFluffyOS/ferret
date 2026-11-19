@@ -11,6 +11,6 @@ PRODUCT_NAME = ferret
 PRODUCT_BUNDLE_IDENTIFIER = io.sofluffy.ferret
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 io.sofluffy. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 SoFluffy. Free software under the GPL-3.0.
 
 #include "ShareGroup.xcconfig"
