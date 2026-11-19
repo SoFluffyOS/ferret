@@ -1,10 +1,20 @@
 import Cocoa
 
-/// Draws the menubar icon for each state. Every image but the drag-over one
-/// is a template, so the menubar tints it for light and dark by itself.
+/// Draws the menubar icon for each state: the ferret from
+/// branding/ferret-template.svg, with the state drawn over it. Every image but
+/// the drag-over one is a template, so the menubar tints it for light and dark
+/// by itself.
 enum StatusIconRenderer {
     private static let side: CGFloat = 18
-    private static let glyphName = "arrow.left.arrow.right"
+    private static let glyphHeight: CGFloat = 16
+
+    /// The ferret down to its waist: with the whole body it is too thin to
+    /// read at menubar size.
+    private static let glyphBox = NSRect(
+        x: FerretGlyph.bounds.minX,
+        y: FerretGlyph.bounds.minY,
+        width: FerretGlyph.bounds.width,
+        height: 860 - FerretGlyph.bounds.minY)
 
     static func image(for state: MenubarIconState, progress: Double) -> NSImage {
         let size = NSSize(width: side, height: side)
@@ -19,21 +29,21 @@ enum StatusIconRenderer {
     private static func draw(_ state: MenubarIconState, progress: Double, in bounds: NSRect) {
         switch state {
         case .normal:
-            drawSymbol(glyphName, pointSize: 13, in: bounds)
+            drawGlyph(height: glyphHeight, in: bounds)
         case .alone:
-            drawSymbol(glyphName, pointSize: 13, in: bounds, alpha: 0.5)
+            drawGlyph(height: glyphHeight, in: bounds, color: NSColor.black.withAlphaComponent(0.5))
         case .dragOver:
             drawDragOver(in: bounds)
         case .working:
-            drawSymbol(glyphName, pointSize: 7.5, weight: .bold, in: bounds)
+            drawGlyph(height: 9.5, in: bounds)
             drawRing(progress: progress, in: bounds)
         case .done:
             drawSymbol("checkmark", pointSize: 13, weight: .semibold, in: bounds)
         case .needsYou:
-            drawSymbol(glyphName, pointSize: 13, in: bounds)
+            drawGlyph(height: glyphHeight, in: bounds)
             drawDot(in: bounds)
         case .paused:
-            drawSymbol(glyphName, pointSize: 13, in: bounds)
+            drawGlyph(height: glyphHeight, in: bounds)
             drawSlash(in: bounds)
         }
     }
@@ -47,13 +57,31 @@ enum StatusIconRenderer {
     private static func drawSymbol(
         _ name: String,
         pointSize: CGFloat,
-        weight: NSFont.Weight = .medium,
-        in bounds: NSRect,
-        alpha: CGFloat = 1
+        weight: NSFont.Weight,
+        in bounds: NSRect
     ) {
         guard let glyph = symbol(name, pointSize: pointSize, weight: weight) else { return }
 
-        glyph.draw(in: centered(glyph.size, in: bounds), from: .zero, operation: .sourceOver, fraction: alpha)
+        glyph.draw(in: centered(glyph.size, in: bounds))
+    }
+
+    /// The ferret, `height` points high and centred in `bounds`. The path is
+    /// drawn with y growing downwards, so it is flipped on the way in.
+    private static func drawGlyph(height: CGFloat, in bounds: NSRect, color: NSColor = .black) {
+        let scale = height / glyphBox.height
+        let frame = centered(NSSize(width: glyphBox.width * scale, height: height), in: bounds)
+
+        var transform = AffineTransform(translationByX: frame.minX, byY: frame.maxY)
+        transform.scale(x: scale, y: -scale)
+        transform.translate(x: -glyphBox.minX, y: -glyphBox.minY)
+        let path = FerretGlyph.path()
+        path.transform(using: transform)
+
+        NSGraphicsContext.saveGraphicsState()
+        NSBezierPath(rect: frame).addClip()
+        color.setFill()
+        path.fill()
+        NSGraphicsContext.restoreGraphicsState()
     }
 
     private static func centered(_ size: NSSize, in bounds: NSRect) -> NSRect {
@@ -68,16 +96,7 @@ enum StatusIconRenderer {
     private static func drawDragOver(in bounds: NSRect) {
         NSColor.controlAccentColor.setFill()
         NSBezierPath(roundedRect: bounds, xRadius: 5, yRadius: 5).fill()
-
-        guard let glyph = symbol(glyphName, pointSize: 12, weight: .semibold) else { return }
-
-        let white = NSImage(size: glyph.size, flipped: false) { rect in
-            glyph.draw(in: rect)
-            NSColor.white.set()
-            rect.fill(using: .sourceAtop)
-            return true
-        }
-        white.draw(in: centered(glyph.size, in: bounds))
+        drawGlyph(height: 13, in: bounds, color: .white)
     }
 
     /// A faint full circle, and over it the part done so far, clockwise
@@ -125,8 +144,8 @@ enum StatusIconRenderer {
         NSBezierPath(ovalIn: square(around: center, radius: radius)).fill()
     }
 
-    /// A line from the bottom left to the top right, which crosses the
-    /// shafts and spares both arrowheads, with a gap cut along it.
+    /// A line from the bottom left to the top right across the ferret, with
+    /// a gap cut along it.
     private static func drawSlash(in bounds: NSRect) {
         let inset: CGFloat = 2.5
         let slash = NSBezierPath()
