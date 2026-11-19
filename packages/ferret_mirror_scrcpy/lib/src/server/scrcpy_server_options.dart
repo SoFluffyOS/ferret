@@ -8,6 +8,7 @@ class ScrcpyServerOptions {
     this.maxSize = 0,
     this.maxFps = 0,
     this.videoBitRate = 0,
+    this.audioCodec,
   });
 
   factory ScrcpyServerOptions.from(FeedOptions options, {required int scid}) {
@@ -16,6 +17,7 @@ class ScrcpyServerOptions {
       maxSize: options.maxSize,
       maxFps: options.maxFps,
       videoBitRate: options.bitrate,
+      audioCodec: _audioCodecFor(options.audioCodecs),
     );
   }
 
@@ -27,6 +29,13 @@ class ScrcpyServerOptions {
   final int maxSize;
   final int maxFps;
   final int videoBitRate;
+
+  /// How the device's sound is sent, or null for pictures only. While it
+  /// is sent, the device itself goes quiet: Android plays it in one place.
+  /// Needs Android 11.
+  final MirrorAudioCodec? audioCodec;
+
+  bool get audio => audioCodec != null;
 
   String get scidHex => scid.toRadixString(16).padLeft(8, '0');
 
@@ -42,6 +51,8 @@ class ScrcpyServerOptions {
   ///
   /// The control socket is always open, because asking for a keyframe goes
   /// through it. The device's clipboard is never sent here on its own.
+  /// Only what plays on the device is ever captured, never its
+  /// microphone.
   List<String> get shellCommand => [
     'CLASSPATH=$devicePath',
     'app_process',
@@ -52,11 +63,24 @@ class ScrcpyServerOptions {
     'log_level=info',
     'tunnel_forward=true',
     'video_codec=h264',
-    'audio=false',
+    ...switch (audioCodec) {
+      null => const ['audio=false'],
+      .opus => const ['audio=true', 'audio_codec=opus', 'audio_source=output'],
+      .pcm => const ['audio=true', 'audio_codec=raw', 'audio_source=output'],
+    },
     'control=true',
     'clipboard_autosync=false',
     if (maxSize > 0) 'max_size=$maxSize',
     if (maxFps > 0) 'max_fps=$maxFps',
     if (videoBitRate > 0) 'video_bit_rate=$videoBitRate',
   ];
+
+  /// The first codec the viewer plays. scrcpy's server has both.
+  static MirrorAudioCodec? _audioCodecFor(List<MirrorAudioCodec> wanted) {
+    if (wanted.isEmpty) {
+      return null;
+    }
+
+    return wanted.first;
+  }
 }

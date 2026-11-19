@@ -195,6 +195,39 @@ void _mirrorsTheEmulator(String way, AdbBridge adb) {
         );
       },
     );
+
+    // Plays nothing itself: start any sound on the emulator first to hear
+    // more than silence. The emulator's own speaker goes quiet meanwhile.
+    test('brings the sound along, as Opus and as plain samples', () async {
+      for (final codec in MirrorAudioCodec.values) {
+        final feed = await route.open(
+          emulator,
+          FeedOptions(
+            codecs: const [.h264],
+            maxSize: 640,
+            audioCodecs: [codec],
+          ),
+        );
+        final events = _Recorder(feed.events);
+
+        final config = (await events.next<FeedAudioConfigured>()).config;
+        expect(config, MirrorAudioConfig(codec: codec));
+
+        final first = await events.next<FeedAudio>();
+        final later = await events.nextWhere<FeedAudio>(
+          (event) => event.packet.ptsUs > first.packet.ptsUs + 500000,
+        );
+        expect(later.packet.data, isNotEmpty);
+        expect(events.count<FeedAudioUnavailable>(), 0);
+
+        final packetCount = events.count<FeedAudio>();
+        await feed.stop();
+        expect((await events.next<FeedEnded>()).reason, FeedEnd.stoppedHere);
+
+        // ignore: avoid_print
+        print('Emulator sound (${codec.name}): $packetCount packets');
+      }
+    });
   });
 }
 

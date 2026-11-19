@@ -3,19 +3,30 @@ import 'dart:typed_data';
 
 import 'package:ferret_mirror_scrcpy/src/adb/adb.dart';
 
-/// The two connections to a running scrcpy server: video first, then
-/// control, the order the server accepts them in.
+/// The connections to a running scrcpy server: video first, then audio
+/// when it was asked for, then control, the order the server accepts them
+/// in.
 class ScrcpySockets {
-  ScrcpySockets._(this._video, this._control, this.video);
+  ScrcpySockets._(
+    this._video,
+    this._audio,
+    this._control,
+    this.video,
+    this.audio,
+  );
 
   static const int _attempts = 100;
   static const Duration _retryDelay = Duration(milliseconds: 100);
 
   final AdbConnection _video;
+  final AdbConnection? _audio;
   final AdbConnection _control;
 
   /// What the server sends on the video socket, from its first byte.
   final Stream<Uint8List> video;
+
+  /// What the server sends on the audio socket, or null without one.
+  final Stream<Uint8List>? audio;
 
   /// Connects with [dial], which may fail or give a connection that closes
   /// without a byte while the server isn't listening yet: only the
@@ -25,13 +36,14 @@ class ScrcpySockets {
   static Future<ScrcpySockets?> connect(
     Future<AdbConnection?> Function() dial, {
     required bool Function() shouldGiveUp,
+    bool audio = false,
   }) async {
     for (var attempt = 0; attempt < _attempts; attempt++) {
       if (shouldGiveUp()) {
         return null;
       }
 
-      if (await _connectOnce(dial) case final sockets?) {
+      if (await _connectOnce(dial, audio: audio) case final sockets?) {
         return sockets;
       }
 
@@ -45,12 +57,14 @@ class ScrcpySockets {
 
   void close() {
     _video.close();
+    _audio?.close();
     _control.close();
   }
 
   static Future<ScrcpySockets?> _connectOnce(
-    Future<AdbConnection?> Function() dial,
-  ) async {
+    Future<AdbConnection?> Function() dial, {
+    required bool audio,
+  }) async {
     final video = await dial();
     if (video == null) {
       return null;
@@ -88,9 +102,19 @@ class ScrcpySockets {
       return null;
     }
 
+    AdbConnection? sound;
+    if (audio) {
+      sound = await dial();
+      if (sound == null) {
+        video.close();
+        return null;
+      }
+    }
+
     final control = await dial();
     if (control == null) {
       video.close();
+      sound?.close();
       return null;
     }
 
@@ -98,6 +122,6 @@ class ScrcpySockets {
     // must be read so the server never blocks on a full socket.
     control.input.listen((_) {}, onError: (Object _) {});
 
-    return ScrcpySockets._(video, control, chunks.stream);
+    return ScrcpySockets._(video, sound, control, chunks.stream, sound?.input);
   }
 }

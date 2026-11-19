@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-/// What scrcpy's server writes on its video socket, in order.
+/// What scrcpy's server writes on its video and audio sockets, in order.
 sealed class ScrcpyPacket {
   const ScrcpyPacket();
 }
@@ -18,6 +18,10 @@ class CodecPacket extends ScrcpyPacket {
   const CodecPacket(this.codecId);
 
   static const int h264 = 0x68323634;
+  static const int opus = 0x6f707573;
+
+  /// Plain samples: signed 16-bit little-endian, 48 kHz, stereo.
+  static const int raw = 0x00726177;
   static const int disabled = 0;
   static const int configurationError = 1;
 

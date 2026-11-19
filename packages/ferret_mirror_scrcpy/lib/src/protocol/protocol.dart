@@ -1,5 +1,6 @@
 export 'package:ferret_mirror_scrcpy/src/protocol/android_input.dart';
 export 'package:ferret_mirror_scrcpy/src/protocol/annex_b.dart';
+export 'package:ferret_mirror_scrcpy/src/protocol/audio_feed_assembler.dart';
 export 'package:ferret_mirror_scrcpy/src/protocol/bit_reader.dart';
 export 'package:ferret_mirror_scrcpy/src/protocol/byte_queue.dart';
 export 'package:ferret_mirror_scrcpy/src/protocol/control_message.dart';

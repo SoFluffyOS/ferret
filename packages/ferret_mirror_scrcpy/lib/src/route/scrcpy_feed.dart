@@ -46,12 +46,15 @@ class ScrcpyFeed implements MirrorFeed {
   final ScrcpyServerOptions _serverOptions;
   final H264FeedAssembler _assembler;
   final ScrcpyDemuxer _demuxer = .new();
+  final ScrcpyDemuxer _audioDemuxer = .audio();
+  final AudioFeedAssembler _audioAssembler = .new();
   final StreamController<FeedEvent> _events = .new();
   late final ScrcpyControl _control;
 
   AdbShell? _server;
   ScrcpySockets? _sockets;
   StreamSubscription<Uint8List>? _videoSubscription;
+  StreamSubscription<Uint8List>? _audioSubscription;
   String _lastServerLine = '';
   bool _ended = false;
 
@@ -115,6 +118,7 @@ class ScrcpyFeed implements MirrorFeed {
     final sockets = await ScrcpySockets.connect(
       () => _adb.open(serial, _serverOptions.socketName),
       shouldGiveUp: () => _ended,
+      audio: _serverOptions.audio,
     );
     if (_ended) {
       sockets?.close();
@@ -129,6 +133,10 @@ class ScrcpyFeed implements MirrorFeed {
     _videoSubscription = sockets.video.listen(
       _onVideo,
       onDone: () => unawaited(_end(.lostConnection)),
+    );
+    _audioSubscription = sockets.audio?.listen(
+      _onAudio,
+      onError: (Object _) => _loseAudio(),
     );
   }
 
@@ -156,6 +164,29 @@ class ScrcpyFeed implements MirrorFeed {
       _demuxer.add(chunk).forEach(_onPacket);
     } on FormatException catch (error) {
       unawaited(_end(.failed, detail: error.message));
+    }
+  }
+
+  /// Sound that stops making sense is given up on; the pictures go on.
+  void _onAudio(Uint8List chunk) {
+    if (_ended) {
+      return;
+    }
+
+    try {
+      for (final packet in _audioDemuxer.add(chunk)) {
+        _audioAssembler.add(packet).forEach(_events.add);
+      }
+    } on FormatException {
+      _loseAudio();
+    }
+  }
+
+  void _loseAudio() {
+    unawaited(_audioSubscription?.cancel());
+    _audioSubscription = null;
+    if (!_ended) {
+      _events.add(const FeedAudioUnavailable(.failed));
     }
   }
 
@@ -205,6 +236,7 @@ class ScrcpyFeed implements MirrorFeed {
   /// to do so and delete its own file, then it is cut off.
   Future<void> _cleanUp() async {
     await _videoSubscription?.cancel();
+    await _audioSubscription?.cancel();
     _sockets?.close();
 
     if (_server case final server?) {

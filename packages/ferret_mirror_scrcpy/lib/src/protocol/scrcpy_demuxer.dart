@@ -4,12 +4,17 @@ import 'dart:typed_data';
 import 'package:ferret_mirror_scrcpy/src/protocol/byte_queue.dart';
 import 'package:ferret_mirror_scrcpy/src/protocol/scrcpy_packet.dart';
 
-/// Reads the video socket of scrcpy's server (protocol of scrcpy 4.0 and
-/// later, checked against 5.0.1): on a forward tunnel one dummy byte, then
-/// 64 bytes of device name, the codec id, and from there 12-byte headers,
-/// each one a session packet or the header of a media packet.
+/// Reads the video or the audio socket of scrcpy's server (protocol of
+/// scrcpy 4.0 and later, checked against 5.0.1). On the first socket, the
+/// video one here: on a forward tunnel one dummy byte, then 64 bytes of
+/// device name. On both: the codec id, and from there 12-byte headers, each
+/// one a session packet (video only) or the header of a media packet.
 class ScrcpyDemuxer {
-  ScrcpyDemuxer({this.expectDummyByte = true});
+  ScrcpyDemuxer({this.expectDummyByte = true, this.expectDeviceMeta = true});
+
+  /// For the audio socket, which is never the first one opened here: it
+  /// starts at the codec id.
+  ScrcpyDemuxer.audio() : this(expectDummyByte: false, expectDeviceMeta: false);
 
   static const int deviceNameLength = 64;
   static const int headerLength = 12;
@@ -26,6 +31,9 @@ class ScrcpyDemuxer {
   /// The server sends it on a forward tunnel only, where a connection opens
   /// even when nothing listens on the device.
   final bool expectDummyByte;
+
+  /// The device's name comes on the first socket only.
+  final bool expectDeviceMeta;
 
   final ByteQueue _queue = .new();
   _Step _step = .start;
@@ -58,7 +66,10 @@ class ScrcpyDemuxer {
       return false;
     }
 
-    _step = .deviceMeta;
+    _step = switch (expectDeviceMeta) {
+      true => .deviceMeta,
+      false => .codec,
+    };
     return true;
   }
 

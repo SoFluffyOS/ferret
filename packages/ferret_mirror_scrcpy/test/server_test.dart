@@ -56,6 +56,41 @@ void main() {
     });
   });
 
+  group('ScrcpyServerOptions with sound', () {
+    List<String> commandFor(List<MirrorAudioCodec> audioCodecs) =>
+        ScrcpyServerOptions.from(
+          FeedOptions(codecs: const [.h264], audioCodecs: audioCodecs),
+          scid: 1,
+        ).shellCommand;
+
+    test('asks for the device\'s own output, as Opus', () {
+      final command = commandFor(const [.opus, .pcm]);
+
+      expect(
+        command,
+        containsAll(['audio=true', 'audio_codec=opus', 'audio_source=output']),
+      );
+      expect(command, isNot(contains('audio=false')));
+    });
+
+    test('asks for plain samples where nothing decodes Opus', () {
+      expect(
+        commandFor(const [.pcm]),
+        containsAll(['audio=true', 'audio_codec=raw']),
+      );
+    });
+
+    test('never asks for the microphone', () {
+      final command = commandFor(const [.opus]).join(' ');
+
+      expect(command, isNot(contains('mic')));
+    });
+
+    test('leaves sound off unless the viewer asked', () {
+      expect(commandFor(const []), contains('audio=false'));
+    });
+  });
+
   group('ScrcpyServerBundle', () {
     final asset = File('assets/${ScrcpyRelease.serverFileName}');
     late Directory directory;
