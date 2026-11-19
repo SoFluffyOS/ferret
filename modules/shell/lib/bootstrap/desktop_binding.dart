@@ -19,6 +19,7 @@ class DesktopBinding {
     required this.pause,
     required this.settings,
     required this.notifier,
+    AppQuit? quit,
     DesktopTray? tray,
     DesktopWindow? window,
     FerretSystem? system,
@@ -26,6 +27,7 @@ class DesktopBinding {
     Locale? locale,
   }) : _tray = tray ?? DesktopTray.current(),
        _window = window ?? DesktopWindow(),
+       _quit = quit,
        _system = system ?? FerretSystem(),
        _isDesktop = isDesktop ?? (Platform.isWindows || Platform.isLinux),
        _l10n = lookupShellLocalizations(_supported(locale));
@@ -45,6 +47,7 @@ class DesktopBinding {
   final LocalNotifier notifier;
   final DesktopTray _tray;
   final DesktopWindow _window;
+  final AppQuit? _quit;
   final FerretSystem _system;
   final bool _isDesktop;
   final ShellLocalizations _l10n;
@@ -155,8 +158,17 @@ class DesktopBinding {
       case pauseId:
         await pause.pause(duration: const Duration(hours: 1));
       case quitId:
-        await _window.quit();
+        await _quitApp();
     }
+  }
+
+  Future<void> _quitApp() async {
+    if (_quit case final quit?) {
+      await quit.quit();
+      return;
+    }
+
+    await _window.quit();
   }
 
   /// The first close only: after that, people know where Ferret went.

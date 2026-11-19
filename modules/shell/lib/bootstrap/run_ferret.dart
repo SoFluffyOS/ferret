@@ -61,6 +61,7 @@ Future<void> runFerret({
   );
   sharedComputer.follow(engine, computerName: described.name);
   await engine.start();
+  final quit = AppQuit(shutdown: engine.shutdown)..start();
 
   final host = EngineHost(engine);
   final pause = PauseController(engine);
@@ -137,6 +138,7 @@ Future<void> runFerret({
     views: views,
     navigation: navigation,
     menubar: ferretMenubar,
+    quit: quit,
   );
   await menubar.start();
   await DesktopBinding(
@@ -144,6 +146,7 @@ Future<void> runFerret({
     pause: pause,
     settings: settings,
     notifier: notifier,
+    quit: quit,
   ).start();
 
   _run(
@@ -155,6 +158,7 @@ Future<void> runFerret({
       menubar: menubar.menubar,
       navigation: navigation,
       featureWindows: featureWindows,
+      quit: quit,
       views: switch (ferretMenubar.isSupported) {
         true => views,
         false => null,

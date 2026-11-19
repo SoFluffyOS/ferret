@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
-import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -84,7 +83,7 @@ class WindowMenuFrame extends StatelessWidget {
         null => null,
       },
       .showShortcuts: () => nav.show(const KeyboardShortcutsPage()),
-      .quit: () => unawaited(_quit()),
+      .quit: () => unawaited(context.read<AppQuit>().quit()),
     };
     void selectSection(int index) {
       if (sectionsDevice == null || index >= sections.length) {
@@ -138,17 +137,6 @@ class WindowMenuFrame extends StatelessWidget {
         child: keyed,
       ),
     );
-  }
-
-  /// On Windows and Linux the window may only be hiding in the tray, so
-  /// Quit goes through the runner, which also remembers where it was.
-  static Future<void> _quit() async {
-    if (defaultTargetPlatform == .windows || defaultTargetPlatform == .linux) {
-      await DesktopWindow().quit();
-      return;
-    }
-
-    await SystemNavigator.pop();
   }
 
   /// The device's action features placed at [order], while it is connected.

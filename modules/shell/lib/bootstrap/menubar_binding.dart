@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
@@ -22,7 +21,9 @@ class MenubarBinding {
     required this.views,
     required this.navigation,
     required FerretMenubar menubar,
-  }) : _menubar = menubar;
+    required AppQuit quit,
+  }) : _menubar = menubar,
+       _quitter = quit;
 
   final EngineHost host;
   final PauseController pause;
@@ -34,6 +35,7 @@ class MenubarBinding {
   /// pushed in the popover.
   final WindowNavRegistry navigation;
   final FerretMenubar _menubar;
+  final AppQuit _quitter;
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final List<Listenable> _listened = [];
   late final ShellLocalizations _l10n = lookupShellLocalizations(
@@ -170,7 +172,7 @@ class MenubarBinding {
         }
         navigation.open(const SettingsDestination());
       case _quit:
-        await SystemNavigator.pop();
+        await _quitter.quit();
     }
   }
 

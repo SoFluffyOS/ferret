@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +86,7 @@ class HomeMenu extends StatelessWidget {
           MenuEntry(
             label: l10n.settingsQuit,
             icon: LucideIcons.power,
-            onSelected: () => unawaited(SystemNavigator.pop()),
+            onSelected: () => unawaited(context.read<AppQuit>().quit()),
           ),
       ],
     );

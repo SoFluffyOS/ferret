@@ -23,6 +23,7 @@ class FerretApp extends StatelessWidget {
     this.views,
     this.navigation,
     this.featureWindows,
+    this.quit,
   });
 
   final EngineHost host;
@@ -45,6 +46,9 @@ class FerretApp extends StatelessWidget {
   /// The window a feature opens for itself, drawn next to [views].
   final FeatureWindowHost? featureWindows;
 
+  /// How Quit ends Ferret. Without, Quit only ends the app.
+  final AppQuit? quit;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -58,6 +62,7 @@ class FerretApp extends StatelessWidget {
         if (menubar case final menubar?) Provider.value(value: menubar),
         if (featureWindows case final featureWindows?)
           ChangeNotifierProvider.value(value: featureWindows),
+        Provider.value(value: quit ?? AppQuit()),
         Provider<WindowNavRegistry>(
           create: (_) => navigation ?? WindowNavRegistry(featureContext),
           lazy: false,

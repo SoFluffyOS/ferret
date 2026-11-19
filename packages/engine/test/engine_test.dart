@@ -480,6 +480,26 @@ void main() {
     expect(phone.sessions.single.isClosed, isFalse);
   });
 
+  test('shutting down says goodbye, so peers see it offline at once', () async {
+    final laptopEcho = _EchoFeature();
+    final laptop = await startEngine('Laptop', features: [laptopEcho]);
+    final phone = await startEngine('Phone', features: [_EchoFeature()]);
+    await pairByOffer(phone, laptop);
+    await _until(() => laptop.sessions.isNotEmpty && phone.sessions.isNotEmpty);
+    final phoneSide = phone.sessions.single;
+
+    await laptop.shutdown();
+    await _until(
+      () => phone.sessions.isEmpty,
+      timeout: const Duration(seconds: 1),
+    );
+
+    expect(laptopEcho.isStopped, isTrue);
+    expect(phoneSide.remoteGoodbye, GoodbyeReason.GOODBYE_REASON_SHUTDOWN);
+    expect(phone.devices.single.isConnected, isFalse);
+    expect(phone.devices.single.isReconnecting, isFalse);
+  });
+
   test(
     'discovery connects paired devices that both dial at once to one session',
     () async {
@@ -543,6 +563,11 @@ Future<void> _until(
 class _EchoFeature extends Feature {
   @override
   String get id => 'echo';
+
+  bool isStopped = false;
+
+  @override
+  Future<void> stop() async => isStopped = true;
 
   @override
   Future<GeneratedMessage?> onEnvelope(

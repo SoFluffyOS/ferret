@@ -7,7 +7,7 @@ import 'package:engine/engine.dart';
 import 'package:ferret_cli/cli_environment.dart';
 import 'package:transport/transport.dart';
 
-/// Runs Ferret headless until Ctrl-C: listens, reconnects to paired devices,
+/// Runs Ferret headless until Ctrl-C or SIGTERM: listens, reconnects to paired devices,
 /// and asks on the terminal before pairing with a new one.
 class DaemonCommand extends Command<int> {
   DaemonCommand(this._environment) {
@@ -17,6 +17,9 @@ class DaemonCommand extends Command<int> {
       defaultsTo: '${FerretEngine.defaultPort}',
     );
   }
+
+  /// The longest a stop waits for connected devices to hear goodbye.
+  static const _goodbyeTimeout = Duration(milliseconds: 1500);
 
   final CliEnvironment _environment;
 
@@ -57,13 +60,36 @@ class DaemonCommand extends Command<int> {
       ),
     ];
 
-    await ProcessSignal.sigint.watch().first;
+    await _stopAsked();
     for (final subscription in subscriptions) {
       await subscription.cancel();
     }
 
-    await engine.stop();
+    await engine.shutdown().timeout(_goodbyeTimeout, onTimeout: () {});
     return 0;
+  }
+
+  /// Ctrl-C, or SIGTERM from a service manager such as systemd or launchd.
+  /// Windows can't watch SIGTERM.
+  Future<void> _stopAsked() async {
+    final signals = [
+      ProcessSignal.sigint,
+      if (!Platform.isWindows) ProcessSignal.sigterm,
+    ];
+    final asked = Completer<void>();
+    final watches = [
+      for (final signal in signals)
+        signal.watch().listen((_) {
+          if (!asked.isCompleted) {
+            asked.complete();
+          }
+        }),
+    ];
+
+    await asked.future;
+    for (final watch in watches) {
+      await watch.cancel();
+    }
   }
 
   String _names(List<Session> sessions) {
