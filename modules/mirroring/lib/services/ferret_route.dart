@@ -167,6 +167,9 @@ class FerretRoute implements MirrorRoute {
   void onAudioEnded(Session session) =>
       _feeds[session.remoteDeviceId]?.onAudioEnded();
 
+  void onControlState(Session session, ControlState state) =>
+      _feeds[session.remoteDeviceId]?.onControlState(state);
+
   void onSourceState(Session session, SourceState state) =>
       _feeds[session.remoteDeviceId]?.onSourceState(state);
 

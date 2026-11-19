@@ -1280,6 +1280,91 @@ void main() {
     });
   });
 
+  group('control over Ferret', () {
+    testWidgets('View only becomes Control, which asks the phone', (
+      tester,
+    ) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      ferret().onControlState(
+        pixel,
+        ControlState(status: .CONTROL_STATUS_CAN_ASK),
+      );
+      await pumpStage(tester);
+
+      expect(find.text('View only'), findsNothing);
+      await tester.tap(find.text('Control'));
+      await tester.pump();
+      expect(pixel.sentOf<ControlAsk>(), hasLength(1));
+
+      ferret().onControlState(
+        pixel,
+        ControlState(status: .CONTROL_STATUS_ASKING, timeoutSeconds: 60),
+      );
+      await tester.pump();
+      expect(find.text('Asking…'), findsOneWidget);
+      expect(find.textContaining('tap Once or Always'), findsOneWidget);
+    });
+
+    testWidgets('a yes brings the phone\'s own buttons', (tester) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      ferret().onControlState(
+        pixel,
+        ControlState(status: .CONTROL_STATUS_CAN_ASK),
+      );
+      await tester.pump();
+      ferret().onControlState(
+        pixel,
+        ControlState(
+          status: .CONTROL_STATUS_ALLOWED,
+          kinds: const [.CONTROL_KIND_POINTER, .CONTROL_KIND_BUTTONS],
+          buttons: const [
+            .CONTROL_BUTTON_BACK,
+            .CONTROL_BUTTON_HOME,
+            .CONTROL_BUTTON_RECENTS,
+          ],
+        ),
+      );
+      await pumpStage(tester);
+
+      expect(find.text('Control'), findsNothing);
+      expect(find.text('View only'), findsNothing);
+      expect(
+        find.textContaining('click and type on Pixel now'),
+        findsOneWidget,
+      );
+      await tester.tap(tool(LucideIcons.chevronLeft));
+      await tester.pump();
+
+      final batch = pixel.sentOf<ControlInput>().single;
+      expect(
+        batch.events.single.button.button,
+        ControlButton.CONTROL_BUTTON_BACK,
+      );
+    });
+
+    testWidgets('a phone without Ferret control says where to turn it on', (
+      tester,
+    ) async {
+      await start(tester);
+      await streamOverFerret(tester);
+      ferret().onControlState(
+        pixel,
+        ControlState(status: .CONTROL_STATUS_NEEDS_SETUP),
+      );
+      await pumpStage(tester);
+
+      await tester.tap(find.text('View only'));
+      await tester.pump();
+
+      expect(
+        find.textContaining('turn on Ferret control on Pixel'),
+        findsOneWidget,
+      );
+    });
+  });
+
   group('the sound of the screen', () {
     Future<void> openSound(WidgetTester tester) async {
       await tester.tap(tool(LucideIcons.ellipsis));

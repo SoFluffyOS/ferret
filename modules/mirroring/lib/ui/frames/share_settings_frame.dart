@@ -4,6 +4,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mirroring/l10n/l10n.dart';
 import 'package:mirroring/models/models.dart';
+import 'package:mirroring/ui/frames/control_settings_frame.dart';
 import 'package:mirroring/ui/widgets/widgets.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +96,7 @@ class ShareSettingsFrame extends StatelessWidget {
             ),
           ],
         ),
+        const ControlSettingsFrame(),
         HistoryList(
           history: history,
           emptyText: l10n.settingsHistoryEmptyShared,

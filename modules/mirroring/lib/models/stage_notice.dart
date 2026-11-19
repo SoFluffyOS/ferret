@@ -20,4 +20,19 @@ enum StageNotice {
 
   /// The picture of the screen couldn't be saved.
   screenshotFailed,
+
+  /// The phone's owner is asked to let this computer control it.
+  controlAsking,
+
+  /// Clicks and keys reach the phone now.
+  controlAllowed,
+
+  /// The phone's owner said no to control.
+  controlDenied,
+
+  /// Nobody answered on the phone about control.
+  controlTimedOut,
+
+  /// The phone's owner stopped control.
+  controlStopped,
 }

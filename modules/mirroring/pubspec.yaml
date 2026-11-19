@@ -17,6 +17,8 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_mirroring:
     path: ../../packages/ferret_mirroring
+  ferret_phone_control:
+    path: ../../packages/ferret_phone_control
   fixnum: ^1.1.1
   flutter:
     sdk: flutter
@@ -33,6 +35,8 @@ dependencies:
 
 dev_dependencies:
   fake_async: ^1.3.3
+  ferret_power:
+    path: ../../packages/ferret_power
   flutter_test:
     sdk: flutter
   lints: ^6.0.0

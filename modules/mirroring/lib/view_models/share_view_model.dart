@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:ferret_phone_control/ferret_phone_control.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mirroring/feature/mirroring_feature.dart';
 import 'package:mirroring/models/models.dart';
@@ -53,7 +54,11 @@ class ShareViewModel extends ChangeNotifier {
 
   List<MirrorRecord> get history => feature.settings.history;
 
-  bool get hasCard => pending != null || active != null || lastRecord != null;
+  bool get hasCard =>
+      pending != null ||
+      active != null ||
+      lastRecord != null ||
+      controlPending != null;
 
   Future<void> stop() async => _source?.stop();
 
@@ -66,6 +71,36 @@ class ShareViewModel extends ChangeNotifier {
       _source?.setBlocked(deviceId, !value);
 
   void dismissRecord() => _source?.dismissRecord();
+
+  SourceControl? get _control => _source?.control;
+
+  /// Whether a computer could ever control this phone.
+  bool get canBeControlled => _control?.isSupported ?? false;
+
+  /// What would carry a computer's taps right now.
+  ControlPath get controlPath => _control?.path ?? .none;
+
+  /// A computer that sees this screen, asking to control it.
+  ControlRequest? get controlPending => _control?.pending;
+
+  /// The computer controlling this phone right now.
+  ControlRequest? get controller => _control?.controller;
+
+  /// How many computers control this phone without asking.
+  int get controlAlwaysCount => _control?.alwaysAllowed.length ?? 0;
+
+  /// This phone's own name, for the question.
+  String get phoneName => feature.host.localDevice.name;
+
+  Future<void> answerControl(ControlChoice choice) async =>
+      _control?.answer(choice);
+
+  Future<void> stopControl() async => _control?.stop();
+
+  Future<bool> openControlSettings() async =>
+      await _control?.openServiceSettings() ?? false;
+
+  Future<void> forgetControlAlways() async => _control?.forgetAlways();
 
   Future<void> clearHistory() async => _source?.clearHistory();
 

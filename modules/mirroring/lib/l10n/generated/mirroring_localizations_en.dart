@@ -1042,4 +1042,126 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get allowNoticeBody => 'Say yes only if it is yours.';
+
+  @override
+  String get controlAsk => 'Control';
+
+  @override
+  String get controlAsking => 'Asking…';
+
+  @override
+  String noticeControlAsking(String device) {
+    return 'On $device, tap Once or Always to let this computer click and type there.';
+  }
+
+  @override
+  String noticeControlAllowed(String device) {
+    return 'You can click and type on $device now.';
+  }
+
+  @override
+  String noticeControlDenied(String device) {
+    return '$device said no to control. You can still watch.';
+  }
+
+  @override
+  String noticeControlTimedOut(String device) {
+    return 'Nobody answered on $device. Click Control to ask again.';
+  }
+
+  @override
+  String noticeControlStopped(String device) {
+    return '$device stopped control. You can still watch.';
+  }
+
+  @override
+  String viewOnlySetupBody(String device) {
+    return 'To click and type over Wi-Fi, turn on Ferret control on $device: open Ferret there, then Settings → To your computer.';
+  }
+
+  @override
+  String controlAskTitle(String computer, String phone) {
+    return 'Let $computer control $phone while showing its screen?';
+  }
+
+  @override
+  String controlAskBody(String computer) {
+    return '$computer can tap, swipe and type here until you stop it, or until the screen stops being shown.';
+  }
+
+  @override
+  String get controlAlways => 'Always';
+
+  @override
+  String get controlOnce => 'Once';
+
+  @override
+  String get controlNo => 'No';
+
+  @override
+  String controlledTitle(String computer) {
+    return 'Being controlled by $computer';
+  }
+
+  @override
+  String get controlledBody =>
+      'It can tap and type here while it shows this screen.';
+
+  @override
+  String get controlStop => 'Stop control';
+
+  @override
+  String get noticeControlChannel => 'Control from a computer';
+
+  @override
+  String get settingsControlTitle => 'Control from a computer';
+
+  @override
+  String get settingsControlPowerUps =>
+      'A computer that shows this screen can tap and type here, through Power-ups. It asks you first.';
+
+  @override
+  String get settingsControlService =>
+      'Ferret control is on. A computer that shows this screen can tap and type here after it asks you.';
+
+  @override
+  String get settingsControlOff =>
+      'To let a computer that shows this screen tap and type here, turn on Ferret control in Android\'s Accessibility settings.';
+
+  @override
+  String get settingsControlTurnOn => 'Turn on Ferret control…';
+
+  @override
+  String get settingsControlOpen => 'Accessibility settings';
+
+  @override
+  String settingsControlAlwaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count computers control this phone without asking.',
+      one: '1 computer controls this phone without asking.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsControlAskAgain => 'Ask every time';
+
+  @override
+  String get controlDisclosureTitle => 'Turn on Ferret control?';
+
+  @override
+  String get controlDisclosureBody =>
+      'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.';
+
+  @override
+  String get controlDisclosureSteps =>
+      'Next, in Accessibility, tap Ferret control and turn it on.';
+
+  @override
+  String get controlDisclosureOpen => 'Open Accessibility settings';
+
+  @override
+  String get notNow => 'Not now';
 }

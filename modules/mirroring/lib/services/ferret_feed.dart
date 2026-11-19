@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:mirroring/services/ferret_control.dart';
 import 'package:mirroring/services/mirror_protocol.dart';
 import 'package:mirroring/services/viewer_stats_sink.dart';
 import 'package:protobuf/protobuf.dart';
@@ -12,7 +13,7 @@ enum _FeedState { requesting, waiting, mirroring, ended }
 
 /// One phone's screen arriving over Ferret's own session: the messages of
 /// `ferret.mirroring.v1` turned into feed events, and back.
-class FerretFeed implements MirrorFeed, ViewerStatsSink {
+class FerretFeed implements MirrorFeed, ViewerStatsSink, ControlAsking {
   FerretFeed({
     required this.target,
     required Future<void> Function(GeneratedMessage message) send,
@@ -38,15 +39,22 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
   final StreamController<FeedEvent> _events = .new(sync: true);
 
   _FeedState _state = .requesting;
+  ControlAccess? _controlAccess;
+  FerretControl? _control;
   int? _configId;
   Int64? _lastSequence;
 
   @override
   Stream<FeedEvent> get events => _events.stream;
 
-  /// View only: typing and clicking on a phone is Remote input's job.
+  /// Clicks and keys, once the phone's owner let this computer control
+  /// it. Null means view only.
   @override
-  MirrorControl? get control => null;
+  MirrorControl? get control => _control;
+
+  /// Where control stands, or null for a phone that never said: an older
+  /// Ferret, which is view only.
+  ControlAccess? get controlAccess => _controlAccess;
 
   bool get isEnded => _state == .ended;
 
@@ -197,6 +205,46 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
     return true;
   }
 
+  /// The phone says where control stands.
+  void onControlState(ControlState state) {
+    if (_state != .mirroring) {
+      return;
+    }
+
+    final access = switch (state.status) {
+      .CONTROL_STATUS_CAN_ASK => ControlAccess.canAsk,
+      .CONTROL_STATUS_ASKING => ControlAccess.asking,
+      .CONTROL_STATUS_ALLOWED => ControlAccess.allowed,
+      .CONTROL_STATUS_DENIED => ControlAccess.denied,
+      .CONTROL_STATUS_TIMED_OUT => ControlAccess.timedOut,
+      .CONTROL_STATUS_NEEDS_SETUP => ControlAccess.needsSetup,
+      .CONTROL_STATUS_STOPPED => ControlAccess.stopped,
+      _ => ControlAccess.unsupported,
+    };
+    _controlAccess = access;
+    _control = switch (access) {
+      .allowed => FerretControl.of(state, send: _send),
+      _ => null,
+    };
+    _events.add(
+      FeedControlChanged(
+        access,
+        timeout: Duration(seconds: state.timeoutSeconds),
+      ),
+    );
+  }
+
+  /// Asks the phone's owner to let this computer control it.
+  @override
+  Future<void> askControl() async {
+    final access = _controlAccess;
+    if (_state != .mirroring || access == null || !access.canAskNow) {
+      return;
+    }
+
+    await _send(ControlAsk());
+  }
+
   void onSourceState(SourceState state) {
     if (_state != .mirroring) {
       return;
@@ -243,6 +291,7 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
     }
 
     _state = .ended;
+    _control = null;
     _onEnded(this);
     _events.add(FeedEnded(reason, detail: detail));
     unawaited(_events.close());
@@ -290,6 +339,7 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink {
     }
 
     _state = .ended;
+    _control = null;
     _onEnded(this);
     await _send(Stop(reason: .STOP_REASON_VIEWER_DONE));
     _events.add(const FeedEnded(.stoppedHere));

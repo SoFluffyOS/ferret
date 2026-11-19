@@ -1,5 +1,6 @@
 export 'package:mirroring/services/bitrate_controller.dart';
 export 'package:mirroring/services/feed_player.dart';
+export 'package:mirroring/services/ferret_control.dart';
 export 'package:mirroring/services/ferret_feed.dart';
 export 'package:mirroring/services/ferret_route.dart';
 export 'package:mirroring/services/frame_sender.dart';
@@ -8,5 +9,7 @@ export 'package:mirroring/services/mirror_protocol.dart';
 export 'package:mirroring/services/mirror_routes.dart';
 export 'package:mirroring/services/mirror_source.dart';
 export 'package:mirroring/services/mirror_viewer.dart';
+export 'package:mirroring/services/phone_inputs.dart';
 export 'package:mirroring/services/screenshot_store.dart';
+export 'package:mirroring/services/source_control.dart';
 export 'package:mirroring/services/viewer_stats_sink.dart';

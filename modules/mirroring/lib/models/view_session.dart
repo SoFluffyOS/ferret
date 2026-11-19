@@ -175,6 +175,7 @@ class ViewSession {
     this.lost = false,
     this.viaFallback = false,
     this.sound = .off,
+    this.control,
     this.stats = const ViewStats(),
   });
 
@@ -221,6 +222,11 @@ class ViewSession {
 
   /// The device's sound, next to its picture.
   final ViewSound sound;
+
+  /// Where it stands with letting this computer control it, for a device
+  /// that asks its owner first. Null for a route that never asks: a cable
+  /// controls at once, AirPlay never.
+  final ControlAccess? control;
   final ViewStats stats;
 
   String get deviceId => deviceIdOf(target);
@@ -248,6 +254,7 @@ class ViewSession {
     bool? lost,
     bool? viaFallback,
     ViewSound? sound,
+    ControlAccess? control,
     ViewStats? stats,
   }) => ViewSession(
     target: target,
@@ -263,6 +270,7 @@ class ViewSession {
     lost: lost ?? this.lost,
     viaFallback: viaFallback ?? this.viaFallback,
     sound: sound ?? this.sound,
+    control: control ?? this.control,
     stats: stats ?? this.stats,
   );
 }

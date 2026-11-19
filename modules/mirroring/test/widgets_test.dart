@@ -4,6 +4,9 @@ import 'dart:typed_data';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:ferret_phone_control/ferret_phone_control.dart';
+import 'package:ferret_phone_control/testing.dart';
+import 'package:ferret_power/testing.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -87,6 +90,7 @@ void main() {
     WidgetTester tester, {
     CaptureSupport support = const CaptureSupport(h264: true, jpeg: true),
     AudioCaptureSupport sound = .unsupported,
+    FakeControlService? controlService,
   }) async {
     final created = await tester.runAsync(FakeHost.create);
     if (created == null) {
@@ -98,8 +102,17 @@ void main() {
     host.sessions = [mac];
     capture = FakeCapture(supportNow: support)..soundNow = sound;
     now = DateTime(2026, 11, 18, 21, 10);
+    final service = controlService;
     feature = MirroringFeature(
       capture: () => capture,
+      phoneControl: switch (service) {
+        null => null,
+        final fake => () => PhoneControl(
+          power: PowerCapabilities.withPlatform(FakePowerPlatform()),
+          service: fake,
+          supported: true,
+        ),
+      },
       canShare: true,
       canView: false,
       clock: () => now,
@@ -409,6 +422,91 @@ void main() {
       );
       expect(find.textContaining('visible there, with sound'), findsOneWidget);
       await feature.source?.stop();
+    });
+
+    Future<void> pumpCard(WidgetTester tester) => tester.pumpWidget(
+      testApp(
+        Builder(
+          builder: (context) =>
+              ui.buildHomeCard(context, featureContext()) ??
+              const SizedBox.shrink(),
+        ),
+      ),
+    );
+
+    Future<void> shareWithMac(WidgetTester tester) async {
+      await feature.source?.onRequest(
+        mac,
+        StartRequest(version: 1, codecs: const [.CODEC_H264]),
+      );
+      await tester.pump();
+      capture.answer(.granted);
+      await tester.pump();
+    }
+
+    testWidgets('a computer asking for control gets Always, Once and No, '
+        'and Once shows who controls the phone, with Stop control', (
+      tester,
+    ) async {
+      final service = FakeControlService(enabled: true);
+      await startPhone(tester, controlService: service);
+      await shareWithMac(tester);
+      await feature.source?.control?.onAsk('mac');
+      await pumpCard(tester);
+
+      expect(
+        find.text('Let MacBook control This device while showing its screen?'),
+        findsOneWidget,
+      );
+      expect(find.text('Always'), findsOneWidget);
+      expect(find.text('No'), findsOneWidget);
+
+      await tester.tap(find.text('Once'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Being controlled by MacBook'), findsOneWidget);
+      expect(service.armed, isTrue);
+
+      await tester.tap(find.text('Stop control'));
+      await tester.pumpAndSettle();
+
+      expect(service.armed, isFalse);
+      expect(find.text('Sharing screen with MacBook'), findsOneWidget);
+      await feature.source?.stop();
+    });
+
+    testWidgets('settings explain Ferret control before Android opens', (
+      tester,
+    ) async {
+      final service = FakeControlService();
+      await startPhone(tester, controlService: service);
+      await pumpPhoneSettings(tester);
+
+      expect(find.text('Control from a computer'), findsOneWidget);
+      expect(
+        find.textContaining('turn on Ferret control in Android'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Turn on Ferret control…'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('reads the text field you type into'),
+        findsOneWidget,
+      );
+      expect(service.settingsOpened, 0, reason: 'explained first');
+
+      await tester.tap(find.text('Open Accessibility settings'));
+      await tester.pumpAndSettle();
+      expect(service.settingsOpened, 1);
+    });
+
+    testWidgets('no Control section where nothing could control the '
+        'phone', (tester) async {
+      await startPhone(tester);
+      await pumpPhoneSettings(tester);
+
+      expect(find.text('Control from a computer'), findsNothing);
     });
 
     Future<void> pumpComputerSettings(

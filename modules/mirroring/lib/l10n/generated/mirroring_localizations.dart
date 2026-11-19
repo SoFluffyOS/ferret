@@ -1648,6 +1648,186 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Say yes only if it is yours.'**
   String get allowNoticeBody;
+
+  /// Toolbar chip on a phone shown over Wi-Fi: asks the phone's owner to let this computer click and type there
+  ///
+  /// In en, this message translates to:
+  /// **'Control'**
+  String get controlAsk;
+
+  /// The Control chip while the phone's owner is being asked
+  ///
+  /// In en, this message translates to:
+  /// **'Asking…'**
+  String get controlAsking;
+
+  /// No description provided for @noticeControlAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}, tap Once or Always to let this computer click and type there.'**
+  String noticeControlAsking(String device);
+
+  /// No description provided for @noticeControlAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'You can click and type on {device} now.'**
+  String noticeControlAllowed(String device);
+
+  /// No description provided for @noticeControlDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} said no to control. You can still watch.'**
+  String noticeControlDenied(String device);
+
+  /// No description provided for @noticeControlTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody answered on {device}. Click Control to ask again.'**
+  String noticeControlTimedOut(String device);
+
+  /// No description provided for @noticeControlStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} stopped control. You can still watch.'**
+  String noticeControlStopped(String device);
+
+  /// No description provided for @viewOnlySetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To click and type over Wi-Fi, turn on Ferret control on {device}: open Ferret there, then Settings → To your computer.'**
+  String viewOnlySetupBody(String device);
+
+  /// No description provided for @controlAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let {computer} control {phone} while showing its screen?'**
+  String controlAskTitle(String computer, String phone);
+
+  /// No description provided for @controlAskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{computer} can tap, swipe and type here until you stop it, or until the screen stops being shown.'**
+  String controlAskBody(String computer);
+
+  /// Answer: let this computer control the phone now and every time after
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get controlAlways;
+
+  /// Answer: let this computer control the phone this time
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get controlOnce;
+
+  /// Answer: don't let this computer control the phone
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get controlNo;
+
+  /// No description provided for @controlledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Being controlled by {computer}'**
+  String controlledTitle(String computer);
+
+  /// No description provided for @controlledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It can tap and type here while it shows this screen.'**
+  String get controlledBody;
+
+  /// No description provided for @controlStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop control'**
+  String get controlStop;
+
+  /// Android notification channel name
+  ///
+  /// In en, this message translates to:
+  /// **'Control from a computer'**
+  String get noticeControlChannel;
+
+  /// No description provided for @settingsControlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control from a computer'**
+  String get settingsControlTitle;
+
+  /// No description provided for @settingsControlPowerUps.
+  ///
+  /// In en, this message translates to:
+  /// **'A computer that shows this screen can tap and type here, through Power-ups. It asks you first.'**
+  String get settingsControlPowerUps;
+
+  /// No description provided for @settingsControlService.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret control is on. A computer that shows this screen can tap and type here after it asks you.'**
+  String get settingsControlService;
+
+  /// No description provided for @settingsControlOff.
+  ///
+  /// In en, this message translates to:
+  /// **'To let a computer that shows this screen tap and type here, turn on Ferret control in Android\'s Accessibility settings.'**
+  String get settingsControlOff;
+
+  /// No description provided for @settingsControlTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Ferret control…'**
+  String get settingsControlTurnOn;
+
+  /// No description provided for @settingsControlOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility settings'**
+  String get settingsControlOpen;
+
+  /// No description provided for @settingsControlAlwaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 computer controls this phone without asking.} other{{count} computers control this phone without asking.}}'**
+  String settingsControlAlwaysCount(int count);
+
+  /// No description provided for @settingsControlAskAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask every time'**
+  String get settingsControlAskAgain;
+
+  /// No description provided for @controlDisclosureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Ferret control?'**
+  String get controlDisclosureTitle;
+
+  /// No description provided for @controlDisclosureBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.'**
+  String get controlDisclosureBody;
+
+  /// No description provided for @controlDisclosureSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Next, in Accessibility, tap Ferret control and turn it on.'**
+  String get controlDisclosureSteps;
+
+  /// No description provided for @controlDisclosureOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Accessibility settings'**
+  String get controlDisclosureOpen;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
 }
 
 class _MirroringLocalizationsDelegate

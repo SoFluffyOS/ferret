@@ -27,8 +27,64 @@ class ShareCardFrame extends StatelessWidget {
     final record = context.select<ShareViewModel, MirrorRecord?>(
       (viewModel) => viewModel.lastRecord,
     );
+    final controlPending = context.select<ShareViewModel, ControlRequest?>(
+      (viewModel) => viewModel.controlPending,
+    );
+    final controller = context.select<ShareViewModel, ControlRequest?>(
+      (viewModel) => viewModel.controller,
+    );
     final viewModel = context.read<ShareViewModel>();
     final l10n = context.mirroringL10n;
+
+    if (controlPending != null) {
+      return FeatureCard(
+        icon: LucideIcons.mousePointerClick,
+        iconTone: .accent,
+        title: l10n.controlAskTitle(
+          controlPending.deviceName,
+          viewModel.phoneName,
+        ),
+        subtitle: l10n.controlAskBody(controlPending.deviceName),
+        actions: [
+          Button(
+            variant: .ghost,
+            label: l10n.controlNo,
+            onPressed: () => unawaited(viewModel.answerControl(.no)),
+          ),
+          Button(
+            variant: .ghost,
+            label: l10n.controlAlways,
+            onPressed: () => unawaited(viewModel.answerControl(.always)),
+          ),
+          Button(
+            variant: .primary,
+            label: l10n.controlOnce,
+            onPressed: () => unawaited(viewModel.answerControl(.once)),
+          ),
+        ],
+      );
+    }
+
+    if (active != null && controller != null) {
+      return FeatureCard(
+        icon: LucideIcons.mousePointerClick,
+        iconTone: .warning,
+        title: l10n.controlledTitle(controller.deviceName),
+        subtitle: l10n.controlledBody,
+        actions: [
+          Button(
+            variant: .ghost,
+            label: l10n.stop,
+            onPressed: () => unawaited(viewModel.stop()),
+          ),
+          Button(
+            variant: .primary,
+            label: l10n.controlStop,
+            onPressed: () => unawaited(viewModel.stopControl()),
+          ),
+        ],
+      );
+    }
 
     if (active != null) {
       return FeatureCard(

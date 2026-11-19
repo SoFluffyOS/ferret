@@ -30,6 +30,7 @@ class MirrorToolbar extends StatefulWidget {
     this.soundPanel,
     this.soundDetail,
     this.soundMuted = false,
+    this.askingControl = false,
     this.quality = .good,
     this.moreButtons = const [],
     this.isFullScreen = false,
@@ -61,6 +62,10 @@ class MirrorToolbar extends StatefulWidget {
 
   /// No sound of the device plays here right now.
   final bool soundMuted;
+
+  /// The device's owner is being asked to let this computer control it:
+  /// the Control chip waits.
+  final bool askingControl;
   final ViewQuality quality;
 
   /// The device's keys that sit behind More: volume, power, its
@@ -177,6 +182,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
 
       width += switch (item) {
         .viewOnly when names => named(l10n.viewOnly),
+        .askControl when names => named(_askControlName(l10n)),
         .stop when names && !inBar => named(l10n.stop),
         _ => Spacing.d28,
       };
@@ -318,6 +324,15 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
           onTap: () => _open(_viewOnly),
         ),
       ),
+      .askControl => ToolbarButton(
+        icon: LucideIcons.mousePointerClick,
+        name: _askControlName(l10n),
+        showName: names,
+        onTap: switch (widget.askingControl) {
+          true => null,
+          false => () => _act(.askControl),
+        },
+      ),
       .quality => ToolbarPopup(
         controller: _quality,
         place: widget.place,
@@ -427,6 +442,12 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     );
   }
 
+  String _askControlName(MirroringLocalizations l10n) =>
+      switch (widget.askingControl) {
+        true => l10n.controlAsking,
+        false => l10n.controlAsk,
+      };
+
   IconData _iconOf(ToolbarItem item) => switch (item) {
     .back => LucideIcons.chevronLeft,
     .home => LucideIcons.circle,
@@ -439,6 +460,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       false => LucideIcons.maximize,
     },
     .viewOnly => LucideIcons.eye,
+    .askControl => LucideIcons.mousePointerClick,
     .quality => LucideIcons.signal,
     .more => LucideIcons.ellipsis,
     .stop => LucideIcons.circleStop,
@@ -468,6 +490,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
           false => l10n.fullScreen,
         },
         .viewOnly => l10n.viewOnly,
+        .askControl => _askControlName(l10n),
         .quality => l10n.pictureTitle,
         .more => l10n.more,
         .stop => l10n.stop,

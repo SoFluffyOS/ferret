@@ -1,5 +1,7 @@
 export 'package:mirroring/models/active_share.dart';
 export 'package:mirroring/models/cable_setup.dart';
+export 'package:mirroring/models/control_choice.dart';
+export 'package:mirroring/models/control_request.dart';
 export 'package:mirroring/models/incoming_request.dart';
 export 'package:mirroring/models/input_action.dart';
 export 'package:mirroring/models/mirror_end.dart';

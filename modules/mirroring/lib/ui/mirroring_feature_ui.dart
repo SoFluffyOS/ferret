@@ -49,6 +49,14 @@ class MirroringFeatureUi extends FeatureUi {
   static const _requestNotice = 'mirroring.request';
   static const _showAction = 'mirroring.show';
   static const _denyAction = 'mirroring.deny';
+  static const _controlAskCategory = 'mirroring.control_ask';
+  static const _controlAskNotice = 'mirroring.control_ask';
+  static const _controlledCategory = 'mirroring.controlled';
+  static const _controlledNotice = 'mirroring.controlled';
+  static const _alwaysAction = 'mirroring.control_always';
+  static const _onceAction = 'mirroring.control_once';
+  static const _noAction = 'mirroring.control_no';
+  static const _stopControlAction = 'mirroring.control_stop';
 
   /// Where "Show screen" sits among a device's first actions: right
   /// after Send files.
@@ -67,7 +75,11 @@ class MirroringFeatureUi extends FeatureUi {
   StreamSubscription<MirrorFeed>? _openOnIncoming;
   StreamSubscription<void>? _askOnRequest;
   StreamSubscription<NoticeResponse>? _noticeResponses;
+  StreamSubscription<void>? _controlNotices;
+  StreamSubscription<NoticeResponse>? _controlResponses;
   final Set<IncomingRequest> _asked = {};
+  ControlRequest? _controlAskShown;
+  ControlRequest? _controlledShown;
 
   /// The mirror page that is open, so a second one takes its place
   /// instead of piling up on it.
@@ -96,6 +108,18 @@ class MirroringFeatureUi extends FeatureUi {
           NoticeAction(id: _denyAction, label: l10n.dontAllow),
         ],
       ),
+      NoticeCategory(
+        id: _controlAskCategory,
+        actions: [
+          NoticeAction(id: _onceAction, label: l10n.controlOnce),
+          NoticeAction(id: _alwaysAction, label: l10n.controlAlways),
+          NoticeAction(id: _noAction, label: l10n.controlNo),
+        ],
+      ),
+      NoticeCategory(
+        id: _controlledCategory,
+        actions: [NoticeAction(id: _stopControlAction, label: l10n.stop)],
+      ),
     ];
   }
 
@@ -120,6 +144,16 @@ class MirroringFeatureUi extends FeatureUi {
     }
 
     _revealOnAsk = feature.changes.listen((_) => _revealWhenAsked(context));
+    _controlNotices = feature.changes.listen(
+      (_) => _syncControlNotices(context),
+    );
+    _controlResponses = context.notifier.responses
+        .where(
+          (response) =>
+              response.noticeId == _controlAskNotice ||
+              response.noticeId == _controlledNotice,
+        )
+        .listen(_onControlResponse);
   }
 
   @override
@@ -544,10 +578,85 @@ class MirroringFeatureUi extends FeatureUi {
     await _openOnIncoming?.cancel();
     await _askOnRequest?.cancel();
     await _noticeResponses?.cancel();
+    await _controlNotices?.cancel();
+    await _controlResponses?.cancel();
     _changes.dispose();
     stageWindow.dispose();
     viewerViewModel.dispose();
     shareViewModel.dispose();
+  }
+
+  /// On the phone: the question while a computer asks to control it, and
+  /// "Being controlled by MacBook" with Stop for as long as it does.
+  void _syncControlNotices(FeatureContext context) {
+    final control = feature.source?.control;
+    final pending = control?.pending;
+    final controller = control?.controller;
+    final l10n = platformMirroringL10n();
+    if (!identical(pending, _controlAskShown)) {
+      _controlAskShown = pending;
+      _showOrCancel(context, _controlAskNotice, switch (pending) {
+        final asking? => LocalNotice(
+          id: _controlAskNotice,
+          channel: .incoming,
+          title: l10n.controlAskTitle(
+            asking.deviceName,
+            feature.host.localDevice.name,
+          ),
+          body: l10n.controlAskBody(asking.deviceName),
+          category: _controlAskCategory,
+        ),
+        null => null,
+      });
+      if (pending != null) {
+        unawaited(context.reveal());
+      }
+    }
+
+    if (identical(controller, _controlledShown)) {
+      return;
+    }
+
+    _controlledShown = controller;
+    _showOrCancel(context, _controlledNotice, switch (controller) {
+      final controlling? => LocalNotice(
+        id: _controlledNotice,
+        channel: .incoming,
+        title: l10n.controlledTitle(controlling.deviceName),
+        body: l10n.controlledBody,
+        category: _controlledCategory,
+        silent: true,
+        ongoing: true,
+      ),
+      null => null,
+    });
+  }
+
+  void _showOrCancel(FeatureContext context, String id, LocalNotice? notice) {
+    if (notice == null) {
+      unawaited(context.notifier.cancel(id));
+      return;
+    }
+
+    unawaited(context.notifier.show(notice));
+  }
+
+  void _onControlResponse(NoticeResponse response) {
+    final control = feature.source?.control;
+    final choice = switch (response.actionId) {
+      _onceAction => ControlChoice.once,
+      _alwaysAction => ControlChoice.always,
+      _noAction => ControlChoice.no,
+      _ => null,
+    };
+    if (choice != null) {
+      unawaited(control?.answer(choice));
+      return;
+    }
+
+    if (response.actionId == _stopControlAction) {
+      unawaited(control?.stop());
+    }
   }
 
   /// Brings Ferret to the front once per request, so the owner sees who

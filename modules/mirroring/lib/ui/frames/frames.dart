@@ -1,4 +1,5 @@
 export 'package:mirroring/ui/frames/airplay_guide_frame.dart';
+export 'package:mirroring/ui/frames/control_settings_frame.dart';
 export 'package:mirroring/ui/frames/mirror_ended_frame.dart';
 export 'package:mirroring/ui/frames/mirror_live_frame.dart';
 export 'package:mirroring/ui/frames/mirror_setup_frame.dart';

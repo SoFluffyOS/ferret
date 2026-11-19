@@ -359,6 +359,11 @@ class _NoticeFrame extends StatelessWidget {
         () => unawaited(viewModel.revealScreenshot()),
       ),
       .screenshotFailed => (l10n.screenshotFailed, null, null),
+      .controlAsking => (l10n.noticeControlAsking(deviceName), null, null),
+      .controlAllowed => (l10n.noticeControlAllowed(deviceName), null, null),
+      .controlDenied => (l10n.noticeControlDenied(deviceName), null, null),
+      .controlTimedOut => (l10n.noticeControlTimedOut(deviceName), null, null),
+      .controlStopped => (l10n.noticeControlStopped(deviceName), null, null),
     };
 
     return Padding(

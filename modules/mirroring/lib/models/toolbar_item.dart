@@ -11,6 +11,10 @@ enum ToolbarItem {
 
   /// Takes the place of every control on a device that is view only.
   viewOnly,
+
+  /// Takes the place of [viewOnly] on a device whose owner can let this
+  /// computer control it: asks them.
+  askControl,
   quality,
   fullScreen,
   more,
@@ -46,6 +50,7 @@ class ToolbarFold {
     ToolbarItem.home,
     ToolbarItem.recents,
     ToolbarItem.viewOnly,
+    ToolbarItem.askControl,
     ToolbarItem.more,
     ToolbarItem.stop,
   };

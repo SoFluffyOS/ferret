@@ -92,6 +92,7 @@ class ViewerViewModel extends ChangeNotifier {
   DateTime? _poorSince;
   bool _slowTold = false;
   bool _viewOnlyTold = false;
+  ControlAccess? _lastControl;
   bool _basicTold = false;
   bool _textFieldOpen = false;
   String? _screenshotPath;
@@ -428,6 +429,9 @@ class ViewerViewModel extends ChangeNotifier {
 
   void press(DeviceButton button) => _viewer?.control?.press(button);
 
+  /// Asks the phone's owner to let this computer click and type there.
+  Future<void> askControl() async => _viewer?.askControl();
+
   /// Pastes this computer's clipboard on the device.
   Future<void> paste() async {
     final text = await _readClipboard();
@@ -754,6 +758,7 @@ class ViewerViewModel extends ChangeNotifier {
       _noticedSession = sessionKey;
       _slowTold = false;
       _viewOnlyTold = false;
+      _lastControl = null;
       _poorSince = null;
       _textFieldOpen = false;
     }
@@ -772,6 +777,35 @@ class ViewerViewModel extends ChangeNotifier {
     if (began) {
       _noticeFor(current);
     }
+
+    _noticeControl(current.control);
+  }
+
+  /// Says once what the phone's owner did about control.
+  void _noticeControl(ControlAccess? control) {
+    if (control == _lastControl) {
+      return;
+    }
+
+    final before = _lastControl;
+    _lastControl = control;
+    final notice = switch (control) {
+      .asking => StageNotice.controlAsking,
+      .allowed => StageNotice.controlAllowed,
+      .denied => StageNotice.controlDenied,
+      .timedOut => StageNotice.controlTimedOut,
+      .stopped => StageNotice.controlStopped,
+      _ => null,
+    };
+    if (notice == null || before == null) {
+      if (_notice == .controlAsking) {
+        dismissNotice();
+      }
+
+      return;
+    }
+
+    _showNotice(notice, stays: notice == .controlAsking);
   }
 
   void _noticeFor(ViewSession session) {

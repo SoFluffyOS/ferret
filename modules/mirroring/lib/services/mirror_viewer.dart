@@ -119,6 +119,19 @@ class MirrorViewer {
     return _feed?.control;
   }
 
+  /// Asks the owner of the device being shown to let this computer
+  /// control it, where its route asks first.
+  Future<void> askControl() async {
+    final current = _current;
+    if (current == null || !current.isMirroring) {
+      return;
+    }
+
+    if (_feed case final ControlAsking asking) {
+      await asking.askControl();
+    }
+  }
+
   /// A device that started by itself is asked or shown right now.
   bool get isShowingIncoming => (_current?.isLive ?? false) && !_reopenable;
 
@@ -429,6 +442,8 @@ class MirrorViewer {
         _player?.add(frame, lost: lost);
       case FeedSourceState(:final screenOff):
         _onSourceState(screenOff);
+      case FeedControlChanged(:final access):
+        _onControlChanged(access);
       case FeedAudioConfigured(:final config):
         _audioConfig = config;
         unawaited(_playSound(config));
@@ -441,6 +456,15 @@ class MirrorViewer {
       case FeedEnded(:final reason):
         unawaited(_finish(.ofFeed(reason)));
     }
+  }
+
+  void _onControlChanged(ControlAccess access) {
+    final current = _current;
+    if (current == null || !current.isLive) {
+      return;
+    }
+
+    _set(current.copyWith(control: access));
   }
 
   void _onWaiting(Duration timeout) {

@@ -1,3 +1,4 @@
+import 'package:ferret_mirroring/src/route/control_access.dart';
 import 'package:ferret_mirroring/src/route/mirror_control.dart';
 import 'package:ferret_mirroring/src/route/mirror_target.dart';
 import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
@@ -14,6 +15,8 @@ abstract interface class MirrorFeed {
   /// [FeedEnded] last. [FeedSourceState] and [FeedStats] come in between,
   /// from routes that know them. A feed asked for sound adds a
   /// [FeedAudioConfigured] and [FeedAudio]s, or one [FeedAudioUnavailable].
+  /// A feed that is also [ControlAsking] says where control stands with
+  /// [FeedControlChanged].
   Stream<FeedEvent> get events;
 
   /// Mouse, keyboard and buttons on the other device, when the route has
@@ -78,6 +81,17 @@ class FeedAudioUnavailable extends FeedEvent {
   const FeedAudioUnavailable(this.reason);
 
   final AudioUnavailable reason;
+}
+
+/// Whether the device lets this computer control it changed, as its
+/// owner answered or set it up. [control] follows it.
+class FeedControlChanged extends FeedEvent {
+  const FeedControlChanged(this.access, {this.timeout = Duration.zero});
+
+  final ControlAccess access;
+
+  /// With [ControlAccess.asking]: how long the owner has to answer.
+  final Duration timeout;
 }
 
 /// The other device's screen went off or came back on. While it is off,

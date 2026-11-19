@@ -3,6 +3,7 @@ import 'dart:io' as io;
 
 import 'package:engine/engine.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:ferret_phone_control/ferret_phone_control.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/services.dart';
 import 'package:protobuf/protobuf.dart';
@@ -15,6 +16,7 @@ import 'package:protocol/protocol.dart';
 class MirroringFeature extends Feature {
   MirroringFeature({
     ScreenCapture Function()? capture,
+    PhoneControl Function()? phoneControl,
     MirrorDecoder Function()? decoder,
     List<MirrorCodec>? codecs,
     AudioSink Function()? audioSink,
@@ -29,6 +31,7 @@ class MirroringFeature extends Feature {
     this.requestTimeout = const Duration(seconds: 10),
     this.firstPictureTimeout = const Duration(seconds: 10),
   }) : _createCapture = capture ?? ScreenCapture.current,
+       _createPhoneControl = phoneControl ?? PhoneControl.new,
        _createDecoder = decoder ?? MirrorDecoder.current,
        _codecs = codecs,
        _createAudioSink = audioSink,
@@ -71,6 +74,7 @@ class MirroringFeature extends Feature {
       _plainTexts;
 
   final ScreenCapture Function() _createCapture;
+  final PhoneControl Function() _createPhoneControl;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec>? _codecs;
   final AudioSink Function()? _createAudioSink;
@@ -118,6 +122,7 @@ class MirroringFeature extends Feature {
         host: host,
         featureId: featureId,
         capture: _createCapture(),
+        phoneControl: _createPhoneControl(),
         settings: settings,
         texts: (deviceName, {withSound = false}) =>
             texts(deviceName, withSound: withSound),
@@ -202,6 +207,26 @@ class MirroringFeature extends Feature {
 
     if (payloadOf(envelope, AudioFrame.new) case final frame?) {
       _routes?.ferret.onAudioFrame(session, frame);
+      return null;
+    }
+
+    if (payloadOf(envelope, ControlInput.new) case final input?) {
+      _source?.control?.onInput(session.remoteDeviceId, input);
+      return null;
+    }
+
+    if (payloadOf(envelope, ControlState.new) case final state?) {
+      _routes?.ferret.onControlState(session, state);
+      return null;
+    }
+
+    if (payloadOf(envelope, ControlAsk.new) != null) {
+      await _source?.control?.onAsk(session.remoteDeviceId);
+      return null;
+    }
+
+    if (payloadOf(envelope, ControlRelease.new) != null) {
+      await _source?.control?.onRelease(session.remoteDeviceId);
       return null;
     }
 

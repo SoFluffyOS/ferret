@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:ferret_phone_control/ferret_phone_control.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/bitrate_controller.dart';
 import 'package:mirroring/services/frame_sender.dart';
 import 'package:mirroring/services/mirror_protocol.dart';
+import 'package:mirroring/services/source_control.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/mirroring.dart';
 
@@ -22,6 +24,7 @@ class MirrorSource {
     required ScreenCapture capture,
     required MirroringSettings settings,
     required ConsentTexts Function(String deviceName, {bool withSound}) texts,
+    PhoneControl? phoneControl,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.denyCooldown = const Duration(seconds: 30),
@@ -31,6 +34,7 @@ class MirrorSource {
        _capture = capture,
        _settings = settings,
        _texts = texts,
+       _phoneControl = phoneControl,
        _clock = clock ?? DateTime.now;
 
   /// How long the owner has to answer before the request is denied.
@@ -54,7 +58,23 @@ class MirrorSource {
   final StreamController<void> _changes = .broadcast();
   final Map<String, DateTime> _deniedUntil = {};
 
+  /// A computer that sees this screen tapping and typing on it, or null
+  /// where nothing could ever let it.
+  late final SourceControl? control = switch (_phoneControl) {
+    final phone? => SourceControl(
+      phone: phone,
+      settings: _settings,
+      send: _send,
+      clock: _clock,
+      askTimeout: consentTimeout,
+    ),
+    null => null,
+  };
+
+  final PhoneControl? _phoneControl;
+
   StreamSubscription<CaptureEvent>? _events;
+  StreamSubscription<void>? _controlChanges;
   CaptureSupport _support = const .none();
   ShareRequest? _pending;
   ActiveShare? _active;
@@ -103,6 +123,10 @@ class MirrorSource {
 
     await _checkSound();
     _events = _capture.events.listen(_onCaptureEvent);
+    if (control case final control?) {
+      await control.start();
+      _controlChanges = control.changes.listen((_) => _emit());
+    }
   }
 
   /// Turns sending sound on or off. Turning it on asks Android for the
@@ -356,6 +380,8 @@ class MirrorSource {
     }
 
     await _events?.cancel();
+    await _controlChanges?.cancel();
+    await control?.dispose();
     await _capture.dispose();
     await _changes.close();
   }
@@ -414,6 +440,7 @@ class MirrorSource {
     );
     _begin(active);
     await _send(deviceId, _acceptFor(active, soundAnswer));
+    await control?.onShown(active.deviceId, active.deviceName);
 
     final started = await _startCapture(active, request);
     if (!started && identical(_active, active)) {
@@ -557,6 +584,7 @@ class MirrorSource {
       _onAudioConfig(resumed, config);
     }
 
+    await control?.onShown(resumed.deviceId, resumed.deviceName);
     await _capture.requestKeyframe();
   }
 
@@ -644,6 +672,7 @@ class MirrorSource {
     _graceTimer?.cancel();
     _graceTimer = null;
     _active = null;
+    unawaited(control?.onShareEnded());
     _sender = null;
     _bitrate = null;
     _lastConfig = null;

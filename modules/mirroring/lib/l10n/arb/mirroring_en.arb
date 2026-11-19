@@ -1045,5 +1045,126 @@
       }
     }
   },
-  "allowNoticeBody": "Say yes only if it is yours."
+  "allowNoticeBody": "Say yes only if it is yours.",
+  "controlAsk": "Control",
+  "@controlAsk": {
+    "description": "Toolbar chip on a phone shown over Wi-Fi: asks the phone's owner to let this computer click and type there"
+  },
+  "controlAsking": "Asking…",
+  "@controlAsking": {
+    "description": "The Control chip while the phone's owner is being asked"
+  },
+  "noticeControlAsking": "On {device}, tap Once or Always to let this computer click and type there.",
+  "@noticeControlAsking": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeControlAllowed": "You can click and type on {device} now.",
+  "@noticeControlAllowed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeControlDenied": "{device} said no to control. You can still watch.",
+  "@noticeControlDenied": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeControlTimedOut": "Nobody answered on {device}. Click Control to ask again.",
+  "@noticeControlTimedOut": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeControlStopped": "{device} stopped control. You can still watch.",
+  "@noticeControlStopped": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "viewOnlySetupBody": "To click and type over Wi-Fi, turn on Ferret control on {device}: open Ferret there, then Settings → To your computer.",
+  "@viewOnlySetupBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "controlAskTitle": "Let {computer} control {phone} while showing its screen?",
+  "@controlAskTitle": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "controlAskBody": "{computer} can tap, swipe and type here until you stop it, or until the screen stops being shown.",
+  "@controlAskBody": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "controlAlways": "Always",
+  "@controlAlways": {
+    "description": "Answer: let this computer control the phone now and every time after"
+  },
+  "controlOnce": "Once",
+  "@controlOnce": {
+    "description": "Answer: let this computer control the phone this time"
+  },
+  "controlNo": "No",
+  "@controlNo": {
+    "description": "Answer: don't let this computer control the phone"
+  },
+  "controlledTitle": "Being controlled by {computer}",
+  "@controlledTitle": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "controlledBody": "It can tap and type here while it shows this screen.",
+  "controlStop": "Stop control",
+  "noticeControlChannel": "Control from a computer",
+  "@noticeControlChannel": {
+    "description": "Android notification channel name"
+  },
+  "settingsControlTitle": "Control from a computer",
+  "settingsControlPowerUps": "A computer that shows this screen can tap and type here, through Power-ups. It asks you first.",
+  "settingsControlService": "Ferret control is on. A computer that shows this screen can tap and type here after it asks you.",
+  "settingsControlOff": "To let a computer that shows this screen tap and type here, turn on Ferret control in Android's Accessibility settings.",
+  "settingsControlTurnOn": "Turn on Ferret control…",
+  "settingsControlOpen": "Accessibility settings",
+  "settingsControlAlwaysCount": "{count, plural, =1{1 computer controls this phone without asking.} other{{count} computers control this phone without asking.}}",
+  "@settingsControlAlwaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsControlAskAgain": "Ask every time",
+  "controlDisclosureTitle": "Turn on Ferret control?",
+  "controlDisclosureBody": "Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.",
+  "controlDisclosureSteps": "Next, in Accessibility, tap Ferret control and turn it on.",
+  "controlDisclosureOpen": "Open Accessibility settings",
+  "notNow": "Not now"
 }

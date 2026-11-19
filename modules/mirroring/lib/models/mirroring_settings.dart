@@ -15,6 +15,7 @@ class MirroringSettings {
   static const soundKey = 'mirroring.sound';
   static const soundVolumeKey = 'mirroring.sound_volume';
   static const sendSoundKey = 'mirroring.send_sound';
+  static const controlAlwaysKey = 'mirroring.control_always';
 
   /// The one switch the cable and the receivers used to share. Only read,
   /// so a computer that had it on keeps both.
@@ -93,6 +94,23 @@ class MirroringSettings {
   bool get sendSound => _store.get<bool>(sendSoundKey) ?? false;
 
   Future<void> setSendSound(bool value) => _store.set(sendSoundKey, value);
+
+  /// The computers this phone's owner answered Always: they control it
+  /// without asking while it shows them its screen.
+  List<String> get controlAlways => [
+    for (final id in _store.get<List<Object?>>(controlAlwaysKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  Future<void> setControlAlways(String deviceId, bool always) =>
+      _store.set(controlAlwaysKey, [
+        for (final id in controlAlways)
+          if (id != deviceId) id,
+        if (always) deviceId,
+      ]);
+
+  Future<void> clearControlAlways() =>
+      _store.set(controlAlwaysKey, const <Object?>[]);
 
   /// The phones whose owner was told once that a cable doesn't ask.
   List<String> get cableTold => [

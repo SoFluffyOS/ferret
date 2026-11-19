@@ -48,6 +48,12 @@ class MirrorToolbarFrame extends StatelessWidget {
     final viewOnly = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.abilities.isEmpty,
     );
+    final controlAccess = context.select<ViewerViewModel, ControlAccess?>(
+      (viewModel) => viewModel.current?.control,
+    );
+    final canAskControl =
+        viewOnly &&
+        (controlAccess == .asking || (controlAccess?.canAskNow ?? false));
     final canFullScreen = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.canFullScreen,
     );
@@ -94,7 +100,8 @@ class MirrorToolbarFrame extends StatelessWidget {
       },
       items: [
         if (canPress) ...const [.back, .home, .recents, .rotate],
-        if (viewOnly) .viewOnly,
+        if (canAskControl) .askControl,
+        if (viewOnly && !canAskControl) .viewOnly,
         .screenshot,
         if (canText) .keyboard,
         .quality,
@@ -111,6 +118,7 @@ class MirrorToolbarFrame extends StatelessWidget {
         .screenshot => unawaited(viewModel.screenshot()),
         .keyboard => viewModel.openTextField(),
         .fullScreen => unawaited(viewModel.setFullScreen(!isFullScreen)),
+        .askControl => unawaited(viewModel.askControl()),
         .stop => onStop(),
         .viewOnly || .quality || .more => null,
       },
@@ -124,6 +132,7 @@ class MirrorToolbarFrame extends StatelessWidget {
         _ => l10n.soundDetail(sound, on: soundOn),
       },
       soundMuted: !soundOn || sound != .playing,
+      askingControl: controlAccess == .asking,
       viewOnlyPanel: (_) => _ViewOnlyPanel(
         deviceId: deviceId,
         deviceName: deviceName,
@@ -150,6 +159,9 @@ class _ViewOnlyPanel extends StatelessWidget {
     final hasCable = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.hasCable,
     );
+    final controlAccess = context.select<ViewerViewModel, ControlAccess?>(
+      (viewModel) => viewModel.current?.control,
+    );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
     final overAirplay = way == .airplay;
@@ -163,9 +175,10 @@ class _ViewOnlyPanel extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             Text(
-              switch (overAirplay) {
-                true => l10n.viewOnlyAirplayBody,
-                false => l10n.viewOnlyBody(deviceName),
+              switch ((overAirplay, controlAccess)) {
+                (true, _) => l10n.viewOnlyAirplayBody,
+                (false, .needsSetup) => l10n.viewOnlySetupBody(deviceName),
+                _ => l10n.viewOnlyBody(deviceName),
               },
               style: context.fluffyTheme.typography.caption1.copyWith(
                 color: context.palette.text,

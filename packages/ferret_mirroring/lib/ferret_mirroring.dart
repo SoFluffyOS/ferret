@@ -22,6 +22,7 @@ export 'package:ferret_mirroring/src/decoder/mirror_decoder.dart';
 export 'package:ferret_mirroring/src/decoder/mirror_picture.dart';
 export 'package:ferret_mirroring/src/decoder/video_toolbox_decoder.dart';
 export 'package:ferret_mirroring/src/messages.g.dart';
+export 'package:ferret_mirroring/src/route/control_access.dart';
 export 'package:ferret_mirroring/src/route/mirror_control.dart';
 export 'package:ferret_mirroring/src/route/mirror_feed.dart';
 export 'package:ferret_mirroring/src/route/mirror_route.dart';
