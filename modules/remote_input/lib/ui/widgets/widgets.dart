@@ -1,5 +1,6 @@
 export 'package:remote_input/ui/widgets/consent_dialog.dart';
 export 'package:remote_input/ui/widgets/hold_button.dart';
+export 'package:remote_input/ui/widgets/host_dismiss_button.dart';
 export 'package:remote_input/ui/widgets/key_chip.dart';
 export 'package:remote_input/ui/widgets/key_strip.dart';
 export 'package:remote_input/ui/widgets/keyboard_field.dart';
