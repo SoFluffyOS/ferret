@@ -11,7 +11,7 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 ## What it checks
 
 1. **This device's network.** Is it on Wi-Fi or Ethernet at all?
-2. **VPN.** A VPN can hide devices on your network. Allow local network access in the VPN, or turn it off for a moment.
+2. **VPN.** A VPN can hide devices on your network. Allow local network access in the VPN, or turn it off for a moment. Is it your own VPN, such as Tailscale? Tap **Reach over your VPN** and Ferret uses it to reach the device away from home. With that on, it says Ferret also tries the VPN. See [Reach your devices away from home](away-from-home.md).
 3. **Same network.** Were both devices last seen on the same Wi-Fi? Guest and office networks often keep devices apart.
 4. **Is the other device answering?** If not, open Ferret on it. On Android, battery saving may have stopped it: see [Ferret on Android](../getting-started/android.md).
 5. **Does it still know this device?** If it was reset or reinstalled, pair again.

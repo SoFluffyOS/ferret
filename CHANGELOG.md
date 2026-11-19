@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 🌍 **Reach your devices away from home**: already on Tailscale, ZeroTier or WireGuard? Open your phone in Ferret, tap **Reach away from home** and turn on **Also reach Pixel 7 over your VPN**. When your Wi-Fi doesn't find it, Ferret goes through your own VPN, and back home it moves to the Wi-Fi by itself. No Ferret account, no server. See [Reach your devices away from home](docs/public/features/away-from-home.md).
 - 🕹️ **Control your phone over Wi-Fi**: show its screen, click **Control**, and tap **Once** or **Always** on the phone. Back, Home, clicks, scrolling and typing just work, no cable. Your phone says **Being controlled by MacBook Air** with **Stop control** the whole time. Works with Power-ups, or turn on **Ferret control** in Android's Accessibility settings. Not possible on iPhone.
 - ❤️ **Sponsor Ferret**: Ferret is free and always will be. If it saves you time, **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page. Also in the Mac's **Help** menu and the **•••** menu on Windows and Linux. Never a popup, never a reminder.
 - 🔊 **Sound with Show screen**: the phone's sound plays on your computer along with its screen. Over a cable it just works (Android 11 and later). Over Wi-Fi, turn on **Send sound too** on the phone (Android 10 and later), and its notice says **Sharing screen and sound with MacBook**. Pick **On this computer** or **On Pixel 7** in **••• → Sound**. Only what the phone plays, never its microphone.

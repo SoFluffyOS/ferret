@@ -14,7 +14,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 ## 🙅 What Ferret never does
 
 - No account. No sign-in. No email.
-- No cloud, no relay, no "fallback over the internet".
+- No cloud, no relay, no "fallback over the internet". If you run your own VPN (Tailscale, ZeroTier, WireGuard), Ferret can use it, but only for a device you turned that on for. See [Reach your devices away from home](features/away-from-home.md).
 - No analytics, no crash reporting service, no ads, no tracking of any kind.
 - It never logs what you copy, the files you send, your messages or your notifications.
 
@@ -75,6 +75,7 @@ Checked against the code, line by line:
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
 | Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
 | A computer's network card (MAC) addresses and network, so your devices can wake it | Only to devices you paired, end-to-end encrypted. Turn it off with **Let my devices wake this computer** | When a device connects, and when the cards change |
+| This device's VPN addresses (Tailscale, ZeroTier, WireGuard), so your devices can reach it away from home | Only to paired devices that have **Also reach … over your VPN** on for this device, end-to-end encrypted | When that device connects, and when it turns the switch on |
 | A Wake-on-LAN magic packet (only the MAC address, repeated) | Your network, as a broadcast and to the computer's last address | Only when you tap **Wake**, or a phone of yours asks this computer to |
 | Files and links | Phones you share with through Quick Share or LocalSend, on your Wi-Fi | Only when you turn that on in Drop |
 | A download of Android's platform tools | `dl.google.com` | Only when you click **Download**, for [mirroring with a cable](features/mirroring-with-a-cable.md) |
