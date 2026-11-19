@@ -18,6 +18,7 @@ This always works, on every device.
 - **Android:** share a link or some text, then pick **Continue on…** in the share sheet. Pick a device in the small list and you're done. A short message says "Sent to MacBook".
 - **Any device:** open a device in Ferret, then **Send a link…**. Paste a link or type some text.
 - **macOS:** turn on **Read the current browser page** in **Settings → Continue & media**, then use **Send current page** on a device.
+- **macOS, by dragging:** drag a link from your browser (its address bar, or a link on the page) onto a device in Ferret's popover or window. It opens there.
 
 What happens on the other side:
 

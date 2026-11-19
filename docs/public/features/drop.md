@@ -14,7 +14,7 @@ With Ferret, files and text go straight from one of your devices to another, ove
 
 - **In the window:** drag files onto a device in the list on the left. The device under the pointer lights up and says **Send to Pixel 9**. Hold still for a moment and it opens, so you can see where they go. Or drop on the page itself: it goes to the device you have open, or to all your connected devices on **Activity** and **Settings**. The page stays where it was, and a card in the corner shows how sending goes.
 - **On a phone or the Mac popover:** drag files over Ferret and it turns into one big tile per device. Drop on the one you want, or on **All my devices**. Or open a device and pick **Send files…**.
-- **On a Mac:** drag files onto the menubar icon and hold for a moment. The popover springs open on the same tiles. Drop right on the icon instead and they go to your one connected device, or Ferret shows the tiles so you pick.
+- **On a Mac:** drag files onto the menubar icon and hold for a moment. The popover springs open on the same tiles. Drop right on the icon instead and they go to your one connected device, or to the device you dropped files on last while it is connected. The icon's ring fills while they go. Otherwise Ferret shows the tiles so you pick.
 - **On Android:** share from any app and pick **Send with Ferret**. Photos, PDFs, anything.
 - **From the file manager:** right-click a file and pick **Share → Ferret** in Finder, **Send to** on Windows or **Open With** on Linux. See [Send from the file manager](share-menu.md).
 - **Offline devices** stay on screen, faded, and don't take the drop. In the window, an offline device says **Offline** while you drag over it.
@@ -29,6 +29,8 @@ Files from your paired devices are accepted on their own. No prompt to click.
 
 When a transfer finishes, you get one quiet notice, such as **IMG_2041.jpg from Pixel 9**, with **Open** and **Show in Finder** (**Show in folder** on Windows, Linux and Android). Its line in **Activity** has the same buttons.
 
+On a Mac, that line IS the file: drag it to Finder, your desktop or any app (Mail, Messages, an editor) and a copy lands there. Select it with the arrow keys and press Space for Quick Look.
+
 Files from a phone that isn't paired (LocalSend or Quick Share) wait under **Needs you** at the top of the home screen: **Ana's Pixel wants to send** · **2 files · 6 MB**, with **Decline** and **Accept**. Tap the line to see everything about the offer first.
 
 Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Try again** sends it again.
@@ -38,6 +40,8 @@ Ferret never overwrites a file. If `photo.jpg` already exists, the new one becom
 ## 💬 Send text
 
 Share text to **Send with Ferret** on Android and it arrives as a notice on your other device, with a **Copy** button.
+
+On a Mac, drag text onto a device in the popover or the window: it lands on that device's clipboard. Drag a link and it opens there. See [Clipboard](clipboard.md) and [Handoff](handoff.md).
 
 ## 🔁 Dropped connection? It continues
 

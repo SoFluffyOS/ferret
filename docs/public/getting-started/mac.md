@@ -32,7 +32,28 @@ macOS asks two things the first time:
 - **+** adds a device. **•••** holds **Pause syncing** (for an hour, until tomorrow, or until you resume), **Open Ferret window**, **Settings** and **Quit Ferret**. While paused, the last line says until when, with **Resume**.
 - **Things that need room open the window**: click a device, **Settings**, a phone's texts or its notifications, and the window opens right there. The popover steps aside. A notification you click does the same.
 - **Drag** the popover away from the menubar to keep it open as a window.
-- **Drop files** on the icon (or the popover) to send them to your phone.
+- **Drop files** on the icon (or the popover) to send them to your phone. Dropped right on the icon, they go to your one connected device, or to the device you sent files to last. The icon's ring fills while they go. With no way to tell, the popover opens so you pick.
+- **Drop text or a link** on a device in the popover or the window. Text lands on that device's clipboard. A link opens there, like **Send a link…**.
+- **Drag a file out of Activity**: a file that just arrived is a real file. Drag its line to Finder, Mail or any app. Press Space on it for Quick Look.
+
+### ⌨️ The popover from the keyboard
+
+Press **⌃⌥Space** in any app and Ferret opens under its icon. Press it again to close it.
+
+| Keys | Does |
+|---|---|
+| ⌃⌥Space | Open or close Ferret, from any app |
+| ↓ / ↑ | Next / previous device or Activity line |
+| ↩ | Open the device, or the line (a file opens) |
+| ⌘V | On a device: send it your clipboard |
+| Space | On a file that arrived: Quick Look |
+| ⌘N | Add a device |
+| ⌘, | Settings |
+| Esc | Back a page, or close Ferret |
+
+⌃⌥Space taken by another app? Pick other keys in **Settings → Advanced → Open Ferret from anywhere**: click **Change** and press the new ones. **Turn off** if you don't want any.
+
+No Accessibility permission needed. Ferret asks macOS for just that one key combination, so it never sees anything else you type.
 
 The icon tells you what Ferret is doing. Plain means a device is connected. Dimmed means none is, which is fine. A ring fills while a file moves, then a check shows for a moment. A dot means someone is waiting for your answer: a device that wants to pair, or a file from someone else. A slash means Ferret is paused. Rest the pointer on the icon to read it in words.
 

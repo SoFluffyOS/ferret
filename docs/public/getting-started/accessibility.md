@@ -32,6 +32,8 @@ On a computer you never need the mouse.
 
 What has the focus wears a blue ring. A blue button wears one that stands out from it, so you see it either way.
 
+In the Mac popover, ↓ and ↑ move from device to device and through Activity, ↩ opens what is selected, and Esc closes it. ⌃⌥Space opens it from any app.
+
 The window has shortcuts for everything you do often: ⌘1 to ⌘6 for a device's sections, ⌘N to add a device, ⌘, for Settings. The full list is on the [Mac page](mac.md).
 
 ## 🔎 With large text
