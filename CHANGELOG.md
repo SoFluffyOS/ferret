@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 🦊 **A real app icon**: Ferret has its own icon on macOS, iOS, Android and Windows. Dark and tinted on iOS, themed on Android.
 - 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**.
 - ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away.
 - 📋 **A copy waits for you**: copied with no device around? Activity says it's waiting, then **Sent to Pixel 7 when it came back**.
