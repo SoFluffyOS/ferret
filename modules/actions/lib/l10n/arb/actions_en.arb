@@ -504,5 +504,131 @@
       }
     }
   },
-  "healthHostOffHelp": "Turn on Computer actions in Settings → Control."
+  "healthHostOffHelp": "Turn on Computer actions in Settings → Control.",
+  "leaveTitle": "Lock when your phone leaves",
+  "leaveSwitch": "Lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} when {device} leaves",
+  "@leaveSwitch": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveSwitchBody": "When {device} drops off the Wi-Fi and stays gone for {minutes, plural, =1{1 minute} other{{minutes} minutes}}.",
+  "@leaveSwitchBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveAfter": "Lock after",
+  "leaveMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@leaveMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveNote": "It waits until nobody has touched the keyboard or mouse for a minute, then gives you 10 seconds to cancel. It never unlocks. Pausing Ferret on the phone isn't leaving.",
+  "leaveNoPhones": "Pair an Android phone to lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} when it leaves. iPhone can't: iOS stops Ferret in the background, so it would look gone all the time.",
+  "@leaveNoPhones": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveCountdownTitle": "Locking {computer, select, mac{this Mac} windows{this PC} other{this computer}} in {seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@leaveCountdownTitle": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveCountdownBody": "{device} left. Cancel if you're still here.",
+  "@leaveCountdownBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveNoticeTitle": "Locking {computer, select, mac{this Mac} windows{this PC} other{this computer}}: {device} left",
+  "@leaveNoticeTitle": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveNoticeBody": "Cancel to keep it unlocked.",
+  "leaveLocked": "Locked {computer, select, mac{this Mac} windows{this PC} other{this computer}}: {device} left",
+  "@leaveLocked": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveLockedDetail": "Gone for {minutes, plural, =1{1 minute} other{{minutes} minutes}}, with nobody at the keyboard",
+  "@leaveLockedDetail": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveCancelled": "Stayed unlocked after {device} left",
+  "@leaveCancelled": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveCancelledDetail": "You cancelled the lock",
+  "leaveFailed": "Couldn't lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} after {device} left",
+  "@leaveFailed": {
+    "description": "computer is mac, windows or linux.",
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveFailedDetail": "The system said no. Lock it by hand.",
+  "leavePermissionDetail": "After {minutes, plural, =1{1 minute} other{{minutes} minutes}} away, when nobody is at the keyboard",
+  "@leavePermissionDetail": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
 }

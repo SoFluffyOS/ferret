@@ -534,4 +534,123 @@ void main() {
       expect(reply?.result, RunResult.RUN_RESULT_CANCELLED);
     });
   });
+
+  group('lock when a phone leaves', () {
+    testWidgets('the countdown names the phone and cancels', (tester) async {
+      var cancelled = false;
+      final startedAt = DateTime(2026, 11, 19, 9);
+      await tester.pumpWidget(
+        testApp(
+          LeaveCountdownDialog(
+            countdown: LeaveCountdown(
+              deviceId: 'pixel',
+              deviceName: 'Pixel 7',
+              startedAt: startedAt,
+              endsAt: startedAt.add(const Duration(seconds: 10)),
+            ),
+            computer: .mac,
+            clock: () => startedAt,
+            onCancel: () => cancelled = true,
+          ),
+          scroll: false,
+        ),
+      );
+
+      expect(find.text('Locking this Mac in 10 seconds'), findsOneWidget);
+      expect(
+        find.text("Pixel 7 left. Cancel if you're still here."),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Cancel'));
+      expect(cancelled, isTrue);
+    });
+
+    testWidgets('Settings has a switch per Android phone and the minutes', (
+      tester,
+    ) async {
+      late FakeHost host;
+      late ActionsFeature feature;
+      await tester.runAsync(() async {
+        host = await FakeHost.create();
+        await pairPhone(host, 'pixel');
+        feature = ActionsFeature(
+          computer: FakeComputer(),
+          runner: FakeRunner(),
+          locker: FakeLocker(),
+          idle: FakeIdle(),
+          offersActions: true,
+        );
+        await feature.start(host);
+      });
+      final viewModel = ActionsViewModel(feature);
+      addTearDown(viewModel.dispose);
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider.value(
+            value: viewModel,
+            child: const LeaveLockSettingsFrame(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Lock when your phone leaves'), findsOneWidget);
+      expect(find.textContaining('when Pixel 7 leaves'), findsOneWidget);
+      expect(find.text('2 minutes'), findsOneWidget);
+      expect(find.byType(SwitchToggle), findsOneWidget);
+
+      await tester.tap(find.byType(SwitchToggle));
+      await tester.runAsync(settle);
+      await tester.pumpAndSettle();
+      expect(feature.settings.locksWhenGone('pixel'), isTrue);
+
+      await tester.tap(find.text('2 minutes'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('5 minutes'));
+      await tester.runAsync(settle);
+      await tester.pumpAndSettle();
+      expect(feature.settings.lockAfterMinutes, 5);
+      await tester.runAsync(feature.stop);
+    });
+
+    testWidgets('Activity says when it locked and why', (tester) async {
+      late List<ActivityItem> items;
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) {
+              items = leaveActivity(
+                context.actionsL10n,
+                [
+                  LeaveLockRecord(
+                    deviceId: 'pixel',
+                    deviceName: 'Pixel 7',
+                    at: DateTime(2026, 11, 19, 9),
+                    outcome: .locked,
+                  ),
+                  LeaveLockRecord(
+                    deviceId: 'pixel',
+                    deviceName: 'Pixel 7',
+                    at: DateTime(2026, 11, 19, 8),
+                    outcome: .cancelled,
+                  ),
+                ],
+                lockAfterMinutes: 2,
+                onDismiss: (_) {},
+              );
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      expect(items.first.title, contains('Pixel 7 left'));
+      expect(
+        items.first.detail,
+        'Gone for 2 minutes, with nobody at the keyboard',
+      );
+      expect(items.last.title, 'Stayed unlocked after Pixel 7 left');
+    });
+  });
 }

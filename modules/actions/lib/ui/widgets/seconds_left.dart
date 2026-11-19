@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:actions/models/models.dart';
 import 'package:flutter/widgets.dart';
 
-/// Rebuilds once a second with the whole seconds [countdown] has left.
+/// Rebuilds once a second with the whole seconds left until [endsAt].
 class SecondsLeft extends StatefulWidget {
   const SecondsLeft({
     super.key,
-    required this.countdown,
+    required this.endsAt,
     required this.builder,
     this.clock = DateTime.now,
   });
 
-  final ActionCountdown countdown;
+  final DateTime endsAt;
   final Widget Function(BuildContext context, int seconds) builder;
   final DateTime Function() clock;
 
@@ -29,7 +29,7 @@ class _SecondsLeftState extends State<SecondsLeft> {
   @override
   void initState() {
     super.initState();
-    _seconds = widget.countdown.secondsLeft(widget.clock());
+    _seconds = secondsUntil(widget.endsAt, widget.clock());
     _timer = .periodic(_tick, (_) => _update());
   }
 
@@ -40,7 +40,7 @@ class _SecondsLeftState extends State<SecondsLeft> {
   }
 
   void _update() {
-    final seconds = widget.countdown.secondsLeft(widget.clock());
+    final seconds = secondsUntil(widget.endsAt, widget.clock());
     if (seconds == _seconds) {
       return;
     }

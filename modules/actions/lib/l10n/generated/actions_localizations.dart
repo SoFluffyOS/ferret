@@ -688,6 +688,114 @@ abstract class ActionsLocalizations {
   /// In en, this message translates to:
   /// **'Turn on Computer actions in Settings → Control.'**
   String get healthHostOffHelp;
+
+  /// No description provided for @leaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock when your phone leaves'**
+  String get leaveTitle;
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} when {device} leaves'**
+  String leaveSwitch(String device, String computer);
+
+  /// No description provided for @leaveSwitchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device} drops off the Wi-Fi and stays gone for {minutes, plural, =1{1 minute} other{{minutes} minutes}}.'**
+  String leaveSwitchBody(String device, int minutes);
+
+  /// No description provided for @leaveAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock after'**
+  String get leaveAfter;
+
+  /// No description provided for @leaveMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 minute} other{{minutes} minutes}}'**
+  String leaveMinutes(int minutes);
+
+  /// No description provided for @leaveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'It waits until nobody has touched the keyboard or mouse for a minute, then gives you 10 seconds to cancel. It never unlocks. Pausing Ferret on the phone isn\'t leaving.'**
+  String get leaveNote;
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair an Android phone to lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} when it leaves. iPhone can\'t: iOS stops Ferret in the background, so it would look gone all the time.'**
+  String leaveNoPhones(String computer);
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Locking {computer, select, mac{this Mac} windows{this PC} other{this computer}} in {seconds, plural, =1{1 second} other{{seconds} seconds}}'**
+  String leaveCountdownTitle(String computer, int seconds);
+
+  /// No description provided for @leaveCountdownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} left. Cancel if you\'re still here.'**
+  String leaveCountdownBody(String device);
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Locking {computer, select, mac{this Mac} windows{this PC} other{this computer}}: {device} left'**
+  String leaveNoticeTitle(String computer, String device);
+
+  /// No description provided for @leaveNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel to keep it unlocked.'**
+  String get leaveNoticeBody;
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked {computer, select, mac{this Mac} windows{this PC} other{this computer}}: {device} left'**
+  String leaveLocked(String computer, String device);
+
+  /// No description provided for @leaveLockedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Gone for {minutes, plural, =1{1 minute} other{{minutes} minutes}}, with nobody at the keyboard'**
+  String leaveLockedDetail(int minutes);
+
+  /// No description provided for @leaveCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Stayed unlocked after {device} left'**
+  String leaveCancelled(String device);
+
+  /// No description provided for @leaveCancelledDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'You cancelled the lock'**
+  String get leaveCancelledDetail;
+
+  /// computer is mac, windows or linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t lock {computer, select, mac{this Mac} windows{this PC} other{this computer}} after {device} left'**
+  String leaveFailed(String computer, String device);
+
+  /// No description provided for @leaveFailedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'The system said no. Lock it by hand.'**
+  String get leaveFailedDetail;
+
+  /// No description provided for @leavePermissionDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'After {minutes, plural, =1{1 minute} other{{minutes} minutes}} away, when nobody is at the keyboard'**
+  String leavePermissionDetail(int minutes);
 }
 
 class _ActionsLocalizationsDelegate

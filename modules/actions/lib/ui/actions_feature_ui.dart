@@ -59,8 +59,17 @@ class ActionsFeatureUi extends FeatureUi {
       return;
     }
 
+    if (feature.leaveLock case final leaveLock?) {
+      leaveLock.watchReconnecting(
+        (deviceId) => context.engine.devices.any(
+          (status) => status.device.id == deviceId && status.isReconnecting,
+        ),
+      );
+    }
+
     _notices = ActionNotices(
       host: actionsHost,
+      leaveLock: feature.leaveLock,
       notifier: context.notifier,
       l10n: platformActionsL10n(),
       reveal: context.reveal,
@@ -101,6 +110,12 @@ class ActionsFeatureUi extends FeatureUi {
       viewModel.recent,
       commandSeconds: viewModel.commandSeconds,
       onDismiss: viewModel.dismissRecord,
+    ),
+    ...leaveActivity(
+      context.actionsL10n,
+      viewModel.leaveRecords,
+      lockAfterMinutes: viewModel.lockAfterMinutes,
+      onDismiss: viewModel.dismissLeaveRecord,
     ),
     ...outgoingActivity(
       context.actionsL10n,
@@ -206,14 +221,23 @@ class ActionsFeatureUi extends FeatureUi {
   }
 
   /// On a computer, what [device] may run without asking: one switch per
-  /// action, the three sound actions as one.
+  /// action, the three sound actions as one. For an Android phone, also
+  /// whether this computer locks when it leaves.
   @override
   List<DevicePermission> devicePermissions(
     BuildContext context,
     FeatureContext feature,
     DeviceStatus device,
+  ) => [
+    ..._actionPermissions(context, device),
+    ?_leavePermission(context, device),
+  ];
+
+  List<DevicePermission> _actionPermissions(
+    BuildContext context,
+    DeviceStatus device,
   ) {
-    final actionsHost = this.feature.actionsHost;
+    final actionsHost = feature.actionsHost;
     final deviceId = device.device.id;
     if (actionsHost == null || !actionsHost.enabled) {
       return const [];
@@ -221,7 +245,7 @@ class ActionsFeatureUi extends FeatureUi {
 
     final asksOrMay =
         (device.session?.supports(featureId) ?? false) ||
-        this.feature.settings.allowedFor(deviceId).isNotEmpty;
+        feature.settings.allowedFor(deviceId).isNotEmpty;
     if (!asksOrMay) {
       return const [];
     }
@@ -239,6 +263,28 @@ class ActionsFeatureUi extends FeatureUi {
     ];
   }
 
+  DevicePermission? _leavePermission(
+    BuildContext context,
+    DeviceStatus device,
+  ) {
+    if (!viewModel.canWatch(device.device.platform)) {
+      return null;
+    }
+
+    final l10n = context.actionsL10n;
+    final deviceId = device.device.id;
+    return DevicePermission(
+      label: l10n.leaveSwitch(
+        feature.host.displayNameOf(deviceId),
+        ComputerKind.here.name,
+      ),
+      detail: l10n.leavePermissionDetail(viewModel.lockAfterMinutes),
+      value: viewModel.locksWhenGone(deviceId),
+      onChanged: (value) =>
+          unawaited(viewModel.setLocksWhenGone(deviceId, locks: value)),
+    );
+  }
+
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {
     await _notices?.dispose();
@@ -254,7 +300,9 @@ class ActionsFeatureUi extends FeatureUi {
   /// the owner sees it right away.
   void _revealWhenAsked(FeatureContext context) {
     final startedAt =
-        viewModel.countdown?.startedAt ?? viewModel.pending?.askedAt;
+        viewModel.countdown?.startedAt ??
+        viewModel.leaveCountdown?.startedAt ??
+        viewModel.pending?.askedAt;
     if (startedAt == null || _revealedFor == startedAt) {
       return;
     }

@@ -46,7 +46,7 @@ class _CountdownCard extends StatelessWidget {
     final viewModel = context.read<ActionsViewModel>();
 
     return SecondsLeft(
-      countdown: countdown,
+      endsAt: countdown.endsAt,
       builder: (context, seconds) => FeatureCard(
         icon: actionIcon(countdown.action.kind),
         iconTone: .warning,

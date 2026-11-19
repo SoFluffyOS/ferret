@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:actions/feature/feature.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/services/services.dart';
+import 'package:engine/engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:protocol/actions.dart';
+import 'package:protocol/protocol.dart' show Platform;
 
 /// What the actions UI shows on both sides: on a computer, who asks, the
 /// countdown, the owner's own actions and what ran; on the asking device,
@@ -18,6 +20,8 @@ class ActionsViewModel extends ChangeNotifier {
   late final StreamSubscription<void> _subscription;
 
   ActionsHost? get _host => feature.actionsHost;
+
+  LeaveLock? get _leaveLock => feature.leaveLock;
 
   /// Whether this device runs actions for others: computers.
   bool get offersActions => _host != null;
@@ -42,6 +46,47 @@ class ActionsViewModel extends ChangeNotifier {
   /// Whether something needs the owner right now: a device asking, or a
   /// restart or shut down counting down.
   bool get needsOwner => pending != null || countdown != null;
+
+  /// Whether this computer can lock itself when a phone leaves.
+  bool get canLockWhenGone => _leaveLock != null;
+
+  /// A phone left and this computer is about to lock, or null.
+  LeaveCountdown? get leaveCountdown => _leaveLock?.countdown;
+
+  List<LeaveLockRecord> get leaveRecords => _leaveLock?.recent ?? const [];
+
+  /// Paired phones that can lock this computer when they leave, as id and
+  /// name.
+  List<({String id, String name})> get watchablePhones {
+    if (!canLockWhenGone) {
+      return const [];
+    }
+
+    final host = feature.host;
+    return [
+      for (final device in host.trustStore.devices)
+        if (LeaveLock.canWatch(device.platform))
+          (id: device.id, name: host.displayNameOf(device.id)),
+    ];
+  }
+
+  bool canWatch(Platform platform) =>
+      canLockWhenGone && LeaveLock.canWatch(platform);
+
+  bool locksWhenGone(String deviceId) =>
+      feature.settings.locksWhenGone(deviceId);
+
+  int get lockAfterMinutes => feature.settings.lockAfterMinutes;
+
+  Future<void> setLocksWhenGone(String deviceId, {required bool locks}) =>
+      feature.settings.setLocksWhenGone(deviceId, locks: locks);
+
+  Future<void> setLockAfterMinutes(int minutes) =>
+      feature.settings.setLockAfterMinutes(minutes);
+
+  void cancelLeaveLock() => _leaveLock?.cancel();
+
+  void dismissLeaveRecord(String id) => _leaveLock?.dismissRecord(id);
 
   List<Action> actionsOf(String deviceId) => feature.actionsOf(deviceId);
 

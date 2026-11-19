@@ -28,7 +28,7 @@ class CountdownDialog extends StatelessWidget {
 
     return DialogCard(
       title: SecondsLeft(
-        countdown: countdown,
+        endsAt: countdown.endsAt,
         clock: clock,
         builder: (context, seconds) => Text(
           l10n.countdownTitleOf(

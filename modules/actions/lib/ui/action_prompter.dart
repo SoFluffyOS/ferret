@@ -10,7 +10,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// Puts the question ("Let Pixel 7 restart this Mac?") and then the
 /// countdown on top of the app, and takes each away once it is answered
 /// anywhere: the dialog, the notice or the home card. A question closed by
-/// hand stays closed; a countdown can only be cancelled.
+/// hand stays closed; a countdown can only be cancelled. The lock after a
+/// phone left counts down here too.
 class ActionPrompter {
   ActionPrompter({required this.viewModel, required this.navigatorKey});
 
@@ -35,7 +36,9 @@ class ActionPrompter {
   void _sync() {
     final pending = viewModel.pending;
     final countdown = viewModel.countdown;
-    final startedAt = countdown?.startedAt ?? pending?.askedAt;
+    final leaveCountdown = viewModel.leaveCountdown;
+    final startedAt =
+        countdown?.startedAt ?? leaveCountdown?.startedAt ?? pending?.askedAt;
     if (startedAt == null) {
       _shownFor = null;
       _close();
@@ -54,11 +57,11 @@ class ActionPrompter {
     _shownFor = startedAt;
     _close();
     final route = RawDialogRoute<void>(
-      barrierDismissible: countdown == null,
+      barrierDismissible: countdown == null && leaveCountdown == null,
       barrierLabel: platformActionsL10n().dismiss,
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
-      pageBuilder: (_, _, _) => _dialog(pending, countdown),
+      pageBuilder: (_, _, _) => _dialog(pending, countdown, leaveCountdown),
     );
     _route = route;
     unawaited(
@@ -70,11 +73,22 @@ class ActionPrompter {
     );
   }
 
-  Widget _dialog(ActionAsk? pending, ActionCountdown? countdown) {
+  Widget _dialog(
+    ActionAsk? pending,
+    ActionCountdown? countdown,
+    LeaveCountdown? leaveCountdown,
+  ) {
     if (countdown != null) {
       return CountdownDialog(
         countdown: countdown,
         onCancel: viewModel.cancelCountdown,
+      );
+    }
+
+    if (leaveCountdown != null) {
+      return LeaveCountdownDialog(
+        countdown: leaveCountdown,
+        onCancel: viewModel.cancelLeaveLock,
       );
     }
 

@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:actions/l10n/l10n.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/services/actions_host.dart';
+import 'package:actions/services/leave_lock.dart';
 import 'package:feature_kit/feature_kit.dart';
 
 /// The system notices on the computer: the question with its three
 /// answers, and "Pixel 7 is restarting this Mac · Cancel" while the
-/// countdown runs, so both reach the owner with Ferret out of sight.
+/// countdown runs, so both reach the owner with Ferret out of sight. Also
+/// "Locking this Mac: Pixel 7 left · Cancel" before a lock.
 class ActionNotices {
   ActionNotices({
     required this.host,
+    this.leaveLock,
     required this.notifier,
     required this.l10n,
     required this.reveal,
@@ -19,6 +22,7 @@ class ActionNotices {
 
   static const consentNotice = 'actions.consent';
   static const countdownNotice = 'actions.countdown';
+  static const leaveNotice = 'actions.leave';
 
   static const allowOnceAction = 'allow_once';
   static const alwaysAction = 'always';
@@ -26,6 +30,7 @@ class ActionNotices {
   static const cancelAction = 'cancel';
 
   final ActionsHost host;
+  final LeaveLock? leaveLock;
   final LocalNotifier notifier;
   final ActionsLocalizations l10n;
   final Future<void> Function() reveal;
@@ -34,6 +39,7 @@ class ActionNotices {
 
   DateTime? _consentShownFor;
   DateTime? _countdownShownFor;
+  DateTime? _leaveShownFor;
 
   static List<NoticeCategory> categories(ActionsLocalizations l10n) => [
     NoticeCategory(
@@ -48,11 +54,19 @@ class ActionNotices {
       id: countdownNotice,
       actions: [NoticeAction(id: cancelAction, label: l10n.cancel)],
     ),
+    NoticeCategory(
+      id: leaveNotice,
+      actions: [NoticeAction(id: cancelAction, label: l10n.cancel)],
+    ),
   ];
 
   void start() {
     _subscriptions
       ..add(host.changes.listen((_) => unawaited(_sync())))
+      ..addAll([
+        if (leaveLock case final leaveLock?)
+          leaveLock.changes.listen((_) => unawaited(_syncLeave())),
+      ])
       ..add(
         notifier.responses
             .where((response) => response.noticeId.startsWith('actions.'))
@@ -72,6 +86,7 @@ class ActionNotices {
   Future<void> _sync() async {
     await _syncConsent();
     await _syncCountdown();
+    await _syncLeave();
   }
 
   Future<void> _syncConsent() async {
@@ -130,6 +145,34 @@ class ActionNotices {
     );
   }
 
+  Future<void> _syncLeave() async {
+    final countdown = leaveLock?.countdown;
+    if (countdown == null) {
+      if (_leaveShownFor == null) {
+        return;
+      }
+
+      _leaveShownFor = null;
+      await notifier.cancel(leaveNotice);
+      return;
+    }
+
+    if (_leaveShownFor == countdown.startedAt) {
+      return;
+    }
+
+    _leaveShownFor = countdown.startedAt;
+    await notifier.show(
+      LocalNotice(
+        id: leaveNotice,
+        channel: .incoming,
+        title: l10n.leaveNoticeTitle(computer.name, countdown.deviceName),
+        body: l10n.leaveNoticeBody,
+        category: leaveNotice,
+      ),
+    );
+  }
+
   Future<void> _onResponse(NoticeResponse response) async {
     switch ((response.noticeId, response.actionId)) {
       case (consentNotice, alwaysAction):
@@ -140,6 +183,8 @@ class ActionNotices {
         await host.answer(.deny);
       case (countdownNotice, cancelAction):
         host.cancelCountdown();
+      case (leaveNotice, cancelAction):
+        leaveLock?.cancel();
       default:
         await reveal();
     }

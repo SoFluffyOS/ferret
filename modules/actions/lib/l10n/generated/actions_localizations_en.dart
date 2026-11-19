@@ -560,4 +560,161 @@ class ActionsLocalizationsEn extends ActionsLocalizations {
   @override
   String get healthHostOffHelp =>
       'Turn on Computer actions in Settings → Control.';
+
+  @override
+  String get leaveTitle => 'Lock when your phone leaves';
+
+  @override
+  String leaveSwitch(String device, String computer) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Lock $_temp0 when $device leaves';
+  }
+
+  @override
+  String leaveSwitchBody(String device, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return 'When $device drops off the Wi-Fi and stays gone for $_temp0.';
+  }
+
+  @override
+  String get leaveAfter => 'Lock after';
+
+  @override
+  String leaveMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get leaveNote =>
+      'It waits until nobody has touched the keyboard or mouse for a minute, then gives you 10 seconds to cancel. It never unlocks. Pausing Ferret on the phone isn\'t leaving.';
+
+  @override
+  String leaveNoPhones(String computer) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Pair an Android phone to lock $_temp0 when it leaves. iPhone can\'t: iOS stops Ferret in the background, so it would look gone all the time.';
+  }
+
+  @override
+  String leaveCountdownTitle(String computer, int seconds) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds seconds',
+      one: '1 second',
+    );
+    return 'Locking $_temp0 in $_temp1';
+  }
+
+  @override
+  String leaveCountdownBody(String device) {
+    return '$device left. Cancel if you\'re still here.';
+  }
+
+  @override
+  String leaveNoticeTitle(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Locking $_temp0: $device left';
+  }
+
+  @override
+  String get leaveNoticeBody => 'Cancel to keep it unlocked.';
+
+  @override
+  String leaveLocked(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Locked $_temp0: $device left';
+  }
+
+  @override
+  String leaveLockedDetail(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return 'Gone for $_temp0, with nobody at the keyboard';
+  }
+
+  @override
+  String leaveCancelled(String device) {
+    return 'Stayed unlocked after $device left';
+  }
+
+  @override
+  String get leaveCancelledDetail => 'You cancelled the lock';
+
+  @override
+  String leaveFailed(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Couldn\'t lock $_temp0 after $device left';
+  }
+
+  @override
+  String get leaveFailedDetail => 'The system said no. Lock it by hand.';
+
+  @override
+  String leavePermissionDetail(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return 'After $_temp0 away, when nobody is at the keyboard';
+  }
 }

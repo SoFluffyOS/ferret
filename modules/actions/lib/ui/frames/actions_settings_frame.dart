@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:actions/l10n/l10n.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/ui/frames/custom_action_editor.dart';
+import 'package:actions/ui/frames/leave_lock_settings_frame.dart';
 import 'package:actions/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// This computer's actions in Settings: on or off, the owner's own
-/// actions with what each runs, and the history of what devices ran.
+/// actions with what each runs, locking when a phone leaves, and the
+/// history of what devices ran.
 /// Which device may run what without asking is on that device's page.
 class ActionsSettingsFrame extends StatefulWidget {
   const ActionsSettingsFrame({super.key});
@@ -95,6 +97,7 @@ class _ActionsSettingsFrameState extends State<ActionsSettingsFrame> {
               ),
           ],
         ),
+        const LeaveLockSettingsFrame(),
         const _History(),
       ],
     );

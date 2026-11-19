@@ -2,6 +2,7 @@ import 'package:actions/l10n/l10n.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/ui/action_icon.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/actions.dart';
 
 /// The computer's lines in Activity: what each device ran here and how it
@@ -102,3 +103,35 @@ String _doneTitle(ActionsLocalizations l10n, String device, Action action) =>
       .ACTION_KIND_SHUT_DOWN => l10n.outShutDown(device),
       _ => l10n.outCustom(device, l10n.actionLabel(action.kind, action.title)),
     };
+
+/// The computer's lines in Activity for each lock after a phone left.
+List<ActivityItem> leaveActivity(
+  ActionsLocalizations l10n,
+  List<LeaveLockRecord> records, {
+  required int lockAfterMinutes,
+  required void Function(String id) onDismiss,
+}) => [
+  for (final record in records)
+    ActivityItem(
+      id: 'actions.left.${record.id}',
+      icon: LucideIcons.lock,
+      title: switch (record.outcome) {
+        .locked => l10n.leaveLocked(ComputerKind.here.name, record.deviceName),
+        .cancelled => l10n.leaveCancelled(record.deviceName),
+        .failed => l10n.leaveFailed(ComputerKind.here.name, record.deviceName),
+      },
+      detail: switch (record.outcome) {
+        .locked => l10n.leaveLockedDetail(lockAfterMinutes),
+        .cancelled => l10n.leaveCancelledDetail,
+        .failed => l10n.leaveFailedDetail,
+      },
+      at: record.at,
+      deviceId: record.deviceId,
+      tone: switch (record.outcome) {
+        .locked => .success,
+        .cancelled => .normal,
+        .failed => .warning,
+      },
+      onDismiss: () => onDismiss(record.id),
+    ),
+];

@@ -557,4 +557,156 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   @override
   String get healthHostOffHelp =>
       'Bật Thao tác trên máy tính trong Cài đặt → Điều khiển.';
+
+  @override
+  String get leaveTitle => 'Khóa khi điện thoại rời đi';
+
+  @override
+  String leaveSwitch(String device, String computer) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Khóa $_temp0 khi $device rời đi';
+  }
+
+  @override
+  String leaveSwitchBody(String device, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes phút',
+    );
+    return 'Khi $device rời Wi-Fi và vắng mặt $_temp0.';
+  }
+
+  @override
+  String get leaveAfter => 'Khóa sau';
+
+  @override
+  String leaveMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes phút',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get leaveNote =>
+      'Ferret chờ đến khi không ai chạm bàn phím hay chuột trong một phút, rồi cho bạn 10 giây để hủy. Ferret không bao giờ mở khóa. Tạm dừng Ferret trên điện thoại không tính là rời đi.';
+
+  @override
+  String leaveNoPhones(String computer) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Ghép đôi một điện thoại Android để khóa $_temp0 khi nó rời đi. iPhone không làm được: iOS dừng Ferret khi chạy nền, nên lúc nào nó cũng như đã rời đi.';
+  }
+
+  @override
+  String leaveCountdownTitle(String computer, int seconds) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: '$seconds giây',
+    );
+    return 'Sẽ khóa $_temp0 sau $_temp1';
+  }
+
+  @override
+  String leaveCountdownBody(String device) {
+    return '$device đã rời đi. Hãy hủy nếu bạn vẫn ở đây.';
+  }
+
+  @override
+  String leaveNoticeTitle(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Đang khóa $_temp0: $device đã rời đi';
+  }
+
+  @override
+  String get leaveNoticeBody => 'Hủy để giữ máy không bị khóa.';
+
+  @override
+  String leaveLocked(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Đã khóa $_temp0: $device đã rời đi';
+  }
+
+  @override
+  String leaveLockedDetail(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes phút',
+    );
+    return 'Vắng mặt $_temp0, không ai ở bàn phím';
+  }
+
+  @override
+  String leaveCancelled(String device) {
+    return 'Vẫn mở khóa sau khi $device rời đi';
+  }
+
+  @override
+  String get leaveCancelledDetail => 'Bạn đã hủy khóa';
+
+  @override
+  String leaveFailed(String computer, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      computer,
+      {
+        'mac': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Không khóa được $_temp0 sau khi $device rời đi';
+  }
+
+  @override
+  String get leaveFailedDetail => 'Hệ thống từ chối. Hãy khóa bằng tay.';
+
+  @override
+  String leavePermissionDetail(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes phút',
+    );
+    return 'Sau $_temp0 vắng mặt, khi không ai ở bàn phím';
+  }
 }
