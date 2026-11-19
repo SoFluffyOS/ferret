@@ -1577,8 +1577,8 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsLanguageNote.
   ///
   /// In en, this message translates to:
-  /// **'Menus, the tray icon and notifications switch the next time Ferret starts.'**
-  String get settingsLanguageNote;
+  /// **'{here, select, macOS{Menus, the menu bar icon and notifications switch the next time Ferret starts.} other{Menus, the tray icon and notifications switch the next time Ferret starts.}}'**
+  String settingsLanguageNote(String here);
 
   /// No description provided for @settingsAbout.
   ///

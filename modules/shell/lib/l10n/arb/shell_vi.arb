@@ -247,7 +247,7 @@
   "settingsAdvanced": "Nâng cao",
   "settingsLanguage": "Ngôn ngữ",
   "settingsLanguageSystem": "Theo hệ thống",
-  "settingsLanguageNote": "Menu, biểu tượng khay hệ thống và thông báo sẽ đổi vào lần tới Ferret khởi động.",
+  "settingsLanguageNote": "{here, select, macOS{Menu, biểu tượng trên thanh menu và thông báo sẽ đổi vào lần tới Ferret khởi động.} other{Menu, biểu tượng khay hệ thống và thông báo sẽ đổi vào lần tới Ferret khởi động.}}",
   "settingsAbout": "Giới thiệu · Quyền riêng tư",
   "settingsVersion": "Ferret {version}",
   "settingsLicense": "Phần mềm tự do theo giấy phép GPL-3.0. Giao thức cũng mở, theo giấy phép MIT.",

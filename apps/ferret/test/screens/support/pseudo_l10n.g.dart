@@ -3781,8 +3781,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsLanguageSystem => pseudo(super.settingsLanguageSystem);
   @override
-  String get settingsLanguageNote => pseudo(super.settingsLanguageNote);
-  @override
   String get settingsAbout => pseudo(super.settingsAbout);
   @override
   String get settingsLicense => pseudo(super.settingsLicense);
@@ -4298,6 +4296,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.settingsCountOn(on, total));
   @override
   String settingsNamedOn(String names) => pseudo(super.settingsNamedOn(names));
+  @override
+  String settingsLanguageNote(String here) =>
+      pseudo(super.settingsLanguageNote(here));
   @override
   String settingsVersion(String version) =>
       pseudo(super.settingsVersion(version));

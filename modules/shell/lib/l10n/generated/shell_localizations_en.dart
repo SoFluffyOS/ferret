@@ -1183,8 +1183,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsLanguageSystem => 'Same as the system';
 
   @override
-  String get settingsLanguageNote =>
-      'Menus, the tray icon and notifications switch the next time Ferret starts.';
+  String settingsLanguageNote(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Menus, the menu bar icon and notifications switch the next time Ferret starts.',
+        'other': 'Menus, the tray icon and notifications switch the next time Ferret starts.',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get settingsAbout => 'About · Privacy';

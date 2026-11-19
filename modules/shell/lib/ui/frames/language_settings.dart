@@ -61,7 +61,7 @@ class LanguageSettings extends StatelessWidget {
               top: Spacing.d8,
             ),
             child: Text(
-              l10n.settingsLanguageNote,
+              l10n.settingsLanguageNote(ThisComputer.here),
               style: context.fluffyTheme.typography.caption1.copyWith(
                 color: palette.mutedText,
               ),

@@ -901,7 +901,14 @@
   "@settingsLanguageSystem": {
     "description": "The default choice for Language: follow the language of the operating system"
   },
-  "settingsLanguageNote": "Menus, the tray icon and notifications switch the next time Ferret starts.",
+  "settingsLanguageNote": "{here, select, macOS{Menus, the menu bar icon and notifications switch the next time Ferret starts.} other{Menus, the tray icon and notifications switch the next time Ferret starts.}}",
+  "@settingsLanguageNote": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAbout": "About · Privacy",
   "settingsVersion": "Ferret {version}",
   "@settingsVersion": {

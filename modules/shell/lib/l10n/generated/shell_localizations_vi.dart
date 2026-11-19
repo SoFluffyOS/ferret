@@ -1179,8 +1179,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsLanguageSystem => 'Theo hệ thống';
 
   @override
-  String get settingsLanguageNote =>
-      'Menu, biểu tượng khay hệ thống và thông báo sẽ đổi vào lần tới Ferret khởi động.';
+  String settingsLanguageNote(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Menu, biểu tượng trên thanh menu và thông báo sẽ đổi vào lần tới Ferret khởi động.',
+        'other': 'Menu, biểu tượng khay hệ thống và thông báo sẽ đổi vào lần tới Ferret khởi động.',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get settingsAbout => 'Giới thiệu · Quyền riêng tư';
