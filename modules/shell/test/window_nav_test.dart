@@ -403,7 +403,7 @@ void main() {
 
       expect(
         tester.getSemantics(find.byIcon(LucideIcons.plus)),
-        containsSemantics(label: 'Add a device', isButton: true),
+        isSemantics(label: 'Add a device', isButton: true),
       );
       semantics.dispose();
     });
