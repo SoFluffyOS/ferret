@@ -268,4 +268,14 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
   String continueUntitledFrom(String device) {
     return 'Continue from $device';
   }
+
+  @override
+  String get settingsHistory => 'History';
+
+  @override
+  String get settingsHistoryBody =>
+      'What you continued between devices, kept on this device for 30 days at most.';
+
+  @override
+  String get settingsHistoryClear => 'Clear';
 }

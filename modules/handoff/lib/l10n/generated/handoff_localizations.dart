@@ -504,6 +504,24 @@ abstract class HandoffLocalizations {
   /// In en, this message translates to:
   /// **'Continue from {device}'**
   String continueUntitledFrom(String device);
+
+  /// No description provided for @settingsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get settingsHistory;
+
+  /// No description provided for @settingsHistoryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you continued between devices, kept on this device for 30 days at most.'**
+  String get settingsHistoryBody;
+
+  /// No description provided for @settingsHistoryClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get settingsHistoryClear;
 }
 
 class _HandoffLocalizationsDelegate

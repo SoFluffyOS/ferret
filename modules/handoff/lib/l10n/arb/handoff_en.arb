@@ -190,5 +190,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settingsHistory": "History",
+  "settingsHistoryBody": "What you continued between devices, kept on this device for 30 days at most.",
+  "settingsHistoryClear": "Clear"
 }

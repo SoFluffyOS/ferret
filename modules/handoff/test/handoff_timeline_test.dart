@@ -12,9 +12,11 @@ TimelineEntry _entry(String id, {TimelineDirection direction = .received}) =>
       at: DateTime(2026),
     );
 
+DateTime _now() => DateTime(2026, 1, 20);
+
 void main() {
   test('the timeline keeps the newest 50 entries', () async {
-    final timeline = HandoffTimeline(MemorySettingsStore());
+    final timeline = HandoffTimeline(MemorySettingsStore(), now: _now);
 
     for (var index = 0; index < 60; index++) {
       await timeline.add(_entry('a$index'));
@@ -26,7 +28,7 @@ void main() {
   });
 
   test('the same activity moves up instead of repeating', () async {
-    final timeline = HandoffTimeline(MemorySettingsStore());
+    final timeline = HandoffTimeline(MemorySettingsStore(), now: _now);
 
     await timeline.add(_entry('a'));
     await timeline.add(_entry('b'));
@@ -46,7 +48,7 @@ void main() {
   test('the timeline survives a restart, without large app state', () async {
     final settings = MemorySettingsStore();
     final big = webActivity('big')..state = List.filled(4096, 1);
-    await HandoffTimeline(settings).add(
+    await HandoffTimeline(settings, now: _now).add(
       TimelineEntry(
         activity: big,
         peer: pixel,
@@ -55,7 +57,7 @@ void main() {
       ),
     );
 
-    final reloaded = HandoffTimeline(settings)..load();
+    final reloaded = HandoffTimeline(settings, now: _now)..load();
 
     final entry = reloaded.entries.single;
     expect(entry.activity.uri, 'https://example.org/big');
@@ -74,8 +76,31 @@ void main() {
       ],
     });
 
-    final timeline = HandoffTimeline(settings)..load();
+    final timeline = HandoffTimeline(settings, now: _now)..load();
 
     expect(timeline.entries.single.activity.id, 'ok');
+  });
+
+  test('entries older than 30 days go, on load and on every add', () async {
+    var today = DateTime(2026, 1, 20);
+    final settings = MemorySettingsStore();
+    final timeline = HandoffTimeline(settings, now: () => today);
+    await timeline.add(_entry('old'));
+
+    today = DateTime(2026, 2, 15);
+    await timeline.add(
+      TimelineEntry(
+        activity: webActivity('new'),
+        peer: pixel,
+        direction: .received,
+        at: today,
+      ),
+    );
+
+    expect(timeline.entries.map((entry) => entry.activity.id), ['new']);
+    expect(
+      (HandoffTimeline(settings, now: () => today)..load()).entries,
+      hasLength(1),
+    );
   });
 }

@@ -94,6 +94,11 @@ class HandoffViewModel extends ChangeNotifier {
     return PageSent(outcome);
   }
 
+  /// Whether anything continued between devices is still kept here.
+  bool get hasHistory => feature.timeline.isNotEmpty;
+
+  Future<void> clearHistory() => feature.clearTimeline();
+
   Future<void> setPassiveEnabled(bool enabled) async {
     await feature.setPassiveEnabled(enabled);
     await bridge.refreshBrowserWatch();

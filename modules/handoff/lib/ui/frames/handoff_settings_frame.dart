@@ -24,6 +24,9 @@ class HandoffSettingsFrame extends StatelessWidget {
     final browserTab = context.select<HandoffViewModel, bool>(
       (viewModel) => viewModel.browserTabEnabled,
     );
+    final hasHistory = context.select<HandoffViewModel, bool>(
+      (viewModel) => viewModel.hasHistory,
+    );
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -49,6 +52,19 @@ class HandoffSettingsFrame extends StatelessWidget {
                 value: browserTab,
                 onChanged: viewModel.setBrowserTabEnabled,
               ),
+            GroupedRow(
+              title: l10n.settingsHistory,
+              subtitle: l10n.settingsHistoryBody,
+              trailing: Button(
+                variant: .ghost,
+                label: l10n.settingsHistoryClear,
+                mainAxisSize: .min,
+                onPressed: switch (hasHistory) {
+                  true => viewModel.clearHistory,
+                  false => null,
+                },
+              ),
+            ),
           ],
         ),
         if (viewModel.supportsAssistant) ...[
