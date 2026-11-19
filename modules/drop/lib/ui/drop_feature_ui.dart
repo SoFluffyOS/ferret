@@ -283,8 +283,8 @@ class DropFeatureUi extends FeatureUi {
     }
   }
 
-  /// Letting phones without Ferret send here is one tap away, without a
-  /// card that stays.
+  /// Letting a guest's phone without Ferret send one file here is one tap
+  /// away, without a card that stays. Longer windows sit in Drop's card.
   @override
   FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
     if (!_dropViewModel.canOpenToOthers) {
@@ -293,10 +293,10 @@ class DropFeatureUi extends FeatureUi {
 
     final l10n = context.dropL10n;
     return FeatureOffer(
-      title: l10n.otherApps,
-      description: l10n.offerOtherPhonesBody,
-      actionLabel: l10n.offerOtherPhonesAction,
-      onAction: () => unawaited(_dropViewModel.openToOthers()),
+      title: l10n.guestTitle,
+      description: l10n.guestBody,
+      actionLabel: l10n.guestAction,
+      onAction: () => unawaited(_dropViewModel.receiveFromGuest()),
     );
   }
 

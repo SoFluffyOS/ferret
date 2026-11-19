@@ -450,4 +450,20 @@ void main() {
       expect(changes, greaterThan(0));
     });
   });
+
+  testWidgets('a guest window says it closes after one file', (tester) async {
+    await start(settings: {DropSettings.quickShareEnabled: false});
+    final viewModel = await pumpCard(tester);
+
+    await tester.runAsync(viewModel.receiveFromGuest);
+    await tester.pump();
+
+    expect(
+      find.text(
+        'Open for one file from a guest. It closes once the file arrives.',
+      ),
+      findsOneWidget,
+    );
+    await tester.runAsync(viewModel.stopReceiving);
+  });
 }

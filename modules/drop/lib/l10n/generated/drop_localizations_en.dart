@@ -75,11 +75,18 @@ class DropLocalizationsEn extends DropLocalizations {
   String get actionRevealFinder => 'Show in Finder';
 
   @override
-  String get offerOtherPhonesBody =>
-      'Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.';
+  String get guestTitle => 'Receive a file from a guest';
 
   @override
-  String get offerOtherPhonesAction => 'Turn on';
+  String get guestBody =>
+      'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.';
+
+  @override
+  String get guestAction => 'Allow once';
+
+  @override
+  String get guestWaiting =>
+      'Open for one file from a guest. It closes once the file arrives.';
 
   @override
   String get clearFinished => 'Clear finished';

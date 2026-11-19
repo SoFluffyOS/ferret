@@ -402,9 +402,13 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get actionRevealFinder => pseudo(super.actionRevealFinder);
   @override
-  String get offerOtherPhonesBody => pseudo(super.offerOtherPhonesBody);
+  String get guestTitle => pseudo(super.guestTitle);
   @override
-  String get offerOtherPhonesAction => pseudo(super.offerOtherPhonesAction);
+  String get guestBody => pseudo(super.guestBody);
+  @override
+  String get guestAction => pseudo(super.guestAction);
+  @override
+  String get guestWaiting => pseudo(super.guestWaiting);
   @override
   String get clearFinished => pseudo(super.clearFinished);
   @override
@@ -1507,6 +1511,8 @@ class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
   String activityTitle(String sender, String device) =>
       pseudo(super.activityTitle(sender, device));
   @override
+  String privateCover(String device) => pseudo(super.privateCover(device));
+  @override
   String noticeTitleCount(String name, int count) =>
       pseudo(super.noticeTitleCount(name, count));
   @override
@@ -2220,6 +2226,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String activityCount(int count, String device) =>
       pseudo(super.activityCount(count, device));
+  @override
+  String privateCover(String device) => pseudo(super.privateCover(device));
 }
 
 class PseudoPowerLocalizations extends PowerLocalizationsEn {
@@ -2982,6 +2990,16 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsRenameTitle => pseudo(super.settingsRenameTitle);
   @override
+  String get thisDeviceShared => pseudo(super.thisDeviceShared);
+  @override
+  String get privateCoverBody => pseudo(super.privateCoverBody);
+  @override
+  String get privateCoverDetail => pseudo(super.privateCoverDetail);
+  @override
+  String get previewsTitle => pseudo(super.previewsTitle);
+  @override
+  String get previewsSharedDefault => pseudo(super.previewsSharedDefault);
+  @override
   String get settingsAddressHint => pseudo(super.settingsAddressHint);
   @override
   String get deviceWhyLong => pseudo(super.deviceWhyLong);
@@ -3458,6 +3476,11 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String onboardReadyBodyPaired(String device) =>
       pseudo(super.onboardReadyBodyPaired(device));
+  @override
+  String thisDeviceOtherPort(String port, String usual) =>
+      pseudo(super.thisDeviceOtherPort(port, usual));
+  @override
+  String previewsBody(String device) => pseudo(super.previewsBody(device));
   @override
   String settingsAddress(String address) =>
       pseudo(super.settingsAddress(address));

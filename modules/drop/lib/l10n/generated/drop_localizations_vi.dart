@@ -75,11 +75,18 @@ class DropLocalizationsVi extends DropLocalizations {
   String get actionRevealFinder => 'Hiển thị trong Finder';
 
   @override
-  String get offerOtherPhonesBody =>
-      'Điện thoại chưa có Ferret có thể gửi đến đây trong 10 phút, bằng Quick Share hoặc LocalSend.';
+  String get guestTitle => 'Nhận tệp từ khách';
 
   @override
-  String get offerOtherPhonesAction => 'Bật';
+  String get guestBody =>
+      'Điện thoại không có Ferret có thể gửi một tệp tới đây bằng Quick Share hoặc LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.';
+
+  @override
+  String get guestAction => 'Cho phép một lần';
+
+  @override
+  String get guestWaiting =>
+      'Đang mở để nhận một tệp từ khách. Sẽ tự đóng khi tệp tới.';
 
   @override
   String get clearFinished => 'Xoá mục đã xong';

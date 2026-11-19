@@ -65,6 +65,9 @@ class DropHomeFrame extends StatelessWidget {
     final hasFinished = context.select<DropViewModel, bool>(
       (model) => model.hasFinished,
     );
+    final guestOnce = context.select<DropViewModel, bool>(
+      (model) => model.isGuestOnce,
+    );
     final l10n = context.dropL10n;
     final texts = context.transferTexts;
 
@@ -114,6 +117,13 @@ class DropHomeFrame extends StatelessWidget {
             title: l10n.otherApps,
             keepOpen: _isBusy(receiving) || _isVisible(visibility),
             children: [
+              if (guestOnce)
+                Text(
+                  l10n.guestWaiting,
+                  style: context.fluffyTheme.typography.caption1.copyWith(
+                    color: context.palette.mutedText,
+                  ),
+                ),
               if (localSend)
                 ReceiveRow(
                   title: l10n.receiveTitle,

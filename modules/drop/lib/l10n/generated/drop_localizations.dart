@@ -200,17 +200,29 @@ abstract class DropLocalizations {
   /// **'Show in Finder'**
   String get actionRevealFinder;
 
-  /// No description provided for @offerOtherPhonesBody.
+  /// Offer on Home: let one person without Ferret send one file here
   ///
   /// In en, this message translates to:
-  /// **'Phones without Ferret can send here for 10 minutes, with Quick Share or LocalSend.'**
-  String get offerOtherPhonesBody;
+  /// **'Receive a file from a guest'**
+  String get guestTitle;
 
-  /// No description provided for @offerOtherPhonesAction.
+  /// No description provided for @guestBody.
   ///
   /// In en, this message translates to:
-  /// **'Turn on'**
-  String get offerOtherPhonesAction;
+  /// **'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.'**
+  String get guestBody;
+
+  /// No description provided for @guestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow once'**
+  String get guestAction;
+
+  /// No description provided for @guestWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Open for one file from a guest. It closes once the file arrives.'**
+  String get guestWaiting;
 
   /// Button: remove finished transfers from the list
   ///

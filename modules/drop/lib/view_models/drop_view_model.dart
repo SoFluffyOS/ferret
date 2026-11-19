@@ -62,6 +62,7 @@ class DropViewModel extends ChangeNotifier {
   QuickShareReceiveState _quickShareState = const QuickShareReceiveState();
   Timer? _countdown;
   String _receiveFolder = '';
+  bool _guestOnce = false;
 
   /// Newest first.
   List<Transfer> get transfers => _transfers;
@@ -104,6 +105,19 @@ class DropViewModel extends ChangeNotifier {
     if (localSendEnabled) {
       await receiveFromLocalSend();
     }
+  }
+
+  /// Whether this device is open to phones without Ferret for one file
+  /// only, and closes once it arrives.
+  bool get isGuestOnce => _guestOnce && isOpenToOthers;
+
+  /// Lets a guest's phone without Ferret send one file here: Quick Share
+  /// and LocalSend open for their usual 10 minutes, and close as soon as a
+  /// file from one of them is saved.
+  Future<void> receiveFromGuest() async {
+    _guestOnce = true;
+    notifyListeners();
+    await openToOthers();
   }
 
   bool get hasFinished =>
@@ -346,12 +360,26 @@ class DropViewModel extends ChangeNotifier {
       final wasRunning = _runningIds.contains(transfer.id);
       if (wasRunning && transfer.status == .done) {
         _finishedCount++;
+        _closeAfterGuest(transfer);
       }
     }
 
     _runningIds = _idsOfRunning(transfers);
     _transfers = transfers;
     notifyListeners();
+  }
+
+  void _closeAfterGuest(Transfer transfer) {
+    final fromGuest = transfer.isUnpaired && !transfer.isOutgoing;
+    if (!_guestOnce || !fromGuest) {
+      return;
+    }
+
+    _guestOnce = false;
+    unawaited(stopQuickShare());
+    if (!receiveAlways) {
+      unawaited(feature.localSend.stopReceiving());
+    }
   }
 
   Set<String> _idsOfRunning(List<Transfer> transfers) => {
