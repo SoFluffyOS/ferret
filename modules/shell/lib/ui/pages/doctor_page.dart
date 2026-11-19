@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
@@ -134,18 +135,20 @@ class _DoctorPageState extends State<DoctorPage> {
               onPressed: () => _apply(fix),
             ),
           ),
-        Button(
-          variant: switch (realFixes.isEmpty) {
-            true => .primary,
-            false => .ghost,
-          },
-          label: l10n.doctorTryAgainPrimary,
-          onPressed: _run,
-        ),
-        Spacing.v8,
-        Wrap(
-          alignment: .center,
-          children: [
+        _tryAgainAndLinks(
+          tryAgain: Button(
+            variant: switch (realFixes.isEmpty) {
+              true => .primary,
+              false => .ghost,
+            },
+            mainAxisSize: switch (_isTouch) {
+              true => .max,
+              false => .min,
+            },
+            label: l10n.doctorTryAgainPrimary,
+            onPressed: _run,
+          ),
+          links: [
             for (final fix in [
               if (fixes.contains(DoctorFix.connectByAddress))
                 DoctorFix.connectByAddress,
@@ -164,6 +167,36 @@ class _DoctorPageState extends State<DoctorPage> {
           ],
         ),
       ],
+    );
+  }
+
+  /// Phones stretch the button and center the quiet links under it; a
+  /// pointer gets them on one row, next to the button.
+  static bool get _isTouch => switch (defaultTargetPlatform) {
+    .android || .iOS => true,
+    _ => false,
+  };
+
+  Widget _tryAgainAndLinks({
+    required Widget tryAgain,
+    required List<Widget> links,
+  }) {
+    if (_isTouch) {
+      return Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          tryAgain,
+          Spacing.v8,
+          Wrap(alignment: .center, children: links),
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: Spacing.d8,
+      runSpacing: Spacing.d8,
+      crossAxisAlignment: .center,
+      children: [tryAgain, ...links],
     );
   }
 
