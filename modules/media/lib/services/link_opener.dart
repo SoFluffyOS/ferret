@@ -16,7 +16,7 @@ class UrlLauncherLinkOpener implements LinkOpener {
     try {
       return await launchUrl(uri, mode: .externalApplication);
     } on Object catch (error) {
-      printDebug('No app opened a ${uri.scheme} link: $error');
+      printDebug('No app opened a ${uri.scheme} link (${error.runtimeType})');
       return false;
     }
   }

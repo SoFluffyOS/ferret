@@ -6,6 +6,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_system/ferret_system.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shell/app/app.dart';
@@ -23,6 +24,12 @@ Future<void> runFerret({
   void Function(FerretEngine engine)? onStarted,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Release builds print to the system log (logcat, Console.app), which
+  // other tools can read; debug lines name devices and addresses.
+  if (kReleaseMode) {
+    Log.minimum = .info;
+  }
+
   await initializeDateFormatting();
 
   final paths = await AppPaths.get();
