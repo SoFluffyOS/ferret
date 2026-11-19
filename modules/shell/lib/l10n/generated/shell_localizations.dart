@@ -1262,6 +1262,12 @@ abstract class ShellLocalizations {
   /// **'Pair'**
   String get nearbyPair;
 
+  /// What a screen reader says for a nearby device's Pair button.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair with {name}'**
+  String nearbyPairWith(String name);
+
   /// No description provided for @nearbyConnecting.
   ///
   /// In en, this message translates to:

@@ -880,6 +880,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get nearbyPair => 'Pair';
 
   @override
+  String nearbyPairWith(String name) {
+    return 'Pair with $name';
+  }
+
+  @override
   String nearbyConnecting(String device) {
     return 'Connecting to $device…';
   }

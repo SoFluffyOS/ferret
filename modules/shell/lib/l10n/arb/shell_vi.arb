@@ -195,6 +195,7 @@
   "nearbyNone": "Chưa tìm thấy thiết bị nào.",
   "nearbyLookAgain": "Tìm lại",
   "nearbyPair": "Ghép đôi",
+  "nearbyPairWith": "Ghép đôi với {name}",
   "nearbyConnecting": "Đang kết nối với {device}…",
   "nearbyCheckCode": "Kiểm tra {device} có hiện đúng mã này.",
   "nearbyTheyMatch": "Mã khớp",

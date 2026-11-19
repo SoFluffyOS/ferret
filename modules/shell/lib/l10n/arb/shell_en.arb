@@ -622,6 +622,15 @@
   "nearbyNone": "No devices found yet.",
   "nearbyLookAgain": "Look again",
   "nearbyPair": "Pair",
+  "nearbyPairWith": "Pair with {name}",
+  "@nearbyPairWith": {
+    "description": "What a screen reader says for a nearby device's Pair button.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "nearbyConnecting": "Connecting to {device}…",
   "@nearbyConnecting": {
     "placeholders": {

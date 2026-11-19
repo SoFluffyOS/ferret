@@ -56,6 +56,7 @@ class NearbyTile extends StatelessWidget {
                     false => .ghost,
                   },
                   label: l10n.nearbyPair,
+                  semanticLabel: l10n.nearbyPairWith(name),
                   onPressed: onPair,
                 ),
                 _ => null,

@@ -875,6 +875,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get nearbyPair => 'Ghép đôi';
 
   @override
+  String nearbyPairWith(String name) {
+    return 'Ghép đôi với $name';
+  }
+
+  @override
   String nearbyConnecting(String device) {
     return 'Đang kết nối với $device…';
   }
