@@ -40,7 +40,20 @@ class DevicePage extends StatelessWidget {
     final engine = scope.featureContext.engine;
     final device = status.device;
 
+    final preferences = context.read<EngineHost>().preferences;
     final details = [
+      DeviceNameCard(
+        ownName: device.ownName,
+        nickname: device.nickname,
+        hasNamesake: device.sameNameTag != null,
+        here: l10n.here(engine.device),
+        isPinned: context.select<EngineHost, bool>(
+          (host) => host.preferences.isPinned(deviceId),
+        ),
+        onRename: (name) => unawaited(engine.renameDevice(deviceId, name)),
+        onPin: (pinned) =>
+            unawaited(preferences.setPinned(deviceId, pinned: pinned)),
+      ),
       Spacing.v8,
       GroupedCard(
         separatorIndent: NavRow.placeIndent,
@@ -127,6 +140,7 @@ class DevicePage extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
 
     return [
+      if (device.nickname != null) l10n.deviceOwnName(device.ownName),
       '${l10n.deviceTitleId} ${DeviceIdentity.format(device.id)}',
       if ((device.lastHost, device.lastPort) case (final host?, final port?))
         l10n.settingsAddress('$host:$port'),
@@ -152,7 +166,10 @@ class DevicePage extends StatelessWidget {
     final engine = ShellScope.read(context).featureContext.engine;
     final navigator = Navigator.of(context);
 
+    final preferences = context.read<EngineHost>().preferences;
+
     await engine.unpair(deviceId, everywhere: scope == .everywhere);
+    await preferences.forget(deviceId);
     // In a window this page is the pane's first one, and the device list
     // moves on to another device by itself.
     if (navigator.canPop()) {

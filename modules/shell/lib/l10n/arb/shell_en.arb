@@ -940,6 +940,121 @@
     }
   },
   "devicesShow": "Show",
+  "devicesPin": "Pin to Top",
+  "devicesUnpin": "Unpin",
+  "devicesStale": "{count, plural, =1{1 not seen in 30 days} other{{count} not seen in 30 days}}",
+  "@devicesStale": {
+    "description": "Under Home's device list: offline devices nobody has seen for a month, offered for removal.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicesStaleReview": "Remove…",
+  "devicesStaleConfirm": "Remove {names} from {here}?",
+  "@devicesStaleConfirm": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "devicesStaleConfirmBody": "Not seen in 30 days. Your other devices keep them, and you can pair them again any time.",
+  "devicesStaleRemove": "Remove",
+  "deviceRename": "Rename…",
+  "deviceRenameTitle": "Name on {here}",
+  "@deviceRenameTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceRenameBody": "Only {here} uses this name. {device} keeps its own.",
+  "@deviceRenameBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceRenameSave": "Save",
+  "deviceRenameReset": "Use its own name",
+  "deviceSameName": "Another of your devices is also called {name}. Give this one a name you'll recognise.",
+  "@deviceSameName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceOwnName": "Calls itself {name}",
+  "@deviceOwnName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityFilterAll": "All",
+  "activityFilterEmpty": "Nothing from {device} lately.",
+  "@activityFilterEmpty": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedManyNotice": "{count} devices joined your devices",
+  "@joinedManyNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinedManyBanner": "{names} joined your devices",
+  "@joinedManyBanner": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedManyAddedBy": "Added by {introducer}",
+  "@joinedManyAddedBy": {
+    "placeholders": {
+      "introducer": {
+        "type": "String"
+      }
+    }
+  },
+  "joinedReview": "Review",
+  "joinedKeepAll": "Keep all",
+  "sidebarFind": "Find a device",
+  "sidebarNoMatch": "No device called “{query}”",
+  "@sidebarNoMatch": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "dropOfflineCount": "{count, plural, =1{1 offline} other{{count} offline}}",
+  "@dropOfflineCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
   "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
   "emptyCantSee": "Can't see it?",

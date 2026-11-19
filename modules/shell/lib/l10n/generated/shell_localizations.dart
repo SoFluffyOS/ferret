@@ -2002,6 +2002,150 @@ abstract class ShellLocalizations {
   /// **'Show'**
   String get devicesShow;
 
+  /// No description provided for @devicesPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin to Top'**
+  String get devicesPin;
+
+  /// No description provided for @devicesUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get devicesUnpin;
+
+  /// Under Home's device list: offline devices nobody has seen for a month, offered for removal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 not seen in 30 days} other{{count} not seen in 30 days}}'**
+  String devicesStale(int count);
+
+  /// No description provided for @devicesStaleReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove…'**
+  String get devicesStaleReview;
+
+  /// No description provided for @devicesStaleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {names} from {here}?'**
+  String devicesStaleConfirm(String names, String here);
+
+  /// No description provided for @devicesStaleConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen in 30 days. Your other devices keep them, and you can pair them again any time.'**
+  String get devicesStaleConfirmBody;
+
+  /// No description provided for @devicesStaleRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get devicesStaleRemove;
+
+  /// No description provided for @deviceRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename…'**
+  String get deviceRename;
+
+  /// No description provided for @deviceRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name on {here}'**
+  String deviceRenameTitle(String here);
+
+  /// No description provided for @deviceRenameBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {here} uses this name. {device} keeps its own.'**
+  String deviceRenameBody(String here, String device);
+
+  /// No description provided for @deviceRenameSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get deviceRenameSave;
+
+  /// No description provided for @deviceRenameReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Use its own name'**
+  String get deviceRenameReset;
+
+  /// No description provided for @deviceSameName.
+  ///
+  /// In en, this message translates to:
+  /// **'Another of your devices is also called {name}. Give this one a name you\'ll recognise.'**
+  String deviceSameName(String name);
+
+  /// No description provided for @deviceOwnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls itself {name}'**
+  String deviceOwnName(String name);
+
+  /// No description provided for @activityFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get activityFilterAll;
+
+  /// No description provided for @activityFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing from {device} lately.'**
+  String activityFilterEmpty(String device);
+
+  /// No description provided for @joinedManyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} devices joined your devices'**
+  String joinedManyNotice(int count);
+
+  /// No description provided for @joinedManyBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} joined your devices'**
+  String joinedManyBanner(String names);
+
+  /// No description provided for @joinedManyAddedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by {introducer}'**
+  String joinedManyAddedBy(String introducer);
+
+  /// No description provided for @joinedReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get joinedReview;
+
+  /// No description provided for @joinedKeepAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep all'**
+  String get joinedKeepAll;
+
+  /// No description provided for @sidebarFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a device'**
+  String get sidebarFind;
+
+  /// No description provided for @sidebarNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No device called “{query}”'**
+  String sidebarNoMatch(String query);
+
+  /// No description provided for @dropOfflineCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 offline} other{{count} offline}}'**
+  String dropOfflineCount(int count);
+
   /// No description provided for @emptyBody.
   ///
   /// In en, this message translates to:
