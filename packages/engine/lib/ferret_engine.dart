@@ -104,6 +104,20 @@ class FerretEngine implements FeatureHost {
   bool _running = false;
   Future<void>? _reconnecting;
   bool _reconnectAgain = false;
+  final Set<String> _droppedRecently = {};
+  final Map<String, int> _drops = {};
+  final Map<String, StreamSubscription<bool>> _weakWatches = {};
+  DateTime? _startedAt;
+  DateTime? _lastHeardOthers;
+
+  /// How long a device that dropped without saying goodbye counts as
+  /// coming back: the first four redials (1, 3, 10 and 30 seconds).
+  static const _quickRedials = 4;
+
+  /// Redials after a drop. The later ones are minutes apart, for a network
+  /// that keeps announcements from arriving, such as a mesh that moved the
+  /// device to another access point.
+  static const _redialDelays = [1, 3, 10, 30, 60, 120, 300];
 
   /// The TCP port this device listens on, once started.
   int get port => _server?.port ?? preferredPort;
@@ -137,8 +151,21 @@ class FerretEngine implements FeatureHost {
   /// Paired devices with their connection state.
   List<DeviceStatus> get devices => [
     for (final device in trustStore.devices)
-      DeviceStatus(device, _ready[device.id]),
+      DeviceStatus(
+        device,
+        _ready[device.id],
+        isReconnecting:
+            _ready[device.id] == null && _droppedRecently.contains(device.id),
+      ),
   ];
+
+  /// When this engine last started, or null while it never ran.
+  DateTime? get startedAt => _startedAt;
+
+  /// When discovery last heard another Ferret device, paired or not. A
+  /// network that keeps devices apart, such as café or hotel Wi-Fi, never
+  /// lets one through.
+  DateTime? get lastHeardOthers => _lastHeardOthers;
 
   Stream<List<DeviceStatus>> get deviceChanges => _deviceChanges.stream;
 
@@ -209,6 +236,7 @@ class FerretEngine implements FeatureHost {
     }
 
     _running = true;
+    _startedAt = DateTime.now();
     final server = await _bind();
     _server = server;
     _subscriptions
@@ -247,6 +275,7 @@ class FerretEngine implements FeatureHost {
     }
 
     _running = false;
+    _droppedRecently.clear();
     await _discovery.stop();
     for (final subscription in _subscriptions) {
       await subscription.cancel();
@@ -641,6 +670,10 @@ class FerretEngine implements FeatureHost {
       if (own.contains(peer.host)) {
         return;
       }
+    }
+
+    if (peer.deviceId != identity.deviceId) {
+      _lastHeardOthers = DateTime.now();
     }
 
     if (trustStore.isTrusted(peer.deviceId)) {
@@ -1256,6 +1289,8 @@ class FerretEngine implements FeatureHost {
     }
 
     _ready[session.remoteDeviceId] = session;
+    _droppedRecently.remove(session.remoteDeviceId);
+    _watchWeak(session);
     printLog('Connected to ${hello.device.name}');
     for (final feature in _features.values) {
       feature.onSessionOpened(session);
@@ -1368,6 +1403,11 @@ class FerretEngine implements FeatureHost {
     final wasReady = _ready[session.remoteDeviceId] == session;
     if (wasReady) {
       _ready.remove(session.remoteDeviceId);
+      unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());
+      if (_running && session.remoteGoodbye == null) {
+        _droppedRecently.add(session.remoteDeviceId);
+      }
+
       for (final feature in _features.values) {
         feature.onSessionClosed(session);
       }
@@ -1406,25 +1446,57 @@ class FerretEngine implements FeatureHost {
     await trustStore.remove(deviceId);
   }
 
+  /// Only the newest drop of a device redials; an older run that wakes up
+  /// after the device came back and dropped again leaves it to the new one.
   Future<void> _reconnect(String deviceId) async {
-    for (final delay in const [1, 3, 10, 30]) {
-      await Future<void>.delayed(Duration(seconds: delay));
-      if (!_running || _sessions.containsKey(deviceId)) {
-        return;
-      }
+    final drop = (_drops[deviceId] ?? 0) + 1;
+    _drops[deviceId] = drop;
+    try {
+      for (final (attempt, delay) in _redialDelays.indexed) {
+        if (attempt == _quickRedials) {
+          _settleDrop(deviceId);
+        }
 
-      final trusted = trustStore[deviceId];
-      if (trusted == null) {
-        return;
-      }
+        await Future<void>.delayed(Duration(seconds: delay));
+        if (!_running ||
+            _drops[deviceId] != drop ||
+            _sessions.containsKey(deviceId)) {
+          return;
+        }
 
-      if ((trusted.lastHost, trusted.lastPort) case (
-        final host?,
-        final port?,
-      )) {
-        await _dial(host, port, expectedDeviceId: deviceId);
+        final trusted = trustStore[deviceId];
+        if (trusted == null) {
+          return;
+        }
+
+        if ((trusted.lastHost, trusted.lastPort) case (
+          final host?,
+          final port?,
+        )) {
+          await _dial(host, port, expectedDeviceId: deviceId);
+        }
+      }
+    } finally {
+      if (_drops[deviceId] == drop) {
+        _settleDrop(deviceId);
       }
     }
+  }
+
+  /// The quick redials are over: the device reads as offline from here.
+  void _settleDrop(String deviceId) {
+    if (!_droppedRecently.remove(deviceId)) {
+      return;
+    }
+
+    _emitDevices();
+  }
+
+  void _watchWeak(Session session) {
+    unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());
+    _weakWatches[session.remoteDeviceId] = session.weakChanges.listen(
+      (_) => _emitDevices(),
+    );
   }
 
   void _emitSessions() {

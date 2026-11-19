@@ -43,7 +43,17 @@ class Session {
   final Duration keepAlive;
   final Duration idleTimeout;
 
+  /// A link this slow or slower is called weak; it stops being weak once
+  /// it is back under [_steadyRoundTrip]. Pings share the stream with
+  /// everything else, so a busy transfer adds its own queue to the time;
+  /// the bar sits well above that on a healthy network.
+  static const _weakRoundTrip = Duration(milliseconds: 600);
+  static const _steadyRoundTrip = Duration(milliseconds: 300);
+
   final StreamController<Envelope> _incoming = .broadcast(sync: true);
+  final StreamController<bool> _weakChanges = .broadcast();
+  Duration? _roundTrip;
+  bool _isWeak = false;
   final Map<int, Completer<Envelope>> _pending = {};
   final Set<Completer<void>> _listeners = {};
   final Completer<void> _closed = .new();
@@ -59,6 +69,16 @@ class Session {
 
   /// Envelopes that are not replies to this side's requests.
   Stream<Envelope> get incoming => _incoming.stream;
+
+  /// How long a ping takes to come back, smoothed over the last few, or
+  /// null before the first answer.
+  Duration? get roundTrip => _roundTrip;
+
+  /// Whether the link is slow enough to say so, such as far from the Wi-Fi.
+  bool get isWeak => _isWeak;
+
+  /// [isWeak] each time it changes.
+  Stream<bool> get weakChanges => _weakChanges.stream;
 
   /// Completes when the session ends.
   Future<void> get closed => _closed.future;
@@ -278,6 +298,16 @@ class Session {
     if (unpackPayload(
           type: envelope.type,
           payload: envelope.payload,
+          create: Pong.new,
+        )
+        case final pong?) {
+      _onPong(pong);
+      return;
+    }
+
+    if (unpackPayload(
+          type: envelope.type,
+          payload: envelope.payload,
           create: Goodbye.new,
         )
         case final goodbye?) {
@@ -296,6 +326,33 @@ class Session {
     }
 
     _incoming.add(envelope);
+  }
+
+  /// The ping carried this device's own clock, so the echo times the round
+  /// trip without trusting the other device's clock.
+  void _onPong(Pong pong) {
+    final sentAt = pong.pingSentAtMs.toInt();
+    final sample = DateTime.now().millisecondsSinceEpoch - sentAt;
+    if (sentAt <= 0 || sample < 0) {
+      return;
+    }
+
+    final smoothed = switch (_roundTrip) {
+      final previous? => (previous.inMilliseconds * 3 + sample) ~/ 4,
+      null => sample,
+    };
+    _roundTrip = Duration(milliseconds: smoothed);
+
+    final weak = switch (_isWeak) {
+      true => smoothed >= _steadyRoundTrip.inMilliseconds,
+      false => smoothed >= _weakRoundTrip.inMilliseconds,
+    };
+    if (weak == _isWeak) {
+      return;
+    }
+
+    _isWeak = weak;
+    _weakChanges.add(weak);
   }
 
   void _sendPing() {
@@ -341,5 +398,6 @@ class Session {
     await _subscription.cancel();
     await channel.close();
     await _incoming.close();
+    await _weakChanges.close();
   }
 }

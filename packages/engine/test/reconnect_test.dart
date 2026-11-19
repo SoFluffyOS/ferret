@@ -134,6 +134,69 @@ void main() {
     expect(discovery.isStarted, isTrue);
   });
 
+  test('a link that drops says it is reconnecting until it is back', () async {
+    final laptop = await startEngine('Laptop', _CountingDiscovery());
+    final phone = await startEngine('Phone', _CountingDiscovery());
+    final proxy = await _Proxy.to(laptop.port);
+    proxies.add(proxy);
+    await pair(phone, laptop, port: proxy.port);
+    final first = phone.sessions.single;
+    final changes = <bool>[];
+    final watch = phone.deviceChanges.listen(
+      (devices) => changes.add(devices.single.isReconnecting),
+    );
+
+    proxy.cut();
+    await _until(() => first.isClosed);
+
+    expect(phone.devices.single.isConnected, isFalse);
+    expect(phone.devices.single.isReconnecting, isTrue);
+    await _until(() => phone.sessions.isNotEmpty);
+    expect(phone.devices.single.isReconnecting, isFalse);
+    expect(changes, contains(true));
+    await watch.cancel();
+  });
+
+  test('a device that said goodbye is offline, not reconnecting', () async {
+    final laptop = await startEngine('Laptop', _CountingDiscovery());
+    final phone = await startEngine('Phone', _CountingDiscovery());
+    await pair(phone, laptop);
+
+    await laptop.sessions.single.close();
+    await _until(() => phone.sessions.isEmpty);
+
+    expect(phone.devices.single.isReconnecting, isFalse);
+  });
+
+  test('a slow link is weak, and steady again once it recovers', () async {
+    final laptop = await startEngine('Laptop', _CountingDiscovery());
+    final phone = await startEngine('Phone', _CountingDiscovery());
+    final proxy = await _Proxy.to(laptop.port);
+    proxies.add(proxy);
+    await pair(phone, laptop, port: proxy.port);
+    final session = phone.sessions.single;
+    expect(phone.devices.single.isWeak, isFalse);
+
+    proxy.delay = const Duration(milliseconds: 400);
+    expect(
+      await session.checkAlive(timeout: const Duration(seconds: 3)),
+      isTrue,
+    );
+    await _until(() => session.roundTrip != null);
+
+    expect(session.roundTrip?.inMilliseconds, greaterThanOrEqualTo(600));
+    expect(phone.devices.single.isWeak, isTrue);
+
+    proxy.delay = Duration.zero;
+    for (var ping = 0; ping < 8; ping++) {
+      await session.checkAlive();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+
+    expect(phone.devices.single.isWeak, isFalse);
+    expect(session.isClosed, isFalse);
+  });
+
   test('calls during a reconnect merge into one more run', () async {
     final discovery = _CountingDiscovery();
     final phone = await startEngine('Phone', discovery);
@@ -222,6 +285,9 @@ class _Proxy {
   late final int _target;
   bool frozen = false;
 
+  /// Added to every hop, in order, like a far-away Wi-Fi.
+  Duration delay = Duration.zero;
+
   int get port => _server.port;
 
   Future<void> _onClient(Socket client) async {
@@ -234,12 +300,32 @@ class _Proxy {
     _pipe(upstream, client);
   }
 
+  /// Drops every connection at once, like a Wi-Fi that hopped access
+  /// points: no goodbye, the sockets just end.
+  void cut() {
+    for (final socket in _sockets) {
+      socket.destroy();
+    }
+
+    _sockets.clear();
+  }
+
   void _pipe(Socket from, Socket to) {
+    var tail = Future<void>.value();
     from.listen(
       (data) {
-        if (!frozen) {
-          to.add(data);
+        if (frozen) {
+          return;
         }
+
+        final wait = delay;
+        tail = tail.then((_) async {
+          if (wait > Duration.zero) {
+            await Future<void>.delayed(wait);
+          }
+
+          to.add(data);
+        });
       },
       onError: (Object _) => to.destroy(),
       onDone: to.destroy,
