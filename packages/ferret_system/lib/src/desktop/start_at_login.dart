@@ -60,12 +60,19 @@ class StartAtLogin {
     'Type=Application',
     'Name=Ferret',
     'Comment=Continue what you were doing on any of your devices',
-    'Exec="$_executable" $hiddenArgument',
+    'Exec="$_launcher" $hiddenArgument',
     'Icon=io.sofluffy.ferret',
     'Terminal=false',
     'X-GNOME-Autostart-enabled=true',
     '',
   ].join('\n');
+
+  /// What autostart runs. An AppImage's binary sits in a mount that moves
+  /// every run, so the AppImage file itself, which `APPIMAGE` names.
+  String get _launcher => switch (_environment['APPIMAGE']) {
+    final String appImage when appImage.isNotEmpty => appImage,
+    _ => _executable,
+  };
 
   /// Whether Ferret starts at login. Inside a Flatpak the portal keeps
   /// this, so [remembered] answers.

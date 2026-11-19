@@ -12,14 +12,17 @@ void main() {
 
   tearDown(() => home.delete(recursive: true));
 
-  StartAtLogin linux({bool flatpak = false, List<bool>? portal}) =>
-      StartAtLogin(
-        operatingSystem: 'linux',
-        environment: {'HOME': home.path},
-        executable: '/opt/ferret/ferret',
-        isFlatpak: () async => flatpak,
-        requestBackground: (enabled) async => portal?.add(enabled),
-      );
+  StartAtLogin linux({
+    bool flatpak = false,
+    List<bool>? portal,
+    Map<String, String> environment = const {},
+  }) => StartAtLogin(
+    operatingSystem: 'linux',
+    environment: {'HOME': home.path, ...environment},
+    executable: '/opt/ferret/ferret',
+    isFlatpak: () async => flatpak,
+    requestBackground: (enabled) async => portal?.add(enabled),
+  );
 
   test('on Linux, an autostart entry starts Ferret in the tray', () async {
     final login = linux();
@@ -35,6 +38,20 @@ void main() {
     final entry = await File(login.desktopFilePath).readAsString();
     expect(entry, contains('Exec="/opt/ferret/ferret" --hidden'));
     expect(entry, startsWith('[Desktop Entry]'));
+  });
+
+  test('from an AppImage, autostart runs the AppImage file', () async {
+    final login = linux(
+      environment: const {'APPIMAGE': '/home/someone/Apps/Ferret.AppImage'},
+    );
+
+    await login.setEnabled(true);
+
+    final entry = await File(login.desktopFilePath).readAsString();
+    expect(
+      entry,
+      contains('Exec="/home/someone/Apps/Ferret.AppImage" --hidden'),
+    );
   });
 
   test('turning it off removes the entry', () async {
