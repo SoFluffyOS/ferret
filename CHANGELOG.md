@@ -75,7 +75,7 @@
 - 🔌 **Show any Android phone with a cable (experimental)**: no Ferret on the phone, and you can click, scroll, type and paste on it. Right-click is Back, middle-click is Home. A checklist ticks itself as you plug in and tap Allow. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.
 - 📲 **Show an iPhone or iPad (experimental)**: click **Show screen** on the iPhone in Ferret, pick your computer under **Screen Mirroring** in Control Center, and confirm on the same page. Nothing to install on the iPhone.
 - 📷 **Pair with a QR code**: no device in sight? **Add a device** has the QR code one tap down, and a link or an address under **Other ways**.
-- 🤖 **Stays connected on Android**: a quiet background service, a Quick Settings tile, and battery tips for your phone maker.
+- 🤖 **Stays connected on Android**: a quiet background service that comes back after a restart or an update, and a Quick Settings tile. **Stay connected** says when Android limits Ferret, with a **Fix** button and the steps for your phone maker. See [Keep Ferret running on Android](docs/public/getting-started/android-keep-running.md).
 - ⚡ **Instant reconnect** after sleep or a network change.
 - 🩺 **Fix connection**: when a device won't connect, Ferret tells you why in plain words and offers the fix. **Check my network** does the same before you have paired anything. On Windows it names the firewall and opens the right list.
 - 📱 **Device page**: everything that works with a device in one list, with what is off (and **How?** to turn it on) and what is broken (and **Fix**). What that device may do here sits right below.

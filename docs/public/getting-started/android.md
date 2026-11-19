@@ -32,18 +32,13 @@ Don't want to see it at all? Long-press it, then turn off the **Stay connected**
 
 ## 🔋 Battery settings
 
-Android's battery optimization can put Ferret to sleep. Ferret asks you to turn it off when you turn on something that needs to stay connected. You can also do it yourself: **Settings → Apps → Ferret → App battery usage → Unrestricted**.
+Android's battery optimization can put Ferret to sleep, and some phone makers add a second killer on top.
 
-Some phone makers add a second killer on top. Ferret detects your phone's maker and opens the right screen when it can. Here is where to look:
+Ferret shows what is in the way on its **Stay connected** card, each with a **Fix** button. For your phone maker it writes the exact steps under the button.
 
-- **Xiaomi, Redmi, POCO:** Settings → Apps → Manage apps → Ferret → turn on **Autostart**, and set **Battery saver** to **No restrictions**. Lock Ferret in the recent apps view (long-press its card, then the lock).
-- **Samsung:** Settings → Battery → Background usage limits → **Never sleeping apps** → add Ferret. Then Settings → Apps → Ferret → Battery → **Unrestricted**.
-- **OnePlus:** Settings → Apps → Ferret → Battery usage → turn on **Allow background activity**. Lock Ferret in the recent apps view.
-- **Huawei, Honor:** Settings → Battery → App launch → Ferret → turn off **Manage automatically**, then turn on **Auto-launch**, **Secondary launch** and **Run in background**.
-- **Oppo, realme:** Settings → Apps → Ferret → Battery usage → turn on **Allow background activity** and **Allow auto launch**.
-- **Vivo, iQOO:** Settings → Battery → Background power consumption management → Ferret → **Allow**. Turn on **Autostart** for Ferret in i Manager too.
+The short version: **Settings → Apps → Ferret → App battery usage → Unrestricted**.
 
-Menus move between versions. When in doubt, [dontkillmyapp.com](https://dontkillmyapp.com) has the steps for your exact phone.
+Samsung, Xiaomi, OnePlus, Oppo, Huawei or Vivo? See [Keep Ferret running on Android](android-keep-running.md) for the steps on your phone.
 
 Ferret notices when Android stopped it anyway, and tells you: "Android stopped Ferret 3 times today". That is your hint to check these settings.
 
@@ -62,7 +57,7 @@ Easy, right?
 
 ## 🚀 Start when the phone starts
 
-Ferret doesn't start by itself after a restart unless you ask for it. Turn on **Start when the phone starts** in Ferret's settings, and it's back as soon as you unlock your phone.
+Ferret is back as soon as you unlock your phone after a restart, and right after an update. Don't want that? Turn off **Start when the phone starts** in **Settings → Background**.
 
 ## 🔄 After sleep and Wi-Fi changes
 
@@ -70,9 +65,10 @@ Ferret reconnects right away when:
 
 - your phone joins a network, or its Wi-Fi changes,
 - the screen turns on, or the phone leaves deep sleep,
+- Android lets Ferret back on the network,
 - you open the app.
 
-It checks which connections still answer, replaces the ones that died, and calls your paired devices at their last known address without waiting for discovery. No polling in between, so it stays light on battery.
+It checks which connections still answer, replaces the ones that died, and calls your paired devices at their last known address without waiting for discovery. While none of your devices is connected, it looks again every 15 minutes, without waking the phone for it. So it stays light on battery.
 
 🦊
 
