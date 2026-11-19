@@ -10,6 +10,27 @@ message Hello {
   repeated FeatureSupport features = 2;
   // TCP port this device accepts connections on, for reconnecting later.
   uint32 listen_port = 3;
+  // This device's addresses on the user's own VPN (Tailscale, ZeroTier,
+  // WireGuard), such as "100.101.102.103". Sent only to a device that asked
+  // for them (see wants_vpn_addresses and VpnReach); empty otherwise, and
+  // from devices that predate VPN reach. An empty list never clears what
+  // the receiver remembers: VpnReach does that.
+  repeated string vpn_addresses = 4;
+  // The user turned on "Also reach this device over my VPN" here, so the
+  // receiver may share its VPN addresses with this device.
+  bool wants_vpn_addresses = 5;
+}
+
+// VPN reach changed during a session (feature "session"): the sender's
+// switch for the receiver, and the sender's VPN addresses when the
+// receiver asked for them. Devices that predate it ignore it.
+message VpnReach {
+  // Same as Hello.wants_vpn_addresses.
+  bool wants_addresses = 1;
+  // Whether addresses below is the sender's full list. False when the
+  // receiver hasn't asked for them, and then addresses is empty.
+  bool includes_addresses = 2;
+  repeated string addresses = 3;
 }
 
 // Keeps a session alive and measures round trips (feature "session").

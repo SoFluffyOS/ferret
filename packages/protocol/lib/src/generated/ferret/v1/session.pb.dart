@@ -28,11 +28,15 @@ class Hello extends $pb.GeneratedMessage {
     $0.DeviceInfo? device,
     $core.Iterable<$0.FeatureSupport>? features,
     $core.int? listenPort,
+    $core.Iterable<$core.String>? vpnAddresses,
+    $core.bool? wantsVpnAddresses,
   }) {
     final result = Hello._();
     if (device != null) result.device = device;
     if (features != null) result.features.addAll(features);
     if (listenPort != null) result.listenPort = listenPort;
+    if (vpnAddresses != null) result.vpnAddresses.addAll(vpnAddresses);
+    if (wantsVpnAddresses != null) result.wantsVpnAddresses = wantsVpnAddresses;
     return result;
   }
 
@@ -54,6 +58,8 @@ class Hello extends $pb.GeneratedMessage {
     ..pPM<$0.FeatureSupport>(2, _omitFieldNames ? '' : 'features',
         subBuilder: $0.FeatureSupport.$_createMessage)
     ..aI(3, _omitFieldNames ? '' : 'listenPort', fieldType: $pb.PbFieldType.OU3)
+    ..pPS(4, _omitFieldNames ? '' : 'vpnAddresses')
+    ..aOB(5, _omitFieldNames ? '' : 'wantsVpnAddresses')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -99,6 +105,104 @@ class Hello extends $pb.GeneratedMessage {
   $core.bool hasListenPort() => $_has(2);
   @$pb.TagNumber(3)
   void clearListenPort() => $_clearField(3);
+
+  /// This device's addresses on the user's own VPN (Tailscale, ZeroTier,
+  /// WireGuard), such as "100.101.102.103". Sent only to a device that asked
+  /// for them (see wants_vpn_addresses and VpnReach); empty otherwise, and
+  /// from devices that predate VPN reach. An empty list never clears what
+  /// the receiver remembers: VpnReach does that.
+  @$pb.TagNumber(4)
+  $pb.PbList<$core.String> get vpnAddresses => $_getList(3);
+
+  /// The user turned on "Also reach this device over my VPN" here, so the
+  /// receiver may share its VPN addresses with this device.
+  @$pb.TagNumber(5)
+  $core.bool get wantsVpnAddresses => $_getBF(4);
+  @$pb.TagNumber(5)
+  set wantsVpnAddresses($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasWantsVpnAddresses() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearWantsVpnAddresses() => $_clearField(5);
+}
+
+/// VPN reach changed during a session (feature "session"): the sender's
+/// switch for the receiver, and the sender's VPN addresses when the
+/// receiver asked for them. Devices that predate it ignore it.
+class VpnReach extends $pb.GeneratedMessage {
+  factory VpnReach({
+    $core.bool? wantsAddresses,
+    $core.bool? includesAddresses,
+    $core.Iterable<$core.String>? addresses,
+  }) {
+    final result = VpnReach._();
+    if (wantsAddresses != null) result.wantsAddresses = wantsAddresses;
+    if (includesAddresses != null) result.includesAddresses = includesAddresses;
+    if (addresses != null) result.addresses.addAll(addresses);
+    return result;
+  }
+
+  VpnReach._();
+
+  factory VpnReach.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      VpnReach()..mergeFromBuffer(data, registry);
+  factory VpnReach.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      VpnReach()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VpnReach',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'ferret.v1'),
+      createEmptyInstance: VpnReach.$_createMessage)
+    ..aOB(1, _omitFieldNames ? '' : 'wantsAddresses')
+    ..aOB(2, _omitFieldNames ? '' : 'includesAddresses')
+    ..pPS(3, _omitFieldNames ? '' : 'addresses')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VpnReach clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VpnReach copyWith(void Function(VpnReach) updates) =>
+      super.copyWith((message) => updates(message as VpnReach)) as VpnReach;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use VpnReach() / VpnReach.new instead')
+  static VpnReach create() => VpnReach._();
+  static $pb.GeneratedMessage $_createMessage() => VpnReach._();
+  @$core.override
+  VpnReach createEmptyInstance() => VpnReach._();
+  @$core.pragma('dart2js:noInline')
+  static VpnReach getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VpnReach>(VpnReach.$_createMessage);
+  static VpnReach? _defaultInstance;
+
+  /// Same as Hello.wants_vpn_addresses.
+  @$pb.TagNumber(1)
+  $core.bool get wantsAddresses => $_getBF(0);
+  @$pb.TagNumber(1)
+  set wantsAddresses($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasWantsAddresses() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearWantsAddresses() => $_clearField(1);
+
+  /// Whether addresses below is the sender's full list. False when the
+  /// receiver hasn't asked for them, and then addresses is empty.
+  @$pb.TagNumber(2)
+  $core.bool get includesAddresses => $_getBF(1);
+  @$pb.TagNumber(2)
+  set includesAddresses($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasIncludesAddresses() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIncludesAddresses() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<$core.String> get addresses => $_getList(2);
 }
 
 /// Keeps a session alive and measures round trips (feature "session").

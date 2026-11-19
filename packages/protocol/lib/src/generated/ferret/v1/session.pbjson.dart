@@ -53,6 +53,14 @@ const Hello$json = {
       '10': 'features'
     },
     {'1': 'listen_port', '3': 3, '4': 1, '5': 13, '10': 'listenPort'},
+    {'1': 'vpn_addresses', '3': 4, '4': 3, '5': 9, '10': 'vpnAddresses'},
+    {
+      '1': 'wants_vpn_addresses',
+      '3': 5,
+      '4': 1,
+      '5': 8,
+      '10': 'wantsVpnAddresses'
+    },
   ],
 };
 
@@ -60,7 +68,31 @@ const Hello$json = {
 final $typed_data.Uint8List helloDescriptor = $convert.base64Decode(
     'CgVIZWxsbxItCgZkZXZpY2UYASABKAsyFS5mZXJyZXQudjEuRGV2aWNlSW5mb1IGZGV2aWNlEj'
     'UKCGZlYXR1cmVzGAIgAygLMhkuZmVycmV0LnYxLkZlYXR1cmVTdXBwb3J0UghmZWF0dXJlcxIf'
-    'CgtsaXN0ZW5fcG9ydBgDIAEoDVIKbGlzdGVuUG9ydA==');
+    'CgtsaXN0ZW5fcG9ydBgDIAEoDVIKbGlzdGVuUG9ydBIjCg12cG5fYWRkcmVzc2VzGAQgAygJUg'
+    'x2cG5BZGRyZXNzZXMSLgoTd2FudHNfdnBuX2FkZHJlc3NlcxgFIAEoCFIRd2FudHNWcG5BZGRy'
+    'ZXNzZXM=');
+
+@$core.Deprecated('Use vpnReachDescriptor instead')
+const VpnReach$json = {
+  '1': 'VpnReach',
+  '2': [
+    {'1': 'wants_addresses', '3': 1, '4': 1, '5': 8, '10': 'wantsAddresses'},
+    {
+      '1': 'includes_addresses',
+      '3': 2,
+      '4': 1,
+      '5': 8,
+      '10': 'includesAddresses'
+    },
+    {'1': 'addresses', '3': 3, '4': 3, '5': 9, '10': 'addresses'},
+  ],
+};
+
+/// Descriptor for `VpnReach`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vpnReachDescriptor = $convert.base64Decode(
+    'CghWcG5SZWFjaBInCg93YW50c19hZGRyZXNzZXMYASABKAhSDndhbnRzQWRkcmVzc2VzEi0KEm'
+    'luY2x1ZGVzX2FkZHJlc3NlcxgCIAEoCFIRaW5jbHVkZXNBZGRyZXNzZXMSHAoJYWRkcmVzc2Vz'
+    'GAMgAygJUglhZGRyZXNzZXM=');
 
 @$core.Deprecated('Use pingDescriptor instead')
 const Ping$json = {

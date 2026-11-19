@@ -1985,6 +1985,18 @@ First envelope each side sends on a trusted session (feature "session").
 | `device` | `DeviceInfo` | 1 |  |
 | `features` | `repeated FeatureSupport` | 2 |  |
 | `listen_port` | `uint32` | 3 | TCP port this device accepts connections on, for reconnecting later. |
+| `vpn_addresses` | `repeated string` | 4 | This device's addresses on the user's own VPN (Tailscale, ZeroTier, WireGuard), such as "100.101.102.103". Sent only to a device that asked for them (see wants_vpn_addresses and VpnReach); empty otherwise, and from devices that predate VPN reach. An empty list never clears what the receiver remembers: VpnReach does that. |
+| `wants_vpn_addresses` | `bool` | 5 | The user turned on "Also reach this device over my VPN" here, so the receiver may share its VPN addresses with this device. |
+
+### message `VpnReach`
+
+VPN reach changed during a session (feature "session"): the sender's switch for the receiver, and the sender's VPN addresses when the receiver asked for them. Devices that predate it ignore it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `wants_addresses` | `bool` | 1 | Same as Hello.wants_vpn_addresses. |
+| `includes_addresses` | `bool` | 2 | Whether addresses below is the sender's full list. False when the receiver hasn't asked for them, and then addresses is empty. |
+| `addresses` | `repeated string` | 3 |  |
 
 ### message `Ping`
 
