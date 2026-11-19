@@ -6,6 +6,36 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 > 2. From 600 wide: your devices on the left, the page you picked on the right.
 > 3. From 1200 wide: an Activity pane joins on the right.
 
+## 📦 Install
+
+> 1. Download `Ferret-0.1.0-x64-setup.exe` from the [releases](https://github.com/simonpham/ferret/releases), or run `winget install SoFluffy.Ferret`
+> 2. Run it. No admin needed: it installs just for you
+> 3. Keep **Allow Ferret through Windows Firewall** ticked and say **Yes** when Windows asks
+
+That's it. You get Ferret in the Start menu, **Send to → Ferret** when you right-click a file, and `ferret-cli.exe` next to the app.
+
+Windows may say it protected your PC (SmartScreen). Click **More info**, then **Run anyway**.
+
+### The firewall box
+
+Windows hides your PC from your phone until Ferret is allowed through its firewall. The installer does that for you with three rules, on **Private** networks only:
+
+| Rule | Port | For |
+|---|---|---|
+| Ferret (47640/tcp) | 47640/tcp | Your devices talking to each other |
+| Ferret discovery (47641/udp) | 47641/udp | Finding your devices |
+| Ferret mDNS (5353/udp) | 5353/udp | Finding your devices with mDNS |
+
+Said **No**, or installed with winget? No problem. **Fix connection** notices the rules are missing and offers **Allow through firewall**. One click, one **Yes**, done.
+
+Public networks (a café, a hotel, a Wi-Fi Windows doesn't know yet) stay closed. At home, set your Wi-Fi to Private: **Settings → Network & internet → Wi-Fi**, pick your network, then **Private network**.
+
+### Uninstall
+
+**Settings → Apps → Installed apps → Ferret → Uninstall.** It removes the app, the shortcuts, the firewall rules and Start at login.
+
+Your keys, paired devices and settings stay in `%USERPROFILE%\.sofluffy\ferret`, so a reinstall picks up where you left off. Delete that folder to forget everything.
+
 ## 🪟 The window
 
 - **Your devices** are a list on the left. Click one and it opens to its sections: **Overview**, then what that device offers, such as **Messages**, **Calls**, **Notifications** and **Files**. The line you picked stays highlighted.
@@ -54,4 +84,4 @@ There is no menu bar. The **•••** at the end of the window's toolbar holds
 
 ## 🧱 If your phone doesn't show up
 
-Windows Firewall is the usual reason. **Add a device → Check my network** names it and opens the right list. See [Fix connection](../features/connection-doctor.md).
+Windows Firewall is the usual reason. **Add a device → Check my network** tells you whether Ferret's firewall rules are in place, and **Allow through firewall** adds them. See [Fix connection](../features/connection-doctor.md).

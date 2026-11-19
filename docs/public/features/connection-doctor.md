@@ -22,11 +22,12 @@ Each problem comes with a button that fixes it, or tells you exactly where to go
 
 The first time Ferret opens, Windows asks whether to allow it on your network. Close that question, or tick only one kind of network, and your other devices can't find this computer. Windows never asks again.
 
-Fix connection names it whenever your other device doesn't show up or doesn't answer:
+The installer can add Ferret's firewall rules for you (see [Ferret on Windows](../getting-started/windows.md)). Fix connection checks for them whenever your other device doesn't show up or doesn't answer:
 
-1. Click **Open Windows Firewall**, then **Change settings**.
-2. Tick **Ferret**, under both **Private** and **Public**.
-3. Select **OK**, then **Try again**.
+- **Rules in place?** It says so. Still hidden? Your network is probably set to Public (below).
+- **Rules missing?** Click **Allow through firewall**, then **Yes** when Windows asks. Then **Try again**.
+
+Rather do it by hand? Click **Open Windows Firewall**, then **Change settings**, tick **Ferret** under both **Private** and **Public**, and select **OK**.
 
 No button? Open **Windows Security → Firewall & network protection → Allow an app through firewall**. It's the same list.
 

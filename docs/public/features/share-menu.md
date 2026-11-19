@@ -93,7 +93,7 @@ Now right-click a file and pick **Open With → Send with Ferret**.
 
 ## 🪟 Windows: Send to → Ferret
 
-Windows has a **Send to** menu, and anything you put in its folder shows up there.
+The installer puts Ferret in **Send to** for you. Running Ferret without the installer? Add it yourself: Windows has a **Send to** menu, and anything you put in its folder shows up there.
 
 1. Press **Win + R**, type `shell:sendto` and press Enter. A folder opens.
 2. Right-click in it and pick **New → Shortcut**.
@@ -121,7 +121,7 @@ Either way the transfer shows in **Activity** like any other, with progress and 
 | macOS | **Share → Ferret** | In the Share menu | Files, photos, text and links. You may have to switch it on once in System Settings |
 | iPhone, iPad | **Share → Ferret** | In the share sheet | Files, photos, videos, text and links. Ferret opens to send them |
 | Linux | **Open With → Send with Ferret** | In Ferret, when there are several | You copy one `.desktop` file |
-| Windows | **Send to → Ferret** | In Ferret, when there are several | You make the shortcut once |
+| Windows | **Send to → Ferret** | In Ferret, when there are several | The installer adds it |
 | Android | **Share → Send with Ferret** | In Ferret, when there are several | See [Drop](drop.md) |
 
 Folders aren't sent yet: pick the files inside them.
