@@ -1,15 +1,23 @@
+import 'package:ferret_docs/landing/landing.dart';
 import 'package:jaspr/dom.dart' as dom;
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_content/jaspr_content.dart';
 
 /// The docs layout with Ferret's icons in the head: the favicon, the home
-/// screen icon and the picture a link preview shows.
+/// screen icon, the page's canonical address and the picture a link preview
+/// shows.
 class FerretDocsLayout extends DocsLayout {
   const FerretDocsLayout({super.sidebar, super.header, super.footer});
 
   @override
   Iterable<Component> buildHead(Page page) sync* {
     yield* super.buildHead(page);
+    yield dom.link(rel: 'canonical', href: '${SiteLinks.origin}${page.url}');
+    yield dom.meta(
+      attributes: {'property': 'og:url'},
+      content: '${SiteLinks.origin}${page.url}',
+    );
+    yield const dom.link(rel: 'stylesheet', href: '/docs.css');
     yield const dom.link(
       rel: 'icon',
       type: 'image/svg+xml',
@@ -26,7 +34,7 @@ class FerretDocsLayout extends DocsLayout {
     );
     yield const dom.meta(
       attributes: {'property': 'og:image'},
-      content: '/images/social.png',
+      content: '${SiteLinks.origin}/images/social.png',
     );
     yield const dom.meta(
       attributes: {'property': 'og:image:width'},

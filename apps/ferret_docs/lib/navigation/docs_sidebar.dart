@@ -5,14 +5,19 @@ import 'package:path/path.dart' as p;
 
 /// Builds the sidebar from the folders in `docs/public`, so a new page shows
 /// up without editing a list. Each folder is a group; each page's title is
-/// its first `# ` heading. Pages can set `order: 3` in front matter.
-Sidebar docsSidebar(String root) {
+/// its first `# ` heading. Pages can set `order: 3` in front matter. Every
+/// link starts with [base], where the docs are served.
+Sidebar docsSidebar(String root, {String base = '/docs'}) {
   final directory = Directory(root);
-  final topLevel = _pages(directory, root).where((link) => link.href != '/');
+  final topLevel = _pages(
+    directory,
+    root,
+    base,
+  ).where((link) => link.href != base);
   final groups = <SidebarGroup>[
     SidebarGroup(
       links: [
-        const SidebarLink(text: 'Overview', href: '/'),
+        SidebarLink(text: 'Overview', href: base),
         ...topLevel,
       ],
     ),
@@ -27,7 +32,7 @@ Sidebar docsSidebar(String root) {
         ..sort((a, b) => _groupRank(a.path).compareTo(_groupRank(b.path)));
 
   for (final folder in folders) {
-    final pages = _pages(folder, root);
+    final pages = _pages(folder, root, base);
     if (pages.isEmpty) {
       continue;
     }
@@ -57,7 +62,7 @@ int _groupRank(String path) {
   };
 }
 
-List<SidebarLink> _pages(Directory folder, String root) {
+List<SidebarLink> _pages(Directory folder, String root, String base) {
   final files = folder
       .listSync()
       .whereType<File>()
@@ -79,7 +84,10 @@ List<SidebarLink> _pages(Directory folder, String root) {
     for (final entry in entries)
       SidebarLink(
         text: entry.meta.title,
-        href: '/${_route(p.relative(entry.file.path, from: root))}',
+        href: p.posix.join(
+          base,
+          _route(p.relative(entry.file.path, from: root)),
+        ),
       ),
   ];
 }
@@ -108,12 +116,13 @@ String _route(String relativePath) {
   final withoutExtension = relativePath
       .substring(0, relativePath.length - '.md'.length)
       .replaceAll(r'\', '/');
-  return switch (withoutExtension.endsWith('/index')) {
-    true => withoutExtension.substring(
+  return switch (withoutExtension) {
+    'index' => '',
+    final path when path.endsWith('/index') => path.substring(
       0,
-      withoutExtension.length - '/index'.length,
+      path.length - '/index'.length,
     ),
-    false => withoutExtension,
+    final path => path,
   };
 }
 

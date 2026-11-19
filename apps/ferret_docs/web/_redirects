@@ -1,0 +1,11 @@
+# Cloudflare Pages (and Netlify) read this file. The docs used to live at the
+# site root; they moved under /docs when the landing page took /.
+/privacy                 /docs/privacy                    301
+/getting-started/*       /docs/getting-started/:splat     301
+/features/*              /docs/features/:splat            301
+/android-modes/*         /docs/android-modes/:splat       301
+/iphone                  /docs/iphone                     301
+/iphone/*                /docs/iphone/:splat              301
+/interop/*               /docs/interop/:splat             301
+/spec/*                  /docs/spec/:splat                301
+/contributing/*          /docs/contributing/:splat        301

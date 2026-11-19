@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# The docs site reads docs/public in place; nothing is copied.
+# The site: the landing page at /, and the docs read from docs/public in
+# place (nothing is copied) and served under /docs.
 #   scripts/docs.sh serve       live preview on http://localhost:8080
 #   scripts/docs.sh check       links, images, internal links, protocol reference
 #   scripts/docs.sh reference   regenerate docs/public/spec/reference.md from proto/
@@ -30,7 +31,15 @@ case "${1:-check}" in
     ;;
   build)
     dart run tool/check_docs.dart
-    $JASPR build
+    $JASPR build \
+      --sitemap-domain https://ferret.sofluffy.io \
+      --sitemap-exclude '^/404'
+    # The landing and 404 pages have no client components; Jaspr adds its
+    # client script to every page anyway, so these two drop it.
+    for page in build/jaspr/index.html build/jaspr/404.html; do
+      sed -i.bak 's#<script src="main.client.dart.js" defer></script>##' "$page"
+      rm "$page.bak"
+    done
     if [ -n "${2:-}" ]; then
       mkdir -p "$2"
       cp -R build/jaspr/. "$2/"

@@ -1,0 +1,48 @@
+/// One feature group on the landing: what it does, a render, and its docs.
+class FeatureStory {
+  const FeatureStory({
+    required this.id,
+    required this.emoji,
+    required this.title,
+    required this.lead,
+    required this.points,
+    required this.shot,
+    required this.alt,
+    required this.width,
+    required this.height,
+    required this.docs,
+    required this.docsLabel,
+    required this.frame,
+  });
+
+  final String id;
+  final String emoji;
+  final String title;
+  final String lead;
+  final List<String> points;
+  final String shot;
+  final String alt;
+  final int width;
+  final int height;
+  final String docs;
+  final String docsLabel;
+  final ShotFrame frame;
+}
+
+/// What a render shows, so it gets the right corners around it: a computer
+/// window, the Mac menubar popover, or a phone screen.
+enum ShotFrame { window, popover, phone }
+
+/// A smaller feature without a render.
+typedef FeatureExtra = ({String emoji, String title, String body, String docs});
+
+/// One question in the FAQ, with an optional link to read more.
+typedef FaqEntry = ({String question, String answer, String? link});
+
+/// One platform in the download section.
+typedef PlatformEntry = ({
+  String emoji,
+  String name,
+  String how,
+  String guide,
+});

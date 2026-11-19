@@ -32,8 +32,8 @@ class MarkdownLinksExtension implements PageExtension {
     ]);
   }
 
-  /// `../features/clipboard.md#limits` on `getting-started/android.md`
-  /// becomes `/features/clipboard#limits`.
+  /// `../features/clipboard.md#limits` on `docs/getting-started/android.md`
+  /// becomes `/docs/features/clipboard#limits`.
   static String routeFor(String href, String pagePath) {
     if (_isExternal(href)) {
       return href;
@@ -60,7 +60,9 @@ class MarkdownLinksExtension implements PageExtension {
     return '$route$fragment';
   }
 
-  /// `../assets/pairing.png` becomes `/assets/pairing.png`.
+  /// `../assets/pairing.png` on `docs/features/drop.md` becomes
+  /// `/assets/pairing.png`: assets are served from the site root, shared with
+  /// the landing page, while pages live under `/docs`.
   static String assetFor(String source, String pagePath) {
     if (_isExternal(source)) {
       return source;
@@ -69,7 +71,13 @@ class MarkdownLinksExtension implements PageExtension {
     final resolved = p.posix.normalize(
       p.posix.join(p.posix.dirname(pagePath), source),
     );
-    return '/$resolved';
+    final segments = p.posix.split(resolved);
+    final assetIndex = segments.indexOf('assets');
+    if (assetIndex < 0) {
+      return '/$resolved';
+    }
+
+    return '/${p.posix.joinAll(segments.skip(assetIndex))}';
   }
 
   static bool _isExternal(String href) =>
