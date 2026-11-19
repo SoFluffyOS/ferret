@@ -1,0 +1,294 @@
+{
+  "@@locale": "en",
+  "title": "Photos",
+  "@title": {
+    "description": "The feature's name and the device section's title."
+  },
+  "back": "Back",
+  "autoScreenshots": "New screenshots arrive by themselves",
+  "@autoScreenshots": {
+    "description": "Switch on a phone's Photos page on a computer. Off by default."
+  },
+  "autoScreenshotsBody": "Each screenshot you take on {device} lands here while Ferret runs on both.",
+  "@autoScreenshotsBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "select": "Select",
+  "cancel": "Cancel",
+  "saveCount": "{count, plural, =1{Save 1 photo} other{Save {count} photos}}",
+  "@saveCount": {
+    "description": "Button that saves the selected photos into the receive folder.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "save": "Save",
+  "saving": "Saving…",
+  "saved": "Saved to your receive folder.",
+  "saveFailed": "Couldn't save it. Try again.",
+  "limited": "{device} shares only the photos you picked.",
+  "@limited": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "allowMore": "Allow more photos",
+  "loading": "Loading photos from {device}…",
+  "@loading": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "offline": "{device} is offline. Its photos show here once it's back.",
+  "@offline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "unsupported": "{device} needs a newer Ferret to share photos.",
+  "@unsupported": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "failed": "{device} didn't answer.",
+  "@failed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "tryAgain": "Try again",
+  "notAllowedTitle": "{device} doesn't share its photos here yet",
+  "@notAllowedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "notAllowedBody": "Your photos stay on the phone until you allow it. On {device}, open this computer and turn on Photos under What it can use.",
+  "@notAllowedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noPermissionTitle": "Ferret on {device} can't see photos yet",
+  "@noPermissionTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noPermissionBody": "The phone hasn't given Ferret photo access. Allow it on {device}.",
+  "@noPermissionBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askOnDevice": "Ask on {device}",
+  "@askOnDevice": {
+    "description": "Sends a notice to the phone asking its owner to share photos.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "askedOnDevice": "A notice is waiting on {device}.",
+  "@askedOnDevice": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "unavailableTitle": "Open Ferret on {device} to see photos",
+  "@unavailableTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "unavailableBody": "An iPhone shares photos only while Ferret is open on it.",
+  "empty": "No photos on {device} yet.",
+  "@empty": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "hidden": "Photos from {device} are hidden on this computer right now.",
+  "@hidden": {
+    "description": "Shown while previews from that phone are off here, the screen is locked, or another account is in front.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "kindPhoto": "Photo, {date}",
+  "@kindPhoto": {
+    "description": "Read by screen readers for a tile.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "kindScreenshot": "Screenshot, {date}",
+  "@kindScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "kindVideo": "Video, {date}",
+  "@kindVideo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySaving": "{count, plural, =1{Saving a photo from {device}} other{Saving {count} photos from {device}}}",
+  "@activitySaving": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySaved": "{count, plural, =1{Saved a photo from {device}} other{Saved {count} photos from {device}}}",
+  "@activitySaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityScreenshot": "Screenshot from {device}",
+  "@activityScreenshot": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityFailed": "Couldn't save photos from {device}",
+  "@activityFailed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityInFolder": "In your receive folder",
+  "failOffline": "{device} went offline.",
+  "@failOffline": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "failNotAllowed": "{device} doesn't share photos with this computer.",
+  "@failNotAllowed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "failNoPermission": "Ferret on {device} can't read photos.",
+  "@failNoPermission": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "failMissing": "Those photos aren't on {device} any more.",
+  "@failMissing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "failOther": "The transfer stopped. Try again.",
+  "permissionLabel": "Let {device} see your photos",
+  "@permissionLabel": {
+    "description": "Switch on a computer's page on the phone. Off by default.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionDetail": "Recent photos and screenshots, while Ferret runs. {device} can look and save, never delete.",
+  "@permissionDetail": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionDetailLimited": "Ferret sees only the photos you picked. Change it in Settings, Photos.",
+  "permissionDetailDenied": "Photo access is off for Ferret. Turn it on in Settings, Photos.",
+  "noticeAskTitle": "{device} wants to see your photos",
+  "@noticeAskTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeAskBody": "Tap to choose what it can see.",
+  "settingsFull": "Ferret can see all your photos.",
+  "settingsLimited": "Ferret sees only the photos you picked.",
+  "settingsDenied": "Photo access is off for Ferret.",
+  "settingsNotAsked": "Ferret asks for photo access when you share photos with a computer.",
+  "settingsUnavailable": "Photos can't be read right now.",
+  "allowPhotos": "Allow photos",
+  "openSettings": "Open Settings",
+  "settingsPerDevice": "Choose which computers see your photos on each computer's page, under What it can use. Nothing is ever deleted from here.",
+  "settingsSharing": "Shared with: {devices}",
+  "@settingsSharing": {
+    "placeholders": {
+      "devices": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSharingNone": "Not shared with any computer."
+}

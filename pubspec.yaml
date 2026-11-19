@@ -18,6 +18,7 @@ workspace:
   - modules/messages
   - modules/mirroring
   - modules/notifications
+  - modules/photos
   - modules/power
   - modules/remote_input
   - modules/scripting
