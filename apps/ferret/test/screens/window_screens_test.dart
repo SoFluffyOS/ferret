@@ -278,6 +278,8 @@ final windowScreens = <WindowScreen>[
     await _pairPhone(tester, rig);
     await tester.tap(find.byIcon(LucideIcons.panelLeftClose));
     await rig.settle(tester);
+    // The list slides out; one more frame past the end of the slide.
+    await tester.pump(const Duration(milliseconds: 300));
   }),
 ];
 
