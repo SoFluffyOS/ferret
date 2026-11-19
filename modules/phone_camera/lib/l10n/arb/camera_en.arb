@@ -114,7 +114,7 @@
     }
   },
   "endUnsupportedDetail": "It has no camera Ferret can open, or no document scanner.",
-  "endNoPermission": "{device} needs camera access for Ferret",
+  "endNoPermission": "No camera access on {device}",
   "@endNoPermission": {
     "placeholders": {
       "device": {

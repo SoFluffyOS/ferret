@@ -257,7 +257,7 @@ abstract class CameraLocalizations {
   /// No description provided for @endNoPermission.
   ///
   /// In en, this message translates to:
-  /// **'{device} needs camera access for Ferret'**
+  /// **'No camera access on {device}'**
   String endNoPermission(String device);
 
   /// No description provided for @endNoPermissionDetail.

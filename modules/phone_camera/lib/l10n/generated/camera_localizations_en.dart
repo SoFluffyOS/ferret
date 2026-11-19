@@ -112,7 +112,7 @@ class CameraLocalizationsEn extends CameraLocalizations {
 
   @override
   String endNoPermission(String device) {
-    return '$device needs camera access for Ferret';
+    return 'No camera access on $device';
   }
 
   @override

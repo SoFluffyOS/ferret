@@ -27,7 +27,7 @@
   "endCancelled": "Không có ảnh nào được chụp trên {device}",
   "endUnsupported": "{device} không chụp được loại này",
   "endUnsupportedDetail": "Máy không có máy ảnh mà Ferret mở được, hoặc không có trình quét tài liệu.",
-  "endNoPermission": "{device} cần cho Ferret dùng máy ảnh",
+  "endNoPermission": "Không có quyền dùng máy ảnh trên {device}",
   "endNoPermissionDetail": "Cho phép Ferret dùng máy ảnh trong phần cài đặt của điện thoại.",
   "endBusy": "Máy ảnh trên {device} đang mở",
   "endOffline": "{device} chưa kết nối",

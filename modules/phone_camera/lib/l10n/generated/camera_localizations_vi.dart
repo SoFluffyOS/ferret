@@ -112,7 +112,7 @@ class CameraLocalizationsVi extends CameraLocalizations {
 
   @override
   String endNoPermission(String device) {
-    return '$device cần cho Ferret dùng máy ảnh';
+    return 'Không có quyền dùng máy ảnh trên $device';
   }
 
   @override
