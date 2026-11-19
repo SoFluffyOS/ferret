@@ -110,6 +110,7 @@ class FerretEngine implements FeatureHost {
   Future<void>? _reconnecting;
   bool _reconnectAgain = false;
   final Set<String> _droppedRecently = {};
+  final Map<String, VersionMismatch> _mismatches = {};
   final Map<String, int> _drops = {};
   final Map<String, StreamSubscription<bool>> _weakWatches = {};
   DateTime? _startedAt;
@@ -161,6 +162,7 @@ class FerretEngine implements FeatureHost {
         _ready[device.id],
         isReconnecting:
             _ready[device.id] == null && _droppedRecently.contains(device.id),
+        versionMismatch: _mismatches[device.id],
       ),
   ];
 
@@ -505,6 +507,7 @@ class FerretEngine implements FeatureHost {
       ),
     );
     await trustStore.remove(deviceId);
+    _mismatches.remove(deviceId);
     await session?.close(.GOODBYE_REASON_UNPAIRED);
     _emitDevices();
     if (everywhere) {
@@ -532,13 +535,7 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
-    _device = LocalDevice(
-      name: trimmed,
-      platform: _device.platform,
-      formFactor: _device.formFactor,
-      model: _device.model,
-      appVersion: _device.appVersion,
-    );
+    _device = _device.renamed(trimmed);
     await settings.set('device.name', trimmed);
     if (_running) {
       await _discovery.start(_announce());
@@ -575,6 +572,10 @@ class FerretEngine implements FeatureHost {
     final dials = <Future<void>>[];
     for (final trusted in trustStore.devices) {
       if (_sessions[trusted.id] case final session? when !session.isClosed) {
+        continue;
+      }
+
+      if (_mismatches.containsKey(trusted.id)) {
         continue;
       }
 
@@ -692,6 +693,10 @@ class FerretEngine implements FeatureHost {
     }
 
     if (trustStore.isTrusted(peer.deviceId)) {
+      if (_stillMismatched(peer)) {
+        return;
+      }
+
       if (!_sessions.containsKey(peer.deviceId)) {
         unawaited(_dial(peer.host, peer.port, expectedDeviceId: peer.deviceId));
       }
@@ -702,6 +707,24 @@ class FerretEngine implements FeatureHost {
     _nearby[peer.deviceId] = (peer: peer, seen: DateTime.now());
     _dropStaleNearby();
     _nearbyChanges.add(nearby);
+  }
+
+  /// A device that needs an update is dialed again only once it announces
+  /// another protocol version, so it isn't asked again and again for nothing.
+  bool _stillMismatched(DiscoveredPeer peer) {
+    final mismatch = _mismatches[peer.deviceId];
+    if (mismatch == null) {
+      return false;
+    }
+
+    final announced = peer.announce.protocolVersion;
+    if (announced == 0 || announced == mismatch.remoteProtocol) {
+      return true;
+    }
+
+    _mismatches.remove(peer.deviceId);
+    _emitDevices();
+    return false;
   }
 
   void _onDeparture(String deviceId) {
@@ -1303,6 +1326,23 @@ class FerretEngine implements FeatureHost {
           lastPort: hello.listenPort,
         ),
       );
+    }
+
+    if (VersionMismatch.between(localDevice, hello.device)
+        case final mismatch?) {
+      printWarning(
+        '${session.remoteDeviceId} speaks protocol '
+        '${mismatch.remoteProtocol}; ${mismatch.update.name} needs an update',
+      );
+      _mismatches[session.remoteDeviceId] = mismatch;
+      _droppedRecently.remove(session.remoteDeviceId);
+      await session.close();
+      _emitDevices();
+      return;
+    }
+
+    if (_mismatches.remove(session.remoteDeviceId) != null) {
+      _emitDevices();
     }
 
     _ready[session.remoteDeviceId] = session;

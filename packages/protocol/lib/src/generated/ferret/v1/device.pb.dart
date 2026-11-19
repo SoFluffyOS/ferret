@@ -30,6 +30,7 @@ class DeviceInfo extends $pb.GeneratedMessage {
     $core.String? model,
     $core.String? appVersion,
     $core.int? protocolVersion,
+    $core.int? oldestProtocolVersion,
   }) {
     final result = DeviceInfo._();
     if (id != null) result.id = id;
@@ -39,6 +40,8 @@ class DeviceInfo extends $pb.GeneratedMessage {
     if (model != null) result.model = model;
     if (appVersion != null) result.appVersion = appVersion;
     if (protocolVersion != null) result.protocolVersion = protocolVersion;
+    if (oldestProtocolVersion != null)
+      result.oldestProtocolVersion = oldestProtocolVersion;
     return result;
   }
 
@@ -64,6 +67,8 @@ class DeviceInfo extends $pb.GeneratedMessage {
     ..aOS(5, _omitFieldNames ? '' : 'model')
     ..aOS(6, _omitFieldNames ? '' : 'appVersion')
     ..aI(7, _omitFieldNames ? '' : 'protocolVersion',
+        fieldType: $pb.PbFieldType.OU3)
+    ..aI(8, _omitFieldNames ? '' : 'oldestProtocolVersion',
         fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
@@ -151,6 +156,18 @@ class DeviceInfo extends $pb.GeneratedMessage {
   $core.bool hasProtocolVersion() => $_has(6);
   @$pb.TagNumber(7)
   void clearProtocolVersion() => $_clearField(7);
+
+  /// Lowest protocol version the device still speaks. Zero means the same as
+  /// protocol_version. Two devices talk only while their ranges overlap; each
+  /// side works out which one must update from the two ranges alone.
+  @$pb.TagNumber(8)
+  $core.int get oldestProtocolVersion => $_getIZ(7);
+  @$pb.TagNumber(8)
+  set oldestProtocolVersion($core.int value) => $_setUnsignedInt32(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasOldestProtocolVersion() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearOldestProtocolVersion() => $_clearField(8);
 }
 
 /// A feature a device offers, with the feature's own version.

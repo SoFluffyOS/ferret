@@ -81,6 +81,13 @@ const DeviceInfo$json = {
     {'1': 'model', '3': 5, '4': 1, '5': 9, '10': 'model'},
     {'1': 'app_version', '3': 6, '4': 1, '5': 9, '10': 'appVersion'},
     {'1': 'protocol_version', '3': 7, '4': 1, '5': 13, '10': 'protocolVersion'},
+    {
+      '1': 'oldest_protocol_version',
+      '3': 8,
+      '4': 1,
+      '5': 13,
+      '10': 'oldestProtocolVersion'
+    },
   ],
 };
 
@@ -90,7 +97,8 @@ final $typed_data.Uint8List deviceInfoDescriptor = $convert.base64Decode(
     'Rmb3JtGAMgASgOMhMuZmVycmV0LnYxLlBsYXRmb3JtUghwbGF0Zm9ybRI2Cgtmb3JtX2ZhY3Rv'
     'chgEIAEoDjIVLmZlcnJldC52MS5Gb3JtRmFjdG9yUgpmb3JtRmFjdG9yEhQKBW1vZGVsGAUgAS'
     'gJUgVtb2RlbBIfCgthcHBfdmVyc2lvbhgGIAEoCVIKYXBwVmVyc2lvbhIpChBwcm90b2NvbF92'
-    'ZXJzaW9uGAcgASgNUg9wcm90b2NvbFZlcnNpb24=');
+    'ZXJzaW9uGAcgASgNUg9wcm90b2NvbFZlcnNpb24SNgoXb2xkZXN0X3Byb3RvY29sX3ZlcnNpb2'
+    '4YCCABKA1SFW9sZGVzdFByb3RvY29sVmVyc2lvbg==');
 
 @$core.Deprecated('Use featureSupportDescriptor instead')
 const FeatureSupport$json = {

@@ -1343,6 +1343,7 @@ What a device says about itself after the secure channel is up.
 | `model` | `string` | 5 |  |
 | `app_version` | `string` | 6 |  |
 | `protocol_version` | `uint32` | 7 | Highest protocol version the device speaks. |
+| `oldest_protocol_version` | `uint32` | 8 | Lowest protocol version the device still speaks. Zero means the same as protocol_version. Two devices talk only while their ranges overlap; each side works out which one must update from the two ranges alone. |
 
 ### message `FeatureSupport`
 

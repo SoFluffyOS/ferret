@@ -35,6 +35,10 @@ message DeviceInfo {
   string app_version = 6;
   // Highest protocol version the device speaks.
   uint32 protocol_version = 7;
+  // Lowest protocol version the device still speaks. Zero means the same as
+  // protocol_version. Two devices talk only while their ranges overlap; each
+  // side works out which one must update from the two ranges alone.
+  uint32 oldest_protocol_version = 8;
 }
 
 // A feature a device offers, with the feature's own version.
