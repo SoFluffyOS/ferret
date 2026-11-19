@@ -294,7 +294,10 @@ class DropFeatureUi extends FeatureUi {
     final l10n = context.dropL10n;
     return FeatureOffer(
       title: l10n.guestTitle,
-      description: l10n.guestBody,
+      description: switch (_dropViewModel.quickShareSupported) {
+        true => l10n.guestBody,
+        false => l10n.guestBodyLocalSend,
+      },
       actionLabel: l10n.guestAction,
       onAction: () => unawaited(_dropViewModel.receiveFromGuest()),
     );

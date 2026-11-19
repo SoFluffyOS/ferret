@@ -95,6 +95,7 @@
     "description": "Offer on Home: let one person without Ferret send one file here"
   },
   "guestBody": "A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.",
+  "guestBodyLocalSend": "A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.",
   "guestAction": "Allow once",
   "guestWaiting": "Open for one file from a guest. It closes once the file arrives.",
   "clearFinished": "Clear finished",

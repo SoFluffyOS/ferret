@@ -82,6 +82,10 @@ class DropLocalizationsVi extends DropLocalizations {
       'Điện thoại không có Ferret có thể gửi một tệp tới đây bằng Quick Share hoặc LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.';
 
   @override
+  String get guestBodyLocalSend =>
+      'Điện thoại không có Ferret có thể gửi một tệp tới đây bằng LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.';
+
+  @override
   String get guestAction => 'Cho phép một lần';
 
   @override

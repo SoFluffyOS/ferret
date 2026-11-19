@@ -20,6 +20,7 @@
   "actionRevealFinder": "Hiển thị trong Finder",
   "guestTitle": "Nhận tệp từ khách",
   "guestBody": "Điện thoại không có Ferret có thể gửi một tệp tới đây bằng Quick Share hoặc LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.",
+  "guestBodyLocalSend": "Điện thoại không có Ferret có thể gửi một tệp tới đây bằng LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.",
   "guestAction": "Cho phép một lần",
   "guestWaiting": "Đang mở để nhận một tệp từ khách. Sẽ tự đóng khi tệp tới.",
   "clearFinished": "Xoá mục đã xong",

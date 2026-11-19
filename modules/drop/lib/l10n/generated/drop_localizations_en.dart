@@ -82,6 +82,10 @@ class DropLocalizationsEn extends DropLocalizations {
       'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.';
 
   @override
+  String get guestBodyLocalSend =>
+      'A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.';
+
+  @override
   String get guestAction => 'Allow once';
 
   @override

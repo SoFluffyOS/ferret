@@ -212,6 +212,12 @@ abstract class DropLocalizations {
   /// **'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.'**
   String get guestBody;
 
+  /// No description provided for @guestBodyLocalSend.
+  ///
+  /// In en, this message translates to:
+  /// **'A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.'**
+  String get guestBodyLocalSend;
+
   /// No description provided for @guestAction.
   ///
   /// In en, this message translates to:
