@@ -3,7 +3,7 @@
 > **TL;DR**
 >
 > 1. Pair your devices.
-> 2. Drop files on Ferret, or pick **Send files…** on a device.
+> 2. Drop files or folders on Ferret, or pick **Send files…** on a device.
 > 3. They land in **Downloads/Ferret** on the other side. That's it.
 
 You need a photo from your phone on your laptop, or a PDF from your laptop on your phone. Cables, chat apps and emailing yourself all work, and all are slow.
@@ -36,6 +36,31 @@ Files from a phone that isn't paired (LocalSend or Quick Share) wait under **Nee
 Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Try again** sends it again.
 
 Ferret never overwrites a file. If `photo.jpg` already exists, the new one becomes `photo (1).jpg`.
+
+## 📁 Send folders
+
+Drop a whole folder, the same way you drop files. Everything inside goes along, subfolders included.
+
+- **In the window or the popover:** drag the folder onto a device.
+- **Pick one:** open a device's **Files** and click **Choose a folder…**, or use **Send a folder** on the device's page. On macOS, Windows and Linux.
+- **From Finder or Files:** **Share → Ferret** works on folders too.
+- **From the terminal:** `ferret-cli send ~/Pictures/Holiday`.
+
+While it goes, the line counts files as well as bytes: **Photos · 120 of 340 files · 1.2 GB of 3.4 GB**. A dropped connection pauses it at the file it was on, and it goes on from there.
+
+On the other side, the folder lands in the receive folder with its tree as it was: `Downloads/Ferret/Photos/2024/…`. Modified dates are kept on computers.
+
+Ferret NEVER merges into a folder you already have. If `Photos` is there, the new one becomes `Photos (2)`. **Open** opens the folder, **Show in Finder** shows it.
+
+A few things stay behind on purpose:
+
+- **Links and special files** don't travel. A link can point anywhere, even outside the folder. The line says how many were left out.
+- **System litter** such as `.DS_Store` and `Thumbs.db` is skipped.
+- **Names the other side can't use** are cleaned up: no `..`, no paths from the root, no names Windows refuses, nothing too long. A folder that tries to climb out of the receive folder is refused whole.
+
+Sending to a device with an older Ferret? It says **Pixel 7's Ferret is too old for folders. Update it, or send the files.** **Send the files** sends everything inside, without the folders. Nothing gets flattened behind your back.
+
+LocalSend and Quick Share carry folders too: a folder you send to LocalSend arrives as a folder, and a folder a phone shares with Quick Share lands as one here.
 
 ## 💬 Send text
 
@@ -83,7 +108,7 @@ Each device's page lists **Files** under **What works**: where files arrive, or 
 | Android 7 to 9 | Same | Ferret's own folder in `Android/data` | No storage permission asked |
 | iPhone and iPad | **Send files…** | Ferret's folder in the Files app | Receives while Ferret is open |
 
-Folders aren't sent yet: pick the files inside them.
+Folders: drag them anywhere, or **Choose a folder…** on macOS, Windows and Linux. On iPhone and iPad, share a folder from the Files app. Android can't pick a folder to send yet: send the files inside. Android receives folders with their tree, but without their modified dates.
 
 File names and contents are never logged, and nothing leaves your network.
 
