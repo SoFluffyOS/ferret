@@ -1000,7 +1000,7 @@
       }
     }
   },
-  "qrScanEnough": "Scanning is enough. No code to compare.",
+  "qrScanEnough": "Scanning is enough, with Ferret or the phone's camera. No code to compare.",
   "qrWaiting": "Waiting for your phone…",
   "otherShowQr": "Show a QR code",
   "otherLinkTitle": "With a link",

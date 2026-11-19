@@ -16,6 +16,7 @@ import 'package:shell/bootstrap/menubar_binding.dart';
 import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/pages/pages.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
 /// the app. [onStarted] gets the running engine, for wiring between
@@ -121,6 +122,14 @@ Future<void> runFerret({
     showsPreviewsFrom: (deviceId) =>
         screen.isActive && PrivatePreviews(settings).showsFrom(deviceId),
   );
+  if (Platform.isAndroid || Platform.isIOS) {
+    unawaited(
+      PairLinks.forApp(
+        featureContext.navigatorKey,
+        (link) => LinkPairPage(link: link),
+      ).start(),
+    );
+  }
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
   featureContext.windows = featureWindows;
   final navigation = WindowNavRegistry(featureContext, views: views);

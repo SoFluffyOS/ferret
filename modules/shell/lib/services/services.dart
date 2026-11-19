@@ -23,6 +23,7 @@ export 'package:shell/services/menubar_icon_inputs.dart';
 export 'package:shell/services/menubar_icon_resolver.dart';
 export 'package:shell/services/menubar_tooltips.dart';
 export 'package:shell/services/notification_permission.dart';
+export 'package:shell/services/pair_links.dart';
 export 'package:shell/services/pane_titles.dart';
 export 'package:shell/services/pause_controller.dart';
 export 'package:shell/services/presence_reporter.dart';

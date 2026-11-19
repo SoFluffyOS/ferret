@@ -1739,7 +1739,7 @@ abstract class ShellLocalizations {
   /// No description provided for @qrScanEnough.
   ///
   /// In en, this message translates to:
-  /// **'Scanning is enough. No code to compare.'**
+  /// **'Scanning is enough, with Ferret or the phone\'s camera. No code to compare.'**
   String get qrScanEnough;
 
   /// No description provided for @qrWaiting.

@@ -274,7 +274,7 @@
   "deviceNothingWorks": "Chưa có gì để hiện. Hãy giữ Ferret mở trên {device}.",
   "addDontSee": "Không thấy thiết bị?",
   "addShowsAs": "Hiển thị là {name}",
-  "qrScanEnough": "Chỉ cần quét. Không phải so mã.",
+  "qrScanEnough": "Chỉ cần quét, bằng Ferret hoặc camera của điện thoại. Không phải so mã.",
   "qrWaiting": "Đang chờ điện thoại của bạn…",
   "otherShowQr": "Hiện mã QR",
   "otherLinkTitle": "Bằng liên kết",

@@ -1292,7 +1292,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get qrScanEnough => 'Scanning is enough. No code to compare.';
+  String get qrScanEnough =>
+      'Scanning is enough, with Ferret or the phone\'s camera. No code to compare.';
 
   @override
   String get qrWaiting => 'Waiting for your phone…';

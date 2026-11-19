@@ -1288,7 +1288,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get qrScanEnough => 'Chỉ cần quét. Không phải so mã.';
+  String get qrScanEnough =>
+      'Chỉ cần quét, bằng Ferret hoặc camera của điện thoại. Không phải so mã.';
 
   @override
   String get qrWaiting => 'Đang chờ điện thoại của bạn…';
