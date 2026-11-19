@@ -16,6 +16,8 @@ dependencies:
     path: ../../packages/core
   engine:
     path: ../../packages/engine
+  ferret_wake:
+    path: ../../packages/ferret_wake
   protocol:
     path: ../../packages/protocol
   transport:

@@ -7,3 +7,4 @@ export 'package:ferret_cli/commands/pair_command.dart';
 export 'package:ferret_cli/commands/ring_command.dart';
 export 'package:ferret_cli/commands/send_command.dart';
 export 'package:ferret_cli/commands/unpair_command.dart';
+export 'package:ferret_cli/commands/wake_command.dart';

@@ -21,7 +21,8 @@ CommandRunner<int> buildRunner(CliEnvironment environment) =>
       ..addCommand(PairCommand(environment))
       ..addCommand(RingCommand(environment))
       ..addCommand(SendCommand(environment))
-      ..addCommand(UnpairCommand(environment));
+      ..addCommand(UnpairCommand(environment))
+      ..addCommand(WakeCommand(environment));
 
 class _FerretRunner extends CommandRunner<int> {
   _FerretRunner(this._environment)

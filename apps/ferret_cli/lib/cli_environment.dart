@@ -41,6 +41,7 @@ class CliEnvironment {
 
   Future<FerretEngine> createEngine({
     int port = FerretEngine.defaultPort,
+    List<Feature> features = const [],
   }) async {
     final settings = await JsonFileSettingsStore.open(
       (await paths.create(paths.settings)).path,
@@ -58,6 +59,7 @@ class CliEnvironment {
         formFactor: .FORM_FACTOR_DESKTOP,
         model: 'ferret-cli',
       ),
+      features: features,
       port: port,
     );
   }

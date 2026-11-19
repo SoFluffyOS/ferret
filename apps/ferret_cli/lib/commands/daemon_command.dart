@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_cli/cli_environment.dart';
+import 'package:ferret_wake/ferret_wake.dart';
 import 'package:transport/transport.dart';
 
 /// Runs Ferret headless until Ctrl-C or SIGTERM: listens, reconnects to paired devices,
@@ -34,7 +35,10 @@ class DaemonCommand extends Command<int> {
     final port =
         int.tryParse(argResults?['port'] as String? ?? '') ??
         FerretEngine.defaultPort;
-    final engine = await _environment.createEngine(port: port);
+    final engine = await _environment.createEngine(
+      port: port,
+      features: [WakeFeature(isComputer: true)],
+    );
     await engine.start();
     stdout.writeln(
       'Ferret ${DeviceIdentity.format(engine.identity.deviceId)} on port ${engine.port}. Ctrl-C to stop.',
