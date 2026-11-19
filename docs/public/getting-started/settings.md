@@ -43,13 +43,19 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 | **Control** | [Control](../features/remote-input.md) a computer from your phone, [sleep, restart or run your own actions](../features/computer-actions.md) on it, [find](../features/find.md) a device, and Power-ups on Android. |
 | **Other apps** | [LocalSend](../interop/localsend.md), [Quick Share](../interop/quick-share.md), the [browser extension](browser.md) and an [iPhone](../iphone/index.md). |
 | **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Low battery notice**, **Check my network** and **Quit Ferret**. |
-| **About · Privacy** | The [privacy](../privacy.md) promise, **Show tips again** for the short hints you waved off, the version and the licence. |
+| **About · Privacy** | The [privacy](../privacy.md) promise, **Show tips again** for the short hints you waved off, **Sponsor Ferret**, the version and the licence. |
 
 A row that can't apply to your device isn't there. No Power-ups on a Mac.
 
 A small orange dot on a row means something you turned on isn't working. Open the row to see what. A feature you never set up stays quiet.
 
 Switches about **one device** are not in Settings. They live on that device's page.
+
+## ❤️ Sponsor Ferret
+
+Ferret is free and open source. If it saves you time, **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page in your browser. On a Mac it's in the **Help** menu too, and on Windows and Linux in the window's **•••** menu.
+
+That's it. No popups, no banners, no reminders.
 
 ## 🌐 Language
 
