@@ -92,6 +92,8 @@ final class AppWindowController: NSObject, NSWindowDelegate {
 
     var viewId: Int64? { viewController?.viewIdentifier }
 
+    var flutterViewController: FlutterViewController? { viewController }
+
     /// Opens the window, or brings it to the front. Returns the id of its
     /// Flutter view, or nil when this Flutter can't draw a second one.
     @discardableResult

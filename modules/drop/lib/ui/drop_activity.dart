@@ -39,7 +39,21 @@ List<ActivityItem> dropActivity(
             _ => null,
           },
           actions: _actions(l10n, texts, viewModel, transfer),
+          files: _savedFiles(transfer),
         ),
+  ];
+}
+
+/// Where a received file was saved, when it is a path on this device.
+List<String> _savedFiles(Transfer transfer) {
+  if (transfer.isOutgoing || transfer.isText || transfer.status != .done) {
+    return const [];
+  }
+
+  return [
+    for (final file in transfer.files)
+      if (file.location case final location? when !location.contains('://'))
+        location,
   ];
 }
 

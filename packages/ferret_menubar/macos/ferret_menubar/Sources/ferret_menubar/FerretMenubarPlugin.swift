@@ -16,6 +16,9 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static var flutterApi: MenubarFlutterApi?
     private static let hotKey = GlobalHotKey()
     private static let recorder = ShortcutRecorder()
+    private static let quickLook = QuickLookPreview()
+    private static var fileDrags: FileDragSource?
+    private static weak var popoverViewController: FlutterViewController?
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = FerretMenubarPlugin()
@@ -32,10 +35,14 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     ) {
         window.contentViewController = nil
         window.orderOut(nil)
+        let fileDrags = FileDragSource()
+        self.fileDrags = fileDrags
+        popoverViewController = flutterViewController
 
         flutterViewController.view.frame = NSRect(origin: .zero, size: size)
 
         let controller = MenubarController(contentViewController: flutterViewController, size: size)
+        controller.onMouseForwarded = { event in fileDrags.note(event) }
         controller.onMenuItemSelected = { id in
             Task { @MainActor in try? await flutterApi?.onMenuItemSelected(id: id) }
         }
@@ -243,6 +250,21 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func cancelRecording() throws {
         Self.recorder.cancel()
+    }
+
+    func startFileDrag(viewId: Int64, paths: [String]) throws -> Bool {
+        let controller: FlutterViewController? = switch viewId {
+        case Self.popoverViewId: Self.popoverViewController
+        case Self.windowController?.viewId: Self.windowController?.flutterViewController
+        default: nil
+        }
+        guard let controller, let fileDrags = Self.fileDrags else { return false }
+
+        return fileDrags.start(paths: paths, in: controller)
+    }
+
+    func toggleQuickLook(paths: [String]) throws {
+        Self.quickLook.toggle(paths: paths)
     }
 
     func setDetachable(detachable: Bool) throws {

@@ -140,6 +140,39 @@ void main() {
     expect(line.actions.first.primary, isFalse);
   });
 
+  test(
+    'a received file can be dragged out; a sent one or a phone URI not',
+    () async {
+      link.laptop.feature.registry
+        ..put(sampleTransfer(status: .done))
+        ..put(sampleTransfer(id: 't2', status: .done, direction: .outgoing))
+        ..put(
+          sampleTransfer(
+            id: 't3',
+            status: .done,
+            files: const [
+              TransferFile(
+                name: 'c.jpg',
+                size: 1,
+                location: 'content://media/1',
+              ),
+            ],
+          ),
+        );
+      await Future<void>.delayed(Duration.zero);
+
+      final files = {
+        for (final item in dropActivity(l10n, viewModel)) item.id: item.files,
+      };
+
+      expect(files, {
+        'drop.t1': ['/tmp/photo.jpg'],
+        'drop.t2': <String>[],
+        'drop.t3': <String>[],
+      });
+    },
+  );
+
   test('tapping an offer asks for its details', () async {
     final asked = <String>[];
     link.laptop.feature.registry.put(

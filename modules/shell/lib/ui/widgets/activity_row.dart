@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/keyboard_line.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
@@ -157,10 +161,15 @@ class ActivityRow extends StatelessWidget {
       ),
     );
 
-    return KeyboardLine(
-      keys: _keys(),
+    final files = item.files;
+    final menubar = switch (files) {
+      [] => null,
+      _ => context.read<FerretMenubar?>(),
+    };
+    final line = KeyboardLine(
+      keys: _keys(menubar),
       builder: (context, focusNode) => ContextMenuRegion(
-        entries: _menu(context.shellL10n),
+        entries: _menu(context.shellL10n, menubar),
         child: switch (item.onTap) {
           final onTap? => Tappable(
             onTap: onTap,
@@ -171,23 +180,45 @@ class ActivityRow extends StatelessWidget {
         },
       ),
     );
+    if (menubar == null) {
+      return line;
+    }
+
+    // A line about files on this Mac is those files: dragged out, they go
+    // to Finder or the app they land on.
+    return GestureDetector(
+      onPanStart: (_) => unawaited(
+        menubar.startFileDrag(View.of(context).viewId, files),
+      ),
+      child: line,
+    );
   }
 
   /// Enter on a line that opens nothing runs its first action instead,
-  /// such as Open on a received file.
-  Map<SingleActivator, VoidCallback> _keys() {
+  /// such as Open on a received file. Space shows the line's files in
+  /// Quick Look, as in Finder.
+  Map<SingleActivator, VoidCallback> _keys(FerretMenubar? menubar) {
     final firstAction = item.actions.firstOrNull;
 
     return {
       if (item.onTap == null && firstAction != null)
         const SingleActivator(LogicalKeyboardKey.enter): firstAction.onPressed,
+      if (menubar != null)
+        const SingleActivator(LogicalKeyboardKey.space): () =>
+            unawaited(menubar.toggleQuickLook(item.files)),
     };
   }
 
   /// A right-click on the line: everything the line itself offers.
-  List<MenuEntry> _menu(ShellLocalizations l10n) => [
+  List<MenuEntry> _menu(ShellLocalizations l10n, FerretMenubar? menubar) => [
     if (item.onTap case final onTap?)
       MenuEntry(label: l10n.activityOpen, onSelected: onTap),
+    if (menubar != null)
+      MenuEntry(
+        label: l10n.activityQuickLook,
+        icon: LucideIcons.eye,
+        onSelected: () => unawaited(menubar.toggleQuickLook(item.files)),
+      ),
     for (final action in item.actions)
       MenuEntry(
         label: action.label,

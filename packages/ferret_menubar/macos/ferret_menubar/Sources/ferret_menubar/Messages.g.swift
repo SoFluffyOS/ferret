@@ -467,6 +467,13 @@ protocol MenubarHostApi {
   /// shortcut rests meanwhile, so pressing it records it.
   func recordShortcut() async throws -> MenubarShortcut?
   func cancelRecording() throws
+  /// Starts dragging the files at [paths] out of the view [viewId], from
+  /// where the mouse is pressed in it, to Finder or another app. False
+  /// when no press in that view is under way.
+  func startFileDrag(viewId: Int64, paths: [String]) throws -> Bool
+  /// Shows the files at [paths] in Quick Look, or closes it when it is
+  /// open.
+  func toggleQuickLook(paths: [String]) throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -820,6 +827,42 @@ class MenubarHostApiSetup {
       }
     } else {
       cancelRecordingChannel.setMessageHandler(nil)
+    }
+    /// Starts dragging the files at [paths] out of the view [viewId], from
+    /// where the mouse is pressed in it, to Finder or another app. False
+    /// when no press in that view is under way.
+    let startFileDragChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startFileDrag\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startFileDragChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let viewIdArg = args[0] as! Int64
+        let pathsArg = args[1] as! [String]
+        do {
+          let result = try api.startFileDrag(viewId: viewIdArg, paths: pathsArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      startFileDragChannel.setMessageHandler(nil)
+    }
+    /// Shows the files at [paths] in Quick Look, or closes it when it is
+    /// open.
+    let toggleQuickLookChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.toggleQuickLook\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      toggleQuickLookChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let pathsArg = args[0] as! [String]
+        do {
+          try api.toggleQuickLook(paths: pathsArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      toggleQuickLookChannel.setMessageHandler(nil)
     }
   }
 }

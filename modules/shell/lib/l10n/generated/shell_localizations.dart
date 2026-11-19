@@ -2038,6 +2038,12 @@ abstract class ShellLocalizations {
   /// **'Dismiss'**
   String get activityDismiss;
 
+  /// No description provided for @activityQuickLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Look'**
+  String get activityQuickLook;
+
   /// No description provided for @needsYouTitle.
   ///
   /// In en, this message translates to:

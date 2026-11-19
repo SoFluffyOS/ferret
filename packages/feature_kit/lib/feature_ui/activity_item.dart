@@ -24,6 +24,7 @@ class ActivityItem {
     this.onTap,
     this.onDismiss,
     this.deviceId,
+    this.files = const [],
   });
 
   /// Stays the same while the line is about the same thing, and is unique
@@ -79,6 +80,12 @@ class ActivityItem {
 
   /// Opens the full story, such as the list of notifications.
   final VoidCallback? onTap;
+
+  /// Paths of the files on this device the line is about, such as a file
+  /// that just arrived. On a Mac the line can then be dragged to Finder or
+  /// another app, and Space shows them in Quick Look. Never a `content://`
+  /// URI.
+  final List<String> files;
 
   /// Takes the line away, behind a small ✕ at its end. Null when the line
   /// goes by itself, such as a call that ended.

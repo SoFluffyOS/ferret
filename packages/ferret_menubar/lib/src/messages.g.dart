@@ -811,6 +811,50 @@ class MenubarHostApi {
       isNullValid: true,
     );
   }
+
+  /// Starts dragging the files at [paths] out of the view [viewId], from
+  /// where the mouse is pressed in it, to Finder or another app. False
+  /// when no press in that view is under way.
+  Future<bool> startFileDrag(int viewId, List<String> paths) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startFileDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[viewId, paths],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Shows the files at [paths] in Quick Look, or closes it when it is
+  /// open.
+  Future<void> toggleQuickLook(List<String> paths) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.toggleQuickLook$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[paths],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
 }
 
 abstract class MenubarFlutterApi {

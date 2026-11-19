@@ -167,6 +167,15 @@ abstract class MenubarHostApi {
   MenubarShortcut? recordShortcut();
 
   void cancelRecording();
+
+  /// Starts dragging the files at [paths] out of the view [viewId], from
+  /// where the mouse is pressed in it, to Finder or another app. False
+  /// when no press in that view is under way.
+  bool startFileDrag(int viewId, List<String> paths);
+
+  /// Shows the files at [paths] in Quick Look, or closes it when it is
+  /// open.
+  void toggleQuickLook(List<String> paths);
 }
 
 @FlutterApi()

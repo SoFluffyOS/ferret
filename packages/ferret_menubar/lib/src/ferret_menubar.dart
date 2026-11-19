@@ -173,6 +173,22 @@ class FerretMenubar implements MenubarFlutterApi {
 
   Future<void> cancelRecording() => _call(_api.cancelRecording);
 
+  /// Drags the files at [paths] out of the view [viewId] to Finder or
+  /// another app, from the mouse press under way there: call it when a
+  /// drag starts on something that stands for those files. False when it
+  /// couldn't start, or where there is no menubar.
+  Future<bool> startFileDrag(int viewId, List<String> paths) async {
+    if (!isSupported) {
+      return false;
+    }
+
+    return _api.startFileDrag(viewId, paths);
+  }
+
+  /// Shows the files at [paths] in Quick Look, or closes it when open.
+  Future<void> toggleQuickLook(List<String> paths) =>
+      _call(() => _api.toggleQuickLook(paths));
+
   Future<void> _call(Future<void> Function() call) async {
     if (!isSupported) {
       return;

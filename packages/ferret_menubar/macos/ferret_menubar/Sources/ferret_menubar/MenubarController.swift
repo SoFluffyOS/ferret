@@ -20,6 +20,8 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     private let dragLeaveGrace: TimeInterval = 0.6
 
     var onMenuItemSelected: ((String) -> Void)?
+    /// Each mouse event handed to the Flutter view in the popover.
+    var onMouseForwarded: ((NSEvent) -> Void)?
     var onVisibilityChanged: ((Bool) -> Void)?
     var onFilesDropped: (([String]) -> Void)?
     var onDragEntered: ((NSPoint, Int, MenubarDragKind) -> Void)?
@@ -160,6 +162,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
                   hit.isDescendant(of: view)
             else { return event }
 
+            self?.onMouseForwarded?(event)
             switch event.type {
             case .leftMouseDown: controller.mouseDown(with: event)
             case .leftMouseUp: controller.mouseUp(with: event)

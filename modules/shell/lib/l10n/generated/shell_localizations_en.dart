@@ -1217,6 +1217,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get activityDismiss => 'Dismiss';
 
   @override
+  String get activityQuickLook => 'Quick Look';
+
+  @override
   String get needsYouTitle => 'Needs you';
 
   @override
