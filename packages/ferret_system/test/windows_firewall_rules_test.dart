@@ -72,6 +72,7 @@ void main() {
         'dir=in action=allow protocol=TCP localport=47640 profile=private',
       ),
     );
+    expect(script, contains('localport=47642-47649'));
     expect(script, contains('localport=47641'));
     expect(script, contains('localport=5353'));
   });
@@ -91,7 +92,7 @@ void main() {
 
     for (final rule in WindowsFirewallRules.rules) {
       expect(script, contains('name="${rule.name}"'));
-      expect(script, contains('localport=${rule.port}'));
+      expect(script, contains('localport=${rule.ports}'));
     }
     expect(script, contains('profile=${WindowsFirewallRules.profile}'));
   });

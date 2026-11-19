@@ -7,14 +7,15 @@ enum LinuxFirewallKind {
   firewalld;
 
   /// The terminal command that lets Ferret through: its own port, the
-  /// discovery port and mDNS.
+  /// ports Ferret in another account moves to, discovery and mDNS.
   String get allowCommand => switch (this) {
     .ufw =>
-      'sudo ufw allow 47640/tcp && sudo ufw allow 47641/udp && '
-          'sudo ufw allow 5353/udp',
+      'sudo ufw allow 47640/tcp && sudo ufw allow 47642:47649/tcp && '
+          'sudo ufw allow 47641/udp && sudo ufw allow 5353/udp',
     .firewalld =>
       'sudo firewall-cmd --permanent --add-port=47640/tcp '
-          '--add-port=47641/udp --add-service=mdns && '
+          '--add-port=47642-47649/tcp --add-port=47641/udp '
+          '--add-service=mdns && '
           'sudo firewall-cmd --reload',
   };
 }

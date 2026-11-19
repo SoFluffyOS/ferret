@@ -18,11 +18,12 @@ Windows may say it protected your PC (SmartScreen). Click **More info**, then **
 
 ### The firewall box
 
-Windows hides your PC from your phone until Ferret is allowed through its firewall. The installer does that for you with three rules, on **Private** networks only:
+Windows hides your PC from your phone until Ferret is allowed through its firewall. The installer does that for you with four rules, on **Private** networks only:
 
 | Rule | Port | For |
 |---|---|---|
 | Ferret (47640/tcp) | 47640/tcp | Your devices talking to each other |
+| Ferret other accounts (47642-47649/tcp) | 47642–47649/tcp | Ferret in another account on the same PC |
 | Ferret discovery (47641/udp) | 47641/udp | Finding your devices |
 | Ferret mDNS (5353/udp) | 5353/udp | Finding your devices with mDNS |
 

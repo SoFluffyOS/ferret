@@ -32,6 +32,19 @@ class FerretEngine implements FeatureHost {
        _roster = DeviceRoster(trustStore, identity.deviceId);
 
   static const defaultPort = 47640;
+
+  /// How many ports after the preferred one's neighbour are tried when it
+  /// is taken (47642 to 47649 for the default). 47641 is discovery's.
+  static const fallbackPortCount = 8;
+
+  /// The ports tried in order: [preferred], then the fallback range. Port 0
+  /// (any free port) has no range.
+  static List<int> candidatePorts(int preferred) => [
+    preferred,
+    if (preferred != 0)
+      for (var offset = 2; offset < 2 + fallbackPortCount; offset++)
+        preferred + offset,
+  ];
   static const _maxPendingHandshakes = 8;
   static const _pairingTimeout = Duration(seconds: 30);
 
@@ -100,6 +113,8 @@ class FerretEngine implements FeatureHost {
   final StreamController<PairingPrompt> _pairingPrompts = .broadcast();
   final StreamController<List<DiscoveredPeer>> _nearbyChanges = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
+  final Set<String> _otherAccounts = {};
+  final StreamController<void> _otherAccountsChanges = .broadcast();
 
   ServerSocket? _server;
   Presence _presence = Presence(batteryPercent: -1);
@@ -127,6 +142,19 @@ class FerretEngine implements FeatureHost {
 
   /// The TCP port this device listens on, once started.
   int get port => _server?.port ?? preferredPort;
+
+  /// Whether the preferred port was taken, such as by Ferret in another
+  /// account on this computer, so this one listens on another.
+  bool get usesFallbackPort =>
+      _server != null && preferredPort != 0 && port != preferredPort;
+
+  /// Ferret in other accounts on this computer, by device id: they
+  /// announce from this computer's own address with its platform. Several
+  /// people sharing one computer each get their own Ferret.
+  Set<String> get otherAccountsHere => Set.unmodifiable(_otherAccounts);
+
+  /// Fires when [otherAccountsHere] gains a device.
+  Stream<void> get otherAccountsChanges => _otherAccountsChanges.stream;
 
   bool get isRunning => _running;
 
@@ -551,15 +579,19 @@ class FerretEngine implements FeatureHost {
   }
 
   /// Renames this device. Nearby devices see it right away; paired ones on
-  /// their next connection.
-  Future<void> rename(String name) async {
+  /// their next connection. With [remember] false the name is not kept as
+  /// the person's choice, such as one Ferret picked to tell accounts apart.
+  Future<void> rename(String name, {bool remember = true}) async {
     final trimmed = name.trim();
     if (trimmed.isEmpty || trimmed == _device.name) {
       return;
     }
 
     _device = _device.renamed(trimmed);
-    await settings.set('device.name', trimmed);
+    if (remember) {
+      await settings.set('device.name', trimmed);
+    }
+
     if (_running) {
       await _discovery.start(_announce());
     }
@@ -647,13 +679,20 @@ class FerretEngine implements FeatureHost {
     }
   }
 
+  /// Another account on this computer running Ferret holds the preferred
+  /// port, so the next few are tried before any free one: a known range
+  /// the firewall rules can open ahead of time.
   Future<ServerSocket> _bind() async {
-    try {
-      return await ServerSocket.bind(InternetAddress.anyIPv4, preferredPort);
-    } on SocketException {
-      printWarning('Port $preferredPort is taken; using a free one');
-      return ServerSocket.bind(InternetAddress.anyIPv4, 0);
+    for (final candidate in candidatePorts(preferredPort)) {
+      try {
+        return await ServerSocket.bind(InternetAddress.anyIPv4, candidate);
+      } on SocketException {
+        printDebug('Port $candidate is taken');
+      }
     }
+
+    printWarning('Ports from $preferredPort on are taken; using a free one');
+    return ServerSocket.bind(InternetAddress.anyIPv4, 0);
   }
 
   Announce _announce() => Announce(
@@ -713,6 +752,7 @@ class FerretEngine implements FeatureHost {
 
     if (peer.deviceId != identity.deviceId) {
       _lastHeardOthers = DateTime.now();
+      await _noteOtherAccount(peer);
     }
 
     if (trustStore.isTrusted(peer.deviceId)) {
@@ -730,6 +770,21 @@ class FerretEngine implements FeatureHost {
     _nearby[peer.deviceId] = (peer: peer, seen: DateTime.now());
     _dropStaleNearby();
     _nearbyChanges.add(nearby);
+  }
+
+  Future<void> _noteOtherAccount(DiscoveredPeer peer) async {
+    final isSameKind = peer.announce.platform == device.platform;
+    if (!isSameKind || _otherAccounts.contains(peer.deviceId)) {
+      return;
+    }
+
+    final own = _ownAddresses ??= {'127.0.0.1', ...await _localAddresses()};
+    if (!own.contains(peer.host)) {
+      return;
+    }
+
+    _otherAccounts.add(peer.deviceId);
+    _otherAccountsChanges.add(null);
   }
 
   /// A device that needs an update is dialed again only once it announces

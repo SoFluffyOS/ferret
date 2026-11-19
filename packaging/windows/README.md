@@ -32,11 +32,12 @@ MSIX stays as a second path for the Microsoft Store, where Microsoft signs the p
 - Installs `ferret.exe`, the Flutter bundle, `ferret-cli.exe` and the MSVC runtime DLLs (app-local, so no VC++ redistributable).
 - **Start menu** shortcut, with the AppUserModelID `io.sofluffy.ferret` that notifications use.
 - **Send to → Ferret** (task, on by default): a shortcut to `ferret.exe send` in the user's Send to folder. See [Share menu](../../docs/public/features/share-menu.md).
-- **Allow Ferret through Windows Firewall** (task, on by default): one UAC prompt, then three inbound rules on **Private** networks only.
+- **Allow Ferret through Windows Firewall** (task, on by default): one UAC prompt, then four inbound rules on **Private** networks only.
 
 | Rule name | Port | Why |
 |---|---|---|
 | `Ferret (47640/tcp)` | 47640/tcp | Connections between your devices |
+| `Ferret other accounts (47642-47649/tcp)` | 47642–47649/tcp | Ferret in a second account on the same PC |
 | `Ferret discovery (47641/udp)` | 47641/udp | Finding your devices |
 | `Ferret mDNS (5353/udp)` | 5353/udp | Finding devices with mDNS |
 

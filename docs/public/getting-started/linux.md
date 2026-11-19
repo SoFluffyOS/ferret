@@ -118,7 +118,7 @@ There is no menu bar. The **•••** at the end of the window's toolbar holds
 
 A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. See [Fix connection](../features/connection-doctor.md).
 
-Ferret needs `47640/tcp`, `47641/udp` and mDNS (`5353/udp`). Installed the `.deb`? It ships profiles for both firewalls:
+Ferret needs `47640/tcp` (`47642`–`47649/tcp` for a second account on the same computer), `47641/udp` and mDNS (`5353/udp`). Installed the `.deb`? It ships profiles for both firewalls:
 
 ```sh
 sudo ufw allow Ferret

@@ -41,13 +41,13 @@ Fix connection checks which one is on, without asking for your password, and nam
 
 ```bash
 # ufw
-sudo ufw allow 47640/tcp && sudo ufw allow 47641/udp && sudo ufw allow 5353/udp
+sudo ufw allow 47640/tcp && sudo ufw allow 47642:47649/tcp && sudo ufw allow 47641/udp && sudo ufw allow 5353/udp
 
 # firewalld
-sudo firewall-cmd --permanent --add-port=47640/tcp --add-port=47641/udp --add-service=mdns && sudo firewall-cmd --reload
+sudo firewall-cmd --permanent --add-port=47640/tcp --add-port=47642-47649/tcp --add-port=47641/udp --add-service=mdns && sudo firewall-cmd --reload
 ```
 
-That's it. `47640/tcp` is Ferret itself, `47641/udp` and `5353/udp` (mDNS) are how your devices find each other.
+That's it. `47640/tcp` is Ferret itself (`47642`–`47649` when another account on the same computer runs Ferret too), `47641/udp` and `5353/udp` (mDNS) are how your devices find each other.
 
 ## On café, hotel or campus Wi-Fi
 

@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:ferret_system/src/desktop/start_at_login.dart';
 
-/// One inbound port Ferret needs open in Windows Firewall.
-typedef WindowsFirewallRule = ({String name, String protocol, int port});
+/// One inbound port, or range of ports such as `47642-47649`, Ferret needs
+/// open in Windows Firewall.
+typedef WindowsFirewallRule = ({String name, String protocol, String ports});
 
-/// Ferret's inbound rules in Windows Firewall: its connection port,
-/// discovery and mDNS, on Private networks only.
+/// Ferret's inbound rules in Windows Firewall: its connection port, the
+/// ports Ferret in a second account on the same PC moves to, discovery and
+/// mDNS, on Private networks only.
 ///
 /// The installer adds the same rules (`packaging/windows/ferret.iss`), so
 /// the app can tell whether they are there and add them itself with one
@@ -16,9 +18,14 @@ class WindowsFirewallRules {
   WindowsFirewallRules({RunProcess? run}) : _run = run ?? Process.run;
 
   static const List<WindowsFirewallRule> rules = [
-    (name: 'Ferret (47640/tcp)', protocol: 'TCP', port: 47640),
-    (name: 'Ferret discovery (47641/udp)', protocol: 'UDP', port: 47641),
-    (name: 'Ferret mDNS (5353/udp)', protocol: 'UDP', port: 5353),
+    (name: 'Ferret (47640/tcp)', protocol: 'TCP', ports: '47640'),
+    (
+      name: 'Ferret other accounts (47642-47649/tcp)',
+      protocol: 'TCP',
+      ports: '47642-47649',
+    ),
+    (name: 'Ferret discovery (47641/udp)', protocol: 'UDP', ports: '47641'),
+    (name: 'Ferret mDNS (5353/udp)', protocol: 'UDP', ports: '5353'),
   ];
 
   /// Rules apply on networks Windows calls Private. A Public network (a
@@ -37,7 +44,7 @@ class WindowsFirewallRules {
     'dir=in',
     'action=allow',
     'protocol=${rule.protocol}',
-    'localport=${rule.port}',
+    'localport=${rule.ports}',
     'profile=$profile',
   ];
 

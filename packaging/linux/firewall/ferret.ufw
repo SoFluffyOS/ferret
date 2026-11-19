@@ -1,4 +1,4 @@
 [Ferret]
 title=Ferret
 description=Continue what you were doing on your other devices
-ports=47640/tcp|47641/udp|5353/udp
+ports=47640/tcp|47642:47649/tcp|47641/udp|5353/udp

@@ -98,8 +98,9 @@ Filename: "{app}\ferret.exe"; Description: "{cm:LaunchProgram,Ferret}"; Flags: n
 const
   RunKey = 'Software\Microsoft\Windows\CurrentVersion\Run';
 
-{ The same three rules as WindowsFirewallRules in packages/ferret_system:
-  Ferret's port, discovery and mDNS, inbound, on Private networks only.
+{ The same four rules as WindowsFirewallRules in packages/ferret_system:
+  Ferret's port, the ports Ferret in a second account moves to, discovery
+  and mDNS, inbound, on Private networks only.
   Each add first deletes a rule of the same name, so running it twice
   never leaves duplicates. }
 function FirewallCommands(Add: Boolean): String;
@@ -108,6 +109,7 @@ begin
   begin
     Result :=
       'netsh advfirewall firewall delete rule name="Ferret (47640/tcp)" & ' +
+      'netsh advfirewall firewall delete rule name="Ferret other accounts (47642-47649/tcp)" & ' +
       'netsh advfirewall firewall delete rule name="Ferret discovery (47641/udp)" & ' +
       'netsh advfirewall firewall delete rule name="Ferret mDNS (5353/udp)"';
     exit;
@@ -116,6 +118,8 @@ begin
   Result :=
     'netsh advfirewall firewall delete rule name="Ferret (47640/tcp)" >nul & ' +
     'netsh advfirewall firewall add rule name="Ferret (47640/tcp)" dir=in action=allow protocol=TCP localport=47640 profile=private & ' +
+    'netsh advfirewall firewall delete rule name="Ferret other accounts (47642-47649/tcp)" >nul & ' +
+    'netsh advfirewall firewall add rule name="Ferret other accounts (47642-47649/tcp)" dir=in action=allow protocol=TCP localport=47642-47649 profile=private & ' +
     'netsh advfirewall firewall delete rule name="Ferret discovery (47641/udp)" >nul & ' +
     'netsh advfirewall firewall add rule name="Ferret discovery (47641/udp)" dir=in action=allow protocol=UDP localport=47641 profile=private & ' +
     'netsh advfirewall firewall delete rule name="Ferret mDNS (5353/udp)" >nul & ' +

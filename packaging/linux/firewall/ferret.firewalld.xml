@@ -3,6 +3,7 @@
   <short>Ferret</short>
   <description>Continue what you were doing on your other devices: pairing, discovery and the encrypted link between them.</description>
   <port protocol="tcp" port="47640"/>
+  <port protocol="tcp" port="47642-47649"/>
   <port protocol="udp" port="47641"/>
   <port protocol="udp" port="5353"/>
 </service>
