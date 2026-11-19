@@ -1550,6 +1550,30 @@ abstract class ShellLocalizations {
   /// **'Free software under GPL-3.0. The protocol is open too, under MIT.'**
   String get settingsLicense;
 
+  /// Settings, About: a row that opens the owner's GitHub Sponsors page in the browser. Never shown as a popup or reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor Ferret'**
+  String get settingsSponsor;
+
+  /// No description provided for @settingsSponsorDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is free. If it saves you time, you can sponsor its work on GitHub.'**
+  String get settingsSponsorDetail;
+
+  /// Settings, About: a quiet line at the bottom, followed by the settingsSponsorLink link
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret is free and open source.'**
+  String get settingsOpenSource;
+
+  /// No description provided for @settingsSponsorLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor ❤️'**
+  String get settingsSponsorLink;
+
   /// No description provided for @settingsDeviceIdLabel.
   ///
   /// In en, this message translates to:
@@ -2347,6 +2371,12 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Check My Network…'**
   String get menuCheckNetwork;
+
+  /// Help menu on a Mac and the window's ••• menu on Windows and Linux: opens the GitHub Sponsors page in the browser
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor Ferret…'**
+  String get menuSponsor;
 
   /// No description provided for @shortcutsTitle.
   ///

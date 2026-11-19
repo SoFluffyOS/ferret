@@ -16,6 +16,7 @@ enum WindowCommand {
   back,
   fixConnection,
   showShortcuts,
+  sponsor,
   quit,
 }
 
@@ -103,7 +104,7 @@ abstract final class WindowShortcuts {
       alt: true,
     ),
     .back => _primary(LogicalKeyboardKey.bracketLeft, platform),
-    .fixConnection => null,
+    .fixConnection || .sponsor => null,
     // A Mac gets Help and Quit from its menu bar.
     .showShortcuts => switch (platform) {
       .macOS || .iOS => null,

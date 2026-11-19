@@ -33,6 +33,8 @@ void main() {
       expect(describe(.sendClipboard, .macOS), '⇧⌘V');
       expect(describe(.toggleSidebar, .macOS), '⌃⌘S');
       expect(describe(.quit, .macOS), '');
+      expect(describe(.sponsor, .macOS), '');
+      expect(describe(.sponsor, .linux), '');
       expect(describe(.takePhoto, .macOS), '⌃⌘P');
     });
   });
@@ -81,6 +83,7 @@ void main() {
     expect(find.text('Keyboard Shortcuts'), findsOneWidget);
     expect(find.text('Ctrl+?'), findsOneWidget);
     expect(find.text('Quit Ferret'), findsOneWidget);
+    expect(find.text('Sponsor Ferret…'), findsOneWidget);
     expect(find.text('Take Photo with Pixel 7'), findsOneWidget);
     expect(find.text('Ctrl+Alt+P'), findsOneWidget);
     expect(find.text('Send Files…'), findsNothing);

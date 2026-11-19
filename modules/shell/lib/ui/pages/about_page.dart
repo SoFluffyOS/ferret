@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The privacy promise, a way to see the tips again, the version and the
-/// licence.
+/// The privacy promise, a way to see the tips again, the sponsor page, the
+/// version and the licence.
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
@@ -37,7 +40,7 @@ class AboutPage extends StatelessWidget {
           ),
         ),
         Spacing.v24,
-        const GroupedCard(children: [TipsAgainRow()]),
+        const GroupedCard(children: [TipsAgainRow(), SponsorRow()]),
         Spacing.v16,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
@@ -50,6 +53,17 @@ class AboutPage extends StatelessWidget {
               ),
               Spacing.v4,
               Text(l10n.settingsLicense, style: muted),
+              Spacing.v4,
+              Wrap(
+                crossAxisAlignment: .center,
+                children: [
+                  Text(l10n.settingsOpenSource, style: muted),
+                  TextLink(
+                    label: l10n.settingsSponsorLink,
+                    onTap: () => unawaited(Sponsor.open()),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

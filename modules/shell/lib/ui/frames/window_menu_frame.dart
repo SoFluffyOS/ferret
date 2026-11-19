@@ -96,6 +96,7 @@ class WindowMenuFrame extends StatelessWidget {
         null => null,
       },
       .showShortcuts: () => nav.show(const KeyboardShortcutsPage()),
+      .sponsor: () => unawaited(Sponsor.open()),
       .quit: () => unawaited(context.read<AppQuit>().quit()),
     };
     void selectSection(int index) {
@@ -393,6 +394,7 @@ class WindowMenuFrame extends StatelessWidget {
               ),
             ],
           ),
+          PlatformMenuItemGroup(members: [item(l10n.menuSponsor, .sponsor)]),
         ],
       ),
     ];

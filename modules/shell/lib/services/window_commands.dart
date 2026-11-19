@@ -34,6 +34,7 @@ class WindowCommands {
         .back => l10n.menuBack,
         .fixConnection => l10n.menuFixConnection,
         .showShortcuts => l10n.menuKeyboardShortcuts,
+        .sponsor => l10n.menuSponsor,
         .quit => l10n.menuQuit,
       };
 }

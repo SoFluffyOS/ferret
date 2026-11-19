@@ -9,7 +9,7 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Windows and Linux have no menu bar, so the window's ••• holds its
 /// commands, each with its keys next to it, ending with the list of all
-/// keys and Quit.
+/// keys, the sponsor page and Quit.
 class WindowMoreMenu extends StatelessWidget {
   const WindowMoreMenu({super.key});
 
@@ -26,7 +26,11 @@ class WindowMoreMenu extends StatelessWidget {
       WindowCommand.toggleSidebar,
       WindowCommand.toggleActivityPane,
     ],
-    [WindowCommand.fixConnection, WindowCommand.showShortcuts],
+    [
+      WindowCommand.fixConnection,
+      WindowCommand.showShortcuts,
+      WindowCommand.sponsor,
+    ],
     [WindowCommand.quit],
   ];
 

@@ -1085,6 +1085,19 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Phần mềm tự do theo giấy phép GPL-3.0. Giao thức cũng mở, theo giấy phép MIT.';
 
   @override
+  String get settingsSponsor => 'Tài trợ Ferret';
+
+  @override
+  String get settingsSponsorDetail =>
+      'Ferret miễn phí. Nếu Ferret giúp bạn tiết kiệm thời gian, bạn có thể tài trợ trên GitHub.';
+
+  @override
+  String get settingsOpenSource => 'Ferret miễn phí và mã nguồn mở.';
+
+  @override
+  String get settingsSponsorLink => 'Tài trợ ❤️';
+
+  @override
   String get settingsDeviceIdLabel => 'ID thiết bị';
 
   @override
@@ -1622,6 +1635,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get menuCheckNetwork => 'Kiểm tra mạng của tôi…';
+
+  @override
+  String get menuSponsor => 'Tài trợ Ferret…';
 
   @override
   String get shortcutsTitle => 'Phím tắt';

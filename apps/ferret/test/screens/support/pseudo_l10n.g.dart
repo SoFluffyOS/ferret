@@ -3070,6 +3070,14 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsLicense => pseudo(super.settingsLicense);
   @override
+  String get settingsSponsor => pseudo(super.settingsSponsor);
+  @override
+  String get settingsSponsorDetail => pseudo(super.settingsSponsorDetail);
+  @override
+  String get settingsOpenSource => pseudo(super.settingsOpenSource);
+  @override
+  String get settingsSponsorLink => pseudo(super.settingsSponsorLink);
+  @override
   String get settingsDeviceIdLabel => pseudo(super.settingsDeviceIdLabel);
   @override
   String get settingsAddressLabel => pseudo(super.settingsAddressLabel);
@@ -3275,6 +3283,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get menuKeyboardShortcuts => pseudo(super.menuKeyboardShortcuts);
   @override
   String get menuCheckNetwork => pseudo(super.menuCheckNetwork);
+  @override
+  String get menuSponsor => pseudo(super.menuSponsor);
   @override
   String get shortcutsTitle => pseudo(super.shortcutsTitle);
   @override

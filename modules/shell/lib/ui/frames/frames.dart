@@ -41,6 +41,7 @@ export 'package:shell/ui/frames/sidebar_frame.dart';
 export 'package:shell/ui/frames/sidebar_nearby_frame.dart';
 export 'package:shell/ui/frames/sidebar_paused_line.dart';
 export 'package:shell/ui/frames/sliding_sidebar.dart';
+export 'package:shell/ui/frames/sponsor_row.dart';
 export 'package:shell/ui/frames/stay_connected_card.dart';
 export 'package:shell/ui/frames/successors_frame.dart';
 export 'package:shell/ui/frames/tabs_onward.dart';

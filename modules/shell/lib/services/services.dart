@@ -30,6 +30,7 @@ export 'package:shell/services/private_previews.dart';
 export 'package:shell/services/secret_store_factory.dart';
 export 'package:shell/services/settled_use.dart';
 export 'package:shell/services/shared_computer.dart';
+export 'package:shell/services/sponsor.dart';
 export 'package:shell/services/system_notifier.dart';
 export 'package:shell/services/tips.dart';
 export 'package:shell/services/whats_new.dart';

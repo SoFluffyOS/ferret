@@ -1088,6 +1088,19 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Free software under GPL-3.0. The protocol is open too, under MIT.';
 
   @override
+  String get settingsSponsor => 'Sponsor Ferret';
+
+  @override
+  String get settingsSponsorDetail =>
+      'Ferret is free. If it saves you time, you can sponsor its work on GitHub.';
+
+  @override
+  String get settingsOpenSource => 'Ferret is free and open source.';
+
+  @override
+  String get settingsSponsorLink => 'Sponsor ❤️';
+
+  @override
   String get settingsDeviceIdLabel => 'Device ID';
 
   @override
@@ -1628,6 +1641,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get menuCheckNetwork => 'Check My Network…';
+
+  @override
+  String get menuSponsor => 'Sponsor Ferret…';
 
   @override
   String get shortcutsTitle => 'Keyboard shortcuts';
