@@ -815,6 +815,24 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String get privateCoverBody => 'Open Ferret to see it.';
+
+  @override
+  String get privateCoverDetail => 'Hidden on this computer';
+
+  @override
+  String get previewsTitle => 'Show previews on this computer';
+
+  @override
+  String previewsBody(String device) {
+    return 'Notifications, texts, callers and copied text from $device show on this screen. Off, Ferret only says that something arrived. They always hide while the screen is locked or another account is in front.';
+  }
+
+  @override
+  String get previewsSharedDefault =>
+      'Off at first here, because other accounts on this computer use Ferret.';
+
+  @override
   String settingsAddress(String address) {
     return 'Address: $address';
   }

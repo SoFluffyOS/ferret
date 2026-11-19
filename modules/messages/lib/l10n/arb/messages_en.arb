@@ -305,6 +305,15 @@
       }
     }
   },
+  "privateCover": "New text on {device}",
+  "@privateCover": {
+    "description": "Shown instead of a text message when previews are hidden on this computer",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "markReadAction": "Mark as read",
   "replyFailedTitle": "Reply not sent",
   "noticeTitleCount": "{name} · {count, plural, other{{count} new}}",

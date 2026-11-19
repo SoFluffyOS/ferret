@@ -1340,6 +1340,36 @@ abstract class ShellLocalizations {
   /// **'Listening on port {port}: another account has {usual}.'**
   String thisDeviceOtherPort(String port, String usual);
 
+  /// Body of a notice whose content is hidden: previews are off for that device, or the screen is locked
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret to see it.'**
+  String get privateCoverBody;
+
+  /// Second line of an Activity line whose content is hidden because previews are off for that device
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden on this computer'**
+  String get privateCoverDetail;
+
+  /// No description provided for @previewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show previews on this computer'**
+  String get previewsTitle;
+
+  /// No description provided for @previewsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications, texts, callers and copied text from {device} show on this screen. Off, Ferret only says that something arrived. They always hide while the screen is locked or another account is in front.'**
+  String previewsBody(String device);
+
+  /// Under the previews switch, on a computer several OS accounts run Ferret on, before the person chose
+  ///
+  /// In en, this message translates to:
+  /// **'Off at first here, because other accounts on this computer use Ferret.'**
+  String get previewsSharedDefault;
+
   /// No description provided for @settingsAddress.
   ///
   /// In en, this message translates to:

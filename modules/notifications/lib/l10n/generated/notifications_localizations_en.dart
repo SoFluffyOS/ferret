@@ -359,6 +359,11 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   }
 
   @override
+  String privateCover(String device) {
+    return 'New notification from $device';
+  }
+
+  @override
   String get hideCodes => 'Hide one-time codes';
 
   @override

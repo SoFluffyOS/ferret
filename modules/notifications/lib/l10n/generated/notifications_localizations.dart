@@ -611,6 +611,12 @@ abstract class NotificationsLocalizations {
   /// **'{count, plural, =1{1 notification from {device}} other{{count} notifications from {device}}}'**
   String activityCount(int count, String device);
 
+  /// Shown instead of a notification when its previews are hidden on this computer
+  ///
+  /// In en, this message translates to:
+  /// **'New notification from {device}'**
+  String privateCover(String device);
+
   /// No description provided for @hideCodes.
   ///
   /// In en, this message translates to:

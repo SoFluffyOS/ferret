@@ -326,6 +326,11 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
   }
 
   @override
+  String privateCover(String device) {
+    return 'New text on $device';
+  }
+
+  @override
   String get markReadAction => 'Mark as read';
 
   @override

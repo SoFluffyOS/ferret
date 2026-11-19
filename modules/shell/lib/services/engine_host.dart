@@ -4,6 +4,7 @@ import 'package:engine/engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shell/services/device_preferences.dart';
 import 'package:shell/services/device_successors.dart';
+import 'package:shell/services/private_previews.dart';
 import 'package:shell/services/settled_use.dart';
 import 'package:shell/services/whats_new.dart';
 import 'package:transport/transport.dart';
@@ -21,6 +22,7 @@ class EngineHost extends ChangeNotifier {
             .where(
               (key) =>
                   DevicePreferences.isOwnKey(key) ||
+                  PrivatePreviews.isOwnKey(key) ||
                   key == DeviceSuccessors.keptKey,
             )
             .listen((_) => notifyListeners()),

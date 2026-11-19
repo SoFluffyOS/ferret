@@ -32,6 +32,13 @@ abstract final class NotificationsActivity {
           },
           at: latest.postedAt,
           onTap: onOpen,
+          private: PrivateContent(
+            deviceId,
+            cover: switch (notifications.length) {
+              1 => l10n.privateCover(deviceName(deviceId)),
+              final count => l10n.activityCount(count, deviceName(deviceId)),
+            },
+          ),
         ),
   ];
 

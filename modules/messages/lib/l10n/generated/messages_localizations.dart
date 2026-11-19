@@ -587,6 +587,12 @@ abstract class MessagesLocalizations {
   /// **'{sender} · {device}'**
   String activityTitle(String sender, String device);
 
+  /// Shown instead of a text message when previews are hidden on this computer
+  ///
+  /// In en, this message translates to:
+  /// **'New text on {device}'**
+  String privateCover(String device);
+
   /// No description provided for @markReadAction.
   ///
   /// In en, this message translates to:

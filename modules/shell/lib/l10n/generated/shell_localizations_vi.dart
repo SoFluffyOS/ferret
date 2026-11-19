@@ -812,6 +812,24 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String get privateCoverBody => 'Mở Ferret để xem.';
+
+  @override
+  String get privateCoverDetail => 'Đã ẩn trên máy tính này';
+
+  @override
+  String get previewsTitle => 'Hiện nội dung xem trước trên máy tính này';
+
+  @override
+  String previewsBody(String device) {
+    return 'Thông báo, tin nhắn, người gọi và văn bản đã sao chép từ $device hiện trên màn hình này. Khi tắt, Ferret chỉ báo là có thứ vừa đến. Nội dung luôn ẩn khi màn hình bị khóa hoặc một tài khoản khác đang dùng máy.';
+  }
+
+  @override
+  String get previewsSharedDefault =>
+      'Mặc định tắt ở đây, vì các tài khoản khác trên máy tính này cũng dùng Ferret.';
+
+  @override
   String settingsAddress(String address) {
     return 'Địa chỉ: $address';
   }

@@ -1,3 +1,4 @@
+import 'package:feature_kit/services/private_content.dart';
 import 'package:feature_kit/widgets/feature_card.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,6 +26,7 @@ class ActivityItem {
     this.onDismiss,
     this.deviceId,
     this.files = const [],
+    this.private,
   });
 
   /// Stays the same while the line is about the same thing, and is unique
@@ -90,6 +92,29 @@ class ActivityItem {
   /// Takes the line away, behind a small ✕ at its end. Null when the line
   /// goes by itself, such as a call that ended.
   final VoidCallback? onDismiss;
+
+  /// Set when the title or detail say something private, such as a text
+  /// or a notification. See [PrivateContent].
+  final PrivateContent? private;
+
+  /// This line with [private]'s cover as its title, [detail] in place of
+  /// the content, and no picture or files.
+  ActivityItem covered(String detail) => ActivityItem(
+    id: id,
+    icon: icon,
+    title: private?.cover ?? title,
+    detail: detail,
+    at: at,
+    pinned: pinned,
+    needsYou: needsYou,
+    trailing: trailing,
+    progress: progress,
+    tone: tone,
+    actions: actions,
+    onTap: onTap,
+    onDismiss: onDismiss,
+    deviceId: deviceId,
+  );
 }
 
 /// Something to do about an [ActivityItem], shown at the end of its line.

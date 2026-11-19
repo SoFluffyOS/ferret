@@ -353,6 +353,11 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   }
 
   @override
+  String privateCover(String device) {
+    return 'Thông báo mới từ $device';
+  }
+
+  @override
   String get hideCodes => 'Ẩn mã một lần';
 
   @override

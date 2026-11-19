@@ -96,6 +96,10 @@ class CallNotices {
           category: incomingCategory,
           groupKey: 'calls.${call.deviceId}',
           silent: isUpdate,
+          private: PrivateContent(
+            call.deviceId,
+            cover: l10n.noticeIncomingBody(call.deviceName),
+          ),
         ),
       ),
     );
@@ -116,6 +120,10 @@ class CallNotices {
           ),
           groupKey: 'calls.${call.deviceId}',
           silent: true,
+          private: PrivateContent(
+            call.deviceId,
+            cover: l10n.noticeMissedTitle,
+          ),
         ),
       ),
     );

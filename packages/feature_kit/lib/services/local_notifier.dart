@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:feature_kit/services/private_content.dart';
+
 /// Where a notice belongs, so people can tune each kind in system settings
 /// instead of turning everything off.
 enum NoticeChannel {
@@ -58,6 +60,7 @@ class LocalNotice {
     this.silent = false,
     this.progress,
     this.ongoing = false,
+    this.private,
   });
 
   /// Unique per notice; showing the same id again updates it.
@@ -82,6 +85,25 @@ class LocalNotice {
   /// Stays until the feature cancels it and can't be swiped away, such as
   /// "Controlled by Pixel · Stop".
   final bool ongoing;
+
+  /// Set when the title, body or image say something private, such as a
+  /// mirrored notification or a text.
+  final PrivateContent? private;
+
+  /// This notice with [private]'s cover as its title, [body] in place of
+  /// the content and no image. Actions stay, so a call can still be
+  /// answered.
+  LocalNotice covered(String body) => LocalNotice(
+    id: id,
+    channel: channel,
+    title: private?.cover ?? title,
+    body: body,
+    category: category,
+    groupKey: groupKey,
+    silent: silent,
+    progress: progress,
+    ongoing: ongoing,
+  );
 }
 
 /// Someone tapped a notice or one of its actions.

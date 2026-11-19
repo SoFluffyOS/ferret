@@ -44,11 +44,12 @@ ActivityItem _clip(
   ClipEntry entry,
 ) {
   final canCopy = entry.direction == .received && entry.hasContent;
+  final title = _title(l10n, entry, waiting: viewModel.isWaiting(entry));
 
   return ActivityItem(
     id: 'clipboard.${entry.id}',
     icon: LucideIcons.clipboard,
-    title: _title(l10n, entry, waiting: viewModel.isWaiting(entry)),
+    title: title,
     detail: _detail(l10n, entry),
     deviceId: switch (entry.deviceIds) {
       [final only] => only,
@@ -66,6 +67,10 @@ ActivityItem _clip(
           onPressed: () => unawaited(viewModel.copy(entry)),
         ),
     ],
+    private: switch ((entry.direction, entry.deviceIds)) {
+      (.received, [final from, ...]) => PrivateContent(from, cover: title),
+      _ => null,
+    },
   );
 }
 

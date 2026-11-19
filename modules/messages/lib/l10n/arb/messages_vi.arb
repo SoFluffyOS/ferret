@@ -82,6 +82,7 @@
   "rcsComputerNote": "Cuộc trò chuyện RCS không hiện ở đây. Chúng đến cùng thông báo của điện thoại, và bạn có thể trả lời tại đó.",
   "replyAction": "Trả lời",
   "activityTitle": "{sender} · {device}",
+  "privateCover": "Tin nhắn mới trên {device}",
   "markReadAction": "Đánh dấu đã đọc",
   "replyFailedTitle": "Chưa gửi được câu trả lời",
   "noticeTitleCount": "{name} · {count, plural, other{{count} tin mới}}",

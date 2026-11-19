@@ -13,6 +13,7 @@ import 'package:shell/app/app.dart';
 import 'package:shell/bootstrap/desktop_binding.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
 import 'package:shell/bootstrap/system_binding.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
@@ -66,9 +67,18 @@ Future<void> runFerret({
   await system.start();
   await PresenceReporter(engine).start();
 
-  final notifier = await SystemNotifier.create([
-    for (final feature in features) ...feature.noticeCategories,
-  ]);
+  final screen = ScreenSession.forPlatform();
+  await screen.start();
+  final notifier = PrivateNotifier(
+    await SystemNotifier.create([
+      for (final feature in features) ...feature.noticeCategories,
+    ]),
+    previews: PrivatePreviews(settings),
+    isAtScreen: () => screen.isActive,
+    coverBody: () => lookupShellLocalizations(
+      AppLocale.pick(ShellLocalizations.supportedLocales),
+    ).privateCoverBody,
+  );
   final ferretMenubar = FerretMenubar();
   final views = AppViews(
     menubar: ferretMenubar,

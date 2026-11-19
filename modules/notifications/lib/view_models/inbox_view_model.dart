@@ -161,6 +161,10 @@ class InboxViewModel extends ChangeNotifier {
           groupKey: _groupKey(deviceId),
           image: notification.appIcon,
           silent: isUpdate,
+          private: PrivateContent(
+            deviceId,
+            cover: _strings().privateCover(_deviceName(deviceId)),
+          ),
         ),
       ),
     );

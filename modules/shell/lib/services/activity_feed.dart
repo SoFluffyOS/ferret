@@ -1,5 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/private_previews.dart';
 
 /// Every feature's activity as Home shows it: what waits for the person's
 /// answer, apart at the top; then what is going on right now, then what
@@ -11,15 +13,24 @@ class ActivityFeed {
     this.needsYou = const [],
   });
 
-  /// Asks each of [features] what it did, and sorts the answers.
+  /// Asks each of [features] what it did, and sorts the answers. Private
+  /// lines from a device whose previews are off here show their cover.
   factory ActivityFeed.gather(
     BuildContext context,
     List<FeatureUi> features,
     FeatureContext featureContext,
   ) {
+    final previews = PrivatePreviews(featureContext.engine.settings);
+    final hidden = context.shellL10n.privateCoverDetail;
+
     return ActivityFeed.of([
       for (final feature in features)
-        ...feature.activity(context, featureContext),
+        for (final item in feature.activity(context, featureContext))
+          switch (item.private) {
+            final private? when !previews.showsFrom(private.deviceId) =>
+              item.covered(hidden),
+            _ => item,
+          },
     ]);
   }
 

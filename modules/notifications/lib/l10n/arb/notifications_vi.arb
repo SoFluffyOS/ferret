@@ -86,6 +86,7 @@
   "healthOffThisPhoneHelp": "Trên điện thoại này: Cài đặt → Đến máy tính của bạn → Thông báo.",
   "activityOne": "{app}: {title}",
   "activityCount": "{count, plural, other{{count} thông báo từ {device}}}",
+  "privateCover": "Thông báo mới từ {device}",
   "hideCodes": "Ẩn mã một lần",
   "hideCodesDetail": "Mã đăng nhập, ngân hàng và giao hàng ở lại trên điện thoại này. Máy tính chỉ hiện tên ứng dụng và \"Đã ẩn mã\".",
   "codeHidden": "Đã ẩn mã. Hãy mở trên điện thoại."

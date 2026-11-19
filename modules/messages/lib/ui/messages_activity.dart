@@ -62,4 +62,5 @@ ActivityItem _line({
   at: DateTime.fromMillisecondsSinceEpoch(conversation.lastDateMs.toInt()),
   actions: [ActivityAction(label: l10n.replyAction, onPressed: onOpen)],
   onTap: onOpen,
+  private: PrivateContent(deviceId, cover: l10n.privateCover(deviceName)),
 );

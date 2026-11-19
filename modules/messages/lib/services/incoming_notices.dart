@@ -150,6 +150,10 @@ class IncomingNotices {
         },
         groupKey: '$_prefix$deviceId',
         image: _avatarOf(conversation, message.senderAddress),
+        private: PrivateContent(
+          deviceId,
+          cover: strings.privateCover(_deviceName(deviceId)),
+        ),
       ),
     );
   }

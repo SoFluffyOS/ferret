@@ -21,6 +21,8 @@ export 'package:shell/services/menubar_tooltips.dart';
 export 'package:shell/services/pane_titles.dart';
 export 'package:shell/services/pause_controller.dart';
 export 'package:shell/services/presence_reporter.dart';
+export 'package:shell/services/private_notifier.dart';
+export 'package:shell/services/private_previews.dart';
 export 'package:shell/services/secret_store_factory.dart';
 export 'package:shell/services/settled_use.dart';
 export 'package:shell/services/shared_computer.dart';

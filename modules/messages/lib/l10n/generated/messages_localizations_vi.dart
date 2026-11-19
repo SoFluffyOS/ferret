@@ -325,6 +325,11 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
   }
 
   @override
+  String privateCover(String device) {
+    return 'Tin nhắn mới trên $device';
+  }
+
+  @override
   String get markReadAction => 'Đánh dấu đã đọc';
 
   @override

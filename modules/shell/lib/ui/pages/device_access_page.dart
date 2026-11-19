@@ -6,8 +6,9 @@ import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
-import 'package:shell/ui/frames/device_access_frame.dart';
+import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/view_models/view_models.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What one paired device can use on this one, feature by feature, each
 /// with a switch that stops it right away.
@@ -110,6 +111,14 @@ class _DeviceAccessPageState extends State<DeviceAccessPage> {
             isConnected: status?.isConnected ?? false,
             features: _features,
           ),
+          if (engine.device.formFactor != .FORM_FACTOR_PHONE) ...[
+            Spacing.v24,
+            PrivatePreviewsCard(
+              previews: PrivatePreviews(engine.settings),
+              deviceId: widget.deviceId,
+              deviceName: name,
+            ),
+          ],
         ],
       ),
     );
