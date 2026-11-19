@@ -4,6 +4,7 @@
 import 'package:calls/ui/widgets/widgets.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/protocol.dart';
@@ -129,7 +130,13 @@ class SampleActivityFeatureUi extends FeatureUi {
         at: now.subtract(const Duration(minutes: 2)),
         actions: [
           ActivityAction(label: 'Open', onPressed: () {}),
-          ActivityAction(label: 'Show in Finder', onPressed: () {}),
+          ActivityAction(
+            label: switch (defaultTargetPlatform) {
+              .macOS => 'Show in Finder',
+              _ => 'Show in folder',
+            },
+            onPressed: () {},
+          ),
         ],
       ),
       ActivityItem(
