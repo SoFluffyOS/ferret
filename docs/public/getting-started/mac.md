@@ -4,11 +4,43 @@ Ferret lives in your menubar. No Dock icon, no window in the way. Want a real wi
 
 ## 📦 Installing on a Mac
 
-Download Ferret from its releases page and drag it to **Applications**. That's it.
+> 1. Download `Ferret-<version>.dmg` from the releases page
+> 2. Open it and drag **Ferret** onto **Applications**
+> 3. Open Ferret from Applications
+
+That's it. Ferret needs macOS 12 Monterey or later, on Apple silicon or Intel.
 
 Ferret for Mac comes straight from us, not from the Mac App Store. It is signed with a Developer ID and notarized by Apple, so macOS opens it without a warning.
 
-Removing it later? Delete the app and `~/.sofluffy/ferret`, where Ferret keeps its data. See [Privacy](../privacy.md).
+Prefer Homebrew?
+
+```sh
+brew install --cask ferret
+```
+
+### The command line
+
+`ferret-cli` comes inside the app. Homebrew puts it on your `PATH` for you. Installed from the DMG? Link it once:
+
+```sh
+ln -s /Applications/Ferret.app/Contents/Helpers/ferret-cli /usr/local/bin/ferret-cli
+```
+
+It runs on Apple silicon Macs. See [Pair your devices](pairing.md) for what it does.
+
+### Removing it
+
+Delete the app and `~/.sofluffy/ferret`, where Ferret keeps its data. See [Privacy](../privacy.md). With Homebrew, `brew uninstall --zap ferret` does both.
+
+### Build it yourself
+
+From the source, on a Mac with the Developer ID certificate:
+
+```sh
+scripts/package_macos.sh
+```
+
+The signed DMG lands in `build/macos-packages`. See `packaging/macos/README.md` for notarizing it.
 
 Why not the App Store? Apps there must run in Apple's sandbox, and a sandboxed app can't start **adb**, Android's tool that [mirroring a phone without Ferret on it](../features/mirroring-with-a-cable.md) needs.
 

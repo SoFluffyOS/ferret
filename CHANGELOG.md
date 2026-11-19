@@ -76,6 +76,7 @@
 - 📦 **Flatpak, AppImage and .deb**: Ferret installs on Linux with its icon, the tray and **Send with Ferret** in the file manager. The `.deb` adds `sudo ufw allow Ferret` and a firewalld service.
 - 🪟 **A Windows installer**: Ferret installs just for you, no admin needed, with a Start menu shortcut and **Send to → Ferret**. Tick one box and Windows Firewall lets your devices in. Uninstall cleans all of it up.
 - 🧱 **Allow through firewall**: on Windows, Fix connection tells you when Ferret's firewall rules are in place. Missing? One click, one Yes, and your phone finds this PC.
+- 🍎 **A Mac DMG**: open it, drag Ferret to Applications, done. Signed and notarized, so macOS opens it without a warning. `ferret-cli` comes inside, and Homebrew puts it on your `PATH` with `brew install --cask ferret`.
 - 🚀 **Start at login on Windows and Linux**: one switch in Settings. Ferret starts in the tray (XDG autostart on Linux, the Background portal in a Flatpak, the Run key on Windows).
 - ⌨️ **Every key, written down**: a **Help** menu on the Mac, and on Windows and Linux a **•••** menu that shows each command's keys. **Keyboard Shortcuts** (Ctrl+?) lists them all.
 - 💻 **Scriptable `ferret-cli`**: `ferret-cli send <file>…` hands files to the running app, `ferret-cli devices --json` for scripts, `--version`, and exit codes `--help` explains. The app itself is `ferret`, and takes `ferret send` too.
