@@ -12,7 +12,9 @@ void main() {
   final folders = modules.listSync().whereType<Directory>().toList()
     ..sort((left, right) => left.path.compareTo(right.path));
   for (final folder in folders) {
-    final module = folder.uri.pathSegments.where((part) => part.isNotEmpty).last;
+    final module = folder.uri.pathSegments
+        .where((part) => part.isNotEmpty)
+        .last;
     final generated = Directory('${folder.path}/lib/l10n/generated');
     if (!generated.existsSync()) {
       continue;
@@ -81,7 +83,9 @@ void main() {
     ..writeln('  bool isSupported(Locale locale) => true;')
     ..writeln()
     ..writeln('  @override')
-    ..writeln('  Future<T> load(Locale locale) => SynchronousFuture(_create());')
+    ..writeln(
+      '  Future<T> load(Locale locale) => SynchronousFuture(_create());',
+    )
     ..writeln()
     ..writeln('  @override')
     ..writeln('  bool shouldReload(_PseudoDelegate<T> old) => false;')
@@ -100,8 +104,10 @@ void main() {
 
 String _overrides(String source) {
   final out = StringBuffer();
-  for (final match in RegExp(r'^  String get (\w+);', multiLine: true)
-      .allMatches(source)) {
+  for (final match in RegExp(
+    r'^  String get (\w+);',
+    multiLine: true,
+  ).allMatches(source)) {
     final name = match.group(1);
     out
       ..writeln('  @override')
