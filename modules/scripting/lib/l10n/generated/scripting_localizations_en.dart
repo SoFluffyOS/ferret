@@ -55,4 +55,37 @@ class ScriptingLocalizationsEn extends ScriptingLocalizations {
 
   @override
   String get checkAgain => 'Check again';
+
+  @override
+  String failureTitle(String source) {
+    return '$source couldn\'t do that';
+  }
+
+  @override
+  String failureNotConnected(String device) {
+    return '$device isn\'t connected right now.';
+  }
+
+  @override
+  String failureUnknownDevice(String device) {
+    return 'No paired device is called $device.';
+  }
+
+  @override
+  String failureAmbiguous(String device) {
+    return 'Several devices fit $device. Use more of its name.';
+  }
+
+  @override
+  String failureNotAllowed(String device) {
+    return '$device doesn\'t take notices from scripts here yet.';
+  }
+
+  @override
+  String failureUnknownAction(String device) {
+    return '$device has no action by that name.';
+  }
+
+  @override
+  String get failureOther => 'It didn\'t work. Check the action\'s settings.';
 }

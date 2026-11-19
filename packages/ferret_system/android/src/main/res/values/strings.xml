@@ -23,4 +23,23 @@
         <item quantity="other">%d devices</item>
     </plurals>
     <string name="ferret_system_clipboard_empty">Your clipboard is empty</string>
+    <string name="ferret_system_tasker_label">Ferret</string>
+    <string name="ferret_system_tasker_title">Ferret action</string>
+    <string name="ferret_system_tasker_command">What to do</string>
+    <string name="ferret_system_tasker_send_text">Send text to your devices</string>
+    <string name="ferret_system_tasker_ring">Ring a device</string>
+    <string name="ferret_system_tasker_open">Open a link on a device</string>
+    <string name="ferret_system_tasker_run_action">Run a computer action</string>
+    <string name="ferret_system_tasker_notify">Show a notice on a device</string>
+    <string name="ferret_system_tasker_device">Device</string>
+    <string name="ferret_system_tasker_device_hint">Its name, such as MacBook</string>
+    <string name="ferret_system_tasker_device_needed">Name the device</string>
+    <string name="ferret_system_tasker_text">Text</string>
+    <string name="ferret_system_tasker_link">Link</string>
+    <string name="ferret_system_tasker_action">Action, such as sleep or lock</string>
+    <string name="ferret_system_tasker_title_field">Title</string>
+    <string name="ferret_system_tasker_body">Body</string>
+    <string name="ferret_system_tasker_value_hint">Tasker variables work, such as %CLIP</string>
+    <string name="ferret_system_tasker_note">Leave Device empty to send text to every connected device. Ferret starts if it isn\'t running.</string>
+    <string name="ferret_system_tasker_save">Save</string>
 </resources>

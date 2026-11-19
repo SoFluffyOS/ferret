@@ -172,6 +172,48 @@ abstract class ScriptingLocalizations {
   /// In en, this message translates to:
   /// **'Check again'**
   String get checkAgain;
+
+  /// A Tasker or Shortcuts request failed. source is Tasker or Shortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'{source} couldn\'t do that'**
+  String failureTitle(String source);
+
+  /// No description provided for @failureNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} isn\'t connected right now.'**
+  String failureNotConnected(String device);
+
+  /// No description provided for @failureUnknownDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired device is called {device}.'**
+  String failureUnknownDevice(String device);
+
+  /// No description provided for @failureAmbiguous.
+  ///
+  /// In en, this message translates to:
+  /// **'Several devices fit {device}. Use more of its name.'**
+  String failureAmbiguous(String device);
+
+  /// No description provided for @failureNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} doesn\'t take notices from scripts here yet.'**
+  String failureNotAllowed(String device);
+
+  /// No description provided for @failureUnknownAction.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} has no action by that name.'**
+  String failureUnknownAction(String device);
+
+  /// No description provided for @failureOther.
+  ///
+  /// In en, this message translates to:
+  /// **'It didn\'t work. Check the action\'s settings.'**
+  String get failureOther;
 }
 
 class _ScriptingLocalizationsDelegate

@@ -55,4 +55,38 @@ class ScriptingLocalizationsVi extends ScriptingLocalizations {
 
   @override
   String get checkAgain => 'Kiểm tra lại';
+
+  @override
+  String failureTitle(String source) {
+    return '$source không làm được việc đó';
+  }
+
+  @override
+  String failureNotConnected(String device) {
+    return '$device hiện chưa kết nối.';
+  }
+
+  @override
+  String failureUnknownDevice(String device) {
+    return 'Không có thiết bị đã ghép đôi nào tên $device.';
+  }
+
+  @override
+  String failureAmbiguous(String device) {
+    return 'Có nhiều thiết bị khớp với $device. Hãy nhập đầy đủ tên hơn.';
+  }
+
+  @override
+  String failureNotAllowed(String device) {
+    return '$device chưa nhận thông báo từ tập lệnh ở đây.';
+  }
+
+  @override
+  String failureUnknownAction(String device) {
+    return '$device không có hành động nào tên như vậy.';
+  }
+
+  @override
+  String get failureOther =>
+      'Không thành công. Hãy kiểm tra cài đặt của hành động.';
 }

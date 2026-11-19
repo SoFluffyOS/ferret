@@ -31,6 +31,12 @@ class ScriptingFeature extends Feature {
   final Duration requestTimeout;
   final NoticeLimit _limit;
   final StreamController<ScriptNoticeArrived> _notices = .broadcast();
+  final StreamController<ScriptRequestFailure> _failures = .broadcast();
+  final List<ScriptRequest> _waiting = [];
+  Future<void> Function(ScriptRequest request)? _runner;
+
+  /// How many requests from before the app was ready wait for it.
+  static const int maxWaiting = 8;
 
   @override
   String get id => featureId;
@@ -43,9 +49,48 @@ class ScriptingFeature extends Feature {
   /// Notices from other devices' scripts that may show here.
   Stream<ScriptNoticeArrived> get notices => _notices.stream;
 
+  /// Tasker or Shortcuts requests that didn't work, to say why on screen.
+  Stream<ScriptRequestFailure> get failures => _failures.stream;
+
+  /// A request from Tasker or Shortcuts, run once the app is ready (see
+  /// [runRequestsWith]), such as one that started Ferret.
+  void receive(ScriptRequest request) {
+    final runner = _runner;
+    if (runner == null) {
+      if (_waiting.length < maxWaiting) {
+        _waiting.add(request);
+      }
+
+      return;
+    }
+
+    unawaited(runner(request));
+  }
+
+  /// Runs every request [receive] got, the waiting ones first.
+  void runRequestsWith(Future<void> Function(ScriptRequest request) runner) {
+    _runner = runner;
+    final waiting = [..._waiting];
+    _waiting.clear();
+    for (final request in waiting) {
+      unawaited(runner(request));
+    }
+  }
+
+  /// Says on screen that [failure] happened. The app calls it after it ran
+  /// a request from Tasker, which can't show an answer itself.
+  void reportFailure(ScriptRequestFailure failure) {
+    if (_failures.isClosed) {
+      return;
+    }
+
+    _failures.add(failure);
+  }
+
   @override
   Future<void> stop() async {
     await _notices.close();
+    await _failures.close();
     await events.dispose();
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -28,6 +29,11 @@ class ScriptingFeatureUi extends FeatureUi {
   HookRunner? _hooks;
   ScriptingViewModel? _viewModel;
   StreamSubscription<ScriptNoticeArrived>? _notices;
+  StreamSubscription<ScriptRequestFailure>? _failures;
+  StreamSubscription<SystemAction>? _tasker;
+
+  /// The system action Ferret's Tasker plugin fires.
+  static const taskerActionId = 'script.run';
   var _noticeCount = 0;
 
   static bool get _isComputer => switch (defaultTargetPlatform) {
@@ -57,9 +63,14 @@ class ScriptingFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
-    await _notices?.cancel();
+    _listenToTasker();
+    unawaited(_notices?.cancel());
+    unawaited(_failures?.cancel());
     _notices = feature.notices.listen(
       (notice) => unawaited(_show(context.notifier, notice)),
+    );
+    _failures = feature.failures.listen(
+      (failure) => unawaited(_showFailure(context.notifier, failure)),
     );
     if (!_isComputer) {
       return;
@@ -75,10 +86,24 @@ class ScriptingFeatureUi extends FeatureUi {
     await viewModel.refresh();
   }
 
+  /// Listens before anything else at startup: the request that started
+  /// Ferret is handed to the first listener.
+  void _listenToTasker() {
+    if (defaultTargetPlatform != .android || _tasker != null) {
+      return;
+    }
+
+    _tasker = FerretSystem().actions
+        .where((action) => action.id == taskerActionId)
+        .listen((action) {
+          if (ScriptRequest.fromMap(.tasker, action.data) case final request?) {
+            feature.receive(request);
+          }
+        });
+  }
+
   Future<void> _show(LocalNotifier notifier, ScriptNoticeArrived notice) {
-    final l10n = lookupScriptingLocalizations(
-      AppLocale.pick(ScriptingLocalizations.supportedLocales),
-    );
+    final l10n = _l10n;
     _noticeCount++;
     final title = switch (notice.title.isEmpty) {
       true => notice.deviceName,
@@ -99,6 +124,41 @@ class ScriptingFeatureUi extends FeatureUi {
       ),
     );
   }
+
+  Future<void> _showFailure(
+    LocalNotifier notifier,
+    ScriptRequestFailure failure,
+  ) {
+    final l10n = _l10n;
+    final device = failure.deviceName;
+    final source = switch (failure.request.source) {
+      .tasker => 'Tasker',
+      .shortcuts => 'Shortcuts',
+    };
+    final reason = switch (failure.error) {
+      'not_connected' => l10n.failureNotConnected(device),
+      'unknown_device' => l10n.failureUnknownDevice(device),
+      'ambiguous_device' => l10n.failureAmbiguous(device),
+      'not_allowed' => l10n.failureNotAllowed(device),
+      'unknown_action' => l10n.failureUnknownAction(device),
+      _ => l10n.failureOther,
+    };
+    _noticeCount++;
+
+    return notifier.show(
+      LocalNotice(
+        id: '$featureId.failure.$_noticeCount',
+        channel: .problems,
+        title: l10n.failureTitle(source),
+        body: reason,
+        groupKey: '$featureId.failures',
+      ),
+    );
+  }
+
+  static ScriptingLocalizations get _l10n => lookupScriptingLocalizations(
+    AppLocale.pick(ScriptingLocalizations.supportedLocales),
+  );
 
   @override
   List<DevicePermission> devicePermissions(

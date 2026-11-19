@@ -21,4 +21,23 @@
         <item quantity="other">%d thiết bị</item>
     </plurals>
     <string name="ferret_system_clipboard_empty">Bảng nhớ tạm đang trống</string>
+    <string name="ferret_system_tasker_label">Ferret</string>
+    <string name="ferret_system_tasker_title">Hành động Ferret</string>
+    <string name="ferret_system_tasker_command">Việc cần làm</string>
+    <string name="ferret_system_tasker_send_text">Gửi văn bản đến thiết bị của bạn</string>
+    <string name="ferret_system_tasker_ring">Đổ chuông một thiết bị</string>
+    <string name="ferret_system_tasker_open">Mở liên kết trên một thiết bị</string>
+    <string name="ferret_system_tasker_run_action">Chạy một hành động máy tính</string>
+    <string name="ferret_system_tasker_notify">Hiện thông báo trên một thiết bị</string>
+    <string name="ferret_system_tasker_device">Thiết bị</string>
+    <string name="ferret_system_tasker_device_hint">Tên của nó, ví dụ MacBook</string>
+    <string name="ferret_system_tasker_device_needed">Hãy nhập tên thiết bị</string>
+    <string name="ferret_system_tasker_text">Văn bản</string>
+    <string name="ferret_system_tasker_link">Liên kết</string>
+    <string name="ferret_system_tasker_action">Hành động, ví dụ sleep hoặc lock</string>
+    <string name="ferret_system_tasker_title_field">Tiêu đề</string>
+    <string name="ferret_system_tasker_body">Nội dung</string>
+    <string name="ferret_system_tasker_value_hint">Dùng được biến Tasker, ví dụ %CLIP</string>
+    <string name="ferret_system_tasker_note">Để trống Thiết bị để gửi văn bản đến mọi thiết bị đang kết nối. Ferret sẽ tự khởi động nếu chưa chạy.</string>
+    <string name="ferret_system_tasker_save">Lưu</string>
 </resources>

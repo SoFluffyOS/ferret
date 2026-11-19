@@ -12,5 +12,12 @@
   "hooksActive": "Hook đang chạy: {events}",
   "hooksPrivacy": "Hook không bao giờ nhận văn bản đã sao chép hay nội dung thông báo, và không nhận tên khi bản xem trước từ thiết bị đó đang tắt.",
   "copyPath": "Sao chép đường dẫn",
-  "checkAgain": "Kiểm tra lại"
+  "checkAgain": "Kiểm tra lại",
+  "failureTitle": "{source} không làm được việc đó",
+  "failureNotConnected": "{device} hiện chưa kết nối.",
+  "failureUnknownDevice": "Không có thiết bị đã ghép đôi nào tên {device}.",
+  "failureAmbiguous": "Có nhiều thiết bị khớp với {device}. Hãy nhập đầy đủ tên hơn.",
+  "failureNotAllowed": "{device} chưa nhận thông báo từ tập lệnh ở đây.",
+  "failureUnknownAction": "{device} không có hành động nào tên như vậy.",
+  "failureOther": "Không thành công. Hãy kiểm tra cài đặt của hành động."
 }
