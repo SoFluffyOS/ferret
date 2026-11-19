@@ -55,9 +55,14 @@ class FerretPage extends StatelessWidget {
     };
     final hasBar = canPop || shownTitle.isNotEmpty || actions.isNotEmpty;
 
+    // Without a Scaffold nothing else makes room for the on-screen
+    // keyboard, and a text field near the bottom would sit under it.
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+
     return ColoredBox(
       color: palette.background,
       child: SafeArea(
+        minimum: EdgeInsets.only(bottom: keyboard),
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
