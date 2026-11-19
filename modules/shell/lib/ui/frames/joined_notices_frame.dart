@@ -5,6 +5,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/shell_scope.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Says when a device joined through another of the user's devices, with a
@@ -73,22 +74,10 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
         id: _noticeId,
         channel: .incoming,
         title: l10n.joinedManyNotice(_joined.length),
-        body: _names(_joined),
+        body: JoinedSummary(_joined).names,
       ),
     };
     unawaited(notifier.show(notice));
-  }
-
-  String _names(List<DeviceJoined> joined) =>
-      [for (final each in joined) each.device.name].join(', ');
-
-  /// Who added them, when it was the same device for all of them.
-  String? _introducer(List<DeviceJoined> joined) {
-    final names = {for (final each in joined) each.introducer.name};
-    return switch (names.length) {
-      1 => names.first,
-      _ => null,
-    };
   }
 
   void _keep(DeviceJoined joined) {
@@ -130,10 +119,11 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      l10n.joinedManyBanner(_names(_joined)),
+                      l10n.joinedManyBanner(JoinedSummary(_joined).names),
                       style: typography.base2.copyWith(color: palette.text),
                     ),
-                    if (_introducer(_joined) case final introducer?)
+                    if (JoinedSummary(_joined).introducer
+                        case final introducer?)
                       Text(
                         l10n.joinedManyAddedBy(introducer),
                         style: typography.caption1.copyWith(
