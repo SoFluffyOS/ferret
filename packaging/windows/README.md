@@ -12,7 +12,8 @@ It runs on Windows only. Output lands in `build\windows-packages`.
 | File | What it is |
 |---|---|
 | `ferret.iss` | Inno Setup 6 script: the installer we ship |
-| `msix/AppxManifest.xml`, `msix/Assets/` | MSIX manifest and tile images, for the Microsoft Store or a signed sideload |
+| `wizard-*.bmp` | The installer's pictures, rendered from `branding/` by `scripts/generate_icons.sh` |
+| `msix/AppxManifest.xml`, `msix/Assets/` | MSIX manifest and tile images (rendered by `scripts/generate_icons.sh`), for the Microsoft Store or a signed sideload |
 | `winget/` | winget manifest templates (version, installer, en-US locale) |
 
 ## Why Inno Setup first

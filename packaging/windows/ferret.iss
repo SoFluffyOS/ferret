@@ -56,6 +56,8 @@ UninstallDisplayName=Ferret
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
+WizardImageFile=wizard-100.bmp,wizard-200.bmp
+WizardSmallImageFile=wizard-small-100.bmp,wizard-small-200.bmp
 CloseApplications=yes
 RestartApplications=no
 
