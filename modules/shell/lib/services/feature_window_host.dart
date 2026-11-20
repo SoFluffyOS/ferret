@@ -120,6 +120,24 @@ class FeatureWindowHost extends ChangeNotifier
     await _menubar.closePictureWindow();
   }
 
+  @override
+  Future<void> setFullScreen(bool fullScreen) async {
+    if (_window == null) {
+      return;
+    }
+
+    await _menubar.setPictureWindowFullScreen(fullScreen);
+  }
+
+  @override
+  Future<bool> isFullScreen() async {
+    if (_window == null) {
+      return false;
+    }
+
+    return _menubar.isPictureWindowFullScreen();
+  }
+
   /// Views come and go through the engine, a moment apart from the
   /// plugin's own events, so this is where the window's view really
   /// appears and disappears.
@@ -133,6 +151,7 @@ class FeatureWindowHost extends ChangeNotifier
         title: window.title,
         size: window.contentSize,
         barHeight: window.barHeight,
+        fullScreen: window.fullScreen,
       );
     } on PlatformException {
       return null;

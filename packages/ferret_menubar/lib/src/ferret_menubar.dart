@@ -120,12 +120,14 @@ class FerretMenubar implements MenubarFlutterApi {
   /// front; another [id] takes its place. Gives the id of its Flutter
   /// view, or null where there is no such window. A [barHeight] adds a
   /// bar that many points tall along the top edge, beside the traffic
-  /// lights, for controls that must never cover the picture.
+  /// lights, for controls that must never cover the picture. With
+  /// [fullScreen] it fills its screen at once.
   Future<int?> openPictureWindow({
     required String id,
     required String title,
     required Size size,
     double barHeight = 0,
+    bool fullScreen = false,
   }) async {
     if (!await isWindowSupported()) {
       return null;
@@ -137,6 +139,7 @@ class FerretMenubar implements MenubarFlutterApi {
       size.width,
       size.height,
       barHeight,
+      fullScreen,
     );
   }
 
@@ -152,6 +155,18 @@ class FerretMenubar implements MenubarFlutterApi {
 
   /// Closes the picture window and removes its Flutter view.
   Future<void> closePictureWindow() => _call(_api.closePictureWindow);
+
+  /// Puts the picture window in full screen, or takes it out.
+  Future<void> setPictureWindowFullScreen(bool fullScreen) =>
+      _call(() => _api.setPictureWindowFullScreen(fullScreen));
+
+  Future<bool> isPictureWindowFullScreen() async {
+    try {
+      return await _api.isPictureWindowFullScreen();
+    } on Object {
+      return false;
+    }
+  }
 
   Future<void> setDetachable(bool detachable) =>
       _call(() => _api.setDetachable(detachable));

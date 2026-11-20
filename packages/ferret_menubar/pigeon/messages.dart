@@ -137,13 +137,15 @@ abstract class MenubarHostApi {
   /// front; another [id] takes its place. A [barHeight] above zero adds a
   /// bar that many points tall along the top edge, under the traffic
   /// lights, where Flutter draws its controls: the picture keeps its shape
-  /// below it.
+  /// below it. With [fullScreen], the window fills its screen at once, as
+  /// a display does.
   int openPictureWindow(
     String id,
     String title,
     double width,
     double height,
     double barHeight,
+    bool fullScreen,
   );
 
   /// The picture is [width] by [height] pixels now, such as after the
@@ -157,6 +159,11 @@ abstract class MenubarHostApi {
 
   /// Closes the picture window and removes its Flutter view.
   void closePictureWindow();
+
+  /// Puts the picture window in full screen, or takes it out.
+  void setPictureWindowFullScreen(bool fullScreen);
+
+  bool isPictureWindowFullScreen();
 
   /// Lets people drag the popover off into its own window.
   void setDetachable(bool detachable);

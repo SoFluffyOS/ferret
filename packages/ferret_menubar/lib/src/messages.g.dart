@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-  List<Object?>? replyList,
-  String channelName, {
-  required bool isNullValid,
+    List<Object?>? replyList,
+    String channelName, {
+    required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -34,11 +34,8 @@ Object? _extractReplyValueOrThrow(
   return replyList.firstOrNull;
 }
 
-List<Object?> wrapResponse({
-  Object? result,
-  PlatformException? error,
-  bool empty = false,
-}) {
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -47,7 +44,6 @@ List<Object?> wrapResponse({
   }
   return <Object?>[error.code, error.message, error.details];
 }
-
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -60,9 +56,8 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed.every(
-          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
-        );
+        a.indexed
+            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -111,50 +106,42 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
+
 /// What the menubar icon says, one at a time.
 enum MenubarIconState {
   /// At least one device is connected: the plain glyph.
   normal,
-
   /// Nothing is connected, which is no error: the glyph, dimmed.
   alone,
-
   /// A file drag is over the icon. The icon shows this by itself while the
   /// drag is there, then goes back to the state it was given.
   dragOver,
-
   /// A transfer is running: the glyph in a progress ring.
   working,
-
   /// A transfer just finished: a check.
   done,
-
   /// A pairing or file request waits for the person: the glyph with a dot.
   needsYou,
-
   /// Ferret is paused: the glyph, slashed.
-  paused,
+  paused;
 }
 
 /// What is dragged over one of the app's views.
 enum MenubarDragKind {
   /// Files, from Finder or promised by an app such as Photos.
   files,
-
   /// Text, such as words selected on a web page.
   text,
-
   /// A web link, such as one dragged from a browser's address bar.
-  link,
+  link;
 }
 
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode {
   /// Only while the desktop window is open.
   whenWindowOpen,
-
   /// All the time, like a regular app.
-  always,
+  always;
 }
 
 class MenubarMenuItem {
@@ -187,8 +174,7 @@ class MenubarMenuItem {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static MenubarMenuItem decode(Object result) {
     result as List<Object?>;
@@ -210,11 +196,7 @@ class MenubarMenuItem {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(id, other.id) &&
-        _deepEquals(title, other.title) &&
-        _deepEquals(enabled, other.enabled) &&
-        _deepEquals(separator, other.separator) &&
-        _deepEquals(keyEquivalent, other.keyEquivalent);
+    return _deepEquals(id, other.id) && _deepEquals(title, other.title) && _deepEquals(enabled, other.enabled) && _deepEquals(separator, other.separator) && _deepEquals(keyEquivalent, other.keyEquivalent);
   }
 
   @override
@@ -264,8 +246,7 @@ class MenubarShortcut {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static MenubarShortcut decode(Object result) {
     result as List<Object?>;
@@ -288,12 +269,7 @@ class MenubarShortcut {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(keyCode, other.keyCode) &&
-        _deepEquals(label, other.label) &&
-        _deepEquals(command, other.command) &&
-        _deepEquals(control, other.control) &&
-        _deepEquals(option, other.option) &&
-        _deepEquals(shift, other.shift);
+    return _deepEquals(keyCode, other.keyCode) && _deepEquals(label, other.label) && _deepEquals(command, other.command) && _deepEquals(control, other.control) && _deepEquals(option, other.option) && _deepEquals(shift, other.shift);
   }
 
   @override
@@ -306,6 +282,7 @@ class MenubarShortcut {
   }
 }
 
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -313,19 +290,19 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    } else if (value is MenubarIconState) {
+    }    else if (value is MenubarIconState) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is MenubarDragKind) {
+    }    else if (value is MenubarDragKind) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    } else if (value is MenubarDockMode) {
+    }    else if (value is MenubarDockMode) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    } else if (value is MenubarMenuItem) {
+    }    else if (value is MenubarMenuItem) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    } else if (value is MenubarShortcut) {
+    }    else if (value is MenubarShortcut) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
@@ -360,66 +337,57 @@ class MenubarHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   MenubarHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   /// Draws the menubar icon for [state]. [progress] is 0 to 1 and fills the
   /// ring of [MenubarIconState.working]; [tooltip] shows when the pointer
   /// rests on the icon.
-  Future<void> setIconState(
-    MenubarIconState state,
-    double progress,
-    String tooltip,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconState$pigeonVar_messageChannelSuffix';
+  Future<void> setIconState(MenubarIconState state, double progress, String tooltip) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconState$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[state, progress, tooltip],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[state, progress, tooltip]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> setPopoverSize(double width, double height) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPopoverSize$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPopoverSize$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[width, height],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[width, height]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> showPopover() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showPopover$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showPopover$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -428,15 +396,15 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> hidePopover() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hidePopover$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hidePopover$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -445,15 +413,15 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<bool> isPopoverShown() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isPopoverShown$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isPopoverShown$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -462,58 +430,54 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// The menu a right-click (or Control-click) on the icon opens.
   Future<void> setMenu(List<MenubarMenuItem> items) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setMenu$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setMenu$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[items],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[items]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// When the app shows in the Dock and the app switcher.
   Future<void> setDockMode(MenubarDockMode mode) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDockMode$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDockMode$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[mode],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[mode]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Whether this Flutter can draw a second view, which the desktop window
   /// needs. False leaves the app in its popover only.
   Future<bool> isWindowSupported() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowSupported$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowSupported$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -522,18 +486,18 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Opens the desktop window next to the popover, or brings it to the
   /// front when it is open already. Returns the id of its Flutter view.
   Future<int> openWindow() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -542,18 +506,18 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as int;
   }
 
   /// Closes the desktop window and removes its Flutter view. The app keeps
   /// running in the menubar.
   Future<void> closeWindow() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -562,15 +526,15 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<bool> isWindowOpen() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowOpen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isWindowOpen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -579,32 +543,31 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// What the desktop window's title bar says, such as the device and the
   /// section it shows.
   Future<void> setWindowTitle(String title) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setWindowTitle$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setWindowTitle$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[title],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[title]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Opens a window in the shape of a picture [width] by [height] pixels,
@@ -614,57 +577,47 @@ class MenubarHostApi {
   /// front; another [id] takes its place. A [barHeight] above zero adds a
   /// bar that many points tall along the top edge, under the traffic
   /// lights, where Flutter draws its controls: the picture keeps its shape
-  /// below it.
-  Future<int> openPictureWindow(
-    String id,
-    String title,
-    double width,
-    double height,
-    double barHeight,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow$pigeonVar_messageChannelSuffix';
+  /// below it. With [fullScreen], the window fills its screen at once, as
+  /// a display does.
+  Future<int> openPictureWindow(String id, String title, double width, double height, double barHeight, bool fullScreen) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[id, title, width, height, barHeight],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id, title, width, height, barHeight, fullScreen]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as int;
   }
 
   /// The picture is [width] by [height] pixels now, such as after the
   /// phone was turned: the window turns with it and keeps its long side.
   Future<void> setPictureWindowSize(double width, double height) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowSize$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowSize$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[width, height],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[width, height]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> focusPictureWindow() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.focusPictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.focusPictureWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -673,16 +626,16 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Moves the picture window with the pointer, from a press on its bar.
   Future<void> dragPictureWindow() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.dragPictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.dragPictureWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -691,16 +644,16 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Closes the picture window and removes its Flutter view.
   Future<void> closePictureWindow() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closePictureWindow$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closePictureWindow$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -709,57 +662,89 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
-  /// Lets people drag the popover off into its own window.
-  Future<void> setDetachable(bool detachable) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable$pigeonVar_messageChannelSuffix';
+  /// Puts the picture window in full screen, or takes it out.
+  Future<void> setPictureWindowFullScreen(bool fullScreen) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowFullScreen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[detachable],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[fullScreen]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<bool> isPictureWindowFullScreen() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isPictureWindowFullScreen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
-      isNullValid: true,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
     );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Lets people drag the popover off into its own window.
+  Future<void> setDetachable(bool detachable) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[detachable]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Whether a drop where the pointer is now, over the view [viewId], would
   /// be taken, so the cursor shows a copy badge or refuses.
   Future<void> setDropAllowed(int viewId, bool allowed) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDropAllowed$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDropAllowed$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[viewId, allowed],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[viewId, allowed]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Closes the popover if a file drag sprang it open.
   Future<void> closeIfOpenedByDrag() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeIfOpenedByDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.closeIfOpenedByDrag$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -768,53 +753,50 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Opens or closes the popover with [shortcut] from any app, or stops
   /// doing so when it is null. False when the Mac refused it.
   Future<bool> setGlobalShortcut(MenubarShortcut? shortcut) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setGlobalShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setGlobalShortcut$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[shortcut],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[shortcut]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// A second combination that shows Recent clips from anywhere. False when
   /// the Mac refused it.
   Future<bool> setClipsShortcut(MenubarShortcut? shortcut) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setClipsShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setClipsShortcut$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[shortcut],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[shortcut]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
@@ -822,8 +804,7 @@ class MenubarHostApi {
   /// shortcut; null when Esc was pressed or it was cancelled. The global
   /// shortcut rests meanwhile, so pressing it records it.
   Future<MenubarShortcut?> recordShortcut() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.recordShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.recordShortcut$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -832,16 +813,16 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
     return pigeonVar_replyValue as MenubarShortcut?;
   }
 
   Future<void> cancelRecording() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.cancelRecording$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.cancelRecording$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -850,54 +831,51 @@ class MenubarHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Starts dragging the files at [paths] out of the view [viewId], from
   /// where the mouse is pressed in it, to Finder or another app. False
   /// when no press in that view is under way.
   Future<bool> startFileDrag(int viewId, List<String> paths) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startFileDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startFileDrag$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[viewId, paths],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[viewId, paths]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   Future<void> toggleQuickLook(List<String> paths) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.toggleQuickLook$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.toggleQuickLook$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[paths],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[paths]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -917,13 +895,7 @@ abstract class MenubarFlutterApi {
   /// Something of [kind] dragged into the view [viewId] (the popover's or
   /// the window's), at [x], [y] in logical pixels from its top left.
   /// [fileCount] is 1 for text and links.
-  void onDragEntered(
-    int viewId,
-    double x,
-    double y,
-    int fileCount,
-    MenubarDragKind kind,
-  );
+  void onDragEntered(int viewId, double x, double y, int fileCount, MenubarDragKind kind);
 
   void onDragUpdated(int viewId, double x, double y);
 
@@ -949,20 +921,16 @@ abstract class MenubarFlutterApi {
   /// The picture window closed and its Flutter view [viewId] is gone.
   void onPictureWindowClosed(int viewId);
 
-  static void setUp(
-    MenubarFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(MenubarFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onMenuItemSelected$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onMenuItemSelected$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -974,20 +942,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onClipsShortcut$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onClipsShortcut$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -997,20 +961,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPopoverVisibilityChanged$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPopoverVisibilityChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1022,46 +982,37 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onFilesDropped$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onFilesDropped$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           final List<Object?> args = message! as List<Object?>;
-          final List<String> arg_paths = (args[0]! as List<Object?>)
-              .cast<String>();
+          final List<String> arg_paths = (args[0]! as List<Object?>).cast<String>();
           try {
             api.onFilesDropped(arg_paths);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1073,30 +1024,20 @@ abstract class MenubarFlutterApi {
           final int arg_fileCount = args[3]! as int;
           final MenubarDragKind arg_kind = args[4]! as MenubarDragKind;
           try {
-            api.onDragEntered(
-              arg_viewId,
-              arg_x,
-              arg_y,
-              arg_fileCount,
-              arg_kind,
-            );
+            api.onDragEntered(arg_viewId, arg_x, arg_y, arg_fileCount, arg_kind);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragUpdated$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragUpdated$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1110,20 +1051,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragExited$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragExited$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1135,28 +1072,23 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragPerformed$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragPerformed$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           final List<Object?> args = message! as List<Object?>;
           final int arg_viewId = args[0]! as int;
-          final List<String> arg_paths = (args[1]! as List<Object?>)
-              .cast<String>();
+          final List<String> arg_paths = (args[1]! as List<Object?>).cast<String>();
           final double arg_x = args[2]! as double;
           final double arg_y = args[3]! as double;
           try {
@@ -1164,20 +1096,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onTextDropped$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onTextDropped$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1193,20 +1121,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowOpened$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowOpened$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1218,20 +1142,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowFocusChanged$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowFocusChanged$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1243,20 +1163,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowClosed$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onWindowClosed$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1268,20 +1184,16 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPictureWindowClosed$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPictureWindowClosed$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1293,10 +1205,8 @@ abstract class MenubarFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }

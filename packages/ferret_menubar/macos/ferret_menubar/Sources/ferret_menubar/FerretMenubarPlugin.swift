@@ -196,12 +196,14 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     }
 
     func openPictureWindow(
-        id: String, title: String, width: Double, height: Double, barHeight: Double
+        id: String, title: String, width: Double, height: Double, barHeight: Double,
+        fullScreen: Bool
     ) throws -> Int64 {
         let picture = NSSize(width: width, height: height)
         guard
             let viewId = Self.pictureController?.open(
-                id: id, title: title, picture: picture, bar: CGFloat(barHeight))
+                id: id, title: title, picture: picture, bar: CGFloat(barHeight),
+                fullScreen: fullScreen)
         else {
             throw PigeonError(
                 code: "window-unsupported",
@@ -226,6 +228,14 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func closePictureWindow() throws {
         Self.pictureController?.close()
+    }
+
+    func setPictureWindowFullScreen(fullScreen: Bool) throws {
+        Self.pictureController?.setFullScreen(fullScreen)
+    }
+
+    func isPictureWindowFullScreen() throws -> Bool {
+        Self.pictureController?.isFullScreen ?? false
     }
 
     func setDropAllowed(viewId: Int64, allowed: Bool) throws {

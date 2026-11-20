@@ -447,8 +447,9 @@ protocol MenubarHostApi {
   /// front; another [id] takes its place. A [barHeight] above zero adds a
   /// bar that many points tall along the top edge, under the traffic
   /// lights, where Flutter draws its controls: the picture keeps its shape
-  /// below it.
-  func openPictureWindow(id: String, title: String, width: Double, height: Double, barHeight: Double) throws -> Int64
+  /// below it. With [fullScreen], the window fills its screen at once, as
+  /// a display does.
+  func openPictureWindow(id: String, title: String, width: Double, height: Double, barHeight: Double, fullScreen: Bool) throws -> Int64
   /// The picture is [width] by [height] pixels now, such as after the
   /// phone was turned: the window turns with it and keeps its long side.
   func setPictureWindowSize(width: Double, height: Double) throws
@@ -457,6 +458,9 @@ protocol MenubarHostApi {
   func dragPictureWindow() throws
   /// Closes the picture window and removes its Flutter view.
   func closePictureWindow() throws
+  /// Puts the picture window in full screen, or takes it out.
+  func setPictureWindowFullScreen(fullScreen: Bool) throws
+  func isPictureWindowFullScreen() throws -> Bool
   /// Lets people drag the popover off into its own window.
   func setDetachable(detachable: Bool) throws
   /// Whether a drop where the pointer is now, over the view [viewId], would
@@ -679,7 +683,8 @@ class MenubarHostApiSetup {
     /// front; another [id] takes its place. A [barHeight] above zero adds a
     /// bar that many points tall along the top edge, under the traffic
     /// lights, where Flutter draws its controls: the picture keeps its shape
-    /// below it.
+    /// below it. With [fullScreen], the window fills its screen at once, as
+    /// a display does.
     let openPictureWindowChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.openPictureWindow\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       openPictureWindowChannel.setMessageHandler { message, reply in
@@ -689,8 +694,9 @@ class MenubarHostApiSetup {
         let widthArg = args[2] as! Double
         let heightArg = args[3] as! Double
         let barHeightArg = args[4] as! Double
+        let fullScreenArg = args[5] as! Bool
         do {
-          let result = try api.openPictureWindow(id: idArg, title: titleArg, width: widthArg, height: heightArg, barHeight: barHeightArg)
+          let result = try api.openPictureWindow(id: idArg, title: titleArg, width: widthArg, height: heightArg, barHeight: barHeightArg, fullScreen: fullScreenArg)
           reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
@@ -757,6 +763,35 @@ class MenubarHostApiSetup {
       }
     } else {
       closePictureWindowChannel.setMessageHandler(nil)
+    }
+    /// Puts the picture window in full screen, or takes it out.
+    let setPictureWindowFullScreenChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setPictureWindowFullScreen\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setPictureWindowFullScreenChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let fullScreenArg = args[0] as! Bool
+        do {
+          try api.setPictureWindowFullScreen(fullScreen: fullScreenArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setPictureWindowFullScreenChannel.setMessageHandler(nil)
+    }
+    let isPictureWindowFullScreenChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.isPictureWindowFullScreen\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isPictureWindowFullScreenChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isPictureWindowFullScreen()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isPictureWindowFullScreenChannel.setMessageHandler(nil)
     }
     /// Lets people drag the popover off into its own window.
     let setDetachableChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setDetachable\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)

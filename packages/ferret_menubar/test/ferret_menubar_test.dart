@@ -29,6 +29,7 @@ class _RecordingApi implements MenubarHostApi {
     double width,
     double height,
     double barHeight,
+    bool fullScreen,
   ) async {
     pictureWindows.add((id, title, width, height, barHeight));
     return 3;

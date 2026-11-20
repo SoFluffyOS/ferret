@@ -29,6 +29,7 @@ class _FakeMenubarApi implements MenubarHostApi {
     double width,
     double height,
     double barHeight,
+    bool fullScreen,
   ) async {
     opened.add(
       '$id: $title, ${width.round()} × ${height.round()}, bar ${barHeight.round()}',

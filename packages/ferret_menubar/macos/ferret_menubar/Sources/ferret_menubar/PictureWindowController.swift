@@ -42,10 +42,15 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
     /// Opens the window for `id`, or brings it to the front when it is the
     /// one open. Another id takes the open window's place. Returns the id
     /// of its Flutter view, or nil when this Flutter can't draw one more.
-    func open(id: String, title: String, picture: NSSize, bar: CGFloat = 0) -> Int64? {
+    func open(
+        id: String, title: String, picture: NSSize, bar: CGFloat = 0, fullScreen: Bool = false
+    ) -> Int64? {
         if let viewController, self.id == id {
             window?.title = title
             bringToFront()
+            if fullScreen {
+                setFullScreen(true)
+            }
             return viewController.viewIdentifier
         }
 
@@ -87,7 +92,21 @@ final class PictureWindowController: NSObject, NSWindowDelegate {
         place(window)
         dock.isPictureWindowOpen = true
         bringToFront()
+        if fullScreen {
+            setFullScreen(true)
+        }
         return viewController.viewIdentifier
+    }
+
+    var isFullScreen: Bool { window?.styleMask.contains(.fullScreen) ?? false }
+
+    /// A window that is someone's display fills its screen; only such a
+    /// window ever asks, so the others stay out of full screen.
+    func setFullScreen(_ fullScreen: Bool) {
+        guard let window, isFullScreen != fullScreen else { return }
+
+        window.collectionBehavior = [.fullScreenPrimary]
+        window.toggleFullScreen(nil)
     }
 
     /// The picture has another size now. A phone that was turned turns the

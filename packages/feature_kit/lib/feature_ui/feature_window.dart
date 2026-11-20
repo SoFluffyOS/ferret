@@ -10,6 +10,7 @@ class FeatureWindow {
     required this.contentSize,
     required this.builder,
     this.barHeight = 0,
+    this.fullScreen = false,
   });
 
   /// What the remembered size and place go by, such as a device's id.
@@ -27,6 +28,9 @@ class FeatureWindow {
   /// window adds it above the picture, so the picture keeps its shape and
   /// nothing is drawn over it. Zero for a plain title bar.
   final double barHeight;
+
+  /// The window fills its screen as soon as it opens, as a display does.
+  final bool fullScreen;
 
   /// What fills the window. It sits under the app's theme and strings,
   /// with a navigator of its own.
@@ -60,4 +64,9 @@ abstract interface class FeatureWindows implements Listenable {
   /// Closes the window. Its content is disposed like after the person
   /// closed it.
   Future<void> close();
+
+  /// Puts the window in full screen, or takes it out.
+  Future<void> setFullScreen(bool fullScreen);
+
+  Future<bool> isFullScreen();
 }
