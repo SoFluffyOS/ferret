@@ -50,7 +50,7 @@ While it goes, the line counts files as well as bytes: **Photos · 120 of 340 fi
 
 On the other side, the folder lands in the receive folder with its tree as it was: `Downloads/Ferret/Photos/2024/…`. Modified dates are kept on computers.
 
-Ferret NEVER merges into a folder you already have. If `Photos` is there, the new one becomes `Photos (2)`. **Open** opens the folder, **Show in Finder** shows it.
+Ferret NEVER merges into a folder you already have. If `Photos` is there, the new one becomes `Photos (2)`. **Open** opens the folder, **Show in Finder** (**Show in folder** elsewhere) shows it.
 
 A few things stay behind on purpose:
 

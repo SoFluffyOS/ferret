@@ -95,7 +95,7 @@ Want the window's buttons to stay lit? **••• → Keep toolbar visible**.
 
 Click the camera, or press `⇧⌘S`. Ferret saves the phone's screen as a PNG in **Downloads › Ferret**, at the phone's full size, whatever size the window has.
 
-A line above the picture says "Saved to Downloads › Ferret", with **Show in Finder**. Easy, right?
+A line above the picture says "Saved to Downloads › Ferret", with **Show in Finder** (**Show in folder** on Windows and Linux). Easy, right?
 
 It works over Wi-Fi too. You can't click a phone that is **View only**, but you can keep what you see.
 
