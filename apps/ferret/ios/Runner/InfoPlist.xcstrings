@@ -8,7 +8,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ferret chỉ dùng camera để quét mã ghép đôi trên thiết bị kia của bạn."
+            "value": "Ferret dùng camera để quét mã ghép đôi trên thiết bị kia của bạn, và để chụp ảnh hoặc quét tài liệu cho máy tính khi bạn chạm Chụp ảnh."
           }
         }
       }
@@ -21,6 +21,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ferret kết nối với máy tính và điện thoại của chính bạn trên Wi-Fi này để đồng bộ, và với thiết bị bạn chọn để chia sẻ tệp."
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription": {
+      "comment": "Info.plist NSMicrophoneUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret không bao giờ dùng micrô. Phần camera dùng để quét mã ghép đôi thì có thể, nên iOS cần dòng này."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription": {
+      "comment": "Info.plist NSPhotoLibraryUsageDescription",
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferret hiện ảnh và ảnh chụp màn hình gần đây của bạn trên những máy tính bạn chọn, chỉ khi Ferret đang mở. Ferret không bao giờ sửa hay xoá ảnh."
           }
         }
       }
