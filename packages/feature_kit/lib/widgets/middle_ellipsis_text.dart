@@ -1,15 +1,23 @@
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// One line of [text] that, when too long, keeps its start and its end
-/// and drops the middle, as Finder does with a file name: both
-/// "PXL_2026…export.jpg" and its extension stay readable. Cut text shows
-/// in full in a tooltip.
+/// [text] on one line, or up to [maxLines], that, when too long, keeps
+/// its start and its end and drops the middle, as Finder does with a
+/// file name: both "PXL_2026…export.jpg" and its extension stay
+/// readable. Cut text shows in full in a tooltip.
 class MiddleEllipsisText extends StatefulWidget {
-  const MiddleEllipsisText(this.text, {super.key, this.style});
+  const MiddleEllipsisText(
+    this.text, {
+    super.key,
+    this.style,
+    this.maxLines = 1,
+    this.textAlign = .start,
+  });
 
   final String text;
   final TextStyle? style;
+  final int maxLines;
+  final TextAlign textAlign;
 
   static const _ellipsis = '…';
 
@@ -22,14 +30,16 @@ class MiddleEllipsisText extends StatefulWidget {
   @override
   State<MiddleEllipsisText> createState() => _MiddleEllipsisTextState();
 
-  /// [text] as it fits in [maxWidth] on one line: itself, or its start and
-  /// end around an ellipsis, with a little more of the start kept.
+  /// [text] as it fits in [maxWidth] on [maxLines] lines: itself, or its
+  /// start and end around an ellipsis, with a little more of the start
+  /// kept.
   static String fit(
     String text, {
     required double maxWidth,
     required TextStyle style,
     TextScaler textScaler = TextScaler.noScaling,
     TextDirection textDirection = .ltr,
+    int maxLines = 1,
   }) {
     final measured = switch ((style.fontFamily, debugMeasureFontFamily)) {
       (null, final family?) => style.copyWith(
@@ -43,13 +53,17 @@ class MiddleEllipsisText extends StatefulWidget {
     final painter = TextPainter(
       textDirection: textDirection,
       textScaler: textScaler,
-      maxLines: 1,
+      maxLines: maxLines,
     );
     bool fits(String candidate) {
-      painter
-        ..text = TextSpan(text: candidate, style: measured)
-        ..layout();
-      return painter.width <= maxWidth;
+      painter.text = TextSpan(text: candidate, style: measured);
+      if (maxLines == 1) {
+        painter.layout();
+        return painter.width <= maxWidth;
+      }
+
+      painter.layout(maxWidth: maxWidth);
+      return !painter.didExceedMaxLines;
     }
 
     try {
@@ -124,13 +138,15 @@ class _MiddleEllipsisTextState extends State<MiddleEllipsisText> {
           style: style,
           textScaler: textScaler,
           textDirection: direction,
+          maxLines: widget.maxLines,
         );
         final line = Text(
           shown,
           style: style,
-          maxLines: 1,
-          softWrap: false,
+          maxLines: widget.maxLines,
+          softWrap: widget.maxLines > 1,
           overflow: .clip,
+          textAlign: widget.textAlign,
           semanticsLabel: widget.text,
         );
         if (shown == widget.text) {

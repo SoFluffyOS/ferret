@@ -22,6 +22,20 @@ void main() {
     expect(shown.length, greaterThan(10));
   });
 
+  test('two lines keep more of the name than one', () {
+    final one = MiddleEllipsisText.fit(name, maxWidth: 120, style: style);
+    final two = MiddleEllipsisText.fit(
+      name,
+      maxWidth: 120,
+      style: style,
+      maxLines: 2,
+    );
+
+    expect(two, contains('…'));
+    expect(two, endsWith('.jpg'));
+    expect(two.length, greaterThan(one.length));
+  });
+
   testWidgets('shows the whole text where it fits', (tester) async {
     await tester.pumpWidget(
       const Directionality(
