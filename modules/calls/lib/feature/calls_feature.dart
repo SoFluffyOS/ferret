@@ -46,6 +46,7 @@ class CallsFeature extends Feature implements CallsControl {
   StreamSubscription<String>? _settingsChanges;
   StreamSubscription<PlatformPhoneEvent>? _phoneEvents;
   PlatformCallPermissions? _permissions;
+  bool _hasTelephony = true;
   CallsStatus? _pushedStatus;
   Future<void> _outbox = Future.value();
   bool _monitoring = false;
@@ -64,6 +65,11 @@ class CallsFeature extends Feature implements CallsControl {
   bool get isPhone => phone != null;
 
   CallsSettings get settings => CallsSettings(host.settings);
+
+  /// Whether this device makes and takes phone calls. False on a
+  /// Wi-Fi-only tablet, where there are no calls to share; true until the
+  /// first read.
+  bool get hasTelephony => _hasTelephony;
 
   /// The phone's permissions as last read, null before the first read and on
   /// computers.
@@ -213,6 +219,7 @@ class CallsFeature extends Feature implements CallsControl {
       return;
     }
 
+    _hasTelephony = await _guard(phone.hasTelephony) ?? _hasTelephony;
     _permissions = await _guard(phone.permissions) ?? _permissions;
     await _syncMonitoring(phone);
   }

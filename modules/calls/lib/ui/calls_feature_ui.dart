@@ -91,7 +91,7 @@ class CallsFeatureUi extends FeatureUi {
   /// Ferret. A computer shows its calls in [activity].
   @override
   bool hasHomeCard(FeatureContext feature) {
-    if (!this.feature.isPhone) {
+    if (!this.feature.isPhone || !this.feature.hasTelephony) {
       return false;
     }
 
@@ -100,10 +100,12 @@ class CallsFeatureUi extends FeatureUi {
     return this.feature.settings.enabled && permissions != null && !canSeeCalls;
   }
 
-  /// On the phone, while calls are off.
+  /// On the phone, while calls are off. Never on a tablet without calls.
   @override
   FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
-    if (!this.feature.isPhone || this.feature.settings.enabled) {
+    if (!this.feature.isPhone ||
+        !this.feature.hasTelephony ||
+        this.feature.settings.enabled) {
       return null;
     }
 
@@ -125,6 +127,10 @@ class CallsFeatureUi extends FeatureUi {
 
     final flags = session.remoteFeature(featureId)?.flags ?? const <String>[];
     if (this.feature.isPhone) {
+      if (!this.feature.hasTelephony) {
+        return null;
+      }
+
       return _phoneHealth(feature, device, flags);
     }
 
@@ -363,8 +369,13 @@ class CallsFeatureUi extends FeatureUi {
     return FeatureHealth(.ok, reason: l10n.healthLocalOk(name));
   }
 
-  _SettingsState _phoneSettingsState(CallsLocalizations l10n) {
+  /// Null on a tablet that can't call: there is nothing to set.
+  _SettingsState? _phoneSettingsState(CallsLocalizations l10n) {
     final permissions = feature.permissions;
+    if (!feature.hasTelephony) {
+      return null;
+    }
+
     if (!feature.settings.enabled) {
       return (summary: '', isOn: false, needsAttention: false);
     }

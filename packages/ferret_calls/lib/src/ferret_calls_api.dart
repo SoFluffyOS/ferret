@@ -33,6 +33,9 @@ class FerretCalls implements PhoneCalls {
       _hostApi.requestPermissions();
 
   @override
+  Future<bool> hasTelephony() => _hostApi.hasTelephony();
+
+  @override
   Future<void> openAppSettings() => _hostApi.openAppSettings();
 
   @override

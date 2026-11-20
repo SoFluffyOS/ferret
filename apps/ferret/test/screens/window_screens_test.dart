@@ -121,6 +121,9 @@ class _ScreenPhone implements PhoneCalls {
       );
 
   @override
+  Future<bool> hasTelephony() async => true;
+
+  @override
   Future<bool> startMonitoring() async => true;
 
   @override

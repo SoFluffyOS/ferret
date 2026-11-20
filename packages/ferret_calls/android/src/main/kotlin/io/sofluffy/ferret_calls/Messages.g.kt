@@ -570,6 +570,11 @@ interface CallsHostApi {
    */
   suspend fun requestPermissions(): PlatformCallPermissions
   /**
+   * Whether this device can make and take phone calls. False on a
+   * Wi-Fi-only tablet.
+   */
+  fun hasTelephony(): Boolean
+  /**
    * Opens this app's page in system settings, where permissions that can no
    * longer be asked for are granted.
    */
@@ -636,6 +641,21 @@ interface CallsHostApi {
               }
               reply.reply(wrapped)
             }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_calls.CallsHostApi.hasTelephony$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.hasTelephony())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

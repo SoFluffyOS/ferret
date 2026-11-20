@@ -508,6 +508,26 @@ class CallsHostApi {
     return pigeonVar_replyValue! as PlatformCallPermissions;
   }
 
+  /// Whether this device can make and take phone calls. False on a
+  /// Wi-Fi-only tablet.
+  Future<bool> hasTelephony() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_calls.CallsHostApi.hasTelephony$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
   /// Opens this app's page in system settings, where permissions that can no
   /// longer be asked for are granted.
   Future<void> openAppSettings() async {

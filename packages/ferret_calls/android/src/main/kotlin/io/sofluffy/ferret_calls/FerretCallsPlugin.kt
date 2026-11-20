@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -71,6 +73,14 @@ class FerretCallsPlugin :
     override fun onDetachedFromActivityForConfigChanges() = detach()
 
     override fun onDetachedFromActivity() = detach()
+
+    override fun hasTelephony(): Boolean {
+        val feature = when (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            true -> PackageManager.FEATURE_TELEPHONY_CALLING
+            false -> PackageManager.FEATURE_TELEPHONY
+        }
+        return requireContext().packageManager.hasSystemFeature(feature)
+    }
 
     override fun getPermissions(): PlatformCallPermissions =
         CallPermissions.read(requireContext(), activityBinding?.activity)

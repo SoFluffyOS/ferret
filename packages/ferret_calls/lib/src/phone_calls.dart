@@ -11,6 +11,10 @@ abstract interface class PhoneCalls {
   /// Shows the system's permission dialogs for what is missing.
   Future<PlatformCallPermissions> requestPermissions();
 
+  /// Whether this device can make and take phone calls. False on a
+  /// Wi-Fi-only tablet.
+  Future<bool> hasTelephony();
+
   /// Opens the app's page in system settings.
   Future<void> openAppSettings();
 

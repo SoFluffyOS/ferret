@@ -123,6 +123,10 @@ abstract class CallsHostApi {
   @async
   PlatformCallPermissions requestPermissions();
 
+  /// Whether this device can make and take phone calls. False on a
+  /// Wi-Fi-only tablet.
+  bool hasTelephony();
+
   /// Opens this app's page in system settings, where permissions that can no
   /// longer be asked for are granted.
   void openAppSettings();

@@ -26,6 +26,9 @@ class FakePhone implements PhoneCalls {
   List<PlatformCallLogEntry> log = [];
   bool monitoring = false;
   bool settingsOpen = true;
+
+  /// False for a Wi-Fi-only tablet.
+  bool telephony = true;
   int answered = 0;
   int ended = 0;
   int silenced = 0;
@@ -55,6 +58,9 @@ class FakePhone implements PhoneCalls {
     granted = afterRequest ?? granted;
     return granted;
   }
+
+  @override
+  Future<bool> hasTelephony() async => telephony;
 
   @override
   Future<void> openAppSettings() async {

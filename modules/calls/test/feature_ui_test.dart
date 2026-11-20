@@ -189,11 +189,12 @@ void main() {
       WidgetTester tester, {
       required bool enabled,
       bool isPhone = true,
+      bool telephony = true,
     }) async {
       await tester.runAsync(() async {
         host = FakeHost(settings: {CallsSettings.enabledKey: enabled});
         feature = switch (isPhone) {
-          true => CallsFeature(phone: FakePhone()),
+          true => CallsFeature(phone: FakePhone()..telephony = telephony),
           false => CallsFeature(),
         };
         await feature.start(host);
@@ -224,6 +225,10 @@ void main() {
 
     testWidgets('no offer on a computer', (tester) async {
       expect(await offerOn(tester, enabled: false, isPhone: false), isNull);
+    });
+
+    testWidgets('no offer on a tablet without calls', (tester) async {
+      expect(await offerOn(tester, enabled: false, telephony: false), isNull);
     });
   });
 }
