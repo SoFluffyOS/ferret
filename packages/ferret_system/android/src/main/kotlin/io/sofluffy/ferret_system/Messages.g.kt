@@ -443,6 +443,13 @@ interface SystemHostApi {
    * Empty follows the system again.
    */
   fun setAppLanguage(languageTag: String)
+  /** macOS 13 and later: whether Ferret opens when the user logs in. */
+  fun isLoginItem(): Boolean
+  /**
+   * macOS 13 and later: opens Ferret at login, or stops. False when the
+   * system said no or can't.
+   */
+  fun setLoginItem(enabled: Boolean): Boolean
 
   companion object {
     /** The codec used by SystemHostApi. */
@@ -843,6 +850,38 @@ interface SystemHostApi {
             val wrapped: List<Any?> = try {
               api.setAppLanguage(languageTagArg)
               listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.isLoginItem$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.isLoginItem())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.setLoginItem$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val enabledArg = args[0] as Boolean
+            val wrapped: List<Any?> = try {
+              listOf(api.setLoginItem(enabledArg))
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

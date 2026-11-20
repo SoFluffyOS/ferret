@@ -1748,8 +1748,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsStartAtLogin => 'Khởi động Ferret khi tôi đăng nhập';
 
   @override
-  String get settingsStartAtLoginBody =>
-      'Ferret khởi động trong khay hệ thống, để các thiết bị kết nối sẵn trước khi bạn cần.';
+  String settingsStartAtLoginBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Ferret mở trên thanh menu, để thiết bị của bạn kết nối sẵn trước khi cần.',
+        'other': 'Ferret khởi động trong khay hệ thống, để các thiết bị kết nối sẵn trước khi bạn cần.',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get menuHelp => 'Trợ giúp';

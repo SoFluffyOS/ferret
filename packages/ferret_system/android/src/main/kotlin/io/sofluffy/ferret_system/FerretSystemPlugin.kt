@@ -198,6 +198,10 @@ class FerretSystemPlugin :
         manager.applicationLocales = wanted
     }
 
+    override fun isLoginItem(): Boolean = false
+
+    override fun setLoginItem(enabled: Boolean): Boolean = false
+
     override fun canRequestAddTile(): Boolean =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activity != null
 

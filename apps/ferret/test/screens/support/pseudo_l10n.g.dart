@@ -3991,8 +3991,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsStartAtLogin => pseudo(super.settingsStartAtLogin);
   @override
-  String get settingsStartAtLoginBody => pseudo(super.settingsStartAtLoginBody);
-  @override
   String get menuHelp => pseudo(super.menuHelp);
   @override
   String get menuKeyboardShortcuts => pseudo(super.menuKeyboardShortcuts);
@@ -4381,6 +4379,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String doctorFirewallLinux(String firewall) =>
       pseudo(super.doctorFirewallLinux(firewall));
+  @override
+  String settingsStartAtLoginBody(String here) =>
+      pseudo(super.settingsStartAtLoginBody(here));
   @override
   String accessTitle(String device) => pseudo(super.accessTitle(device));
   @override

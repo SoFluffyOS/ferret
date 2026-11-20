@@ -47,12 +47,34 @@ void main() {
     expect(settings.get<bool>(LoginSettings.startAtLoginKey), isFalse);
   });
 
-  testWidgets('a Mac shows nothing here', (tester) async {
+  testWidgets('a Mac has it too, and says the menu bar', (tester) async {
+    var item = false;
     await tester.pumpWidget(
       testApp(
         LoginSettings(
           settings: MemorySettingsStore(),
-          login: StartAtLogin(operatingSystem: 'macos'),
+          login: StartAtLogin(
+            operatingSystem: 'macos',
+            isLoginItem: () async => item,
+            setLoginItem: (enabled) async {
+              item = enabled;
+              return true;
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Start Ferret when I log in'), findsOneWidget);
+  });
+
+  testWidgets('a phone shows nothing here', (tester) async {
+    await tester.pumpWidget(
+      testApp(
+        LoginSettings(
+          settings: MemorySettingsStore(),
+          login: StartAtLogin(operatingSystem: 'android'),
         ),
       ),
     );

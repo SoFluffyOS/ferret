@@ -2399,8 +2399,8 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsStartAtLoginBody.
   ///
   /// In en, this message translates to:
-  /// **'It starts in the tray, so your devices connect before you need them.'**
-  String get settingsStartAtLoginBody;
+  /// **'{here, select, macOS{It opens in the menu bar, so your devices connect before you need them.} other{It starts in the tray, so your devices connect before you need them.}}'**
+  String settingsStartAtLoginBody(String here);
 
   /// No description provided for @menuHelp.
   ///

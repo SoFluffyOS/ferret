@@ -132,10 +132,31 @@ void main() {
     );
   });
 
-  test('a Mac has none of this', () async {
-    final login = StartAtLogin(operatingSystem: 'macos');
+  test('on a Mac, a login item for the app itself', () async {
+    var item = false;
+    final login = StartAtLogin(
+      operatingSystem: 'macos',
+      isLoginItem: () async => item,
+      setLoginItem: (enabled) async {
+        item = enabled;
+        return true;
+      },
+    );
 
-    expect(login.isSupported, isFalse);
+    expect(login.isSupported, isTrue);
+    expect(await login.isEnabled(), isFalse);
+    await login.setEnabled(true);
+    expect(await login.isEnabled(), isTrue);
+    await login.setEnabled(false);
+    expect(await login.isEnabled(), isFalse);
+  });
+
+  test('a Mac without the plugin says off, quietly', () async {
+    final login = StartAtLogin(
+      operatingSystem: 'macos',
+      isLoginItem: () async => throw StateError('no plugin'),
+    );
+
     expect(await login.isEnabled(), isFalse);
   });
 }

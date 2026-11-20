@@ -403,6 +403,11 @@ protocol SystemHostApi {
   /// `vi`, so its own notices and the system's per-app language agree.
   /// Empty follows the system again.
   func setAppLanguage(languageTag: String) throws
+  /// macOS 13 and later: whether Ferret opens when the user logs in.
+  func isLoginItem() throws -> Bool
+  /// macOS 13 and later: opens Ferret at login, or stops. False when the
+  /// system said no or can't.
+  func setLoginItem(enabled: Bool) throws -> Bool
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -772,6 +777,37 @@ class SystemHostApiSetup {
       }
     } else {
       setAppLanguageChannel.setMessageHandler(nil)
+    }
+    /// macOS 13 and later: whether Ferret opens when the user logs in.
+    let isLoginItemChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.isLoginItem\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isLoginItemChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isLoginItem()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isLoginItemChannel.setMessageHandler(nil)
+    }
+    /// macOS 13 and later: opens Ferret at login, or stops. False when the
+    /// system said no or can't.
+    let setLoginItemChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.setLoginItem\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setLoginItemChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let enabledArg = args[0] as! Bool
+        do {
+          let result = try api.setLoginItem(enabled: enabledArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setLoginItemChannel.setMessageHandler(nil)
     }
   }
 }

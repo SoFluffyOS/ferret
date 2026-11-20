@@ -1755,8 +1755,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsStartAtLogin => 'Start Ferret when I log in';
 
   @override
-  String get settingsStartAtLoginBody =>
-      'It starts in the tray, so your devices connect before you need them.';
+  String settingsStartAtLoginBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'It opens in the menu bar, so your devices connect before you need them.',
+        'other': 'It starts in the tray, so your devices connect before you need them.',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get menuHelp => 'Help';

@@ -384,7 +384,7 @@
   "noticeChannelFind": "Tìm thiết bị",
   "noticeChannelProblems": "Sự cố kết nối",
   "settingsStartAtLogin": "Khởi động Ferret khi tôi đăng nhập",
-  "settingsStartAtLoginBody": "Ferret khởi động trong khay hệ thống, để các thiết bị kết nối sẵn trước khi bạn cần.",
+  "settingsStartAtLoginBody": "{here, select, macOS{Ferret mở trên thanh menu, để thiết bị của bạn kết nối sẵn trước khi cần.} other{Ferret khởi động trong khay hệ thống, để các thiết bị kết nối sẵn trước khi bạn cần.}}",
   "menuHelp": "Trợ giúp",
   "menuKeyboardShortcuts": "Phím tắt",
   "menuCheckNetwork": "Kiểm tra mạng của tôi…",

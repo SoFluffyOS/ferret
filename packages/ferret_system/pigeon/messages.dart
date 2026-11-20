@@ -121,6 +121,13 @@ abstract class SystemHostApi {
   /// `vi`, so its own notices and the system's per-app language agree.
   /// Empty follows the system again.
   void setAppLanguage(String languageTag);
+
+  /// macOS 13 and later: whether Ferret opens when the user logs in.
+  bool isLoginItem();
+
+  /// macOS 13 and later: opens Ferret at login, or stops. False when the
+  /// system said no or can't.
+  bool setLoginItem(bool enabled);
 }
 
 @FlutterApi()

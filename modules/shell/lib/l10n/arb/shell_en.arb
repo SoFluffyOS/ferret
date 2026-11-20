@@ -1345,7 +1345,14 @@
     "description": "The name of a notification category, shown in the system notification settings"
   },
   "settingsStartAtLogin": "Start Ferret when I log in",
-  "settingsStartAtLoginBody": "It starts in the tray, so your devices connect before you need them.",
+  "settingsStartAtLoginBody": "{here, select, macOS{It opens in the menu bar, so your devices connect before you need them.} other{It starts in the tray, so your devices connect before you need them.}}",
+  "@settingsStartAtLoginBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "menuHelp": "Help",
   "menuKeyboardShortcuts": "Keyboard Shortcuts",
   "menuCheckNetwork": "Check My Network…",

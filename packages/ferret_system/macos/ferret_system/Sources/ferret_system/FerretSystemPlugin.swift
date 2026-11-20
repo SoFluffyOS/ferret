@@ -1,6 +1,7 @@
 import Cocoa
 import FlutterMacOS
 import Network
+import ServiceManagement
 
 /// Reports wake from sleep and network changes on macOS, so Ferret reconnects
 /// right away, and when the screen locks or another account takes over the
@@ -171,6 +172,25 @@ public class FerretSystemPlugin: NSObject, FlutterPlugin, SystemHostApi {
     func canRequestAddTile() throws -> Bool { false }
 
     func setAppLanguage(languageTag: String) throws {}
+
+    func isLoginItem() throws -> Bool {
+        guard #available(macOS 13.0, *) else { return false }
+        return SMAppService.mainApp.status == .enabled
+    }
+
+    func setLoginItem(enabled: Bool) throws -> Bool {
+        guard #available(macOS 13.0, *) else { return false }
+        do {
+            if enabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+            return true
+        } catch {
+            return false
+        }
+    }
 
     func requestAddTile() async throws -> AddTileResult { .unsupported }
 

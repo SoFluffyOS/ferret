@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dbus/dbus.dart';
+import 'package:ferret_system/src/messages.g.dart';
 
 /// Runs a command and reports how it ended.
 typedef RunProcess = Future<ProcessResult> Function(
@@ -12,8 +13,9 @@ typedef RunProcess = Future<ProcessResult> Function(
 ///
 /// Linux: an XDG autostart entry in `~/.config/autostart`, which every
 /// desktop reads; inside a Flatpak, the Background portal instead.
-/// Windows: the user's `Run` key. Turning it off removes what was added, so
-/// nothing is left outside Ferret's own folder.
+/// Windows: the user's `Run` key. macOS 13 and later: a login item for the
+/// app itself. Turning it off removes what was added, so nothing is left
+/// outside Ferret's own folder.
 class StartAtLogin {
   StartAtLogin({
     String? operatingSystem,
@@ -22,12 +24,16 @@ class StartAtLogin {
     RunProcess? run,
     Future<bool> Function()? isFlatpak,
     Future<void> Function(bool enabled)? requestBackground,
+    Future<bool> Function()? isLoginItem,
+    Future<bool> Function(bool enabled)? setLoginItem,
   }) : _operatingSystem = operatingSystem ?? Platform.operatingSystem,
        _environment = environment ?? Platform.environment,
        _executable = executable ?? Platform.resolvedExecutable,
        _run = run ?? Process.run,
        _isFlatpak = isFlatpak ?? (() => File('/.flatpak-info').exists()),
-       _requestBackground = requestBackground ?? _portalRequest;
+       _requestBackground = requestBackground ?? _portalRequest,
+       _isLoginItem = isLoginItem ?? SystemHostApi().isLoginItem,
+       _setLoginItem = setLoginItem ?? SystemHostApi().setLoginItem;
 
   static const desktopFileName = 'io.sofluffy.ferret.desktop';
   static const runKey = r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run';
@@ -40,9 +46,13 @@ class StartAtLogin {
   final RunProcess _run;
   final Future<bool> Function() _isFlatpak;
   final Future<void> Function(bool enabled) _requestBackground;
+  final Future<bool> Function() _isLoginItem;
+  final Future<bool> Function(bool enabled) _setLoginItem;
 
-  bool get isSupported =>
-      _operatingSystem == 'linux' || _operatingSystem == 'windows';
+  bool get isSupported => switch (_operatingSystem) {
+    'linux' || 'windows' || 'macos' => true,
+    _ => false,
+  };
 
   /// Where the Linux autostart entry goes.
   String get desktopFilePath {
@@ -100,6 +110,10 @@ class StartAtLogin {
       return result?.exitCode == 0;
     }
 
+    if (_operatingSystem == 'macos') {
+      return _quietlyAsk(_isLoginItem);
+    }
+
     if (_operatingSystem != 'linux') {
       return false;
     }
@@ -114,6 +128,11 @@ class StartAtLogin {
   Future<void> setEnabled(bool enabled) async {
     if (_operatingSystem == 'windows') {
       await _setRunKey(enabled);
+      return;
+    }
+
+    if (_operatingSystem == 'macos') {
+      await _quietlyAsk(() => _setLoginItem(enabled));
       return;
     }
 
@@ -195,6 +214,15 @@ class StartAtLogin {
       return;
     } finally {
       await client?.close();
+    }
+  }
+
+  /// The system's answer, or false when the plugin isn't there.
+  static Future<bool> _quietlyAsk(Future<bool> Function() ask) async {
+    try {
+      return await ask();
+    } on Object {
+      return false;
     }
   }
 }

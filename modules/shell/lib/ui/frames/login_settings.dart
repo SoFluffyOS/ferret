@@ -6,7 +6,8 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
 
-/// Windows and Linux: start Ferret, in the tray, when you log in.
+/// Start Ferret when you log in: in the tray on Windows and Linux, in the
+/// menu bar on a Mac.
 class LoginSettings extends StatefulWidget {
   const LoginSettings({super.key, required this.settings, this.login});
 
@@ -65,7 +66,7 @@ class _LoginSettingsState extends State<LoginSettings> {
           children: [
             SettingSwitchRow(
               title: l10n.settingsStartAtLogin,
-              body: l10n.settingsStartAtLoginBody,
+              body: l10n.settingsStartAtLoginBody(ThisComputer.here),
               value: _enabled,
               onChanged: (value) => unawaited(_set(value)),
             ),
