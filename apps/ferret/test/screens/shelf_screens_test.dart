@@ -59,8 +59,8 @@ Future<List<int>> _picture(int width, int height) async {
 
 /// Fills the shelf with a few dropped things and two copies, kept since
 /// Keep copies is on.
-Future<void> _fill(WidgetTester tester, ShelfStore store) async {
-  final viewModel = _viewModel(tester);
+Future<void> fillShelf(WidgetTester tester, ShelfStore store) async {
+  final viewModel = shelfViewModel(tester);
   await tester.runAsync(() async {
     await viewModel.setKeepCopies(true);
     final home = Directory(p.join(p.dirname(store.folder), 'home'))
@@ -88,7 +88,7 @@ Future<void> _fill(WidgetTester tester, ShelfStore store) async {
   });
 }
 
-ShelfViewModel _viewModel(WidgetTester tester) =>
+ShelfViewModel shelfViewModel(WidgetTester tester) =>
     tester.element(find.byType(ShelfBoxFrame).first).read<ShelfViewModel>();
 
 /// The floating panel as it shows over another app: its size, its corner
@@ -129,7 +129,7 @@ class _PanelPreview extends StatelessWidget {
 
 Future<void> _openPanel(WidgetTester tester, ScreenRig rig) async {
   await rig.settle(tester);
-  await rig.open(tester, _PanelPreview(_viewModel(tester)));
+  await rig.open(tester, _PanelPreview(shelfViewModel(tester)));
 }
 
 Future<void> _openSettings(
@@ -167,15 +167,15 @@ Future<void> _openList(WidgetTester tester, ScreenRig rig) async {
 final _screens = <String, _Script>{
   'empty': (tester, rig, store) async {},
   'empty_drop_over': (tester, rig, store) async =>
-      _viewModel(tester).hover(over: true),
-  'items': (tester, rig, store) => _fill(tester, store),
+      shelfViewModel(tester).hover(over: true),
+  'items': (tester, rig, store) => fillShelf(tester, store),
   'drop_over': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await rig.settle(tester);
-    _viewModel(tester).hover(over: true);
+    shelfViewModel(tester).hover(over: true);
   },
   'selection': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await rig.settle(tester);
     await tester.tap(_tile('IMG_2041.png'));
     await tester.sendKeyDownEvent(LogicalKeyboardKey.metaLeft);
@@ -183,13 +183,13 @@ final _screens = <String, _Script>{
     await tester.sendKeyUpEvent(LogicalKeyboardKey.metaLeft);
   },
   'hover': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await rig.settle(tester);
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: tester.getCenter(_tile('Trip to Da Lat')));
   },
   'missing': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     final folder = store.items.firstWhere(
       (item) => item.name == 'Trip to Da Lat',
     );
@@ -198,9 +198,9 @@ final _screens = <String, _Script>{
       await store.refresh();
     });
   },
-  'hidden': (tester, rig, store) => _fill(tester, store),
+  'hidden': (tester, rig, store) => fillShelf(tester, store),
   'list': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await _openList(tester, rig);
     await rig.settle(tester);
     final viewModel = tester
@@ -210,7 +210,7 @@ final _screens = <String, _Script>{
   },
   'empty_list': (tester, rig, store) => _openList(tester, rig),
   'copies_list': (tester, rig, store) async {
-    await tester.runAsync(() => _viewModel(tester).setKeepCopies(true));
+    await tester.runAsync(() => shelfViewModel(tester).setKeepCopies(true));
     await tester.runAsync(
       () => store.keepText(
         'https://example.org/tickets/4471',
@@ -221,18 +221,18 @@ final _screens = <String, _Script>{
     await _openList(tester, rig);
   },
   'hidden_list': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await _openList(tester, rig);
   },
   'panel_empty': (tester, rig, store) => _openPanel(tester, rig),
   'panel_items': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await _openPanel(tester, rig);
   },
   'panel_drop_over': (tester, rig, store) async {
-    await _fill(tester, store);
+    await fillShelf(tester, store);
     await _openPanel(tester, rig);
-    _viewModel(tester).hover(over: true);
+    shelfViewModel(tester).hover(over: true);
   },
   'settings': (tester, rig, store) => _openSettings(tester, rig),
   'settings_all_on': (tester, rig, store) async {
