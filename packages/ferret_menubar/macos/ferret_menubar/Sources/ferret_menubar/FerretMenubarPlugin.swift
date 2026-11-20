@@ -255,8 +255,10 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         await withCheckedContinuation { continuation in
             DispatchQueue.main.async {
                 Self.hotKey.pause()
+                Self.clipsHotKey.pause()
                 Self.recorder.record { shortcut in
                     Self.hotKey.resume()
+                    Self.clipsHotKey.resume()
                     continuation.resume(returning: shortcut)
                 }
             }
