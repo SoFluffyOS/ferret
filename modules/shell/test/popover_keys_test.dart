@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shell/shell.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'test_app.dart';
 
@@ -169,5 +170,116 @@ void main() {
 
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     expect(closed, 1);
+  });
+
+  testWidgets('Home and End jump to the first and the last line', (
+    tester,
+  ) async {
+    final opened = <String>[];
+    await tester.pumpWidget(
+      lines([
+        for (final name in ['Pixel 9', 'iPad', 'Studio PC'])
+          tapLine(name, onTap: () => opened.add(name)),
+      ]),
+    );
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.end);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+
+    expect(opened, ['Studio PC', 'Pixel 9']);
+  });
+
+  group('in the popover', () {
+    late GlobalKey<NavigatorState> navigatorKey;
+    late FocusNode shelf;
+    late List<String> opened;
+
+    Future<void> showPopover(WidgetTester tester) async {
+      navigatorKey = GlobalKey<NavigatorState>();
+      shelf = FocusNode(debugLabel: 'shelf box');
+      addTearDown(shelf.dispose);
+      opened = [];
+      await tester.pumpWidget(
+        WidgetsApp(
+          navigatorKey: navigatorKey,
+          color: const Color(0xFFFFFFFF),
+          pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
+            settings: settings,
+            pageBuilder: (context, _, _) => builder(context),
+          ),
+          home: KeyboardLines(
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                for (final name in ['Pixel 9', 'Studio PC'])
+                  tapLine(name, onTap: () => opened.add(name)),
+              ],
+            ),
+          ),
+          builder: (context, navigator) => PopoverKeysFrame(
+            navigatorKey: navigatorKey,
+            onClose: () {},
+            child: FluffyTheme(
+              data: FluffyThemeData.fallback(),
+              child: Column(
+                children: [
+                  Expanded(child: navigator ?? const SizedBox.shrink()),
+                  Row(
+                    children: [
+                      const Focus(
+                        debugLabel: 'Clear',
+                        child: SizedBox(width: 40, height: 20),
+                      ),
+                      Expanded(
+                        child: Focus(
+                          focusNode: shelf,
+                          child: const SizedBox(height: 100),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    testWidgets('↓ from the last device goes into the shelf, ↑ comes back', (
+      tester,
+    ) async {
+      await showPopover(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      expect(shelf.hasPrimaryFocus, isFalse);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      expect(shelf.hasPrimaryFocus, isTrue);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      expect(shelf.hasPrimaryFocus, isFalse);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(opened, ['Studio PC']);
+    });
+
+    testWidgets('↑ on the first device stays there', (tester) async {
+      await showPopover(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+
+      expect(opened, ['Pixel 9']);
+    });
   });
 }

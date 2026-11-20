@@ -78,6 +78,16 @@ final _screens = <String, _Screen>{
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     },
   ),
+  // Moved down the devices with the arrow keys.
+  'keys_devices': _Screen(
+    .three,
+    full: true,
+    script: (tester, rig, _) async {
+      for (var press = 0; press < 2; press++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      }
+    },
+  ),
   // Tabbed from the page into the shelf.
   'keys_tab': _Screen(
     .one,
