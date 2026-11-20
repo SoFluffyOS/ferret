@@ -1,8 +1,11 @@
 import Cocoa
 
-/// Sits over the status bar button: takes clicks and accepts dropped files.
-/// A drag of text or a link springs the popover open too, to be dropped on
-/// a device there; dropped on the icon itself, it is refused.
+/// Sits over the status bar button: takes clicks and accepts files dropped
+/// from other apps. A drag of text or a link springs the popover open too,
+/// to be dropped on a device there; dropped on the icon itself, it is
+/// refused. So is anything dragged out of Ferret itself (a photo, a clip, a
+/// shelf item): it springs the popover open, but never goes to the last
+/// device by landing on the icon.
 final class StatusItemView: NSView {
     var onClick: (() -> Void)?
     var onSecondaryClick: (() -> Void)?
@@ -49,6 +52,8 @@ final class StatusItemView: NSView {
         springTimer = Timer.scheduledTimer(withTimeInterval: springDelay, repeats: false) { [weak self] _ in
             self?.onDragHeld?()
         }
+        guard !Self.isFromThisApp(sender) else { return [] }
+
         onDragOverChanged?(true)
         return .copy
     }
@@ -63,15 +68,28 @@ final class StatusItemView: NSView {
         onDragOverChanged?(false)
     }
 
+    override func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        !Self.isFromThisApp(sender)
+    }
+
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         springTimer?.invalidate()
         springTimer = nil
         onDragOverChanged?(false)
+        guard !Self.isFromThisApp(sender) else { return false }
+
         let paths = fileURLs(from: sender).map(\.path)
         guard !paths.isEmpty else { return false }
 
         onFilesDropped?(paths)
         return true
+    }
+
+    /// AppKit gives a drag's source only to views in the app it started in.
+    /// Only drags from other apps land on the icon; Ferret's own go to a
+    /// device row or the shelf in the popover instead.
+    static func isFromThisApp(_ info: NSDraggingInfo) -> Bool {
+        info.draggingSource != nil
     }
 
     private func fileURLs(from info: NSDraggingInfo) -> [URL] {
