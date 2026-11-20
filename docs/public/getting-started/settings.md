@@ -35,7 +35,7 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 
 | Row | What's inside |
 |---|---|
-| **This device's name** | **Rename** it. Your other devices show the new name right away. |
+| **This device** | **Rename** it (your other devices show the new name right away). On a computer, **Start Ferret when I log in**; on a Mac, **Always show in the Dock** too. On Android, how Ferret keeps running. |
 | **Clipboard** | [Clipboard](../features/clipboard.md) sync and what it skips. |
 | **Files** | Where [files](../features/drop.md) land and who may send them. |
 | **Continue & media** | [Continue](../features/handoff.md) pages and [media](../features/media.md) controls. |
