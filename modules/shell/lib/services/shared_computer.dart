@@ -7,8 +7,9 @@ import 'package:engine/engine.dart';
 /// computer, such as a family PC where each person has their own login.
 ///
 /// Once another account's Ferret is heard, this computer counts as shared
-/// for good, and unless the person picked a name, it goes by the account
-/// too: "Family PC (Anna)" instead of a second "Family PC".
+/// until the person says only they use it, and unless the person picked a
+/// name, it goes by the account too: "Family PC (Anna)" instead of a second
+/// "Family PC".
 class SharedComputer {
   SharedComputer(this.settings, {Map<String, String>? environment})
     : _environment = environment ?? const {};
@@ -60,6 +61,29 @@ class SharedComputer {
     }
 
     return '$computerName ($account)';
+  }
+
+  /// [name] without the account [nameFor] added to it.
+  String plainName(String name) {
+    final suffix = ' ($accountName)';
+    if (accountName == null || !name.endsWith(suffix)) {
+      return name;
+    }
+
+    return name.substring(0, name.length - suffix.length);
+  }
+
+  /// The person says only they use this computer: it stops counting as
+  /// shared, so previews follow the usual default again, and the account
+  /// leaves the name unless the person picked it. Choices made for each
+  /// device stay. Hearing Ferret in another account marks it shared again.
+  Future<void> onlyMe(FerretEngine engine) async {
+    await settings.set(sharedKey, false);
+    if (hasChosenName) {
+      return;
+    }
+
+    await engine.rename(plainName(engine.device.name), remember: false);
   }
 
   /// Marks the computer shared and renames this device the first time

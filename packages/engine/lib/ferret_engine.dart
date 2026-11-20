@@ -29,7 +29,9 @@ class FerretEngine implements FeatureHost {
     required VpnAddresses vpnFilter,
     required Future<List<String>> Function() vpnAddressSource,
     required List<Duration> vpnDelays,
+    required SameAccount sameAccount,
   }) : _device = device,
+       _sameAccount = sameAccount,
        _vpnFilter = vpnFilter,
        _vpnAddressSource = vpnAddressSource,
        _features = {for (final feature in features) feature.id: feature},
@@ -80,6 +82,7 @@ class FerretEngine implements FeatureHost {
     Future<List<String>> Function() vpnAddressSource =
         VpnAddresses.ofThisDevice,
     List<Duration> vpnDelays = VpnReacher.defaultDelays,
+    SameAccount? sameAccount,
   }) async {
     final identity = await DeviceIdentity.loadOrCreate(secrets);
     final trustStore = await TrustStore.open(secrets);
@@ -94,6 +97,7 @@ class FerretEngine implements FeatureHost {
       vpnFilter: vpnFilter,
       vpnAddressSource: vpnAddressSource,
       vpnDelays: vpnDelays,
+      sameAccount: sameAccount ?? SameAccount(),
     );
   }
 
@@ -143,6 +147,11 @@ class FerretEngine implements FeatureHost {
   final StreamController<List<DiscoveredPeer>> _nearbyChanges = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
   final Set<String> _otherAccounts = {};
+  final SameAccount _sameAccount;
+
+  /// Ferret this same account runs here, such as its ferret-cli, and the
+  /// ones still being checked: never another account.
+  final Set<String> _ownAccount = {};
   final StreamController<void> _otherAccountsChanges = .broadcast();
 
   ServerSocket? _server;
@@ -181,7 +190,9 @@ class FerretEngine implements FeatureHost {
 
   /// Ferret in other accounts on this computer, by device id: they
   /// announce from this computer's own address with its platform. Several
-  /// people sharing one computer each get their own Ferret.
+  /// people sharing one computer each get their own Ferret. What this
+  /// account runs itself, such as its ferret-cli, never counts (see
+  /// [SameAccount]).
   Set<String> get otherAccountsHere => Set.unmodifiable(_otherAccounts);
 
   /// Fires when [otherAccountsHere] gains a device.
@@ -1014,17 +1025,25 @@ class FerretEngine implements FeatureHost {
   }
 
   Future<void> _noteOtherAccount(DiscoveredPeer peer) async {
+    final deviceId = peer.deviceId;
     final isSameKind = peer.announce.platform == device.platform;
-    if (!isSameKind || _otherAccounts.contains(peer.deviceId)) {
+    if (!isSameKind ||
+        _otherAccounts.contains(deviceId) ||
+        _ownAccount.contains(deviceId)) {
       return;
     }
 
     final own = _ownAddresses ??= {'127.0.0.1', ...await _localAddresses()};
-    if (!own.contains(peer.host)) {
+    if (!own.contains(peer.host) || !_ownAccount.add(deviceId)) {
       return;
     }
 
-    _otherAccounts.add(peer.deviceId);
+    if (await _sameAccount.runs(peer)) {
+      return;
+    }
+
+    _ownAccount.remove(deviceId);
+    _otherAccounts.add(deviceId);
     _otherAccountsChanges.add(null);
   }
 

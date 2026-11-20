@@ -4040,6 +4040,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsRenameTitle => pseudo(super.settingsRenameTitle);
   @override
+  String get thisDeviceOnlyMe => pseudo(super.thisDeviceOnlyMe);
+  @override
   String get privateCoverBody => pseudo(super.privateCoverBody);
   @override
   String get settingsAddressHint => pseudo(super.settingsAddressHint);
@@ -4546,6 +4548,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.dropDeviceOffline(name));
   @override
   String thisDeviceShared(String here) => pseudo(super.thisDeviceShared(here));
+  @override
+  String thisDeviceOnlyMeHint(String here) =>
+      pseudo(super.thisDeviceOnlyMeHint(here));
   @override
   String thisDeviceOtherPort(String port, String usual) =>
       pseudo(super.thisDeviceOtherPort(port, usual));

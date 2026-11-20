@@ -84,6 +84,12 @@ class FerretPaths {
   /// A feature's own saved files, such as Messages' saved texts.
   String feature(String featureId) => _path.join(root, 'features', featureId);
 
+  /// The folder ferret-cli keeps its own identity in, next to the app's.
+  static const String cliFolder = 'cli';
+
+  /// ferret-cli's paths: its identity, pairings and settings.
+  FerretPaths get cli => nested(cliFolder);
+
   /// Paths rooted in a subfolder, such as the command line's own `cli`
   /// identity next to the app's.
   FerretPaths nested(String name) =>

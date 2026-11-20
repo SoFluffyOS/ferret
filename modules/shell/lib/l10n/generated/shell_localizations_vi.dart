@@ -785,6 +785,22 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String get thisDeviceOnlyMe => 'Chỉ mình tôi';
+
+  @override
+  String thisDeviceOnlyMeHint(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Chỉ mình tôi dùng $_temp0. Nội dung xem trước hiện lại, trừ thiết bị bạn đã tắt, và tên bỏ phần tài khoản. Nếu Ferret thấy một tài khoản khác ở đây, máy lại được tính là dùng chung.';
+  }
+
+  @override
   String thisDeviceOtherPort(String port, String usual) {
     return 'Đang dùng cổng $port: một tài khoản khác đang dùng cổng $usual.';
   }

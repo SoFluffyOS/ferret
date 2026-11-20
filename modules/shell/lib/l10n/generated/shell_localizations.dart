@@ -1136,6 +1136,18 @@ abstract class ShellLocalizations {
   /// **'Other accounts on {here, select, macOS{this Mac} windows{this PC} other{this computer}} use Ferret too. Each one has its own devices.'**
   String thisDeviceShared(String here);
 
+  /// Button next to the shared-computer line under this device name in Settings: the person says nobody else uses this computer
+  ///
+  /// In en, this message translates to:
+  /// **'Only me'**
+  String get thisDeviceOnlyMe;
+
+  /// Tooltip of the Only me button: what saying nobody else uses this computer does
+  ///
+  /// In en, this message translates to:
+  /// **'Only I use {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Previews show again unless you turned them off for a device, and the name drops the account. If Ferret hears another account here, it counts as shared again.'**
+  String thisDeviceOnlyMeHint(String here);
+
   /// No description provided for @thisDeviceOtherPort.
   ///
   /// In en, this message translates to:

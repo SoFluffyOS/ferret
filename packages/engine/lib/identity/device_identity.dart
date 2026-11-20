@@ -9,19 +9,24 @@ import 'package:transport/transport.dart';
 class DeviceIdentity {
   const DeviceIdentity._(this.keyPair, this.publicKey, this.deviceId);
 
-  static const _storageKey = 'ferret.identity';
+  /// Where the identity is kept in a [SecretStore].
+  static const storageKey = 'ferret.identity';
 
   /// Loads the identity from [store], creating and saving one on first run.
   static Future<DeviceIdentity> loadOrCreate(SecretStore store) async {
-    if (await store.read(_storageKey) case final saved?) {
-      return fromPrivateKey(base64Decode(saved));
+    if (await store.read(storageKey) case final saved?) {
+      return fromSaved(saved);
     }
 
     final keyPair = await NoiseCrypto.generateKeyPair();
     final privateKey = await NoiseCrypto.privateKeyOf(keyPair);
-    await store.write(_storageKey, base64Encode(privateKey));
+    await store.write(storageKey, base64Encode(privateKey));
     return _fromKeyPair(keyPair);
   }
+
+  /// The identity as [loadOrCreate] saved it.
+  static Future<DeviceIdentity> fromSaved(String saved) =>
+      fromPrivateKey(base64Decode(saved));
 
   static Future<DeviceIdentity> fromPrivateKey(List<int> privateKey) async =>
       _fromKeyPair(await NoiseCrypto.keyPairFromPrivateKey(privateKey));

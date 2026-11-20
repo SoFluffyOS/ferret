@@ -535,6 +535,19 @@
       }
     }
   },
+  "thisDeviceOnlyMe": "Only me",
+  "@thisDeviceOnlyMe": {
+    "description": "Button next to the shared-computer line under this device name in Settings: the person says nobody else uses this computer"
+  },
+  "thisDeviceOnlyMeHint": "Only I use {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Previews show again unless you turned them off for a device, and the name drops the account. If Ferret hears another account here, it counts as shared again.",
+  "@thisDeviceOnlyMeHint": {
+    "description": "Tooltip of the Only me button: what saying nobody else uses this computer does",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "thisDeviceOtherPort": "Listening on port {port}: another account has {usual}.",
   "@thisDeviceOtherPort": {
     "placeholders": {

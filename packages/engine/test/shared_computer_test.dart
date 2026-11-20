@@ -22,9 +22,11 @@ void main() {
     required Discovery discovery,
     Platform platform = .PLATFORM_WINDOWS,
     int port = 0,
+    SecretStore? secrets,
+    SameAccount? sameAccount,
   }) async {
     final engine = await FerretEngine.create(
-      secrets: MemorySecretStore(),
+      secrets: secrets ?? MemorySecretStore(),
       settings: MemorySettingsStore(),
       device: LocalDevice(
         name: 'Family PC',
@@ -33,6 +35,7 @@ void main() {
       ),
       discovery: discovery,
       port: port,
+      sameAccount: sameAccount ?? SameAccount(listens: (_) async => false),
     );
     await engine.start();
     engines.add(engine);
@@ -90,6 +93,106 @@ void main() {
     },
   );
 
+  group('what this same account runs is not another account', () {
+    late Directory home;
+
+    setUp(() async {
+      home = await Directory.systemTemp.createTemp('ferret_same_account');
+    });
+
+    tearDown(() => home.delete(recursive: true));
+
+    test('its ferret-cli, known by the identity it can read', () async {
+      final cliSecrets = '${home.path}/cli/secrets';
+      final bus = _Bus();
+      final anna = await startEngine(
+        discovery: bus.join(),
+        sameAccount: SameAccount(
+          siblingSecrets: [cliSecrets],
+          listens: (_) async => false,
+        ),
+      );
+      final changes = anna.otherAccountsChanges.first;
+      final cli = await startEngine(
+        discovery: bus.join(),
+        secrets: FileSecretStore(cliSecrets),
+      );
+      final ben = await startEngine(discovery: bus.join());
+
+      await changes.timeout(const Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(anna.otherAccountsHere, {ben.identity.deviceId});
+      expect(anna.otherAccountsHere, isNot(contains(cli.identity.deviceId)));
+    });
+
+    test('a ferret-cli identity set up after the app started', () async {
+      final cliSecrets = '${home.path}/cli/secrets';
+      final sameAccount = SameAccount(
+        siblingSecrets: [cliSecrets],
+        listens: (_) async => false,
+      );
+      final cli = await DeviceIdentity.loadOrCreate(
+        FileSecretStore(cliSecrets),
+      );
+
+      expect(
+        await sameAccount.runs(_peerFrom(cli.deviceId, port: 47642)),
+        isTrue,
+      );
+      expect(
+        await sameAccount.runs(_peerFrom('SOMEONEELSE', port: 47643)),
+        isFalse,
+      );
+    });
+
+    test(
+      'an unreadable identity counts as another account, as before',
+      () async {
+        final cliSecrets = Directory('${home.path}/cli/secrets')
+          ..createSync(recursive: true);
+        File('${cliSecrets.path}/secrets.json').writeAsStringSync('not json');
+        final sameAccount = SameAccount(
+          siblingSecrets: [cliSecrets.path, '${home.path}/missing'],
+          listens: (_) async => throw const FileSystemException('no lsof'),
+        );
+
+        expect(
+          await sameAccount.runs(_peerFrom('BEN', port: 47642)),
+          isFalse,
+        );
+      },
+    );
+
+    test('a copy listening in this account, such as one started from '
+        'another data folder', () async {
+      final bus = _Bus();
+      final anna = await startEngine(
+        discovery: bus.join(),
+        sameAccount: SameAccount(),
+      );
+      final copy = await startEngine(discovery: bus.join());
+
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      expect(anna.otherAccountsHere, isNot(contains(copy.identity.deviceId)));
+    }, testOn: 'mac-os || linux');
+
+    test(
+      'a port this account listens on is seen, a closed one is not',
+      () async {
+        final listener = await ServerSocket.bind(InternetAddress.anyIPv4, 0);
+        final port = listener.port;
+
+        expect(await SameAccount.listensHere(port), isTrue);
+
+        await listener.close();
+        expect(await SameAccount.listensHere(port), isFalse);
+      },
+      testOn: 'mac-os || linux',
+    );
+  });
+
   test('a computer elsewhere on the network is not another account', () async {
     final bus = _Bus(host: '192.0.2.40');
     final anna = await startEngine(discovery: bus.join());
@@ -100,6 +203,16 @@ void main() {
     expect(anna.otherAccountsHere, isEmpty);
   });
 }
+
+DiscoveredPeer _peerFrom(String deviceId, {required int port}) =>
+    DiscoveredPeer(
+      announce: Announce(
+        deviceId: deviceId,
+        port: port,
+        platform: .PLATFORM_WINDOWS,
+      ),
+      host: '127.0.0.1',
+    );
 
 class _Bus {
   _Bus({this.host = '127.0.0.1'});

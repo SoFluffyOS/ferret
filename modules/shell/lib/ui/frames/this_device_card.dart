@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -5,7 +7,8 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// This device as the others see it: its name, with Rename.
+/// This device as the others see it: its name, with Rename, and on a
+/// computer counted as shared, a way to say only the person uses it.
 class ThisDeviceCard extends StatefulWidget {
   const ThisDeviceCard({super.key, required this.engine});
 
@@ -72,11 +75,29 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
             ),
           ),
           Spacing.h12,
-          Button(
-            mainAxisSize: .min,
-            variant: .ghost,
-            label: l10n.settingsRename,
-            onPressed: _rename,
+          IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: .stretch,
+              children: [
+                Button(
+                  mainAxisSize: .min,
+                  variant: .ghost,
+                  label: l10n.settingsRename,
+                  onPressed: _rename,
+                ),
+                if (_sharedComputer.isShared) ...[
+                  Spacing.v8,
+                  Button(
+                    mainAxisSize: .min,
+                    variant: .ghost,
+                    label: l10n.thisDeviceOnlyMe,
+                    tooltip: l10n.thisDeviceOnlyMeHint(ThisComputer.here),
+                    semanticLabel: l10n.thisDeviceOnlyMeHint(ThisComputer.here),
+                    onPressed: _onlyMe,
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),
@@ -87,13 +108,25 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
   /// name carries the account, and the port when the usual one is taken.
   List<String> _sharingLines(ShellLocalizations l10n) {
     final engine = widget.engine;
-    final isShared = SharedComputer(engine.settings).isShared;
+    final isShared = _sharedComputer.isShared;
 
     return [
       if (isShared) l10n.thisDeviceShared(ThisComputer.here),
       if (engine.usesFallbackPort)
         l10n.thisDeviceOtherPort('${engine.port}', '${engine.preferredPort}'),
     ];
+  }
+
+  SharedComputer get _sharedComputer => SharedComputer(
+    widget.engine.settings,
+    environment: Platform.environment,
+  );
+
+  Future<void> _onlyMe() async {
+    await _sharedComputer.onlyMe(widget.engine);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _rename() async {

@@ -30,6 +30,11 @@ final _screens = <String, _Script>{
   'this_device': (tester, rig, sample) async {
     await rig.open(tester, const ThisDeviceSettingsPage());
   },
+  'this_device_only_me': (tester, rig, sample) async {
+    await rig.open(tester, const ThisDeviceSettingsPage());
+    await tester.tap(find.text('Only me'));
+    await rig.settle(tester);
+  },
   'previews': (tester, rig, sample) async {
     final phoneId = await rig.pairConnectedPhone(
       tester,

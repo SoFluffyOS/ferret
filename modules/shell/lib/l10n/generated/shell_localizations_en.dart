@@ -790,6 +790,22 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String get thisDeviceOnlyMe => 'Only me';
+
+  @override
+  String thisDeviceOnlyMeHint(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Only I use $_temp0. Previews show again unless you turned them off for a device, and the name drops the account. If Ferret hears another account here, it counts as shared again.';
+  }
+
+  @override
   String thisDeviceOtherPort(String port, String usual) {
     return 'Listening on port $port: another account has $usual.';
   }

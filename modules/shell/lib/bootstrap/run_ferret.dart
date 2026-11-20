@@ -68,6 +68,7 @@ Future<void> runFerret({
     settings: settings,
     device: device,
     features: [for (final feature in features) feature.feature],
+    sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
   );
   sharedComputer.follow(engine, computerName: described.name);
   await engine.start();

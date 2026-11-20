@@ -33,7 +33,7 @@ class CliEnvironment {
 
   final Stream<List<int>>? _input;
 
-  static const String folderName = 'cli';
+  static const String folderName = FerretPaths.cliFolder;
 
   /// The CLI's folders for this user, under `FERRET_HOME` when it is set.
   /// [environment] defaults to this process's.
