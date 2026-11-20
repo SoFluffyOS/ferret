@@ -39,6 +39,48 @@ class ImagePicture extends MirrorPicture {
   int get height => image.height;
 }
 
+/// [picture] turned clockwise by [quarterTurns] to show upright, as a
+/// camera's is when the phone is held another way than its sensor sits.
+/// [width] and [height] are the picture's as it shows.
+class TurnedPicture extends MirrorPicture {
+  const TurnedPicture(this.picture, this.quarterTurns);
+
+  /// [picture] turned by [degrees] clockwise, or as it is when that is
+  /// no turn at all.
+  static MirrorPicture of(MirrorPicture picture, int degrees) {
+    final quarterTurns = (degrees ~/ 90) % 4;
+    if (quarterTurns == 0) {
+      return picture;
+    }
+
+    return TurnedPicture(picture, quarterTurns);
+  }
+
+  final MirrorPicture picture;
+  final int quarterTurns;
+
+  @override
+  int get width => switch (quarterTurns.isOdd) {
+    true => picture.height,
+    false => picture.width,
+  };
+
+  @override
+  int get height => switch (quarterTurns.isOdd) {
+    true => picture.width,
+    false => picture.height,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is TurnedPicture &&
+      other.picture == picture &&
+      other.quarterTurns == quarterTurns;
+
+  @override
+  int get hashCode => Object.hash(picture, quarterTurns);
+}
+
 /// A frame reached the screen.
 class DecodedFrame {
   const DecodedFrame({

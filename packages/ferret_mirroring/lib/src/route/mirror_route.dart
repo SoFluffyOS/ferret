@@ -1,3 +1,4 @@
+import 'package:ferret_mirroring/src/capture/camera_capture.dart';
 import 'package:ferret_mirroring/src/route/mirror_feed.dart';
 import 'package:ferret_mirroring/src/route/mirror_target.dart';
 import 'package:ferret_mirroring/src/stream/mirror_audio.dart';
@@ -65,6 +66,7 @@ class FeedOptions {
     this.bitrate = 0,
     this.audioCodecs = const [],
     this.control = false,
+    this.lens,
   });
 
   /// What this computer can decode, best first.
@@ -85,6 +87,10 @@ class FeedOptions {
 
   /// Ask for a way to control the device, where the route has one.
   final bool control;
+
+  /// For a target that is a camera: the one to start with. Null leaves it
+  /// to the device.
+  final MirrorLens? lens;
 }
 
 /// Where a route stands on this device.

@@ -3,15 +3,29 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Android asks for this to capture what the phone plays along with its
-         screen (AudioPlaybackCapture). The microphone is never opened. Asked
-         only when the owner turns on "Send sound too". -->
+         screen (AudioPlaybackCapture): asked when the owner turns on "Send
+         sound too", and the microphone stays closed. The microphone itself
+         is only opened along with the camera, below. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- A computer uses this phone's camera and microphone, after the owner
+         said Once or Always. Asked right then, never before. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application>
         <service
             android:name="io.sofluffy.ferret_mirroring.MirrorService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
+
+        <service
+            android:name="io.sofluffy.ferret_mirroring.CameraService"
+            android:exported="false"
+            android:foregroundServiceType="camera|microphone" />
 
         <activity
             android:name="io.sofluffy.ferret_mirroring.ProjectionConsentActivity"

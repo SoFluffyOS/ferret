@@ -145,6 +145,13 @@ enum NativeCaptureEnd {
   failed;
 }
 
+enum NativeCameraLens {
+  /// Faces away from the screen.
+  back,
+  /// Faces whoever looks at the screen.
+  front;
+}
+
 enum NativeAudioCodec {
   /// Opus, one packet per call.
   opus,
@@ -365,6 +372,7 @@ class NativeStreamConfig {
     required this.fps,
     this.sps,
     this.pps,
+    this.turn,
   });
 
   NativeCodec codec;
@@ -383,6 +391,10 @@ class NativeStreamConfig {
 
   Uint8List? pps;
 
+  /// A camera only: degrees clockwise to turn the picture so it shows
+  /// upright. Null for a screen, which is upright already.
+  int? turn;
+
   List<Object?> _toList() {
     return <Object?>[
       codec,
@@ -392,6 +404,7 @@ class NativeStreamConfig {
       fps,
       sps,
       pps,
+      turn,
     ];
   }
 
@@ -408,6 +421,7 @@ class NativeStreamConfig {
       fps: result[4]! as int,
       sps: result[5] as Uint8List?,
       pps: result[6] as Uint8List?,
+      turn: result[7] as int?,
     );
   }
 
@@ -420,7 +434,7 @@ class NativeStreamConfig {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(codec, other.codec) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(rotation, other.rotation) && _deepEquals(fps, other.fps) && _deepEquals(sps, other.sps) && _deepEquals(pps, other.pps);
+    return _deepEquals(codec, other.codec) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(rotation, other.rotation) && _deepEquals(fps, other.fps) && _deepEquals(sps, other.sps) && _deepEquals(pps, other.pps) && _deepEquals(turn, other.turn);
   }
 
   @override
@@ -429,7 +443,7 @@ class NativeStreamConfig {
 
   @override
   String toString() {
-    return 'NativeStreamConfig(codec: $codec, width: $width, height: $height, rotation: $rotation, fps: $fps, sps: $sps, pps: $pps)';
+    return 'NativeStreamConfig(codec: $codec, width: $width, height: $height, rotation: $rotation, fps: $fps, sps: $sps, pps: $pps, turn: $turn)';
   }
 }
 
@@ -486,6 +500,208 @@ class NativeFrame {
   @override
   String toString() {
     return 'NativeFrame(data: $data, ptsUs: $ptsUs, keyframe: $keyframe)';
+  }
+}
+
+/// What this device's cameras can do for a computer, as things stand.
+class NativeCameraSupport {
+  NativeCameraSupport({
+    required this.h264,
+    required this.lenses,
+    required this.cameraGranted,
+    required this.microphoneGranted,
+  });
+
+  /// A hardware or software H.264 encoder is there.
+  bool h264;
+
+  /// The cameras there are. Empty on a device without one.
+  List<NativeCameraLens> lenses;
+
+  /// Android's camera permission is granted.
+  bool cameraGranted;
+
+  /// Android's microphone permission is granted.
+  bool microphoneGranted;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      h264,
+      lenses,
+      cameraGranted,
+      microphoneGranted,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeCameraSupport decode(Object result) {
+    result as List<Object?>;
+    return NativeCameraSupport(
+      h264: result[0]! as bool,
+      lenses: (result[1]! as List<Object?>).cast<NativeCameraLens>(),
+      cameraGranted: result[2]! as bool,
+      microphoneGranted: result[3]! as bool,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeCameraSupport || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(h264, other.h264) && _deepEquals(lenses, other.lenses) && _deepEquals(cameraGranted, other.cameraGranted) && _deepEquals(microphoneGranted, other.microphoneGranted);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeCameraSupport(h264: $h264, lenses: $lenses, cameraGranted: $cameraGranted, microphoneGranted: $microphoneGranted)';
+  }
+}
+
+class NativeCameraOptions {
+  NativeCameraOptions({
+    required this.lens,
+    required this.maxLongSide,
+    required this.maxShortSide,
+    required this.fps,
+    required this.bitrate,
+    this.audioCodec,
+  });
+
+  /// The camera to start with. Another one is used when it isn't there.
+  NativeCameraLens lens;
+
+  int maxLongSide;
+
+  int maxShortSide;
+
+  int fps;
+
+  /// Bits per second the H.264 encoder starts with.
+  int bitrate;
+
+  /// Also capture the microphone, encoded this way. Null for pictures
+  /// only.
+  NativeAudioCodec? audioCodec;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      lens,
+      maxLongSide,
+      maxShortSide,
+      fps,
+      bitrate,
+      audioCodec,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeCameraOptions decode(Object result) {
+    result as List<Object?>;
+    return NativeCameraOptions(
+      lens: result[0]! as NativeCameraLens,
+      maxLongSide: result[1]! as int,
+      maxShortSide: result[2]! as int,
+      fps: result[3]! as int,
+      bitrate: result[4]! as int,
+      audioCodec: result[5] as NativeAudioCodec?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeCameraOptions || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(lens, other.lens) && _deepEquals(maxLongSide, other.maxLongSide) && _deepEquals(maxShortSide, other.maxShortSide) && _deepEquals(fps, other.fps) && _deepEquals(bitrate, other.bitrate) && _deepEquals(audioCodec, other.audioCodec);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeCameraOptions(lens: $lens, maxLongSide: $maxLongSide, maxShortSide: $maxShortSide, fps: $fps, bitrate: $bitrate, audioCodec: $audioCodec)';
+  }
+}
+
+/// The words on the ongoing notice while the camera is on, in the owner's
+/// language.
+class NativeCameraTexts {
+  NativeCameraTexts({
+    required this.title,
+    required this.body,
+    required this.stopLabel,
+    required this.channelName,
+  });
+
+  /// Such as "Camera on for MacBook".
+  String title;
+
+  String body;
+
+  String stopLabel;
+
+  String channelName;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      title,
+      body,
+      stopLabel,
+      channelName,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeCameraTexts decode(Object result) {
+    result as List<Object?>;
+    return NativeCameraTexts(
+      title: result[0]! as String,
+      body: result[1]! as String,
+      stopLabel: result[2]! as String,
+      channelName: result[3]! as String,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeCameraTexts || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(title, other.title) && _deepEquals(body, other.body) && _deepEquals(stopLabel, other.stopLabel) && _deepEquals(channelName, other.channelName);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeCameraTexts(title: $title, body: $body, stopLabel: $stopLabel, channelName: $channelName)';
   }
 }
 
@@ -561,26 +777,38 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is NativeCaptureEnd) {
       buffer.putUint8(132);
       writeValue(buffer, value.index);
-    }    else if (value is NativeAudioCodec) {
+    }    else if (value is NativeCameraLens) {
       buffer.putUint8(133);
       writeValue(buffer, value.index);
-    }    else if (value is NativeCaptureSupport) {
+    }    else if (value is NativeAudioCodec) {
       buffer.putUint8(134);
-      writeValue(buffer, value.encode());
-    }    else if (value is NativeConsentTexts) {
+      writeValue(buffer, value.index);
+    }    else if (value is NativeCaptureSupport) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCaptureOptions) {
+    }    else if (value is NativeConsentTexts) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeStreamConfig) {
+    }    else if (value is NativeCaptureOptions) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeFrame) {
+    }    else if (value is NativeStreamConfig) {
       buffer.putUint8(138);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeAudioStats) {
+    }    else if (value is NativeFrame) {
       buffer.putUint8(139);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeCameraSupport) {
+      buffer.putUint8(140);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeCameraOptions) {
+      buffer.putUint8(141);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeCameraTexts) {
+      buffer.putUint8(142);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeAudioStats) {
+      buffer.putUint8(143);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -604,18 +832,27 @@ class _PigeonCodec extends StandardMessageCodec {
         return value == null ? null : NativeCaptureEnd.values[value];
       case 133:
         final value = readValue(buffer) as int?;
-        return value == null ? null : NativeAudioCodec.values[value];
+        return value == null ? null : NativeCameraLens.values[value];
       case 134:
-        return NativeCaptureSupport.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativeAudioCodec.values[value];
       case 135:
-        return NativeConsentTexts.decode(readValue(buffer)!);
+        return NativeCaptureSupport.decode(readValue(buffer)!);
       case 136:
-        return NativeCaptureOptions.decode(readValue(buffer)!);
+        return NativeConsentTexts.decode(readValue(buffer)!);
       case 137:
-        return NativeStreamConfig.decode(readValue(buffer)!);
+        return NativeCaptureOptions.decode(readValue(buffer)!);
       case 138:
-        return NativeFrame.decode(readValue(buffer)!);
+        return NativeStreamConfig.decode(readValue(buffer)!);
       case 139:
+        return NativeFrame.decode(readValue(buffer)!);
+      case 140:
+        return NativeCameraSupport.decode(readValue(buffer)!);
+      case 141:
+        return NativeCameraOptions.decode(readValue(buffer)!);
+      case 142:
+        return NativeCameraTexts.decode(readValue(buffer)!);
+      case 143:
         return NativeAudioStats.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -965,6 +1202,313 @@ abstract class MirrorCaptureFlutterApi {
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeCaptureEnd arg_end = args[0]! as NativeCaptureEnd;
+          try {
+            api.onEnded(arg_end);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+  }
+}
+
+/// Android: sends a camera and the microphone with Camera2, from a
+/// foreground service with an ongoing notice.
+class CameraCaptureHostApi {
+  /// Constructor for [CameraCaptureHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  CameraCaptureHostApi({
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  final String pigeonVar_messageChannelSuffix;
+
+
+  Future<NativeCameraSupport> support() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.support$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as NativeCameraSupport;
+  }
+
+  /// Shows Android's permission prompt for the camera, and for the
+  /// microphone with [withMicrophone], when they aren't granted yet.
+  /// Answers with how things stand afterwards; nothing is asked when no
+  /// screen of the app is open.
+  Future<NativeCameraSupport> requestAccess(bool withMicrophone) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestAccess$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[withMicrophone]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as NativeCameraSupport;
+  }
+
+  /// Starts the foreground service, the camera and the encoder. Answers
+  /// with the camera that is on, or null when it couldn't start: no
+  /// permission, no camera, or Android doesn't let a camera start from
+  /// the background.
+  Future<NativeCameraLens?> start(NativeCameraOptions options, NativeCameraTexts texts) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.start$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[options, texts]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+    return pigeonVar_replyValue as NativeCameraLens?;
+  }
+
+  /// Switches to another camera while one is on. Answers with the camera
+  /// that is on afterwards, or null when none is.
+  Future<NativeCameraLens?> setLens(NativeCameraLens lens) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setLens$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[lens]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+    return pigeonVar_replyValue as NativeCameraLens?;
+  }
+
+  Future<void> stop() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> requestKeyframe() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> setBitrate(int bitrate) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bitrate]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+}
+
+abstract class CameraCaptureFlutterApi {
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  void onConfig(NativeStreamConfig config);
+
+  void onFrame(NativeFrame frame);
+
+  /// The microphone's sound follows, encoded this way.
+  void onAudioConfig(NativeAudioCodec codec, int sampleRate, int channels);
+
+  /// Opus: one packet. PCM: whole samples for every channel.
+  void onAudioFrame(Uint8List data, int ptsUs);
+
+  /// Capturing the microphone stopped working; the pictures go on.
+  void onAudioEnded();
+
+  void onEnded(NativeCaptureEnd end);
+
+  static void setUp(CameraCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
+    String messageChannelSuffix = '',
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeStreamConfig arg_config = args[0]! as NativeStreamConfig;
+          try {
+            api.onConfig(arg_config);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeFrame arg_frame = args[0]! as NativeFrame;
+          try {
+            api.onFrame(arg_frame);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeAudioCodec arg_codec = args[0]! as NativeAudioCodec;
+          final int arg_sampleRate = args[1]! as int;
+          final int arg_channels = args[2]! as int;
+          try {
+            api.onAudioConfig(arg_codec, arg_sampleRate, arg_channels);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final Uint8List arg_data = args[0]! as Uint8List;
+          final int arg_ptsUs = args[1]! as int;
+          try {
+            api.onAudioFrame(arg_data, arg_ptsUs);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          try {
+            api.onAudioEnded();
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);

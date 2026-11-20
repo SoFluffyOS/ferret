@@ -1,3 +1,4 @@
+import 'package:ferret_mirroring/src/capture/camera_capture.dart';
 import 'package:ferret_mirroring/src/route/control_access.dart';
 import 'package:ferret_mirroring/src/route/mirror_control.dart';
 import 'package:ferret_mirroring/src/route/mirror_target.dart';
@@ -16,7 +17,8 @@ abstract interface class MirrorFeed {
   /// from routes that know them. A feed asked for sound adds a
   /// [FeedAudioConfigured] and [FeedAudio]s, or one [FeedAudioUnavailable].
   /// A feed that is also [ControlAsking] says where control stands with
-  /// [FeedControlChanged].
+  /// [FeedControlChanged]. A feed of a camera says which one is on with
+  /// [FeedCameraChanged].
   Stream<FeedEvent> get events;
 
   /// Mouse, keyboard and buttons on the other device, when the route has
@@ -92,6 +94,23 @@ class FeedControlChanged extends FeedEvent {
 
   /// With [ControlAccess.asking]: how long the owner has to answer.
   final Duration timeout;
+}
+
+/// The device's camera [lens] is on, out of [lenses]. Again whenever
+/// that changes.
+class FeedCameraChanged extends FeedEvent {
+  const FeedCameraChanged(this.lens, {this.lenses = const []});
+
+  final MirrorLens lens;
+
+  /// Every camera [CameraSwitching.setLens] can pick.
+  final List<MirrorLens> lenses;
+}
+
+/// A feed of a device's camera that can switch to another of its cameras.
+abstract interface class CameraSwitching {
+  /// Asks for [lens]. A [FeedCameraChanged] says how it went.
+  Future<void> setLens(MirrorLens lens);
 }
 
 /// The other device's screen went off or came back on. While it is off,

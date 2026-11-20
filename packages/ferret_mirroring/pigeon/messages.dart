@@ -113,6 +113,7 @@ class NativeStreamConfig {
     required this.fps,
     this.sps,
     this.pps,
+    this.turn,
   });
 
   NativeCodec codec;
@@ -126,6 +127,10 @@ class NativeStreamConfig {
   /// H.264 parameter sets, each one NAL unit without a start code.
   Uint8List? sps;
   Uint8List? pps;
+
+  /// A camera only: degrees clockwise to turn the picture so it shows
+  /// upright. Null for a screen, which is upright already.
+  int? turn;
 }
 
 class NativeFrame {
@@ -204,6 +209,127 @@ abstract class MirrorCaptureFlutterApi {
   void onAudioFrame(Uint8List data, int ptsUs);
 
   /// Capturing the sound stopped working; the pictures go on.
+  void onAudioEnded();
+
+  void onEnded(NativeCaptureEnd end);
+}
+
+enum NativeCameraLens {
+  /// Faces away from the screen.
+  back,
+
+  /// Faces whoever looks at the screen.
+  front,
+}
+
+/// What this device's cameras can do for a computer, as things stand.
+class NativeCameraSupport {
+  NativeCameraSupport({
+    required this.h264,
+    required this.lenses,
+    required this.cameraGranted,
+    required this.microphoneGranted,
+  });
+
+  /// A hardware or software H.264 encoder is there.
+  bool h264;
+
+  /// The cameras there are. Empty on a device without one.
+  List<NativeCameraLens> lenses;
+
+  /// Android's camera permission is granted.
+  bool cameraGranted;
+
+  /// Android's microphone permission is granted.
+  bool microphoneGranted;
+}
+
+class NativeCameraOptions {
+  NativeCameraOptions({
+    required this.lens,
+    required this.maxLongSide,
+    required this.maxShortSide,
+    required this.fps,
+    required this.bitrate,
+    this.audioCodec,
+  });
+
+  /// The camera to start with. Another one is used when it isn't there.
+  NativeCameraLens lens;
+  int maxLongSide;
+  int maxShortSide;
+  int fps;
+
+  /// Bits per second the H.264 encoder starts with.
+  int bitrate;
+
+  /// Also capture the microphone, encoded this way. Null for pictures
+  /// only.
+  NativeAudioCodec? audioCodec;
+}
+
+/// The words on the ongoing notice while the camera is on, in the owner's
+/// language.
+class NativeCameraTexts {
+  NativeCameraTexts({
+    required this.title,
+    required this.body,
+    required this.stopLabel,
+    required this.channelName,
+  });
+
+  /// Such as "Camera on for MacBook".
+  String title;
+  String body;
+  String stopLabel;
+  String channelName;
+}
+
+/// Android: sends a camera and the microphone with Camera2, from a
+/// foreground service with an ongoing notice.
+@HostApi()
+abstract class CameraCaptureHostApi {
+  NativeCameraSupport support();
+
+  /// Shows Android's permission prompt for the camera, and for the
+  /// microphone with [withMicrophone], when they aren't granted yet.
+  /// Answers with how things stand afterwards; nothing is asked when no
+  /// screen of the app is open.
+  @async
+  NativeCameraSupport requestAccess(bool withMicrophone);
+
+  /// Starts the foreground service, the camera and the encoder. Answers
+  /// with the camera that is on, or null when it couldn't start: no
+  /// permission, no camera, or Android doesn't let a camera start from
+  /// the background.
+  @async
+  NativeCameraLens? start(NativeCameraOptions options, NativeCameraTexts texts);
+
+  /// Switches to another camera while one is on. Answers with the camera
+  /// that is on afterwards, or null when none is.
+  @async
+  NativeCameraLens? setLens(NativeCameraLens lens);
+
+  void stop();
+
+  void requestKeyframe();
+
+  void setBitrate(int bitrate);
+}
+
+@FlutterApi()
+abstract class CameraCaptureFlutterApi {
+  void onConfig(NativeStreamConfig config);
+
+  void onFrame(NativeFrame frame);
+
+  /// The microphone's sound follows, encoded this way.
+  void onAudioConfig(NativeAudioCodec codec, int sampleRate, int channels);
+
+  /// Opus: one packet. PCM: whole samples for every channel.
+  void onAudioFrame(Uint8List data, int ptsUs);
+
+  /// Capturing the microphone stopped working; the pictures go on.
   void onAudioEnded();
 
   void onEnded(NativeCaptureEnd end);

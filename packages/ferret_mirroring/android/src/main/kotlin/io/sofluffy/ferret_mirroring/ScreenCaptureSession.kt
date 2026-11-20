@@ -190,7 +190,7 @@ internal class ScreenCaptureSession(
         }
 
         try {
-            val created = AudioCapture(projection, codec, this)
+            val created = AudioCapture(AudioCapture.Source.Playback(projection), codec, this)
             created.start()
             audio = created
         } catch (error: Exception) {

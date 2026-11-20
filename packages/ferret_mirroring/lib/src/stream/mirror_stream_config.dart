@@ -13,6 +13,7 @@ class MirrorStreamConfig {
     this.fps = 0,
     this.sps,
     this.pps,
+    this.turn = 0,
   });
 
   final MirrorCodec codec;
@@ -26,4 +27,9 @@ class MirrorStreamConfig {
   /// H.264 parameter sets, each one NAL unit without a start code.
   final Uint8List? sps;
   final Uint8List? pps;
+
+  /// A camera only: how far to turn the picture clockwise to show it
+  /// upright, in degrees: 0, 90, 180 or 270. [width] and [height] are the
+  /// picture's before it is turned.
+  final int turn;
 }

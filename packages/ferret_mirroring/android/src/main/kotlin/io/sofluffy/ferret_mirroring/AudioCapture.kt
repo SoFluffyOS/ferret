@@ -10,24 +10,34 @@ import android.media.AudioPlaybackCaptureConfiguration
 import android.media.AudioRecord
 import android.media.MediaCodec
 import android.media.MediaFormat
+import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.os.Build
 import android.util.Log
 import android.annotation.TargetApi
 
 /**
- * Captures what the phone plays (media and games, never the microphone)
- * with the same grant the screen is captured with, and hands it on as Opus
- * packets or plain samples. Apps that don't allow their sound to be
- * captured are simply not in it. Nothing is handed on while the phone is
- * silent.
+ * Captures sound and hands it on as Opus packets or plain samples. With
+ * the screen: what the phone plays (media and games, never the
+ * microphone), with the same grant the screen is captured with; apps that
+ * don't allow their sound to be captured are simply not in it. With the
+ * camera: the microphone, as a call would hear it. Nothing is handed on
+ * while there is only silence.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 internal class AudioCapture(
-    private val projection: MediaProjection,
+    private val source: Source,
     private val codec: NativeAudioCodec,
     private val output: Output,
 ) {
+    /** Where the sound comes from. */
+    sealed interface Source {
+        /** What the phone plays, under the screen capture's grant. Android 10 and newer. */
+        class Playback(val projection: MediaProjection) : Source
+
+        /** The microphone, with the phone's own echo cancelling and noise suppression. */
+        data object Microphone : Source
+    }
+
     /** Called on the sound thread. */
     interface Output {
         fun onAudioConfig(codec: NativeAudioCodec, sampleRate: Int, channels: Int)
@@ -47,11 +57,6 @@ internal class AudioCapture(
     /** Throws when Android refuses the capture or has no encoder. */
     @SuppressLint("MissingPermission")
     fun start() {
-        val capture = AudioPlaybackCaptureConfiguration.Builder(projection)
-            .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
-            .addMatchingUsage(AudioAttributes.USAGE_GAME)
-            .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
-            .build()
         val format = AudioFormat.Builder()
             .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
             .setSampleRate(SAMPLE_RATE)
@@ -62,11 +67,13 @@ internal class AudioCapture(
             AudioFormat.CHANNEL_IN_STEREO,
             AudioFormat.ENCODING_PCM_16BIT,
         )
-        val created = AudioRecord.Builder()
+        val builder = AudioRecord.Builder()
             .setAudioFormat(format)
             .setBufferSizeInBytes(maxOf(smallest, CHUNK_BYTES * BUFFERED_CHUNKS))
-            .setAudioPlaybackCaptureConfig(capture)
-            .build()
+        val created = when (source) {
+            is Source.Playback -> fromPlayback(builder, source.projection).build()
+            Source.Microphone -> builder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION).build()
+        }
         if (created.state != AudioRecord.STATE_INITIALIZED) {
             created.release()
             throw IllegalStateException("Android refused to capture the sound")
@@ -115,6 +122,17 @@ internal class AudioCapture(
 
         encoder?.release()
         encoder = null
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    private fun fromPlayback(builder: AudioRecord.Builder, projection: MediaProjection): AudioRecord.Builder {
+        val capture = AudioPlaybackCaptureConfiguration.Builder(projection)
+            .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+            .addMatchingUsage(AudioAttributes.USAGE_GAME)
+            .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
+            .build()
+
+        return builder.setAudioPlaybackCaptureConfig(capture)
     }
 
     private fun run(record: AudioRecord) {

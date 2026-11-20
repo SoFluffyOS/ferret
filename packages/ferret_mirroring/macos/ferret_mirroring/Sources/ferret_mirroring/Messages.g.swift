@@ -226,6 +226,13 @@ enum NativeCaptureEnd: Int, CaseIterable {
   case failed = 2
 }
 
+enum NativeCameraLens: Int, CaseIterable {
+  /// Faces away from the screen.
+  case back = 0
+  /// Faces whoever looks at the screen.
+  case front = 1
+}
+
 enum NativeAudioCodec: Int, CaseIterable {
   /// Opus, one packet per call.
   case opus = 0
@@ -420,6 +427,9 @@ struct NativeStreamConfig: Hashable, CustomStringConvertible {
   /// H.264 parameter sets, each one NAL unit without a start code.
   var sps: FlutterStandardTypedData? = nil
   var pps: FlutterStandardTypedData? = nil
+  /// A camera only: degrees clockwise to turn the picture so it shows
+  /// upright. Null for a screen, which is upright already.
+  var turn: Int64? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -431,6 +441,7 @@ struct NativeStreamConfig: Hashable, CustomStringConvertible {
     let fps = pigeonVar_list[4] as! Int64
     let sps: FlutterStandardTypedData? = nilOrValue(pigeonVar_list[5])
     let pps: FlutterStandardTypedData? = nilOrValue(pigeonVar_list[6])
+    let turn: Int64? = nilOrValue(pigeonVar_list[7])
 
     return NativeStreamConfig(
       codec: codec,
@@ -439,7 +450,8 @@ struct NativeStreamConfig: Hashable, CustomStringConvertible {
       rotation: rotation,
       fps: fps,
       sps: sps,
-      pps: pps
+      pps: pps,
+      turn: turn
     )
   }
   func toList() -> [Any?] {
@@ -451,13 +463,14 @@ struct NativeStreamConfig: Hashable, CustomStringConvertible {
       fps,
       sps,
       pps,
+      turn,
     ]
   }
   static func == (lhs: NativeStreamConfig, rhs: NativeStreamConfig) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return MessagesPigeonInternal.deepEquals(lhs.codec, rhs.codec) && MessagesPigeonInternal.deepEquals(lhs.width, rhs.width) && MessagesPigeonInternal.deepEquals(lhs.height, rhs.height) && MessagesPigeonInternal.deepEquals(lhs.rotation, rhs.rotation) && MessagesPigeonInternal.deepEquals(lhs.fps, rhs.fps) && MessagesPigeonInternal.deepEquals(lhs.sps, rhs.sps) && MessagesPigeonInternal.deepEquals(lhs.pps, rhs.pps)
+    return MessagesPigeonInternal.deepEquals(lhs.codec, rhs.codec) && MessagesPigeonInternal.deepEquals(lhs.width, rhs.width) && MessagesPigeonInternal.deepEquals(lhs.height, rhs.height) && MessagesPigeonInternal.deepEquals(lhs.rotation, rhs.rotation) && MessagesPigeonInternal.deepEquals(lhs.fps, rhs.fps) && MessagesPigeonInternal.deepEquals(lhs.sps, rhs.sps) && MessagesPigeonInternal.deepEquals(lhs.pps, rhs.pps) && MessagesPigeonInternal.deepEquals(lhs.turn, rhs.turn)
   }
 
   func hash(into hasher: inout Hasher) {
@@ -469,10 +482,11 @@ struct NativeStreamConfig: Hashable, CustomStringConvertible {
     MessagesPigeonInternal.deepHash(value: fps, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: sps, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: pps, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: turn, hasher: &hasher)
   }
 
   public var description: String {
-    return "NativeStreamConfig(codec: \(String(describing: codec)), width: \(String(describing: width)), height: \(String(describing: height)), rotation: \(String(describing: rotation)), fps: \(String(describing: fps)), sps: \(String(describing: sps)), pps: \(String(describing: pps)))"
+    return "NativeStreamConfig(codec: \(String(describing: codec)), width: \(String(describing: width)), height: \(String(describing: height)), rotation: \(String(describing: rotation)), fps: \(String(describing: fps)), sps: \(String(describing: sps)), pps: \(String(describing: pps)), turn: \(String(describing: turn)))"
   }
 }
 
@@ -519,6 +533,180 @@ struct NativeFrame: Hashable, CustomStringConvertible {
 
   public var description: String {
     return "NativeFrame(data: \(String(describing: data)), ptsUs: \(String(describing: ptsUs)), keyframe: \(String(describing: keyframe)))"
+  }
+}
+
+/// What this device's cameras can do for a computer, as things stand.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeCameraSupport: Hashable, CustomStringConvertible {
+  /// A hardware or software H.264 encoder is there.
+  var h264: Bool
+  /// The cameras there are. Empty on a device without one.
+  var lenses: [NativeCameraLens]
+  /// Android's camera permission is granted.
+  var cameraGranted: Bool
+  /// Android's microphone permission is granted.
+  var microphoneGranted: Bool
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeCameraSupport? {
+    let h264 = pigeonVar_list[0] as! Bool
+    let lenses = pigeonVar_list[1] as! [NativeCameraLens]
+    let cameraGranted = pigeonVar_list[2] as! Bool
+    let microphoneGranted = pigeonVar_list[3] as! Bool
+
+    return NativeCameraSupport(
+      h264: h264,
+      lenses: lenses,
+      cameraGranted: cameraGranted,
+      microphoneGranted: microphoneGranted
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      h264,
+      lenses,
+      cameraGranted,
+      microphoneGranted,
+    ]
+  }
+  static func == (lhs: NativeCameraSupport, rhs: NativeCameraSupport) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.h264, rhs.h264) && MessagesPigeonInternal.deepEquals(lhs.lenses, rhs.lenses) && MessagesPigeonInternal.deepEquals(lhs.cameraGranted, rhs.cameraGranted) && MessagesPigeonInternal.deepEquals(lhs.microphoneGranted, rhs.microphoneGranted)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeCameraSupport")
+    MessagesPigeonInternal.deepHash(value: h264, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: lenses, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: cameraGranted, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: microphoneGranted, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeCameraSupport(h264: \(String(describing: h264)), lenses: \(String(describing: lenses)), cameraGranted: \(String(describing: cameraGranted)), microphoneGranted: \(String(describing: microphoneGranted)))"
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeCameraOptions: Hashable, CustomStringConvertible {
+  /// The camera to start with. Another one is used when it isn't there.
+  var lens: NativeCameraLens
+  var maxLongSide: Int64
+  var maxShortSide: Int64
+  var fps: Int64
+  /// Bits per second the H.264 encoder starts with.
+  var bitrate: Int64
+  /// Also capture the microphone, encoded this way. Null for pictures
+  /// only.
+  var audioCodec: NativeAudioCodec? = nil
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeCameraOptions? {
+    let lens = pigeonVar_list[0] as! NativeCameraLens
+    let maxLongSide = pigeonVar_list[1] as! Int64
+    let maxShortSide = pigeonVar_list[2] as! Int64
+    let fps = pigeonVar_list[3] as! Int64
+    let bitrate = pigeonVar_list[4] as! Int64
+    let audioCodec: NativeAudioCodec? = nilOrValue(pigeonVar_list[5])
+
+    return NativeCameraOptions(
+      lens: lens,
+      maxLongSide: maxLongSide,
+      maxShortSide: maxShortSide,
+      fps: fps,
+      bitrate: bitrate,
+      audioCodec: audioCodec
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      lens,
+      maxLongSide,
+      maxShortSide,
+      fps,
+      bitrate,
+      audioCodec,
+    ]
+  }
+  static func == (lhs: NativeCameraOptions, rhs: NativeCameraOptions) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.lens, rhs.lens) && MessagesPigeonInternal.deepEquals(lhs.maxLongSide, rhs.maxLongSide) && MessagesPigeonInternal.deepEquals(lhs.maxShortSide, rhs.maxShortSide) && MessagesPigeonInternal.deepEquals(lhs.fps, rhs.fps) && MessagesPigeonInternal.deepEquals(lhs.bitrate, rhs.bitrate) && MessagesPigeonInternal.deepEquals(lhs.audioCodec, rhs.audioCodec)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeCameraOptions")
+    MessagesPigeonInternal.deepHash(value: lens, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: maxLongSide, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: maxShortSide, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: fps, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: bitrate, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: audioCodec, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeCameraOptions(lens: \(String(describing: lens)), maxLongSide: \(String(describing: maxLongSide)), maxShortSide: \(String(describing: maxShortSide)), fps: \(String(describing: fps)), bitrate: \(String(describing: bitrate)), audioCodec: \(String(describing: audioCodec)))"
+  }
+}
+
+/// The words on the ongoing notice while the camera is on, in the owner's
+/// language.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeCameraTexts: Hashable, CustomStringConvertible {
+  /// Such as "Camera on for MacBook".
+  var title: String
+  var body: String
+  var stopLabel: String
+  var channelName: String
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeCameraTexts? {
+    let title = pigeonVar_list[0] as! String
+    let body = pigeonVar_list[1] as! String
+    let stopLabel = pigeonVar_list[2] as! String
+    let channelName = pigeonVar_list[3] as! String
+
+    return NativeCameraTexts(
+      title: title,
+      body: body,
+      stopLabel: stopLabel,
+      channelName: channelName
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      title,
+      body,
+      stopLabel,
+      channelName,
+    ]
+  }
+  static func == (lhs: NativeCameraTexts, rhs: NativeCameraTexts) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.title, rhs.title) && MessagesPigeonInternal.deepEquals(lhs.body, rhs.body) && MessagesPigeonInternal.deepEquals(lhs.stopLabel, rhs.stopLabel) && MessagesPigeonInternal.deepEquals(lhs.channelName, rhs.channelName)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeCameraTexts")
+    MessagesPigeonInternal.deepHash(value: title, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: body, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: stopLabel, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: channelName, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeCameraTexts(title: \(String(describing: title)), body: \(String(describing: body)), stopLabel: \(String(describing: stopLabel)), channelName: \(String(describing: channelName)))"
   }
 }
 
@@ -594,20 +782,32 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 133:
       let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
       if let enumResultAsInt = enumResultAsInt {
-        return NativeAudioCodec(rawValue: enumResultAsInt)
+        return NativeCameraLens(rawValue: enumResultAsInt)
       }
       return nil
     case 134:
-      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeAudioCodec(rawValue: enumResultAsInt)
+      }
+      return nil
     case 135:
-      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
+      return NativeCaptureSupport.fromList(self.readValue() as! [Any?])
     case 136:
-      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
+      return NativeConsentTexts.fromList(self.readValue() as! [Any?])
     case 137:
-      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
+      return NativeCaptureOptions.fromList(self.readValue() as! [Any?])
     case 138:
-      return NativeFrame.fromList(self.readValue() as! [Any?])
+      return NativeStreamConfig.fromList(self.readValue() as! [Any?])
     case 139:
+      return NativeFrame.fromList(self.readValue() as! [Any?])
+    case 140:
+      return NativeCameraSupport.fromList(self.readValue() as! [Any?])
+    case 141:
+      return NativeCameraOptions.fromList(self.readValue() as! [Any?])
+    case 142:
+      return NativeCameraTexts.fromList(self.readValue() as! [Any?])
+    case 143:
       return NativeAudioStats.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -629,26 +829,38 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? NativeCaptureEnd {
       super.writeByte(132)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeAudioCodec {
+    } else if let value = value as? NativeCameraLens {
       super.writeByte(133)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeCaptureSupport {
+    } else if let value = value as? NativeAudioCodec {
       super.writeByte(134)
-      super.writeValue(value.toList())
-    } else if let value = value as? NativeConsentTexts {
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeCaptureSupport {
       super.writeByte(135)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeCaptureOptions {
+    } else if let value = value as? NativeConsentTexts {
       super.writeByte(136)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeStreamConfig {
+    } else if let value = value as? NativeCaptureOptions {
       super.writeByte(137)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFrame {
+    } else if let value = value as? NativeStreamConfig {
       super.writeByte(138)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeAudioStats {
+    } else if let value = value as? NativeFrame {
       super.writeByte(139)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeCameraSupport {
+      super.writeByte(140)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeCameraOptions {
+      super.writeByte(141)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeCameraTexts {
+      super.writeByte(142)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeAudioStats {
+      super.writeByte(143)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -992,6 +1204,301 @@ class MirrorCaptureFlutterApi: MirrorCaptureFlutterApiProtocol {
   @MainActor func onEnded(end endArg: NativeCaptureEnd) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onEnded\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([endArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+}
+/// Android: sends a camera and the microphone with Camera2, from a
+/// foreground service with an ongoing notice.
+///
+/// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+protocol CameraCaptureHostApi {
+  func support() throws -> NativeCameraSupport
+  /// Shows Android's permission prompt for the camera, and for the
+  /// microphone with [withMicrophone], when they aren't granted yet.
+  /// Answers with how things stand afterwards; nothing is asked when no
+  /// screen of the app is open.
+  func requestAccess(withMicrophone: Bool) async throws -> NativeCameraSupport
+  /// Starts the foreground service, the camera and the encoder. Answers
+  /// with the camera that is on, or null when it couldn't start: no
+  /// permission, no camera, or Android doesn't let a camera start from
+  /// the background.
+  func start(options: NativeCameraOptions, texts: NativeCameraTexts) async throws -> NativeCameraLens?
+  /// Switches to another camera while one is on. Answers with the camera
+  /// that is on afterwards, or null when none is.
+  func setLens(lens: NativeCameraLens) async throws -> NativeCameraLens?
+  func stop() throws
+  func requestKeyframe() throws
+  func setBitrate(bitrate: Int64) throws
+}
+
+/// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+class CameraCaptureHostApiSetup {
+  static var codec: FlutterStandardMessageCodec { MessagesPigeonCodec.shared }
+  /// Sets up an instance of `CameraCaptureHostApi` to handle messages through the `binaryMessenger`.
+  static func setUp(binaryMessenger: FlutterBinaryMessenger, api: CameraCaptureHostApi?, messageChannelSuffix: String = "") {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    let supportChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.support\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      supportChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.support()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      supportChannel.setMessageHandler(nil)
+    }
+    /// Shows Android's permission prompt for the camera, and for the
+    /// microphone with [withMicrophone], when they aren't granted yet.
+    /// Answers with how things stand afterwards; nothing is asked when no
+    /// screen of the app is open.
+    let requestAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      requestAccessChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let withMicrophoneArg = args[0] as! Bool
+        Task { @MainActor in
+          do {
+            let result = try await api.requestAccess(withMicrophone: withMicrophoneArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      requestAccessChannel.setMessageHandler(nil)
+    }
+    /// Starts the foreground service, the camera and the encoder. Answers
+    /// with the camera that is on, or null when it couldn't start: no
+    /// permission, no camera, or Android doesn't let a camera start from
+    /// the background.
+    let startChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.start\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let optionsArg = args[0] as! NativeCameraOptions
+        let textsArg = args[1] as! NativeCameraTexts
+        Task { @MainActor in
+          do {
+            let result = try await api.start(options: optionsArg, texts: textsArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      startChannel.setMessageHandler(nil)
+    }
+    /// Switches to another camera while one is on. Answers with the camera
+    /// that is on afterwards, or null when none is.
+    let setLensChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setLens\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setLensChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let lensArg = args[0] as! NativeCameraLens
+        Task { @MainActor in
+          do {
+            let result = try await api.setLens(lens: lensArg)
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      setLensChannel.setMessageHandler(nil)
+    }
+    let stopChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.stop\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      stopChannel.setMessageHandler { _, reply in
+        do {
+          try api.stop()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      stopChannel.setMessageHandler(nil)
+    }
+    let requestKeyframeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestKeyframe\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      requestKeyframeChannel.setMessageHandler { _, reply in
+        do {
+          try api.requestKeyframe()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      requestKeyframeChannel.setMessageHandler(nil)
+    }
+    let setBitrateChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setBitrate\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setBitrateChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let bitrateArg = args[0] as! Int64
+        do {
+          try api.setBitrate(bitrate: bitrateArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setBitrateChannel.setMessageHandler(nil)
+    }
+  }
+}
+
+/// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
+protocol CameraCaptureFlutterApiProtocol {
+  @MainActor func onConfig(config configArg: NativeStreamConfig) async throws
+  @MainActor func onFrame(frame frameArg: NativeFrame) async throws
+  /// The microphone's sound follows, encoded this way.
+  @MainActor func onAudioConfig(codec codecArg: NativeAudioCodec, sampleRate sampleRateArg: Int64, channels channelsArg: Int64) async throws
+  /// Opus: one packet. PCM: whole samples for every channel.
+  @MainActor func onAudioFrame(data dataArg: FlutterStandardTypedData, ptsUs ptsUsArg: Int64) async throws
+  /// Capturing the microphone stopped working; the pictures go on.
+  @MainActor func onAudioEnded() async throws
+  @MainActor func onEnded(end endArg: NativeCaptureEnd) async throws
+}
+class CameraCaptureFlutterApi: CameraCaptureFlutterApiProtocol {
+  private let binaryMessenger: FlutterBinaryMessenger
+  private let messageChannelSuffix: String
+  init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+    self.binaryMessenger = binaryMessenger
+    self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+  }
+  var codec: MessagesPigeonCodec {
+    return MessagesPigeonCodec.shared
+  }
+  @MainActor func onConfig(config configArg: NativeStreamConfig) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onConfig\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([configArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onFrame(frame frameArg: NativeFrame) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onFrame\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([frameArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The microphone's sound follows, encoded this way.
+  @MainActor func onAudioConfig(codec codecArg: NativeAudioCodec, sampleRate sampleRateArg: Int64, channels channelsArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioConfig\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([codecArg, sampleRateArg, channelsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Opus: one packet. PCM: whole samples for every channel.
+  @MainActor func onAudioFrame(data dataArg: FlutterStandardTypedData, ptsUs ptsUsArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioFrame\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([dataArg, ptsUsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Capturing the microphone stopped working; the pictures go on.
+  @MainActor func onAudioEnded() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioEnded\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onEnded(end endArg: NativeCaptureEnd) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onEnded\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([endArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {

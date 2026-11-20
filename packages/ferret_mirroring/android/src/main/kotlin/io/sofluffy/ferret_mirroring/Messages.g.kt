@@ -275,6 +275,21 @@ enum class NativeCaptureEnd(val raw: Int) {
   }
 }
 
+enum class NativeCameraLens(val raw: Int) {
+  /** Faces away from the screen. */
+  BACK(0),
+  /** Faces whoever looks at the screen. */
+  FRONT(1);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): NativeCameraLens? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
 enum class NativeAudioCodec(val raw: Int) {
   /** Opus, one packet per call. */
   OPUS(0),
@@ -476,7 +491,12 @@ data class NativeStreamConfig (
   val fps: Long,
   /** H.264 parameter sets, each one NAL unit without a start code. */
   val sps: ByteArray? = null,
-  val pps: ByteArray? = null
+  val pps: ByteArray? = null,
+  /**
+   * A camera only: degrees clockwise to turn the picture so it shows
+   * upright. Null for a screen, which is upright already.
+   */
+  val turn: Long? = null
 )
  {
   companion object {
@@ -488,7 +508,8 @@ data class NativeStreamConfig (
       val fps = pigeonVar_list[4] as Long
       val sps = pigeonVar_list[5] as ByteArray?
       val pps = pigeonVar_list[6] as ByteArray?
-      return NativeStreamConfig(codec, width, height, rotation, fps, sps, pps)
+      val turn = pigeonVar_list[7] as Long?
+      return NativeStreamConfig(codec, width, height, rotation, fps, sps, pps, turn)
     }
   }
   fun toList(): List<Any?> {
@@ -500,6 +521,7 @@ data class NativeStreamConfig (
       fps,
       sps,
       pps,
+      turn,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -510,7 +532,7 @@ data class NativeStreamConfig (
       return true
     }
     val other = other as NativeStreamConfig
-    return MessagesPigeonUtils.deepEquals(this.codec, other.codec) && MessagesPigeonUtils.deepEquals(this.width, other.width) && MessagesPigeonUtils.deepEquals(this.height, other.height) && MessagesPigeonUtils.deepEquals(this.rotation, other.rotation) && MessagesPigeonUtils.deepEquals(this.fps, other.fps) && MessagesPigeonUtils.deepEquals(this.sps, other.sps) && MessagesPigeonUtils.deepEquals(this.pps, other.pps)
+    return MessagesPigeonUtils.deepEquals(this.codec, other.codec) && MessagesPigeonUtils.deepEquals(this.width, other.width) && MessagesPigeonUtils.deepEquals(this.height, other.height) && MessagesPigeonUtils.deepEquals(this.rotation, other.rotation) && MessagesPigeonUtils.deepEquals(this.fps, other.fps) && MessagesPigeonUtils.deepEquals(this.sps, other.sps) && MessagesPigeonUtils.deepEquals(this.pps, other.pps) && MessagesPigeonUtils.deepEquals(this.turn, other.turn)
   }
 
   override fun hashCode(): Int {
@@ -522,10 +544,11 @@ data class NativeStreamConfig (
     result = 31 * result + MessagesPigeonUtils.deepHash(this.fps)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.sps)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.pps)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.turn)
     return result
   }
   override fun toString(): String {
-    return "NativeStreamConfig(codec=$codec, width=$width, height=$height, rotation=$rotation, fps=$fps, sps=${sps?.contentToString()}, pps=${pps?.contentToString()})"
+    return "NativeStreamConfig(codec=$codec, width=$width, height=$height, rotation=$rotation, fps=$fps, sps=${sps?.contentToString()}, pps=${pps?.contentToString()}, turn=$turn)"
   }
 }
 
@@ -572,6 +595,181 @@ data class NativeFrame (
   }
   override fun toString(): String {
     return "NativeFrame(data=${data.contentToString()}, ptsUs=$ptsUs, keyframe=$keyframe)"
+  }
+}
+
+/**
+ * What this device's cameras can do for a computer, as things stand.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeCameraSupport (
+  /** A hardware or software H.264 encoder is there. */
+  val h264: Boolean,
+  /** The cameras there are. Empty on a device without one. */
+  val lenses: List<NativeCameraLens>,
+  /** Android's camera permission is granted. */
+  val cameraGranted: Boolean,
+  /** Android's microphone permission is granted. */
+  val microphoneGranted: Boolean
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeCameraSupport {
+      val h264 = pigeonVar_list[0] as Boolean
+      val lenses = pigeonVar_list[1] as List<NativeCameraLens>
+      val cameraGranted = pigeonVar_list[2] as Boolean
+      val microphoneGranted = pigeonVar_list[3] as Boolean
+      return NativeCameraSupport(h264, lenses, cameraGranted, microphoneGranted)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      h264,
+      lenses,
+      cameraGranted,
+      microphoneGranted,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeCameraSupport
+    return MessagesPigeonUtils.deepEquals(this.h264, other.h264) && MessagesPigeonUtils.deepEquals(this.lenses, other.lenses) && MessagesPigeonUtils.deepEquals(this.cameraGranted, other.cameraGranted) && MessagesPigeonUtils.deepEquals(this.microphoneGranted, other.microphoneGranted)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.h264)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.lenses)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.cameraGranted)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.microphoneGranted)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeCameraSupport(h264=$h264, lenses=$lenses, cameraGranted=$cameraGranted, microphoneGranted=$microphoneGranted)"
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeCameraOptions (
+  /** The camera to start with. Another one is used when it isn't there. */
+  val lens: NativeCameraLens,
+  val maxLongSide: Long,
+  val maxShortSide: Long,
+  val fps: Long,
+  /** Bits per second the H.264 encoder starts with. */
+  val bitrate: Long,
+  /**
+   * Also capture the microphone, encoded this way. Null for pictures
+   * only.
+   */
+  val audioCodec: NativeAudioCodec? = null
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeCameraOptions {
+      val lens = pigeonVar_list[0] as NativeCameraLens
+      val maxLongSide = pigeonVar_list[1] as Long
+      val maxShortSide = pigeonVar_list[2] as Long
+      val fps = pigeonVar_list[3] as Long
+      val bitrate = pigeonVar_list[4] as Long
+      val audioCodec = pigeonVar_list[5] as NativeAudioCodec?
+      return NativeCameraOptions(lens, maxLongSide, maxShortSide, fps, bitrate, audioCodec)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      lens,
+      maxLongSide,
+      maxShortSide,
+      fps,
+      bitrate,
+      audioCodec,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeCameraOptions
+    return MessagesPigeonUtils.deepEquals(this.lens, other.lens) && MessagesPigeonUtils.deepEquals(this.maxLongSide, other.maxLongSide) && MessagesPigeonUtils.deepEquals(this.maxShortSide, other.maxShortSide) && MessagesPigeonUtils.deepEquals(this.fps, other.fps) && MessagesPigeonUtils.deepEquals(this.bitrate, other.bitrate) && MessagesPigeonUtils.deepEquals(this.audioCodec, other.audioCodec)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.lens)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.maxLongSide)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.maxShortSide)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.fps)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.bitrate)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.audioCodec)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeCameraOptions(lens=$lens, maxLongSide=$maxLongSide, maxShortSide=$maxShortSide, fps=$fps, bitrate=$bitrate, audioCodec=$audioCodec)"
+  }
+}
+
+/**
+ * The words on the ongoing notice while the camera is on, in the owner's
+ * language.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeCameraTexts (
+  /** Such as "Camera on for MacBook". */
+  val title: String,
+  val body: String,
+  val stopLabel: String,
+  val channelName: String
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeCameraTexts {
+      val title = pigeonVar_list[0] as String
+      val body = pigeonVar_list[1] as String
+      val stopLabel = pigeonVar_list[2] as String
+      val channelName = pigeonVar_list[3] as String
+      return NativeCameraTexts(title, body, stopLabel, channelName)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      title,
+      body,
+      stopLabel,
+      channelName,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeCameraTexts
+    return MessagesPigeonUtils.deepEquals(this.title, other.title) && MessagesPigeonUtils.deepEquals(this.body, other.body) && MessagesPigeonUtils.deepEquals(this.stopLabel, other.stopLabel) && MessagesPigeonUtils.deepEquals(this.channelName, other.channelName)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.title)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.body)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.stopLabel)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.channelName)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeCameraTexts(title=$title, body=$body, stopLabel=$stopLabel, channelName=$channelName)"
   }
 }
 
@@ -642,35 +840,55 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       133.toByte() -> {
         (readValue(buffer) as Long?)?.let {
-          NativeAudioCodec.ofRaw(it.toInt())
+          NativeCameraLens.ofRaw(it.toInt())
         }
       }
       134.toByte() -> {
-        (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureSupport.fromList(it)
+        (readValue(buffer) as Long?)?.let {
+          NativeAudioCodec.ofRaw(it.toInt())
         }
       }
       135.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeConsentTexts.fromList(it)
+          NativeCaptureSupport.fromList(it)
         }
       }
       136.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureOptions.fromList(it)
+          NativeConsentTexts.fromList(it)
         }
       }
       137.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeStreamConfig.fromList(it)
+          NativeCaptureOptions.fromList(it)
         }
       }
       138.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeFrame.fromList(it)
+          NativeStreamConfig.fromList(it)
         }
       }
       139.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeFrame.fromList(it)
+        }
+      }
+      140.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeCameraSupport.fromList(it)
+        }
+      }
+      141.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeCameraOptions.fromList(it)
+        }
+      }
+      142.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeCameraTexts.fromList(it)
+        }
+      }
+      143.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           NativeAudioStats.fromList(it)
         }
@@ -696,32 +914,48 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(132)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeAudioCodec -> {
+      is NativeCameraLens -> {
         stream.write(133)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeCaptureSupport -> {
+      is NativeAudioCodec -> {
         stream.write(134)
-        writeValue(stream, value.toList())
+        writeValue(stream, value.raw.toLong())
       }
-      is NativeConsentTexts -> {
+      is NativeCaptureSupport -> {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is NativeCaptureOptions -> {
+      is NativeConsentTexts -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is NativeStreamConfig -> {
+      is NativeCaptureOptions -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
-      is NativeFrame -> {
+      is NativeStreamConfig -> {
         stream.write(138)
         writeValue(stream, value.toList())
       }
-      is NativeAudioStats -> {
+      is NativeFrame -> {
         stream.write(139)
+        writeValue(stream, value.toList())
+      }
+      is NativeCameraSupport -> {
+        stream.write(140)
+        writeValue(stream, value.toList())
+      }
+      is NativeCameraOptions -> {
+        stream.write(141)
+        writeValue(stream, value.toList())
+      }
+      is NativeCameraTexts -> {
+        stream.write(142)
+        writeValue(stream, value.toList())
+      }
+      is NativeAudioStats -> {
+        stream.write(143)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -1055,6 +1289,298 @@ class MirrorCaptureFlutterApi(private val binaryMessenger: BinaryMessenger, priv
     val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
     return suspendCancellableCoroutine { continuation ->
       val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onEnded$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(endArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+}
+/**
+ * Android: sends a camera and the microphone with Camera2, from a
+ * foreground service with an ongoing notice.
+ *
+ * Generated interface from Pigeon that represents a handler of messages from Flutter.
+ */
+interface CameraCaptureHostApi {
+  fun support(): NativeCameraSupport
+  /**
+   * Shows Android's permission prompt for the camera, and for the
+   * microphone with [withMicrophone], when they aren't granted yet.
+   * Answers with how things stand afterwards; nothing is asked when no
+   * screen of the app is open.
+   */
+  suspend fun requestAccess(withMicrophone: Boolean): NativeCameraSupport
+  /**
+   * Starts the foreground service, the camera and the encoder. Answers
+   * with the camera that is on, or null when it couldn't start: no
+   * permission, no camera, or Android doesn't let a camera start from
+   * the background.
+   */
+  suspend fun start(options: NativeCameraOptions, texts: NativeCameraTexts): NativeCameraLens?
+  /**
+   * Switches to another camera while one is on. Answers with the camera
+   * that is on afterwards, or null when none is.
+   */
+  suspend fun setLens(lens: NativeCameraLens): NativeCameraLens?
+  fun stop()
+  fun requestKeyframe()
+  fun setBitrate(bitrate: Long)
+
+  companion object {
+    /** The codec used by CameraCaptureHostApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+    /** Sets up an instance of `CameraCaptureHostApi` to handle messages through the `binaryMessenger`. */
+    @JvmOverloads
+    fun setUp(binaryMessenger: BinaryMessenger, api: CameraCaptureHostApi?, messageChannelSuffix: String = "") {
+      val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.support$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.support())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestAccess$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val withMicrophoneArg = args[0] as Boolean
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.requestAccess(withMicrophoneArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.start$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val optionsArg = args[0] as NativeCameraOptions
+            val textsArg = args[1] as NativeCameraTexts
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.start(optionsArg, textsArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setLens$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val lensArg = args[0] as NativeCameraLens
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.setLens(lensArg))
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.stop$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.stop()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestKeyframe$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.requestKeyframe()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setBitrate$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val bitrateArg = args[0] as Long
+            val wrapped: List<Any?> = try {
+              api.setBitrate(bitrateArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+    }
+  }
+}
+/** Generated class from Pigeon that represents Flutter messages that can be called from Kotlin. */
+class CameraCaptureFlutterApi(private val binaryMessenger: BinaryMessenger, private val messageChannelSuffix: String = "") {
+  companion object {
+    /** The codec used by CameraCaptureFlutterApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+  }
+  suspend fun onConfig(configArg: NativeStreamConfig)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onConfig$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(configArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  suspend fun onFrame(frameArg: NativeFrame)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onFrame$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(frameArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** The microphone's sound follows, encoded this way. */
+  suspend fun onAudioConfig(codecArg: NativeAudioCodec, sampleRateArg: Long, channelsArg: Long)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioConfig$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(codecArg, sampleRateArg, channelsArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** Opus: one packet. PCM: whole samples for every channel. */
+  suspend fun onAudioFrame(dataArg: ByteArray, ptsUsArg: Long)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioFrame$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(dataArg, ptsUsArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  /** Capturing the microphone stopped working; the pictures go on. */
+  suspend fun onAudioEnded()
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioEnded$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(null) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  suspend fun onEnded(endArg: NativeCaptureEnd)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onEnded$separatedMessageChannelSuffix"
       val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
       channel.send(listOf(endArg)) {
         if (it is List<*>) {

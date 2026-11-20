@@ -6,6 +6,7 @@ class MirrorTarget {
     required this.name,
     this.ferretDeviceId,
     this.wireless = false,
+    this.camera = false,
   });
 
   final String routeId;
@@ -22,10 +23,16 @@ class MirrorTarget {
   /// Reached over the network rather than a cable.
   final bool wireless;
 
-  @override
-  bool operator ==(Object other) =>
-      other is MirrorTarget && other.routeId == routeId && other.id == id;
+  /// Its camera and microphone rather than its screen.
+  final bool camera;
 
   @override
-  int get hashCode => Object.hash(routeId, id);
+  bool operator ==(Object other) =>
+      other is MirrorTarget &&
+      other.routeId == routeId &&
+      other.id == id &&
+      other.camera == camera;
+
+  @override
+  int get hashCode => Object.hash(routeId, id, camera);
 }

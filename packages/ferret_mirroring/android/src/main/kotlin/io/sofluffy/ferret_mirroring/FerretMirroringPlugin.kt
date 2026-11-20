@@ -38,6 +38,7 @@ class FerretMirroringPlugin :
     private val soundWaitingForDart = AtomicInteger(0)
     private var activity: ActivityPluginBinding? = null
     private var permissionAnswer: ((Boolean) -> Unit)? = null
+    private var camera: CameraCaptureApi? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
@@ -45,6 +46,14 @@ class FerretMirroringPlugin :
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         MirrorCaptureHostApi.setUp(binding.binaryMessenger, this)
         MirrorBridge.listener = this
+        val created = CameraCaptureApi(
+            binding.applicationContext,
+            CameraCaptureFlutterApi(binding.binaryMessenger),
+            scope,
+        ) { activity?.activity }
+        camera = created
+        CameraCaptureHostApi.setUp(binding.binaryMessenger, created)
+        created.attach()
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -54,6 +63,9 @@ class FerretMirroringPlugin :
         }
 
         MirrorBridge.service?.finish()
+        CameraCaptureHostApi.setUp(binding.binaryMessenger, null)
+        camera?.detach()
+        camera = null
         scope.cancel()
         flutterApi = null
         context = null
@@ -68,6 +80,7 @@ class FerretMirroringPlugin :
         activity?.removeRequestPermissionsResultListener(this)
         activity = null
         answerPermission(false)
+        camera?.answerPermission()
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) = onAttachedToActivity(binding)
@@ -80,7 +93,7 @@ class FerretMirroringPlugin :
         grantResults: IntArray,
     ): Boolean {
         if (requestCode != REQUEST_SOUND) {
-            return false
+            return camera?.onPermissionsResult(requestCode) ?: false
         }
 
         answerPermission(grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
