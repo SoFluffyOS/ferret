@@ -14,6 +14,7 @@ export 'package:drop/services/localsend/localsend.dart';
 export 'package:drop/services/outgoing_file.dart';
 export 'package:drop/services/outgoing_files.dart';
 export 'package:drop/services/outgoing_job.dart';
+export 'package:drop/services/part_hasher.dart';
 export 'package:drop/services/progress_throttle.dart';
 export 'package:drop/services/quickshare/quickshare.dart';
 export 'package:drop/services/receive_store.dart';

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:drop/models/models.dart';
+import 'package:drop/services/part_hasher.dart';
 import 'package:drop/services/speed_meter.dart';
 import 'package:path/path.dart' as p;
 import 'package:protocol/drop.dart';
@@ -36,6 +37,9 @@ class IncomingJob {
   final List<int> written;
   final List<ReceivedFile?> saved;
   final SpeedMeter speed = SpeedMeter();
+
+  /// Hashes each part as it's written; let go with [close].
+  final PartHasher hasher = PartHasher();
 
   /// Set once the transfer was cancelled; later chunks are refused.
   bool cancelled = false;
@@ -114,6 +118,7 @@ class IncomingJob {
     }
 
     written[index] = 0;
+    hasher.forget(index);
     await _deleteQuietly(partFor(index));
   }
 
@@ -142,8 +147,15 @@ class IncomingJob {
       };
       if (length < written[index]) {
         written[index] = length;
+        hasher.forget(index);
       }
     }
+  }
+
+  /// Lets go of the part file and the hasher, once the job is over.
+  Future<void> close() async {
+    hasher.dispose();
+    await closePart();
   }
 
   Future<void> _deleteQuietly(File file) async {

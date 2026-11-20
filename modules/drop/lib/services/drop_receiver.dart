@@ -404,7 +404,7 @@ class DropReceiver {
 
   Future<void> dispose() async {
     for (final job in _jobs.values) {
-      await job.closePart();
+      await job.close();
     }
   }
 
@@ -432,6 +432,7 @@ class DropReceiver {
     try {
       final file = await job.openPart(index);
       await file.writeFrom(chunk.data);
+      job.hasher.add(index, offset, chunk.data);
     } on FileSystemException catch (error) {
       printWarning('Drop could not write a received file', error.osError);
       await _stop(session, job, .storage);
@@ -494,7 +495,9 @@ class DropReceiver {
         await part.create();
       }
 
-      final hash = await FileHasher.hashFile(part.path);
+      final hash =
+          await job.hasher.digest(index, job.written[index]) ??
+          await FileHasher.hashFile(part.path);
       final promised = job.files[index].sha256;
       final matches =
           FileHasher.same(hash, complete.sha256) &&
@@ -621,6 +624,7 @@ class DropReceiver {
 
   void _finish(IncomingJob job) {
     _jobs.remove(job.id);
+    job.hasher.dispose();
     _throttles.remove(job.id);
     _set(
       job.id,
@@ -674,6 +678,7 @@ class DropReceiver {
     _jobs.remove(job.id);
     _throttles.remove(job.id);
     await job.enqueue(job.discard);
+    job.hasher.dispose();
   }
 
   IncomingJob? _activeJob(Session session, String id) {
