@@ -6,6 +6,10 @@ abstract final class FileNames {
   static const _maxLength = 200;
   static const _fallback = 'file';
   static final _unsafe = RegExp(r'[\x00-\x1f<>:"/\\|?*\x7f]');
+
+  /// Marks that change which way text runs, so `photo\u202Egpj.exe` shows
+  /// as `photoexe.jpg`. A name never needs them.
+  static final _bidi = RegExp('[\u200e\u200f\u202a-\u202e\u2066-\u2069]');
   static final _reserved = RegExp(
     r'^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$',
     caseSensitive: false,
@@ -15,7 +19,7 @@ abstract final class FileNames {
   /// Windows refuses, no reserved device names, and not too long.
   static String safe(String remote) {
     final base = remote.split(RegExp(r'[/\\]')).last;
-    var cleaned = base.replaceAll(_unsafe, '_').trim();
+    var cleaned = base.replaceAll(_bidi, '').replaceAll(_unsafe, '_').trim();
     cleaned = cleaned.replaceAll(RegExp(r'[. ]+$'), '');
     if (cleaned.isEmpty || cleaned.replaceAll('.', '').isEmpty) {
       return _fallback;

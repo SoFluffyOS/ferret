@@ -46,6 +46,11 @@ void main() {
       expect(FileNames.safe('CON.txt'), '_CON.txt');
     });
 
+    test('drops marks that would disguise the extension', () {
+      expect(FileNames.safe('photo\u202Egpj.exe'), 'photogpj.exe');
+      expect(FileNames.safe('\u2067invoice\u2069.pdf'), 'invoice.pdf');
+    });
+
     test('shortens long names but keeps the extension', () {
       final long = '${'x' * 300}.pdf';
 
