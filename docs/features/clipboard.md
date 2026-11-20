@@ -65,6 +65,8 @@ On a Mac it's even quicker: press **⌃⌥V** in any app. Change the keys or tur
 
 Password managers mark what they copy as private. Ferret skips those items by default.
 
+On a Mac, copies made in Passwords, Keychain Access, 1Password, Bitwarden, KeePassXC, LastPass, Enpass or Proton Pass count as private too, even when the app forgets to mark them. Anything an app put on the clipboard by itself, without you copying, is left alone.
+
 If you turn on **Include passwords**, they are sent marked as private, never shown in Activity, kept out of clipboard history on the other device, and dropped from Ferret's memory after 2 minutes.
 
 ## ⚙️ Settings
@@ -77,6 +79,8 @@ In **Settings → Clipboard**:
 - **Include passwords**: sync items that password managers mark as private. Off by default.
 - **Clear history**: Ferret keeps the last 20 items in memory, never on disk.
 
+Ferret only watches your clipboard while it has a reason to: **Send automatically** is on, or **Keep copies** is on for the [shelf](shelf.md) on a Mac. Both off? It doesn't look at all.
+
 The Settings row says how it's set: **Syncs by itself**, **Sends by itself** or **Send by hand**.
 
 Each device page also has **Send clipboard**, to send to just that device. Under **What works** it says which side sends by itself and which side sends by hand.
@@ -85,7 +89,7 @@ Each device page also has **Send clipboard**, to send to just that device. Under
 
 | Platform | Sends on its own | Receives | Private items detected |
 |---|---|---|---|
-| macOS | ✅ | ✅ | Concealed and transient types, set by most password managers |
+| macOS | ✅ | ✅ | Concealed and transient types, set by most password managers, and copies made in a password manager |
 | Windows | ✅ | ✅ | Items kept out of Windows clipboard history |
 | Linux, X11 | ✅ | ✅ | KeePassXC and KDE password hint |
 | Linux, Wayland | ✅ on KDE Plasma and Sway with `wl-clipboard`. On GNOME, while Ferret's window is in front | ✅ | KeePassXC and KDE password hint |

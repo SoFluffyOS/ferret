@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- 📥 **Shelf**: a bar at the bottom of the Mac popover to put things down for a moment. Drop files, photos, text or links on it, and what you copy lands there too. Drag the stack to take everything out, one thumbnail to take just that one, or drop it on a device to send it. It never leaves your computer. See [Shelf](docs/features/shelf.md).
+- 📥 **Shelf**: a bar at the bottom of the Mac popover to put things down for a moment. Drop files, photos, text or links on it. Turn on **Keep copies** and what you copy lands there too, until you quit Ferret or for a day or a week. Drag the stack to take everything out, one thumbnail to take just that one, or drop it on a device to send it. It never leaves your computer. See [Shelf](docs/features/shelf.md).
 - 🖱️ **Drag photos and clips into any app**: on a Mac, drag a phone photo out of **Photos**, or a clip out of **Recent clips**, and drop it in Mail, Slack, Finder or wherever you want it. Works from the popover too, where your phone's page now has a **Photos** button. The photo comes from the phone only once you drop it.
 - 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.
 - 🧭 **Coming from another app?** A new guide lists the features you used every day under the names you know, where they live in Ferret, and what isn't there yet. See [Coming from another app](docs/getting-started/coming-from-another-app.md).
@@ -79,7 +79,7 @@
 - 📡 **Devices near you**: Ferret finds your other devices on the Wi-Fi by itself and lists them on the home screen, kept up to date while you look.
 - 👨‍👩‍👧 **Pair once, join them all**: a device you pair with one of your devices joins all of them. Copy on one, paste on any. **Forget** removes it from all of them, or only here.
 - 🔄 **Handoff**: send a page or link to another device with **Continue on…** and it opens there. Your other devices quietly suggest the page you were on.
-- 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put.
+- 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put. On a Mac, Ferret only watches the clipboard while **Send automatically** or the shelf's **Keep copies** is on.
 - 📦 **Drop**: drag files onto Ferret and drop them on the device you want, or on **All my devices**, or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
 - 🙋 **Needs you**: files from a phone that isn't paired wait at the top of the home screen with their size, **Decline** and **Accept**. Files that arrived open right from the notice, or **Show in Finder**.
 - 📤 **Share → Ferret**: right-click a file in Finder, pick **Share → Ferret** and click the device. On Windows and Linux, `ferret send` puts **Send with Ferret** in the file manager.
