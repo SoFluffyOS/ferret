@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:core/core.dart';
 import 'package:ferret_cli/cli_environment.dart';
@@ -85,9 +82,15 @@ class _SendCommand extends Command<int> {
   Future<int> run() async {
     final words = argResults?.rest ?? const [];
     final text = switch (words) {
-      [] => await _readInput(),
+      [] => (await _environment.readInput() ?? '').trimRight(),
       _ => words.join(' '),
     };
+    if (text.isEmpty) {
+      usageException(
+        'Give the text, or pipe it in: echo hello | ferret-cli clipboard send',
+      );
+    }
+
     final device = argResults?['to'] as String?;
 
     final answer = await AppControl(_environment.appRoot).ask(
@@ -104,14 +107,5 @@ class _SendCommand extends Command<int> {
         _ => 'Sent to your devices.',
       },
     );
-  }
-
-  static Future<String> _readInput() async {
-    if (stdin.hasTerminal) {
-      return '';
-    }
-
-    final text = await stdin.transform(utf8.decoder).join();
-    return text.trimRight();
   }
 }

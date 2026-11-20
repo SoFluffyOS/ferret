@@ -50,6 +50,7 @@ abstract final class AppAnswer {
     return switch (answer['error']) {
       'not_connected' => ExitCodes.notConnected,
       'no_clip' => ExitCodes.noInput,
+      'unknown_device' || 'ambiguous_device' => ExitCodes.noDevice,
       'nothing_to_send' => ExitCodes.usage,
       _ => ExitCodes.failed,
     };
@@ -69,6 +70,9 @@ abstract final class AppAnswer {
       ('no_clip', _) => 'No clip has arrived from your devices yet.',
       ('nothing_to_send', _) => 'There is no text to send.',
       ('not_supported', _) => "This Ferret can't do that.",
+      ('unknown_command', _) =>
+        'The Ferret app here is older than ferret-cli. Update it, then try '
+            'again.',
       ('not_a_link', _) =>
         "That isn't a web or map link. Start it with https:// or geo:.",
       ('unknown_action', _) =>

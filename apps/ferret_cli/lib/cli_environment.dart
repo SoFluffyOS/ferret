@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io' as io;
 
 import 'package:core/core.dart';
@@ -12,9 +13,11 @@ class CliEnvironment {
     String? appRoot,
     StringSink? out,
     StringSink? err,
+    Stream<List<int>>? input,
   }) : appRoot = appRoot ?? io.Directory(paths.root).parent.path,
        out = out ?? io.stdout,
-       err = err ?? io.stderr;
+       err = err ?? io.stderr,
+       _input = input;
 
   /// The CLI's own folders: `~/.sofluffy/ferret/cli`, so its identity stays
   /// apart from the app's on the same computer.
@@ -28,6 +31,8 @@ class CliEnvironment {
   final StringSink out;
   final StringSink err;
 
+  final Stream<List<int>>? _input;
+
   static const String folderName = 'cli';
 
   /// The CLI's folders for this user, under `FERRET_HOME` when it is set.
@@ -37,6 +42,21 @@ class CliEnvironment {
   }) async {
     final paths = await FerretPaths.resolve(environment: environment);
     return CliEnvironment(paths.nested(folderName), appRoot: paths.root);
+  }
+
+  /// Everything piped into the command, or null when standard input is a
+  /// terminal and nothing was piped.
+  Future<String?> readInput() async {
+    final piped = _input;
+    if (piped != null) {
+      return piped.transform(utf8.decoder).join();
+    }
+
+    if (io.stdin.hasTerminal) {
+      return null;
+    }
+
+    return io.stdin.transform(utf8.decoder).join();
   }
 
   Future<FerretEngine> createEngine({

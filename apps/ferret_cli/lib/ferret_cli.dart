@@ -8,6 +8,7 @@ import 'package:ferret_cli/commands/commands.dart';
 import 'package:ferret_cli/exit_codes.dart';
 
 export 'package:ferret_cli/cli_environment.dart';
+export 'package:ferret_cli/completion/completion.dart';
 export 'package:ferret_cli/exit_codes.dart';
 
 const String cliVersion = '0.1.0';
@@ -19,6 +20,7 @@ CommandRunner<int> buildRunner(
   ..addCommand(ActionCommand(environment))
   ..addCommand(CameraCommand(environment))
   ..addCommand(ClipboardCommand(environment))
+  ..addCommand(CompletionCommand(environment))
   ..addCommand(DaemonCommand(environment))
   ..addCommand(DevicesCommand(environment))
   ..addCommand(NotifyCommand(environment))
@@ -51,7 +53,9 @@ class _FerretRunner extends CommandRunner<int> {
   final CliEnvironment _environment;
 
   @override
-  String get usageFooter => '\n${ExitCodes.description}';
+  String get usageFooter =>
+      '\n${ExitCodes.description}\n\n'
+      'Scripting guide: https://ferret.sofluffy.io/docs/features/scripting';
 
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {

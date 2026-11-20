@@ -150,13 +150,15 @@ class WakeCommand extends Command<int> {
   }
 
   int _fail(String error, String message) {
+    final answer = {'ok': false, 'error': error};
+    final code = AppAnswer.exitCodeOf(answer);
     if (_asJson) {
-      _environment.out.writeln(jsonEncode({'ok': false, 'error': error}));
-      return ExitCodes.failed;
+      _environment.out.writeln(jsonEncode(answer));
+      return code;
     }
 
     _environment.err.writeln(message);
-    return ExitCodes.failed;
+    return code;
   }
 
   static String _waking(String name) =>

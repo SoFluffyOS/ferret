@@ -133,10 +133,10 @@ void main() {
     );
   });
 
-  test('without the app, an unknown name fails and sends nothing', () async {
+  test('without the app, an unknown name exits 67 and sends nothing', () async {
     final exit = await runner().run(['wake', 'Toaster']);
 
-    expect(exit, ExitCodes.failed);
+    expect(exit, ExitCodes.noDevice);
     expect(sender.sent, isEmpty);
     expect(err.toString(), contains('MAC address'));
   });
