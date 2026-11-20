@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -13,6 +14,153 @@ Uint8List _hex(String hex) => Uint8List.fromList([
 ]);
 
 void main() {
+  final appendixA = jsonDecode(
+    File('test/fixtures/rfc8439_appendix_a.json').readAsStringSync(),
+  ) as Map<String, Object?>;
+  List<Map<String, Object?>> vectors(String kind) => [
+    for (final vector in appendixA[kind]! as List<Object?>)
+      vector! as Map<String, Object?>,
+  ];
+  Uint8List field(Map<String, Object?> vector, String name) =>
+      _hex(vector[name]! as String);
+
+  group('RFC 8439 Appendix A', () {
+    test('A.1 ChaCha20 block function', () {
+      for (final vector in vectors('block')) {
+        expect(
+          ChaChaPoly.chacha20(
+            field(vector, 'key'),
+            field(vector, 'nonce'),
+            vector['counter']! as int,
+            Uint8List(64),
+          ),
+          field(vector, 'keystream'),
+          reason: 'vector ${vector['vector']}',
+        );
+      }
+    });
+
+    test('A.2 ChaCha20 encryption', () {
+      for (final vector in vectors('encrypt')) {
+        final key = field(vector, 'key');
+        final nonce = field(vector, 'nonce');
+        final counter = vector['counter']! as int;
+        final ciphertext = field(vector, 'ciphertext');
+        expect(
+          ChaChaPoly.chacha20(key, nonce, counter, field(vector, 'plaintext')),
+          ciphertext,
+          reason: 'vector ${vector['vector']}',
+        );
+        expect(
+          ChaChaPoly.chacha20(key, nonce, counter, ciphertext),
+          field(vector, 'plaintext'),
+          reason: 'vector ${vector['vector']}',
+        );
+      }
+    });
+
+    test('A.3 Poly1305, including the carry and reduction edge cases', () {
+      final all = vectors('poly1305');
+      expect(all.map((vector) => vector['vector']), [
+        for (var number = 1; number <= 11; number++) number,
+      ]);
+      for (final vector in all) {
+        expect(
+          ChaChaPoly.poly1305(field(vector, 'key'), field(vector, 'message')),
+          field(vector, 'tag'),
+          reason: 'vector ${vector['vector']}',
+        );
+      }
+    });
+
+    test('A.4 Poly1305 key generation', () {
+      for (final vector in vectors('keygen')) {
+        expect(
+          ChaChaPoly.poly1305KeyFor(
+            field(vector, 'key'),
+            field(vector, 'nonce'),
+          ),
+          field(vector, 'polyKey'),
+          reason: 'vector ${vector['vector']}',
+        );
+      }
+    });
+
+    test('A.5 AEAD decryption', () {
+      final vector = vectors('aead').single;
+      final key = field(vector, 'key');
+      final nonce = field(vector, 'nonce');
+      final aad = field(vector, 'aad');
+      final sealed = Uint8List.fromList([
+        ...field(vector, 'ciphertext'),
+        ...field(vector, 'tag'),
+      ]);
+
+      expect(ChaChaPoly.poly1305KeyFor(key, nonce), field(vector, 'polyKey'));
+      expect(
+        ChaChaPoly.decrypt(key, nonce, aad, sealed),
+        field(vector, 'plaintext'),
+      );
+      expect(
+        ChaChaPoly.encrypt(key, nonce, aad, field(vector, 'plaintext')),
+        sealed,
+      );
+    });
+  });
+
+  group('block counter', () {
+    final key = List.generate(32, (index) => index * 7 % 256);
+    final nonce = List.generate(12, (index) => index + 1);
+
+    test('the last block before the 32-bit counter wraps matches the '
+        'cryptography package', () async {
+      const last = 0xffffffff;
+      final reference =
+          await Chacha20(
+            macAlgorithm: MacAlgorithm.empty,
+          ).encrypt(
+            Uint8List(64),
+            secretKey: SecretKey(key),
+            nonce: nonce,
+            keyStreamIndex: last * 64,
+          );
+
+      expect(
+        ChaChaPoly.chacha20(key, nonce, last, Uint8List(64)),
+        reference.cipherText,
+      );
+    });
+
+    test('a key stream that would wrap the counter is refused', () {
+      expect(
+        () => ChaChaPoly.chacha20(key, nonce, 0xffffffff, Uint8List(65)),
+        throwsArgumentError,
+      );
+      expect(
+        () => ChaChaPoly.chacha20(key, nonce, 0xfffffffe, Uint8List(128)),
+        returnsNormally,
+      );
+    });
+
+    test('a long message runs the counter over many blocks like the '
+        'cryptography package', () async {
+      final data = Uint8List.fromList(
+        List.generate(64 * 1000 + 13, (index) => index % 251),
+      );
+      final reference =
+          await Chacha20(
+            macAlgorithm: MacAlgorithm.empty,
+          ).encrypt(
+            data,
+            secretKey: SecretKey(key),
+            nonce: nonce,
+            keyStreamIndex: 64 * 5,
+          );
+
+      expect(ChaChaPoly.chacha20(key, nonce, 5, data), reference.cipherText);
+    });
+  });
+
   group('ChaChaPoly', () {
     test('matches the RFC 8439 section 2.8.2 test vector', () {
       final key = _hex(
@@ -77,6 +225,27 @@ void main() {
         expect(
           ChaChaPoly.decrypt(key, nonce, aad, sealed),
           plaintext,
+          reason: '$length',
+        );
+      }
+    });
+
+    test('plain Poly1305 matches the cryptography package', () async {
+      final random = Random(8439);
+      // The package gets the empty message wrong; its tag is just s.
+      final key = List.generate(32, (index) => index);
+      expect(ChaChaPoly.poly1305(key, const []), key.sublist(16));
+      for (var length = 1; length < 200; length++) {
+        final key = List.generate(32, (_) => random.nextInt(256));
+        final message = List.generate(length, (_) => random.nextInt(256));
+        final mac = await Poly1305().calculateMac(
+          message,
+          secretKey: SecretKey(key),
+        );
+
+        expect(
+          ChaChaPoly.poly1305(key, message),
+          mac.bytes,
           reason: '$length',
         );
       }

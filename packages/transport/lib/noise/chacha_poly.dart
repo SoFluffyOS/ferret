@@ -26,7 +26,7 @@ abstract final class ChaChaPoly {
     final out = Uint8List(plaintext.length + tagLength)
       ..setRange(0, plaintext.length, plaintext);
     final polyKey = _polyKey(state);
-    _xorKeyStream(state, out, plaintext.length);
+    _xorKeyStream(state, out, plaintext.length, 1);
     final tag = _tag(polyKey, _bytes(associatedData), out, plaintext.length);
     out.setRange(plaintext.length, out.length, tag);
     return out;
@@ -59,9 +59,46 @@ abstract final class ChaChaPoly {
     }
 
     final out = Uint8List(length)..setRange(0, length, input);
-    _xorKeyStream(state, out, length);
+    _xorKeyStream(state, out, length, 1);
     return out;
   }
+
+  /// Plain ChaCha20: [data] XORed with the key stream from block [counter]
+  /// on. The AEAD above uses it from block 1; this entry point is here for
+  /// the RFC 8439 test vectors.
+  static Uint8List chacha20(
+    List<int> key,
+    List<int> nonce,
+    int counter,
+    List<int> data,
+  ) {
+    final out = Uint8List.fromList(data);
+    _xorKeyStream(_state(key, nonce), out, out.length, counter);
+    return out;
+  }
+
+  /// Plain Poly1305 of [message] under a 32-byte one-time [key], for the
+  /// RFC 8439 test vectors.
+  static Uint8List poly1305(List<int> key, List<int> message) {
+    if (key.length != keyLength) {
+      throw ArgumentError('Poly1305 needs a 32-byte key.');
+    }
+
+    final words = ByteData.sublistView(_bytes(key));
+    final poly = _Poly1305(
+      Uint32List.fromList([
+        for (var word = 0; word < 8; word++)
+          words.getUint32(word * 4, Endian.little),
+      ]),
+    );
+    final bytes = _bytes(message);
+    poly.update(bytes, bytes.length, padded: false);
+    return poly.finish();
+  }
+
+  /// The one-time Poly1305 key the AEAD derives for [key] and [nonce].
+  static Uint8List poly1305KeyFor(List<int> key, List<int> nonce) =>
+      chacha20(key, nonce, 0, Uint8List(32));
 
   static Uint8List _bytes(List<int> data) => switch (data) {
     final Uint8List bytes => bytes,
@@ -103,12 +140,22 @@ abstract final class ChaChaPoly {
     return Uint32List.sublistView(block, 0, 8);
   }
 
-  /// XORs the key stream from block 1 on into the first [length] bytes.
-  static void _xorKeyStream(Uint32List state, Uint8List data, int length) {
+  /// XORs the key stream from block [counter] on into the first [length]
+  /// bytes. The 32-bit block counter must not wrap (RFC 8439 section 2.4).
+  static void _xorKeyStream(
+    Uint32List state,
+    Uint8List data,
+    int length,
+    int counter,
+  ) {
+    final blocks = (length + 63) ~/ 64;
+    if (counter < 0 || counter + blocks - 1 > _mask32) {
+      throw ArgumentError('The ChaCha20 block counter would wrap.');
+    }
+
     final block = Uint32List(16);
     final blockBytes = Uint8List.view(block.buffer);
     final view = ByteData.sublistView(data);
-    var counter = 1;
     var offset = 0;
     while (offset < length) {
       state[12] = counter++;
@@ -278,8 +325,10 @@ abstract final class ChaChaPoly {
 }
 
 /// Poly1305 in the 32-bit "donna" style: five 26-bit limbs. Each call to
-/// [update] takes a whole message part and pads its tail with zeros to a
-/// 16-byte block, which is what the AEAD construction asks for.
+/// [update] takes a whole message part. When [update] is `padded`, its tail
+/// is filled with zeros to a full 16-byte block, which is what the AEAD
+/// construction asks for; otherwise the tail is a short block, ended with
+/// a 1 byte as plain Poly1305 does.
 class _Poly1305 {
   _Poly1305(Uint32List key)
     : _r0 = key[0] & 0x3ffffff,
@@ -304,19 +353,28 @@ class _Poly1305 {
   static const _mask = ChaChaPoly._mask26;
   static const _hibit = 1 << 24;
 
-  void update(Uint8List data, int length) {
+  void update(Uint8List data, int length, {bool padded = true}) {
     final whole = length & ~15;
     if (whole > 0) {
-      _blocks(ByteData.sublistView(data, 0, whole), whole);
+      _blocks(ByteData.sublistView(data, 0, whole), whole, _hibit);
     }
 
-    if (whole < length) {
-      final last = Uint8List(16)..setRange(0, length - whole, data, whole);
-      _blocks(ByteData.sublistView(last), 16);
+    if (whole == length) {
+      return;
     }
+
+    final tail = length - whole;
+    final last = Uint8List(16)..setRange(0, tail, data, whole);
+    if (padded) {
+      _blocks(ByteData.sublistView(last), 16, _hibit);
+      return;
+    }
+
+    last[tail] = 1;
+    _blocks(ByteData.sublistView(last), 16, 0);
   }
 
-  void _blocks(ByteData data, int length) {
+  void _blocks(ByteData data, int length, int hibit) {
     final r0 = _r0;
     final r1 = _r1;
     final r2 = _r2;
@@ -341,7 +399,7 @@ class _Poly1305 {
       h1 += ((t0 >> 26) | (t1 << 6)) & _mask;
       h2 += ((t1 >> 20) | (t2 << 12)) & _mask;
       h3 += ((t2 >> 14) | (t3 << 18)) & _mask;
-      h4 += (t3 >> 8) | _hibit;
+      h4 += (t3 >> 8) | hibit;
 
       final d0 = h0 * r0 + h1 * s4 + h2 * s3 + h3 * s2 + h4 * s1;
       var d1 = h0 * r1 + h1 * r0 + h2 * s4 + h3 * s3 + h4 * s2;
