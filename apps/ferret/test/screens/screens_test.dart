@@ -17,6 +17,10 @@ import 'package:calls/calls.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:drop/drop.dart';
 import 'package:feature_kit/feature_kit.dart';
+// ignore: depend_on_referenced_packages
+import 'package:ferret_camera/ferret_camera.dart';
+// ignore: depend_on_referenced_packages
+import 'package:ferret_photos/ferret_photos.dart';
 import 'package:find/find.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -29,11 +33,14 @@ import 'package:media/media.dart';
 import 'package:messages/messages.dart';
 import 'package:mirroring/mirroring.dart';
 import 'package:notifications/notifications.dart';
+import 'package:phone_camera/phone_camera.dart';
+import 'package:photos/photos.dart';
 import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
 import 'support/action_fakes.dart';
+import 'support/ios_features.dart';
 import 'support/phone_fakes.dart';
 import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
@@ -81,6 +88,10 @@ typedef ScreenScript = Future<void> Function(
 
 /// One screen: its file name and how to get there. [tall] screens are also saved at full length
 /// (`<name>_full_<mode>.png`) so nothing below the fold is missed.
+///
+/// At the `iphone` size the app is the iPhone build (`iosFeatures()`) on an
+/// iPhone, and the device a script pairs or adds without naming it is a
+/// Mac (see [ScreenRig.otherName]).
 class Screen {
   const Screen(
     this.name,
@@ -89,6 +100,9 @@ class Screen {
     this.sampleActivity = false,
     this.tall = false,
     this.phone = false,
+    this.onIphone = true,
+    this.only,
+    this.withPhotos = false,
     this.fullHeight = 2400,
   });
 
@@ -105,6 +119,18 @@ class Screen {
 
   /// Runs as an Android phone paired with a computer (see [phoneFeatures]).
   final bool phone;
+
+  /// Whether the screen exists on an iPhone. False for what only Android
+  /// does, for finding devices nearby, which an iPhone can't, and where a
+  /// `phone_` twin already shows the iPhone's side.
+  final bool onIphone;
+
+  /// The one size this screen is captured at, or null for every size.
+  final CaptureSize? only;
+
+  /// Adds the computer's side of Photos and Camera, which `lib/main.dart`
+  /// registers too, so a phone's photos and camera show on its page.
+  final bool withPhotos;
 
   /// Height of the full-length capture, in logical pixels.
   final double fullHeight;
@@ -124,7 +150,32 @@ final screens = <Screen>[
   Screen('home_offline_iphone', (tester, rig) async {
     await rig.addOfflinePhone(tester, name: 'iPhone', platform: .PLATFORM_IOS);
     await rig.settle(tester);
-  }),
+  }, onIphone: false),
+  Screen(
+    'mac_iphone_connected',
+    (tester, rig) async {
+      await rig.pairConnectedIphone(tester, iphoneFeatures: iosFeatures());
+      await rig.settle(tester);
+    },
+    only: popover,
+    withPhotos: true,
+  ),
+  Screen(
+    'mac_iphone_device',
+    (tester, rig) async {
+      final iphoneId = await rig.pairConnectedIphone(
+        tester,
+        iphoneFeatures: iosFeatures(),
+      );
+      if (iphoneId == null) {
+        return;
+      }
+
+      await rig.open(tester, DevicePage(deviceId: iphoneId));
+    },
+    only: popover,
+    withPhotos: true,
+  ),
   Screen('home_reconnecting', (tester, rig) async {
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);
@@ -176,6 +227,19 @@ final screens = <Screen>[
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);
   }, tall: true),
+  Screen(
+    'iphone_home',
+    (tester, rig) async {
+      await rig.pairConnectedComputer(
+        tester,
+        computerFeatures: appFeatures(),
+        name: 'Simon’s MacBook Air',
+      );
+      await rig.settle(tester);
+    },
+    only: iphone,
+    tipsDone: true,
+  ),
   Screen('home_nearby', (tester, rig) async {
     await rig.addNearby(tester, name: 'Pixel 9');
     await rig.addNearby(
@@ -184,26 +248,31 @@ final screens = <Screen>[
       platform: .PLATFORM_LINUX,
       formFactor: .FORM_FACTOR_LAPTOP,
     );
-  }),
-  Screen('home_connected_nearby', (tester, rig) async {
-    await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
-    await rig.addNearby(
-      tester,
-      name: 'iPad',
-      platform: .PLATFORM_IOS,
-      formFactor: .FORM_FACTOR_TABLET,
-    );
-    await rig.settle(tester);
-  }, tall: true),
+  }, onIphone: false),
+  Screen(
+    'home_connected_nearby',
+    (tester, rig) async {
+      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+      await rig.addNearby(
+        tester,
+        name: 'iPad',
+        platform: .PLATFORM_IOS,
+        formFactor: .FORM_FACTOR_TABLET,
+      );
+      await rig.settle(tester);
+    },
+    tall: true,
+    onIphone: false,
+  ),
   Screen('pair_code', (tester, rig) async {
     await rig.startNearby(tester);
     await rig.tapText(tester, 'Pair');
-  }),
+  }, onIphone: false),
   Screen('pair_code_confirmed', (tester, rig) async {
     await rig.startNearby(tester);
     await rig.tapText(tester, 'Pair');
     await rig.tapText(tester, 'They match');
-  }),
+  }, onIphone: false),
   Screen('pair_request', (tester, rig) async {
     final other = await rig.startNearby(
       tester,
@@ -224,31 +293,36 @@ final screens = <Screen>[
       await Future<void>.delayed(const Duration(milliseconds: 300));
     });
     await rig.settle(tester);
-  }),
+  }, onIphone: false),
   Screen('pair', (tester, rig) async {
     await rig.open(tester, const PairPage());
   }),
   Screen('pair_nearby', (tester, rig) async {
     await rig.addNearby(tester, name: 'Pixel 9');
     await rig.open(tester, const PairPage());
-  }),
+  }, onIphone: false),
   Screen('pair_qr', (tester, rig) async {
     await rig.open(tester, const QrPairPage());
   }),
   Screen('pair_other_ways', (tester, rig) async {
     await rig.open(tester, const OtherWaysPage());
   }, tall: true),
-  Screen('device_connected', (tester, rig) async {
-    final phoneId = await rig.pairConnectedPhone(
-      tester,
-      phoneFeatures: appFeatures(),
-    );
-    if (phoneId == null) {
-      return;
-    }
+  Screen(
+    'device_connected',
+    (tester, rig) async {
+      final phoneId = await rig.pairConnectedPhone(
+        tester,
+        phoneFeatures: appFeatures(),
+      );
+      if (phoneId == null) {
+        return;
+      }
 
-    await rig.open(tester, DevicePage(deviceId: phoneId));
-  }, tall: true),
+      await rig.open(tester, DevicePage(deviceId: phoneId));
+    },
+    tall: true,
+    onIphone: false,
+  ),
   Screen('device_offline', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
@@ -261,7 +335,7 @@ final screens = <Screen>[
   Screen('device_forget', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
-    await rig.tapText(tester, 'Forget Pixel 9');
+    await rig.tapText(tester, 'Forget ${rig.otherName}');
   }),
   Screen('device_access', (tester, rig) async {
     final phoneId = await rig.pairConnectedPhone(
@@ -303,16 +377,21 @@ final screens = <Screen>[
   Screen('settings_connected', (tester, rig) async {
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.open(tester, const SettingsPage());
-  }),
+  }, onIphone: false),
   Screen('phone_settings', (tester, rig) async {
     await rig.pairConnectedComputer(tester, computerFeatures: appFeatures());
     await rig.open(tester, const SettingsPage());
   }, phone: true),
   for (final group in SettingsGroup.values) ...[
-    Screen('settings_group_${group.name}', (tester, rig) async {
-      await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
-      await rig.open(tester, SettingsGroupPage(group: group));
-    }, tall: true),
+    Screen(
+      'settings_group_${group.name}',
+      (tester, rig) async {
+        await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
+        await rig.open(tester, SettingsGroupPage(group: group));
+      },
+      tall: true,
+      onIphone: false,
+    ),
     Screen(
       'phone_settings_group_${group.name}',
       (tester, rig) async {
@@ -418,6 +497,7 @@ final screens = <Screen>[
     },
     phone: true,
     tall: true,
+    onIphone: false,
   ),
   Screen(
     'phone_notifications_setup',
@@ -428,6 +508,7 @@ final screens = <Screen>[
     },
     phone: true,
     tall: true,
+    onIphone: false,
   ),
   Screen(
     'phone_notifications_apps',
@@ -435,6 +516,7 @@ final screens = <Screen>[
       await rig.open(tester, samplePicker(.APP_FILTER_ALL));
     },
     phone: true,
+    onIphone: false,
   ),
   Screen(
     'phone_notifications_apps_except',
@@ -443,6 +525,7 @@ final screens = <Screen>[
     },
     phone: true,
     tall: true,
+    onIphone: false,
   ),
 ];
 
@@ -466,6 +549,14 @@ void main() {
 
   for (final screen in screens) {
     for (final size in sizes) {
+      if (size == iphone && !screen.onIphone) {
+        continue;
+      }
+
+      if (screen.only case final only? when only != size) {
+        continue;
+      }
+
       for (final brightness in Brightness.values) {
         if (brightness == .dark && !size.darkToo) {
           continue;
@@ -507,26 +598,40 @@ Future<void> _run(
   Brightness brightness,
 ) async {
   final name = screen.name;
+  final onIphone = size == iphone;
   final rig = await ScreenRig.create(
     tester,
     features: [
-      ...switch (screen.phone) {
-        true => phoneFeatures(),
-        false => appFeatures(),
+      ...switch ((onIphone, screen.phone)) {
+        (true, _) => iosFeatures(),
+        (false, true) => phoneFeatures(),
+        (false, false) => appFeatures(),
       },
       if (screen.sampleActivity) SampleActivityFeatureUi(),
+      if (screen.withPhotos) ...[
+        PhotosFeatureUi(
+          feature: PhotosFeature(library: const UnsupportedPhotoLibrary()),
+        ),
+        CameraFeatureUi(
+          feature: CameraFeature(camera: const UnsupportedPhoneCamera()),
+        ),
+      ],
     ],
     tipsDone: screen.tipsDone,
-    asPhone: screen.phone,
+    asPhone: screen.phone && !onIphone,
+    asIphone: onIphone,
   );
   await rig.show(tester);
 
   await screen.script(tester, rig);
   await rig.capture(tester, name, size, brightness);
 
-  if (screen.tall && size == phone) {
+  if (screen.tall && (size == phone || onIphone)) {
     final full = CaptureSize(
-      'full',
+      switch (onIphone) {
+        true => 'iphone_full',
+        false => 'full',
+      },
       size.width,
       screen.fullHeight,
       platform: size.platform,

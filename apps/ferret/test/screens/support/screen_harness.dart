@@ -91,13 +91,30 @@ final screensDirectory = Directory('../../temp/screens');
 /// One running Ferret: the engine the app shows, plus a second engine on
 /// loopback when the screen needs a connected phone.
 class ScreenRig {
-  ScreenRig._(this.engine, this.app, this.featureContext, this._discovery);
+  ScreenRig._(
+    this.engine,
+    this.app,
+    this.featureContext,
+    this._discovery, {
+    required this.isIphone,
+  });
 
   final FerretEngine engine;
   final FerretApp app;
   final FeatureContext featureContext;
   final SilentDiscovery _discovery;
   final List<FerretEngine> _others = [];
+
+  /// Whether this is an iPhone. Its owner's other device is then a Mac:
+  /// the phone a script pairs or adds without naming it becomes one.
+  final bool isIphone;
+
+  /// The device a script gets when it names none: a Pixel 9 for a computer
+  /// or an Android phone, a MacBook Air for an iPhone.
+  String get otherName => switch (isIphone) {
+    true => 'MacBook Air',
+    false => 'Pixel 9',
+  };
 
   /// The engines paired with this one, such as the phone of
   /// [pairConnectedPhone], newest last.
@@ -107,7 +124,8 @@ class ScreenRig {
   NavigatorState? get navigator => featureContext.navigatorKey.currentState;
 
   /// Builds the app like `runFerret` does, with in-memory storage, no
-  /// discovery and an ephemeral port.
+  /// discovery and an ephemeral port. [asIphone] wants the features of
+  /// `iosFeatures()`.
   static Future<ScreenRig> create(
     WidgetTester tester, {
     required List<FeatureUi> features,
@@ -115,13 +133,20 @@ class ScreenRig {
     bool tipsDone = false,
     bool asPhone = false,
     bool asTablet = false,
+    bool asIphone = false,
   }) async {
     final rig = await tester.runAsync(() async {
       final discovery = SilentDiscovery();
       final engine = await FerretEngine.create(
         secrets: MemorySecretStore(),
         settings: MemorySettingsStore(),
-        device: switch (asPhone || asTablet) {
+        device: switch (asPhone || asTablet || asIphone) {
+          true when asIphone => const LocalDevice(
+            name: 'iPhone 16',
+            platform: .PLATFORM_IOS,
+            formFactor: .FORM_FACTOR_PHONE,
+            appVersion: '0.1.0',
+          ),
           true when asTablet => const LocalDevice(
             name: 'Galaxy Tab S9',
             platform: .PLATFORM_ANDROID,
@@ -172,7 +197,13 @@ class ScreenRig {
         features: features,
         featureContext: featureContext,
       );
-      return ScreenRig._(engine, app, featureContext, discovery);
+      return ScreenRig._(
+        engine,
+        app,
+        featureContext,
+        discovery,
+        isIphone: asIphone,
+      );
     });
     if (rig == null) {
       throw StateError('Could not start the engine.');
@@ -181,21 +212,23 @@ class ScreenRig {
     return rig;
   }
 
-  /// Adds an offline paired phone straight to the trust store.
+  /// Adds an offline paired phone straight to the trust store; on an
+  /// iPhone, a Mac unless [name] says which.
   Future<void> addOfflinePhone(
     WidgetTester tester, {
-    String name = 'Pixel 9',
+    String? name,
     String id = 'a1b2c3d4e5f60718',
-    Platform platform = .PLATFORM_ANDROID,
+    Platform? platform,
   }) {
+    final (other, kind) = _otherOr(name, platform);
     return tester
         .runAsync(() async {
           await engine.trustStore.save(
             TrustedDevice(
               id: id,
-              name: name,
-              platform: platform,
-              formFactor: .FORM_FACTOR_PHONE,
+              name: other,
+              platform: kind.platform,
+              formFactor: kind.formFactor,
               publicKey: Uint8List(32),
               pairedAt: DateTime.now().subtract(const Duration(days: 2)),
               lastSeen: DateTime.now().subtract(const Duration(minutes: 12)),
@@ -210,17 +243,21 @@ class ScreenRig {
   Future<void> addPhoneLastSeenAt(
     WidgetTester tester, {
     required String host,
-    String name = 'Pixel 7',
+    String? name,
     String id = 'a1b2c3d4e5f60718',
   }) {
+    final (other, kind) = _otherOr(switch (isIphone) {
+      true => name,
+      false => name ?? 'Pixel 7',
+    }, null);
     return tester
         .runAsync(() async {
           await engine.trustStore.save(
             TrustedDevice(
               id: id,
-              name: name,
-              platform: .PLATFORM_ANDROID,
-              formFactor: .FORM_FACTOR_PHONE,
+              name: other,
+              platform: kind.platform,
+              formFactor: kind.formFactor,
               publicKey: Uint8List(32),
               pairedAt: DateTime.now().subtract(const Duration(days: 2)),
               lastSeen: DateTime.now().subtract(const Duration(minutes: 3)),
@@ -233,21 +270,71 @@ class ScreenRig {
   }
 
   /// Pairs a second engine (an Android phone) over loopback with a QR offer,
-  /// so the app shows a real connected device with a live session.
+  /// so the app shows a real connected device with a live session. On an
+  /// iPhone it is a Mac with [phoneFeatures] unless [name] says which:
+  /// scripts written for a computer pass the computer's features.
   Future<String?> pairConnectedPhone(
     WidgetTester tester, {
     required List<FeatureUi> phoneFeatures,
-    String name = 'Pixel 9',
+    String? name,
+  }) {
+    final (other, kind) = _otherOr(name, null);
+    return _pairOther(
+      tester,
+      features: phoneFeatures,
+      device: LocalDevice(
+        name: other,
+        platform: kind.platform,
+        formFactor: kind.formFactor,
+        appVersion: '0.1.0',
+      ),
+    );
+  }
+
+  /// Pairs an iPhone running [iphoneFeatures] (`iosFeatures()`), so a
+  /// computer shows what a connected iPhone offers.
+  Future<String?> pairConnectedIphone(
+    WidgetTester tester, {
+    required List<FeatureUi> iphoneFeatures,
+    String name = 'iPhone 16',
   }) => _pairOther(
     tester,
-    features: phoneFeatures,
+    features: iphoneFeatures,
     device: LocalDevice(
       name: name,
-      platform: .PLATFORM_ANDROID,
+      platform: .PLATFORM_IOS,
       formFactor: .FORM_FACTOR_PHONE,
       appVersion: '0.1.0',
     ),
   );
+
+  /// [name] and its kind, or this rig's [otherName] and its kind. A named
+  /// device is an Android phone unless [platform] says otherwise.
+  (String, ({Platform platform, FormFactor formFactor})) _otherOr(
+    String? name,
+    Platform? platform,
+  ) {
+    if (name == null && platform == null && isIphone) {
+      return (
+        otherName,
+        (platform: Platform.PLATFORM_MACOS, formFactor: .FORM_FACTOR_LAPTOP),
+      );
+    }
+
+    final kind = platform ?? Platform.PLATFORM_ANDROID;
+    return (
+      name ?? otherName,
+      (
+        platform: kind,
+        formFactor: switch (kind) {
+          .PLATFORM_MACOS ||
+          .PLATFORM_WINDOWS ||
+          .PLATFORM_LINUX => FormFactor.FORM_FACTOR_LAPTOP,
+          _ => FormFactor.FORM_FACTOR_PHONE,
+        },
+      ),
+    );
+  }
 
   /// Same as [pairConnectedPhone], for a phone rig: pairs a Mac.
   Future<String?> pairConnectedComputer(

@@ -18,6 +18,7 @@ import 'package:shell/shell.dart';
 import 'package:wake/wake.dart';
 
 import 'screens_test.dart' show phoneFeatures;
+import 'support/ios_features.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
 
@@ -158,12 +159,21 @@ void main() {
                 wakeTimeout: _timeoutFor(name),
               ),
             );
-            final features = <FeatureUi>[...phoneFeatures(), wake];
+            final onIphone = size == iphone;
+            final features = <FeatureUi>[
+              for (final feature in switch (onIphone) {
+                true => iosFeatures(),
+                false => phoneFeatures(),
+              })
+                if (feature.featureId != WakeFeature.featureId) feature,
+              wake,
+            ];
             final rig = await ScreenRig.create(
               tester,
               features: features,
               tipsDone: true,
-              asPhone: true,
+              asPhone: !onIphone,
+              asIphone: onIphone,
             );
             await rig.show(tester);
             await script(tester, rig, wake);

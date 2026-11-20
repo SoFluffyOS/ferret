@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +127,8 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                 ],
               ),
             ),
-            if (Platform.isAndroid || Platform.isIOS) ...[
+            if (defaultTargetPlatform == .android ||
+                defaultTargetPlatform == .iOS) ...[
               Spacing.v16,
               GroupedCard(
                 children: [

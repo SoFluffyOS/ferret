@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -11,7 +12,7 @@ abstract final class ReceiveFolders {
   static bool get usesFolderName => Platform.isAndroid;
 
   /// Whether people can pick another folder here.
-  static bool get canChange => !Platform.isIOS;
+  static bool get canChange => defaultTargetPlatform != .iOS;
 
   /// The folder name inside Downloads, for Android.
   static String folderName(SettingsStore settings) {

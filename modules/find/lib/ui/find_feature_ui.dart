@@ -19,11 +19,14 @@ import 'package:provider/provider.dart';
 /// line in Activity, the ringing screen and notice with "Found it",
 /// Settings, and each device's ring health.
 class FindFeatureUi extends FeatureUi {
-  FindFeatureUi({FindFeature? feature})
+  FindFeatureUi({FindFeature? feature, this.platform})
     : feature = feature ?? FindFeature(texts: _alertTexts);
 
   @override
   final FindFeature feature;
+
+  /// Which platform's ringing Settings explains; this one's when null.
+  final FindPlatformKind? platform;
 
   late final FindViewModel viewModel = FindViewModel(feature);
   FindNotices? _notices;
@@ -133,7 +136,7 @@ class FindFeatureUi extends FeatureUi {
   @override
   Widget? buildSettings(BuildContext context, FeatureContext feature) =>
       ChangeNotifierProvider(
-        create: (_) => FindSettingsViewModel(this.feature),
+        create: (_) => FindSettingsViewModel(this.feature, platform: platform),
         child: const FindSettingsFrame(),
       );
 

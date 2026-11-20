@@ -12,6 +12,7 @@ class QuickShareOptions {
     this.receiveWindow = const Duration(minutes: 10),
     this.answerTimeout = const Duration(minutes: 2),
     this.timeouts = const QuickShareTimeouts(),
+    this.supported,
   });
 
   /// The port phones connect to. Quick Share has no fixed one, so any
@@ -32,4 +33,8 @@ class QuickShareOptions {
   /// How long an offer waits for someone here to accept it.
   final Duration answerTimeout;
   final QuickShareTimeouts timeouts;
+
+  /// Whether this device can take Quick Share at all; this platform's
+  /// answer when null.
+  final bool? supported;
 }
