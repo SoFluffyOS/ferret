@@ -12,7 +12,8 @@ import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Pairs from a `ferret://pair` link: a computer's QR code scanned with
-/// the phone's own camera. It says how it goes, and closes once paired.
+/// the phone's own camera. It says how it goes, and closes once paired. A
+/// link cut short says so, with a way to scan the code in Ferret.
 class LinkPairPage extends StatefulWidget {
   const LinkPairPage({super.key, required this.link});
 
@@ -27,11 +28,16 @@ class _LinkPairPageState extends State<LinkPairPage> {
     ShellScope.read(context).featureContext.engine,
   );
 
+  late bool _isLink;
+
   @override
   void initState() {
     super.initState();
-    _viewModel.pairWithLink(widget.link);
+    _isLink = _viewModel.pairWithLink(widget.link);
   }
+
+  void _pair(String link) =>
+      setState(() => _isLink = _viewModel.pairWithLink(link));
 
   @override
   void dispose() {
@@ -51,17 +57,44 @@ class _LinkPairPageState extends State<LinkPairPage> {
           title: l10n.pairTitle,
           backLabel: l10n.back,
           width: .narrow,
-          children: const [PairingStatusCard(), _ScanAgain()],
+          children: [
+            if (!_isLink) const _NotALink(),
+            const PairingStatusCard(),
+            _ScanAgain(isLink: _isLink, onLink: _pair),
+          ],
         ),
       ),
     );
   }
 }
 
-/// After a code that didn't work, such as an old one, scanning the
-/// computer's new code is the next step.
+/// A link that isn't a whole pairing offer, such as one cut short.
+class _NotALink extends StatelessWidget {
+  const _NotALink();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(top: Spacing.d8, bottom: Spacing.d8),
+    child: SurfaceCard(
+      padding: EdgeInsets.all(Spacing.d16),
+      child: Text(
+        context.shellL10n.scanNotFerret,
+        textAlign: .center,
+        style: context.fluffyTheme.typography.base1.copyWith(
+          color: context.palette.text,
+        ),
+      ),
+    ),
+  );
+}
+
+/// After a code that didn't work, such as an old one, or a link that
+/// wasn't one, scanning the computer's code is the next step.
 class _ScanAgain extends StatelessWidget {
-  const _ScanAgain();
+  const _ScanAgain({required this.isLink, required this.onLink});
+
+  final bool isLink;
+  final ValueChanged<String> onLink;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +104,7 @@ class _ScanAgain extends StatelessWidget {
         _ => false,
       },
     );
-    if (!failed) {
+    if (isLink && !failed) {
       return const SizedBox.shrink();
     }
 
@@ -86,7 +119,6 @@ class _ScanAgain extends StatelessWidget {
   }
 
   Future<void> _scan(BuildContext context) async {
-    final viewModel = context.read<PairingViewModel>();
     final link = await Navigator.of(
       context,
     ).push<String>(ferretRoute<String>(const ScanPage()));
@@ -94,6 +126,6 @@ class _ScanAgain extends StatelessWidget {
       return;
     }
 
-    viewModel.pairWithLink(link);
+    onLink(link);
   }
 }
