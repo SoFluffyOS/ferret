@@ -211,10 +211,9 @@ class _VolumeRow extends StatelessWidget {
         children: [
           for (final (index, action) in buttons.indexed) ...[
             if (index > 0) Spacing.h8,
-            Button(
+            GhostButton(
               key: ValueKey(action.id),
               mainAxisSize: .min,
-              variant: .ghost,
               // An icon alone needs no text-sized padding; with it the
               // three buttons squeeze "Volume" apart on a phone or tablet.
               padding: EdgeInsets.symmetric(

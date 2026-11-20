@@ -396,13 +396,14 @@ void main() {
       });
     }
 
-    // One ring at a time: a button in a card, the card itself, and Fix on
-    // an offline device, focused from the keyboard, on a phone and in the
-    // popover.
+    // One ring at a time: a button in a card, the card itself, Fix on an
+    // offline device and a plain outlined button, focused from the
+    // keyboard, on a phone and in the popover.
     const focused = {
       ('home_connected', 'Show screen', 'ghost_in_card'),
       ('home_connected', 'Pixel 9', 'card'),
       ('home_offline', 'Fix', 'fix'),
+      ('device_forget', 'Cancel', 'ghost'),
     };
     for (final (screenName, stop, shot) in focused) {
       final screen = screens.firstWhere((each) => each.name == screenName);

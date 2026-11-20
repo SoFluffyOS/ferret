@@ -82,15 +82,13 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                     spacing: Spacing.d8,
                     runSpacing: Spacing.d8,
                     children: [
-                      Button(
+                      GhostButton(
                         mainAxisSize: .min,
-                        variant: .ghost,
                         label: l10n.otherPairLink,
                         onPressed: _pairWithLink,
                       ),
-                      Button(
+                      GhostButton(
                         mainAxisSize: .min,
-                        variant: .ghost,
                         label: switch (_copied) {
                           true => l10n.pairLinkCopied,
                           false => l10n.pairCopyLink,
@@ -119,9 +117,8 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                   Spacing.v12,
                   Wrap(
                     children: [
-                      Button(
+                      GhostButton(
                         mainAxisSize: .min,
-                        variant: .ghost,
                         label: l10n.otherPairAddress,
                         onPressed: _pairWithAddress,
                       ),

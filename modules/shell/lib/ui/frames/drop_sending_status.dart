@@ -74,9 +74,8 @@ class DropSendingStatus extends StatelessWidget {
           Row(
             mainAxisAlignment: .end,
             children: [
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.dropClose,
                 onPressed: viewModel.cancel,
               ),

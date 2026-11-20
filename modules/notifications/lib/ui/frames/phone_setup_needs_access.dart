@@ -64,8 +64,7 @@ class PhoneSetupNeedsAccess extends StatelessWidget {
             child: RestrictedGuide(onOpenAppInfo: viewModel.openAppInfo),
           ),
         GroupedCell(
-          child: Button(
-            variant: .ghost,
+          child: GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

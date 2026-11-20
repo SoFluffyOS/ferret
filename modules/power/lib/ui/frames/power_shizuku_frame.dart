@@ -103,9 +103,8 @@ class PowerShizukuFrame extends StatelessWidget {
             },
             trailing: switch (batteryUnrestricted) {
               true => null,
-              false => Button(
+              false => GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.turnOn,
                 enable: !isBusy,
                 onPressed: viewModel.allowBackgroundRunning,
@@ -115,9 +114,8 @@ class PowerShizukuFrame extends StatelessWidget {
           GroupedCell(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Button(
+              child: GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.stopUsingShizuku,
                 enable: !isBusy,
                 onPressed: viewModel.stopUsingShizuku,

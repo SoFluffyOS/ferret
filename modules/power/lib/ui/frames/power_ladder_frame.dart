@@ -55,9 +55,8 @@ class PowerLadderFrame extends StatelessWidget {
                   spacing: Spacing.d8,
                   runSpacing: Spacing.d8,
                   children: [
-                    Button(
+                    GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: switch (tier) {
                         .standard => l10n.notificationsOpenShort,
                         _ => l10n.notificationsTurnOnNow,
@@ -74,9 +73,8 @@ class PowerLadderFrame extends StatelessWidget {
                       onPressed: viewModel.turnOnNotificationAccess,
                     ),
                     if (tier == .standard)
-                      Button(
+                      GhostButton(
                         mainAxisSize: .min,
-                        variant: .ghost,
                         label: l10n.appInfo,
                         enable: !isBusy,
                         onPressed: viewModel.openAppInfo,
@@ -90,9 +88,8 @@ class PowerLadderFrame extends StatelessWidget {
                 Spacing.v8,
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: Button(
+                  child: GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.appInfo,
                     enable: !isBusy,
                     onPressed: viewModel.openAppInfo,

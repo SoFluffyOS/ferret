@@ -142,8 +142,7 @@ class _RecentCalls extends StatelessWidget {
               style: typography.body2.copyWith(color: palette.text),
             ),
             Spacing.v12,
-            Button(
-              variant: .ghost,
+            GhostButton(
               label: l10n.retry,
               enable: !loading,
               onPressed: viewModel.loadRecent,

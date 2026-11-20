@@ -33,8 +33,7 @@ class BrowserPairCardFrame extends StatelessWidget {
           onPressed: () =>
               unawaited(viewModel.answerPair(request, allow: true)),
         ),
-        Button(
-          variant: .ghost,
+        GhostButton(
           label: l10n.browserPairDeny,
           mainAxisSize: .min,
           onPressed: () =>

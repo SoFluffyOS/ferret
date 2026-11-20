@@ -44,9 +44,8 @@ class NearbyFeatureTile extends StatelessWidget {
               ),
             ),
             Spacing.h12,
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: row.actionLabel,
               onPressed: row.onAction,
             ),

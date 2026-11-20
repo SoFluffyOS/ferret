@@ -45,8 +45,7 @@ class AdvancedSettingsPage extends StatelessWidget {
           ],
         ),
         Spacing.v24,
-        Button(
-          variant: .ghost,
+        GhostButton(
           label: l10n.settingsQuit,
           onPressed: SystemNavigator.pop,
         ),

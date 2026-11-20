@@ -21,19 +21,11 @@ class ActionPair extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Focused from the keyboard, its outline gives way to the focus ring.
-    final ghost = ButtonFocusRing(
-      builder: (context, keyboardFocused) => Button(
-        variant: .ghost,
-        label: ghostLabel,
-        mainAxisSize: .max,
-        titleExpand: .shrink,
-        borderWidth: switch (keyboardFocused) {
-          true => 0,
-          false => null,
-        },
-        onPressed: onGhost,
-      ),
+    final ghost = GhostButton(
+      label: ghostLabel,
+      mainAxisSize: .max,
+      titleExpand: .shrink,
+      onPressed: onGhost,
     );
     final primary = Button(
       variant: .primary,

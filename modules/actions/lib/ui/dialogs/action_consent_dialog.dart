@@ -1,6 +1,7 @@
 import 'package:actions/l10n/l10n.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/ui/widgets/widgets.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -55,17 +56,15 @@ class ActionConsentDialog extends StatelessWidget {
           onPressed: () => onAnswer(.always),
         ),
         Spacing.v8,
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.allowOnce,
           tooltip: l10n.allowOnce,
           onPressed: () => onAnswer(.allowOnce),
         ),
         Spacing.v8,
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.dontAllow,
           tooltip: l10n.dontAllow,
           onPressed: () => onAnswer(.deny),

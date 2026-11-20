@@ -1,6 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// One clip in Recent clips: what it holds (or a cover when previews are
 /// hidden), where it came from, and Copy.
@@ -45,9 +44,8 @@ class RecentClipRow extends StatelessWidget {
     title: title,
     titleMaxLines: 2,
     subtitle: subtitle,
-    trailing: Button(
+    trailing: GhostButton(
       mainAxisSize: .min,
-      variant: .ghost,
       label: copyLabel,
       enable: !isCopied,
       onPressed: onCopy,

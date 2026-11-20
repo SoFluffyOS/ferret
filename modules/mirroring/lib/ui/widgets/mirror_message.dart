@@ -87,15 +87,21 @@ class MirrorMessage extends StatelessWidget {
                   runSpacing: Spacing.d8,
                   children: [
                     for (final action in actions)
-                      Button(
-                        variant: switch (action.primary) {
-                          true => .primary,
-                          false => .ghost,
-                        },
-                        mainAxisSize: .min,
-                        enable: action.onPressed != null,
-                        label: action.label,
-                        onPressed: action.onPressed,
+                      ButtonFocusRing(
+                        builder: (context, keyboardFocused) => Button(
+                          variant: switch (action.primary) {
+                            true => .primary,
+                            false => .ghost,
+                          },
+                          borderWidth: switch (keyboardFocused) {
+                            true => 0,
+                            false => null,
+                          },
+                          mainAxisSize: .min,
+                          enable: action.onPressed != null,
+                          label: action.label,
+                          onPressed: action.onPressed,
+                        ),
                       ),
                   ],
                 ),

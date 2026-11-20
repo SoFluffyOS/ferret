@@ -94,8 +94,7 @@ class DeviceFilesFrame extends StatelessWidget {
                     onPressed: () => unawaited(viewModel.pickAndSend(deviceId)),
                   ),
                   if (viewModel.canPickFolder)
-                    Button(
-                      variant: .ghost,
+                    GhostButton(
                       mainAxisSize: .min,
                       enable: isConnected,
                       label: l10n.filesChooseFolder,

@@ -87,4 +87,15 @@ void main() {
     expect(_cardRings(tester), 0);
     expect(keyboardFocused.last, isTrue);
   });
+
+  testWidgets('a ghost button drops its outline only while the keyboard '
+      'focuses it', (tester) async {
+    await tester.pumpWidget(_app(GhostButton(label: 'Open', onPressed: () {})));
+    double? border() => tester.widget<Button>(find.byType(Button)).borderWidth;
+
+    expect(border(), isNull);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(border(), 0);
+  });
 }

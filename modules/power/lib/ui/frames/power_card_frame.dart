@@ -62,9 +62,8 @@ class PowerCardFrame extends StatelessWidget {
             _ => viewModel.openShizuku,
           },
         ),
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: switch (prompt) {
             .rootLost => l10n.stopUsingRoot,
             _ => l10n.stopUsingShizuku,

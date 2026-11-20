@@ -56,13 +56,11 @@ class ShareCardFrame extends StatelessWidget {
             label: l10n.controlOnce,
             onPressed: () => unawaited(viewModel.answerCamera(.once)),
           ),
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.controlAlways,
             onPressed: () => unawaited(viewModel.answerCamera(.always)),
           ),
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.controlNo,
             onPressed: () => unawaited(viewModel.answerCamera(.no)),
           ),
@@ -106,13 +104,11 @@ class ShareCardFrame extends StatelessWidget {
             label: l10n.controlOnce,
             onPressed: () => unawaited(viewModel.answerControl(.once)),
           ),
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.controlAlways,
             onPressed: () => unawaited(viewModel.answerControl(.always)),
           ),
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.controlNo,
             onPressed: () => unawaited(viewModel.answerControl(.no)),
           ),
@@ -132,8 +128,7 @@ class ShareCardFrame extends StatelessWidget {
             label: l10n.controlStop,
             onPressed: () => unawaited(viewModel.stopControl()),
           ),
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.controlStopSharing,
             onPressed: () => unawaited(viewModel.stop()),
           ),

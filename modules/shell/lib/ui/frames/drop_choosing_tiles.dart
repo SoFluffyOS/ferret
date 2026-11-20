@@ -70,9 +70,8 @@ class DropChoosingTiles extends StatelessWidget {
               ),
             ),
             if (held)
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.dropCancel,
                 onPressed: viewModel.cancel,
               ),

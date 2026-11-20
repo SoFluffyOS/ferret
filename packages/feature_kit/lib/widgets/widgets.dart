@@ -5,6 +5,7 @@ export 'package:feature_kit/widgets/feature_card.dart';
 export 'package:feature_kit/widgets/ferret_logo.dart';
 export 'package:feature_kit/widgets/ferret_page.dart';
 export 'package:feature_kit/widgets/focus_rings.dart';
+export 'package:feature_kit/widgets/ghost_button.dart';
 export 'package:feature_kit/widgets/grouped_card.dart';
 export 'package:feature_kit/widgets/grouped_cell.dart';
 export 'package:feature_kit/widgets/grouped_row.dart';

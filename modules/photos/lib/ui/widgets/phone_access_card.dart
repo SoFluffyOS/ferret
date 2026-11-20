@@ -72,8 +72,7 @@ class PhoneAccessCard extends StatelessWidget {
           GroupedCell(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Button(
-                variant: .ghost,
+              child: GhostButton(
                 mainAxisSize: .min,
                 label: label,
                 onPressed: onPressed,

@@ -51,8 +51,7 @@ class PhoneSetupNeedsPermission extends StatelessWidget {
             onPressed: viewModel.allow,
           ),
           Spacing.v8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

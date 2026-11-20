@@ -34,9 +34,8 @@ class LinkProblemCard extends StatelessWidget {
       label: l10n.openBluetoothSettings,
       onPressed: onOpenBluetooth,
     );
-    final tryAgain = Button(
+    final tryAgain = GhostButton(
       mainAxisSize: .min,
-      variant: .ghost,
       label: l10n.tryAgain,
       onPressed: onRetry,
     );

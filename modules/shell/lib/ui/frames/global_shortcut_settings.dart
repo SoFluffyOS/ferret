@@ -122,9 +122,8 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
               spacing: Spacing.d8,
               runSpacing: Spacing.d8,
               children: [
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.settingsShortcutChange,
                   semanticLabel: l10n.activityActionFor(
                     l10n.settingsShortcutChange,
@@ -135,9 +134,8 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
                     false => () => unawaited(_record(menubar)),
                   },
                 ),
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: toggleLabel,
                   semanticLabel: l10n.activityActionFor(toggleLabel, title),
                   onPressed: switch (_isRecording) {

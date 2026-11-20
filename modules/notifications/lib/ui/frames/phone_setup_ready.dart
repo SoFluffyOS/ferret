@@ -5,7 +5,6 @@ import 'package:notifications/ui/widgets/widgets.dart';
 import 'package:notifications/view_models/view_models.dart';
 import 'package:protocol/notifications.dart';
 import 'package:provider/provider.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class PhoneSetupReady extends StatelessWidget {
   const PhoneSetupReady({super.key, required this.onChooseApps});
@@ -47,8 +46,7 @@ class PhoneSetupReady extends StatelessWidget {
           onChanged: viewModel.setHideCodes,
         ),
         GroupedCell(
-          child: Button(
-            variant: .ghost,
+          child: GhostButton(
             label: l10n.chooseApps,
             tooltip:
                 '${l10n.chooseApps} · ${l10n.appsSummary(appFilter, appCount)}',
@@ -58,8 +56,7 @@ class PhoneSetupReady extends StatelessWidget {
           ),
         ),
         GroupedCell(
-          child: Button(
-            variant: .ghost,
+          child: GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

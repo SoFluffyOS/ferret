@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iphone/l10n/l10n.dart';
 import 'package:iphone/view_models/view_models.dart';
@@ -24,15 +25,13 @@ class IphoneChosenActions extends StatelessWidget {
         runSpacing: Spacing.d8,
         children: [
           if (showRetry)
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: l10n.tryAgain,
               onPressed: () => unawaited(viewModel.retry()),
             ),
-          Button(
+          GhostButton(
             mainAxisSize: .min,
-            variant: .ghost,
             label: l10n.forget,
             onPressed: () => unawaited(viewModel.forget()),
           ),

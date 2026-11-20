@@ -116,8 +116,7 @@ class _DeviceVpnPageState extends State<DeviceVpnPage> {
           Spacing.v8,
           Row(
             children: [
-              Button(
-                variant: .ghost,
+              GhostButton(
                 mainAxisSize: .min,
                 label: l10n.vpnSaveAddress,
                 onPressed: () => unawaited(_saveAddress()),

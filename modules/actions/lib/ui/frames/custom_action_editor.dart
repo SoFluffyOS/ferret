@@ -110,16 +110,14 @@ class _CustomActionEditorState extends State<CustomActionEditor> {
                 label: l10n.save,
                 onPressed: _save,
               ),
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.cancel,
                 onPressed: widget.onCancel,
               ),
               if (widget.onRemove case final onRemove?)
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.remove,
                   onPressed: onRemove,
                 ),

@@ -100,15 +100,13 @@ class _AskCard extends StatelessWidget {
           label: l10n.allowAlways,
           onPressed: () => unawaited(viewModel.answer(.always)),
         ),
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.allowOnce,
           onPressed: () => unawaited(viewModel.answer(.allowOnce)),
         ),
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.dontAllow,
           onPressed: () => unawaited(viewModel.answer(.deny)),
         ),

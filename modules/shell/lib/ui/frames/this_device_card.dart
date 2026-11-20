@@ -79,17 +79,15 @@ class _ThisDeviceCardState extends State<ThisDeviceCard> {
             child: Column(
               crossAxisAlignment: .stretch,
               children: [
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.settingsRename,
                   onPressed: _rename,
                 ),
                 if (_sharedComputer.isShared) ...[
                   Spacing.v8,
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.thisDeviceOnlyMe,
                     tooltip: l10n.thisDeviceOnlyMeHint(ThisComputer.here),
                     semanticLabel: l10n.thisDeviceOnlyMeHint(ThisComputer.here),

@@ -67,9 +67,8 @@ class _PresentationPageState extends State<PresentationPage> {
                 onBack: _back,
                 actions: [
                   if (isActive)
-                    Button(
+                    GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: l10n.stop,
                       onPressed: _back,
                     ),

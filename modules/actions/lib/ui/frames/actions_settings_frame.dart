@@ -72,9 +72,8 @@ class _ActionsSettingsFrameState extends State<ActionsSettingsFrame> {
                   title: action.name,
                   subtitle: action.commandLine,
                   titleMaxLines: 1,
-                  trailing: Button(
+                  trailing: GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.editAction,
                     onPressed: () => setState(() => _editing = action.id),
                   ),
@@ -85,9 +84,8 @@ class _ActionsSettingsFrameState extends State<ActionsSettingsFrame> {
               GroupedCell(
                 child: Row(
                   children: [
-                    Button(
+                    GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: l10n.addAction,
                       icon: Icon(LucideIcons.plus, size: Spacing.d16),
                       onPressed: () => setState(() => _editing = _newAction),
@@ -175,9 +173,8 @@ class _History extends StatelessWidget {
               GroupedCell(
                 child: Row(
                   children: [
-                    Button(
+                    GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: l10n.clearHistory,
                       onPressed: () => unawaited(viewModel.clearHistory()),
                     ),

@@ -97,16 +97,14 @@ class _Failed extends StatelessWidget {
         Row(
           mainAxisSize: .min,
           children: [
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: l10n.discard,
               onPressed: onDiscard,
             ),
             Spacing.h8,
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: l10n.retrySend,
               onPressed: onRetry,
             ),

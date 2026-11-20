@@ -53,8 +53,7 @@ class HistoryList extends StatelessWidget {
               GroupedRow(title: l10n.audit(record)),
             if (history.isNotEmpty)
               GroupedCell(
-                child: Button(
-                  variant: .ghost,
+                child: GhostButton(
                   label: l10n.clearHistory,
                   onPressed: onClear,
                 ),

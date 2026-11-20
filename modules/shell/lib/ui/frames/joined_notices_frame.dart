@@ -134,16 +134,14 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
                 ),
               ),
               Spacing.h12,
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.joinedReview,
                 onPressed: () => setState(() => _reviewing = true),
               ),
               Spacing.h8,
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.joinedKeepAll,
                 onPressed: _keepAll,
               ),
@@ -172,16 +170,14 @@ class _JoinedNoticesFrameState extends State<JoinedNoticesFrame> {
                     ),
                   ),
                   Spacing.h12,
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.joinedUndo,
                     onPressed: () => _undo(joined),
                   ),
                   Spacing.h8,
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.joinedKeep,
                     onPressed: () => _keep(joined),
                   ),

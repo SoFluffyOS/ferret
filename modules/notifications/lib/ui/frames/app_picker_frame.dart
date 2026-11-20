@@ -39,8 +39,7 @@ class AppPickerFrame extends StatelessWidget {
               ),
             ),
             GroupedCell(
-              child: Button(
-                variant: .ghost,
+              child: GhostButton(
                 label: l10n.tryAgain,
                 onPressed: viewModel.reload,
               ),
@@ -169,14 +168,12 @@ class _AppList extends StatelessWidget {
           spacing: Spacing.d8,
           runSpacing: Spacing.d8,
           children: [
-            Button(
-              variant: .ghost,
+            GhostButton(
               mainAxisSize: .min,
               label: l10n.selectAll,
               onPressed: () => viewModel.setAllShown(true),
             ),
-            Button(
-              variant: .ghost,
+            GhostButton(
               mainAxisSize: .min,
               label: l10n.selectNone,
               onPressed: () => viewModel.setAllShown(false),

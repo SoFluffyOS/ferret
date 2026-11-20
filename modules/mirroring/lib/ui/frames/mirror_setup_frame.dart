@@ -161,8 +161,7 @@ class _MirrorSetupFrameState extends State<MirrorSetupFrame> {
               Spacing.v16,
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Button(
-                  variant: .ghost,
+                child: GhostButton(
                   mainAxisSize: .min,
                   label: l10n.cancel,
                   onPressed: widget.onCancel,

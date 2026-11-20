@@ -77,9 +77,8 @@ class _TouchpadPageState extends State<TouchpadPage> {
                   onBack: _back,
                   actions: [
                     if (isActive)
-                      Button(
+                      GhostButton(
                         mainAxisSize: .min,
-                        variant: .ghost,
                         label: l10n.stop,
                         onPressed: _back,
                       ),

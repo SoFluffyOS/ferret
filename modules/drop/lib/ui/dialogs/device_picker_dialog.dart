@@ -97,16 +97,14 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
                 if (localSend && !scanning)
                   Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: Button(
+                    child: GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: l10n.pickerSearchAgain,
                       onPressed: () => unawaited(viewModel.scan()),
                     ),
                   ),
                 Spacing.v8,
-                Button(
-                  variant: .ghost,
+                GhostButton(
                   label: l10n.actionCancel,
                   onPressed: () => Navigator.of(context).pop(),
                 ),

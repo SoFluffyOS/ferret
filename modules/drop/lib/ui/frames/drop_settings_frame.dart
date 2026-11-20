@@ -67,9 +67,8 @@ class DropSettingsFrame extends StatelessWidget {
                 ),
                 if (viewModel.canChangeFolder) ...[
                   Spacing.h8,
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.settingsChange,
                     onPressed: () => _changeFolder(context, viewModel),
                   ),
@@ -82,9 +81,8 @@ class DropSettingsFrame extends StatelessWidget {
           GroupedCell(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Button(
+              child: GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.settingsUseDefault,
                 onPressed: viewModel.resetReceiveFolder,
               ),

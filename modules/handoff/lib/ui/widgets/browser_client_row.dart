@@ -57,8 +57,7 @@ class BrowserClientRow extends StatelessWidget {
             ),
           ),
           Spacing.h8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.browserClientRemove,
             mainAxisSize: .min,
             padding: EdgeInsets.symmetric(

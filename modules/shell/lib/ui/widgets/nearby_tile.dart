@@ -49,15 +49,21 @@ class NearbyTile extends StatelessWidget {
             _Header(
               peer: peer,
               trailing: switch (attempt) {
-                null => Button(
-                  mainAxisSize: .min,
-                  variant: switch (isFirst) {
-                    true => .primary,
-                    false => .ghost,
-                  },
-                  label: l10n.nearbyPair,
-                  semanticLabel: l10n.nearbyPairWith(name),
-                  onPressed: onPair,
+                null => ButtonFocusRing(
+                  builder: (context, keyboardFocused) => Button(
+                    mainAxisSize: .min,
+                    variant: switch (isFirst) {
+                      true => .primary,
+                      false => .ghost,
+                    },
+                    borderWidth: switch (keyboardFocused) {
+                      true => 0,
+                      false => null,
+                    },
+                    label: l10n.nearbyPair,
+                    semanticLabel: l10n.nearbyPairWith(name),
+                    onPressed: onPair,
+                  ),
                 ),
                 _ => null,
               },

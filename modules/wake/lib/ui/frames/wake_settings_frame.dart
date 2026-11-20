@@ -60,8 +60,7 @@ class WakeSettingsFrame extends StatelessWidget {
         GroupedCell(
           child: Align(
             alignment: .centerLeft,
-            child: Button(
-              variant: .ghost,
+            child: GhostButton(
               mainAxisSize: .min,
               label: l10n.howToTurnOnShort,
               tooltip: l10n.howToTurnOn,

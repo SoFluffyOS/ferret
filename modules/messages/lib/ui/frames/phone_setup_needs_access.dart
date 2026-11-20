@@ -64,8 +64,7 @@ class PhoneSetupNeedsAccess extends StatelessWidget {
             onPressed: viewModel.requestAccess,
           ),
           Spacing.v8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

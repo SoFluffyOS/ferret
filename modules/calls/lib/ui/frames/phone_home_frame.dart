@@ -5,7 +5,6 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The home card on the phone, only while calls are on but the Phone
 /// permission is missing. Turning calls on is offered in "Do more".
@@ -34,9 +33,8 @@ class PhoneHomeFrame extends StatelessWidget {
       onTap: onSetUp,
       children: [StatusLine(text: l10n.phoneHomePaused, tone: .warning)],
       actions: [
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.fix,
           onPressed: onSetUp,
         ),

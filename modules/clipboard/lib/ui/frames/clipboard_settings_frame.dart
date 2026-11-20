@@ -118,9 +118,8 @@ class ClipboardSettingsFrame extends StatelessWidget {
                 ),
               ),
               Spacing.h12,
-              Button(
+              GhostButton(
                 mainAxisSize: .min,
-                variant: .ghost,
                 label: l10n.settingsClearHistory,
                 enable: historyCount > 0,
                 onPressed: viewModel.clearHistory,

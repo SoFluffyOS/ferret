@@ -41,9 +41,8 @@ class AccessPrompt extends StatelessWidget {
               label: actionLabel,
               onPressed: onAction,
             ),
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: checkAgainLabel,
               onPressed: onCheckAgain,
             ),

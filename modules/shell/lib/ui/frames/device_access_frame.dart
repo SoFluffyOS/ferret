@@ -61,8 +61,7 @@ class DeviceAccessFrame extends StatelessWidget {
         Spacing.v16,
         Row(
           children: [
-            Button(
-              variant: .ghost,
+            GhostButton(
               mainAxisSize: .min,
               label: switch (allOff) {
                 true => l10n.accessTurnAllOn,

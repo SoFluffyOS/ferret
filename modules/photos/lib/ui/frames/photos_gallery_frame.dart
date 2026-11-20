@@ -359,8 +359,7 @@ class _LimitedBanner extends StatelessWidget {
               ),
             ),
             Spacing.h8,
-            Button(
-              variant: .ghost,
+            GhostButton(
               mainAxisSize: .min,
               label: l10n.allowMore,
               onPressed: () => unawaited(viewModel.askForAccess()),

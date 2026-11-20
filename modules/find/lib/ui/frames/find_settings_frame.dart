@@ -75,8 +75,7 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
           ),
         ..._limits(l10n, platform, abilities),
         GroupedCell(
-          child: Button(
-            variant: .ghost,
+          child: GhostButton(
             label: l10n.settingsTestRing,
             tooltip: l10n.settingsTestRingBody,
             onPressed: () => unawaited(viewModel.testRing()),

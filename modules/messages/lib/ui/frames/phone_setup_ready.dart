@@ -35,15 +35,13 @@ class PhoneSetupReady extends StatelessWidget {
           ],
           if (contactsMissing || sendMissing) ...[
             Spacing.v8,
-            Button(
-              variant: .ghost,
+            GhostButton(
               label: l10n.allowAccess,
               onPressed: viewModel.requestAccess,
             ),
           ],
           Spacing.v8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

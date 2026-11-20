@@ -54,25 +54,31 @@ class ControlSettingsFrame extends StatelessWidget {
                   }, style: caption),
                   if (path != .powerUps) ...[
                     Spacing.v8,
-                    Button(
-                      variant: switch (path) {
-                        .none => .primary,
-                        _ => .ghost,
-                      },
-                      mainAxisSize: .min,
-                      label: switch (path) {
-                        .none => l10n.settingsControlTurnOnShort,
-                        _ => l10n.settingsControlOpenShort,
-                      },
-                      tooltip: switch (path) {
-                        .none => l10n.settingsControlTurnOn,
-                        _ => l10n.settingsControlOpen,
-                      },
-                      semanticLabel: switch (path) {
-                        .none => l10n.settingsControlTurnOn,
-                        _ => l10n.settingsControlOpen,
-                      },
-                      onPressed: () => unawaited(_turnOn(context, path)),
+                    ButtonFocusRing(
+                      builder: (context, keyboardFocused) => Button(
+                        variant: switch (path) {
+                          .none => .primary,
+                          _ => .ghost,
+                        },
+                        borderWidth: switch (keyboardFocused) {
+                          true => 0,
+                          false => null,
+                        },
+                        mainAxisSize: .min,
+                        label: switch (path) {
+                          .none => l10n.settingsControlTurnOnShort,
+                          _ => l10n.settingsControlOpenShort,
+                        },
+                        tooltip: switch (path) {
+                          .none => l10n.settingsControlTurnOn,
+                          _ => l10n.settingsControlOpen,
+                        },
+                        semanticLabel: switch (path) {
+                          .none => l10n.settingsControlTurnOn,
+                          _ => l10n.settingsControlOpen,
+                        },
+                        onPressed: () => unawaited(_turnOn(context, path)),
+                      ),
                     ),
                   ],
                 ],
@@ -91,8 +97,7 @@ class ControlSettingsFrame extends StatelessWidget {
                       style: caption,
                     ),
                     Spacing.v8,
-                    Button(
-                      variant: .ghost,
+                    GhostButton(
                       mainAxisSize: .min,
                       label: l10n.settingsControlAskAgain,
                       onPressed: () =>

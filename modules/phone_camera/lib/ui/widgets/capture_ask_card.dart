@@ -55,9 +55,8 @@ class CaptureAskCard extends StatelessWidget {
             false => onTake,
           },
         ),
-        Button(
+        GhostButton(
           label: l10n.askNotNow,
-          variant: .ghost,
           mainAxisSize: .min,
           onPressed: switch (ask.isCapturing) {
             true => null,

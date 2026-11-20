@@ -85,17 +85,15 @@ class _CallCard extends StatelessWidget {
         enable: !busy,
         onPressed: () => viewModel.answer(call),
       ),
-      Button(
+      GhostButton(
         mainAxisSize: .min,
-        variant: .ghost,
         label: l10n.decline,
         icon: Icon(LucideIcons.phoneOff, size: Spacing.d16),
         enable: !busy,
         onPressed: () => viewModel.end(call),
       ),
-      Button(
+      GhostButton(
         mainAxisSize: .min,
-        variant: .ghost,
         label: switch (silenced) {
           true => l10n.silenced,
           false => l10n.silence,

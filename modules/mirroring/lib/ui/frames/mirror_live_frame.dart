@@ -296,8 +296,7 @@ class _Standing extends StatelessWidget {
             ],
             if ((actionLabel, onAction) case (final label?, final action?)) ...[
               Spacing.v12,
-              Button(
-                variant: .ghost,
+              GhostButton(
                 mainAxisSize: .min,
                 label: label,
                 onPressed: action,

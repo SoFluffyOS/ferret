@@ -55,8 +55,7 @@ class HandoffSettingsFrame extends StatelessWidget {
             GroupedRow(
               title: l10n.settingsHistory,
               subtitle: l10n.settingsHistoryBody,
-              trailing: Button(
-                variant: .ghost,
+              trailing: GhostButton(
                 label: l10n.settingsHistoryClear,
                 mainAxisSize: .min,
                 onPressed: switch (hasHistory) {
@@ -103,8 +102,7 @@ class _AssistantSetup extends StatelessWidget {
         GroupedRow(
           title: l10n.settingsAssistantTitle,
           subtitle: l10n.settingsAssistantBody,
-          trailing: Button(
-            variant: .ghost,
+          trailing: GhostButton(
             label: l10n.settingsAssistantOpen,
             mainAxisSize: .min,
             onPressed: viewModel.openAssistantSettings,

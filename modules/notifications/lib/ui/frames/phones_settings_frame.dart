@@ -76,8 +76,7 @@ class _PhoneRow extends StatelessWidget {
           PhoneStatusLine(phone: phone),
           if (phone.unreachable) ...[
             Spacing.v8,
-            Button(
-              variant: .ghost,
+            GhostButton(
               label: l10n.tryAgain,
               onPressed: () => viewModel.retry(phone.deviceId),
             ),

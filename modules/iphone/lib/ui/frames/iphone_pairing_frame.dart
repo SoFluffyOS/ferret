@@ -54,9 +54,8 @@ class IphonePairingFrame extends StatelessWidget {
               label: l10n.openBluetoothSettings,
               onPressed: () => unawaited(viewModel.openBluetoothSettings()),
             ),
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: l10n.devicesRefresh,
               onPressed: () => unawaited(viewModel.loadDevices()),
             ),

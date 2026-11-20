@@ -71,8 +71,7 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
       backLabel: l10n.back,
       actions: switch (_savedPath) {
         final path? => [
-          Button(
-            variant: .ghost,
+          GhostButton(
             mainAxisSize: .min,
             label: switch (defaultTargetPlatform) {
               .macOS => l10n.revealSavedFinder,

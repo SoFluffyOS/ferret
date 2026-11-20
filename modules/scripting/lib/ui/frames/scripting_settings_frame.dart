@@ -52,16 +52,14 @@ class ScriptingSettingsFrame extends StatelessWidget {
           child: Row(
             spacing: Spacing.d8,
             children: [
-              Button(
-                variant: .ghost,
+              GhostButton(
                 mainAxisSize: .min,
                 label: l10n.copyPath,
                 onPressed: () => unawaited(
                   Clipboard.setData(ClipboardData(text: viewModel.folder)),
                 ),
               ),
-              Button(
-                variant: .ghost,
+              GhostButton(
                 mainAxisSize: .min,
                 label: l10n.checkAgain,
                 onPressed: () => unawaited(viewModel.refresh()),

@@ -57,8 +57,7 @@ class RestrictedGuide extends StatelessWidget {
             ),
           ),
         Spacing.v8,
-        Button(
-          variant: .ghost,
+        GhostButton(
           label: l10n.openAppInfo,
           onPressed: onOpenAppInfo,
         ),

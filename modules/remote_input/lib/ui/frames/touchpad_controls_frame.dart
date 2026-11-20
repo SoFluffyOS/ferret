@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -89,9 +90,8 @@ class _TouchpadControlsFrameState extends State<TouchpadControlsFrame> {
               ),
             ),
             Spacing.h8,
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: keyboardLabel,
               icon: Icon(keyboardIcon, size: Spacing.d16),
               onPressed: _toggleKeyboard,

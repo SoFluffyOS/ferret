@@ -59,8 +59,7 @@ class BrowserSettingsFrame extends StatelessWidget {
                 Spacing.v8,
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: Button(
-                    variant: .ghost,
+                  child: GhostButton(
                     label: l10n.browserBridgeRetry,
                     mainAxisSize: .min,
                     onPressed: () => unawaited(viewModel.retryBrowserBridge()),

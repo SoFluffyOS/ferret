@@ -51,8 +51,7 @@ class PhoneSetupReady extends StatelessWidget {
           const OpenSettingsFailed(),
           if (hasMissing) ...[
             Spacing.v12,
-            Button(
-              variant: .ghost,
+            GhostButton(
               label: switch (needsSettings) {
                 true => l10n.openSettings,
                 false => l10n.allowRest,
@@ -61,8 +60,7 @@ class PhoneSetupReady extends StatelessWidget {
             ),
           ],
           Spacing.v8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             label: l10n.turnOff,
             onPressed: viewModel.turnOff,
           ),

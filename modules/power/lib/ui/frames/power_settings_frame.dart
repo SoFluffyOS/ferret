@@ -35,9 +35,8 @@ class PowerSettingsFrame extends StatelessWidget {
       children: [
         GroupedRow(
           title: l10n.tierSummary(tier),
-          trailing: Button(
+          trailing: GhostButton(
             mainAxisSize: .min,
-            variant: .ghost,
             label: l10n.settingsOpen,
             onPressed: onOpen,
           ),

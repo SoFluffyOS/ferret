@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:remote_input/l10n/l10n.dart';
 import 'package:remote_input/models/models.dart';
@@ -32,17 +33,15 @@ class ConsentDialog extends StatelessWidget {
           onPressed: () => onAnswer(.always),
         ),
         Spacing.v8,
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.allowOnce,
           tooltip: l10n.allowOnce,
           onPressed: () => onAnswer(.allowOnce),
         ),
         Spacing.v8,
-        Button(
+        GhostButton(
           mainAxisSize: .min,
-          variant: .ghost,
           label: l10n.dontAllow,
           tooltip: l10n.dontAllow,
           onPressed: () => onAnswer(.deny),

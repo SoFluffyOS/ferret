@@ -28,9 +28,8 @@ class StatusBanner extends StatelessWidget {
           Spacing.v8,
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: Button(
+            child: GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: label,
               onPressed: onAction,
             ),

@@ -57,8 +57,7 @@ class CameraSettingsFrame extends StatelessWidget {
                       style: caption,
                     ),
                     Spacing.v8,
-                    Button(
-                      variant: .ghost,
+                    GhostButton(
                       mainAxisSize: .min,
                       label: l10n.settingsControlAskAgain,
                       onPressed: () =>
