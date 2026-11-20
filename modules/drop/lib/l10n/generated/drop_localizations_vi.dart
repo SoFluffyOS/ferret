@@ -673,6 +673,11 @@ class DropLocalizationsVi extends DropLocalizations {
   }
 
   @override
+  String filesPickToSend(String device) {
+    return 'Chọn ảnh và tệp để gửi đến $device.';
+  }
+
+  @override
   String get filesChoose => 'Chọn tệp…';
 
   @override

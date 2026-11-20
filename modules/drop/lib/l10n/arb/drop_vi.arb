@@ -154,6 +154,7 @@
   "etaMinutes": "{minutes, plural, other{{minutes} phút}}",
   "etaHours": "{hours, plural, other{{hours} giờ}} {minutes, plural, other{{minutes} phút}}",
   "filesDropHere": "Thả tệp vào đây để gửi đến {device}.",
+  "filesPickToSend": "Chọn ảnh và tệp để gửi đến {device}.",
   "filesChoose": "Chọn tệp…",
   "filesOffline": "{device} chưa kết nối. Bạn có thể gửi tệp khi thiết bị kết nối lại.",
   "filesRecent": "Đã gửi và đã nhận",

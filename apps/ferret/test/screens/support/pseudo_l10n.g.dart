@@ -1064,6 +1064,9 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String filesDropHere(String device) => pseudo(super.filesDropHere(device));
   @override
+  String filesPickToSend(String device) =>
+      pseudo(super.filesPickToSend(device));
+  @override
   String filesOffline(String device) => pseudo(super.filesOffline(device));
   @override
   String filesNone(String device) => pseudo(super.filesNone(device));

@@ -1016,6 +1016,12 @@ abstract class DropLocalizations {
   /// **'Drop files here to send them to {device}.'**
   String filesDropHere(String device);
 
+  /// No description provided for @filesPickToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick photos and files to send to {device}.'**
+  String filesPickToSend(String device);
+
   /// No description provided for @filesChoose.
   ///
   /// In en, this message translates to:

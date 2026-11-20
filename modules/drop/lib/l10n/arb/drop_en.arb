@@ -756,6 +756,14 @@
       }
     }
   },
+  "filesPickToSend": "Pick photos and files to send to {device}.",
+  "@filesPickToSend": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "filesChoose": "Choose files…",
   "filesOffline": "{device} isn't connected. Send it files once it is.",
   "@filesOffline": {

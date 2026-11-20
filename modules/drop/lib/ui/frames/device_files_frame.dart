@@ -6,6 +6,7 @@ import 'package:drop/ui/frames/transfer_actions.dart';
 import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -69,9 +70,12 @@ class DeviceFilesFrame extends StatelessWidget {
               ),
               Spacing.v12,
               Text(
-                switch (isConnected) {
-                  true => l10n.filesDropHere(deviceName),
-                  false => l10n.filesOffline(deviceName),
+                switch ((isConnected, defaultTargetPlatform)) {
+                  (false, _) => l10n.filesOffline(deviceName),
+                  // Nothing takes a drag from another app on a phone or
+                  // tablet yet, so it says what does work.
+                  (true, .android || .iOS) => l10n.filesPickToSend(deviceName),
+                  (true, _) => l10n.filesDropHere(deviceName),
                 },
                 textAlign: .center,
                 style: typography.base2.copyWith(color: palette.mutedText),

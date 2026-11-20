@@ -672,6 +672,11 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
+  String filesPickToSend(String device) {
+    return 'Pick photos and files to send to $device.';
+  }
+
+  @override
   String get filesChoose => 'Choose files…';
 
   @override
