@@ -15,7 +15,7 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 
 ## 📦 Install
 
-> 1. Download [Ferret-windows-x64-setup.exe](https://github.com/simonpham/ferret/releases/latest/download/Ferret-windows-x64-setup.exe), the newest release, or run `winget install SoFluffy.Ferret`
+> 1. Download [Ferret-windows-x64-setup.exe](https://github.com/simonpham/ferret/releases/latest/download/Ferret-windows-x64-setup.exe), the newest release
 > 2. Run it. No admin needed: it installs just for you
 > 3. Keep **Allow Ferret through Windows Firewall** ticked and say **Yes** when Windows asks
 
@@ -34,7 +34,7 @@ Windows hides your PC from your phone until Ferret is allowed through its firewa
 | Ferret discovery (47641/udp) | 47641/udp | Finding your devices |
 | Ferret mDNS (5353/udp) | 5353/udp | Finding your devices with mDNS |
 
-Said **No**, or installed with winget? No problem. **Fix connection** notices the rules are missing and offers **Allow through firewall**. One click, one **Yes**, done.
+Said **No**? No problem. **Fix connection** notices the rules are missing and offers **Allow through firewall**. One click, one **Yes**, done.
 
 Public networks (a café, a hotel, a Wi-Fi Windows doesn't know yet) stay closed. At home, set your Wi-Fi to Private: **Settings → Network & internet → Wi-Fi**, pick your network, then **Private network**.
 

@@ -20,15 +20,9 @@ That's it. Ferret needs macOS 12 Monterey or later, on Apple silicon or Intel.
 
 Ferret for Mac comes straight from us, not from the Mac App Store. It is signed with a Developer ID and notarized by Apple, so macOS opens it without a warning.
 
-Prefer Homebrew?
-
-```sh
-brew install --cask ferret
-```
-
 ### The command line
 
-`ferret-cli` comes inside the app. Homebrew puts it on your `PATH` for you. Installed from the DMG? Link it once:
+`ferret-cli` comes inside the app. Link it once to use it from a terminal:
 
 ```sh
 ln -s /Applications/Ferret.app/Contents/Helpers/ferret-cli /usr/local/bin/ferret-cli
@@ -38,7 +32,7 @@ It runs on Apple silicon Macs. See [Pair your devices](pairing.md) for what it d
 
 ### Removing it
 
-Delete the app and `~/.sofluffy/ferret`, where Ferret keeps its data. See [Privacy](../privacy.md). With Homebrew, `brew uninstall --zap ferret` does both.
+Delete the app and `~/.sofluffy/ferret`, where Ferret keeps its data. See [Privacy](../privacy.md).
 
 ### Build it yourself
 
