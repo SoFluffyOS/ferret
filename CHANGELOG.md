@@ -40,6 +40,7 @@
 - ⌨️ **Recent clips from anywhere on a Mac**: press **⌃⌥V** in any app and Ferret opens on the last things you copied, on any device.
 - 🪟 **Menus that look at home**: title case on a Mac, sentence case on Windows, Linux and Android.
 - 📡 **What leaves this device**: the privacy page lists every byte that goes anywhere, and how long Ferret keeps things.
+- 🛡️ **Security page**: what Ferret protects you from (your Wi-Fi, strangers, web pages) and what it doesn't (a device you paired, apps running as you), with how pairing and encryption work. See [Security](docs/spec/security.md).
 - 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only. Every feature uses that same name, a small pin marks a pinned device, and a row you just used waits a moment before it moves up.
 - 🧹 **Clean up old devices**: Home offers to remove the ones not seen in 30 days. Activity filters by device, several devices joining make one card, and the window's list gets a search field from 9 devices.
 - 🎨 **Settings you can scan**: every row has its own coloured icon, with what it's set to right under its name. Rows sit in groups with a thin line between them. Same list in the popover, on the phone and in the window.

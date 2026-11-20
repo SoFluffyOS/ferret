@@ -6,10 +6,11 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 
 - Your devices talk **directly to each other on your network**. Nothing goes through a server.
 - Every connection is **end-to-end encrypted** with the [Noise protocol](https://noiseprotocol.org) (`Noise_XX_25519_ChaChaPoly_SHA256`).
-- A device can only connect after you **paired** it, by comparing six digits or scanning a code. Strangers on the same Wi-Fi can't read or send anything.
-- Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one, and you can turn this off under **Settings → Advanced**.
-- To find each other, your devices announce their name and kind on your Wi-Fi. Nothing else, and never outside your network.
-- Each device has its own key, kept in the system keychain on phones and in a file only you can read on computers.
+- A device can only connect after you **paired** it, by comparing six digits or scanning a code. Strangers on the same Wi-Fi can't read anything. All they can send is a request to pair, which you have to accept.
+- A pairing QR code works once, for 5 minutes, and whoever scans it in that time pairs without a question. Show it, don't post it.
+- Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one. It can do so later too, without asking again: your other devices then say **Pixel 7 joined your devices**, with **Undo**. A device added this way starts with the same features turned off as the one that added it. Turn it all off with **Settings → Advanced → Pair once for all my devices**.
+- To find each other, your devices announce their name, kind and device id (a fingerprint of their key) on the Wi-Fi you're on. The id is the same on every network. Nothing else, and never outside your network. **Pause** stops it.
+- Each device has its own key, kept in the system keychain on phones. On computers it's a file only your user account can read, like your SSH keys, so apps you run yourself can read it too.
 
 ## 🙅 What Ferret never does
 
@@ -21,7 +22,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 ## 🛂 You stay in control
 
 - **Pause** Ferret any time, for an hour or until you resume.
-- **Unpair** a device in one click; both sides forget each other.
+- **Unpair** a device in one click; both sides forget each other. One that's away forgets the next time it shows up.
 - Every feature is a switch in Settings, and sensitive ones (notifications, messages, calls) stay off until you turn them on.
 - Ferret asks for each system permission when you turn on the feature that needs it, after a line that says why. Never at first launch.
 
@@ -71,7 +72,7 @@ Checked against the code, line by line:
 
 | What | Where it goes | When |
 |---|---|---|
-| Your device's name and kind | Your Wi-Fi only (mDNS and a broadcast), so your devices find each other | While Ferret runs and isn't paused |
+| Your device's name, kind and device id, and the port Ferret listens on | Your Wi-Fi only (mDNS and a broadcast), so your devices find each other | While Ferret runs and isn't paused |
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
 | Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
 | A computer's network card (MAC) addresses and network, so your devices can wake it | Only to devices you paired, end-to-end encrypted. Turn it off with **Let my devices wake this computer** | When a device connects, and when the cards change |
@@ -110,7 +111,7 @@ On phones, Ferret keeps its data in its own app storage, and its key in the syst
 | Times a phone controlled this computer | The last few, with **Clear history** in Settings → Control |
 | Actions devices ran on this computer | The last 20: which action, which device, when. Not what it printed. **Clear history** in Settings → Control |
 
-Ferret writes no log file. Release builds print only short status lines to the system log (Console on a Mac, logcat on Android), never what you copy, send, read or type.
+Ferret writes no log file. Release builds print only short status lines to the system log (Console on a Mac, logcat on Android), never what you copy, send, read or type. An error there says what kind it was, never the file, link or text it failed on.
 
 ## 🧹 Removing Ferret
 
@@ -122,4 +123,4 @@ On a phone, uninstalling the app removes everything.
 
 ## 🔓 Check it yourself
 
-Ferret is open source. The apps are GPL-3.0 and the protocol is MIT, documented in the [protocol reference](spec/reference.md).
+Ferret is open source. The apps are GPL-3.0 and the protocol is MIT, documented in the [protocol reference](spec/reference.md). What Ferret protects you from, and what it doesn't, is on the [security](spec/security.md) page.

@@ -143,9 +143,9 @@ Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both 
 
 ## 🔒 Privacy
 
-Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. Nothing goes through a server.
+Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. Nothing goes through a server. The one exception you turn on yourself: sharing with Quick Share and LocalSend devices nearby, and each of their offers asks you first.
 
-Every byte that goes anywhere else is listed under **What leaves this device** on the [privacy page](docs/privacy.md).
+Every byte that goes anywhere else is listed under **What leaves this device** on the [privacy page](docs/privacy.md). What Ferret protects you from, and what it doesn't, is on the [security page](docs/spec/security.md).
 
 ## 🛠️ Build from source
 

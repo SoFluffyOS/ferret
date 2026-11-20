@@ -18,6 +18,8 @@ I'll answer within a week, keep you posted while it gets fixed, and credit you i
 
 ## 🧭 What's in scope
 
+The threat model, with what Ferret protects you from and what it doesn't, is in [docs/spec/security.md](docs/spec/security.md).
+
 - The pairing and the Noise XX channel (`packages/transport`, `packages/engine`).
 - Anything that lets an unpaired device do more than ask to pair.
 - Anything that lets a paired device do something its owner didn't allow on that device's page.

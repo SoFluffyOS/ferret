@@ -236,7 +236,7 @@ abstract final class LandingContent {
   static const privacyPoints = [
     'Your devices talk **directly to each other** on your network. Nothing goes through a server.',
     'Every connection is **end-to-end encrypted** with Noise.',
-    'Only devices you **paired** can connect. Strangers on the same Wi-Fi get nothing.',
+    'Only devices you **paired** can connect. Strangers on the same Wi-Fi can ask to pair, and that’s all.',
     '**No account, no analytics, no crash reporting, no ads.** Ferret never logs what you copy, send or read.',
   ];
 

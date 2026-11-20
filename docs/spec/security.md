@@ -1,0 +1,52 @@
+# Security
+
+Ferret can read your clipboard, your phone's notifications and texts, and move your mouse. So you should know exactly what it protects you from, and what it doesn't. Here is the honest list.
+
+> **TL;DR**
+>
+> 1. Someone else on your Wi-Fi can't read or change what your devices send each other, and can't get in without you saying yes.
+> 2. A device you paired is trusted. It can do what you allowed on its page, and it can add devices to your other ones.
+> 3. Anything already running as you on your computer can read Ferret's key. Ferret doesn't protect against that, and neither does any other app.
+
+Found a hole? Please report it privately, see [SECURITY.md](https://github.com/simonpham/ferret/blob/main/SECURITY.md).
+
+## 🔐 How a connection works
+
+- **Transport.** TCP on your network. Each frame starts with a 2-byte length, as Noise suggests.
+- **Encryption.** `Noise_XX_25519_ChaChaPoly_SHA256` with the prologue `ferret/1`. The handshake lives in `packages/transport`, on top of the X25519, ChaCha20-Poly1305 and SHA-256 of the Dart `cryptography` package. It's checked byte for byte against the cacophony test vectors.
+- **Nonces.** One counter per direction, starting at zero for every connection. Every reconnect runs a new handshake with new ephemeral keys. There is no rekey inside a connection: the counter would need 2⁶³ messages to run out, and Ferret stops before it.
+- **Identity.** Each device has a long-term X25519 key. Its device id is the first 80 bits of the key's SHA-256, written in base32. Pairing stores the **whole key**, and every later connection must present exactly that key. A device id alone never gets anyone in.
+- **Messages.** Up to 64 MiB once paired, split into Noise frames. Before pairing: 64 KiB.
+
+## 🤝 How pairing works
+
+There are two ways, and both bind the pairing to one Noise handshake, so nobody in the middle can reuse it.
+
+- **Scanning a QR code** (or opening a pairing link). The code carries the device's key and a 16-byte one-time secret. The scanner checks the key, then proves it saw the secret with HMAC-SHA256(secret, handshake hash). The code works once, for 5 minutes, and **whoever scans it pairs without a question**. Treat it like a password: show it, don't post it.
+- **Comparing six digits.** The asking side commits to a random nonce (sends its hash), the other side sends its own nonce, then the first one is revealed. Both screens show six digits from HMAC-SHA256(handshake hash, both nonces). Neither side can steer the digits, so someone in the middle gets one guess in a million per try. Both people must say yes.
+
+## 🧱 What Ferret protects you from
+
+- **Someone on the same Wi-Fi** (a café, a hotel, a compromised router). They can't read anything your devices send each other, change it, or pretend to be one of your devices.
+- **A stranger who tries to connect.** Before pairing, all a device can do is finish a Noise handshake and ask to pair. At most 4 strangers at a time, each with messages of up to 64 KiB and a time limit on every answer. Nothing is handled before you said yes, except the pairing messages themselves.
+- **Spoofed announcements.** Ferret only uses what a device announces as a hint where to dial. Who answers must hold the key it paired with, or the connection drops. A forged announcement can't unpair anything.
+- **Web pages in your browser.** The browser extension's bridge listens on `127.0.0.1` only, checks the `Origin` and `Host` headers before anything else, and needs a token you allowed. See the [browser bridge protocol](https://github.com/simonpham/ferret/blob/main/extensions/browser/PROTOCOL.md).
+- **Other people's accounts on a shared computer** (macOS and Linux). Ferret's folder is `chmod 700`, its key file `600`. On Windows it sits in your profile folder, which only you and administrators can open.
+- **Files with tricky names.** A received name never becomes a path: no `..`, no folders it didn't create, no drive letters, no Windows device names like `CON`, no marks that flip text direction, and it never overwrites a file. Quick Share and LocalSend senders aren't paired, so every one of their offers asks you first, and nothing they send is saved before your yes.
+
+## ⚠️ What it doesn't protect you from
+
+- **A device you paired.** It's yours, so it's trusted. It can use every feature you left on in **What Pixel 7 can use**. Files from it arrive without a question (turn that off in Drop's settings).
+- **A paired device adding others.** With **Pair once for all my devices** on (the default), a paired device can add a device to your other ones, and remove one. Your devices show **… joined your devices** with **Undo**, and a device added this way starts with the same features turned off as the one that added it. Don't want that? Turn the switch off.
+- **Apps running as you.** On a computer, the key is a file your user account can read, so any program you run can copy it and pretend to be this computer. The same goes for `app_control.json`, which lets `ferret-cli` drive the running app. That's the same deal as your SSH keys. If malware runs as you, it has your clipboard anyway.
+- **Someone with your unlocked device.** They can open Ferret, pair a new device, or read what's on the screen.
+- **Being seen on the network.** Your device announces its name, kind and device id on every Wi-Fi it joins, so someone there can tell it's the same device as yesterday. **Pause** Ferret on networks you don't trust. Anyone can also see that two addresses talk, and roughly how much.
+- **Hook scripts that trust their input.** A [hook](../features/scripting.md#-hooks) gets the other device's name in `FERRET_DEVICE_NAME`. That device picks its own name, so quote it in your script.
+- **Denial of service.** Anyone on your network can keep Ferret busy, fill its 4 pairing slots, or flood it. Ferret limits what that costs, but can't stop it.
+
+## 🔍 What hasn't been checked
+
+- No outside audit yet. If you know your way around Noise, a look at `packages/transport` and `packages/engine` is the most useful thing you can do.
+- The primitives come from a pure-Dart library. They are correct against the test vectors, but nobody has checked them for timing side channels.
+
+## Happy Coding 🦊
