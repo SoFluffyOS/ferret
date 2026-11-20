@@ -34,7 +34,12 @@ class OffersCard extends StatelessWidget {
             icon: LucideIcons.sparkles,
             title: l10n.offersTitle,
             subtitle: l10n.offersSubtitle,
-            children: [for (final offer in offers) _OfferRow(offer: offer)],
+            children: [
+              for (final (index, offer) in offers.indexed) ...[
+                if (index > 0) Spacing.v8,
+                _OfferRow(offer: offer),
+              ],
+            ],
           ),
         );
       },
@@ -52,29 +57,26 @@ class _OfferRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: Spacing.d8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  offer.title,
-                  style: typography.base2.copyWith(color: palette.text),
-                ),
-                Text(
-                  offer.description,
-                  style: typography.caption1.copyWith(color: palette.mutedText),
-                ),
-              ],
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Text(
+                offer.title,
+                style: typography.base2.copyWith(color: palette.text),
+              ),
+              Text(
+                offer.description,
+                style: typography.caption1.copyWith(color: palette.mutedText),
+              ),
+            ],
           ),
-          Spacing.h12,
-          RowActionButton(label: offer.actionLabel, onPressed: offer.onAction),
-        ],
-      ),
+        ),
+        Spacing.h12,
+        RowActionButton(label: offer.actionLabel, onPressed: offer.onAction),
+      ],
     );
   }
 }

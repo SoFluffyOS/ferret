@@ -1,4 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -26,6 +27,17 @@ void main() {
     expect(Corners.inner(16, 8), 8);
     expect(Corners.inner(12, 12), 0);
     expect(Corners.inner(12, 10), 0);
+  });
+
+  test('a control in a card shares its corner on touch screens', () {
+    for (final platform in TargetPlatform.values) {
+      debugDefaultTargetPlatformOverride = platform;
+      expect(Corners.control, 12, reason: platform.name);
+      expect(Corners.card - PageInsets.row, lessThanOrEqualTo(12));
+    }
+    debugDefaultTargetPlatformOverride = .android;
+    expect(Corners.inner(Corners.card, PageInsets.row), Corners.control);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   test('every place colour carries a white icon at 3:1 or better', () {

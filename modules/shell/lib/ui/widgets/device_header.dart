@@ -41,7 +41,7 @@ class DeviceHeader extends StatelessWidget {
           DecoratedBox(
             decoration: ShapeDecoration(
               color: palette.surface,
-              shape: Corners.shape(Corners.card),
+              shape: Corners.shape(Corners.iconTile),
             ),
             child: Padding(
               padding: EdgeInsets.all(Spacing.d12),

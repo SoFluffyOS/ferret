@@ -39,9 +39,9 @@ class RowActionButton extends StatelessWidget {
       semanticLabel: semanticLabel ?? tooltip,
       tooltip: tooltip,
       mainAxisSize: .min,
-      // It sits a card's padding from the card's corner, where a curve of
-      // its own would be none at all: a capsule.
-      radius: Corners.capsule,
+      // It sits a card's inset from the card's corner, so its curve shares
+      // the card's centre.
+      radius: Corners.control,
       padding: EdgeInsets.symmetric(
         horizontal: Spacing.d12,
         vertical: Spacing.d6,
