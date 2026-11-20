@@ -28,6 +28,7 @@ class HeroSection extends StatelessComponent {
         ]),
         const h1(id: 'hero-title', [Component.text(LandingContent.pitch)]),
         const p(classes: 'lead', [Component.text(LandingContent.subPitch)]),
+        const p(classes: 'acronym', [Component.text(LandingContent.acronym)]),
         const div(classes: 'actions', [
           a(classes: 'button primary', href: '#download', [
             Component.text('Download'),

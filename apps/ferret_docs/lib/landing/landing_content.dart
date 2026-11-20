@@ -10,6 +10,10 @@ abstract final class LandingContent {
       'Wi-Fi, with no account. Free and open source.';
 
   static const pitch = 'Your phone and your computers, working as one.';
+
+  /// What the name stands for.
+  static const acronym =
+      'F.E.R.R.E.T. · Fast Encrypted Relay for Resuming Every Task';
   static const subPitch =
       'Copy on one, paste on the other. Send files, answer calls, see your '
       'phone’s screen. On the Wi-Fi you already have, with no account and no '

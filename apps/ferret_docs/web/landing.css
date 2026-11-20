@@ -372,6 +372,12 @@ code {
   font-size: clamp(18px, 2.4vw, 21px);
 }
 
+.acronym {
+  color: var(--ink-2);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
 .hero .actions {
   justify-content: center;
   margin-top: var(--s2);

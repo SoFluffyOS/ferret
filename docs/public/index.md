@@ -1,5 +1,7 @@
 # Ferret
 
+**F.E.R.R.E.T.** · **F**ast **E**ncrypted **R**elay for **R**esuming **E**very **T**ask
+
 Start something on your phone. Pick it up on your laptop. And back again.
 
 Ferret carries what you're doing between your own devices: pages, media, your clipboard, files, notifications, messages and calls. It works on Android, iOS, macOS, Linux and Windows.

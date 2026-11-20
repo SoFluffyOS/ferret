@@ -12,6 +12,10 @@
 </p>
 
 <p align="center">
+  <b>F.E.R.R.E.T.</b> · <b>F</b>ast <b>E</b>ncrypted <b>R</b>elay for <b>R</b>esuming <b>E</b>very <b>T</b>ask
+</p>
+
+<p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0"></a>
   <a href="https://github.com/sponsors/simonpham"><img src="https://img.shields.io/badge/sponsor-%E2%9D%A4-db61a2" alt="Sponsor"></a>
 </p>
