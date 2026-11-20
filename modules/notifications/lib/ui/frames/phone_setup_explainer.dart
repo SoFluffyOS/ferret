@@ -20,7 +20,7 @@ class PhoneSetupExplainer extends StatelessWidget {
         ),
         GroupedCell(
           child: Button(
-            variant: .primary,
+            variant: SharedPageScope.mainButton(context),
             label: l10n.turnOn,
             onPressed: context.read<MirrorSetupViewModel>().turnOn,
           ),
