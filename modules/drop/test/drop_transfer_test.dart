@@ -124,6 +124,37 @@ void main() {
     );
   });
 
+  test(
+    'a send stuck on a dead link pauses as soon as the session closes',
+    () async {
+      await startLink();
+      final source = await randomFile(sources, 'recording.mov', 20 * 1024);
+      var chunks = 0;
+      link.onDeliver = (from, message) {
+        if (message is Chunk && ++chunks == 6) {
+          link.onDeliver = null;
+          link.laptop.session?.stalled = true;
+        }
+      };
+
+      final sent = await send([source]);
+      await until(() => link.laptop.session?.stalled ?? false);
+      await pumpEventQueue();
+      expect(onLaptop(sent.id)?.status, TransferStatus.transferring);
+
+      link.drop();
+      await until(() => onLaptop(sent.id)?.isPaused ?? false);
+      expect(onLaptop(sent.id)?.failure, TransferFailure.disconnected);
+
+      link.connect();
+      await until(() => onLaptop(sent.id)?.status == .done);
+      expect(
+        await File(p.join(phoneInbox.path, 'recording.mov')).readAsBytes(),
+        await source.readAsBytes(),
+      );
+    },
+  );
+
   test('a send to a device that is away goes once it is back', () async {
     await startLink();
     final source = await randomFile(sources, 'notes.pdf', 5000);

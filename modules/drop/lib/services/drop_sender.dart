@@ -285,11 +285,14 @@ class DropSender {
           job,
           (transfer) => transfer.copyWith(status: .waiting, clearFailure: true),
         );
-        final answer = await session.call(
-          featureId,
-          _offerOf(job),
-          TransferAnswer.new,
-          timeout: offerTimeout,
+        final answer = await _whileOpen(
+          session,
+          session.call(
+            featureId,
+            _offerOf(job),
+            TransferAnswer.new,
+            timeout: offerTimeout,
+          ),
         );
         if (!answer.accepted) {
           _fail(job, FailureCodes.fromDecline(answer.reason));
@@ -330,7 +333,10 @@ class DropSender {
         }
       }
 
-      await session.send(featureId, TransferComplete(transferId: job.id));
+      await _whileOpen(
+        session,
+        session.send(featureId, TransferComplete(transferId: job.id)),
+      );
       _set(
         job,
         (transfer) => transfer.copyWith(
@@ -366,6 +372,9 @@ class DropSender {
     } on SessionClosedException {
       _fail(job, .disconnected);
     } on StateError {
+      _fail(job, .disconnected);
+    } on IOException {
+      // The socket gave up on a link that died without a word.
       _fail(job, .disconnected);
     } on RemoteErrorException catch (error) {
       _fail(
@@ -443,7 +452,7 @@ class DropSender {
         }
       }
 
-      await pendingAck;
+      await _whileOpen(session, pendingAck ?? Future.value());
       hash.close();
     } finally {
       await input.close();
@@ -458,15 +467,18 @@ class DropSender {
       (transfer) =>
           transfer.copyWith(status: .verifying, bytesDone: base + file.size),
     );
-    final verified = await session.call(
-      featureId,
-      FileComplete(
-        transferId: job.id,
-        fileIndex: index,
-        sha256: digest.value.bytes,
+    final verified = await _whileOpen(
+      session,
+      session.call(
+        featureId,
+        FileComplete(
+          transferId: job.id,
+          fileIndex: index,
+          sha256: digest.value.bytes,
+        ),
+        FileVerified.new,
+        timeout: _verifyTimeout(file.size),
       ),
-      FileVerified.new,
-      timeout: _verifyTimeout(file.size),
     );
     if (job.cancelled) {
       throw const _Stop();
@@ -490,14 +502,30 @@ class DropSender {
     required Future<Envelope>? previousAck,
   }) async {
     if (!wantsAck) {
-      await session.send(featureId, chunk);
+      await _whileOpen(session, session.send(featureId, chunk));
       return (ack: previousAck);
     }
 
-    await previousAck;
+    await _whileOpen(session, previousAck ?? Future.value());
     final ack = session.request(featureId, chunk, timeout: ackTimeout)
       ..ignore();
     return (ack: ack);
+  }
+
+  /// [work], or [SessionClosedException] as soon as [session] closes. A
+  /// write into a link that died without a word, such as Wi-Fi switched
+  /// off, can hang until the socket gives up minutes later; the transfer
+  /// should read as paused at once instead.
+  Future<T> _whileOpen<T>(Session session, Future<T> work) {
+    if (session.isClosed) {
+      work.ignore();
+      return Future.error(const SessionClosedException());
+    }
+
+    return Future.any([
+      work,
+      session.closed.then<T>((_) => throw const SessionClosedException()),
+    ]);
   }
 
   TransferOffer _offerOf(OutgoingJob job) => TransferOffer(

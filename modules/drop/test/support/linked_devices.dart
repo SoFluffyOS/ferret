@@ -77,8 +77,8 @@ class LinkedDevices {
     final toLaptop = phone.session;
     laptop.session = null;
     phone.session = null;
-    toPhone?.closedByTest = true;
-    toLaptop?.closedByTest = true;
+    toPhone?.cut();
+    toLaptop?.cut();
     if (toPhone != null) {
       laptop.feature.onSessionClosed(toPhone);
     }
@@ -150,6 +150,20 @@ class LinkedSession implements Session {
   late LinkedSession peer;
   bool closedByTest = false;
   final List<GeneratedMessage> sent = [];
+  final Completer<void> _closed = Completer();
+
+  /// Set by a test to stand in for a dead socket: writes never finish.
+  bool stalled = false;
+
+  @override
+  Future<void> get closed => _closed.future;
+
+  void cut() {
+    closedByTest = true;
+    if (!_closed.isCompleted) {
+      _closed.complete();
+    }
+  }
 
   /// Set by a test to stand in for a slow link.
   @override
@@ -220,6 +234,10 @@ class LinkedSession implements Session {
 
     sent.add(message);
     link.onDeliver?.call(from.id, message);
+    if (stalled) {
+      await Completer<void>().future;
+    }
+
     await Future<void>.delayed(Duration.zero);
     if (closedByTest) {
       throw const SessionClosedException();
