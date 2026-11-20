@@ -16,6 +16,7 @@ import 'package:remote_input/ui/frames/frames.dart';
 import 'package:remote_input/ui/lock_activity.dart';
 import 'package:remote_input/ui/pages/pages.dart';
 import 'package:remote_input/ui/remote_input_activity.dart';
+import 'package:remote_input/ui/screen_switch_activity.dart';
 import 'package:remote_input/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -33,7 +34,11 @@ class RemoteInputFeatureUi extends FeatureUi {
 
   late final HostViewModel hostViewModel = HostViewModel(feature);
   late final TouchpadViewModel touchpadViewModel = TouchpadViewModel(feature);
+  late final ScreenSwitchViewModel screenViewModel = ScreenSwitchViewModel(
+    feature,
+  );
   ControlNotices? _notices;
+  ScreenNotices? _screenNotices;
   ConsentPrompter? _prompter;
   VoidCallback? _revealOnAsk;
 
@@ -49,8 +54,10 @@ class RemoteInputFeatureUi extends FeatureUi {
   ];
 
   @override
-  List<NoticeCategory> get noticeCategories =>
-      ControlNotices.categories(platformRemoteInputL10n());
+  List<NoticeCategory> get noticeCategories => [
+    ...ControlNotices.categories(platformRemoteInputL10n()),
+    ...ScreenNotices.categories(platformRemoteInputL10n()),
+  ];
 
   @override
   String title(BuildContext context) => context.remoteInputL10n.title;
@@ -60,6 +67,14 @@ class RemoteInputFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
+    if (feature.screenSwitch case final screenSwitch?) {
+      _screenNotices = ScreenNotices(
+        screenSwitch: screenSwitch,
+        notifier: context.notifier,
+        l10n: platformRemoteInputL10n(),
+      )..start();
+    }
+
     final controlHost = feature.controlHost;
     if (controlHost == null) {
       return;
@@ -113,6 +128,8 @@ class RemoteInputFeatureUi extends FeatureUi {
       this.feature.locks,
       onDismiss: this.feature.dismissLock,
     ),
+    if (screenViewModel.isAvailable)
+      ...screenSwitchActivity(context.remoteInputL10n, screenViewModel),
   ];
 
   @override
@@ -141,12 +158,38 @@ class RemoteInputFeatureUi extends FeatureUi {
       return _touchpadHealth(l10n, device.device);
     }
 
+    final takesKeyboard = _takesKeyboard(session);
+    if (takesKeyboard && screenViewModel.enabled) {
+      return FeatureHealth(
+        .ok,
+        reason: l10n.healthScreenKeys,
+        help: l10n.healthScreenKeysHelp(ThisComputer.here, device.device.name),
+      );
+    }
+
     if (hostViewModel.isAvailable && _isController(session)) {
       return _hostHealth(l10n, device.device.id);
     }
 
+    if (takesKeyboard) {
+      return FeatureHealth(
+        .off,
+        reason: l10n.summaryOff,
+        help: l10n.healthScreenOffHelp(ThisComputer.here),
+      );
+    }
+
     return null;
   }
+
+  /// This Mac can send its keyboard and mouse to [session]'s computer.
+  bool _takesKeyboard(Session session) =>
+      screenViewModel.isAvailable &&
+      (session
+              .remoteFeature(featureId)
+              ?.flags
+              .contains(RemoteInputFeature.screenFlag) ??
+          false);
 
   @override
   List<FeatureAction> deviceActions(
@@ -196,6 +239,7 @@ class RemoteInputFeatureUi extends FeatureUi {
   Widget? buildSettings(BuildContext context, FeatureContext feature) {
     final sections = [
       if (hostViewModel.isAvailable) _hostSettings(),
+      if (screenViewModel.isAvailable) _screenSettings(),
       if (this.feature.canControl) _touchpadSettings(),
     ];
     if (sections.isEmpty) {
@@ -231,6 +275,18 @@ class RemoteInputFeatureUi extends FeatureUi {
           summary: _hostSummary(l10n),
           isOn: hostViewModel.enabled && _hostIsReady,
           needsAttention: hostViewModel.lostAccess,
+        ),
+      if (screenViewModel.isAvailable)
+        FeatureSettings(
+          group: .control,
+          title: l10n.settingsScreenTitle,
+          child: _screenSettings(),
+          summary: switch (screenViewModel.enabled) {
+            true => l10n.summaryOn,
+            false => l10n.summaryOff,
+          },
+          isOn: screenViewModel.enabled,
+          needsAttention: screenViewModel.needsAccess,
         ),
       if (this.feature.canControl)
         FeatureSettings(
@@ -282,6 +338,8 @@ class RemoteInputFeatureUi extends FeatureUi {
   /// Stops listening, for tests and hot restarts.
   Future<void> dispose() async {
     await _notices?.dispose();
+    await _screenNotices?.dispose();
+    screenViewModel.dispose();
     _prompter?.dispose();
     if (_revealOnAsk case final revealOnAsk?) {
       hostViewModel.removeListener(revealOnAsk);
@@ -351,6 +409,11 @@ class RemoteInputFeatureUi extends FeatureUi {
     child: const HostSettingsFrame(),
   );
 
+  Widget _screenSettings() => ChangeNotifierProvider.value(
+    value: screenViewModel,
+    child: const ScreenSwitchSettingsFrame(),
+  );
+
   Widget _touchpadSettings() => ChangeNotifierProvider.value(
     value: touchpadViewModel,
     child: const ControllerSettingsFrame(),
@@ -364,13 +427,13 @@ class RemoteInputFeatureUi extends FeatureUi {
     _ => .linux,
   };
 
-  /// Whether [session]'s device offers itself as a touchpad.
-  bool _isController(Session? session) =>
-      session
-          ?.remoteFeature(featureId)
-          ?.flags
-          .contains(RemoteInputFeature.controllerFlag) ??
-      false;
+  /// Whether [session]'s device offers itself as a touchpad, or lends a
+  /// computer's own keyboard and mouse.
+  bool _isController(Session? session) {
+    final flags = session?.remoteFeature(featureId)?.flags ?? const [];
+    return flags.contains(RemoteInputFeature.controllerFlag) ||
+        flags.contains(RemoteInputFeature.screenSenderFlag);
+  }
 
   String _hostSummary(RemoteInputLocalizations l10n) {
     if (!hostViewModel.enabled) {

@@ -19,6 +19,36 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     };
   }
 
+  /// Why this Mac's keyboard and mouse didn't go, or came back: the line.
+  String screenProblemTitle(ScreenSwitchState state) {
+    final name = state.deviceName;
+    return switch (state.problem) {
+      .noComputer => screenNoComputer,
+      .needsAccess => screenNeedsAccess,
+      .secureInput => screenSecureInput,
+      .captureFailed => screenCaptureFailed(ThisComputer.here),
+      .denied => screenDenied(name),
+      .lostConnection => screenLost(name),
+      .stopped => screenStopped(name),
+      null => '',
+    };
+  }
+
+  /// What to do about [screenProblemTitle], or where the keys are now.
+  String screenProblemBody(ScreenSwitchState state) {
+    final name = state.deviceName;
+    return switch (state.problem) {
+      .noComputer => screenNoComputerBody,
+      .needsAccess => screenNeedsAccessBody,
+      .secureInput => screenSecureInputBody(ThisComputer.here),
+      .denied => _denial(state.denial, name),
+      .captureFailed ||
+      .lostConnection ||
+      .stopped ||
+      null => screenBackHere(ThisComputer.here),
+    };
+  }
+
   String _denial(OutgoingDenial? denial, String name) => switch (denial) {
     .timeout => deniedTimeout(name),
     .busy => deniedBusy(name),

@@ -30,6 +30,7 @@ void main() {
           locker: const UnsupportedScreenLocker(),
           canBeControlled: computer,
           canControl: !computer,
+          canSwitchScreens: false,
           requestTimeout: const Duration(milliseconds: 10),
         ),
       );
