@@ -135,6 +135,26 @@ Future<List<String>> _tabStops(WidgetTester tester, {int limit = 60}) async {
   return stops;
 }
 
+final _noLetters = RegExp(r'^[^\p{L}]+', unicode: true);
+
+/// Presses Tab until the focused stop's text, icons left out, starts
+/// with [text].
+Future<void> _tabTo(WidgetTester tester, String text, {int limit = 40}) async {
+  for (var step = 0; step < limit; step++) {
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump(const Duration(milliseconds: 120));
+    final render = FocusManager.instance.primaryFocus?.context
+        ?.findRenderObject();
+    final spoken = _spokenAt(render).replaceFirst(_noLetters, '');
+    if (spoken.startsWith(text)) {
+      await tester.pump(const Duration(milliseconds: 500));
+      return;
+    }
+  }
+
+  fail('Tab never reached "$text"');
+}
+
 String _spokenAt(RenderObject? render) {
   if (render is! RenderBox || !render.hasSize) {
     return '(nothing drawn)';
@@ -374,6 +394,36 @@ void main() {
           await rig.dispose(tester);
         });
       });
+    }
+
+    // One ring at a time: a button in a card, the card itself, and Fix on
+    // an offline device, focused from the keyboard, on a phone and in the
+    // popover.
+    const focused = {
+      ('home_connected', 'Show screen', 'ghost_in_card'),
+      ('home_connected', 'Pixel 9', 'card'),
+      ('home_offline', 'Fix', 'fix'),
+    };
+    for (final (screenName, stop, shot) in focused) {
+      final screen = screens.firstWhere((each) => each.name == screenName);
+      for (final size in [popover, phone]) {
+        testWidgets('focus $shot ${size.name}', (tester) async {
+          await _onScreen(tester, size, .light, () async {
+            final rig = await ScreenRig.create(
+              tester,
+              features: _featuresFor(screen),
+              tipsDone: screen.tipsDone,
+              asPhone: size == phone,
+            );
+            await rig.show(tester);
+            await screen.script(tester, rig);
+            await rig.settle(tester);
+            await _tabTo(tester, stop);
+            await _captureTo(tester, rig, 'focus_${shot}_${size.name}');
+            await rig.dispose(tester);
+          });
+        });
+      }
     }
 
     for (final screen in windowScreens) {

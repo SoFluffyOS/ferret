@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/focus_rings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -166,30 +167,34 @@ class GroupedRow extends StatelessWidget {
         true => true,
         false => null,
       },
-      child: Tappable(
-        semanticButton: true,
-        onTap: onTap,
+      child: PrimaryFocusBuilder(
         focusNode: focusNode,
-        enableAnimation: false,
-        enableHover: true,
-        // The row draws its own ring, inside the card's corners.
-        enableFocusBorder: false,
-        builder: (context, state) => DecoratedBox(
-          position: .foreground,
-          decoration: ShapeDecoration(
-            shape: Corners.shape(
-              Corners.card,
-              side: switch (state) {
-                .focus => BorderSide(
-                  color: palette.accent,
-                  width: Spacing.d2,
-                  strokeAlign: BorderSide.strokeAlignInside,
-                ),
-                _ => BorderSide.none,
-              },
+        builder: (context, node) => Tappable(
+          semanticButton: true,
+          onTap: onTap,
+          focusNode: node,
+          enableAnimation: false,
+          enableHover: true,
+          // The row draws its own ring, inside the card's corners, and
+          // none while focus is on a control in it.
+          enableFocusBorder: false,
+          builder: (context, state) => DecoratedBox(
+            position: .foreground,
+            decoration: ShapeDecoration(
+              shape: Corners.shape(
+                Corners.card,
+                side: switch (state == .focus && node.hasPrimaryFocus) {
+                  true => BorderSide(
+                    color: palette.accent,
+                    width: Spacing.d2,
+                    strokeAlign: BorderSide.strokeAlignInside,
+                  ),
+                  false => BorderSide.none,
+                },
+              ),
             ),
+            child: ColoredBox(color: _fill(palette, state), child: row),
           ),
-          child: ColoredBox(color: _fill(palette, state), child: row),
         ),
       ),
     );

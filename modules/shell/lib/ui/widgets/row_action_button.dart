@@ -29,32 +29,40 @@ class RowActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Button(
-      variant: switch (isPrimary) {
-        true => .primary,
-        false => .ghost,
-      },
-      onPressed: onPressed,
-      enable: onPressed != null,
-      semanticLabel: semanticLabel ?? tooltip,
-      tooltip: tooltip,
-      mainAxisSize: .min,
-      // It sits a card's inset from the card's corner, so its curve shares
-      // the card's centre.
-      radius: Corners.control,
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.d12,
-        vertical: Spacing.d6,
-      ),
-      child: Text(
-        label,
-        semanticsLabel: switch (semanticLabel ?? tooltip) {
-          null => null,
-          _ => '',
+    // Focused from the keyboard, the outline gives way to the focus ring,
+    // so the button doesn't wear two.
+    return ButtonFocusRing(
+      builder: (context, keyboardFocused) => Button(
+        variant: switch (isPrimary) {
+          true => .primary,
+          false => .ghost,
         },
-        maxLines: 1,
-        overflow: .ellipsis,
-        style: context.fluffyTheme.typography.caption1,
+        borderWidth: switch (keyboardFocused) {
+          true => 0,
+          false => null,
+        },
+        onPressed: onPressed,
+        enable: onPressed != null,
+        semanticLabel: semanticLabel ?? tooltip,
+        tooltip: tooltip,
+        mainAxisSize: .min,
+        // It sits a card's inset from the card's corner, so its curve shares
+        // the card's centre.
+        radius: Corners.control,
+        padding: EdgeInsets.symmetric(
+          horizontal: Spacing.d12,
+          vertical: Spacing.d6,
+        ),
+        child: Text(
+          label,
+          semanticsLabel: switch (semanticLabel ?? tooltip) {
+            null => null,
+            _ => '',
+          },
+          maxLines: 1,
+          overflow: .ellipsis,
+          style: context.fluffyTheme.typography.caption1,
+        ),
       ),
     );
   }

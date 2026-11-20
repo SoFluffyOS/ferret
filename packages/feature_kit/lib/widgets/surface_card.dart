@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/focus_rings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -34,12 +35,35 @@ class SurfaceCard extends StatelessWidget {
       return card;
     }
 
-    return Tappable(
-      semanticButton: true,
-      onTap: onTap,
+    // Focus on a button inside the card is that button's: the card draws
+    // its ring, and grows a little, only while it holds focus itself.
+    return PrimaryFocusBuilder(
       focusNode: focusNode,
-      hoverOverlayBorderRadius: Corners.card,
-      child: card,
+      builder: (context, node) => Tappable(
+        semanticButton: true,
+        onTap: onTap,
+        focusNode: node,
+        enableAnimation: !node.focusIsInside,
+        enableFocusBorder: false,
+        hoverOverlayBorderRadius: Corners.card,
+        builder: (context, state) => DecoratedBox(
+          position: .foreground,
+          decoration: ShapeDecoration(
+            shape: Corners.shape(
+              Corners.card,
+              side: switch (state == .focus && node.hasPrimaryFocus) {
+                true => BorderSide(
+                  color: context.palette.accent,
+                  width: Spacing.d2,
+                  strokeAlign: BorderSide.strokeAlignInside,
+                ),
+                false => BorderSide.none,
+              },
+            ),
+          ),
+          child: card,
+        ),
+      ),
     );
   }
 }
