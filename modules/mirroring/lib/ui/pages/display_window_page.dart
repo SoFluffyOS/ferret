@@ -41,6 +41,7 @@ class _DisplayWindowPageState extends State<DisplayWindowPage> {
   late final StageWindowViewModel _window;
   final bool _touch = DisplayHere.isTouch;
   bool _heldStill = false;
+  AppLifecycleListener? _lifecycle;
 
   @override
   void initState() {
@@ -51,7 +52,19 @@ class _DisplayWindowPageState extends State<DisplayWindowPage> {
     if (_touch) {
       unawaited(SystemChrome.setEnabledSystemUIMode(.immersiveSticky));
       unawaited(DisplayScreen.keepOn(true));
+      _lifecycle = AppLifecycleListener(
+        onHide: () => _setHidden(true),
+        onShow: () => _setHidden(false),
+      );
     }
+  }
+
+  /// Home or another app on top: the display goes on unseen, and the
+  /// screen may turn off.
+  void _setHidden(bool hidden) {
+    _viewModel.setHidden(hidden);
+    final ended = _viewModel.sessionFor(widget.deviceId)?.phase == .ended;
+    unawaited(DisplayScreen.keepOn(!hidden && !ended));
   }
 
   @override
@@ -76,6 +89,11 @@ class _DisplayWindowPageState extends State<DisplayWindowPage> {
   @override
   void dispose() {
     _viewModel.removeListener(_onViewer);
+    _lifecycle?.dispose();
+    if (_lifecycle != null) {
+      _viewModel.setHidden(false);
+    }
+
     unawaited(_viewModel.leaveStage(widget.deviceId));
     if (_touch) {
       unawaited(SystemChrome.setEnabledSystemUIMode(.edgeToEdge));

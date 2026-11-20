@@ -2407,6 +2407,8 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get betaTooltip => pseudo(super.betaTooltip);
   @override
+  String get displayingBody => pseudo(super.displayingBody);
+  @override
   String windowTitle(String device) => pseudo(super.windowTitle(device));
   @override
   String inWindowTitle(String device) => pseudo(super.inWindowTitle(device));
@@ -2881,6 +2883,9 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
       pseudo(super.displayStopBody(device));
   @override
   String inBeta(String text) => pseudo(super.inBeta(text));
+  @override
+  String displayingTitle(String here, String device) =>
+      pseudo(super.displayingTitle(here, device));
 }
 
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {

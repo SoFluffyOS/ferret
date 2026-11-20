@@ -42,6 +42,7 @@ class MirroringFeature extends Feature {
     this.consentTimeout = const Duration(seconds: 60),
     this.requestTimeout = const Duration(seconds: 10),
     this.firstPictureTimeout = const Duration(seconds: 10),
+    this.hiddenDisplayLimit = const Duration(minutes: 10),
   }) : _createCapture = capture ?? ScreenCapture.current,
        _createCamera = camera ?? CameraCapture.current,
        _createPhoneControl = phoneControl ?? PhoneControl.new,
@@ -131,6 +132,10 @@ class MirroringFeature extends Feature {
   final Duration consentTimeout;
   final Duration requestTimeout;
   final Duration firstPictureTimeout;
+
+  /// How long this device stays another computer's display while it
+  /// can't be seen, see [MirrorViewer.setHidden].
+  final Duration hiddenDisplayLimit;
 
   /// The words on the phone's own notices. The app sets them in the
   /// owner's language before any request can arrive.
@@ -300,6 +305,7 @@ class MirroringFeature extends Feature {
         audioCodecs: _audioCodecs,
         clock: _clock,
         firstPictureTimeout: firstPictureTimeout,
+        hiddenDisplayLimit: hiddenDisplayLimit,
       );
       routes.isShowingIncoming = () => viewer.isShowingIncoming;
       _routes = routes;

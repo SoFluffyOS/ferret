@@ -31,6 +31,7 @@ class MirrorViewer {
     this.statsInterval = const Duration(seconds: 1),
     this.maxDecoding = 12,
     this.reconnectGrace = const Duration(seconds: 20),
+    this.hiddenDisplayLimit = const Duration(minutes: 10),
   }) : _routes = routes,
        _createDecoder = createDecoder,
        _codecs = codecs,
@@ -61,6 +62,10 @@ class MirrorViewer {
   /// prompt.
   final Duration reconnectGrace;
 
+  /// How long another computer's display goes on while it can't be seen
+  /// here, such as after Home on a phone, before it stops by itself.
+  final Duration hiddenDisplayLimit;
+
   /// How long a phone turns the same computer away after its owner said
   /// no, so "Ask again" waits as long.
   static const denyCooldown = Duration(seconds: 30);
@@ -90,7 +95,11 @@ class MirrorViewer {
   Timer? _waitTimer;
   Timer? _statsTimer;
   Timer? _graceTimer;
+  Timer? _hiddenTimer;
   int _attempt = 0;
+
+  /// Nothing here can be seen, such as after Home on a phone.
+  bool _hidden = false;
 
   /// The feed came through a route this computer can open again, not
   /// from a device that started it itself.
@@ -296,6 +305,63 @@ class MirrorViewer {
     _emit();
   }
 
+  /// Whether nothing here can be seen, see [setHidden].
+  bool get isHidden => _hidden;
+
+  /// Says whether this device's screen shows Ferret. While it doesn't,
+  /// another computer's display goes on without being decoded, so coming
+  /// back is instant and costs no battery meanwhile; it asks for a
+  /// keyframe on the way back, and stops after [hiddenDisplayLimit].
+  void setHidden(bool hidden) {
+    if (_hidden == hidden) {
+      return;
+    }
+
+    _hidden = hidden;
+    _applyHidden();
+  }
+
+  void _applyHidden() {
+    final current = _current;
+    final pauses = _hidden && current != null && current.isDisplay;
+    final player = _player;
+    if (pauses && current.isLive) {
+      player?.pause();
+      _hiddenTimer ??= Timer(
+        hiddenDisplayLimit,
+        () => unawaited(_stopHidden()),
+      );
+      if (current.phase == .starting) {
+        _waitTimer?.cancel();
+        _waitTimer = null;
+      }
+
+      return;
+    }
+
+    _hiddenTimer?.cancel();
+    _hiddenTimer = null;
+    if (player == null || !player.isPaused) {
+      return;
+    }
+
+    player.resume();
+    if (current != null && current.phase == .starting && _waitTimer == null) {
+      final attempt = _attempt;
+      _waitTimer = Timer(
+        firstPictureTimeout,
+        () => unawaited(_endAttempt(attempt, .noAnswer)),
+      );
+    }
+  }
+
+  Future<void> _stopHidden() async {
+    _hiddenTimer = null;
+    if (_hidden) {
+      await stop();
+    }
+  }
+
   /// Stop or Back on this computer.
   Future<void> stop() async {
     final current = _current;
@@ -332,6 +398,7 @@ class MirrorViewer {
     await stop();
     _waitTimer?.cancel();
     _statsTimer?.cancel();
+    _hiddenTimer?.cancel();
     _stopLooking();
     await _closePlayer();
     _picture.dispose();
@@ -605,6 +672,7 @@ class MirrorViewer {
         lost: false,
       ),
     );
+    _applyHidden();
   }
 
   Future<void> _configure(MirrorStreamConfig config) async {
@@ -732,6 +800,7 @@ class MirrorViewer {
     );
     _player = player;
     player.picture.addListener(_onPicture);
+    _applyHidden();
   }
 
   Future<void> _closePlayer() async {
@@ -877,6 +946,8 @@ class MirrorViewer {
     _stopLooking();
     _statsTimer?.cancel();
     _statsTimer = null;
+    _hiddenTimer?.cancel();
+    _hiddenTimer = null;
     _current = current.copyWith(phase: .ended, end: end, endedAt: _clock());
     _lastEnds[current.deviceId] = end;
     final record = _recordOf(current, end);

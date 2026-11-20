@@ -45,6 +45,7 @@ A keyboard plugged into the tablet types on your Mac too.
 - The screen stays on while it shows, and the system bars hide.
 - Tap the small handle at the top for a bar with **Stop**.
 - **Back** asks **Stop being MacBook Pro's display?** first, so a stray swipe never ends it.
+- Press **Home** and it keeps going: a notice says **This tablet is MacBook Pro's display**, with **Stop**. Tap it and the picture is back in a blink. Ferret stops drawing it meanwhile to save your battery, and ends it after 10 minutes away.
 
 ## 🔒 You stay in charge
 

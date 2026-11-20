@@ -367,5 +367,7 @@
   "displayStopBody": "Các cửa sổ trên màn hình này sẽ trở về {device}.",
   "beta": "Beta",
   "betaTooltip": "Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật",
-  "inBeta": "{text} (beta)"
+  "inBeta": "{text} (beta)",
+  "displayingTitle": "{here, select, tablet{Máy tính bảng này} other{Điện thoại này}} đang là màn hình phụ của {device}",
+  "displayingBody": "Chạm để xem lại. Tự dừng sau 10 phút chạy nền."
 }

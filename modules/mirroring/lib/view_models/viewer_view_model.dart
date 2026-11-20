@@ -215,6 +215,10 @@ class ViewerViewModel extends ChangeNotifier {
 
   Future<void> setSound(bool on) async => _viewer?.setSound(on);
 
+  /// Whether this device's screen shows Ferret, so a display that can't
+  /// be seen isn't decoded.
+  void setHidden(bool hidden) => _viewer?.setHidden(hidden);
+
   Future<void> setSoundVolume(double volume) async =>
       _viewer?.setSoundVolume(volume);
 

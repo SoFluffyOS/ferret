@@ -42,6 +42,24 @@ class _QuietNotifier implements LocalNotifier {
   Stream<NoticeResponse> get responses => const .empty();
 }
 
+class _RecordingNotifier implements LocalNotifier {
+  final Map<String, LocalNotice> shown = {};
+  final StreamController<NoticeResponse> _responses = .broadcast(sync: true);
+
+  void respond(String noticeId, [String? actionId]) => _responses.add(
+    NoticeResponse(noticeId: noticeId, actionId: actionId),
+  );
+
+  @override
+  Future<void> show(LocalNotice notice) async => shown[notice.id] = notice;
+
+  @override
+  Future<void> cancel(String id) async => shown.remove(id);
+
+  @override
+  Stream<NoticeResponse> get responses => _responses.stream;
+}
+
 void main() {
   // The default test display, 800 by 600, counts as a tablet's; these
   // strings are checked as a phone says them.
@@ -174,10 +192,11 @@ void main() {
   FeatureContext featureContext({
     Future<void> Function()? onReveal,
     List<DeviceStatus> devices = const [],
+    LocalNotifier? notifier,
   }) => FeatureContext(
     engine: _FakeEngine(devices),
     navigatorKey: GlobalKey<NavigatorState>(),
-    notifier: _QuietNotifier(),
+    notifier: notifier ?? _QuietNotifier(),
     onReveal: onReveal,
   );
 
@@ -922,6 +941,61 @@ void main() {
       expect(feature.viewer, isNotNull);
       expect(parts, hasLength(1));
       expect(find.text('Clear history'), findsOneWidget);
+    });
+
+    testWidgets('while the phone is a display, an ongoing notice says so '
+        'with Stop, which ends it from the shade', (tester) async {
+      await startPhone(tester, canBeDisplay: true);
+      mac = FakeSession(
+        'mac',
+        name: 'MacBook',
+        flags: const ['view', MirrorProtocol.extendFlag],
+        answer: (_) => StartPending(timeoutSeconds: 0),
+      );
+      host.sessions = [mac];
+      final notifier = _RecordingNotifier();
+      await ui.onAppStarted(featureContext(notifier: notifier));
+      final routes = feature.routes;
+      final viewer = feature.viewer;
+      if (routes == null || viewer == null) {
+        fail('The phone should be able to be a display');
+      }
+
+      await tester.runAsync(
+        () => feature.onEnvelope(
+          mac,
+          envelopeOf(DisplayOffer(version: 1), expectsReply: true),
+        ),
+      );
+      expect(notifier.shown, isNot(contains('mirroring.displaying')));
+      routes.answer(routes.requests.single, allow: true);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+
+      expect(viewer.current?.isDisplay, isTrue);
+      final notice = notifier.shown['mirroring.displaying'];
+      expect(notice?.title, "This phone is MacBook's display");
+      expect(notice?.ongoing, isTrue);
+      expect(notice?.public, isTrue);
+      expect(notice?.silent, isTrue);
+      final stop = ui.noticeCategories
+          .singleWhere((category) => category.id == notice?.category)
+          .actions
+          .single;
+      expect(stop.label, 'Stop');
+      expect(stop.opensApp, isFalse);
+
+      notifier.respond('mirroring.displaying', stop.id);
+      await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+      await tester.pump();
+
+      expect(viewer.current?.phase, ViewPhase.ended);
+      expect(viewer.current?.end, ViewEnd.stoppedHere);
+      expect(notifier.shown, isNot(contains('mirroring.displaying')));
+      expect(mac.sentOf<Stop>(), isNotEmpty);
+      await tester.runAsync(ui.dispose);
     });
 
     testWidgets('turned off on the phone reads Off, and the row hears about '

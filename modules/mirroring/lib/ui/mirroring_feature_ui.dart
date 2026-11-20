@@ -66,6 +66,9 @@ class MirroringFeatureUi extends FeatureUi {
   static const _cameraOnceAction = 'mirroring.camera_once';
   static const _cameraAlwaysAction = 'mirroring.camera_always';
   static const _cameraNoAction = 'mirroring.camera_no';
+  static const _displayingCategory = 'mirroring.displaying';
+  static const _displayingNotice = 'mirroring.displaying';
+  static const _stopDisplayAction = 'mirroring.display_stop';
 
   /// Where "Show screen" sits among a device's first actions: right
   /// after Send files.
@@ -88,6 +91,11 @@ class MirroringFeatureUi extends FeatureUi {
   StreamSubscription<NoticeResponse>? _controlResponses;
   StreamSubscription<void>? _cameraNotices;
   StreamSubscription<NoticeResponse>? _cameraResponses;
+  StreamSubscription<void>? _displayNotices;
+  StreamSubscription<NoticeResponse>? _displayResponses;
+
+  /// The display "This phone is MacBook's display" was last shown for.
+  MirrorTarget? _displayNoticeShown;
   ShareRequest? _cameraAskShown;
   final Set<IncomingRequest> _asked = {};
   ControlRequest? _controlAskShown;
@@ -161,6 +169,10 @@ class MirroringFeatureUi extends FeatureUi {
         actions: [NoticeAction(id: _stopControlAction, label: l10n.stop)],
       ),
       NoticeCategory(
+        id: _displayingCategory,
+        actions: [NoticeAction(id: _stopDisplayAction, label: l10n.stop)],
+      ),
+      NoticeCategory(
         id: _cameraAskCategory,
         actions: [
           NoticeAction(
@@ -198,6 +210,15 @@ class MirroringFeatureUi extends FeatureUi {
     _noticeResponses = context.notifier.responses
         .where((response) => response.noticeId == _requestNotice)
         .listen(_onNoticeResponse);
+    if (DisplayHere.isTouch) {
+      _displayNotices = feature.changes.listen(
+        (_) => _syncDisplayNotice(context),
+      );
+      _displayResponses = context.notifier.responses
+          .where((response) => response.noticeId == _displayingNotice)
+          .listen((response) => _onDisplayResponse(context, response));
+    }
+
     if (feature.source == null) {
       return;
     }
@@ -906,6 +927,8 @@ class MirroringFeatureUi extends FeatureUi {
     await _controlResponses?.cancel();
     await _cameraNotices?.cancel();
     await _cameraResponses?.cancel();
+    await _displayNotices?.cancel();
+    await _displayResponses?.cancel();
     _changes.dispose();
     stageWindow.dispose();
     viewerViewModel.dispose();
@@ -996,6 +1019,61 @@ class MirroringFeatureUi extends FeatureUi {
     if (choice != null) {
       unawaited(feature.camera?.answer(choice));
     }
+  }
+
+  /// On a phone or tablet that is another computer's display: "This
+  /// phone is MacBook's display" with Stop for as long as it is, so it
+  /// can be stopped or brought back from anywhere.
+  void _syncDisplayNotice(FeatureContext context) {
+    final current = feature.viewer?.current;
+    final showing = switch (current) {
+      final session? when session.isDisplay && session.isLive => session,
+      _ => null,
+    };
+    if (showing?.target == _displayNoticeShown) {
+      return;
+    }
+
+    _displayNoticeShown = showing?.target;
+    final l10n = platformMirroringL10n();
+    _showOrCancel(context, _displayingNotice, switch (showing) {
+      final session? => LocalNotice(
+        id: _displayingNotice,
+        channel: .incoming,
+        title: l10n.displayingTitle(ThisComputer.handheld, session.deviceName),
+        body: l10n.displayingBody,
+        category: _displayingCategory,
+        silent: true,
+        ongoing: true,
+        public: true,
+      ),
+      null => null,
+    });
+  }
+
+  /// Stop ends the display where the notice is; a tap brings it back.
+  void _onDisplayResponse(FeatureContext context, NoticeResponse response) {
+    final current = feature.viewer?.current;
+    if (current == null || !current.isDisplay || !current.isLive) {
+      return;
+    }
+
+    if (response.actionId == _stopDisplayAction) {
+      unawaited(viewerViewModel.stop());
+      final page = _displayPage;
+      if (page != null && page.isActive) {
+        page.navigator?.removeRoute(page);
+      }
+
+      return;
+    }
+
+    if (response.actionId != null) {
+      return;
+    }
+
+    unawaited(context.reveal());
+    unawaited(_openDisplay(context, current.deviceId, current.deviceName));
   }
 
   void _showOrCancel(FeatureContext context, String id, LocalNotice? notice) {

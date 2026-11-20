@@ -2307,6 +2307,18 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'{text} (beta)'**
   String inBeta(String text);
+
+  /// Ongoing Android notice while this phone or tablet is another computer's display
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, tablet{This tablet} other{This phone}} is {device}\'s display'**
+  String displayingTitle(String here, String device);
+
+  /// No description provided for @displayingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to see it again. It stops by itself after 10 minutes in the background.'**
+  String get displayingBody;
 }
 
 class _MirroringLocalizationsDelegate

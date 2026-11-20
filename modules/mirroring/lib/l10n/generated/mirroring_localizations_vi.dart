@@ -1861,4 +1861,19 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String inBeta(String text) {
     return '$text (beta)';
   }
+
+  @override
+  String displayingTitle(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'Máy tính bảng này',
+        'other': 'Điện thoại này',
+      },
+    );
+    return '$_temp0 đang là màn hình phụ của $device';
+  }
+
+  @override
+  String get displayingBody => 'Chạm để xem lại. Tự dừng sau 10 phút chạy nền.';
 }

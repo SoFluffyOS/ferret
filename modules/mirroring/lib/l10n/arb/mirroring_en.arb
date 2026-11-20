@@ -1820,5 +1820,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "displayingTitle": "{here, select, tablet{This tablet} other{This phone}} is {device}'s display",
+  "@displayingTitle": {
+    "description": "Ongoing Android notice while this phone or tablet is another computer's display",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayingBody": "Tap to see it again. It stops by itself after 10 minutes in the background."
 }

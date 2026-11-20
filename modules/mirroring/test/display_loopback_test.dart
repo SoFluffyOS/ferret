@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
@@ -83,7 +85,7 @@ void main() {
       String airId,
     })
   >
-  twoMacs() async {
+  twoMacs({Duration hiddenDisplayLimit = const Duration(minutes: 10)}) async {
     final capture = FakeDisplayCapture();
     final injector = FakeInjector();
     final decoder = FakeDecoder();
@@ -112,6 +114,7 @@ void main() {
       canView: true,
       canExtend: false,
       canBeDisplay: true,
+      hiddenDisplayLimit: hiddenDisplayLimit,
     );
     final proEngine = await startEngine('MacBook Pro', pro);
     final airEngine = await startEngine('MacBook Air', air);
@@ -174,6 +177,86 @@ void main() {
     expect(macs.capture.pointers.last.buttons, 2);
 
     await viewer.stop();
+    await until(() => macs.capture.stops == 1);
+    expect(display.lastRecord?.end, ExtendEnd.stoppedThere);
+  });
+
+  test('a display that can\'t be seen goes on without decoding or asking '
+      'for keyframes, and asks for one on the way back', () async {
+    final macs = await twoMacs();
+    final display = macs.pro.display;
+    final routes = macs.air.routes;
+    final viewer = macs.air.viewer;
+    if (display == null || routes == null || viewer == null) {
+      fail('Both sides should be set up');
+    }
+
+    await display.offer(macs.airId);
+    await until(() => routes.requests.isNotEmpty);
+    routes.answer(routes.requests.single, allow: true);
+    await until(() => display.current?.phase == .extending);
+    macs.capture.play();
+    await until(() => macs.decoder.frames.isNotEmpty);
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    final asked = macs.capture.keyframeRequests;
+
+    viewer.setHidden(true);
+    for (var index = 0; index < 20; index++) {
+      await Future<void>.delayed(const Duration(milliseconds: 5));
+      macs.capture.emit(
+        CaptureFrame(
+          MirrorFrame(
+            data: Uint8List.fromList([0, 0, 0, 1, 0x41, index]),
+            ptsUs: 2000 + index,
+            keyframe: false,
+          ),
+        ),
+      );
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    expect(macs.decoder.frames, hasLength(1), reason: 'nothing decoded');
+    expect(macs.capture.keyframeRequests, asked);
+    expect(viewer.current?.isLive, isTrue, reason: 'the display goes on');
+
+    viewer.setHidden(false);
+    await until(() => macs.capture.keyframeRequests == asked + 1);
+    macs.capture.emit(
+      CaptureFrame(
+        MirrorFrame(
+          data: Uint8List.fromList([0, 0, 0, 1, 0x65, 9]),
+          ptsUs: 9000,
+          keyframe: true,
+        ),
+      ),
+    );
+    await until(() => macs.decoder.frames.length == 2);
+  });
+
+  test('a display left unseen too long stops by itself', () async {
+    final macs = await twoMacs(
+      hiddenDisplayLimit: const Duration(milliseconds: 300),
+    );
+    final display = macs.pro.display;
+    final routes = macs.air.routes;
+    final viewer = macs.air.viewer;
+    if (display == null || routes == null || viewer == null) {
+      fail('Both sides should be set up');
+    }
+
+    await display.offer(macs.airId);
+    await until(() => routes.requests.isNotEmpty);
+    routes.answer(routes.requests.single, allow: true);
+    await until(() => display.current?.phase == .extending);
+    macs.capture.play();
+    await until(() => macs.decoder.frames.isNotEmpty);
+
+    viewer
+      ..setHidden(true)
+      ..setHidden(false)
+      ..setHidden(true);
+    await until(() => viewer.current?.phase == .ended);
+    expect(viewer.current?.end, ViewEnd.stoppedHere);
     await until(() => macs.capture.stops == 1);
     expect(display.lastRecord?.end, ExtendEnd.stoppedThere);
   });

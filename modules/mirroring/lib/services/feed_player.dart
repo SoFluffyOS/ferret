@@ -56,6 +56,7 @@ class FeedPlayer {
   bool _configuring = false;
   bool _needsKeyframe = true;
   bool _closed = false;
+  bool _paused = false;
   DateTime? _keyframeAskedAt;
   int _shownInWindow = 0;
   int _droppedInWindow = 0;
@@ -104,9 +105,31 @@ class FeedPlayer {
     return .ready;
   }
 
+  /// Whether frames are let go of unseen, see [pause].
+  bool get isPaused => _paused;
+
+  /// Lets every frame go without decoding it, such as while the picture
+  /// can't be seen. They don't count as dropped: nothing fell behind.
+  void pause() {
+    _paused = true;
+    _held.clear();
+    _decodingSince.clear();
+  }
+
+  /// Decodes again from the next keyframe, and asks for one right away.
+  void resume() {
+    if (!_paused) {
+      return;
+    }
+
+    _paused = false;
+    _keyframeAskedAt = null;
+    _loseKeyframe();
+  }
+
   /// Takes the next frame of the feed, with how many were lost before it.
   void add(MirrorFrame frame, {int lost = 0}) {
-    if (_closed) {
+    if (_closed || _paused) {
       return;
     }
 
@@ -196,6 +219,7 @@ class FeedPlayer {
     final now = _clock();
     final askedAt = _keyframeAskedAt;
     if (_closed ||
+        _paused ||
         (askedAt != null && now.difference(askedAt) < _keyframeRequestGap)) {
       return;
     }

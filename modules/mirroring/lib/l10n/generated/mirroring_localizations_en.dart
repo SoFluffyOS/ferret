@@ -1879,4 +1879,20 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String inBeta(String text) {
     return '$text (beta)';
   }
+
+  @override
+  String displayingTitle(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'This tablet',
+        'other': 'This phone',
+      },
+    );
+    return '$_temp0 is $device\'s display';
+  }
+
+  @override
+  String get displayingBody =>
+      'Tap to see it again. It stops by itself after 10 minutes in the background.';
 }
