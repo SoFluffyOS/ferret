@@ -18,6 +18,8 @@ Scan instead:
 2. On the iPhone, open Ferret and tap **Scan the code on your computer**. The camera opens straight away.
 3. Point it at the code. That's it.
 
+The iPhone's **Camera** app works too: point it at the code and tap **Open in Ferret**.
+
 The first time, iOS asks whether Ferret may find and connect to devices on your local network. Tap **Allow**. Said no? The pairing says it couldn't reach the computer, with an **Open Settings** button: turn on **Local Network** for Ferret.
 
 More about codes and the other ways in [Pair your devices](pairing.md).
