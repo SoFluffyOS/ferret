@@ -24,13 +24,18 @@ typedef RosterChanges = ({List<DeviceJoined> joined, List<String> removed});
 /// here and is not passed on. Pairing a device again by hand always wins,
 /// because that pairing is newer than the forgetting.
 class DeviceRoster {
-  DeviceRoster(this._trustStore, this._localDeviceId);
+  DeviceRoster(this._trustStore, this._localDeviceId, {this.beforeJoin});
 
   static const maxDevices = 64;
   static const _keyLength = 32;
 
   final TrustStore _trustStore;
   final String _localDeviceId;
+
+  /// Runs before a device another one vouched for is trusted here, so what
+  /// it may use is settled before it can connect.
+  final Future<void> Function(String deviceId, TrustedDevice introducer)?
+  beforeJoin;
 
   /// What to tell [recipientId]: every other trusted device, and the
   /// devices removed everywhere.
@@ -158,6 +163,7 @@ class DeviceRoster {
       },
       introducedBy: introducer.id,
     );
+    await beforeJoin?.call(device.id, introducer);
     await _trustStore.save(device);
     return device;
   }

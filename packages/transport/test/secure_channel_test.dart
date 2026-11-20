@@ -73,6 +73,49 @@ void main() {
     await client.close();
   });
 
+  test('a message over the limit closes the channel with an error', () async {
+    final (client, responder) = await connectPair();
+    responder.messageLimit = 1024;
+    final errors = <Object>[];
+    final done = Completer<void>();
+    responder.messages.listen(
+      (_) {},
+      onError: errors.add,
+      onDone: done.complete,
+    );
+
+    await client.send(Uint8List(4096));
+
+    await done.future.timeout(const Duration(seconds: 5));
+    expect(errors.single, isA<FramingException>());
+    expect(responder.isClosed, isTrue);
+  });
+
+  test('a paused listener holds reading back and misses nothing', () async {
+    final (client, responder) = await connectPair();
+    final received = <int>[];
+    final subscription = responder.messages.listen(
+      (message) => received.add(message.first),
+    );
+    subscription.pause();
+
+    for (var i = 0; i < 50; i++) {
+      await client.send([i, ...Uint8List(1000)]);
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    expect(received, isEmpty);
+
+    subscription.resume();
+    final deadline = DateTime.now().add(const Duration(seconds: 5));
+    while (received.length < 50 && DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+
+    expect(received, List.generate(50, (i) => i));
+    await client.close();
+  });
+
   test('an empty message is delivered', () async {
     final (client, responder) = await connectPair();
     final received = responder.messages.first;

@@ -437,6 +437,36 @@ void main() {
     },
   );
 
+  Future<SecureChannel> stranger(FerretEngine engine) async =>
+      SecureChannel.initiate(
+        await SocketConnection.connect('127.0.0.1', engine.port),
+        (await DeviceIdentity.generate()).keyPair,
+      );
+
+  test('a stranger sending a big message is hung up on', () async {
+    final laptop = await startEngine('Laptop');
+    final channel = await stranger(laptop);
+
+    await channel.send(List.filled(256 * 1024, 1));
+
+    await channel.done.timeout(const Duration(seconds: 5));
+    expect(channel.isClosed, isTrue);
+  });
+
+  test('only a few strangers may ask to pair at once', () async {
+    final laptop = await startEngine('Laptop');
+    final waiting = [for (var i = 0; i < 4; i++) await stranger(laptop)];
+    final fifth = await stranger(laptop);
+
+    await fifth.done.timeout(const Duration(seconds: 5));
+    expect(fifth.isClosed, isTrue);
+    expect(waiting.any((channel) => channel.isClosed), isFalse);
+
+    for (final channel in waiting) {
+      await channel.close();
+    }
+  });
+
   test('an unpaired device cannot open a session', () async {
     final laptop = await startEngine('Laptop', features: [_EchoFeature()]);
     final stranger = await startEngine('Stranger');

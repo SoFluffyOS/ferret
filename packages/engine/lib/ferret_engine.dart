@@ -33,8 +33,7 @@ class FerretEngine implements FeatureHost {
        _vpnFilter = vpnFilter,
        _vpnAddressSource = vpnAddressSource,
        _features = {for (final feature in features) feature.id: feature},
-       _discovery = discovery,
-       _roster = DeviceRoster(trustStore, identity.deviceId) {
+       _discovery = discovery {
     _vpnReacher = VpnReacher(attempt: _reachOverVpn, delays: vpnDelays);
   }
 
@@ -53,6 +52,11 @@ class FerretEngine implements FeatureHost {
         preferred + offset,
   ];
   static const _maxPendingHandshakes = 8;
+
+  /// Devices that aren't paired may only ask to pair: a few at a time, in
+  /// short messages, so a stranger on the network can't fill memory.
+  static const _maxStrangers = 4;
+  static const _strangerMessageLimit = 64 * 1024;
   static const _pairingTimeout = Duration(seconds: 30);
 
   /// How long a code comparison waits for each person to answer.
@@ -116,7 +120,11 @@ class FerretEngine implements FeatureHost {
   final Future<List<String>> Function() _vpnAddressSource;
   late final VpnReacher _vpnReacher;
   final Discovery _discovery;
-  final DeviceRoster _roster;
+  late final DeviceRoster _roster = DeviceRoster(
+    trustStore,
+    identity.deviceId,
+    beforeJoin: _inheritAccess,
+  );
   final StreamController<DeviceJoined> _joins = .broadcast();
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
@@ -142,6 +150,7 @@ class FerretEngine implements FeatureHost {
   final StreamController<Presence> _presenceChanges = .broadcast();
   bool _featuresStarted = false;
   int _pendingHandshakes = 0;
+  int _strangers = 0;
   bool _running = false;
   Future<void>? _reconnecting;
   bool _reconnectAgain = false;
@@ -1119,6 +1128,7 @@ class FerretEngine implements FeatureHost {
       _pendingHandshakes--;
     }
 
+    channel.messageLimit = _strangerMessageLimit;
     final remoteId = await DeviceIdentity.deviceIdFor(channel.remoteStaticKey);
     if (_isTrustedKey(remoteId, channel.remoteStaticKey)) {
       await _openSession(
@@ -1131,7 +1141,17 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
-    await _answerPairing(channel, remoteId, connection.remoteHost);
+    if (_strangers >= _maxStrangers) {
+      await channel.close();
+      return;
+    }
+
+    _strangers++;
+    try {
+      await _answerPairing(channel, remoteId, connection.remoteHost);
+    } finally {
+      _strangers--;
+    }
   }
 
   /// Pairs from a scanned offer. The proof shows this device saw the
@@ -1566,6 +1586,7 @@ class FerretEngine implements FeatureHost {
     required bool initiatedByLocal,
     required String host,
   }) async {
+    channel.messageLimit = SecureChannel.maxMessageLength;
     final initiatorId = switch (initiatedByLocal) {
       true => identity.deviceId,
       false => remoteId,
@@ -1715,6 +1736,12 @@ class FerretEngine implements FeatureHost {
       }
     }
   }
+
+  /// A device may vouch for others, never for more than it may use itself:
+  /// otherwise turning a feature off for it could be undone by a second
+  /// key it introduces.
+  Future<void> _inheritAccess(String deviceId, TrustedDevice introducer) =>
+      access.blockAll(deviceId, access.blockedFor(introducer.id));
 
   Future<void> _onIntroduce(Session session, Envelope envelope) async {
     final introduce = payloadOf(envelope, Introduce.new);

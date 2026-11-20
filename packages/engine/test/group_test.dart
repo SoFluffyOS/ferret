@@ -161,6 +161,25 @@ void main() {
     },
   );
 
+  test('a device it vouches for gets no more than the one vouching', () async {
+    final mac = await startEngine('MacBook Pro');
+    final pixel = await startEngine('Pixel 7');
+    final tablet = await startEngine('Tablet');
+    await pair(pixel, mac);
+    await _until(() => connected(mac, [pixel]));
+    await mac.access.setAllowed(
+      pixel.identity.deviceId,
+      'copy',
+      allowed: false,
+    );
+
+    await pair(tablet, pixel);
+    await _until(() => mac.trustStore.isTrusted(tablet.identity.deviceId));
+
+    expect(mac.access.isBlocked(tablet.identity.deviceId, 'copy'), isTrue);
+    expect(pixel.access.isBlocked(tablet.identity.deviceId, 'copy'), isFalse);
+  });
+
   test('removing a device from all of them reaches every one', () async {
     final mac = await startEngine('MacBook Pro');
     final pixel = await startEngine('Pixel 7');

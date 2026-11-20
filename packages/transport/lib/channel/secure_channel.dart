@@ -26,6 +26,10 @@ class SecureChannel {
   }
 
   static const maxMessageLength = 64 * 1024 * 1024;
+
+  /// The longest message this channel takes in before it closes. Starts at
+  /// [maxMessageLength]; a device that isn't trusted yet gets less.
+  int messageLimit = maxMessageLength;
   static const _segmentPayload =
       FrameReader.maxFrameLength - NoiseCrypto.tagLength - 1;
   static const _lastSegment = 0;
@@ -88,7 +92,11 @@ class SecureChannel {
   final FrameReader _reader;
   final NoiseCipherState _send;
   final NoiseCipherState _receive;
-  final StreamController<Uint8List> _messages = .new();
+  late final StreamController<Uint8List> _messages = .new(
+    onResume: _resumeReading,
+    onCancel: _resumeReading,
+  );
+  Completer<void>? _paused;
   final Completer<void> _done = .new();
   Future<void> _sendQueue = Future.value();
   bool _closed = false;
@@ -134,6 +142,7 @@ class SecureChannel {
     }
 
     _closed = true;
+    _resumeReading();
     await _sendQueue;
     await _reader.cancel();
     await _connection.close();
@@ -168,6 +177,7 @@ class SecureChannel {
     final message = BytesBuilder(copy: false);
     try {
       while (true) {
+        await _whilePaused();
         final frame = await _reader.next();
         if (frame == null) {
           break;
@@ -179,7 +189,7 @@ class SecureChannel {
         }
 
         message.add(Uint8List.sublistView(segment, 1));
-        if (message.length > maxMessageLength) {
+        if (message.length > messageLimit) {
           throw const FramingException('Message too long.');
         }
 
@@ -198,12 +208,30 @@ class SecureChannel {
     await _finish();
   }
 
+  /// Stops reading while the listener is paused, so a peer that sends
+  /// faster than this side handles fills the socket, not memory.
+  Future<void> _whilePaused() async {
+    while (_messages.hasListener && _messages.isPaused && !_closed) {
+      final paused = _paused ??= Completer<void>();
+      await paused.future;
+    }
+  }
+
+  void _resumeReading() {
+    final paused = _paused;
+    _paused = null;
+    if (paused != null && !paused.isCompleted) {
+      paused.complete();
+    }
+  }
+
   Future<void> _finish() async {
     if (_done.isCompleted) {
       return;
     }
 
     _done.complete();
-    await _messages.close();
+    // Its future waits for a listener to see the end, and there may be none.
+    unawaited(_messages.close());
   }
 }
