@@ -51,21 +51,22 @@ abstract final class LandingContent {
     (
       icon: 'windows',
       name: 'Windows',
-      how: 'Window and tray icon. Installs just for you, no admin.',
+      how:
+          'Window and tray icon, no admin. Not in the first release yet. It builds from source today.',
       guide: '/docs/getting-started/windows',
-      download: '${SiteLinks.latest}/Ferret-windows-x64-setup.exe',
-      downloadLabel: 'Download .exe',
+      download: null,
+      downloadLabel: null,
       command: null,
     ),
     (
       icon: 'linux',
       name: 'Linux',
       how:
-          'Window and tray icon. One line installs the AppImage, or get the Flatpak or .deb.',
+          'Window and tray icon. Flatpak, AppImage or .deb. Not in the first release yet. It builds from source today.',
       guide: '/docs/getting-started/linux',
       download: null,
       downloadLabel: null,
-      command: 'curl -fsSL ferret.sofluffy.io/install.sh | sh',
+      command: null,
     ),
   ];
 
@@ -106,8 +107,8 @@ abstract final class LandingContent {
       shot: 'popover-home',
       frame: ShotFrame.popover,
       alt:
-          'The Ferret menubar popover on a Mac: a file waiting, a call ringing '
-          'and your devices',
+          'The Ferret menubar popover on a Mac: your devices with Send files, '
+          'and the shelf at the bottom',
       width: 760,
       height: 1120,
       docs: '/docs/features/drop',
@@ -201,6 +202,23 @@ abstract final class LandingContent {
   ];
 
   static const extras = <FeatureExtra>[
+    (
+      icon: 'inbox',
+      title: 'A shelf on your Mac',
+      body:
+          'Put files, photos, text and links down for a moment at the bottom '
+          'of the popover. Drag them out again into any app, or onto a '
+          'device.',
+      docs: '/docs/features/shelf',
+    ),
+    (
+      icon: 'monitor',
+      title: 'A second display',
+      body:
+          'Your other Mac or your Android tablet becomes one more screen for '
+          'your Mac. In beta.',
+      docs: '/docs/features/second-display',
+    ),
     (
       icon: 'arrow-right-left',
       title: 'Continue where you left off',
@@ -300,6 +318,14 @@ abstract final class LandingContent {
       link: SiteLinks.iphoneLimits,
     ),
     (
+      question: 'Can my tablet be a second screen?',
+      answer:
+          'Yes. Your Android tablet, your phone or another Mac can be one '
+          'more display for your Mac: drag windows onto it, tap to click. It '
+          'is in beta, so tell me how it goes.',
+      link: '/docs/features/second-display',
+    ),
+    (
       question: 'Do I need root on Android?',
       answer:
           'No. Everything works without it. Shizuku or root only add extras, '
@@ -309,9 +335,9 @@ abstract final class LandingContent {
     (
       question: 'Where do I get it?',
       answer:
-          'Right here, under Get Ferret: Mac, Windows, Linux and Android, '
-          'always the newest release from GitHub. iPhone comes later; it '
-          'builds from source today.',
+          'Right here, under Get Ferret: Mac and Android, always the newest '
+          'release from GitHub. Windows, Linux and iPhone come later; they '
+          'build from source today.',
       link: '#download',
     ),
   ];
