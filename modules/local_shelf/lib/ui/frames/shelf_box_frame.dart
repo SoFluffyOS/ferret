@@ -17,8 +17,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// take it, the stack at the start to take everything, or a selection
 /// (⌘- or ⇧-click) to take that. Drop anything on the box to keep it.
 /// Under the pointer a tile shows ⓧ to take it off; right-click for
-/// Quick Look, Show in Finder, Copy and Remove; Space previews the
-/// selection. While previews are hidden here it shows only how many
+/// Quick Look, Show in Finder, Copy and Remove. From the keyboard the
+/// row is one Tab stop: the arrow keys move the selection (⇧ adds to it),
+/// Space or Return previews it, and Delete takes it off. While previews are hidden here it shows only how many
 /// things it holds.
 class ShelfBoxFrame extends StatefulWidget {
   const ShelfBoxFrame({
@@ -58,21 +59,67 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     with WidgetsBindingObserver {
   final ScrollController _scroll = ScrollController();
   final FocusNode _focus = FocusNode(debugLabel: 'shelf box');
+  final Map<String, GlobalKey> _tileKeys = {};
   Set<String>? _seen;
   bool _confirmsClear = false;
+
+  /// The tile the arrow keys move from: the last one clicked or reached.
+  String? _cursor;
+
+  /// The box took focus from a click, not from the keyboard: no ring
+  /// until a key is pressed.
+  bool _byPointer = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _focus.addListener(_focusChanged);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _focus.removeListener(_focusChanged);
     _scroll.dispose();
     _focus.dispose();
     super.dispose();
+  }
+
+  void _focusChanged() {
+    if (!_focus.hasFocus) {
+      _byPointer = false;
+    }
+
+    setState(() {});
+  }
+
+  /// The arrow keys move the selection along the row, ⇧ adds to it, and
+  /// the tile they land on scrolls into view.
+  void _step(ShelfViewModel viewModel, int by, {bool extend = false}) {
+    final id = viewModel.selectNext(_cursor, by, extend: extend);
+    if (id == null) {
+      return;
+    }
+
+    setState(() => _cursor = id);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final tile = _tileKeys[id]?.currentContext;
+      if (tile == null || !tile.mounted) {
+        return;
+      }
+
+      unawaited(
+        Scrollable.ensureVisible(
+          tile,
+          duration: const Duration(milliseconds: 120),
+          alignmentPolicy: switch (by < 0) {
+            true => .keepVisibleAtStart,
+            false => .keepVisibleAtEnd,
+          },
+        ),
+      );
+    });
   }
 
   /// The popover opening brings the app back: files may have moved since.
@@ -111,6 +158,7 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     }
 
     final ids = {for (final item in items) item.id};
+    _tileKeys.removeWhere((id, _) => !ids.contains(id));
     final seen = _seen ?? ids;
     final fresh = ids.difference(seen);
     _seen = ids;
@@ -146,9 +194,10 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
         isDropOver: isDropOver,
       ),
     };
+    final showsRing = _focus.hasFocus && !_byPointer;
     final shape = Corners.shape(
       ShelfBoxFrame.radius,
-      side: switch (isDropOver) {
+      side: switch (isDropOver || showsRing) {
         true => BorderSide(
           color: palette.accent,
           width: Spacing.d2,
@@ -185,6 +234,7 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
           child: Semantics(
             container: true,
             label: l10n.title,
+            hint: l10n.barEmpty,
             child: Column(
               mainAxisSize: switch (widget.expands) {
                 true => .max,
@@ -374,6 +424,7 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
               tooltip: l10n.dragAll(items.length),
               labelStyle: TextStyle(color: palette.link, fontWeight: .w600),
               onTap: () {
+                _byPointer = true;
                 _focus.requestFocus();
                 viewModel.selectAll();
               },
@@ -399,6 +450,20 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       bindings: {
         const SingleActivator(LogicalKeyboardKey.space): () =>
             unawaited(viewModel.previewSelected()),
+        const SingleActivator(LogicalKeyboardKey.enter): () =>
+            unawaited(viewModel.previewSelected()),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+            _step(viewModel, 1),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+            _step(viewModel, -1),
+        const SingleActivator(LogicalKeyboardKey.arrowRight, shift: true): () =>
+            _step(viewModel, 1, extend: true),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true): () =>
+            _step(viewModel, -1, extend: true),
+        const SingleActivator(LogicalKeyboardKey.home): () =>
+            _step(viewModel, -items.length),
+        const SingleActivator(LogicalKeyboardKey.end): () =>
+            _step(viewModel, items.length),
         const SingleActivator(LogicalKeyboardKey.keyA, meta: true):
             viewModel.selectAll,
         const SingleActivator(LogicalKeyboardKey.backspace): () =>
@@ -408,6 +473,13 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       },
       child: Focus(
         focusNode: _focus,
+        onKeyEvent: (_, _) {
+          if (_byPointer) {
+            setState(() => _byPointer = false);
+          }
+
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           behavior: .translucent,
           onTap: viewModel.clearSelection,
@@ -482,7 +554,7 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     final removeLabel = l10n.removeTooltip(name);
 
     return ContextMenuRegion(
-      key: ValueKey(item.id),
+      key: _tileKeys.putIfAbsent(item.id, GlobalKey.new),
       entries: [
         if (!isHidden && !item.isMissing)
           MenuEntry(
@@ -537,6 +609,8 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
         isSelected: isSelected,
         isFresh: isFresh,
         onTap: () {
+          _byPointer = true;
+          _cursor = item.id;
           _focus.requestFocus();
           final keyboard = HardwareKeyboard.instance;
           viewModel.select(

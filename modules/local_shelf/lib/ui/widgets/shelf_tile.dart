@@ -1,4 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -115,6 +116,12 @@ class _ShelfTileState extends State<ShelfTile> {
         button: true,
         selected: widget.isSelected,
         label: widget.tooltip,
+        customSemanticsActions: switch ((remove, widget.removeLabel)) {
+          (final remove?, final label?) => {
+            CustomSemanticsAction(label: label): remove,
+          },
+          _ => null,
+        },
         child: Stack(
           clipBehavior: .none,
           children: [

@@ -141,6 +141,34 @@ void main() {
     expect(dragOut.fileDrags.single, hasLength(2));
   });
 
+  testWidgets('the arrow keys move the selection along the row', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    await keep(tester, ['first', 'second', 'third']);
+    await tester.pumpWidget(boxApp());
+    final ids = [for (final item in viewModel.items) item.id];
+
+    await tester.tap(tile(viewModel.items.first.name));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(viewModel.selected, {ids[1]});
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.pump();
+    expect(viewModel.selected, {ids[1], ids[2]});
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.pump();
+    expect(viewModel.selected, {ids[0]});
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+    await settle(tester);
+    expect(viewModel.items.map((item) => item.id), [ids[1], ids[2]]);
+  });
+
   testWidgets('a selection made with ⌘-click drags out together', (
     tester,
   ) async {

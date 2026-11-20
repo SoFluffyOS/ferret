@@ -59,7 +59,9 @@ class ShelfStore {
   /// Looks again whether every file is still there: one of the person's
   /// own that moved shows as missing, and a kept file that is gone takes
   /// its item with it.
-  Future<void> refresh() => _serial(_check);
+  /// Says nothing when all is as it was, so opening the popover redraws
+  /// nothing.
+  Future<void> refresh() => _serial(() => _check(quietIfSame: true));
 
   /// Keeps [paths]: files and folders are pointed at where they are, and
   /// those in a temporary folder are copied in first.
@@ -332,9 +334,10 @@ class ShelfStore {
     await _deleteKept(removed);
   }
 
-  Future<void> _check() async {
+  Future<void> _check({bool quietIfSame = false}) async {
     final checked = <ShelfItem>[];
     final gone = <ShelfItem>[];
+    var isSame = true;
     for (final item in _items) {
       final exists = await FileSystemEntity.type(item.path) != .notFound;
       if (!exists && item.isCached) {
@@ -342,7 +345,17 @@ class ShelfStore {
         continue;
       }
 
-      checked.add(item.copyWith(isMissing: !exists));
+      if (item.isMissing == exists) {
+        isSame = false;
+        checked.add(item.copyWith(isMissing: !exists));
+        continue;
+      }
+
+      checked.add(item);
+    }
+
+    if (quietIfSame && isSame && gone.isEmpty) {
+      return;
     }
 
     _items = checked;

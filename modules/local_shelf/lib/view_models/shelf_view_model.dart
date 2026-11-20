@@ -207,6 +207,25 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
     notifyListeners();
   }
 
+  /// Selects the item [by] places from [from], as an arrow key does:
+  /// the first one when [from] is null or gone. With [extend], what is
+  /// selected stays. Returns the item it landed on.
+  String? selectNext(String? from, int by, {bool extend = false}) {
+    if (_items.isEmpty) {
+      return null;
+    }
+
+    final ids = [for (final item in _items) item.id];
+    final at = ids.indexOf(from ?? '');
+    final target = switch (at) {
+      -1 => 0,
+      _ => (at + by).clamp(0, ids.length - 1),
+    };
+    final id = ids[target];
+    select(id, extend: extend);
+    return id;
+  }
+
   void selectAll() {
     _selected = {for (final item in _items) item.id};
     notifyListeners();

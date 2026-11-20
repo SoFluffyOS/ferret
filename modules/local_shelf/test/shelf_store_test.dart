@@ -178,6 +178,20 @@ void main() {
     expect(store.items.single.isMissing, isTrue);
   });
 
+  test('a refresh that finds everything in place says nothing', () async {
+    final store = storeOf();
+    await store.load();
+    await store.keepText('note', isLink: false, source: .copied);
+    var changes = 0;
+    final listening = store.changes.listen((_) => changes++);
+
+    await store.refresh();
+    await pumpEventQueue();
+    await listening.cancel();
+
+    expect(changes, 0);
+  });
+
   test('removing deletes only what Ferret kept', () async {
     final store = storeOf();
     await store.load();
