@@ -8,7 +8,15 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 
 ## 📦 Install
 
-Pick the one that fits your system. All three install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager.
+The quickest way, one line, no sudo:
+
+```sh
+curl -fsSL ferret.sofluffy.io/install.sh | sh
+```
+
+It puts the newest AppImage in `~/.local/opt/ferret`, links `ferret` and `ferret-cli` in `~/.local/bin`, and adds Ferret to your app menu. Run it again to update. AppImages need FUSE 2: the script tells you the package if it's missing.
+
+Rather pick a package? All three install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager. Get them from the [latest release](https://github.com/simonpham/ferret/releases/latest).
 
 > 1. **Flatpak** (any distribution): `flatpak install --user ferret-0.1.0-x86_64.flatpak`
 > 2. **AppImage** (no install): `chmod +x Ferret-0.1.0-x86_64.AppImage`, then run it
