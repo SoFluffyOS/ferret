@@ -44,7 +44,7 @@ Suggestions go away after 5 minutes, and a newer one from the same device replac
 
 Some apps don't have a share button for what you're looking at. Ferret can read the current screen when you ask, like the system assistant does:
 
-1. In Ferret, open **Settings → Continue & media**, then tap **Open assistant settings**.
+1. In Ferret, open **Settings → Continue & media**, then tap **Assistant settings**.
 2. Pick **Ferret** as the **Digital assistant app**.
 3. On the same page, turn on **Use text from screen**.
 4. Now long-press Home (or swipe up from a bottom corner) on any screen. Ferret shows your devices. Tap one.

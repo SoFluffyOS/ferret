@@ -49,7 +49,10 @@ class PhoneSetupReady extends StatelessWidget {
         GroupedCell(
           child: Button(
             variant: .ghost,
-            label:
+            label: l10n.chooseApps,
+            tooltip:
+                '${l10n.chooseApps} · ${l10n.appsSummary(appFilter, appCount)}',
+            semanticLabel:
                 '${l10n.chooseApps} · ${l10n.appsSummary(appFilter, appCount)}',
             onPressed: onChooseApps,
           ),

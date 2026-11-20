@@ -36,6 +36,9 @@ class WakeLocalizationsEn extends WakeLocalizations {
   String get howToTurnOn => 'How to turn on Wake-on-LAN';
 
   @override
+  String get howToTurnOnShort => 'How to turn on';
+
+  @override
   String get healthReady => 'Can wake it from sleep';
 
   @override

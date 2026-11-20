@@ -260,7 +260,9 @@ class _Offline extends StatelessWidget {
             false => .ghost,
           },
           titleExpand: .shrink,
-          label: l10n.deviceWhyLong,
+          label: l10n.deviceWhyShort,
+          tooltip: l10n.deviceWhyLong,
+          semanticLabel: l10n.deviceWhyLong,
           onPressed: () => Navigator.of(context).push(
             ferretRoute<void>(DoctorPage(deviceId: status.device.id)),
           ),

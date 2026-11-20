@@ -2183,7 +2183,12 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get settingsControlTurnOn => pseudo(super.settingsControlTurnOn);
   @override
+  String get settingsControlTurnOnShort =>
+      pseudo(super.settingsControlTurnOnShort);
+  @override
   String get settingsControlOpen => pseudo(super.settingsControlOpen);
+  @override
+  String get settingsControlOpenShort => pseudo(super.settingsControlOpenShort);
   @override
   String get settingsControlAskAgain => pseudo(super.settingsControlAskAgain);
   @override
@@ -2194,6 +2199,8 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String get controlDisclosureOpen => pseudo(super.controlDisclosureOpen);
   @override
   String get notNow => pseudo(super.notNow);
+  @override
+  String get useCameraShort => pseudo(super.useCameraShort);
   @override
   String get cameraSavePicture => pseudo(super.cameraSavePicture);
   @override
@@ -2224,6 +2231,10 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String get permissionCameraAskOff => pseudo(super.permissionCameraAskOff);
   @override
   String get cameraTitle => pseudo(super.cameraTitle);
+  @override
+  String get displayUseShort => pseudo(super.displayUseShort);
+  @override
+  String get displayStopShort => pseudo(super.displayStopShort);
   @override
   String get displayScreenRecordingBody =>
       pseudo(super.displayScreenRecordingBody);
@@ -2734,6 +2745,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get openAccessSettings => pseudo(super.openAccessSettings);
   @override
+  String get openAccessShort => pseudo(super.openAccessShort);
+  @override
   String get openSettingsFailed => pseudo(super.openSettingsFailed);
   @override
   String get restrictedTitle => pseudo(super.restrictedTitle);
@@ -2827,6 +2840,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   String get permissionHold => pseudo(super.permissionHold);
   @override
   String get actionChooseApps => pseudo(super.actionChooseApps);
+  @override
+  String get actionChooseAppsShort => pseudo(super.actionChooseAppsShort);
   @override
   String get healthHiddenHere => pseudo(super.healthHiddenHere);
   @override
@@ -3013,6 +3028,8 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   @override
   String get tryAgain => pseudo(super.tryAgain);
   @override
+  String get askShort => pseudo(super.askShort);
+  @override
   String get unavailableBody => pseudo(super.unavailableBody);
   @override
   String get activityInFolder => pseudo(super.activityInFolder);
@@ -3183,6 +3200,8 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   @override
   String get notificationsOpenSettings =>
       pseudo(super.notificationsOpenSettings);
+  @override
+  String get notificationsOpenShort => pseudo(super.notificationsOpenShort);
   @override
   String get notificationsTurnOnNow => pseudo(super.notificationsTurnOnNow);
   @override
@@ -3434,11 +3453,15 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String get healthHostUnavailableHelp =>
       pseudo(super.healthHostUnavailableHelp);
   @override
+  String get lockShort => pseudo(super.lockShort);
+  @override
   String get lockTimedOutDetail => pseudo(super.lockTimedOutDetail);
   @override
   String get lockTurnedOffDetail => pseudo(super.lockTurnedOffDetail);
   @override
   String get permissionLockDetail => pseudo(super.permissionLockDetail);
+  @override
+  String get presentShort => pseudo(super.presentShort);
   @override
   String get presentTitle => pseudo(super.presentTitle);
   @override
@@ -3984,6 +4007,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get scanButton => pseudo(super.scanButton);
   @override
+  String get scanButtonShort => pseudo(super.scanButtonShort);
+  @override
   String get scanNotFerret => pseudo(super.scanNotFerret);
   @override
   String get offersTitle => pseudo(super.offersTitle);
@@ -4002,7 +4027,11 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get deviceWhyLong => pseudo(super.deviceWhyLong);
   @override
+  String get deviceWhyShort => pseudo(super.deviceWhyShort);
+  @override
   String get deviceDetails => pseudo(super.deviceDetails);
+  @override
+  String get deviceForgetShort => pseudo(super.deviceForgetShort);
   @override
   String get doctorTryAgainPrimary => pseudo(super.doctorTryAgainPrimary);
   @override
@@ -4033,6 +4062,11 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get joinedKeep => pseudo(super.joinedKeep);
   @override
   String get deviceForgetEverywhere => pseudo(super.deviceForgetEverywhere);
+  @override
+  String get deviceForgetEverywhereShort =>
+      pseudo(super.deviceForgetEverywhereShort);
+  @override
+  String get deviceForgetHereShort => pseudo(super.deviceForgetHereShort);
   @override
   String get settingsSharePairings => pseudo(super.settingsSharePairings);
   @override
@@ -4777,6 +4811,8 @@ class PseudoWakeLocalizations extends WakeLocalizationsEn {
   String get couldntSend => pseudo(super.couldntSend);
   @override
   String get howToTurnOn => pseudo(super.howToTurnOn);
+  @override
+  String get howToTurnOnShort => pseudo(super.howToTurnOnShort);
   @override
   String get healthReady => pseudo(super.healthReady);
   @override

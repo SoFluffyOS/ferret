@@ -126,7 +126,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
   String get settingsAssistantOff => 'Ferret isn\'t your assistant yet';
 
   @override
-  String get settingsAssistantOpen => 'Open assistant settings';
+  String get settingsAssistantOpen => 'Assistant settings';
 
   @override
   String get settingsShareHint =>

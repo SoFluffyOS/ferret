@@ -115,7 +115,8 @@ class WakeFeatureUi extends FeatureUi {
     void wake() => unawaited(viewModel.wake(deviceId));
     final help = FeatureAction(
       id: helpActionId,
-      label: l10n.howToTurnOn,
+      label: l10n.howToTurnOnShort,
+      tooltip: l10n.howToTurnOn,
       icon: LucideIcons.circleQuestionMark,
       onPressed: () => unawaited(_openHelp(feature, device.device)),
     );

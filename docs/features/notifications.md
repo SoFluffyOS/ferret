@@ -49,7 +49,7 @@ Too much? Open **Choose apps** and pick one of three:
 
 The list has a search box and **Select all** / **Select none**, and the apps that sent you something lately come first.
 
-Find **Choose apps** on the phone in **Settings → To your computer → Notifications**. Or on your computer: open the phone from Home and click **Choose notification apps**.
+Find **Choose apps** on the phone in **Settings → To your computer → Notifications**. Or on your computer: open the phone from Home and click **Choose apps**.
 
 Picked apps one by one in an earlier version? Ferret keeps your list as **Only these apps…**. Switch to **All apps** in one tap.
 

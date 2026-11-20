@@ -15,7 +15,7 @@ You need Windows 10 (version 1703 or later) or Windows 11, and a Bluetooth adapt
 
 1. Unlock the iPhone. Open **Settings → Bluetooth** and **keep that screen open**. The iPhone is only visible while it's showing.
 2. In Ferret, open **Settings → Other apps** and turn on **Connect an iPhone**.
-3. Tap **Open Bluetooth settings**. In Windows, choose **Add device → Bluetooth** and pick your iPhone.
+3. Tap **Bluetooth settings**. In Windows, choose **Add device → Bluetooth** and pick your iPhone.
 4. Both screens show a code. Same code? Confirm on both.
 5. Come back to Ferret. The iPhone is in the list. Tap **Use**.
 6. The iPhone asks to share notifications with the PC, right after pairing or when Ferret first connects. **Allow** it.

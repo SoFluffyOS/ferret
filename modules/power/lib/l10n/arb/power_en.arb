@@ -49,6 +49,10 @@
   "perkSameAsShizuku": "Everything Shizuku adds",
   "perkSurvivesRestart": "Keeps working after the phone restarts",
   "notificationsOpenSettings": "Open notification access",
+  "notificationsOpenShort": "Open settings",
+  "@notificationsOpenShort": {
+    "description": "Short button for notificationsOpenSettings; the full sentence is its tooltip"
+  },
   "notificationsTurnOnNow": "Turn on now",
   "notificationsRestricted": "If Android says the setting is restricted, open App info, tap the three dots and choose Allow restricted settings. Then try again.",
   "appInfo": "App info",

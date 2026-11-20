@@ -85,6 +85,14 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
               variant: .primary,
               color: palette.danger,
               label: switch (widget.sharedWithOthers) {
+                true => l10n.deviceForgetEverywhereShort,
+                false => l10n.deviceForgetShort,
+              },
+              tooltip: switch (widget.sharedWithOthers) {
+                true => l10n.deviceForgetEverywhere,
+                false => l10n.deviceForget(name),
+              },
+              semanticLabel: switch (widget.sharedWithOthers) {
                 true => l10n.deviceForgetEverywhere,
                 false => l10n.deviceForget(name),
               },
@@ -98,7 +106,9 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
               Spacing.v8,
               Button(
                 variant: .ghost,
-                label: l10n.deviceForgetHere(widget.here),
+                label: l10n.deviceForgetHereShort,
+                tooltip: l10n.deviceForgetHere(widget.here),
+                semanticLabel: l10n.deviceForgetHere(widget.here),
                 onPressed: () => widget.onForget(ForgetScope.here),
               ),
             ],

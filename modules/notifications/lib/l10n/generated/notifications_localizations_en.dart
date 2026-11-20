@@ -64,6 +64,9 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get openAccessSettings => 'Open notification access';
 
   @override
+  String get openAccessShort => 'Open settings';
+
+  @override
   String get openSettingsFailed =>
       'Couldn\'t open Settings. Open Settings → Notifications → Notification access yourself.';
 
@@ -355,6 +358,9 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get actionChooseApps => 'Choose notification apps';
+
+  @override
+  String get actionChooseAppsShort => 'Choose apps';
 
   @override
   String get healthHiddenHere => 'Turned off here';

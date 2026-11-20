@@ -139,7 +139,7 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   String get yourIphone => 'iPhone';
 
   @override
-  String get openBluetoothSettings => 'Open Bluetooth settings';
+  String get openBluetoothSettings => 'Bluetooth settings';
 
   @override
   String get openFailed =>

@@ -51,7 +51,9 @@ class PhoneSetupNeedsAccess extends StatelessWidget {
               Spacing.v12,
               Button(
                 variant: .primary,
-                label: l10n.openAccessSettings,
+                label: l10n.openAccessShort,
+                tooltip: l10n.openAccessSettings,
+                semanticLabel: l10n.openAccessSettings,
                 onPressed: viewModel.openAccessSettings,
               ),
             ],

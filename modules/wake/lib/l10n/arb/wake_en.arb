@@ -31,6 +31,10 @@
     "description": "Status line when no device could send the magic packet."
   },
   "howToTurnOn": "How to turn on Wake-on-LAN",
+  "howToTurnOnShort": "How to turn on",
+  "@howToTurnOnShort": {
+    "description": "Short button for howToTurnOn, next to Wake-on-LAN; the full sentence is its tooltip"
+  },
   "healthReady": "Can wake it from sleep",
   "healthWiredUnknown": "Can try to wake it over its cable",
   "healthWiredOff": "Wake-on-LAN is off on {name}",

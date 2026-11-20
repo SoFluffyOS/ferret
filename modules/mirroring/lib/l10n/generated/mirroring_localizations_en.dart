@@ -1340,7 +1340,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get controlStop => 'Stop control';
 
   @override
-  String get controlStopSharing => 'Stop sharing screen';
+  String get controlStopSharing => 'Stop sharing';
 
   @override
   String get noticeControlChannel => 'Control from a computer';
@@ -1364,7 +1364,13 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get settingsControlTurnOn => 'Turn on Ferret control…';
 
   @override
+  String get settingsControlTurnOnShort => 'Turn on control…';
+
+  @override
   String get settingsControlOpen => 'Accessibility settings';
+
+  @override
+  String get settingsControlOpenShort => 'Open settings';
 
   @override
   String settingsControlAlwaysCount(int count, String here) {
@@ -1416,6 +1422,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String useCamera(String device) {
     return 'Use $device\'s camera';
   }
+
+  @override
+  String get useCameraShort => 'Use camera';
 
   @override
   String cameraWindowTitle(String device) {
@@ -1667,6 +1676,12 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String displayStopUsing(String device) {
     return 'Stop using $device as a display';
   }
+
+  @override
+  String get displayUseShort => 'Use as display';
+
+  @override
+  String get displayStopShort => 'Stop display';
 
   @override
   String displayAskingTitle(String device) {

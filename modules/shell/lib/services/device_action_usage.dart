@@ -88,6 +88,7 @@ class DeviceActionUsage {
     return FeatureAction(
       id: actionId,
       label: action.label,
+      tooltip: action.tooltip,
       icon: action.icon,
       homeOrder: action.homeOrder,
       sectionId: action.sectionId,

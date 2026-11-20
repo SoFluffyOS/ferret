@@ -63,7 +63,9 @@ class WakeSettingsFrame extends StatelessWidget {
             child: Button(
               variant: .ghost,
               mainAxisSize: .min,
-              label: l10n.howToTurnOn,
+              label: l10n.howToTurnOnShort,
+              tooltip: l10n.howToTurnOn,
+              semanticLabel: l10n.howToTurnOn,
               onPressed: onHelp,
             ),
           ),

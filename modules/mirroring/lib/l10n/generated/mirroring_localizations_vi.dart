@@ -1321,7 +1321,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get controlStop => 'Dừng điều khiển';
 
   @override
-  String get controlStopSharing => 'Dừng chia sẻ màn hình';
+  String get controlStopSharing => 'Dừng chia sẻ';
 
   @override
   String get noticeControlChannel => 'Điều khiển từ máy tính';
@@ -1345,7 +1345,13 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get settingsControlTurnOn => 'Bật Điều khiển Ferret…';
 
   @override
+  String get settingsControlTurnOnShort => 'Bật điều khiển…';
+
+  @override
   String get settingsControlOpen => 'Cài đặt Hỗ trợ tiếp cận';
+
+  @override
+  String get settingsControlOpenShort => 'Mở cài đặt';
 
   @override
   String settingsControlAlwaysCount(int count, String here) {
@@ -1396,6 +1402,9 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String useCamera(String device) {
     return 'Dùng camera của $device';
   }
+
+  @override
+  String get useCameraShort => 'Dùng camera';
 
   @override
   String cameraWindowTitle(String device) {
@@ -1647,6 +1656,12 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String displayStopUsing(String device) {
     return 'Thôi dùng $device làm màn hình phụ';
   }
+
+  @override
+  String get displayUseShort => 'Làm màn hình phụ';
+
+  @override
+  String get displayStopShort => 'Dừng màn hình phụ';
 
   @override
   String displayAskingTitle(String device) {

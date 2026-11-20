@@ -82,7 +82,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    await tester.tap(find.text('Scan the code on your computer'));
+    await tester.tap(find.text('Scan the code'));
     expect(scans, 1);
     debugDefaultTargetPlatformOverride = null;
   });

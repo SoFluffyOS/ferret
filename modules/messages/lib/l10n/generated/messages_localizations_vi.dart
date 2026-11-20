@@ -355,7 +355,7 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
       'Kèm nút Trả lời, trừ khi cuộc trò chuyện đang mở sẵn ở đây.';
 
   @override
-  String get forgetHistory => 'Xoá tin nhắn đã lưu';
+  String get forgetHistory => 'Xoá tin đã lưu';
 
   @override
   String forgetDetail(String here) {

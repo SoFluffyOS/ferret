@@ -131,6 +131,9 @@ class PowerLocalizationsVi extends PowerLocalizations {
   String get notificationsOpenSettings => 'Mở quyền truy cập thông báo';
 
   @override
+  String get notificationsOpenShort => 'Mở cài đặt';
+
+  @override
   String get notificationsTurnOnNow => 'Bật ngay';
 
   @override

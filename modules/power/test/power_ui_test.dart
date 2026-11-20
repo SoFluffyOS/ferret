@@ -110,7 +110,7 @@ void main() {
       expect(checksIn(.shizuku), 2);
       expect(locksIn(.messagesAndCalls), 2);
       expect(locksIn(.root), 2);
-      expect(find.text('Open notification access'), findsNothing);
+      expect(find.text('Open settings'), findsNothing);
     });
 
     testWidgets('notification access opens the setting, with the fix for '
@@ -119,7 +119,7 @@ void main() {
       await tester.pumpWidget(framed(const PowerLadderFrame()));
 
       expect(find.textContaining('Allow restricted settings'), findsOneWidget);
-      await tapAndSettle(tester, 'Open notification access');
+      await tapAndSettle(tester, 'Open settings');
 
       expect(harness.phone.opened, ['notificationAccess']);
       expect(harness.phone.shellCalls, isEmpty);

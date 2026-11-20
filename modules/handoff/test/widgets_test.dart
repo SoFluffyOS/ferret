@@ -147,6 +147,6 @@ void main() {
 
     expect(find.text('Continue from any app'), findsOneWidget);
     expect(find.text("Ferret isn't your assistant yet"), findsOneWidget);
-    expect(find.text('Open assistant settings'), findsOneWidget);
+    expect(find.text('Assistant settings'), findsOneWidget);
   });
 }

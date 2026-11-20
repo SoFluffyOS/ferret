@@ -513,6 +513,10 @@
   "scanTitle": "Scan the code",
   "scanBody": "On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.",
   "scanButton": "Scan the code on your computer",
+  "scanButtonShort": "Scan the code",
+  "@scanButtonShort": {
+    "description": "Short button for scanButton; the full sentence is its tooltip"
+  },
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.",
   "offersTitle": "Do more",
   "@offersTitle": {
@@ -590,6 +594,10 @@
   },
   "settingsAddressHint": "If another device can't find this one: on it, open Add a device, then Other ways, and type this address.",
   "deviceWhyLong": "Why isn't it connecting?",
+  "deviceWhyShort": "Find out why",
+  "@deviceWhyShort": {
+    "description": "Short button for deviceWhyLong; the full question is its tooltip"
+  },
   "deviceWhatWorks": "What works with {device}",
   "@deviceWhatWorks": {
     "placeholders": {
@@ -606,6 +614,10 @@
         "type": "String"
       }
     }
+  },
+  "deviceForgetShort": "Forget",
+  "@deviceForgetShort": {
+    "description": "Short button for deviceForget; the full sentence with the device name is its tooltip"
   },
   "deviceForgetConfirmTitle": "Forget {device}?",
   "@deviceForgetConfirmTitle": {
@@ -809,6 +821,10 @@
     }
   },
   "deviceForgetEverywhere": "Remove from all my devices",
+  "deviceForgetEverywhereShort": "Remove everywhere",
+  "@deviceForgetEverywhereShort": {
+    "description": "Short button for deviceForgetEverywhere; the full sentence is its tooltip"
+  },
   "deviceForgetHere": "Forget on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only",
   "@deviceForgetHere": {
     "placeholders": {
@@ -816,6 +832,10 @@
         "type": "String"
       }
     }
+  },
+  "deviceForgetHereShort": "Forget here only",
+  "@deviceForgetHereShort": {
+    "description": "Short button for deviceForgetHere; the full sentence is its tooltip"
   },
   "settingsSharePairings": "Pair once for all my devices",
   "settingsSharePairingsBody": "A device you pair here joins all your devices. Remove it once and it leaves them all.",
@@ -1409,7 +1429,7 @@
     }
   },
   "accessTurnAllOff": "Turn everything off",
-  "accessTurnAllOn": "Turn everything back on",
+  "accessTurnAllOn": "Turn all back on",
   "accessForgetHint": "Turning everything off keeps {device} paired. To stop it connecting at all, forget it at the bottom of its page.",
   "@accessForgetHint": {
     "placeholders": {
@@ -1509,7 +1529,7 @@
       }
     }
   },
-  "replaceAction": "Replace the old one",
+  "replaceAction": "Replace old one",
   "replaceKeepBoth": "Keep both",
   "whatsNewLine": "Updated to Ferret {version}",
   "@whatsNewLine": {

@@ -38,7 +38,7 @@
   "settingsDndOff": "Quyền truy cập Không làm phiền đang tắt",
   "settingsDndHowTo": "Nếu không có quyền này, {here, select, tablet{máy tính bảng} other{điện thoại}} vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.",
   "settingsDndStillOff": "Vẫn đang tắt. Tìm Ferret trong danh sách, bật lên rồi quay lại.",
-  "settingsAllow": "Cho phép trong Cài đặt",
+  "settingsAllow": "Cho phép ở Cài đặt",
   "settingsOpenFailed": "Không mở được Cài đặt. Mở Cài đặt, rồi Thông báo, rồi Quyền truy cập Không làm phiền và bật Ferret.",
   "settingsFullScreenOff": "Màn hình đổ chuông không hiện được trên màn hình khoá",
   "settingsFullScreenHowTo": "Bạn vẫn nghe thấy chuông và nhận được thông báo. Cho phép thông báo toàn màn hình để thấy ngay nút Tìm thấy rồi.",

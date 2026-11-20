@@ -59,7 +59,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairTitle => 'Thêm thiết bị';
 
   @override
-  String get pairShowCode => 'Ghép đôi bằng mã QR';
+  String get pairShowCode => 'Ghép bằng mã QR';
 
   @override
   String get pairEnterCode => 'Cách khác';
@@ -749,6 +749,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get scanButton => 'Quét mã trên máy tính';
 
   @override
+  String get scanButtonShort => 'Quét mã';
+
+  @override
   String get scanNotFerret =>
       'Đây không phải mã của Ferret. Trên máy tính, mở Ferret và bấm +, rồi chọn Ghép đôi bằng mã QR.';
 
@@ -846,6 +849,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceWhyLong => 'Vì sao không kết nối được?';
 
   @override
+  String get deviceWhyShort => 'Xem vì sao';
+
+  @override
   String deviceWhatWorks(String device) {
     return 'Những gì dùng được với $device';
   }
@@ -857,6 +863,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String deviceForget(String device) {
     return 'Quên $device';
   }
+
+  @override
+  String get deviceForgetShort => 'Quên';
 
   @override
   String deviceForgetConfirmTitle(String device) {
@@ -1039,6 +1048,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceForgetEverywhere => 'Gỡ khỏi tất cả thiết bị của tôi';
 
   @override
+  String get deviceForgetEverywhereShort => 'Gỡ khỏi mọi máy';
+
+  @override
   String deviceForgetHere(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
@@ -1051,6 +1063,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
     );
     return 'Chỉ quên trên $_temp0';
   }
+
+  @override
+  String get deviceForgetHereShort => 'Chỉ quên ở đây';
 
   @override
   String get settingsSharePairings =>
@@ -1313,10 +1328,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Dành cho mạng che các thiết bị khỏi nhau. Địa chỉ nằm trong Cài đặt của Ferret, mục Nâng cao, trên thiết bị kia.';
 
   @override
-  String get otherPairLink => 'Ghép đôi bằng liên kết';
+  String get otherPairLink => 'Ghép bằng liên kết';
 
   @override
-  String get otherPairAddress => 'Ghép đôi bằng địa chỉ';
+  String get otherPairAddress => 'Ghép bằng địa chỉ';
 
   @override
   String get homeMore => 'Khác';

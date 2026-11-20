@@ -158,7 +158,9 @@ class PhotosGalleryFrame extends StatelessWidget {
     final askButton = Button(
       variant: .primary,
       mainAxisSize: .min,
-      label: l10n.askOnDevice(deviceName),
+      label: l10n.askShort,
+      tooltip: l10n.askOnDevice(deviceName),
+      semanticLabel: l10n.askOnDevice(deviceName),
       onPressed: () => unawaited(viewModel.askForAccess()),
     );
     final tryAgain = Button(

@@ -541,7 +541,8 @@ class MirroringFeatureUi extends FeatureUi {
       if (_canUseCamera(device))
         FeatureAction(
           id: 'mirroring.use_camera',
-          label: l10n.useCamera(device.device.name),
+          label: l10n.useCameraShort,
+          tooltip: l10n.useCamera(device.device.name),
           icon: LucideIcons.video,
           onPressed: () => unawaited(_openCamera(feature, device.device)),
         ),
@@ -561,6 +562,10 @@ class MirroringFeatureUi extends FeatureUi {
     return FeatureAction(
       id: 'mirroring.use_as_display',
       label: switch (lentHere) {
+        true => l10n.displayStopShort,
+        false => l10n.displayUseShort,
+      },
+      tooltip: switch (lentHere) {
         true => l10n.displayStopUsing(device.name),
         false => l10n.displayUse(device.name),
       },

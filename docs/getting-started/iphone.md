@@ -6,7 +6,7 @@ order: 5
 > **TL;DR**
 >
 > 1. Install Ferret on your iPhone and on your computer, and open both.
-> 2. On the iPhone, tap **Scan the code on your computer**. On the computer, click **Pair with a QR code**. Point the camera at it.
+> 2. On the iPhone, tap **Scan the code**. On the computer, click **Pair with a QR code**. Point the camera at it.
 > 3. Keep Ferret open on the iPhone while you use it with your computer.
 
 An iPhone plays by Apple's rules. Ferret follows them, and tells you where they bite instead of failing in silence.
@@ -24,7 +24,7 @@ An iPhone can't look for devices on the network by itself: Apple keeps that for 
 Scan instead:
 
 1. On your computer, open Ferret and click **+**, then **Pair with a QR code**.
-2. On the iPhone, open Ferret and tap **Scan the code on your computer**. The camera opens straight away.
+2. On the iPhone, open Ferret and tap **Scan the code**. The camera opens straight away.
 3. Point it at the code. That's it.
 
 The iPhone's **Camera** app works too: point it at the code and tap **Open in Ferret**.

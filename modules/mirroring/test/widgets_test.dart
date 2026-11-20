@@ -507,7 +507,7 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.text('Turn on Ferret control…'));
+      await tester.tap(find.text('Turn on control…'));
       await tester.pumpAndSettle();
       expect(
         find.textContaining('reads the text field you type into'),
@@ -1233,7 +1233,7 @@ void main() {
         ),
       );
 
-      expect(pixelActions.map((action) => action.label), [
+      expect(pixelActions.map((action) => action.fullLabel), [
         'Show screen',
         "Use Pixel's camera",
       ]);

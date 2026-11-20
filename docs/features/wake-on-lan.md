@@ -22,7 +22,7 @@ Ferret can wake it from any of your devices.
 - Tap it and Ferret sends a Wake-on-LAN "magic packet" from this device, to the computer's network and to its last address, on ports 9 and 7.
 - At the same time it asks every computer of yours that is on to send the packet too. That covers an iPhone, which can't send it, and a phone on another network.
 - The row says **Waking MacBook Pro… (up to a minute)**, then turns into **Connected** when the computer is back.
-- No answer after about 90 seconds? It says **Didn't wake**, with **Try again** and **How to turn on Wake-on-LAN**.
+- No answer after about 90 seconds? It says **Didn't wake**, with **Try again** and **How to turn on**.
 
 ## 🔌 Cable or Wi-Fi
 

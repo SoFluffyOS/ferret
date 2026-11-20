@@ -145,9 +145,9 @@ No cable on the desk? Click and type on your phone over Wi-Fi anyway.
 Your phone needs a way to take the clicks. Ferret picks it by itself:
 
 - **Power-ups** (Shizuku or root) when you turned them on. See [Shizuku](../android-modes/shizuku.md) and [Root](../android-modes/root-magisk.md).
-- Otherwise **Ferret control**, an accessibility service. It is OFF until you turn it on: on the phone, open Ferret, then **Settings → To your computer → Turn on Ferret control…**. Ferret says what it does, then opens Android's Accessibility settings. Tap **Ferret control** and turn it on.
+- Otherwise **Ferret control**, an accessibility service. It is OFF until you turn it on: on the phone, open Ferret, then **Settings → To your computer → Turn on control…**. Ferret says what it does, then opens Android's Accessibility settings. Tap **Ferret control** and turn it on.
 
-While it lasts, the phone says **Being controlled by MacBook Air** with **Stop control**, on Home and in a notice you can't swipe away. **Stop sharing screen** next to it ends the picture too. Control ends with the picture, always.
+While it lasts, the phone says **Being controlled by MacBook Air** with **Stop control**, on Home and in a notice you can't swipe away. **Stop sharing** next to it ends the picture too. Control ends with the picture, always.
 
 **Always** skips the question next time for that computer. Changed your mind? **Ask every time** in the same settings.
 

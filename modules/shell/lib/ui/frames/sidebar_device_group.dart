@@ -159,7 +159,7 @@ class SidebarDeviceGroup extends StatelessWidget {
       for (final action in actions)
         if (action.onPressed case final onPressed?)
           MenuEntry(
-            label: WindowCommands.buttonInMenu(l10n, action.label),
+            label: WindowCommands.buttonInMenu(l10n, action.fullLabel),
             icon: action.icon,
             onSelected: onPressed,
           ),

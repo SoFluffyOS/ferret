@@ -146,6 +146,12 @@ abstract class WakeLocalizations {
   /// **'How to turn on Wake-on-LAN'**
   String get howToTurnOn;
 
+  /// Short button for howToTurnOn, next to Wake-on-LAN; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'How to turn on'**
+  String get howToTurnOnShort;
+
   /// No description provided for @healthReady.
   ///
   /// In en, this message translates to:

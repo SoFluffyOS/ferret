@@ -755,6 +755,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get scanButton => 'Scan the code on your computer';
 
   @override
+  String get scanButtonShort => 'Scan the code';
+
+  @override
   String get scanNotFerret =>
       'That\'s not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.';
 
@@ -851,6 +854,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceWhyLong => 'Why isn\'t it connecting?';
 
   @override
+  String get deviceWhyShort => 'Find out why';
+
+  @override
   String deviceWhatWorks(String device) {
     return 'What works with $device';
   }
@@ -862,6 +868,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String deviceForget(String device) {
     return 'Forget $device';
   }
+
+  @override
+  String get deviceForgetShort => 'Forget';
 
   @override
   String deviceForgetConfirmTitle(String device) {
@@ -1044,6 +1053,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceForgetEverywhere => 'Remove from all my devices';
 
   @override
+  String get deviceForgetEverywhereShort => 'Remove everywhere';
+
+  @override
   String deviceForgetHere(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
@@ -1056,6 +1068,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
     );
     return 'Forget on $_temp0 only';
   }
+
+  @override
+  String get deviceForgetHereShort => 'Forget here only';
 
   @override
   String get settingsSharePairings => 'Pair once for all my devices';
@@ -1838,7 +1853,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get accessTurnAllOff => 'Turn everything off';
 
   @override
-  String get accessTurnAllOn => 'Turn everything back on';
+  String get accessTurnAllOn => 'Turn all back on';
 
   @override
   String accessForgetHint(String device) {
@@ -1971,7 +1986,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get replaceAction => 'Replace the old one';
+  String get replaceAction => 'Replace old one';
 
   @override
   String get replaceKeepBoth => 'Keep both';

@@ -59,8 +59,16 @@ class PowerLadderFrame extends StatelessWidget {
                       mainAxisSize: .min,
                       variant: .ghost,
                       label: switch (tier) {
-                        .standard => l10n.notificationsOpenSettings,
+                        .standard => l10n.notificationsOpenShort,
                         _ => l10n.notificationsTurnOnNow,
+                      },
+                      tooltip: switch (tier) {
+                        .standard => l10n.notificationsOpenSettings,
+                        _ => null,
+                      },
+                      semanticLabel: switch (tier) {
+                        .standard => l10n.notificationsOpenSettings,
+                        _ => null,
                       },
                       enable: !isBusy,
                       onPressed: viewModel.turnOnNotificationAccess,

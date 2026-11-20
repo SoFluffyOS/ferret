@@ -27,7 +27,7 @@ You don't have to climb it. Basic works on its own, and every step is optional.
 
 ## 🔔 Notification access
 
-Tap **Open notification access** on the ladder and turn Ferret on in the list.
+Tap **Open settings** on the ladder and turn Ferret on in the list.
 
 Android says the setting is restricted? That happens on Android 13 and later when an app was installed from an APK and not from a store.
 

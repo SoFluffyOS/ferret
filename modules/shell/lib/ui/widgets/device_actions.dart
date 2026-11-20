@@ -49,6 +49,8 @@ class DeviceActions extends StatelessWidget {
               false => .ghost,
             },
             label: action.label,
+            tooltip: action.tooltip,
+            semanticLabel: action.tooltip,
             icon: Icon(action.icon, size: Spacing.d16),
             onPressed: action.onPressed,
           ),
@@ -63,7 +65,7 @@ class DeviceActions extends StatelessWidget {
                   MenuEntry(
                     label: WindowCommands.buttonInMenu(
                       context.shellL10n,
-                      action.label,
+                      action.fullLabel,
                     ),
                     icon: action.icon,
                     onSelected: onPressed,

@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. On your Mac, open your other Mac (or your Android tablet or phone) in Ferret and click **Use MacBook Air as a display**.
+> 1. On your Mac, open your other Mac (or your Android tablet or phone) in Ferret and click **Use as display**.
 > 2. On the other device, tap **Allow**.
 > 3. Drag a window onto it. That's it.
 
@@ -14,7 +14,7 @@ Ferret turns it into a real extra display for your Mac. Not a mirror: macOS sees
 
 On the Mac whose desktop you want to extend:
 
-- Open the other device in Ferret and click **Use MacBook Air as a display**. It may sit behind **More**.
+- Open the other device in Ferret and click **Use as display**. It may sit behind **More**, where it reads **Use MacBook Air as a display**.
 - The first time, macOS asks to let Ferret record the screen. Ferret only ever captures the extra display it makes, nothing else. Turn Ferret on in **Privacy & Security → Screen Recording**, then quit and open Ferret again.
 - Allow Ferret in **Accessibility** too, so clicks on the other device land where you point.
 

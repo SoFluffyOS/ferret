@@ -34,6 +34,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining("That's not a Ferret code."), findsOneWidget);
-    expect(find.text('Scan the code on your computer'), findsOneWidget);
+    expect(find.text('Scan the code'), findsOneWidget);
   });
 }

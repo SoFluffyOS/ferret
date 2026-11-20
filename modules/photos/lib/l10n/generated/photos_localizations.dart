@@ -260,6 +260,12 @@ abstract class PhotosLocalizations {
   /// **'Ask on {device}'**
   String askOnDevice(String device);
 
+  /// Short button for askOnDevice; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for access'**
+  String get askShort;
+
   /// No description provided for @askedOnDevice.
   ///
   /// In en, this message translates to:

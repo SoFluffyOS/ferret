@@ -64,6 +64,9 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   String get openAccessSettings => 'Mở quyền truy cập thông báo';
 
   @override
+  String get openAccessShort => 'Mở cài đặt';
+
+  @override
   String get openSettingsFailed =>
       'Không mở được Cài đặt. Hãy tự mở Cài đặt → Thông báo → Quyền truy cập thông báo.';
 
@@ -86,7 +89,7 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
       'Quay lại và mở quyền truy cập thông báo lần nữa.';
 
   @override
-  String get openAppInfo => 'Mở Thông tin ứng dụng';
+  String get openAppInfo => 'Thông tin ứng dụng';
 
   @override
   String get skipWhileUsing => 'Tạm dừng khi tôi đang dùng điện thoại';
@@ -350,6 +353,9 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
 
   @override
   String get actionChooseApps => 'Chọn ứng dụng gửi thông báo';
+
+  @override
+  String get actionChooseAppsShort => 'Chọn ứng dụng';
 
   @override
   String get healthHiddenHere => 'Đã tắt tại đây';

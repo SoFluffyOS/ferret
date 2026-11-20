@@ -57,6 +57,14 @@ class ControlSettingsFrame extends StatelessWidget {
                       },
                       mainAxisSize: .min,
                       label: switch (path) {
+                        .none => l10n.settingsControlTurnOnShort,
+                        _ => l10n.settingsControlOpenShort,
+                      },
+                      tooltip: switch (path) {
+                        .none => l10n.settingsControlTurnOn,
+                        _ => l10n.settingsControlOpen,
+                      },
+                      semanticLabel: switch (path) {
                         .none => l10n.settingsControlTurnOn,
                         _ => l10n.settingsControlOpen,
                       },

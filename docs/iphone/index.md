@@ -63,7 +63,7 @@ Ferret says what's wrong, on the home card and in Settings:
 
 | Ferret says | What to do |
 |---|---|
-| **Bluetooth is off** | Turn it on. **Open Bluetooth settings** takes you there |
+| **Bluetooth is off** | Turn it on. **Bluetooth settings** takes you there |
 | **Pick your iPhone** | Pair it first, then choose it. See the page for your system |
 | **iPhone isn't sharing with this computer** | On the iPhone: **Settings → Bluetooth → ⓘ** next to your computer → turn on **Share System Notifications** |
 | **iPhone is out of reach** | Nothing. Ferret reconnects when it's back |

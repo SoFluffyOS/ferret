@@ -95,7 +95,7 @@ void main() {
       expect(find.text("Didn't wake"), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
 
-      await tester.tap(find.text('How to turn on Wake-on-LAN'));
+      await tester.tap(find.text('How to turn on'));
       await tester.pumpAndSettle();
       expect(find.byType(WakeHelpPage), findsOneWidget);
       expect(find.text('What MacBook Pro told Ferret'), findsOneWidget);

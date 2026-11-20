@@ -48,8 +48,8 @@ Copy something on any of them and it reaches all the others.
 
 Removing works the same way. Open a device, tap **Forget Pixel 7** at the bottom, and choose:
 
-- **Remove from all my devices**: every device forgets it.
-- **Forget on this Mac only**: just this one does.
+- **Remove everywhere**: every device forgets it.
+- **Forget here only**: just this one does.
 
 The question opens right there on the page. Changed your mind? **Cancel**.
 
@@ -82,7 +82,7 @@ Still nothing? Two more rows wait below.
 ### 📷 Pair with a QR code
 
 1. On your computer, open **+**, then **Pair with a QR code**. The code appears.
-2. On your phone, open **+**, then **Pair with a QR code** (on an iPhone: **Scan the code on your computer**). The camera opens: point it at the code.
+2. On your phone, open **+**, then **Pair with a QR code** (on an iPhone: **Scan the code**). The camera opens: point it at the code.
 
 Nothing paired yet on the phone? The button on its home screen opens the camera straight away.
 

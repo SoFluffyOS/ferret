@@ -167,6 +167,12 @@ abstract class NotificationsLocalizations {
   /// **'Open notification access'**
   String get openAccessSettings;
 
+  /// Short button for openAccessSettings; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openAccessShort;
+
   /// No description provided for @openSettingsFailed.
   ///
   /// In en, this message translates to:
@@ -568,6 +574,12 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Choose notification apps'**
   String get actionChooseApps;
+
+  /// Short button for actionChooseApps; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Choose apps'**
+  String get actionChooseAppsShort;
 
   /// Device page, next to Notifications, when this computer doesn't show that phone's notifications.
   ///

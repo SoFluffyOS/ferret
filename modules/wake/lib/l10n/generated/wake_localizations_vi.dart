@@ -36,6 +36,9 @@ class WakeLocalizationsVi extends WakeLocalizations {
   String get howToTurnOn => 'Cách bật Wake-on-LAN';
 
   @override
+  String get howToTurnOnShort => 'Cách bật';
+
+  @override
   String get healthReady => 'Có thể đánh thức khi đang ngủ';
 
   @override

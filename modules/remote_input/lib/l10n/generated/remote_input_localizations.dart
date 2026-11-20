@@ -851,6 +851,12 @@ abstract class RemoteInputLocalizations {
   /// **'Lock {device}'**
   String lockDevice(String device);
 
+  /// Short button for lockDevice; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Lock'**
+  String get lockShort;
+
   /// No description provided for @lockAsking.
   ///
   /// In en, this message translates to:
@@ -928,6 +934,12 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Present on {device}'**
   String presentOn(String device);
+
+  /// Short button for presentOn; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get presentShort;
 
   /// No description provided for @presentTitle.
   ///

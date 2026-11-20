@@ -9,7 +9,7 @@ When a paired device won't connect, Ferret tells you why. No guessing.
 
 ## How to open it
 
-Tap **Fix** next to a device that isn't connected, or open the device and tap **Why isn't it connecting?**.
+Tap **Fix** next to a device that isn't connected, or open the device and tap **Find out why**.
 
 The device you want to pair doesn't show up at all? **+** → **Check my network** runs the first two checks for this device alone. It's under **Settings → Advanced** too.
 

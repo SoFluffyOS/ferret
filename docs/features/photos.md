@@ -53,7 +53,7 @@ Take a screenshot on the phone and it shows up on the computer a second later. A
 
 ## 🙋 "Ask on Pixel 7"
 
-Opened **Photos** and the phone doesn't share with this computer yet? Click **Ask on Pixel 7**.
+Opened **Photos** and the phone doesn't share with this computer yet? Click **Ask for access**.
 
 The phone shows **MacBook wants to see your photos**. Tap it, and you get the switch for that computer. Nothing changes until you flip it.
 

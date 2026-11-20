@@ -213,7 +213,7 @@ void main() {
 
       expect(find.text('Bluetooth is off'), findsOneWidget);
 
-      await tester.tap(find.text('Open Bluetooth settings'));
+      await tester.tap(find.text('Bluetooth settings'));
       await tester.pump();
       expect(rig.transport.settingsOpened, 1);
 
@@ -446,7 +446,7 @@ void main() {
       await show(tester);
       await rig.feature.stop();
 
-      await tester.tap(find.text('Open Bluetooth settings'));
+      await tester.tap(find.text('Bluetooth settings'));
       await tester.pump();
 
       expect(find.textContaining("Couldn't open"), findsOneWidget);

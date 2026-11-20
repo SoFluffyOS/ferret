@@ -118,7 +118,7 @@ void main() {
 
       expect(find.text('Notification access is on'), findsOneWidget);
       expect(find.text("Pause while I'm using the phone"), findsOneWidget);
-      expect(find.text('Choose apps · All apps'), findsOneWidget);
+      expect(_buttonSaying('Choose apps · All apps'), findsOneWidget);
     });
 
     testWidgets('picks saved before filters still read as only these', (
@@ -129,7 +129,7 @@ void main() {
       await settings.set(MirrorPreferences.allowedAppsKey, [signal, game]);
       await pumpSetup(tester);
 
-      expect(find.text('Choose apps · 2 apps'), findsOneWidget);
+      expect(_buttonSaying('Choose apps · 2 apps'), findsOneWidget);
     });
   });
 
@@ -470,3 +470,9 @@ void main() {
     });
   });
 }
+
+/// The button whose whole label, said by screen readers and shown on
+/// hover, is [label].
+Finder _buttonSaying(String label) => find.byWidgetPredicate(
+  (widget) => widget is Button && widget.semanticLabel == label,
+);

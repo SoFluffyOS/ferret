@@ -296,7 +296,7 @@ void main() {
         laptopUi
             .deviceActions(context, laptopContext, device)
             .map((action) => action.label),
-        ['Choose notification apps'],
+        ['Choose apps'],
       );
 
       await tester.runAsync(() async {

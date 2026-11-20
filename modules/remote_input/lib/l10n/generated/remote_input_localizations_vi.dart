@@ -723,6 +723,9 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
+  String get lockShort => 'Khoá';
+
+  @override
   String lockAsking(String device) {
     return 'Đang khoá $device…';
   }
@@ -790,6 +793,9 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String presentOn(String device) {
     return 'Trình chiếu trên $device';
   }
+
+  @override
+  String get presentShort => 'Trình chiếu';
 
   @override
   String get presentTitle => 'Trình chiếu';

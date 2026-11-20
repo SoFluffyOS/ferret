@@ -130,6 +130,9 @@ class PowerLocalizationsEn extends PowerLocalizations {
   String get notificationsOpenSettings => 'Open notification access';
 
   @override
+  String get notificationsOpenShort => 'Open settings';
+
+  @override
   String get notificationsTurnOnNow => 'Turn on now';
 
   @override

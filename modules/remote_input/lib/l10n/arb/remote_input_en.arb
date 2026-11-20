@@ -569,6 +569,10 @@
       }
     }
   },
+  "lockShort": "Lock",
+  "@lockShort": {
+    "description": "Short button for lockDevice; the full sentence with the device name is its tooltip"
+  },
   "lockAsking": "Locking {device}…",
   "@lockAsking": {
     "placeholders": {
@@ -652,6 +656,10 @@
         "type": "String"
       }
     }
+  },
+  "presentShort": "Present",
+  "@presentShort": {
+    "description": "Short button for presentOn; the full sentence with the device name is its tooltip"
   },
   "presentTitle": "Presentation",
   "presentNext": "Next",

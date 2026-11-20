@@ -129,6 +129,9 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
+  String get askShort => 'Ask for access';
+
+  @override
   String askedOnDevice(String device) {
     return 'A notice is waiting on $device.';
   }

@@ -33,7 +33,7 @@ It stops as soon as the iPhone is connected, and when you turn **Connect an iPho
 
 - Check the switch on the iPhone: **Settings → Bluetooth → ⓘ** next to your computer → **Share System Notifications**.
 - Bluetooth must be powered on: `bluetoothctl power on`, or your desktop's toggle.
-- **Open Bluetooth settings** in Ferret tries GNOME Settings, KDE System Settings, then Blueman.
+- **Bluetooth settings** in Ferret tries GNOME Settings, KDE System Settings, then Blueman.
 - After a suspend, give it up to half a minute.
 
 This part of Ferret is tested against a simulated BlueZ and still needs testing on more distributions. If it doesn't connect on yours, tell us the distribution and `bluetoothctl --version`.

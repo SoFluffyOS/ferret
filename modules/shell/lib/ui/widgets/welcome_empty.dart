@@ -119,8 +119,12 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
           Button(
             variant: .primary,
             label: switch (isIphone) {
-              true => l10n.scanButton,
+              true => l10n.scanButtonShort,
               false => l10n.pairShowCode,
+            },
+            semanticLabel: switch (isIphone) {
+              true => l10n.scanButton,
+              false => null,
             },
             mainAxisSize: .min,
             titleExpand: .shrink,

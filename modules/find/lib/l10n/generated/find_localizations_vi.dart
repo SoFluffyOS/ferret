@@ -169,7 +169,7 @@ class FindLocalizationsVi extends FindLocalizations {
       'Vẫn đang tắt. Tìm Ferret trong danh sách, bật lên rồi quay lại.';
 
   @override
-  String get settingsAllow => 'Cho phép trong Cài đặt';
+  String get settingsAllow => 'Cho phép ở Cài đặt';
 
   @override
   String get settingsOpenFailed =>

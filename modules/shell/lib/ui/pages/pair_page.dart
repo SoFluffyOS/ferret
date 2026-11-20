@@ -70,7 +70,7 @@ class _PairPageState extends State<PairPage> {
             if (isIphone) ...[
               NearbyNotice(
                 body: l10n.pairIphoneBody,
-                actionLabel: l10n.scanButton,
+                actionLabel: l10n.scanButtonShort,
                 onAction: () => unawaited(_pairWithQr()),
                 isPrimary: true,
               ),

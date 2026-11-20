@@ -100,7 +100,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(viewModel.allOff, isTrue);
-    expect(find.text('Turn everything back on'), findsOneWidget);
+    expect(find.text('Turn all back on'), findsOneWidget);
   });
 }
 

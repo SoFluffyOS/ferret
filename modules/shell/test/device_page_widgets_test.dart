@@ -94,9 +94,9 @@ void main() {
     await tester.pump();
 
     expect(find.text('Forget Pixel 9?'), findsOneWidget);
-    expect(find.text('Remove from all my devices'), findsNothing);
+    expect(find.text('Remove everywhere'), findsNothing);
 
-    await tester.tap(find.text('Forget Pixel 9'));
+    await tester.tap(find.text('Forget'));
 
     expect(scopes, [ForgetScope.here]);
   });
@@ -118,8 +118,8 @@ void main() {
 
     await tester.tap(find.text('Forget Pixel 9'));
     await tester.pump();
-    await tester.tap(find.text('Remove from all my devices'));
-    await tester.tap(find.text('Forget on this Mac only'));
+    await tester.tap(find.text('Remove everywhere'));
+    await tester.tap(find.text('Forget here only'));
 
     expect(scopes, [ForgetScope.everywhere, ForgetScope.here]);
   });

@@ -35,7 +35,7 @@ Tap a device on Home. Its page answers three questions.
 
 **Details** holds the device ID, its address and the day you paired. **Forget Pixel 9** is at the bottom. See [Pair your devices](pairing.md).
 
-Not connected? The page says when it was last seen and offers **Why isn't it connecting?**. See [Fix connection](../features/connection-doctor.md).
+Not connected? The page says when it was last seen and offers **Find out why**. See [Fix connection](../features/connection-doctor.md).
 
 ## ⚙️ Settings
 

@@ -1088,6 +1088,12 @@ abstract class ShellLocalizations {
   /// **'Scan the code on your computer'**
   String get scanButton;
 
+  /// Short button for scanButton; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code'**
+  String get scanButtonShort;
+
   /// No description provided for @scanNotFerret.
   ///
   /// In en, this message translates to:
@@ -1184,6 +1190,12 @@ abstract class ShellLocalizations {
   /// **'Why isn\'t it connecting?'**
   String get deviceWhyLong;
 
+  /// Short button for deviceWhyLong; the full question is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Find out why'**
+  String get deviceWhyShort;
+
   /// No description provided for @deviceWhatWorks.
   ///
   /// In en, this message translates to:
@@ -1201,6 +1213,12 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Forget {device}'**
   String deviceForget(String device);
+
+  /// Short button for deviceForget; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get deviceForgetShort;
 
   /// No description provided for @deviceForgetConfirmTitle.
   ///
@@ -1418,11 +1436,23 @@ abstract class ShellLocalizations {
   /// **'Remove from all my devices'**
   String get deviceForgetEverywhere;
 
+  /// Short button for deviceForgetEverywhere; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Remove everywhere'**
+  String get deviceForgetEverywhereShort;
+
   /// No description provided for @deviceForgetHere.
   ///
   /// In en, this message translates to:
   /// **'Forget on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only'**
   String deviceForgetHere(String here);
+
+  /// Short button for deviceForgetHere; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Forget here only'**
+  String get deviceForgetHereShort;
 
   /// No description provided for @settingsSharePairings.
   ///
@@ -2513,7 +2543,7 @@ abstract class ShellLocalizations {
   /// No description provided for @accessTurnAllOn.
   ///
   /// In en, this message translates to:
-  /// **'Turn everything back on'**
+  /// **'Turn all back on'**
   String get accessTurnAllOn;
 
   /// No description provided for @accessForgetHint.
@@ -2657,7 +2687,7 @@ abstract class ShellLocalizations {
   /// No description provided for @replaceAction.
   ///
   /// In en, this message translates to:
-  /// **'Replace the old one'**
+  /// **'Replace old one'**
   String get replaceAction;
 
   /// No description provided for @replaceKeepBoth.

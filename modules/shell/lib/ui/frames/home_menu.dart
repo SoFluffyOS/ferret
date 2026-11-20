@@ -64,7 +64,7 @@ class HomeMenu extends StatelessWidget {
         ],
         for (final (index, action) in featureActions.indexed)
           MenuEntry(
-            label: WindowCommands.buttonInMenu(l10n, action.label),
+            label: WindowCommands.buttonInMenu(l10n, action.fullLabel),
             icon: action.icon,
             startsGroup: index == 0,
             onSelected: action.onPressed ?? () {},

@@ -236,10 +236,10 @@ class CallsLocalizationsVi extends CallsLocalizations {
   String get allow => 'Cho phép truy cập';
 
   @override
-  String get allowRest => 'Cho phép phần còn lại';
+  String get allowRest => 'Cho phép nốt';
 
   @override
-  String get openSettings => 'Mở cài đặt ứng dụng';
+  String get openSettings => 'Cài đặt ứng dụng';
 
   @override
   String get openSettingsFailed =>

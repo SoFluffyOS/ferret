@@ -215,7 +215,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @openBluetoothSettings.
   ///
   /// In en, this message translates to:
-  /// **'Open Bluetooth settings'**
+  /// **'Bluetooth settings'**
   String get openBluetoothSettings;
 
   /// No description provided for @openFailed.

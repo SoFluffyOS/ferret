@@ -724,6 +724,9 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
+  String get lockShort => 'Lock';
+
+  @override
   String lockAsking(String device) {
     return 'Locking $device…';
   }
@@ -791,6 +794,9 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String presentOn(String device) {
     return 'Present on $device';
   }
+
+  @override
+  String get presentShort => 'Present';
 
   @override
   String get presentTitle => 'Presentation';

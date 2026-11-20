@@ -112,7 +112,9 @@ class _ScanAgain extends StatelessWidget {
       padding: EdgeInsets.only(top: Spacing.d12),
       child: Button(
         variant: .primary,
-        label: context.shellL10n.scanButton,
+        label: context.shellL10n.scanButtonShort,
+        tooltip: context.shellL10n.scanButton,
+        semanticLabel: context.shellL10n.scanButton,
         onPressed: () => unawaited(_scan(context)),
       ),
     );

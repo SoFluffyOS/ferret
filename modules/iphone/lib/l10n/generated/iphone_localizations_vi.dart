@@ -131,7 +131,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   String get yourIphone => 'iPhone';
 
   @override
-  String get openBluetoothSettings => 'Mở cài đặt Bluetooth';
+  String get openBluetoothSettings => 'Cài đặt Bluetooth';
 
   @override
   String get openFailed =>

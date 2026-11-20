@@ -28,6 +28,10 @@
   "accessStillOff": "Still off. Turn on Ferret on the Notification access screen, then come back.",
   "accessHowTo": "On the next screen, turn on Ferret, then come back here.",
   "openAccessSettings": "Open notification access",
+  "openAccessShort": "Open settings",
+  "@openAccessShort": {
+    "description": "Short button for openAccessSettings; the full sentence is its tooltip"
+  },
   "openSettingsFailed": "Couldn't open Settings. Open Settings → Notifications → Notification access yourself.",
   "restrictedTitle": "Android blocked this setting",
   "restrictedBody": "Android blocks it for apps installed outside an app store. Allow it once:",
@@ -263,6 +267,10 @@
     "description": "Switch on a phone's page, under \"<phone> may\", after \"Show its notifications here\"."
   },
   "actionChooseApps": "Choose notification apps",
+  "actionChooseAppsShort": "Choose apps",
+  "@actionChooseAppsShort": {
+    "description": "Short button for actionChooseApps; the full sentence is its tooltip"
+  },
   "healthHiddenHere": "Turned off here",
   "@healthHiddenHere": {
     "description": "Device page, next to Notifications, when this computer doesn't show that phone's notifications."

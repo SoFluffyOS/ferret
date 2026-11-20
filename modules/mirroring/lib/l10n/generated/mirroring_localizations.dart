@@ -1754,7 +1754,7 @@ abstract class MirroringLocalizations {
   /// While a computer controls the phone: ends both control and showing the screen.
   ///
   /// In en, this message translates to:
-  /// **'Stop sharing screen'**
+  /// **'Stop sharing'**
   String get controlStopSharing;
 
   /// Android notification channel name
@@ -1793,11 +1793,23 @@ abstract class MirroringLocalizations {
   /// **'Turn on Ferret control…'**
   String get settingsControlTurnOn;
 
+  /// Short button for settingsControlTurnOn; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on control…'**
+  String get settingsControlTurnOnShort;
+
   /// No description provided for @settingsControlOpen.
   ///
   /// In en, this message translates to:
   /// **'Accessibility settings'**
   String get settingsControlOpen;
+
+  /// Short button for settingsControlOpen; the full name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get settingsControlOpenShort;
 
   /// No description provided for @settingsControlAlwaysCount.
   ///
@@ -1846,6 +1858,12 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Use {device}\'s camera'**
   String useCamera(String device);
+
+  /// Short button for useCamera; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Use camera'**
+  String get useCameraShort;
 
   /// No description provided for @cameraWindowTitle.
   ///
@@ -2109,6 +2127,18 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Stop using {device} as a display'**
   String displayStopUsing(String device);
+
+  /// Short button for displayUse; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Use as display'**
+  String get displayUseShort;
+
+  /// Short button for displayStopUsing; the full sentence with the device name is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Stop display'**
+  String get displayStopShort;
 
   /// No description provided for @displayAskingTitle.
   ///

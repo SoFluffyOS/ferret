@@ -20,7 +20,7 @@
   "problemNotSharedTitle": "{device} chưa chia sẻ với {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}",
   "problemNotSharedBody": "Trên {device}: Cài đặt → Bluetooth, nhấn ⓘ bên cạnh {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}, rồi bật Chia sẻ thông báo hệ thống. Không thấy trong danh sách? Hãy ghép đôi lại.",
   "yourIphone": "iPhone",
-  "openBluetoothSettings": "Mở cài đặt Bluetooth",
+  "openBluetoothSettings": "Cài đặt Bluetooth",
   "openFailed": "Không mở được cài đặt Bluetooth. Hãy mở từ cài đặt hệ thống.",
   "setUp": "Thiết lập",
   "tryAgain": "Thử lại",

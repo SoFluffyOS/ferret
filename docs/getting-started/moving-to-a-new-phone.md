@@ -4,7 +4,7 @@ New phone, or the old one was reset? Ferret on it has a new identity, so your co
 
 > TL;DR
 > 1. Install Ferret on the new phone and pair it with any ONE of your devices.
-> 2. Home asks **Is this your new Pixel 7?** Tap **Replace the old one**.
+> 2. Home asks **Is this your new Pixel 7?** Tap **Replace old one**.
 > 3. That's it. Your other devices follow by themselves.
 
 ## 📱 Pair the new phone
@@ -18,7 +18,7 @@ Right after pairing, Home shows a card:
 > **Is this your new Pixel 7?**
 > Pixel 7 (3F2A) hasn't been seen since. Replace it, and it goes from all your devices, while this one keeps its name, pin and what it may use.
 
-Tap **Replace the old one**. The new phone takes over:
+Tap **Replace old one**. The new phone takes over:
 
 - 🏷️ the name you gave the old one on this device, such as **My Pixel**
 - 📌 its place at the top, if you pinned it

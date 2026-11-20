@@ -1280,7 +1280,7 @@
   },
   "controlledBody": "It can tap and type here while it shows this screen.",
   "controlStop": "Stop control",
-  "controlStopSharing": "Stop sharing screen",
+  "controlStopSharing": "Stop sharing",
   "@controlStopSharing": {
     "description": "While a computer controls the phone: ends both control and showing the screen."
   },
@@ -1293,7 +1293,15 @@
   "settingsControlService": "Ferret control is on. A computer that shows this screen can tap and type here after it asks you.",
   "settingsControlOff": "To let a computer that shows this screen tap and type here, turn on Ferret control in Android's Accessibility settings.",
   "settingsControlTurnOn": "Turn on Ferret control…",
+  "settingsControlTurnOnShort": "Turn on control…",
+  "@settingsControlTurnOnShort": {
+    "description": "Short button for settingsControlTurnOn; the full sentence is its tooltip"
+  },
   "settingsControlOpen": "Accessibility settings",
+  "settingsControlOpenShort": "Open settings",
+  "@settingsControlOpenShort": {
+    "description": "Short button for settingsControlOpen; the full name is its tooltip"
+  },
   "settingsControlAlwaysCount": "{count, plural, =1{1 computer controls} other{{count} computers control}} {here, select, tablet{this tablet} other{this phone}} without asking.",
   "@settingsControlAlwaysCount": {
     "placeholders": {
@@ -1325,6 +1333,10 @@
         "type": "String"
       }
     }
+  },
+  "useCameraShort": "Use camera",
+  "@useCameraShort": {
+    "description": "Short button for useCamera; the full sentence with the device name is its tooltip"
   },
   "cameraWindowTitle": "{device} — Camera",
   "@cameraWindowTitle": {
@@ -1592,6 +1604,14 @@
         "type": "String"
       }
     }
+  },
+  "displayUseShort": "Use as display",
+  "@displayUseShort": {
+    "description": "Short button for displayUse; the full sentence with the device name is its tooltip"
+  },
+  "displayStopShort": "Stop display",
+  "@displayStopShort": {
+    "description": "Short button for displayStopUsing; the full sentence with the device name is its tooltip"
   },
   "displayAskingTitle": "Asking {device} to be a display…",
   "@displayAskingTitle": {

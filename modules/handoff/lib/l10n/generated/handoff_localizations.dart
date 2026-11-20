@@ -296,7 +296,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @settingsAssistantOpen.
   ///
   /// In en, this message translates to:
-  /// **'Open assistant settings'**
+  /// **'Assistant settings'**
   String get settingsAssistantOpen;
 
   /// No description provided for @settingsShareHint.

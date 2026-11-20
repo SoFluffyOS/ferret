@@ -228,6 +228,7 @@ class FeatureAction {
     this.id,
     this.homeOrder,
     this.sectionId,
+    this.tooltip,
   });
 
   /// Stays the same across languages and launches, prefixed with the
@@ -236,8 +237,18 @@ class FeatureAction {
   /// it, such as the clipboard's for ⌘V on a device row. Null opts out.
   final String? id;
 
-  /// A verb and its object, such as "Send files".
+  /// A verb and its object, such as "Send files", short enough for a
+  /// button at large text: no device name, roughly 18 characters at most.
   final String label;
+
+  /// The whole sentence when [label] leaves something out, such as "Use
+  /// MacBook Air as a display" for "Use as display". A button shows it on
+  /// hover and screen readers say it instead of [label]; menus, which have
+  /// the room, show it in place of [label].
+  final String? tooltip;
+
+  /// What a menu shows: [tooltip] when there is one, else [label].
+  String get fullLabel => tooltip ?? label;
   final IconData icon;
   final VoidCallback? onPressed;
 

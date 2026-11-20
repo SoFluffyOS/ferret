@@ -52,10 +52,10 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String get openSaved => 'Mở';
 
   @override
-  String get revealSaved => 'Hiển thị trong thư mục';
+  String get revealSaved => 'Xem trong thư mục';
 
   @override
-  String get revealSavedFinder => 'Hiển thị trong Finder';
+  String get revealSavedFinder => 'Xem trong Finder';
 
   @override
   String get saved => 'Đã lưu vào thư mục nhận.';
@@ -126,6 +126,9 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String askOnDevice(String device) {
     return 'Hỏi trên $device';
   }
+
+  @override
+  String get askShort => 'Xin quyền truy cập';
 
   @override
   String askedOnDevice(String device) {

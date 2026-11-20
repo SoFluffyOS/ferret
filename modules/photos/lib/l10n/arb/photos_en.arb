@@ -128,6 +128,10 @@
       }
     }
   },
+  "askShort": "Ask for access",
+  "@askShort": {
+    "description": "Short button for askOnDevice; the full sentence with the device name is its tooltip"
+  },
   "askedOnDevice": "A notice is waiting on {device}.",
   "@askedOnDevice": {
     "placeholders": {

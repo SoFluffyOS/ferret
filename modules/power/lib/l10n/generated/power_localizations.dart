@@ -290,6 +290,12 @@ abstract class PowerLocalizations {
   /// **'Open notification access'**
   String get notificationsOpenSettings;
 
+  /// Short button for notificationsOpenSettings; the full sentence is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get notificationsOpenShort;
+
   /// No description provided for @notificationsTurnOnNow.
   ///
   /// In en, this message translates to:

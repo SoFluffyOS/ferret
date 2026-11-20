@@ -15,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/protocol.dart';
 import 'package:shell/shell.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:transport/transport.dart';
 
 import 'screen_fonts.dart';
@@ -539,6 +540,16 @@ class ScreenRig {
     for (final labels in overflowingRows(boundary)) {
       capturedOverflows.add('${name}_${size.name}_$mode: $labels');
     }
+    final cut = cutButtonLabels(boundary);
+    if (cut.isNotEmpty) {
+      await tester.runAsync(() async {
+        await screensDirectory.create(recursive: true);
+        await File('${screensDirectory.path}/cut_buttons.txt').writeAsString(
+          '${name}_${size.name}_$mode: ${cut.join(' / ')}\n',
+          mode: .append,
+        );
+      });
+    }
 
     await tester.runAsync(() async {
       final image = await boundary.toImage(pixelRatio: capturePixelRatio);
@@ -628,6 +639,28 @@ List<String> overflowingRows(RenderObject root) {
   void visit(RenderObject node) {
     if (node is RenderFlex && node.toStringShort().contains('OVERFLOWING')) {
       found.add('"${_labelsUnder(node).join(' / ')}"');
+    }
+
+    node.visitChildren(visit);
+  }
+
+  visit(root);
+  return found;
+}
+
+/// The labels of buttons under [root] that end in "…" because they don't
+/// fit. Appended to `temp/screens/cut_buttons.txt` at each capture; delete
+/// the file before a run to see only that run's.
+List<String> cutButtonLabels(RenderObject root) {
+  final found = <String>[];
+  void visit(RenderObject node) {
+    if (node is RenderParagraph &&
+        node.overflow == .ellipsis &&
+        node.didExceedMaxLines) {
+      if (node.debugCreator case DebugCreator(:final element)
+          when element.findAncestorWidgetOfExactType<Button>() != null) {
+        found.add('"${node.text.toPlainText()}"');
+      }
     }
 
     node.visitChildren(visit);

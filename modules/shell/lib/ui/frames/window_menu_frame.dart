@@ -296,7 +296,7 @@ class WindowMenuFrame extends StatelessWidget {
               members: [
                 for (final action in featureActions)
                   PlatformMenuItem(
-                    label: action.label,
+                    label: action.fullLabel,
                     onSelected: action.onPressed,
                   ),
               ],

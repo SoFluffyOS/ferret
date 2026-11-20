@@ -11,6 +11,7 @@ class RowActionButton extends StatelessWidget {
     required this.onPressed,
     this.isPrimary = false,
     this.semanticLabel,
+    this.tooltip,
   });
 
   final String label;
@@ -22,6 +23,10 @@ class RowActionButton extends StatelessWidget {
   /// What a screen reader says instead of [label].
   final String? semanticLabel;
 
+  /// The whole sentence a short [label] stands for, shown on hover and
+  /// said by screen readers when [semanticLabel] is left out.
+  final String? tooltip;
+
   @override
   Widget build(BuildContext context) {
     return Button(
@@ -31,7 +36,8 @@ class RowActionButton extends StatelessWidget {
       },
       onPressed: onPressed,
       enable: onPressed != null,
-      semanticLabel: semanticLabel,
+      semanticLabel: semanticLabel ?? tooltip,
+      tooltip: tooltip,
       mainAxisSize: .min,
       // It sits a card's padding from the card's corner, where a curve of
       // its own would be none at all: a capsule.
@@ -42,7 +48,7 @@ class RowActionButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        semanticsLabel: switch (semanticLabel) {
+        semanticsLabel: switch (semanticLabel ?? tooltip) {
           null => null,
           _ => '',
         },

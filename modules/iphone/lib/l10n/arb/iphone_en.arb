@@ -90,7 +90,7 @@
     }
   },
   "yourIphone": "iPhone",
-  "openBluetoothSettings": "Open Bluetooth settings",
+  "openBluetoothSettings": "Bluetooth settings",
   "openFailed": "Couldn't open the Bluetooth settings. Open them from your system settings.",
   "setUp": "Set up",
   "tryAgain": "Try again",

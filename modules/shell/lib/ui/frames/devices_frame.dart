@@ -201,6 +201,7 @@ class _DevicesFrameState extends State<DevicesFrame> {
           FeatureAction(
             id: action.id,
             label: action.label,
+            tooltip: action.tooltip,
             icon: action.icon,
             onPressed: null,
           ),

@@ -223,14 +223,16 @@ class RemoteInputFeatureUi extends FeatureUi {
       ),
       FeatureAction(
         id: 'remote_input.present',
-        label: l10n.presentOn(device.device.name),
+        label: l10n.presentShort,
+        tooltip: l10n.presentOn(device.device.name),
         icon: LucideIcons.presentation,
         onPressed: () => unawaited(_openPresentation(feature, device)),
       ),
       if (this.feature.canLockDevice(session))
         FeatureAction(
           id: 'remote_input.lock',
-          label: l10n.lockDevice(device.device.name),
+          label: l10n.lockShort,
+          tooltip: l10n.lockDevice(device.device.name),
           icon: LucideIcons.lock,
           homeOrder: 40,
           onPressed: switch (isLocking) {

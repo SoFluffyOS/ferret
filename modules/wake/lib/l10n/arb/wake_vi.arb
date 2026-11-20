@@ -9,6 +9,7 @@
   "didntWake": "Không thức dậy",
   "couldntSend": "Không gửi được tín hiệu đánh thức",
   "howToTurnOn": "Cách bật Wake-on-LAN",
+  "howToTurnOnShort": "Cách bật",
   "healthReady": "Có thể đánh thức khi đang ngủ",
   "healthWiredUnknown": "Có thể thử đánh thức qua cáp mạng",
   "healthWiredOff": "Wake-on-LAN đang tắt trên {name}",

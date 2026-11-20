@@ -177,6 +177,7 @@ class DeviceTile extends StatelessWidget {
                     for (final (index, action) in actions.indexed)
                       RowActionButton(
                         label: action.label,
+                        tooltip: action.tooltip,
                         isPrimary:
                             hasPrimary && index == 0 && status.isConnected,
                         onPressed: action.onPressed,

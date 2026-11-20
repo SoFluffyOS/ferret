@@ -251,7 +251,8 @@ class NotificationsFeatureUi extends FeatureUi {
     return [
       FeatureAction(
         id: 'notifications.choose_apps',
-        label: context.notificationsL10n.actionChooseApps,
+        label: context.notificationsL10n.actionChooseAppsShort,
+        tooltip: context.notificationsL10n.actionChooseApps,
         icon: LucideIcons.bell,
         onPressed: () =>
             _openRemotePicker(feature, deviceId, device.device.name),
