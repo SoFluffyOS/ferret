@@ -341,8 +341,15 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'Answer Android\'s prompt. If you don\'t see it, tap the notice from Ferret.';
 
   @override
-  String auditShared(String device, String duration, String time) {
-    return '$device saw this phone\'s screen for $duration at $time';
+  String auditShared(String device, String duration, String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return '$device saw $_temp0 screen for $duration at $time';
   }
 
   @override
@@ -440,7 +447,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       'Sending sound takes Android 10 or newer.';
 
   @override
-  String get settingsUnsupported => 'This phone can\'t capture its screen';
+  String settingsUnsupported(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'This tablet',
+        'other': 'This phone',
+      },
+    );
+    return '$_temp0 can\'t capture its screen';
+  }
 
   @override
   String get settingsHistoryTitle => 'History';
@@ -465,7 +481,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get summaryCantCapture => 'Can\'t capture';
 
   @override
-  String get permissionAsk => 'Ask to see this phone\'s screen';
+  String permissionAsk(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Ask to see $_temp0 screen';
+  }
 
   @override
   String get permissionAskOff =>
@@ -480,7 +505,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get healthTryAgainHelp => 'Choose Show screen to try again.';
 
   @override
-  String get healthShareOff => 'Off on this phone';
+  String healthShareOff(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Off on $_temp0';
+  }
 
   @override
   String get healthShareOffHelp =>
@@ -492,12 +526,28 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String healthShareBlockedHelp(String device) {
-    return 'Turn on Ask to see this phone\'s screen for $device, further down this page.';
+  String healthShareBlockedHelp(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Turn on Ask to see $_temp0 screen for $device, further down this page.';
   }
 
   @override
-  String get healthSharing => 'Sees this phone\'s screen now';
+  String healthSharing(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Sees $_temp0 screen now';
+  }
 
   @override
   String get healthShareAsks => 'Asks you every time';
@@ -1317,14 +1367,21 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get settingsControlOpen => 'Accessibility settings';
 
   @override
-  String settingsControlAlwaysCount(int count) {
+  String settingsControlAlwaysCount(int count, String here) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count computers control this phone without asking.',
-      one: '1 computer controls this phone without asking.',
+      other: '$count computers control',
+      one: '1 computer controls',
     );
-    return '$_temp0';
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return '$_temp0 $_temp1 without asking.';
   }
 
   @override
@@ -1334,8 +1391,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get controlDisclosureTitle => 'Turn on Ferret control?';
 
   @override
-  String get controlDisclosureBody =>
-      'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.';
+  String controlDisclosureBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on $_temp0.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.';
+  }
 
   @override
   String get controlDisclosureSteps =>
@@ -1461,8 +1526,20 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String cameraAuditShared(String device, String duration, String time) {
-    return '$device used this phone\'s camera for $duration at $time';
+  String cameraAuditShared(
+    String device,
+    String duration,
+    String time,
+    String here,
+  ) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return '$device used $_temp0 camera for $duration at $time';
   }
 
   @override
@@ -1491,20 +1568,52 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String cameraOnBody(String time) {
-    return 'It sees and hears through this phone. Since $time.';
+  String cameraOnBody(String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'It sees and hears through $_temp0. Since $time.';
   }
 
   @override
-  String cameraOnBodySilent(String time) {
-    return 'It sees through this phone\'s camera. The microphone is off. Since $time.';
+  String cameraOnBodySilent(String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'It sees through $_temp0 camera. The microphone is off. Since $time.';
   }
 
   @override
-  String get noticeCameraBody => 'It sees and hears through this phone';
+  String noticeCameraBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'It sees and hears through $_temp0';
+  }
 
   @override
-  String get noticeCameraBodySilent => 'It sees through this phone\'s camera';
+  String noticeCameraBodySilent(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'It sees through $_temp0 camera';
+  }
 
   @override
   String get noticeCameraChannel => 'Camera for a computer';
@@ -1531,7 +1640,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
-  String get permissionCameraAsk => 'Ask to use this phone\'s camera';
+  String permissionCameraAsk(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Ask to use $_temp0 camera';
+  }
 
   @override
   String get permissionCameraAskOff =>

@@ -1,8 +1,22 @@
 {
   "@@locale": "en",
   "title": "Notifications",
-  "explainer": "Shows this phone's notifications on your computer. Every app comes through, and you can mute the ones you don't want.",
-  "offerDescription": "See this phone's notifications on your computer.",
+  "explainer": "Shows {here, select, tablet{this tablet's} other{this phone's}} notifications on your computer. Every app comes through, and you can mute the ones you don't want.",
+  "@explainer": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "offerDescription": "See {here, select, tablet{this tablet's} other{this phone's}} notifications on your computer.",
+  "@offerDescription": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "explainerDetail": "Only new notifications. Nothing leaves your network.",
   "turnOn": "Turn on",
   "turnOff": "Turn off mirroring",
@@ -78,9 +92,14 @@
       }
     }
   },
-  "thisPhone": "this phone",
+  "thisPhone": "{here, select, tablet{this tablet} other{this phone}}",
   "@thisPhone": {
-    "description": "Stands in for a device name in the middle of other sentences"
+    "description": "Stands in for a device name in the middle of other sentences",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   },
   "tryAgain": "Try again",
   "back": "Back",
@@ -163,7 +182,14 @@
   },
   "setUp": "Set up",
   "fix": "Fix",
-  "phoneHomePaused": "Notification access is off on this phone, so your computer gets no notifications.",
+  "phoneHomePaused": "Notification access is off on {here, select, tablet{this tablet} other{this phone}}, so your computer gets no notifications.",
+  "@phoneHomePaused": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "homeTurnOn": "Turn on Notifications on {device} to see its notifications here.",
   "@homeTurnOn": {
     "placeholders": {
@@ -250,8 +276,22 @@
       }
     }
   },
-  "healthOffThisPhone": "Off on this phone",
-  "healthOffThisPhoneHelp": "On this phone: Settings → To your computer → Notifications.",
+  "healthOffThisPhone": "Off on {here, select, tablet{this tablet} other{this phone}}",
+  "@healthOffThisPhone": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "healthOffThisPhoneHelp": "On {here, select, tablet{this tablet} other{this phone}}: Settings → To your computer → Notifications.",
+  "@healthOffThisPhoneHelp": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "activityOne": "{app}: {title}",
   "@activityOne": {
     "placeholders": {
@@ -284,6 +324,13 @@
     }
   },
   "hideCodes": "Hide one-time codes",
-  "hideCodesDetail": "Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".",
+  "hideCodesDetail": "Sign-in, bank and delivery codes stay on {here, select, tablet{this tablet} other{this phone}}. Computers show the app and \"Code hidden\".",
+  "@hideCodesDetail": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "codeHidden": "Code hidden. Open it on the phone."
 }

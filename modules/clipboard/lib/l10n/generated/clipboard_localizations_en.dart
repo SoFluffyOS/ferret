@@ -158,8 +158,16 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
       'Send what you copy here to your connected devices.';
 
   @override
-  String get settingsAutoSendBodyManual =>
-      'This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.';
+  String settingsAutoSendBodyManual(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'This tablet',
+        'other': 'This phone',
+      },
+    );
+    return '$_temp0 only allows it for copies made inside Ferret. Use Send clipboard for the rest.';
+  }
 
   @override
   String get settingsBackgroundSend => 'Send automatically in the background';

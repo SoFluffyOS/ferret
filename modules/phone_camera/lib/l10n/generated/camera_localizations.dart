@@ -161,8 +161,8 @@ abstract class CameraLocalizations {
   /// No description provided for @noticeBody.
   ///
   /// In en, this message translates to:
-  /// **'Tap to answer on this phone.'**
-  String get noticeBody;
+  /// **'Tap to answer on {here, select, tablet{this tablet} other{this phone}}.'**
+  String noticeBody(String here);
 
   /// No description provided for @activityWaiting.
   ///

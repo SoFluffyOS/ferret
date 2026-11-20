@@ -350,8 +350,8 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsAutoSendBodyManual.
   ///
   /// In en, this message translates to:
-  /// **'This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.'**
-  String get settingsAutoSendBodyManual;
+  /// **'{here, select, tablet{This tablet} other{This phone}} only allows it for copies made inside Ferret. Use Send clipboard for the rest.'**
+  String settingsAutoSendBodyManual(String here);
 
   /// No description provided for @settingsBackgroundSend.
   ///

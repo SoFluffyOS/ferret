@@ -489,8 +489,15 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get stoppedIdle => 'Đã dừng vì lâu không có thao tác.';
 
   @override
-  String stoppedRevoked(String device) {
-    return '$device không còn cho điện thoại này điều khiển.';
+  String stoppedRevoked(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return '$device không còn cho $_temp0 điều khiển.';
   }
 
   @override

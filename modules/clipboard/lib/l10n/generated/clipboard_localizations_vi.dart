@@ -158,8 +158,16 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
       'Gửi những gì bạn sao chép tại đây đến các thiết bị đã kết nối.';
 
   @override
-  String get settingsAutoSendBodyManual =>
-      'Điện thoại này chỉ cho phép với nội dung sao chép bên trong Ferret. Dùng Gửi bảng nhớ tạm cho phần còn lại.';
+  String settingsAutoSendBodyManual(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'Máy tính bảng này',
+        'other': 'Điện thoại này',
+      },
+    );
+    return '$_temp0 chỉ cho phép với nội dung sao chép bên trong Ferret. Dùng Gửi bảng nhớ tạm cho phần còn lại.';
+  }
 
   @override
   String get settingsBackgroundSend => 'Tự động gửi trong nền';

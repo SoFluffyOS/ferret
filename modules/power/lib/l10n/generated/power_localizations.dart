@@ -161,8 +161,8 @@ abstract class PowerLocalizations {
   /// No description provided for @ladderTitle.
   ///
   /// In en, this message translates to:
-  /// **'What this phone lets Ferret do'**
-  String get ladderTitle;
+  /// **'What {here, select, tablet{this tablet} other{this phone}} lets Ferret do'**
+  String ladderTitle(String here);
 
   /// No description provided for @rungBasic.
   ///
@@ -239,8 +239,8 @@ abstract class PowerLocalizations {
   /// No description provided for @perkNotifications.
   ///
   /// In en, this message translates to:
-  /// **'See this phone\'s notifications on your other devices'**
-  String get perkNotifications;
+  /// **'See {here, select, tablet{this tablet\'s} other{this phone\'s}} notifications on your other devices'**
+  String perkNotifications(String here);
 
   /// No description provided for @perkReplies.
   ///
@@ -419,8 +419,8 @@ abstract class PowerLocalizations {
   /// No description provided for @noticeGrantFailed.
   ///
   /// In en, this message translates to:
-  /// **'Android didn\'t take the change. Try again, or turn it on in this phone\'s Settings.'**
-  String get noticeGrantFailed;
+  /// **'Android didn\'t take the change. Try again, or turn it on in {here, select, tablet{this tablet\'s} other{this phone\'s}} Settings.'**
+  String noticeGrantFailed(String here);
 
   /// No description provided for @noticeRootRefused.
   ///
@@ -431,8 +431,8 @@ abstract class PowerLocalizations {
   /// No description provided for @noticeSettingsNotOpened.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t open this phone\'s Settings. Open Settings, then Apps, then Ferret.'**
-  String get noticeSettingsNotOpened;
+  /// **'Couldn\'t open {here, select, tablet{this tablet\'s} other{this phone\'s}} Settings. Open Settings, then Apps, then Ferret.'**
+  String noticeSettingsNotOpened(String here);
 
   /// No description provided for @batteryTitle.
   ///
@@ -467,20 +467,20 @@ abstract class PowerLocalizations {
   /// No description provided for @rootNotFound.
   ///
   /// In en, this message translates to:
-  /// **'This phone isn\'t rooted, and it doesn\'t need to be: Shizuku adds the same features.'**
-  String get rootNotFound;
+  /// **'{here, select, tablet{This tablet} other{This phone}} isn\'t rooted, and it doesn\'t need to be: Shizuku adds the same features.'**
+  String rootNotFound(String here);
 
   /// No description provided for @rootFound.
   ///
   /// In en, this message translates to:
-  /// **'Root found on this phone.'**
-  String get rootFound;
+  /// **'Root found on {here, select, tablet{this tablet} other{this phone}}.'**
+  String rootFound(String here);
 
   /// No description provided for @rootFoundWith.
   ///
   /// In en, this message translates to:
-  /// **'Root found on this phone ({manager}).'**
-  String rootFoundWith(String manager);
+  /// **'Root found on {here, select, tablet{this tablet} other{this phone}} ({manager}).'**
+  String rootFoundWith(String manager, String here);
 
   /// No description provided for @rootWarning.
   ///

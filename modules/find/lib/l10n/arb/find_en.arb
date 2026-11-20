@@ -169,7 +169,14 @@
   "settingsFlashTorchBody": "Blinks the flashlight while ringing, so you spot it in the dark.",
   "settingsDndOn": "Rings through Do Not Disturb.",
   "settingsDndOff": "Do Not Disturb access is off",
-  "settingsDndHowTo": "Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.",
+  "settingsDndHowTo": "Without it, {here, select, tablet{this tablet} other{this phone}} rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.",
+  "@settingsDndHowTo": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsDndStillOff": "Still off. Find Ferret in the list, turn it on, then come back.",
   "settingsAllow": "Allow in Settings",
   "settingsOpenFailed": "Couldn't open Settings. Open Settings, then Notifications, then Do Not Disturb access, and turn Ferret on.",

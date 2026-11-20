@@ -11,7 +11,7 @@
   "askTakePhoto": "Chụp ảnh",
   "askScan": "Quét",
   "askNotNow": "Để sau",
-  "noticeBody": "Chạm để trả lời trên điện thoại này.",
+  "noticeBody": "Chạm để trả lời trên {here, select, tablet{máy tính bảng này} other{điện thoại này}}.",
   "activityWaiting": "Đang chờ ảnh từ {device}",
   "activityWaitingScan": "Đang chờ bản quét từ {device}",
   "activityWaitingDetail": "Chụp trên {device}.",

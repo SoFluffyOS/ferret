@@ -36,7 +36,7 @@
   "settingsFlashTorchBody": "Nháy đèn pin trong lúc đổ chuông để bạn dễ thấy trong bóng tối.",
   "settingsDndOn": "Đổ chuông cả khi Không làm phiền.",
   "settingsDndOff": "Quyền truy cập Không làm phiền đang tắt",
-  "settingsDndHowTo": "Nếu không có quyền này, điện thoại vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.",
+  "settingsDndHowTo": "Nếu không có quyền này, {here, select, tablet{máy tính bảng} other{điện thoại}} vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.",
   "settingsDndStillOff": "Vẫn đang tắt. Tìm Ferret trong danh sách, bật lên rồi quay lại.",
   "settingsAllow": "Cho phép trong Cài đặt",
   "settingsOpenFailed": "Không mở được Cài đặt. Mở Cài đặt, rồi Thông báo, rồi Quyền truy cập Không làm phiền và bật Ferret.",

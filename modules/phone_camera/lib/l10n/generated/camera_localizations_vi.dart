@@ -44,7 +44,16 @@ class CameraLocalizationsVi extends CameraLocalizations {
   String get askNotNow => 'Để sau';
 
   @override
-  String get noticeBody => 'Chạm để trả lời trên điện thoại này.';
+  String noticeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Chạm để trả lời trên $_temp0.';
+  }
 
   @override
   String activityWaiting(String device) {

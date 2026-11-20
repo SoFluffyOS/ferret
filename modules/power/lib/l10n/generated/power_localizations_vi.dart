@@ -44,7 +44,16 @@ class PowerLocalizationsVi extends PowerLocalizations {
   String get settingsShortRoot => 'Root đang bật';
 
   @override
-  String get ladderTitle => 'Những gì điện thoại này cho phép Ferret làm';
+  String ladderTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Những gì $_temp0 cho phép Ferret làm';
+  }
 
   @override
   String get rungBasic => 'Cơ bản';
@@ -83,8 +92,16 @@ class PowerLocalizationsVi extends PowerLocalizations {
   String get perkFind => 'Đổ chuông thiết bị bị thất lạc';
 
   @override
-  String get perkNotifications =>
-      'Xem thông báo của điện thoại này trên các thiết bị khác của bạn';
+  String perkNotifications(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Xem thông báo của $_temp0 trên các thiết bị khác của bạn';
+  }
 
   @override
   String get perkReplies => 'Trả lời và bỏ qua thông báo ngay từ đó';
@@ -187,16 +204,32 @@ class PowerLocalizationsVi extends PowerLocalizations {
       'Không mở được trình duyệt. Hãy tìm Shizuku trên F-Droid hoặc GitHub.';
 
   @override
-  String get noticeGrantFailed =>
-      'Android không nhận thay đổi này. Hãy thử lại, hoặc bật trong Cài đặt của điện thoại này.';
+  String noticeGrantFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Android không nhận thay đổi này. Hãy thử lại, hoặc bật trong Cài đặt của $_temp0.';
+  }
 
   @override
   String get noticeRootRefused =>
       'Quyền root đã bị từ chối. Hãy cho phép Ferret trong trình quản lý root, rồi thử lại.';
 
   @override
-  String get noticeSettingsNotOpened =>
-      'Không mở được Cài đặt của điện thoại này. Hãy mở Cài đặt, chọn Ứng dụng, rồi chọn Ferret.';
+  String noticeSettingsNotOpened(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Không mở được Cài đặt của $_temp0. Hãy mở Cài đặt, chọn Ứng dụng, rồi chọn Ferret.';
+  }
 
   @override
   String get batteryTitle => 'Giữ Ferret chạy trong nền';
@@ -215,15 +248,39 @@ class PowerLocalizationsVi extends PowerLocalizations {
   String get rootTitle => 'Root';
 
   @override
-  String get rootNotFound =>
-      'Điện thoại này chưa root, và cũng không cần: Shizuku mang lại các tính năng tương tự.';
+  String rootNotFound(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'Máy tính bảng này',
+        'other': 'Điện thoại này',
+      },
+    );
+    return '$_temp0 chưa root, và cũng không cần: Shizuku mang lại các tính năng tương tự.';
+  }
 
   @override
-  String get rootFound => 'Đã tìm thấy root trên điện thoại này.';
+  String rootFound(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Đã tìm thấy root trên $_temp0.';
+  }
 
   @override
-  String rootFoundWith(String manager) {
-    return 'Đã tìm thấy root trên điện thoại này ($manager).';
+  String rootFoundWith(String manager, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Đã tìm thấy root trên $_temp0 ($manager).';
   }
 
   @override

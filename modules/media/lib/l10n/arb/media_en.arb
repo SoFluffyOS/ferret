@@ -117,7 +117,7 @@
     "description": "Health line: the other device shares what it plays with this one"
   },
   "healthNothingPlaying": "Nothing playing right now",
-  "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
+  "healthSharesMine": "{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}.",
   "@healthSharesMine": {
     "placeholders": {
       "name": {
@@ -128,7 +128,7 @@
       }
     }
   },
-  "healthShowsAndShares": "Shares what's playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.",
+  "healthShowsAndShares": "Shares what's playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}.",
   "@healthShowsAndShares": {
     "placeholders": {
       "name": {
@@ -139,7 +139,7 @@
       }
     }
   },
-  "healthLostAccess": "Ferret can't see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "healthLostAccess": "Ferret can't see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}",
   "@healthLostAccess": {
     "placeholders": {
       "here": {
@@ -147,7 +147,7 @@
       }
     }
   },
-  "healthOffHere": "Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "healthOffHere": "Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}",
   "@healthOffHere": {
     "placeholders": {
       "here": {
@@ -155,7 +155,7 @@
       }
     }
   },
-  "healthNotShared": "Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}",
+  "healthNotShared": "Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}",
   "@healthNotShared": {
     "placeholders": {
       "here": {
@@ -165,7 +165,14 @@
   },
   "healthShowHelp": "Settings → Continue & media → Show media from other devices",
   "healthShareHelp": "Settings → Continue & media → Share my media",
-  "accessAndroid": "Ferret needs Notification access to see what plays on this phone. It only reads media controls here.",
+  "accessAndroid": "Ferret needs Notification access to see what plays on {here, select, tablet{this tablet} other{this phone}}. It only reads media controls here.",
+  "@accessAndroid": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "accessMacos": "macOS asks once to let Ferret control Music and Spotify.",
   "accessDenied": "Ferret can't control Music or Spotify yet. Allow it in System Settings, Privacy & Security, Automation.",
   "accessAllow": "Allow access",

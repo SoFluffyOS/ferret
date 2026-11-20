@@ -13,12 +13,28 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   String get title => 'Thông báo';
 
   @override
-  String get explainer =>
-      'Hiện thông báo của điện thoại này trên máy tính. Mọi ứng dụng đều được chuyển sang, và bạn có thể tắt tiếng những ứng dụng không muốn nhận.';
+  String explainer(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Hiện thông báo của $_temp0 trên máy tính. Mọi ứng dụng đều được chuyển sang, và bạn có thể tắt tiếng những ứng dụng không muốn nhận.';
+  }
 
   @override
-  String get offerDescription =>
-      'Xem thông báo của điện thoại này trên máy tính.';
+  String offerDescription(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Xem thông báo của $_temp0 trên máy tính.';
+  }
 
   @override
   String get explainerDetail =>
@@ -169,7 +185,16 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   }
 
   @override
-  String get thisPhone => 'điện thoại này';
+  String thisPhone(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get tryAgain => 'Thử lại';
@@ -258,8 +283,16 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   String get fix => 'Sửa';
 
   @override
-  String get phoneHomePaused =>
-      'Quyền truy cập thông báo đang tắt trên điện thoại này nên máy tính không nhận được thông báo.';
+  String phoneHomePaused(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Quyền truy cập thông báo đang tắt trên $_temp0 nên máy tính không nhận được thông báo.';
+  }
 
   @override
   String homeTurnOn(String device) {
@@ -331,11 +364,28 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   }
 
   @override
-  String get healthOffThisPhone => 'Đang tắt trên điện thoại này';
+  String healthOffThisPhone(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Đang tắt trên $_temp0';
+  }
 
   @override
-  String get healthOffThisPhoneHelp =>
-      'Trên điện thoại này: Cài đặt → Đến máy tính của bạn → Thông báo.';
+  String healthOffThisPhoneHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Trên $_temp0: Cài đặt → Đến máy tính của bạn → Thông báo.';
+  }
 
   @override
   String activityOne(String app, String title) {
@@ -361,8 +411,16 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   String get hideCodes => 'Ẩn mã một lần';
 
   @override
-  String get hideCodesDetail =>
-      'Mã đăng nhập, ngân hàng và giao hàng ở lại trên điện thoại này. Máy tính chỉ hiện tên ứng dụng và \"Đã ẩn mã\".';
+  String hideCodesDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Mã đăng nhập, ngân hàng và giao hàng ở lại trên $_temp0. Máy tính chỉ hiện tên ứng dụng và \"Đã ẩn mã\".';
+  }
 
   @override
   String get codeHidden => 'Đã ẩn mã. Hãy mở trên điện thoại.';

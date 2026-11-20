@@ -44,7 +44,16 @@ class PowerLocalizationsEn extends PowerLocalizations {
   String get settingsShortRoot => 'Root on';
 
   @override
-  String get ladderTitle => 'What this phone lets Ferret do';
+  String ladderTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'What $_temp0 lets Ferret do';
+  }
 
   @override
   String get rungBasic => 'Basic';
@@ -83,8 +92,16 @@ class PowerLocalizationsEn extends PowerLocalizations {
   String get perkFind => 'Ring a lost device';
 
   @override
-  String get perkNotifications =>
-      'See this phone\'s notifications on your other devices';
+  String perkNotifications(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'See $_temp0 notifications on your other devices';
+  }
 
   @override
   String get perkReplies => 'Reply to them and dismiss them from there';
@@ -186,16 +203,32 @@ class PowerLocalizationsEn extends PowerLocalizations {
       'Couldn\'t open the browser. Search for Shizuku on F-Droid or GitHub.';
 
   @override
-  String get noticeGrantFailed =>
-      'Android didn\'t take the change. Try again, or turn it on in this phone\'s Settings.';
+  String noticeGrantFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Android didn\'t take the change. Try again, or turn it on in $_temp0 Settings.';
+  }
 
   @override
   String get noticeRootRefused =>
       'Root access was denied. Allow Ferret in your root manager, then try again.';
 
   @override
-  String get noticeSettingsNotOpened =>
-      'Couldn\'t open this phone\'s Settings. Open Settings, then Apps, then Ferret.';
+  String noticeSettingsNotOpened(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Couldn\'t open $_temp0 Settings. Open Settings, then Apps, then Ferret.';
+  }
 
   @override
   String get batteryTitle => 'Keep Ferret running in the background';
@@ -214,15 +247,39 @@ class PowerLocalizationsEn extends PowerLocalizations {
   String get rootTitle => 'Root';
 
   @override
-  String get rootNotFound =>
-      'This phone isn\'t rooted, and it doesn\'t need to be: Shizuku adds the same features.';
+  String rootNotFound(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'This tablet',
+        'other': 'This phone',
+      },
+    );
+    return '$_temp0 isn\'t rooted, and it doesn\'t need to be: Shizuku adds the same features.';
+  }
 
   @override
-  String get rootFound => 'Root found on this phone.';
+  String rootFound(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Root found on $_temp0.';
+  }
 
   @override
-  String rootFoundWith(String manager) {
-    return 'Root found on this phone ($manager).';
+  String rootFoundWith(String manager, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Root found on $_temp0 ($manager).';
   }
 
   @override

@@ -77,8 +77,8 @@ class ShareCardFrame extends StatelessWidget {
         iconTone: .warning,
         title: l10n.cameraOnTitle(cameraActive.deviceName),
         subtitle: switch (cameraActive.withSound) {
-          true => l10n.cameraOnBody(since),
-          false => l10n.cameraOnBodySilent(since),
+          true => l10n.cameraOnBody(since, ThisComputer.handheld),
+          false => l10n.cameraOnBodySilent(since, ThisComputer.handheld),
         },
         actions: [
           Button(

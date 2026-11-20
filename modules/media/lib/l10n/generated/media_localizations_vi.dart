@@ -137,6 +137,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
         'android': 'điện thoại này',
         'ios': 'iPhone này',
         'windows': 'PC này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -152,6 +153,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
         'android': 'điện thoại này',
         'ios': 'iPhone này',
         'windows': 'PC này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -167,6 +169,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
         'android': 'điện thoại này',
         'ios': 'iPhone này',
         'windows': 'PC này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -182,6 +185,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
         'android': 'điện thoại này',
         'ios': 'iPhone này',
         'windows': 'PC này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -197,6 +201,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
         'android': 'điện thoại này',
         'ios': 'iPhone này',
         'windows': 'PC này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -212,8 +217,16 @@ class MediaLocalizationsVi extends MediaLocalizations {
       'Cài đặt → Tiếp tục & đa phương tiện → Chia sẻ đa phương tiện của tôi';
 
   @override
-  String get accessAndroid =>
-      'Ferret cần Quyền truy cập thông báo để thấy nội dung đang phát trên điện thoại này. Ferret chỉ đọc các nút điều khiển đa phương tiện.';
+  String accessAndroid(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Ferret cần Quyền truy cập thông báo để thấy nội dung đang phát trên $_temp0. Ferret chỉ đọc các nút điều khiển đa phương tiện.';
+  }
 
   @override
   String get accessMacos =>

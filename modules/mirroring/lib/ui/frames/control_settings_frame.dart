@@ -72,7 +72,10 @@ class ControlSettingsFrame extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      l10n.settingsControlAlwaysCount(alwaysCount),
+                      l10n.settingsControlAlwaysCount(
+                        alwaysCount,
+                        ThisComputer.handheld,
+                      ),
                       style: caption,
                     ),
                     Spacing.v8,
@@ -106,7 +109,7 @@ class ControlSettingsFrame extends StatelessWidget {
       context,
       title: l10n.controlDisclosureTitle,
       message:
-          '${l10n.controlDisclosureBody}\n\n${l10n.controlDisclosureSteps}',
+          '${l10n.controlDisclosureBody(ThisComputer.handheld)}\n\n${l10n.controlDisclosureSteps}',
       negativeText: l10n.notNow,
       positiveText: l10n.controlDisclosureOpen,
       barrierLabel: l10n.dismiss,

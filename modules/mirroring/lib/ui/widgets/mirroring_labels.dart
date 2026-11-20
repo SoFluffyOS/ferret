@@ -12,9 +12,19 @@ extension MirroringLabels on MirroringLocalizations {
     final length = duration(record.duration);
     final at = time(record.startedAt);
     return switch ((record.role, record.camera)) {
-      (.shared, false) => auditShared(record.deviceName, length, at),
+      (.shared, false) => auditShared(
+        record.deviceName,
+        length,
+        at,
+        ThisComputer.handheld,
+      ),
       (.viewed, false) => auditViewed(record.deviceName, length, at),
-      (.shared, true) => cameraAuditShared(record.deviceName, length, at),
+      (.shared, true) => cameraAuditShared(
+        record.deviceName,
+        length,
+        at,
+        ThisComputer.handheld,
+      ),
       (.viewed, true) => cameraAuditViewed(record.deviceName, length, at),
     };
   }

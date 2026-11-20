@@ -72,7 +72,7 @@ extension RemoteInputLabels on RemoteInputLocalizations {
   String _stop(OutgoingStop? stop, String name, HostKind? host) =>
       switch (stop) {
         .idle => stoppedIdle,
-        .revoked => stoppedRevoked(name),
+        .revoked => stoppedRevoked(name, ThisComputer.handheld),
         .failed => stoppedFailed(name, hostKey(host)),
         .stoppedOnHost || null => stoppedOnHost(name),
       };

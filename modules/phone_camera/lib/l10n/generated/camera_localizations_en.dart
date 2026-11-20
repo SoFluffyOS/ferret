@@ -44,7 +44,16 @@ class CameraLocalizationsEn extends CameraLocalizations {
   String get askNotNow => 'Not now';
 
   @override
-  String get noticeBody => 'Tap to answer on this phone.';
+  String noticeBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Tap to answer on $_temp0.';
+  }
 
   @override
   String activityWaiting(String device) {

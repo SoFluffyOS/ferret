@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_power/ferret_power.dart';
 import 'package:flutter/widgets.dart';
 import 'package:power/l10n/generated/power_localizations.dart';
@@ -24,7 +25,7 @@ extension PowerLabels on PowerLocalizations {
     .handoff => perkHandoff,
     .media => perkMedia,
     .find => perkFind,
-    .notifications => perkNotifications,
+    .notifications => perkNotifications(ThisComputer.handheld),
     .replies => perkReplies,
     .messages => perkMessages,
     .calls => perkCalls,
@@ -38,9 +39,9 @@ extension PowerLabels on PowerLocalizations {
     .shizukuRefused => noticeShizukuRefused,
     .shizukuNotOpened => noticeShizukuNotOpened,
     .linkFailed => noticeLinkFailed,
-    .grantFailed => noticeGrantFailed,
+    .grantFailed => noticeGrantFailed(ThisComputer.handheld),
     .rootRefused => noticeRootRefused,
-    .settingsNotOpened => noticeSettingsNotOpened,
+    .settingsNotOpened => noticeSettingsNotOpened(ThisComputer.handheld),
   };
 
   String promptText(PowerPrompt prompt) => switch (prompt) {
@@ -66,9 +67,9 @@ extension PowerLabels on PowerLocalizations {
   };
 
   String rootFoundText(RootManager manager) => switch (manager) {
-    .magisk => rootFoundWith('Magisk'),
-    .kernelSu => rootFoundWith('KernelSU'),
-    .aPatch => rootFoundWith('APatch'),
-    .none || .unknown => rootFound,
+    .magisk => rootFoundWith('Magisk', ThisComputer.handheld),
+    .kernelSu => rootFoundWith('KernelSU', ThisComputer.handheld),
+    .aPatch => rootFoundWith('APatch', ThisComputer.handheld),
+    .none || .unknown => rootFound(ThisComputer.handheld),
   };
 }

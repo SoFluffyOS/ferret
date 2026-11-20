@@ -679,7 +679,7 @@ class MirroringFeatureUi extends FeatureUi {
     return [
       if (applies)
         DevicePermission(
-          label: l10n.permissionAsk,
+          label: l10n.permissionAsk(ThisComputer.handheld),
           detail: switch (shareViewModel.enabled) {
             true => l10n.settingsAllowBody,
             false => l10n.permissionAskOff,
@@ -690,7 +690,7 @@ class MirroringFeatureUi extends FeatureUi {
         ),
       if (cameraApplies)
         DevicePermission(
-          label: l10n.permissionCameraAsk,
+          label: l10n.permissionCameraAsk(ThisComputer.handheld),
           detail: switch (shareViewModel.cameraEnabled) {
             true => l10n.settingsCameraAllowBody,
             false => l10n.permissionCameraAskOff,
@@ -824,7 +824,7 @@ class MirroringFeatureUi extends FeatureUi {
     if (!shareViewModel.enabled) {
       return FeatureHealth(
         .off,
-        reason: l10n.healthShareOff,
+        reason: l10n.healthShareOff(ThisComputer.handheld),
         help: l10n.healthShareOffHelp,
       );
     }
@@ -833,16 +833,22 @@ class MirroringFeatureUi extends FeatureUi {
       return FeatureHealth(
         .off,
         reason: l10n.healthShareBlocked(name),
-        help: l10n.healthShareBlockedHelp(name),
+        help: l10n.healthShareBlockedHelp(name, ThisComputer.handheld),
       );
     }
 
     if (!shareViewModel.canCapture) {
-      return FeatureHealth(.off, reason: l10n.settingsUnsupported);
+      return FeatureHealth(
+        .off,
+        reason: l10n.settingsUnsupported(ThisComputer.handheld),
+      );
     }
 
     if (shareViewModel.active?.deviceId == device.id) {
-      return FeatureHealth(.ok, reason: l10n.healthSharing);
+      return FeatureHealth(
+        .ok,
+        reason: l10n.healthSharing(ThisComputer.handheld),
+      );
     }
 
     return FeatureHealth(.ok, reason: l10n.healthShareAsks);
@@ -1296,8 +1302,8 @@ class MirroringFeatureUi extends FeatureUi {
     return CameraTexts(
       title: l10n.cameraOnTitle(deviceName),
       body: switch (withSound) {
-        true => l10n.noticeCameraBody,
-        false => l10n.noticeCameraBodySilent,
+        true => l10n.noticeCameraBody(ThisComputer.handheld),
+        false => l10n.noticeCameraBodySilent(ThisComputer.handheld),
       },
       stopLabel: l10n.stop,
       channelName: l10n.noticeCameraChannel,

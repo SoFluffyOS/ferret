@@ -13,12 +13,28 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get title => 'Notifications';
 
   @override
-  String get explainer =>
-      'Shows this phone\'s notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.';
+  String explainer(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'Shows $_temp0 notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.';
+  }
 
   @override
-  String get offerDescription =>
-      'See this phone\'s notifications on your computer.';
+  String offerDescription(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet\'s',
+        'other': 'this phone\'s',
+      },
+    );
+    return 'See $_temp0 notifications on your computer.';
+  }
 
   @override
   String get explainerDetail =>
@@ -172,7 +188,16 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   }
 
   @override
-  String get thisPhone => 'this phone';
+  String thisPhone(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get tryAgain => 'Try again';
@@ -263,8 +288,16 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get fix => 'Fix';
 
   @override
-  String get phoneHomePaused =>
-      'Notification access is off on this phone, so your computer gets no notifications.';
+  String phoneHomePaused(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Notification access is off on $_temp0, so your computer gets no notifications.';
+  }
 
   @override
   String homeTurnOn(String device) {
@@ -336,11 +369,28 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   }
 
   @override
-  String get healthOffThisPhone => 'Off on this phone';
+  String healthOffThisPhone(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Off on $_temp0';
+  }
 
   @override
-  String get healthOffThisPhoneHelp =>
-      'On this phone: Settings → To your computer → Notifications.';
+  String healthOffThisPhoneHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'On $_temp0: Settings → To your computer → Notifications.';
+  }
 
   @override
   String activityOne(String app, String title) {
@@ -367,8 +417,16 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
   String get hideCodes => 'Hide one-time codes';
 
   @override
-  String get hideCodesDetail =>
-      'Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".';
+  String hideCodesDetail(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Sign-in, bank and delivery codes stay on $_temp0. Computers show the app and \"Code hidden\".';
+  }
 
   @override
   String get codeHidden => 'Code hidden. Open it on the phone.';

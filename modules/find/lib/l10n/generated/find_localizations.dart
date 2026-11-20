@@ -311,8 +311,8 @@ abstract class FindLocalizations {
   /// No description provided for @settingsDndHowTo.
   ///
   /// In en, this message translates to:
-  /// **'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.'**
-  String get settingsDndHowTo;
+  /// **'Without it, {here, select, tablet{this tablet} other{this phone}} rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.'**
+  String settingsDndHowTo(String here);
 
   /// No description provided for @settingsDndStillOff.
   ///

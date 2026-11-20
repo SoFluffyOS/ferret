@@ -34,7 +34,14 @@
   "askTakePhoto": "Take photo",
   "askScan": "Scan",
   "askNotNow": "Not now",
-  "noticeBody": "Tap to answer on this phone.",
+  "noticeBody": "Tap to answer on {here, select, tablet{this tablet} other{this phone}}.",
+  "@noticeBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "activityWaiting": "Waiting for a photo from {device}",
   "@activityWaiting": {
     "placeholders": {

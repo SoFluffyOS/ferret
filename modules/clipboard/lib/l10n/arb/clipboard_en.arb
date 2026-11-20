@@ -100,7 +100,14 @@
   "settingsBackgroundSendLost": "Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.",
   "settingsAutoSend": "Send automatically",
   "settingsAutoSendBody": "Send what you copy here to your connected devices.",
-  "settingsAutoSendBodyManual": "This phone only allows it for copies made inside Ferret. Use Send clipboard for the rest.",
+  "settingsAutoSendBodyManual": "{here, select, tablet{This tablet} other{This phone}} only allows it for copies made inside Ferret. Use Send clipboard for the rest.",
+  "@settingsAutoSendBodyManual": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackgroundSend": "Send automatically in the background",
   "settingsBackgroundSendBody": "Send text you copy in any app, also while Ferret is closed. Uses your power-up (Shizuku or root). Images still need Send clipboard.",
   "settingsWhyManual": "Why Send clipboard?",

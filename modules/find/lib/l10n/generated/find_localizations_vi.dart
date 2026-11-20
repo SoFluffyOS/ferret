@@ -153,8 +153,16 @@ class FindLocalizationsVi extends FindLocalizations {
   String get settingsDndOff => 'Quyền truy cập Không làm phiền đang tắt';
 
   @override
-  String get settingsDndHowTo =>
-      'Nếu không có quyền này, điện thoại vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.';
+  String settingsDndHowTo(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng',
+        'other': 'điện thoại',
+      },
+    );
+    return 'Nếu không có quyền này, $_temp0 vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.';
+  }
 
   @override
   String get settingsDndStillOff =>

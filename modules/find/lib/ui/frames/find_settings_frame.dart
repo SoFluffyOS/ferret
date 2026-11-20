@@ -151,7 +151,7 @@ class _RingOnSilent extends StatelessWidget {
       if (isAndroid && needsDndAccess)
         NoticeBlock(
           title: dndTitle,
-          body: l10n.settingsDndHowTo,
+          body: l10n.settingsDndHowTo(ThisComputer.handheld),
           actionLabel: l10n.settingsAllow,
           onAction: () => unawaited(viewModel.openDndAccess()),
         ),

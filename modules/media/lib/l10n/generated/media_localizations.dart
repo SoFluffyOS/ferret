@@ -293,31 +293,31 @@ abstract class MediaLocalizations {
   /// No description provided for @healthSharesMine.
   ///
   /// In en, this message translates to:
-  /// **'{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.'**
+  /// **'{name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}.'**
   String healthSharesMine(String name, String here);
 
   /// No description provided for @healthShowsAndShares.
   ///
   /// In en, this message translates to:
-  /// **'Shares what\'s playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}.'**
+  /// **'Shares what\'s playing. {name} sees what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}.'**
   String healthShowsAndShares(String name, String here);
 
   /// No description provided for @healthLostAccess.
   ///
   /// In en, this message translates to:
-  /// **'Ferret can\'t see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  /// **'Ferret can\'t see what plays on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}'**
   String healthLostAccess(String here);
 
   /// No description provided for @healthOffHere.
   ///
   /// In en, this message translates to:
-  /// **'Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  /// **'Off on {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}'**
   String healthOffHere(String here);
 
   /// No description provided for @healthNotShared.
   ///
   /// In en, this message translates to:
-  /// **'Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} other{this computer}}'**
+  /// **'Not shared from {here, select, macos{this Mac} android{this phone} ios{this iPhone} windows{this PC} tablet{this tablet} other{this computer}}'**
   String healthNotShared(String here);
 
   /// No description provided for @healthShowHelp.
@@ -335,8 +335,8 @@ abstract class MediaLocalizations {
   /// No description provided for @accessAndroid.
   ///
   /// In en, this message translates to:
-  /// **'Ferret needs Notification access to see what plays on this phone. It only reads media controls here.'**
-  String get accessAndroid;
+  /// **'Ferret needs Notification access to see what plays on {here, select, tablet{this tablet} other{this phone}}. It only reads media controls here.'**
+  String accessAndroid(String here);
 
   /// No description provided for @accessMacos.
   ///

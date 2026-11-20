@@ -42,7 +42,7 @@
   "settingsBackgroundSendLost": "Đã ngừng gửi trong nền: Shizuku hoặc root không còn bật. Hãy thiết lập lại trong Cài đặt → Điều khiển.",
   "settingsAutoSend": "Tự động gửi",
   "settingsAutoSendBody": "Gửi những gì bạn sao chép tại đây đến các thiết bị đã kết nối.",
-  "settingsAutoSendBodyManual": "Điện thoại này chỉ cho phép với nội dung sao chép bên trong Ferret. Dùng Gửi bảng nhớ tạm cho phần còn lại.",
+  "settingsAutoSendBodyManual": "{here, select, tablet{Máy tính bảng này} other{Điện thoại này}} chỉ cho phép với nội dung sao chép bên trong Ferret. Dùng Gửi bảng nhớ tạm cho phần còn lại.",
   "settingsBackgroundSend": "Tự động gửi trong nền",
   "settingsBackgroundSendBody": "Gửi văn bản bạn sao chép trong bất kỳ ứng dụng nào, cả khi Ferret đã đóng. Dùng tính năng tăng cường của bạn (Shizuku hoặc root). Hình ảnh vẫn cần Gửi bảng nhớ tạm.",
   "settingsWhyManual": "Vì sao cần Gửi bảng nhớ tạm?",

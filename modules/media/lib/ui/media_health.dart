@@ -27,7 +27,10 @@ FeatureHealth? mediaHealthOf(
     return null;
   }
 
-  final here = model.platform.name;
+  final here = switch (model.platform) {
+    .android || .ios when ThisComputer.isTabletScreen => 'tablet',
+    final platform => platform.name,
+  };
   if (model.lostAccess) {
     return FeatureHealth(
       .needsAttention,

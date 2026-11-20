@@ -137,6 +137,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
         'android': 'this phone',
         'ios': 'this iPhone',
         'windows': 'this PC',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -152,6 +153,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
         'android': 'this phone',
         'ios': 'this iPhone',
         'windows': 'this PC',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -167,6 +169,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
         'android': 'this phone',
         'ios': 'this iPhone',
         'windows': 'this PC',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -182,6 +185,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
         'android': 'this phone',
         'ios': 'this iPhone',
         'windows': 'this PC',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -197,6 +201,7 @@ class MediaLocalizationsEn extends MediaLocalizations {
         'android': 'this phone',
         'ios': 'this iPhone',
         'windows': 'this PC',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -211,8 +216,16 @@ class MediaLocalizationsEn extends MediaLocalizations {
   String get healthShareHelp => 'Settings → Continue & media → Share my media';
 
   @override
-  String get accessAndroid =>
-      'Ferret needs Notification access to see what plays on this phone. It only reads media controls here.';
+  String accessAndroid(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Ferret needs Notification access to see what plays on $_temp0. It only reads media controls here.';
+  }
 
   @override
   String get accessMacos =>

@@ -21,7 +21,7 @@ class PowerPage extends StatelessWidget {
         title: l10n.title,
         backLabel: l10n.back,
         children: [
-          SectionTitle(l10n.ladderTitle),
+          SectionTitle(l10n.ladderTitle(ThisComputer.handheld)),
           const PowerLadderFrame(),
           SectionTitle(l10n.shizukuTitle),
           const PowerShizukuFrame(),

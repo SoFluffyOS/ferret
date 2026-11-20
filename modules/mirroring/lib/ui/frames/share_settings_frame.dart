@@ -57,7 +57,7 @@ class ShareSettingsFrame extends StatelessWidget {
             if (!canCapture)
               GroupedCell(
                 child: Text(
-                  l10n.settingsUnsupported,
+                  l10n.settingsUnsupported(ThisComputer.handheld),
                   style: caption.copyWith(color: palette.mutedText),
                 ),
               ),

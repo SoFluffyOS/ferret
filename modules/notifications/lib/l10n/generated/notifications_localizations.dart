@@ -110,14 +110,14 @@ abstract class NotificationsLocalizations {
   /// No description provided for @explainer.
   ///
   /// In en, this message translates to:
-  /// **'Shows this phone\'s notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.'**
-  String get explainer;
+  /// **'Shows {here, select, tablet{this tablet\'s} other{this phone\'s}} notifications on your computer. Every app comes through, and you can mute the ones you don\'t want.'**
+  String explainer(String here);
 
   /// No description provided for @offerDescription.
   ///
   /// In en, this message translates to:
-  /// **'See this phone\'s notifications on your computer.'**
-  String get offerDescription;
+  /// **'See {here, select, tablet{this tablet\'s} other{this phone\'s}} notifications on your computer.'**
+  String offerDescription(String here);
 
   /// No description provided for @explainerDetail.
   ///
@@ -356,8 +356,8 @@ abstract class NotificationsLocalizations {
   /// Stands in for a device name in the middle of other sentences
   ///
   /// In en, this message translates to:
-  /// **'this phone'**
-  String get thisPhone;
+  /// **'{here, select, tablet{this tablet} other{this phone}}'**
+  String thisPhone(String here);
 
   /// No description provided for @tryAgain.
   ///
@@ -482,8 +482,8 @@ abstract class NotificationsLocalizations {
   /// No description provided for @phoneHomePaused.
   ///
   /// In en, this message translates to:
-  /// **'Notification access is off on this phone, so your computer gets no notifications.'**
-  String get phoneHomePaused;
+  /// **'Notification access is off on {here, select, tablet{this tablet} other{this phone}}, so your computer gets no notifications.'**
+  String phoneHomePaused(String here);
 
   /// No description provided for @homeTurnOn.
   ///
@@ -590,14 +590,14 @@ abstract class NotificationsLocalizations {
   /// No description provided for @healthOffThisPhone.
   ///
   /// In en, this message translates to:
-  /// **'Off on this phone'**
-  String get healthOffThisPhone;
+  /// **'Off on {here, select, tablet{this tablet} other{this phone}}'**
+  String healthOffThisPhone(String here);
 
   /// No description provided for @healthOffThisPhoneHelp.
   ///
   /// In en, this message translates to:
-  /// **'On this phone: Settings → To your computer → Notifications.'**
-  String get healthOffThisPhoneHelp;
+  /// **'On {here, select, tablet{this tablet} other{this phone}}: Settings → To your computer → Notifications.'**
+  String healthOffThisPhoneHelp(String here);
 
   /// No description provided for @activityOne.
   ///
@@ -626,8 +626,8 @@ abstract class NotificationsLocalizations {
   /// No description provided for @hideCodesDetail.
   ///
   /// In en, this message translates to:
-  /// **'Sign-in, bank and delivery codes stay on this phone. Computers show the app and \"Code hidden\".'**
-  String get hideCodesDetail;
+  /// **'Sign-in, bank and delivery codes stay on {here, select, tablet{this tablet} other{this phone}}. Computers show the app and \"Code hidden\".'**
+  String hideCodesDetail(String here);
 
   /// No description provided for @codeHidden.
   ///

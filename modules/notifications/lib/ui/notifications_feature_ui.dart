@@ -158,7 +158,7 @@ class NotificationsFeatureUi extends FeatureUi {
     final l10n = context.notificationsL10n;
     return FeatureOffer(
       title: l10n.title,
-      description: l10n.offerDescription,
+      description: l10n.offerDescription(ThisComputer.handheld),
       actionLabel: l10n.setUp,
       onAction: () => _openSetup(feature, phoneAccess),
     );
@@ -412,8 +412,8 @@ class NotificationsFeatureUi extends FeatureUi {
     return switch (setup.stage) {
       .off => FeatureHealth(
         .off,
-        reason: l10n.healthOffThisPhone,
-        help: l10n.healthOffThisPhoneHelp,
+        reason: l10n.healthOffThisPhone(ThisComputer.handheld),
+        help: l10n.healthOffThisPhoneHelp(ThisComputer.handheld),
       ),
       .needsAccess => FeatureHealth(
         .needsAttention,
@@ -638,7 +638,9 @@ class NotificationsFeatureUi extends FeatureUi {
   void _openLocalPicker(FeatureContext featureContext) => unawaited(
     featureContext.push<void>(
       AppPickerPage(
-        deviceName: platformNotificationsL10n().thisPhone,
+        deviceName: platformNotificationsL10n().thisPhone(
+          ThisComputer.handheld,
+        ),
         load: () async => (
           settings: await feature.localSettings(),
           apps: await feature.localApps(),

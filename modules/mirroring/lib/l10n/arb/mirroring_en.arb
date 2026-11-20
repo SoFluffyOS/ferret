@@ -401,7 +401,7 @@
     }
   },
   "askingBody": "Answer Android's prompt. If you don't see it, tap the notice from Ferret.",
-  "auditShared": "{device} saw this phone's screen for {duration} at {time}",
+  "auditShared": "{device} saw {here, select, tablet{this tablet's} other{this phone's}} screen for {duration} at {time}",
   "@auditShared": {
     "placeholders": {
       "device": {
@@ -411,6 +411,9 @@
         "type": "String"
       },
       "time": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -484,7 +487,14 @@
   "settingsSendSoundPermission": "Android calls this permission \"record audio\" and files it under Microphone. Ferret only captures what the phone plays.",
   "settingsSendSoundDenied": "Android didn't allow it. To change that, open Ferret in Android's app settings, then Permissions → Microphone.",
   "settingsSendSoundUnsupported": "Sending sound takes Android 10 or newer.",
-  "settingsUnsupported": "This phone can't capture its screen",
+  "settingsUnsupported": "{here, select, tablet{This tablet} other{This phone}} can't capture its screen",
+  "@settingsUnsupported": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsHistoryTitle": "History",
   "settingsHistoryEmptyShared": "Nobody has seen this screen yet.",
   "clearHistory": "Clear history",
@@ -492,7 +502,14 @@
   "summaryOff": "Off",
   "summaryAsks": "Asks every time",
   "summaryCantCapture": "Can't capture",
-  "permissionAsk": "Ask to see this phone's screen",
+  "permissionAsk": "Ask to see {here, select, tablet{this tablet's} other{this phone's}} screen",
+  "@permissionAsk": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "permissionAskOff": "Screen is off for every computer. Turn it on in Settings → To your computer.",
   "healthAsks": "Asks on {device} every time",
   "@healthAsks": {
@@ -503,7 +520,14 @@
     }
   },
   "healthTryAgainHelp": "Choose Show screen to try again.",
-  "healthShareOff": "Off on this phone",
+  "healthShareOff": "Off on {here, select, tablet{this tablet} other{this phone}}",
+  "@healthShareOff": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "healthShareOffHelp": "Open Settings → To your computer and turn on Let my computers ask to see this screen.",
   "healthShareBlocked": "Off for {device}",
   "@healthShareBlocked": {
@@ -513,15 +537,25 @@
       }
     }
   },
-  "healthShareBlockedHelp": "Turn on Ask to see this phone's screen for {device}, further down this page.",
+  "healthShareBlockedHelp": "Turn on Ask to see {here, select, tablet{this tablet's} other{this phone's}} screen for {device}, further down this page.",
   "@healthShareBlockedHelp": {
     "placeholders": {
       "device": {
         "type": "String"
+      },
+      "here": {
+        "type": "String"
       }
     }
   },
-  "healthSharing": "Sees this phone's screen now",
+  "healthSharing": "Sees {here, select, tablet{this tablet's} other{this phone's}} screen now",
+  "@healthSharing": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "healthShareAsks": "Asks you every time",
   "healthViewing": "Showing its screen here",
   "healthTurnedOff": "Off on {device}",
@@ -1260,17 +1294,27 @@
   "settingsControlOff": "To let a computer that shows this screen tap and type here, turn on Ferret control in Android's Accessibility settings.",
   "settingsControlTurnOn": "Turn on Ferret control…",
   "settingsControlOpen": "Accessibility settings",
-  "settingsControlAlwaysCount": "{count, plural, =1{1 computer controls this phone without asking.} other{{count} computers control this phone without asking.}}",
+  "settingsControlAlwaysCount": "{count, plural, =1{1 computer controls} other{{count} computers control}} {here, select, tablet{this tablet} other{this phone}} without asking.",
   "@settingsControlAlwaysCount": {
     "placeholders": {
       "count": {
         "type": "int"
+      },
+      "here": {
+        "type": "String"
       }
     }
   },
   "settingsControlAskAgain": "Ask every time",
   "controlDisclosureTitle": "Turn on Ferret control?",
-  "controlDisclosureBody": "Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.",
+  "controlDisclosureBody": "Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on {here, select, tablet{this tablet} other{this phone}}.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.",
+  "@controlDisclosureBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "controlDisclosureSteps": "Next, in Accessibility, tap Ferret control and turn it on.",
   "controlDisclosureOpen": "Open settings",
   "notNow": "Not now",
@@ -1428,7 +1472,7 @@
       }
     }
   },
-  "cameraAuditShared": "{device} used this phone's camera for {duration} at {time}",
+  "cameraAuditShared": "{device} used {here, select, tablet{this tablet's} other{this phone's}} camera for {duration} at {time}",
   "@cameraAuditShared": {
     "placeholders": {
       "device": {
@@ -1438,6 +1482,9 @@
         "type": "String"
       },
       "time": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
@@ -1469,24 +1516,44 @@
       }
     }
   },
-  "cameraOnBody": "It sees and hears through this phone. Since {time}.",
+  "cameraOnBody": "It sees and hears through {here, select, tablet{this tablet} other{this phone}}. Since {time}.",
   "@cameraOnBody": {
     "placeholders": {
       "time": {
         "type": "String"
-      }
-    }
-  },
-  "cameraOnBodySilent": "It sees through this phone's camera. The microphone is off. Since {time}.",
-  "@cameraOnBodySilent": {
-    "placeholders": {
-      "time": {
+      },
+      "here": {
         "type": "String"
       }
     }
   },
-  "noticeCameraBody": "It sees and hears through this phone",
-  "noticeCameraBodySilent": "It sees through this phone's camera",
+  "cameraOnBodySilent": "It sees through {here, select, tablet{this tablet's} other{this phone's}} camera. The microphone is off. Since {time}.",
+  "@cameraOnBodySilent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeCameraBody": "It sees and hears through {here, select, tablet{this tablet} other{this phone}}",
+  "@noticeCameraBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeCameraBodySilent": "It sees through {here, select, tablet{this tablet's} other{this phone's}} camera",
+  "@noticeCameraBodySilent": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "noticeCameraChannel": "Camera for a computer",
   "settingsCameraTitle": "Camera for a computer",
   "settingsCameraAllow": "Let my computers ask to use this camera",
@@ -1499,7 +1566,14 @@
       }
     }
   },
-  "permissionCameraAsk": "Ask to use this phone's camera",
+  "permissionCameraAsk": "Ask to use {here, select, tablet{this tablet's} other{this phone's}} camera",
+  "@permissionCameraAsk": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "permissionCameraAskOff": "Camera is off for every computer. Turn it on in Settings → To your computer.",
   "cameraTitle": "Camera",
   "displayUse": "Use {device} as a display",

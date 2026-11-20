@@ -164,7 +164,7 @@ class CameraFeatureUi extends FeatureUi {
           .photo => l10n.askPhotoTitle(name),
           .document => l10n.askDocumentTitle(name),
         },
-        body: l10n.noticeBody,
+        body: l10n.noticeBody(ThisComputer.handheld),
       ),
     );
   }

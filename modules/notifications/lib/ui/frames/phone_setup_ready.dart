@@ -42,7 +42,7 @@ class PhoneSetupReady extends StatelessWidget {
         ),
         SettingSwitchRow(
           title: l10n.hideCodes,
-          body: l10n.hideCodesDetail,
+          body: l10n.hideCodesDetail(ThisComputer.handheld),
           value: hideCodes,
           onChanged: viewModel.setHideCodes,
         ),

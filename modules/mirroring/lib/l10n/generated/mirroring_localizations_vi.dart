@@ -341,8 +341,15 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       'Trả lời lời nhắc của Android. Nếu không thấy, hãy nhấn vào thông báo từ Ferret.';
 
   @override
-  String auditShared(String device, String duration, String time) {
-    return '$device đã xem màn hình điện thoại này trong $duration lúc $time';
+  String auditShared(String device, String duration, String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return '$device đã xem màn hình $_temp0 trong $duration lúc $time';
   }
 
   @override
@@ -438,8 +445,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       'Gửi âm thanh cần Android 10 trở lên.';
 
   @override
-  String get settingsUnsupported =>
-      'Điện thoại này không chụp được màn hình của nó';
+  String settingsUnsupported(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'Máy tính bảng này',
+        'other': 'Điện thoại này',
+      },
+    );
+    return '$_temp0 không chụp được màn hình của nó';
+  }
 
   @override
   String get settingsHistoryTitle => 'Lịch sử';
@@ -464,7 +479,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get summaryCantCapture => 'Không chụp được';
 
   @override
-  String get permissionAsk => 'Hỏi xem màn hình điện thoại này';
+  String permissionAsk(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Hỏi xem màn hình $_temp0';
+  }
 
   @override
   String get permissionAskOff =>
@@ -479,7 +503,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get healthTryAgainHelp => 'Chọn Xem màn hình để thử lại.';
 
   @override
-  String get healthShareOff => 'Đang tắt trên điện thoại này';
+  String healthShareOff(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Đang tắt trên $_temp0';
+  }
 
   @override
   String get healthShareOffHelp =>
@@ -491,12 +524,28 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String healthShareBlockedHelp(String device) {
-    return 'Bật “Hỏi xem màn hình điện thoại này” cho $device ở phía dưới trang này.';
+  String healthShareBlockedHelp(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Bật “Hỏi xem màn hình $_temp0” cho $device ở phía dưới trang này.';
   }
 
   @override
-  String get healthSharing => 'Đang xem màn hình điện thoại này';
+  String healthSharing(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Đang xem màn hình $_temp0';
+  }
 
   @override
   String get healthShareAsks => 'Hỏi bạn mỗi lần';
@@ -1299,13 +1348,20 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get settingsControlOpen => 'Cài đặt Hỗ trợ tiếp cận';
 
   @override
-  String settingsControlAlwaysCount(int count) {
+  String settingsControlAlwaysCount(int count, String here) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count máy tính điều khiển điện thoại này mà không cần hỏi.',
+      other: '$count máy tính',
     );
-    return '$_temp0';
+    String _temp1 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return '$_temp0 điều khiển $_temp1 mà không cần hỏi.';
   }
 
   @override
@@ -1315,8 +1371,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get controlDisclosureTitle => 'Bật Điều khiển Ferret?';
 
   @override
-  String get controlDisclosureBody =>
-      'Điều khiển Ferret là một dịch vụ hỗ trợ tiếp cận của Android. Khi bật, máy tính bạn đã ghép đôi có thể chạm, vuốt, nhấn Quay lại và Màn hình chính, và gõ trên điện thoại này.\n\nNó chỉ hoạt động khi bạn đang hiển thị màn hình này cho máy tính đó và đã đồng ý cho điều khiển. Một thông báo luôn hiện suốt thời gian đó, kèm nút Dừng.\n\nĐể gõ, nó đọc ô văn bản bạn đang gõ vào. Nó không đọc gì khác, không lưu gì, và không gửi gì đi đâu.';
+  String controlDisclosureBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Điều khiển Ferret là một dịch vụ hỗ trợ tiếp cận của Android. Khi bật, máy tính bạn đã ghép đôi có thể chạm, vuốt, nhấn Quay lại và Màn hình chính, và gõ trên $_temp0.\n\nNó chỉ hoạt động khi bạn đang hiển thị màn hình này cho máy tính đó và đã đồng ý cho điều khiển. Một thông báo luôn hiện suốt thời gian đó, kèm nút Dừng.\n\nĐể gõ, nó đọc ô văn bản bạn đang gõ vào. Nó không đọc gì khác, không lưu gì, và không gửi gì đi đâu.';
+  }
 
   @override
   String get controlDisclosureSteps =>
@@ -1443,8 +1507,20 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String cameraAuditShared(String device, String duration, String time) {
-    return '$device đã dùng camera của điện thoại này trong $duration lúc $time';
+  String cameraAuditShared(
+    String device,
+    String duration,
+    String time,
+    String here,
+  ) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return '$device đã dùng camera của $_temp0 trong $duration lúc $time';
   }
 
   @override
@@ -1473,21 +1549,52 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String cameraOnBody(String time) {
-    return 'Nó đang thấy và nghe qua điện thoại này. Từ $time.';
+  String cameraOnBody(String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Nó đang thấy và nghe qua $_temp0. Từ $time.';
   }
 
   @override
-  String cameraOnBodySilent(String time) {
-    return 'Nó đang thấy qua camera của điện thoại này. Micro đang tắt. Từ $time.';
+  String cameraOnBodySilent(String time, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Nó đang thấy qua camera của $_temp0. Micro đang tắt. Từ $time.';
   }
 
   @override
-  String get noticeCameraBody => 'Nó đang thấy và nghe qua điện thoại này';
+  String noticeCameraBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Nó đang thấy và nghe qua $_temp0';
+  }
 
   @override
-  String get noticeCameraBodySilent =>
-      'Nó đang thấy qua camera của điện thoại này';
+  String noticeCameraBodySilent(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Nó đang thấy qua camera của $_temp0';
+  }
 
   @override
   String get noticeCameraChannel => 'Camera cho máy tính';
@@ -1513,7 +1620,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String get permissionCameraAsk => 'Hỏi dùng camera của điện thoại này';
+  String permissionCameraAsk(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng này',
+        'other': 'điện thoại này',
+      },
+    );
+    return 'Hỏi dùng camera của $_temp0';
+  }
 
   @override
   String get permissionCameraAskOff =>

@@ -616,9 +616,6 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   @override
   String get settingsAutoSendBody => pseudo(super.settingsAutoSendBody);
   @override
-  String get settingsAutoSendBodyManual =>
-      pseudo(super.settingsAutoSendBodyManual);
-  @override
   String get settingsBackgroundSend => pseudo(super.settingsBackgroundSend);
   @override
   String get settingsBackgroundSendBody =>
@@ -679,6 +676,9 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   @override
   String healthUnsupported(String name) =>
       pseudo(super.healthUnsupported(name));
+  @override
+  String settingsAutoSendBodyManual(String here) =>
+      pseudo(super.settingsAutoSendBodyManual(here));
   @override
   String settingsImagesBody(int megabytes) =>
       pseudo(super.settingsImagesBody(megabytes));
@@ -1121,8 +1121,6 @@ class PseudoFindLocalizations extends FindLocalizationsEn {
   @override
   String get settingsDndOff => pseudo(super.settingsDndOff);
   @override
-  String get settingsDndHowTo => pseudo(super.settingsDndHowTo);
-  @override
   String get settingsDndStillOff => pseudo(super.settingsDndStillOff);
   @override
   String get settingsAllow => pseudo(super.settingsAllow);
@@ -1199,6 +1197,8 @@ class PseudoFindLocalizations extends FindLocalizationsEn {
   @override
   String outgoingLostConnectionDetail(String name) =>
       pseudo(super.outgoingLostConnectionDetail(name));
+  @override
+  String settingsDndHowTo(String here) => pseudo(super.settingsDndHowTo(here));
   @override
   String healthChecking(String name) => pseudo(super.healthChecking(name));
   @override
@@ -1601,8 +1601,6 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   @override
   String get healthShareHelp => pseudo(super.healthShareHelp);
   @override
-  String get accessAndroid => pseudo(super.accessAndroid);
-  @override
   String get accessMacos => pseudo(super.accessMacos);
   @override
   String get accessDenied => pseudo(super.accessDenied);
@@ -1659,6 +1657,8 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   String healthOffHere(String here) => pseudo(super.healthOffHere(here));
   @override
   String healthNotShared(String here) => pseudo(super.healthNotShared(here));
+  @override
+  String accessAndroid(String here) => pseudo(super.accessAndroid(here));
 }
 
 class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
@@ -1923,8 +1923,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String get settingsSendSoundUnsupported =>
       pseudo(super.settingsSendSoundUnsupported);
   @override
-  String get settingsUnsupported => pseudo(super.settingsUnsupported);
-  @override
   String get settingsHistoryTitle => pseudo(super.settingsHistoryTitle);
   @override
   String get settingsHistoryEmptyShared =>
@@ -1940,17 +1938,11 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get summaryCantCapture => pseudo(super.summaryCantCapture);
   @override
-  String get permissionAsk => pseudo(super.permissionAsk);
-  @override
   String get permissionAskOff => pseudo(super.permissionAskOff);
   @override
   String get healthTryAgainHelp => pseudo(super.healthTryAgainHelp);
   @override
-  String get healthShareOff => pseudo(super.healthShareOff);
-  @override
   String get healthShareOffHelp => pseudo(super.healthShareOffHelp);
-  @override
-  String get healthSharing => pseudo(super.healthSharing);
   @override
   String get healthShareAsks => pseudo(super.healthShareAsks);
   @override
@@ -2194,8 +2186,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get controlDisclosureTitle => pseudo(super.controlDisclosureTitle);
   @override
-  String get controlDisclosureBody => pseudo(super.controlDisclosureBody);
-  @override
   String get controlDisclosureSteps => pseudo(super.controlDisclosureSteps);
   @override
   String get controlDisclosureOpen => pseudo(super.controlDisclosureOpen);
@@ -2220,10 +2210,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get cameraAskBody => pseudo(super.cameraAskBody);
   @override
-  String get noticeCameraBody => pseudo(super.noticeCameraBody);
-  @override
-  String get noticeCameraBodySilent => pseudo(super.noticeCameraBodySilent);
-  @override
   String get noticeCameraChannel => pseudo(super.noticeCameraChannel);
   @override
   String get settingsCameraTitle => pseudo(super.settingsCameraTitle);
@@ -2231,8 +2217,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String get settingsCameraAllow => pseudo(super.settingsCameraAllow);
   @override
   String get settingsCameraAllowBody => pseudo(super.settingsCameraAllowBody);
-  @override
-  String get permissionCameraAsk => pseudo(super.permissionCameraAsk);
   @override
   String get permissionCameraAskOff => pseudo(super.permissionCameraAskOff);
   @override
@@ -2367,8 +2351,12 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String askingTitle(String device) => pseudo(super.askingTitle(device));
   @override
-  String auditShared(String device, String duration, String time) =>
-      pseudo(super.auditShared(device, duration, time));
+  String auditShared(
+    String device,
+    String duration,
+    String time,
+    String here,
+  ) => pseudo(super.auditShared(device, duration, time, here));
   @override
   String auditViewed(String device, String duration, String time) =>
       pseudo(super.auditViewed(device, duration, time));
@@ -2385,13 +2373,22 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String sharingBodySound(String time) => pseudo(super.sharingBodySound(time));
   @override
+  String settingsUnsupported(String here) =>
+      pseudo(super.settingsUnsupported(here));
+  @override
+  String permissionAsk(String here) => pseudo(super.permissionAsk(here));
+  @override
   String healthAsks(String device) => pseudo(super.healthAsks(device));
+  @override
+  String healthShareOff(String here) => pseudo(super.healthShareOff(here));
   @override
   String healthShareBlocked(String device) =>
       pseudo(super.healthShareBlocked(device));
   @override
-  String healthShareBlockedHelp(String device) =>
-      pseudo(super.healthShareBlockedHelp(device));
+  String healthShareBlockedHelp(String device, String here) =>
+      pseudo(super.healthShareBlockedHelp(device, here));
+  @override
+  String healthSharing(String here) => pseudo(super.healthSharing(here));
   @override
   String healthTurnedOff(String device) =>
       pseudo(super.healthTurnedOff(device));
@@ -2563,8 +2560,11 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String controlledTitle(String computer) =>
       pseudo(super.controlledTitle(computer));
   @override
-  String settingsControlAlwaysCount(int count) =>
-      pseudo(super.settingsControlAlwaysCount(count));
+  String settingsControlAlwaysCount(int count, String here) =>
+      pseudo(super.settingsControlAlwaysCount(count, here));
+  @override
+  String controlDisclosureBody(String here) =>
+      pseudo(super.controlDisclosureBody(here));
   @override
   String useCamera(String device) => pseudo(super.useCamera(device));
   @override
@@ -2616,8 +2616,12 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String cameraAuditViewed(String device, String duration, String time) =>
       pseudo(super.cameraAuditViewed(device, duration, time));
   @override
-  String cameraAuditShared(String device, String duration, String time) =>
-      pseudo(super.cameraAuditShared(device, duration, time));
+  String cameraAuditShared(
+    String device,
+    String duration,
+    String time,
+    String here,
+  ) => pseudo(super.cameraAuditShared(device, duration, time, here));
   @override
   String cameraLeaveTitle(String device) =>
       pseudo(super.cameraLeaveTitle(device));
@@ -2628,13 +2632,22 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   String cameraOnTitle(String computer) =>
       pseudo(super.cameraOnTitle(computer));
   @override
-  String cameraOnBody(String time) => pseudo(super.cameraOnBody(time));
+  String cameraOnBody(String time, String here) =>
+      pseudo(super.cameraOnBody(time, here));
   @override
-  String cameraOnBodySilent(String time) =>
-      pseudo(super.cameraOnBodySilent(time));
+  String cameraOnBodySilent(String time, String here) =>
+      pseudo(super.cameraOnBodySilent(time, here));
+  @override
+  String noticeCameraBody(String here) => pseudo(super.noticeCameraBody(here));
+  @override
+  String noticeCameraBodySilent(String here) =>
+      pseudo(super.noticeCameraBodySilent(here));
   @override
   String settingsCameraAlwaysCount(int count) =>
       pseudo(super.settingsCameraAlwaysCount(count));
+  @override
+  String permissionCameraAsk(String here) =>
+      pseudo(super.permissionCameraAsk(here));
   @override
   String displayUse(String device) => pseudo(super.displayUse(device));
   @override
@@ -2701,10 +2714,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get title => pseudo(super.title);
-  @override
-  String get explainer => pseudo(super.explainer);
-  @override
-  String get offerDescription => pseudo(super.offerDescription);
   @override
   String get explainerDetail => pseudo(super.explainerDetail);
   @override
@@ -2776,8 +2785,6 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get appPickerEmpty => pseudo(super.appPickerEmpty);
   @override
-  String get thisPhone => pseudo(super.thisPhone);
-  @override
   String get tryAgain => pseudo(super.tryAgain);
   @override
   String get back => pseudo(super.back);
@@ -2804,8 +2811,6 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get fix => pseudo(super.fix);
   @override
-  String get phoneHomePaused => pseudo(super.phoneHomePaused);
-  @override
   String get how => pseudo(super.how);
   @override
   String get ok => pseudo(super.ok);
@@ -2824,15 +2829,13 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get healthHiddenHelp => pseudo(super.healthHiddenHelp);
   @override
-  String get healthOffThisPhone => pseudo(super.healthOffThisPhone);
-  @override
-  String get healthOffThisPhoneHelp => pseudo(super.healthOffThisPhoneHelp);
-  @override
   String get hideCodes => pseudo(super.hideCodes);
   @override
-  String get hideCodesDetail => pseudo(super.hideCodesDetail);
-  @override
   String get codeHidden => pseudo(super.codeHidden);
+  @override
+  String explainer(String here) => pseudo(super.explainer(here));
+  @override
+  String offerDescription(String here) => pseudo(super.offerDescription(here));
   @override
   String appsAllExcept(int count) => pseudo(super.appsAllExcept(count));
   @override
@@ -2843,6 +2846,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String appPickerSaveFailed(String device) =>
       pseudo(super.appPickerSaveFailed(device));
+  @override
+  String thisPhone(String here) => pseudo(super.thisPhone(here));
   @override
   String phoneMirroring(String apps) => pseudo(super.phoneMirroring(apps));
   @override
@@ -2861,6 +2866,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String replyFailedBody(String device) =>
       pseudo(super.replyFailedBody(device));
+  @override
+  String phoneHomePaused(String here) => pseudo(super.phoneHomePaused(here));
   @override
   String homeTurnOn(String device) => pseudo(super.homeTurnOn(device));
   @override
@@ -2881,6 +2888,12 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   String healthAccessHelp(String device) =>
       pseudo(super.healthAccessHelp(device));
   @override
+  String healthOffThisPhone(String here) =>
+      pseudo(super.healthOffThisPhone(here));
+  @override
+  String healthOffThisPhoneHelp(String here) =>
+      pseudo(super.healthOffThisPhoneHelp(here));
+  @override
   String activityOne(String app, String title) =>
       pseudo(super.activityOne(app, title));
   @override
@@ -2888,6 +2901,8 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
       pseudo(super.activityCount(count, device));
   @override
   String privateCover(String device) => pseudo(super.privateCover(device));
+  @override
+  String hideCodesDetail(String here) => pseudo(super.hideCodesDetail(here));
 }
 
 class PseudoCameraLocalizations extends CameraLocalizationsEn {
@@ -2908,8 +2923,6 @@ class PseudoCameraLocalizations extends CameraLocalizationsEn {
   @override
   String get askNotNow => pseudo(super.askNotNow);
   @override
-  String get noticeBody => pseudo(super.noticeBody);
-  @override
   String get activityOnClipboard => pseudo(super.activityOnClipboard);
   @override
   String get activityInFolder => pseudo(super.activityInFolder);
@@ -2928,6 +2941,8 @@ class PseudoCameraLocalizations extends CameraLocalizationsEn {
   @override
   String askDocumentTitle(String device) =>
       pseudo(super.askDocumentTitle(device));
+  @override
+  String noticeBody(String here) => pseudo(super.noticeBody(here));
   @override
   String activityWaiting(String device) =>
       pseudo(super.activityWaiting(device));
@@ -3125,8 +3140,6 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   @override
   String get settingsShortRoot => pseudo(super.settingsShortRoot);
   @override
-  String get ladderTitle => pseudo(super.ladderTitle);
-  @override
   String get rungBasic => pseudo(super.rungBasic);
   @override
   String get rungNotifications => pseudo(super.rungNotifications);
@@ -3150,8 +3163,6 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   String get perkMedia => pseudo(super.perkMedia);
   @override
   String get perkFind => pseudo(super.perkFind);
-  @override
-  String get perkNotifications => pseudo(super.perkNotifications);
   @override
   String get perkReplies => pseudo(super.perkReplies);
   @override
@@ -3212,11 +3223,7 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   @override
   String get noticeLinkFailed => pseudo(super.noticeLinkFailed);
   @override
-  String get noticeGrantFailed => pseudo(super.noticeGrantFailed);
-  @override
   String get noticeRootRefused => pseudo(super.noticeRootRefused);
-  @override
-  String get noticeSettingsNotOpened => pseudo(super.noticeSettingsNotOpened);
   @override
   String get batteryTitle => pseudo(super.batteryTitle);
   @override
@@ -3227,10 +3234,6 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   String get turnOn => pseudo(super.turnOn);
   @override
   String get rootTitle => pseudo(super.rootTitle);
-  @override
-  String get rootNotFound => pseudo(super.rootNotFound);
-  @override
-  String get rootFound => pseudo(super.rootFound);
   @override
   String get rootWarning => pseudo(super.rootWarning);
   @override
@@ -3258,7 +3261,23 @@ class PseudoPowerLocalizations extends PowerLocalizationsEn {
   @override
   String get cardAskAgain => pseudo(super.cardAskAgain);
   @override
-  String rootFoundWith(String manager) => pseudo(super.rootFoundWith(manager));
+  String ladderTitle(String here) => pseudo(super.ladderTitle(here));
+  @override
+  String perkNotifications(String here) =>
+      pseudo(super.perkNotifications(here));
+  @override
+  String noticeGrantFailed(String here) =>
+      pseudo(super.noticeGrantFailed(here));
+  @override
+  String noticeSettingsNotOpened(String here) =>
+      pseudo(super.noticeSettingsNotOpened(here));
+  @override
+  String rootNotFound(String here) => pseudo(super.rootNotFound(here));
+  @override
+  String rootFound(String here) => pseudo(super.rootFound(here));
+  @override
+  String rootFoundWith(String manager, String here) =>
+      pseudo(super.rootFoundWith(manager, here));
 }
 
 class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
@@ -3528,7 +3547,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String stoppedOnHost(String device) => pseudo(super.stoppedOnHost(device));
   @override
-  String stoppedRevoked(String device) => pseudo(super.stoppedRevoked(device));
+  String stoppedRevoked(String device, String here) =>
+      pseudo(super.stoppedRevoked(device, here));
   @override
   String stoppedFailed(String device, String host) =>
       pseudo(super.stoppedFailed(device, host));

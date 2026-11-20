@@ -96,7 +96,7 @@
   "deniedVersion": "{device} đang chạy Ferret bản cũ. Cập nhật Ferret trên {device}, rồi thử lại.",
   "stoppedOnHost": "Có người đã dừng điều khiển trên {device}.",
   "stoppedIdle": "Đã dừng vì lâu không có thao tác.",
-  "stoppedRevoked": "{device} không còn cho điện thoại này điều khiển.",
+  "stoppedRevoked": "{device} không còn cho {here, select, tablet{máy tính bảng này} other{điện thoại này}} điều khiển.",
   "stoppedFailed": "{host, select, mac{{device} không còn di chuyển con trỏ hay gõ phím được nữa. Trên {device}: kiểm tra quyền Trợ năng.} linux{{device} không còn di chuyển con trỏ hay gõ phím được nữa. Trên {device}: mở Ferret → Cài đặt → Điều khiển rồi kiểm tra /dev/uinput, xdotool hoặc ydotool.} other{{device} không còn di chuyển con trỏ hay gõ phím được nữa. Trên {device}: mở Ferret → Cài đặt → Điều khiển để xem lý do.}}",
   "lostConnection": "Mất kết nối với {device}.",
   "unreachable": "{device} không phản hồi. Trên {device}: mở Ferret.",

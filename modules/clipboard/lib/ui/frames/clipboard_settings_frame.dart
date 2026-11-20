@@ -67,7 +67,7 @@ class ClipboardSettingsFrame extends StatelessWidget {
           title: l10n.settingsAutoSend,
           body: switch ((needsManualSend, access)) {
             (true, .whileFocused) => l10n.settingsAutoSendBodyWayland,
-            (true, _) => l10n.settingsAutoSendBodyManual,
+            (true, _) => l10n.settingsAutoSendBodyManual(ThisComputer.handheld),
             (false, _) => l10n.settingsAutoSendBody,
           },
           value: autoSend,

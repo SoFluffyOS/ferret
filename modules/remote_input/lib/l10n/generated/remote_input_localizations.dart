@@ -674,8 +674,8 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @stoppedRevoked.
   ///
   /// In en, this message translates to:
-  /// **'{device} no longer lets this phone control it.'**
-  String stoppedRevoked(String device);
+  /// **'{device} no longer lets {here, select, tablet{this tablet} other{this phone}} control it.'**
+  String stoppedRevoked(String device, String here);
 
   /// host is mac, windows or linux for the computer being controlled, or other when unknown.
   ///

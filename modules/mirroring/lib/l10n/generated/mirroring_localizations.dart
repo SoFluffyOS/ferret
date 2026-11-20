@@ -476,8 +476,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @auditShared.
   ///
   /// In en, this message translates to:
-  /// **'{device} saw this phone\'s screen for {duration} at {time}'**
-  String auditShared(String device, String duration, String time);
+  /// **'{device} saw {here, select, tablet{this tablet\'s} other{this phone\'s}} screen for {duration} at {time}'**
+  String auditShared(String device, String duration, String time, String here);
 
   /// No description provided for @auditViewed.
   ///
@@ -590,8 +590,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @settingsUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'This phone can\'t capture its screen'**
-  String get settingsUnsupported;
+  /// **'{here, select, tablet{This tablet} other{This phone}} can\'t capture its screen'**
+  String settingsUnsupported(String here);
 
   /// No description provided for @settingsHistoryTitle.
   ///
@@ -638,8 +638,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @permissionAsk.
   ///
   /// In en, this message translates to:
-  /// **'Ask to see this phone\'s screen'**
-  String get permissionAsk;
+  /// **'Ask to see {here, select, tablet{this tablet\'s} other{this phone\'s}} screen'**
+  String permissionAsk(String here);
 
   /// No description provided for @permissionAskOff.
   ///
@@ -662,8 +662,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @healthShareOff.
   ///
   /// In en, this message translates to:
-  /// **'Off on this phone'**
-  String get healthShareOff;
+  /// **'Off on {here, select, tablet{this tablet} other{this phone}}'**
+  String healthShareOff(String here);
 
   /// No description provided for @healthShareOffHelp.
   ///
@@ -680,14 +680,14 @@ abstract class MirroringLocalizations {
   /// No description provided for @healthShareBlockedHelp.
   ///
   /// In en, this message translates to:
-  /// **'Turn on Ask to see this phone\'s screen for {device}, further down this page.'**
-  String healthShareBlockedHelp(String device);
+  /// **'Turn on Ask to see {here, select, tablet{this tablet\'s} other{this phone\'s}} screen for {device}, further down this page.'**
+  String healthShareBlockedHelp(String device, String here);
 
   /// No description provided for @healthSharing.
   ///
   /// In en, this message translates to:
-  /// **'Sees this phone\'s screen now'**
-  String get healthSharing;
+  /// **'Sees {here, select, tablet{this tablet\'s} other{this phone\'s}} screen now'**
+  String healthSharing(String here);
 
   /// No description provided for @healthShareAsks.
   ///
@@ -1802,8 +1802,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @settingsControlAlwaysCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 computer controls this phone without asking.} other{{count} computers control this phone without asking.}}'**
-  String settingsControlAlwaysCount(int count);
+  /// **'{count, plural, =1{1 computer controls} other{{count} computers control}} {here, select, tablet{this tablet} other{this phone}} without asking.'**
+  String settingsControlAlwaysCount(int count, String here);
 
   /// No description provided for @settingsControlAskAgain.
   ///
@@ -1820,8 +1820,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @controlDisclosureBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.'**
-  String get controlDisclosureBody;
+  /// **'Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on {here, select, tablet{this tablet} other{this phone}}.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.'**
+  String controlDisclosureBody(String here);
 
   /// No description provided for @controlDisclosureSteps.
   ///
@@ -1982,8 +1982,13 @@ abstract class MirroringLocalizations {
   /// No description provided for @cameraAuditShared.
   ///
   /// In en, this message translates to:
-  /// **'{device} used this phone\'s camera for {duration} at {time}'**
-  String cameraAuditShared(String device, String duration, String time);
+  /// **'{device} used {here, select, tablet{this tablet\'s} other{this phone\'s}} camera for {duration} at {time}'**
+  String cameraAuditShared(
+    String device,
+    String duration,
+    String time,
+    String here,
+  );
 
   /// No description provided for @cameraLeaveTitle.
   ///
@@ -2024,26 +2029,26 @@ abstract class MirroringLocalizations {
   /// No description provided for @cameraOnBody.
   ///
   /// In en, this message translates to:
-  /// **'It sees and hears through this phone. Since {time}.'**
-  String cameraOnBody(String time);
+  /// **'It sees and hears through {here, select, tablet{this tablet} other{this phone}}. Since {time}.'**
+  String cameraOnBody(String time, String here);
 
   /// No description provided for @cameraOnBodySilent.
   ///
   /// In en, this message translates to:
-  /// **'It sees through this phone\'s camera. The microphone is off. Since {time}.'**
-  String cameraOnBodySilent(String time);
+  /// **'It sees through {here, select, tablet{this tablet\'s} other{this phone\'s}} camera. The microphone is off. Since {time}.'**
+  String cameraOnBodySilent(String time, String here);
 
   /// No description provided for @noticeCameraBody.
   ///
   /// In en, this message translates to:
-  /// **'It sees and hears through this phone'**
-  String get noticeCameraBody;
+  /// **'It sees and hears through {here, select, tablet{this tablet} other{this phone}}'**
+  String noticeCameraBody(String here);
 
   /// No description provided for @noticeCameraBodySilent.
   ///
   /// In en, this message translates to:
-  /// **'It sees through this phone\'s camera'**
-  String get noticeCameraBodySilent;
+  /// **'It sees through {here, select, tablet{this tablet\'s} other{this phone\'s}} camera'**
+  String noticeCameraBodySilent(String here);
 
   /// No description provided for @noticeCameraChannel.
   ///
@@ -2078,8 +2083,8 @@ abstract class MirroringLocalizations {
   /// No description provided for @permissionCameraAsk.
   ///
   /// In en, this message translates to:
-  /// **'Ask to use this phone\'s camera'**
-  String get permissionCameraAsk;
+  /// **'Ask to use {here, select, tablet{this tablet\'s} other{this phone\'s}} camera'**
+  String permissionCameraAsk(String here);
 
   /// No description provided for @permissionCameraAskOff.
   ///

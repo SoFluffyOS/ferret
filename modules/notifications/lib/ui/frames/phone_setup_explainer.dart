@@ -14,7 +14,10 @@ class PhoneSetupExplainer extends StatelessWidget {
 
     return GroupedCard(
       children: [
-        GroupedRow(title: l10n.explainer, subtitle: l10n.explainerDetail),
+        GroupedRow(
+          title: l10n.explainer(ThisComputer.handheld),
+          subtitle: l10n.explainerDetail,
+        ),
         GroupedCell(
           child: Button(
             variant: .primary,

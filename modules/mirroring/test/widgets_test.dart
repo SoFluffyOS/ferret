@@ -43,6 +43,19 @@ class _QuietNotifier implements LocalNotifier {
 }
 
 void main() {
+  // The default test display, 800 by 600, counts as a tablet's; these
+  // strings are checked as a phone says them.
+  setUp(() {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.platformDispatcher.implicitView!.display
+      ..devicePixelRatio = 1
+      ..size = const Size(390, 844);
+  });
+  tearDown(() {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.platformDispatcher.implicitView!.display.reset();
+  });
+
   late FakeHost host;
   late FakeSession pixel;
   late FakeSession mac;

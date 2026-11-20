@@ -153,8 +153,16 @@ class FindLocalizationsEn extends FindLocalizations {
   String get settingsDndOff => 'Do Not Disturb access is off';
 
   @override
-  String get settingsDndHowTo =>
-      'Without it, this phone rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.';
+  String settingsDndHowTo(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return 'Without it, $_temp0 rings on silent but stays quiet in Do Not Disturb. Tap Allow in Settings, find Ferret in the list and turn it on.';
+  }
 
   @override
   String get settingsDndStillOff =>

@@ -82,7 +82,7 @@ class MediaSettingsFrame extends StatelessWidget {
   }) {
     final (text, label, action) = switch ((model.platform, askedBefore)) {
       (.android, _) => (
-        l10n.accessAndroid,
+        l10n.accessAndroid(ThisComputer.handheld),
         l10n.accessOpenSettings,
         model.openAccessSettings,
       ),

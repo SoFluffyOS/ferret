@@ -334,10 +334,13 @@
     }
   },
   "stoppedIdle": "Stopped after a long time without input.",
-  "stoppedRevoked": "{device} no longer lets this phone control it.",
+  "stoppedRevoked": "{device} no longer lets {here, select, tablet{this tablet} other{this phone}} control it.",
   "@stoppedRevoked": {
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }

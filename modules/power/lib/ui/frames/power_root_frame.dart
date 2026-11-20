@@ -39,7 +39,7 @@ class PowerRootFrame extends StatelessWidget {
     if (root == .notFound) {
       return SurfaceCard(
         child: Text(
-          l10n.rootNotFound,
+          l10n.rootNotFound(ThisComputer.handheld),
           style: typography.caption1.copyWith(color: palette.mutedText),
         ),
       );

@@ -490,8 +490,15 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get stoppedIdle => 'Stopped after a long time without input.';
 
   @override
-  String stoppedRevoked(String device) {
-    return '$device no longer lets this phone control it.';
+  String stoppedRevoked(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'this tablet',
+        'other': 'this phone',
+      },
+    );
+    return '$device no longer lets $_temp0 control it.';
   }
 
   @override

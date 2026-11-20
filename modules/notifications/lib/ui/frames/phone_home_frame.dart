@@ -40,7 +40,12 @@ class PhoneHomeFrame extends StatelessWidget {
           onPressed: onSetUp,
         ),
       ],
-      children: [StatusLine(text: l10n.phoneHomePaused, tone: .warning)],
+      children: [
+        StatusLine(
+          text: l10n.phoneHomePaused(ThisComputer.handheld),
+          tone: .warning,
+        ),
+      ],
     );
   }
 }
