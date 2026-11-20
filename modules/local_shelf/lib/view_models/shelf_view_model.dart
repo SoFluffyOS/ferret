@@ -16,6 +16,7 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
     this.nameOf = _sameName,
     this.dragOut,
     this.quickLook,
+    this.settings,
   });
 
   /// This computer's device id: its own copies show as long as previews
@@ -30,6 +31,9 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
 
   DragOut? dragOut;
   Future<void> Function(List<String> paths)? quickLook;
+
+  /// Whether and how long copies are kept; none in tests that don't ask.
+  final ShelfSettings? settings;
 
   ShelfStore? _store;
   StreamSubscription<void>? _changes;
@@ -55,6 +59,21 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
   /// from a device whose previews are off here.
   bool hides(ShelfItem item) =>
       isHidden || !showsPreviewsFrom(item.fromDeviceId ?? localDeviceId);
+
+  /// Whether what is copied goes on the shelf too.
+  bool get keepsCopies => settings?.keepCopies ?? false;
+
+  ShelfCopiesFor get copiesFor => settings?.copiesFor ?? .untilQuit;
+
+  Future<void> setKeepCopies(bool value) async {
+    await settings?.setKeepCopies(value);
+    notifyListeners();
+  }
+
+  Future<void> setCopiesFor(ShelfCopiesFor value) async {
+    await settings?.setCopiesFor(value);
+    notifyListeners();
+  }
 
   /// Shows [store]'s items from now on.
   void attach(ShelfStore store) {

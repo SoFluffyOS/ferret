@@ -194,6 +194,26 @@ class ShelfStore {
     await _finish();
   });
 
+  /// Takes copies off the shelf: all of them, or those added before
+  /// [addedBefore]. What the person dropped stays.
+  Future<void> forgetCopies({DateTime? addedBefore}) => _serial(() async {
+    bool goes(ShelfItem item) =>
+        item.source == .copied &&
+        (addedBefore == null || item.addedAt.isBefore(addedBefore));
+
+    final removed = _items.where(goes).toList();
+    if (removed.isEmpty) {
+      return;
+    }
+
+    _items = [
+      for (final item in _items)
+        if (!goes(item)) item,
+    ];
+    await _deleteKept(removed);
+    await _finish();
+  });
+
   /// Takes everything off the shelf.
   Future<void> clear() => _serial(() async {
     final removed = _items;

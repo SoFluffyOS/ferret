@@ -251,7 +251,7 @@ abstract class ShelfLocalizations {
   /// No description provided for @emptyNote.
   ///
   /// In en, this message translates to:
-  /// **'Drop files, photos, text or links on the bar at the bottom. What you copy shows up here too. It all stays on this computer.'**
+  /// **'Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.'**
   String get emptyNote;
 
   /// No description provided for @hiddenNote.
@@ -271,6 +271,60 @@ abstract class ShelfLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, other{{count} selected}}'**
   String selectedCount(int count);
+
+  /// Switch: also put what is copied to the clipboard on the shelf. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep copies'**
+  String get keepCopies;
+
+  /// Under the Keep copies switch while it is on: how long copies stay.
+  ///
+  /// In en, this message translates to:
+  /// **'{keep, select, untilQuit{What you copy here or on your other devices goes on the shelf too, until you quit Ferret. Passwords never do.} day{What you copy here or on your other devices goes on the shelf too, for a day. Passwords never do.} other{What you copy here or on your other devices goes on the shelf too, for 7 days. Passwords never do.}}'**
+  String keepCopiesBody(String keep);
+
+  /// Under the Keep copies switch while it is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Only what you drop stays here. Ferret doesn\'t watch your clipboard for the shelf.'**
+  String get keepCopiesOffBody;
+
+  /// Row title: how long copies stay on the shelf.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them'**
+  String get copiesFor;
+
+  /// No description provided for @copiesForTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'How long copies stay on the shelf. What you drop stays until you take it off.'**
+  String get copiesForTooltip;
+
+  /// Button label with the chosen time. Keep it very short.
+  ///
+  /// In en, this message translates to:
+  /// **'{keep, select, untilQuit{Until quit} day{1 day} other{7 days}}'**
+  String copiesForShort(String keep);
+
+  /// Menu entries: how long copies stay on the shelf.
+  ///
+  /// In en, this message translates to:
+  /// **'{keep, select, untilQuit{Until you quit Ferret} day{For a day} other{For 7 days}}'**
+  String copiesForChoice(String keep);
+
+  /// Settings row value: the shelf keeps what is copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps copies'**
+  String get summaryCopies;
+
+  /// Settings row value: the shelf keeps only what is dropped on it.
+  ///
+  /// In en, this message translates to:
+  /// **'Only what you drop'**
+  String get summaryDropped;
 
   /// No description provided for @back.
   ///

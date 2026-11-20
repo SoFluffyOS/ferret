@@ -5,6 +5,7 @@ import 'package:local_shelf/local_shelf.dart';
 import 'package:path/path.dart' as p;
 
 import 'helpers/fake_drag_out.dart';
+import 'helpers/fake_host.dart';
 
 void main() {
   late Directory root;
@@ -128,6 +129,10 @@ void main() {
 
   test('copies wait for the shelf to be ready, files by reference', () async {
     final feature = ShelfFeature();
+    final host = FakeHost();
+    await host.settings.set(ShelfSettings.keepCopiesKey, true);
+    await feature.start(host);
+    addTearDown(feature.stop);
     final file = File(p.join(root.path, 'copied.pdf'))..writeAsStringSync('');
 
     final keeping = feature.keepCopy(text: 'copied.pdf', files: [file.path]);

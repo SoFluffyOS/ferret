@@ -125,7 +125,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get emptyNote =>
-      'Thả tệp, ảnh, chữ hay liên kết lên thanh ở dưới cùng. Những gì bạn sao chép cũng hiện ở đây. Mọi thứ chỉ nằm trên máy tính này.';
+      'Thả tệp, ảnh, chữ hay liên kết lên thanh ở dưới cùng. Mọi thứ chỉ nằm trên máy tính này.';
 
   @override
   String get hiddenNote =>
@@ -144,6 +144,65 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get keepCopies => 'Giữ bản sao chép';
+
+  @override
+  String keepCopiesBody(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'Những gì bạn sao chép ở đây hay trên thiết bị khác cũng lên kệ tạm, cho tới khi bạn thoát Ferret. Mật khẩu thì không bao giờ.',
+        'day': 'Những gì bạn sao chép ở đây hay trên thiết bị khác cũng lên kệ tạm, trong một ngày. Mật khẩu thì không bao giờ.',
+        'other': 'Những gì bạn sao chép ở đây hay trên thiết bị khác cũng lên kệ tạm, trong 7 ngày. Mật khẩu thì không bao giờ.',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get keepCopiesOffBody =>
+      'Chỉ những gì bạn thả vào mới ở lại đây. Ferret không theo dõi bộ nhớ tạm cho kệ tạm.';
+
+  @override
+  String get copiesFor => 'Giữ trong';
+
+  @override
+  String get copiesForTooltip =>
+      'Bản sao chép nằm trên kệ tạm bao lâu. Những gì bạn thả vào thì ở lại tới khi bạn bỏ đi.';
+
+  @override
+  String copiesForShort(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'Tới khi thoát',
+        'day': '1 ngày',
+        'other': '7 ngày',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiesForChoice(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'Tới khi bạn thoát Ferret',
+        'day': 'Một ngày',
+        'other': '7 ngày',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get summaryCopies => 'Giữ bản sao chép';
+
+  @override
+  String get summaryDropped => 'Chỉ những gì bạn thả';
 
   @override
   String get back => 'Quay lại';

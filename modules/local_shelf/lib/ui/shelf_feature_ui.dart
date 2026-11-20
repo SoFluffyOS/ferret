@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:local_shelf/feature/shelf_feature.dart';
 import 'package:local_shelf/l10n/l10n.dart';
+import 'package:local_shelf/models/models.dart';
 import 'package:local_shelf/services/services.dart';
 import 'package:local_shelf/ui/frames/frames.dart';
 import 'package:local_shelf/ui/pages/pages.dart';
@@ -58,6 +60,7 @@ class ShelfFeatureUi extends FeatureUi {
       nameOf: engine.displayNameOf,
       dragOut: context.dragOut,
       quickLook: context.quickLook,
+      settings: ShelfSettings(engine.settings),
     );
     _viewModel = viewModel;
     await _settings?.cancel();
@@ -70,7 +73,41 @@ class ShelfFeatureUi extends FeatureUi {
     feature.use(store);
     final shelf = feature.store ?? store;
     await shelf.load();
+    await feature.tidyOnLaunch();
     viewModel.attach(shelf);
+  }
+
+  @override
+  SettingsGroup get settingsGroup => .clipboard;
+
+  /// Next to Clipboard in Settings, on a Mac only, where the shelf is.
+  @override
+  List<FeatureSettings> settingsSections(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    final viewModel = _viewModel;
+    if (viewModel == null || defaultTargetPlatform != .macOS) {
+      return const [];
+    }
+
+    final l10n = context.shelfL10n;
+
+    return [
+      FeatureSettings(
+        group: settingsGroup,
+        title: l10n.title,
+        child: ChangeNotifierProvider.value(
+          value: viewModel,
+          child: const ShelfCopiesFrame(),
+        ),
+        summary: switch (viewModel.keepsCopies) {
+          true => l10n.summaryCopies,
+          false => l10n.summaryDropped,
+        },
+        isOn: viewModel.keepsCopies,
+      ),
+    ];
   }
 
   @override

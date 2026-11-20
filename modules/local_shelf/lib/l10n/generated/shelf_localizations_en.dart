@@ -129,7 +129,7 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
 
   @override
   String get emptyNote =>
-      'Drop files, photos, text or links on the bar at the bottom. What you copy shows up here too. It all stays on this computer.';
+      'Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.';
 
   @override
   String get hiddenNote =>
@@ -148,6 +148,65 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get keepCopies => 'Keep copies';
+
+  @override
+  String keepCopiesBody(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'What you copy here or on your other devices goes on the shelf too, until you quit Ferret. Passwords never do.',
+        'day': 'What you copy here or on your other devices goes on the shelf too, for a day. Passwords never do.',
+        'other': 'What you copy here or on your other devices goes on the shelf too, for 7 days. Passwords never do.',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get keepCopiesOffBody =>
+      'Only what you drop stays here. Ferret doesn\'t watch your clipboard for the shelf.';
+
+  @override
+  String get copiesFor => 'Keep them';
+
+  @override
+  String get copiesForTooltip =>
+      'How long copies stay on the shelf. What you drop stays until you take it off.';
+
+  @override
+  String copiesForShort(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'Until quit',
+        'day': '1 day',
+        'other': '7 days',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiesForChoice(String keep) {
+    String _temp0 = intl.Intl.selectLogic(
+      keep,
+      {
+        'untilQuit': 'Until you quit Ferret',
+        'day': 'For a day',
+        'other': 'For 7 days',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get summaryCopies => 'Keeps copies';
+
+  @override
+  String get summaryDropped => 'Only what you drop';
 
   @override
   String get back => 'Back';

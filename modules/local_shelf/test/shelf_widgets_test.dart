@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_shelf/local_shelf.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'helpers/test_app.dart';
 
@@ -133,5 +135,34 @@ void main() {
     await settle(tester);
 
     expect(find.text('Nothing on the shelf yet'), findsOneWidget);
+  });
+
+  testWidgets('Keep copies is off on the page until turned on', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    final settings = ShelfSettings(MemorySettingsStore());
+    viewModel = ShelfViewModel(localDeviceId: 'mac', settings: settings)
+      ..attach(store);
+    await tester.pumpWidget(testApp(ShelfPage(viewModel: viewModel)));
+    await tester.pump();
+
+    expect(find.text('Keep copies'), findsOneWidget);
+    expect(
+      find.text(
+        "Only what you drop stays here. Ferret doesn't watch your clipboard "
+        'for the shelf.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Keep them'), findsNothing);
+
+    await tester.tap(find.byType(SwitchToggle));
+    await tester.pumpAndSettle();
+    await settle(tester);
+
+    expect(settings.keepCopies, isTrue);
+    expect(find.text('Keep them'), findsOneWidget);
+    expect(find.text('Until quit'), findsOneWidget);
   });
 }

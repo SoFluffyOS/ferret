@@ -108,7 +108,7 @@
     "description": "Title of a shelf item whose contents are hidden because previews are off."
   },
   "empty": "Nothing on the shelf yet",
-  "emptyNote": "Drop files, photos, text or links on the bar at the bottom. What you copy shows up here too. It all stays on this computer.",
+  "emptyNote": "Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.",
   "hiddenNote": "Hidden while private previews are off on this computer.",
   "dragNote": "Drag anything out to another app, or onto a device to send it. Space shows a preview.",
   "selectedCount": "{count, plural, other{{count} selected}}",
@@ -118,6 +118,54 @@
         "type": "int"
       }
     }
+  },
+  "keepCopies": "Keep copies",
+  "@keepCopies": {
+    "description": "Switch: also put what is copied to the clipboard on the shelf. Keep it short."
+  },
+  "keepCopiesBody": "{keep, select, untilQuit{What you copy here or on your other devices goes on the shelf too, until you quit Ferret. Passwords never do.} day{What you copy here or on your other devices goes on the shelf too, for a day. Passwords never do.} other{What you copy here or on your other devices goes on the shelf too, for 7 days. Passwords never do.}}",
+  "@keepCopiesBody": {
+    "description": "Under the Keep copies switch while it is on: how long copies stay.",
+    "placeholders": {
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "keepCopiesOffBody": "Only what you drop stays here. Ferret doesn't watch your clipboard for the shelf.",
+  "@keepCopiesOffBody": {
+    "description": "Under the Keep copies switch while it is off."
+  },
+  "copiesFor": "Keep them",
+  "@copiesFor": {
+    "description": "Row title: how long copies stay on the shelf."
+  },
+  "copiesForTooltip": "How long copies stay on the shelf. What you drop stays until you take it off.",
+  "copiesForShort": "{keep, select, untilQuit{Until quit} day{1 day} other{7 days}}",
+  "@copiesForShort": {
+    "description": "Button label with the chosen time. Keep it very short.",
+    "placeholders": {
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "copiesForChoice": "{keep, select, untilQuit{Until you quit Ferret} day{For a day} other{For 7 days}}",
+  "@copiesForChoice": {
+    "description": "Menu entries: how long copies stay on the shelf.",
+    "placeholders": {
+      "keep": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryCopies": "Keeps copies",
+  "@summaryCopies": {
+    "description": "Settings row value: the shelf keeps what is copied."
+  },
+  "summaryDropped": "Only what you drop",
+  "@summaryDropped": {
+    "description": "Settings row value: the shelf keeps only what is dropped on it."
   },
   "back": "Back"
 }

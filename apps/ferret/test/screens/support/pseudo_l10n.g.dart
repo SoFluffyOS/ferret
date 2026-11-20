@@ -1605,6 +1605,18 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   @override
   String get dragNote => pseudo(super.dragNote);
   @override
+  String get keepCopies => pseudo(super.keepCopies);
+  @override
+  String get keepCopiesOffBody => pseudo(super.keepCopiesOffBody);
+  @override
+  String get copiesFor => pseudo(super.copiesFor);
+  @override
+  String get copiesForTooltip => pseudo(super.copiesForTooltip);
+  @override
+  String get summaryCopies => pseudo(super.summaryCopies);
+  @override
+  String get summaryDropped => pseudo(super.summaryDropped);
+  @override
   String get back => pseudo(super.back);
   @override
   String barCount(int count) => pseudo(super.barCount(count));
@@ -1623,6 +1635,12 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   String fromDevice(String name) => pseudo(super.fromDevice(name));
   @override
   String selectedCount(int count) => pseudo(super.selectedCount(count));
+  @override
+  String keepCopiesBody(String keep) => pseudo(super.keepCopiesBody(keep));
+  @override
+  String copiesForShort(String keep) => pseudo(super.copiesForShort(keep));
+  @override
+  String copiesForChoice(String keep) => pseudo(super.copiesForChoice(keep));
 }
 
 class PseudoMediaLocalizations extends MediaLocalizationsEn {

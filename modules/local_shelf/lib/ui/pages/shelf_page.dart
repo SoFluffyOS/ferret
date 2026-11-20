@@ -86,7 +86,10 @@ class _ShelfPageState extends State<ShelfPage> {
             },
           ),
       ],
-      children: const [ShelfListFrame()],
+      children: [
+        const ShelfListFrame(),
+        if (!isHidden) ...[Spacing.v24, const ShelfCopiesFrame()],
+      ],
     );
   }
 

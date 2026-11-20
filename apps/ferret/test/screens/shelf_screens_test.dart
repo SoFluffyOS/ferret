@@ -52,8 +52,14 @@ Future<List<int>> _picture(int width, int height) async {
 
 /// Puts a document, a folder, a photo from the phone, a copied picture,
 /// text and a link on the shelf, newest last.
+/// Fills the shelf with a few dropped things and two copies, kept since
+/// Keep copies is on.
 Future<void> _fill(WidgetTester tester, ShelfStore store) async {
+  final viewModel = tester
+      .element(find.byType(ShelfBarFrame))
+      .read<ShelfViewModel>();
   await tester.runAsync(() async {
+    await viewModel.setKeepCopies(true);
     final home = Directory(p.join(p.dirname(store.folder), 'home'))
       ..createSync(recursive: true);
     final report = File(p.join(home.path, 'Q3 report.pdf'))
@@ -97,6 +103,26 @@ final _screens = <String, _Script>{
         .element(find.byType(ShelfListFrame))
         .read<ShelfViewModel>();
     viewModel.select(viewModel.items[1].id);
+  },
+  'empty_open': (tester, rig, store) async {
+    await rig.settle(tester);
+    await tester.tap(find.byType(ShelfBarFrame));
+  },
+  'copies_open': (tester, rig, store) async {
+    final viewModel = tester
+        .element(find.byType(ShelfBarFrame))
+        .read<ShelfViewModel>();
+    await tester.runAsync(() => viewModel.setKeepCopies(true));
+    await tester.runAsync(() => store.clear());
+    await tester.runAsync(
+      () => store.keepText(
+        'https://example.org/tickets/4471',
+        isLink: true,
+        source: .copied,
+      ),
+    );
+    await rig.settle(tester);
+    await tester.tap(find.byType(ShelfBarFrame));
   },
   'hidden': (tester, rig, store) => _fill(tester, store),
   'hidden_open': (tester, rig, store) async {
