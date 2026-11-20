@@ -2,135 +2,98 @@
 
 ## [Unreleased]
 
+The first release. Your phone and your computers, working as one: on the Wi-Fi you already have, with no account and no cloud.
+
+Things marked *Beta* work in my tests but haven't met enough real devices yet. Tried one? [Tell me how it went](https://github.com/simonpham/ferret/issues).
+
 ### Added
-- 📤 **Your devices in Android's share sheet**: share a photo or a link and your connected computers sit right in the top row. Tap one and it goes straight there, no Ferret screen in between. **Send with Ferret** still asks where.
-- 🔕 **Hide Ferret's notification on Android**: swipe it away (Android 14+) and it stays away. Ferret keeps running. The Quick Settings tile is now called **Send clipboard**, which is what it does.
-- 📥 **Shelf**: an open box at the bottom of the Mac popover to put things down for a moment. Drop files, photos, text or links on it and see them right there as tiles with their names. Turn on **Keep copies** and what you copy lands there too, until you quit Ferret or for a day or a week. Drag one tile out, **All** to take everything, a ⌘-click selection, or drop it on a device to send it. Mid-drag, rest on the menubar icon or shake the pointer and the shelf comes to you; a box at the screen's edge is one switch away. Files dropped right on the icon wait 3 seconds for **Undo**. It never leaves your computer. See [Shelf](docs/features/shelf.md).
-- 🖱️ **Drag photos and clips into any app**: on a Mac, drag a phone photo out of **Photos**, or a clip out of **Recent clips**, and drop it in Mail, Slack, Finder or wherever you want it. Works from the popover too, where your phone's page now has a **Photos** button. The photo comes from the phone only once you drop it.
-- 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.
-- 🧭 **Coming from another app?** A new guide lists the features you used every day under the names you know, where they live in Ferret, and what isn't there yet. See [Coming from another app](docs/getting-started/coming-from-another-app.md).
-- 📱 **Your Android tablet or phone as a second display**: open it in Ferret on your Mac and click **Use Pixel Tablet as a display**. Tap **Allow** on the tablet, and its screen becomes one more display for your Mac. Tap to click, drag, hold to right-click, two fingers to scroll. Back on the tablet asks before it stops. See [A second display](docs/features/second-display.md).
-- 🖥️ **Another Mac as a second display**: open your other Mac in Ferret and click **Use MacBook Air as a display**. Click **Allow** there, and its screen becomes a real extra display for your Mac: drag windows onto it, its mouse and keyboard work on it. **Stop** on either Mac ends it. Windows and Linux are coming. See [Another Mac as a second display](docs/features/second-display.md).
-- ⌨️ **One keyboard and mouse for your computers**: turn it on in **Settings → Control** on your Mac, then press **⌃⌥→** and your Mac's keyboard and mouse work on the PC or Mac next to it. **⌃⌥⎋** brings them back, every time. The other computer asks the first time. See [Control](docs/features/remote-input.md).
-- 🎥 **Your phone's camera over Wi-Fi**: click **Use Pixel 7's camera** on your phone's page and its camera and microphone show up in a Ferret window. Tap **Once** or **Always** on the phone, which says **Camera on for MacBook Air** with **Stop** while it's on. Front or back with **Switch camera**. Android only. See [Your Android phone as a webcam](docs/features/android-webcam.md).
-- 🌍 **Reach your devices away from home**: already on Tailscale, ZeroTier or WireGuard? Open your phone in Ferret, tap **Reach away from home** and turn on **Also reach Pixel 7 over your VPN**. When your Wi-Fi doesn't find it, Ferret goes through your own VPN, and back home it moves to the Wi-Fi by itself. No Ferret account, no server. See [Reach your devices away from home](docs/features/away-from-home.md).
-- 📶 **Fix connection knows mobile data**: on a phone with Wi-Fi off, it says so instead of "no network", and offers **Reach over your VPN**.
-- 🕹️ **Control your phone over Wi-Fi**: show its screen, click **Control**, and tap **Once** or **Always** on the phone. Back, Home, clicks, scrolling and typing just work, no cable. Your phone says **Being controlled by MacBook Air** with **Stop control** the whole time. Works with Power-ups, or turn on **Ferret control** in Android's Accessibility settings. Not possible on iPhone.
-- ❤️ **Sponsor Ferret**: Ferret is free and always will be. If it saves you time, **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page. Also in the Mac's **Help** menu and the **•••** menu on Windows and Linux. Never a popup, never a reminder.
-- 🔊 **Sound with Show screen**: the phone's sound plays on your computer along with its screen. Over a cable it just works (Android 11 and later). Over Wi-Fi, turn on **Send sound too** on the phone (Android 10 and later), and its notice says **Sharing screen and sound with MacBook**. Pick **On this computer** or **On Pixel 7** in **••• → Sound**. Only what the phone plays, never its microphone.
-- 📸 **Take a photo with your phone**: press **⌃⌘P** or click **Take a photo** on your phone's page. Your phone asks **MacBook Air wants a photo**, opens its own camera, and the shot lands on your computer's clipboard: **Photo from Pixel 7 · On your clipboard**. Nothing is captured until you press the shutter. On iPhone, **Scan a document** too. See [Take a photo](docs/features/camera.md). From a script, `ferret-cli camera "Pixel 7"` waits for the photo and prints where it was saved.
-- 🖼️ **Phone photos on your computer**: open your phone in Ferret and click **Photos** to see its recent photos and screenshots, newest first. **Save** one, or **Select** a few. Turn on **New screenshots arrive by themselves** and each screenshot lands on your computer a second later. Your phone shares nothing until you turn on **Let MacBook see your photos** there, and nothing can be deleted from the computer. See [Photos](docs/features/photos.md).
-- 💻 **Computer actions**: open a computer on your phone and tap **Sleep**, **Restart…**, **Shut down…** or a volume button under **Power and sound**. The computer asks the first time, and counts down 10 seconds with **Cancel** before it restarts or shuts down. Add your own in **Settings → Control → Your actions**: a name and a command, script or shortcut. Your phone never sends a command, only which action to run. Also `ferret-cli action <computer> sleep`.
-- 🔒 **Lock when your phone leaves**: turn on **Lock this Mac when Pixel 7 leaves** in **Settings → Control**. Your phone drops off the Wi-Fi for 2 minutes, nobody's at the keyboard, and after a 10-second **Cancel** your computer locks. It never unlocks. Android phones only.
-- 🤖 **Scripting**: `ferret-cli watch` shows what happens with your devices as it happens (connected, battery, files, calls, notifications), and `--json` hands it to your own scripts. Or drop an executable named after an event, such as `device.connected`, in `~/.sofluffy/ferret/hooks`. See [Scripting](docs/features/scripting.md).
-- ⌨️ **`ferret-cli` for the terminal**: Tab completion for bash, zsh and fish (`ferret-cli completion zsh`). `ferret-cli devices` shows which devices are connected, `send --to pixel` skips the question, and `-` reads paths from a pipe. Exit code `67` means no device has that name.
-- 🔔 **`ferret-cli open` and `ferret-cli notify`**: open a link on your phone, or put **Build done** on its screen. Notices only show once you turn on **Let scripts on MacBook show notices here** on that phone.
-- 📲 **Tasker and Shortcuts**: on Android, Ferret is a Tasker plugin (send text, ring, open a link, run a computer action). On iPhone, **Send Clipboard**, **Ring Device**, **Send File** and **Open Link on Device** are in the Shortcuts app.
-- 🚀 **Android asks before it starts with your phone**: the **Stay connected** card asks **Start Ferret when Pixel 7 restarts?** once, instead of doing it on its own. Already using Ferret? Nothing changes for you.
-- ⚡ **Wake-on-LAN**: tap **Wake** on a sleeping computer's row and it says **Waking MacBook Pro…** until it's back. From an iPhone, another computer of yours sends the wake signal. **How to turn on Wake-on-LAN** has the steps for Mac, Windows and Linux, and `ferret-cli wake` does it from a script. See [Wake-on-LAN](docs/features/wake-on-lan.md).
-- 📁 **Send folders**: drop a folder, pick **Choose a folder…** or run `ferret-cli send <folder>`, and the whole tree arrives as **Photos**, or **Photos (2)** when you already have one. Progress counts files: **120 of 340 files · 1.2 GB of 3.4 GB**. Works with LocalSend and Quick Share too.
-- 👪 **A computer the family shares**: Ferret in each account goes by its account, such as **Family PC (Anna)**, and moves to the next free port when another account has the usual one. Your phone shows a locked or switched-away computer as **Connected · locked**. See [A computer the family shares](docs/getting-started/shared-computer.md).
-- 🙈 **Private previews**: a phone's notifications, texts, callers and copied text hide while the screen is locked or another account is in front. **Show previews on this computer** turns them off for one phone, and starts off on a shared computer.
-- 🎟️ **Receive a file from a guest**: **Allow once** lets a phone without Ferret send one file with Quick Share or LocalSend, then closes again.
-- 🇻🇳 **Ferret in Vietnamese**: the whole app, the share sheets, permission prompts and Android notices. Pick a language in **Settings → Advanced → Language**, or let Ferret follow the system. Want your language? [Translate Ferret](docs/contributing/translating.md).
-- 🌐 **Ready for every language**: counts read right (**1 device**, not **1 devices**), times and numbers follow your region, lists use your language's comma, and layouts mirror for right-to-left languages.
-- 🔁 **New phone? Replace the old one**: pair the new phone and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings, and the old one goes from all your devices.
-- 🆙 **Says who needs an update**: when two devices no longer speak the same Ferret, the device says **Needs a newer Ferret** or **Update Ferret here to connect** instead of staying offline. After an update, one quiet **What's new** line shows up once. **Show tips again** in **Settings → About** brings back the short hints.
-- 👀 **What a device can use**: open a device and see every feature it can reach here, with a switch each. Turn one off and it stops right away, on both devices. **Turn everything off** keeps it paired.
-- 🔑 **Codes stay on your phone**: sign-in and bank codes in notifications show up on your computer as **Code hidden**. Turn off **Hide one-time codes** on the phone if you want them.
-- 🟢 **Watched? You know**: on a Mac, the menubar icon keeps a dot while a device sees your screen or controls your computer, and says who.
-- 🧹 **Less kept around**: Continue's history lasts 30 days at most, with **Clear** in Settings. Unpairing a phone deletes its saved texts from your computer.
-- 🍎 **Says where it is**: Ferret calls your computer **this Mac** or **this PC** everywhere, from Show screen to Control, instead of "this computer".
-- 📷 **Pair with the phone's camera**: scan your computer's QR code with the camera app, tap the link, and Ferret opens and pairs. No need to find the scanner inside Ferret first.
-- 🌅 **Start at login on a Mac**: turn on **Start Ferret when I log in** in **Settings → This device** and it's in the menu bar every morning (macOS 13 or later).
-- ⌨️ **Recent clips from anywhere on a Mac**: press **⌃⌥V** in any app and Ferret opens on the last things you copied, on any device.
-- 🪟 **Menus that look at home**: title case on a Mac, sentence case on Windows, Linux and Android.
-- 📡 **What leaves this device**: the privacy page lists every byte that goes anywhere, and how long Ferret keeps things.
-- 🛡️ **Security page**: what Ferret protects you from (your Wi-Fi, strangers, web pages) and what it doesn't (a device you paired, apps running as you), with how pairing and encryption work. See [Security](docs/spec/security.md).
-- 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only. Every feature uses that same name, a small pin marks a pinned device, and a row you just used waits a moment before it moves up.
-- 🧹 **Clean up old devices**: Home offers to remove the ones not seen in 30 days. Activity filters by device, several devices joining make one card, and the window's list gets a search field from 9 devices.
-- 🎨 **Settings you can scan**: every row has its own coloured icon, with what it's set to right under its name. Rows sit in groups with a thin line between them. Same list in the popover, on the phone and in the window.
-- 🧰 **A toolbar in the window**: it says where you are, and its buttons hide or show the device list and the Activity pane. The list slides away. **+** sits on **Your devices**, and **Nearby** folds with a click.
-- ⌨️ **Keys where you need them**: rest the pointer on a toolbar button or a line of the device list and it tells you its shortcut.
-- 💎 **Calmer pages**: smooth corners EVERYWHERE, more room at the edges, headings in normal case instead of ALL CAPS, and Activity's links show up when you point at a line.
-- 🦊 **A real app icon**: a cream ferret in its dark mask, popping up from a sable plate. On macOS, iOS, Android, Windows and Linux, dark and tinted on iOS, themed on Android, and the same ferret in the menubar.
-- 📶 **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** and keeps its place instead of flickering offline. Ferret keeps dialing it for minutes, and a slow link says **weak connection**, on the device and on a transfer that crawls.
-- ⏸️ **Paused, not failed**: a transfer cut off by the Wi-Fi says **Paused at 620 MB of 1.8 GB** and goes on by itself when the device is back. So does one sent while the device was away. **Try all again** restarts every stopped transfer with a device.
-- 📋 **A copy waits for you**: copied with no device around? Activity says it's waiting, then **Sent to Pixel 7 when it came back**.
-- 🧭 **Café and hotel Wi-Fi**: Fix connection says when a network keeps devices apart, and what to do instead.
-- 👋 **No setup screens**: Ferret opens on your devices. Nothing paired yet? It says what it is, keeps looking, and offers a QR code. One tip at a time shows up later, right where it applies.
-- 🪟 **A window on the Mac**: **Open Ferret window** gives you Ferret in a normal window, next to the menubar popover. Same app, live in both. Close the window and Ferret stays in the menubar.
-- 🖥️ **A window that uses its room**: from 600 wide, your devices are a list on the left and the one you pick opens next to it, with **Messages**, **Calls**, **Notifications**, **Files** and **Screen** as its sections. Go wide and an **Activity** pane joins on the right. Nothing stretches: pages stop at a comfortable width.
-- 🧭 **An Overview you can read**: the few things you do most with a device, then **More**. With room, what works sits next to what the device may do. **Settings** keeps its list and opens the row you pick beside it.
-- 📞 **Calls side by side**: in the window, a phone's **Calls** shows the dialer and its call going on next to **Recent calls**.
-- 🎯 **Drop on a device in the window**: drag files onto a device in the list and it lights up with **Send to Pixel 9**; rest on it and it opens. Drop on the page and they go to the device you have open. The page stays put, and sending shows in a corner card.
-- 🍎 **A Mac window that looks like one**: the device list runs up under the traffic lights, with no grey title bar on top.
-- 🖱️ **Right-click**: a device in the list for its actions, **Fix Connection…** and **Forget This Device…**; a line in Activity for what that line offers.
-- 📴 **Offline, not empty**: a phone that drops off keeps its sections with what they showed last, under a line that says since when. A section whose feature is off is dimmed.
-- ↗️ **The popover hands over**: on the Mac, a device, Settings, texts and notifications open the window right where you need to be. So does a notification you click.
-- ⌨️ **Keys and a real menu bar**: ⌘1 to ⌘6 for a device's sections, ⌘N to add a device, ⌘O to send files, ⌘, for Settings, ⌃⌘S for the device list. Ctrl on Windows and Linux.
-- ⌨️ **Ferret from any app**: ⌃⌥Space opens the menubar popover, ↓ ↑ and ↩ get you through your devices and Activity, ⌘V sends your clipboard to the selected device, Esc closes. Pick other keys in **Settings → Advanced**.
-- 🫳 **Drop text or a link**: drag words onto a device and they land on its clipboard. Drag a link and it opens there.
-- 📤 **Drag a file out of Activity**: a file that just arrived drags straight to Finder or any app. Space shows it in Quick Look.
-- 🎯 **Your favourite action first**: use one of a device's actions a few times and it moves to the front of its row.
-- 📍 **Drop on the icon, done**: files dropped on the menubar icon go to the device you sent to last, and the icon's ring shows them going.
-- ♿️ **Accessibility**: Ferret works with VoiceOver and TalkBack (every button has a name, switches say on or off, the pairing code is read digit by digit), with a keyboard alone (Tab, arrow keys in lists and menus, Enter, Space, Esc, a focus ring you can see), with text at 200%, and with readable contrast in light and dark.
-- 🏠 **Devices are the home screen**: each device has **Send files**, **Send clipboard** and **Ring** on its row, and **Fix** when it isn't connected.
-- 🧾 **Activity**: what just happened, in one short list. A copy that synced, a file that arrived, a call, a song playing, each with the one thing to do about it.
-- 🔑 **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. No QR code to scan, no account, ever.
-- 📡 **Devices near you**: Ferret finds your other devices on the Wi-Fi by itself and lists them on the home screen, kept up to date while you look.
-- 👨‍👩‍👧 **Pair once, join them all**: a device you pair with one of your devices joins all of them. Copy on one, paste on any. **Forget** removes it from all of them, or only here.
-- 🔄 **Handoff**: send a page or link to another device with **Continue on…** and it opens there. Your other devices quietly suggest the page you were on.
-- 📋 **Clipboard sync**: copy on one device, paste on another. Text, links and images; password-manager items stay put. On a Mac, Ferret only watches the clipboard while **Send automatically** or the shelf's **Keep copies** is on.
-- 📦 **Drop**: drag files onto Ferret and drop them on the device you want, or on **All my devices**, or share with **Send with Ferret**. Progress, checked with SHA-256, resumes after a dropped connection, never overwrites.
-- 🙋 **Needs you**: files from a phone that isn't paired wait at the top of the home screen with their size, **Decline** and **Accept**. Files that arrived open right from the notice, or **Show in Finder**.
-- 📤 **Share → Ferret**: right-click a file in Finder, pick **Share → Ferret** and click the device. On Windows and Linux, `ferret send` puts **Send with Ferret** in the file manager.
-- 📱 **Ferret in the iPhone share sheet**: photos, videos, files, text and links, from ANY app. Tap **Ferret**, tap the device, and Ferret opens and sends while you watch. Links open on the other device.
-- 🔔 **Notifications**: your phone's notifications on your computer, from ALL your apps by default, with Reply and Dismiss synced both ways. Mute a few noisy apps, or pick only the ones you want.
-- 🎧 **Media**: see what plays on your other devices, control it, and **Continue here** at the same second. Your music pauses while a call rings or goes on, and plays again after.
-- 💬 **Messages**: read and reply to your Android phone's texts from your computer, with names, photos and pictures, saved for when the phone is away.
-- 🍎 **No more Allow Paste nagging**: the first time you send your clipboard from an iPhone, a tip shows how to let Ferret paste without asking, with an **Open Settings** link.
-- 📞 **Calls**: see who's calling on your computer, with their photo, at the top under **Needs you**. Answer, decline, silence, hang up or start a call from there. A timer runs while you talk.
-- 🔍 **Find**: ring a lost phone or computer from another device, even on silent, and stop it with one big **Found it**.
-- 🔁 **LocalSend**: send files to devices running LocalSend, and receive from them with one tap for 10 minutes.
-- 🧩 **Browser extension**: send the tab you're on to your phone from Chrome, Edge, Brave or Firefox, and open pages from your phone right in the browser you're using.
-- 📡 **Quick Share**: Android phones can send files to Ferret on a computer with nothing installed. Make the computer visible for 10 minutes, compare the PIN, accept.
-- 🔓 **Power-ups (Android)**: a ladder in Settings shows what your phone lets Ferret do. With Shizuku or root, Ferret sends what you copy on its own, even in the background.
-- 📱 **iPhone on your PC**: your iPhone's notifications (with Clear, Answer and Decline) and media controls on Windows and Linux over Bluetooth, with nothing to install on the iPhone.
-- 🍎 **Ferret on iPhone**: pair by scanning your computer's code, straight from the home screen, and swipe from the edge to go back. iOS pauses apps you leave, so Ferret says **Keep Ferret open to sync**, and your computer shows a paused iPhone as **Connects when Ferret is open on it**, not as broken.
-- 🖱️ **Control**: use your phone as the touchpad and keyboard of your computer. Two-finger scrolling glides on, and **Keyboard** shows or hides the keys. The computer asks first, says who is in control next to **Stop control** while it happens, and keeps a history.
-- 🪞 **Screen**: click **Show screen** on a phone and its screen shows up on your computer. Ferret picks the way: Wi-Fi with Ferret on the phone, where Android asks you every time, or a cable. One page tells the whole story, with a countdown while the phone asks and the right button when it ends.
-- 🧰 **A toolbar on the picture**: Back, Home, Recents, Rotate, Keyboard and **Stop**, hiding when the pointer rests. Three bars say **Good**, **Slow** or **Poor**, with **Auto**, **Sharp** and **Fast** behind them. Over Wi-Fi it says **View only**.
-- 🪟 **The phone gets its own window (Mac)**: **Show screen** opens a window in the phone's shape. Resize it and the shape holds, turn the phone and it turns, and each phone gets its size back. `⌘0`, `⌘+` and `⌘−` set the size. Closing it stops sharing.
-- 📸 **Screenshot**: the camera on the toolbar, or `⇧⌘S`, saves the phone's screen to **Downloads › Ferret** at full size, with **Show in Finder**.
-- 🔁 **Screen picks up again**: a dropped connection keeps the last picture, and coming back within 20 seconds needs no new prompt. Leaving the page stops sharing on both devices.
-- 🔌 **Show any Android phone with a cable (experimental)**: no Ferret on the phone, and you can click, scroll, type and paste on it. Right-click is Back, middle-click is Home. A checklist ticks itself as you plug in and tap Allow. No adb on the computer? One click downloads Android's platform tools from Google. Powered by scrcpy's server.
-- 📲 **Show an iPhone or iPad (experimental)**: click **Show screen** on the iPhone in Ferret, pick your computer under **Screen Mirroring** in Control Center, and confirm on the same page. Nothing to install on the iPhone.
-- 📷 **Pair with a QR code**: no device in sight? **Add a device** has the QR code one tap down, and a link or an address under **Other ways**.
-- 🤖 **Stays connected on Android**: a quiet background service that comes back after a restart or an update, and a Quick Settings tile. **Stay connected** says when Android limits Ferret, with a **Fix** button and the steps for your phone maker. See [Keep Ferret running on Android](docs/getting-started/android-keep-running.md).
-- ⚡ **Instant reconnect** after sleep or a network change.
-- 🩺 **Fix connection**: when a device won't connect, Ferret tells you why in plain words and offers the fix. **Check my network** does the same before you have paired anything. On Windows it names the firewall and opens the right list.
-- 📱 **Device page**: everything that works with a device in one list, with what is off (and **How?** to turn it on) and what is broken (and **Fix**). What that device may do here sits right below.
-- ⚙️ **Settings on one screen**: ten rows, each showing its state (**Files · To Downloads**), each opening its own page. No endless scroll.
-- 💬 **Plain words everywhere**: every line names the device and says which side acts. "On Pixel 9: open Ferret."
-- ⏸️ **Pause** Ferret for an hour, until tomorrow, or until you resume, from the **•••** menu. The last line of the home screen says until when.
-- 🗂️ **One folder for your data**: on computers Ferret keeps everything in `~/.sofluffy/ferret`. Delete it and nothing is left behind.
-- 🍎 **Menubar app on macOS**, with a popover you can drag off into its own window and files you can drop on the icon. The icon shows what's going on: a ring while a file moves, a check when it's done, a dot when someone waits for your answer, a slash while paused.
-- 💻 **`ferret` command line**: run it headless, pair, and list devices.
-- 🧱 **Linux firewalls**: Fix connection notices when ufw or firewalld is on, and copies the one line that lets Ferret through.
-- 🐧 **Wayland, honestly**: on GNOME, Settings → Clipboard says copies go out while Ferret's window is in front. On KDE Plasma and Sway, `wl-clipboard` lets it watch by itself.
-- 🧷 **A tray icon on Windows and Linux**: Open Ferret, Send clipboard, Pause and Quit. Closing the window keeps Ferret in the tray where there is one, and the window comes back at the size (and on X11 and Windows, the place) you left it.
-- 📦 **Flatpak, AppImage and .deb**: Ferret installs on Linux with its icon, the tray and **Send with Ferret** in the file manager. The `.deb` adds `sudo ufw allow Ferret` and a firewalld service.
-- 🪟 **A Windows installer**: Ferret installs just for you, no admin needed, with a Start menu shortcut and **Send to → Ferret**. Tick one box and Windows Firewall lets your devices in. Uninstall cleans all of it up.
-- 🧱 **Allow through firewall**: on Windows, Fix connection tells you when Ferret's firewall rules are in place. Missing? One click, one Yes, and your phone finds this PC.
-- 🍎 **A Mac DMG**: open it, drag Ferret to Applications, done. Signed and notarized, so macOS opens it without a warning. `ferret-cli` comes inside, and Homebrew puts it on your `PATH` with `brew install --cask ferret`.
-- 🚀 **Start at login on Windows and Linux**: one switch in Settings. Ferret starts in the tray (XDG autostart on Linux, the Background portal in a Flatpak, the Run key on Windows).
-- ⌨️ **Every key, written down**: a **Help** menu on the Mac, and on Windows and Linux a **•••** menu that shows each command's keys. **Keyboard Shortcuts** (Ctrl+?) lists them all.
-- 💻 **Scriptable `ferret-cli`**: `ferret-cli send <file>…` hands files to the running app, `ferret-cli devices --json` for scripts, `--version`, and exit codes `--help` explains. The app itself is `ferret`, and takes `ferret send` too.
-- 📟 **`ferret-cli ring` and `ferret-cli clipboard`**: ring your phone from a terminal, print the last text you copied on another device, or pipe text to them. `--json` and exit codes for scripts.
-- 🕘 **Recent clips**: the last 20 things you copied, here or on your devices, with **Copy** on each. In the **•••** menu. Private clips never show up.
-- 📶 **No shared Wi-Fi? Use the hotspot**: when a network keeps your devices apart, Fix connection names your phone and says to join its hotspot. Ferret works over it, with no mobile data between your devices.
-- 📷 **Your phone as a webcam**: open an Android phone on your computer and **Use Pixel 7 as a webcam** shows how to turn on the phone's own USB webcam mode (Android 14 and later).
-- 🔒 **Lock this computer from your phone**: tap **Lock MacBook Air**. The computer asks once (**Let Pixel 7 lock this Mac?**), then locks right away on macOS, Windows and Linux.
-- 🎤 **Your phone as a clicker**: **Present on MacBook Air** gives you a huge **Next**, **Previous**, **Black screen** and a timer. Works with PowerPoint, Keynote, Google Slides and PDFs.
-- 🔋 **Battery on your devices**: a phone or laptop shows **62%** next to **Connected**, with a bolt while it charges. At 15% the others say **Pixel 7 is at 15%**, once. Turn it off in **Settings → Advanced**.
+
+#### 🔑 Pair and stay connected
+- **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. Or scan a QR code, from Ferret or the phone's own camera. No account, ever.
+- **Pair once, join them all**: a device you pair with one of yours joins all of them. **Forget** removes it everywhere, or only here.
+- **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** instead of offline, and comes back right after sleep or a network change. A slow link says **weak connection**.
+- **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
+- **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
+- **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
+- **Says who needs an update** instead of staying offline.
+
+#### 📋 Clipboard
+- **Clipboard sync**: copy on one device, paste on another. Text, links and images. Password-manager items stay put.
+- **Recent clips**: the last 20 things you copied, on any device. **⌃⌥V** opens them from any app on a Mac.
+- Copied with no device around? It goes as soon as the device is back.
+
+#### 📦 Files and folders
+- **Drop**: drag files or a whole folder onto a device. Checked with SHA-256, never overwrites, and a transfer cut off by the Wi-Fi goes on by itself when the device is back.
+- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption.
+- **Room first**: a file that doesn't fit is turned down before a byte moves, with how much space it needs.
+- **Share menus**: **Share → Ferret** on Mac and iPhone, **Send with Ferret** on Windows and Linux. On Android, your connected devices sit right in the share sheet's top row.
+- **Needs you**: files from a device you didn't pair wait for **Accept**. **Allow once** lets a guest's phone send you one file.
+- **LocalSend and Quick Share**: send to LocalSend, and receive from both. Android phones send to your computer with nothing installed.
+
+#### 📥 Shelf (Mac)
+- **Shelf**: a box at the bottom of the popover to put things down for a moment. Drop files, photos, text or links on it, and drag them back out into any app or onto a device. Mid-drag, rest on the menubar icon or shake the pointer and it comes to you. It never leaves your Mac. See [Shelf](docs/features/shelf.md).
+- **Keep copies**: turn it on and what you copy lands on the shelf too, until you quit or for a day or a week.
+- **Drag photos and clips out**: a phone photo or a Recent clip drags straight into Mail, Finder or any app.
+- **Drop on the icon**: files dropped on the menubar icon go to your last device, with 3 seconds to **Undo**.
+
+#### 🔔 From your Android phone
+- **Notifications** on your computer, with **Reply** and **Dismiss** synced both ways. One-time codes stay on the phone as **Code hidden**.
+- **Messages**: read and reply to your texts, with names, photos and pictures.
+- **Calls**: see who's calling, then answer, decline, silence or hang up. Your music pauses while you talk.
+- **Private previews**: texts, callers and copied text hide while the computer is locked or someone else's account is in front.
+
+#### 🪞 Screen, photos and camera
+- **Show screen**: your phone's screen on your computer, over Wi-Fi (*Beta*) or a cable with no Ferret on the phone (*Beta*). Click, scroll and type on it, with its sound too (*Beta*). On a Mac it gets its own phone-shaped window.
+- **Control over Wi-Fi** (*Beta*): click and type on the phone with no cable. The phone asks first and says who's in control the whole time.
+- **iPhone and iPad through AirPlay** (*Beta*).
+- **Photos**: browse your phone's recent photos and screenshots from the computer, and save the ones you want. New screenshots can land by themselves.
+- **Take a photo**: press **⌃⌘P**, shoot on the phone, and it's on your computer's clipboard. On iPhone, **Scan a document** too.
+- **Your phone's camera in a window** (*Beta*): **Use camera** on your Android phone's page shows its camera and microphone on your computer, over Wi-Fi.
+
+#### 🖥️ A second display (*Beta*)
+- **Another Mac as a display**: click **Use as display** on your other Mac, **Allow** there, and it's a real extra display. Its mouse and keyboard work on it. See [A second display](docs/features/second-display.md).
+- **An Android tablet or phone as a display**: same button. Tap to click, drag, hold to right-click, two fingers to scroll.
+- **One keyboard and mouse**: press **⌃⌥→** and your Mac's keyboard and mouse work on the computer next to it. **⌃⌥⎋** brings them back, every time. See [Control](docs/features/remote-input.md).
+
+#### 🔍 Find, wake and control
+- **Ring** a lost phone or computer, even on silent.
+- **Wake** a sleeping computer with Wake-on-LAN.
+- **Your phone as a touchpad and keyboard**, or as a **presentation clicker**.
+- **Computer actions**: **Sleep**, **Restart…**, **Shut down…**, **Lock**, the volume, or your own commands, from your phone. The computer asks first, once.
+- **Lock when your phone leaves**: walk away with your Android phone and your computer locks itself after a 10-second **Cancel**.
+- **Media**: see what plays on your other devices, control it, and **Continue here** at the same second.
+- **Continue on…**: send a page to another device, or from the browser extension.
+- **Battery**: every device's battery, and one heads-up when it's low.
+
+#### 🤖 Scripting
+- **`ferret-cli`**: `send`, `devices`, `ring`, `clipboard`, `open`, `notify`, `wake`, `action` and `camera`, with tab completion for bash, zsh and fish.
+- **`ferret-cli watch --json`** streams what happens to your own scripts, and **hooks** in `~/.sofluffy/ferret/hooks` run on each event. See [Scripting](docs/features/scripting.md).
+- **Tasker** plugin on Android, **Shortcuts** actions on iPhone.
+
+#### 💻 At home on every platform
+- 🍏 **Mac**: a menubar app with a popover and a full window, **⌃⌥Space** from any app, a real menu bar with keys, and start at login.
+- 🤖 **Android**: a quiet background service and a Quick Settings tile. **Stay connected** says when Android limits Ferret and how to fix it. Swipe Ferret's notice away and it stays away. Ready for Android 17's local network permission.
+- 🍎 **iPhone**: the share sheet, Shortcuts, and a tip for the Allow Paste question. A Windows or Linux computer shows an iPhone's notifications over Bluetooth.
+- 🪟 **Windows**: an installer just for you, no admin, a tray icon, and one box for the firewall.
+- 🐧 **Linux**: Flatpak, AppImage and `.deb`, a tray icon, and the one line your firewall needs.
+- 👪 **A computer the family shares**: one Ferret per account, each under its own name.
+
+#### 💎 Easy to use, for everyone
+- **Your devices are the home screen**, with **Send files**, **Send clipboard** and **Ring** on each row. **Activity** says what just happened.
+- **Short buttons**: the whole sentence is in the tooltip and what screen readers say.
+- **Large text**: up to 200%, and pages grow with it.
+- **Accessibility**: VoiceOver and TalkBack, a keyboard alone, and readable contrast in light and dark.
+- **Ferret in Vietnamese**, and ready for every language, right-to-left included. [Translate Ferret](docs/contributing/translating.md).
+- **Beta tags** on what hasn't met enough real devices yet.
+
+#### 🔒 Privacy and security
+- **Local network only**: your devices talk directly, end-to-end encrypted with Noise. Nothing goes through a server.
+- **Strangers can only ask to pair**, in short messages and a few at a time.
+- **What a device can use**: a switch per feature on each device. **Turn everything off** keeps it paired.
+- **Watched? You know**: the menubar icon keeps a dot while a device sees your screen or controls your Mac.
+- **No hiding in file names**: received names lose the marks that flip text direction.
+- **Logs stay clean**: never a path, link or text you copied.
+- **Privacy** and **Security** pages: every byte that leaves a device, and what Ferret protects you from.
+
+#### ❤️ Sponsor
+- Ferret is free and always will be. **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page. Never a popup, never a reminder.
