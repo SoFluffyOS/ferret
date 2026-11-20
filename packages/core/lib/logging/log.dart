@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 /// How serious a log line is.
 enum LogLevel { debug, info, warning, error }
@@ -23,7 +24,7 @@ class LogRecord {
   String toString() {
     final buffer = StringBuffer('[${level.name}] $message');
     if (error case final error?) {
-      buffer.write(': $error');
+      buffer.write(': ${Log.describe(error)}');
     }
 
     return buffer.toString();
@@ -36,6 +37,36 @@ abstract final class Log {
   static final StreamController<LogRecord> _records = .broadcast(sync: true);
   static LogLevel minimum = .debug;
   static bool printToConsole = true;
+
+  /// Whether errors are written without what they carry. An error's text
+  /// can hold what it failed on: a file's path, a link, the text a parser
+  /// choked on. Release builds turn this on, since the system log is
+  /// readable by other tools.
+  static bool redactErrors = false;
+
+  /// [error] as a log line shows it: whole, or with [redactErrors] only
+  /// its kind and the parts that never carry content.
+  static String describe(Object error) {
+    if (!redactErrors) {
+      return '$error';
+    }
+
+    return switch (error) {
+      FileSystemException(:final message, :final osError) =>
+        'FileSystemException: $message${_os(osError)}',
+      SocketException(:final message, :final osError) =>
+        'SocketException: $message${_os(osError)}',
+      OSError() => 'OSError${_os(error)}',
+      FormatException(:final message) => 'FormatException: $message',
+      TimeoutException() => 'TimeoutException',
+      _ => '${error.runtimeType}',
+    };
+  }
+
+  static String _os(OSError? error) => switch (error) {
+    null => '',
+    OSError(:final message, :final errorCode) => ' ($message, $errorCode)',
+  };
 
   /// Every record written, for file sinks and in-app log viewers.
   static Stream<LogRecord> get records => _records.stream;

@@ -28,9 +28,18 @@ Future<void> runFerret({
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
   // Release builds print to the system log (logcat, Console.app), which
-  // other tools can read; debug lines name devices and addresses.
+  // other tools can read; debug lines name devices and addresses, and an
+  // error's text can hold a path or a link.
   if (kReleaseMode) {
     Log.minimum = .info;
+    Log.redactErrors = true;
+    // Uncaught errors would otherwise reach the system log whole.
+    FlutterError.onError = (details) =>
+        printError('Uncaught Flutter error', details.exception, details.stack);
+    PlatformDispatcher.instance.onError = (error, stackTrace) {
+      printError('Uncaught error', error, stackTrace);
+      return true;
+    };
   }
 
   await initializeDateFormatting();
