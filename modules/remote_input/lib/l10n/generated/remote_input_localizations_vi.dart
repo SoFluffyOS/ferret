@@ -789,7 +789,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String get settingsScreenTitle => 'Bàn phím và chuột';
+  String get settingsScreenTitle => 'Một bộ bàn phím và chuột';
 
   @override
   String settingsScreenSwitch(String here) {
@@ -885,15 +885,14 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       'Hãy kết nối một máy Mac, PC hoặc Linux có Ferret trước.';
 
   @override
-  String get screenNeedsAccess =>
-      'Ferret cần quyền Giám sát đầu vào và Trợ năng';
+  String get screenNeedsAccess => 'Ferret cần hai quyền';
 
   @override
   String get screenNeedsAccessBody =>
-      'Cho phép cả hai trong Cài đặt hệ thống → Quyền riêng tư & Bảo mật, rồi nhấn lại ⌃⌥→.';
+      'Cho phép Giám sát đầu vào và Trợ năng trong Cài đặt hệ thống → Quyền riêng tư & Bảo mật, rồi nhấn lại ⌃⌥→.';
 
   @override
-  String get screenSecureInput => 'Một ô mật khẩu đang giữ bàn phím';
+  String get screenSecureInput => 'Một ô mật khẩu đang mở';
 
   @override
   String screenSecureInputBody(String here) {
@@ -905,7 +904,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Khi một ô mật khẩu đang hoạt động, macOS ẩn thao tác gõ phím khỏi Ferret, nên phím của bạn sẽ gõ vào $_temp0. Hãy nhập xong hoặc đóng nó, rồi nhấn lại ⌃⌥→.';
+    return 'Nhập xong hoặc đóng nó, rồi nhấn lại ⌃⌥→. Khi ô này đang mở, macOS ẩn thao tác gõ phím khỏi Ferret, nên phím của bạn ở lại $_temp0.';
   }
 
   @override

@@ -135,10 +135,10 @@ void main() {
       tester.element(find.byType(ScreenSwitchSettingsFrame)),
       _context,
     );
-    expect(part.map((part) => part.title), contains('Keyboard and mouse'));
+    expect(part.map((part) => part.title), contains('One keyboard and mouse'));
     expect(
       part
-          .singleWhere((part) => part.title == 'Keyboard and mouse')
+          .singleWhere((part) => part.title == 'One keyboard and mouse')
           .needsAttention,
       isTrue,
     );

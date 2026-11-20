@@ -790,7 +790,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String get settingsScreenTitle => 'Keyboard and mouse';
+  String get settingsScreenTitle => 'One keyboard and mouse';
 
   @override
   String settingsScreenSwitch(String here) {
@@ -886,15 +886,14 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'Connect a Mac, PC or Linux computer with Ferret first.';
 
   @override
-  String get screenNeedsAccess =>
-      'Ferret needs Input Monitoring and Accessibility';
+  String get screenNeedsAccess => 'Ferret needs two permissions';
 
   @override
   String get screenNeedsAccessBody =>
-      'Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.';
+      'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again.';
 
   @override
-  String get screenSecureInput => 'A password field is holding the keyboard';
+  String get screenSecureInput => 'A password field is open';
 
   @override
   String screenSecureInputBody(String here) {
@@ -906,7 +905,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'While a password field is active, macOS hides typing from Ferret, so your keys would land on $_temp0. Finish or close it, then press ⌃⌥→ again.';
+    return 'Finish or close it, then press ⌃⌥→ again. While it\'s open, macOS hides your typing from Ferret, so your keys stay on $_temp0.';
   }
 
   @override

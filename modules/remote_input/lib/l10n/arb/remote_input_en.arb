@@ -661,7 +661,7 @@
       }
     }
   },
-  "settingsScreenTitle": "Keyboard and mouse",
+  "settingsScreenTitle": "One keyboard and mouse",
   "settingsScreenSwitch": "Use {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keyboard and mouse on my other computers",
   "@settingsScreenSwitch": {
     "placeholders": {
@@ -722,10 +722,10 @@
   "screenBringBack": "Bring back",
   "screenNoComputer": "No computer to switch to",
   "screenNoComputerBody": "Connect a Mac, PC or Linux computer with Ferret first.",
-  "screenNeedsAccess": "Ferret needs Input Monitoring and Accessibility",
-  "screenNeedsAccessBody": "Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.",
-  "screenSecureInput": "A password field is holding the keyboard",
-  "screenSecureInputBody": "While a password field is active, macOS hides typing from Ferret, so your keys would land on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Finish or close it, then press ⌃⌥→ again.",
+  "screenNeedsAccess": "Ferret needs two permissions",
+  "screenNeedsAccessBody": "Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again.",
+  "screenSecureInput": "A password field is open",
+  "screenSecureInputBody": "Finish or close it, then press ⌃⌥→ again. While it's open, macOS hides your typing from Ferret, so your keys stay on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
   "@screenSecureInputBody": {
     "placeholders": {
       "here": {

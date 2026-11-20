@@ -154,7 +154,7 @@ Future<void> _goAway(WidgetTester tester, ScreenRig rig, _Macs macs) async {
   await rig.settle(tester);
 }
 
-/// Settings → Control, scrolled to the Keyboard and mouse part.
+/// Settings → Control, scrolled to the One keyboard and mouse part.
 Future<void> _openKeyboardSettings(WidgetTester tester, ScreenRig rig) async {
   await rig.open(tester, const SettingsGroupPage(group: .control));
   await tester.scrollUntilVisible(

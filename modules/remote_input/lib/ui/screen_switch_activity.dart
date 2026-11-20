@@ -63,6 +63,13 @@ List<ActivityItem> screenSwitchActivity(
           at: state.at,
           deviceId: state.deviceId,
           tone: .warning,
+          actions: [
+            if (problem == .needsAccess)
+              ActivityAction(
+                label: l10n.allowAccess,
+                onPressed: () => unawaited(viewModel.requestAccess()),
+              ),
+          ],
           onDismiss: viewModel.dismissProblem,
         ),
       ];

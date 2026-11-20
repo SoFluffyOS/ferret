@@ -992,7 +992,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Keyboard and mouse'**
+  /// **'One keyboard and mouse'**
   String get settingsScreenTitle;
 
   /// No description provided for @settingsScreenSwitch.
@@ -1088,25 +1088,25 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @screenNeedsAccess.
   ///
   /// In en, this message translates to:
-  /// **'Ferret needs Input Monitoring and Accessibility'**
+  /// **'Ferret needs two permissions'**
   String get screenNeedsAccess;
 
   /// No description provided for @screenNeedsAccessBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.'**
+  /// **'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again.'**
   String get screenNeedsAccessBody;
 
   /// No description provided for @screenSecureInput.
   ///
   /// In en, this message translates to:
-  /// **'A password field is holding the keyboard'**
+  /// **'A password field is open'**
   String get screenSecureInput;
 
   /// No description provided for @screenSecureInputBody.
   ///
   /// In en, this message translates to:
-  /// **'While a password field is active, macOS hides typing from Ferret, so your keys would land on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Finish or close it, then press ⌃⌥→ again.'**
+  /// **'Finish or close it, then press ⌃⌥→ again. While it\'s open, macOS hides your typing from Ferret, so your keys stay on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
   String screenSecureInputBody(String here);
 
   /// No description provided for @screenCaptureFailed.
