@@ -405,7 +405,7 @@
   "editCommandChanged": "A new command asks every device again.",
   "save": "Save",
   "remove": "Remove",
-  "historyTitle": "History",
+  "historyTitle": "Actions run here",
   "historyEmpty": "Nothing ran yet.",
   "clearHistory": "Clear history",
   "summaryOff": "Off",

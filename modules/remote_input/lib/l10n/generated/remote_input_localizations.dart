@@ -230,7 +230,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  /// **'Let my devices control {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
   String settingsEnabled(String here);
 
   /// No description provided for @settingsEnabledBody.
@@ -392,7 +392,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsHistoryTitle.
   ///
   /// In en, this message translates to:
-  /// **'History'**
+  /// **'Who controlled it'**
   String get settingsHistoryTitle;
 
   /// No description provided for @settingsHistoryEmpty.
@@ -734,7 +734,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthTurnedOffHelp.
   ///
   /// In en, this message translates to:
-  /// **'On {device}: open Ferret → Settings → Control and turn on Let my phones control {host, select, mac{this Mac} windows{this PC} other{this computer}}.'**
+  /// **'On {device}: open Ferret → Settings → Control and turn on Let my devices control {host, select, mac{this Mac} windows{this PC} other{this computer}}.'**
   String healthTurnedOffHelp(String device, String host);
 
   /// No description provided for @healthVersion.
@@ -788,7 +788,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthHostOffHelp.
   ///
   /// In en, this message translates to:
-  /// **'Open Settings → Control and turn on Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  /// **'Open Settings → Control and turn on Let my devices control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
   String healthHostOffHelp(String here);
 
   /// host is mac, windows or linux.

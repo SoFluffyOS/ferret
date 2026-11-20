@@ -174,7 +174,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'Let my phones control $_temp0';
+    return 'Let my devices control $_temp0';
   }
 
   @override
@@ -294,7 +294,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'Control is off. Turn it on in Settings → Control.';
 
   @override
-  String get settingsHistoryTitle => 'History';
+  String get settingsHistoryTitle => 'Who controlled it';
 
   @override
   String settingsHistoryEmpty(String here) {
@@ -527,7 +527,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'On $device: open Ferret → Settings → Control and turn on Let my phones control $_temp0.';
+    return 'On $device: open Ferret → Settings → Control and turn on Let my devices control $_temp0.';
   }
 
   @override
@@ -612,7 +612,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'Open Settings → Control and turn on Let my phones control $_temp0.';
+    return 'Open Settings → Control and turn on Let my devices control $_temp0.';
   }
 
   @override

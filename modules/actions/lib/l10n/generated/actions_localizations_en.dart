@@ -428,7 +428,7 @@ class ActionsLocalizationsEn extends ActionsLocalizations {
   String get remove => 'Remove';
 
   @override
-  String get historyTitle => 'History';
+  String get historyTitle => 'Actions run here';
 
   @override
   String get historyEmpty => 'Nothing ran yet.';

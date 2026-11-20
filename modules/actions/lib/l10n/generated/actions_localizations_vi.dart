@@ -427,7 +427,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   String get remove => 'Xoá';
 
   @override
-  String get historyTitle => 'Lịch sử';
+  String get historyTitle => 'Thao tác đã chạy ở đây';
 
   @override
   String get historyEmpty => 'Chưa có gì được chạy.';

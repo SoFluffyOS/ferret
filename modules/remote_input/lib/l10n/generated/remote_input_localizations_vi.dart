@@ -172,7 +172,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Cho điện thoại của tôi điều khiển $_temp0';
+    return 'Cho thiết bị của tôi điều khiển $_temp0';
   }
 
   @override
@@ -293,7 +293,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       'Điều khiển đang tắt. Bật trong Cài đặt → Điều khiển.';
 
   @override
-  String get settingsHistoryTitle => 'Lịch sử';
+  String get settingsHistoryTitle => 'Ai đã điều khiển';
 
   @override
   String settingsHistoryEmpty(String here) {
@@ -526,7 +526,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển $_temp0.';
+    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi bật Cho thiết bị của tôi điều khiển $_temp0.';
   }
 
   @override
@@ -611,7 +611,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Mở Cài đặt → Điều khiển rồi bật Cho điện thoại của tôi điều khiển $_temp0.';
+    return 'Mở Cài đặt → Điều khiển rồi bật Cho thiết bị của tôi điều khiển $_temp0.';
   }
 
   @override

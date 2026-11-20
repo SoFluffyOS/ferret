@@ -85,7 +85,7 @@ Nobody takes over your computer without you knowing.
 - **While it happens**, a notice says "Pixel is controlling this Mac" with **Stop control**, and so does the top line of **Activity**, with **Stop**. Either cuts the phone off right away and lets go of any held key.
 - **Afterwards**, **Activity** keeps a line such as "Pixel controlled this Mac · For 4 min" until you dismiss it with **✕**. The last 20 are in **Settings → Control**, under **History**.
 - Changed your mind about Always allow? On the computer, open the phone in Ferret and turn off **Control this Mac without asking**. The same switch turns it on without waiting for the phone to ask.
-- Don't want it at all? Turn off **Let my phones control this computer** in **Settings → Control**.
+- Don't want it at all? Turn off **Let my devices control this computer** in **Settings → Control**.
 
 Control also ends on its own after 10 minutes without any input, or when the phone leaves the touchpad page.
 

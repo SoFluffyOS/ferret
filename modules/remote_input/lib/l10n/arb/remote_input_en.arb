@@ -130,7 +130,7 @@
       }
     }
   },
-  "settingsEnabled": "Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "settingsEnabled": "Let my devices control {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
   "@settingsEnabled": {
     "placeholders": {
       "here": {
@@ -186,7 +186,7 @@
   },
   "permissionAlwaysDetail": "You still see it the whole time, with Stop control.",
   "permissionAlwaysOff": "Control is off. Turn it on in Settings → Control.",
-  "settingsHistoryTitle": "History",
+  "settingsHistoryTitle": "Who controlled it",
   "settingsHistoryEmpty": "No device controlled {here, select, macOS{this Mac} windows{this PC} other{this computer}} yet.",
   "@settingsHistoryEmpty": {
     "placeholders": {
@@ -399,7 +399,7 @@
       }
     }
   },
-  "healthTurnedOffHelp": "On {device}: open Ferret → Settings → Control and turn on Let my phones control {host, select, mac{this Mac} windows{this PC} other{this computer}}.",
+  "healthTurnedOffHelp": "On {device}: open Ferret → Settings → Control and turn on Let my devices control {host, select, mac{this Mac} windows{this PC} other{this computer}}.",
   "@healthTurnedOffHelp": {
     "placeholders": {
       "device": {
@@ -478,7 +478,7 @@
       }
     }
   },
-  "healthHostOffHelp": "Open Settings → Control and turn on Let my phones control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
+  "healthHostOffHelp": "Open Settings → Control and turn on Let my devices control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
   "@healthHostOffHelp": {
     "placeholders": {
       "here": {

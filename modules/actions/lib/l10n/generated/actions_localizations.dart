@@ -590,7 +590,7 @@ abstract class ActionsLocalizations {
   /// No description provided for @historyTitle.
   ///
   /// In en, this message translates to:
-  /// **'History'**
+  /// **'Actions run here'**
   String get historyTitle;
 
   /// No description provided for @historyEmpty.

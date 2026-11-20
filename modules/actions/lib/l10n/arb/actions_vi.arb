@@ -82,7 +82,7 @@
   "editCommandChanged": "Lệnh mới sẽ khiến mọi thiết bị phải hỏi lại.",
   "save": "Lưu",
   "remove": "Xoá",
-  "historyTitle": "Lịch sử",
+  "historyTitle": "Thao tác đã chạy ở đây",
   "historyEmpty": "Chưa có gì được chạy.",
   "clearHistory": "Xoá lịch sử",
   "summaryOff": "Tắt",
