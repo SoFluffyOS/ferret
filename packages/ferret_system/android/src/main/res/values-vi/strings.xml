@@ -14,7 +14,7 @@
     <string name="ferret_system_action_send_clipboard">Gửi bảng nhớ tạm</string>
     <string name="ferret_system_action_pause">Tạm dừng 1 giờ</string>
     <string name="ferret_system_action_resume">Tiếp tục chạy</string>
-    <string name="ferret_system_tile_label">Ferret</string>
+    <string name="ferret_system_tile_label">Gửi bảng nhớ tạm</string>
     <string name="ferret_system_tile_not_connected">Chưa kết nối</string>
     <string name="ferret_system_tile_paused">Đã tạm dừng</string>
     <plurals name="ferret_system_tile_devices">

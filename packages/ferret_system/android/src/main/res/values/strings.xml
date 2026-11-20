@@ -15,7 +15,7 @@
     <string name="ferret_system_action_send_clipboard">Send clipboard</string>
     <string name="ferret_system_action_pause">Pause 1 h</string>
     <string name="ferret_system_action_resume">Resume</string>
-    <string name="ferret_system_tile_label">Ferret</string>
+    <string name="ferret_system_tile_label">Send clipboard</string>
     <string name="ferret_system_tile_not_connected">Not connected</string>
     <string name="ferret_system_tile_paused">Paused</string>
     <plurals name="ferret_system_tile_devices">

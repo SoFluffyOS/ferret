@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 📤 **Your devices in Android's share sheet**: share a photo or a link and your connected computers sit right in the top row. Tap one and it goes straight there, no Ferret screen in between. **Send with Ferret** still asks where.
+- 🔕 **Hide Ferret's notification on Android**: swipe it away (Android 14+) and it stays away. Ferret keeps running. The Quick Settings tile is now called **Send clipboard**, which is what it does.
 - 📥 **Shelf**: an open box at the bottom of the Mac popover to put things down for a moment. Drop files, photos, text or links on it and see them right there as tiles with their names. Turn on **Keep copies** and what you copy lands there too, until you quit Ferret or for a day or a week. Drag one tile out, **All** to take everything, a ⌘-click selection, or drop it on a device to send it. Mid-drag, rest on the menubar icon or shake the pointer and the shelf comes to you; a box at the screen's edge is one switch away. Files dropped right on the icon wait 3 seconds for **Undo**. It never leaves your computer. See [Shelf](docs/features/shelf.md).
 - 🖱️ **Drag photos and clips into any app**: on a Mac, drag a phone photo out of **Photos**, or a clip out of **Recent clips**, and drop it in Mail, Slack, Finder or wherever you want it. Works from the popover too, where your phone's page now has a **Photos** button. The photo comes from the phone only once you drop it.
 - 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.

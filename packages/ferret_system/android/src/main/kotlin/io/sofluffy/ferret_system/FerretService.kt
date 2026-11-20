@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -14,8 +15,11 @@ import android.util.Log
  * closed. Android shows its notification for as long as it runs.
  */
 class FerretService : Service() {
+    private var inForeground = false
+
     override fun onCreate() {
         super.onCreate()
+        ServiceNotification.hidden = false
         running = this
         ServiceStops.onServiceCreated(this)
         FerretRuntime.ensureEngine(this)
@@ -23,7 +27,9 @@ class FerretService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!enterForeground()) {
+        // Android lets a service that is already in the foreground skip
+        // startForeground, which would post a swiped-away notice again.
+        if (ServiceNotification.shouldPost(inForeground) && !enterForeground()) {
             stopSelf()
             return START_NOT_STICKY
         }
@@ -50,6 +56,12 @@ class FerretService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    /** The notice follows a language picked for Ferret in Android's settings. */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        refreshNotification(this)
+    }
+
     private fun enterForeground(): Boolean {
         val notification = ServiceNotification.build(this)
         return try {
@@ -62,6 +74,7 @@ class FerretService : Service() {
             } else {
                 startForeground(ServiceNotification.ID, notification)
             }
+            inForeground = true
             true
         } catch (error: RuntimeException) {
             Log.w(TAG, "Android did not let the service run in the foreground", error)
@@ -103,6 +116,9 @@ class FerretService : Service() {
 
         fun refreshNotification(context: Context) {
             val service = running ?: return
+            if (!ServiceNotification.shouldPost(service.inForeground)) {
+                return
+            }
             val manager = service.getSystemService(NotificationManager::class.java) ?: return
             manager.notify(ServiceNotification.ID, ServiceNotification.build(context))
         }

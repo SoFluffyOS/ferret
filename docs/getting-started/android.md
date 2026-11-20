@@ -8,11 +8,13 @@ order: 4
 > 1. Install Ferret and open it once.
 > 2. Allow notifications, so you can see that Ferret is running.
 > 3. Turn off battery optimization for Ferret (and your phone maker's own killer, see below).
-> 4. Add the **Ferret** tile to Quick Settings: copy something, tap the tile, and it's on your laptop.
+> 4. Add Ferret's **Send clipboard** tile to Quick Settings: copy something, tap the tile, and it's on your laptop.
 
 Android loves to stop apps in the background. That is the number one reason apps like Ferret "lose" your phone.
 
 Ferret runs a small background service, shows one quiet notification while it does, and reconnects the moment your phone wakes up or changes network.
+
+Don't want the notification? Swipe it away (Android 14+). Ferret keeps running and leaves it hidden until Ferret starts again.
 
 <figure class="shot shot-narrow">
   <img src="/assets/docs/android-home-light.webp" alt="Ferret on an Android phone: a connected Mac with Send files, Send clipboard and Ring" width="380" height="822" loading="lazy">

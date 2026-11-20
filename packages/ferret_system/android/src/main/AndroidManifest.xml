@@ -75,6 +75,10 @@
             android:name="io.sofluffy.ferret_system.ReconnectReceiver"
             android:exported="false" />
 
+        <receiver
+            android:name="io.sofluffy.ferret_system.NoticeHiddenReceiver"
+            android:exported="false" />
+
         <!-- The notification plugin's button receiver, which
              FerretComponentFactory swaps for NoticeButtonReceiver. Off before
              Android 9, where there is no factory and the plugin's own one

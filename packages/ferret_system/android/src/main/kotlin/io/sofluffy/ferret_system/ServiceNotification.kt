@@ -20,6 +20,18 @@ object ServiceNotification {
     private const val REQUEST_CLIPBOARD = 2
     private const val REQUEST_PAUSE = 3
     private const val REQUEST_RESUME = 4
+    private const val REQUEST_HIDDEN = 5
+
+    /**
+     * True once the user swiped the notice away (Android 14+ lets them).
+     * Ferret then leaves it hidden instead of posting it again at every
+     * connect, until the service starts afresh.
+     */
+    @Volatile
+    var hidden = false
+
+    /** Whether to post the notice now: never again over a swipe, once running. */
+    fun shouldPost(inForeground: Boolean): Boolean = !(inForeground && hidden)
 
     fun ensureChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -57,6 +69,14 @@ object ServiceNotification {
             .setVisibility(Notification.VISIBILITY_PUBLIC)
 
         openAppIntent(context)?.let(builder::setContentIntent)
+        builder.setDeleteIntent(
+            PendingIntent.getBroadcast(
+                context,
+                REQUEST_HIDDEN,
+                Intent(context, NoticeHiddenReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            ),
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
         }

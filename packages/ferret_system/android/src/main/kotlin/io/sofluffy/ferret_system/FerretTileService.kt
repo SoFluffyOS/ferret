@@ -8,7 +8,7 @@ import android.service.quicksettings.TileService
 import android.util.Log
 
 /**
- * The "Ferret" Quick Settings tile. A tap sends the clipboard; a long press
+ * The "Send clipboard" Quick Settings tile. A tap sends the clipboard; a long press
  * opens the app (through the app activity that handles
  * `android.service.quicksettings.action.QS_TILE_PREFERENCES`).
  */
