@@ -15,6 +15,10 @@ When Ferret hears another account's Ferret on the same computer, it adds the acc
 
 **Settings → This device** says so, and which port this Ferret listens on.
 
+Your own `ferret-cli`, or a second copy of Ferret you started yourself, never counts as another account. Only Ferret in someone else's login does.
+
+Only you use this computer, but Ferret thinks it's shared? Open **Settings → This device** and press **Only me**. That's it. The account leaves the name, and previews show again, except for a phone you turned them off for. If Ferret hears another account later, it says so again.
+
 ## 🔌 Ports
 
 The first Ferret takes port `47640`. The next accounts move to `47642`–`47649` and tell your devices where they are. The Windows installer and the Linux firewall profiles open that range too. Already installed? **Fix connection → Allow through firewall** adds the missing rule.
