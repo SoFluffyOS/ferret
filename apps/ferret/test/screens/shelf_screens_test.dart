@@ -132,22 +132,21 @@ Future<void> _openPanel(WidgetTester tester, ScreenRig rig) async {
   await rig.open(tester, _PanelPreview(shelfViewModel(tester)));
 }
 
-Future<void> _openSettings(
-  WidgetTester tester,
-  ScreenRig rig, {
-  String at = 'While you drag',
-}) async {
+/// The popover made taller for Settings → Clipboard, so the whole "While
+/// you drag" section shows from its heading down, under the shelf.
+const _tallPopover = CaptureSize('popover_tall', 380, 860);
+
+/// Opens Settings → Clipboard at its end, where the shelf's section is.
+Future<void> _openSettings(WidgetTester tester, ScreenRig rig) async {
   await rig.open(tester, const SettingsGroupPage(group: .clipboard));
+  final scrollable = find.byType(Scrollable).last;
   await tester.scrollUntilVisible(
-    find.text(at),
+    find.text('While you drag'),
     200,
-    scrollable: find.byType(Scrollable).last,
+    scrollable: scrollable,
   );
-  await rig.settle(tester);
-  await tester.drag(find.byType(Scrollable).last, const Offset(0, -2000));
-  await rig.settle(tester);
-  final top = tester.getTopLeft(find.text(at)).dy;
-  await tester.drag(find.byType(Scrollable).last, Offset(0, 120 - top));
+  final position = tester.state<ScrollableState>(scrollable).position;
+  position.jumpTo(position.maxScrollExtent);
   await rig.settle(tester);
 }
 
@@ -250,7 +249,7 @@ final _screens = <String, _Script>{
         IgnoredApp(id: 'com.apple.Safari', name: 'Safari'),
       ]);
     });
-    await _openSettings(tester, rig, at: 'Shake to show');
+    await _openSettings(tester, rig);
   },
 };
 
@@ -262,8 +261,12 @@ void main() {
 
   for (final MapEntry(key: name, value: script) in _screens.entries) {
     for (final brightness in Brightness.values) {
+      final size = switch (name.startsWith('settings')) {
+        true => _tallPopover,
+        false => popover,
+      };
       testWidgets('shelf $name ${brightness.name}', (tester) async {
-        setScreen(tester, popover, brightness);
+        setScreen(tester, size, brightness);
         mockPlugins(tester);
         debugDisableShadows = false;
         debugDefaultTargetPlatformOverride = popover.platform;
@@ -298,7 +301,8 @@ void main() {
             await rig.settle(tester);
           }
 
-          await rig.capture(tester, 'shelf_$name', popover, brightness);
+          await rig.capture(tester, 'shelf_$name', size, brightness);
+
           await rig.dispose(tester);
         } finally {
           debugDisableShadows = true;
