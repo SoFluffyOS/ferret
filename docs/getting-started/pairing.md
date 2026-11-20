@@ -86,7 +86,7 @@ Still nothing? Two more rows wait below.
 
 Nothing paired yet on the phone? The button on its home screen opens the camera straight away.
 
-The phone's own camera works too: point it at the code and tap the Ferret link. Ferret opens and pairs.
+The phone's own camera works too (🧪 beta): point it at the code and tap the Ferret link. Ferret opens and pairs.
 
 Scanning is enough, there are no digits to compare: the code carries a one-time secret that only someone looking at your screen has. It works once and expires after 5 minutes. **New code** makes a fresh one. It also carries your computer's address, so it works on networks where devices can't find each other.
 

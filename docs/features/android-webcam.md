@@ -21,6 +21,8 @@ In Ferret, open the phone on your computer: **Use Pixel 7 as a webcam** shows th
 
 ## 📶 Over Wi-Fi with Ferret
 
+> 🧪 **Beta.** It works in my tests, but it hasn't met enough real devices yet. Something off? [Open an issue](https://github.com/simonpham/ferret/issues).
+
 No cable, or no **Webcam** in your phone's USB list? Ferret sends the camera over Wi-Fi.
 
 1. On your computer, open the phone in Ferret and click **Use camera** (behind **More** it reads **Use Pixel 7's camera**).

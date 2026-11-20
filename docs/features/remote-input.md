@@ -59,6 +59,8 @@ Only locking, never unlocking. Sleep, restart, shut down and your own commands a
 
 ## 💻 One keyboard and mouse for your computers
 
+> 🧪 **Beta.** It works in my tests, but it hasn't met enough real devices yet. Something off? [Open an issue](https://github.com/simonpham/ferret/issues).
+
 A Mac on the desk, a PC next to it. Two keyboards, two mice, and you always grab the wrong one.
 
 On the Mac, turn on **Use this Mac's keyboard and mouse on my other computers** in **Settings → Control**. Then:

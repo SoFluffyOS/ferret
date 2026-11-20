@@ -108,7 +108,7 @@ It works over Wi-Fi too. You can't click a phone that is **View only**, but you 
 
 A video on the phone, and the sound stays in your pocket. Not anymore.
 
-**Over Wi-Fi**, the phone decides. On the phone, open Ferret, then **Settings → To your computer**, and turn on **Send sound too**. Android asks for its "record audio" permission once. It files it under Microphone, but Ferret only captures what the phone PLAYS: music, videos, games. Never the microphone.
+**Over Wi-Fi** (🧪 beta), the phone decides. On the phone, open Ferret, then **Settings → To your computer**, and turn on **Send sound too**. Android asks for its "record audio" permission once. It files it under Microphone, but Ferret only captures what the phone PLAYS: music, videos, games. Never the microphone.
 
 From then on, the phone's question says so, and so does its notice: "Sharing screen and sound with MacBook". Sound goes only while the screen is shown.
 
@@ -135,6 +135,8 @@ This is for a phone on a cable, or one that let you control it over Wi-Fi:
 - Accents and emoji go through the phone's clipboard. You don't have to think about it.
 
 ## 🕹️ Control over Wi-Fi
+
+> 🧪 **Beta.** It works in my tests, but it hasn't met enough real devices yet. Something off? [Open an issue](https://github.com/simonpham/ferret/issues).
 
 No cable on the desk? Click and type on your phone over Wi-Fi anyway.
 

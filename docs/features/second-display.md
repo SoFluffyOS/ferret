@@ -10,6 +10,8 @@ One screen is never enough. And there's a second screen on your desk doing nothi
 
 Ferret turns it into a real extra display for your Mac. Not a mirror: macOS sees one more monitor, so you move windows onto it, arrange it in **System Settings → Displays**, and work on it.
 
+> 🧪 **Beta.** It works in my tests, but it hasn't met enough real devices yet. Something off? [Open an issue](https://github.com/simonpham/ferret/issues).
+
 ## 🖥️ Start it
 
 On the Mac whose desktop you want to extend:
