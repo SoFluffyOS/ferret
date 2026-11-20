@@ -34,6 +34,7 @@
 - Settings keys are snake_case under the feature id (`clipboard.sync_images`); enum values are stored by name.
 - Platform code goes in a `packages/ferret_<capability>` plugin package with a Dart interface, so other apps can reuse it.
 - Features never import each other. Share through `engine`, `feature_kit` or a capability package.
+- **Beta**: a feature that works in tests but hasn't met enough real devices gets a `BetaTag` (feature_kit) beside its switch, prompt or bar, and "(beta)" in tooltips and menus through `BetaFeature.label`, never on a button's own label. Once it has, take it out of `BetaFeature._inBeta`: every tag for it goes away.
 
 ## Docs
 

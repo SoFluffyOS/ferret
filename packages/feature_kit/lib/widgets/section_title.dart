@@ -7,10 +7,13 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// A small heading above a group, such as "Your devices". It starts where
 /// the text of the rows under it starts.
 class SectionTitle extends StatelessWidget {
-  const SectionTitle(this.text, {super.key, this.trailing});
+  const SectionTitle(this.text, {super.key, this.trailing, this.badge});
 
   final String text;
   final Widget? trailing;
+
+  /// A small widget right after the title, such as a `BetaTag`.
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,18 @@ class SectionTitle extends StatelessWidget {
         constraints: BoxConstraints(minHeight: TextLink.minHeight),
         child: Row(
           children: [
-            Expanded(child: Text(text, style: style)),
+            Expanded(
+              child: switch (badge) {
+                final badge? => Row(
+                  children: [
+                    Flexible(child: Text(text, style: style)),
+                    Spacing.h8,
+                    badge,
+                  ],
+                ),
+                null => Text(text, style: style),
+              },
+            ),
             ?trailing,
           ],
         ),

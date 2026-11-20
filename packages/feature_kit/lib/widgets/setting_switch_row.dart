@@ -12,6 +12,7 @@ class SettingSwitchRow extends StatelessWidget {
     required this.onChanged,
     this.body,
     this.tag,
+    this.badge,
   });
 
   final String title;
@@ -24,6 +25,9 @@ class SettingSwitchRow extends StatelessWidget {
   /// A word next to the title, such as "Experimental".
   final String? tag;
 
+  /// A small widget next to the title, such as a `BetaTag`.
+  final Widget? badge;
+
   @override
   Widget build(BuildContext context) {
     return MergeSemantics(
@@ -31,6 +35,7 @@ class SettingSwitchRow extends StatelessWidget {
         title: title,
         subtitle: body,
         tag: tag,
+        badge: badge,
         trailing: SwitchToggle(value: value, onChanged: onChanged),
       ),
     );

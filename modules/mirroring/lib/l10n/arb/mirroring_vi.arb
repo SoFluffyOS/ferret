@@ -365,5 +365,8 @@
   "displayTouchHint": "Chạm để bấm · Giữ để bấm chuột phải · Hai ngón để cuộn",
   "displayHandleLabel": "Hiện thanh của màn hình phụ {device}",
   "displayStopTitle": "Thôi làm màn hình phụ của {device}?",
-  "displayStopBody": "Các cửa sổ trên màn hình này sẽ trở về {device}."
+  "displayStopBody": "Các cửa sổ trên màn hình này sẽ trở về {device}.",
+  "beta": "Beta",
+  "betaTooltip": "Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật",
+  "inBeta": "{text} (beta)"
 }

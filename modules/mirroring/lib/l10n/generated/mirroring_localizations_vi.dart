@@ -1852,4 +1852,16 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String displayStopBody(String device) {
     return 'Các cửa sổ trên màn hình này sẽ trở về $device.';
   }
+
+  @override
+  String get beta => 'Beta';
+
+  @override
+  String get betaTooltip =>
+      'Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật';
+
+  @override
+  String inBeta(String text) {
+    return '$text (beta)';
+  }
 }

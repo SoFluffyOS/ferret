@@ -1030,4 +1030,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String screenStopped(String device) {
     return '$device đã dừng';
   }
+
+  @override
+  String get beta => 'Beta';
+
+  @override
+  String get betaTooltip =>
+      'Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật';
+
+  @override
+  String inBeta(String text) {
+    return '$text (beta)';
+  }
 }

@@ -15,6 +15,7 @@ class GroupedRow extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.tag,
+    this.badge,
     this.titleMaxLines,
     this.leading,
     this.value = '',
@@ -35,6 +36,9 @@ class GroupedRow extends StatelessWidget {
 
   /// A word next to the title, such as "Experimental".
   final String? tag;
+
+  /// A small widget next to the title, such as a `BetaTag`.
+  final Widget? badge;
 
   /// At the start of the row, such as an `IconTile`.
   final Widget? leading;
@@ -104,17 +108,18 @@ class GroupedRow extends StatelessWidget {
       crossAxisAlignment: .start,
       mainAxisSize: .min,
       children: [
-        switch (tag) {
-          final tag? => Wrap(
+        switch ((tag, badge)) {
+          (null, null) => titleText,
+          (final tag, final badge) => Wrap(
             spacing: Spacing.d8,
             runSpacing: Spacing.d4,
             crossAxisAlignment: .center,
             children: [
               titleText,
-              Tag(tag, color: palette.warning),
+              if (tag != null) Tag(tag, color: palette.warning),
+              ?badge,
             ],
           ),
-          null => titleText,
         },
         if (subtitle case final subtitle?) ...[
           Spacing.vertical(Spacing.d2),

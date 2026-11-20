@@ -9,6 +9,7 @@ export 'package:mirroring/ui/widgets/mirror_message.dart';
 export 'package:mirroring/ui/widgets/mirror_surface.dart';
 export 'package:mirroring/ui/widgets/mirror_toolbar.dart';
 export 'package:mirroring/ui/widgets/mirror_window_bar.dart';
+export 'package:mirroring/ui/widgets/mirroring_beta_tag.dart';
 export 'package:mirroring/ui/widgets/mirroring_labels.dart';
 export 'package:mirroring/ui/widgets/popup_row.dart';
 export 'package:mirroring/ui/widgets/quality_mark.dart';

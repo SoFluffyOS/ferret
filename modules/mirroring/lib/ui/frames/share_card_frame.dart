@@ -94,6 +94,7 @@ class ShareCardFrame extends StatelessWidget {
       return FeatureCard(
         icon: LucideIcons.mousePointerClick,
         iconTone: .accent,
+        trailing: const MirroringBetaTag(.wifiControl),
         title: l10n.controlAskCardTitle(
           controlPending.deviceName,
           viewModel.phoneName,

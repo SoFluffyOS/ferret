@@ -180,5 +180,8 @@
   "screenBackHere": "Bàn phím và chuột của bạn đã về lại {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}.",
   "screenDenied": "{device} không nhận bàn phím và chuột của bạn",
   "screenLost": "Mất kết nối với {device}",
-  "screenStopped": "{device} đã dừng"
+  "screenStopped": "{device} đã dừng",
+  "beta": "Beta",
+  "betaTooltip": "Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật",
+  "inBeta": "{text} (beta)"
 }

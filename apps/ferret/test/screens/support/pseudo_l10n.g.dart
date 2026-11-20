@@ -2251,6 +2251,10 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get displayTouchHint => pseudo(super.displayTouchHint);
   @override
+  String get beta => pseudo(super.beta);
+  @override
+  String get betaTooltip => pseudo(super.betaTooltip);
+  @override
   String windowTitle(String device) => pseudo(super.windowTitle(device));
   @override
   String inWindowTitle(String device) => pseudo(super.inWindowTitle(device));
@@ -2723,6 +2727,8 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String displayStopBody(String device) =>
       pseudo(super.displayStopBody(device));
+  @override
+  String inBeta(String text) => pseudo(super.inBeta(text));
 }
 
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
@@ -3507,6 +3513,10 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get screenSecureInput => pseudo(super.screenSecureInput);
   @override
+  String get beta => pseudo(super.beta);
+  @override
+  String get betaTooltip => pseudo(super.betaTooltip);
+  @override
   String consentTitle(String device, String here) =>
       pseudo(super.consentTitle(device, here));
   @override
@@ -3713,6 +3723,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String screenLost(String device) => pseudo(super.screenLost(device));
   @override
   String screenStopped(String device) => pseudo(super.screenStopped(device));
+  @override
+  String inBeta(String text) => pseudo(super.inBeta(text));
 }
 
 class PseudoScriptingLocalizations extends ScriptingLocalizationsEn {

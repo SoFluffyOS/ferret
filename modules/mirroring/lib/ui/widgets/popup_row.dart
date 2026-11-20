@@ -13,6 +13,7 @@ class PopupRow extends StatelessWidget {
     this.icon,
     this.detail,
     this.checked,
+    this.badge,
   });
 
   final String label;
@@ -22,6 +23,9 @@ class PopupRow extends StatelessWidget {
 
   /// Null for a row that isn't a choice.
   final bool? checked;
+
+  /// A small widget after [label], such as a `BetaTag`.
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +61,17 @@ class PopupRow extends StatelessWidget {
             ),
             Spacing.h8,
             Expanded(
-              child: Text(
-                label,
-                overflow: .ellipsis,
-                style: typography.base2.copyWith(color: palette.text),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      label,
+                      overflow: .ellipsis,
+                      style: typography.base2.copyWith(color: palette.text),
+                    ),
+                  ),
+                  if (badge case final badge?) ...[Spacing.h8, badge],
+                ],
               ),
             ),
             if (detail case final detail?) ...[

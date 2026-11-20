@@ -229,7 +229,7 @@ final _screens = <String, _Script>{
   'control_setting': (tester, rig, mirroring) async {
     await _openSettings(tester, rig, mirroring);
     await tester.scrollUntilVisible(
-      find.text('Turn on Ferret control…'),
+      find.text('Turn on control…'),
       200,
       scrollable: find.byType(Scrollable).last,
     );
@@ -237,11 +237,11 @@ final _screens = <String, _Script>{
   'control_disclosure': (tester, rig, mirroring) async {
     await _openSettings(tester, rig, mirroring);
     await tester.scrollUntilVisible(
-      find.text('Turn on Ferret control…'),
+      find.text('Turn on control…'),
       200,
       scrollable: find.byType(Scrollable).last,
     );
-    await rig.tapText(tester, 'Turn on Ferret control…');
+    await rig.tapText(tester, 'Turn on control…');
   },
   'camera_ask': (tester, rig, mirroring) async {
     await _askForCamera(tester, rig, mirroring);

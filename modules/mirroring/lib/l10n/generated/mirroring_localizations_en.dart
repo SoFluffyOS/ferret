@@ -1870,4 +1870,16 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String displayStopBody(String device) {
     return 'Its windows on this screen go back to $device.';
   }
+
+  @override
+  String get beta => 'Beta';
+
+  @override
+  String get betaTooltip =>
+      'Works in our tests, not yet on enough real devices';
+
+  @override
+  String inBeta(String text) {
+    return '$text (beta)';
+  }
 }

@@ -1031,4 +1031,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String screenStopped(String device) {
     return '$device stopped it';
   }
+
+  @override
+  String get beta => 'Beta';
+
+  @override
+  String get betaTooltip =>
+      'Works in our tests, not yet on enough real devices';
+
+  @override
+  String inBeta(String text) {
+    return '$text (beta)';
+  }
 }

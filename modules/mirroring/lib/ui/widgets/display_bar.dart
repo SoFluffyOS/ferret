@@ -17,6 +17,7 @@ class DisplayBar extends StatelessWidget {
     required this.onStop,
     this.fullScreenLabel,
     this.onFullScreen,
+    this.badge,
   });
 
   final bool shown;
@@ -25,6 +26,9 @@ class DisplayBar extends StatelessWidget {
   final VoidCallback onLeave;
 
   final String title;
+
+  /// A small widget after [title], such as a `BetaTag`.
+  final Widget? badge;
 
   /// How to leave full screen without the bar.
   final String hint;
@@ -85,14 +89,25 @@ class DisplayBar extends StatelessWidget {
                           mainAxisSize: .min,
                           crossAxisAlignment: .start,
                           children: [
-                            Text(
-                              title,
-                              maxLines: 1,
-                              overflow: .ellipsis,
-                              style: typography.base2.copyWith(
-                                color: palette.text,
-                                fontWeight: .w600,
-                              ),
+                            Row(
+                              mainAxisSize: .min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    title,
+                                    maxLines: 1,
+                                    overflow: .ellipsis,
+                                    style: typography.base2.copyWith(
+                                      color: palette.text,
+                                      fontWeight: .w600,
+                                    ),
+                                  ),
+                                ),
+                                if (badge case final badge?) ...[
+                                  Spacing.h8,
+                                  badge,
+                                ],
+                              ],
                             ),
                             Text(
                               hint,

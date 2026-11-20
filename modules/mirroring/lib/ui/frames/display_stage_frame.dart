@@ -152,6 +152,7 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
               shown: _barShown,
               onLeave: () => _showBar(false),
               title: l10n.displayBarTitle(widget.deviceName),
+              badge: const MirroringBetaTag(.secondDisplay),
               hint: switch (touch) {
                 true => l10n.displayTouchHint,
                 false => l10n.displayEscHint,

@@ -833,5 +833,22 @@
         "type": "String"
       }
     }
+  },
+  "beta": "Beta",
+  "@beta": {
+    "description": "A small tag beside a feature that works in tests but hasn't been tried on enough real devices yet"
+  },
+  "betaTooltip": "Works in our tests, not yet on enough real devices",
+  "@betaTooltip": {
+    "description": "Shown when resting on the Beta tag"
+  },
+  "inBeta": "{text} (beta)",
+  "@inBeta": {
+    "description": "A tooltip or menu item for a feature in beta, such as 'Use MacBook Air as a display (beta)'",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
   }
 }

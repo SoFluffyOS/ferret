@@ -297,14 +297,23 @@ class MirroringFeatureUi extends FeatureUi {
             },
             needsYou: true,
             tone: .accent,
-            trailing: Countdown(
-              until: request.deadline,
-              builder: (context, left) => Text(
-                Countdown.clockText(left),
-                style: context.fluffyTheme.typography.caption1.copyWith(
-                  color: context.palette.mutedText,
+            trailing: Row(
+              mainAxisSize: .min,
+              children: [
+                if (request.display) ...[
+                  const MirroringBetaTag(.secondDisplay),
+                  Spacing.h8,
+                ],
+                Countdown(
+                  until: request.deadline,
+                  builder: (context, left) => Text(
+                    Countdown.clockText(left),
+                    style: context.fluffyTheme.typography.caption1.copyWith(
+                      color: context.palette.mutedText,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             actions: [
               ActivityAction(
@@ -542,7 +551,10 @@ class MirroringFeatureUi extends FeatureUi {
         FeatureAction(
           id: 'mirroring.use_camera',
           label: l10n.useCameraShort,
-          tooltip: l10n.useCamera(device.device.name),
+          tooltip: BetaFeature.wifiCamera.label(
+            l10n.useCamera(device.device.name),
+            l10n.inBeta,
+          ),
           icon: LucideIcons.video,
           onPressed: () => unawaited(_openCamera(feature, device.device)),
         ),
@@ -567,7 +579,10 @@ class MirroringFeatureUi extends FeatureUi {
       },
       tooltip: switch (lentHere) {
         true => l10n.displayStopUsing(device.name),
-        false => l10n.displayUse(device.name),
+        false => BetaFeature.secondDisplay.label(
+          l10n.displayUse(device.name),
+          l10n.inBeta,
+        ),
       },
       icon: LucideIcons.monitor,
       onPressed: switch (lentHere) {

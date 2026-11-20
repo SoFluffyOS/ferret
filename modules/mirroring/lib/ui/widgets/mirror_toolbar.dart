@@ -333,6 +333,10 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       .askControl => ToolbarButton(
         icon: LucideIcons.mousePointerClick,
         name: _askControlName(l10n),
+        tooltip: BetaFeature.wifiControl.label(
+          _askControlName(l10n),
+          l10n.inBeta,
+        ),
         showName: names,
         onTap: switch (widget.askingControl) {
           true => null,

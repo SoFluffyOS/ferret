@@ -64,6 +64,7 @@ class ShareSettingsFrame extends StatelessWidget {
             if (canCapture && canSendSound) ...[
               SettingSwitchRow(
                 title: l10n.settingsSendSound,
+                badge: const MirroringBetaTag(.wifiSound),
                 body: l10n.settingsSendSoundBody,
                 value: sendSound,
                 onChanged: (value) => unawaited(viewModel.setSendSound(value)),

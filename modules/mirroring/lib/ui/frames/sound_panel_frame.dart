@@ -68,6 +68,11 @@ class SoundPanelFrame extends StatelessWidget {
             if (offers) ...[
               PopupRow(
                 label: l10n.soundHere(ThisComputer.here),
+                // Sound that plays in both places is the Wi-Fi way.
+                badge: switch (way) {
+                  .copies => const MirroringBetaTag(.wifiSound),
+                  _ => null,
+                },
                 checked: on,
                 onTap: () => unawaited(viewModel.setSound(true)),
               ),

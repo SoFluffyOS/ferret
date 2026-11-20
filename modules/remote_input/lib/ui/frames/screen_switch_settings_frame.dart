@@ -49,6 +49,11 @@ class _ScreenSwitchSettingsFrameState extends State<ScreenSwitchSettingsFrame> {
       children: [
         SettingSwitchRow(
           title: l10n.settingsScreenSwitch(ThisComputer.here),
+          badge: BetaTag(
+            .sharedInput,
+            label: l10n.beta,
+            tooltip: l10n.betaTooltip,
+          ),
           body: l10n.settingsScreenSwitchBody,
           value: enabled,
           onChanged: (value) => unawaited(viewModel.setEnabled(value)),

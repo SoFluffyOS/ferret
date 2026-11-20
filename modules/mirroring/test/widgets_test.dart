@@ -1233,9 +1233,13 @@ void main() {
         ),
       );
 
+      // Menus say the camera over Wi-Fi is still in beta.
       expect(pixelActions.map((action) => action.fullLabel), [
         'Show screen',
-        "Use Pixel's camera",
+        BetaFeature.wifiCamera.label(
+          "Use Pixel's camera",
+          (text) => '$text (beta)',
+        ),
       ]);
       expect(olderActions.map((action) => action.label), ['Show screen']);
     });

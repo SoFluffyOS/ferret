@@ -2295,6 +2295,24 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Its windows on this screen go back to {device}.'**
   String displayStopBody(String device);
+
+  /// A small tag beside a feature that works in tests but hasn't been tried on enough real devices yet
+  ///
+  /// In en, this message translates to:
+  /// **'Beta'**
+  String get beta;
+
+  /// Shown when resting on the Beta tag
+  ///
+  /// In en, this message translates to:
+  /// **'Works in our tests, not yet on enough real devices'**
+  String get betaTooltip;
+
+  /// A tooltip or menu item for a feature in beta, such as 'Use MacBook Air as a display (beta)'
+  ///
+  /// In en, this message translates to:
+  /// **'{text} (beta)'**
+  String inBeta(String text);
 }
 
 class _MirroringLocalizationsDelegate
