@@ -51,6 +51,35 @@ const iphone = CaptureSize(
 const popover = CaptureSize('popover', 380, 560);
 const sizes = [phone, iphone, popover];
 
+/// An Android tablet (Galaxy Tab S9, Pixel Tablet) held both ways, and
+/// Ferret beside another app in split screen: half of the landscape screen,
+/// and the bottom half of the portrait one.
+const tabletLandscape = CaptureSize(
+  'tablet_land',
+  1280,
+  800,
+  platform: .android,
+);
+const tabletPortrait = CaptureSize(
+  'tablet_port',
+  800,
+  1280,
+  platform: .android,
+);
+const tabletHalf = CaptureSize('tablet_half', 636, 800, platform: .android);
+const tabletPortraitHalf = CaptureSize(
+  'tablet_port_half',
+  800,
+  636,
+  platform: .android,
+);
+const tabletSizes = [
+  tabletLandscape,
+  tabletPortrait,
+  tabletHalf,
+  tabletPortraitHalf,
+];
+
 /// Pixel ratio of the saved PNGs.
 const capturePixelRatio = 2.0;
 
@@ -84,13 +113,20 @@ class ScreenRig {
     String name = 'MacBook Air',
     bool tipsDone = false,
     bool asPhone = false,
+    bool asTablet = false,
   }) async {
     final rig = await tester.runAsync(() async {
       final discovery = SilentDiscovery();
       final engine = await FerretEngine.create(
         secrets: MemorySecretStore(),
         settings: MemorySettingsStore(),
-        device: switch (asPhone) {
+        device: switch (asPhone || asTablet) {
+          true when asTablet => const LocalDevice(
+            name: 'Galaxy Tab S9',
+            platform: .PLATFORM_ANDROID,
+            formFactor: .FORM_FACTOR_TABLET,
+            appVersion: '0.1.0',
+          ),
           true => const LocalDevice(
             name: 'Pixel 9',
             platform: .PLATFORM_ANDROID,
@@ -620,8 +656,18 @@ void setScreen(WidgetTester tester, CaptureSize size, Brightness brightness) {
   tester.view
     ..devicePixelRatio = 1
     ..physicalSize = Size(size.width, size.height);
+  // A tablet's split-screen half is still a tablet: the display is the
+  // whole screen.
+  final screen = switch (size.name) {
+    'tablet_half' || 'tablet_port_half' => const Size(1280, 800),
+    _ => Size(size.width, size.height),
+  };
+  tester.view.display
+    ..devicePixelRatio = 1
+    ..size = screen;
   tester.platformDispatcher.platformBrightnessTestValue = brightness;
   addTearDown(() {
+    tester.view.display.reset();
     tester.view.reset();
     tester.platformDispatcher.clearPlatformBrightnessTestValue();
   });
