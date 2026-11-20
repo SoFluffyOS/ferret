@@ -2193,4 +2193,27 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get doctorFixReachOverVpn => 'Kết nối qua VPN';
+
+  @override
+  String get iconDropChoose => 'Chọn thiết bị';
+
+  @override
+  String get iconDropShelf => 'Để lên kệ tạm';
+
+  @override
+  String get iconDropKept => 'Đã để lên kệ tạm';
+
+  @override
+  String iconDropSending(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đang gửi $count tệp đến $name',
+      one: 'Đang gửi đến $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get iconDropUndo => 'Hoàn tác';
 }

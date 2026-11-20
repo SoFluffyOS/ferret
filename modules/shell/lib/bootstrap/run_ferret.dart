@@ -145,8 +145,14 @@ Future<void> runFerret({
   if (ferretMenubar.isSupported) {
     featureContext
       ..dragOut = MenubarDragOut(ferretMenubar)
-      ..quickLook = ferretMenubar.toggleQuickLook;
+      ..quickLook = ferretMenubar.toggleQuickLook
+      ..systemDrags = MenubarSystemDrags(ferretMenubar);
   }
+  final floatingPanel = switch (ferretMenubar.isSupported) {
+    true => FloatingPanelHost(menubar: ferretMenubar),
+    false => null,
+  };
+  featureContext.floatingPanel = floatingPanel;
   final navigation = WindowNavRegistry(featureContext, views: views);
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));
@@ -182,6 +188,7 @@ Future<void> runFerret({
       menubar: menubar.menubar,
       navigation: navigation,
       featureWindows: featureWindows,
+      floatingPanel: floatingPanel,
       quit: quit,
       views: switch (ferretMenubar.isSupported) {
         true => views,

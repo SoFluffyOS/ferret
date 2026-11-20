@@ -40,6 +40,7 @@ class OsDropViewModel extends ChangeNotifier {
     VoidCallback? onFailed,
     this.leaveGrace = const Duration(milliseconds: 600),
     this.sentHold = const Duration(milliseconds: 1500),
+    this.undoWindow = const Duration(seconds: 3),
   }) : _devices = devices,
        _send = send,
        _sendText = sendText,
@@ -68,6 +69,10 @@ class OsDropViewModel extends ChangeNotifier {
   /// How long "Sent" shows before going back to rest.
   final Duration sentHold;
 
+  /// How long a quick drop on the menubar icon waits before it goes, so it
+  /// can be undone.
+  final Duration undoWindow;
+
   DropPhase _phase = const DropIdle();
   int _fileCount = 0;
   int _folderCount = 0;
@@ -80,6 +85,8 @@ class OsDropViewModel extends ChangeNotifier {
   Timer? _timer;
   StreamSubscription<FilesSendProgress>? _progress;
   int _sendRun = 0;
+  Timer? _undoTimer;
+  DeviceDropTarget? _pendingTarget;
 
   DropPhase get phase => _phase;
 
@@ -220,34 +227,104 @@ class OsDropViewModel extends ChangeNotifier {
     await _sendTo(target);
   }
 
-  /// Files dropped on the menubar icon without waiting for the popover:
-  /// with one device connected they go straight to it, and with several to
-  /// the one files were last dropped on while it is connected. Otherwise
-  /// the targets show so people pick one rather than Ferret guessing; true
-  /// back means they were held for that.
-  Future<bool> dropBlind(List<String> paths) async {
-    if (paths.isEmpty) {
-      return false;
-    }
+  /// Where a quick drop on the menubar icon goes now: the only connected
+  /// device, or with several the one files were last dropped on while it
+  /// is connected. Null when Ferret would have to guess.
+  DeviceDropTarget? get blindTarget =>
+      blindTargetOf(_devices(), _settings?.get<String>(lastDeviceKey));
 
+  static DeviceDropTarget? blindTargetOf(
+    List<DeviceDropTarget> devices,
+    String? lastId,
+  ) {
     final connected = [
-      for (final device in _devices())
+      for (final device in devices)
         if (device.isConnected) device,
     ];
-    final lastId = _settings?.get<String>(lastDeviceKey);
-    final target = switch (connected) {
+
+    return switch (connected) {
       [final only] => only,
       _ => connected.where((device) => device.deviceId == lastId).firstOrNull,
     };
-    if (target == null) {
-      hold(paths);
-      return true;
+  }
+
+  /// The device a quick drop on the icon is about to go to, while it can
+  /// still be undone.
+  DeviceDropTarget? get pendingTarget => _pendingTarget;
+
+  /// Files dropped on the menubar icon without waiting for the popover,
+  /// as [mode] says. Sent to [blindTarget] after [undoWindow], unless
+  /// [undoIconDrop] comes first; with no target the targets show so
+  /// people pick one rather than Ferret guessing. [keeper] keeps them for
+  /// [IconDrop.shelf].
+  Future<IconDropOutcome> dropOnIcon(
+    List<String> paths, {
+    IconDrop mode = .sendToLast,
+    DropReceiver? keeper,
+  }) async {
+    if (paths.isEmpty) {
+      return const IconDropRefused();
     }
 
-    _kind = .files;
-    _paths = paths;
-    await _sendTo(target);
-    return false;
+    if ((mode, keeper) case (.shelf, final keeper?)) {
+      final kept = await keeper.takeFiles(paths);
+      return switch (kept) {
+        true => const IconDropKept(),
+        false => const IconDropRefused(),
+      };
+    }
+
+    final target = blindTarget;
+    if (mode == .ask || target == null) {
+      hold(paths);
+      return const IconDropHeld();
+    }
+
+    undoIconDrop();
+    _pendingTarget = target;
+    _undoTimer = Timer(undoWindow, () {
+      _pendingTarget = null;
+      _kind = .files;
+      _paths = paths;
+      unawaited(_sendTo(target));
+    });
+    notifyListeners();
+    return IconDropPending(target, paths.length);
+  }
+
+  /// Text or a link dropped on the icon: a blind send would be a guess,
+  /// so it stays on the shelf ([keeper]) when there is one.
+  Future<IconDropOutcome> dropTextOnIcon(
+    String text, {
+    required bool isLink,
+    DropReceiver? keeper,
+  }) async {
+    if (keeper == null || text.trim().isEmpty) {
+      return const IconDropRefused();
+    }
+
+    final kept = await keeper.takeText(
+      text,
+      isLink: DropKind.ofText(text, isLink: isLink) == .link,
+    );
+    return switch (kept) {
+      true => const IconDropKept(),
+      false => const IconDropRefused(),
+    };
+  }
+
+  /// Stops a quick drop that hasn't gone yet. False when there was none.
+  bool undoIconDrop() {
+    final timer = _undoTimer;
+    _undoTimer = null;
+    if (timer == null || !timer.isActive) {
+      return false;
+    }
+
+    timer.cancel();
+    _pendingTarget = null;
+    notifyListeners();
+    return true;
   }
 
   /// Shows the targets for [paths] already dropped, to pick one by tapping.
@@ -429,6 +506,7 @@ class OsDropViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _undoTimer?.cancel();
     _timer?.cancel();
     _stopSending();
     super.dispose();

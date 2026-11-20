@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
@@ -29,6 +30,13 @@ class AppViewsFrame extends StatelessWidget {
     final featureWindow = context.select<FeatureWindowHost?, FeatureWindow?>(
       (host) => host?.window,
     );
+    final panelView = context.select<FloatingPanelHost?, FlutterView?>(
+      (host) => host?.view,
+    );
+    final panelBuilder = context.select<FloatingPanelHost?, WidgetBuilder?>(
+      (host) => host?.builder,
+    );
+    final menubar = context.read<FerretMenubar?>();
 
     return ViewCollection(
       views: [
@@ -48,6 +56,16 @@ class AppViewsFrame extends StatelessWidget {
             key: ValueKey(view.viewId),
             view: view,
             child: FeatureWindowView(window: window),
+          ),
+        if ((panelView, panelBuilder, menubar) case (
+          final view?,
+          final builder?,
+          final menubar?,
+        ))
+          View(
+            key: ValueKey(view.viewId),
+            view: view,
+            child: FloatingPanelView(builder: builder, menubar: menubar),
           ),
       ],
     );

@@ -473,5 +473,10 @@
   "deviceReachedOverVpn": "Đang kết nối qua VPN của bạn",
   "doctorVpnReachOn": "Ferret cũng thử kết nối {device} qua VPN của bạn. Hãy chắc VPN đang bật trên cả hai thiết bị.",
   "doctorVpnReachOff": "Đang ở xa? Nếu {device} cũng ở trong VPN của bạn, Ferret có thể kết nối qua đó.",
-  "doctorFixReachOverVpn": "Kết nối qua VPN"
+  "doctorFixReachOverVpn": "Kết nối qua VPN",
+  "iconDropChoose": "Chọn thiết bị",
+  "iconDropShelf": "Để lên kệ tạm",
+  "iconDropKept": "Đã để lên kệ tạm",
+  "iconDropSending": "{count, plural, =1{Đang gửi đến {name}} other{Đang gửi {count} tệp đến {name}}}",
+  "iconDropUndo": "Hoàn tác"
 }

@@ -2935,6 +2935,36 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Reach over your VPN'**
   String get doctorFixReachOverVpn;
+
+  /// Small label under the menubar icon while files dragged from another app rest on it and Ferret can't tell which device they'd go to: let go and the popover opens to pick one.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a device'**
+  String get iconDropChoose;
+
+  /// Small label under the menubar icon while something dragged rests on it and a drop there stays on this computer's shelf.
+  ///
+  /// In en, this message translates to:
+  /// **'Put on the shelf'**
+  String get iconDropShelf;
+
+  /// Small notice under the menubar icon right after something dropped there went on the shelf.
+  ///
+  /// In en, this message translates to:
+  /// **'On the shelf'**
+  String get iconDropKept;
+
+  /// Small notice under the menubar icon right after files were dropped there; they go to the device in 3 seconds unless Undo is pressed. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Sending to {name}} other{Sending {count} files to {name}}}'**
+  String iconDropSending(int count, String name);
+
+  /// Button on the notice under the menubar icon: stops files dropped there from being sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get iconDropUndo;
 }
 
 class _ShellLocalizationsDelegate

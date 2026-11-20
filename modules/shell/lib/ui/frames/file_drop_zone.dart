@@ -7,6 +7,7 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
+import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/drop_targets_frame.dart';
@@ -78,7 +79,13 @@ class _FileDropZoneState extends State<FileDropZone> {
     if (menubar != null) {
       _subscriptions
         ..add(menubar.drags.listen(_onPopoverDrag))
-        ..add(menubar.drops.listen(_onIconDrop));
+        ..add(menubar.drops.listen(_onIconDrop))
+        ..add(
+          menubar.iconTextDrops.listen(
+            (drop) => unawaited(_onIconText(drop.$1, isLink: drop.$2)),
+          ),
+        )
+        ..add(menubar.noticeActions.listen((_) => _onUndo()));
     }
   }
 
@@ -188,18 +195,69 @@ class _FileDropZoneState extends State<FileDropZone> {
     }
   }
 
-  /// Dropped on the icon before the popover opened: the only connected
-  /// device, or the one used last, gets them while the icon shows the
-  /// ring; otherwise the popover opens on the tiles to pick one.
+  /// Dropped on the icon before the popover opened, as Settings → Shelf
+  /// says: to the only connected device or the one used last, after a
+  /// moment to undo it; on the shelf; or the popover opens on the tiles
+  /// to pick one.
   Future<void> _onIconDrop(List<String> paths) async {
     if (!_isMainView) {
       return;
     }
 
-    final held = await _viewModel.dropBlind(paths);
-    if (held) {
-      await widget.menubar?.show();
+    final scope = ShellScope.read(context);
+    final mode = MenubarDrops(scope.featureContext.engine.settings).iconDrop;
+    final outcome = await _viewModel.dropOnIcon(
+      paths,
+      mode: mode,
+      keeper: scope.featureContext.dropKeeper,
+    );
+    await _tell(outcome);
+  }
+
+  /// Text and links let go on the icon: a guess would be wrong more often
+  /// than not, so they stay on the shelf.
+  Future<void> _onIconText(String text, {required bool isLink}) async {
+    if (!_isMainView) {
+      return;
     }
+
+    final outcome = await _viewModel.dropTextOnIcon(
+      text,
+      isLink: isLink,
+      keeper: ShellScope.read(context).featureContext.dropKeeper,
+    );
+    await _tell(outcome);
+  }
+
+  Future<void> _tell(IconDropOutcome outcome) async {
+    final menubar = widget.menubar;
+    if (menubar == null || !mounted) {
+      return;
+    }
+
+    final l10n = context.shellL10n;
+    switch (outcome) {
+      case IconDropPending(:final target, :final count):
+        await menubar.showIconNotice(
+          l10n.iconDropSending(count, target.name),
+          action: l10n.iconDropUndo,
+          duration: _viewModel.undoWindow,
+        );
+      case IconDropKept():
+        await menubar.showIconNotice(l10n.iconDropKept);
+      case IconDropHeld():
+        await menubar.show();
+      case IconDropRefused():
+        break;
+    }
+  }
+
+  void _onUndo() {
+    if (!_isMainView) {
+      return;
+    }
+
+    _viewModel.undoIconDrop();
   }
 
   Future<Stream<FilesSendProgress>?> _dispatch(

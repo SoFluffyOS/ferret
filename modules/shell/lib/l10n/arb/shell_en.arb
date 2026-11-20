@@ -1746,5 +1746,33 @@
       }
     }
   },
-  "doctorFixReachOverVpn": "Reach over your VPN"
+  "doctorFixReachOverVpn": "Reach over your VPN",
+  "iconDropChoose": "Choose a device",
+  "@iconDropChoose": {
+    "description": "Small label under the menubar icon while files dragged from another app rest on it and Ferret can't tell which device they'd go to: let go and the popover opens to pick one."
+  },
+  "iconDropShelf": "Put on the shelf",
+  "@iconDropShelf": {
+    "description": "Small label under the menubar icon while something dragged rests on it and a drop there stays on this computer's shelf."
+  },
+  "iconDropKept": "On the shelf",
+  "@iconDropKept": {
+    "description": "Small notice under the menubar icon right after something dropped there went on the shelf."
+  },
+  "iconDropSending": "{count, plural, =1{Sending to {name}} other{Sending {count} files to {name}}}",
+  "@iconDropSending": {
+    "description": "Small notice under the menubar icon right after files were dropped there; they go to the device in 3 seconds unless Undo is pressed. Keep it short.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "iconDropUndo": "Undo",
+  "@iconDropUndo": {
+    "description": "Button on the notice under the menubar icon: stops files dropped there from being sent."
+  }
 }

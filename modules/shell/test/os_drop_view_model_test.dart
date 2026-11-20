@@ -37,6 +37,29 @@ const _overNothing = Offset(50, 20);
 /// Stands in for the 600 ms and 1.5 s holds, so tests stay quick.
 const _grace = Duration(milliseconds: 40);
 
+/// Stands in for the 3 s undo window.
+const _undo = Duration(milliseconds: 40);
+
+class _Keeper implements DropReceiver {
+  final List<List<String>> files = [];
+  final List<(String, bool)> texts = [];
+
+  @override
+  void hover({required bool over}) {}
+
+  @override
+  Future<bool> takeFiles(List<String> paths) async {
+    files.add(paths);
+    return true;
+  }
+
+  @override
+  Future<bool> takeText(String text, {required bool isLink}) async {
+    texts.add((text, isLink));
+    return true;
+  }
+}
+
 Future<void> _wait(int milliseconds) =>
     Future<void>.delayed(Duration(milliseconds: milliseconds));
 
@@ -79,6 +102,7 @@ void main() {
       onFailed: () => failed++,
       leaveGrace: _grace,
       sentHold: _grace,
+      undoWindow: _undo,
     )..addListener(() => notifications++);
   });
 
@@ -204,9 +228,108 @@ void main() {
   });
 
   test('a blind drop on the icon goes to the only connected device', () async {
-    await viewModel.dropBlind(['/a.jpg']);
+    final outcome = await viewModel.dropOnIcon(['/a.jpg']);
 
+    expect(outcome, isA<IconDropPending>());
+    expect((outcome as IconDropPending).target, _pixel);
+    expect(viewModel.pendingTarget, _pixel);
+    expect(sent, isEmpty, reason: 'it waits for the undo window');
+
+    await _wait(80);
     expect(sent.single.$2, 'pixel-id');
+    expect(viewModel.pendingTarget, isNull);
+  });
+
+  test('undo within the window keeps a blind drop from going', () async {
+    await viewModel.dropOnIcon(['/a.jpg']);
+    await _wait(10);
+
+    expect(viewModel.undoIconDrop(), isTrue);
+    await _wait(80);
+
+    expect(sent, isEmpty);
+    expect(viewModel.pendingTarget, isNull);
+    expect(viewModel.undoIconDrop(), isFalse);
+  });
+
+  test('undo after the window has nothing left to stop', () async {
+    await viewModel.dropOnIcon(['/a.jpg']);
+    await _wait(80);
+
+    expect(viewModel.undoIconDrop(), isFalse);
+    expect(sent.single.$1, ['/a.jpg']);
+  });
+
+  test('a second blind drop replaces the one still waiting', () async {
+    await viewModel.dropOnIcon(['/a.jpg']);
+    await viewModel.dropOnIcon(['/b.jpg']);
+    await _wait(80);
+
+    expect(sent.single.$1, ['/b.jpg']);
+  });
+
+  test('Put it on the shelf keeps icon drops on this computer', () async {
+    final keeper = _Keeper();
+
+    final outcome = await viewModel.dropOnIcon(
+      ['/a.jpg'],
+      mode: .shelf,
+      keeper: keeper,
+    );
+    await _wait(80);
+
+    expect(outcome, isA<IconDropKept>());
+    expect(keeper.files.single, ['/a.jpg']);
+    expect(sent, isEmpty);
+  });
+
+  test('Ask every time holds icon drops for a device to be picked', () async {
+    final outcome = await viewModel.dropOnIcon(['/a.jpg'], mode: .ask);
+    await _wait(80);
+
+    expect(outcome, isA<IconDropHeld>());
+    expect((viewModel.phase as DropChoosing).held, isTrue);
+    expect(sent, isEmpty);
+  });
+
+  test('text and links dropped on the icon go to the shelf', () async {
+    final keeper = _Keeper();
+
+    expect(
+      await viewModel.dropTextOnIcon(
+        'Meet at 6',
+        isLink: false,
+        keeper: keeper,
+      ),
+      isA<IconDropKept>(),
+    );
+    expect(
+      await viewModel.dropTextOnIcon(
+        'https://example.com',
+        isLink: false,
+        keeper: keeper,
+      ),
+      isA<IconDropKept>(),
+    );
+    expect(keeper.texts, [('Meet at 6', false), ('https://example.com', true)]);
+    expect(sentText, isEmpty);
+    expect(
+      await viewModel.dropTextOnIcon('Hi', isLink: false),
+      isA<IconDropRefused>(),
+    );
+  });
+
+  test('the blind target names the device a quick drop goes to', () {
+    expect(viewModel.blindTarget, _pixel);
+
+    devices = [
+      _pixel,
+      const DeviceDropTarget(deviceId: 'ipad', name: 'iPad', isConnected: true),
+    ];
+    expect(viewModel.blindTarget, isNull);
+
+    devices = [_tablet];
+    expect(viewModel.blindTarget, isNull);
   });
 
   test('with two devices connected a blind drop asks which', () async {
@@ -215,7 +338,7 @@ void main() {
       const DeviceDropTarget(deviceId: 'ipad', name: 'iPad', isConnected: true),
     ];
 
-    await viewModel.dropBlind(['/a.jpg', '/b.jpg']);
+    await viewModel.dropOnIcon(['/a.jpg', '/b.jpg']);
     expect(sent, isEmpty);
     expect(viewModel.phase, isA<DropChoosing>());
     expect((viewModel.phase as DropChoosing).held, isTrue);
@@ -242,9 +365,10 @@ void main() {
     await _wait(60);
     progress = StreamController<FilesSendProgress>();
 
-    final held = await viewModel.dropBlind(['/blind.jpg']);
+    final outcome = await viewModel.dropOnIcon(['/blind.jpg']);
+    await _wait(80);
 
-    expect(held, isFalse);
+    expect(outcome, isA<IconDropPending>());
     expect(sent.last.$1, ['/blind.jpg']);
     expect(sent.last.$2, 'pixel-id');
     expect(viewModel.phase, isA<DropSending>());
@@ -266,7 +390,7 @@ void main() {
     );
     addTearDown(asking.dispose);
 
-    expect(await asking.dropBlind(['/a.jpg']), isTrue);
+    expect(await asking.dropOnIcon(['/a.jpg']), isA<IconDropHeld>());
     expect(asking.phase, isA<DropChoosing>());
   });
 

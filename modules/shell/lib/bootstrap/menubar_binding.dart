@@ -8,6 +8,7 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/pages.dart';
+import 'package:shell/view_models/view_models.dart';
 
 /// Connects the macOS menubar icon to the app: its menu and its icon state.
 /// Files dragged onto it are the app's `FileDropZone`'s. Start [views]
@@ -45,6 +46,7 @@ class MenubarBinding {
     onHoldEnded: _onChanged,
   );
   (MenubarIconState, int, String)? _shown;
+  (bool, bool, String?, String?)? _dropsShown;
 
   /// Settings key that says the first launch already happened.
   static const firstLaunchDoneKey = 'onboarding.done';
@@ -86,8 +88,18 @@ class MenubarBinding {
       ),
     );
 
+    await _updateIconDrops();
     _subscriptions
       ..add(_menubar.menuSelections.listen(_onMenu))
+      ..add(
+        featureContext.engine.settings.changes
+            .where(
+              (key) =>
+                  MenubarDrops.owns(key) ||
+                  key == OsDropViewModel.lastDeviceKey,
+            )
+            .listen((_) => unawaited(_updateIconDrops())),
+      )
       ..add(
         _menubar.clipsShortcutPresses.listen(
           (_) => unawaited(_openRecentClips()),
@@ -138,7 +150,49 @@ class MenubarBinding {
     }
   }
 
-  void _onChanged() => unawaited(_updateIcon());
+  void _onChanged() {
+    unawaited(_updateIcon());
+    unawaited(_updateIconDrops());
+  }
+
+  /// How the icon takes a drag, and what its label says while one rests
+  /// there: where a quick drop would go.
+  Future<void> _updateIconDrops() async {
+    final settings = featureContext.engine.settings;
+    final drops = MenubarDrops(settings);
+    final mode = drops.iconDrop;
+    final hasShelf = featureContext.dropKeeper != null;
+    final target = OsDropViewModel.blindTargetOf([
+      for (final status in host.devices)
+        DeviceDropTarget(
+          deviceId: status.device.id,
+          name: status.device.name,
+          isConnected: status.isConnected,
+        ),
+    ], settings.get<String>(OsDropViewModel.lastDeviceKey));
+    final l10n = _l10n;
+    final files = switch ((mode, hasShelf, target)) {
+      (.ask, _, _) => null,
+      (.shelf, true, _) => l10n.iconDropShelf,
+      (_, _, final target?) => l10n.dropSendTo(target.name),
+      _ => l10n.iconDropChoose,
+    };
+    final text = switch ((mode, hasShelf)) {
+      (.ask, _) || (_, false) => null,
+      _ => l10n.iconDropShelf,
+    };
+    final shown = (drops.springLoading, mode == .ask, files, text);
+    if (shown == _dropsShown) {
+      return;
+    }
+
+    _dropsShown = shown;
+    await _menubar.setIconDragBehavior(
+      springOnHover: drops.springLoading,
+      opensAtOnce: mode == .ask,
+    );
+    await _menubar.setIconDropLabels(files: files, text: text);
+  }
 
   /// Features fire for many reasons and transfers report often, so the Mac
   /// hears only when what the icon shows really changed, a whole percent

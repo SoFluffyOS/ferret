@@ -2201,4 +2201,27 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixReachOverVpn => 'Reach over your VPN';
+
+  @override
+  String get iconDropChoose => 'Choose a device';
+
+  @override
+  String get iconDropShelf => 'Put on the shelf';
+
+  @override
+  String get iconDropKept => 'On the shelf';
+
+  @override
+  String iconDropSending(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sending $count files to $name',
+      one: 'Sending to $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get iconDropUndo => 'Undo';
 }
