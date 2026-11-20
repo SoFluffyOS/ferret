@@ -199,6 +199,10 @@ struct PlatformClip: Hashable, CustomStringConvertible {
   /// macOS, `EXTRA_IS_SENSITIVE` on Android, the history and monitor
   /// exclusion formats on Windows).
   var sensitive: Bool
+  /// Files copied in a file manager, such as Finder, by their paths. Read
+  /// only; [text] holds their names then. Null where the platform doesn't
+  /// say.
+  var filePaths: [String]? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -207,12 +211,14 @@ struct PlatformClip: Hashable, CustomStringConvertible {
     let image: FlutterStandardTypedData? = nilOrValue(pigeonVar_list[1])
     let imageMime: String? = nilOrValue(pigeonVar_list[2])
     let sensitive = pigeonVar_list[3] as! Bool
+    let filePaths: [String]? = nilOrValue(pigeonVar_list[4])
 
     return PlatformClip(
       text: text,
       image: image,
       imageMime: imageMime,
-      sensitive: sensitive
+      sensitive: sensitive,
+      filePaths: filePaths
     )
   }
   func toList() -> [Any?] {
@@ -221,13 +227,14 @@ struct PlatformClip: Hashable, CustomStringConvertible {
       image,
       imageMime,
       sensitive,
+      filePaths,
     ]
   }
   static func == (lhs: PlatformClip, rhs: PlatformClip) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return MessagesPigeonInternal.deepEquals(lhs.text, rhs.text) && MessagesPigeonInternal.deepEquals(lhs.image, rhs.image) && MessagesPigeonInternal.deepEquals(lhs.imageMime, rhs.imageMime) && MessagesPigeonInternal.deepEquals(lhs.sensitive, rhs.sensitive)
+    return MessagesPigeonInternal.deepEquals(lhs.text, rhs.text) && MessagesPigeonInternal.deepEquals(lhs.image, rhs.image) && MessagesPigeonInternal.deepEquals(lhs.imageMime, rhs.imageMime) && MessagesPigeonInternal.deepEquals(lhs.sensitive, rhs.sensitive) && MessagesPigeonInternal.deepEquals(lhs.filePaths, rhs.filePaths)
   }
 
   func hash(into hasher: inout Hasher) {
@@ -236,10 +243,11 @@ struct PlatformClip: Hashable, CustomStringConvertible {
     MessagesPigeonInternal.deepHash(value: image, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: imageMime, hasher: &hasher)
     MessagesPigeonInternal.deepHash(value: sensitive, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: filePaths, hasher: &hasher)
   }
 
   public var description: String {
-    return "PlatformClip(text: \(String(describing: text)), image: \(String(describing: image)), imageMime: \(String(describing: imageMime)), sensitive: \(String(describing: sensitive)))"
+    return "PlatformClip(text: \(String(describing: text)), image: \(String(describing: image)), imageMime: \(String(describing: imageMime)), sensitive: \(String(describing: sensitive)), filePaths: \(String(describing: filePaths)))"
   }
 }
 

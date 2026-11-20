@@ -48,6 +48,10 @@ class ClipboardFeature extends Feature {
   final ClipHistory _history = ClipHistory(limit: historyLimit);
   final RecentIds _seen = RecentIds();
   final StreamController<void> _changes = .broadcast();
+  late final StreamController<ClipCopy> _copies = .broadcast(
+    onListen: () => unawaited(_updateWatching()),
+    onCancel: () => unawaited(_updateWatching()),
+  );
   final Map<String, Timer> _expiryTimers = {};
 
   ClipboardPlatform? _clipboard;
@@ -100,6 +104,12 @@ class ClipboardFeature extends Feature {
 
   /// Fires when the history or the settings change.
   Stream<void> get changes => _changes.stream;
+
+  /// Each new copy the clipboard here takes, copied here or arrived from
+  /// another device, never a private one: for keeping, such as on the
+  /// shelf. While someone listens, copies made here are noticed even when
+  /// they aren't sent on their own.
+  Stream<ClipCopy> get copies => _copies.stream;
 
   @override
   Future<void> onStart() async {
@@ -392,7 +402,9 @@ class ClipboardFeature extends Feature {
       return;
     }
 
-    final shouldWatch = settings.autoSend && clipboard.access != .onRequest;
+    final shouldWatch =
+        (settings.autoSend || _copies.hasListener) &&
+        clipboard.access != .onRequest;
     if (!shouldWatch) {
       await _stopWatching();
       return;
@@ -449,13 +461,40 @@ class ClipboardFeature extends Feature {
       do {
         _readAgain = false;
         final content = await _read();
-        if (content != null && settings.autoSend) {
-          await _share(content, userAsked: false);
+        if (content != null) {
+          await _onLocalContent(content);
         }
       } while (_readAgain);
     } finally {
       _reading = false;
     }
+  }
+
+  /// A copy made here: sent when copies go out on their own, otherwise
+  /// only noted for [copies].
+  Future<void> _onLocalContent(ClipboardContent content) async {
+    if (settings.autoSend) {
+      await _share(content, userAsked: false);
+      return;
+    }
+
+    final hash = ClipCodec.hashOf(content);
+    if (hash == _currentHash) {
+      return;
+    }
+
+    _currentHash = hash;
+    _noteCopy(content);
+  }
+
+  void _noteCopy(ClipboardContent content, {String? fromDeviceId}) {
+    if (content.sensitive || !_copies.hasListener) {
+      return;
+    }
+
+    _copies.add(
+      ClipCopy(content: content, at: _clock(), fromDeviceId: fromDeviceId),
+    );
   }
 
   Future<ClipboardContent?> _read() async {
@@ -478,6 +517,10 @@ class ClipboardFeature extends Feature {
     }
 
     _currentHash = hash;
+    if (!userAsked) {
+      _noteCopy(content);
+    }
+
     final at = _clock();
     final item = _codec.itemFor(
       content,
@@ -555,6 +598,7 @@ class ClipboardFeature extends Feature {
       return;
     }
 
+    _noteCopy(content, fromDeviceId: session.remoteDeviceId);
     final entry = ClipEntry(
       item: item,
       direction: .received,

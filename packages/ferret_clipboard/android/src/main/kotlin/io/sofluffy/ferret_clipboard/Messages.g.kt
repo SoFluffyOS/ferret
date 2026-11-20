@@ -215,7 +215,13 @@ data class PlatformClip (
    * macOS, `EXTRA_IS_SENSITIVE` on Android, the history and monitor
    * exclusion formats on Windows).
    */
-  val sensitive: Boolean
+  val sensitive: Boolean,
+  /**
+   * Files copied in a file manager, such as Finder, by their paths. Read
+   * only; [text] holds their names then. Null where the platform doesn't
+   * say.
+   */
+  val filePaths: List<String>? = null
 )
  {
   companion object {
@@ -224,7 +230,8 @@ data class PlatformClip (
       val image = pigeonVar_list[1] as ByteArray?
       val imageMime = pigeonVar_list[2] as String?
       val sensitive = pigeonVar_list[3] as Boolean
-      return PlatformClip(text, image, imageMime, sensitive)
+      val filePaths = pigeonVar_list[4] as List<String>?
+      return PlatformClip(text, image, imageMime, sensitive, filePaths)
     }
   }
   fun toList(): List<Any?> {
@@ -233,6 +240,7 @@ data class PlatformClip (
       image,
       imageMime,
       sensitive,
+      filePaths,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -243,7 +251,7 @@ data class PlatformClip (
       return true
     }
     val other = other as PlatformClip
-    return MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.image, other.image) && MessagesPigeonUtils.deepEquals(this.imageMime, other.imageMime) && MessagesPigeonUtils.deepEquals(this.sensitive, other.sensitive)
+    return MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.image, other.image) && MessagesPigeonUtils.deepEquals(this.imageMime, other.imageMime) && MessagesPigeonUtils.deepEquals(this.sensitive, other.sensitive) && MessagesPigeonUtils.deepEquals(this.filePaths, other.filePaths)
   }
 
   override fun hashCode(): Int {
@@ -252,10 +260,11 @@ data class PlatformClip (
     result = 31 * result + MessagesPigeonUtils.deepHash(this.image)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.imageMime)
     result = 31 * result + MessagesPigeonUtils.deepHash(this.sensitive)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.filePaths)
     return result
   }
   override fun toString(): String {
-    return "PlatformClip(text=$text, image=${image?.contentToString()}, imageMime=$imageMime, sensitive=$sensitive)"
+    return "PlatformClip(text=$text, image=${image?.contentToString()}, imageMime=$imageMime, sensitive=$sensitive, filePaths=$filePaths)"
   }
 }
 private open class MessagesPigeonCodec : StandardMessageCodec() {

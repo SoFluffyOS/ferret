@@ -72,7 +72,8 @@ class PlatformClip {
     const std::string* text,
     const std::vector<uint8_t>* image,
     const std::string* image_mime,
-    bool sensitive);
+    bool sensitive,
+    const ::flutter::EncodableList* file_paths);
 
   const std::string* text() const;
   void set_text(const std::string_view* value_arg);
@@ -92,6 +93,13 @@ class PlatformClip {
   bool sensitive() const;
   void set_sensitive(bool value_arg);
 
+  // Files copied in a file manager, such as Finder, by their paths. Read
+  // only; [text] holds their names then. Null where the platform doesn't
+  // say.
+  const ::flutter::EncodableList* file_paths() const;
+  void set_file_paths(const ::flutter::EncodableList* value_arg);
+  void set_file_paths(const ::flutter::EncodableList& value_arg);
+
   bool operator==(const PlatformClip& other) const;
   bool operator!=(const PlatformClip& other) const;
   /// Returns a hash code value for the object. This method is supported for the benefit of hash tables.
@@ -108,6 +116,7 @@ class PlatformClip {
   std::optional<std::vector<uint8_t>> image_;
   std::optional<std::string> image_mime_;
   bool sensitive_;
+  std::optional<::flutter::EncodableList> file_paths_;
 };
 
 

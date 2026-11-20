@@ -328,11 +328,13 @@ PlatformClip::PlatformClip(
   const std::string* text,
   const std::vector<uint8_t>* image,
   const std::string* image_mime,
-  bool sensitive)
+  bool sensitive,
+  const EncodableList* file_paths)
  : text_(text ? std::optional<std::string>(*text) : std::nullopt),
     image_(image ? std::optional<std::vector<uint8_t>>(*image) : std::nullopt),
     image_mime_(image_mime ? std::optional<std::string>(*image_mime) : std::nullopt),
-    sensitive_(sensitive) {}
+    sensitive_(sensitive),
+    file_paths_(file_paths ? std::optional<EncodableList>(*file_paths) : std::nullopt) {}
 
 const std::string* PlatformClip::text() const {
   return text_ ? &(*text_) : nullptr;
@@ -382,13 +384,27 @@ void PlatformClip::set_sensitive(bool value_arg) {
 }
 
 
+const EncodableList* PlatformClip::file_paths() const {
+  return file_paths_ ? &(*file_paths_) : nullptr;
+}
+
+void PlatformClip::set_file_paths(const EncodableList* value_arg) {
+  file_paths_ = value_arg ? std::optional<EncodableList>(*value_arg) : std::nullopt;
+}
+
+void PlatformClip::set_file_paths(const EncodableList& value_arg) {
+  file_paths_ = value_arg;
+}
+
+
 EncodableList PlatformClip::ToEncodableList() const {
   EncodableList list;
-  list.reserve(4);
+  list.reserve(5);
   list.push_back(text_ ? EncodableValue(*text_) : EncodableValue());
   list.push_back(image_ ? EncodableValue(*image_) : EncodableValue());
   list.push_back(image_mime_ ? EncodableValue(*image_mime_) : EncodableValue());
   list.push_back(EncodableValue(sensitive_));
+  list.push_back(file_paths_ ? EncodableValue(*file_paths_) : EncodableValue());
   return list;
 }
 
@@ -407,11 +423,15 @@ PlatformClip PlatformClip::FromEncodableList(const EncodableList& list) {
   if (!encodable_image_mime.IsNull()) {
     decoded.set_image_mime(std::get<std::string>(encodable_image_mime));
   }
+  auto& encodable_file_paths = list[4];
+  if (!encodable_file_paths.IsNull()) {
+    decoded.set_file_paths(std::get<EncodableList>(encodable_file_paths));
+  }
   return decoded;
 }
 
 bool PlatformClip::operator==(const PlatformClip& other) const {
-  return PigeonInternalDeepEquals(text_, other.text_) && PigeonInternalDeepEquals(image_, other.image_) && PigeonInternalDeepEquals(image_mime_, other.image_mime_) && PigeonInternalDeepEquals(sensitive_, other.sensitive_);
+  return PigeonInternalDeepEquals(text_, other.text_) && PigeonInternalDeepEquals(image_, other.image_) && PigeonInternalDeepEquals(image_mime_, other.image_mime_) && PigeonInternalDeepEquals(sensitive_, other.sensitive_) && PigeonInternalDeepEquals(file_paths_, other.file_paths_);
 }
 
 bool PlatformClip::operator!=(const PlatformClip& other) const {
@@ -424,6 +444,7 @@ size_t PlatformClip::Hash() const {
   result = result * 31 + PigeonInternalDeepHash(image_);
   result = result * 31 + PigeonInternalDeepHash(image_mime_);
   result = result * 31 + PigeonInternalDeepHash(sensitive_);
+  result = result * 31 + PigeonInternalDeepHash(file_paths_);
   return result;
 }
 
@@ -454,6 +475,13 @@ std::ostream& operator<<(
   }
   os << ", sensitive: ";
   os << PigeonInternalToString(obj.sensitive_);
+  os << ", file_paths: ";
+  if (obj.file_paths_) {
+    os << PigeonInternalToString(*obj.file_paths_);
+  }
+  else {
+    os << "null";
+  }
   os << ")";
   return os;
 }

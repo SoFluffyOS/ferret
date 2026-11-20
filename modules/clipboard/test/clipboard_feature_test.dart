@@ -466,4 +466,58 @@ void main() {
     expect(feature.flags, containsAll(['receive', 'send']));
     expect(feature.flags, isNot(contains('images')));
   });
+
+  group('copies to keep', () {
+    test('a copy here is noted, a private one never', () async {
+      await start();
+      final copies = <ClipCopy>[];
+      final subscription = feature.copies.listen(copies.add);
+
+      clipboard.copy(const .text('keep me'));
+      await settle();
+      clipboard.copy(const .text('keep me'));
+      await settle();
+      clipboard.copy(const .text('secret', sensitive: true));
+      await settle();
+
+      expect([for (final copy in copies) copy.content.text], ['keep me']);
+      expect(copies.single.fromDeviceId, isNull);
+      await subscription.cancel();
+    });
+
+    test('listening watches the clipboard while copies stay here', () async {
+      await start(settings: {ClipboardSettings.autoSendKey: false});
+      expect(clipboard.watching, isFalse);
+
+      final copies = <ClipCopy>[];
+      final subscription = feature.copies.listen(copies.add);
+      await settle();
+      clipboard.copy(const .text('local only'));
+      await settle();
+
+      expect(clipboard.watching, isTrue);
+      expect(copies.single.content.text, 'local only');
+      expect(pixel.pushes, isEmpty);
+
+      await subscription.cancel();
+      await settle();
+      expect(clipboard.watching, isFalse);
+    });
+
+    test(
+      'a clip from another device is noted with where it came from',
+      () async {
+        await start();
+        final copies = <ClipCopy>[];
+        final subscription = feature.copies.listen(copies.add);
+
+        await feature.onEnvelope(pixel, envelopeOf(pushOf('from the phone')));
+        await settle();
+
+        expect(copies.single.content.text, 'from the phone');
+        expect(copies.single.fromDeviceId, pixel.remoteDeviceId);
+        await subscription.cancel();
+      },
+    );
+  });
 }

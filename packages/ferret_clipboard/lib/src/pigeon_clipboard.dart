@@ -31,7 +31,11 @@ class PigeonClipboard implements ClipboardPlatform, ClipboardFlutterApi {
     }
 
     if (clip.text case final text? when text.isNotEmpty) {
-      return ClipboardContent.text(text, sensitive: clip.sensitive);
+      return ClipboardContent.text(
+        text,
+        sensitive: clip.sensitive,
+        files: clip.filePaths ?? const [],
+      );
     }
 
     if ((clip.image, clip.imageMime) case (final image?, final mime?)

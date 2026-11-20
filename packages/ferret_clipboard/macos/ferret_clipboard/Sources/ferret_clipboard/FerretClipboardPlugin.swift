@@ -30,8 +30,15 @@ public class FerretClipboardPlugin: NSObject, FlutterPlugin, ClipboardHostApi {
     let types = pasteboard.types ?? []
     let sensitive = types.contains(Self.concealedType) || types.contains(Self.transientType)
 
+    let files = copiedFiles()
     if let text = pasteboard.string(forType: .string), !text.isEmpty {
-      return PlatformClip(text: text, sensitive: sensitive)
+      return PlatformClip(
+        text: text, sensitive: sensitive, filePaths: files.isEmpty ? nil : files)
+    }
+
+    if !files.isEmpty {
+      let names = files.map { ($0 as NSString).lastPathComponent }.joined(separator: "\n")
+      return PlatformClip(text: names, sensitive: sensitive, filePaths: files)
     }
 
     if let png = pasteboard.data(forType: .png) {
@@ -48,6 +55,13 @@ public class FerretClipboardPlugin: NSObject, FlutterPlugin, ClipboardHostApi {
     }
 
     return nil
+  }
+
+  /// Files copied in Finder, by their paths.
+  private func copiedFiles() -> [String] {
+    let options: [NSPasteboard.ReadingOptionKey: Any] = [.urlReadingFileURLsOnly: true]
+    let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: options) as? [URL]
+    return (urls ?? []).map(\.path)
   }
 
   func write(clip: PlatformClip) throws {

@@ -118,6 +118,7 @@ class PlatformClip {
     this.image,
     this.imageMime,
     required this.sensitive,
+    this.filePaths,
   });
 
   String? text;
@@ -131,12 +132,18 @@ class PlatformClip {
   /// exclusion formats on Windows).
   bool sensitive;
 
+  /// Files copied in a file manager, such as Finder, by their paths. Read
+  /// only; [text] holds their names then. Null where the platform doesn't
+  /// say.
+  List<String>? filePaths;
+
   List<Object?> _toList() {
     return <Object?>[
       text,
       image,
       imageMime,
       sensitive,
+      filePaths,
     ];
   }
 
@@ -151,6 +158,7 @@ class PlatformClip {
       image: result[1] as Uint8List?,
       imageMime: result[2] as String?,
       sensitive: result[3]! as bool,
+      filePaths: (result[4] as List<Object?>?)?.cast<String>(),
     );
   }
 
@@ -166,7 +174,8 @@ class PlatformClip {
     return _deepEquals(text, other.text) &&
         _deepEquals(image, other.image) &&
         _deepEquals(imageMime, other.imageMime) &&
-        _deepEquals(sensitive, other.sensitive);
+        _deepEquals(sensitive, other.sensitive) &&
+        _deepEquals(filePaths, other.filePaths);
   }
 
   @override
@@ -175,7 +184,7 @@ class PlatformClip {
 
   @override
   String toString() {
-    return 'PlatformClip(text: $text, image: $image, imageMime: $imageMime, sensitive: $sensitive)';
+    return 'PlatformClip(text: $text, image: $image, imageMime: $imageMime, sensitive: $sensitive, filePaths: $filePaths)';
   }
 }
 

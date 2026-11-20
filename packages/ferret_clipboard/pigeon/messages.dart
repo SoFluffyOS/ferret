@@ -23,6 +23,7 @@ class PlatformClip {
     this.image,
     this.imageMime,
     required this.sensitive,
+    this.filePaths,
   });
 
   String? text;
@@ -33,6 +34,11 @@ class PlatformClip {
   /// macOS, `EXTRA_IS_SENSITIVE` on Android, the history and monitor
   /// exclusion formats on Windows).
   bool sensitive;
+
+  /// Files copied in a file manager, such as Finder, by their paths. Read
+  /// only; [text] holds their names then. Null where the platform doesn't
+  /// say.
+  List<String>? filePaths;
 }
 
 @HostApi()
