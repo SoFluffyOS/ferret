@@ -215,6 +215,12 @@ class _VolumeRow extends StatelessWidget {
               key: ValueKey(action.id),
               mainAxisSize: .min,
               variant: .ghost,
+              // An icon alone needs no text-sized padding; with it the
+              // three buttons squeeze "Volume" apart on a phone or tablet.
+              padding: EdgeInsets.symmetric(
+                horizontal: Spacing.d12,
+                vertical: Spacing.d8,
+              ),
               tooltip: l10n.actionLabel(action.kind, action.title),
               semanticLabel: l10n.actionLabel(action.kind, action.title),
               onPressed: () => unawaited(frame.run(context, action)),
