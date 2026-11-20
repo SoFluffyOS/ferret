@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-  List<Object?>? replyList,
-  String channelName, {
-  required bool isNullValid,
+    List<Object?>? replyList,
+    String channelName, {
+    required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -34,11 +34,8 @@ Object? _extractReplyValueOrThrow(
   return replyList.firstOrNull;
 }
 
-List<Object?> wrapResponse({
-  Object? result,
-  PlatformException? error,
-  bool empty = false,
-}) {
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -47,7 +44,6 @@ List<Object?> wrapResponse({
   }
   return <Object?>[error.code, error.message, error.details];
 }
-
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -60,9 +56,8 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed.every(
-          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
-        );
+        a.indexed
+            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -111,65 +106,66 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
-enum NativeCodec { h264, jpeg }
+
+enum NativeCodec {
+  h264,
+  jpeg;
+}
 
 enum NativeConsentResult {
   /// The owner allowed this capture on the system prompt.
   granted,
-
   /// The owner said no, or closed the prompt.
   denied,
-
   /// Nobody answered in time, or the request was cancelled.
   timedOut,
-
   /// The prompt couldn't be shown: the app is in the background and may
   /// not post notices.
   cannotAsk,
-
   /// The system refused to start the capture service.
-  failed,
+  failed;
 }
 
 /// Whether this device can capture what it plays.
 enum NativeAudioSupport {
   /// Android 9 or older.
   unsupported,
-
   /// Android wants its "record audio" permission first, though only what
   /// the device plays is captured, never the microphone.
   needsPermission,
-  ready,
+  ready;
 }
 
 enum NativeCaptureEnd {
   /// Stop on the ongoing notice.
   stoppedByUser,
-
   /// The system ended the capture, such as when the phone was locked.
   endedBySystem,
-
   /// The encoder or the capture failed.
-  failed,
+  failed;
 }
 
 enum NativeCameraLens {
   /// Faces away from the screen.
   back,
-
   /// Faces whoever looks at the screen.
-  front,
+  front;
 }
 
 enum NativeAudioCodec {
   /// Opus, one packet per call.
   opus,
-
   /// Signed 16-bit little-endian samples, channels interleaved.
-  pcm,
+  pcm;
 }
 
-enum NativePointerPhase { down, move, up, hover, scroll }
+enum NativePointerPhase {
+  down,
+  move,
+  up,
+  hover,
+  scroll;
+}
 
 /// What this device can capture with.
 class NativeCaptureSupport {
@@ -191,8 +187,7 @@ class NativeCaptureSupport {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeCaptureSupport decode(Object result) {
     result as List<Object?>;
@@ -266,8 +261,7 @@ class NativeConsentTexts {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeConsentTexts decode(Object result) {
     result as List<Object?>;
@@ -291,13 +285,7 @@ class NativeConsentTexts {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(askTitle, other.askTitle) &&
-        _deepEquals(askBody, other.askBody) &&
-        _deepEquals(askChannelName, other.askChannelName) &&
-        _deepEquals(sharingTitle, other.sharingTitle) &&
-        _deepEquals(sharingBody, other.sharingBody) &&
-        _deepEquals(stopLabel, other.stopLabel) &&
-        _deepEquals(sharingChannelName, other.sharingChannelName);
+    return _deepEquals(askTitle, other.askTitle) && _deepEquals(askBody, other.askBody) && _deepEquals(askChannelName, other.askChannelName) && _deepEquals(sharingTitle, other.sharingTitle) && _deepEquals(sharingBody, other.sharingBody) && _deepEquals(stopLabel, other.stopLabel) && _deepEquals(sharingChannelName, other.sharingChannelName);
   }
 
   @override
@@ -347,8 +335,7 @@ class NativeCaptureOptions {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeCaptureOptions decode(Object result) {
     result as List<Object?>;
@@ -371,12 +358,7 @@ class NativeCaptureOptions {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(codec, other.codec) &&
-        _deepEquals(maxLongSide, other.maxLongSide) &&
-        _deepEquals(maxShortSide, other.maxShortSide) &&
-        _deepEquals(fps, other.fps) &&
-        _deepEquals(bitrate, other.bitrate) &&
-        _deepEquals(audioCodec, other.audioCodec);
+    return _deepEquals(codec, other.codec) && _deepEquals(maxLongSide, other.maxLongSide) && _deepEquals(maxShortSide, other.maxShortSide) && _deepEquals(fps, other.fps) && _deepEquals(bitrate, other.bitrate) && _deepEquals(audioCodec, other.audioCodec);
   }
 
   @override
@@ -435,8 +417,7 @@ class NativeStreamConfig {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeStreamConfig decode(Object result) {
     result as List<Object?>;
@@ -461,14 +442,7 @@ class NativeStreamConfig {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(codec, other.codec) &&
-        _deepEquals(width, other.width) &&
-        _deepEquals(height, other.height) &&
-        _deepEquals(rotation, other.rotation) &&
-        _deepEquals(fps, other.fps) &&
-        _deepEquals(sps, other.sps) &&
-        _deepEquals(pps, other.pps) &&
-        _deepEquals(turn, other.turn);
+    return _deepEquals(codec, other.codec) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(rotation, other.rotation) && _deepEquals(fps, other.fps) && _deepEquals(sps, other.sps) && _deepEquals(pps, other.pps) && _deepEquals(turn, other.turn);
   }
 
   @override
@@ -504,8 +478,7 @@ class NativeFrame {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeFrame decode(Object result) {
     result as List<Object?>;
@@ -525,9 +498,7 @@ class NativeFrame {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(data, other.data) &&
-        _deepEquals(ptsUs, other.ptsUs) &&
-        _deepEquals(keyframe, other.keyframe);
+    return _deepEquals(data, other.data) && _deepEquals(ptsUs, other.ptsUs) && _deepEquals(keyframe, other.keyframe);
   }
 
   @override
@@ -571,8 +542,7 @@ class NativeCameraSupport {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeCameraSupport decode(Object result) {
     result as List<Object?>;
@@ -593,10 +563,7 @@ class NativeCameraSupport {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(h264, other.h264) &&
-        _deepEquals(lenses, other.lenses) &&
-        _deepEquals(cameraGranted, other.cameraGranted) &&
-        _deepEquals(microphoneGranted, other.microphoneGranted);
+    return _deepEquals(h264, other.h264) && _deepEquals(lenses, other.lenses) && _deepEquals(cameraGranted, other.cameraGranted) && _deepEquals(microphoneGranted, other.microphoneGranted);
   }
 
   @override
@@ -647,8 +614,7 @@ class NativeCameraOptions {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeCameraOptions decode(Object result) {
     result as List<Object?>;
@@ -671,12 +637,7 @@ class NativeCameraOptions {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(lens, other.lens) &&
-        _deepEquals(maxLongSide, other.maxLongSide) &&
-        _deepEquals(maxShortSide, other.maxShortSide) &&
-        _deepEquals(fps, other.fps) &&
-        _deepEquals(bitrate, other.bitrate) &&
-        _deepEquals(audioCodec, other.audioCodec);
+    return _deepEquals(lens, other.lens) && _deepEquals(maxLongSide, other.maxLongSide) && _deepEquals(maxShortSide, other.maxShortSide) && _deepEquals(fps, other.fps) && _deepEquals(bitrate, other.bitrate) && _deepEquals(audioCodec, other.audioCodec);
   }
 
   @override
@@ -718,8 +679,7 @@ class NativeCameraTexts {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeCameraTexts decode(Object result) {
     result as List<Object?>;
@@ -740,10 +700,7 @@ class NativeCameraTexts {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(title, other.title) &&
-        _deepEquals(body, other.body) &&
-        _deepEquals(stopLabel, other.stopLabel) &&
-        _deepEquals(channelName, other.channelName);
+    return _deepEquals(title, other.title) && _deepEquals(body, other.body) && _deepEquals(stopLabel, other.stopLabel) && _deepEquals(channelName, other.channelName);
   }
 
   @override
@@ -776,8 +733,7 @@ class NativeAudioStats {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeAudioStats decode(Object result) {
     result as List<Object?>;
@@ -835,8 +791,7 @@ class NativeDisplaySupport {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeDisplaySupport decode(Object result) {
     result as List<Object?>;
@@ -856,9 +811,7 @@ class NativeDisplaySupport {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(canExtend, other.canExtend) &&
-        _deepEquals(screenRecordingGranted, other.screenRecordingGranted) &&
-        _deepEquals(inputGranted, other.inputGranted);
+    return _deepEquals(canExtend, other.canExtend) && _deepEquals(screenRecordingGranted, other.screenRecordingGranted) && _deepEquals(inputGranted, other.inputGranted);
   }
 
   @override
@@ -915,8 +868,7 @@ class NativeDisplayOptions {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeDisplayOptions decode(Object result) {
     result as List<Object?>;
@@ -940,13 +892,7 @@ class NativeDisplayOptions {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(name, other.name) &&
-        _deepEquals(serial, other.serial) &&
-        _deepEquals(width, other.width) &&
-        _deepEquals(height, other.height) &&
-        _deepEquals(scale, other.scale) &&
-        _deepEquals(refreshHz, other.refreshHz) &&
-        _deepEquals(bitrate, other.bitrate);
+    return _deepEquals(name, other.name) && _deepEquals(serial, other.serial) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(scale, other.scale) && _deepEquals(refreshHz, other.refreshHz) && _deepEquals(bitrate, other.bitrate);
   }
 
   @override
@@ -989,8 +935,7 @@ class NativeScreenPanel {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeScreenPanel decode(Object result) {
     result as List<Object?>;
@@ -1011,10 +956,7 @@ class NativeScreenPanel {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(width, other.width) &&
-        _deepEquals(height, other.height) &&
-        _deepEquals(scale, other.scale) &&
-        _deepEquals(refreshHz, other.refreshHz);
+    return _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(scale, other.scale) && _deepEquals(refreshHz, other.refreshHz);
   }
 
   @override
@@ -1065,8 +1007,7 @@ class NativeDisplayPointer {
   }
 
   Object encode() {
-    return _toList();
-  }
+    return _toList();  }
 
   static NativeDisplayPointer decode(Object result) {
     result as List<Object?>;
@@ -1089,12 +1030,7 @@ class NativeDisplayPointer {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(phase, other.phase) &&
-        _deepEquals(x, other.x) &&
-        _deepEquals(y, other.y) &&
-        _deepEquals(button, other.button) &&
-        _deepEquals(scrollX, other.scrollX) &&
-        _deepEquals(scrollY, other.scrollY);
+    return _deepEquals(phase, other.phase) && _deepEquals(x, other.x) && _deepEquals(y, other.y) && _deepEquals(button, other.button) && _deepEquals(scrollX, other.scrollX) && _deepEquals(scrollY, other.scrollY);
   }
 
   @override
@@ -1107,6 +1043,7 @@ class NativeDisplayPointer {
   }
 }
 
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -1114,64 +1051,64 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    } else if (value is NativeCodec) {
+    }    else if (value is NativeCodec) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is NativeConsentResult) {
+    }    else if (value is NativeConsentResult) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    } else if (value is NativeAudioSupport) {
+    }    else if (value is NativeAudioSupport) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    } else if (value is NativeCaptureEnd) {
+    }    else if (value is NativeCaptureEnd) {
       buffer.putUint8(132);
       writeValue(buffer, value.index);
-    } else if (value is NativeCameraLens) {
+    }    else if (value is NativeCameraLens) {
       buffer.putUint8(133);
       writeValue(buffer, value.index);
-    } else if (value is NativeAudioCodec) {
+    }    else if (value is NativeAudioCodec) {
       buffer.putUint8(134);
       writeValue(buffer, value.index);
-    } else if (value is NativePointerPhase) {
+    }    else if (value is NativePointerPhase) {
       buffer.putUint8(135);
       writeValue(buffer, value.index);
-    } else if (value is NativeCaptureSupport) {
+    }    else if (value is NativeCaptureSupport) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    } else if (value is NativeConsentTexts) {
+    }    else if (value is NativeConsentTexts) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    } else if (value is NativeCaptureOptions) {
+    }    else if (value is NativeCaptureOptions) {
       buffer.putUint8(138);
       writeValue(buffer, value.encode());
-    } else if (value is NativeStreamConfig) {
+    }    else if (value is NativeStreamConfig) {
       buffer.putUint8(139);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFrame) {
+    }    else if (value is NativeFrame) {
       buffer.putUint8(140);
       writeValue(buffer, value.encode());
-    } else if (value is NativeCameraSupport) {
+    }    else if (value is NativeCameraSupport) {
       buffer.putUint8(141);
       writeValue(buffer, value.encode());
-    } else if (value is NativeCameraOptions) {
+    }    else if (value is NativeCameraOptions) {
       buffer.putUint8(142);
       writeValue(buffer, value.encode());
-    } else if (value is NativeCameraTexts) {
+    }    else if (value is NativeCameraTexts) {
       buffer.putUint8(143);
       writeValue(buffer, value.encode());
-    } else if (value is NativeAudioStats) {
+    }    else if (value is NativeAudioStats) {
       buffer.putUint8(144);
       writeValue(buffer, value.encode());
-    } else if (value is NativeDisplaySupport) {
+    }    else if (value is NativeDisplaySupport) {
       buffer.putUint8(145);
       writeValue(buffer, value.encode());
-    } else if (value is NativeDisplayOptions) {
+    }    else if (value is NativeDisplayOptions) {
       buffer.putUint8(146);
       writeValue(buffer, value.encode());
-    } else if (value is NativeScreenPanel) {
+    }    else if (value is NativeScreenPanel) {
       buffer.putUint8(147);
       writeValue(buffer, value.encode());
-    } else if (value is NativeDisplayPointer) {
+    }    else if (value is NativeDisplayPointer) {
       buffer.putUint8(148);
       writeValue(buffer, value.encode());
     } else {
@@ -1241,21 +1178,20 @@ class MirrorCaptureHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   MirrorCaptureHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   Future<NativeCaptureSupport> support() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.support$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.support$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1264,10 +1200,11 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeCaptureSupport;
   }
 
@@ -1275,32 +1212,26 @@ class MirrorCaptureHostApi {
   /// in the background, a notice leads to it. A yes starts the foreground
   /// service with its ongoing notice; the grant is used once by [start]
   /// and never kept.
-  Future<NativeConsentResult> requestConsent(
-    NativeConsentTexts texts,
-    int timeoutSeconds,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestConsent$pigeonVar_messageChannelSuffix';
+  Future<NativeConsentResult> requestConsent(NativeConsentTexts texts, int timeoutSeconds) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestConsent$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[texts, timeoutSeconds],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[texts, timeoutSeconds]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeConsentResult;
   }
 
   Future<NativeAudioSupport> audioSupport() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.audioSupport$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.audioSupport$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1309,18 +1240,18 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeAudioSupport;
   }
 
   /// Shows Android's permission prompt for capturing sound. False when
   /// the owner said no, or no screen of the app is open to ask from.
   Future<bool> requestAudioPermission() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestAudioPermission$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestAudioPermission$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1329,17 +1260,17 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Takes back a [requestConsent] that hasn't been answered.
   Future<void> cancelConsent() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.cancelConsent$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.cancelConsent$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1348,37 +1279,35 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Starts the capture and the encoder with the grant from
   /// [requestConsent]. Returns false when there is none or it failed.
   Future<bool> start(NativeCaptureOptions options) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.start$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.start$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[options],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[options]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   Future<void> stop() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1387,15 +1316,15 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> requestKeyframe() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1404,29 +1333,28 @@ class MirrorCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> setBitrate(int bitrate) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[bitrate],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bitrate]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -1450,20 +1378,16 @@ abstract class MirrorCaptureFlutterApi {
 
   void onEnded(NativeCaptureEnd end);
 
-  static void setUp(
-    MirrorCaptureFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(MirrorCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onConfig$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1475,20 +1399,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onFrame$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1500,20 +1420,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onScreenOff$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onScreenOff$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1525,20 +1441,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioConfig$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1552,20 +1464,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioFrame$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1578,20 +1486,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioEnded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onAudioEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1601,20 +1505,16 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onEnded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1626,10 +1526,8 @@ abstract class MirrorCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
@@ -1644,21 +1542,20 @@ class CameraCaptureHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   CameraCaptureHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   Future<NativeCameraSupport> support() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.support$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.support$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1667,10 +1564,11 @@ class CameraCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeCameraSupport;
   }
 
@@ -1679,22 +1577,20 @@ class CameraCaptureHostApi {
   /// Answers with how things stand afterwards; nothing is asked when no
   /// screen of the app is open.
   Future<NativeCameraSupport> requestAccess(bool withMicrophone) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestAccess$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestAccess$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[withMicrophone],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[withMicrophone]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeCameraSupport;
   }
 
@@ -1702,54 +1598,46 @@ class CameraCaptureHostApi {
   /// with the camera that is on, or null when it couldn't start: no
   /// permission, no camera, or Android doesn't let a camera start from
   /// the background.
-  Future<NativeCameraLens?> start(
-    NativeCameraOptions options,
-    NativeCameraTexts texts,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.start$pigeonVar_messageChannelSuffix';
+  Future<NativeCameraLens?> start(NativeCameraOptions options, NativeCameraTexts texts) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.start$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[options, texts],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[options, texts]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
     return pigeonVar_replyValue as NativeCameraLens?;
   }
 
   /// Switches to another camera while one is on. Answers with the camera
   /// that is on afterwards, or null when none is.
   Future<NativeCameraLens?> setLens(NativeCameraLens lens) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setLens$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setLens$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[lens],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[lens]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
     return pigeonVar_replyValue as NativeCameraLens?;
   }
 
   Future<void> stop() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1758,15 +1646,15 @@ class CameraCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> requestKeyframe() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -1775,29 +1663,28 @@ class CameraCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> setBitrate(int bitrate) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.CameraCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[bitrate],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bitrate]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -1819,20 +1706,16 @@ abstract class CameraCaptureFlutterApi {
 
   void onEnded(NativeCaptureEnd end);
 
-  static void setUp(
-    CameraCaptureFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(CameraCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onConfig$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1844,20 +1727,16 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onFrame$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1869,20 +1748,16 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioConfig$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1896,20 +1771,16 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioFrame$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1922,20 +1793,16 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioEnded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onAudioEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1945,20 +1812,16 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onEnded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.CameraCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -1970,10 +1833,8 @@ abstract class CameraCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
@@ -1981,28 +1842,28 @@ abstract class CameraCaptureFlutterApi {
   }
 }
 
-/// macOS: decodes H.264 with VideoToolbox into a Flutter texture.
+/// Decodes H.264 into a Flutter texture: VideoToolbox on macOS, MediaCodec
+/// on Android.
 class MirrorDecoderHostApi {
   /// Constructor for [MirrorDecoderHostApi]. The [binaryMessenger] named argument is
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   MirrorDecoderHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   /// Registers the texture pictures are drawn to and returns its id.
   Future<int> create() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.create$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.create$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2011,58 +1872,54 @@ class MirrorDecoderHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as int;
   }
 
   /// Sets up the decoder for these parameter sets (NAL units without start
   /// codes). Throws when VideoToolbox refuses them.
   Future<void> configure(Uint8List sps, Uint8List pps) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.configure$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.configure$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[sps, pps],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[sps, pps]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Decodes one Annex-B access unit. Results arrive through
   /// [MirrorDecoderFlutterApi].
   Future<void> decode(Uint8List data, int ptsUs, bool keyframe) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.decode$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.decode$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[data, ptsUs, keyframe],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[data, ptsUs, keyframe]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> dispose() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.dispose$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.dispose$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2071,39 +1928,37 @@ class MirrorDecoderHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Saves the picture that is on the texture right now as a PNG file at
   /// [path], making its folder when it isn't there. False when there is no
   /// picture yet or the file couldn't be written.
   Future<bool> savePicture(String path) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.savePicture$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.savePicture$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[path],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[path]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Whether the window showing Flutter can go full screen.
   Future<bool> canFullScreen() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.canFullScreen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.canFullScreen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2112,16 +1967,16 @@ class MirrorDecoderHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   Future<bool> isFullScreen() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.isFullScreen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.isFullScreen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2130,30 +1985,29 @@ class MirrorDecoderHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   Future<void> setFullScreen(bool fullScreen) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.setFullScreen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderHostApi.setFullScreen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[fullScreen],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[fullScreen]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -2166,20 +2020,22 @@ abstract class MirrorDecoderFlutterApi {
   /// A frame couldn't be decoded; the next one must be a keyframe.
   void onDecodeError(int status);
 
-  static void setUp(
-    MirrorDecoderFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  /// Android: the texture's buffers are [bufferWidth] × [bufferHeight] and
+  /// only the part from ([cropLeft], [cropTop]) the size [onDecoded] gives
+  /// is the picture. Sent before the first picture of a new size, only
+  /// where Flutter doesn't cut the buffers itself.
+  void onBufferSize(int bufferWidth, int bufferHeight, int cropLeft, int cropTop);
+
+  static void setUp(MirrorDecoderFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onDecoded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onDecoded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -2193,20 +2049,16 @@ abstract class MirrorDecoderFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onDecodeError$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onDecodeError$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -2218,14 +2070,74 @@ abstract class MirrorDecoderFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onBufferSize$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final int arg_bufferWidth = args[0]! as int;
+          final int arg_bufferHeight = args[1]! as int;
+          final int arg_cropLeft = args[2]! as int;
+          final int arg_cropTop = args[3]! as int;
+          try {
+            api.onBufferSize(arg_bufferWidth, arg_bufferHeight, arg_cropLeft, arg_cropTop);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+  }
+}
+
+/// Android: the screen of the activity Flutter draws in, while it shows
+/// another computer's display.
+class MirrorScreenHostApi {
+  /// Constructor for [MirrorScreenHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  MirrorScreenHostApi({
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  final String pigeonVar_messageChannelSuffix;
+
+
+  /// Keeps the screen on while [on], however long nobody touches it.
+  Future<void> keepScreenOn(bool on) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorScreenHostApi.keepScreenOn$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[on]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -2236,69 +2148,59 @@ class MirrorAudioHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   MirrorAudioHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   /// Gets ready for a stream. With [silent], sound is decoded and measured
   /// but the speakers are never opened. Throws when the stream can't be
   /// played.
-  Future<void> configure(
-    NativeAudioCodec codec,
-    int sampleRate,
-    int channels,
-    bool silent,
-  ) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.configure$pigeonVar_messageChannelSuffix';
+  Future<void> configure(NativeAudioCodec codec, int sampleRate, int channels, bool silent) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.configure$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[codec, sampleRate, channels, silent],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[codec, sampleRate, channels, silent]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Decodes [data] and queues it right after what was queued before.
   Future<void> play(Uint8List data) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.play$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.play$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[data],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[data]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Drops what is queued and hasn't played yet.
   Future<void> flush() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.flush$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.flush$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2307,35 +2209,33 @@ class MirrorAudioHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// From 0 to 1.
   Future<void> setVolume(double volume) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.setVolume$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.setVolume$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[volume],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[volume]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<NativeAudioStats> stats() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.stats$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.stats$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2344,16 +2244,16 @@ class MirrorAudioHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeAudioStats;
   }
 
   Future<void> close() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.close$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.MirrorAudioHostApi.close$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2362,10 +2262,11 @@ class MirrorAudioHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -2376,21 +2277,20 @@ class DisplayCaptureHostApi {
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
   DisplayCaptureHostApi({
-    BinaryMessenger? binaryMessenger,
-    String messageChannelSuffix = '',
-  }) : pigeonVar_binaryMessenger = binaryMessenger,
-       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
-           ? '.$messageChannelSuffix'
-           : '';
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
+
   Future<NativeDisplaySupport> support() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.support$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.support$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2399,17 +2299,17 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeDisplaySupport;
   }
 
   /// The screen Ferret's window is on, or the main one.
   Future<NativeScreenPanel> screen() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.screen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.screen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2418,18 +2318,18 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as NativeScreenPanel;
   }
 
   /// Asks for Screen Recording, with the system's prompt the first time.
   /// Answers whether it is granted now.
   Future<bool> requestScreenRecording() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestScreenRecording$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestScreenRecording$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2438,17 +2338,17 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   /// Asks for Accessibility, which moving the pointer needs.
   Future<bool> requestInput() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestInput$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestInput$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2457,16 +2357,16 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: false,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
     return pigeonVar_replyValue! as bool;
   }
 
   Future<void> openScreenRecordingSettings() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.openScreenRecordingSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.openScreenRecordingSettings$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2475,36 +2375,34 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Makes the display and starts sending it. Throws when it can't.
   Future<void> start(NativeDisplayOptions options) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.start$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.start$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[options],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[options]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   /// Stops sending and takes the display away.
   Future<void> stop() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2513,15 +2411,15 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> requestKeyframe() async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -2530,48 +2428,45 @@ class DisplayCaptureHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> setBitrate(int bitrate) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[bitrate],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bitrate]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 
   Future<void> pointer(NativeDisplayPointer event) async {
-    final pigeonVar_channelName =
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.pointer$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.pointer$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
-      <Object?>[event],
-    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[event]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     _extractReplyValueOrThrow(
-      pigeonVar_replyList,
-      pigeonVar_channelName,
-      isNullValid: true,
-    );
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
   }
 }
 
@@ -2584,20 +2479,16 @@ abstract class DisplayCaptureFlutterApi {
 
   void onEnded(NativeCaptureEnd end);
 
-  static void setUp(
-    DisplayCaptureFlutterApi? api, {
-    BinaryMessenger? binaryMessenger,
+  static void setUp(DisplayCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
     String messageChannelSuffix = '',
-  }) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty
-        ? '.$messageChannelSuffix'
-        : '';
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onConfig$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -2609,20 +2500,16 @@ abstract class DisplayCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onFrame$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -2634,20 +2521,16 @@ abstract class DisplayCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onEnded$messageChannelSuffix',
-        pigeonChannelCodec,
-        binaryMessenger: binaryMessenger,
-      );
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -2659,10 +2542,8 @@ abstract class DisplayCaptureFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          } catch (e) {
-            return wrapResponse(
-              error: PlatformException(code: 'error', message: e.toString()),
-            );
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }

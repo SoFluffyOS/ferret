@@ -9,13 +9,20 @@ sealed class MirrorPicture {
   int get height;
 }
 
-/// A platform texture the decoder keeps drawing into.
+/// A platform texture the decoder keeps drawing into. Its buffers can be
+/// bigger than the picture (H.264 codes whole 16-pixel blocks): then only
+/// the [width] × [height] part from ([cropLeft], [cropTop]) is shown.
 class TexturePicture extends MirrorPicture {
   const TexturePicture({
     required this.textureId,
     required this.width,
     required this.height,
-  });
+    int? bufferWidth,
+    int? bufferHeight,
+    this.cropLeft = 0,
+    this.cropTop = 0,
+  }) : bufferWidth = bufferWidth ?? width,
+       bufferHeight = bufferHeight ?? height;
 
   final int textureId;
 
@@ -24,6 +31,40 @@ class TexturePicture extends MirrorPicture {
 
   @override
   final int height;
+
+  final int bufferWidth;
+  final int bufferHeight;
+  final int cropLeft;
+  final int cropTop;
+
+  /// The buffers hold more than the picture.
+  bool get isCropped =>
+      bufferWidth != width ||
+      bufferHeight != height ||
+      cropLeft != 0 ||
+      cropTop != 0;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TexturePicture &&
+      other.textureId == textureId &&
+      other.width == width &&
+      other.height == height &&
+      other.bufferWidth == bufferWidth &&
+      other.bufferHeight == bufferHeight &&
+      other.cropLeft == cropLeft &&
+      other.cropTop == cropTop;
+
+  @override
+  int get hashCode => Object.hash(
+    textureId,
+    width,
+    height,
+    bufferWidth,
+    bufferHeight,
+    cropLeft,
+    cropTop,
+  );
 }
 
 /// One decoded image, replaced with every frame.

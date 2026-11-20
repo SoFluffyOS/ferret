@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:ferret_mirroring/src/decoder/jpeg_mirror_decoder.dart';
 import 'package:ferret_mirroring/src/decoder/mirror_picture.dart';
-import 'package:ferret_mirroring/src/decoder/video_toolbox_decoder.dart';
+import 'package:ferret_mirroring/src/decoder/native_h264_decoder.dart';
 import 'package:ferret_mirroring/src/stream/mirror_codec.dart';
 import 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
@@ -10,11 +10,15 @@ import 'package:flutter/foundation.dart';
 
 /// Turns a mirrored screen's frames into something to draw.
 abstract interface class MirrorDecoder {
-  /// The best decoder here: VideoToolbox on macOS, JPEG pictures decoded
-  /// by Flutter itself everywhere else.
+  /// The best decoder here: VideoToolbox on macOS, MediaCodec on Android,
+  /// JPEG pictures decoded by Flutter itself everywhere else.
   static MirrorDecoder current() {
     if (Platform.isMacOS) {
       return VideoToolboxDecoder();
+    }
+
+    if (Platform.isAndroid) {
+      return MediaCodecDecoder();
     }
 
     return JpegMirrorDecoder();
@@ -23,7 +27,7 @@ abstract interface class MirrorDecoder {
   /// What [current] can decode on this platform, best first, without
   /// creating a decoder.
   static List<MirrorCodec> get platformCodecs {
-    if (Platform.isMacOS) {
+    if (Platform.isMacOS || Platform.isAndroid) {
       return const [.h264, .jpeg];
     }
 

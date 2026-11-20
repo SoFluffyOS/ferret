@@ -1795,7 +1795,8 @@ class CameraCaptureFlutterApi: CameraCaptureFlutterApiProtocol {
     }
   }
 }
-/// macOS: decodes H.264 with VideoToolbox into a Flutter texture.
+/// Decodes H.264 into a Flutter texture: VideoToolbox on macOS, MediaCodec
+/// on Android.
 ///
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol MirrorDecoderHostApi {
@@ -1959,6 +1960,11 @@ protocol MirrorDecoderFlutterApiProtocol {
   @MainActor func onDecoded(ptsUs ptsUsArg: Int64, width widthArg: Int64, height heightArg: Int64) async throws
   /// A frame couldn't be decoded; the next one must be a keyframe.
   @MainActor func onDecodeError(status statusArg: Int64) async throws
+  /// Android: the texture's buffers are [bufferWidth] × [bufferHeight] and
+  /// only the part from ([cropLeft], [cropTop]) the size [onDecoded] gives
+  /// is the picture. Sent before the first picture of a new size, only
+  /// where Flutter doesn't cut the buffers itself.
+  @MainActor func onBufferSize(bufferWidth bufferWidthArg: Int64, bufferHeight bufferHeightArg: Int64, cropLeft cropLeftArg: Int64, cropTop cropTopArg: Int64) async throws
 }
 class MirrorDecoderFlutterApi: MirrorDecoderFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -2010,6 +2016,63 @@ class MirrorDecoderFlutterApi: MirrorDecoderFlutterApiProtocol {
           continuation.resume()
         }
       }
+    }
+  }
+  /// Android: the texture's buffers are [bufferWidth] × [bufferHeight] and
+  /// only the part from ([cropLeft], [cropTop]) the size [onDecoded] gives
+  /// is the picture. Sent before the first picture of a new size, only
+  /// where Flutter doesn't cut the buffers itself.
+  @MainActor func onBufferSize(bufferWidth bufferWidthArg: Int64, bufferHeight bufferHeightArg: Int64, cropLeft cropLeftArg: Int64, cropTop cropTopArg: Int64) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onBufferSize\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([bufferWidthArg, bufferHeightArg, cropLeftArg, cropTopArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+}
+/// Android: the screen of the activity Flutter draws in, while it shows
+/// another computer's display.
+///
+/// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+protocol MirrorScreenHostApi {
+  /// Keeps the screen on while [on], however long nobody touches it.
+  func keepScreenOn(on: Bool) throws
+}
+
+/// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+class MirrorScreenHostApiSetup {
+  static var codec: FlutterStandardMessageCodec { MessagesPigeonCodec.shared }
+  /// Sets up an instance of `MirrorScreenHostApi` to handle messages through the `binaryMessenger`.
+  static func setUp(binaryMessenger: FlutterBinaryMessenger, api: MirrorScreenHostApi?, messageChannelSuffix: String = "") {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    /// Keeps the screen on while [on], however long nobody touches it.
+    let keepScreenOnChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.MirrorScreenHostApi.keepScreenOn\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      keepScreenOnChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let onArg = args[0] as! Bool
+        do {
+          try api.keepScreenOn(on: onArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      keepScreenOnChannel.setMessageHandler(nil)
     }
   }
 }

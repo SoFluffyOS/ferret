@@ -335,7 +335,8 @@ abstract class CameraCaptureFlutterApi {
   void onEnded(NativeCaptureEnd end);
 }
 
-/// macOS: decodes H.264 with VideoToolbox into a Flutter texture.
+/// Decodes H.264 into a Flutter texture: VideoToolbox on macOS, MediaCodec
+/// on Android.
 @HostApi()
 abstract class MirrorDecoderHostApi {
   /// Registers the texture pictures are drawn to and returns its id.
@@ -372,6 +373,25 @@ abstract class MirrorDecoderFlutterApi {
 
   /// A frame couldn't be decoded; the next one must be a keyframe.
   void onDecodeError(int status);
+
+  /// Android: the texture's buffers are [bufferWidth] × [bufferHeight] and
+  /// only the part from ([cropLeft], [cropTop]) the size [onDecoded] gives
+  /// is the picture. Sent before the first picture of a new size, only
+  /// where Flutter doesn't cut the buffers itself.
+  void onBufferSize(
+    int bufferWidth,
+    int bufferHeight,
+    int cropLeft,
+    int cropTop,
+  );
+}
+
+/// Android: the screen of the activity Flutter draws in, while it shows
+/// another computer's display.
+@HostApi()
+abstract class MirrorScreenHostApi {
+  /// Keeps the screen on while [on], however long nobody touches it.
+  void keepScreenOn(bool on);
 }
 
 enum NativeAudioCodec {

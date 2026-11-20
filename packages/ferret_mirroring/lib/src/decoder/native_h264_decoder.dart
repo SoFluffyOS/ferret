@@ -9,11 +9,11 @@ import 'package:ferret_mirroring/src/stream/mirror_frame.dart';
 import 'package:ferret_mirroring/src/stream/mirror_stream_config.dart';
 import 'package:flutter/foundation.dart';
 
-/// macOS: H.264 decoded by VideoToolbox (the Mac's hardware decoder) into
-/// a texture Flutter draws without copying pixels. JPEG streams go to
-/// [JpegMirrorDecoder].
-class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
-  VideoToolboxDecoder({MirrorDecoderHostApi? api, JpegMirrorDecoder? jpeg})
+/// H.264 decoded by the platform's own (hardware) decoder into a texture
+/// Flutter draws without copying pixels: [VideoToolboxDecoder] on macOS,
+/// [MediaCodecDecoder] on Android. JPEG streams go to [JpegMirrorDecoder].
+class NativeH264Decoder implements MirrorDecoder, MirrorDecoderFlutterApi {
+  NativeH264Decoder({MirrorDecoderHostApi? api, JpegMirrorDecoder? jpeg})
     : _api = api ?? MirrorDecoderHostApi(),
       _jpeg = jpeg ?? JpegMirrorDecoder() {
     MirrorDecoderFlutterApi.setUp(this);
@@ -32,6 +32,10 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
 
   MirrorCodec _codec = .h264;
   int? _textureId;
+
+  /// The texture's buffers and where the picture starts in them, when
+  /// the platform said they are bigger than the picture.
+  ({int width, int height, int left, int top})? _buffer;
   bool _disposed = false;
 
   @override
@@ -57,6 +61,7 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
     }
 
     _textureId ??= await _api.create();
+    _buffer = null;
     await _api.configure(sps, pps);
   }
 
@@ -127,18 +132,18 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
       return;
     }
 
-    final shown = _picture.value;
-    final isSame =
-        shown is TexturePicture &&
-        shown.textureId == textureId &&
-        shown.width == width &&
-        shown.height == height;
-    if (!isSame) {
-      _picture.value = TexturePicture(
-        textureId: textureId,
-        width: width,
-        height: height,
-      );
+    final buffer = _buffer;
+    final picture = TexturePicture(
+      textureId: textureId,
+      width: width,
+      height: height,
+      bufferWidth: buffer?.width,
+      bufferHeight: buffer?.height,
+      cropLeft: buffer?.left ?? 0,
+      cropTop: buffer?.top ?? 0,
+    );
+    if (_picture.value != picture) {
+      _picture.value = picture;
     }
 
     _decoded.add(DecodedFrame(ptsUs: ptsUs, width: width, height: height));
@@ -146,6 +151,21 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
 
   @override
   void onDecodeError(int status) => _reportError();
+
+  @override
+  void onBufferSize(
+    int bufferWidth,
+    int bufferHeight,
+    int cropLeft,
+    int cropTop,
+  ) {
+    _buffer = (
+      width: bufferWidth,
+      height: bufferHeight,
+      left: cropLeft,
+      top: cropTop,
+    );
+  }
 
   void _onJpegPicture() {
     if (_disposed || _codec != .jpeg) {
@@ -160,4 +180,15 @@ class VideoToolboxDecoder implements MirrorDecoder, MirrorDecoderFlutterApi {
       _errors.add(null);
     }
   }
+}
+
+/// macOS: H.264 decoded by VideoToolbox (the Mac's hardware decoder).
+class VideoToolboxDecoder extends NativeH264Decoder {
+  VideoToolboxDecoder({super.api, super.jpeg});
+}
+
+/// Android: H.264 decoded by MediaCodec, low latency where the decoder
+/// has it, onto a SurfaceProducer texture.
+class MediaCodecDecoder extends NativeH264Decoder {
+  MediaCodecDecoder({super.api, super.jpeg});
 }

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeDecoderApi implements MirrorDecoderHostApi {
@@ -163,5 +164,52 @@ void main() {
 
     expect(await window.isFullScreen(), isTrue);
     expect(await const FixedMirrorWindow().canFullScreen(), isFalse);
+  });
+
+  test('a picture in bigger buffers is cut to its own size', () async {
+    final android = MediaCodecDecoder(api: api);
+    addTearDown(android.dispose);
+    await android.configure(h264());
+    android
+      ..onBufferSize(1088, 2400, 0, 0)
+      ..onDecoded(1000, 1080, 2400);
+
+    final picture = android.picture.value! as TexturePicture;
+    expect(picture.width, 1080);
+    expect(picture.bufferWidth, 1088);
+    expect(picture.isCropped, isTrue);
+
+    android.onDecoded(2000, 1080, 2400);
+    expect(identical(android.picture.value, picture), isTrue);
+  });
+
+  test('a new stream forgets the old buffers', () async {
+    decoder
+      ..onBufferSize(1088, 2400, 0, 0)
+      ..onDecoded(1000, 1080, 2400);
+    await decoder.configure(h264(width: 1280, height: 720));
+    decoder.onDecoded(2000, 1280, 720);
+
+    final picture = decoder.picture.value! as TexturePicture;
+    expect(picture.isCropped, isFalse);
+  });
+
+  test('a screen is measured in pixels, sharp from 1.5 pixels per point', () {
+    final pixel = DisplayScreen.panelOf(
+      physicalSize: const Size(1080, 2400),
+      devicePixelRatio: 2.625,
+      refreshRate: 90,
+    );
+    expect(
+      (pixel.width, pixel.height, pixel.scale, pixel.refreshHz),
+      (1080, 2400, 2, 90),
+    );
+
+    final tablet = DisplayScreen.panelOf(
+      physicalSize: const Size(1280, 800),
+      devicePixelRatio: 1,
+      refreshRate: 0,
+    );
+    expect((tablet.scale, tablet.refreshHz), (1, 60));
   });
 }

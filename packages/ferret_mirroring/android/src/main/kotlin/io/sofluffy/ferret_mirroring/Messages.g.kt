@@ -1899,7 +1899,8 @@ class CameraCaptureFlutterApi(private val binaryMessenger: BinaryMessenger, priv
   }
 }
 /**
- * macOS: decodes H.264 with VideoToolbox into a Flutter texture.
+ * Decodes H.264 into a Flutter texture: VideoToolbox on macOS, MediaCodec
+ * on Android.
  *
  * Generated interface from Pigeon that represents a handler of messages from Flutter.
  */
@@ -2122,6 +2123,71 @@ class MirrorDecoderFlutterApi(private val binaryMessenger: BinaryMessenger, priv
         } else {
           continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
         } 
+      }
+    }
+  }
+  /**
+   * Android: the texture's buffers are [bufferWidth] × [bufferHeight] and
+   * only the part from ([cropLeft], [cropTop]) the size [onDecoded] gives
+   * is the picture. Sent before the first picture of a new size, only
+   * where Flutter doesn't cut the buffers itself.
+   */
+  suspend fun onBufferSize(bufferWidthArg: Long, bufferHeightArg: Long, cropLeftArg: Long, cropTopArg: Long)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.MirrorDecoderFlutterApi.onBufferSize$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(bufferWidthArg, bufferHeightArg, cropLeftArg, cropTopArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+}
+/**
+ * Android: the screen of the activity Flutter draws in, while it shows
+ * another computer's display.
+ *
+ * Generated interface from Pigeon that represents a handler of messages from Flutter.
+ */
+interface MirrorScreenHostApi {
+  /** Keeps the screen on while [on], however long nobody touches it. */
+  fun keepScreenOn(on: Boolean)
+
+  companion object {
+    /** The codec used by MirrorScreenHostApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+    /** Sets up an instance of `MirrorScreenHostApi` to handle messages through the `binaryMessenger`. */
+    @JvmOverloads
+    fun setUp(binaryMessenger: BinaryMessenger, api: MirrorScreenHostApi?, messageChannelSuffix: String = "") {
+      val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.MirrorScreenHostApi.keepScreenOn$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val onArg = args[0] as Boolean
+            val wrapped: List<Any?> = try {
+              api.keepScreenOn(onArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
       }
     }
   }

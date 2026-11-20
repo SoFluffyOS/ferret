@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.view.WindowManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -17,12 +18,16 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-/** Captures this phone's screen for Dart: consent, the service, and the frames. */
+/**
+ * Captures this phone's screen for Dart: consent, the service, and the
+ * frames. Also decodes H.264 into a texture, for another computer's display.
+ */
 class FerretMirroringPlugin :
     FlutterPlugin,
     ActivityAware,
     PluginRegistry.RequestPermissionsResultListener,
     MirrorCaptureHostApi,
+    MirrorScreenHostApi,
     MirrorBridge.Listener {
     private var context: Context? = null
     private var flutterApi: MirrorCaptureFlutterApi? = null
@@ -39,6 +44,8 @@ class FerretMirroringPlugin :
     private var activity: ActivityPluginBinding? = null
     private var permissionAnswer: ((Boolean) -> Unit)? = null
     private var camera: CameraCaptureApi? = null
+    private var decoder: MirrorDecoderApi? = null
+    private var keepsScreenOn = false
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
@@ -54,6 +61,14 @@ class FerretMirroringPlugin :
         camera = created
         CameraCaptureHostApi.setUp(binding.binaryMessenger, created)
         created.attach()
+        val decoding = MirrorDecoderApi(
+            binding.textureRegistry,
+            MirrorDecoderFlutterApi(binding.binaryMessenger),
+            scope,
+        )
+        decoder = decoding
+        MirrorDecoderHostApi.setUp(binding.binaryMessenger, decoding)
+        MirrorScreenHostApi.setUp(binding.binaryMessenger, this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -66,6 +81,10 @@ class FerretMirroringPlugin :
         CameraCaptureHostApi.setUp(binding.binaryMessenger, null)
         camera?.detach()
         camera = null
+        MirrorDecoderHostApi.setUp(binding.binaryMessenger, null)
+        MirrorScreenHostApi.setUp(binding.binaryMessenger, null)
+        decoder?.dispose()
+        decoder = null
         scope.cancel()
         flutterApi = null
         context = null
@@ -74,9 +93,11 @@ class FerretMirroringPlugin :
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding
         binding.addRequestPermissionsResultListener(this)
+        applyKeepScreenOn()
     }
 
     override fun onDetachedFromActivity() {
+        activity?.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         activity?.removeRequestPermissionsResultListener(this)
         activity = null
         answerPermission(false)
@@ -128,6 +149,21 @@ class FerretMirroringPlugin :
             }
             screen.requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_SOUND)
         }
+    }
+
+    override fun keepScreenOn(on: Boolean) {
+        keepsScreenOn = on
+        applyKeepScreenOn()
+    }
+
+    private fun applyKeepScreenOn() {
+        val window = activity?.activity?.window ?: return
+        if (keepsScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            return
+        }
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun answerPermission(granted: Boolean) {
