@@ -54,15 +54,13 @@ class _ShelfPageState extends State<ShelfPage> {
       backLabel: l10n.back,
       actions: [
         if (canClear && _confirmsClear) ...[
-          Button(
-            variant: .ghost,
+          GhostButton(
             mainAxisSize: .min,
             label: l10n.cancel,
             onPressed: () => setState(() => _confirmsClear = false),
           ),
           Spacing.h8,
-          Button(
-            variant: .ghost,
+          GhostButton(
             mainAxisSize: .min,
             color: context.palette.danger,
             label: l10n.clearConfirm(count),
@@ -71,8 +69,7 @@ class _ShelfPageState extends State<ShelfPage> {
           ),
         ],
         if (canClear && !_confirmsClear)
-          Button(
-            variant: .ghost,
+          GhostButton(
             mainAxisSize: .min,
             label: l10n.clear,
             tooltip: l10n.clearTooltip,
