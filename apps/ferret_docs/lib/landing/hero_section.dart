@@ -45,7 +45,12 @@ class HeroSection extends StatelessComponent {
           attributes: {'aria-label': 'Runs on'},
           [
             for (final platform in LandingContent.platforms)
-              li([Marker(platform.icon), Component.text(platform.name)]),
+              li([
+                Marker(platform.icon),
+                Component.text(platform.name),
+                if (platform.download == null && platform.command == null)
+                  const span(classes: 'later', [Component.text(' · not yet')]),
+              ]),
           ],
         ),
       ]),

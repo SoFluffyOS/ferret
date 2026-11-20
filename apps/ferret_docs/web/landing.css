@@ -414,8 +414,25 @@ code {
 }
 
 .hero-shot {
-  margin-top: var(--s12);
+  margin-top: var(--s10);
   margin-bottom: var(--s16);
+}
+
+/* On a laptop the pitch takes two lines, not three, so the app shows up
+   in the first screen. */
+@media (min-width: 860px) {
+  .hero {
+    padding-top: var(--s10);
+  }
+
+  .hero h1 {
+    max-width: 21ch;
+    font-size: 64px;
+  }
+}
+
+.badges .later {
+  font-weight: 600;
 }
 
 /* App renders */
