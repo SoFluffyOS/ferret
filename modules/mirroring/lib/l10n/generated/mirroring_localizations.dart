@@ -731,12 +731,6 @@ abstract class MirroringLocalizations {
   /// **'This computer couldn\'t show the picture'**
   String get healthDecoderFailed;
 
-  /// No description provided for @experimental.
-  ///
-  /// In en, this message translates to:
-  /// **'Experimental'**
-  String get experimental;
-
   /// No description provided for @targetCable.
   ///
   /// In en, this message translates to:
@@ -1544,7 +1538,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @airplayNote.
   ///
   /// In en, this message translates to:
-  /// **'View only. No sound. Experimental: an iOS update can break it.'**
+  /// **'View only. No sound. Beta: an iOS update can break it.'**
   String get airplayNote;
 
   /// No description provided for @airplayMacTitle.

@@ -20,7 +20,16 @@ enum BetaFeature {
   wifiControl,
 
   /// The phone's sound with Show screen, over Wi-Fi.
-  wifiSound;
+  wifiSound,
+
+  /// Show screen: a phone sharing its screen with a computer over Wi-Fi.
+  wifiScreen,
+
+  /// Show screen over a USB cable.
+  cableScreen,
+
+  /// A computer as a screen receiver, such as AirPlay from an iPhone.
+  screenReceiver;
 
   /// The features still in beta. Once one has met enough real devices,
   /// take it out of this set: every tag and "(beta)" for it goes away.
@@ -30,6 +39,9 @@ enum BetaFeature {
     wifiCamera,
     wifiControl,
     wifiSound,
+    wifiScreen,
+    cableScreen,
+    screenReceiver,
   };
 
   bool get isBeta => _inBeta.contains(this);

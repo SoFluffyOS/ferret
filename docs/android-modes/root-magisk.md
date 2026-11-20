@@ -15,7 +15,7 @@ This page is for phones that are rooted already. Ferret never roots a phone, and
 
 > ⚠️ Root gives an app full control of your phone. Turn it on only if you rooted the phone yourself and know what that means.
 
-> 🧪 This mode is new. Its helper was tested on an Android 15 emulator, but not yet through `su` on a rooted phone. Treat it as experimental.
+> 🧪 This mode is new. Its helper was tested on an Android 15 emulator, but not yet through `su` on a rooted phone. Treat it as beta.
 
 ## 🔑 Turn it on
 
@@ -46,7 +46,7 @@ The helper is the same one Shizuku runs. It reads the clipboard text, turns on F
 
 Tap **Stop using root** and the helper stops. Take the permission back in your root manager whenever you like.
 
-## 📦 The Magisk module (optional, experimental)
+## 📦 The Magisk module (optional, beta)
 
 The repository has a Magisk module template in [`magisk/`](https://github.com/simonpham/ferret/tree/main/magisk). It installs Ferret as a privileged system app, for system permissions later versions may use.
 

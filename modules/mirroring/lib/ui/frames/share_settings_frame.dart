@@ -49,7 +49,7 @@ class ShareSettingsFrame extends StatelessWidget {
           children: [
             SettingSwitchRow(
               title: l10n.settingsAllow,
-              tag: l10n.experimental,
+              badge: const MirroringBetaTag(.wifiScreen),
               body: l10n.settingsAllowBody,
               value: enabled,
               onChanged: (value) => unawaited(viewModel.setEnabled(value)),

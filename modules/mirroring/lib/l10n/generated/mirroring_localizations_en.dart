@@ -579,9 +579,6 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   String get healthDecoderFailed => 'This computer couldn\'t show the picture';
 
   @override
-  String get experimental => 'Experimental';
-
-  @override
   String get targetCable => 'Cable';
 
   @override
@@ -1181,7 +1178,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get airplayNote =>
-      'View only. No sound. Experimental: an iOS update can break it.';
+      'View only. No sound. Beta: an iOS update can break it.';
 
   @override
   String get airplayMacTitle => 'Macs already do this';

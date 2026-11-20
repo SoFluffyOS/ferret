@@ -10,7 +10,7 @@
 
 Ferret can show any Android phone that has debugging turned on. No Ferret on the phone, no root, nothing to install there. And this way the mouse and the keyboard work on the phone too.
 
-> 🧪 This is experimental. It was tested on a Mac with an Android emulator, not yet on Windows and Linux.
+> 🧪 **Beta.** It was tested on a Mac with an Android emulator, not yet on Windows and Linux.
 
 ## ✅ The steps tick themselves
 

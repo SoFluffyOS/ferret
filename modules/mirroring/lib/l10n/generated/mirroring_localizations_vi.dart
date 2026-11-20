@@ -577,9 +577,6 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get healthDecoderFailed => 'Máy tính này không hiển thị được hình ảnh';
 
   @override
-  String get experimental => 'Thử nghiệm';
-
-  @override
   String get targetCable => 'Cáp';
 
   @override
@@ -1163,7 +1160,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get airplayNote =>
-      'Chỉ xem. Không có âm thanh. Thử nghiệm: một bản cập nhật iOS có thể làm hỏng tính năng này.';
+      'Chỉ xem. Không có âm thanh. Beta: một bản cập nhật iOS có thể làm hỏng tính năng này.';
 
   @override
   String get airplayMacTitle => 'Mac đã có sẵn tính năng này';

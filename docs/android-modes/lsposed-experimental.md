@@ -1,7 +1,7 @@
 ---
 order: 4
 ---
-# LSPosed (experimental)
+# LSPosed (beta)
 
 > **TL;DR**
 >
@@ -19,7 +19,7 @@ So Ferret's handoff works with what apps share openly, like links. See [Handoff]
 
 A Ferret module would listen at the one place where an app describes what you are looking at, and pass that description to Ferret. Then "continue on my laptop" would work for apps that never heard of Ferret.
 
-## ⚠️ Why it is experimental
+## ⚠️ Why it is beta
 
 - It needs root **and** LSPosed. That is a lot to ask.
 - Code that runs inside other apps is a serious thing. It has to be tiny, opt-in for each app, and easy to read.

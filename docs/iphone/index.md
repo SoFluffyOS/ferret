@@ -38,7 +38,7 @@ The first pairing is different on each system. Pick yours:
 
 - [Windows](windows.md)
 - [Linux](linux.md)
-- [macOS](mac.md) (experimental)
+- [macOS](mac.md) (beta)
 
 ## 🔔 How notifications behave
 

@@ -328,11 +328,11 @@ void main() {
       await finish(tester);
     });
 
-    testWidgets('on a Mac it is marked experimental', (tester) async {
+    testWidgets('on a Mac it is marked beta', (tester) async {
       await start(tester, settings: {IphoneSettings.enabledKey: true});
       await show(tester, host: .macos);
 
-      expect(find.textContaining('Experimental'), findsOneWidget);
+      expect(find.textContaining('Beta'), findsOneWidget);
 
       await finish(tester);
     });

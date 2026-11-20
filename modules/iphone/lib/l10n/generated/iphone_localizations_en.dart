@@ -182,7 +182,7 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
   }
 
   @override
-  String get macNoteTitle => 'Experimental on a Mac';
+  String get macNoteTitle => 'Beta on a Mac';
 
   @override
   String get macNote =>

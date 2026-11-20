@@ -275,7 +275,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @macNoteTitle.
   ///
   /// In en, this message translates to:
-  /// **'Experimental on a Mac'**
+  /// **'Beta on a Mac'**
   String get macNoteTitle;
 
   /// No description provided for @macNote.

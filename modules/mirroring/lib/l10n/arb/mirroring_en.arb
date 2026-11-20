@@ -591,7 +591,6 @@
     }
   },
   "healthDecoderFailed": "This computer couldn't show the picture",
-  "experimental": "Experimental",
   "targetCable": "Cable",
   "targetWireless": "Wi-Fi debugging",
   "setupInstallToolBody": "Install Android's platform tools (they include adb) on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. This page moves on by itself.",
@@ -1099,7 +1098,7 @@
       }
     }
   },
-  "airplayNote": "View only. No sound. Experimental: an iOS update can break it.",
+  "airplayNote": "View only. No sound. Beta: an iOS update can break it.",
   "airplayMacTitle": "Macs already do this",
   "airplayMacBody": "On {device}, pick this Mac under Screen Mirroring, or use iPhone Mirroring.",
   "@airplayMacBody": {

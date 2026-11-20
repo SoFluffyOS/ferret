@@ -107,7 +107,7 @@
       }
     }
   },
-  "macNoteTitle": "Experimental on a Mac",
+  "macNoteTitle": "Beta on a Mac",
   "macNote": "It only works while macOS itself is connected to the iPhone over Bluetooth, and macOS may keep the iPhone's notifications to itself.",
   "statusUnsupported": "This computer has no Bluetooth LE, which the iPhone link needs.",
   "statusNotConfigured": "This build of Ferret isn't allowed to use Bluetooth.",

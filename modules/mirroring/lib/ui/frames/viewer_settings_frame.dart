@@ -35,7 +35,7 @@ class ViewerSettingsFrame extends StatelessWidget {
       if (hasCable)
         SettingSwitchRow(
           title: l10n.lookForCableTitle,
-          tag: l10n.experimental,
+          badge: const MirroringBetaTag(.cableScreen),
           body: l10n.lookForCableBody,
           value: lookForCable,
           onChanged: (value) => unawaited(viewModel.setLookForCable(value)),
@@ -43,7 +43,7 @@ class ViewerSettingsFrame extends StatelessWidget {
       for (final receiver in receivers)
         SettingSwitchRow(
           title: l10n.receiverTitle(receiver.receiverId),
-          tag: l10n.experimental,
+          badge: const MirroringBetaTag(.screenReceiver),
           body: l10n.receiverBody(receiver.receiverId),
           value: receiver.on,
           onChanged: (value) => unawaited(

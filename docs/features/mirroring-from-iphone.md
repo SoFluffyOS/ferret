@@ -10,7 +10,7 @@
 
 But an iPhone already knows how to send its screen: **AirPlay**. So Ferret on your computer answers like an AirPlay screen would. Nothing to install on the iPhone. An iPad works the same way.
 
-> 🧪 This is experimental, and we mean it. It was built and tested without a real iPhone at hand. It may not work with yours yet. Tell us how it goes.
+> 🧪 **Beta**, and I mean it. It was built and tested without a real iPhone at hand. It may not work with yours yet. Tell us how it goes.
 
 ## 🔑 Listening for two minutes
 

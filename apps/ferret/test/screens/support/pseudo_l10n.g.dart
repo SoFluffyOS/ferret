@@ -1953,8 +1953,6 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get healthDecoderFailed => pseudo(super.healthDecoderFailed);
   @override
-  String get experimental => pseudo(super.experimental);
-  @override
   String get targetCable => pseudo(super.targetCable);
   @override
   String get targetWireless => pseudo(super.targetWireless);

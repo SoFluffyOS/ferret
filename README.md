@@ -37,7 +37,7 @@ You copy something on your phone and need it on your laptop. A file sits on the 
   </picture>
 </p>
 
-> 🧪 **Status: before the first release.** Ferret is built and tested on macOS and Android first. The Windows, Linux and iPhone apps are written and run in tests, but have met fewer real machines. Things marked *experimental* below mean it.
+> 🧪 **Status: before the first release.** Ferret is built and tested on macOS and Android first. The Windows, Linux and iPhone apps are written and run in tests, but have met fewer real machines. Things marked *beta* below mean it.
 
 ## ✨ What you can do
 
@@ -70,8 +70,8 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 - **Show screen** puts an Android phone's screen on your computer, over Wi-Fi with Ferret on the phone. On a Mac it gets its own phone-shaped window.
 - 🔊 Its sound comes along too.
-- 🖱️ Over a cable, click, scroll and type on it. No Ferret needed on the phone. *Experimental*, powered by scrcpy's server.
-- 📲 iPhone and iPad through AirPlay. *Experimental*.
+- 🖱️ Over a cable, click, scroll and type on it. No Ferret needed on the phone. *Beta*, powered by scrcpy's server.
+- 📲 iPhone and iPad through AirPlay. *Beta*.
 - 📸 Screenshot at full size with one click.
 
 <p align="center">

@@ -30,7 +30,7 @@
   "worksBody": "Thông báo ngay khi đến, kèm Xoá, Trả lời và Từ chối. Phát, tạm dừng, chuyển bài và âm lượng cho bất cứ nội dung nào iPhone đang phát.",
   "limitsTitle": "Chưa có",
   "limitsBody": "Đọc và gửi tin nhắn (SMS và iMessage) và nghe gọi trên {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}. Apple chỉ cho tệp, bảng nhớ tạm và Handoff hoạt động giữa các thiết bị của hãng.",
-  "macNoteTitle": "Thử nghiệm trên Mac",
+  "macNoteTitle": "Beta trên Mac",
   "macNote": "Chỉ hoạt động khi chính macOS đang kết nối với iPhone qua Bluetooth, và macOS có thể giữ thông báo của iPhone cho riêng mình.",
   "statusUnsupported": "Máy tính này không có Bluetooth LE, thứ cần để kết nối với iPhone.",
   "statusNotConfigured": "Bản dựng Ferret này không được phép dùng Bluetooth.",

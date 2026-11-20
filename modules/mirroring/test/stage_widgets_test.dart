@@ -1857,7 +1857,7 @@ void main() {
       await ui.viewerViewModel.stop();
     });
 
-    testWidgets('settings are two switches, each marked Experimental, and '
+    testWidgets('settings are two switches, each marked Beta, and '
         'no setup rows', (tester) async {
       await startUi(tester, on: false);
       cable.statusNow = const RouteNeedsSetup(.enableDebugging);
@@ -1876,7 +1876,7 @@ void main() {
         find.text('Show iPhone and iPad screens here'),
         findsOneWidget,
       );
-      expect(find.text('Experimental'), findsNWidgets(2));
+      expect(find.text('Beta'), findsNWidgets(2));
       expect(find.textContaining('More ways'), findsNothing);
       expect(find.textContaining('needs one setting'), findsNothing);
       expect(find.text('Check again'), findsNothing);

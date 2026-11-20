@@ -174,7 +174,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   }
 
   @override
-  String get macNoteTitle => 'Thử nghiệm trên Mac';
+  String get macNoteTitle => 'Beta trên Mac';
 
   @override
   String get macNote =>

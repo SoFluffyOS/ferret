@@ -885,7 +885,7 @@ void main() {
     }
 
     testWidgets('a phone has Screen under what it shares with a computer, '
-        'on and marked Experimental', (tester) async {
+        'on and marked Beta', (tester) async {
       await startPhone(tester);
 
       final part = (await partsOf(tester)).single;
@@ -895,7 +895,7 @@ void main() {
       expect(part.summary, 'Asks every time');
       expect(part.isOn, isTrue);
       expect(part.needsAttention, isFalse);
-      expect(find.text('Experimental'), findsOneWidget);
+      expect(find.text('Beta'), findsWidgets);
     });
 
     testWidgets('turned off on the phone reads Off, and the row hears about '
