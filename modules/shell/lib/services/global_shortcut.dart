@@ -6,6 +6,9 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 abstract final class GlobalShortcut {
   static const key = 'shell.global_shortcut';
 
+  /// Settings key of the Recent clips shortcut, kept the same way.
+  static const clipsKey = 'shell.clips_shortcut';
+
   /// Stored in place of a shortcut when the person turned it off.
   static const off = 'off';
 
@@ -27,7 +30,11 @@ abstract final class GlobalShortcut {
 
   /// The shortcut in [settings], the default when none was picked, or
   /// null when it is off.
-  static MenubarShortcut? read(SettingsStore settings) {
+  static MenubarShortcut? read(
+    SettingsStore settings, {
+    String key = GlobalShortcut.key,
+    MenubarShortcut? fallback,
+  }) {
     final stored = settings.get<Object>(key);
 
     return switch (stored) {
@@ -48,15 +55,16 @@ abstract final class GlobalShortcut {
           option: option,
           shift: shift,
         ),
-      _ => fallback,
+      _ => fallback ?? GlobalShortcut.fallback,
     };
   }
 
   /// Keeps [shortcut], or turns the global shortcut off when it is null.
   static Future<void> write(
     SettingsStore settings,
-    MenubarShortcut? shortcut,
-  ) async {
+    MenubarShortcut? shortcut, {
+    String key = GlobalShortcut.key,
+  }) async {
     final value = switch (shortcut) {
       null => off,
       final shortcut => {

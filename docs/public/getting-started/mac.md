@@ -77,7 +77,7 @@ Press **⌃⌥Space** in any app and Ferret opens under its icon. Press it again
 | Keys | Does |
 |---|---|
 | ⌃⌥Space | Open or close Ferret, from any app |
-| ⌃⌥V | Recent clips, from any app: the last things you copied on any device |
+| ⌃⌥V | Recent clips, from any app: the last things you copied on any device. Change or turn it off in **Settings → Advanced** |
 | ↓ / ↑ | Next / previous device or Activity line |
 | ↩ | Open the device, or the line (a file opens) |
 | ⌘V | On a device: send it your clipboard |

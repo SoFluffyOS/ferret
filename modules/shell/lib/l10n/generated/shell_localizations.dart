@@ -1640,6 +1640,18 @@ abstract class ShellLocalizations {
   /// **'Open Ferret from anywhere'**
   String get settingsShortcutTitle;
 
+  /// No description provided for @settingsClipsShortcutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent clips from anywhere'**
+  String get settingsClipsShortcutTitle;
+
+  /// No description provided for @settingsClipsShortcutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Press these keys in any app to see the last things you copied, on any device.'**
+  String get settingsClipsShortcutBody;
+
   /// No description provided for @settingsShortcutBody.
   ///
   /// In en, this message translates to:

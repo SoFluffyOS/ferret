@@ -10,11 +10,16 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The keys that open the menubar popover from any app: what they are,
-/// Change to press new ones, and a way to turn them off. Only on a Mac,
-/// where there is a menubar popover to open.
+/// Keys that work from any app: what they are, Change to press new ones,
+/// and a way to turn them off. Only on a Mac, where there is a menubar.
+/// By default the ones that open the popover; [GlobalShortcutSettings.clips]
+/// the ones for Recent clips.
 class GlobalShortcutSettings extends StatefulWidget {
-  const GlobalShortcutSettings({super.key});
+  const GlobalShortcutSettings({super.key}) : isClips = false;
+
+  const GlobalShortcutSettings.clips({super.key}) : isClips = true;
+
+  final bool isClips;
 
   @override
   State<GlobalShortcutSettings> createState() => _GlobalShortcutSettingsState();
@@ -32,7 +37,11 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
     super.initState();
     _settings = ShellScope.read(context).featureContext.engine.settings;
     _menubar = context.read<FerretMenubar?>();
-    _shortcut = GlobalShortcut.read(_settings);
+    _shortcut = GlobalShortcut.read(
+      _settings,
+      key: _key,
+      fallback: _fallback,
+    );
   }
 
   @override
@@ -62,7 +71,10 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
     final note = switch ((_isRecording, _wasRefused)) {
       (true, _) => l10n.settingsShortcutRecording,
       (false, true) => l10n.settingsShortcutTaken,
-      (false, false) => l10n.settingsShortcutBody,
+      (false, false) => switch (widget.isClips) {
+        true => l10n.settingsClipsShortcutBody,
+        false => l10n.settingsShortcutBody,
+      },
     };
 
     // It brings the gap above it, so a Mac without a menubar shows none.
@@ -76,7 +88,10 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
               children: [
                 Expanded(
                   child: Text(
-                    l10n.settingsShortcutTitle,
+                    switch (widget.isClips) {
+                      true => l10n.settingsClipsShortcutTitle,
+                      false => l10n.settingsShortcutTitle,
+                    },
                     style: typography.base1.copyWith(color: palette.text),
                   ),
                 ),
@@ -122,7 +137,7 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
                     true => null,
                     false => () => unawaited(
                       _use(menubar, switch (shortcut) {
-                        null => GlobalShortcut.fallback,
+                        null => _fallback,
                         _ => null,
                       }),
                     ),
@@ -154,17 +169,33 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
   /// Keys the Mac refuses leave the ones before in place.
   Future<void> _use(FerretMenubar menubar, MenubarShortcut? shortcut) async {
     final previous = _shortcut;
-    final taken = await menubar.setGlobalShortcut(shortcut);
+    final taken = await _apply(menubar, shortcut);
     if (!taken) {
-      await menubar.setGlobalShortcut(previous);
+      await _apply(menubar, previous);
       _show(refused: true);
       return;
     }
 
-    await GlobalShortcut.write(_settings, shortcut);
+    await GlobalShortcut.write(_settings, shortcut, key: _key);
     _shortcut = shortcut;
     _show(refused: false);
   }
+
+  String get _key => switch (widget.isClips) {
+    true => GlobalShortcut.clipsKey,
+    false => GlobalShortcut.key,
+  };
+
+  MenubarShortcut get _fallback => switch (widget.isClips) {
+    true => GlobalShortcut.recentClips,
+    false => GlobalShortcut.fallback,
+  };
+
+  Future<bool> _apply(FerretMenubar menubar, MenubarShortcut? shortcut) =>
+      switch (widget.isClips) {
+        true => menubar.setClipsShortcut(shortcut),
+        false => menubar.setGlobalShortcut(shortcut),
+      };
 
   void _show({required bool refused}) {
     if (!mounted) {

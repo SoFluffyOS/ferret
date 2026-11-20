@@ -1227,6 +1227,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsShortcutTitle => 'Mở Ferret từ bất cứ đâu';
 
   @override
+  String get settingsClipsShortcutTitle => 'Mục đã chép gần đây, từ mọi nơi';
+
+  @override
+  String get settingsClipsShortcutBody =>
+      'Nhấn tổ hợp phím này trong mọi ứng dụng để xem những gì bạn vừa chép, trên mọi thiết bị.';
+
+  @override
   String get settingsShortcutBody =>
       'Nhấn các phím này trong bất kỳ ứng dụng nào để mở hoặc đóng menu của Ferret.';
 

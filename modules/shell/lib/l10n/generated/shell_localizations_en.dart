@@ -1231,6 +1231,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsShortcutTitle => 'Open Ferret from anywhere';
 
   @override
+  String get settingsClipsShortcutTitle => 'Recent clips from anywhere';
+
+  @override
+  String get settingsClipsShortcutBody =>
+      'Press these keys in any app to see the last things you copied, on any device.';
+
+  @override
   String get settingsShortcutBody =>
       'Press these keys in any app to open or close Ferret\'s menu.';
 

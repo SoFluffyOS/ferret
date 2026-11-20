@@ -929,6 +929,8 @@
   "settingsCheckNetwork": "Check my network",
   "settingsNothingHere": "Nothing to set here yet. Pair a device first.",
   "settingsShortcutTitle": "Open Ferret from anywhere",
+  "settingsClipsShortcutTitle": "Recent clips from anywhere",
+  "settingsClipsShortcutBody": "Press these keys in any app to see the last things you copied, on any device.",
   "settingsShortcutBody": "Press these keys in any app to open or close Ferret's menu.",
   "settingsShortcutOff": "Off",
   "settingsShortcutChange": "Change",

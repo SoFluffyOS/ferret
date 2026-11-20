@@ -26,6 +26,7 @@ class AdvancedSettingsPage extends StatelessWidget {
         Spacing.v24,
         PairingSettings(engine: engine),
         const GlobalShortcutSettings(),
+        const GlobalShortcutSettings.clips(),
         Spacing.v24,
         const LanguageSettings(),
         Spacing.v24,

@@ -78,7 +78,13 @@ class MenubarBinding {
     await _menubar.setGlobalShortcut(
       GlobalShortcut.read(featureContext.engine.settings),
     );
-    await _menubar.setClipsShortcut(GlobalShortcut.recentClips);
+    await _menubar.setClipsShortcut(
+      GlobalShortcut.read(
+        featureContext.engine.settings,
+        key: GlobalShortcut.clipsKey,
+        fallback: GlobalShortcut.recentClips,
+      ),
+    );
 
     _subscriptions
       ..add(_menubar.menuSelections.listen(_onMenu))

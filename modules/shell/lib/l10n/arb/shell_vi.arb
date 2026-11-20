@@ -258,6 +258,8 @@
   "settingsCheckNetwork": "Kiểm tra mạng của tôi",
   "settingsNothingHere": "Chưa có gì để cài đặt ở đây. Hãy ghép đôi một thiết bị trước.",
   "settingsShortcutTitle": "Mở Ferret từ bất cứ đâu",
+  "settingsClipsShortcutTitle": "Mục đã chép gần đây, từ mọi nơi",
+  "settingsClipsShortcutBody": "Nhấn tổ hợp phím này trong mọi ứng dụng để xem những gì bạn vừa chép, trên mọi thiết bị.",
   "settingsShortcutBody": "Nhấn các phím này trong bất kỳ ứng dụng nào để mở hoặc đóng menu của Ferret.",
   "settingsShortcutOff": "Tắt",
   "settingsShortcutChange": "Đổi",

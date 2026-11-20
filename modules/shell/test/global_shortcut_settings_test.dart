@@ -39,6 +39,14 @@ class _FakeMenubarApi implements MenubarHostApi {
     return !refuses;
   }
 
+  final List<String?> clips = [];
+
+  @override
+  Future<bool> setClipsShortcut(MenubarShortcut? shortcut) async {
+    clips.add(shortcut?.label);
+    return !refuses;
+  }
+
   @override
   Future<MenubarShortcut?> recordShortcut() => recording.future;
 
@@ -51,7 +59,10 @@ void main() {
   late _FakeEngine engine;
 
   /// The recording completes inside the test's own clock.
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    Widget settings = const GlobalShortcutSettings(),
+  }) async {
     api.recording = Completer();
     tester.view
       ..devicePixelRatio = 1
@@ -67,7 +78,7 @@ void main() {
             navigatorKey: GlobalKey<NavigatorState>(),
             notifier: _FakeNotifier(),
           ),
-          child: testApp(const GlobalShortcutSettings()),
+          child: testApp(settings),
         ),
       ),
     );
@@ -131,4 +142,28 @@ void main() {
     expect(find.text('Turn on'), findsOneWidget);
     expect(GlobalShortcut.read(engine.settings), isNull);
   }, skip: !Platform.isMacOS);
+
+  testWidgets('Recent clips keys show ⌃⌥V and turn off on their own', (
+    tester,
+  ) async {
+    await pump(tester, settings: const GlobalShortcutSettings.clips());
+
+    expect(find.text('Recent clips from anywhere'), findsOneWidget);
+    expect(find.text('⌃⌥V'), findsOneWidget);
+
+    await tester.tap(find.text('Turn off'));
+    await tester.pumpAndSettle();
+
+    expect(api.clips, [null]);
+    expect(api.registered, isEmpty);
+    expect(
+      GlobalShortcut.read(
+        engine.settings,
+        key: GlobalShortcut.clipsKey,
+        fallback: GlobalShortcut.recentClips,
+      ),
+      isNull,
+    );
+    expect(GlobalShortcut.read(engine.settings)?.label, '⌃⌥Space');
+  });
 }

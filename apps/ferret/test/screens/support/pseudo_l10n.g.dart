@@ -3801,6 +3801,12 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsShortcutTitle => pseudo(super.settingsShortcutTitle);
   @override
+  String get settingsClipsShortcutTitle =>
+      pseudo(super.settingsClipsShortcutTitle);
+  @override
+  String get settingsClipsShortcutBody =>
+      pseudo(super.settingsClipsShortcutBody);
+  @override
   String get settingsShortcutBody => pseudo(super.settingsShortcutBody);
   @override
   String get settingsShortcutOff => pseudo(super.settingsShortcutOff);
