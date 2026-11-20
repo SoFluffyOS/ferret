@@ -54,6 +54,8 @@ Receiving works while Ferret is open.
 
 Copied something ten minutes ago and pasted over it since? Open **••• → Recent clips…** (on a Mac window: **File → Recent clips…**). You get the last 20 clips, from here and from your devices, each with **Copy**.
 
+On a Mac it's even quicker: press **⌃⌥V** in any app. Change the keys or turn them off in **Settings → Advanced → Recent clips from anywhere**.
+
 - 🔑 Private clips (passwords, codes) are never listed.
 - 🙈 On a computer where a phone's previews are hidden, its clips show as **Copied on Pixel 7**, not what they hold. **Copy** still works.
 - 🧠 The list lives in memory only. Quit Ferret and it's gone.
