@@ -70,5 +70,6 @@ Good to know:
 - Dual SIM: calls on both SIMs show up. Calls from the computer use your default SIM. If your phone is set to ask every time, Ferret uses the first SIM, since nobody is at the phone to answer the question.
 - **Silence** mutes the ringtone until the ringing stops. Android refuses it when it would change Do Not Disturb.
 - Emergency numbers open the phone's own dialer. Android doesn't let apps call them directly.
+- A Wi-Fi-only tablet has no calls to share, so Ferret doesn't offer Calls there. A tablet with a SIM gets it like a phone.
 
 Numbers and names are never logged. They only go to your own paired devices, and never leave your network.
