@@ -26,6 +26,7 @@ class SecureChannel {
   }
 
   static const maxMessageLength = 64 * 1024 * 1024;
+  static const _closeGrace = Duration(seconds: 2);
 
   /// The longest message this channel takes in before it closes. Starts at
   /// [maxMessageLength]; a device that isn't trusted yet gets less.
@@ -143,7 +144,10 @@ class SecureChannel {
 
     _closed = true;
     _resumeReading();
-    await _sendQueue;
+    // A write into a link that died without a word never finishes, so
+    // closing waits for queued sends only briefly; the socket close below
+    // gives up on them.
+    await _sendQueue.timeout(_closeGrace, onTimeout: () {});
     await _reader.cancel();
     await _connection.close();
     await _finish();

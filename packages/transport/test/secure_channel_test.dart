@@ -37,6 +37,24 @@ void main() {
     return (client, responder);
   }
 
+  test('closing does not wait for a send the other side never reads', () async {
+    final (client, responder) = await connectPair();
+    final reading = responder.messages.listen((_) {})..pause();
+
+    final stuck = client.send(Uint8List(48 * 1024 * 1024))..ignore();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    final watch = Stopwatch()..start();
+    await client.close();
+
+    expect(watch.elapsed, lessThan(const Duration(seconds: 8)));
+    final settled = await stuck
+        .then((_) => true, onError: (Object _) => true)
+        .timeout(const Duration(seconds: 5), onTimeout: () => false);
+    expect(settled, isTrue);
+    await reading.cancel();
+    await responder.close();
+  });
+
   test('messages arrive in order, both ways', () async {
     final (client, responder) = await connectPair();
     final received = responder.messages.take(3).toList();
