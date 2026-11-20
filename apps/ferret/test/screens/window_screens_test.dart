@@ -256,7 +256,7 @@ final windowScreens = <WindowScreen>[
   WindowScreen('fix_connection', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.settle(tester);
-    await rig.tapText(tester, "Why isn't it connecting?");
+    await rig.tapText(tester, 'Find out why');
   }),
   WindowScreen('pair_request', (tester, rig) async {
     await _pairPhone(tester, rig);

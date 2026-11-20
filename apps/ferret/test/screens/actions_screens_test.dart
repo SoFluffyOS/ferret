@@ -243,9 +243,13 @@ final _screens = <String, _Script>{
     final computerId = await _pairMac(tester, rig);
     await rig.open(tester, DevicePage(deviceId: computerId));
     await tester.scrollUntilVisible(
-      find.text('Volume'),
+      find.text('Power and sound'),
       200,
       scrollable: find.byType(Scrollable).last,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.text('Power and sound')),
+      alignment: 0.1,
     );
     await rig.settle(tester);
   },

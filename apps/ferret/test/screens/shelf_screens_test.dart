@@ -281,6 +281,11 @@ void main() {
             features: features,
             tipsDone: true,
           );
+          // This version ran here before, so no "Updated to" line on top.
+          await rig.engine.settings.set(
+            WhatsNew.seenVersionKey,
+            rig.engine.device.appVersion,
+          );
           await rig.pairConnectedPhone(
             tester,
             phoneFeatures: phoneFeatures(),
