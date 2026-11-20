@@ -64,7 +64,6 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
     return Padding(
       padding: EdgeInsets.only(top: Spacing.d8),
       child: SurfaceCard(
-        padding: EdgeInsets.all(Spacing.d16),
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
@@ -104,8 +103,7 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
             ),
             if (widget.sharedWithOthers) ...[
               Spacing.v8,
-              Button(
-                variant: .ghost,
+              GhostButton(
                 label: l10n.deviceForgetHereShort,
                 tooltip: l10n.deviceForgetHere(widget.here),
                 semanticLabel: l10n.deviceForgetHere(widget.here),
@@ -113,8 +111,7 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
               ),
             ],
             Spacing.v8,
-            Button(
-              variant: .ghost,
+            GhostButton(
               label: l10n.cancel,
               onPressed: () => setState(() => _asking = false),
             ),

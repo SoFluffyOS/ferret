@@ -31,7 +31,6 @@ class ReplaceDeviceCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: Spacing.d8),
       child: SurfaceCard(
-        padding: EdgeInsets.all(Spacing.d16),
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
@@ -49,15 +48,13 @@ class ReplaceDeviceCard extends StatelessWidget {
               spacing: Spacing.d8,
               runSpacing: Spacing.d8,
               children: [
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.replaceAction,
                   onPressed: onReplace,
                 ),
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.replaceKeepBoth,
                   onPressed: onKeepBoth,
                 ),

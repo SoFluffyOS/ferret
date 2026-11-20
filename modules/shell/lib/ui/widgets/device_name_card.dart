@@ -79,7 +79,6 @@ class _DeviceNameCardState extends State<DeviceNameCard> {
       return Padding(
         padding: EdgeInsets.only(top: Spacing.d8),
         child: SurfaceCard(
-          padding: EdgeInsets.all(Spacing.d16),
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
@@ -105,22 +104,19 @@ class _DeviceNameCardState extends State<DeviceNameCard> {
                 spacing: Spacing.d8,
                 runSpacing: Spacing.d8,
                 children: [
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.deviceRenameSave,
                     onPressed: () => _save(_name.text),
                   ),
                   if (widget.nickname != null)
-                    Button(
+                    GhostButton(
                       mainAxisSize: .min,
-                      variant: .ghost,
                       label: l10n.deviceRenameReset,
                       onPressed: () => _save(null),
                     ),
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.cancel,
                     onPressed: () => setState(() => _editing = false),
                   ),
@@ -148,9 +144,8 @@ class _DeviceNameCardState extends State<DeviceNameCard> {
                     ),
                   ),
                   Spacing.h12,
-                  Button(
+                  GhostButton(
                     mainAxisSize: .min,
-                    variant: .ghost,
                     label: l10n.deviceRename,
                     onPressed: _edit,
                   ),

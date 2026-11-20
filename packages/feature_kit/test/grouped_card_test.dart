@@ -40,6 +40,47 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
   });
 
+  testWidgets('a button at the end of a card\'s last row is as far from the '
+      'card\'s bottom as from its side; a middle row keeps its height', (
+    tester,
+  ) async {
+    Widget button(String label) => Button(
+      variant: .ghost,
+      padding: const EdgeInsets.all(8),
+      onPressed: () {},
+      child: SizedBox.square(dimension: 16, child: Text(label)),
+    );
+    await tester.pumpWidget(
+      _app(
+        SizedBox(
+          width: 320,
+          child: GroupedCard(
+            children: [
+              const GroupedRow(title: 'First'),
+              GroupedRow(title: 'Middle', trailing: button('m')),
+              GroupedRow(title: 'Last', trailing: button('l')),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final card = tester.getRect(find.byType(GroupedCard));
+    final last = tester.getRect(
+      find.ancestor(of: find.text('l'), matching: find.byType(Button)),
+    );
+    expect(card.right - last.right, PageInsets.row);
+    expect(card.bottom - last.bottom, PageInsets.row);
+
+    final middle = tester.getRect(
+      find.ancestor(of: find.text('m'), matching: find.byType(GroupedRow)),
+    );
+    final middleButton = tester.getRect(
+      find.ancestor(of: find.text('m'), matching: find.byType(Button)),
+    );
+    expect(middle.bottom - middleButton.bottom, Spacing.d8);
+  });
+
   test('every place colour carries a white icon at 3:1 or better', () {
     for (final color in PlaceColor.values) {
       expect(

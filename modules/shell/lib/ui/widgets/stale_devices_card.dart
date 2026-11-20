@@ -30,7 +30,6 @@ class StaleDevicesCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: Spacing.d8),
       child: SurfaceCard(
-        padding: EdgeInsets.all(Spacing.d16),
         child: Column(
           crossAxisAlignment: .stretch,
           children: [
@@ -49,17 +48,15 @@ class StaleDevicesCard extends StatelessWidget {
             Spacing.v12,
             Row(
               children: [
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   color: palette.danger,
                   label: l10n.devicesStaleRemove,
                   onPressed: onRemove,
                 ),
                 Spacing.h8,
-                Button(
+                GhostButton(
                   mainAxisSize: .min,
-                  variant: .ghost,
                   label: l10n.cancel,
                   onPressed: onCancel,
                 ),

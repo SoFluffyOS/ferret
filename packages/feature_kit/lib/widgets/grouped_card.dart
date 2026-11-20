@@ -43,11 +43,37 @@ class GroupedCard extends StatelessWidget {
                   indent: indent,
                   color: palette.separator,
                 ),
-              child,
+              GroupedEdge(
+                isFirst: index == 0,
+                isLast: index == children.length - 1,
+                child: child,
+              ),
             ],
           ],
         ),
       ),
     );
   }
+}
+
+/// Whether a row of a `GroupedCard` touches the card's top or bottom edge,
+/// where a control at its end sits in the card's corner.
+class GroupedEdge extends InheritedWidget {
+  const GroupedEdge({
+    super.key,
+    required this.isFirst,
+    required this.isLast,
+    required super.child,
+  });
+
+  final bool isFirst;
+  final bool isLast;
+
+  /// Null outside a `GroupedCard`.
+  static GroupedEdge? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<GroupedEdge>();
+
+  @override
+  bool updateShouldNotify(GroupedEdge oldWidget) =>
+      isFirst != oldWidget.isFirst || isLast != oldWidget.isLast;
 }

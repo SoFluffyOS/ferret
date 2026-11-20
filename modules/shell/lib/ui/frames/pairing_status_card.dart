@@ -52,8 +52,7 @@ class PairingStatusCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Button(
-                    variant: .ghost,
+                  child: GhostButton(
                     label: l10n.cancel,
                     onPressed: context.read<PairingViewModel>().cancel,
                   ),
@@ -85,9 +84,8 @@ class PairingStatusCard extends StatelessWidget {
           ),
           if (_offersSettings(outcome)) ...[
             Spacing.v12,
-            Button(
+            GhostButton(
               mainAxisSize: .min,
-              variant: .ghost,
               label: l10n.nearbyOpenSettings,
               onPressed: () => unawaited(launchUrl(Uri.parse('app-settings:'))),
             ),
@@ -103,7 +101,6 @@ class PairingStatusCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: Spacing.d8, bottom: Spacing.d8),
       child: SurfaceCard(
-        padding: EdgeInsets.all(Spacing.d16),
         child: content,
       ),
     );

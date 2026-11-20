@@ -54,7 +54,6 @@ class UpdateNeededCard extends StatelessWidget {
     };
 
     return SurfaceCard(
-      padding: EdgeInsets.all(Spacing.d16),
       child: Column(
         crossAxisAlignment: .stretch,
         children: [

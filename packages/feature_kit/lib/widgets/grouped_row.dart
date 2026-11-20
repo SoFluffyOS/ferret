@@ -1,6 +1,7 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:feature_kit/widgets/focus_rings.dart';
+import 'package:feature_kit/widgets/grouped_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -53,6 +54,8 @@ class GroupedRow extends StatelessWidget {
   /// The row whose page shows next to the list. It stays filled.
   final bool isSelected;
   final FocusNode? focusNode;
+
+  static double get _vertical => Spacing.d8;
 
   static bool get _isTouch => switch (defaultTargetPlatform) {
     .android || .iOS || .fuchsia => true,
@@ -135,7 +138,7 @@ class GroupedRow extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: PageInsets.row,
-          vertical: Spacing.d8,
+          vertical: _vertical,
         ),
         child: Row(
           children: [
@@ -156,7 +159,10 @@ class GroupedRow extends StatelessWidget {
                 ),
               ],
             },
-            if (trailing case final trailing?) ...[Spacing.h8, trailing],
+            if (trailing case final trailing?) ...[
+              Spacing.h8,
+              _inCorner(context, trailing),
+            ],
           ],
         ),
       ),
@@ -202,6 +208,29 @@ class GroupedRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// A control at the end of the card's first or last row sits in the
+  /// card's corner: as far from the card's top or bottom as from its side,
+  /// so its corner is concentric with the card's. Rows whose control is
+  /// shorter than the row, and every row between, keep their height, and
+  /// so does a switch, as in the system's own lists: every setting row
+  /// would grow on a phone for it.
+  Widget _inCorner(BuildContext context, Widget trailing) {
+    final edge = GroupedEdge.of(context);
+    if (edge == null || !(edge.isFirst || edge.isLast)) {
+      return trailing;
+    }
+
+    if (trailing is SwitchToggle) {
+      return trailing;
+    }
+
+    // Both ways, so the control stays in line with the row's title.
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: PageInsets.row - _vertical),
+      child: trailing,
     );
   }
 
