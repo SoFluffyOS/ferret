@@ -1387,6 +1387,14 @@ class FerretEngine implements FeatureHost {
     return null;
   }
 
+  /// Whether [deviceId], unknown here, may be one a paired device is about
+  /// to introduce: this device takes introductions, has devices that could
+  /// make them, and never forgot this one.
+  bool _mayJoinSoon(String deviceId) =>
+      sharesPairings &&
+      trustStore.devices.isNotEmpty &&
+      trustStore.forgottenOf(deviceId) == null;
+
   Future<void> _answerPairing(
     SecureChannel channel,
     String remoteId,
@@ -1403,6 +1411,16 @@ class FerretEngine implements FeatureHost {
 
     final request = PairingExchange.read(envelope, PairingRequest.new);
     if (request == null || request.device.id != remoteId) {
+      if (_mayJoinSoon(remoteId)) {
+        // One of this device's own devices may have just vouched for it
+        // there, and its word hasn't arrived here yet. Saying "not paired"
+        // would make it forget this device for good; once the word arrives
+        // this side dials it instead.
+        printDebug('Device $remoteId is not known here yet');
+        await exchange.close();
+        return;
+      }
+
       // A device that still trusts this one after it was forgotten here.
       // Telling it so makes it forget too, instead of trying forever.
       printDebug('Device $remoteId is not paired here; telling it so');
