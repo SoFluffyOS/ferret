@@ -17,6 +17,7 @@ Everything stays on this computer and your own devices. Nothing listens on the n
 `ferret-cli` talks to the Ferret app running on the same computer:
 
 ```sh
+ferret-cli devices                       # your devices, and which ones are connected
 ferret-cli watch                         # what happens, live
 ferret-cli open "Pixel 7" https://example.com
 ferret-cli notify "Pixel 7" "Build done" "All tests green"
@@ -26,12 +27,69 @@ ferret-cli clipboard get                 # the last text that arrived
 ferret-cli clipboard send "hello"        # to every connected device
 ferret-cli action "Family PC" sleep
 ferret-cli wake "Family PC"
-ferret-cli send report.pdf
+ferret-cli send report.pdf               # Ferret asks which device
+ferret-cli send report.pdf --to "Pixel 7"
 ```
 
-A device name can be its full name, the start of it, or its id: `pix` works when only one device starts with it. Add `--json` to any of them for an answer your script can read.
+A device name can be its full name, the start of it, or its id: `pix` works when only one device starts with it. Two fit? Ferret lists them and exits with `67`, so you can type a bit more.
 
-Exit codes: `0` done, `1` failed, `64` wrong usage, `66` a file or a clip is missing, `69` the Ferret app isn't running, `75` the device isn't connected.
+Add `--json` to any of them for an answer your script can read.
+
+### 🚰 Pipes
+
+Anything that takes text or files reads standard input too:
+
+```sh
+git log -1 --format=%H | ferret-cli clipboard send --to pixel
+find ~/Screenshots -name '*.png' -newer ~/.last-sync | ferret-cli send - --to pixel
+ferret-cli clipboard get --json | jq -r .from
+ferret-cli ring "$(ferret-cli devices --names | fzf)"
+```
+
+`-` means "the paths come from stdin, one per line". `devices --names` prints one name per line, made for `fzf` and friends.
+
+### 🚦 Exit codes
+
+| Code | What happened |
+|---|---|
+| `0` | Done |
+| `1` | It didn't work, such as the phone saying no. The message says why |
+| `64` | Wrong usage, such as nothing to send |
+| `66` | A file to send is missing, or no clip arrived yet |
+| `67` | No device has that name, or several do |
+| `69` | The Ferret app isn't running |
+| `75` | The device isn't connected right now. Try again later |
+
+Answers go to stdout, problems go to stderr, always with what to do next. `--json` answers carry an `error` you can match on, such as `not_connected` or `unknown_device`.
+
+### ⌨️ Tab completion
+
+Commands, options and your device names, with Tab:
+
+```sh
+# bash, in ~/.bashrc
+source <(ferret-cli completion bash)
+
+# zsh, in ~/.zshrc after compinit
+source <(ferret-cli completion zsh)
+
+# fish, once
+ferret-cli completion fish > ~/.config/fish/completions/ferret-cli.fish
+```
+
+Type `ferret-cli ring P` and Tab. That's it.
+
+### 📋 Devices
+
+```sh
+$ ferret-cli devices
+Paired with the Ferret app:
+  Pixel 7  connected · battery 64%
+  Family PC  not connected
+ferret-cli's own id: 3exo-d4n5-xd7r-njy6
+```
+
+`--json` puts them under `app.devices`, each with `name`, `id`, `connected`, `reconnecting` and `battery` when known. The ids are the same ones `watch` prints. Devices you paired with `ferret-cli daemon` itself are under `devices`.
 
 ## 👀 Watch
 
@@ -159,7 +217,95 @@ The rules:
 
 On Windows, name it `device.connected.cmd`, `.bat` or `.exe`. The folder is `%USERPROFILE%\.sofluffy\ferret\hooks`.
 
+### 🧪 Try a hook without waiting
+
+No need to walk out of the house and back. Feed it an event by hand:
+
+```sh
+echo '{"v":1,"type":"device.connected","at":"2026-11-20T09:30:12Z","device":{"id":"3f2a","name":"Pixel 7"}}' |
+  FERRET_EVENT=device.connected FERRET_DEVICE_NAME="Pixel 7" ~/.sofluffy/ferret/hooks/device.connected
+```
+
+### 🧰 Good to know
+
+- **PATH is short.** Ferret was started by your desktop, not your shell, so your `~/.zshrc` never ran. On a Mac that means `/usr/bin:/bin:/usr/sbin:/sbin`: no Homebrew. Use full paths, or put `export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"` at the top.
+- **Output goes nowhere.** Ferret doesn't keep what a hook prints. Want a log? `exec >>"$HOME/.sofluffy/ferret/hooks/hooks.log" 2>&1` as the second line.
+- **Longer jobs go in the background.** After 10 seconds a hook gets `SIGTERM`, then `SIGKILL` 2 seconds later. Start the slow part with `nohup ./backup.sh >/dev/null 2>&1 &` and exit.
+- **The exit code is yours.** Ferret doesn't act on it.
+
 **Settings → Other apps → Scripts** shows the folder and which hooks Ferret found.
+
+## ⏰ Keep `watch` running
+
+A hook is the easy way. Want one long-running script instead? Let your system start it and bring it back when Ferret restarts: `watch` exits with `69` when the app quits.
+
+### macOS (launchd)
+
+Save this as `~/Library/LaunchAgents/io.sofluffy.ferret.watch.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>io.sofluffy.ferret.watch</string>
+  <key>ProgramArguments</key>
+  <array><string>/Users/you/bin/ferret-watch.sh</string></array>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>30</integer>
+</dict>
+</plist>
+```
+
+Then `launchctl load ~/Library/LaunchAgents/io.sofluffy.ferret.watch.plist`.
+
+### Linux (systemd)
+
+Save this as `~/.config/systemd/user/ferret-watch.service`:
+
+```ini
+[Unit]
+Description=React to Ferret events
+
+[Service]
+ExecStart=%h/bin/ferret-watch.sh
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target
+```
+
+Then `systemctl --user enable --now ferret-watch`.
+
+### cron
+
+For a check every few minutes, the exit codes do the work:
+
+```sh
+*/10 * * * * ferret-cli clipboard send --to pixel "$(cat ~/notes/today.txt)" || [ $? -eq 75 ]
+```
+
+`75` means the phone is away, which is fine. Anything else lands in cron's mail.
+
+## 🚀 Raycast, Alfred and Shortcuts on a Mac
+
+Anything that runs a shell command can run `ferret-cli`. A Raycast script command that rings your phone:
+
+```sh
+#!/bin/bash
+# @raycast.schemaVersion 1
+# @raycast.title Ring my phone
+# @raycast.mode compact
+# @raycast.argument1 { "type": "text", "placeholder": "Device", "optional": true }
+
+/usr/local/bin/ferret-cli ring "${1:-Pixel 7}"
+```
+
+In Alfred, use a **Run Script** action. In the Shortcuts app on a Mac, use **Run Shell Script**. Both start without your shell's PATH, so write the full path, like above.
 
 ## 🔔 Notices from your scripts
 

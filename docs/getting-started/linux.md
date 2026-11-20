@@ -160,9 +160,9 @@ ferret-cli --help                      # everything else
 
 `ferret send` needs the app running. It exits with `69` when it isn't, `66` when a file is missing, `64` on wrong usage and `0` when the app took the files. That makes it easy to bind to a key in your window manager.
 
-`ring` and `clipboard` go through the running app too, take `--json`, and exit with `75` when the device isn't connected right now. `clipboard get` never prints private clips or images.
+`ring` and `clipboard` go through the running app too, take `--json`, exit with `75` when the device isn't connected right now and `67` when no device has that name. `clipboard get` never prints private clips or images.
 
 Everything Ferret keeps is in `~/.sofluffy/ferret`: settings, keys, pairings, and `window.ini` for the window's size. Set `FERRET_HOME` to put it somewhere else. The command line keeps its own identity in `~/.sofluffy/ferret/cli`. Nothing is sent anywhere but your own devices: no telemetry, no account, no cloud.
 
-Not there yet: `ferret clip` to send text from a pipe.
+Want text from a pipe? `make 2>&1 | tail -20 | ferret-cli clipboard send`. Tab completion: `source <(ferret-cli completion bash)`. All of it is in [Scripting](../features/scripting.md).
 
