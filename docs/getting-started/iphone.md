@@ -14,7 +14,7 @@ An iPhone plays by Apple's rules. Ferret follows them, and tells you where they 
 > ⏳ **Not in the first release yet.** The iPhone app isn't on the App Store. Today you build it from source with Xcode, like any Flutter app: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's on your phone.
 
 <figure class="shot shot-narrow">
-  <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected computer with Send files and Send clipboard" width="380" height="822" loading="lazy">
+  <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected Mac with Send files, Send clipboard and Ring" width="390" height="844" loading="lazy">
 </figure>
 
 ## 📷 Pair by scanning
@@ -48,7 +48,7 @@ iOS stops apps soon after you leave them. So Ferret on an iPhone syncs **while i
 | Copy on the computer, paste on the iPhone | Arrives while Ferret is open |
 | Copy on the iPhone, paste on the computer | Tap **Send clipboard**, then allow the paste. iOS only lets apps read the clipboard when you ask |
 | Files from the computer | Saved in Ferret's folder in the Files app, while Ferret is open |
-| Files to the computer | **Send files…** on the device |
+| Files to the computer | **Share → Ferret** from Photos, Files or any app. Or **Send files…** on the device. See [Send from the file manager](../features/share-menu.md) |
 | Your iPhone's screen on the Mac | Use AirPlay: see [Mirroring from an iPhone](../features/mirroring-from-iphone.md) |
 
 Ferret feels like an iPhone app where it matters: swipe from the left edge to go back.

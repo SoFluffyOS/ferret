@@ -120,7 +120,7 @@ Each device's page lists **Files** under **What works**: where files arrive, or 
 | Linux | Drop on the window, or **Send files…** | `~/Downloads/Ferret`, or a folder you pick | **Show in folder** uses your file manager |
 | Android 10+ | **Send with Ferret** from any app, or **Send files…** | `Download/Ferret`, visible in the Files app | **Show in folder** opens Downloads |
 | Android 7 to 9 | Same | Ferret's own folder in `Android/data` | No storage permission asked |
-| iPhone and iPad | **Send files…** | Ferret's folder in the Files app | Receives while Ferret is open |
+| iPhone and iPad | **Share → Ferret** from any app, or **Send files…** | Ferret's folder in the Files app (**Files › Ferret** in the app) | Receives while Ferret is open |
 
 Folders: drag them anywhere, or **Choose a folder…** on macOS, Windows and Linux. On iPhone and iPad, share a folder from the Files app. Android can't pick a folder to send yet: send the files inside. Android receives folders with their tree, but without their modified dates.
 
