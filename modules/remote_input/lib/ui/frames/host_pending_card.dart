@@ -22,6 +22,7 @@ class HostPendingCard extends StatelessWidget {
     return FeatureCard(
       icon: switch (pending.kind) {
         .control => LucideIcons.mousePointerClick,
+        .screen => LucideIcons.keyboard,
         .lock => LucideIcons.lock,
       },
       iconTone: .accent,

@@ -8,11 +8,13 @@ extension ConsentTexts on RemoteInputLocalizations {
   String consentTitleOf(ConsentRequest request, HostKind host) =>
       switch (request.kind) {
         .control => consentTitle(request.deviceName, ThisComputer.here),
+        .screen => screenConsentTitle(request.deviceName, ThisComputer.here),
         .lock => lockConsentTitle(request.deviceName, host.name),
       };
 
   String consentBodyOf(ConsentRequest request) => switch (request.kind) {
     .control => consentBody(request.deviceName),
+    .screen => screenConsentBody(request.deviceName),
     .lock => lockConsentBody(request.deviceName),
   };
 }

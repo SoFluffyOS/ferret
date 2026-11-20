@@ -18,10 +18,25 @@ void main() {
       locker: const UnsupportedScreenLocker(),
       canBeControlled: true,
       canControl: false,
+      canSwitchScreens: false,
+    );
+    final mac = RemoteInputFeature(
+      locker: const UnsupportedScreenLocker(),
+      canBeControlled: true,
+      canControl: false,
+      canSwitchScreens: true,
     );
     final phone = RemoteInputFeature(canBeControlled: false, canControl: true);
 
-    expect(computer.flags, [RemoteInputFeature.controlFlag]);
+    expect(computer.flags, [
+      RemoteInputFeature.controlFlag,
+      RemoteInputFeature.screenFlag,
+    ]);
+    expect(mac.flags, [
+      RemoteInputFeature.controlFlag,
+      RemoteInputFeature.screenFlag,
+      RemoteInputFeature.screenSenderFlag,
+    ]);
     expect(phone.flags, [RemoteInputFeature.controllerFlag]);
   });
 

@@ -236,7 +236,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsEnabledBody.
   ///
   /// In en, this message translates to:
-  /// **'A phone becomes its touchpad and keyboard. Each phone asks you first.'**
+  /// **'A phone becomes its touchpad and keyboard, or another computer lends its own. Each one asks you first.'**
   String get settingsEnabledBody;
 
   /// No description provided for @statusReadyQuartz.
@@ -976,6 +976,168 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker.'**
   String get presentWorksWith;
+
+  /// No description provided for @screenConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let {device} use {here, select, macOS{this Mac} windows{this PC} other{this computer}} with its keyboard and mouse?'**
+  String screenConsentTitle(String device, String here);
+
+  /// No description provided for @screenConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When you switch over on {device}, its keyboard and mouse move the pointer, click and type here until you stop it. You\'ll see it the whole time.'**
+  String screenConsentBody(String device);
+
+  /// No description provided for @settingsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard and mouse'**
+  String get settingsScreenTitle;
+
+  /// No description provided for @settingsScreenSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {here, select, macOS{this Mac\'s} windows{this PC\'s} other{this computer\'s}} keyboard and mouse on my other computers'**
+  String settingsScreenSwitch(String here);
+
+  /// No description provided for @settingsScreenSwitchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.'**
+  String get settingsScreenSwitchBody;
+
+  /// No description provided for @settingsScreenReady.
+  ///
+  /// In en, this message translates to:
+  /// **'On. Uses Input Monitoring and Accessibility.'**
+  String get settingsScreenReady;
+
+  /// No description provided for @settingsScreenAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Input Monitoring and Accessibility'**
+  String get settingsScreenAccess;
+
+  /// No description provided for @settingsScreenAccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'So Ferret can hold {here, select, macOS{this Mac\'s} windows{this PC\'s} other{this computer\'s}} keys and pointer while they\'re on another computer. If this stays after you allow both, quit and reopen Ferret.'**
+  String settingsScreenAccessBody(String here);
+
+  /// No description provided for @settingsScreenKeysTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app uses ⌃⌥→ or ⌃⌥⎋, so they don\'t reach Ferret.'**
+  String get settingsScreenKeysTaken;
+
+  /// No description provided for @healthScreenKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'⌃⌥→ to go there, ⌃⌥⎋ to come back'**
+  String get healthScreenKeys;
+
+  /// No description provided for @healthScreenKeysHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Press ⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to use its keyboard and mouse on {device}, and ⌃⌥⎋ to bring them back. {device} asks the first time.'**
+  String healthScreenKeysHelp(String here, String device);
+
+  /// No description provided for @healthScreenOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings → Control and turn on Use {here, select, macOS{this Mac\'s} windows{this PC\'s} other{this computer\'s}} keyboard and mouse on my other computers.'**
+  String healthScreenOffHelp(String here);
+
+  /// No description provided for @activityScreenAway.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard and mouse on {device}'**
+  String activityScreenAway(String device);
+
+  /// No description provided for @activityScreenAwayDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'⌃⌥⎋ brings them back'**
+  String get activityScreenAwayDetail;
+
+  /// No description provided for @activityScreenAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {device} to allow your keyboard and mouse'**
+  String activityScreenAsking(String device);
+
+  /// No description provided for @screenBringBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get screenBringBack;
+
+  /// No description provided for @screenNoComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'No computer to switch to'**
+  String get screenNoComputer;
+
+  /// No description provided for @screenNoComputerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a Mac, PC or Linux computer with Ferret first.'**
+  String get screenNoComputerBody;
+
+  /// No description provided for @screenNeedsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret needs Input Monitoring and Accessibility'**
+  String get screenNeedsAccess;
+
+  /// No description provided for @screenNeedsAccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.'**
+  String get screenNeedsAccessBody;
+
+  /// No description provided for @screenSecureInput.
+  ///
+  /// In en, this message translates to:
+  /// **'A password field is holding the keyboard'**
+  String get screenSecureInput;
+
+  /// No description provided for @screenSecureInputBody.
+  ///
+  /// In en, this message translates to:
+  /// **'While a password field is active, macOS hides typing from Ferret, so your keys would land on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Finish or close it, then press ⌃⌥→ again.'**
+  String screenSecureInputBody(String here);
+
+  /// No description provided for @screenCaptureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t hold {here, select, macOS{this Mac\'s} windows{this PC\'s} other{this computer\'s}} keyboard and mouse'**
+  String screenCaptureFailed(String here);
+
+  /// No description provided for @screenBackHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Your keyboard and mouse are back on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
+  String screenBackHere(String here);
+
+  /// No description provided for @screenDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} didn\'t take your keyboard and mouse'**
+  String screenDenied(String device);
+
+  /// No description provided for @screenLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost {device}'**
+  String screenLost(String device);
+
+  /// No description provided for @screenStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} stopped it'**
+  String screenStopped(String device);
 }
 
 class _RemoteInputLocalizationsDelegate

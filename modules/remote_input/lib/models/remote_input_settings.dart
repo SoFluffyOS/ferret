@@ -14,6 +14,13 @@ class RemoteInputSettings {
   static const touchpadSpeedKey = 'remote_input.touchpad_speed';
   static const naturalScrollKey = 'remote_input.natural_scroll';
 
+  /// This Mac's keyboard and mouse switch to other computers with ⌃⌥→.
+  static const screenSwitchKey = 'remote_input.screen_switch';
+
+  /// The system prompts for taking the keyboard and mouse were shown once;
+  /// macOS never shows them again, so the next time opens System Settings.
+  static const captureAskedKey = 'remote_input.capture_asked';
+
   /// Set once this computer could be controlled, so access that went away
   /// later reads as lost and access never given as not set up.
   static const hadAccessKey = 'remote_input.had_access';
@@ -65,7 +72,18 @@ class RemoteInputSettings {
   /// Two fingers moving up scroll the page down, as on a touch screen.
   bool get naturalScroll => _store.get<bool>(naturalScrollKey) ?? true;
 
+  /// Off until the owner turns it on: the switch keys are global.
+  bool get screenSwitch => _store.get<bool>(screenSwitchKey) ?? false;
+
+  bool get captureAsked => _store.get<bool>(captureAskedKey) ?? false;
+
   Future<void> setEnabled(bool value) => _store.set(enabledKey, value);
+
+  Future<void> setScreenSwitch(bool value) =>
+      _store.set(screenSwitchKey, value);
+
+  Future<void> setCaptureAsked(bool value) =>
+      _store.set(captureAskedKey, value);
 
   Future<void> setHadAccess(bool value) => _store.set(hadAccessKey, value);
 

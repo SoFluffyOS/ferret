@@ -19,6 +19,8 @@ class RemoteInputFeature extends Feature {
     ScreenLocker? locker,
     bool? canBeControlled,
     bool? canControl,
+    bool? canSwitchScreens,
+    InputCapture Function()? capture,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.idleTimeout = const Duration(minutes: 10),
@@ -27,6 +29,11 @@ class RemoteInputFeature extends Feature {
        _locker = locker ?? ScreenLocker.current(),
        canBeControlled = canBeControlled ?? InputInjector.isSupportedPlatform,
        canControl = canControl ?? (io.Platform.isAndroid || io.Platform.isIOS),
+       canSwitchScreens =
+           canSwitchScreens ??
+           (InputCapture.isSupportedPlatform &&
+               (canBeControlled ?? InputInjector.isSupportedPlatform)),
+       _createCapture = capture ?? InputCapture.current,
        _clock = clock ?? DateTime.now;
 
   static const featureId = 'remote_input';
@@ -41,6 +48,14 @@ class RemoteInputFeature extends Feature {
   /// with a `LockRequest`.
   static const lockFlag = 'lock';
 
+  /// Flag in [FeatureSupport]: this computer takes another computer's
+  /// keyboard and mouse (`CONTROL_MODE_SCREEN`, `EnterScreen`).
+  static const screenFlag = ScreenSwitch.screenFlag;
+
+  /// Flag in [FeatureSupport]: this computer can lend its own keyboard and
+  /// mouse to others.
+  static const screenSenderFlag = 'screen_sender';
+
   /// How long a phone waits for a lock: the computer may ask its owner
   /// first.
   Duration get lockTimeout => consentTimeout + requestTimeout;
@@ -51,11 +66,15 @@ class RemoteInputFeature extends Feature {
   /// This device offers itself as a touchpad: phones and tablets.
   final bool canControl;
 
+  /// This computer lends its own keyboard and mouse with ⌃⌥→: macOS.
+  final bool canSwitchScreens;
+
   final Duration consentTimeout;
   final Duration idleTimeout;
   final Duration requestTimeout;
 
   final InputInjector Function() _createInjector;
+  final InputCapture Function() _createCapture;
   final ScreenLocker _locker;
   final Map<String, OutgoingLock> _locks = {};
   final DateTime Function() _clock;
@@ -64,6 +83,8 @@ class RemoteInputFeature extends Feature {
 
   ControlHost? _controlHost;
   ControlClient? _client;
+  ControlClient? _screenClient;
+  ScreenSwitch? _screenSwitch;
 
   @override
   String get id => featureId;
@@ -73,6 +94,8 @@ class RemoteInputFeature extends Feature {
     if (canBeControlled) controlFlag,
     if (canBeControlled && _locker.isSupported) lockFlag,
     if (canControl) controllerFlag,
+    if (canBeControlled) screenFlag,
+    if (canSwitchScreens) screenSenderFlag,
   ];
 
   RemoteInputSettings get settings => RemoteInputSettings(host.settings);
@@ -82,6 +105,10 @@ class RemoteInputFeature extends Feature {
 
   /// The touchpad side, or null on computers.
   ControlClient? get client => _client;
+
+  /// This Mac's keyboard and mouse on other computers, or null where it
+  /// can't lend them.
+  ScreenSwitch? get screenSwitch => _screenSwitch;
 
   /// Fires when anything the UI shows may have changed.
   Stream<void> get changes => _changes.stream;
@@ -130,8 +157,35 @@ class RemoteInputFeature extends Feature {
       _subscriptions.add(client.changes.listen((_) => _emit()));
     }
 
+    if (canSwitchScreens) {
+      final screenClient = ControlClient(
+        host: host,
+        featureId: featureId,
+        mode: .CONTROL_MODE_SCREEN,
+        requestTimeout: requestTimeout,
+        batchInterval: screenBatchInterval,
+        clock: _clock,
+      );
+      final screenSwitch = ScreenSwitch(
+        host: host,
+        featureId: featureId,
+        client: screenClient,
+        settings: settings,
+        capture: _createCapture,
+        clock: _clock,
+      );
+      _screenClient = screenClient;
+      _screenSwitch = screenSwitch;
+      _subscriptions.add(screenSwitch.changes.listen((_) => _emit()));
+      await screenSwitch.start();
+    }
+
     _subscriptions.add(settings.changes.listen((_) => _emit()));
   }
+
+  /// A mouse moves more often than a finger: batches leave at up to 120 a
+  /// second.
+  static const screenBatchInterval = Duration(milliseconds: 8);
 
   @override
   Future<void> stop() async {
@@ -140,6 +194,8 @@ class RemoteInputFeature extends Feature {
     }
 
     _subscriptions.clear();
+    await _screenSwitch?.dispose();
+    await _screenClient?.dispose();
     await _controlHost?.dispose();
     await _client?.dispose();
   }
@@ -149,6 +205,7 @@ class RemoteInputFeature extends Feature {
     final deviceId = session.remoteDeviceId;
     unawaited(_controlHost?.onSessionClosed(deviceId));
     _client?.onSessionClosed(deviceId);
+    _screenClient?.onSessionClosed(deviceId);
   }
 
   @override
@@ -180,21 +237,35 @@ class RemoteInputFeature extends Feature {
     }
 
     if (payloadOf(envelope, ControlStop.new) case final stop?) {
-      await _controlHost?.onStop(session);
-      _client?.onStop(session, stop);
+      await _onStop(session, stop);
       return null;
     }
 
     if (payloadOf(envelope, ControlGrant.new) case final grant?) {
       _client?.onGrant(session, grant);
+      _screenClient?.onGrant(session, grant);
       return null;
     }
 
     if (payloadOf(envelope, ControlDeny.new) case final deny?) {
       _client?.onDeny(session, deny);
+      _screenClient?.onDeny(session, deny);
     }
 
     return null;
+  }
+
+  /// Two computers can control each other, so a stop goes to the side it
+  /// is meant for: a controller only ever says it is done, everything else
+  /// comes from a computer that was controlled.
+  Future<void> _onStop(Session session, ControlStop stop) async {
+    switch (stop.reason) {
+      case .STOP_REASON_CONTROLLER_DONE || .STOP_REASON_UNSPECIFIED:
+        await _controlHost?.onStop(session);
+      default:
+        _client?.onStop(session, stop);
+        _screenClient?.onStop(session, stop);
+    }
   }
 
   /// Asks [deviceId] for control; the touchpad page follows [client].

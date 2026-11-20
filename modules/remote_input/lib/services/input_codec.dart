@@ -39,7 +39,9 @@ abstract final class InputCodec {
     MouseButton.MOUSE_BUTTON_MIDDLE: .middle,
   };
 
-  /// The actions in [batch], skipping what this side doesn't know.
+  /// The actions in [batch], skipping what this side doesn't know. A
+  /// `LeaveScreen` lets go of the modifiers held on their own; the host lets
+  /// go of everything else too.
   static List<InputAction> actionsOf(InputBatch batch) => [
     for (final event in batch.events.take(maxEventsPerBatch)) ?actionOf(event),
   ];
@@ -66,9 +68,7 @@ abstract final class InputCodec {
         return KeyAction(
           key,
           pressed: event.key.pressed,
-          modifiers: {
-            for (final modifier in event.key.modifiers) ?modifiers[modifier],
-          },
+          modifiers: modifiersOf(event.key.modifiers),
         );
       case .text:
         final text = event.text.text;
@@ -81,10 +81,37 @@ abstract final class InputCodec {
         }
 
         return TextAction(text);
+      case .modifiers:
+        return ModifiersAction(modifiersOf(event.modifiers.held));
+      case .enter:
+        return ModifiersAction(modifiersOf(event.enter.held));
+      case .leave:
+        return const ModifiersAction({});
       case .notSet:
         return null;
     }
   }
+
+  static Set<KeyModifier> modifiersOf(Iterable<Modifier> wire) => {
+    for (final modifier in wire) ?modifiers[modifier],
+  };
+
+  static List<Modifier> _wireModifiersOf(Set<KeyModifier> held) => [
+    for (final modifier in KeyModifier.values)
+      if (held.contains(modifier)) ?_wireModifiers[modifier],
+  ];
+
+  /// The modifier keys held down on their own now.
+  static InputEvent modifierState(Set<KeyModifier> held) => InputEvent(
+    modifiers: ModifierState(held: _wireModifiersOf(held)),
+  );
+
+  /// The person switched over to the other computer, with [held] down.
+  static InputEvent enter(Set<KeyModifier> held) =>
+      InputEvent(enter: EnterScreen(held: _wireModifiersOf(held)));
+
+  /// The person switched back.
+  static InputEvent leave() => InputEvent(leave: LeaveScreen());
 
   static InputEvent move(int dx, int dy) => InputEvent(
     move: PointerMove(dx: dx, dy: dy),
@@ -113,10 +140,7 @@ abstract final class InputCodec {
     key: KeyEvent(
       key: _wireKeys[key],
       pressed: pressed,
-      modifiers: [
-        for (final modifier in KeyModifier.values)
-          if (modifiers.contains(modifier)) ?_wireModifiers[modifier],
-      ],
+      modifiers: _wireModifiersOf(modifiers),
     ),
   );
 

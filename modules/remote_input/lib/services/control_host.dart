@@ -179,7 +179,7 @@ class ControlHost {
     }
 
     if (_pending case final pending?) {
-      if (pending.deviceId == deviceId && pending.kind == .control) {
+      if (pending.deviceId == deviceId && pending.isControl) {
         return ControlPending(timeoutSeconds: _secondsLeft(pending));
       }
 
@@ -200,6 +200,10 @@ class ControlHost {
       deviceId: deviceId,
       deviceName: deviceName,
       askedAt: _clock(),
+      kind: switch (request.mode) {
+        .CONTROL_MODE_SCREEN => .screen,
+        _ => .control,
+      },
     );
     _pending = pending;
     _consentTimer = Timer(consentTimeout, () => _onConsentTimeout(pending));
@@ -324,14 +328,42 @@ class ControlHost {
     }
 
     _lastInputAt = _clock();
-    final actions = InputCodec.actionsOf(batch);
-    if (actions.isEmpty) {
-      return Future.value();
-    }
-
-    final injecting = _injecting.then((_) => _inject(deviceId, actions));
+    final injecting = _injecting.then((_) => _play(deviceId, batch));
     _injecting = injecting;
     return injecting;
+  }
+
+  /// Injects [batch] in order. At each `LeaveScreen` the other computer's
+  /// person switched away, so everything still held is let go.
+  Future<void> _play(String deviceId, InputBatch batch) async {
+    var actions = <InputAction>[];
+    for (final event in batch.events.take(InputCodec.maxEventsPerBatch)) {
+      if (InputCodec.actionOf(event) case final action?) {
+        actions.add(action);
+      }
+
+      if (!event.hasLeave()) {
+        continue;
+      }
+
+      await _inject(deviceId, actions);
+      actions = [];
+      await _letGo(deviceId);
+    }
+
+    await _inject(deviceId, actions);
+  }
+
+  Future<void> _letGo(String deviceId) async {
+    if (_active?.deviceId != deviceId) {
+      return;
+    }
+
+    try {
+      await _injector.releaseAll();
+    } on Object catch (error) {
+      printWarning('Releasing held keys failed', error);
+    }
   }
 
   /// The other device ended control, or gave up asking.
@@ -390,7 +422,7 @@ class ControlHost {
       final lockAnswer = _takeLockAnswer();
       _clearPending();
       lockAnswer?.complete(.LOCK_RESULT_TURNED_OFF);
-      if (pending.kind == .control) {
+      if (pending.isControl) {
         await _send(
           pending.deviceId,
           ControlDeny(reason: .DENY_REASON_TURNED_OFF),
@@ -459,7 +491,7 @@ class ControlHost {
   }
 
   Future<void> _inject(String deviceId, List<InputAction> actions) async {
-    if (_active?.deviceId != deviceId) {
+    if (actions.isEmpty || _active?.deviceId != deviceId) {
       return;
     }
 

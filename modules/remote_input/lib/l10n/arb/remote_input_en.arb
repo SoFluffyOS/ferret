@@ -138,7 +138,7 @@
       }
     }
   },
-  "settingsEnabledBody": "A phone becomes its touchpad and keyboard. Each phone asks you first.",
+  "settingsEnabledBody": "A phone becomes its touchpad and keyboard, or another computer lends its own. Each one asks you first.",
   "statusReadyQuartz": "On. Uses Accessibility access.",
   "statusReadySendInput": "On. Apps running as administrator can't be controlled.",
   "statusReadyUinput": "On. Uses a virtual input device.",
@@ -641,5 +641,136 @@
   "presentShowSlides": "Show slides",
   "presentTimerHint": "The timer starts with the first slide",
   "presentRestartTimer": "Tap the time to start over",
-  "presentWorksWith": "Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker."
+  "presentWorksWith": "Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker.",
+  "screenConsentTitle": "Let {device} use {here, select, macOS{this Mac} windows{this PC} other{this computer}} with its keyboard and mouse?",
+  "@screenConsentTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "screenConsentBody": "When you switch over on {device}, its keyboard and mouse move the pointer, click and type here until you stop it. You'll see it the whole time.",
+  "@screenConsentBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsScreenTitle": "Keyboard and mouse",
+  "settingsScreenSwitch": "Use {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keyboard and mouse on my other computers",
+  "@settingsScreenSwitch": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsScreenSwitchBody": "⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.",
+  "settingsScreenReady": "On. Uses Input Monitoring and Accessibility.",
+  "settingsScreenAccess": "Needs Input Monitoring and Accessibility",
+  "settingsScreenAccessBody": "So Ferret can hold {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keys and pointer while they're on another computer. If this stays after you allow both, quit and reopen Ferret.",
+  "@settingsScreenAccessBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsScreenKeysTaken": "Another app uses ⌃⌥→ or ⌃⌥⎋, so they don't reach Ferret.",
+  "healthScreenKeys": "⌃⌥→ to go there, ⌃⌥⎋ to come back",
+  "healthScreenKeysHelp": "Press ⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to use its keyboard and mouse on {device}, and ⌃⌥⎋ to bring them back. {device} asks the first time.",
+  "@healthScreenKeysHelp": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "healthScreenOffHelp": "Open Settings → Control and turn on Use {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keyboard and mouse on my other computers.",
+  "@healthScreenOffHelp": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "activityScreenAway": "Keyboard and mouse on {device}",
+  "@activityScreenAway": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityScreenAwayDetail": "⌃⌥⎋ brings them back",
+  "activityScreenAsking": "Waiting for {device} to allow your keyboard and mouse",
+  "@activityScreenAsking": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "screenBringBack": "Bring back",
+  "screenNoComputer": "No computer to switch to",
+  "screenNoComputerBody": "Connect a Mac, PC or Linux computer with Ferret first.",
+  "screenNeedsAccess": "Ferret needs Input Monitoring and Accessibility",
+  "screenNeedsAccessBody": "Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.",
+  "screenSecureInput": "A password field is holding the keyboard",
+  "screenSecureInputBody": "While a password field is active, macOS hides typing from Ferret, so your keys would land on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Finish or close it, then press ⌃⌥→ again.",
+  "@screenSecureInputBody": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "screenCaptureFailed": "Couldn't hold {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keyboard and mouse",
+  "@screenCaptureFailed": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "screenBackHere": "Your keyboard and mouse are back on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.",
+  "@screenBackHere": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "screenDenied": "{device} didn't take your keyboard and mouse",
+  "@screenDenied": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "screenLost": "Lost {device}",
+  "@screenLost": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "screenStopped": "{device} stopped it",
+  "@screenStopped": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

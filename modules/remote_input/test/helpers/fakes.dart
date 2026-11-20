@@ -211,3 +211,113 @@ Future<void> nameHere(
   );
   await store.rename(deviceId, nickname);
 }
+
+/// A Mac's event tap in memory: tests push what "was typed" through
+/// [capture], and read back whether it runs.
+class FakeCapture implements InputCapture {
+  FakeCapture({
+    this.accessNow = const CaptureAccess(
+      inputMonitoring: true,
+      accessibility: true,
+    ),
+  });
+
+  CaptureAccess accessNow;
+  CaptureAccess? accessAfterRequest;
+  Set<KeyModifier> heldOnStart = const {};
+  bool secureInput = false;
+  bool failStart = false;
+  bool keysRegistered = true;
+  bool? switchKeysOn;
+  bool capturing = false;
+  int starts = 0;
+  int stops = 0;
+  int requests = 0;
+  int settingsOpened = 0;
+
+  final StreamController<List<NativeCapturedEvent>> _events = .broadcast(
+    sync: true,
+  );
+  final StreamController<NativeSwitchKey> _switchKeys = .broadcast();
+  final StreamController<NativeCaptureEnd> _ends = .broadcast();
+
+  /// What the tap took from this Mac's keyboard and mouse.
+  void capture(List<NativeCapturedEvent> events) => _events.add(events);
+
+  void pressSwitchKey(NativeSwitchKey key) => _switchKeys.add(key);
+
+  /// The tap stopped on its own, as for ⌃⌥⎋ or a password field.
+  void end(NativeCaptureEnd reason) {
+    capturing = false;
+    _ends.add(reason);
+  }
+
+  @override
+  Future<CaptureAccess> access() async => accessNow;
+
+  @override
+  Future<CaptureAccess> requestAccess() async {
+    requests++;
+    accessNow = accessAfterRequest ?? accessNow;
+    return accessNow;
+  }
+
+  @override
+  Future<void> openAccessSettings() async => settingsOpened++;
+
+  @override
+  Future<bool> secureInputOn() async => secureInput;
+
+  @override
+  Future<bool> setSwitchKeys({required bool enabled}) async {
+    switchKeysOn = enabled;
+    return !enabled || keysRegistered;
+  }
+
+  @override
+  Future<Set<KeyModifier>?> start() async {
+    if (failStart) {
+      return null;
+    }
+
+    starts++;
+    capturing = true;
+    return heldOnStart;
+  }
+
+  @override
+  Future<void> stop() async {
+    stops++;
+    capturing = false;
+  }
+
+  @override
+  Stream<List<NativeCapturedEvent>> get events => _events.stream;
+
+  @override
+  Stream<NativeSwitchKey> get switchKeys => _switchKeys.stream;
+
+  @override
+  Stream<NativeCaptureEnd> get ends => _ends.stream;
+}
+
+/// One event as the Mac's tap reports it.
+NativeCapturedEvent captured(
+  NativeCaptureKind kind, {
+  double x = 0,
+  double y = 0,
+  int code = 0,
+  bool pressed = false,
+  int modifiers = 0,
+  bool isRepeat = false,
+  String? text,
+}) => NativeCapturedEvent(
+  kind: kind,
+  x: x,
+  y: y,
+  code: code,
+  pressed: pressed,
+  modifiers: modifiers,
+  isRepeat: isRepeat,
+  text: text,
+);

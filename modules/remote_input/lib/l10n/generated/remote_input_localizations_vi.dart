@@ -177,7 +177,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String get settingsEnabledBody =>
-      'Điện thoại trở thành bàn di chuột và bàn phím của máy. Mỗi điện thoại đều hỏi bạn trước.';
+      'Điện thoại trở thành bàn di chuột và bàn phím của máy, hoặc một máy tính khác cho mượn bàn phím và chuột của nó. Mỗi thiết bị đều hỏi bạn trước.';
 
   @override
   String get statusReadyQuartz => 'Đang bật. Dùng quyền Trợ năng.';
@@ -769,4 +769,183 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   @override
   String get presentWorksWith =>
       'Dùng được với PowerPoint, Keynote, Google Slides và PDF ở chế độ toàn màn hình, như một bút trình chiếu.';
+
+  @override
+  String screenConsentTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Cho $device dùng $_temp0 bằng bàn phím và chuột của nó?';
+  }
+
+  @override
+  String screenConsentBody(String device) {
+    return 'Khi bạn chuyển sang từ $device, bàn phím và chuột của nó sẽ di chuyển con trỏ, nhấp và gõ phím ở đây cho đến khi bạn dừng lại. Bạn luôn thấy rõ trong suốt thời gian đó.';
+  }
+
+  @override
+  String get settingsScreenTitle => 'Bàn phím và chuột';
+
+  @override
+  String settingsScreenSwitch(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'của Mac này',
+        'windows': 'của PC này',
+        'other': 'của máy tính này',
+      },
+    );
+    return 'Dùng bàn phím và chuột $_temp0 trên các máy tính khác của tôi';
+  }
+
+  @override
+  String get settingsScreenSwitchBody =>
+      '⌃⌥→ chuyển chúng sang máy tính kế tiếp đang kết nối, ⌃⌥⎋ đưa chúng về lại. Mỗi máy tính sẽ hỏi ở lần đầu.';
+
+  @override
+  String get settingsScreenReady =>
+      'Đang bật. Dùng quyền Giám sát đầu vào và Trợ năng.';
+
+  @override
+  String get settingsScreenAccess => 'Cần quyền Giám sát đầu vào và Trợ năng';
+
+  @override
+  String settingsScreenAccessBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'của Mac này',
+        'windows': 'của PC này',
+        'other': 'của máy tính này',
+      },
+    );
+    return 'Để Ferret giữ phím và con trỏ $_temp0 khi chúng đang ở máy tính khác. Nếu dòng này vẫn còn sau khi bạn đã cho phép cả hai, hãy thoát rồi mở lại Ferret.';
+  }
+
+  @override
+  String get settingsScreenKeysTaken =>
+      'Một ứng dụng khác đang dùng ⌃⌥→ hoặc ⌃⌥⎋, nên Ferret không nhận được.';
+
+  @override
+  String get healthScreenKeys => '⌃⌥→ để chuyển sang, ⌃⌥⎋ để quay về';
+
+  @override
+  String healthScreenKeysHelp(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Nhấn ⌃⌥→ trên $_temp0 để dùng bàn phím và chuột của nó trên $device, và ⌃⌥⎋ để đưa về. $device sẽ hỏi ở lần đầu.';
+  }
+
+  @override
+  String healthScreenOffHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'của Mac này',
+        'windows': 'của PC này',
+        'other': 'của máy tính này',
+      },
+    );
+    return 'Mở Cài đặt → Điều khiển và bật Dùng bàn phím và chuột $_temp0 trên các máy tính khác của tôi.';
+  }
+
+  @override
+  String activityScreenAway(String device) {
+    return 'Bàn phím và chuột đang ở $device';
+  }
+
+  @override
+  String get activityScreenAwayDetail => '⌃⌥⎋ để đưa về';
+
+  @override
+  String activityScreenAsking(String device) {
+    return 'Đang chờ $device cho phép bàn phím và chuột của bạn';
+  }
+
+  @override
+  String get screenBringBack => 'Đưa về';
+
+  @override
+  String get screenNoComputer => 'Không có máy tính nào để chuyển sang';
+
+  @override
+  String get screenNoComputerBody =>
+      'Hãy kết nối một máy Mac, PC hoặc Linux có Ferret trước.';
+
+  @override
+  String get screenNeedsAccess =>
+      'Ferret cần quyền Giám sát đầu vào và Trợ năng';
+
+  @override
+  String get screenNeedsAccessBody =>
+      'Cho phép cả hai trong Cài đặt hệ thống → Quyền riêng tư & Bảo mật, rồi nhấn lại ⌃⌥→.';
+
+  @override
+  String get screenSecureInput => 'Một ô mật khẩu đang giữ bàn phím';
+
+  @override
+  String screenSecureInputBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Khi một ô mật khẩu đang hoạt động, macOS ẩn thao tác gõ phím khỏi Ferret, nên phím của bạn sẽ gõ vào $_temp0. Hãy nhập xong hoặc đóng nó, rồi nhấn lại ⌃⌥→.';
+  }
+
+  @override
+  String screenCaptureFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'của Mac này',
+        'windows': 'của PC này',
+        'other': 'của máy tính này',
+      },
+    );
+    return 'Không giữ được bàn phím và chuột $_temp0';
+  }
+
+  @override
+  String screenBackHere(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Bàn phím và chuột của bạn đã về lại $_temp0.';
+  }
+
+  @override
+  String screenDenied(String device) {
+    return '$device không nhận bàn phím và chuột của bạn';
+  }
+
+  @override
+  String screenLost(String device) {
+    return 'Mất kết nối với $device';
+  }
+
+  @override
+  String screenStopped(String device) {
+    return '$device đã dừng';
+  }
 }

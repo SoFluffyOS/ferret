@@ -8,3 +8,4 @@ export 'package:remote_input/models/outgoing_control.dart';
 export 'package:remote_input/models/outgoing_lock.dart';
 export 'package:remote_input/models/permission_ask.dart';
 export 'package:remote_input/models/remote_input_settings.dart';
+export 'package:remote_input/models/screen_switch_state.dart';

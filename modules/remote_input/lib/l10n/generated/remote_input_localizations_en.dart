@@ -179,7 +179,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String get settingsEnabledBody =>
-      'A phone becomes its touchpad and keyboard. Each phone asks you first.';
+      'A phone becomes its touchpad and keyboard, or another computer lends its own. Each one asks you first.';
 
   @override
   String get statusReadyQuartz => 'On. Uses Accessibility access.';
@@ -770,4 +770,183 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   @override
   String get presentWorksWith =>
       'Works with PowerPoint, Keynote, Google Slides and PDFs in full screen, like a clicker.';
+
+  @override
+  String screenConsentTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Let $device use $_temp0 with its keyboard and mouse?';
+  }
+
+  @override
+  String screenConsentBody(String device) {
+    return 'When you switch over on $device, its keyboard and mouse move the pointer, click and type here until you stop it. You\'ll see it the whole time.';
+  }
+
+  @override
+  String get settingsScreenTitle => 'Keyboard and mouse';
+
+  @override
+  String settingsScreenSwitch(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': 'this computer\'s',
+      },
+    );
+    return 'Use $_temp0 keyboard and mouse on my other computers';
+  }
+
+  @override
+  String get settingsScreenSwitchBody =>
+      '⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.';
+
+  @override
+  String get settingsScreenReady =>
+      'On. Uses Input Monitoring and Accessibility.';
+
+  @override
+  String get settingsScreenAccess => 'Needs Input Monitoring and Accessibility';
+
+  @override
+  String settingsScreenAccessBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': 'this computer\'s',
+      },
+    );
+    return 'So Ferret can hold $_temp0 keys and pointer while they\'re on another computer. If this stays after you allow both, quit and reopen Ferret.';
+  }
+
+  @override
+  String get settingsScreenKeysTaken =>
+      'Another app uses ⌃⌥→ or ⌃⌥⎋, so they don\'t reach Ferret.';
+
+  @override
+  String get healthScreenKeys => '⌃⌥→ to go there, ⌃⌥⎋ to come back';
+
+  @override
+  String healthScreenKeysHelp(String here, String device) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Press ⌃⌥→ on $_temp0 to use its keyboard and mouse on $device, and ⌃⌥⎋ to bring them back. $device asks the first time.';
+  }
+
+  @override
+  String healthScreenOffHelp(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': 'this computer\'s',
+      },
+    );
+    return 'Open Settings → Control and turn on Use $_temp0 keyboard and mouse on my other computers.';
+  }
+
+  @override
+  String activityScreenAway(String device) {
+    return 'Keyboard and mouse on $device';
+  }
+
+  @override
+  String get activityScreenAwayDetail => '⌃⌥⎋ brings them back';
+
+  @override
+  String activityScreenAsking(String device) {
+    return 'Waiting for $device to allow your keyboard and mouse';
+  }
+
+  @override
+  String get screenBringBack => 'Bring back';
+
+  @override
+  String get screenNoComputer => 'No computer to switch to';
+
+  @override
+  String get screenNoComputerBody =>
+      'Connect a Mac, PC or Linux computer with Ferret first.';
+
+  @override
+  String get screenNeedsAccess =>
+      'Ferret needs Input Monitoring and Accessibility';
+
+  @override
+  String get screenNeedsAccessBody =>
+      'Allow both in System Settings → Privacy & Security, then press ⌃⌥→ again.';
+
+  @override
+  String get screenSecureInput => 'A password field is holding the keyboard';
+
+  @override
+  String screenSecureInputBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'While a password field is active, macOS hides typing from Ferret, so your keys would land on $_temp0. Finish or close it, then press ⌃⌥→ again.';
+  }
+
+  @override
+  String screenCaptureFailed(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac\'s',
+        'windows': 'this PC\'s',
+        'other': 'this computer\'s',
+      },
+    );
+    return 'Couldn\'t hold $_temp0 keyboard and mouse';
+  }
+
+  @override
+  String screenBackHere(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Your keyboard and mouse are back on $_temp0.';
+  }
+
+  @override
+  String screenDenied(String device) {
+    return '$device didn\'t take your keyboard and mouse';
+  }
+
+  @override
+  String screenLost(String device) {
+    return 'Lost $device';
+  }
+
+  @override
+  String screenStopped(String device) {
+    return '$device stopped it';
+  }
 }

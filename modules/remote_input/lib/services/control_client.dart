@@ -7,16 +7,19 @@ import 'package:protobuf/protobuf.dart';
 import 'package:protocol/protocol.dart';
 import 'package:protocol/remote_input.dart';
 import 'package:remote_input/models/models.dart';
+import 'package:remote_input/services/capture_translator.dart';
 import 'package:remote_input/services/input_batcher.dart';
 import 'package:remote_input/services/input_codec.dart';
 
 /// This device's side when it controls another, such as a phone used as a
-/// touchpad: asks for control, waits for the owner's answer, then sends
-/// input in small batches without waiting for replies.
-class ControlClient {
+/// touchpad or a Mac lending its keyboard and mouse ([mode]): asks for
+/// control, waits for the owner's answer, then sends input in small
+/// batches without waiting for replies.
+class ControlClient implements InputSink {
   ControlClient({
     required FeatureHost host,
     required String featureId,
+    this.mode = .CONTROL_MODE_UNSPECIFIED,
     this.requestTimeout = const Duration(seconds: 10),
     this.consentGrace = const Duration(seconds: 15),
     this.batchInterval = const Duration(milliseconds: 16),
@@ -24,6 +27,9 @@ class ControlClient {
   }) : _host = host,
        _featureId = featureId,
        _clock = clock ?? DateTime.now;
+
+  /// What kind of controller this device is, told to the other device.
+  final ControlMode mode;
 
   final Duration requestTimeout;
 
@@ -79,7 +85,7 @@ class ControlClient {
     try {
       final reply = await session.request(
         _featureId,
-        ControlRequest(version: InputCodec.protocolVersion),
+        ControlRequest(version: InputCodec.protocolVersion, mode: mode),
         timeout: requestTimeout,
       );
       return _onReply(session, control, reply);
@@ -126,9 +132,18 @@ class ControlClient {
     }
   }
 
+  @override
   void move(double dx, double dy) => _batcher?.move(dx, dy);
 
+  @override
   void scroll(double dx, double dy) => _batcher?.scroll(dx, dy);
+
+  /// Sends [event] now, after any motion waiting.
+  @override
+  void add(InputEvent event) => _batcher?.add(event);
+
+  /// Sends whatever waits now.
+  void flush() => _batcher?.flush();
 
   void click(PointerButton button) {
     _batcher

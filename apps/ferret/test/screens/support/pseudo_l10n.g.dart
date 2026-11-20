@@ -3350,6 +3350,32 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get presentWorksWith => pseudo(super.presentWorksWith);
   @override
+  String get settingsScreenTitle => pseudo(super.settingsScreenTitle);
+  @override
+  String get settingsScreenSwitchBody => pseudo(super.settingsScreenSwitchBody);
+  @override
+  String get settingsScreenReady => pseudo(super.settingsScreenReady);
+  @override
+  String get settingsScreenAccess => pseudo(super.settingsScreenAccess);
+  @override
+  String get settingsScreenKeysTaken => pseudo(super.settingsScreenKeysTaken);
+  @override
+  String get healthScreenKeys => pseudo(super.healthScreenKeys);
+  @override
+  String get activityScreenAwayDetail => pseudo(super.activityScreenAwayDetail);
+  @override
+  String get screenBringBack => pseudo(super.screenBringBack);
+  @override
+  String get screenNoComputer => pseudo(super.screenNoComputer);
+  @override
+  String get screenNoComputerBody => pseudo(super.screenNoComputerBody);
+  @override
+  String get screenNeedsAccess => pseudo(super.screenNeedsAccess);
+  @override
+  String get screenNeedsAccessBody => pseudo(super.screenNeedsAccessBody);
+  @override
+  String get screenSecureInput => pseudo(super.screenSecureInput);
+  @override
   String consentTitle(String device, String here) =>
       pseudo(super.consentTitle(device, here));
   @override
@@ -3504,6 +3530,44 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String permissionLock(String host) => pseudo(super.permissionLock(host));
   @override
   String presentOn(String device) => pseudo(super.presentOn(device));
+  @override
+  String screenConsentTitle(String device, String here) =>
+      pseudo(super.screenConsentTitle(device, here));
+  @override
+  String screenConsentBody(String device) =>
+      pseudo(super.screenConsentBody(device));
+  @override
+  String settingsScreenSwitch(String here) =>
+      pseudo(super.settingsScreenSwitch(here));
+  @override
+  String settingsScreenAccessBody(String here) =>
+      pseudo(super.settingsScreenAccessBody(here));
+  @override
+  String healthScreenKeysHelp(String here, String device) =>
+      pseudo(super.healthScreenKeysHelp(here, device));
+  @override
+  String healthScreenOffHelp(String here) =>
+      pseudo(super.healthScreenOffHelp(here));
+  @override
+  String activityScreenAway(String device) =>
+      pseudo(super.activityScreenAway(device));
+  @override
+  String activityScreenAsking(String device) =>
+      pseudo(super.activityScreenAsking(device));
+  @override
+  String screenSecureInputBody(String here) =>
+      pseudo(super.screenSecureInputBody(here));
+  @override
+  String screenCaptureFailed(String here) =>
+      pseudo(super.screenCaptureFailed(here));
+  @override
+  String screenBackHere(String here) => pseudo(super.screenBackHere(here));
+  @override
+  String screenDenied(String device) => pseudo(super.screenDenied(device));
+  @override
+  String screenLost(String device) => pseudo(super.screenLost(device));
+  @override
+  String screenStopped(String device) => pseudo(super.screenStopped(device));
 }
 
 class PseudoScriptingLocalizations extends ScriptingLocalizationsEn {
