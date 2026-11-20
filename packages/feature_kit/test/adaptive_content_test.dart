@@ -40,6 +40,35 @@ void main() {
     expect(AdaptiveContent.marginFor(.extraLarge, 1120, .fill), 0);
   });
 
+  test('the cap is a line length: it grows with the text size', () {
+    expect(AdaptiveContent.marginFor(.large, 1000, .page, textScale: 1.3), 32);
+    expect(AdaptiveContent.marginFor(.larger, 1000, .page, textScale: 2), 0);
+  });
+
+  testWidgets('two columns need twice the room at 200% text', (tester) async {
+    Future<int> rowsAt(double scale) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: .ltr,
+          child: MediaQuery(
+            data: MediaQueryData(
+              size: const Size(1000, 800),
+              textScaler: TextScaler.linear(scale),
+            ),
+            child: const SizedBox(
+              width: 1000,
+              child: TwoColumns(leading: [Text('a')], trailing: [Text('b')]),
+            ),
+          ),
+        ),
+      );
+      return tester.widgetList(find.byType(Row)).length;
+    }
+
+    expect(await rowsAt(1), 1);
+    expect(await rowsAt(2), 0);
+  });
+
   testWidgets('a resize across the breakpoints keeps the state below', (
     tester,
   ) async {

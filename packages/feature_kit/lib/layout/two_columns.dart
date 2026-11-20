@@ -1,9 +1,11 @@
 import 'package:feature_kit/layout/pane_widths.dart';
+import 'package:feature_kit/layout/text_size_context.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Two blocks of a page: side by side where the page is [breakpoint] wide,
-/// one under the other below that. It asks its own width, not the view's,
+/// one under the other below that. The breakpoint grows with the text
+/// size: at 200 % the blocks need twice the room to sit side by side. It asks its own width, not the view's,
 /// and both blocks keep their state when a resize moves them.
 class TwoColumns extends StatefulWidget {
   const TwoColumns({
@@ -40,7 +42,7 @@ class _TwoColumnsState extends State<TwoColumns> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < widget.breakpoint) {
+        if (constraints.maxWidth < widget.breakpoint * context.textScale) {
           return Column(
             crossAxisAlignment: .stretch,
             children: [leading, trailing],

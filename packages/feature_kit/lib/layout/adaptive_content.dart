@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:feature_kit/layout/pane_widths.dart';
 import 'package:feature_kit/layout/screen_size_context.dart';
+import 'package:feature_kit/layout/text_size_context.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -32,17 +33,20 @@ class AdaptiveContent extends StatelessWidget {
   final ContentWidth width;
 
   /// The room to leave on each side of content that is [width] wide at
-  /// most, in [available] pixels on a [screenSize] view.
+  /// most, in [available] pixels on a [screenSize] view. The maximum is a
+  /// line length, so it grows with [textScale]: large text gets the same
+  /// words per line, not more lines in the same width.
   static double marginFor(
     ScreenSize screenSize,
     double available,
-    ContentWidth width,
-  ) {
+    ContentWidth width, {
+    double textScale = 1,
+  }) {
     if (screenSize < ScreenSize.large || !available.isFinite) {
       return 0;
     }
 
-    return math.max(0, (available - width.max) / 2);
+    return math.max(0, (available - width.max * textScale) / 2);
   }
 
   @override
@@ -52,7 +56,12 @@ class AdaptiveContent extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) => Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: marginFor(screenSize, constraints.maxWidth, width),
+          horizontal: marginFor(
+            screenSize,
+            constraints.maxWidth,
+            width,
+            textScale: context.textScale,
+          ),
         ),
         child: child,
       ),

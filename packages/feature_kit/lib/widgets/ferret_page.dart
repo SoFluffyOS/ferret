@@ -130,6 +130,7 @@ class FerretPage extends StatelessWidget {
                     screenSize,
                     constraints.maxWidth - side * 2,
                     width,
+                    textScale: context.textScale,
                   );
 
                   return ListView(

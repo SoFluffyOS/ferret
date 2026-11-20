@@ -343,6 +343,63 @@ void main() {
     }
   }
 
+  // Large text on Windows, where people set it: the Activity pane stays
+  // only while the content beside it keeps the Overview's two columns.
+  const largeText = {'overview', 'sidebar_hidden'};
+  for (final screen in windowScreens.where(
+    (screen) => largeText.contains(screen.name),
+  )) {
+    for (final size in windowSizes.skip(2)) {
+      for (final scale in const [1.3, 2.0]) {
+        final suffix = 'text${(scale * 100).round()}';
+        testWidgets('window ${screen.name} $suffix ${size.name}', (
+          tester,
+        ) async {
+          setScreen(tester, size, .light);
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          mockPlugins(tester);
+          debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+          final reportError = FlutterError.onError;
+          FlutterError.onError = (details) {
+            final message = details.exceptionAsString();
+            if (message.contains('overflowed')) {
+              _overflows.add(
+                '${screen.name} $suffix ${size.name}: '
+                '${message.split('\n').first}',
+              );
+              return;
+            }
+
+            reportError?.call(details);
+          };
+          try {
+            final rig = await ScreenRig.create(
+              tester,
+              features: [
+                ...appFeatures(),
+                if (screen.sampleActivity) SampleActivityFeatureUi(),
+              ],
+              tipsDone: true,
+            );
+            await rig.show(tester);
+            await screen.script(tester, rig);
+            await rig.capture(
+              tester,
+              'window_${screen.name}_$suffix',
+              size,
+              .light,
+            );
+            await rig.dispose(tester);
+          } finally {
+            FlutterError.onError = reportError;
+            debugDefaultTargetPlatformOverride = null;
+          }
+        });
+      }
+    }
+  }
+
   for (final screen in windowScreens) {
     for (final size in windowSizes) {
       for (final brightness in Brightness.values) {

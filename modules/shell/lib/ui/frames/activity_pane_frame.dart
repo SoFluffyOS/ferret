@@ -65,7 +65,7 @@ class _ActivityPaneFrameState extends State<ActivityPaneFrame> {
     if (isHidden ||
         device == null ||
         selection is! DeviceDestination ||
-        screenSize < ScreenSize.larger) {
+        !WindowLayout.showsActivityPane(context)) {
       return const SizedBox.shrink();
     }
 

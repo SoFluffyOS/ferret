@@ -22,7 +22,7 @@ class DeviceNowFrame extends StatelessWidget {
     final isPaneHidden = context.select<WindowNavViewModel?, bool>(
       (viewModel) => viewModel?.isActivityPaneHidden ?? false,
     );
-    final hasPane = context.screenSize >= ScreenSize.larger && !isPaneHidden;
+    final hasPane = WindowLayout.showsActivityPane(context) && !isPaneHidden;
     if (!WindowLayout.splits(context) || hasPane) {
       return const SizedBox.shrink();
     }
