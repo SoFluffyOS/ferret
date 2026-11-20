@@ -49,6 +49,7 @@ const ControlKind$json = {
     {'1': 'CONTROL_KIND_KEYS', '2': 2},
     {'1': 'CONTROL_KIND_TEXT', '2': 3},
     {'1': 'CONTROL_KIND_BUTTONS', '2': 4},
+    {'1': 'CONTROL_KIND_MOUSE', '2': 5},
   ],
 };
 
@@ -56,7 +57,7 @@ const ControlKind$json = {
 final $typed_data.Uint8List controlKindDescriptor = $convert.base64Decode(
     'CgtDb250cm9sS2luZBIcChhDT05UUk9MX0tJTkRfVU5TUEVDSUZJRUQQABIYChRDT05UUk9MX0'
     'tJTkRfUE9JTlRFUhABEhUKEUNPTlRST0xfS0lORF9LRVlTEAISFQoRQ09OVFJPTF9LSU5EX1RF'
-    'WFQQAxIYChRDT05UUk9MX0tJTkRfQlVUVE9OUxAE');
+    'WFQQAxIYChRDT05UUk9MX0tJTkRfQlVUVE9OUxAEEhYKEkNPTlRST0xfS0lORF9NT1VTRRAF');
 
 @$core.Deprecated('Use touchPhaseDescriptor instead')
 const TouchPhase$json = {
@@ -68,6 +69,7 @@ const TouchPhase$json = {
     {'1': 'TOUCH_PHASE_UP', '2': 3},
     {'1': 'TOUCH_PHASE_CANCEL', '2': 4},
     {'1': 'TOUCH_PHASE_SCROLL', '2': 5},
+    {'1': 'TOUCH_PHASE_HOVER', '2': 6},
   ],
 };
 
@@ -75,7 +77,8 @@ const TouchPhase$json = {
 final $typed_data.Uint8List touchPhaseDescriptor = $convert.base64Decode(
     'CgpUb3VjaFBoYXNlEhsKF1RPVUNIX1BIQVNFX1VOU1BFQ0lGSUVEEAASFAoQVE9VQ0hfUEhBU0'
     'VfRE9XThABEhQKEFRPVUNIX1BIQVNFX01PVkUQAhISCg5UT1VDSF9QSEFTRV9VUBADEhYKElRP'
-    'VUNIX1BIQVNFX0NBTkNFTBAEEhYKElRPVUNIX1BIQVNFX1NDUk9MTBAF');
+    'VUNIX1BIQVNFX0NBTkNFTBAEEhYKElRPVUNIX1BIQVNFX1NDUk9MTBAFEhUKEVRPVUNIX1BIQV'
+    'NFX0hPVkVSEAY=');
 
 @$core.Deprecated('Use controlButtonDescriptor instead')
 const ControlButton$json = {
@@ -174,6 +177,14 @@ const PointerInput$json = {
     {'1': 'y', '3': 3, '4': 1, '5': 2, '10': 'y'},
     {'1': 'scroll_x', '3': 4, '4': 1, '5': 2, '10': 'scrollX'},
     {'1': 'scroll_y', '3': 5, '4': 1, '5': 2, '10': 'scrollY'},
+    {
+      '1': 'button',
+      '3': 6,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.remote_input.v1.MouseButton',
+      '10': 'button'
+    },
   ],
 };
 
@@ -181,7 +192,8 @@ const PointerInput$json = {
 final $typed_data.Uint8List pointerInputDescriptor = $convert.base64Decode(
     'CgxQb2ludGVySW5wdXQSNQoFcGhhc2UYASABKA4yHy5mZXJyZXQubWlycm9yaW5nLnYxLlRvdW'
     'NoUGhhc2VSBXBoYXNlEgwKAXgYAiABKAJSAXgSDAoBeRgDIAEoAlIBeRIZCghzY3JvbGxfeBgE'
-    'IAEoAlIHc2Nyb2xsWBIZCghzY3JvbGxfeRgFIAEoAlIHc2Nyb2xsWQ==');
+    'IAEoAlIHc2Nyb2xsWBIZCghzY3JvbGxfeRgFIAEoAlIHc2Nyb2xsWRI7CgZidXR0b24YBiABKA'
+    '4yIy5mZXJyZXQucmVtb3RlX2lucHV0LnYxLk1vdXNlQnV0dG9uUgZidXR0b24=');
 
 @$core.Deprecated('Use buttonPressDescriptor instead')
 const ButtonPress$json = {

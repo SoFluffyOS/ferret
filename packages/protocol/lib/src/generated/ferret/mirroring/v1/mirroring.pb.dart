@@ -84,7 +84,8 @@ class CameraOptions extends $pb.GeneratedMessage {
   void clearLens() => $_clearField(1);
 }
 
-/// Asks the source to show its screen, or its camera. Expects a
+/// Asks the source to show its screen, its camera, or the display it
+/// offered. Expects a
 /// `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
 /// or `StartDeny` later, without expecting a reply.
 class StartRequest extends $pb.GeneratedMessage {
@@ -97,6 +98,7 @@ class StartRequest extends $pb.GeneratedMessage {
     $core.Iterable<AudioCodec>? audioCodecs,
     Source? source,
     CameraOptions? camera,
+    DisplayPanel? display,
   }) {
     final result = StartRequest._();
     if (version != null) result.version = version;
@@ -107,6 +109,7 @@ class StartRequest extends $pb.GeneratedMessage {
     if (audioCodecs != null) result.audioCodecs.addAll(audioCodecs);
     if (source != null) result.source = source;
     if (camera != null) result.camera = camera;
+    if (display != null) result.display = display;
     return result;
   }
 
@@ -140,6 +143,8 @@ class StartRequest extends $pb.GeneratedMessage {
     ..aE<Source>(7, _omitFieldNames ? '' : 'source', enumValues: Source.values)
     ..aOM<CameraOptions>(8, _omitFieldNames ? '' : 'camera',
         subBuilder: CameraOptions.$_createMessage)
+    ..aOM<DisplayPanel>(9, _omitFieldNames ? '' : 'display',
+        subBuilder: DisplayPanel.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -235,6 +240,244 @@ class StartRequest extends $pb.GeneratedMessage {
   void clearCamera() => $_clearField(8);
   @$pb.TagNumber(8)
   CameraOptions ensureCamera() => $_ensure(7);
+
+  /// With `SOURCE_DISPLAY` only.
+  @$pb.TagNumber(9)
+  DisplayPanel get display => $_getN(8);
+  @$pb.TagNumber(9)
+  set display(DisplayPanel value) => $_setField(9, value);
+  @$pb.TagNumber(9)
+  $core.bool hasDisplay() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearDisplay() => $_clearField(9);
+  @$pb.TagNumber(9)
+  DisplayPanel ensureDisplay() => $_ensure(8);
+}
+
+/// The viewer's screen, for a source that makes a display to fill it.
+class DisplayPanel extends $pb.GeneratedMessage {
+  factory DisplayPanel({
+    $core.int? width,
+    $core.int? height,
+    $core.int? scale,
+    $core.int? refreshHz,
+  }) {
+    final result = DisplayPanel._();
+    if (width != null) result.width = width;
+    if (height != null) result.height = height;
+    if (scale != null) result.scale = scale;
+    if (refreshHz != null) result.refreshHz = refreshHz;
+    return result;
+  }
+
+  DisplayPanel._();
+
+  factory DisplayPanel.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayPanel()..mergeFromBuffer(data, registry);
+  factory DisplayPanel.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayPanel()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DisplayPanel',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: DisplayPanel.$_createMessage)
+    ..aI(1, _omitFieldNames ? '' : 'width', fieldType: $pb.PbFieldType.OU3)
+    ..aI(2, _omitFieldNames ? '' : 'height', fieldType: $pb.PbFieldType.OU3)
+    ..aI(3, _omitFieldNames ? '' : 'scale', fieldType: $pb.PbFieldType.OU3)
+    ..aI(4, _omitFieldNames ? '' : 'refreshHz', fieldType: $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayPanel clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayPanel copyWith(void Function(DisplayPanel) updates) =>
+      super.copyWith((message) => updates(message as DisplayPanel))
+          as DisplayPanel;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use DisplayPanel() / DisplayPanel.new instead')
+  static DisplayPanel create() => DisplayPanel._();
+  static $pb.GeneratedMessage $_createMessage() => DisplayPanel._();
+  @$core.override
+  DisplayPanel createEmptyInstance() => DisplayPanel._();
+  @$core.pragma('dart2js:noInline')
+  static DisplayPanel getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DisplayPanel>(
+          DisplayPanel.$_createMessage);
+  static DisplayPanel? _defaultInstance;
+
+  /// The screen's size in pixels, as it is held now.
+  @$pb.TagNumber(1)
+  $core.int get width => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set width($core.int value) => $_setUnsignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasWidth() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearWidth() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get height => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set height($core.int value) => $_setUnsignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasHeight() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHeight() => $_clearField(2);
+
+  /// Pixels per point: 2 for a sharp (Retina) screen, 1 otherwise. 0
+  /// counts as 1.
+  @$pb.TagNumber(3)
+  $core.int get scale => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set scale($core.int value) => $_setUnsignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasScale() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearScale() => $_clearField(3);
+
+  /// How many times a second the screen redraws. 0 leaves it to the
+  /// source, which uses 60.
+  @$pb.TagNumber(4)
+  $core.int get refreshHz => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set refreshHz($core.int value) => $_setUnsignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasRefreshHz() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearRefreshHz() => $_clearField(4);
+}
+
+/// A computer offers to extend its desktop onto this device, which would
+/// become its extra display. Expects a `StartPending` reply while this
+/// device asks its owner, or a `StartDeny` at once. The owner's yes follows
+/// as a `StartRequest` with `SOURCE_DISPLAY`, a no as a `DisplayDecline`.
+/// The source takes back an offer nobody answered yet with `Stop`.
+class DisplayOffer extends $pb.GeneratedMessage {
+  factory DisplayOffer({
+    $core.int? version,
+  }) {
+    final result = DisplayOffer._();
+    if (version != null) result.version = version;
+    return result;
+  }
+
+  DisplayOffer._();
+
+  factory DisplayOffer.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayOffer()..mergeFromBuffer(data, registry);
+  factory DisplayOffer.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayOffer()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DisplayOffer',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: DisplayOffer.$_createMessage)
+    ..aI(1, _omitFieldNames ? '' : 'version', fieldType: $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayOffer clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayOffer copyWith(void Function(DisplayOffer) updates) =>
+      super.copyWith((message) => updates(message as DisplayOffer))
+          as DisplayOffer;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use DisplayOffer() / DisplayOffer.new instead')
+  static DisplayOffer create() => DisplayOffer._();
+  static $pb.GeneratedMessage $_createMessage() => DisplayOffer._();
+  @$core.override
+  DisplayOffer createEmptyInstance() => DisplayOffer._();
+  @$core.pragma('dart2js:noInline')
+  static DisplayOffer getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DisplayOffer>(
+          DisplayOffer.$_createMessage);
+  static DisplayOffer? _defaultInstance;
+
+  /// The version of these messages the source speaks.
+  @$pb.TagNumber(1)
+  $core.int get version => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set version($core.int value) => $_setUnsignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasVersion() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearVersion() => $_clearField(1);
+}
+
+/// The viewer's owner said no to a `DisplayOffer`, or nobody answered in
+/// time. Sent without expecting a reply.
+class DisplayDecline extends $pb.GeneratedMessage {
+  factory DisplayDecline({
+    DenyReason? reason,
+  }) {
+    final result = DisplayDecline._();
+    if (reason != null) result.reason = reason;
+    return result;
+  }
+
+  DisplayDecline._();
+
+  factory DisplayDecline.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayDecline()..mergeFromBuffer(data, registry);
+  factory DisplayDecline.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      DisplayDecline()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DisplayDecline',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: DisplayDecline.$_createMessage)
+    ..aE<DenyReason>(1, _omitFieldNames ? '' : 'reason',
+        enumValues: DenyReason.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayDecline clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DisplayDecline copyWith(void Function(DisplayDecline) updates) =>
+      super.copyWith((message) => updates(message as DisplayDecline))
+          as DisplayDecline;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use DisplayDecline() / DisplayDecline.new instead')
+  static DisplayDecline create() => DisplayDecline._();
+  static $pb.GeneratedMessage $_createMessage() => DisplayDecline._();
+  @$core.override
+  DisplayDecline createEmptyInstance() => DisplayDecline._();
+  @$core.pragma('dart2js:noInline')
+  static DisplayDecline getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DisplayDecline>(
+          DisplayDecline.$_createMessage);
+  static DisplayDecline? _defaultInstance;
+
+  /// `DENY_REASON_DENIED` or `DENY_REASON_TIMEOUT`.
+  @$pb.TagNumber(1)
+  DenyReason get reason => $_getN(0);
+  @$pb.TagNumber(1)
+  set reason(DenyReason value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasReason() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearReason() => $_clearField(1);
 }
 
 /// The source is asking its owner. The answer follows as `StartAccept` or

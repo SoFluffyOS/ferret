@@ -26,6 +26,18 @@ package ferret.mirroring.v1;
 // The camera's owner answers the source's own question (once, always or
 // no) instead of the system's screen capture prompt. Everything after
 // `StartAccept` is the same stream, with the microphone as its sound.
+//
+// A computer's extra display came later in version 1 too. The computer
+// (the source) makes a display that only exists in software and sends
+// what is on it; another device (the viewer) is its screen and sends the
+// pointer and keys back. It goes the other way round from the rest: the
+// source offers with `DisplayOffer`, and the viewer's owner answers. A yes
+// is the viewer's `StartRequest` with `SOURCE_DISPLAY` and its
+// `DisplayPanel`, so the source can size the display to fit; a no is a
+// `DisplayDecline`. A source only offers to a device whose feature
+// support has the `display` flag, and only a computer with the `extend`
+// flag offers. Control is part of the yes: the source sends a
+// `ControlState` with `CONTROL_STATUS_ALLOWED` right after `StartAccept`.
 
 // How the pictures are encoded.
 enum Codec {
@@ -55,6 +67,10 @@ enum Source {
   SOURCE_SCREEN = 1;
   // Its camera, and its microphone.
   SOURCE_CAMERA = 2;
+  // An extra display the source makes for the viewer: the viewer's own
+  // screen becomes one more screen of the source's desktop. Only after
+  // the source's `DisplayOffer`.
+  SOURCE_DISPLAY = 3;
 }
 
 // One of a source's cameras.
@@ -75,7 +91,8 @@ message CameraOptions {
   CameraLens lens = 1;
 }
 
-// Asks the source to show its screen, or its camera. Expects a
+// Asks the source to show its screen, its camera, or the display it
+// offered. Expects a
 // `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
 // or `StartDeny` later, without expecting a reply.
 message StartRequest {
@@ -97,6 +114,38 @@ message StartRequest {
   Source source = 7;
   // With `SOURCE_CAMERA` only.
   CameraOptions camera = 8;
+  // With `SOURCE_DISPLAY` only.
+  DisplayPanel display = 9;
+}
+
+// The viewer's screen, for a source that makes a display to fill it.
+message DisplayPanel {
+  // The screen's size in pixels, as it is held now.
+  uint32 width = 1;
+  uint32 height = 2;
+  // Pixels per point: 2 for a sharp (Retina) screen, 1 otherwise. 0
+  // counts as 1.
+  uint32 scale = 3;
+  // How many times a second the screen redraws. 0 leaves it to the
+  // source, which uses 60.
+  uint32 refresh_hz = 4;
+}
+
+// A computer offers to extend its desktop onto this device, which would
+// become its extra display. Expects a `StartPending` reply while this
+// device asks its owner, or a `StartDeny` at once. The owner's yes follows
+// as a `StartRequest` with `SOURCE_DISPLAY`, a no as a `DisplayDecline`.
+// The source takes back an offer nobody answered yet with `Stop`.
+message DisplayOffer {
+  // The version of these messages the source speaks.
+  uint32 version = 1;
+}
+
+// The viewer's owner said no to a `DisplayOffer`, or nobody answered in
+// time. Sent without expecting a reply.
+message DisplayDecline {
+  // `DENY_REASON_DENIED` or `DENY_REASON_TIMEOUT`.
+  DenyReason reason = 1;
 }
 
 // The source is asking its owner. The answer follows as `StartAccept` or

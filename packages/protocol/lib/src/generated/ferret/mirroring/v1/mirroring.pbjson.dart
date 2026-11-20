@@ -52,13 +52,14 @@ const Source$json = {
     {'1': 'SOURCE_UNSPECIFIED', '2': 0},
     {'1': 'SOURCE_SCREEN', '2': 1},
     {'1': 'SOURCE_CAMERA', '2': 2},
+    {'1': 'SOURCE_DISPLAY', '2': 3},
   ],
 };
 
 /// Descriptor for `Source`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List sourceDescriptor = $convert.base64Decode(
     'CgZTb3VyY2USFgoSU09VUkNFX1VOU1BFQ0lGSUVEEAASEQoNU09VUkNFX1NDUkVFThABEhEKDV'
-    'NPVVJDRV9DQU1FUkEQAg==');
+    'NPVVJDRV9DQU1FUkEQAhISCg5TT1VSQ0VfRElTUExBWRAD');
 
 @$core.Deprecated('Use cameraLensDescriptor instead')
 const CameraLens$json = {
@@ -198,6 +199,14 @@ const StartRequest$json = {
       '6': '.ferret.mirroring.v1.CameraOptions',
       '10': 'camera'
     },
+    {
+      '1': 'display',
+      '3': 9,
+      '4': 1,
+      '5': 11,
+      '6': '.ferret.mirroring.v1.DisplayPanel',
+      '10': 'display'
+    },
   ],
 };
 
@@ -209,7 +218,57 @@ final $typed_data.Uint8List startRequestDescriptor = $convert.base64Decode(
     'EoDVIGbWF4RnBzEkIKDGF1ZGlvX2NvZGVjcxgGIAMoDjIfLmZlcnJldC5taXJyb3JpbmcudjEu'
     'QXVkaW9Db2RlY1ILYXVkaW9Db2RlY3MSMwoGc291cmNlGAcgASgOMhsuZmVycmV0Lm1pcnJvcm'
     'luZy52MS5Tb3VyY2VSBnNvdXJjZRI6CgZjYW1lcmEYCCABKAsyIi5mZXJyZXQubWlycm9yaW5n'
-    'LnYxLkNhbWVyYU9wdGlvbnNSBmNhbWVyYQ==');
+    'LnYxLkNhbWVyYU9wdGlvbnNSBmNhbWVyYRI7CgdkaXNwbGF5GAkgASgLMiEuZmVycmV0Lm1pcn'
+    'JvcmluZy52MS5EaXNwbGF5UGFuZWxSB2Rpc3BsYXk=');
+
+@$core.Deprecated('Use displayPanelDescriptor instead')
+const DisplayPanel$json = {
+  '1': 'DisplayPanel',
+  '2': [
+    {'1': 'width', '3': 1, '4': 1, '5': 13, '10': 'width'},
+    {'1': 'height', '3': 2, '4': 1, '5': 13, '10': 'height'},
+    {'1': 'scale', '3': 3, '4': 1, '5': 13, '10': 'scale'},
+    {'1': 'refresh_hz', '3': 4, '4': 1, '5': 13, '10': 'refreshHz'},
+  ],
+};
+
+/// Descriptor for `DisplayPanel`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List displayPanelDescriptor = $convert.base64Decode(
+    'CgxEaXNwbGF5UGFuZWwSFAoFd2lkdGgYASABKA1SBXdpZHRoEhYKBmhlaWdodBgCIAEoDVIGaG'
+    'VpZ2h0EhQKBXNjYWxlGAMgASgNUgVzY2FsZRIdCgpyZWZyZXNoX2h6GAQgASgNUglyZWZyZXNo'
+    'SHo=');
+
+@$core.Deprecated('Use displayOfferDescriptor instead')
+const DisplayOffer$json = {
+  '1': 'DisplayOffer',
+  '2': [
+    {'1': 'version', '3': 1, '4': 1, '5': 13, '10': 'version'},
+  ],
+};
+
+/// Descriptor for `DisplayOffer`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List displayOfferDescriptor = $convert
+    .base64Decode('CgxEaXNwbGF5T2ZmZXISGAoHdmVyc2lvbhgBIAEoDVIHdmVyc2lvbg==');
+
+@$core.Deprecated('Use displayDeclineDescriptor instead')
+const DisplayDecline$json = {
+  '1': 'DisplayDecline',
+  '2': [
+    {
+      '1': 'reason',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.DenyReason',
+      '10': 'reason'
+    },
+  ],
+};
+
+/// Descriptor for `DisplayDecline`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List displayDeclineDescriptor = $convert.base64Decode(
+    'Cg5EaXNwbGF5RGVjbGluZRI3CgZyZWFzb24YASABKA4yHy5mZXJyZXQubWlycm9yaW5nLnYxLk'
+    'RlbnlSZWFzb25SBnJlYXNvbg==');
 
 @$core.Deprecated('Use startPendingDescriptor instead')
 const StartPending$json = {

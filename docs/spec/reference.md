@@ -942,6 +942,7 @@ What the source can take while control is allowed.
 | `CONTROL_KIND_KEYS` | 2 | Every `ferret.remote_input.v1.Key`, with modifiers. |
 | `CONTROL_KIND_TEXT` | 3 | Typed text. |
 | `CONTROL_KIND_BUTTONS` | 4 | The device's own buttons: `ButtonPress`. |
+| `CONTROL_KIND_MOUSE` | 5 | A computer's mouse: `TOUCH_PHASE_HOVER` moves the pointer with nothing pressed, and `PointerInput.button` picks the button a press and its release are for. Sent by a computer's extra display. |
 
 ### message `ControlState`
 
@@ -976,6 +977,7 @@ What a pointer does.
 | `TOUCH_PHASE_UP` | 3 | The finger lifts at (`x`, `y`). |
 | `TOUCH_PHASE_CANCEL` | 4 | The touch is abandoned: nothing under it is activated. |
 | `TOUCH_PHASE_SCROLL` | 5 | The content under (`x`, `y`) scrolls by `scroll_x` and `scroll_y`. |
+| `TOUCH_PHASE_HOVER` | 6 | The pointer moves to (`x`, `y`) with nothing pressed. Only for a source that takes `CONTROL_KIND_MOUSE`. |
 
 ### message `PointerInput`
 
@@ -988,6 +990,7 @@ One step of a touch. Positions are fractions of the picture as the source sends 
 | `y` | `float` | 3 |  |
 | `scroll_x` | `float` | 4 | `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is right. |
 | `scroll_y` | `float` | 5 | `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is down. |
+| `button` | `ferret.remote_input.v1.MouseButton` | 6 | `TOUCH_PHASE_DOWN`, `MOVE` and `UP` for a source that takes `CONTROL_KIND_MOUSE`: the button pressed, held or let go. Unset is the primary one. |
 
 ### enum `ControlButton`
 
@@ -1060,6 +1063,7 @@ What a source sends.
 | `SOURCE_UNSPECIFIED` | 0 | A viewer that doesn't know the field: the screen. |
 | `SOURCE_SCREEN` | 1 | Its screen, and what it plays. |
 | `SOURCE_CAMERA` | 2 | Its camera, and its microphone. |
+| `SOURCE_DISPLAY` | 3 | An extra display the source makes for the viewer: the viewer's own screen becomes one more screen of the source's desktop. Only after the source's `DisplayOffer`. |
 
 ### enum `CameraLens`
 
@@ -1081,7 +1085,7 @@ What a viewer wants from the camera. The size and frame rate come from `StartReq
 
 ### message `StartRequest`
 
-Asks the source to show its screen, or its camera. Expects a `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept` or `StartDeny` later, without expecting a reply.
+Asks the source to show its screen, its camera, or the display it offered. Expects a `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept` or `StartDeny` later, without expecting a reply.
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -1093,6 +1097,34 @@ Asks the source to show its screen, or its camera. Expects a `StartPending` or `
 | `audio_codecs` | `repeated AudioCodec` | 6 | What the viewer can play of the source's sound, best first. Empty asks for pictures only. |
 | `source` | `Source` | 7 | What to send. Only set to `SOURCE_CAMERA` for a source whose feature support has the `camera` flag. |
 | `camera` | `CameraOptions` | 8 | With `SOURCE_CAMERA` only. |
+| `display` | `DisplayPanel` | 9 | With `SOURCE_DISPLAY` only. |
+
+### message `DisplayPanel`
+
+The viewer's screen, for a source that makes a display to fill it.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `width` | `uint32` | 1 | The screen's size in pixels, as it is held now. |
+| `height` | `uint32` | 2 |  |
+| `scale` | `uint32` | 3 | Pixels per point: 2 for a sharp (Retina) screen, 1 otherwise. 0 counts as 1. |
+| `refresh_hz` | `uint32` | 4 | How many times a second the screen redraws. 0 leaves it to the source, which uses 60. |
+
+### message `DisplayOffer`
+
+A computer offers to extend its desktop onto this device, which would become its extra display. Expects a `StartPending` reply while this device asks its owner, or a `StartDeny` at once. The owner's yes follows as a `StartRequest` with `SOURCE_DISPLAY`, a no as a `DisplayDecline`. The source takes back an offer nobody answered yet with `Stop`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `version` | `uint32` | 1 | The version of these messages the source speaks. |
+
+### message `DisplayDecline`
+
+The viewer's owner said no to a `DisplayOffer`, or nobody answered in time. Sent without expecting a reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `reason` | `DenyReason` | 1 | `DENY_REASON_DENIED` or `DENY_REASON_TIMEOUT`. |
 
 ### message `StartPending`
 

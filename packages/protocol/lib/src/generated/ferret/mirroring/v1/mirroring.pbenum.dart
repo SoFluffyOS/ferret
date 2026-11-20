@@ -84,14 +84,21 @@ class Source extends $pb.ProtobufEnum {
   static const Source SOURCE_CAMERA =
       Source._(2, _omitEnumNames ? '' : 'SOURCE_CAMERA');
 
+  /// An extra display the source makes for the viewer: the viewer's own
+  /// screen becomes one more screen of the source's desktop. Only after
+  /// the source's `DisplayOffer`.
+  static const Source SOURCE_DISPLAY =
+      Source._(3, _omitEnumNames ? '' : 'SOURCE_DISPLAY');
+
   static const $core.List<Source> values = <Source>[
     SOURCE_UNSPECIFIED,
     SOURCE_SCREEN,
     SOURCE_CAMERA,
+    SOURCE_DISPLAY,
   ];
 
   static final $core.List<Source?> _byValue =
-      $pb.ProtobufEnum.$_initByValueList(values, 2);
+      $pb.ProtobufEnum.$_initByValueList(values, 3);
   static Source? valueOf($core.int value) =>
       value < 0 || value >= _byValue.length ? null : _byValue[value];
 

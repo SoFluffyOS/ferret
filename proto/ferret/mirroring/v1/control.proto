@@ -52,6 +52,10 @@ enum ControlKind {
   CONTROL_KIND_TEXT = 3;
   // The device's own buttons: `ButtonPress`.
   CONTROL_KIND_BUTTONS = 4;
+  // A computer's mouse: `TOUCH_PHASE_HOVER` moves the pointer with
+  // nothing pressed, and `PointerInput.button` picks the button a press
+  // and its release are for. Sent by a computer's extra display.
+  CONTROL_KIND_MOUSE = 5;
 }
 
 // Sent by the source after `StartAccept`, and again whenever control
@@ -90,6 +94,9 @@ enum TouchPhase {
   TOUCH_PHASE_CANCEL = 4;
   // The content under (`x`, `y`) scrolls by `scroll_x` and `scroll_y`.
   TOUCH_PHASE_SCROLL = 5;
+  // The pointer moves to (`x`, `y`) with nothing pressed. Only for a
+  // source that takes `CONTROL_KIND_MOUSE`.
+  TOUCH_PHASE_HOVER = 6;
 }
 
 // One step of a touch. Positions are fractions of the picture as the source
@@ -103,6 +110,10 @@ message PointerInput {
   float scroll_x = 4;
   // `TOUCH_PHASE_SCROLL` only, in wheel notches: positive is down.
   float scroll_y = 5;
+  // `TOUCH_PHASE_DOWN`, `MOVE` and `UP` for a source that takes
+  // `CONTROL_KIND_MOUSE`: the button pressed, held or let go. Unset is
+  // the primary one.
+  ferret.remote_input.v1.MouseButton button = 6;
 }
 
 // A button of the device itself.

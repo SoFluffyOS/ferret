@@ -215,6 +215,7 @@ class PointerInput extends $pb.GeneratedMessage {
     $core.double? y,
     $core.double? scrollX,
     $core.double? scrollY,
+    $0.MouseButton? button,
   }) {
     final result = PointerInput._();
     if (phase != null) result.phase = phase;
@@ -222,6 +223,7 @@ class PointerInput extends $pb.GeneratedMessage {
     if (y != null) result.y = y;
     if (scrollX != null) result.scrollX = scrollX;
     if (scrollY != null) result.scrollY = scrollY;
+    if (button != null) result.button = button;
     return result;
   }
 
@@ -245,6 +247,8 @@ class PointerInput extends $pb.GeneratedMessage {
     ..aD(3, _omitFieldNames ? '' : 'y', fieldType: $pb.PbFieldType.OF)
     ..aD(4, _omitFieldNames ? '' : 'scrollX', fieldType: $pb.PbFieldType.OF)
     ..aD(5, _omitFieldNames ? '' : 'scrollY', fieldType: $pb.PbFieldType.OF)
+    ..aE<$0.MouseButton>(6, _omitFieldNames ? '' : 'button',
+        enumValues: $0.MouseButton.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -315,6 +319,18 @@ class PointerInput extends $pb.GeneratedMessage {
   $core.bool hasScrollY() => $_has(4);
   @$pb.TagNumber(5)
   void clearScrollY() => $_clearField(5);
+
+  /// `TOUCH_PHASE_DOWN`, `MOVE` and `UP` for a source that takes
+  /// `CONTROL_KIND_MOUSE`: the button pressed, held or let go. Unset is
+  /// the primary one.
+  @$pb.TagNumber(6)
+  $0.MouseButton get button => $_getN(5);
+  @$pb.TagNumber(6)
+  set button($0.MouseButton value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasButton() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearButton() => $_clearField(6);
 }
 
 /// A press and release of one of the device's buttons.

@@ -93,16 +93,23 @@ class ControlKind extends $pb.ProtobufEnum {
   static const ControlKind CONTROL_KIND_BUTTONS =
       ControlKind._(4, _omitEnumNames ? '' : 'CONTROL_KIND_BUTTONS');
 
+  /// A computer's mouse: `TOUCH_PHASE_HOVER` moves the pointer with
+  /// nothing pressed, and `PointerInput.button` picks the button a press
+  /// and its release are for. Sent by a computer's extra display.
+  static const ControlKind CONTROL_KIND_MOUSE =
+      ControlKind._(5, _omitEnumNames ? '' : 'CONTROL_KIND_MOUSE');
+
   static const $core.List<ControlKind> values = <ControlKind>[
     CONTROL_KIND_UNSPECIFIED,
     CONTROL_KIND_POINTER,
     CONTROL_KIND_KEYS,
     CONTROL_KIND_TEXT,
     CONTROL_KIND_BUTTONS,
+    CONTROL_KIND_MOUSE,
   ];
 
   static final $core.List<ControlKind?> _byValue =
-      $pb.ProtobufEnum.$_initByValueList(values, 4);
+      $pb.ProtobufEnum.$_initByValueList(values, 5);
   static ControlKind? valueOf($core.int value) =>
       value < 0 || value >= _byValue.length ? null : _byValue[value];
 
@@ -134,6 +141,11 @@ class TouchPhase extends $pb.ProtobufEnum {
   static const TouchPhase TOUCH_PHASE_SCROLL =
       TouchPhase._(5, _omitEnumNames ? '' : 'TOUCH_PHASE_SCROLL');
 
+  /// The pointer moves to (`x`, `y`) with nothing pressed. Only for a
+  /// source that takes `CONTROL_KIND_MOUSE`.
+  static const TouchPhase TOUCH_PHASE_HOVER =
+      TouchPhase._(6, _omitEnumNames ? '' : 'TOUCH_PHASE_HOVER');
+
   static const $core.List<TouchPhase> values = <TouchPhase>[
     TOUCH_PHASE_UNSPECIFIED,
     TOUCH_PHASE_DOWN,
@@ -141,10 +153,11 @@ class TouchPhase extends $pb.ProtobufEnum {
     TOUCH_PHASE_UP,
     TOUCH_PHASE_CANCEL,
     TOUCH_PHASE_SCROLL,
+    TOUCH_PHASE_HOVER,
   ];
 
   static final $core.List<TouchPhase?> _byValue =
-      $pb.ProtobufEnum.$_initByValueList(values, 5);
+      $pb.ProtobufEnum.$_initByValueList(values, 6);
   static TouchPhase? valueOf($core.int value) =>
       value < 0 || value >= _byValue.length ? null : _byValue[value];
 
