@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 🎥 **Your phone's camera over Wi-Fi**: click **Use Pixel 7's camera** on your phone's page and its camera and microphone show up in a Ferret window. Tap **Once** or **Always** on the phone, which says **Camera on for MacBook Air** with **Stop** while it's on. Front or back with **Switch camera**. Android only. See [Your Android phone as a webcam](docs/public/features/android-webcam.md).
 - 🌍 **Reach your devices away from home**: already on Tailscale, ZeroTier or WireGuard? Open your phone in Ferret, tap **Reach away from home** and turn on **Also reach Pixel 7 over your VPN**. When your Wi-Fi doesn't find it, Ferret goes through your own VPN, and back home it moves to the Wi-Fi by itself. No Ferret account, no server. See [Reach your devices away from home](docs/public/features/away-from-home.md).
 - 📶 **Fix connection knows mobile data**: on a phone with Wi-Fi off, it says so instead of "no network", and offers **Reach over your VPN**.
 - 🕹️ **Control your phone over Wi-Fi**: show its screen, click **Control**, and tap **Once** or **Always** on the phone. Back, Home, clicks, scrolling and typing just work, no cable. Your phone says **Being controlled by MacBook Air** with **Stop control** the whole time. Works with Power-ups, or turn on **Ferret control** in Android's Accessibility settings. Not possible on iPhone.

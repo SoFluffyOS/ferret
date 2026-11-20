@@ -19,8 +19,21 @@ Many Android phones with Android 14 or later can be a USB webcam all by themselv
 
 In Ferret, open the phone on your computer: **Use Pixel 7 as a webcam** shows these steps right there.
 
+## 📶 Over Wi-Fi with Ferret
+
+No cable, or no **Webcam** in your phone's USB list? Ferret sends the camera over Wi-Fi.
+
+1. On your computer, open the phone in Ferret and click **Use Pixel 7's camera**.
+2. On the phone, tap **Once** or **Always**. The first time, Android asks for the camera and the microphone.
+3. A window opens with the camera's picture and the microphone's sound.
+
+Click **Switch camera** for the front or the back one. Your phone says **Camera on for MacBook Air** with **Stop** the whole time, and nothing starts until you answer. Changed your mind about **Always**? **Settings → To your computer → Ask every time**.
+
+The picture lives in a Ferret window for now. Video apps can't pick it as a camera yet, but OBS and window sharing in a call can show it. Easy, right?
+
 ## 🧭 Limits
 
 - 📱 Not every phone has it. Pixel phones from the Pixel 6 on do. No **Webcam** in the USB list? Your phone doesn't have it yet.
-- 🔌 It needs the cable. Ferret doesn't send a phone's camera over Wi-Fi yet.
+- 🔌 The USB webcam needs the cable. Over Wi-Fi, the camera shows in a Ferret window, not in your video app yet.
+- 🤖 Over Wi-Fi it takes an Android phone with Ferret.
 - 🍎 iPhone: Continuity Camera does this between an iPhone and a Mac, outside Ferret.
