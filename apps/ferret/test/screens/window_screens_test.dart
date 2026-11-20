@@ -304,34 +304,40 @@ void main() {
     });
   });
 
-  // A Windows user's view of the screens that change most by platform:
+  // A Windows or Linux user's view of the screens that change most by
+  // platform:
   // menus in sentence case, Ctrl keys, "this PC". Light, one size.
   const onWindows = {'overview', 'device_menu', 'settings', 'activity'};
   for (final screen in windowScreens.where(
     (screen) => onWindows.contains(screen.name),
   )) {
-    testWidgets('window ${screen.name} on Windows', (tester) async {
-      final size = windowSizes[1];
-      setScreen(tester, size, .light);
-      mockPlugins(tester);
-      debugDefaultTargetPlatformOverride = TargetPlatform.windows;
-      try {
-        final rig = await ScreenRig.create(
-          tester,
-          features: [
-            ...appFeatures(),
-            if (screen.sampleActivity) SampleActivityFeatureUi(),
-          ],
-          tipsDone: true,
-        );
-        await rig.show(tester);
-        await screen.script(tester, rig);
-        await rig.capture(tester, 'windows_${screen.name}', size, .light);
-        await rig.dispose(tester);
-      } finally {
-        debugDefaultTargetPlatformOverride = null;
-      }
-    });
+    for (final (os, platform) in [
+      ('windows', TargetPlatform.windows),
+      ('linux', TargetPlatform.linux),
+    ]) {
+      testWidgets('window ${screen.name} on $os', (tester) async {
+        final size = windowSizes[1];
+        setScreen(tester, size, .light);
+        mockPlugins(tester);
+        debugDefaultTargetPlatformOverride = platform;
+        try {
+          final rig = await ScreenRig.create(
+            tester,
+            features: [
+              ...appFeatures(),
+              if (screen.sampleActivity) SampleActivityFeatureUi(),
+            ],
+            tipsDone: true,
+          );
+          await rig.show(tester);
+          await screen.script(tester, rig);
+          await rig.capture(tester, '${os}_${screen.name}', size, .light);
+          await rig.dispose(tester);
+        } finally {
+          debugDefaultTargetPlatformOverride = null;
+        }
+      });
+    }
   }
 
   for (final screen in windowScreens) {
