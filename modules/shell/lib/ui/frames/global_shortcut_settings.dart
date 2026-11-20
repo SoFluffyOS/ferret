@@ -68,6 +68,14 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
       final shortcut? => shortcut.label,
       null => l10n.settingsShortcutOff,
     };
+    final title = switch (widget.isClips) {
+      true => l10n.settingsClipsShortcutTitle,
+      false => l10n.settingsShortcutTitle,
+    };
+    final toggleLabel = switch (shortcut) {
+      null => l10n.settingsShortcutTurnOn,
+      _ => l10n.settingsShortcutTurnOff,
+    };
     final note = switch ((_isRecording, _wasRefused)) {
       (true, _) => l10n.settingsShortcutRecording,
       (false, true) => l10n.settingsShortcutTaken,
@@ -88,10 +96,7 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
               children: [
                 Expanded(
                   child: Text(
-                    switch (widget.isClips) {
-                      true => l10n.settingsClipsShortcutTitle,
-                      false => l10n.settingsShortcutTitle,
-                    },
+                    title,
                     style: typography.base1.copyWith(color: palette.text),
                   ),
                 ),
@@ -121,6 +126,10 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
                   mainAxisSize: .min,
                   variant: .ghost,
                   label: l10n.settingsShortcutChange,
+                  semanticLabel: l10n.activityActionFor(
+                    l10n.settingsShortcutChange,
+                    title,
+                  ),
                   onPressed: switch (_isRecording) {
                     true => null,
                     false => () => unawaited(_record(menubar)),
@@ -129,10 +138,8 @@ class _GlobalShortcutSettingsState extends State<GlobalShortcutSettings> {
                 Button(
                   mainAxisSize: .min,
                   variant: .ghost,
-                  label: switch (shortcut) {
-                    null => l10n.settingsShortcutTurnOn,
-                    _ => l10n.settingsShortcutTurnOff,
-                  },
+                  label: toggleLabel,
+                  semanticLabel: l10n.activityActionFor(toggleLabel, title),
                   onPressed: switch (_isRecording) {
                     true => null,
                     false => () => unawaited(

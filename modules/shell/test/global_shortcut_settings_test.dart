@@ -166,4 +166,21 @@ void main() {
     );
     expect(GlobalShortcut.read(engine.settings)?.label, '⌃⌥Space');
   });
+
+  testWidgets('a screen reader hears which keys Change and Turn off are for', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, settings: const GlobalShortcutSettings.clips());
+
+    expect(
+      find.bySemanticsLabel('Change: Recent clips from anywhere'),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel('Turn off: Recent clips from anywhere'),
+      findsOneWidget,
+    );
+    semantics.dispose();
+  }, skip: !Platform.isMacOS);
 }
