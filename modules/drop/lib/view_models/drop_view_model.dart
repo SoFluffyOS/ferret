@@ -283,6 +283,28 @@ class DropViewModel extends ChangeNotifier {
       transfer.status == .failed &&
       transfer.failure == .foldersUnsupported;
 
+  /// Whether this device turned [transfer] down because it didn't fit,
+  /// and has a place to make room: Android's storage settings, or the
+  /// receive folder on a computer.
+  bool canMakeRoom(Transfer transfer) =>
+      !transfer.isOutgoing &&
+      transfer.status == .failed &&
+      transfer.failure == .outOfSpace &&
+      switch (defaultTargetPlatform) {
+        .android || .macOS || .windows || .linux => true,
+        _ => false,
+      };
+
+  /// Opens the place to make room after files didn't fit here.
+  Future<void> makeRoom() async {
+    if (defaultTargetPlatform == .android) {
+      await FreeSpace.openStorageSettings();
+      return;
+    }
+
+    await _plugin.reveal(_receiveFolder);
+  }
+
   /// Sends a folder's files on their own, in place of [transfer].
   Future<Transfer?> sendLoose(Transfer transfer) =>
       feature.sendLoose(transfer.id);

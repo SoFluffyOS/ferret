@@ -175,6 +175,7 @@ class TransferTexts {
         true => l10n.failureStorageSending(device),
         false => l10n.failureStorage,
       },
+      TransferFailure.outOfSpace => outOfSpace(transfer),
       TransferFailure.checksum => l10n.failureChecksum,
       TransferFailure.sourceChanged => l10n.failureSourceChanged,
       TransferFailure.cancelledByPeer => l10n.failureCancelledByPeer(device),
@@ -189,6 +190,17 @@ class TransferTexts {
         true => l10n.failureQuickShare(device),
         false => l10n.failureProtocol(device),
       },
+    };
+  }
+
+  /// Files the receiving device turned down because they don't fit:
+  /// what they need against what was free there.
+  String outOfSpace(Transfer transfer) {
+    final needed = size(transfer.totalBytes - transfer.bytesDone);
+    final free = size(transfer.freeBytes ?? 0);
+    return switch (transfer.isOutgoing) {
+      true => l10n.failureOutOfSpaceSending(transfer.deviceName, needed, free),
+      false => l10n.failureOutOfSpace(title(transfer), needed, free),
     };
   }
 

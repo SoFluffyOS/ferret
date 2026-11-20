@@ -16,25 +16,29 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Share target, MediaStore saving, and opening received files on Android. */
+/** Share target, MediaStore saving, free space, and opening received files on Android. */
 class FerretDropPlugin :
     FlutterPlugin,
     FerretDropHostApi,
     ShareInbox.Listener {
     private var context: Context? = null
     private var flutterApi: FerretDropFlutterApi? = null
+    private var freeSpace: FreeSpaceChannel? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
         flutterApi = FerretDropFlutterApi(binding.binaryMessenger)
         FerretDropHostApi.setUp(binding.binaryMessenger, this)
+        freeSpace = FreeSpaceChannel(binding.binaryMessenger, binding.applicationContext)
         ShareInbox.setListener(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         ShareInbox.setListener(null)
         FerretDropHostApi.setUp(binding.binaryMessenger, null)
+        freeSpace?.dispose()
+        freeSpace = null
         scope.cancel()
         flutterApi = null
         context = null

@@ -41,6 +41,9 @@ message TransferAnswer {
   // Where to start sending: the first file that isn't complete yet and the
   // byte offset in it. Both are 0 for a new transfer.
   uint32 file_index = 4;
+  // On a DECLINE_REASON_STORAGE answer, the bytes free on the receiver when
+  // the files don't fit there (at least 1), or 0 for any other storage
+  // trouble.
   uint64 offset = 5;
 }
 
@@ -50,7 +53,8 @@ enum DeclineReason {
   DECLINE_REASON_DECLINED = 1;
   // Nobody answered in time.
   DECLINE_REASON_TIMEOUT = 2;
-  // The receiver can't write to its receive folder.
+  // The receiver can't write to its receive folder, or the files don't fit
+  // in its free space (TransferAnswer.offset then says how much is free).
   DECLINE_REASON_STORAGE = 3;
   // The receiver doesn't know this transfer any more and can't resume it.
   DECLINE_REASON_UNKNOWN_TRANSFER = 4;

@@ -24,6 +24,7 @@ class Transfer {
     this.localSend,
     this.quickShare,
     this.skipped = 0,
+    this.freeBytes,
   });
 
   final String id;
@@ -52,6 +53,10 @@ class Transfer {
 
   /// Links and special files in a sent folder that were left out.
   final int skipped;
+
+  /// The room the receiving device had when it turned the files down for
+  /// lack of it ([TransferFailure.outOfSpace]).
+  final int? freeBytes;
 
   bool get isLocalSend => localSend != null;
 
@@ -179,7 +184,8 @@ class Transfer {
       TransferFailure.tooManyAttempts ||
       TransferFailure.busy ||
       TransferFailure.unreachable ||
-      TransferFailure.untrusted => isOutgoing,
+      TransferFailure.untrusted ||
+      TransferFailure.outOfSpace => isOutgoing,
       _ => !isUnpaired || isOutgoing,
     },
     _ => false,
@@ -194,6 +200,7 @@ class Transfer {
     int? bytesDone,
     double? bytesPerSecond,
     bool? needsAnswer,
+    int? freeBytes,
   }) => Transfer(
     id: id,
     direction: direction,
@@ -213,5 +220,9 @@ class Transfer {
     localSend: localSend,
     quickShare: quickShare,
     skipped: skipped,
+    freeBytes: switch (clearFailure) {
+      true => null,
+      false => freeBytes ?? this.freeBytes,
+    },
   );
 }

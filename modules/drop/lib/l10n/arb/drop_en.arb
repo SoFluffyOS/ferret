@@ -291,6 +291,40 @@
       }
     }
   },
+  "failureOutOfSpace": "Not enough space for {name}: needs {needed}, {free} free",
+  "@failureOutOfSpace": {
+    "description": "Receiving side: files turned down before they came because they don't fit. name is the file, folder or 'N files'; needed and free are sizes like '2 GB'.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "needed": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "failureOutOfSpaceSending": "{device} is out of space: needs {needed}, {free} free",
+  "@failureOutOfSpaceSending": {
+    "description": "Sending side: the receiving device turned the files down because they don't fit there.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "needed": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "actionStorageSettings": "Open Settings",
+  "@actionStorageSettings": {
+    "description": "Android: opens the system's storage settings, to make room after files didn't fit."
+  },
   "failureChecksum": "The file arrived damaged. Try again to send it once more.",
   "failureSourceChanged": "The file changed or moved while it was being sent. Send it again.",
   "failureCancelledByPeer": "{device} cancelled.",

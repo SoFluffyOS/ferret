@@ -386,6 +386,24 @@ abstract class DropLocalizations {
   /// **'{device} couldn\'t save the file. It may be out of space.'**
   String failureStorageSending(String device);
 
+  /// Receiving side: files turned down before they came because they don't fit. name is the file, folder or 'N files'; needed and free are sizes like '2 GB'.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough space for {name}: needs {needed}, {free} free'**
+  String failureOutOfSpace(String name, String needed, String free);
+
+  /// Sending side: the receiving device turned the files down because they don't fit there.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is out of space: needs {needed}, {free} free'**
+  String failureOutOfSpaceSending(String device, String needed, String free);
+
+  /// Android: opens the system's storage settings, to make room after files didn't fit.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get actionStorageSettings;
+
   /// No description provided for @failureChecksum.
   ///
   /// In en, this message translates to:

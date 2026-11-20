@@ -9,11 +9,15 @@ import 'package:path/path.dart' as p;
 /// Saves received files into a plain folder, such as ~/Downloads/Ferret.
 /// Parts live in a hidden folder inside it, so the final move is a rename.
 class FolderReceiveStore implements ReceiveStore {
-  FolderReceiveStore(this.folder);
+  FolderReceiveStore(this.folder, {this.freeSpace});
 
   /// Resolves the receive folder each time, so a changed setting applies to
   /// the next file.
   final Future<String> Function() folder;
+
+  /// Reads the bytes free on the volume that holds a path. Without it the
+  /// free space is unknown and every offer may go ahead.
+  final Future<int?> Function(String path)? freeSpace;
 
   static const _partsFolder = '.ferret-partial';
   static const _maxAttempts = 10000;
@@ -86,6 +90,15 @@ class FolderReceiveStore implements ReceiveStore {
 
     throw FileSystemException('No free name for the received file', name);
   }
+
+  @override
+  Future<int?> freeBytes() async => switch (freeSpace) {
+    final read? => read(await folder()),
+    null => null,
+  };
+
+  @override
+  Future<bool> copiesOnSave() async => false;
 
   /// Creates an empty placeholder so two files saved at once never pick the
   /// same name. Returns false when the name is taken.

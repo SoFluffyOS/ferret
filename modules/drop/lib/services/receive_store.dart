@@ -27,4 +27,13 @@ abstract interface class ReceiveStore {
     String? folder,
     DateTime? modified,
   });
+
+  /// Bytes free where parts and saved files land, or null when that can't
+  /// be told here. Offers that don't fit are turned down before anything
+  /// is written.
+  Future<int?> freeBytes();
+
+  /// Whether [save] copies a verified part instead of moving it, so a file
+  /// briefly takes its room twice.
+  Future<bool> copiesOnSave();
 }

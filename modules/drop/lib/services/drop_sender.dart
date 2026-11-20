@@ -295,7 +295,7 @@ class DropSender {
           ),
         );
         if (!answer.accepted) {
-          _fail(job, FailureCodes.fromDecline(answer.reason));
+          _declined(job, answer);
           return;
         }
 
@@ -570,6 +570,30 @@ class DropSender {
       bytesPerSecond: job.speed.bytesPerSecond,
     ),
   );
+
+  /// The receiver said no. A storage answer that carries its free bytes
+  /// means the files don't fit there; older receivers never send them.
+  void _declined(OutgoingJob job, TransferAnswer answer) {
+    final free = answer.offset.toInt();
+    if (answer.reason != .DECLINE_REASON_STORAGE || free <= 0) {
+      _fail(job, FailureCodes.fromDecline(answer.reason));
+      return;
+    }
+
+    if (!(registry[job.id]?.status.isActive ?? false)) {
+      return;
+    }
+
+    _set(
+      job,
+      (transfer) => transfer.copyWith(
+        status: .failed,
+        failure: .outOfSpace,
+        freeBytes: free,
+        bytesPerSecond: 0,
+      ),
+    );
+  }
 
   void _fail(OutgoingJob job, TransferFailure failure) {
     final current = registry[job.id];

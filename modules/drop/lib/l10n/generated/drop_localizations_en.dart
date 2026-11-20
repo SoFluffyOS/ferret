@@ -218,6 +218,19 @@ class DropLocalizationsEn extends DropLocalizations {
   }
 
   @override
+  String failureOutOfSpace(String name, String needed, String free) {
+    return 'Not enough space for $name: needs $needed, $free free';
+  }
+
+  @override
+  String failureOutOfSpaceSending(String device, String needed, String free) {
+    return '$device is out of space: needs $needed, $free free';
+  }
+
+  @override
+  String get actionStorageSettings => 'Open Settings';
+
+  @override
   String get failureChecksum =>
       'The file arrived damaged. Try again to send it once more.';
 

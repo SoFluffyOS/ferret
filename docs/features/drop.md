@@ -42,6 +42,15 @@ Every file is checked with a SHA-256 hash before it is saved. A transfer only sa
 
 Ferret never overwrites a file. If `photo.jpg` already exists, the new one becomes `photo (1).jpg`.
 
+### 💾 Not enough space?
+
+Before a single byte moves, Ferret checks the free space where the files land. If they don't fit, it says no right away, instead of filling your disk halfway and failing.
+
+- **Here:** **Not enough space for clip.mov: needs 2 GB, 1.2 GB free**, with **Open Settings** on Android and **Show in Finder** (**Show in folder** elsewhere) on a computer.
+- **On the sending side:** **Pixel 7 is out of space: needs 2 GB, 1.2 GB free**. Make room, press **Retry**, and it goes.
+
+On a Mac, the space macOS can free on its own (caches, purgeable files) counts too, so a nearly full disk doesn't say no too early.
+
 ## 📁 Send folders
 
 Drop a whole folder, the same way you drop files. Everything inside goes along, subfolders included.

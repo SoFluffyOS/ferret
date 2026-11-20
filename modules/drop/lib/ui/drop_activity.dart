@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
+import 'package:drop/ui/frames/transfer_actions.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -218,6 +219,12 @@ List<ActivityAction> _actions(
       ActivityAction(
         label: texts.revealLabel(),
         onPressed: () => unawaited(viewModel.reveal(transfer)),
+      ),
+    ],
+    (.failed, _, _) when viewModel.canMakeRoom(transfer) => [
+      ActivityAction(
+        label: makeRoomLabel(l10n),
+        onPressed: () => unawaited(viewModel.makeRoom()),
       ),
     ],
     (.failed, _, _) when viewModel.canSendLoose(transfer) => [

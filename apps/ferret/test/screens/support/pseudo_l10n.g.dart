@@ -742,6 +742,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get failureStorage => pseudo(super.failureStorage);
   @override
+  String get actionStorageSettings => pseudo(super.actionStorageSettings);
+  @override
   String get failureChecksum => pseudo(super.failureChecksum);
   @override
   String get failureSourceChanged => pseudo(super.failureSourceChanged);
@@ -947,6 +949,12 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String failureStorageSending(String device) =>
       pseudo(super.failureStorageSending(device));
+  @override
+  String failureOutOfSpace(String name, String needed, String free) =>
+      pseudo(super.failureOutOfSpace(name, needed, free));
+  @override
+  String failureOutOfSpaceSending(String device, String needed, String free) =>
+      pseudo(super.failureOutOfSpaceSending(device, needed, free));
   @override
   String failureCancelledByPeer(String device) =>
       pseudo(super.failureCancelledByPeer(device));

@@ -22,6 +22,11 @@ enum TransferFailure {
   /// Reading or writing a file failed, such as a full disk.
   storage,
 
+  /// The receiving device turned the files down before they came: they
+  /// don't fit in its free space. [Transfer.freeBytes] says how much was
+  /// left there.
+  outOfSpace,
+
   /// The received data didn't match the sender's SHA-256.
   checksum,
 

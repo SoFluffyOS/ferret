@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
@@ -41,6 +42,13 @@ class DropReceiver {
   /// How long an offer waits for someone here to accept it. Shorter than the
   /// sender's offer timeout so it hears the answer.
   final Duration answerTimeout;
+
+  /// Room left free on top of what an offer needs, so a transfer never
+  /// fills the disk to the last byte.
+  static const spaceMargin = 64 * 1024 * 1024;
+
+  /// Verified files saved at the same time while later ones arrive.
+  static const savesAtOnce = 4;
 
   static final _validId = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
   static const _maxFiles = 10000;
@@ -116,6 +124,24 @@ class DropReceiver {
       status: .waiting,
       startedAt: DateTime.now(),
     );
+
+    if (await _shortOfSpace(transfer) case final free?) {
+      registry.put(
+        transfer.copyWith(
+          status: .failed,
+          failure: .outOfSpace,
+          freeBytes: free,
+          needsAnswer: false,
+        ),
+      );
+      // The free bytes ride along so the sender can say how short it is;
+      // at least 1, as 0 reads as "not told" there.
+      return TransferAnswer(
+        transferId: id,
+        reason: .DECLINE_REASON_STORAGE,
+        offset: Int64(max(free, 1)),
+      );
+    }
 
     if (!autoAccept()) {
       final accepted = await _ask(transfer);
@@ -558,6 +584,41 @@ class DropReceiver {
     }
 
     return answer();
+  }
+
+  /// The bytes free here when [transfer] doesn't fit, or null when it does
+  /// or the free space can't be told. Saving that copies a part needs the
+  /// biggest files' room twice while they are copied.
+  Future<int?> _shortOfSpace(Transfer transfer) async {
+    if (transfer.files.isEmpty) {
+      return null;
+    }
+
+    final int? free;
+    final bool copies;
+    try {
+      free = await store.freeBytes();
+      copies = await store.copiesOnSave();
+    } on Object catch (error) {
+      printDebug('Drop could not read the free space: ${error.runtimeType}');
+      return null;
+    }
+
+    if (free == null) {
+      return null;
+    }
+
+    final biggest = [for (final file in transfer.files) file.size]
+      ..sort((a, b) => b.compareTo(a));
+    final copied = switch (copies) {
+      true => biggest.take(savesAtOnce).fold(0, (sum, size) => sum + size),
+      false => 0,
+    };
+    final needed = transfer.totalBytes + copied + spaceMargin;
+    return switch (free < needed) {
+      true => free,
+      false => null,
+    };
   }
 
   Future<TransferAnswer> _ask(Transfer transfer) async {

@@ -41,6 +41,12 @@ class PlatformReceiveStore implements ReceiveStore {
     modified: modified,
   );
 
+  @override
+  Future<int?> freeBytes() async => (await _resolve()).freeBytes();
+
+  @override
+  Future<bool> copiesOnSave() async => (await _resolve()).copiesOnSave();
+
   Future<ReceiveStore> _resolve() => _store ??= _pick();
 
   Future<ReceiveStore> _pick() async {
@@ -55,6 +61,9 @@ class PlatformReceiveStore implements ReceiveStore {
       );
     }
 
-    return FolderReceiveStore(() => ReceiveFolders.path(settings));
+    return FolderReceiveStore(
+      () => ReceiveFolders.path(settings),
+      freeSpace: FreeSpace.of,
+    );
   }
 }

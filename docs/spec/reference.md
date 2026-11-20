@@ -374,7 +374,7 @@ The answer to a TransferOffer.
 | `accepted` | `bool` | 2 |  |
 | `reason` | `DeclineReason` | 3 |  |
 | `file_index` | `uint32` | 4 | Where to start sending: the first file that isn't complete yet and the byte offset in it. Both are 0 for a new transfer. |
-| `offset` | `uint64` | 5 |  |
+| `offset` | `uint64` | 5 | On a DECLINE_REASON_STORAGE answer, the bytes free on the receiver when the files don't fit there (at least 1), or 0 for any other storage trouble. |
 
 ### enum `DeclineReason`
 
@@ -383,7 +383,7 @@ The answer to a TransferOffer.
 | `DECLINE_REASON_UNSPECIFIED` | 0 |  |
 | `DECLINE_REASON_DECLINED` | 1 | Someone on the receiving device said no. |
 | `DECLINE_REASON_TIMEOUT` | 2 | Nobody answered in time. |
-| `DECLINE_REASON_STORAGE` | 3 | The receiver can't write to its receive folder. |
+| `DECLINE_REASON_STORAGE` | 3 | The receiver can't write to its receive folder, or the files don't fit in its free space (TransferAnswer.offset then says how much is free). |
 | `DECLINE_REASON_UNKNOWN_TRANSFER` | 4 | The receiver doesn't know this transfer any more and can't resume it. |
 | `DECLINE_REASON_INVALID` | 5 | The offer is malformed, such as a file without a name. |
 

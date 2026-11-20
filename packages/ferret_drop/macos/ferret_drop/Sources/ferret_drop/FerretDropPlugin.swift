@@ -18,6 +18,7 @@ public class FerretDropPlugin: NSObject, FlutterPlugin, FerretDropHostApi {
     let instance = FerretDropPlugin(
       flutterApi: FerretDropFlutterApi(binaryMessenger: registrar.messenger))
     FerretDropHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: instance)
+    FreeSpace.register(with: registrar)
     registrar.addApplicationDelegate(instance)
     DistributedNotificationCenter.default().addObserver(
       instance, selector: #selector(shareArrived), name: ShareInbox.wakeNotification,

@@ -4,7 +4,15 @@ import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/ui/widgets/widgets.dart';
 import 'package:drop/view_models/view_models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+/// Where to make room after files didn't fit: Open Settings on Android,
+/// Show in Finder (or folder) on a computer.
+String makeRoomLabel(DropLocalizations l10n) => switch (defaultTargetPlatform) {
+  .android => l10n.actionStorageSettings,
+  _ => TransferTexts(l10n).revealLabel(),
+};
 
 /// The buttons each transfer offers, given where it stands.
 List<TransferAction> transferActions(
@@ -72,6 +80,16 @@ List<TransferAction> transferActions(
           onPressed: () => onEnterPin(transfer),
         ),
       ],
+    (TransferStatus.failed, _, _) when viewModel.canMakeRoom(transfer) => [
+      TransferAction(
+        label: makeRoomLabel(l10n),
+        icon: switch (defaultTargetPlatform) {
+          .android => LucideIcons.hardDrive,
+          _ => LucideIcons.folderOpen,
+        },
+        onPressed: () => unawaited(viewModel.makeRoom()),
+      ),
+    ],
     (TransferStatus.failed, _, _) when viewModel.canSendLoose(transfer) => [
       TransferAction(
         label: l10n.actionSendLoose,

@@ -218,6 +218,19 @@ class DropLocalizationsVi extends DropLocalizations {
   }
 
   @override
+  String failureOutOfSpace(String name, String needed, String free) {
+    return 'Không đủ dung lượng cho $name: cần $needed, còn trống $free';
+  }
+
+  @override
+  String failureOutOfSpaceSending(String device, String needed, String free) {
+    return '$device đã hết dung lượng: cần $needed, còn trống $free';
+  }
+
+  @override
+  String get actionStorageSettings => 'Mở Cài đặt';
+
+  @override
   String get failureChecksum =>
       'Tệp đến nơi bị hỏng. Hãy thử lại để gửi lần nữa.';
 

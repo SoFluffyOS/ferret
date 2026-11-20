@@ -74,6 +74,14 @@ class MediaStoreReceiveStore implements ReceiveStore {
     return ReceivedFile(location: saved.location, name: saved.name);
   }
 
+  /// Parts and the shared Downloads folder sit on the same storage, so the
+  /// parts folder tells for both.
+  @override
+  Future<int?> freeBytes() async => FreeSpace.of((await partsDirectory()).path);
+
+  @override
+  Future<bool> copiesOnSave() async => true;
+
   /// `/storage/emulated/0/Download`, found from the app's own external
   /// folder, which sits under the same storage root.
   static Future<String?> _sharedDownloads() async {

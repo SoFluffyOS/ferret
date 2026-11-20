@@ -22,7 +22,7 @@ abstract final class FailureCodes {
 
   static FailureReason toWire(TransferFailure failure) => switch (failure) {
     .checksum => .FAILURE_REASON_CHECKSUM,
-    .storage => .FAILURE_REASON_STORAGE,
+    .storage || .outOfSpace => .FAILURE_REASON_STORAGE,
     .sourceChanged => .FAILURE_REASON_SOURCE_CHANGED,
     .protocol => .FAILURE_REASON_PROTOCOL,
     .unknownTransfer => .FAILURE_REASON_UNKNOWN_TRANSFER,
