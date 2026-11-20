@@ -20,6 +20,7 @@ class PhotosGalleryFrame extends StatelessWidget {
     required this.deviceName,
     required this.showsPreviews,
     required this.onOpen,
+    this.dragOut,
   });
 
   final String deviceName;
@@ -28,6 +29,9 @@ class PhotosGalleryFrame extends StatelessWidget {
   /// asked for or drawn.
   final bool showsPreviews;
   final void Function(PhotoItem item) onOpen;
+
+  /// Drags photos out to other apps; null where that can't be done.
+  final DragOut? dragOut;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +97,21 @@ class PhotosGalleryFrame extends StatelessWidget {
               children: _selectionActions(context, isSelecting, selected),
             ),
           ),
+        if (showsGrid && dragOut != null)
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              PageInsets.row,
+              0,
+              PageInsets.row,
+              Spacing.d8,
+            ),
+            child: Text(
+              l10n.dragHint,
+              style: context.fluffyTheme.typography.caption1.copyWith(
+                color: context.palette.mutedText,
+              ),
+            ),
+          ),
         if (showsGrid)
           for (var start = 0; start < items.length; start += columns)
             Padding(
@@ -103,6 +122,7 @@ class PhotosGalleryFrame extends StatelessWidget {
                 isSelecting: isSelecting,
                 selected: selected,
                 onOpen: onOpen,
+                dragOut: dragOut,
               ),
             ),
         if (showsGrid && hasMore)
@@ -228,6 +248,7 @@ class _GridRow extends StatelessWidget {
     required this.isSelecting,
     required this.selected,
     required this.onOpen,
+    required this.dragOut,
   });
 
   final List<PhotoItem> items;
@@ -235,6 +256,7 @@ class _GridRow extends StatelessWidget {
   final bool isSelecting;
   final Set<String> selected;
   final void Function(PhotoItem item) onOpen;
+  final DragOut? dragOut;
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +270,7 @@ class _GridRow extends StatelessWidget {
           if (index > 0) Spacing.h4,
           Expanded(
             child: switch (index < items.length) {
-              true => _tile(viewModel, l10n, locale, items[index]),
+              true => _tile(context, viewModel, l10n, locale, items[index]),
               false => const SizedBox.shrink(),
             },
           ),
@@ -258,6 +280,7 @@ class _GridRow extends StatelessWidget {
   }
 
   Widget _tile(
+    BuildContext context,
     PhotoGalleryViewModel viewModel,
     PhotosLocalizations l10n,
     String locale,
@@ -281,6 +304,17 @@ class _GridRow extends StatelessWidget {
       isSelecting: isSelecting,
       isSelected: selected.contains(item.id),
       onLongPress: () => viewModel.toggle(item.id),
+      onDragStart: switch (dragOut) {
+        final dragOut? => () => unawaited(
+          PhotoDrag.start(
+            context,
+            dragOut: dragOut,
+            viewModel: viewModel,
+            items: viewModel.dragged(item),
+          ),
+        ),
+        null => null,
+      },
       onTap: () {
         if (isSelecting) {
           viewModel.toggle(item.id);

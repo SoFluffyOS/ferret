@@ -469,6 +469,12 @@ abstract class PhotosLocalizations {
   /// In en, this message translates to:
   /// **'Not shared with any computer.'**
   String get settingsSharingNone;
+
+  /// No description provided for @dragHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a photo into any app to drop it there.'**
+  String get dragHint;
 }
 
 class _PhotosLocalizationsDelegate

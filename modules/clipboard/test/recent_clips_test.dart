@@ -1,11 +1,27 @@
 import 'package:clipboard/clipboard.dart';
+import 'package:clipboard/services/services.dart';
 import 'package:clipboard/ui/frames/frames.dart';
+import 'package:clipboard/ui/widgets/widgets.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'helpers/fakes.dart';
 import 'helpers/test_app.dart';
+
+class _NoDragOut implements DragOut {
+  @override
+  Future<bool> files(int viewId, List<String> paths) async => false;
+
+  @override
+  Future<bool> promisedFiles(int viewId, List<PromisedFile> files) async =>
+      false;
+
+  @override
+  Future<bool> text(int viewId, String text, {bool isLink = false}) async =>
+      false;
+}
 
 void main() {
   late FakeClipboard clipboard;
@@ -44,17 +60,54 @@ void main() {
     ),
   );
 
-  Widget recentClips({bool showsPreviews = true, String? openKeys}) => testApp(
+  Widget recentClips({
+    bool showsPreviews = true,
+    String? openKeys,
+    ClipDrags? drags,
+  }) => testApp(
     ChangeNotifierProvider.value(
       value: viewModel,
       child: SingleChildScrollView(
         child: RecentClipsFrame(
           showsPreviewsFrom: (_) => showsPreviews,
           openKeys: openKeys,
+          drags: drags,
         ),
       ),
     ),
   );
+
+  ClipDrags drags() =>
+      ClipDrags(dragOut: _NoDragOut(), folder: () async => '/tmp');
+
+  testWidgets('clips drag out where the computer can, never hidden ones', (
+    tester,
+  ) async {
+    await start(tester);
+    await receive(tester, 'first', id: 'a');
+
+    await tester.pumpWidget(recentClips(drags: drags()));
+
+    expect(
+      find.text('Drag one into any app to drop it there.'),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget<RecentClipRow>(find.byType(RecentClipRow)).onDragStart,
+      isNotNull,
+    );
+
+    await tester.pumpWidget(recentClips(drags: drags(), showsPreviews: false));
+
+    expect(
+      tester.widget<RecentClipRow>(find.byType(RecentClipRow)).onDragStart,
+      isNull,
+    );
+
+    await tester.pumpWidget(recentClips());
+
+    expect(find.textContaining('Drag one'), findsNothing);
+  });
 
   testWidgets('says which keys open it from any app, when there are some', (
     tester,

@@ -154,6 +154,27 @@ class PhotoGalleryViewModel extends ChangeNotifier {
     return _feature.save(deviceId, ids);
   }
 
+  /// The full file of [photoId] when it is on this computer already.
+  String? localCopy(String photoId) => _feature.localCopy(deviceId, photoId);
+
+  /// The full file of [photoId] on this computer, saved first when it
+  /// isn't here yet.
+  Future<String?> fetchLocal(String photoId) =>
+      _feature.fetchLocal(deviceId, photoId);
+
+  /// What a drag that starts on [item] takes: the whole selection when
+  /// [item] is in it, else [item] alone.
+  List<PhotoItem> dragged(PhotoItem item) {
+    if (!_isSelecting || !_selected.contains(item.id)) {
+      return [item];
+    }
+
+    return [
+      for (final each in _items)
+        if (_selected.contains(each.id)) each,
+    ];
+  }
+
   Future<bool> open(String path) => _feature.openSaved(path);
 
   Future<bool> reveal(String path) => _feature.revealSaved(path);

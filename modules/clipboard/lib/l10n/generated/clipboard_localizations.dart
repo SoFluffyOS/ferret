@@ -496,6 +496,12 @@ abstract class ClipboardLocalizations {
   /// In en, this message translates to:
   /// **'Previews from this device are hidden here. Copy still works.'**
   String get recentHidden;
+
+  /// No description provided for @recentClipsDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag one into any app to drop it there.'**
+  String get recentClipsDrag;
 }
 
 class _ClipboardLocalizationsDelegate

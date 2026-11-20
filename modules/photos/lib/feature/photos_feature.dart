@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:core/core.dart';
@@ -57,6 +58,10 @@ class PhotosFeature extends Feature {
 
   /// What came to this computer, for Activity.
   final PhotoSaves saves = PhotoSaves();
+
+  /// Full files already here, by device and photo: a drag out of one
+  /// uses it rather than fetching it again.
+  final Map<(String, String), String> _localCopies = {};
 
   final Map<String, DateTime> _subscribers = {};
   final Set<String> _sentScreenshots = {};
@@ -453,7 +458,46 @@ class PhotosFeature extends Feature {
       );
     }
 
-    return saves[save.id] ?? save;
+    final result = saves[save.id] ?? save;
+    // Paths come in the order asked for; with one missing they can't be
+    // matched up, so none is kept.
+    if (result.status == .done && result.paths.length == photoIds.length) {
+      for (final (index, photoId) in photoIds.indexed) {
+        _localCopies[(deviceId, photoId)] = result.paths[index];
+      }
+    }
+
+    return result;
+  }
+
+  /// The full file of [photoId] when it is on this computer already, such
+  /// as after a save.
+  String? localCopy(String deviceId, String photoId) {
+    final path = _localCopies[(deviceId, photoId)];
+    if (path == null) {
+      return null;
+    }
+
+    if (!File(path).existsSync()) {
+      _localCopies.remove((deviceId, photoId));
+      return null;
+    }
+
+    return path;
+  }
+
+  /// The full file of [photoId] on this computer: the one here already,
+  /// or a fresh save into the receive folder. Null when it couldn't come.
+  Future<String?> fetchLocal(String deviceId, String photoId) async {
+    if (localCopy(deviceId, photoId) case final path?) {
+      return path;
+    }
+
+    final save = await this.save(deviceId, [photoId]);
+    return switch (save) {
+      PhotoSave(status: .done, paths: [final path, ...]) => path,
+      _ => null,
+    };
   }
 
   Future<PhotoSaveProblem?> _fetchInto(

@@ -18,10 +18,14 @@ class PhotoPreviewPage extends StatefulWidget {
     super.key,
     required this.viewModel,
     required this.item,
+    this.dragOut,
   });
 
   final PhotoGalleryViewModel viewModel;
   final PhotoItem item;
+
+  /// Drags the photo out to other apps; null where that can't be done.
+  final DragOut? dragOut;
 
   @override
   State<PhotoPreviewPage> createState() => _PhotoPreviewPageState();
@@ -33,7 +37,7 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
     maxPx: PhotoSizes.preview,
   );
   PhotoTransferStatus? _status;
-  String? _savedPath;
+  late String? _savedPath = widget.viewModel.localCopy(widget.item.id);
 
   @override
   Widget build(BuildContext context) {
@@ -99,19 +103,22 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
             constraints: BoxConstraints(maxHeight: maxHeight),
             child: AspectRatio(
               aspectRatio: _aspect(item),
-              child: ClipRSuperellipse(
-                borderRadius: Corners.radius(Corners.card),
-                child: ColoredBox(
-                  color: palette.surface,
-                  child: FutureBuilder<Uint8List?>(
-                    future: _image,
-                    builder: (context, snapshot) {
-                      if (snapshot.data case final bytes?) {
-                        return Image.memory(bytes, fit: .contain);
-                      }
+              child: _draggable(
+                context,
+                child: ClipRSuperellipse(
+                  borderRadius: Corners.radius(Corners.card),
+                  child: ColoredBox(
+                    color: palette.surface,
+                    child: FutureBuilder<Uint8List?>(
+                      future: _image,
+                      builder: (context, snapshot) {
+                        if (snapshot.data case final bytes?) {
+                          return Image.memory(bytes, fit: .contain);
+                        }
 
-                      return const SizedBox.shrink();
-                    },
+                        return const SizedBox.shrink();
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -125,6 +132,26 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
           style: typography.base2.copyWith(color: palette.mutedText),
         ),
       ],
+    );
+  }
+
+  /// The photo itself drags out to Finder or another app, as in Preview.
+  Widget _draggable(BuildContext context, {required Widget child}) {
+    final dragOut = widget.dragOut;
+    if (dragOut == null) {
+      return child;
+    }
+
+    return GestureDetector(
+      onPanStart: (_) => unawaited(
+        PhotoDrag.start(
+          context,
+          dragOut: dragOut,
+          viewModel: widget.viewModel,
+          items: [widget.item],
+        ),
+      ),
+      child: child,
     );
   }
 

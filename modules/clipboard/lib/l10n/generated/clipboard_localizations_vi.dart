@@ -271,4 +271,8 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   @override
   String get recentHidden =>
       'Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được.';
+
+  @override
+  String get recentClipsDrag =>
+      'Kéo một mục vào ứng dụng bất kỳ để thả vào đó.';
 }

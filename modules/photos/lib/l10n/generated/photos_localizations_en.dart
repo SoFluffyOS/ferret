@@ -303,4 +303,7 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
 
   @override
   String get settingsSharingNone => 'Not shared with any computer.';
+
+  @override
+  String get dragHint => 'Drag a photo into any app to drop it there.';
 }

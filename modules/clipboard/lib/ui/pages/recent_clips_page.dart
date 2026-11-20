@@ -1,4 +1,5 @@
 import 'package:clipboard/l10n/l10n.dart';
+import 'package:clipboard/services/services.dart';
 import 'package:clipboard/ui/frames/frames.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
@@ -9,12 +10,16 @@ class RecentClipsPage extends StatelessWidget {
     super.key,
     required this.showsPreviewsFrom,
     this.openKeys,
+    this.drags,
   });
 
   final bool Function(String deviceId) showsPreviewsFrom;
 
   /// See [RecentClipsFrame.openKeys].
   final String? openKeys;
+
+  /// See [RecentClipsFrame.drags].
+  final ClipDrags? drags;
 
   @override
   Widget build(BuildContext context) => FerretPage(
@@ -23,6 +28,7 @@ class RecentClipsPage extends StatelessWidget {
       RecentClipsFrame(
         showsPreviewsFrom: showsPreviewsFrom,
         openKeys: openKeys,
+        drags: drags,
       ),
     ],
   );

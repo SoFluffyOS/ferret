@@ -137,12 +137,44 @@ class PhotosFeatureUi extends FeatureUi {
           viewModel: gallery,
           deviceName: device.device.name,
           showsPreviews: feature.showsPreviewsFrom(deviceId),
+          dragOut: feature.dragOut,
           onOpen: (item) => unawaited(
             feature.push<void>(
-              PhotoPreviewPage(viewModel: gallery, item: item),
+              PhotoPreviewPage(
+                viewModel: gallery,
+                item: item,
+                dragOut: feature.dragOut,
+              ),
             ),
           ),
         ),
+      ),
+    ];
+  }
+
+  /// Photos on the device's page in the popover, where no device list
+  /// shows the section: the way to browse them and drag them out there.
+  @override
+  List<FeatureAction> deviceActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final deviceId = device.device.id;
+    final session = device.session;
+    if (this.feature.isPhone ||
+        session == null ||
+        !PhotosFeature.sharesPhotos(session)) {
+      return const [];
+    }
+
+    return [
+      FeatureAction(
+        id: 'photos.open',
+        label: title(context),
+        icon: icon,
+        sectionId: sectionId,
+        onPressed: () => unawaited(feature.openSection(deviceId, sectionId)),
       ),
     ];
   }

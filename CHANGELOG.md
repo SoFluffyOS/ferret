@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 🖱️ **Drag photos and clips into any app**: on a Mac, drag a phone photo out of **Photos**, or a clip out of **Recent clips**, and drop it in Mail, Slack, Finder or wherever you want it. Works from the popover too, where your phone's page now has a **Photos** button. The photo comes from the phone only once you drop it.
 - 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.
 - 🧭 **Coming from another app?** A new guide lists the features you used every day under the names you know, where they live in Ferret, and what isn't there yet. See [Coming from another app](docs/getting-started/coming-from-another-app.md).
 - 📱 **Your Android tablet or phone as a second display**: open it in Ferret on your Mac and click **Use Pixel Tablet as a display**. Tap **Allow** on the tablet, and its screen becomes one more display for your Mac. Tap to click, drag, hold to right-click, two fingers to scroll. Back on the tablet asks before it stops. See [A second display](docs/features/second-display.md).

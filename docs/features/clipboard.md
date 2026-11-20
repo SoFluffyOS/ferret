@@ -56,8 +56,9 @@ Copied something ten minutes ago and pasted over it since? Open **••• → 
 
 On a Mac it's even quicker: press **⌃⌥V** in any app. Change the keys or turn them off in **Settings → Advanced → Recent clips from anywhere**.
 
+- 🖱️ On a Mac, drag a clip into any app instead. Text lands as text, a link as a link, an image as a picture file. No Copy, no Paste.
 - 🔑 Private clips (passwords, codes) are never listed.
-- 🙈 On a computer where a phone's previews are hidden, its clips show as **Copied on Pixel 7**, not what they hold. **Copy** still works.
+- 🙈 On a computer where a phone's previews are hidden, its clips show as **Copied on Pixel 7**, not what they hold. **Copy** still works, dragging doesn't.
 - 🧠 The list lives in memory only. Quit Ferret and it's gone.
 
 ## 🔑 Passwords stay put

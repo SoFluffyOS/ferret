@@ -657,6 +657,8 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   @override
   String get recentHidden => pseudo(super.recentHidden);
   @override
+  String get recentClipsDrag => pseudo(super.recentClipsDrag);
+  @override
   String sentTo(String devices) => pseudo(super.sentTo(devices));
   @override
   String sentWhenBack(String devices) => pseudo(super.sentWhenBack(devices));
@@ -3069,6 +3071,8 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   String get settingsPerDevice => pseudo(super.settingsPerDevice);
   @override
   String get settingsSharingNone => pseudo(super.settingsSharingNone);
+  @override
+  String get dragHint => pseudo(super.dragHint);
   @override
   String autoScreenshotsBody(String device) =>
       pseudo(super.autoScreenshotsBody(device));

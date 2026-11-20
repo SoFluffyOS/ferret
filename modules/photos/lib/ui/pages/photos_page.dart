@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photos/ui/frames/frames.dart';
 import 'package:photos/view_models/view_models.dart';
@@ -15,12 +16,14 @@ class PhotosPage extends StatefulWidget {
     required this.deviceName,
     required this.showsPreviews,
     required this.onOpen,
+    this.dragOut,
   });
 
   final PhotoGalleryViewModel viewModel;
   final String deviceName;
   final bool showsPreviews;
   final void Function(PhotoItem item) onOpen;
+  final DragOut? dragOut;
 
   @override
   State<PhotosPage> createState() => _PhotosPageState();
@@ -42,6 +45,7 @@ class _PhotosPageState extends State<PhotosPage> {
       deviceName: widget.deviceName,
       showsPreviews: widget.showsPreviews,
       onOpen: widget.onOpen,
+      dragOut: widget.dragOut,
     ),
   );
 }

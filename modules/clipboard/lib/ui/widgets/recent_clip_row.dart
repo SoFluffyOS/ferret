@@ -13,6 +13,7 @@ class RecentClipRow extends StatelessWidget {
     required this.copyLabel,
     required this.isCopied,
     required this.onCopy,
+    this.onDragStart,
   });
 
   final IconData icon;
@@ -24,8 +25,22 @@ class RecentClipRow extends StatelessWidget {
   final bool isCopied;
   final VoidCallback onCopy;
 
+  /// A drag began on the row: the clip goes out to another app. Null when
+  /// it can't, such as while previews are hidden.
+  final VoidCallback? onDragStart;
+
   @override
-  Widget build(BuildContext context) => GroupedRow(
+  Widget build(BuildContext context) {
+    final row = _row();
+    final onDragStart = this.onDragStart;
+    if (onDragStart == null) {
+      return row;
+    }
+
+    return GestureDetector(onPanStart: (_) => onDragStart(), child: row);
+  }
+
+  Widget _row() => GroupedRow(
     leading: IconTile(icon: icon, color: PlaceColor.blue),
     title: title,
     titleMaxLines: 2,

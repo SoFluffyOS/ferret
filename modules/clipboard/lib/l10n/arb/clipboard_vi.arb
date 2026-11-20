@@ -66,5 +66,6 @@
   "recentClipsKeys": "Mở trang này từ bất kỳ ứng dụng nào bằng {keys}.",
   "recentFrom": "Từ {device}",
   "recentCopiedHere": "Sao chép tại đây",
-  "recentHidden": "Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được."
+  "recentHidden": "Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được.",
+  "recentClipsDrag": "Kéo một mục vào ứng dụng bất kỳ để thả vào đó."
 }

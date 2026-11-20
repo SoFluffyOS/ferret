@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/l10n/l10n.dart';
 import 'package:clipboard/models/models.dart';
+import 'package:clipboard/services/services.dart';
 import 'package:clipboard/ui/widgets/widgets.dart';
 import 'package:clipboard/view_models/clipboard_view_model.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -18,9 +19,13 @@ class RecentClipsFrame extends StatelessWidget {
     super.key,
     required this.showsPreviewsFrom,
     this.openKeys,
+    this.drags,
   });
 
   final bool Function(String deviceId) showsPreviewsFrom;
+
+  /// Drags clips out to other apps; null where that can't be done.
+  final ClipDrags? drags;
 
   /// The keys that open Recent clips from any app, such as "⌃⌥V". Null
   /// where there are none, or when they are turned off.
@@ -45,6 +50,10 @@ class RecentClipsFrame extends StatelessWidget {
       crossAxisAlignment: .start,
       mainAxisSize: .min,
       children: [
+        if (drags != null && clips.isNotEmpty) ...[
+          Text(l10n.recentClipsDrag, style: noteStyle),
+          Spacing.v4,
+        ],
         Text(l10n.recentClipsNote, style: noteStyle),
         if (openKeys case final keys?) ...[
           Spacing.v4,
@@ -73,7 +82,13 @@ class RecentClipsFrame extends StatelessWidget {
           separatorIndent: PageInsets.row + IconTile.size + Spacing.d12,
           children: [
             for (final clip in clips)
-              _row(l10n, viewModel, clip, isCopied: clip.id == copiedId),
+              _row(
+                context,
+                l10n,
+                viewModel,
+                clip,
+                isCopied: clip.id == copiedId,
+              ),
           ],
         ),
         Spacing.v8,
@@ -83,6 +98,7 @@ class RecentClipsFrame extends StatelessWidget {
   }
 
   Widget _row(
+    BuildContext context,
     ClipboardLocalizations l10n,
     ClipboardViewModel viewModel,
     ClipEntry clip, {
@@ -118,6 +134,16 @@ class RecentClipsFrame extends StatelessWidget {
       },
       isCopied: isCopied,
       onCopy: () => unawaited(viewModel.copyAgain(clip)),
+      onDragStart: switch (drags) {
+        final drags? when !isHidden && clip.hasContent => () => unawaited(
+          drags.start(
+            View.of(context).viewId,
+            clip,
+            imageName: l10n.imageLabel,
+          ),
+        ),
+        _ => null,
+      },
     );
   }
 

@@ -166,5 +166,6 @@
     }
   },
   "recentCopiedHere": "Copied here",
-  "recentHidden": "Previews from this device are hidden here. Copy still works."
+  "recentHidden": "Previews from this device are hidden here. Copy still works.",
+  "recentClipsDrag": "Drag one into any app to drop it there."
 }

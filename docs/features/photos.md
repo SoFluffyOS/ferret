@@ -36,6 +36,17 @@ Open the phone in Ferret and click **Photos**.
 - Click a photo to see it bigger, then **Save**. Once it's here, **Open** shows it in its app (that's how a video plays) and **Show in folder** finds the file.
 - Click **Select**, pick a few, then **Save 3 photos**.
 
+## 🖱️ Drag them into any app (Mac)
+
+Need that screenshot in Slack, Mail or a Keynote slide? Don't save it first. Drag the tile out of the grid and drop it there. That's it.
+
+- Drag the big photo on its own page the same way.
+- Selected a few? Drag one of them and they all go.
+- The drag starts right away. The phone sends the full photo only once you drop it, and the app you dropped on waits a moment for it.
+- A copy also lands in your receive folder, with its line in Activity. Drag the same photo again and it comes straight from there.
+
+It works in the popover too: open the phone, click **Photos**, and drag. Mac only for now.
+
 Saved photos go through the same transfer as [Drop](drop.md): checked end to end, and they pick up where they stopped if the Wi-Fi drops. Activity says **Saved 3 photos from Pixel 7**. Drag that line to Finder, or press Space to look at it.
 
 Thumbnails stay in `~/.sofluffy/ferret/cache/photos` on the computer, so the grid opens fast next time. Ferret keeps at most 64 MB there and drops the oldest first. Unpair the phone and its thumbnails are gone.
@@ -72,7 +83,7 @@ The phone shows **MacBook wants to see your photos**. Tap it, and you get the sw
 
 ## 🙈 On a computer the family shares
 
-Photos follow [private previews](../getting-started/shared-computer.md). While the screen is locked, another account is in front, or **Show previews on this computer** is off for that phone, the grid says **Photos from Pixel 7 are hidden on this computer right now** and asks for nothing.
+Photos follow [private previews](../getting-started/shared-computer.md). While the screen is locked, another account is in front, or **Show previews on this computer** is off for that phone, the grid says **Photos from Pixel 7 are hidden on this computer right now** and asks for nothing. Nothing to see means nothing to drag, in the window and the popover alike.
 
 ## 📱 Limits
 
@@ -81,7 +92,7 @@ Photos follow [private previews](../getting-started/shared-computer.md). While t
 | Computers | Browse and save from a phone. A computer has no photos to share |
 | Android | Shares photos, videos and screenshots while Ferret runs |
 | iPhone | Shares only while Ferret is open |
-| Not in this version | Deleting from the computer (on purpose), dragging a tile out of the grid, albums |
+| Not in this version | Deleting from the computer (on purpose), dragging photos out on Windows and Linux, albums |
 
 Want a full photo backup? That's a job for Syncthing or Immich. Ferret shows and fetches, it doesn't sync.
 

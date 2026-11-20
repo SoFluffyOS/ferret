@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:clipboard/feature/clipboard_feature.dart';
 import 'package:clipboard/l10n/l10n.dart';
+import 'package:clipboard/services/services.dart';
 import 'package:clipboard/ui/clip_activity.dart';
 import 'package:clipboard/ui/clip_send_report.dart';
 import 'package:clipboard/ui/clipboard_health.dart';
@@ -175,6 +176,13 @@ class ClipboardFeatureUi extends FeatureUi {
       child: RecentClipsPage(
         showsPreviewsFrom: feature.showsPreviewsFrom,
         openKeys: recentClipsKeys?.call(feature),
+        drags: switch (feature.dragOut) {
+          final dragOut? => ClipDrags(
+            dragOut: dragOut,
+            folder: () async => (await AppPaths.get()).cache,
+          ),
+          null => null,
+        },
       ),
     ),
   );

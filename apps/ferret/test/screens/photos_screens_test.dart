@@ -12,12 +12,14 @@ library;
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_photos/ferret_photos.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:photos/photos.dart';
+import 'package:shell/shell.dart';
 
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
@@ -131,6 +133,21 @@ class _SampleLibrary implements PhotoLibrary {
   }
 }
 
+class _NoDragOut implements DragOut {
+  const _NoDragOut();
+
+  @override
+  Future<bool> files(int viewId, List<String> paths) async => false;
+
+  @override
+  Future<bool> promisedFiles(int viewId, List<PromisedFile> files) async =>
+      false;
+
+  @override
+  Future<bool> text(int viewId, String text, {bool isLink = false}) async =>
+      false;
+}
+
 class _Phone {
   _Phone(this.library) : feature = PhotosFeature(library: library);
 
@@ -194,6 +211,15 @@ final _screens = <String, _Script>{
   'grid': (tester, rig) async {
     final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(17));
     await _openPhotos(tester, rig, phoneId);
+  },
+  'grid_drag': (tester, rig) async {
+    rig.featureContext.dragOut = const _NoDragOut();
+    final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(17));
+    await _openPhotos(tester, rig, phoneId);
+  },
+  'device_page': (tester, rig) async {
+    final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(3));
+    await rig.open(tester, DevicePage(deviceId: phoneId));
   },
   'selection': (tester, rig) async {
     final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(17));

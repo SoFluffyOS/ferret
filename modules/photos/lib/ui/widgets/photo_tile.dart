@@ -17,6 +17,7 @@ class PhotoTile extends StatefulWidget {
     this.isSelecting = false,
     this.isSelected = false,
     this.onLongPress,
+    this.onDragStart,
   });
 
   final Future<Uint8List?> Function() loadThumbnail;
@@ -26,6 +27,10 @@ class PhotoTile extends StatefulWidget {
   final bool isSelected;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
+
+  /// A drag began on the tile: it goes out to another app. Null where
+  /// nothing can be dragged out.
+  final VoidCallback? onDragStart;
 
   @override
   State<PhotoTile> createState() => _PhotoTileState();
@@ -45,6 +50,10 @@ class _PhotoTileState extends State<PhotoTile> {
       button: true,
       child: GestureDetector(
         onLongPress: widget.onLongPress,
+        onPanStart: switch (widget.onDragStart) {
+          final onDragStart? => (_) => onDragStart(),
+          null => null,
+        },
         child: Tappable(
           onTap: widget.onTap,
           child: AspectRatio(

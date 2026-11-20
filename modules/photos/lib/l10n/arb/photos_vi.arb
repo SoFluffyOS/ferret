@@ -62,5 +62,6 @@
   "openSettings": "Mở Cài đặt",
   "settingsPerDevice": "Chọn máy tính nào được xem ảnh trên trang của từng máy, trong mục Những gì thiết bị được dùng. Không gì bị xoá từ đây.",
   "settingsSharing": "Đang chia sẻ với: {devices}",
-  "settingsSharingNone": "Chưa chia sẻ với máy tính nào."
+  "settingsSharingNone": "Chưa chia sẻ với máy tính nào.",
+  "dragHint": "Kéo ảnh vào ứng dụng bất kỳ để thả vào đó."
 }

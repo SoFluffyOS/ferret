@@ -300,4 +300,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
 
   @override
   String get settingsSharingNone => 'Chưa chia sẻ với máy tính nào.';
+
+  @override
+  String get dragHint => 'Kéo ảnh vào ứng dụng bất kỳ để thả vào đó.';
 }

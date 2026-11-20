@@ -122,40 +122,65 @@ const _clipboardScreens = {'send_clipboard', 'send_clipboard_home'};
 /// Screens that run as a phone paired with a Mac.
 const _phoneScreens = {'lock_row', 'presentation'};
 
-final _screens = <String, _Script>{
-  'recent_clips': (tester, rig, features) async {
-    final phoneId =
-        await rig.pairConnectedPhone(
-          tester,
-          phoneFeatures: phoneFeatures(),
-          name: 'Pixel 7',
-        ) ??
-        '';
-    final clipboard = features.whereType<ClipboardFeatureUi>().single;
-    final session = rig.engine.sessionFor(phoneId);
-    await tester.runAsync(() async {
-      if (session == null) {
-        return;
-      }
+Future<void> _recentClips(
+  WidgetTester tester,
+  ScreenRig rig,
+  List<FeatureUi> features,
+) async {
+  final phoneId =
+      await rig.pairConnectedPhone(
+        tester,
+        phoneFeatures: phoneFeatures(),
+        name: 'Pixel 7',
+      ) ??
+      '';
+  final clipboard = features.whereType<ClipboardFeatureUi>().single;
+  final session = rig.engine.sessionFor(phoneId);
+  await tester.runAsync(() async {
+    if (session == null) {
+      return;
+    }
 
-      for (final (index, text) in const [
-        'Meet at the north entrance, 7:30',
-        'https://example.org/tickets/4471',
-        'Ferret keeps the last 20 clips in memory only',
-      ].indexed) {
-        await clipboard.feature.onEnvelope(
-          session,
-          _clip(index, text, phoneId),
-        );
-      }
+    for (final (index, text) in const [
+      'Meet at the north entrance, 7:30',
+      'https://example.org/tickets/4471',
+      'Ferret keeps the last 20 clips in memory only',
+    ].indexed) {
       await clipboard.feature.onEnvelope(
         session,
-        _clip(9, 'hunter2', phoneId, sensitive: true),
+        _clip(index, text, phoneId),
       );
-    });
-    final home = tester.element(find.byType(HomePage));
-    clipboard.appActions(home, rig.featureContext).single.onPressed?.call();
-    await rig.settle(tester);
+    }
+    await clipboard.feature.onEnvelope(
+      session,
+      _clip(9, 'hunter2', phoneId, sensitive: true),
+    );
+  });
+  final home = tester.element(find.byType(HomePage));
+  clipboard.appActions(home, rig.featureContext).single.onPressed?.call();
+  await rig.settle(tester);
+}
+
+class _NoDragOut implements DragOut {
+  const _NoDragOut();
+
+  @override
+  Future<bool> files(int viewId, List<String> paths) async => false;
+
+  @override
+  Future<bool> promisedFiles(int viewId, List<PromisedFile> files) async =>
+      false;
+
+  @override
+  Future<bool> text(int viewId, String text, {bool isLink = false}) async =>
+      false;
+}
+
+final _screens = <String, _Script>{
+  'recent_clips': _recentClips,
+  'recent_clips_drag': (tester, rig, features) async {
+    rig.featureContext.dragOut = const _NoDragOut();
+    await _recentClips(tester, rig, features);
   },
   'send_clipboard': (tester, rig, features) async {
     final phoneId =

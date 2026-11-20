@@ -356,4 +356,49 @@ void main() {
     expect(await setup.computer.askForAccess(setup.phoneId), isTrue);
     expect(await prompts, setup.laptopId);
   });
+
+  test(
+    'a photo saved once is dragged from here; another is fetched first',
+    () async {
+      final setup = await setUpPair();
+      await setup.phoneFeature.settings.setSharesWith(
+        setup.laptopId,
+        shared: true,
+      );
+      final saved = File('${cacheRoot.path}/IMG_p0.jpg')..writeAsBytesSync([1]);
+
+      expect(setup.computer.localCopy(setup.phoneId, 'p0'), isNull);
+
+      final first = setup.computer.fetchLocal(setup.phoneId, 'p0');
+      await until(() => setup.computerTransfers.isFollowing('transfer-1'));
+      setup.computerTransfers.finish('transfer-1', [saved.path]);
+
+      expect(await first, saved.path);
+      expect(setup.computer.localCopy(setup.phoneId, 'p0'), saved.path);
+      expect(
+        await setup.computer.fetchLocal(setup.phoneId, 'p0'),
+        saved.path,
+      );
+      expect(setup.phoneTransfers.sent, hasLength(1));
+
+      saved.deleteSync();
+      expect(setup.computer.localCopy(setup.phoneId, 'p0'), isNull);
+    },
+  );
+
+  test('a save with a photo missing keeps no copies it cannot match', () async {
+    final setup = await setUpPair();
+    await setup.phoneFeature.settings.setSharesWith(
+      setup.laptopId,
+      shared: true,
+    );
+    final kept = File('${cacheRoot.path}/p0.jpg')..writeAsBytesSync([1]);
+
+    final saving = setup.computer.save(setup.phoneId, ['p0', 'gone']);
+    await until(() => setup.computerTransfers.isFollowing('transfer-1'));
+    setup.computerTransfers.finish('transfer-1', [kept.path]);
+    await saving;
+
+    expect(setup.computer.localCopy(setup.phoneId, 'p0'), isNull);
+  });
 }

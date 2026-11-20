@@ -272,4 +272,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   @override
   String get recentHidden =>
       'Previews from this device are hidden here. Copy still works.';
+
+  @override
+  String get recentClipsDrag => 'Drag one into any app to drop it there.';
 }
