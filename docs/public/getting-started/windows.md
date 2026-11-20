@@ -44,7 +44,7 @@ Your keys, paired devices and settings stay in `%USERPROFILE%\.sofluffy\ferret`,
 - **Nearby** shows devices you can pair, **+** adds one, and **Activity** and **Settings** sit under your devices.
 - **Snap it** to half the screen, or make it small: under 600 wide the list folds away and Ferret is one column, the same as on your phone. Nothing is lost, only stacked.
 - **Overview** shows the device, the few things you do most and **More** for the rest. With room, what works with the device sits on the left and what it may do on your PC on the right.
-- **Right-click** a device for the same actions, **Fix Connection…** and **Forget This Device…**. Right-click a line in Activity for what that line offers.
+- **Right-click** a device for the same actions, **Fix connection…** and **Forget this device…**. Right-click a line in Activity for what that line offers.
 - **A device that goes offline keeps its sections**, under one line that says since when, with **Fix connection**. A section whose feature is off is dimmed.
 - **Settings** keeps its list on the left and opens the row you pick next to it.
 - Lists and forms stop at a comfortable width and stay centred, however big the window gets.
@@ -66,7 +66,7 @@ Ferret puts an icon in the notification area, next to the clock. Click it to sho
 
 ## ⌨️ Keys
 
-There is no menu bar. The **•••** at the end of the window's toolbar holds the same commands, each with its keys next to it, and **Keyboard Shortcuts** lists them all.
+There is no menu bar. The **•••** at the end of the window's toolbar holds the same commands, each with its keys next to it, and **Keyboard shortcuts** lists them all.
 
 | Keys | Does |
 |---|---|
