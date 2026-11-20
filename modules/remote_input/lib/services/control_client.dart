@@ -72,6 +72,9 @@ class ControlClient implements InputSink {
       deviceId: deviceId,
       deviceName: _host.displayNameOf(deviceId),
       phase: .requesting,
+      host:
+          HostKind.of(session?.remoteDevice?.platform) ??
+          HostKind.of(_host.trustStore[deviceId]?.platform),
     );
     if (session == null) {
       return _set(control.copyWith(phase: .unreachable));

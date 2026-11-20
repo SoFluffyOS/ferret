@@ -65,6 +65,25 @@ void main() {
     expect(control.denial, OutgoingDenial.needsPermission);
   });
 
+  test(
+    'knows what kind of computer it asked, from Hello or the pairing',
+    () async {
+      final windows = FakeSession(
+        'pc',
+        name: 'PC',
+        platform: .PLATFORM_WINDOWS,
+      );
+      host.sessions = [mac, windows];
+      await nameHere(host.trustStore, 'mac', 'Mac');
+      await host.trustStore.save(
+        host.trustStore['mac']!.copyWith(platform: .PLATFORM_LINUX),
+      );
+
+      expect((await client.start('pc')).host, HostKind.windows);
+      expect((await client.start('mac')).host, HostKind.linux);
+    },
+  );
+
   test('no answer at all is unreachable', () async {
     final control = await client.start('mac');
 

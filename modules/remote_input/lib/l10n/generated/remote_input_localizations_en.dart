@@ -442,13 +442,33 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String deniedNeedsPermission(String device) {
-    return '$device needs Accessibility access first. On $device: open Ferret and allow it.';
+  String deniedNeedsPermission(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac':
+            '$device needs Accessibility access first. On $device: open Ferret and allow it.',
+        'linux':
+            '$device needs write access to /dev/uinput, or xdotool or ydotool, first. On $device: open Ferret → Settings → Control to see what it needs.',
+        'other':
+            '$device needs permission to move the pointer and type first. On $device: open Ferret → Settings → Control and click Allow access.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
-  String deniedUnsupported(String device) {
-    return '$device can\'t be controlled yet. On $device: open Ferret → Settings → Control to see why.';
+  String deniedUnsupported(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'linux':
+            '$device can\'t be controlled yet. It needs write access to /dev/uinput, or xdotool or ydotool. On $device: open Ferret → Settings → Control to see which.',
+        'other':
+            '$device can\'t be controlled yet. On $device: open Ferret → Settings → Control to see why.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
@@ -475,8 +495,19 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   }
 
   @override
-  String stoppedFailed(String device) {
-    return '$device can\'t move the pointer or type anymore. On $device: check Accessibility access.';
+  String stoppedFailed(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac':
+            '$device can\'t move the pointer or type anymore. On $device: check Accessibility access.',
+        'linux':
+            '$device can\'t move the pointer or type anymore. On $device: open Ferret → Settings → Control and check /dev/uinput, xdotool or ydotool.',
+        'other':
+            '$device can\'t move the pointer or type anymore. On $device: open Ferret → Settings → Control to see why.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
@@ -620,12 +651,12 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'this Mac',
-        'windows': 'this PC',
-        'other': 'this computer',
+        'mac': 'Needs Accessibility access on this Mac',
+        'windows': 'Needs permission on this PC',
+        'other': 'Needs permission on this computer',
       },
     );
-    return 'Needs Accessibility access on $_temp0';
+    return '$_temp0';
   }
 
   @override
@@ -640,8 +671,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'Open Settings → Control to see what it needs.';
 
   @override
-  String healthNeedsPermission(String device) {
-    return 'Needs Accessibility access on $device';
+  String healthNeedsPermission(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'Needs Accessibility access on $device',
+        'linux': 'Needs uinput, xdotool or ydotool on $device',
+        'other': 'Needs permission on $device',
+      },
+    );
+    return '$_temp0';
   }
 
   @override

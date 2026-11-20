@@ -441,13 +441,33 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String deniedNeedsPermission(String device) {
-    return '$device cần quyền Trợ năng trước. Trên $device: mở Ferret và cấp quyền.';
+  String deniedNeedsPermission(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac':
+            '$device cần quyền Trợ năng trước. Trên $device: mở Ferret và cấp quyền.',
+        'linux':
+            '$device cần quyền ghi vào /dev/uinput, hoặc xdotool hay ydotool, trước. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem còn thiếu gì.',
+        'other':
+            '$device cần được cấp quyền di chuyển con trỏ và gõ phím trước. Trên $device: mở Ferret → Cài đặt → Điều khiển rồi nhấp Cấp quyền truy cập.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
-  String deniedUnsupported(String device) {
-    return 'Chưa thể điều khiển $device. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem lý do.';
+  String deniedUnsupported(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'linux':
+            'Chưa thể điều khiển $device. Máy cần quyền ghi vào /dev/uinput, hoặc xdotool hay ydotool. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem cần cái nào.',
+        'other':
+            'Chưa thể điều khiển $device. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem lý do.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
@@ -474,8 +494,19 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String stoppedFailed(String device) {
-    return '$device không còn di chuyển con trỏ hay gõ phím được nữa. Trên $device: kiểm tra quyền Trợ năng.';
+  String stoppedFailed(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac':
+            '$device không còn di chuyển con trỏ hay gõ phím được nữa. Trên $device: kiểm tra quyền Trợ năng.',
+        'linux':
+            '$device không còn di chuyển con trỏ hay gõ phím được nữa. Trên $device: mở Ferret → Cài đặt → Điều khiển rồi kiểm tra /dev/uinput, xdotool hoặc ydotool.',
+        'other':
+            '$device không còn di chuyển con trỏ hay gõ phím được nữa. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem lý do.',
+      },
+    );
+    return '$_temp0';
   }
 
   @override
@@ -619,12 +650,12 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
-        'other': 'máy tính này',
+        'mac': 'Cần quyền Trợ năng trên Mac này',
+        'windows': 'Cần cấp quyền trên PC này',
+        'other': 'Cần cấp quyền trên máy tính này',
       },
     );
-    return 'Cần quyền Trợ năng trên $_temp0';
+    return '$_temp0';
   }
 
   @override
@@ -639,8 +670,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       'Mở Cài đặt → Điều khiển để xem còn thiếu gì.';
 
   @override
-  String healthNeedsPermission(String device) {
-    return 'Cần quyền Trợ năng trên $device';
+  String healthNeedsPermission(String device, String host) {
+    String _temp0 = intl.Intl.selectLogic(
+      host,
+      {
+        'mac': 'Cần quyền Trợ năng trên $device',
+        'linux': 'Cần uinput, xdotool hoặc ydotool trên $device',
+        'other': 'Cần cấp quyền trên $device',
+      },
+    );
+    return '$_temp0';
   }
 
   @override

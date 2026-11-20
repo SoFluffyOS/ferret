@@ -635,17 +635,17 @@ abstract class RemoteInputLocalizations {
   /// **'Another device controls {device} right now.'**
   String deniedBusy(String device);
 
-  /// No description provided for @deniedNeedsPermission.
+  /// host is mac, windows or linux for the computer being controlled, or other when unknown.
   ///
   /// In en, this message translates to:
-  /// **'{device} needs Accessibility access first. On {device}: open Ferret and allow it.'**
-  String deniedNeedsPermission(String device);
+  /// **'{host, select, mac{{device} needs Accessibility access first. On {device}: open Ferret and allow it.} linux{{device} needs write access to /dev/uinput, or xdotool or ydotool, first. On {device}: open Ferret → Settings → Control to see what it needs.} other{{device} needs permission to move the pointer and type first. On {device}: open Ferret → Settings → Control and click Allow access.}}'**
+  String deniedNeedsPermission(String device, String host);
 
-  /// No description provided for @deniedUnsupported.
+  /// host is mac, windows or linux for the computer being controlled, or other when unknown.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t be controlled yet. On {device}: open Ferret → Settings → Control to see why.'**
-  String deniedUnsupported(String device);
+  /// **'{host, select, linux{{device} can\'t be controlled yet. It needs write access to /dev/uinput, or xdotool or ydotool. On {device}: open Ferret → Settings → Control to see which.} other{{device} can\'t be controlled yet. On {device}: open Ferret → Settings → Control to see why.}}'**
+  String deniedUnsupported(String device, String host);
 
   /// No description provided for @deniedTurnedOff.
   ///
@@ -677,11 +677,11 @@ abstract class RemoteInputLocalizations {
   /// **'{device} no longer lets this phone control it.'**
   String stoppedRevoked(String device);
 
-  /// No description provided for @stoppedFailed.
+  /// host is mac, windows or linux for the computer being controlled, or other when unknown.
   ///
   /// In en, this message translates to:
-  /// **'{device} can\'t move the pointer or type anymore. On {device}: check Accessibility access.'**
-  String stoppedFailed(String device);
+  /// **'{host, select, mac{{device} can\'t move the pointer or type anymore. On {device}: check Accessibility access.} linux{{device} can\'t move the pointer or type anymore. On {device}: open Ferret → Settings → Control and check /dev/uinput, xdotool or ydotool.} other{{device} can\'t move the pointer or type anymore. On {device}: open Ferret → Settings → Control to see why.}}'**
+  String stoppedFailed(String device, String host);
 
   /// No description provided for @lostConnection.
   ///
@@ -791,10 +791,10 @@ abstract class RemoteInputLocalizations {
   /// **'Open Settings → Control and turn on Let my devices control {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
   String healthHostOffHelp(String here);
 
-  /// host is mac, windows or linux.
+  /// host is mac, windows or linux for this computer.
   ///
   /// In en, this message translates to:
-  /// **'Needs Accessibility access on {host, select, mac{this Mac} windows{this PC} other{this computer}}'**
+  /// **'{host, select, mac{Needs Accessibility access on this Mac} windows{Needs permission on this PC} other{Needs permission on this computer}}'**
   String healthHostNeedsAccess(String host);
 
   /// No description provided for @healthHostNeedsAccessHelp.
@@ -815,11 +815,11 @@ abstract class RemoteInputLocalizations {
   /// **'Open Settings → Control to see what it needs.'**
   String get healthHostUnavailableHelp;
 
-  /// No description provided for @healthNeedsPermission.
+  /// host is mac, windows or linux for the computer being controlled, or other when unknown.
   ///
   /// In en, this message translates to:
-  /// **'Needs Accessibility access on {device}'**
-  String healthNeedsPermission(String device);
+  /// **'{host, select, mac{Needs Accessibility access on {device}} linux{Needs uinput, xdotool or ydotool on {device}} other{Needs permission on {device}}}'**
+  String healthNeedsPermission(String device, String host);
 
   /// No description provided for @healthUnsupported.
   ///

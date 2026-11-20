@@ -12,8 +12,8 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     final name = control.deviceName;
     return switch (control.phase) {
       .requesting || .waitingForConsent || .active => null,
-      .denied => _denial(control.denial, name),
-      .stopped => _stop(control.stop, name),
+      .denied => _denial(control.denial, name, control.host),
+      .stopped => _stop(control.stop, name, control.host),
       .lostConnection => lostConnection(name),
       .unreachable => unreachable(name),
     };
@@ -47,7 +47,7 @@ extension RemoteInputLabels on RemoteInputLocalizations {
         final app? => screenSecureInputAppBody(app),
         null => screenSecureInputBody(ThisComputer.here),
       },
-      .denied => _denial(state.denial, name),
+      .denied => _denial(state.denial, name, state.host),
       .captureFailed ||
       .lostConnection ||
       .stopped ||
@@ -55,22 +55,31 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     };
   }
 
-  String _denial(OutgoingDenial? denial, String name) => switch (denial) {
+  String _denial(
+    OutgoingDenial? denial,
+    String name,
+    HostKind? host,
+  ) => switch (denial) {
     .timeout => deniedTimeout(name),
     .busy => deniedBusy(name),
-    .needsPermission => deniedNeedsPermission(name),
-    .unsupported => deniedUnsupported(name),
+    .needsPermission => deniedNeedsPermission(name, hostKey(host)),
+    .unsupported => deniedUnsupported(name, hostKey(host)),
     .turnedOff => deniedTurnedOff(name),
     .version => deniedVersion(name),
     .denied || null => deniedDenied(name),
   };
 
-  String _stop(OutgoingStop? stop, String name) => switch (stop) {
-    .idle => stoppedIdle,
-    .revoked => stoppedRevoked(name),
-    .failed => stoppedFailed(name),
-    .stoppedOnHost || null => stoppedOnHost(name),
-  };
+  String _stop(OutgoingStop? stop, String name, HostKind? host) =>
+      switch (stop) {
+        .idle => stoppedIdle,
+        .revoked => stoppedRevoked(name),
+        .failed => stoppedFailed(name, hostKey(host)),
+        .stoppedOnHost || null => stoppedOnHost(name),
+      };
+
+  /// The `host` select key in the strings: mac, windows, linux, or other
+  /// when the kind of computer isn't known.
+  String hostKey(HostKind? host) => host?.name ?? 'other';
 
   /// "Pixel controlled this computer for 4 min at 21:10".
   String audit(ControlRecord record) => auditLine(

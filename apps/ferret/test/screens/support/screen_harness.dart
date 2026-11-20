@@ -216,12 +216,14 @@ class ScreenRig {
   Future<String?> pairConnectedComputer(
     WidgetTester tester, {
     required List<FeatureUi> computerFeatures,
+    String name = 'MacBook Air',
+    Platform platform = .PLATFORM_MACOS,
   }) => _pairOther(
     tester,
     features: computerFeatures,
-    device: const LocalDevice(
-      name: 'MacBook Air',
-      platform: .PLATFORM_MACOS,
+    device: LocalDevice(
+      name: name,
+      platform: platform,
       formFactor: .FORM_FACTOR_LAPTOP,
       appVersion: '0.1.0',
     ),

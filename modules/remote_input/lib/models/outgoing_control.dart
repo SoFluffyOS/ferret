@@ -1,3 +1,5 @@
+import 'package:remote_input/models/host_kind.dart';
+
 /// Where this device's control of another one stands.
 enum OutgoingPhase {
   requesting,
@@ -45,6 +47,7 @@ class OutgoingControl {
     this.denial,
     this.stop,
     this.always = false,
+    this.host,
   });
 
   final String deviceId;
@@ -55,6 +58,10 @@ class OutgoingControl {
 
   /// The other device allowed this one for good.
   final bool always;
+
+  /// What kind of computer the other device is, for what it needs to be
+  /// controlled; null when it never said.
+  final HostKind? host;
 
   bool get isActive => phase == .active;
 
@@ -70,5 +77,6 @@ class OutgoingControl {
     denial: denial ?? this.denial,
     stop: stop ?? this.stop,
     always: always ?? this.always,
+    host: host,
   );
 }

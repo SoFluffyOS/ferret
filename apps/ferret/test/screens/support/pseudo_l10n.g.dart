@@ -3435,11 +3435,11 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String deniedBusy(String device) => pseudo(super.deniedBusy(device));
   @override
-  String deniedNeedsPermission(String device) =>
-      pseudo(super.deniedNeedsPermission(device));
+  String deniedNeedsPermission(String device, String host) =>
+      pseudo(super.deniedNeedsPermission(device, host));
   @override
-  String deniedUnsupported(String device) =>
-      pseudo(super.deniedUnsupported(device));
+  String deniedUnsupported(String device, String host) =>
+      pseudo(super.deniedUnsupported(device, host));
   @override
   String deniedTurnedOff(String device) =>
       pseudo(super.deniedTurnedOff(device));
@@ -3450,7 +3450,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String stoppedRevoked(String device) => pseudo(super.stoppedRevoked(device));
   @override
-  String stoppedFailed(String device) => pseudo(super.stoppedFailed(device));
+  String stoppedFailed(String device, String host) =>
+      pseudo(super.stoppedFailed(device, host));
   @override
   String lostConnection(String device) => pseudo(super.lostConnection(device));
   @override
@@ -3499,8 +3500,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String healthHostNeedsAccess(String host) =>
       pseudo(super.healthHostNeedsAccess(host));
   @override
-  String healthNeedsPermission(String device) =>
-      pseudo(super.healthNeedsPermission(device));
+  String healthNeedsPermission(String device, String host) =>
+      pseudo(super.healthNeedsPermission(device, host));
   @override
   String healthUnsupported(String device) =>
       pseudo(super.healthUnsupported(device));

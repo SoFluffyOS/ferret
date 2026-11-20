@@ -1,3 +1,4 @@
+import 'package:remote_input/models/host_kind.dart';
 import 'package:remote_input/models/outgoing_control.dart';
 
 /// Where this Mac's keyboard and mouse are.
@@ -43,6 +44,7 @@ class ScreenSwitchState {
     this.deviceName = '',
     this.problem,
     this.denial,
+    this.host,
     this.secureInputHolder,
     this.at,
   });
@@ -56,6 +58,9 @@ class ScreenSwitchState {
   final String deviceName;
   final ScreenSwitchProblem? problem;
   final OutgoingDenial? denial;
+
+  /// What kind of computer said no, for what [denial] asks of it.
+  final HostKind? host;
 
   /// The app that turned on secure input, such as a password manager,
   /// when macOS says which.

@@ -17,6 +17,7 @@ import 'package:remote_input/ui/lock_activity.dart';
 import 'package:remote_input/ui/pages/pages.dart';
 import 'package:remote_input/ui/remote_input_activity.dart';
 import 'package:remote_input/ui/screen_switch_activity.dart';
+import 'package:remote_input/ui/widgets/remote_input_labels.dart';
 import 'package:remote_input/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -506,7 +507,10 @@ class RemoteInputFeatureUi extends FeatureUi {
       OutgoingControl(phase: .denied, denial: .needsPermission) =>
         FeatureHealth(
           .needsAttention,
-          reason: l10n.healthNeedsPermission(name),
+          reason: l10n.healthNeedsPermission(
+            name,
+            l10n.hostKey(HostKind.of(device.platform)),
+          ),
           help: l10n.healthNeedsPermissionHelp(name),
         ),
       OutgoingControl(phase: .denied, denial: .unsupported) => FeatureHealth(

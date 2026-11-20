@@ -285,18 +285,26 @@
       }
     }
   },
-  "deniedNeedsPermission": "{device} needs Accessibility access first. On {device}: open Ferret and allow it.",
+  "deniedNeedsPermission": "{host, select, mac{{device} needs Accessibility access first. On {device}: open Ferret and allow it.} linux{{device} needs write access to /dev/uinput, or xdotool or ydotool, first. On {device}: open Ferret → Settings → Control to see what it needs.} other{{device} needs permission to move the pointer and type first. On {device}: open Ferret → Settings → Control and click Allow access.}}",
   "@deniedNeedsPermission": {
+    "description": "host is mac, windows or linux for the computer being controlled, or other when unknown.",
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "host": {
         "type": "String"
       }
     }
   },
-  "deniedUnsupported": "{device} can't be controlled yet. On {device}: open Ferret → Settings → Control to see why.",
+  "deniedUnsupported": "{host, select, linux{{device} can't be controlled yet. It needs write access to /dev/uinput, or xdotool or ydotool. On {device}: open Ferret → Settings → Control to see which.} other{{device} can't be controlled yet. On {device}: open Ferret → Settings → Control to see why.}}",
   "@deniedUnsupported": {
+    "description": "host is mac, windows or linux for the computer being controlled, or other when unknown.",
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "host": {
         "type": "String"
       }
     }
@@ -334,10 +342,14 @@
       }
     }
   },
-  "stoppedFailed": "{device} can't move the pointer or type anymore. On {device}: check Accessibility access.",
+  "stoppedFailed": "{host, select, mac{{device} can't move the pointer or type anymore. On {device}: check Accessibility access.} linux{{device} can't move the pointer or type anymore. On {device}: open Ferret → Settings → Control and check /dev/uinput, xdotool or ydotool.} other{{device} can't move the pointer or type anymore. On {device}: open Ferret → Settings → Control to see why.}}",
   "@stoppedFailed": {
+    "description": "host is mac, windows or linux for the computer being controlled, or other when unknown.",
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "host": {
         "type": "String"
       }
     }
@@ -486,9 +498,9 @@
       }
     }
   },
-  "healthHostNeedsAccess": "Needs Accessibility access on {host, select, mac{this Mac} windows{this PC} other{this computer}}",
+  "healthHostNeedsAccess": "{host, select, mac{Needs Accessibility access on this Mac} windows{Needs permission on this PC} other{Needs permission on this computer}}",
   "@healthHostNeedsAccess": {
-    "description": "host is mac, windows or linux.",
+    "description": "host is mac, windows or linux for this computer.",
     "placeholders": {
       "host": {
         "type": "String"
@@ -498,10 +510,14 @@
   "healthHostNeedsAccessHelp": "Open Settings → Control and click Allow access.",
   "healthHostUnavailable": "Can't be controlled yet",
   "healthHostUnavailableHelp": "Open Settings → Control to see what it needs.",
-  "healthNeedsPermission": "Needs Accessibility access on {device}",
+  "healthNeedsPermission": "{host, select, mac{Needs Accessibility access on {device}} linux{Needs uinput, xdotool or ydotool on {device}} other{Needs permission on {device}}}",
   "@healthNeedsPermission": {
+    "description": "host is mac, windows or linux for the computer being controlled, or other when unknown.",
     "placeholders": {
       "device": {
+        "type": "String"
+      },
+      "host": {
         "type": "String"
       }
     }

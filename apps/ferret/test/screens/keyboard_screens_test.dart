@@ -18,6 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:protocol/protocol.dart' show Platform;
 import 'package:provider/provider.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
@@ -37,8 +38,12 @@ const _window = CaptureSize('window', 1000, 720);
 /// Takes input and does nothing with it, so a render never moves this
 /// Mac's pointer.
 class _NoInput implements InputInjector {
+  _NoInput([this._status = const .ready(.quartz)]);
+
+  final InjectorStatus _status;
+
   @override
-  Future<InjectorStatus> status() async => const .ready(.quartz);
+  Future<InjectorStatus> status() async => _status;
 
   @override
   Future<InjectorStatus> requestAccess() => status();
@@ -100,20 +105,30 @@ class _NoCapture implements InputCapture {
 /// This Mac ([here]) and the other one ([there]), each with its own
 /// harmless capture.
 class _Macs {
-  _Macs({bool granted = true, this.secureInputHolder})
-    : hereCapture = _NoCapture(granted: granted),
-      thereCapture = _NoCapture();
+  _Macs({
+    bool granted = true,
+    this.secureInputHolder,
+    this.thereStatus = const .ready(.quartz),
+  }) : hereCapture = _NoCapture(granted: granted),
+       thereCapture = _NoCapture();
 
   final _NoCapture hereCapture;
   final _NoCapture thereCapture;
 
   /// The app macOS says holds secure input, for the password lines.
   final String? secureInputHolder;
+
+  /// Whether the other computer can take input.
+  final InjectorStatus thereStatus;
   late final List<FeatureUi> hereFeatures = _features(
     hereCapture,
     secureInputHolder,
   );
-  late final List<FeatureUi> thereFeatures = _features(thereCapture, null);
+  late final List<FeatureUi> thereFeatures = _features(
+    thereCapture,
+    null,
+    thereStatus,
+  );
 
   RemoteInputFeature get here => _remote(hereFeatures);
 
@@ -124,13 +139,14 @@ class _Macs {
 
   static List<FeatureUi> _features(
     InputCapture capture,
-    String? secureInputHolder,
-  ) => [
+    String? secureInputHolder, [
+    InjectorStatus status = const .ready(.quartz),
+  ]) => [
     for (final feature in appFeatures())
       switch (feature) {
         RemoteInputFeatureUi() => RemoteInputFeatureUi(
           feature: RemoteInputFeature(
-            injector: _NoInput.new,
+            injector: () => _NoInput(status),
             canBeControlled: true,
             canControl: false,
             canSwitchScreens: true,
@@ -146,13 +162,37 @@ class _Macs {
 Future<String> _pairOther(
   WidgetTester tester,
   ScreenRig rig,
-  _Macs macs,
-) async =>
+  _Macs macs, {
+  String name = 'MacBook Air',
+  Platform platform = .PLATFORM_MACOS,
+}) async =>
     await rig.pairConnectedComputer(
       tester,
       computerFeatures: macs.thereFeatures,
+      name: name,
+      platform: platform,
     ) ??
     '';
+
+/// Tries ⌃⌥→ to another computer that can't take the keyboard and mouse,
+/// then shows Activity, which says what that kind of computer needs.
+Future<void> _refused(
+  WidgetTester tester,
+  ScreenRig rig,
+  _Macs macs, {
+  required String name,
+  required Platform platform,
+}) async {
+  await _pairOther(tester, rig, macs, name: name, platform: platform);
+  await tester.runAsync(() async {
+    await macs.there.settings.allow(rig.engine.identity.deviceId);
+    await macs.here.screenSwitch?.setEnabled(true);
+    await macs.here.screenSwitch?.next();
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+  });
+  await rig.open(tester, const ActivityPage());
+  await rig.settle(tester);
+}
 
 /// Sends this Mac's keyboard and mouse to the other one, which allowed it
 /// before.
@@ -255,6 +295,22 @@ final _screens = <String, _Script>{
     });
     await rig.settle(tester);
   },
+  'refused_mac': (tester, rig, macs) => _refused(
+    tester,
+    rig,
+    macs,
+    name: 'MacBook Air',
+    platform: .PLATFORM_MACOS,
+  ),
+  'refused_windows': (tester, rig, macs) => _refused(
+    tester,
+    rig,
+    macs,
+    name: 'Gaming PC',
+    platform: .PLATFORM_WINDOWS,
+  ),
+  'refused_linux': (tester, rig, macs) =>
+      _refused(tester, rig, macs, name: 'ThinkPad', platform: .PLATFORM_LINUX),
   'consent': (tester, rig, macs) async {
     await _pairOther(tester, rig, macs);
     await tester.runAsync(() async {
@@ -296,6 +352,12 @@ void main() {
               secureInputHolder: switch (name) {
                 'password_manager' => 'Bitwarden',
                 _ => null,
+              },
+              thereStatus: switch (name) {
+                'refused_mac' => const .needsPermission(.quartz),
+                'refused_windows' => const .needsPermission(.sendInput),
+                'refused_linux' => const .unavailable(.noLinuxBackend),
+                _ => const .ready(.quartz),
               },
             );
             final rig = await ScreenRig.create(

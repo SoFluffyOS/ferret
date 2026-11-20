@@ -58,6 +58,7 @@ class FakeSession implements Session {
     this.flags = const [RemoteInputFeature.controlFlag],
     this.supported = true,
     this.answer,
+    this.platform = .PLATFORM_UNSPECIFIED,
   });
 
   @override
@@ -65,6 +66,7 @@ class FakeSession implements Session {
   final String name;
   final List<String> flags;
   final bool supported;
+  final Platform platform;
 
   /// Answers a request, or throws to fail it. Null fails with a timeout.
   FutureOr<GeneratedMessage> Function(GeneratedMessage request)? answer;
@@ -81,7 +83,8 @@ class FakeSession implements Session {
   bool get isClosed => hasClosed;
 
   @override
-  DeviceInfo? get remoteDevice => DeviceInfo(id: remoteDeviceId, name: name);
+  DeviceInfo? get remoteDevice =>
+      DeviceInfo(id: remoteDeviceId, name: name, platform: platform);
 
   @override
   bool supports(String featureId) =>

@@ -283,7 +283,12 @@ class ScreenSwitch {
         case .requesting || .waitingForConsent:
           return;
         case .denied:
-          _problem(.denied, deviceId: deviceId, denial: current.denial);
+          _problem(
+            .denied,
+            deviceId: deviceId,
+            denial: current.denial,
+            host: current.host,
+          );
         case .stopped:
           _problem(.stopped, deviceId: deviceId);
         case .lostConnection || .unreachable:
@@ -393,6 +398,7 @@ class ScreenSwitch {
     ScreenSwitchProblem problem, {
     String? deviceId,
     OutgoingDenial? denial,
+    HostKind? host,
     String? holder,
   }) {
     _set(
@@ -405,6 +411,7 @@ class ScreenSwitch {
         },
         problem: problem,
         denial: denial,
+        host: host,
         secureInputHolder: holder,
         at: _clock(),
       ),

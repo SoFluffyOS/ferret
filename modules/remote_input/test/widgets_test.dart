@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protobuf/protobuf.dart';
+import 'package:protocol/protocol.dart' show Platform;
 import 'package:protocol/remote_input.dart' hide Key;
 import 'package:provider/provider.dart';
 import 'package:remote_input/remote_input.dart';
@@ -22,9 +23,10 @@ void main() {
   Future<void> startFeature({
     bool computer = true,
     InjectorStatus status = const .ready(.quartz),
+    Platform platform = .PLATFORM_UNSPECIFIED,
   }) async {
     host = await FakeHost.create();
-    pixel = FakeSession('pixel', name: 'Pixel');
+    pixel = FakeSession('pixel', name: 'Pixel', platform: platform);
     host.sessions = [pixel];
     injector = FakeInjector(statusNow: status);
     feature = RemoteInputFeature(
@@ -276,8 +278,11 @@ void main() {
     Future<TouchpadViewModel> openPage(
       WidgetTester tester, {
       GeneratedMessage? reply,
+      Platform platform = .PLATFORM_UNSPECIFIED,
     }) async {
-      await tester.runAsync(() => startFeature(computer: false));
+      await tester.runAsync(
+        () => startFeature(computer: false, platform: platform),
+      );
       pixel.answer = (_) => reply ?? ControlGrant(version: 1);
       final viewModel = TouchpadViewModel(feature);
       await tester.runAsync(() => viewModel.start('pixel'));
@@ -447,6 +452,7 @@ void main() {
       await openPage(
         tester,
         reply: ControlDeny(reason: .DENY_REASON_NEEDS_PERMISSION),
+        platform: .PLATFORM_MACOS,
       );
 
       expect(
@@ -458,6 +464,71 @@ void main() {
       );
       expect(find.text('Try again'), findsOneWidget);
     });
+
+    for (final (platform, words) in [
+      (
+        Platform.PLATFORM_WINDOWS,
+        'Pixel needs permission to move the pointer and type first. On '
+            'Pixel: open Ferret → Settings → Control and click Allow access.',
+      ),
+      (
+        Platform.PLATFORM_LINUX,
+        'Pixel needs write access to /dev/uinput, or xdotool or ydotool, '
+            'first. On Pixel: open Ferret → Settings → Control to see what it '
+            'needs.',
+      ),
+      (
+        Platform.PLATFORM_UNSPECIFIED,
+        'Pixel needs permission to move the pointer and type first. On '
+            'Pixel: open Ferret → Settings → Control and click Allow access.',
+      ),
+    ]) {
+      testWidgets('a missing permission on ${platform.name} never says '
+          'Accessibility', (tester) async {
+        await openPage(
+          tester,
+          reply: ControlDeny(reason: .DENY_REASON_NEEDS_PERMISSION),
+          platform: platform,
+        );
+
+        expect(find.text(words), findsOneWidget);
+        expect(find.textContaining('Accessibility'), findsNothing);
+      });
+    }
+
+    for (final (platform, words) in [
+      (
+        Platform.PLATFORM_MACOS,
+        "Pixel can't move the pointer or type anymore. On Pixel: check "
+            'Accessibility access.',
+      ),
+      (
+        Platform.PLATFORM_WINDOWS,
+        "Pixel can't move the pointer or type anymore. On Pixel: open "
+            'Ferret → Settings → Control to see why.',
+      ),
+      (
+        Platform.PLATFORM_LINUX,
+        "Pixel can't move the pointer or type anymore. On Pixel: open "
+            'Ferret → Settings → Control and check /dev/uinput, xdotool or '
+            'ydotool.',
+      ),
+    ]) {
+      testWidgets('a failed stop on ${platform.name} names what that '
+          'computer needs', (tester) async {
+        final viewModel = await openPage(tester, platform: platform);
+        await tester.runAsync(
+          () => feature.onEnvelope(
+            pixel,
+            envelopeOf(ControlStop(reason: .STOP_REASON_FAILED)),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(viewModel.current?.phase, OutgoingPhase.stopped);
+        expect(find.text(words), findsOneWidget);
+      });
+    }
 
     testWidgets('waiting for the owner says so', (tester) async {
       await openPage(tester, reply: ControlPending(timeoutSeconds: 60));
