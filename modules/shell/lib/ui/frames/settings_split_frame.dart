@@ -22,6 +22,12 @@ class _SettingsSplitFrameState extends State<SettingsSplitFrame> {
   @override
   Widget build(BuildContext context) {
     final side = PageInsets.side(context.screenSize);
+    // Large text widens the rows by up to half, so "To your computer"
+    // still fits on a line at 200%.
+    final grow = ((MediaQuery.textScalerOf(context).scale(1) - 1) / 2).clamp(
+      0.0,
+      0.5,
+    );
 
     return ColoredBox(
       color: context.palette.background,
@@ -29,7 +35,7 @@ class _SettingsSplitFrameState extends State<SettingsSplitFrame> {
         crossAxisAlignment: .stretch,
         children: [
           SizedBox(
-            width: PaneWidths.settingsList,
+            width: PaneWidths.settingsList * (1 + grow),
             child: SafeArea(
               right: false,
               child: FocusTraversalGroup(

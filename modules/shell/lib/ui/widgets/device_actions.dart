@@ -41,6 +41,9 @@ class DeviceActions extends StatelessWidget {
         for (final (position, action) in buttons.indexed)
           Button(
             mainAxisSize: .min,
+            // A label longer than the pane, at large text or in split
+            // screen, ends in "…" instead of running off the button.
+            titleExpand: .shrink,
             variant: switch (position == 0 && hasPrimary) {
               true => .primary,
               false => .ghost,

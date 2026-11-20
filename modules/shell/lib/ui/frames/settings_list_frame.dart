@@ -43,7 +43,16 @@ class SettingsListFrame extends StatelessWidget {
         if (showsThisDevice) ...[
           GroupedCard(
             separatorIndent: NavRow.placeIndent,
-            children: [_row(l10n.settingsThisDevice, const ThisDevicePick())],
+            children: [
+              _row(
+                l10n.settingsThisDevice,
+                const ThisDevicePick(),
+                icon: deviceIconFor(
+                  scope.featureContext.engine.device.formFactor,
+                  scope.featureContext.engine.device.platform,
+                ),
+              ),
+            ],
           ),
           Spacing.v24,
         ],
@@ -95,11 +104,15 @@ class SettingsListFrame extends StatelessWidget {
     SettingsPick pick, {
     String value = '',
     String? attentionLabel,
+    IconData? icon,
   }) => NavRow(
     title: title,
     value: value,
     attentionLabel: attentionLabel,
-    place: pick.place,
+    place: switch (icon) {
+      final icon? => (icon: icon, color: pick.place.color),
+      null => pick.place,
+    },
     isSelected: pick == picked,
     showsChevron: picked == null,
     onTap: () => onPick(pick),

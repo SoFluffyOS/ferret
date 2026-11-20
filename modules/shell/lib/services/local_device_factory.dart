@@ -1,8 +1,8 @@
 import 'dart:io' as io;
-import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:protocol/protocol.dart';
 
 /// Describes this device from what the platform reports. [name] overrides the
@@ -15,7 +15,7 @@ Future<LocalDevice> describeThisDevice({
 
   if (io.Platform.isAndroid) {
     final android = await info.androidInfo;
-    final isTablet = _isLargeScreen();
+    final isTablet = ThisComputer.isTabletScreen;
     return LocalDevice(
       name: name ?? android.model,
       platform: .PLATFORM_ANDROID,
@@ -77,16 +77,4 @@ Future<LocalDevice> describeThisDevice({
     model: linux.prettyName,
     appVersion: appVersion,
   );
-}
-
-/// Tablets have a shortest side of at least 600 logical pixels.
-bool _isLargeScreen() {
-  final views = PlatformDispatcher.instance.views;
-  if (views.isEmpty) {
-    return false;
-  }
-
-  final view = views.first;
-  final logical = view.physicalSize / view.devicePixelRatio;
-  return logical.shortestSide >= 600;
 }
