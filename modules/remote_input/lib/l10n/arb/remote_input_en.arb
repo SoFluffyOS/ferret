@@ -161,7 +161,7 @@
     }
   },
   "checkAgain": "Check again",
-  "settingsPerDevice": "To let one phone control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open the phone from Home.",
+  "settingsPerDevice": "To let one phone or computer control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open it from Home.",
   "@settingsPerDevice": {
     "placeholders": {
       "here": {
@@ -680,7 +680,16 @@
     }
   },
   "settingsScreenSwitchBody": "⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.",
-  "settingsScreenReady": "On. Uses Input Monitoring and Accessibility.",
+  "settingsScreenNext": "On. ⌃⌥→ goes to {names}.",
+  "@settingsScreenNext": {
+    "description": "names: the connected computers in switch order, joined with ' → '.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsScreenNoTarget": "On. No computer to switch to yet: open Ferret on your other computer.",
   "settingsScreenAccess": "Needs Input Monitoring and Accessibility",
   "settingsScreenAccessBody": "So Ferret can hold {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keys and pointer while they're on another computer. If this stays after you allow both, quit and reopen Ferret.",
   "@settingsScreenAccessBody": {
@@ -738,6 +747,22 @@
   "@screenSecureInputBody": {
     "placeholders": {
       "here": {
+        "type": "String"
+      }
+    }
+  },
+  "screenSecureInputApp": "{app} is holding your keys",
+  "@screenSecureInputApp": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "screenSecureInputAppBody": "Quit {app} or close its password field, then press ⌃⌥→ again. It turned on macOS secure input, which hides your typing from Ferret.",
+  "@screenSecureInputAppBody": {
+    "placeholders": {
+      "app": {
         "type": "String"
       }
     }

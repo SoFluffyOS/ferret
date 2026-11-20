@@ -76,6 +76,7 @@ void main() {
       canControl: false,
       canSwitchScreens: true,
       capture: () => capture,
+      secureInputHolder: () async => null,
     );
     pcFeature = RemoteInputFeature(
       injector: () => injector,

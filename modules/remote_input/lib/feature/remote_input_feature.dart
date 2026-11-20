@@ -21,6 +21,7 @@ class RemoteInputFeature extends Feature {
     bool? canControl,
     bool? canSwitchScreens,
     InputCapture Function()? capture,
+    Future<String?> Function()? secureInputHolder,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.idleTimeout = const Duration(minutes: 10),
@@ -34,6 +35,7 @@ class RemoteInputFeature extends Feature {
            (InputCapture.isSupportedPlatform &&
                (canBeControlled ?? InputInjector.isSupportedPlatform)),
        _createCapture = capture ?? InputCapture.current,
+       _secureInputHolder = secureInputHolder ?? SecureInputHolder.find,
        _clock = clock ?? DateTime.now;
 
   static const featureId = 'remote_input';
@@ -75,6 +77,7 @@ class RemoteInputFeature extends Feature {
 
   final InputInjector Function() _createInjector;
   final InputCapture Function() _createCapture;
+  final Future<String?> Function() _secureInputHolder;
   final ScreenLocker _locker;
   final Map<String, OutgoingLock> _locks = {};
   final DateTime Function() _clock;
@@ -172,6 +175,7 @@ class RemoteInputFeature extends Feature {
         client: screenClient,
         settings: settings,
         capture: _createCapture,
+        secureInputHolder: _secureInputHolder,
         clock: _clock,
       );
       _screenClient = screenClient;

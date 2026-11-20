@@ -332,7 +332,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @settingsPerDevice.
   ///
   /// In en, this message translates to:
-  /// **'To let one phone control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open the phone from Home.'**
+  /// **'To let one phone or computer control {here, select, macOS{this Mac} windows{this PC} other{this computer}} without asking, open it from Home.'**
   String settingsPerDevice(String here);
 
   /// No description provided for @settingsHostTitle.
@@ -1019,11 +1019,17 @@ abstract class RemoteInputLocalizations {
   /// **'⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.'**
   String get settingsScreenSwitchBody;
 
-  /// No description provided for @settingsScreenReady.
+  /// names: the connected computers in switch order, joined with ' → '.
   ///
   /// In en, this message translates to:
-  /// **'On. Uses Input Monitoring and Accessibility.'**
-  String get settingsScreenReady;
+  /// **'On. ⌃⌥→ goes to {names}.'**
+  String settingsScreenNext(String names);
+
+  /// No description provided for @settingsScreenNoTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'On. No computer to switch to yet: open Ferret on your other computer.'**
+  String get settingsScreenNoTarget;
 
   /// No description provided for @settingsScreenAccess.
   ///
@@ -1120,6 +1126,18 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'Finish or close it, then press ⌃⌥→ again. While it\'s open, macOS hides your typing from Ferret, so your keys stay on {here, select, macOS{this Mac} windows{this PC} other{this computer}}.'**
   String screenSecureInputBody(String here);
+
+  /// No description provided for @screenSecureInputApp.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} is holding your keys'**
+  String screenSecureInputApp(String app);
+
+  /// No description provided for @screenSecureInputAppBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit {app} or close its password field, then press ⌃⌥→ again. It turned on macOS secure input, which hides your typing from Ferret.'**
+  String screenSecureInputAppBody(String app);
 
   /// No description provided for @screenCaptureFailed.
   ///

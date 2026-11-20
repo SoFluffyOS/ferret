@@ -25,6 +25,7 @@ void main() {
       inputMonitoring: true,
       accessibility: true,
     ),
+    String? secureInputHolder,
   }) async {
     await tester.runAsync(() async {
       host = await FakeHost.create(settings: settings);
@@ -37,6 +38,7 @@ void main() {
           canControl: false,
           canSwitchScreens: true,
           capture: () => capture,
+          secureInputHolder: () async => secureInputHolder,
         ),
       );
       await ui.feature.start(host);
@@ -91,10 +93,7 @@ void main() {
     );
     expect(find.textContaining('⌃⌥→ sends them'), findsOneWidget);
     expect(capture.switchKeysOn, isNull);
-    expect(
-      find.text('On. Uses Input Monitoring and Accessibility.'),
-      findsNothing,
-    );
+    expect(find.textContaining('On. '), findsNothing);
   });
 
   testWidgets('turning it on takes the keys and says it is ready', (
@@ -109,8 +108,55 @@ void main() {
     expect(ui.feature.settings.screenSwitch, isTrue);
     expect(capture.switchKeysOn, isTrue);
     expect(
-      find.text('On. Uses Input Monitoring and Accessibility.'),
+      find.text(
+        'On. No computer to switch to yet: open Ferret on your other '
+        'computer.',
+      ),
       findsOneWidget,
+    );
+  });
+
+  testWidgets('the ready line names where ⌃⌥→ goes, in order', (
+    tester,
+  ) async {
+    await start(tester, settings: {RemoteInputSettings.screenSwitchKey: true});
+    host.sessions = [
+      pc(),
+      FakeSession(
+        'imac',
+        name: 'Apple iMac',
+        flags: const [RemoteInputFeature.screenFlag],
+      ),
+      FakeSession('pixel', flags: const []),
+    ];
+    await showSettings(tester);
+
+    expect(find.text('On. ⌃⌥→ goes to Apple iMac → Desk PC.'), findsOneWidget);
+  });
+
+  testWidgets('a password manager holding secure input is named', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    await start(
+      tester,
+      settings: {RemoteInputSettings.screenSwitchKey: true},
+      secureInputHolder: 'Bitwarden',
+    );
+    host.sessions = [pc()];
+    capture.secureInput = true;
+    final l10n = lookupRemoteInputLocalizations(const Locale('en'));
+
+    await tester.runAsync(() async {
+      await ui.feature.screenSwitch?.next();
+      await settle();
+    });
+    final line = screenSwitchActivity(l10n, ui.screenViewModel).single;
+    expect(line.title, 'Bitwarden is holding your keys');
+    expect(
+      line.detail,
+      startsWith('Quit Bitwarden or close its password field'),
     );
   });
 

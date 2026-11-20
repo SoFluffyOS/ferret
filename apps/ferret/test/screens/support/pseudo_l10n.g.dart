@@ -3360,7 +3360,7 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get settingsScreenSwitchBody => pseudo(super.settingsScreenSwitchBody);
   @override
-  String get settingsScreenReady => pseudo(super.settingsScreenReady);
+  String get settingsScreenNoTarget => pseudo(super.settingsScreenNoTarget);
   @override
   String get settingsScreenAccess => pseudo(super.settingsScreenAccess);
   @override
@@ -3549,6 +3549,9 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String settingsScreenSwitch(String here) =>
       pseudo(super.settingsScreenSwitch(here));
   @override
+  String settingsScreenNext(String names) =>
+      pseudo(super.settingsScreenNext(names));
+  @override
   String settingsScreenAccessBody(String here) =>
       pseudo(super.settingsScreenAccessBody(here));
   @override
@@ -3566,6 +3569,12 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String screenSecureInputBody(String here) =>
       pseudo(super.screenSecureInputBody(here));
+  @override
+  String screenSecureInputApp(String app) =>
+      pseudo(super.screenSecureInputApp(app));
+  @override
+  String screenSecureInputAppBody(String app) =>
+      pseudo(super.screenSecureInputAppBody(app));
   @override
   String screenCaptureFailed(String here) =>
       pseudo(super.screenCaptureFailed(here));

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:engine/engine.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:remote_input/feature/remote_input_feature.dart';
@@ -28,6 +29,12 @@ class ScreenSwitchViewModel extends ChangeNotifier {
   CaptureAccess? get access => _switch?.access;
 
   bool get keysTaken => _switch?.keysTaken ?? false;
+
+  /// The connected computers ⌃⌥→ goes to, in order.
+  List<String> get targetNames => [
+    for (final session in _switch?.targets ?? const <Session>[])
+      feature.host.displayNameOf(session.remoteDeviceId),
+  ];
 
   /// On, and macOS still holds back access it needs.
   bool get needsAccess => enabled && !(access?.isGranted ?? true);

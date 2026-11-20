@@ -25,7 +25,10 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     return switch (state.problem) {
       .noComputer => screenNoComputer,
       .needsAccess => screenNeedsAccess,
-      .secureInput => screenSecureInput,
+      .secureInput => switch (state.secureInputHolder) {
+        final app? => screenSecureInputApp(app),
+        null => screenSecureInput,
+      },
       .captureFailed => screenCaptureFailed(ThisComputer.here),
       .denied => screenDenied(name),
       .lostConnection => screenLost(name),
@@ -40,7 +43,10 @@ extension RemoteInputLabels on RemoteInputLocalizations {
     return switch (state.problem) {
       .noComputer => screenNoComputerBody,
       .needsAccess => screenNeedsAccessBody,
-      .secureInput => screenSecureInputBody(ThisComputer.here),
+      .secureInput => switch (state.secureInputHolder) {
+        final app? => screenSecureInputAppBody(app),
+        null => screenSecureInputBody(ThisComputer.here),
+      },
       .denied => _denial(state.denial, name),
       .captureFailed ||
       .lostConnection ||

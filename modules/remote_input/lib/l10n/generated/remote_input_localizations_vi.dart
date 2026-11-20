@@ -250,7 +250,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Để một điện thoại điều khiển $_temp0 mà không cần hỏi, mở điện thoại đó từ Trang chủ.';
+    return 'Để một điện thoại hoặc máy tính điều khiển $_temp0 mà không cần hỏi, mở thiết bị đó từ Trang chủ.';
   }
 
   @override
@@ -825,8 +825,13 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       '⌃⌥→ chuyển chúng sang máy tính kế tiếp đang kết nối, ⌃⌥⎋ đưa chúng về lại. Mỗi máy tính sẽ hỏi ở lần đầu.';
 
   @override
-  String get settingsScreenReady =>
-      'Đang bật. Dùng quyền Giám sát đầu vào và Trợ năng.';
+  String settingsScreenNext(String names) {
+    return 'Đang bật. ⌃⌥→ chuyển sang $names.';
+  }
+
+  @override
+  String get settingsScreenNoTarget =>
+      'Đang bật. Chưa có máy tính nào để chuyển sang: mở Ferret trên máy tính kia.';
 
   @override
   String get settingsScreenAccess => 'Cần quyền Giám sát đầu vào và Trợ năng';
@@ -921,6 +926,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       },
     );
     return 'Nhập xong hoặc đóng nó, rồi nhấn lại ⌃⌥→. Khi ô này đang mở, macOS ẩn thao tác gõ phím khỏi Ferret, nên phím của bạn ở lại $_temp0.';
+  }
+
+  @override
+  String screenSecureInputApp(String app) {
+    return '$app đang giữ phím của bạn';
+  }
+
+  @override
+  String screenSecureInputAppBody(String app) {
+    return 'Thoát $app hoặc đóng ô mật khẩu của nó, rồi nhấn lại ⌃⌥→. Ứng dụng này đã bật chế độ nhập bảo mật của macOS, nên Ferret không thấy phím bạn gõ.';
   }
 
   @override

@@ -205,7 +205,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Revoke'), findsNothing);
-      expect(find.textContaining('open the phone from Home'), findsOneWidget);
+      expect(find.textContaining('open it from Home'), findsOneWidget);
     });
 
     testWidgets('a check that could not run is a quiet state with a way '

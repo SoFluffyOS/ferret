@@ -251,7 +251,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'To let one phone control $_temp0 without asking, open the phone from Home.';
+    return 'To let one phone or computer control $_temp0 without asking, open it from Home.';
   }
 
   @override
@@ -826,8 +826,13 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       '⌃⌥→ sends them to the next connected computer, ⌃⌥⎋ brings them back. Each computer asks the first time.';
 
   @override
-  String get settingsScreenReady =>
-      'On. Uses Input Monitoring and Accessibility.';
+  String settingsScreenNext(String names) {
+    return 'On. ⌃⌥→ goes to $names.';
+  }
+
+  @override
+  String get settingsScreenNoTarget =>
+      'On. No computer to switch to yet: open Ferret on your other computer.';
 
   @override
   String get settingsScreenAccess => 'Needs Input Monitoring and Accessibility';
@@ -922,6 +927,16 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       },
     );
     return 'Finish or close it, then press ⌃⌥→ again. While it\'s open, macOS hides your typing from Ferret, so your keys stay on $_temp0.';
+  }
+
+  @override
+  String screenSecureInputApp(String app) {
+    return '$app is holding your keys';
+  }
+
+  @override
+  String screenSecureInputAppBody(String app) {
+    return 'Quit $app or close its password field, then press ⌃⌥→ again. It turned on macOS secure input, which hides your typing from Ferret.';
   }
 
   @override

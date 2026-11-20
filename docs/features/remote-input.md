@@ -66,13 +66,18 @@ On the Mac, turn on **Use this Mac's keyboard and mouse on my other computers** 
 - **⌃⌥→** sends the Mac's keyboard and mouse to the next connected computer. Press it again for the one after. After the last one, they come home.
 - **⌃⌥⎋** brings them back to the Mac. ALWAYS, whatever happens on the other computer.
 
-That's it. Type on the PC with your Mac keyboard: **⌘C** is Ctrl+C there, so copy and paste feel the same.
+Not sure which one is next? The setting says it: **On. ⌃⌥→ goes to Desk PC → iMac.**
+
+That's it. Type on the PC with your Mac keyboard: **⌘C** is Ctrl+C there, so copy and paste feel the same. Switch back and every key you held is let go, so nothing stays stuck down.
 
 - 🔐 The other computer asks the first time: **Let MacBook Air use this PC with its keyboard and mouse?** Pick **Always allow** and the next switch is instant. While it's allowed, that computer says **MacBook Air is controlling this PC**, with **Stop**.
+- 🖱️ That first question shows up on the PC, so answer it with the PC's own mouse. Or skip it: on the PC, open **MacBook Air** in Ferret and turn on **Control this PC without asking**. Do it once and the PC's mouse can go in a drawer.
 - 🔌 Lose the connection and the keyboard and mouse are back on the Mac right away. Same when someone presses **Stop** on the other computer.
 - 🙈 While they're away, the Mac's pointer freezes and nothing you type lands on the Mac.
 - 🍎 The Mac needs **Input Monitoring** and **Accessibility** for this. Ferret asks the first time you turn it on or press ⌃⌥→. Still asking after you allowed both? Quit and reopen Ferret.
 - 🔑 A password field on the Mac turns on macOS secure input, which hides your typing from Ferret. Ferret won't switch while one is active, and brings everything home if one turns on, with a notice that says why.
+- 🔑 No password field in sight? Another app holds it. Password managers do that a lot. Ferret names the app, like **Bitwarden is holding your keys**: quit it or close its password field, and press ⌃⌥→ again.
+- 🪟 On a PC, the sign-in screen and **Yes/No** admin prompts ignore it. That's a Windows rule. Use the PC's own keyboard for those.
 - ♿ VoiceOver uses ⌃⌥ too. While this is on, ⌃⌥→ and ⌃⌥⎋ belong to Ferret.
 
 For now a Mac sends, and a Mac, a PC or a Linux computer receives. Pushing the pointer off the edge of the screen comes next.

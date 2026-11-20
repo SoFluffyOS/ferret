@@ -8,6 +8,7 @@ import 'package:remote_input/models/models.dart';
 import 'package:remote_input/services/capture_translator.dart';
 import 'package:remote_input/services/control_client.dart';
 import 'package:remote_input/services/input_codec.dart';
+import 'package:remote_input/services/secure_input_holder.dart';
 
 /// One keyboard and mouse for several computers, from this Mac: ⌃⌥→ sends
 /// them to the next connected computer that takes them, ⌃⌥⎋ brings them
@@ -20,12 +21,14 @@ class ScreenSwitch {
     required ControlClient client,
     required RemoteInputSettings settings,
     required InputCapture Function() capture,
+    Future<String?> Function()? secureInputHolder,
     DateTime Function()? clock,
   }) : _host = host,
        _featureId = featureId,
        _client = client,
        _settings = settings,
        _createCapture = capture,
+       _secureInputHolder = secureInputHolder ?? SecureInputHolder.find,
        _clock = clock ?? DateTime.now;
 
   /// Flag in `FeatureSupport`: this computer takes another computer's
@@ -37,6 +40,7 @@ class ScreenSwitch {
   final ControlClient _client;
   final RemoteInputSettings _settings;
   final InputCapture Function() _createCapture;
+  final Future<String?> Function() _secureInputHolder;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
@@ -64,6 +68,7 @@ class ScreenSwitch {
   Future<void> start() async {
     _subscriptions
       ..add(_client.changes.listen((_) => unawaited(_onClient())))
+      ..add(_host.sessionChanges.listen((_) => _emit()))
       ..add(
         _settings.changes
             .where((key) => key == RemoteInputSettings.screenSwitchKey)
@@ -209,7 +214,11 @@ class ScreenSwitch {
     }
 
     if (await _quietly(capture.secureInputOn) ?? false) {
-      _problem(.secureInput, deviceId: deviceId);
+      _problem(
+        .secureInput,
+        deviceId: deviceId,
+        holder: await _quietly<String?>(_secureInputHolder),
+      );
       return;
     }
 
@@ -305,10 +314,17 @@ class ScreenSwitch {
     if (held == null) {
       final secure = await _quietly(capture.secureInputOn) ?? false;
       await _client.stop();
-      _problem(switch (secure) {
-        true => .secureInput,
-        false => .captureFailed,
-      }, deviceId: deviceId);
+      _problem(
+        switch (secure) {
+          true => .secureInput,
+          false => .captureFailed,
+        },
+        deviceId: deviceId,
+        holder: switch (secure) {
+          true => await _quietly<String?>(_secureInputHolder),
+          false => null,
+        },
+      );
       return;
     }
 
@@ -351,6 +367,10 @@ class ScreenSwitch {
   }
 
   Future<void> _bringHome({ScreenSwitchProblem? problem}) async {
+    final holder = switch (problem) {
+      .secureInput => await _quietly<String?>(_secureInputHolder),
+      _ => null,
+    };
     final state = _state;
     switch (state.phase) {
       case .home:
@@ -362,15 +382,18 @@ class ScreenSwitch {
         await _leave();
     }
 
-    if (problem != null) {
-      _problem(problem, deviceId: state.deviceId);
+    if (problem == null) {
+      return;
     }
+
+    _problem(problem, deviceId: state.deviceId, holder: holder);
   }
 
   void _problem(
     ScreenSwitchProblem problem, {
     String? deviceId,
     OutgoingDenial? denial,
+    String? holder,
   }) {
     _set(
       ScreenSwitchState(
@@ -382,6 +405,7 @@ class ScreenSwitch {
         },
         problem: problem,
         denial: denial,
+        secureInputHolder: holder,
         at: _clock(),
       ),
     );

@@ -87,11 +87,20 @@ class _Status extends StatelessWidget {
       return NoticeBlock(title: l10n.settingsScreenKeysTaken);
     }
 
+    final names = context.select<ScreenSwitchViewModel, String>(
+      (viewModel) => viewModel.targetNames.join(' → '),
+    );
+    final style = context.fluffyTheme.typography.caption1;
+    if (names.isEmpty) {
+      return Text(
+        l10n.settingsScreenNoTarget,
+        style: style.copyWith(color: context.palette.mutedText),
+      );
+    }
+
     return Text(
-      l10n.settingsScreenReady,
-      style: context.fluffyTheme.typography.caption1.copyWith(
-        color: context.palette.success,
-      ),
+      l10n.settingsScreenNext(names),
+      style: style.copyWith(color: context.palette.success),
     );
   }
 }

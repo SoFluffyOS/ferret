@@ -100,14 +100,20 @@ class _NoCapture implements InputCapture {
 /// This Mac ([here]) and the other one ([there]), each with its own
 /// harmless capture.
 class _Macs {
-  _Macs({bool granted = true})
+  _Macs({bool granted = true, this.secureInputHolder})
     : hereCapture = _NoCapture(granted: granted),
       thereCapture = _NoCapture();
 
   final _NoCapture hereCapture;
   final _NoCapture thereCapture;
-  late final List<FeatureUi> hereFeatures = _features(hereCapture);
-  late final List<FeatureUi> thereFeatures = _features(thereCapture);
+
+  /// The app macOS says holds secure input, for the password lines.
+  final String? secureInputHolder;
+  late final List<FeatureUi> hereFeatures = _features(
+    hereCapture,
+    secureInputHolder,
+  );
+  late final List<FeatureUi> thereFeatures = _features(thereCapture, null);
 
   RemoteInputFeature get here => _remote(hereFeatures);
 
@@ -116,7 +122,10 @@ class _Macs {
   static RemoteInputFeature _remote(List<FeatureUi> features) =>
       features.whereType<RemoteInputFeatureUi>().single.feature;
 
-  static List<FeatureUi> _features(InputCapture capture) => [
+  static List<FeatureUi> _features(
+    InputCapture capture,
+    String? secureInputHolder,
+  ) => [
     for (final feature in appFeatures())
       switch (feature) {
         RemoteInputFeatureUi() => RemoteInputFeatureUi(
@@ -126,6 +135,7 @@ class _Macs {
             canControl: false,
             canSwitchScreens: true,
             capture: () => capture,
+            secureInputHolder: () async => secureInputHolder,
           ),
         ),
         _ => feature,
@@ -176,6 +186,15 @@ final _screens = <String, _Script>{
       await Future<void>.delayed(const Duration(milliseconds: 100));
     });
     await _openKeyboardSettings(tester, rig);
+  },
+  'settings_ready': (tester, rig, macs) async {
+    await tester.runAsync(() async {
+      await macs.here.screenSwitch?.setEnabled(true);
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await _openKeyboardSettings(tester, rig);
+    await _pairOther(tester, rig, macs);
+    await rig.settle(tester);
   },
   'settings_access': (tester, rig, macs) async {
     await tester.runAsync(() async {
@@ -228,6 +247,14 @@ final _screens = <String, _Script>{
     });
     await rig.settle(tester);
   },
+  'password_manager': (tester, rig, macs) async {
+    await _goAway(tester, rig, macs);
+    await tester.runAsync(() async {
+      macs.hereCapture.end(.secureInput);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+    });
+    await rig.settle(tester);
+  },
   'consent': (tester, rig, macs) async {
     await _pairOther(tester, rig, macs);
     await tester.runAsync(() async {
@@ -264,7 +291,13 @@ void main() {
             reportError?.call(details);
           };
           try {
-            final macs = _Macs(granted: name != 'settings_access');
+            final macs = _Macs(
+              granted: name != 'settings_access',
+              secureInputHolder: switch (name) {
+                'password_manager' => 'Bitwarden',
+                _ => null,
+              },
+            );
             final rig = await ScreenRig.create(
               tester,
               features: macs.hereFeatures,

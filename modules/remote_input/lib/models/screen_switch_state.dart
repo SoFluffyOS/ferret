@@ -43,6 +43,7 @@ class ScreenSwitchState {
     this.deviceName = '',
     this.problem,
     this.denial,
+    this.secureInputHolder,
     this.at,
   });
 
@@ -55,6 +56,10 @@ class ScreenSwitchState {
   final String deviceName;
   final ScreenSwitchProblem? problem;
   final OutgoingDenial? denial;
+
+  /// The app that turned on secure input, such as a password manager,
+  /// when macOS says which.
+  final String? secureInputHolder;
 
   /// When this state began.
   final DateTime? at;
