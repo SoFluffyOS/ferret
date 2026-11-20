@@ -30,6 +30,19 @@ void main() {
     );
   });
 
+  test('a name that already says whose it is stays as it is', () async {
+    await settings.set(SharedComputer.sharedKey, true);
+
+    expect(
+      shared(const {'USER': 'simon'}).nameFor('Simon’s MacBook Pro'),
+      'Simon’s MacBook Pro',
+    );
+    expect(
+      shared(const {'USER': 'anna'}).nameFor('Simon’s MacBook Pro'),
+      'Simon’s MacBook Pro (Anna)',
+    );
+  });
+
   test('a name the person chose always wins', () async {
     await settings.set(SharedComputer.sharedKey, true);
     await settings.set(SharedComputer.nameKey, 'Anna\'s corner');

@@ -46,10 +46,16 @@ class SharedComputer {
     return '${first[0].toUpperCase()}${first.substring(1)}';
   }
 
-  /// [computerName] as this account goes by on the network.
+  /// [computerName] as this account goes by on the network. A name that
+  /// already says whose it is, such as "Simon's MacBook Pro" for `simon`,
+  /// stays as it is.
   String nameFor(String computerName) {
     final account = accountName;
     if (!isShared || hasChosenName || account == null) {
+      return computerName;
+    }
+
+    if (computerName.toLowerCase().contains(account.toLowerCase())) {
       return computerName;
     }
 
