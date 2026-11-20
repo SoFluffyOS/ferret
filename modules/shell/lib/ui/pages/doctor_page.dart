@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -244,6 +245,23 @@ class _DoctorPageState extends State<DoctorPage> {
         await _copyFirewallCommand();
       case .copyDiagnostics:
         await _copy();
+      case .allowLocalNetwork:
+        final system = FerretSystem();
+        final access = await system.requestLocalNetworkAccess();
+        switch (access) {
+          case .granted:
+            system.onNetworkChange(.available);
+          case .blocked:
+            await system.openAppSettings();
+          case .notGranted || .notNeeded:
+            break;
+        }
+
+        if (mounted) {
+          _run();
+        }
+      case .openAppSettings:
+        await FerretSystem().openAppSettings();
       case .reachOverVpn:
         if (widget.deviceId case final deviceId?) {
           await Navigator.of(context).push(
@@ -288,6 +306,8 @@ class _DoctorPageState extends State<DoctorPage> {
     .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
     .copyDiagnostics => l10n.doctorFixCopy,
     .reachOverVpn => l10n.doctorFixReachOverVpn,
+    .allowLocalNetwork => l10n.doctorFixAllowLocalNetwork,
+    .openAppSettings => l10n.localNetworkOpenSettings,
   };
 
   /// Ferret never heard where this device is, so there was nothing to
@@ -356,6 +376,9 @@ class _DoctorPageState extends State<DoctorPage> {
     final here = l10n.here(local);
 
     return switch ((check.kind, check.status)) {
+      (.localNetwork, _) when check.detail == LocalNetworkAccess.blocked.name =>
+        l10n.doctorLocalNetworkBlocked,
+      (.localNetwork, _) => l10n.doctorLocalNetwork,
       (.network, .problem) => l10n.doctorNetworkProblem(here),
       (.network, _) => l10n.doctorNetworkOk(here),
       (.mobileData, _) when device.isEmpty => l10n.doctorMobileDataAny(here),

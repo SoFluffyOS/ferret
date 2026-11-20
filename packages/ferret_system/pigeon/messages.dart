@@ -28,6 +28,22 @@ enum NetworkChange {
 /// How a request to add the Quick Settings tile ended.
 enum AddTileResult { added, alreadyAdded, notAdded, unsupported }
 
+/// Whether Ferret may reach devices on the local network, which Android 17
+/// asks about for apps that target it.
+enum LocalNetworkAccess {
+  /// Nothing to ask: an older Android, or Ferret doesn't target Android 17
+  /// yet, so the network is open to it.
+  notNeeded,
+
+  granted,
+
+  /// Not allowed yet, and Android will still show its question.
+  notGranted,
+
+  /// Turned down, and Android won't ask again: only Settings can allow it.
+  blocked,
+}
+
 /// Something the user asked for from outside the app, such as the Quick
 /// Settings tile or a notification action.
 class SystemActionMessage {
@@ -111,6 +127,14 @@ abstract class SystemHostApi {
 
   @async
   bool requestNotificationPermission();
+
+  /// Android 17: whether Ferret may reach devices on this network.
+  LocalNetworkAccess localNetworkAccess();
+
+  /// Shows Android's question about the local network, and says how it
+  /// ended. Asks nothing where [localNetworkAccess] isn't [notGranted].
+  @async
+  LocalNetworkAccess requestLocalNetworkAccess();
 
   /// Whether the person is at this computer: the screen is unlocked and
   /// this account is the one in front (not switched away from). Always true

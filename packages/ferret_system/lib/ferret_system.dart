@@ -6,7 +6,7 @@ export 'package:ferret_system/src/desktop/desktop.dart';
 export 'package:ferret_system/src/device_maker.dart';
 export 'package:ferret_system/src/ferret_system.dart';
 export 'package:ferret_system/src/messages.g.dart'
-    show AddTileResult, NetworkChange;
+    show AddTileResult, LocalNetworkAccess, NetworkChange;
 export 'package:ferret_system/src/pause_state.dart';
 export 'package:ferret_system/src/polling_network_watcher.dart';
 export 'package:ferret_system/src/session/session.dart';

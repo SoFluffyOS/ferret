@@ -2224,4 +2224,40 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get iconDropUndo => 'Undo';
+
+  @override
+  String get localNetworkTitle => 'Find your devices';
+
+  @override
+  String get localNetworkBody =>
+      'Ferret finds and talks to your own devices on this Wi-Fi. Android asks before any app can, so Ferret needs your OK. Nothing leaves your network.';
+
+  @override
+  String get localNetworkAllow => 'Allow';
+
+  @override
+  String get localNetworkAllowTooltip =>
+      'Let Ferret reach your devices on this Wi-Fi';
+
+  @override
+  String get localNetworkBlocked =>
+      'Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.';
+
+  @override
+  String get localNetworkOpenSettings => 'Open Settings';
+
+  @override
+  String get localNetworkOpenSettingsTooltip =>
+      'Open Ferret\'s page in Android Settings';
+
+  @override
+  String get doctorLocalNetwork =>
+      'Ferret isn\'t allowed on this Wi-Fi yet, so it can\'t find or reach your devices. Android asks before any app can.';
+
+  @override
+  String get doctorLocalNetworkBlocked =>
+      'Ferret isn\'t allowed on this Wi-Fi, and Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.';
+
+  @override
+  String get doctorFixAllowLocalNetwork => 'Allow on this Wi-Fi';
 }

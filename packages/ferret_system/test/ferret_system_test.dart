@@ -33,6 +33,14 @@ void main() {
       await second.cancel();
     });
 
+    test('Android 17 is asked about the local network', () async {
+      expect(await system.localNetworkAccess(), LocalNetworkAccess.notGranted);
+      expect(
+        await system.requestLocalNetworkAccess(),
+        LocalNetworkAccess.granted,
+      );
+    });
+
     test('network watching follows listeners', () async {
       final changes = <NetworkChange>[];
       final subscription = system.networkChanges.listen(changes.add);
@@ -114,6 +122,11 @@ void main() {
       expect(await system.requestAddTile(), AddTileResult.unsupported);
       expect(await system.pauseState(), PauseState.running);
       expect(await system.serviceStopsToday(), 0);
+      expect(
+        await system.requestLocalNetworkAccess(),
+        LocalNetworkAccess.notNeeded,
+      );
+      expect(api.calls, isEmpty);
     });
 
     test('desktops watch the network by polling', () async {
@@ -154,6 +167,7 @@ class _FakeApi extends SystemHostApi {
   PauseMessage? pause;
   List<int> stops = const [];
   String maker = 'Google';
+  LocalNetworkAccess localNetwork = .notGranted;
   bool restricted = false;
 
   @override
@@ -185,4 +199,16 @@ class _FakeApi extends SystemHostApi {
 
   @override
   Future<bool> isBackgroundRestricted() async => restricted;
+
+  @override
+  Future<LocalNetworkAccess> localNetworkAccess() async {
+    calls.add('localNetworkAccess');
+    return localNetwork;
+  }
+
+  @override
+  Future<LocalNetworkAccess> requestLocalNetworkAccess() async {
+    calls.add('requestLocalNetworkAccess');
+    return localNetwork = .granted;
+  }
 }

@@ -208,6 +208,19 @@ enum AddTileResult: Int, CaseIterable {
   case unsupported = 3
 }
 
+/// Whether Ferret may reach devices on the local network, which Android 17
+/// asks about for apps that target it.
+enum LocalNetworkAccess: Int, CaseIterable {
+  /// Nothing to ask: an older Android, or Ferret doesn't target Android 17
+  /// yet, so the network is open to it.
+  case notNeeded = 0
+  case granted = 1
+  /// Not allowed yet, and Android will still show its question.
+  case notGranted = 2
+  /// Turned down, and Android won't ask again: only Settings can allow it.
+  case blocked = 3
+}
+
 /// Something the user asked for from outside the app, such as the Quick
 /// Settings tile or a notification action.
 ///
@@ -309,8 +322,14 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       }
       return nil
     case 131:
-      return SystemActionMessage.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return LocalNetworkAccess(rawValue: enumResultAsInt)
+      }
+      return nil
     case 132:
+      return SystemActionMessage.fromList(self.readValue() as! [Any?])
+    case 133:
       return PauseMessage.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -326,11 +345,14 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? AddTileResult {
       super.writeByte(130)
       super.writeValue(value.rawValue)
-    } else if let value = value as? SystemActionMessage {
+    } else if let value = value as? LocalNetworkAccess {
       super.writeByte(131)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? SystemActionMessage {
+      super.writeByte(132)
       super.writeValue(value.toList())
     } else if let value = value as? PauseMessage {
-      super.writeByte(132)
+      super.writeByte(133)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -395,6 +417,11 @@ protocol SystemHostApi {
   func requestAddTile() async throws -> AddTileResult
   func areNotificationsAllowed() throws -> Bool
   func requestNotificationPermission() async throws -> Bool
+  /// Android 17: whether Ferret may reach devices on this network.
+  func localNetworkAccess() throws -> LocalNetworkAccess
+  /// Shows Android's question about the local network, and says how it
+  /// ended. Asks nothing where [localNetworkAccess] isn't [notGranted].
+  func requestLocalNetworkAccess() async throws -> LocalNetworkAccess
   /// Whether the person is at this computer: the screen is unlocked and
   /// this account is the one in front (not switched away from). Always true
   /// where there is no such thing.
@@ -743,6 +770,37 @@ class SystemHostApiSetup {
       }
     } else {
       requestNotificationPermissionChannel.setMessageHandler(nil)
+    }
+    /// Android 17: whether Ferret may reach devices on this network.
+    let localNetworkAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.localNetworkAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      localNetworkAccessChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.localNetworkAccess()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      localNetworkAccessChannel.setMessageHandler(nil)
+    }
+    /// Shows Android's question about the local network, and says how it
+    /// ended. Asks nothing where [localNetworkAccess] isn't [notGranted].
+    let requestLocalNetworkAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_system.SystemHostApi.requestLocalNetworkAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      requestLocalNetworkAccessChannel.setMessageHandler { _, reply in
+        Task { @MainActor in
+          do {
+            let result = try await api.requestLocalNetworkAccess()
+            reply(wrapResult(result))
+          } catch {
+            reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      requestLocalNetworkAccessChannel.setMessageHandler(nil)
     }
     /// Whether the person is at this computer: the screen is unlocked and
     /// this account is the one in front (not switched away from). Always true

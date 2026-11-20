@@ -197,6 +197,10 @@ public class FerretSystemPlugin: NSObject, FlutterPlugin, SystemHostApi {
     func areNotificationsAllowed() throws -> Bool { true }
 
     func requestNotificationPermission() async throws -> Bool { true }
+
+    func localNetworkAccess() throws -> LocalNetworkAccess { .notNeeded }
+
+    func requestLocalNetworkAccess() async throws -> LocalNetworkAccess { .notNeeded }
 }
 
 /// What identifies a network: whether it's up, through which interfaces,

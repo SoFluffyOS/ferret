@@ -2965,6 +2965,66 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Undo'**
   String get iconDropUndo;
+
+  /// Title of the Android 17 card that asks to use the local network.
+  ///
+  /// In en, this message translates to:
+  /// **'Find your devices'**
+  String get localNetworkTitle;
+
+  /// Why Ferret asks for Android's local network permission, before discovery and pairing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret finds and talks to your own devices on this Wi-Fi. Android asks before any app can, so Ferret needs your OK. Nothing leaves your network.'**
+  String get localNetworkBody;
+
+  /// Short button: shows Android's local network question.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get localNetworkAllow;
+
+  /// Tooltip and screen reader label of the Allow button.
+  ///
+  /// In en, this message translates to:
+  /// **'Let Ferret reach your devices on this Wi-Fi'**
+  String get localNetworkAllowTooltip;
+
+  /// Shown when the local network permission was turned down for good.
+  ///
+  /// In en, this message translates to:
+  /// **'Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.'**
+  String get localNetworkBlocked;
+
+  /// Short button: opens Ferret's page in Android Settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get localNetworkOpenSettings;
+
+  /// Tooltip and screen reader label of Open Settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret\'s page in Android Settings'**
+  String get localNetworkOpenSettingsTooltip;
+
+  /// Fix connection line: Android 17's local network permission isn't granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret isn\'t allowed on this Wi-Fi yet, so it can\'t find or reach your devices. Android asks before any app can.'**
+  String get doctorLocalNetwork;
+
+  /// Fix connection line: the local network permission was turned down for good.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret isn\'t allowed on this Wi-Fi, and Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.'**
+  String get doctorLocalNetworkBlocked;
+
+  /// Fix connection button: shows Android's local network question.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow on this Wi-Fi'**
+  String get doctorFixAllowLocalNetwork;
 }
 
 class _ShellLocalizationsDelegate

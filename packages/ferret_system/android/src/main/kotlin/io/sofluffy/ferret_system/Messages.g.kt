@@ -238,6 +238,31 @@ enum class AddTileResult(val raw: Int) {
 }
 
 /**
+ * Whether Ferret may reach devices on the local network, which Android 17
+ * asks about for apps that target it.
+ */
+enum class LocalNetworkAccess(val raw: Int) {
+  /**
+   * Nothing to ask: an older Android, or Ferret doesn't target Android 17
+   * yet, so the network is open to it.
+   */
+  NOT_NEEDED(0),
+  GRANTED(1),
+  /** Not allowed yet, and Android will still show its question. */
+  NOT_GRANTED(2),
+  /** Turned down, and Android won't ask again: only Settings can allow it. */
+  BLOCKED(3);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): LocalNetworkAccess? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
+/**
  * Something the user asked for from outside the app, such as the Quick
  * Settings tile or a notification action.
  *
@@ -341,11 +366,16 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         }
       }
       131.toByte() -> {
+        (readValue(buffer) as Long?)?.let {
+          LocalNetworkAccess.ofRaw(it.toInt())
+        }
+      }
+      132.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           SystemActionMessage.fromList(it)
         }
       }
-      132.toByte() -> {
+      133.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
           PauseMessage.fromList(it)
         }
@@ -363,12 +393,16 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(130)
         writeValue(stream, value.raw.toLong())
       }
-      is SystemActionMessage -> {
+      is LocalNetworkAccess -> {
         stream.write(131)
+        writeValue(stream, value.raw.toLong())
+      }
+      is SystemActionMessage -> {
+        stream.write(132)
         writeValue(stream, value.toList())
       }
       is PauseMessage -> {
-        stream.write(132)
+        stream.write(133)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -431,6 +465,13 @@ interface SystemHostApi {
   suspend fun requestAddTile(): AddTileResult
   fun areNotificationsAllowed(): Boolean
   suspend fun requestNotificationPermission(): Boolean
+  /** Android 17: whether Ferret may reach devices on this network. */
+  fun localNetworkAccess(): LocalNetworkAccess
+  /**
+   * Shows Android's question about the local network, and says how it
+   * ended. Asks nothing where [localNetworkAccess] isn't [notGranted].
+   */
+  suspend fun requestLocalNetworkAccess(): LocalNetworkAccess
   /**
    * Whether the person is at this computer: the screen is unlocked and
    * this account is the one in front (not switched away from). Always true
@@ -816,6 +857,38 @@ interface SystemHostApi {
             CoroutineScope(Dispatchers.Main).launch {
               val wrapped: List<Any?> = try {
                 listOf(api.requestNotificationPermission())
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.localNetworkAccess$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.localNetworkAccess())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_system.SystemHostApi.requestLocalNetworkAccess$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                listOf(api.requestLocalNetworkAccess())
               } catch (exception: Throwable) {
                 MessagesPigeonUtils.wrapError(exception)
               }

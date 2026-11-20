@@ -259,6 +259,54 @@ class FerretSystemPlugin :
         }
     }
 
+    /**
+     * Android 17 asks before an app reaches the local network, but only apps
+     * that target it: below that, INTERNET still grants it, and Google asks
+     * apps not to request it.
+     */
+    override fun localNetworkAccess(): LocalNetworkAccess {
+        val appContext = context ?: return LocalNetworkAccess.NOT_NEEDED
+        if (!LocalNetwork.isAsked(appContext)) {
+            return LocalNetworkAccess.NOT_NEEDED
+        }
+
+        if (appContext.checkSelfPermission(LocalNetwork.PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+            return LocalNetworkAccess.GRANTED
+        }
+
+        return when (LocalNetwork.wasTurnedDown(appContext)) {
+            true -> LocalNetworkAccess.BLOCKED
+            false -> LocalNetworkAccess.NOT_GRANTED
+        }
+    }
+
+    override suspend fun requestLocalNetworkAccess(): LocalNetworkAccess {
+        val current = activity
+        val access = localNetworkAccess()
+        if (access != LocalNetworkAccess.NOT_GRANTED || current == null) {
+            return access
+        }
+
+        return suspendCancellableCoroutine { continuation ->
+            permissionResult?.invoke(false)
+            permissionResult = { granted ->
+                val answer = when {
+                    granted -> LocalNetworkAccess.GRANTED
+                    current.shouldShowRequestPermissionRationale(LocalNetwork.PERMISSION) ->
+                        LocalNetworkAccess.NOT_GRANTED
+                    else -> {
+                        LocalNetwork.rememberTurnedDown(current)
+                        LocalNetworkAccess.BLOCKED
+                    }
+                }
+                if (continuation.isActive) {
+                    continuation.resume(answer)
+                }
+            }
+            current.requestPermissions(arrayOf(LocalNetwork.PERMISSION), REQUEST_LOCAL_NETWORK)
+        }
+    }
+
     /** A phone in someone's hand has no other account in front; computers ask. */
     override fun isScreenSessionActive(): Boolean = true
 
@@ -267,14 +315,16 @@ class FerretSystemPlugin :
         permissions: Array<out String>,
         grantResults: IntArray,
     ): Boolean {
-        if (requestCode != REQUEST_NOTIFICATIONS) {
+        if (requestCode != REQUEST_NOTIFICATIONS && requestCode != REQUEST_LOCAL_NETWORK) {
             return false
         }
 
         val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
         permissionResult?.invoke(granted)
         permissionResult = null
-        context?.let { FerretService.refreshNotification(it) }
+        if (requestCode == REQUEST_NOTIFICATIONS) {
+            context?.let { FerretService.refreshNotification(it) }
+        }
         return true
     }
 
@@ -292,5 +342,6 @@ class FerretSystemPlugin :
 
     private companion object {
         const val REQUEST_NOTIFICATIONS = 47641
+        const val REQUEST_LOCAL_NETWORK = 47642
     }
 }

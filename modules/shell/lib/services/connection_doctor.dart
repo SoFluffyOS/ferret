@@ -20,6 +20,13 @@ enum DoctorFix {
 
   /// Opens the device's "Reach away from home" page.
   reachOverVpn,
+
+  /// Shows Android 17's question about the local network.
+  allowLocalNetwork,
+
+  /// Opens Ferret's page in Android's settings, where a local network
+  /// permission turned down for good can still be allowed.
+  openAppSettings,
 }
 
 /// One line of Fix connection: what was checked and what it found.
@@ -40,6 +47,10 @@ class DoctorCheck {
 }
 
 enum DoctorCheckKind {
+  /// Android 17 keeps Ferret off the local network until it is allowed.
+  /// [DoctorCheck.detail] is the [LocalNetworkAccess] name.
+  localNetwork,
+
   network,
   vpn,
   sameNetwork,
@@ -98,13 +109,15 @@ class ConnectionDoctor {
     NetworkInterfaces? interfaces,
     ReachProbe? probe,
     DateTime Function()? clock,
+    Future<LocalNetworkAccess> Function()? localNetwork,
   }) : _isWindows = isWindows ?? Platform.isWindows,
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
        _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
        _listInterfaces = interfaces ?? _systemInterfaces,
        _probe = probe ?? _knock,
-       _clock = clock ?? DateTime.now;
+       _clock = clock ?? DateTime.now,
+       _localNetwork = localNetwork ?? _systemLocalNetwork;
 
   final FerretEngine _engine;
 
@@ -125,6 +138,15 @@ class ConnectionDoctor {
   final NetworkInterfaces _listInterfaces;
   final ReachProbe _probe;
   final DateTime Function() _clock;
+  final Future<LocalNetworkAccess> Function() _localNetwork;
+
+  static Future<LocalNetworkAccess> _systemLocalNetwork() async {
+    if (!Platform.isAndroid) {
+      return .notNeeded;
+    }
+
+    return FerretSystem().localNetworkAccess();
+  }
 
   /// Discovery announces every few seconds, so this long without hearing
   /// anyone means nothing gets through, not bad luck.
@@ -167,6 +189,23 @@ class ConnectionDoctor {
       null => null,
     };
     _target = device;
+    final localNetwork = await _localNetwork();
+    if (localNetwork == .notGranted || localNetwork == .blocked) {
+      // Nothing else gets through until Android lets Ferret on the network.
+      yield [
+        DoctorCheck(
+          kind: .localNetwork,
+          status: .problem,
+          detail: localNetwork.name,
+          fixes: switch (localNetwork) {
+            .blocked => const [DoctorFix.openAppSettings],
+            _ => const [DoctorFix.allowLocalNetwork],
+          },
+        ),
+      ];
+      return;
+    }
+
     final firewall = await _firewallHint();
 
     final interfaces = await _interfaces();

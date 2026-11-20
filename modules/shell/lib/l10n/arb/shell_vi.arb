@@ -478,5 +478,15 @@
   "iconDropShelf": "Để lên kệ tạm",
   "iconDropKept": "Đã để lên kệ tạm",
   "iconDropSending": "{count, plural, =1{Đang gửi đến {name}} other{Đang gửi {count} tệp đến {name}}}",
-  "iconDropUndo": "Hoàn tác"
+  "iconDropUndo": "Hoàn tác",
+  "localNetworkTitle": "Tìm thiết bị của bạn",
+  "localNetworkBody": "Ferret tìm và trò chuyện với các thiết bị của chính bạn trên Wi-Fi này. Android hỏi trước khi bất kỳ ứng dụng nào làm vậy, nên Ferret cần bạn đồng ý. Không có gì rời khỏi mạng của bạn.",
+  "localNetworkAllow": "Cho phép",
+  "localNetworkAllowTooltip": "Cho Ferret kết nối các thiết bị của bạn trên Wi-Fi này",
+  "localNetworkBlocked": "Android sẽ không hỏi lại. Trong Cài đặt, mở Quyền, rồi Thiết bị ở gần, và chọn Cho phép.",
+  "localNetworkOpenSettings": "Mở Cài đặt",
+  "localNetworkOpenSettingsTooltip": "Mở trang của Ferret trong Cài đặt Android",
+  "doctorLocalNetwork": "Ferret chưa được phép dùng Wi-Fi này, nên không thể tìm hay kết nối thiết bị của bạn. Android hỏi trước khi bất kỳ ứng dụng nào làm vậy.",
+  "doctorLocalNetworkBlocked": "Ferret không được phép dùng Wi-Fi này, và Android sẽ không hỏi lại. Trong Cài đặt, mở Quyền, rồi Thiết bị ở gần, và chọn Cho phép.",
+  "doctorFixAllowLocalNetwork": "Cho phép trên Wi-Fi này"
 }

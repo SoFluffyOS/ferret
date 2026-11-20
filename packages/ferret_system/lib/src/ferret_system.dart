@@ -209,6 +209,17 @@ class FerretSystem implements SystemFlutterApi {
   Future<bool> requestNotificationPermission() =>
       _androidValue(_api.requestNotificationPermission, fallback: true);
 
+  /// Android 17: whether Ferret may reach devices on this network. Always
+  /// [LocalNetworkAccess.notNeeded] elsewhere, and until Ferret targets
+  /// Android 17.
+  Future<LocalNetworkAccess> localNetworkAccess() =>
+      _androidValue(_api.localNetworkAccess, fallback: .notNeeded);
+
+  /// Shows Android's question about the local network once it matters, and
+  /// says how it ended.
+  Future<LocalNetworkAccess> requestLocalNetworkAccess() =>
+      _androidValue(_api.requestLocalNetworkAccess, fallback: .notNeeded);
+
   /// Passes on what the user picked outside the app's window, such as the
   /// desktop tray's Send clipboard, the same way the tile's actions come.
   void emitAction(SystemAction action) => _actions.add(action);

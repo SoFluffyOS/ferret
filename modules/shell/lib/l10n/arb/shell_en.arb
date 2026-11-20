@@ -1774,5 +1774,45 @@
   "iconDropUndo": "Undo",
   "@iconDropUndo": {
     "description": "Button on the notice under the menubar icon: stops files dropped there from being sent."
+  },
+  "localNetworkTitle": "Find your devices",
+  "@localNetworkTitle": {
+    "description": "Title of the Android 17 card that asks to use the local network."
+  },
+  "localNetworkBody": "Ferret finds and talks to your own devices on this Wi-Fi. Android asks before any app can, so Ferret needs your OK. Nothing leaves your network.",
+  "@localNetworkBody": {
+    "description": "Why Ferret asks for Android's local network permission, before discovery and pairing."
+  },
+  "localNetworkAllow": "Allow",
+  "@localNetworkAllow": {
+    "description": "Short button: shows Android's local network question."
+  },
+  "localNetworkAllowTooltip": "Let Ferret reach your devices on this Wi-Fi",
+  "@localNetworkAllowTooltip": {
+    "description": "Tooltip and screen reader label of the Allow button."
+  },
+  "localNetworkBlocked": "Android won't ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.",
+  "@localNetworkBlocked": {
+    "description": "Shown when the local network permission was turned down for good."
+  },
+  "localNetworkOpenSettings": "Open Settings",
+  "@localNetworkOpenSettings": {
+    "description": "Short button: opens Ferret's page in Android Settings."
+  },
+  "localNetworkOpenSettingsTooltip": "Open Ferret's page in Android Settings",
+  "@localNetworkOpenSettingsTooltip": {
+    "description": "Tooltip and screen reader label of Open Settings."
+  },
+  "doctorLocalNetwork": "Ferret isn't allowed on this Wi-Fi yet, so it can't find or reach your devices. Android asks before any app can.",
+  "@doctorLocalNetwork": {
+    "description": "Fix connection line: Android 17's local network permission isn't granted."
+  },
+  "doctorLocalNetworkBlocked": "Ferret isn't allowed on this Wi-Fi, and Android won't ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.",
+  "@doctorLocalNetworkBlocked": {
+    "description": "Fix connection line: the local network permission was turned down for good."
+  },
+  "doctorFixAllowLocalNetwork": "Allow on this Wi-Fi",
+  "@doctorFixAllowLocalNetwork": {
+    "description": "Fix connection button: shows Android's local network question."
   }
 }

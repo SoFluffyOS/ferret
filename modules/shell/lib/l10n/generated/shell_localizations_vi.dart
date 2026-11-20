@@ -2216,4 +2216,40 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get iconDropUndo => 'Hoàn tác';
+
+  @override
+  String get localNetworkTitle => 'Tìm thiết bị của bạn';
+
+  @override
+  String get localNetworkBody =>
+      'Ferret tìm và trò chuyện với các thiết bị của chính bạn trên Wi-Fi này. Android hỏi trước khi bất kỳ ứng dụng nào làm vậy, nên Ferret cần bạn đồng ý. Không có gì rời khỏi mạng của bạn.';
+
+  @override
+  String get localNetworkAllow => 'Cho phép';
+
+  @override
+  String get localNetworkAllowTooltip =>
+      'Cho Ferret kết nối các thiết bị của bạn trên Wi-Fi này';
+
+  @override
+  String get localNetworkBlocked =>
+      'Android sẽ không hỏi lại. Trong Cài đặt, mở Quyền, rồi Thiết bị ở gần, và chọn Cho phép.';
+
+  @override
+  String get localNetworkOpenSettings => 'Mở Cài đặt';
+
+  @override
+  String get localNetworkOpenSettingsTooltip =>
+      'Mở trang của Ferret trong Cài đặt Android';
+
+  @override
+  String get doctorLocalNetwork =>
+      'Ferret chưa được phép dùng Wi-Fi này, nên không thể tìm hay kết nối thiết bị của bạn. Android hỏi trước khi bất kỳ ứng dụng nào làm vậy.';
+
+  @override
+  String get doctorLocalNetworkBlocked =>
+      'Ferret không được phép dùng Wi-Fi này, và Android sẽ không hỏi lại. Trong Cài đặt, mở Quyền, rồi Thiết bị ở gần, và chọn Cho phép.';
+
+  @override
+  String get doctorFixAllowLocalNetwork => 'Cho phép trên Wi-Fi này';
 }

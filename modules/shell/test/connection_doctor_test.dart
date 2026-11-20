@@ -100,6 +100,38 @@ void main() {
     }
   });
 
+  test('Android 17 without the local network permission: that line alone, '
+      'with Allow, or Open Settings once Android won\'t ask', () async {
+    for (final (access, fix) in [
+      (LocalNetworkAccess.notGranted, DoctorFix.allowLocalNetwork),
+      (LocalNetworkAccess.blocked, DoctorFix.openAppSettings),
+    ]) {
+      final checks = await ConnectionDoctor(
+        engine,
+        isWindows: false,
+        isLinux: false,
+        localNetwork: () async => access,
+      ).diagnose(null).last;
+
+      expect(checks, hasLength(1));
+      expect(checks.single.kind, DoctorCheckKind.localNetwork);
+      expect(checks.single.status, DoctorStatus.problem);
+      expect(checks.single.detail, access.name);
+      expect(checks.single.fixes, [fix]);
+    }
+  });
+
+  test('allowed, the local network line doesn\'t show', () async {
+    final checks = await ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      localNetwork: () async => .granted,
+    ).diagnose(null).last;
+
+    expect(checks.where((check) => check.kind == .localNetwork), isEmpty);
+  });
+
   test('on Windows with the installer\'s rules in place, the firewall line '
       'says so and offers nothing', () async {
     final checks = await diagnose(null, isWindows: true, rulesInstalled: true);

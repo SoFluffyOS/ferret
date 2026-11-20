@@ -50,6 +50,20 @@ class _Pixel extends Fake implements FerretSystem {
   Future<bool> canRequestAddTile() async => true;
 }
 
+/// A Pixel on Android 17 once Ferret targets it, before the local network
+/// is allowed.
+class _Android17 extends Fake implements FerretSystem {
+  _Android17(this.access);
+
+  final LocalNetworkAccess access;
+
+  @override
+  bool get isAndroid => true;
+
+  @override
+  Future<LocalNetworkAccess> localNetworkAccess() async => access;
+}
+
 List<FeatureUi> _features() => [
   for (final feature in phoneFeatures())
     switch (feature) {
@@ -98,6 +112,42 @@ final _screens = <String, _Script>{
       ),
     );
     expect(find.text('Add tile'), findsOneWidget);
+  },
+  'local_network_ask': (tester, rig) async {
+    await rig.open(
+      tester,
+      FerretPage(
+        title: 'Ferret',
+        backLabel: 'Back',
+        children: [LocalNetworkCard(system: _Android17(.notGranted))],
+      ),
+    );
+    expect(find.text('Allow'), findsOneWidget);
+  },
+  'local_network_blocked': (tester, rig) async {
+    await rig.open(
+      tester,
+      FerretPage(
+        title: 'Ferret',
+        backLabel: 'Back',
+        children: [LocalNetworkCard(system: _Android17(.blocked))],
+      ),
+    );
+    expect(find.text('Open Settings'), findsOneWidget);
+  },
+  'local_network_doctor': (tester, rig) async {
+    await rig.open(
+      tester,
+      DoctorPage(
+        doctorFor: (engine) => ConnectionDoctor(
+          engine,
+          isWindows: false,
+          isLinux: false,
+          localNetwork: () async => .notGranted,
+        ),
+      ),
+    );
+    expect(find.text('Allow on this Wi-Fi'), findsOneWidget);
   },
 };
 

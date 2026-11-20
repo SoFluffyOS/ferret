@@ -75,6 +75,7 @@ class HomePage extends StatelessWidget {
           false => .narrow,
         },
         children: [
+          const LocalNetworkCard(),
           const NeedsYouFrame(),
           const JoinedNoticesFrame(),
           const SuccessorsFrame(),
