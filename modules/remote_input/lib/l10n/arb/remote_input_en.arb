@@ -850,5 +850,14 @@
         "type": "String"
       }
     }
+  },
+  "controlWithTouchpad": "Control {device} with a touchpad and keyboard",
+  "@controlWithTouchpad": {
+    "description": "Tooltip and menu text for the short Control button (useAsTouchpad)",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   }
 }

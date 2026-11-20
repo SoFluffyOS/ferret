@@ -1043,4 +1043,9 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String inBeta(String text) {
     return '$text (beta)';
   }
+
+  @override
+  String controlWithTouchpad(String device) {
+    return 'Control $device with a touchpad and keyboard';
+  }
 }

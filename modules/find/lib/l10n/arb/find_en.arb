@@ -272,5 +272,14 @@
         "type": "String"
       }
     }
+  },
+  "ringToFind": "Ring {name} to find it",
+  "@ringToFind": {
+    "description": "Tooltip and menu text for the Ring button; also what people coming from other apps look for as 'find my phone'",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

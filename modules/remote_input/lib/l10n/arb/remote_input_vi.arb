@@ -183,5 +183,6 @@
   "screenStopped": "{device} đã dừng",
   "beta": "Beta",
   "betaTooltip": "Chạy tốt khi chúng tôi thử, nhưng chưa thử trên đủ thiết bị thật",
-  "inBeta": "{text} (beta)"
+  "inBeta": "{text} (beta)",
+  "controlWithTouchpad": "Điều khiển {device} bằng bàn di chuột và bàn phím"
 }

@@ -268,4 +268,9 @@ class FindLocalizationsEn extends FindLocalizations {
   String healthUnsupported(String name) {
     return 'Needs a Ferret update on $name';
   }
+
+  @override
+  String ringToFind(String name) {
+    return 'Ring $name to find it';
+  }
 }

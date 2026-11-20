@@ -268,4 +268,9 @@ class FindLocalizationsVi extends FindLocalizations {
   String healthUnsupported(String name) {
     return 'Cần cập nhật Ferret trên $name';
   }
+
+  @override
+  String ringToFind(String name) {
+    return 'Đổ chuông $name để tìm';
+  }
 }

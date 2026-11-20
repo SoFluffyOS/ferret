@@ -1198,6 +1198,12 @@ abstract class RemoteInputLocalizations {
   /// In en, this message translates to:
   /// **'{text} (beta)'**
   String inBeta(String text);
+
+  /// Tooltip and menu text for the short Control button (useAsTouchpad)
+  ///
+  /// In en, this message translates to:
+  /// **'Control {device} with a touchpad and keyboard'**
+  String controlWithTouchpad(String device);
 }
 
 class _RemoteInputLocalizationsDelegate

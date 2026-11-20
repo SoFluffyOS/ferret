@@ -182,5 +182,17 @@
   "limitIos": "iPhone doesn't let apps see what other apps play. You can still see and control media on your other devices.",
   "limitWindows": "Ferret sees players that show in the Windows media controls. Volume stays on this PC.",
   "limitLinux": "Ferret sees players that support MPRIS, which most Linux players do.",
-  "back": "Back"
+  "back": "Back",
+  "nowPlayingShort": "Now playing",
+  "@nowPlayingShort": {
+    "description": "Short button on a device's page that opens the controls for what plays there; the full sentence is controlMediaOn"
+  },
+  "controlMediaOn": "Control what plays on {device}",
+  "@controlMediaOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

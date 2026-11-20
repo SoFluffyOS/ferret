@@ -1042,4 +1042,9 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String inBeta(String text) {
     return '$text (beta)';
   }
+
+  @override
+  String controlWithTouchpad(String device) {
+    return 'Điều khiển $device bằng bàn di chuột và bàn phím';
+  }
 }

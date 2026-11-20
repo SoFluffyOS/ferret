@@ -218,6 +218,7 @@ class RemoteInputFeatureUi extends FeatureUi {
       FeatureAction(
         id: 'remote_input.touchpad',
         label: l10n.useAsTouchpad,
+        tooltip: l10n.controlWithTouchpad(device.device.name),
         icon: LucideIcons.mousePointer2,
         onPressed: () => unawaited(_openTouchpad(feature, device)),
       ),

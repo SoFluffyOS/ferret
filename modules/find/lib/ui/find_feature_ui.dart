@@ -122,6 +122,7 @@ class FindFeatureUi extends FeatureUi {
       FeatureAction(
         id: 'find.ring',
         label: context.findL10n.ring,
+        tooltip: context.findL10n.ringToFind(device.device.name),
         icon: LucideIcons.bellRing,
         homeOrder: 30,
         onPressed: () => unawaited(_ring(feature, device)),

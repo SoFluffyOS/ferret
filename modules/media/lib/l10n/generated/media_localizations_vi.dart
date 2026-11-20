@@ -263,4 +263,12 @@ class MediaLocalizationsVi extends MediaLocalizations {
 
   @override
   String get back => 'Quay lại';
+
+  @override
+  String get nowPlayingShort => 'Đang phát';
+
+  @override
+  String controlMediaOn(String device) {
+    return 'Điều khiển nội dung đang phát trên $device';
+  }
 }

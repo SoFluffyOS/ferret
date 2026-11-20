@@ -62,5 +62,6 @@
   "healthNeedsPermission": "Không làm phiền khiến {name} không kêu",
   "healthNotAnswering": "{name} không trả lời lần đổ chuông trước",
   "healthNoSound": "Lần trước {name} không phát được âm thanh",
-  "healthUnsupported": "Cần cập nhật Ferret trên {name}"
+  "healthUnsupported": "Cần cập nhật Ferret trên {name}",
+  "ringToFind": "Đổ chuông {name} để tìm"
 }

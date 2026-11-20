@@ -15,8 +15,8 @@ import 'package:media/ui/pages/now_playing_page.dart';
 import 'package:media/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 
-/// The app side of Media: the "now playing" line in Activity and its
-/// settings.
+/// The app side of Media: the "now playing" line in Activity, a button on
+/// the device that plays, and its settings.
 class MediaFeatureUi extends FeatureUi {
   MediaFeatureUi({MediaFeature? feature, MediaPlatform? platform})
     : _platform = platform ?? _currentPlatform(),
@@ -70,6 +70,42 @@ class MediaFeatureUi extends FeatureUi {
           feature.push<void>(NowPlayingPage(viewModel: viewModel)),
         ),
       );
+
+  /// Now playing on [device]'s page while one of its players has
+  /// something, so its controls are found from the device too.
+  @override
+  List<FeatureAction> deviceActions(
+    BuildContext context,
+    FeatureContext feature,
+    DeviceStatus device,
+  ) {
+    final players = [
+      for (final player in viewModel.players)
+        if (player.deviceId == device.device.id && player.isConnected) player,
+    ];
+    if (players.isEmpty) {
+      return const [];
+    }
+
+    final player = players.firstWhere(
+      (player) => player.isPlaying,
+      orElse: () => players.first,
+    );
+    final l10n = context.mediaL10n;
+
+    return [
+      FeatureAction(
+        id: 'media.now_playing',
+        label: l10n.nowPlayingShort,
+        tooltip: l10n.controlMediaOn(device.device.name),
+        icon: LucideIcons.music,
+        onPressed: () {
+          viewModel.select(player.key);
+          unawaited(feature.push<void>(NowPlayingPage(viewModel: viewModel)));
+        },
+      ),
+    ];
+  }
 
   @override
   FeatureHealth? healthFor(FeatureContext feature, DeviceStatus device) {

@@ -50,5 +50,7 @@
   "limitIos": "iPhone không cho ứng dụng thấy nội dung ứng dụng khác đang phát. Bạn vẫn xem và điều khiển được đa phương tiện trên các thiết bị khác của mình.",
   "limitWindows": "Ferret thấy các trình phát hiện trong phần điều khiển đa phương tiện của Windows. Âm lượng vẫn do PC này điều khiển.",
   "limitLinux": "Ferret thấy các trình phát hỗ trợ MPRIS, tức là hầu hết trình phát trên Linux.",
-  "back": "Quay lại"
+  "back": "Quay lại",
+  "nowPlayingShort": "Đang phát",
+  "controlMediaOn": "Điều khiển nội dung đang phát trên {device}"
 }

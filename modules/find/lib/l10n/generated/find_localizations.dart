@@ -469,6 +469,12 @@ abstract class FindLocalizations {
   /// In en, this message translates to:
   /// **'Needs a Ferret update on {name}'**
   String healthUnsupported(String name);
+
+  /// Tooltip and menu text for the Ring button; also what people coming from other apps look for as 'find my phone'
+  ///
+  /// In en, this message translates to:
+  /// **'Ring {name} to find it'**
+  String ringToFind(String name);
 }
 
 class _FindLocalizationsDelegate

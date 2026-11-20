@@ -1229,6 +1229,8 @@ class PseudoFindLocalizations extends FindLocalizationsEn {
   @override
   String healthUnsupported(String name) =>
       pseudo(super.healthUnsupported(name));
+  @override
+  String ringToFind(String name) => pseudo(super.ringToFind(name));
 }
 
 class PseudoHandoffLocalizations extends HandoffLocalizationsEn {
@@ -1624,6 +1626,8 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   @override
   String get back => pseudo(super.back);
   @override
+  String get nowPlayingShort => pseudo(super.nowPlayingShort);
+  @override
   String nowPlayingOn(String device) => pseudo(super.nowPlayingOn(device));
   @override
   String pausedOn(String device) => pseudo(super.pausedOn(device));
@@ -1662,6 +1666,8 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   String healthNotShared(String here) => pseudo(super.healthNotShared(here));
   @override
   String accessAndroid(String here) => pseudo(super.accessAndroid(here));
+  @override
+  String controlMediaOn(String device) => pseudo(super.controlMediaOn(device));
 }
 
 class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
@@ -3723,6 +3729,9 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   String screenStopped(String device) => pseudo(super.screenStopped(device));
   @override
   String inBeta(String text) => pseudo(super.inBeta(text));
+  @override
+  String controlWithTouchpad(String device) =>
+      pseudo(super.controlWithTouchpad(device));
 }
 
 class PseudoScriptingLocalizations extends ScriptingLocalizationsEn {

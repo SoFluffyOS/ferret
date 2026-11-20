@@ -262,4 +262,12 @@ class MediaLocalizationsEn extends MediaLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get nowPlayingShort => 'Now playing';
+
+  @override
+  String controlMediaOn(String device) {
+    return 'Control what plays on $device';
+  }
 }

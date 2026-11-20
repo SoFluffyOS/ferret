@@ -397,6 +397,18 @@ abstract class MediaLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// Short button on a device's page that opens the controls for what plays there; the full sentence is controlMediaOn
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing'**
+  String get nowPlayingShort;
+
+  /// No description provided for @controlMediaOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Control what plays on {device}'**
+  String controlMediaOn(String device);
 }
 
 class _MediaLocalizationsDelegate
