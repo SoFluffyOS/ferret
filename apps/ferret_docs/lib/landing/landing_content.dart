@@ -266,8 +266,9 @@ abstract final class LandingContent {
       question: 'Does it work on iPhone?',
       answer:
           'Yes, with limits. iOS pauses apps you leave, so Ferret syncs while '
-          'it’s open, and it can’t forward an iPhone’s notifications, texts '
-          'or calls.',
+          'it’s open, and the app can’t forward texts or calls. A computer '
+          'can still show the iPhone’s notifications and media over '
+          'Bluetooth.',
       link: SiteLinks.iphoneLimits,
     ),
     (
