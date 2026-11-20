@@ -756,4 +756,7 @@ class DropLocalizationsEn extends DropLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get folderFilesApp => 'Files › Ferret';
 }

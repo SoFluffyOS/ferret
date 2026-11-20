@@ -1,4 +1,5 @@
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
@@ -44,11 +45,14 @@ class AdvancedSettingsPage extends StatelessWidget {
             ),
           ],
         ),
-        Spacing.v24,
-        GhostButton(
-          label: l10n.settingsQuit,
-          onPressed: SystemNavigator.pop,
-        ),
+        // iOS never lets an app quit itself.
+        if (defaultTargetPlatform != .iOS) ...[
+          Spacing.v24,
+          GhostButton(
+            label: l10n.settingsQuit,
+            onPressed: SystemNavigator.pop,
+          ),
+        ],
       ],
     );
   }

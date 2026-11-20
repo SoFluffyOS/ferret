@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:engine/engine.dart';
 import 'package:ferret_system/ferret_system.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shell/services/linux_firewall.dart';
 
 /// How one check came out.
@@ -110,7 +111,9 @@ class ConnectionDoctor {
     ReachProbe? probe,
     DateTime Function()? clock,
     Future<LocalNetworkAccess> Function()? localNetwork,
+    bool? hearsOthers,
   }) : _isWindows = isWindows ?? Platform.isWindows,
+       _hearsOthers = hearsOthers ?? defaultTargetPlatform != .iOS,
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
        _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
@@ -120,6 +123,10 @@ class ConnectionDoctor {
        _localNetwork = localNetwork ?? _systemLocalNetwork;
 
   final FerretEngine _engine;
+
+  /// Whether discovery hears other devices here at all. An iPhone never
+  /// does, so its silence says nothing about the Wi-Fi.
+  final bool _hearsOthers;
 
   /// Windows Firewall hides a computer from its network until the app is
   /// allowed, and a dismissed prompt never comes back. Nothing tells Ferret
@@ -338,6 +345,7 @@ class ConnectionDoctor {
       final isolated =
           reach == .silent &&
           shared &&
+          _hearsOthers &&
           !_heardOthersLately &&
           await _routerAnswers(local, host);
       checks.add(
@@ -406,7 +414,7 @@ class ConnectionDoctor {
     List<({String name, String address})> local,
   ) async {
     final startedAt = _engine.startedAt;
-    if (startedAt == null || _engine.sessions.isNotEmpty) {
+    if (startedAt == null || _engine.sessions.isNotEmpty || !_hearsOthers) {
       return false;
     }
 

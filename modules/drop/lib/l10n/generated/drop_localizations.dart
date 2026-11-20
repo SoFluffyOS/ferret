@@ -1123,6 +1123,12 @@ abstract class DropLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 link or special file left out} other{{count} links or special files left out}}'**
   String folderSkipped(int count);
+
+  /// Where an iPhone saves received files, as people find it: Ferret's folder in the iOS Files app. Use the Files app's name in this language.
+  ///
+  /// In en, this message translates to:
+  /// **'Files › Ferret'**
+  String get folderFilesApp;
 }
 
 class _DropLocalizationsDelegate

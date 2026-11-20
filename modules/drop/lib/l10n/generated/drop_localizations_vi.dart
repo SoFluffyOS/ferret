@@ -745,4 +745,7 @@ class DropLocalizationsVi extends DropLocalizations {
   String folderSkipped(int count) {
     return 'Đã bỏ qua $count liên kết hoặc tệp đặc biệt';
   }
+
+  @override
+  String get folderFilesApp => 'Tệp › Ferret';
 }

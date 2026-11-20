@@ -17,7 +17,7 @@ class DropSettingsFrame extends StatelessWidget {
       (model) => model.receiveFolder,
     );
     final folderLabel = context.select<DropViewModel, String>(
-      (model) => model.receiveFolderLabel,
+      (model) => model.receiveFolderText(context.dropL10n),
     );
     final autoAccept = context.select<DropViewModel, bool>(
       (model) => model.autoAccept,

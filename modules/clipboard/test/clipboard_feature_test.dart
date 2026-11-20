@@ -467,6 +467,13 @@ void main() {
     expect(feature.flags, isNot(contains('images')));
   });
 
+  test('an iPhone never says it sends by itself', () async {
+    await start(access: .onRequest);
+
+    expect(feature.flags, contains('receive'));
+    expect(feature.flags, isNot(contains('send')));
+  });
+
   group('copies to keep', () {
     test('a copy here is noted, a private one never', () async {
       await start();

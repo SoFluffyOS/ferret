@@ -166,7 +166,7 @@ String _detail(
     return texts.preview(transfer.text ?? '');
   }
 
-  final folder = viewModel.receiveFolderLabel;
+  final folder = viewModel.receiveFolderText(l10n);
   if (folder.isEmpty) {
     return l10n.activitySaved;
   }

@@ -171,5 +171,6 @@
   "sendFolder": "Gửi thư mục",
   "folderFilesDone": "{done} trên {total} tệp",
   "folderProgressDone": "{files} · {size}",
-  "folderSkipped": "Đã bỏ qua {count} liên kết hoặc tệp đặc biệt"
+  "folderSkipped": "Đã bỏ qua {count} liên kết hoặc tệp đặc biệt",
+  "folderFilesApp": "Tệp › Ferret"
 }

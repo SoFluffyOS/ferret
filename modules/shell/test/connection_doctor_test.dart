@@ -261,10 +261,12 @@ void main() {
       required Reach phone,
       required Reach routerAnswer,
       Duration since = const Duration(minutes: 1),
+      bool hearsOthers = true,
     }) => ConnectionDoctor(
       engine,
       isWindows: false,
       isLinux: false,
+      hearsOthers: hearsOthers,
       interfaces: () async => [(name: 'en0', address: '192.168.1.5')],
       probe: (host, port, timeout) async => switch (host) {
         peer => phone,
@@ -308,6 +310,28 @@ void main() {
       ).diagnose('phonephonephonep').last;
 
       expect(checks.where((check) => check.kind == .isolated), isEmpty);
+    });
+
+    test('is not blamed on an iPhone, which never hears anyone', () async {
+      await trustPhone();
+
+      final device = await doctorWith(
+        phone: .silent,
+        routerAnswer: .refused,
+        hearsOthers: false,
+      ).diagnose('phonephonephonep').last;
+      final network = await doctorWith(
+        phone: .silent,
+        routerAnswer: .answered,
+        hearsOthers: false,
+      ).diagnose(null).last;
+
+      expect(device.where((check) => check.kind == .isolated), isEmpty);
+      expect(
+        device.singleWhere((check) => check.kind == .reachable).fixes,
+        [DoctorFix.tryAgain, DoctorFix.connectByAddress],
+      );
+      expect(network.where((check) => check.kind == .isolated), isEmpty);
     });
 
     test('Check my network says it may, after a quiet while', () async {

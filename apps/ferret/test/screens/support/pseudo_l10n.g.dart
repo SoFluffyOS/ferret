@@ -874,6 +874,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get sendFolder => pseudo(super.sendFolder);
   @override
+  String get folderFilesApp => pseudo(super.folderFilesApp);
+  @override
   String activityFrom(String what, String device) =>
       pseudo(super.activityFrom(what, device));
   @override

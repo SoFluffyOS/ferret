@@ -880,5 +880,9 @@
         "type": "int"
       }
     }
+  },
+  "folderFilesApp": "Files › Ferret",
+  "@folderFilesApp": {
+    "description": "Where an iPhone saves received files, as people find it: Ferret's folder in the iOS Files app. Use the Files app's name in this language."
   }
 }

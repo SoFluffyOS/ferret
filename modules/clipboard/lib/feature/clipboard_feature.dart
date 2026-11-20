@@ -77,7 +77,9 @@ class ClipboardFeature extends Feature {
   @override
   List<String> get flags => [
     receiveFlag,
-    if (settings.autoSend) sendFlag,
+    // An iPhone reads the clipboard only when someone taps Send clipboard,
+    // so its devices must not say it syncs by itself.
+    if (settings.autoSend && access != .onRequest) sendFlag,
     if (settings.syncImages) imagesFlag,
   ];
 

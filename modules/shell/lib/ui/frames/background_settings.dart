@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/bootstrap/bootstrap.dart';
 import 'package:shell/l10n/l10n.dart';
@@ -10,7 +11,8 @@ import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/login_settings.dart';
 
 /// Android: keep running in the background, and start with the phone.
-/// Windows and Linux: start at login ([LoginSettings]).
+/// Computers: start at login ([LoginSettings]). An iPhone has neither: iOS
+/// runs Ferret only while it is open.
 class BackgroundSettings extends StatefulWidget {
   const BackgroundSettings({super.key, required this.settings});
 
@@ -34,6 +36,10 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
 
   @override
   Widget build(BuildContext context) {
+    if (defaultTargetPlatform == .iOS) {
+      return const SizedBox.shrink();
+    }
+
     if (!FerretSystem().isAndroid) {
       return LoginSettings(settings: widget.settings);
     }

@@ -120,7 +120,7 @@ class DropFeatureUi extends FeatureUi {
       name: device.device.name,
       supported: session.supports(DropFeature.featureId),
       last: last,
-      folder: _dropViewModel.receiveFolderLabel,
+      folder: _dropViewModel.receiveFolderText(_l10n()),
       onRetry: switch (last) {
         final last? when feature.canRetry(last) => () => unawaited(
           _dropViewModel.retry(last),
@@ -140,7 +140,7 @@ class DropFeatureUi extends FeatureUi {
       onOpen: viewModel.open,
       onReveal: viewModel.reveal,
       onCopy: viewModel.copyText,
-      folderLabel: () => viewModel.receiveFolderLabel,
+      folderLabel: () => viewModel.receiveFolderText(_l10n()),
     )..start();
     _notices = notices;
     _shares = _plugin.shares.listen(
@@ -328,7 +328,7 @@ class DropFeatureUi extends FeatureUi {
         group: settingsGroup,
         title: l10n.title,
         child: buildSettings(context, feature),
-        summary: filesSummaryOf(l10n, viewModel.receiveFolderLabel),
+        summary: filesSummaryOf(l10n, viewModel.receiveFolderText(l10n)),
       ),
       FeatureSettings(
         group: .otherApps,

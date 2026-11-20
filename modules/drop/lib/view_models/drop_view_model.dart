@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:drop/feature/drop_feature.dart';
+import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
@@ -196,6 +197,15 @@ class DropViewModel extends ChangeNotifier {
     _receiveFolder,
     home: Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'],
   );
+
+  /// Where received files go, as people find them: a folder like
+  /// "Downloads › Ferret", or on an iPhone Ferret's folder in the Files
+  /// app, where the app's own path would mean nothing.
+  String receiveFolderText(DropLocalizations l10n) =>
+      switch (defaultTargetPlatform) {
+        .iOS => l10n.folderFilesApp,
+        _ => receiveFolderLabel,
+      };
 
   bool get canChangeFolder => ReceiveFolders.canChange;
 
