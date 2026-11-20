@@ -11,8 +11,8 @@ You need a photo from your phone on your laptop, or a PDF from your laptop on yo
 With Ferret, files and text go straight from one of your devices to another, over your own network. Nothing is uploaded anywhere.
 
 <figure class="shot shot-narrow">
-  <img src="/assets/landing/popover-home-light.webp" alt="The Ferret popover on a Mac: a file waiting to be accepted, a call ringing and your devices" width="380" height="560" loading="lazy">
-  <img src="/assets/landing/popover-home-dark.webp" alt="The Ferret popover on a Mac: a file waiting to be accepted, a call ringing and your devices" width="380" height="560" loading="lazy">
+  <img src="/assets/landing/popover-home-light.webp" alt="The Ferret popover on a Mac: your devices with Send files, and the shelf at the bottom" width="380" height="560" loading="lazy">
+  <img src="/assets/landing/popover-home-dark.webp" alt="The Ferret popover on a Mac: your devices with Send files, and the shelf at the bottom" width="380" height="560" loading="lazy">
 </figure>
 
 ## 📦 Send files

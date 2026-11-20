@@ -15,6 +15,8 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 
 ## 📦 Install
 
+> ⏳ **Not in the first release yet.** The first release is for Mac and Android. The Linux download follows once it has met enough real machines. Today you build it from source: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's installed.
+
 The quickest way, one line, no sudo:
 
 ```sh

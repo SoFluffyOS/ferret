@@ -5,7 +5,7 @@ order: 4
 
 On a Mac, your iPhone already does more with macOS than Ferret can: iPhone notifications, calls, messages and handoff are built in. Use those.
 
-Ferret's iPhone link is there on macOS too, as an **experiment**.
+Ferret's iPhone link is there on macOS too, in **beta**.
 
 ## 🧪 What to expect
 

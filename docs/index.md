@@ -21,9 +21,9 @@ Ferret carries what you're doing between your own devices: pages, media, your cl
 **1. Install it.** Pick your device, the guide has the download:
 
 - 🍎 [Mac](getting-started/mac.md): a menubar app, macOS 12 or later.
-- 🪟 [Windows](getting-started/windows.md): installs just for you, no admin.
-- 🐧 [Linux](getting-started/linux.md): Flatpak, AppImage or .deb.
 - 🤖 [Android](getting-started/android.md): the APK from GitHub.
+- 🪟 [Windows](getting-started/windows.md): not in the first release yet. It builds from source today.
+- 🐧 [Linux](getting-started/linux.md): not in the first release yet. It builds from source today.
 - 📱 [iPhone](getting-started/iphone.md): not in the first release yet. It builds from source today.
 
 **2. Pair your devices.** Open Ferret on both, on the same Wi-Fi, and tap **Pair**. See [Pair your devices](getting-started/pairing.md).
@@ -33,7 +33,9 @@ Ferret carries what you're doing between your own devices: pages, media, your cl
 - 📋 [Clipboard](features/clipboard.md): copy here, paste there.
 - 📦 [Drop](features/drop.md): files and folders, to any of your devices.
 - 🔔 [Notifications](features/notifications.md), [messages](features/messages.md) and [calls](features/calls.md) from your Android phone.
-- 🖥️ [Screen](features/mirroring.md): your phone's screen in a window.
+- 🪞 [Screen](features/mirroring.md): your phone's screen in a window.
+- 📥 [Shelf](features/shelf.md): a box in the Mac popover to put things down for a moment.
+- 🖥️ [A second display](features/second-display.md): your other Mac or your Android tablet as one more screen.
 
 Every other feature has its page in the sidebar.
 

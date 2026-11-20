@@ -26,7 +26,7 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 **Ferret** connects your own devices straight to each other, on the Wi-Fi you're already on. Android, iPhone, Mac, Windows and Linux, in any mix.
 
-- 🔒 **Local network only.** Your devices talk directly, end-to-end encrypted with Noise.
+- 🔒 **Local network only.** Your devices talk directly, end-to-end encrypted with Noise. Away from home, Ferret can go through your own VPN.
 - 🙅 **No account. No cloud. No telemetry.** Nothing to sign up for, nothing phoning home.
 - 🔓 **Open source.** GPL-3.0 apps and an MIT protocol, so anyone can build a compatible client.
 
@@ -37,7 +37,7 @@ You copy something on your phone and need it on your laptop. A file sits on the 
   </picture>
 </p>
 
-> 🧪 **Status: before the first release.** Ferret is built and tested on macOS and Android first. The Windows, Linux and iPhone apps are written and run in tests, but have met fewer real machines. Things marked *beta* below mean it.
+> 🧪 **Status: the first release is on its way, for Mac and Android.** The Windows, Linux and iPhone apps are written and run in tests, but have met fewer real machines, so their downloads come later. Things marked *Beta* below mean it: they work in my tests, not yet on enough real devices.
 
 ## ✨ What you can do
 
@@ -45,7 +45,7 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 - Copy on one device, paste on another. Text, links and images.
 - Password-manager items stay put.
-- **Recent clips**: the last 20 things you copied, anywhere, one click to copy again.
+- **Recent clips**: the last 20 things you copied, anywhere, one click to copy again. **⌃⌥V** opens them from any app on a Mac.
 
 ### 📦 Files and folders
 
@@ -53,6 +53,14 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 - Send a whole folder and it arrives as a folder.
 - **Share → Ferret** on Mac and iPhone, **Send with Ferret** in the Windows and Linux file managers, and `ferret-cli send`.
 - Works with **LocalSend**, and Android phones can send with **Quick Share** with nothing installed.
+- A file that doesn't fit is turned down before a byte moves.
+
+### 📥 Shelf (Mac)
+
+- A box at the bottom of the menubar popover to put things down for a moment: files, photos, text, links.
+- Drag them back out into any app, or onto a device to send.
+- Mid-drag, rest on the menubar icon or shake the pointer, and the shelf comes to you.
+- Turn on **Keep copies** and what you copy lands there too. It never leaves your Mac.
 
 ### 🔔 Notifications, texts and calls (from Android)
 
@@ -68,9 +76,10 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 ### 🪞 Your phone's screen on your computer
 
-- **Show screen** puts an Android phone's screen on your computer, over Wi-Fi with Ferret on the phone. On a Mac it gets its own phone-shaped window.
-- 🔊 Its sound comes along too.
-- 🖱️ Over a cable, click, scroll and type on it. No Ferret needed on the phone. *Beta*, powered by scrcpy's server.
+- **Show screen** puts an Android phone's screen on your computer, over Wi-Fi with Ferret on the phone. On a Mac it gets its own phone-shaped window. *Beta*.
+- 🔊 Its sound comes along too. *Beta*.
+- 🕹️ Click, scroll and type on it over Wi-Fi once the phone says yes. *Beta*.
+- 🖱️ Or over a cable, with no Ferret needed on the phone. *Beta*, powered by scrcpy's server.
 - 📲 iPhone and iPad through AirPlay. *Beta*.
 - 📸 Screenshot at full size with one click.
 
@@ -85,7 +94,14 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 - Browse your phone's recent photos and screenshots from the computer, and save the ones you want.
 - New screenshots can land on the computer by themselves.
+- On a Mac, drag a photo straight out into any app.
 - **Take a photo**: press a key on the computer, shoot on the phone, and it's on your clipboard.
+- **Use camera**: your Android phone's camera and microphone in a window on your computer, over Wi-Fi. *Beta*.
+
+### 🖥️ A second display
+
+- Your other Mac, or your Android tablet or phone, as one more display for your Mac. Drag windows onto it. *Beta*.
+- **One keyboard and mouse**: press **⌃⌥→** and your Mac's keyboard and mouse work on the computer next to it. **⌃⌥⎋** brings them back. *Beta*.
 
 ### 🔍 Find, wake and control
 
@@ -100,13 +116,13 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 - `ferret-cli watch --json` streams what happens (connected, battery, files, calls) to your own scripts.
 - Drop an executable named after an event in `~/.sofluffy/ferret/hooks` and it runs.
-- `ferret-cli send`, `ring`, `clipboard`, `open`, `notify`, `wake` and `action`.
+- `ferret-cli send`, `devices`, `ring`, `clipboard`, `open`, `notify`, `wake`, `action` and `camera`, with tab completion.
 - A **Tasker** plugin on Android and **Shortcuts** actions on iPhone.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/popover-home-dark.png">
-    <img src="docs/assets/readme/popover-home-light.png" alt="The Mac menubar popover: a file waiting, a call ringing, and your devices" width="320">
+    <img src="docs/assets/readme/popover-home-light.png" alt="The Mac menubar popover: your devices, and the shelf at the bottom" width="320">
   </picture>
   &nbsp;
   <picture>
@@ -122,14 +138,14 @@ Every feature has its own page in the [docs](docs/index.md).
 | Platform | How it runs | Good to know |
 |---|---|---|
 | 🤖 **Android** | App with a quiet background service and a Quick Settings tile | Android stops apps reading the clipboard in the background: send with the tile, or let Ferret do it alone with [Shizuku or root](docs/android-modes/shizuku.md). Some phone makers kill background apps: [here's the fix](docs/getting-started/android-keep-running.md). |
-| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, as an experiment, a Mac) can show its notifications and media over [Bluetooth](docs/iphone/index.md). |
-| 🍏 **macOS** | Menubar app with a popover and a full window | macOS 12 or later (13 or later to start at login). Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
+| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, in beta, a Mac) can show its notifications and media over [Bluetooth](docs/iphone/index.md). |
+| 🍏 **macOS** | Menubar app with a popover, a shelf and a full window | macOS 12 or later (13 or later to start at login). Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
 | 🪟 **Windows** | Window and tray icon | Installs just for you, no admin. Tick one box and Windows Firewall lets your devices in. |
 | 🐧 **Linux** | Window and tray icon. Flatpak, AppImage or .deb | On GNOME Wayland, copies go out while Ferret's window is in front (KDE Plasma and Sway watch by themselves with `wl-clipboard`). Stock GNOME needs the AppIndicator extension for the tray. |
 
 ## 📦 Install
 
-Binaries come with the first release, on the [releases page](https://github.com/simonpham/ferret/releases). Until then, see **Build from source** below.
+Downloads come with the first release, on the [releases page](https://github.com/simonpham/ferret/releases): Mac and Android first, Windows and Linux once they've met real machines. Until then, see **Build from source** below.
 
 Then follow the guide for your device:
 
@@ -165,6 +181,7 @@ A few more scripts you may want:
 scripts/gen.sh                     # proto/ -> packages/protocol
 scripts/generate_icons.sh          # every app icon from branding/
 scripts/package_macos.sh           # signed DMG
+scripts/package_android.sh         # release APK
 scripts/package_linux.sh           # Flatpak, AppImage and .deb
 scripts/package_windows.ps1        # Windows installer (on Windows)
 scripts/docs.sh serve              # the docs site on localhost
