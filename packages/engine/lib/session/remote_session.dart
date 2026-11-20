@@ -147,6 +147,10 @@ class Session {
 
     final id = _takeId();
     final reply = Completer<Envelope>();
+    // The session can close while the request is still being written,
+    // before anyone listens for the reply; that close is reported to the
+    // caller by the write or the wait below, not as a stray error.
+    reply.future.ignore();
     _pending[id.toInt()] = reply;
 
     try {
