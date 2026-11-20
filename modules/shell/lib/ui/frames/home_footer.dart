@@ -4,11 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
+import 'package:shell/ui/frames/popover_bar_frame.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 
 /// Home's last line, which changes with what is true: paused and until
-/// when, nobody to send to, that files can be dragged onto a device, or
-/// on an iPhone that Ferret only syncs while it is open.
+/// when, nobody to send to, that files can be dragged onto a device
+/// (where no shelf sits under it), or on an iPhone that Ferret only syncs while it is open.
 /// It sits at the bottom so the device list never jumps.
 class HomeFooter extends StatelessWidget {
   const HomeFooter({super.key});
@@ -65,7 +66,9 @@ class HomeFooter extends StatelessWidget {
       .macOS || .windows || .linux => true,
       _ => false,
     };
-    if (!dragsFiles) {
+    // The popover's shelf sits right under this line and takes drops too:
+    // the devices turn into drop tiles the moment a drag comes in.
+    if (!dragsFiles || PopoverBarFrame.barFor(context) != null) {
       return const SizedBox.shrink();
     }
 

@@ -137,18 +137,20 @@ class _Themed extends StatelessWidget {
   Widget build(BuildContext context) {
     final onTitle = _windowTitle(context);
 
+    // The popover's keys sit over its shelf too, so Esc still closes it
+    // after a click on a tile.
     return FerretTheme(
       child: ScreenSizeScope(
-        child: FileDropZone(
-          menubar: menubar,
-          footer: _popoverBar(context),
-          child: PairingPromptListener(
-            navigatorKey: navigatorKey,
-            child: _UnderTitleBar(
-              isWindow: onTitle != null,
-              child: WindowShellFrame(
-                onTitle: onTitle,
-                child: _popoverKeys(context, child),
+        child: _popoverKeys(
+          context,
+          FileDropZone(
+            menubar: menubar,
+            footer: _popoverBar(context),
+            child: PairingPromptListener(
+              navigatorKey: navigatorKey,
+              child: _UnderTitleBar(
+                isWindow: onTitle != null,
+                child: WindowShellFrame(onTitle: onTitle, child: child),
               ),
             ),
           ),

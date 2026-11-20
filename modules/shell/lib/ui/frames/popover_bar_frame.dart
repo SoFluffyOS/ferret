@@ -1,16 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/services/services.dart';
 
-/// The first feature's bar along the bottom of the menubar popover, such
-/// as the shelf. Nothing where the view is a window with a device list.
+/// The first feature's bar along the bottom of the Mac's menubar popover,
+/// such as the shelf. Nothing in a window or on a phone.
 class PopoverBarFrame extends StatelessWidget {
   const PopoverBarFrame({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    if (WindowLayout.splits(context)) {
-      return const SizedBox.shrink();
+  /// The bar the popover shows under its pages, or null when there is none.
+  static Widget? barFor(BuildContext context) {
+    final isMainView =
+        View.of(context).viewId ==
+        WidgetsBinding.instance.platformDispatcher.implicitView?.viewId;
+    if (defaultTargetPlatform != .macOS ||
+        !isMainView ||
+        WindowLayout.splits(context)) {
+      return null;
     }
 
     final scope = ShellScope.of(context);
@@ -21,6 +27,10 @@ class PopoverBarFrame extends StatelessWidget {
       }
     }
 
-    return const SizedBox.shrink();
+    return null;
   }
+
+  @override
+  Widget build(BuildContext context) =>
+      barFor(context) ?? const SizedBox.shrink();
 }
