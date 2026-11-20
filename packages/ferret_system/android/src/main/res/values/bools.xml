@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notice buttons reach the running app through FerretComponentFactory,
+         which Android uses from 9 (API 28) on. -->
+    <bool name="ferret_system_notice_buttons">false</bool>
+</resources>

@@ -51,7 +51,13 @@ class ControlNotices {
     ),
     NoticeCategory(
       id: permissionNotice,
-      actions: [NoticeAction(id: openSettingsAction, label: l10n.openSettings)],
+      actions: [
+        NoticeAction(
+          id: openSettingsAction,
+          label: l10n.openSettings,
+          opensApp: true,
+        ),
+      ],
     ),
   ];
 

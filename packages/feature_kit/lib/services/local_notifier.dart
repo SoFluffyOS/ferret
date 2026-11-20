@@ -28,11 +28,18 @@ class NoticeAction {
     required this.id,
     required this.label,
     this.isReply = false,
+    this.opensApp = false,
   });
 
   final String id;
   final String label;
   final bool isReply;
+
+  /// Brings Ferret to the front, for an answer that goes on in the app or
+  /// in a system prompt: showing a screen, letting the camera on, opening
+  /// a file. Other buttons do their work where the notice is, without
+  /// unlocking the phone or opening anything.
+  final bool opensApp;
 }
 
 /// A named set of actions notices can use, such as `message` with Reply and

@@ -59,10 +59,11 @@ class DropNotices {
     NoticeCategory(
       id: filesCategory,
       actions: [
-        NoticeAction(id: openAction, label: l10n.actionOpen),
+        NoticeAction(id: openAction, label: l10n.actionOpen, opensApp: true),
         NoticeAction(
           id: revealAction,
           label: TransferTexts(l10n).revealLabel(),
+          opensApp: true,
         ),
       ],
     ),

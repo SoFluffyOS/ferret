@@ -5,6 +5,8 @@ import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/notice_buttons.dart';
+import 'package:shell/services/notice_relay.dart';
 
 /// The app's one [LocalNotifier], on the platform notification centre.
 class SystemNotifier implements LocalNotifier {
@@ -54,7 +56,10 @@ class SystemNotifier implements LocalNotifier {
           ),
         ),
         onDidReceiveNotificationResponse: notifier._onResponse,
+        onDidReceiveBackgroundNotificationResponse: relayNoticeResponse,
       );
+      NoticeRelay.listen(notifier._onResponse);
+      await notifier._takeLaunchResponse();
     } on Object catch (error) {
       printWarning('Notifications are unavailable', error);
     }
@@ -62,12 +67,44 @@ class SystemNotifier implements LocalNotifier {
     return notifier;
   }
 
+  /// The button that started the app, if one did. Features listen once
+  /// they start, after this, so it goes out on the first turn after the
+  /// first of them listens.
+  Future<void> _takeLaunchResponse() async {
+    try {
+      final launch = await _plugin.getNotificationAppLaunchDetails();
+      if (launch == null || !launch.didNotificationLaunchApp) {
+        return;
+      }
+
+      _launchResponse = launch.notificationResponse;
+      if (_responses.hasListener) {
+        _deliverLaunchResponse();
+      }
+    } on Object catch (error) {
+      printDebug('No notice launch details here: $error');
+    }
+  }
+
   final FlutterLocalNotificationsPlugin _plugin;
   final Map<String, NoticeCategory> _categories;
-  final StreamController<NoticeResponse> _responses = .broadcast();
+  late final StreamController<NoticeResponse> _responses = .broadcast(
+    onListen: _deliverLaunchResponse,
+  );
+  NotificationResponse? _launchResponse;
 
   @override
   Stream<NoticeResponse> get responses => _responses.stream;
+
+  void _deliverLaunchResponse() {
+    final response = _launchResponse;
+    if (response == null) {
+      return;
+    }
+
+    _launchResponse = null;
+    Timer.run(() => _onResponse(response));
+  }
 
   @override
   Future<void> show(LocalNotice notice) async {
@@ -134,19 +171,7 @@ class SystemNotifier implements LocalNotifier {
             DarwinNotificationCategory(
               category.id,
               actions: [
-                for (final action in category.actions)
-                  switch (action.isReply) {
-                    true => DarwinNotificationAction.text(
-                      action.id,
-                      action.label,
-                      buttonTitle: action.label,
-                      placeholder: action.label,
-                    ),
-                    false => DarwinNotificationAction.plain(
-                      action.id,
-                      action.label,
-                    ),
-                  },
+                for (final action in category.actions) darwinButton(action),
               ],
             ),
         ],
@@ -210,17 +235,7 @@ class SystemNotifier implements LocalNotifier {
         final image? => ByteArrayAndroidBitmap(image),
         null => null,
       },
-      actions: [
-        for (final action in actions)
-          AndroidNotificationAction(
-            action.id,
-            action.label,
-            inputs: switch (action.isReply) {
-              true => [AndroidNotificationActionInput(label: action.label)],
-              false => const [],
-            },
-          ),
-      ],
+      actions: [for (final action in actions) androidButton(action)],
     );
   }
 

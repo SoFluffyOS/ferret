@@ -30,7 +30,13 @@ class ScreenNotices {
   static List<NoticeCategory> categories(RemoteInputLocalizations l10n) => [
     NoticeCategory(
       id: accessNotice,
-      actions: [NoticeAction(id: openSettingsAction, label: l10n.openSettings)],
+      actions: [
+        NoticeAction(
+          id: openSettingsAction,
+          label: l10n.openSettings,
+          opensApp: true,
+        ),
+      ],
     ),
   ];
 

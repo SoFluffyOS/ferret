@@ -65,7 +65,7 @@ class HandoffBridge {
     NoticeCategory(
       id: continueCategory,
       actions: [
-        NoticeAction(id: openAction, label: strings.open),
+        NoticeAction(id: openAction, label: strings.open, opensApp: true),
         NoticeAction(id: dismissAction, label: strings.dismiss),
       ],
     ),

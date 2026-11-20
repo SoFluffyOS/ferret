@@ -125,22 +125,34 @@ class MirroringFeatureUi extends FeatureUi {
       NoticeCategory(
         id: _requestCategory,
         actions: [
-          NoticeAction(id: _showAction, label: l10n.allow),
+          NoticeAction(id: _showAction, label: l10n.allow, opensApp: true),
           NoticeAction(id: _denyAction, label: l10n.dontAllow),
         ],
       ),
       NoticeCategory(
         id: _displayRequestCategory,
         actions: [
-          NoticeAction(id: _showAction, label: l10n.displayAllow),
+          NoticeAction(
+            id: _showAction,
+            label: l10n.displayAllow,
+            opensApp: true,
+          ),
           NoticeAction(id: _denyAction, label: l10n.dontAllow),
         ],
       ),
       NoticeCategory(
         id: _controlAskCategory,
         actions: [
-          NoticeAction(id: _onceAction, label: l10n.controlOnce),
-          NoticeAction(id: _alwaysAction, label: l10n.controlAlways),
+          NoticeAction(
+            id: _onceAction,
+            label: l10n.controlOnce,
+            opensApp: true,
+          ),
+          NoticeAction(
+            id: _alwaysAction,
+            label: l10n.controlAlways,
+            opensApp: true,
+          ),
           NoticeAction(id: _noAction, label: l10n.controlNo),
         ],
       ),
@@ -151,8 +163,16 @@ class MirroringFeatureUi extends FeatureUi {
       NoticeCategory(
         id: _cameraAskCategory,
         actions: [
-          NoticeAction(id: _cameraOnceAction, label: l10n.controlOnce),
-          NoticeAction(id: _cameraAlwaysAction, label: l10n.controlAlways),
+          NoticeAction(
+            id: _cameraOnceAction,
+            label: l10n.controlOnce,
+            opensApp: true,
+          ),
+          NoticeAction(
+            id: _cameraAlwaysAction,
+            label: l10n.controlAlways,
+            opensApp: true,
+          ),
           NoticeAction(id: _cameraNoAction, label: l10n.controlNo),
         ],
       ),

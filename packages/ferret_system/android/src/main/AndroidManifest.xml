@@ -74,5 +74,14 @@
         <receiver
             android:name="io.sofluffy.ferret_system.ReconnectReceiver"
             android:exported="false" />
+
+        <!-- The notification plugin's button receiver, which
+             FerretComponentFactory swaps for NoticeButtonReceiver. Off before
+             Android 9, where there is no factory and the plugin's own one
+             would start a second engine. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:enabled="@bool/ferret_system_notice_buttons"
+            android:exported="false" />
     </application>
 </manifest>
