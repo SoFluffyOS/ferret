@@ -21,6 +21,8 @@
   "sendClipboard": "Gửi bảng nhớ tạm",
   "offerBackgroundSend": "Tự gửi những gì bạn sao chép, cả khi chạy trong nền.",
   "offerTurnOn": "Bật",
+  "offerTile": "Gửi bảng nhớ tạm chỉ với một chạm từ ô Ferret trong Cài đặt nhanh.",
+  "offerAddTile": "Thêm ô",
   "resultSent": "Đã gửi.",
   "resultNothingToSend": "Bảng nhớ tạm đang trống, hoặc chứa nội dung không phải văn bản hay hình ảnh.",
   "resultDuplicate": "Đã gửi rồi.",

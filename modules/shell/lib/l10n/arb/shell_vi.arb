@@ -131,8 +131,6 @@
   "stayMaker": "Điện thoại {maker} của bạn còn có trình tiết kiệm pin riêng. Hãy cho phép Ferret ở đó.",
   "stayMakerFix": "Mở cài đặt",
   "stayStops": "Hôm nay Android đã dừng Ferret {count, plural, other{{count} lần}}.",
-  "stayTile": "Thêm ô Ferret vào Cài đặt nhanh để gửi bảng nhớ tạm chỉ với một chạm.",
-  "stayTileFix": "Thêm ô",
   "stayBootAsk": "Khởi động Ferret khi {device} khởi động lại? Nếu không, Ferret chỉ kết nối lại khi bạn mở ứng dụng.",
   "stayBootYes": "Có",
   "stayBootNotNow": "Để sau",

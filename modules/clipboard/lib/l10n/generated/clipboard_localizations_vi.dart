@@ -81,6 +81,13 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   String get offerTurnOn => 'Bật';
 
   @override
+  String get offerTile =>
+      'Gửi bảng nhớ tạm chỉ với một chạm từ ô Ferret trong Cài đặt nhanh.';
+
+  @override
+  String get offerAddTile => 'Thêm ô';
+
+  @override
   String get resultSent => 'Đã gửi.';
 
   @override

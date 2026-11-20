@@ -599,13 +599,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get stayTile =>
-      'Thêm ô Ferret vào Cài đặt nhanh để gửi bảng nhớ tạm chỉ với một chạm.';
-
-  @override
-  String get stayTileFix => 'Thêm ô';
-
-  @override
   String stayBootAsk(String device) {
     return 'Khởi động Ferret khi $device khởi động lại? Nếu không, Ferret chỉ kết nối lại khi bạn mở ứng dụng.';
   }

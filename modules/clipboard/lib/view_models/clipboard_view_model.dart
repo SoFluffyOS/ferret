@@ -15,6 +15,7 @@ class ClipboardViewModel extends ChangeNotifier {
   late final StreamSubscription<void> _subscription;
 
   bool _isSending = false;
+  bool _canAddTile = false;
   String? _copiedId;
   ClipSendResult? _lastResult;
   DateTime? _lastResultAt;
@@ -66,6 +67,22 @@ class ClipboardViewModel extends ChangeNotifier {
       canSendInBackground && autoSend && !backgroundSend;
 
   bool get backgroundSend => _settings.backgroundSend;
+
+  /// Android 13+ can show its own "Add tile" prompt for the Send clipboard
+  /// tile. Set once the app started.
+  bool get canAddTile => _canAddTile;
+
+  set canAddTile(bool value) {
+    if (value == _canAddTile) {
+      return;
+    }
+
+    _canAddTile = value;
+    notifyListeners();
+  }
+
+  /// The tile can be added and was never offered.
+  bool get offersTile => _canAddTile && !_settings.tileOffered;
 
   bool get isSending => _isSending;
 
@@ -133,6 +150,8 @@ class ClipboardViewModel extends ChangeNotifier {
 
   Future<void> setBackgroundSend(bool value) =>
       _settings.setBackgroundSend(value);
+
+  Future<void> markTileOffered() => _settings.setTileOffered();
 
   Future<void> setAutoReceive(bool value) => _settings.setAutoReceive(value);
 

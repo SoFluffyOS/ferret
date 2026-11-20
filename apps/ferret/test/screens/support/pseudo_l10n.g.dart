@@ -579,6 +579,10 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   @override
   String get offerTurnOn => pseudo(super.offerTurnOn);
   @override
+  String get offerTile => pseudo(super.offerTile);
+  @override
+  String get offerAddTile => pseudo(super.offerAddTile);
+  @override
   String get resultSent => pseudo(super.resultSent);
   @override
   String get resultNothingToSend => pseudo(super.resultNothingToSend);
@@ -3832,10 +3836,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get stayStepsVivo => pseudo(super.stayStepsVivo);
   @override
   String get stayMakerFix => pseudo(super.stayMakerFix);
-  @override
-  String get stayTile => pseudo(super.stayTile);
-  @override
-  String get stayTileFix => pseudo(super.stayTileFix);
   @override
   String get stayBootYes => pseudo(super.stayBootYes);
   @override

@@ -4,6 +4,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_clipboard/ferret_clipboard.dart';
 import 'package:ferret_power/ferret_power.dart';
 import 'package:ferret_power/testing.dart';
+import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,26 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'helpers/fakes.dart';
 import 'helpers/test_app.dart';
+
+/// Android 13+, where the system can prompt to add the tile.
+class _TilePhone extends Fake implements FerretSystem {
+  int asks = 0;
+
+  @override
+  bool get isAndroid => true;
+
+  @override
+  Stream<SystemAction> get actions => const Stream.empty();
+
+  @override
+  Future<bool> canRequestAddTile() async => true;
+
+  @override
+  Future<AddTileResult> requestAddTile() async {
+    asks++;
+    return AddTileResult.notAdded;
+  }
+}
 
 class _NoContext implements FeatureContext {
   @override
@@ -328,6 +349,47 @@ void main() {
       expect(offerOf(tester, ui), isNull);
       expect(changes, greaterThan(0));
       expect(ui.viewModel.needsManualSend, isFalse);
+    });
+
+    testWidgets('on Android 13+, the tile is offered once', (tester) async {
+      await startUi(tester, shizukuEnabled: false);
+      final system = _TilePhone();
+      final ui = ClipboardFeatureUi(feature: feature, system: system);
+      addTearDown(ui.viewModel.dispose);
+      await tester.runAsync(() => ui.onAppStarted(context));
+      await tester.pumpWidget(home());
+
+      final offer = offerOf(tester, ui);
+      expect(offer?.title, 'Clipboard');
+      expect(offer?.actionLabel, 'Add tile');
+      await tester.runAsync(() async {
+        offer?.onAction();
+        await settle();
+      });
+
+      expect(system.asks, 1);
+      expect(feature.settings.tileOffered, isTrue);
+      expect(offerOf(tester, ui), isNull);
+    });
+
+    testWidgets('the background offer comes before the tile', (tester) async {
+      await startUi(tester);
+      final ui = ClipboardFeatureUi(feature: feature, system: _TilePhone());
+      addTearDown(ui.viewModel.dispose);
+      await tester.runAsync(() => ui.onAppStarted(context));
+      await tester.pumpWidget(home());
+
+      expect(offerOf(tester, ui)?.actionLabel, 'Turn on');
+    });
+
+    testWidgets('without the Android prompt, no tile offer', (tester) async {
+      await startUi(tester, shizukuEnabled: false);
+      final ui = ClipboardFeatureUi(feature: feature);
+      addTearDown(ui.viewModel.dispose);
+      await tester.runAsync(() => ui.onAppStarted(context));
+      await tester.pumpWidget(home());
+
+      expect(offerOf(tester, ui), isNull);
     });
 
     testWidgets('settings explain why Send clipboard is needed', (

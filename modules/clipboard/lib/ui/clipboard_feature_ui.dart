@@ -21,8 +21,12 @@ import 'package:provider/provider.dart';
 /// each device, the Settings section, and Send clipboard from the Android
 /// tile and notification or the Windows and Linux tray.
 class ClipboardFeatureUi extends FeatureUi {
-  ClipboardFeatureUi({ClipboardFeature? feature, this.recentClipsKeys})
-    : feature = feature ?? ClipboardFeature();
+  ClipboardFeatureUi({
+    ClipboardFeature? feature,
+    this.recentClipsKeys,
+    FerretSystem? system,
+  }) : feature = feature ?? ClipboardFeature(),
+       _givenSystem = system;
 
   /// The keys that open Recent clips from any app, such as "⌃⌥V", or null
   /// when there are none here. The app knows them; this module doesn't.
@@ -34,6 +38,10 @@ class ClipboardFeatureUi extends FeatureUi {
   final ClipboardFeature feature;
 
   late final ClipboardViewModel viewModel = ClipboardViewModel(feature);
+  final FerretSystem? _givenSystem;
+
+  /// Made on first use, once the app's platform channels are up.
+  late final FerretSystem _system = _givenSystem ?? FerretSystem();
   StreamSubscription<Object?>? _systemActions;
 
   @override
@@ -52,13 +60,17 @@ class ClipboardFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
+    if (_system.isAndroid) {
+      viewModel.canAddTile = await _system.canRequestAddTile();
+    }
+
     final hasSystemActions =
         Platform.isAndroid || Platform.isWindows || Platform.isLinux;
     if (!hasSystemActions) {
       return;
     }
 
-    _systemActions = FerretSystem().actions
+    _systemActions = _system.actions
         .where((action) => action.id == SystemAction.clipboardSend)
         .listen(
           (action) => unawaited(_sendFromSystem(context, action.data['text'])),
@@ -68,21 +80,40 @@ class ClipboardFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => viewModel;
 
-  /// A power-up already lets this phone send in the background; only the
-  /// switch is left.
+  /// A power-up already lets this phone send in the background, and only
+  /// the switch is left. Otherwise, once on Android 13+: the Quick Settings
+  /// tile that sends the clipboard in one tap.
   @override
   FeatureOffer? offerFor(BuildContext context, FeatureContext feature) {
-    if (!viewModel.offersBackgroundSend) {
+    final l10n = context.clipboardL10n;
+    if (viewModel.offersBackgroundSend) {
+      return FeatureOffer(
+        title: l10n.title,
+        description: l10n.offerBackgroundSend,
+        actionLabel: l10n.offerTurnOn,
+        onAction: () => unawaited(viewModel.setBackgroundSend(true)),
+      );
+    }
+
+    if (!viewModel.offersTile) {
       return null;
     }
 
-    final l10n = context.clipboardL10n;
     return FeatureOffer(
       title: l10n.title,
-      description: l10n.offerBackgroundSend,
-      actionLabel: l10n.offerTurnOn,
-      onAction: () => unawaited(viewModel.setBackgroundSend(true)),
+      description: l10n.offerTile,
+      actionLabel: l10n.offerAddTile,
+      onAction: () => unawaited(_addTile()),
     );
+  }
+
+  /// Asks Android to add the tile. Offered once, whatever the answer.
+  Future<void> _addTile() async {
+    try {
+      await _system.requestAddTile();
+    } finally {
+      await viewModel.markTileOffered();
+    }
   }
 
   /// Clipboard just works, so it has no card: what synced shows in

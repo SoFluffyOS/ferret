@@ -11,6 +11,7 @@ class ClipboardSettings {
   static const syncSensitiveKey = 'clipboard.sync_sensitive';
   static const maxImageBytesKey = 'clipboard.max_image_bytes';
   static const expirySecondsKey = 'clipboard.expiry_seconds';
+  static const tileOfferedKey = 'clipboard.tile_offered';
 
   static const defaultMaxImageBytes = 10 * 1024 * 1024;
   static const defaultExpiry = Duration(minutes: 2);
@@ -46,6 +47,10 @@ class ClipboardSettings {
     _ => defaultExpiry,
   };
 
+  /// On Android: the Quick Settings tile was offered once, whatever the
+  /// answer, so the offer doesn't come back.
+  bool get tileOffered => _store.get<bool>(tileOfferedKey) ?? false;
+
   Future<void> setAutoSend(bool value) => _store.set(autoSendKey, value);
 
   Future<void> setBackgroundSend(bool value) =>
@@ -57,6 +62,8 @@ class ClipboardSettings {
 
   Future<void> setSyncSensitive(bool value) =>
       _store.set(syncSensitiveKey, value);
+
+  Future<void> setTileOffered() => _store.set(tileOfferedKey, true);
 
   /// Fires with the key of each clipboard setting that changed.
   Stream<String> get changes =>

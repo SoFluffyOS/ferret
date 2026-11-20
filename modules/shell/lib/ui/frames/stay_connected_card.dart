@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -75,7 +76,6 @@ class _Steps extends StatelessWidget {
       :showsMakerSteps,
       :maker,
       :stopsToday,
-      :canAddTile,
       :asksAboutBoot,
       :allSet,
     ) = context.select(
@@ -86,7 +86,6 @@ class _Steps extends StatelessWidget {
         showsMakerSteps: viewModel.showsMakerSteps,
         maker: viewModel.maker,
         stopsToday: viewModel.stopsToday,
-        canAddTile: viewModel.canAddTile,
         asksAboutBoot: viewModel.asksAboutBoot,
         allSet: viewModel.allSet,
       ),
@@ -170,12 +169,6 @@ class _Steps extends StatelessWidget {
                 fix: l10n.stayMakerFix,
                 onFix: viewModel.openMakerSettings,
               ),
-            if (canAddTile)
-              _Step(
-                text: l10n.stayTile,
-                fix: l10n.stayTileFix,
-                onFix: viewModel.addTile,
-              ),
           ],
         ),
       ),
@@ -223,7 +216,7 @@ class _BootAsk extends StatelessWidget {
         children: [
           Text(
             question,
-            style: context.fluffyTheme.typography.body2.copyWith(
+            style: context.fluffyTheme.typography.base2.copyWith(
               color: context.palette.text,
             ),
           ),
@@ -232,15 +225,12 @@ class _BootAsk extends StatelessWidget {
             spacing: Spacing.d8,
             runSpacing: Spacing.d8,
             children: [
-              Button(
-                mainAxisSize: .min,
-                variant: .primary,
+              RowActionButton(
                 label: l10n.stayBootYes,
+                isPrimary: true,
                 onPressed: () => onAnswer(true),
               ),
-              Button(
-                mainAxisSize: .min,
-                variant: .ghost,
+              RowActionButton(
                 label: l10n.stayBootNotNow,
                 onPressed: () => onAnswer(false),
               ),
@@ -288,7 +278,7 @@ class _Step extends StatelessWidget {
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                Text(text, style: typography.body2.copyWith(color: textColor)),
+                Text(text, style: typography.base2.copyWith(color: textColor)),
                 if (detail case final steps?) ...[
                   Spacing.v4,
                   Text(
@@ -302,12 +292,7 @@ class _Step extends StatelessWidget {
             ),
           ),
           Spacing.h12,
-          Button(
-            mainAxisSize: .min,
-            variant: .ghost,
-            label: fix,
-            onPressed: onFix,
-          ),
+          RowActionButton(label: fix, onPressed: () => unawaited(onFix())),
         ],
       ),
     );

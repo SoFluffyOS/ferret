@@ -55,6 +55,11 @@
   "sendClipboard": "Send clipboard",
   "offerBackgroundSend": "Send what you copy on its own, even in the background.",
   "offerTurnOn": "Turn on",
+  "offerTile": "Send your clipboard in one tap from the Ferret tile in Quick Settings.",
+  "@offerTile": {
+    "description": "Do more offer on Android 13+: add the Quick Settings tile that sends the clipboard."
+  },
+  "offerAddTile": "Add tile",
   "resultSent": "Sent.",
   "resultNothingToSend": "The clipboard is empty, or holds something other than text or an image.",
   "resultDuplicate": "Already sent.",

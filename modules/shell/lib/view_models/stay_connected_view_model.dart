@@ -27,7 +27,6 @@ class StayConnectedViewModel extends ChangeNotifier {
   bool backgroundRestricted = false;
   DeviceMaker maker = .other;
   int stopsToday = 0;
-  bool canAddTile = false;
 
   bool get isAndroid => _system.isAndroid;
 
@@ -41,7 +40,6 @@ class StayConnectedViewModel extends ChangeNotifier {
       batteryExempt &&
       !backgroundRestricted &&
       stopsToday == 0 &&
-      !canAddTile &&
       !asksAboutBoot;
 
   /// Whether to show the maker's own steps: its killer can't be read, so
@@ -60,7 +58,6 @@ class StayConnectedViewModel extends ChangeNotifier {
     backgroundRestricted = await _system.isBackgroundRestricted();
     maker = await _system.deviceMaker();
     stopsToday = await _system.serviceStopsToday();
-    canAddTile = await _system.canRequestAddTile();
     _notify();
   }
 
@@ -84,12 +81,6 @@ class StayConnectedViewModel extends ChangeNotifier {
   Future<void> openAppSettings() => _system.openAppSettings();
 
   Future<void> openMakerSettings() => _system.openMakerBatterySettings();
-
-  Future<void> addTile() async {
-    await _system.requestAddTile();
-    canAddTile = false;
-    _notify();
-  }
 
   void _notify() {
     if (_disposed) {

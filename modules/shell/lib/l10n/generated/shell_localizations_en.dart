@@ -601,13 +601,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get stayTile =>
-      'Add the Ferret tile to Quick Settings to send your clipboard in one tap.';
-
-  @override
-  String get stayTileFix => 'Add tile';
-
-  @override
   String stayBootAsk(String device) {
     return 'Start Ferret when $device restarts? Otherwise it reconnects only when you open it.';
   }

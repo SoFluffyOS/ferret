@@ -221,6 +221,18 @@ abstract class ClipboardLocalizations {
   /// **'Turn on'**
   String get offerTurnOn;
 
+  /// Do more offer on Android 13+: add the Quick Settings tile that sends the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Send your clipboard in one tap from the Ferret tile in Quick Settings.'**
+  String get offerTile;
+
+  /// No description provided for @offerAddTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tile'**
+  String get offerAddTile;
+
   /// No description provided for @resultSent.
   ///
   /// In en, this message translates to:

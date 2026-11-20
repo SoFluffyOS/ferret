@@ -878,18 +878,6 @@ abstract class ShellLocalizations {
   /// **'Android stopped Ferret {count, plural, =1{once} other{{count} times}} today.'**
   String stayStops(int count);
 
-  /// No description provided for @stayTile.
-  ///
-  /// In en, this message translates to:
-  /// **'Add the Ferret tile to Quick Settings to send your clipboard in one tap.'**
-  String get stayTile;
-
-  /// No description provided for @stayTileFix.
-  ///
-  /// In en, this message translates to:
-  /// **'Add tile'**
-  String get stayTileFix;
-
   /// device is this phone's own name, such as Pixel 7.
   ///
   /// In en, this message translates to:

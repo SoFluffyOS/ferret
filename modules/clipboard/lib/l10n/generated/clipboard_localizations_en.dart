@@ -81,6 +81,13 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
   String get offerTurnOn => 'Turn on';
 
   @override
+  String get offerTile =>
+      'Send your clipboard in one tap from the Ferret tile in Quick Settings.';
+
+  @override
+  String get offerAddTile => 'Add tile';
+
+  @override
   String get resultSent => 'Sent.';
 
   @override
