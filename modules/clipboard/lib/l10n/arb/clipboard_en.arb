@@ -137,6 +137,14 @@
   "recentClipsMenu": "Recent clips…",
   "recentClipsEmpty": "Nothing copied yet. What you copy here or on your devices shows up here.",
   "recentClipsNote": "The last 20, kept in memory until Ferret quits. Private items never show up here.",
+  "recentClipsKeys": "Open this from any app with {keys}.",
+  "@recentClipsKeys": {
+    "placeholders": {
+      "keys": {
+        "type": "String"
+      }
+    }
+  },
   "recentFrom": "From {device}",
   "@recentFrom": {
     "placeholders": {

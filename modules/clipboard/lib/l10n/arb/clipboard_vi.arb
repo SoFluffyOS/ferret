@@ -61,6 +61,7 @@
   "recentClipsMenu": "Mục đã sao chép gần đây…",
   "recentClipsEmpty": "Chưa sao chép gì. Những gì bạn sao chép ở đây hoặc trên các thiết bị của bạn sẽ hiện ở đây.",
   "recentClipsNote": "20 mục gần nhất, chỉ giữ trong bộ nhớ cho đến khi thoát Ferret. Mục riêng tư không bao giờ hiện ở đây.",
+  "recentClipsKeys": "Mở trang này từ bất kỳ ứng dụng nào bằng {keys}.",
   "recentFrom": "Từ {device}",
   "recentCopiedHere": "Sao chép tại đây",
   "recentHidden": "Bản xem trước từ thiết bị này bị ẩn ở đây. Vẫn sao chép được."

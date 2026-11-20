@@ -241,6 +241,11 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
       '20 mục gần nhất, chỉ giữ trong bộ nhớ cho đến khi thoát Ferret. Mục riêng tư không bao giờ hiện ở đây.';
 
   @override
+  String recentClipsKeys(String keys) {
+    return 'Mở trang này từ bất kỳ ứng dụng nào bằng $keys.';
+  }
+
+  @override
   String recentFrom(String device) {
     return 'Từ $device';
   }

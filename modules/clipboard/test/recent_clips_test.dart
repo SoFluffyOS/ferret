@@ -44,14 +44,32 @@ void main() {
     ),
   );
 
-  Widget recentClips({bool showsPreviews = true}) => testApp(
+  Widget recentClips({bool showsPreviews = true, String? openKeys}) => testApp(
     ChangeNotifierProvider.value(
       value: viewModel,
       child: SingleChildScrollView(
-        child: RecentClipsFrame(showsPreviewsFrom: (_) => showsPreviews),
+        child: RecentClipsFrame(
+          showsPreviewsFrom: (_) => showsPreviews,
+          openKeys: openKeys,
+        ),
       ),
     ),
   );
+
+  testWidgets('says which keys open it from any app, when there are some', (
+    tester,
+  ) async {
+    await start(tester);
+    await receive(tester, 'first', id: 'a');
+
+    await tester.pumpWidget(recentClips(openKeys: '⌃⌥V'));
+
+    expect(find.text('Open this from any app with ⌃⌥V.'), findsOneWidget);
+
+    await tester.pumpWidget(recentClips());
+
+    expect(find.textContaining('from any app'), findsNothing);
+  });
 
   testWidgets('says so when nothing was copied yet', (tester) async {
     await start(tester);

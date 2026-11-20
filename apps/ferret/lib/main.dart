@@ -28,7 +28,7 @@ Future<void> main(List<String> arguments) async {
       ActionsFeatureUi(),
       CallsFeatureUi(),
       CameraFeatureUi(),
-      ClipboardFeatureUi(),
+      ClipboardFeatureUi(recentClipsKeys: RecentClipsKeys.of),
       DropFeatureUi(filesToSend: send.files, handoff: send.handoff),
       FindFeatureUi(),
       HandoffFeatureUi(),

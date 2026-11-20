@@ -461,6 +461,12 @@ abstract class ClipboardLocalizations {
   /// **'The last 20, kept in memory until Ferret quits. Private items never show up here.'**
   String get recentClipsNote;
 
+  /// No description provided for @recentClipsKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this from any app with {keys}.'**
+  String recentClipsKeys(String keys);
+
   /// No description provided for @recentFrom.
   ///
   /// In en, this message translates to:

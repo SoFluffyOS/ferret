@@ -684,6 +684,8 @@ class PseudoClipboardLocalizations extends ClipboardLocalizationsEn {
   @override
   String settingsHistory(int count) => pseudo(super.settingsHistory(count));
   @override
+  String recentClipsKeys(String keys) => pseudo(super.recentClipsKeys(keys));
+  @override
   String recentFrom(String device) => pseudo(super.recentFrom(device));
 }
 

@@ -21,8 +21,12 @@ import 'package:provider/provider.dart';
 /// each device, the Settings section, and Send clipboard from the Android
 /// tile and notification or the Windows and Linux tray.
 class ClipboardFeatureUi extends FeatureUi {
-  ClipboardFeatureUi({ClipboardFeature? feature})
+  ClipboardFeatureUi({ClipboardFeature? feature, this.recentClipsKeys})
     : feature = feature ?? ClipboardFeature();
+
+  /// The keys that open Recent clips from any app, such as "⌃⌥V", or null
+  /// when there are none here. The app knows them; this module doesn't.
+  final String? Function(FeatureContext feature)? recentClipsKeys;
 
   static const _resultNoticeId = 'clipboard.result';
 
@@ -137,7 +141,10 @@ class ClipboardFeatureUi extends FeatureUi {
   Future<void> _openRecentClips(FeatureContext feature) => feature.push<void>(
     ChangeNotifierProvider.value(
       value: viewModel,
-      child: RecentClipsPage(showsPreviewsFrom: feature.showsPreviewsFrom),
+      child: RecentClipsPage(
+        showsPreviewsFrom: feature.showsPreviewsFrom,
+        openKeys: recentClipsKeys?.call(feature),
+      ),
     ),
   );
 

@@ -242,6 +242,11 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
       'The last 20, kept in memory until Ferret quits. Private items never show up here.';
 
   @override
+  String recentClipsKeys(String keys) {
+    return 'Open this from any app with $keys.';
+  }
+
+  @override
   String recentFrom(String device) {
     return 'From $device';
   }

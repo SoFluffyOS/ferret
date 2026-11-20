@@ -14,9 +14,17 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// device whose previews are hidden here shows where it came from, never
 /// what it holds.
 class RecentClipsFrame extends StatelessWidget {
-  const RecentClipsFrame({super.key, required this.showsPreviewsFrom});
+  const RecentClipsFrame({
+    super.key,
+    required this.showsPreviewsFrom,
+    this.openKeys,
+  });
 
   final bool Function(String deviceId) showsPreviewsFrom;
+
+  /// The keys that open Recent clips from any app, such as "⌃⌥V". Null
+  /// where there are none, or when they are turned off.
+  final String? openKeys;
 
   static const _previewLength = 80;
 
@@ -32,9 +40,17 @@ class RecentClipsFrame extends StatelessWidget {
     final l10n = context.clipboardL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final note = Text(
-      l10n.recentClipsNote,
-      style: typography.caption1.copyWith(color: palette.mutedText),
+    final noteStyle = typography.caption1.copyWith(color: palette.mutedText);
+    final note = Column(
+      crossAxisAlignment: .start,
+      mainAxisSize: .min,
+      children: [
+        Text(l10n.recentClipsNote, style: noteStyle),
+        if (openKeys case final keys?) ...[
+          Spacing.v4,
+          Text(l10n.recentClipsKeys(keys), style: noteStyle),
+        ],
+      ],
     );
 
     if (clips.isEmpty) {

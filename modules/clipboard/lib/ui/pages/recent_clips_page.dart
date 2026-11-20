@@ -5,13 +5,25 @@ import 'package:flutter/widgets.dart';
 
 /// Recent clips, opened from the ••• menu or the File menu.
 class RecentClipsPage extends StatelessWidget {
-  const RecentClipsPage({super.key, required this.showsPreviewsFrom});
+  const RecentClipsPage({
+    super.key,
+    required this.showsPreviewsFrom,
+    this.openKeys,
+  });
 
   final bool Function(String deviceId) showsPreviewsFrom;
+
+  /// See [RecentClipsFrame.openKeys].
+  final String? openKeys;
 
   @override
   Widget build(BuildContext context) => FerretPage(
     title: context.clipboardL10n.recentClips,
-    children: [RecentClipsFrame(showsPreviewsFrom: showsPreviewsFrom)],
+    children: [
+      RecentClipsFrame(
+        showsPreviewsFrom: showsPreviewsFrom,
+        openKeys: openKeys,
+      ),
+    ],
   );
 }
