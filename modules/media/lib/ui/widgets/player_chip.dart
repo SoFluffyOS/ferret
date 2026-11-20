@@ -30,7 +30,11 @@ class PlayerChip extends StatelessWidget {
     return Tappable(
       onTap: onTap,
       child: DecoratedBox(
-        decoration: ShapeDecoration(color: fill, shape: const StadiumBorder()),
+        // A chip in a card takes a control's corner.
+        decoration: ShapeDecoration(
+          color: fill,
+          shape: Corners.shape(Corners.control),
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: Spacing.d10,

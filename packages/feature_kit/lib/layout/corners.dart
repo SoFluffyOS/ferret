@@ -56,6 +56,11 @@ abstract final class Corners {
     return radius;
   }
 
+  /// The radius of a shape that holds a shape of [inner] at [inset] from
+  /// its corner, such as a floating bar around its buttons: the bar's
+  /// corner follows the button's, not the other way round.
+  static double around(double inner, double inset) => inner + inset;
+
   static BorderRadius radius(double radius) =>
       BorderRadius.all(Radius.circular(radius));
 

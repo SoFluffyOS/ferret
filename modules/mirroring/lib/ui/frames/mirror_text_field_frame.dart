@@ -63,7 +63,8 @@ class _MirrorTextFieldFrameState extends State<MirrorTextFieldFrame> {
         child: DecoratedBox(
           decoration: ShapeDecoration(
             color: palette.surface,
-            shape: Corners.shape(Corners.card),
+            // Wraps the field's and the button's corners, 6 out.
+            shape: Corners.shape(Corners.around(Corners.control, Spacing.d6)),
             shadows: [
               BoxShadow(
                 color: palette.text.withValues(alpha: 0.18),
@@ -82,6 +83,7 @@ class _MirrorTextFieldFrameState extends State<MirrorTextFieldFrame> {
                     focusNode: _focus,
                     hintText: l10n.textFieldHint,
                     textInputAction: .send,
+                    borderRadius: Corners.control,
                     onSubmitted: (_) => _send(viewModel),
                   ),
                 ),
@@ -89,6 +91,7 @@ class _MirrorTextFieldFrameState extends State<MirrorTextFieldFrame> {
                 Button(
                   variant: .primary,
                   mainAxisSize: .min,
+                  radius: Corners.control,
                   label: l10n.send,
                   onPressed: () => _send(viewModel),
                 ),

@@ -65,7 +65,10 @@ class DisplayBar extends StatelessWidget {
               child: DecoratedBox(
                 decoration: ShapeDecoration(
                   color: palette.surface,
-                  shape: Corners.shape(Corners.card),
+                  // The bar wraps its buttons' corners, 8 out.
+                  shape: Corners.shape(
+                    Corners.around(Corners.control, Spacing.d8),
+                  ),
                   shadows: [
                     BoxShadow(
                       color: palette.text.withValues(alpha: 0.18),
@@ -122,17 +125,17 @@ class DisplayBar extends StatelessWidget {
                       ),
                       Spacing.h16,
                       if (fullScreenLabel case final label?) ...[
-                        Button(
-                          variant: .ghost,
+                        GhostButton(
                           mainAxisSize: .min,
+                          radius: Corners.control,
                           label: label,
                           onPressed: onFullScreen,
                         ),
                         Spacing.h4,
                       ],
-                      Button(
-                        variant: .ghost,
+                      GhostButton(
                         mainAxisSize: .min,
+                        radius: Corners.control,
                         label: stopLabel,
                         onPressed: onStop,
                       ),

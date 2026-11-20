@@ -41,6 +41,10 @@ class PopupRow extends StatelessWidget {
       onTap: onTap,
       enableHover: true,
       enableHoverOverlay: true,
+      // Inset from the popup's sides as far as from its top, and concentric
+      // with its corner, like a menu's highlight.
+      hoverOverlayPadding: EdgeInsets.symmetric(horizontal: Spacing.d6),
+      hoverOverlayBorderRadius: Corners.inner(Corners.card, Spacing.d6),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: Spacing.d12,

@@ -29,7 +29,7 @@ class StageNoticeBar extends StatelessWidget {
     return DecoratedBox(
       decoration: ShapeDecoration(
         color: palette.surface,
-        shape: Corners.shape(Corners.card),
+        shape: Corners.shape(Corners.around(Corners.control, Spacing.d6)),
         shadows: [
           BoxShadow(
             color: palette.text.withValues(alpha: 0.18),
@@ -73,6 +73,7 @@ class StageNoticeBar extends StatelessWidget {
             Tappable(
               tooltip: dismissLabel,
               onTap: onDismiss,
+              hoverOverlayBorderRadius: Corners.control,
               child: Padding(
                 padding: EdgeInsets.all(Spacing.d4),
                 child: Icon(
