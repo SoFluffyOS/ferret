@@ -116,7 +116,7 @@ class MirrorToolbarFrame extends StatelessWidget {
     return MirrorToolbar(
       place: place,
       quality: quality,
-      qualityStays: isCamera,
+      isCamera: isCamera,
       isFullScreen: isFullScreen,
       pinned: switch (canPin) {
         true => pinned,

@@ -32,7 +32,7 @@ class MirrorToolbar extends StatefulWidget {
     this.soundMuted = false,
     this.askingControl = false,
     this.quality = .good,
-    this.qualityStays = false,
+    this.isCamera = false,
     this.moreButtons = const [],
     this.isFullScreen = false,
     this.pinned,
@@ -69,9 +69,10 @@ class MirrorToolbar extends StatefulWidget {
   final bool askingControl;
   final ViewQuality quality;
 
-  /// The quality mark stays in the window's bar while there is room,
-  /// good or not: a camera's toolbar has little else.
-  final bool qualityStays;
+  /// A phone's camera rather than its screen: the quality mark stays in
+  /// the window's bar while there is room, good or not, since a camera's
+  /// toolbar has little else, and the screenshot saves a picture.
+  final bool isCamera;
 
   /// The device's keys that sit behind More: volume, power, its
   /// notifications panel.
@@ -237,7 +238,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   Widget _fittingBar(BuildContext context, double width) {
     final withQuality = ToolbarFold.forBar(
       widget.items,
-      showsQuality: widget.quality != .good || widget.qualityStays,
+      showsQuality: widget.quality != .good || widget.isCamera,
     );
     final plain = ToolbarFold.forBar(widget.items);
     for (final (fold, names) in [
@@ -490,7 +491,10 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
         .recents => l10n.buttonRecents,
         .rotate => l10n.buttonRotate,
         .switchLens => l10n.cameraSwitch,
-        .screenshot => l10n.buttonScreenshot,
+        .screenshot => switch (widget.isCamera) {
+          true => l10n.cameraSavePicture,
+          false => l10n.buttonScreenshot,
+        },
         .keyboard => l10n.buttonKeyboard,
         .fullScreen => switch (widget.isFullScreen) {
           true => l10n.exitFullScreen,

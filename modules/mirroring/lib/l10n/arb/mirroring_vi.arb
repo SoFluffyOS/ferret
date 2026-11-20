@@ -293,6 +293,7 @@
   "notNow": "Để sau",
   "useCamera": "Dùng camera của {device}",
   "cameraWindowTitle": "{device} — Camera",
+  "cameraSavePicture": "Lưu ảnh",
   "cameraSwitch": "Đổi camera",
   "cameraUseAgain": "Dùng lại",
   "cameraPictureNote": "720p, 30 khung hình mỗi giây, như một webcam.",

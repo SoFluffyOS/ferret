@@ -1853,6 +1853,12 @@ abstract class MirroringLocalizations {
   /// **'{device} — Camera'**
   String cameraWindowTitle(String device);
 
+  /// Toolbar button over a phone's camera that saves what it shows as a PNG, like a screenshot
+  ///
+  /// In en, this message translates to:
+  /// **'Save a picture'**
+  String get cameraSavePicture;
+
   /// No description provided for @cameraSwitch.
   ///
   /// In en, this message translates to:

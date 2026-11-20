@@ -1339,6 +1339,9 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
+  String get cameraSavePicture => 'Lưu ảnh';
+
+  @override
   String get cameraSwitch => 'Đổi camera';
 
   @override

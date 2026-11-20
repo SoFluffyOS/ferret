@@ -1290,6 +1290,10 @@
       }
     }
   },
+  "cameraSavePicture": "Save a picture",
+  "@cameraSavePicture": {
+    "description": "Toolbar button over a phone's camera that saves what it shows as a PNG, like a screenshot"
+  },
   "cameraSwitch": "Switch camera",
   "cameraUseAgain": "Use again",
   "cameraPictureNote": "720p at 30 frames a second, like a webcam.",

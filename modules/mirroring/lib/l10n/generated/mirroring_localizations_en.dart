@@ -1358,6 +1358,9 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   }
 
   @override
+  String get cameraSavePicture => 'Save a picture';
+
+  @override
   String get cameraSwitch => 'Switch camera';
 
   @override
