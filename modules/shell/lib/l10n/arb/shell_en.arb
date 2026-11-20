@@ -21,7 +21,7 @@
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
   "pairEnterCode": "Other ways",
-  "pairIphoneBody": "An iPhone can't look for devices on the network by itself. On your computer, open Ferret and click +. Then scan the code it shows.",
+  "pairIphoneBody": "An iPhone can't look for devices on the network by itself. On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone's Camera.",
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Copied",
@@ -515,7 +515,7 @@
   "scanTitle": "Scan the code",
   "scanBody": "On your computer, open Ferret and choose Pair with a QR code. Then point your camera at it.",
   "scanButton": "Scan the code on your computer",
-  "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.",
+  "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.",
   "offersTitle": "Do more",
   "@offersTitle": {
     "description": "Title of the Home card that suggests features to turn on"

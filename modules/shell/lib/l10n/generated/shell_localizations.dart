@@ -209,7 +209,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairIphoneBody.
   ///
   /// In en, this message translates to:
-  /// **'An iPhone can\'t look for devices on the network by itself. On your computer, open Ferret and click +. Then scan the code it shows.'**
+  /// **'An iPhone can\'t look for devices on the network by itself. On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone\'s Camera.'**
   String get pairIphoneBody;
 
   /// No description provided for @pairShowCodeBody.
@@ -1103,7 +1103,7 @@ abstract class ShellLocalizations {
   /// No description provided for @scanNotFerret.
   ///
   /// In en, this message translates to:
-  /// **'That\'s not a Ferret code. On your computer, open Ferret and tap +, then Pair with a QR code.'**
+  /// **'That\'s not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.'**
   String get scanNotFerret;
 
   /// Title of the Home card that suggests features to turn on

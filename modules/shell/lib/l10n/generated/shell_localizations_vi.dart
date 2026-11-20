@@ -66,7 +66,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get pairIphoneBody =>
-      'iPhone không thể tự tìm thiết bị trên mạng. Trên máy tính, mở Ferret và bấm +. Sau đó quét mã hiện ra.';
+      'iPhone không thể tự tìm thiết bị trên mạng. Trên máy tính, mở Ferret, bấm + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.';
 
   @override
   String get pairShowCodeBody =>
