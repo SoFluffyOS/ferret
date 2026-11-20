@@ -147,6 +147,9 @@ class UinputDevice {
         return '';
       case TextAction(:final text):
         return _type(events, text);
+      case ModifiersAction(:final held):
+        events.addAll(_rawKeys(_chords.latch(held)));
+        return '';
     }
   }
 

@@ -34,6 +34,20 @@ Object? _extractReplyValueOrThrow(
   return replyList.firstOrNull;
 }
 
+List<Object?> wrapResponse({
+  Object? result,
+  PlatformException? error,
+  bool empty = false,
+}) {
+  if (empty) {
+    return <Object?>[];
+  }
+  if (error == null) {
+    return <Object?>[result];
+  }
+  return <Object?>[error.code, error.message, error.details];
+}
+
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -115,6 +129,46 @@ enum NativeEventKind {
 
   /// Types `text`.
   text,
+}
+
+enum NativeCaptureKind {
+  /// Relative move by `x`, `y` points.
+  move,
+
+  /// `code` is 0 left, 1 right, 2 middle.
+  button,
+
+  /// Scroll by `x`, `y` points, as macOS reports it: positive `y` moves
+  /// the content down (toward the top of the page).
+  scroll,
+
+  /// `code` is the macOS virtual key code; `text` what it types.
+  key,
+
+  /// The modifier keys changed; `modifiers` holds the ones down now.
+  modifiers,
+}
+
+/// A switch combination pressed anywhere on the Mac.
+enum NativeSwitchKey {
+  /// ⌃⌥→: to the next computer.
+  next,
+
+  /// ⌃⌥⎋: back to this Mac.
+  home,
+}
+
+/// Why taking the keyboard and mouse stopped on its own.
+enum NativeCaptureEnd {
+  /// ⌃⌥⎋ was pressed.
+  homeKey,
+
+  /// A password field turned on secure input, which hides keys from
+  /// Ferret; they'd be typed on this Mac instead.
+  secureInput,
+
+  /// macOS turned the event tap off and it couldn't come back.
+  tapFailed,
 }
 
 /// Whether this process may inject input.
@@ -256,6 +310,152 @@ class NativeInputEvent {
   }
 }
 
+/// What this Mac lets Ferret do to take its own keyboard and mouse.
+class NativeCaptureAccess {
+  NativeCaptureAccess({
+    required this.inputMonitoring,
+    required this.accessibility,
+  });
+
+  /// Input Monitoring: seeing keys typed in other apps.
+  bool inputMonitoring;
+
+  /// Accessibility: holding events back from other apps.
+  bool accessibility;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      inputMonitoring,
+      accessibility,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeCaptureAccess decode(Object result) {
+    result as List<Object?>;
+    return NativeCaptureAccess(
+      inputMonitoring: result[0]! as bool,
+      accessibility: result[1]! as bool,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeCaptureAccess || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(inputMonitoring, other.inputMonitoring) &&
+        _deepEquals(accessibility, other.accessibility);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeCaptureAccess(inputMonitoring: $inputMonitoring, accessibility: $accessibility)';
+  }
+}
+
+/// One event taken from this Mac's own keyboard or mouse.
+class NativeCapturedEvent {
+  NativeCapturedEvent({
+    required this.kind,
+    required this.x,
+    required this.y,
+    required this.code,
+    required this.pressed,
+    required this.modifiers,
+    required this.isRepeat,
+    this.text,
+  });
+
+  NativeCaptureKind kind;
+
+  double x;
+
+  double y;
+
+  int code;
+
+  bool pressed;
+
+  /// Bits: 1 shift, 2 control, 4 alt (Option), 8 meta (Command).
+  int modifiers;
+
+  /// A key held down long enough to repeat.
+  bool isRepeat;
+
+  String? text;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      kind,
+      x,
+      y,
+      code,
+      pressed,
+      modifiers,
+      isRepeat,
+      text,
+    ];
+  }
+
+  Object encode() {
+    return _toList();
+  }
+
+  static NativeCapturedEvent decode(Object result) {
+    result as List<Object?>;
+    return NativeCapturedEvent(
+      kind: result[0]! as NativeCaptureKind,
+      x: result[1]! as double,
+      y: result[2]! as double,
+      code: result[3]! as int,
+      pressed: result[4]! as bool,
+      modifiers: result[5]! as int,
+      isRepeat: result[6]! as bool,
+      text: result[7] as String?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeCapturedEvent || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(kind, other.kind) &&
+        _deepEquals(x, other.x) &&
+        _deepEquals(y, other.y) &&
+        _deepEquals(code, other.code) &&
+        _deepEquals(pressed, other.pressed) &&
+        _deepEquals(modifiers, other.modifiers) &&
+        _deepEquals(isRepeat, other.isRepeat) &&
+        _deepEquals(text, other.text);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeCapturedEvent(kind: $kind, x: $x, y: $y, code: $code, pressed: $pressed, modifiers: $modifiers, isRepeat: $isRepeat, text: $text)';
+  }
+}
+
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -266,11 +466,26 @@ class _PigeonCodec extends StandardMessageCodec {
     } else if (value is NativeEventKind) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    } else if (value is NativeAccess) {
+    } else if (value is NativeCaptureKind) {
       buffer.putUint8(130);
+      writeValue(buffer, value.index);
+    } else if (value is NativeSwitchKey) {
+      buffer.putUint8(131);
+      writeValue(buffer, value.index);
+    } else if (value is NativeCaptureEnd) {
+      buffer.putUint8(132);
+      writeValue(buffer, value.index);
+    } else if (value is NativeAccess) {
+      buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else if (value is NativeInputEvent) {
-      buffer.putUint8(131);
+      buffer.putUint8(134);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeCaptureAccess) {
+      buffer.putUint8(135);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeCapturedEvent) {
+      buffer.putUint8(136);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -284,9 +499,22 @@ class _PigeonCodec extends StandardMessageCodec {
         final value = readValue(buffer) as int?;
         return value == null ? null : NativeEventKind.values[value];
       case 130:
-        return NativeAccess.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativeCaptureKind.values[value];
       case 131:
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativeSwitchKey.values[value];
+      case 132:
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativeCaptureEnd.values[value];
+      case 133:
+        return NativeAccess.decode(readValue(buffer)!);
+      case 134:
         return NativeInputEvent.decode(readValue(buffer)!);
+      case 135:
+        return NativeCaptureAccess.decode(readValue(buffer)!);
+      case 136:
+        return NativeCapturedEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -402,5 +630,261 @@ class RemoteInputHostApi {
       pigeonVar_channelName,
       isNullValid: true,
     );
+  }
+}
+
+/// Takes this Mac's own keyboard and mouse away from it, to send them to
+/// another computer. macOS only.
+class InputCaptureHostApi {
+  /// Constructor for [InputCaptureHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  InputCaptureHostApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
+
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  final String pigeonVar_messageChannelSuffix;
+
+  Future<NativeCaptureAccess> captureAccess() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.captureAccess$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as NativeCaptureAccess;
+  }
+
+  /// Shows the Input Monitoring and Accessibility prompts. macOS shows each
+  /// only once. Returns whether both are on now.
+  Future<bool> requestCaptureAccess() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.requestCaptureAccess$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Opens System Settings where the missing one is turned on: Input
+  /// Monitoring first, then Accessibility.
+  Future<void> openCaptureSettings() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.openCaptureSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+
+  /// Whether a password field holds secure input right now.
+  Future<bool> secureInputOn() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.secureInputOn$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Listens for ⌃⌥→ and ⌃⌥⎋ anywhere on the Mac, or stops. False when
+  /// the Mac refused a combination, such as when another app has it.
+  Future<bool> setSwitchKeys(bool enabled) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.setSwitchKeys$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[enabled],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Starts holding back every key and mouse event and sending them here,
+  /// with the pointer frozen and hidden. Returns the modifier bits held
+  /// right now, or -1 when it couldn't start.
+  Future<int> startCapture() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.startCapture$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as int;
+  }
+
+  /// Gives the keyboard and mouse back to this Mac.
+  Future<void> stopCapture() async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.stopCapture$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
+  }
+}
+
+abstract class InputCaptureFlutterApi {
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  /// Events taken since the last call, in order; moves and scrolls added
+  /// up in between.
+  void onCaptured(List<NativeCapturedEvent> events);
+
+  void onSwitchKey(NativeSwitchKey key);
+
+  /// Capture stopped on its own; the keyboard and mouse are back already.
+  void onCaptureEnded(NativeCaptureEnd reason);
+
+  static void setUp(
+    InputCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptured$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final List<NativeCapturedEvent> arg_events =
+              (args[0]! as List<Object?>).cast<NativeCapturedEvent>();
+          try {
+            api.onCaptured(arg_events);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onSwitchKey$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeSwitchKey arg_key = args[0]! as NativeSwitchKey;
+          try {
+            api.onSwitchKey(arg_key);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptureEnded$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeCaptureEnd arg_reason = args[0]! as NativeCaptureEnd;
+          try {
+            api.onCaptureEnded(arg_reason);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
   }
 }

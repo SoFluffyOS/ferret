@@ -27,6 +27,9 @@ class CommandInjector {
   final List<InputAction> _queue = [];
   final KeyChords _chords = KeyChords(LinuxKeyCodes.modifiers);
   final Map<InputKey, Set<KeyModifier>> _heldModifiers = {};
+
+  /// xdotool: the modifier keys held on their own.
+  Set<KeyModifier> _latched = const {};
   Future<void>? _draining;
   int _scrollX = 0;
   int _scrollY = 0;
@@ -54,6 +57,7 @@ class CommandInjector {
   void reset() {
     _chords.reset();
     _heldModifiers.clear();
+    _latched = const {};
   }
 
   /// Adds up neighbouring moves and neighbouring scrolls.
@@ -142,6 +146,8 @@ class CommandInjector {
           current.addAll(['type', '--delay', '0', '--', text]);
           runs.add(current);
           current = [];
+        case ModifiersAction(:final held):
+          current.addAll(_xdotoolLatch(held));
       }
     }
 
@@ -203,9 +209,27 @@ class CommandInjector {
     };
     return [
       for (final modifier in KeyModifier.values)
-        if (held.contains(modifier)) ?XdotoolKeyNames.modifiers[modifier],
+        if (held.contains(modifier) && !_latched.contains(modifier))
+          ?XdotoolKeyNames.modifiers[modifier],
       name,
     ].join('+');
+  }
+
+  List<String> _xdotoolLatch(Set<KeyModifier> held) {
+    final previous = _latched;
+    _latched = Set.unmodifiable(held);
+    return [
+      for (final modifier in KeyModifier.values.reversed)
+        if (previous.contains(modifier) && !held.contains(modifier)) ...[
+          'keyup',
+          ?XdotoolKeyNames.modifiers[modifier],
+        ],
+      for (final modifier in KeyModifier.values)
+        if (held.contains(modifier) && !previous.contains(modifier)) ...[
+          'keydown',
+          ?XdotoolKeyNames.modifiers[modifier],
+        ],
+    ];
   }
 
   String _xdotoolButton(PointerButton button) => switch (button) {
@@ -263,6 +287,14 @@ class CommandInjector {
         case TextAction(:final text):
           if (text.isNotEmpty) {
             runs.add(['type', '--', text]);
+          }
+        case ModifiersAction(:final held):
+          final keys = [
+            for (final rawKey in _chords.latch(held))
+              '${rawKey.code}:${_valueOf(rawKey.pressed)}',
+          ];
+          if (keys.isNotEmpty) {
+            runs.add(['key', ...keys]);
           }
       }
     }

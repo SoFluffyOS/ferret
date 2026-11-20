@@ -50,6 +50,8 @@ template<class T> class ErrorOr {
 
  private:
   friend class RemoteInputHostApi;
+  friend class InputCaptureHostApi;
+  friend class InputCaptureFlutterApi;
   ErrorOr() = default;
   T TakeValue() && { return std::get<T>(std::move(v_)); }
 
@@ -70,6 +72,39 @@ enum class NativeEventKind {
   kMediaKey = 4,
   // Types `text`.
   kText = 5
+};
+
+enum class NativeCaptureKind {
+  // Relative move by `x`, `y` points.
+  kMove = 0,
+  // `code` is 0 left, 1 right, 2 middle.
+  kButton = 1,
+  // Scroll by `x`, `y` points, as macOS reports it: positive `y` moves
+  // the content down (toward the top of the page).
+  kScroll = 2,
+  // `code` is the macOS virtual key code; `text` what it types.
+  kKey = 3,
+  // The modifier keys changed; `modifiers` holds the ones down now.
+  kModifiers = 4
+};
+
+// A switch combination pressed anywhere on the Mac.
+enum class NativeSwitchKey {
+  // ⌃⌥→: to the next computer.
+  kNext = 0,
+  // ⌃⌥⎋: back to this Mac.
+  kHome = 1
+};
+
+// Why taking the keyboard and mouse stopped on its own.
+enum class NativeCaptureEnd {
+  // ⌃⌥⎋ was pressed.
+  kHomeKey = 0,
+  // A password field turned on secure input, which hides keys from
+  // Ferret; they'd be typed on this Mac instead.
+  kSecureInput = 1,
+  // macOS turned the event tap off and it couldn't come back.
+  kTapFailed = 2
 };
 
 
@@ -100,6 +135,8 @@ class NativeAccess {
   static NativeAccess FromEncodableList(const ::flutter::EncodableList& list);
   ::flutter::EncodableList ToEncodableList() const;
   friend class RemoteInputHostApi;
+  friend class InputCaptureHostApi;
+  friend class InputCaptureFlutterApi;
   friend class PigeonInternalCodecSerializer;
   bool granted_;
   bool needs_permission_;
@@ -164,6 +201,8 @@ class NativeInputEvent {
   static NativeInputEvent FromEncodableList(const ::flutter::EncodableList& list);
   ::flutter::EncodableList ToEncodableList() const;
   friend class RemoteInputHostApi;
+  friend class InputCaptureHostApi;
+  friend class InputCaptureFlutterApi;
   friend class PigeonInternalCodecSerializer;
   NativeEventKind kind_;
   int64_t x_;
@@ -171,6 +210,119 @@ class NativeInputEvent {
   int64_t code_;
   bool pressed_;
   int64_t modifiers_;
+  std::optional<std::string> text_;
+};
+
+
+// What this Mac lets Ferret do to take its own keyboard and mouse.
+//
+// Generated class from Pigeon that represents data sent in messages.
+class NativeCaptureAccess {
+ public:
+  // Constructs an object setting all fields.
+  explicit NativeCaptureAccess(
+    bool input_monitoring,
+    bool accessibility);
+
+  // Input Monitoring: seeing keys typed in other apps.
+  bool input_monitoring() const;
+  void set_input_monitoring(bool value_arg);
+
+  // Accessibility: holding events back from other apps.
+  bool accessibility() const;
+  void set_accessibility(bool value_arg);
+
+  bool operator==(const NativeCaptureAccess& other) const;
+  bool operator!=(const NativeCaptureAccess& other) const;
+  /// Returns a hash code value for the object. This method is supported for the benefit of hash tables.
+  size_t Hash() const;
+  /// Stream output operator for formatted string representation.
+  friend std::ostream& operator<<(std::ostream& os, const NativeCaptureAccess& obj);
+ private:
+  static NativeCaptureAccess FromEncodableList(const ::flutter::EncodableList& list);
+  ::flutter::EncodableList ToEncodableList() const;
+  friend class RemoteInputHostApi;
+  friend class InputCaptureHostApi;
+  friend class InputCaptureFlutterApi;
+  friend class PigeonInternalCodecSerializer;
+  bool input_monitoring_;
+  bool accessibility_;
+};
+
+
+// One event taken from this Mac's own keyboard or mouse.
+//
+// Generated class from Pigeon that represents data sent in messages.
+class NativeCapturedEvent {
+ public:
+  // Constructs an object setting all non-nullable fields.
+  explicit NativeCapturedEvent(
+    const NativeCaptureKind& kind,
+    double x,
+    double y,
+    int64_t code,
+    bool pressed,
+    int64_t modifiers,
+    bool is_repeat);
+
+  // Constructs an object setting all fields.
+  explicit NativeCapturedEvent(
+    const NativeCaptureKind& kind,
+    double x,
+    double y,
+    int64_t code,
+    bool pressed,
+    int64_t modifiers,
+    bool is_repeat,
+    const std::string* text);
+
+  const NativeCaptureKind& kind() const;
+  void set_kind(const NativeCaptureKind& value_arg);
+
+  double x() const;
+  void set_x(double value_arg);
+
+  double y() const;
+  void set_y(double value_arg);
+
+  int64_t code() const;
+  void set_code(int64_t value_arg);
+
+  bool pressed() const;
+  void set_pressed(bool value_arg);
+
+  // Bits: 1 shift, 2 control, 4 alt (Option), 8 meta (Command).
+  int64_t modifiers() const;
+  void set_modifiers(int64_t value_arg);
+
+  // A key held down long enough to repeat.
+  bool is_repeat() const;
+  void set_is_repeat(bool value_arg);
+
+  const std::string* text() const;
+  void set_text(const std::string_view* value_arg);
+  void set_text(std::string_view value_arg);
+
+  bool operator==(const NativeCapturedEvent& other) const;
+  bool operator!=(const NativeCapturedEvent& other) const;
+  /// Returns a hash code value for the object. This method is supported for the benefit of hash tables.
+  size_t Hash() const;
+  /// Stream output operator for formatted string representation.
+  friend std::ostream& operator<<(std::ostream& os, const NativeCapturedEvent& obj);
+ private:
+  static NativeCapturedEvent FromEncodableList(const ::flutter::EncodableList& list);
+  ::flutter::EncodableList ToEncodableList() const;
+  friend class RemoteInputHostApi;
+  friend class InputCaptureHostApi;
+  friend class InputCaptureFlutterApi;
+  friend class PigeonInternalCodecSerializer;
+  NativeCaptureKind kind_;
+  double x_;
+  double y_;
+  int64_t code_;
+  bool pressed_;
+  int64_t modifiers_;
+  bool is_repeat_;
   std::optional<std::string> text_;
 };
 
@@ -224,5 +376,76 @@ class RemoteInputHostApi {
  protected:
   RemoteInputHostApi() = default;
 };
+// Takes this Mac's own keyboard and mouse away from it, to send them to
+// another computer. macOS only.
+//
+// Generated interface from Pigeon that represents a handler of messages from Flutter.
+class InputCaptureHostApi {
+ public:
+  InputCaptureHostApi(const InputCaptureHostApi&) = delete;
+  InputCaptureHostApi& operator=(const InputCaptureHostApi&) = delete;
+  virtual ~InputCaptureHostApi() {}
+  virtual ErrorOr<NativeCaptureAccess> CaptureAccess() = 0;
+  // Shows the Input Monitoring and Accessibility prompts. macOS shows each
+  // only once. Returns whether both are on now.
+  virtual ErrorOr<bool> RequestCaptureAccess() = 0;
+  // Opens System Settings where the missing one is turned on: Input
+  // Monitoring first, then Accessibility.
+  virtual std::optional<FlutterError> OpenCaptureSettings() = 0;
+  // Whether a password field holds secure input right now.
+  virtual ErrorOr<bool> SecureInputOn() = 0;
+  // Listens for ⌃⌥→ and ⌃⌥⎋ anywhere on the Mac, or stops. False when
+  // the Mac refused a combination, such as when another app has it.
+  virtual ErrorOr<bool> SetSwitchKeys(bool enabled) = 0;
+  // Starts holding back every key and mouse event and sending them here,
+  // with the pointer frozen and hidden. Returns the modifier bits held
+  // right now, or -1 when it couldn't start.
+  virtual ErrorOr<int64_t> StartCapture() = 0;
+  // Gives the keyboard and mouse back to this Mac.
+  virtual std::optional<FlutterError> StopCapture() = 0;
+
+  // The codec used by InputCaptureHostApi.
+  static const ::flutter::StandardMessageCodec& GetCodec();
+  // Sets up an instance of `InputCaptureHostApi` to handle messages through the `binary_messenger`.
+  static void SetUp(
+    ::flutter::BinaryMessenger* binary_messenger,
+    InputCaptureHostApi* api);
+  static void SetUp(
+    ::flutter::BinaryMessenger* binary_messenger,
+    InputCaptureHostApi* api,
+    const std::string& message_channel_suffix);
+  static ::flutter::EncodableValue WrapError(std::string_view error_message);
+  static ::flutter::EncodableValue WrapError(const FlutterError& error);
+ protected:
+  InputCaptureHostApi() = default;
+};
+// Generated class from Pigeon that represents Flutter messages that can be called from C++.
+class InputCaptureFlutterApi {
+ public:
+  InputCaptureFlutterApi(::flutter::BinaryMessenger* binary_messenger);
+  InputCaptureFlutterApi(
+    ::flutter::BinaryMessenger* binary_messenger,
+    const std::string& message_channel_suffix);
+  static const ::flutter::StandardMessageCodec& GetCodec();
+  // Events taken since the last call, in order; moves and scrolls added
+  // up in between.
+  void OnCaptured(
+    const ::flutter::EncodableList& events,
+    std::function<void(void)>&& on_success,
+    std::function<void(const FlutterError&)>&& on_error);
+  void OnSwitchKey(
+    const NativeSwitchKey& key,
+    std::function<void(void)>&& on_success,
+    std::function<void(const FlutterError&)>&& on_error);
+  // Capture stopped on its own; the keyboard and mouse are back already.
+  void OnCaptureEnded(
+    const NativeCaptureEnd& reason,
+    std::function<void(void)>&& on_success,
+    std::function<void(const FlutterError&)>&& on_error);
+ private:
+  ::flutter::BinaryMessenger* binary_messenger_;
+  std::string message_channel_suffix_;
+};
+
 }  // namespace ferret_remote_input
 #endif  // PIGEON_MESSAGES_G_H_

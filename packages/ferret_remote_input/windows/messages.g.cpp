@@ -569,6 +569,274 @@ size_t PigeonInternalDeepHash(const NativeInputEvent& v) {
   return v.Hash();
 }
 
+// NativeCaptureAccess
+
+NativeCaptureAccess::NativeCaptureAccess(
+  bool input_monitoring,
+  bool accessibility)
+ : input_monitoring_(input_monitoring),
+    accessibility_(accessibility) {}
+
+bool NativeCaptureAccess::input_monitoring() const {
+  return input_monitoring_;
+}
+
+void NativeCaptureAccess::set_input_monitoring(bool value_arg) {
+  input_monitoring_ = value_arg;
+}
+
+
+bool NativeCaptureAccess::accessibility() const {
+  return accessibility_;
+}
+
+void NativeCaptureAccess::set_accessibility(bool value_arg) {
+  accessibility_ = value_arg;
+}
+
+
+EncodableList NativeCaptureAccess::ToEncodableList() const {
+  EncodableList list;
+  list.reserve(2);
+  list.push_back(EncodableValue(input_monitoring_));
+  list.push_back(EncodableValue(accessibility_));
+  return list;
+}
+
+NativeCaptureAccess NativeCaptureAccess::FromEncodableList(const EncodableList& list) {
+  NativeCaptureAccess decoded(
+    std::get<bool>(list[0]),
+    std::get<bool>(list[1]));
+  return decoded;
+}
+
+bool NativeCaptureAccess::operator==(const NativeCaptureAccess& other) const {
+  return PigeonInternalDeepEquals(input_monitoring_, other.input_monitoring_) && PigeonInternalDeepEquals(accessibility_, other.accessibility_);
+}
+
+bool NativeCaptureAccess::operator!=(const NativeCaptureAccess& other) const {
+  return !(*this == other);
+}
+
+size_t NativeCaptureAccess::Hash() const {
+  size_t result = 1;
+  result = result * 31 + PigeonInternalDeepHash(input_monitoring_);
+  result = result * 31 + PigeonInternalDeepHash(accessibility_);
+  return result;
+}
+
+std::ostream& operator<<(
+  std::ostream& os,
+  const NativeCaptureAccess& obj) {
+  os << "NativeCaptureAccess(";
+  os << "input_monitoring: ";
+  os << PigeonInternalToString(obj.input_monitoring_);
+  os << ", accessibility: ";
+  os << PigeonInternalToString(obj.accessibility_);
+  os << ")";
+  return os;
+}
+
+size_t PigeonInternalDeepHash(const NativeCaptureAccess& v) {
+  return v.Hash();
+}
+
+// NativeCapturedEvent
+
+NativeCapturedEvent::NativeCapturedEvent(
+  const NativeCaptureKind& kind,
+  double x,
+  double y,
+  int64_t code,
+  bool pressed,
+  int64_t modifiers,
+  bool is_repeat)
+ : kind_(kind),
+    x_(x),
+    y_(y),
+    code_(code),
+    pressed_(pressed),
+    modifiers_(modifiers),
+    is_repeat_(is_repeat) {}
+
+NativeCapturedEvent::NativeCapturedEvent(
+  const NativeCaptureKind& kind,
+  double x,
+  double y,
+  int64_t code,
+  bool pressed,
+  int64_t modifiers,
+  bool is_repeat,
+  const std::string* text)
+ : kind_(kind),
+    x_(x),
+    y_(y),
+    code_(code),
+    pressed_(pressed),
+    modifiers_(modifiers),
+    is_repeat_(is_repeat),
+    text_(text ? std::optional<std::string>(*text) : std::nullopt) {}
+
+const NativeCaptureKind& NativeCapturedEvent::kind() const {
+  return kind_;
+}
+
+void NativeCapturedEvent::set_kind(const NativeCaptureKind& value_arg) {
+  kind_ = value_arg;
+}
+
+
+double NativeCapturedEvent::x() const {
+  return x_;
+}
+
+void NativeCapturedEvent::set_x(double value_arg) {
+  x_ = value_arg;
+}
+
+
+double NativeCapturedEvent::y() const {
+  return y_;
+}
+
+void NativeCapturedEvent::set_y(double value_arg) {
+  y_ = value_arg;
+}
+
+
+int64_t NativeCapturedEvent::code() const {
+  return code_;
+}
+
+void NativeCapturedEvent::set_code(int64_t value_arg) {
+  code_ = value_arg;
+}
+
+
+bool NativeCapturedEvent::pressed() const {
+  return pressed_;
+}
+
+void NativeCapturedEvent::set_pressed(bool value_arg) {
+  pressed_ = value_arg;
+}
+
+
+int64_t NativeCapturedEvent::modifiers() const {
+  return modifiers_;
+}
+
+void NativeCapturedEvent::set_modifiers(int64_t value_arg) {
+  modifiers_ = value_arg;
+}
+
+
+bool NativeCapturedEvent::is_repeat() const {
+  return is_repeat_;
+}
+
+void NativeCapturedEvent::set_is_repeat(bool value_arg) {
+  is_repeat_ = value_arg;
+}
+
+
+const std::string* NativeCapturedEvent::text() const {
+  return text_ ? &(*text_) : nullptr;
+}
+
+void NativeCapturedEvent::set_text(const std::string_view* value_arg) {
+  text_ = value_arg ? std::optional<std::string>(*value_arg) : std::nullopt;
+}
+
+void NativeCapturedEvent::set_text(std::string_view value_arg) {
+  text_ = value_arg;
+}
+
+
+EncodableList NativeCapturedEvent::ToEncodableList() const {
+  EncodableList list;
+  list.reserve(8);
+  list.push_back(CustomEncodableValue(kind_));
+  list.push_back(EncodableValue(x_));
+  list.push_back(EncodableValue(y_));
+  list.push_back(EncodableValue(code_));
+  list.push_back(EncodableValue(pressed_));
+  list.push_back(EncodableValue(modifiers_));
+  list.push_back(EncodableValue(is_repeat_));
+  list.push_back(text_ ? EncodableValue(*text_) : EncodableValue());
+  return list;
+}
+
+NativeCapturedEvent NativeCapturedEvent::FromEncodableList(const EncodableList& list) {
+  NativeCapturedEvent decoded(
+    std::any_cast<const NativeCaptureKind&>(std::get<CustomEncodableValue>(list[0])),
+    std::get<double>(list[1]),
+    std::get<double>(list[2]),
+    std::get<int64_t>(list[3]),
+    std::get<bool>(list[4]),
+    std::get<int64_t>(list[5]),
+    std::get<bool>(list[6]));
+  auto& encodable_text = list[7];
+  if (!encodable_text.IsNull()) {
+    decoded.set_text(std::get<std::string>(encodable_text));
+  }
+  return decoded;
+}
+
+bool NativeCapturedEvent::operator==(const NativeCapturedEvent& other) const {
+  return PigeonInternalDeepEquals(kind_, other.kind_) && PigeonInternalDeepEquals(x_, other.x_) && PigeonInternalDeepEquals(y_, other.y_) && PigeonInternalDeepEquals(code_, other.code_) && PigeonInternalDeepEquals(pressed_, other.pressed_) && PigeonInternalDeepEquals(modifiers_, other.modifiers_) && PigeonInternalDeepEquals(is_repeat_, other.is_repeat_) && PigeonInternalDeepEquals(text_, other.text_);
+}
+
+bool NativeCapturedEvent::operator!=(const NativeCapturedEvent& other) const {
+  return !(*this == other);
+}
+
+size_t NativeCapturedEvent::Hash() const {
+  size_t result = 1;
+  result = result * 31 + PigeonInternalDeepHash(kind_);
+  result = result * 31 + PigeonInternalDeepHash(x_);
+  result = result * 31 + PigeonInternalDeepHash(y_);
+  result = result * 31 + PigeonInternalDeepHash(code_);
+  result = result * 31 + PigeonInternalDeepHash(pressed_);
+  result = result * 31 + PigeonInternalDeepHash(modifiers_);
+  result = result * 31 + PigeonInternalDeepHash(is_repeat_);
+  result = result * 31 + PigeonInternalDeepHash(text_);
+  return result;
+}
+
+std::ostream& operator<<(
+  std::ostream& os,
+  const NativeCapturedEvent& obj) {
+  os << "NativeCapturedEvent(";
+  os << "kind: ";
+  os << PigeonInternalToString(obj.kind_);
+  os << ", x: ";
+  os << PigeonInternalToString(obj.x_);
+  os << ", y: ";
+  os << PigeonInternalToString(obj.y_);
+  os << ", code: ";
+  os << PigeonInternalToString(obj.code_);
+  os << ", pressed: ";
+  os << PigeonInternalToString(obj.pressed_);
+  os << ", modifiers: ";
+  os << PigeonInternalToString(obj.modifiers_);
+  os << ", is_repeat: ";
+  os << PigeonInternalToString(obj.is_repeat_);
+  os << ", text: ";
+  if (obj.text_) {
+    os << PigeonInternalToString(*obj.text_);
+  }
+  else {
+    os << "null";
+  }
+  os << ")";
+  return os;
+}
+
+size_t PigeonInternalDeepHash(const NativeCapturedEvent& v) {
+  return v.Hash();
+}
+
 
 PigeonInternalCodecSerializer::PigeonInternalCodecSerializer() {}
 
@@ -582,10 +850,31 @@ EncodableValue PigeonInternalCodecSerializer::ReadValueOfType(
         return encodable_enum_arg.IsNull() ? EncodableValue() : CustomEncodableValue(static_cast<NativeEventKind>(enum_arg_value));
       }
     case 130: {
-        return CustomEncodableValue(NativeAccess::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+        const auto& encodable_enum_arg = ReadValue(stream);
+        const int64_t enum_arg_value = encodable_enum_arg.IsNull() ? 0 : encodable_enum_arg.LongValue();
+        return encodable_enum_arg.IsNull() ? EncodableValue() : CustomEncodableValue(static_cast<NativeCaptureKind>(enum_arg_value));
       }
     case 131: {
+        const auto& encodable_enum_arg = ReadValue(stream);
+        const int64_t enum_arg_value = encodable_enum_arg.IsNull() ? 0 : encodable_enum_arg.LongValue();
+        return encodable_enum_arg.IsNull() ? EncodableValue() : CustomEncodableValue(static_cast<NativeSwitchKey>(enum_arg_value));
+      }
+    case 132: {
+        const auto& encodable_enum_arg = ReadValue(stream);
+        const int64_t enum_arg_value = encodable_enum_arg.IsNull() ? 0 : encodable_enum_arg.LongValue();
+        return encodable_enum_arg.IsNull() ? EncodableValue() : CustomEncodableValue(static_cast<NativeCaptureEnd>(enum_arg_value));
+      }
+    case 133: {
+        return CustomEncodableValue(NativeAccess::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+      }
+    case 134: {
         return CustomEncodableValue(NativeInputEvent::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+      }
+    case 135: {
+        return CustomEncodableValue(NativeCaptureAccess::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
+      }
+    case 136: {
+        return CustomEncodableValue(NativeCapturedEvent::FromEncodableList(std::get<EncodableList>(ReadValue(stream))));
       }
     default:
       return ::flutter::StandardCodecSerializer::ReadValueOfType(type, stream);
@@ -601,14 +890,39 @@ void PigeonInternalCodecSerializer::WriteValue(
       WriteValue(EncodableValue(static_cast<int>(std::any_cast<NativeEventKind>(*custom_value))), stream);
       return;
     }
-    if (custom_value->type() == typeid(NativeAccess)) {
+    if (custom_value->type() == typeid(NativeCaptureKind)) {
       stream->WriteByte(130);
+      WriteValue(EncodableValue(static_cast<int>(std::any_cast<NativeCaptureKind>(*custom_value))), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(NativeSwitchKey)) {
+      stream->WriteByte(131);
+      WriteValue(EncodableValue(static_cast<int>(std::any_cast<NativeSwitchKey>(*custom_value))), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(NativeCaptureEnd)) {
+      stream->WriteByte(132);
+      WriteValue(EncodableValue(static_cast<int>(std::any_cast<NativeCaptureEnd>(*custom_value))), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(NativeAccess)) {
+      stream->WriteByte(133);
       WriteValue(EncodableValue(std::any_cast<NativeAccess>(*custom_value).ToEncodableList()), stream);
       return;
     }
     if (custom_value->type() == typeid(NativeInputEvent)) {
-      stream->WriteByte(131);
+      stream->WriteByte(134);
       WriteValue(EncodableValue(std::any_cast<NativeInputEvent>(*custom_value).ToEncodableList()), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(NativeCaptureAccess)) {
+      stream->WriteByte(135);
+      WriteValue(EncodableValue(std::any_cast<NativeCaptureAccess>(*custom_value).ToEncodableList()), stream);
+      return;
+    }
+    if (custom_value->type() == typeid(NativeCapturedEvent)) {
+      stream->WriteByte(136);
+      WriteValue(EncodableValue(std::any_cast<NativeCapturedEvent>(*custom_value).ToEncodableList()), stream);
       return;
     }
   }
@@ -759,6 +1073,285 @@ EncodableValue RemoteInputHostApi::WrapError(const FlutterError& error) {
     EncodableValue(error.code()),
     EncodableValue(error.message()),
     error.details()
+  });
+}
+
+/// The codec used by InputCaptureHostApi.
+const ::flutter::StandardMessageCodec& InputCaptureHostApi::GetCodec() {
+  return ::flutter::StandardMessageCodec::GetInstance(&PigeonInternalCodecSerializer::GetInstance());
+}
+
+// Sets up an instance of `InputCaptureHostApi` to handle messages through the `binary_messenger`.
+void InputCaptureHostApi::SetUp(
+  ::flutter::BinaryMessenger* binary_messenger,
+  InputCaptureHostApi* api) {
+  InputCaptureHostApi::SetUp(binary_messenger, api, "");
+}
+
+void InputCaptureHostApi::SetUp(
+  ::flutter::BinaryMessenger* binary_messenger,
+  InputCaptureHostApi* api,
+  const std::string& message_channel_suffix) {
+  const std::string prepended_suffix = message_channel_suffix.length() > 0 ? std::string(".") + message_channel_suffix : "";
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.captureAccess" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          ErrorOr<NativeCaptureAccess> output = api->CaptureAccess();
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(CustomEncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.requestCaptureAccess" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          ErrorOr<bool> output = api->RequestCaptureAccess();
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.openCaptureSettings" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          std::optional<FlutterError> output = api->OpenCaptureSettings();
+          if (output.has_value()) {
+            reply(WrapError(output.value()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue());
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.secureInputOn" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          ErrorOr<bool> output = api->SecureInputOn();
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.setSwitchKeys" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          const auto& args = std::get<EncodableList>(message);
+          const auto& encodable_enabled_arg = args.at(0);
+          if (encodable_enabled_arg.IsNull()) {
+            reply(WrapError("enabled_arg unexpectedly null."));
+            return;
+          }
+          const auto& enabled_arg = std::get<bool>(encodable_enabled_arg);
+          ErrorOr<bool> output = api->SetSwitchKeys(enabled_arg);
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.startCapture" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          ErrorOr<int64_t> output = api->StartCapture();
+          if (output.has_error()) {
+            reply(WrapError(output.error()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue(std::move(output).TakeValue()));
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.stopCapture" + prepended_suffix, &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const ::flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          std::optional<FlutterError> output = api->StopCapture();
+          if (output.has_value()) {
+            reply(WrapError(output.value()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue());
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+}
+
+EncodableValue InputCaptureHostApi::WrapError(std::string_view error_message) {
+  return EncodableValue(EncodableList{
+    EncodableValue(std::string(error_message)),
+    EncodableValue("Error"),
+    EncodableValue()
+  });
+}
+
+EncodableValue InputCaptureHostApi::WrapError(const FlutterError& error) {
+  return EncodableValue(EncodableList{
+    EncodableValue(error.code()),
+    EncodableValue(error.message()),
+    error.details()
+  });
+}
+
+// Generated class from Pigeon that represents Flutter messages that can be called from C++.
+InputCaptureFlutterApi::InputCaptureFlutterApi(::flutter::BinaryMessenger* binary_messenger)
+ : binary_messenger_(binary_messenger),
+    message_channel_suffix_("") {}
+
+InputCaptureFlutterApi::InputCaptureFlutterApi(
+  ::flutter::BinaryMessenger* binary_messenger,
+  const std::string& message_channel_suffix)
+ : binary_messenger_(binary_messenger),
+    message_channel_suffix_(message_channel_suffix.length() > 0 ? std::string(".") + message_channel_suffix : "") {}
+
+const ::flutter::StandardMessageCodec& InputCaptureFlutterApi::GetCodec() {
+  return ::flutter::StandardMessageCodec::GetInstance(&PigeonInternalCodecSerializer::GetInstance());
+}
+
+void InputCaptureFlutterApi::OnCaptured(
+  const EncodableList& events_arg,
+  std::function<void(void)>&& on_success,
+  std::function<void(const FlutterError&)>&& on_error) {
+  const std::string channel_name = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptured" + message_channel_suffix_;
+  BasicMessageChannel<> channel(binary_messenger_, channel_name, &GetCodec());
+  EncodableValue encoded_api_arguments = EncodableValue(EncodableList{
+    EncodableValue(events_arg),
+  });
+  channel.Send(encoded_api_arguments, [channel_name, on_success = std::move(on_success), on_error = std::move(on_error)](const uint8_t* reply, size_t reply_size) {
+    std::unique_ptr<EncodableValue> response = GetCodec().DecodeMessage(reply, reply_size);
+    const auto& encodable_return_value = *response;
+    const auto* list_return_value = std::get_if<EncodableList>(&encodable_return_value);
+    if (list_return_value) {
+      if (list_return_value->size() > 1) {
+        on_error(FlutterError(std::get<std::string>(list_return_value->at(0)), std::get<std::string>(list_return_value->at(1)), list_return_value->at(2)));
+      } else {
+        on_success();
+      }
+    } else {
+      on_error(CreateConnectionError(channel_name));
+    } 
+  });
+}
+
+void InputCaptureFlutterApi::OnSwitchKey(
+  const NativeSwitchKey& key_arg,
+  std::function<void(void)>&& on_success,
+  std::function<void(const FlutterError&)>&& on_error) {
+  const std::string channel_name = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onSwitchKey" + message_channel_suffix_;
+  BasicMessageChannel<> channel(binary_messenger_, channel_name, &GetCodec());
+  EncodableValue encoded_api_arguments = EncodableValue(EncodableList{
+    CustomEncodableValue(key_arg),
+  });
+  channel.Send(encoded_api_arguments, [channel_name, on_success = std::move(on_success), on_error = std::move(on_error)](const uint8_t* reply, size_t reply_size) {
+    std::unique_ptr<EncodableValue> response = GetCodec().DecodeMessage(reply, reply_size);
+    const auto& encodable_return_value = *response;
+    const auto* list_return_value = std::get_if<EncodableList>(&encodable_return_value);
+    if (list_return_value) {
+      if (list_return_value->size() > 1) {
+        on_error(FlutterError(std::get<std::string>(list_return_value->at(0)), std::get<std::string>(list_return_value->at(1)), list_return_value->at(2)));
+      } else {
+        on_success();
+      }
+    } else {
+      on_error(CreateConnectionError(channel_name));
+    } 
+  });
+}
+
+void InputCaptureFlutterApi::OnCaptureEnded(
+  const NativeCaptureEnd& reason_arg,
+  std::function<void(void)>&& on_success,
+  std::function<void(const FlutterError&)>&& on_error) {
+  const std::string channel_name = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptureEnded" + message_channel_suffix_;
+  BasicMessageChannel<> channel(binary_messenger_, channel_name, &GetCodec());
+  EncodableValue encoded_api_arguments = EncodableValue(EncodableList{
+    CustomEncodableValue(reason_arg),
+  });
+  channel.Send(encoded_api_arguments, [channel_name, on_success = std::move(on_success), on_error = std::move(on_error)](const uint8_t* reply, size_t reply_size) {
+    std::unique_ptr<EncodableValue> response = GetCodec().DecodeMessage(reply, reply_size);
+    const auto& encodable_return_value = *response;
+    const auto* list_return_value = std::get_if<EncodableList>(&encodable_return_value);
+    if (list_return_value) {
+      if (list_return_value->size() > 1) {
+        on_error(FlutterError(std::get<std::string>(list_return_value->at(0)), std::get<std::string>(list_return_value->at(1)), list_return_value->at(2)));
+      } else {
+        on_success();
+      }
+    } else {
+      on_error(CreateConnectionError(channel_name));
+    } 
   });
 }
 

@@ -1,18 +1,29 @@
 /// Moves the pointer, clicks, scrolls and types on this computer for
 /// another device: CGEvent on macOS, SendInput on Windows, and uinput,
 /// xdotool or ydotool on Linux. Key names are the same on every platform.
-/// Also locks the screen on request.
+/// Also locks the screen on request, and on macOS takes the computer's own
+/// keyboard and mouse to use them on another one.
 library;
 
 export 'package:ferret_remote_input/src/held_input.dart';
 export 'package:ferret_remote_input/src/injector_status.dart';
 export 'package:ferret_remote_input/src/input_action.dart';
+export 'package:ferret_remote_input/src/input_capture.dart';
 export 'package:ferret_remote_input/src/input_injector.dart';
 export 'package:ferret_remote_input/src/key_chords.dart';
 export 'package:ferret_remote_input/src/keys/keys.dart';
 export 'package:ferret_remote_input/src/linux/linux.dart';
 export 'package:ferret_remote_input/src/messages.g.dart'
-    show NativeEventKind, NativeInputEvent, NativeAccess, RemoteInputHostApi;
+    show
+        InputCaptureHostApi,
+        NativeAccess,
+        NativeCaptureEnd,
+        NativeCaptureKind,
+        NativeCapturedEvent,
+        NativeEventKind,
+        NativeInputEvent,
+        NativeSwitchKey,
+        RemoteInputHostApi;
 export 'package:ferret_remote_input/src/native_injector.dart';
 export 'package:ferret_remote_input/src/screen_locker.dart';
 export 'package:ferret_remote_input/src/unsupported_injector.dart';

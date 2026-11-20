@@ -26,6 +26,9 @@ class NativeInjector implements InputInjector {
   final KeyChords? _chords;
   final HeldInput _held = HeldInput();
 
+  /// macOS: the modifier keys held on their own, set as flags natively.
+  Set<KeyModifier> _macLatched = const {};
+
   @override
   Future<InjectorStatus> status() async {
     try {
@@ -82,6 +85,7 @@ class NativeInjector implements InputInjector {
         }),
     ];
     _chords?.reset();
+    _macLatched = const {};
     if (events.isNotEmpty) {
       await _api.inject(events);
     }
@@ -116,7 +120,40 @@ class NativeInjector implements InputInjector {
     TextAction(:final text) => [
       if (text.isNotEmpty) _event(.text, text: text),
     ],
+    ModifiersAction(:final held) => _latch(held),
   };
+
+  /// Presses and releases of the modifier keys alone. macOS keeps them as
+  /// flags on what follows, so each one carries the flags held after it.
+  List<NativeInputEvent> _latch(Set<KeyModifier> held) {
+    if (_chords case final chords?) {
+      return [
+        for (final rawKey in chords.latch(held))
+          _event(.key, code: rawKey.code, pressed: rawKey.pressed),
+      ];
+    }
+
+    final previous = _macLatched;
+    _macLatched = Set.unmodifiable(held);
+    final bits = KeyModifier.bitsOf(held);
+    return [
+      for (final modifier in KeyModifier.values.reversed)
+        if (previous.contains(modifier) && !held.contains(modifier))
+          _event(
+            .key,
+            code: MacKeyCodes.modifiers[modifier] ?? 0,
+            modifiers: bits,
+          ),
+      for (final modifier in KeyModifier.values)
+        if (held.contains(modifier) && !previous.contains(modifier))
+          _event(
+            .key,
+            code: MacKeyCodes.modifiers[modifier] ?? 0,
+            pressed: true,
+            modifiers: bits,
+          ),
+    ];
+  }
 
   List<NativeInputEvent> _keyEvents(
     InputKey key,

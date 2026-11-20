@@ -55,6 +55,10 @@ private func wrapError(_ error: Any) -> [Any?] {
   ]
 }
 
+private func createConnectionError(withChannelName channelName: String) -> PigeonError {
+  return PigeonError(code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.", details: "")
+}
+
 enum MessagesPigeonInternal {
   static func isNullish(_ value: Any?) -> Bool {
     guard let innerValue = value else {
@@ -199,6 +203,39 @@ enum NativeEventKind: Int, CaseIterable {
   case text = 5
 }
 
+enum NativeCaptureKind: Int, CaseIterable {
+  /// Relative move by `x`, `y` points.
+  case move = 0
+  /// `code` is 0 left, 1 right, 2 middle.
+  case button = 1
+  /// Scroll by `x`, `y` points, as macOS reports it: positive `y` moves
+  /// the content down (toward the top of the page).
+  case scroll = 2
+  /// `code` is the macOS virtual key code; `text` what it types.
+  case key = 3
+  /// The modifier keys changed; `modifiers` holds the ones down now.
+  case modifiers = 4
+}
+
+/// A switch combination pressed anywhere on the Mac.
+enum NativeSwitchKey: Int, CaseIterable {
+  /// ⌃⌥→: to the next computer.
+  case next = 0
+  /// ⌃⌥⎋: back to this Mac.
+  case home = 1
+}
+
+/// Why taking the keyboard and mouse stopped on its own.
+enum NativeCaptureEnd: Int, CaseIterable {
+  /// ⌃⌥⎋ was pressed.
+  case homeKey = 0
+  /// A password field turned on secure input, which hides keys from
+  /// Ferret; they'd be typed on this Mac instead.
+  case secureInput = 1
+  /// macOS turned the event tap off and it couldn't come back.
+  case tapFailed = 2
+}
+
 /// Whether this process may inject input.
 ///
 /// Generated class from Pigeon that represents data sent in messages.
@@ -311,6 +348,124 @@ struct NativeInputEvent: Hashable, CustomStringConvertible {
   }
 }
 
+/// What this Mac lets Ferret do to take its own keyboard and mouse.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeCaptureAccess: Hashable, CustomStringConvertible {
+  /// Input Monitoring: seeing keys typed in other apps.
+  var inputMonitoring: Bool
+  /// Accessibility: holding events back from other apps.
+  var accessibility: Bool
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeCaptureAccess? {
+    let inputMonitoring = pigeonVar_list[0] as! Bool
+    let accessibility = pigeonVar_list[1] as! Bool
+
+    return NativeCaptureAccess(
+      inputMonitoring: inputMonitoring,
+      accessibility: accessibility
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      inputMonitoring,
+      accessibility,
+    ]
+  }
+  static func == (lhs: NativeCaptureAccess, rhs: NativeCaptureAccess) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.inputMonitoring, rhs.inputMonitoring) && MessagesPigeonInternal.deepEquals(lhs.accessibility, rhs.accessibility)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeCaptureAccess")
+    MessagesPigeonInternal.deepHash(value: inputMonitoring, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: accessibility, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeCaptureAccess(inputMonitoring: \(String(describing: inputMonitoring)), accessibility: \(String(describing: accessibility)))"
+  }
+}
+
+/// One event taken from this Mac's own keyboard or mouse.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeCapturedEvent: Hashable, CustomStringConvertible {
+  var kind: NativeCaptureKind
+  var x: Double
+  var y: Double
+  var code: Int64
+  var pressed: Bool
+  /// Bits: 1 shift, 2 control, 4 alt (Option), 8 meta (Command).
+  var modifiers: Int64
+  /// A key held down long enough to repeat.
+  var isRepeat: Bool
+  var text: String? = nil
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeCapturedEvent? {
+    let kind = pigeonVar_list[0] as! NativeCaptureKind
+    let x = pigeonVar_list[1] as! Double
+    let y = pigeonVar_list[2] as! Double
+    let code = pigeonVar_list[3] as! Int64
+    let pressed = pigeonVar_list[4] as! Bool
+    let modifiers = pigeonVar_list[5] as! Int64
+    let isRepeat = pigeonVar_list[6] as! Bool
+    let text: String? = nilOrValue(pigeonVar_list[7])
+
+    return NativeCapturedEvent(
+      kind: kind,
+      x: x,
+      y: y,
+      code: code,
+      pressed: pressed,
+      modifiers: modifiers,
+      isRepeat: isRepeat,
+      text: text
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      kind,
+      x,
+      y,
+      code,
+      pressed,
+      modifiers,
+      isRepeat,
+      text,
+    ]
+  }
+  static func == (lhs: NativeCapturedEvent, rhs: NativeCapturedEvent) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.kind, rhs.kind) && MessagesPigeonInternal.deepEquals(lhs.x, rhs.x) && MessagesPigeonInternal.deepEquals(lhs.y, rhs.y) && MessagesPigeonInternal.deepEquals(lhs.code, rhs.code) && MessagesPigeonInternal.deepEquals(lhs.pressed, rhs.pressed) && MessagesPigeonInternal.deepEquals(lhs.modifiers, rhs.modifiers) && MessagesPigeonInternal.deepEquals(lhs.isRepeat, rhs.isRepeat) && MessagesPigeonInternal.deepEquals(lhs.text, rhs.text)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeCapturedEvent")
+    MessagesPigeonInternal.deepHash(value: kind, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: x, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: y, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: code, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: pressed, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: modifiers, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: isRepeat, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: text, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeCapturedEvent(kind: \(String(describing: kind)), x: \(String(describing: x)), y: \(String(describing: y)), code: \(String(describing: code)), pressed: \(String(describing: pressed)), modifiers: \(String(describing: modifiers)), isRepeat: \(String(describing: isRepeat)), text: \(String(describing: text)))"
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -321,9 +476,31 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       }
       return nil
     case 130:
-      return NativeAccess.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeCaptureKind(rawValue: enumResultAsInt)
+      }
+      return nil
     case 131:
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeSwitchKey(rawValue: enumResultAsInt)
+      }
+      return nil
+    case 132:
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return NativeCaptureEnd(rawValue: enumResultAsInt)
+      }
+      return nil
+    case 133:
+      return NativeAccess.fromList(self.readValue() as! [Any?])
+    case 134:
       return NativeInputEvent.fromList(self.readValue() as! [Any?])
+    case 135:
+      return NativeCaptureAccess.fromList(self.readValue() as! [Any?])
+    case 136:
+      return NativeCapturedEvent.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -335,11 +512,26 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     if let value = value as? NativeEventKind {
       super.writeByte(129)
       super.writeValue(value.rawValue)
-    } else if let value = value as? NativeAccess {
+    } else if let value = value as? NativeCaptureKind {
       super.writeByte(130)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeSwitchKey {
+      super.writeByte(131)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeCaptureEnd {
+      super.writeByte(132)
+      super.writeValue(value.rawValue)
+    } else if let value = value as? NativeAccess {
+      super.writeByte(133)
       super.writeValue(value.toList())
     } else if let value = value as? NativeInputEvent {
-      super.writeByte(131)
+      super.writeByte(134)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeCaptureAccess {
+      super.writeByte(135)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeCapturedEvent {
+      super.writeByte(136)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -452,6 +644,227 @@ class RemoteInputHostApiSetup {
       }
     } else {
       releaseAllChannel.setMessageHandler(nil)
+    }
+  }
+}
+/// Takes this Mac's own keyboard and mouse away from it, to send them to
+/// another computer. macOS only.
+///
+/// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+protocol InputCaptureHostApi {
+  func captureAccess() throws -> NativeCaptureAccess
+  /// Shows the Input Monitoring and Accessibility prompts. macOS shows each
+  /// only once. Returns whether both are on now.
+  func requestCaptureAccess() throws -> Bool
+  /// Opens System Settings where the missing one is turned on: Input
+  /// Monitoring first, then Accessibility.
+  func openCaptureSettings() throws
+  /// Whether a password field holds secure input right now.
+  func secureInputOn() throws -> Bool
+  /// Listens for ⌃⌥→ and ⌃⌥⎋ anywhere on the Mac, or stops. False when
+  /// the Mac refused a combination, such as when another app has it.
+  func setSwitchKeys(enabled: Bool) throws -> Bool
+  /// Starts holding back every key and mouse event and sending them here,
+  /// with the pointer frozen and hidden. Returns the modifier bits held
+  /// right now, or -1 when it couldn't start.
+  func startCapture() throws -> Int64
+  /// Gives the keyboard and mouse back to this Mac.
+  func stopCapture() throws
+}
+
+/// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+class InputCaptureHostApiSetup {
+  static var codec: FlutterStandardMessageCodec { MessagesPigeonCodec.shared }
+  /// Sets up an instance of `InputCaptureHostApi` to handle messages through the `binaryMessenger`.
+  static func setUp(binaryMessenger: FlutterBinaryMessenger, api: InputCaptureHostApi?, messageChannelSuffix: String = "") {
+    let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    let captureAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.captureAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      captureAccessChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.captureAccess()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      captureAccessChannel.setMessageHandler(nil)
+    }
+    /// Shows the Input Monitoring and Accessibility prompts. macOS shows each
+    /// only once. Returns whether both are on now.
+    let requestCaptureAccessChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.requestCaptureAccess\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      requestCaptureAccessChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.requestCaptureAccess()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      requestCaptureAccessChannel.setMessageHandler(nil)
+    }
+    /// Opens System Settings where the missing one is turned on: Input
+    /// Monitoring first, then Accessibility.
+    let openCaptureSettingsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.openCaptureSettings\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      openCaptureSettingsChannel.setMessageHandler { _, reply in
+        do {
+          try api.openCaptureSettings()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      openCaptureSettingsChannel.setMessageHandler(nil)
+    }
+    /// Whether a password field holds secure input right now.
+    let secureInputOnChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.secureInputOn\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      secureInputOnChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.secureInputOn()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      secureInputOnChannel.setMessageHandler(nil)
+    }
+    /// Listens for ⌃⌥→ and ⌃⌥⎋ anywhere on the Mac, or stops. False when
+    /// the Mac refused a combination, such as when another app has it.
+    let setSwitchKeysChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.setSwitchKeys\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setSwitchKeysChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let enabledArg = args[0] as! Bool
+        do {
+          let result = try api.setSwitchKeys(enabled: enabledArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setSwitchKeysChannel.setMessageHandler(nil)
+    }
+    /// Starts holding back every key and mouse event and sending them here,
+    /// with the pointer frozen and hidden. Returns the modifier bits held
+    /// right now, or -1 when it couldn't start.
+    let startCaptureChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.startCapture\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startCaptureChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.startCapture()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      startCaptureChannel.setMessageHandler(nil)
+    }
+    /// Gives the keyboard and mouse back to this Mac.
+    let stopCaptureChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_remote_input.InputCaptureHostApi.stopCapture\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      stopCaptureChannel.setMessageHandler { _, reply in
+        do {
+          try api.stopCapture()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      stopCaptureChannel.setMessageHandler(nil)
+    }
+  }
+}
+
+/// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
+protocol InputCaptureFlutterApiProtocol {
+  /// Events taken since the last call, in order; moves and scrolls added
+  /// up in between.
+  @MainActor func onCaptured(events eventsArg: [NativeCapturedEvent]) async throws
+  @MainActor func onSwitchKey(key keyArg: NativeSwitchKey) async throws
+  /// Capture stopped on its own; the keyboard and mouse are back already.
+  @MainActor func onCaptureEnded(reason reasonArg: NativeCaptureEnd) async throws
+}
+class InputCaptureFlutterApi: InputCaptureFlutterApiProtocol {
+  private let binaryMessenger: FlutterBinaryMessenger
+  private let messageChannelSuffix: String
+  init(binaryMessenger: FlutterBinaryMessenger, messageChannelSuffix: String = "") {
+    self.binaryMessenger = binaryMessenger
+    self.messageChannelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+  }
+  var codec: MessagesPigeonCodec {
+    return MessagesPigeonCodec.shared
+  }
+  /// Events taken since the last call, in order; moves and scrolls added
+  /// up in between.
+  @MainActor func onCaptured(events eventsArg: [NativeCapturedEvent]) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptured\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([eventsArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onSwitchKey(key keyArg: NativeSwitchKey) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onSwitchKey\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([keyArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Capture stopped on its own; the keyboard and mouse are back already.
+  @MainActor func onCaptureEnded(reason reasonArg: NativeCaptureEnd) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_remote_input.InputCaptureFlutterApi.onCaptureEnded\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([reasonArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
     }
   }
 }

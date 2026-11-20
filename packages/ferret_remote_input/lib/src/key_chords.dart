@@ -6,16 +6,19 @@ typedef RawKey = ({int code, bool pressed});
 /// Turns a key with modifiers into raw presses, for platforms that hold the
 /// modifier keys themselves (Windows, uinput, ydotool). Only modifiers that
 /// aren't already down are pressed, and released again with the key.
+/// Modifiers held on their own ([latch]) stay down across keys.
 class KeyChords {
   KeyChords(this._modifierCodes);
 
   final Map<KeyModifier, int> _modifierCodes;
   final Map<int, Set<KeyModifier>> _added = {};
+  Set<KeyModifier> _latched = const {};
 
   List<RawKey> press(int code, Set<KeyModifier> modifiers) {
-    final held = {for (final added in _added.values) ...added};
+    final repeated = _added.remove(code) ?? const <KeyModifier>{};
+    final held = {..._addedByKeys, ..._latched, ...repeated};
     final toPress = modifiers.difference(held);
-    _added[code] = toPress;
+    _added[code] = {...repeated, ...toPress};
 
     return [
       for (final modifier in KeyModifier.values)
@@ -27,11 +30,31 @@ class KeyChords {
 
   List<RawKey> release(int code) {
     final added = _added.remove(code) ?? const <KeyModifier>{};
+    final stillHeld = {..._addedByKeys, ..._latched};
 
     return [
       (code: code, pressed: false),
       for (final modifier in KeyModifier.values.reversed)
-        if (added.contains(modifier)) (code: _codeOf(modifier), pressed: false),
+        if (added.contains(modifier) && !stillHeld.contains(modifier))
+          (code: _codeOf(modifier), pressed: false),
+    ];
+  }
+
+  /// Holds exactly [held] down on their own, such as Shift for a
+  /// Shift-click: the presses and releases that get there.
+  List<RawKey> latch(Set<KeyModifier> held) {
+    final byKeys = _addedByKeys;
+    final toRelease = _latched.difference(held).difference(byKeys);
+    final toPress = held.difference(_latched).difference(byKeys);
+    _latched = Set.unmodifiable(held);
+
+    return [
+      for (final modifier in KeyModifier.values.reversed)
+        if (toRelease.contains(modifier))
+          (code: _codeOf(modifier), pressed: false),
+      for (final modifier in KeyModifier.values)
+        if (toPress.contains(modifier))
+          (code: _codeOf(modifier), pressed: true),
     ];
   }
 
@@ -41,7 +64,14 @@ class KeyChords {
     ...release(code),
   ];
 
-  void reset() => _added.clear();
+  void reset() {
+    _added.clear();
+    _latched = const {};
+  }
+
+  Set<KeyModifier> get _addedByKeys => {
+    for (final added in _added.values) ...added,
+  };
 
   int _codeOf(KeyModifier modifier) => _modifierCodes[modifier] ?? 0;
 }

@@ -102,3 +102,23 @@ final class TextAction extends InputAction {
   @override
   String toString() => 'TextAction(${text.length} characters)';
 }
+
+/// Holds exactly [held] modifier keys down on their own, such as Shift for a
+/// Shift-click, until the next one. An empty set lets them all go.
+final class ModifiersAction extends InputAction {
+  const ModifiersAction(this.held);
+
+  final Set<KeyModifier> held;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ModifiersAction &&
+      other.held.length == held.length &&
+      other.held.containsAll(held);
+
+  @override
+  int get hashCode => Object.hash(ModifiersAction, KeyModifier.bitsOf(held));
+
+  @override
+  String toString() => 'ModifiersAction($held)';
+}

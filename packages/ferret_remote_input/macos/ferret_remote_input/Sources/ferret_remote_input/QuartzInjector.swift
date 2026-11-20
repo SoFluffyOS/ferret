@@ -13,6 +13,13 @@ final class QuartzInjector {
   private let source: CGEventSource?
   private var heldButtons: Set<Int> = []
   private var heldKeys: [CGKeyCode: CGEventFlags] = [:]
+
+  /// Modifier keys held on their own, such as Shift for a Shift-click: set
+  /// as flags on every event until they are let go.
+  private var latchedFlags: CGEventFlags = []
+  private static let modifierFlags: [CGKeyCode: CGEventFlags] = [
+    0x38: .maskShift, 0x3B: .maskControl, 0x3A: .maskAlternate, 0x37: .maskCommand,
+  ]
   private var lastClick: (button: Int, time: TimeInterval, location: CGPoint, count: Int)?
 
   static var hasAccess: Bool {
@@ -41,9 +48,13 @@ final class QuartzInjector {
       case .scroll:
         scroll(dx: Int32(clamping: event.x), dy: Int32(clamping: event.y))
       case .key:
-        key(
-          CGKeyCode(clamping: event.code), pressed: event.pressed,
-          flags: Self.flags(of: event.modifiers))
+        let code = CGKeyCode(clamping: event.code)
+        if let flag = Self.modifierFlags[code] {
+          modifier(code, flag: flag, pressed: event.pressed)
+          continue
+        }
+
+        key(code, pressed: event.pressed, flags: Self.flags(of: event.modifiers))
       case .mediaKey:
         mediaKey(Int(event.code), pressed: event.pressed)
       case .text:
@@ -59,6 +70,10 @@ final class QuartzInjector {
 
     for (code, flags) in heldKeys {
       key(code, pressed: false, flags: flags)
+    }
+
+    for (code, flag) in Self.modifierFlags where latchedFlags.contains(flag) {
+      modifier(code, flag: flag, pressed: false)
     }
 
     heldButtons.removeAll()
@@ -81,6 +96,7 @@ final class QuartzInjector {
       return
     }
 
+    applyLatched(to: event)
     event.setIntegerValueField(.mouseEventDeltaX, value: Int64(dx))
     event.setIntegerValueField(.mouseEventDeltaY, value: Int64(dy))
     event.post(tap: .cghidEventTap)
@@ -125,6 +141,7 @@ final class QuartzInjector {
       return
     }
 
+    applyLatched(to: event)
     event.setIntegerValueField(.mouseEventClickState, value: Int64(count))
     event.post(tap: .cghidEventTap)
     if pressed {
@@ -160,6 +177,7 @@ final class QuartzInjector {
       return
     }
 
+    applyLatched(to: event)
     event.post(tap: .cghidEventTap)
   }
 
@@ -169,7 +187,7 @@ final class QuartzInjector {
       return
     }
 
-    event.flags = flags
+    event.flags = flags.union(latchedFlags)
     event.post(tap: .cghidEventTap)
     if pressed {
       heldKeys[code] = flags
@@ -177,6 +195,33 @@ final class QuartzInjector {
     }
 
     heldKeys.removeValue(forKey: code)
+  }
+
+  /// A modifier key alone: a flags-changed event, the way the Mac's own
+  /// keyboard sends one, carrying the flags held after it.
+  private func modifier(_ code: CGKeyCode, flag: CGEventFlags, pressed: Bool) {
+    if pressed {
+      latchedFlags.insert(flag)
+    } else {
+      latchedFlags.remove(flag)
+    }
+
+    guard let event = CGEvent(keyboardEventSource: source, virtualKey: code, keyDown: pressed)
+    else {
+      return
+    }
+
+    event.type = .flagsChanged
+    event.flags = latchedFlags
+    event.post(tap: .cghidEventTap)
+  }
+
+  /// Mouse events carry the modifiers held on their own, so a Shift-click
+  /// is one; without any, the event keeps what macOS gave it.
+  private func applyLatched(to event: CGEvent) {
+    guard !latchedFlags.isEmpty else { return }
+
+    event.flags = latchedFlags
   }
 
   /// Media and volume keys are system-defined events, the way the Mac's own
