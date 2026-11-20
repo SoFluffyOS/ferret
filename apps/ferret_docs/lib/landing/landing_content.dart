@@ -234,9 +234,10 @@ abstract final class LandingContent {
     (
       question: 'Do my devices need to be on the same Wi-Fi?',
       answer:
-          'Yes, the same local network. Your phone’s hotspot works too. '
-          'Nothing goes over the internet, so nothing can leak there.',
-      link: '/docs/features/connection-doctor',
+          'Yes, the same local network. Your phone’s hotspot works too. Away '
+          'from home, Ferret can use your own VPN, such as Tailscale. There '
+          'is never a Ferret server in between.',
+      link: '/docs/features/away-from-home',
     ),
     (
       question: 'How is it different from Apple’s Continuity?',
