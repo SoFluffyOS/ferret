@@ -1,10 +1,23 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:feature_kit/widgets/directional_icon.dart';
+import 'package:feature_kit/widgets/middle_ellipsis_text.dart';
 import 'package:feature_kit/widgets/pane_toolbar_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
+
+/// How a [FerretPage] shows its title.
+enum FerretPageTitle {
+  /// Big and bold, up to two lines: a page that is a place, such as
+  /// Settings.
+  large,
+
+  /// One headline-sized line that drops the middle of a long name, beside
+  /// the back button and the actions: a page about one thing, such as a
+  /// photo named after its file, like a detail view in Finder or Photos.
+  inline,
+}
 
 /// A full page with a title bar and a scrolling body. Pages pushed on top get
 /// a back button. On a large view the body stops at [width] and is centred,
@@ -19,6 +32,7 @@ class FerretPage extends StatelessWidget {
     this.status,
     this.footer,
     this.width = .page,
+    this.titleStyle = .large,
   });
 
   final String title;
@@ -35,6 +49,8 @@ class FerretPage extends StatelessWidget {
 
   /// How wide the body may get on a large view.
   final ContentWidth width;
+
+  final FerretPageTitle titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -96,29 +112,41 @@ class FerretPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      if (canPop) Spacing.h4,
+                      if (canPop)
+                        switch (titleStyle) {
+                          .large => Spacing.h4,
+                          .inline => Spacing.h8,
+                        },
                       Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            text: shownTitle,
-                            children: [
-                              if (status case final status?)
-                                TextSpan(
-                                  text: '  $status',
-                                  style: typography.base2.copyWith(
-                                    color: palette.mutedText,
+                        child: switch (titleStyle) {
+                          .large => Text.rich(
+                            TextSpan(
+                              text: shownTitle,
+                              children: [
+                                if (status case final status?)
+                                  TextSpan(
+                                    text: '  $status',
+                                    style: typography.base2.copyWith(
+                                      color: palette.mutedText,
+                                    ),
                                   ),
-                                ),
-                            ],
+                              ],
+                            ),
+                            style: typography.title2.copyWith(
+                              color: palette.text,
+                            ),
+                            overflow: .ellipsis,
+                            maxLines: 2,
                           ),
-                          style: typography.title2.copyWith(
-                            color: palette.text,
+                          .inline => MiddleEllipsisText(
+                            shownTitle,
+                            style: typography.headline6.copyWith(
+                              color: palette.text,
+                            ),
                           ),
-                          overflow: .ellipsis,
-                          maxLines: 2,
-                        ),
+                        },
                       ),
-                      ...actions,
+                      ..._spaced(actions),
                     ],
                   ),
                 ),
@@ -137,6 +165,7 @@ class FerretPage extends StatelessWidget {
                     padding: EdgeInsetsDirectional.fromSTEB(
                       side + margin,
                       switch ((hasBar, isUnderToolbar)) {
+                        (true, _) when titleStyle == .inline => Spacing.d12,
                         (true, _) => Spacing.d4,
                         (false, true) => Spacing.d8,
                         (false, false) => Spacing.d24,
@@ -155,4 +184,20 @@ class FerretPage extends StatelessWidget {
       ),
     );
   }
+
+  /// An inline title keeps its actions apart from itself and from each
+  /// other, as a toolbar does; a large one keeps the tight row of icons it
+  /// always had.
+  List<Widget> _spaced(List<Widget> actions) => switch (titleStyle) {
+    .large => actions,
+    .inline => [
+      for (final (index, action) in actions.indexed) ...[
+        switch (index) {
+          0 => Spacing.h12,
+          _ => Spacing.h8,
+        },
+        action,
+      ],
+    ],
+  };
 }

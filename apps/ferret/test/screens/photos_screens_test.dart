@@ -26,10 +26,13 @@ typedef _Script = Future<void> Function(WidgetTester tester, ScreenRig rig);
 
 /// A phone's library with made-up pictures: soft gradients, one per photo.
 class _SampleLibrary implements PhotoLibrary {
-  _SampleLibrary(this.count, {this.accessNow = .full});
+  _SampleLibrary(this.count, {this.accessNow = .full, this.firstName});
 
   final int count;
   final PhotoLibraryAccess accessNow;
+
+  /// The newest photo's file name, such as a long one the title must fit.
+  final String? firstName;
   final Map<String, Uint8List> _images = {};
 
   late final List<PhotoEntry> entries = [
@@ -44,7 +47,10 @@ class _SampleLibrary implements PhotoLibrary {
         },
         width: 1200,
         height: 1600,
-        name: 'IMG_${2041 + index}.jpg',
+        name: switch ((index, firstName)) {
+          (0, final name?) => name,
+          _ => 'IMG_${2041 + index}.jpg',
+        },
       ),
   ];
 
@@ -169,6 +175,18 @@ Future<void> _openPhotos(WidgetTester tester, ScreenRig rig, String id) async {
   }
 }
 
+Future<void> _openPreview(
+  WidgetTester tester,
+  ScreenRig rig,
+  String phoneId,
+) async {
+  await _openPhotos(tester, rig, phoneId);
+  await tester.tap(find.byKey(const ValueKey('p0')), warnIfMissed: false);
+  for (var round = 0; round < 4; round++) {
+    await rig.settle(tester);
+  }
+}
+
 PhotosFeature _computer(ScreenRig rig) =>
     rig.app.features.whereType<PhotosFeatureUi>().single.feature;
 
@@ -220,6 +238,25 @@ final _screens = <String, _Script>{
   'empty': (tester, rig) async {
     final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(0));
     await _openPhotos(tester, rig, phoneId);
+  },
+  'preview': (tester, rig) async {
+    final (phoneId, _) = await _pairPhone(
+      tester,
+      rig,
+      _SampleLibrary(3, firstName: 'nerver-seen-this-code.jpg'),
+    );
+    await _openPreview(tester, rig, phoneId);
+  },
+  'preview_long': (tester, rig) async {
+    final (phoneId, _) = await _pairPhone(
+      tester,
+      rig,
+      _SampleLibrary(
+        3,
+        firstName: 'PXL_20261119_093512345.NIGHT.from-the-team-wiki-export.jpg',
+      ),
+    );
+    await _openPreview(tester, rig, phoneId);
   },
   'saved_activity': (tester, rig) async {
     final (phoneId, _) = await _pairPhone(tester, rig, _SampleLibrary(3));

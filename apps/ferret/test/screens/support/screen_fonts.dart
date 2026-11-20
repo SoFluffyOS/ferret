@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
@@ -40,6 +41,7 @@ Future<void> loadScreenFonts() async {
   }
 
   await loader.load();
+  MiddleEllipsisText.debugMeasureFontFamily = screenFontFamily;
 
   if (_firstExisting(_symbolCandidates) case final symbols?) {
     await (FontLoader(_symbolFamily)..addFont(_read(symbols))).load();

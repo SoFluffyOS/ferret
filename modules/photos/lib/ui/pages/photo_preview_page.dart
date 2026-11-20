@@ -57,8 +57,13 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
       null => date,
     };
 
+    // Like Preview, the whole photo shows without scrolling: a tall one
+    // gets narrower rather than taller than the view.
+    final maxHeight = MediaQuery.sizeOf(context).height * _maxHeightShare;
+
     return FerretPage(
       title: title,
+      titleStyle: .inline,
       backLabel: l10n.back,
       actions: switch (_savedPath) {
         final path? => [
@@ -89,21 +94,26 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
         ],
       },
       children: [
-        ClipRSuperellipse(
-          borderRadius: Corners.radius(Corners.card),
-          child: ColoredBox(
-            color: palette.surface,
+        Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: maxHeight),
             child: AspectRatio(
               aspectRatio: _aspect(item),
-              child: FutureBuilder<Uint8List?>(
-                future: _image,
-                builder: (context, snapshot) {
-                  if (snapshot.data case final bytes?) {
-                    return Image.memory(bytes, fit: .contain);
-                  }
+              child: ClipRSuperellipse(
+                borderRadius: Corners.radius(Corners.card),
+                child: ColoredBox(
+                  color: palette.surface,
+                  child: FutureBuilder<Uint8List?>(
+                    future: _image,
+                    builder: (context, snapshot) {
+                      if (snapshot.data case final bytes?) {
+                        return Image.memory(bytes, fit: .contain);
+                      }
 
-                  return const SizedBox.shrink();
-                },
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -111,6 +121,7 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
         Spacing.v12,
         Text(
           note,
+          textAlign: .center,
           style: typography.base2.copyWith(color: palette.mutedText),
         ),
       ],
@@ -132,6 +143,8 @@ class _PhotoPreviewPageState extends State<PhotoPreviewPage> {
       };
     });
   }
+
+  static const _maxHeightShare = 0.7;
 
   static double _aspect(PhotoItem item) {
     if (item.width == 0 || item.height == 0) {
