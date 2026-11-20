@@ -17,7 +17,7 @@ class OpenSourceSection extends StatelessComponent {
       div(classes: 'wrap', [
         div(classes: 'card oss-card reveal', [
           const h2(id: 'open-source-title', [
-            Marker('🔓'),
+            Marker('lock-open'),
             Component.text('Free and open source. Always.'),
           ]),
           p(
@@ -35,13 +35,7 @@ class OpenSourceSection extends StatelessComponent {
           ]),
           const div(classes: 'actions', [
             a(classes: 'button primary', href: SiteLinks.sponsor, [
-              span(
-                classes: 'marker',
-                attributes: {'aria-hidden': 'true'},
-                [
-                  Component.text('❤️'),
-                ],
-              ),
+              Marker('heart'),
               Component.text('Sponsor'),
             ]),
             a(classes: 'button', href: SiteLinks.github, [

@@ -21,31 +21,31 @@ abstract final class LandingContent {
 
   static const platforms = <PlatformEntry>[
     (
-      emoji: '🤖',
+      icon: 'android',
       name: 'Android',
       how: 'App with a quiet background service and a Quick Settings tile.',
       guide: '/docs/getting-started/android',
     ),
     (
-      emoji: '🍎',
+      icon: 'apple',
       name: 'iPhone',
       how: 'App, share sheet and Shortcuts. Syncs while Ferret is open.',
       guide: '/docs/getting-started/iphone',
     ),
     (
-      emoji: '🍏',
+      icon: 'apple',
       name: 'Mac',
       how: 'Menubar app with a popover and a full window. macOS 12 or later.',
       guide: '/docs/getting-started/mac',
     ),
     (
-      emoji: '🪟',
+      icon: 'windows',
       name: 'Windows',
       how: 'Window and tray icon. Installs just for you, no admin.',
       guide: '/docs/getting-started/windows',
     ),
     (
-      emoji: '🐧',
+      icon: 'linux',
       name: 'Linux',
       how: 'Window and tray icon. Flatpak, AppImage or .deb.',
       guide: '/docs/getting-started/linux',
@@ -55,7 +55,7 @@ abstract final class LandingContent {
   static const stories = <FeatureStory>[
     FeatureStory(
       id: 'clipboard',
-      emoji: '📋',
+      icon: 'clipboard',
       title: 'Copy here, paste there',
       lead:
           'Copy on your phone, paste on your laptop. Text, links and images. '
@@ -76,7 +76,7 @@ abstract final class LandingContent {
     ),
     FeatureStory(
       id: 'files',
-      emoji: '📦',
+      icon: 'folder-up',
       title: 'Files and folders, right where you want them',
       lead:
           'Drop a file on a device and it’s there. Send a whole folder and it '
@@ -98,7 +98,7 @@ abstract final class LandingContent {
     ),
     FeatureStory(
       id: 'phone',
-      emoji: '🔔',
+      icon: 'bell',
       title: 'Your phone, on your computer',
       lead:
           'Your Android phone rings in the other room. Answer it from your '
@@ -121,7 +121,7 @@ abstract final class LandingContent {
     ),
     FeatureStory(
       id: 'screen',
-      emoji: '🪞',
+      icon: 'monitor-smartphone',
       title: 'Your phone’s screen, in a window',
       lead:
           '**Show screen** puts your Android phone on your computer, over '
@@ -143,7 +143,7 @@ abstract final class LandingContent {
     ),
     FeatureStory(
       id: 'photos',
-      emoji: '🖼️',
+      icon: 'images',
       title: 'Phone photos, no cable',
       lead:
           'Browse your phone’s recent photos and screenshots from the '
@@ -162,7 +162,7 @@ abstract final class LandingContent {
     ),
     FeatureStory(
       id: 'control',
-      emoji: '🔍',
+      icon: 'locate-fixed',
       title: 'Find, wake and control',
       lead: 'Lost your phone in the couch? **Ring** it, even on silent.',
       points: [
@@ -185,7 +185,7 @@ abstract final class LandingContent {
 
   static const extras = <FeatureExtra>[
     (
-      emoji: '🔄',
+      icon: 'arrow-right-left',
       title: 'Continue where you left off',
       body:
           'Send a page to another device with **Continue on…**, or from the '
@@ -193,13 +193,13 @@ abstract final class LandingContent {
       docs: '/docs/features/handoff',
     ),
     (
-      emoji: '🔋',
+      icon: 'battery-medium',
       title: 'Every battery at a glance',
       body: 'See each device’s battery, and hear about it once when it’s low.',
       docs: '/docs/getting-started/settings',
     ),
     (
-      emoji: '🤖',
+      icon: 'terminal',
       title: 'Scripts and shortcuts',
       body:
           '`ferret-cli watch --json`, hooks, a **Tasker** plugin and '
@@ -207,7 +207,7 @@ abstract final class LandingContent {
       docs: '/docs/features/scripting',
     ),
     (
-      emoji: '🩺',
+      icon: 'stethoscope',
       title: 'Fix connection',
       body:
           'Devices won’t see each other? Ferret tells you why in plain words, '

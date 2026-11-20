@@ -25,7 +25,7 @@ class FeatureRow extends StatelessComponent {
       attributes: {'aria-labelledby': titleId},
       [
         div(classes: 'feature-text', [
-          h3(id: titleId, [Marker(story.emoji), Component.text(story.title)]),
+          h3(id: titleId, [Marker(story.icon), Component.text(story.title)]),
           p(classes: 'feature-lead', richText(story.lead)),
           ul(classes: 'points', [
             for (final point in story.points) li(richText(point)),

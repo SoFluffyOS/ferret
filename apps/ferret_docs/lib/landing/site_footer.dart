@@ -35,7 +35,7 @@ class SiteFooter extends StatelessComponent {
       ]),
     ]),
     const div(classes: 'wrap footer-bottom', [
-      p([Component.text('© 2026 SoFluffy · Made by Simon 🦊')]),
+      p([Component.text('© 2026 SoFluffy · Made by Simon')]),
       a(href: '#top', [Component.text('Back to top ↑')]),
     ]),
   ]);

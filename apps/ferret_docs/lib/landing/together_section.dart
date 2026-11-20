@@ -23,7 +23,7 @@ class TogetherSection extends StatelessComponent {
       div(classes: 'wrap split', [
         div(classes: 'split-text', [
           const h2(id: 'together-title', [
-            Marker('🙅'),
+            Marker('user-x'),
             Component.text('Your devices, together. No account, no cloud.'),
           ]),
           const p([

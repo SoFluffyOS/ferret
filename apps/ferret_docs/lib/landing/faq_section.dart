@@ -17,7 +17,7 @@ class FaqSection extends StatelessComponent {
       div(classes: 'wrap', [
         const div(classes: 'section-head', [
           h2(id: 'faq-title', [
-            Marker('🙋'),
+            Marker('message-circle-question'),
             Component.text('Questions.'),
           ]),
         ]),

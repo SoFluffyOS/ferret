@@ -17,7 +17,7 @@ class DownloadSection extends StatelessComponent {
       div(classes: 'wrap', [
         const div(classes: 'section-head', [
           h2(id: 'download-title', [
-            Marker('📦'),
+            Marker('download'),
             Component.text('Get Ferret.'),
           ]),
           p([
@@ -33,7 +33,7 @@ class DownloadSection extends StatelessComponent {
             li([
               a(classes: 'platform reveal', href: platform.guide, [
                 span(classes: 'platform-name', [
-                  Marker(platform.emoji),
+                  Marker(platform.icon),
                   Component.text(platform.name),
                 ]),
                 span(classes: 'platform-how', [Component.text(platform.how)]),

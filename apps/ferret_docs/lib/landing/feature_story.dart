@@ -2,7 +2,7 @@
 class FeatureStory {
   const FeatureStory({
     required this.id,
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.lead,
     required this.points,
@@ -16,7 +16,7 @@ class FeatureStory {
   });
 
   final String id;
-  final String emoji;
+  final String icon;
   final String title;
   final String lead;
   final List<String> points;
@@ -34,14 +34,14 @@ class FeatureStory {
 enum ShotFrame { window, popover, phone }
 
 /// A smaller feature without a render.
-typedef FeatureExtra = ({String emoji, String title, String body, String docs});
+typedef FeatureExtra = ({String icon, String title, String body, String docs});
 
 /// One question in the FAQ, with an optional link to read more.
 typedef FaqEntry = ({String question, String answer, String? link});
 
 /// One platform in the download section.
 typedef PlatformEntry = ({
-  String emoji,
+  String icon,
   String name,
   String how,
   String guide,

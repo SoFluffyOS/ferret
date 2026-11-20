@@ -19,7 +19,7 @@ class PrivacySection extends StatelessComponent {
       div(classes: 'wrap privacy-inner', [
         const div(classes: 'section-head', [
           h2(id: 'privacy-title', [
-            Marker('🔒'),
+            Marker('lock'),
             Component.text('Ferret collects nothing.'),
           ]),
           p([

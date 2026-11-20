@@ -164,8 +164,15 @@ code {
 }
 
 .marker {
+  display: inline-flex;
   margin-right: 0.4em;
-  font-style: normal;
+  vertical-align: -0.12em;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
 }
 
 .wrap {

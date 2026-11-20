@@ -19,7 +19,7 @@ class FeaturesSection extends StatelessComponent {
       div(classes: 'wrap', [
         const div(classes: 'section-head', [
           h2(id: 'features-title', [
-            Marker('✨'),
+            Marker('layout-grid'),
             Component.text('What you can do.'),
           ]),
           p([
@@ -33,7 +33,7 @@ class FeaturesSection extends StatelessComponent {
         ul(classes: 'extras', [
           for (final extra in LandingContent.extras)
             li(classes: 'extra reveal', [
-              h3([Marker(extra.emoji), Component.text(extra.title)]),
+              h3([Marker(extra.icon), Component.text(extra.title)]),
               p(richText(extra.body)),
               a(classes: 'more', href: extra.docs, [
                 const Component.text('Read more'),
