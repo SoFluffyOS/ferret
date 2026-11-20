@@ -232,6 +232,7 @@ echo '{"v":1,"type":"device.connected","at":"2026-11-20T09:30:12Z","device":{"id
 - **Output goes nowhere.** Ferret doesn't keep what a hook prints. Want a log? `exec >>"$HOME/.sofluffy/ferret/hooks/hooks.log" 2>&1` as the second line.
 - **Longer jobs go in the background.** After 10 seconds a hook gets `SIGTERM`, then `SIGKILL` 2 seconds later. Start the slow part with `nohup ./backup.sh >/dev/null 2>&1 &` and exit.
 - **The exit code is yours.** Ferret doesn't act on it.
+- **Names are input.** The other device picks its own name, so treat `FERRET_DEVICE_NAME` like text from the internet: always in quotes, never inside `eval`, a command string or `%FERRET_DEVICE_NAME%` in a `.cmd` line.
 
 **Settings → Other apps → Scripts** shows the folder and which hooks Ferret found.
 
