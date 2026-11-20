@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Resources found only by name, which release builds would shrink away.
+     The notification plugin looks up the small icon from Dart
+     (system_notifier.dart); without it every notice fails to show. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_ferret" />
