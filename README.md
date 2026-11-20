@@ -122,8 +122,8 @@ Every feature has its own page in the [docs](docs/public/index.md).
 | Platform | How it runs | Good to know |
 |---|---|---|
 | 🤖 **Android** | App with a quiet background service and a Quick Settings tile | Android stops apps reading the clipboard in the background: send with the tile, or let Ferret do it alone with [Shizuku or root](docs/public/android-modes/shizuku.md). Some phone makers kill background apps: [here's the fix](docs/public/getting-started/android-keep-running.md). |
-| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux can show its notifications and media over [Bluetooth](docs/public/iphone/index.md). |
-| 🍏 **macOS** | Menubar app with a popover and a full window | macOS 12 or later. Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
+| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, as an experiment, a Mac) can show its notifications and media over [Bluetooth](docs/public/iphone/index.md). |
+| 🍏 **macOS** | Menubar app with a popover and a full window | macOS 12 or later (13 or later to start at login). Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
 | 🪟 **Windows** | Window and tray icon | Installs just for you, no admin. Tick one box and Windows Firewall lets your devices in. |
 | 🐧 **Linux** | Window and tray icon. Flatpak, AppImage or .deb | On GNOME Wayland, copies go out while Ferret's window is in front (KDE Plasma and Sway watch by themselves with `wl-clipboard`). Stock GNOME needs the AppIndicator extension for the tray. |
 
@@ -139,7 +139,7 @@ Then follow the guide for your device:
 - [Windows](docs/public/getting-started/windows.md)
 - [Linux](docs/public/getting-started/linux.md)
 
-Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. See [Pair your devices](docs/public/getting-started/pairing.md).
+Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. An iPhone pairs by scanning your computer's QR code, with Ferret or the Camera app. See [Pair your devices](docs/public/getting-started/pairing.md).
 
 ## 🔒 Privacy
 
