@@ -47,7 +47,10 @@ class SettingsGroupPage extends StatelessWidget {
             for (final section in sections) ...[
               if (sections.length > 1 || section.title != title)
                 SectionTitle(section.title),
-              section.child,
+              switch (sections.length > 1) {
+                true => SharedPageScope(child: section.child),
+                false => section.child,
+              },
               Spacing.v8,
             ],
           ],

@@ -29,7 +29,7 @@ class PhoneSetupExplainer extends StatelessWidget {
           ),
           Spacing.v12,
           Button(
-            variant: .primary,
+            variant: SharedPageScope.mainButton(context),
             label: l10n.turnOn,
             onPressed: context.read<PhoneSetupViewModel>().turnOn,
           ),
