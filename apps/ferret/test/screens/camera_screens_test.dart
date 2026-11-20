@@ -20,6 +20,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mirroring/mirroring.dart'
     show MirroringFeature, MirroringFeatureUi;
 import 'package:phone_camera/phone_camera.dart';
+import 'package:shell/shell.dart' show DevicePage;
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
 import 'support/mirror_fakes.dart' show StillCamera;
@@ -95,19 +96,33 @@ List<FeatureUi> _phoneWithWebcam() => [
   ),
 ];
 
+/// The phone's More menu: on its page, which the popover opens first.
+Future<void> _openMore(
+  WidgetTester tester,
+  ScreenRig rig,
+  String phoneId,
+) async {
+  if (await rig.tapText(tester, 'More')) {
+    return;
+  }
+
+  await rig.open(tester, DevicePage(deviceId: phoneId));
+  await rig.tapText(tester, 'More');
+}
+
 final _screens = <String, _Script>{
   'webcam_action': (tester, rig, features) async {
-    await rig.pairConnectedPhone(
+    final phoneId = await rig.pairConnectedPhone(
       tester,
       phoneFeatures: _phoneWithWebcam(),
       name: 'Pixel 7',
     );
     await rig.settle(tester);
-    await rig.tapText(tester, 'More');
+    await _openMore(tester, rig, phoneId ?? '');
   },
   'action': (tester, rig, features) async {
-    await _pairPixel(tester, rig);
-    await rig.tapText(tester, 'More');
+    final phoneId = await _pairPixel(tester, rig);
+    await _openMore(tester, rig, phoneId);
   },
   'waiting': (tester, rig, features) async {
     final phoneId = await _pairPixel(tester, rig);
