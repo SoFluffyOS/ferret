@@ -2249,6 +2249,10 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get displayEscHint => pseudo(super.displayEscHint);
   @override
+  String get displayAllowBodyTouch => pseudo(super.displayAllowBodyTouch);
+  @override
+  String get displayTouchHint => pseudo(super.displayTouchHint);
+  @override
   String windowTitle(String device) => pseudo(super.windowTitle(device));
   @override
   String inWindowTitle(String device) => pseudo(super.inWindowTitle(device));
@@ -2680,6 +2684,18 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
       pseudo(super.displayViewEnded(device, end, here));
   @override
   String displayNoInput(String device) => pseudo(super.displayNoInput(device));
+  @override
+  String displayShowingSince(String time) =>
+      pseudo(super.displayShowingSince(time));
+  @override
+  String displayHandleLabel(String device) =>
+      pseudo(super.displayHandleLabel(device));
+  @override
+  String displayStopTitle(String device) =>
+      pseudo(super.displayStopTitle(device));
+  @override
+  String displayStopBody(String device) =>
+      pseudo(super.displayStopBody(device));
 }
 
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {

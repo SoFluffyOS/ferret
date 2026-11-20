@@ -1,6 +1,7 @@
 export 'package:mirroring/ui/widgets/countdown.dart';
 export 'package:mirroring/ui/widgets/dismiss_button.dart';
 export 'package:mirroring/ui/widgets/display_bar.dart';
+export 'package:mirroring/ui/widgets/display_here.dart';
 export 'package:mirroring/ui/widgets/history_list.dart';
 export 'package:mirroring/ui/widgets/idle_fade.dart';
 export 'package:mirroring/ui/widgets/mirror_input.dart';

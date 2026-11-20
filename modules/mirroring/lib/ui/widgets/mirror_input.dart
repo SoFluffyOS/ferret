@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -12,7 +14,9 @@ import 'package:mirroring/services/services.dart';
 /// typing types. Positions are fractions of [child], so they hold whatever
 /// size the picture is drawn at. A computer's extra display takes the
 /// mouse as a mouse instead: hovering moves its pointer, which it draws
-/// itself, and every button clicks.
+/// itself, and every button clicks. Fingers on it work as that mouse too
+/// ([TouchMouse]): tap to click, drag, hold to right-click, two fingers
+/// to scroll.
 class MirrorInput extends StatefulWidget {
   const MirrorInput({
     super.key,
@@ -22,6 +26,7 @@ class MirrorInput extends StatefulWidget {
     this.onViewOnlyTap,
     this.onEscape,
     this.focusNode,
+    this.touchPointsPerPixel = 1,
   });
 
   /// One mouse wheel notch, in the pixels Flutter reports for it.
@@ -43,6 +48,10 @@ class MirrorInput extends StatefulWidget {
 
   final FocusNode? focusNode;
 
+  /// Points of a computer's display per pixel a finger moves, for
+  /// scrolling with two fingers.
+  final double touchPointsPerPixel;
+
   @override
   State<MirrorInput> createState() => _MirrorInputState();
 }
@@ -58,6 +67,12 @@ class _MirrorInputState extends State<MirrorInput> {
   /// The mouse buttons each pointer pressed, for its moves and release.
   final Map<int, int> _pressed = {};
 
+  late final TouchMouse _touch = TouchMouse(
+    send: (pointer) => _send(SendPointer(pointer)),
+    pointsPerPixel: widget.touchPointsPerPixel,
+    onHeld: () => unawaited(HapticFeedback.mediumImpact()),
+  );
+
   bool get _isMouse => widget.abilities.contains(ControlAbility.mouse);
 
   bool get _canPoint => widget.abilities.contains(ControlAbility.pointer);
@@ -68,6 +83,24 @@ class _MirrorInputState extends State<MirrorInput> {
     .macOS || .iOS => .meta,
     _ => .control,
   };
+
+  @override
+  void didUpdateWidget(MirrorInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _touch.pointsPerPixel = widget.touchPointsPerPixel;
+  }
+
+  @override
+  void dispose() {
+    _touch.dispose();
+    super.dispose();
+  }
+
+  /// A finger on a computer's display, which takes it as its mouse.
+  bool _isFinger(PointerEvent event) =>
+      _isMouse &&
+      (event.kind == PointerDeviceKind.touch ||
+          event.kind == PointerDeviceKind.stylus);
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +155,11 @@ class _MirrorInputState extends State<MirrorInput> {
   void _send(InputAction action) => widget.onAction?.call(action);
 
   void _onDown(PointerDownEvent event, Size size) {
+    if (_isFinger(event)) {
+      _touch.down(event.pointer, event.localPosition, size);
+      return;
+    }
+
     final button = _buttonOf(event);
     if (button != null) {
       _buttonPresses.add(event.pointer);
@@ -142,6 +180,19 @@ class _MirrorInputState extends State<MirrorInput> {
   }
 
   void _onTouch(PointerPhase phase, PointerEvent event, Size size) {
+    if (_isFinger(event)) {
+      switch (phase) {
+        case .move:
+          _touch.move(event.pointer, event.localPosition, size);
+        case .up:
+          _touch.up(event.pointer, event.localPosition, size);
+        case .cancel || .down || .hover || .scroll:
+          _touch.cancel(event.pointer);
+      }
+
+      return;
+    }
+
     final wasButton = _buttonPresses.contains(event.pointer);
     if (wasButton && phase != .move) {
       _buttonPresses.remove(event.pointer);

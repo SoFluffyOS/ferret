@@ -1621,6 +1621,8 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       {
         'macOS': 'this Mac',
         'windows': 'this PC',
+        'android': 'this phone',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -1629,7 +1631,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get displayAllowBody =>
-      'This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.';
+      'Your mouse and keyboard will work on its desktop. Allow only if it\'s yours.';
 
   @override
   String get displayAllow => 'Allow';
@@ -1641,6 +1643,8 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       {
         'macOS': 'This Mac',
         'windows': 'This PC',
+        'android': 'This phone',
+        'tablet': 'This tablet',
         'other': 'This computer',
       },
     );
@@ -1682,6 +1686,8 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
       {
         'macOS': 'this Mac',
         'windows': 'this PC',
+        'android': 'this phone',
+        'tablet': 'this tablet',
         'other': 'this computer',
       },
     );
@@ -1702,5 +1708,33 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
   @override
   String displayNoInput(String device) {
     return '$device can\'t take your clicks yet: allow Ferret in Accessibility there.';
+  }
+
+  @override
+  String get displayAllowBodyTouch =>
+      'Your fingers will work as its mouse. Allow only if it\'s yours.';
+
+  @override
+  String displayShowingSince(String time) {
+    return 'Since $time';
+  }
+
+  @override
+  String get displayTouchHint =>
+      'Tap to click · Hold to right-click · Two fingers scroll';
+
+  @override
+  String displayHandleLabel(String device) {
+    return 'Show the bar for $device\'s display';
+  }
+
+  @override
+  String displayStopTitle(String device) {
+    return 'Stop being $device\'s display?';
+  }
+
+  @override
+  String displayStopBody(String device) {
+    return 'Its windows on this screen go back to $device.';
   }
 }

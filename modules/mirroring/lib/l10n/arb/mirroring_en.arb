@@ -1577,7 +1577,7 @@
   },
   "displayScreenRecordingBody": "System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.",
   "displayOpenSettings": "Open Settings",
-  "displayAllowTitle": "{device} wants to use {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display",
+  "displayAllowTitle": "{device} wants to use {here, select, macOS{this Mac} windows{this PC} android{this phone} tablet{this tablet} other{this computer}} as a display",
   "@displayAllowTitle": {
     "description": "Question on the computer that would become another computer's extra display",
     "placeholders": {
@@ -1589,12 +1589,12 @@
       }
     }
   },
-  "displayAllowBody": "This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.",
+  "displayAllowBody": "Your mouse and keyboard will work on its desktop. Allow only if it's yours.",
   "displayAllow": "Allow",
   "@displayAllow": {
     "description": "Button that lets another computer use this one as its display"
   },
-  "displayShowingTitle": "{here, select, macOS{This Mac} windows{This PC} other{This computer}} is {device}'s display",
+  "displayShowingTitle": "{here, select, macOS{This Mac} windows{This PC} android{This phone} tablet{This tablet} other{This computer}} is {device}'s display",
   "@displayShowingTitle": {
     "description": "Pinned Activity line on the computer showing another computer's extra display",
     "placeholders": {
@@ -1647,7 +1647,7 @@
     }
   },
   "displayEscHint": "Esc leaves full screen",
-  "displayViewEnded": "{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display} stoppedHere{Stopped being {device}'s display} lostConnection{Lost {device}} noAnswer{{device} didn't send its display} denied{{device} took its offer back} other{{device}'s display stopped working}}",
+  "displayViewEnded": "{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} android{this phone} tablet{this tablet} other{this computer}} as a display} stoppedHere{Stopped being {device}'s display} lostConnection{Lost {device}} noAnswer{{device} didn't send its display} denied{{device} took its offer back} other{{device}'s display stopped working}}",
   "@displayViewEnded": {
     "description": "What the display window says when it ended, by how",
     "placeholders": {
@@ -1664,6 +1664,47 @@
   },
   "displayNoInput": "{device} can't take your clicks yet: allow Ferret in Accessibility there.",
   "@displayNoInput": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayAllowBodyTouch": "Your fingers will work as its mouse. Allow only if it's yours.",
+  "@displayAllowBodyTouch": {
+    "description": "Under the question on a phone or tablet that would become a computer's extra display"
+  },
+  "displayShowingSince": "Since {time}",
+  "@displayShowingSince": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "displayTouchHint": "Tap to click · Hold to right-click · Two fingers scroll",
+  "@displayTouchHint": {
+    "description": "On the bar over a computer's display on a phone or tablet: how fingers work there"
+  },
+  "displayHandleLabel": "Show the bar for {device}'s display",
+  "@displayHandleLabel": {
+    "description": "Screen reader label of the small handle at the top of a computer's display on a phone",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayStopTitle": "Stop being {device}'s display?",
+  "@displayStopTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayStopBody": "Its windows on this screen go back to {device}.",
+  "@displayStopBody": {
     "placeholders": {
       "device": {
         "type": "String"

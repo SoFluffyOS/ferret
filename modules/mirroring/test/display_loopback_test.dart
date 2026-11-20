@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mirroring/mirroring.dart';
 
@@ -235,5 +236,94 @@ void main() {
     await until(() => viewer.current?.phase == .ended);
     expect(viewer.current?.end, ViewEnd.stoppedOnPhone);
     expect(macs.capture.stops, 1);
+  });
+
+  test('a phone that shares its own screen can be a Mac\'s display too: '
+      'it asks, sizes the display to itself, and its taps click', () async {
+    final capture = FakeDisplayCapture();
+    final decoder = FakeDecoder();
+    final pro = MirroringFeature(
+      display: () => capture,
+      injector: FakeInjector.new,
+      decoder: FakeDecoder.new,
+      codecs: const [.h264],
+      canShare: false,
+      canView: true,
+      canExtend: true,
+      canBeDisplay: false,
+    );
+    final pixel = MirroringFeature(
+      capture: FakeCapture.new,
+      display: () => FakeDisplayCapture(screenNow: null),
+      screenPanel: () => const ScreenPanel(
+        width: 1080,
+        height: 2400,
+        scale: 2,
+        refreshHz: 90,
+      ),
+      decoder: () => decoder,
+      codecs: const [.h264, .jpeg],
+      canShare: true,
+      canShareCamera: false,
+      canView: false,
+      canExtend: false,
+      canBeDisplay: true,
+    );
+    final proEngine = await startEngine('MacBook Pro', pro);
+    final pixelEngine = await startEngine('Pixel 7', pixel);
+    final pixelId = await pair(proEngine, pixelEngine);
+    final display = pro.display;
+    final routes = pixel.routes;
+    final viewer = pixel.viewer;
+    if (display == null || routes == null || viewer == null) {
+      fail('The phone should be able to show a display');
+    }
+
+    expect(pixel.flags, contains(MirrorProtocol.displayFlag));
+    expect(pixel.flags, isNot(contains(MirroringFeature.viewFlag)));
+    expect(routes.targets, isEmpty, reason: 'nothing else comes in');
+
+    await display.offer(pixelId);
+    await until(() => routes.requests.isNotEmpty);
+    expect(routes.requests.single.display, isTrue);
+    expect(
+      routes.askTimeout,
+      const Duration(seconds: 30),
+      reason: 'the same question as on a Mac',
+    );
+
+    routes.answer(routes.requests.single, allow: true);
+    await until(() => display.current?.phase == .extending);
+    final options = capture.started.single;
+    expect(
+      (options.width, options.height, options.scale, options.refreshHz),
+      (1080, 2400, 2, 90),
+    );
+
+    capture.play();
+    await until(() => decoder.frames.isNotEmpty);
+    await until(() => viewer.control != null);
+    final control = viewer.control;
+    if (control == null) {
+      fail('The display should take the phone\'s fingers');
+    }
+
+    final touch = TouchMouse(send: control.pointer);
+    addTearDown(touch.dispose);
+    const size = Size(400, 888);
+    touch
+      ..down(1, const Offset(100, 200), size)
+      ..up(1, const Offset(100, 200), size);
+    await until(() => capture.pointers.length == 3);
+    expect(
+      [for (final pointer in capture.pointers) pointer.phase],
+      [PointerPhase.hover, PointerPhase.down, PointerPhase.up],
+    );
+    expect(capture.pointers[1].x, closeTo(0.25, 0.0001));
+    expect(capture.pointers[1].buttons, 1);
+
+    await viewer.stop();
+    await until(() => capture.stops == 1);
+    expect(display.lastRecord?.end, ExtendEnd.stoppedThere);
   });
 }

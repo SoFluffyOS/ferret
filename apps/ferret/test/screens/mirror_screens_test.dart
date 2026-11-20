@@ -38,11 +38,19 @@ final _directory = Directory('../../temp/screens');
 
 /// A window the stage is rendered in.
 class _Window {
-  const _Window(this.name, this.width, this.height);
+  const _Window(
+    this.name,
+    this.width,
+    this.height, {
+    this.platform = .macOS,
+  });
 
   final String name;
   final double width;
   final double height;
+
+  /// What it renders as: a Mac, or an Android phone or tablet.
+  final TargetPlatform platform;
 }
 
 const _windows = [
@@ -828,6 +836,64 @@ final _screens = <_Screen>[
     },
   ),
   _Screen(
+    'mirror_60_display_phone_connecting',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _phoneDisplayWindows,
+    before: (rig) => rig.showDisplay(),
+  ),
+  _Screen(
+    'mirror_61_display_phone_live',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _phoneDisplayWindows,
+    desktop: true,
+    before: (rig) => rig.streamDisplay(),
+  ),
+  _Screen(
+    'mirror_62_display_phone_bar',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _phoneDisplayWindows,
+    desktop: true,
+    before: (rig) => rig.streamDisplay(),
+    after: (tester, rig) async {
+      await tester.tap(
+        find.bySemanticsLabel("Show the bar for MacBook Pro's display"),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+    },
+  ),
+  _Screen(
+    'mirror_63_display_phone_back',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _phoneDisplayWindows,
+    desktop: true,
+    before: (rig) => rig.streamDisplay(),
+    after: (tester, rig) async {
+      await tester.binding.handlePopRoute();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+    },
+  ),
+  _Screen(
+    'mirror_64_display_phone_stopped',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _phoneDisplayWindows,
+    desktop: true,
+    before: (rig) async {
+      await rig.streamDisplay();
+      rig.ferret.onStop(rig.pro, Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE));
+    },
+  ),
+  _Screen(
     'mirror_55_camera_stopped',
     before: (rig) async {
       await rig.streamCamera();
@@ -872,6 +938,13 @@ const _uprightWindows = [
 
 /// A Mac's screen, full of another Mac's extra display.
 const _displayWindows = [_Window('display', 1280, 832)];
+
+/// An Android phone held either way and a tablet, full of a Mac's display.
+const _phoneDisplayWindows = [
+  _Window('phone', 390, 844, platform: .android),
+  _Window('phone_landscape', 844, 390, platform: .android),
+  _Window('tablet', 1194, 834, platform: .android),
+];
 
 const _turnedWindows = [
   _Window('turned', 800, 800 * 540 / 1200 + _bar),
@@ -934,7 +1007,7 @@ class _Listed extends StatelessWidget {
 void main() {
   ui.Image? drawn;
   ui.Image? drawnTurned;
-  ui.Image? drawnDesktop;
+  final drawnDesktops = <Size, ui.Image>{};
 
   setUpAll(loadScreenFonts);
 
@@ -953,7 +1026,7 @@ void main() {
             tester.platformDispatcher.clearPlatformBrightnessTestValue();
           });
           debugDisableShadows = false;
-          debugDefaultTargetPlatformOverride = .macOS;
+          debugDefaultTargetPlatformOverride = window.platform;
           final reportError = FlutterError.onError;
           FlutterError.onError = (details) {
             if (details.exceptionAsString().contains('overflowed')) {
@@ -972,9 +1045,13 @@ void main() {
             }
 
             final phoneScreen = switch ((screen.desktop, screen.turned)) {
-              (true, _) => drawnDesktop ??= await tester.runAsync(
-                _drawDesktop,
-              ),
+              (true, _) =>
+                drawnDesktops[Size(
+                  window.width,
+                  window.height,
+                )] ??= (await tester.runAsync(
+                  () => _drawDesktop(window.width, window.height),
+                ))!,
               (false, false) => upright,
               (false, true) => drawnTurned ??= await tester.runAsync(
                 () => _turn(upright),
@@ -1198,36 +1275,38 @@ Future<ui.Image> _turn(ui.Image upright) async {
 /// A stand-in for a phone's home screen: a wallpaper, a status bar, rows
 /// of app icons and a dock, so the picture reads as a phone at a glance.
 /// A Mac's desktop: wallpaper, the menu bar and one window.
-Future<ui.Image> _drawDesktop() async {
-  const width = 1280.0;
-  const height = 832.0;
+/// A Mac's desktop [width] × [height]: a wallpaper, the menu bar and a
+/// window in the middle.
+Future<ui.Image> _drawDesktop(double width, double height) async {
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
+  final window = Rect.fromCenter(
+    center: Offset(width / 2, height / 2),
+    width: width * 0.6,
+    height: height * 0.58,
+  );
   canvas
     ..drawRect(
-      const Rect.fromLTWH(0, 0, width, height),
+      Rect.fromLTWH(0, 0, width, height),
       Paint()
         ..shader = ui.Gradient.linear(
           Offset.zero,
-          const Offset(width, height),
+          Offset(width, height),
           const [Color(0xFF3A1C71), Color(0xFFD76D77), Color(0xFFFFAF7B)],
           const [0, 0.55, 1],
         ),
     )
     ..drawRect(
-      const Rect.fromLTWH(0, 0, width, 24),
+      Rect.fromLTWH(0, 0, width, 24),
       Paint()..color = const Color(0xCCFFFFFF),
     )
     ..drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(220, 140, 760, 480),
-        const Radius.circular(12),
-      ),
+      RRect.fromRectAndRadius(window, const Radius.circular(12)),
       Paint()..color = const Color(0xFFF5F5F7),
     )
     ..drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(220, 140, 760, 40),
+        Rect.fromLTWH(window.left, window.top, window.width, 40),
         const Radius.circular(12),
       ),
       Paint()..color = const Color(0xFFE5E5EA),
@@ -1238,7 +1317,7 @@ Future<ui.Image> _drawDesktop() async {
     Color(0xFF28C840),
   ].indexed) {
     canvas.drawCircle(
-      Offset(244.0 + index * 20, 160),
+      Offset(window.left + 24 + index * 20, window.top + 20),
       6,
       Paint()..color = color,
     );

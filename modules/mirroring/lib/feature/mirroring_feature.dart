@@ -35,6 +35,7 @@ class MirroringFeature extends Feature {
     bool? canView,
     bool? canExtend,
     bool? canBeDisplay,
+    ScreenPanel? Function()? screenPanel,
     ConsentTexts Function(String deviceName, {bool withSound})? texts,
     CameraTexts Function(String deviceName, {bool withSound})? cameraTexts,
     DateTime Function()? clock,
@@ -62,10 +63,11 @@ class MirroringFeature extends Feature {
        canExtend = canExtend ?? DisplayCapture.isSupportedPlatform,
        canBeDisplay =
            canBeDisplay ??
-           (io.Platform.isMacOS &&
-               (codecs ?? MirrorDecoder.platformCodecs).contains(
-                 MirrorCodec.h264,
-               )),
+           _canBeDisplayHere(
+             canView: canView,
+             codecs: codecs ?? MirrorDecoder.platformCodecs,
+           ),
+       _screenPanel = screenPanel ?? DisplayScreen.measure,
        _clock = clock ?? DateTime.now {
     if (texts != null) {
       this.texts = texts;
@@ -102,8 +104,29 @@ class MirroringFeature extends Feature {
   final bool canExtend;
 
   /// This device can be another computer's extra display: it decodes
-  /// H.264 and has a screen to fill. A Mac, for now.
+  /// H.264 and has a screen to fill. A Mac, an Android phone or tablet.
   final bool canBeDisplay;
+
+  /// A Mac that shows other screens, or an Android device, with an H.264
+  /// decoder.
+  static bool _canBeDisplayHere({
+    required bool? canView,
+    required List<MirrorCodec> codecs,
+  }) {
+    if (!codecs.contains(MirrorCodec.h264)) {
+      return false;
+    }
+
+    if (io.Platform.isAndroid) {
+      return true;
+    }
+
+    return io.Platform.isMacOS && (canView ?? true);
+  }
+
+  /// Measures this device's screen where Flutter knows it best: on
+  /// Android, the whole screen as it is held.
+  final ScreenPanel? Function() _screenPanel;
 
   final Duration consentTimeout;
   final Duration requestTimeout;
@@ -149,7 +172,7 @@ class MirroringFeature extends Feature {
     if (canShareCamera) cameraFlag,
     if (canView) viewFlag,
     if (canExtend) MirrorProtocol.extendFlag,
-    if (canView && canBeDisplay) MirrorProtocol.displayFlag,
+    if (canBeDisplay) MirrorProtocol.displayFlag,
   ];
 
   MirroringSettings get settings => MirroringSettings(host.settings);
@@ -161,15 +184,17 @@ class MirroringFeature extends Feature {
   /// and iPhones.
   CameraSource? get camera => _camera;
 
-  /// The computer's side, or null on phones.
+  /// What shows other screens here: a computer's side, or a phone's
+  /// while it can be a computer's display. Null on the rest.
   MirrorViewer? get viewer => _viewer;
 
   /// This computer's side of lending its desktop as another device's
   /// display, or null where it can't.
   DisplaySource? get display => _display;
 
-  /// Every way a screen can arrive here, or null on phones: Ferret's own
-  /// route, and the routes and receivers the app plugged in.
+  /// Every way a screen can arrive here: Ferret's own route, and on a
+  /// computer the routes and receivers the app plugged in. Null on a
+  /// phone that can't be a display.
   MirrorRoutes? get routes => _routes;
 
   /// Fires when anything the cards, health or settings show may have
@@ -243,7 +268,7 @@ class MirroringFeature extends Feature {
       await display.start();
     }
 
-    if (canView) {
+    if (canView || canBeDisplay) {
       final routes = MirrorRoutes(
         ferret: FerretRoute(
           host: host,
@@ -256,8 +281,15 @@ class MirroringFeature extends Feature {
         receiverName: () => host.localDevice.name,
         pairedPhones: _pairedPhones,
         clock: _clock,
-        routes: _extraRoutes,
-        receivers: _receivers,
+        // A phone is only ever a computer's display: nothing else comes in.
+        routes: switch (canView) {
+          true => _extraRoutes,
+          false => const [],
+        },
+        receivers: switch (canView) {
+          true => _receivers,
+          false => const [],
+        },
       );
       final viewer = MirrorViewer(
         routes: routes,
@@ -536,9 +568,9 @@ class MirroringFeature extends Feature {
   /// This computer's screen, the one Ferret shows on, for the computer
   /// that makes a display to fill it.
   Future<DisplayPanel> _ownScreen() async {
-    final ScreenPanel? screen;
+    ScreenPanel? screen;
     try {
-      screen = await _displayCapture?.screen();
+      screen = await _displayCapture?.screen() ?? _screenPanel();
     } on Object catch (error) {
       printWarning('Could not measure this screen', error);
       return DisplayPanel();

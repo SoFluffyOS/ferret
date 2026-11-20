@@ -1227,4 +1227,43 @@ void main() {
       expect(olderActions.map((action) => action.label), ['Show screen']);
     });
   });
+
+  testWidgets('a finger on a computer\'s display is its mouse: a tap '
+      'clicks where it lands, mouse and all', (tester) async {
+    final actions = <InputAction>[];
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: .ltr,
+        child: Center(
+          child: SizedBox(
+            width: 400,
+            height: 200,
+            child: MirrorInput(
+              abilities: const {
+                ControlAbility.pointer,
+                ControlAbility.keys,
+                ControlAbility.mouse,
+              },
+              onAction: actions.add,
+              child: const SizedBox.expand(),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tapAt(
+      tester.getTopLeft(find.byType(MirrorInput)) + const Offset(100, 50),
+    );
+    final pointers = [
+      for (final action in actions)
+        if (action is SendPointer) action.pointer,
+    ];
+    expect(
+      [for (final pointer in pointers) pointer.phase],
+      [PointerPhase.hover, PointerPhase.down, PointerPhase.up],
+    );
+    expect(pointers[1].x, closeTo(0.25, 0.0001));
+    expect(pointers[1].y, closeTo(0.25, 0.0001));
+  });
 }

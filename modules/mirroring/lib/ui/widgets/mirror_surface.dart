@@ -24,6 +24,7 @@ class MirrorSurface extends StatelessWidget {
   }
 
   Widget _draw(MirrorPicture picture) => switch (picture) {
+    TexturePicture(isCropped: true) => _cropped(picture),
     TexturePicture(:final textureId) => Texture(textureId: textureId),
     ImagePicture(:final image) => RawImage(image: image, fit: .fill),
     TurnedPicture(:final picture, :final quarterTurns) => RotatedBox(
@@ -31,4 +32,26 @@ class MirrorSurface extends StatelessWidget {
       child: _draw(picture),
     ),
   };
+
+  /// Only the picture's part of buffers bigger than it, stretched by as
+  /// much as the picture is.
+  Widget _cropped(TexturePicture picture) => LayoutBuilder(
+    builder: (context, constraints) {
+      final scaleX = constraints.maxWidth / picture.width;
+      final scaleY = constraints.maxHeight / picture.height;
+
+      return Stack(
+        clipBehavior: .hardEdge,
+        children: [
+          Positioned(
+            left: -picture.cropLeft * scaleX,
+            top: -picture.cropTop * scaleY,
+            width: picture.bufferWidth * scaleX,
+            height: picture.bufferHeight * scaleY,
+            child: Texture(textureId: picture.textureId),
+          ),
+        ],
+      );
+    },
+  );
 }

@@ -14,4 +14,5 @@ export 'package:mirroring/services/mirror_viewer.dart';
 export 'package:mirroring/services/phone_inputs.dart';
 export 'package:mirroring/services/screenshot_store.dart';
 export 'package:mirroring/services/source_control.dart';
+export 'package:mirroring/services/touch_mouse.dart';
 export 'package:mirroring/services/viewer_stats_sink.dart';

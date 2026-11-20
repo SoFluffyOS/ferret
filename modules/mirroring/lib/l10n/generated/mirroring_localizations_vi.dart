@@ -1605,6 +1605,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       {
         'macOS': 'Mac này',
         'windows': 'PC này',
+        'android': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -1613,7 +1615,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get displayAllowBody =>
-      'Màn hình này nối vào màn hình nền của nó, và chuột, bàn phím ở đây điều khiển nó. Chỉ đồng ý nếu đó là máy của bạn.';
+      'Chuột và bàn phím ở đây sẽ điều khiển màn hình nền của nó. Chỉ cho phép nếu đó là máy của bạn.';
 
   @override
   String get displayAllow => 'Cho phép';
@@ -1625,6 +1627,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       {
         'macOS': 'Mac này',
         'windows': 'PC này',
+        'android': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
       },
     );
@@ -1666,6 +1670,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
       {
         'macOS': 'Mac này',
         'windows': 'PC này',
+        'android': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
@@ -1686,5 +1692,33 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   @override
   String displayNoInput(String device) {
     return '$device chưa nhận được thao tác của bạn: hãy cho phép Ferret trong Trợ năng trên máy đó.';
+  }
+
+  @override
+  String get displayAllowBodyTouch =>
+      'Ngón tay bạn sẽ dùng như chuột của nó. Chỉ cho phép nếu đó là máy của bạn.';
+
+  @override
+  String displayShowingSince(String time) {
+    return 'Từ $time';
+  }
+
+  @override
+  String get displayTouchHint =>
+      'Chạm để bấm · Giữ để bấm chuột phải · Hai ngón để cuộn';
+
+  @override
+  String displayHandleLabel(String device) {
+    return 'Hiện thanh của màn hình phụ $device';
+  }
+
+  @override
+  String displayStopTitle(String device) {
+    return 'Thôi làm màn hình phụ của $device?';
+  }
+
+  @override
+  String displayStopBody(String device) {
+    return 'Các cửa sổ trên màn hình này sẽ trở về $device.';
   }
 }

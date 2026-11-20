@@ -4,8 +4,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The small bar over another computer's display, while [shown]: it says
 /// whose display this is, and has the ways out. Whoever holds it shows it
-/// when the pointer reaches the top edge, so the rest of the time the
-/// whole screen is that computer's.
+/// when the pointer reaches the top edge, or the handle there is tapped on
+/// a phone, so the rest of the time the whole screen is that computer's.
 class DisplayBar extends StatelessWidget {
   const DisplayBar({
     super.key,
@@ -13,10 +13,10 @@ class DisplayBar extends StatelessWidget {
     required this.onLeave,
     required this.title,
     required this.hint,
-    required this.fullScreenLabel,
     required this.stopLabel,
-    required this.onFullScreen,
     required this.onStop,
+    this.fullScreenLabel,
+    this.onFullScreen,
   });
 
   final bool shown;
@@ -28,10 +28,12 @@ class DisplayBar extends StatelessWidget {
 
   /// How to leave full screen without the bar.
   final String hint;
-  final String fullScreenLabel;
   final String stopLabel;
-  final VoidCallback onFullScreen;
   final VoidCallback onStop;
+
+  /// Null where the display always fills the screen, as on a phone.
+  final String? fullScreenLabel;
+  final VoidCallback? onFullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,12 @@ class DisplayBar extends StatelessWidget {
       child: IgnorePointer(
         ignoring: !shown,
         child: Padding(
-          padding: EdgeInsets.only(top: Spacing.d8),
+          padding: EdgeInsets.fromLTRB(
+            Spacing.d16,
+            Spacing.d8,
+            Spacing.d16,
+            0,
+          ),
           child: Center(
             child: MouseRegion(
               onExit: (_) => onLeave(),
@@ -89,7 +96,7 @@ class DisplayBar extends StatelessWidget {
                             ),
                             Text(
                               hint,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: .ellipsis,
                               style: typography.caption1.copyWith(
                                 color: palette.mutedText,
@@ -99,13 +106,15 @@ class DisplayBar extends StatelessWidget {
                         ),
                       ),
                       Spacing.h16,
-                      Button(
-                        variant: .ghost,
-                        mainAxisSize: .min,
-                        label: fullScreenLabel,
-                        onPressed: onFullScreen,
-                      ),
-                      Spacing.h4,
+                      if (fullScreenLabel case final label?) ...[
+                        Button(
+                          variant: .ghost,
+                          mainAxisSize: .min,
+                          label: label,
+                          onPressed: onFullScreen,
+                        ),
+                        Spacing.h4,
+                      ],
                       Button(
                         variant: .ghost,
                         mainAxisSize: .min,

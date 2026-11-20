@@ -2156,13 +2156,13 @@ abstract class MirroringLocalizations {
   /// Question on the computer that would become another computer's extra display
   ///
   /// In en, this message translates to:
-  /// **'{device} wants to use {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display'**
+  /// **'{device} wants to use {here, select, macOS{this Mac} windows{this PC} android{this phone} tablet{this tablet} other{this computer}} as a display'**
   String displayAllowTitle(String device, String here);
 
   /// No description provided for @displayAllowBody.
   ///
   /// In en, this message translates to:
-  /// **'This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.'**
+  /// **'Your mouse and keyboard will work on its desktop. Allow only if it\'s yours.'**
   String get displayAllowBody;
 
   /// Button that lets another computer use this one as its display
@@ -2174,7 +2174,7 @@ abstract class MirroringLocalizations {
   /// Pinned Activity line on the computer showing another computer's extra display
   ///
   /// In en, this message translates to:
-  /// **'{here, select, macOS{This Mac} windows{This PC} other{This computer}} is {device}\'s display'**
+  /// **'{here, select, macOS{This Mac} windows{This PC} android{This phone} tablet{This tablet} other{This computer}} is {device}\'s display'**
   String displayShowingTitle(String device, String here);
 
   /// No description provided for @displayShowingDetail.
@@ -2216,7 +2216,7 @@ abstract class MirroringLocalizations {
   /// What the display window says when it ended, by how
   ///
   /// In en, this message translates to:
-  /// **'{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display} stoppedHere{Stopped being {device}\'s display} lostConnection{Lost {device}} noAnswer{{device} didn\'t send its display} denied{{device} took its offer back} other{{device}\'s display stopped working}}'**
+  /// **'{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} android{this phone} tablet{this tablet} other{this computer}} as a display} stoppedHere{Stopped being {device}\'s display} lostConnection{Lost {device}} noAnswer{{device} didn\'t send its display} denied{{device} took its offer back} other{{device}\'s display stopped working}}'**
   String displayViewEnded(String device, String end, String here);
 
   /// No description provided for @displayNoInput.
@@ -2224,6 +2224,42 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'{device} can\'t take your clicks yet: allow Ferret in Accessibility there.'**
   String displayNoInput(String device);
+
+  /// Under the question on a phone or tablet that would become a computer's extra display
+  ///
+  /// In en, this message translates to:
+  /// **'Your fingers will work as its mouse. Allow only if it\'s yours.'**
+  String get displayAllowBodyTouch;
+
+  /// No description provided for @displayShowingSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Since {time}'**
+  String displayShowingSince(String time);
+
+  /// On the bar over a computer's display on a phone or tablet: how fingers work there
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to click · Hold to right-click · Two fingers scroll'**
+  String get displayTouchHint;
+
+  /// Screen reader label of the small handle at the top of a computer's display on a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Show the bar for {device}\'s display'**
+  String displayHandleLabel(String device);
+
+  /// No description provided for @displayStopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop being {device}\'s display?'**
+  String displayStopTitle(String device);
+
+  /// No description provided for @displayStopBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its windows on this screen go back to {device}.'**
+  String displayStopBody(String device);
 }
 
 class _MirroringLocalizationsDelegate

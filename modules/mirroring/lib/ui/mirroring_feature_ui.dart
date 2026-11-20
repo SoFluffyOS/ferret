@@ -98,6 +98,10 @@ class MirroringFeatureUi extends FeatureUi {
   /// The display the window was last opened for, so it opens once.
   MirrorTarget? _displayShown;
 
+  /// The page another computer's display fills, where there is no
+  /// window for it: a phone's.
+  Route<void>? _displayPage;
+
   /// The mirror page that is open, so a second one takes its place
   /// instead of piling up on it.
   Route<void>? _page;
@@ -283,12 +287,12 @@ class MirroringFeatureUi extends FeatureUi {
             title: switch (request.display) {
               true => l10n.displayAllowTitle(
                 request.deviceName,
-                ThisComputer.here,
+                DisplayHere.value,
               ),
               false => l10n.allowTitle(request.deviceName),
             },
             detail: switch (request.display) {
-              true => l10n.displayAllowBody,
+              true => _displayAllowBody(l10n),
               false => null,
             },
             needsYou: true,
@@ -325,12 +329,17 @@ class MirroringFeatureUi extends FeatureUi {
             null => l10n.displayConnectingTitle(current.deviceName),
             _ => l10n.displayShowingTitle(
               current.deviceName,
-              ThisComputer.here,
+              DisplayHere.value,
             ),
           },
-          detail: switch (current.startedAt) {
-            final startedAt? => l10n.displayShowingDetail(l10n.time(startedAt)),
-            null => null,
+          detail: switch ((current.startedAt, DisplayHere.isTouch)) {
+            (final startedAt?, true) => l10n.displayShowingSince(
+              l10n.time(startedAt),
+            ),
+            (final startedAt?, false) => l10n.displayShowingDetail(
+              l10n.time(startedAt),
+            ),
+            (null, _) => null,
           },
           at: current.startedAt,
           pinned: true,
@@ -1064,12 +1073,12 @@ class MirroringFeatureUi extends FeatureUi {
           title: switch (request.display) {
             true => l10n.displayAllowTitle(
               request.deviceName,
-              ThisComputer.here,
+              DisplayHere.value,
             ),
             false => l10n.allowTitle(request.deviceName),
           },
           body: switch (request.display) {
-            true => l10n.displayAllowBody,
+            true => _displayAllowBody(l10n),
             false => l10n.allowNoticeBody,
           },
           category: switch (request.display) {
@@ -1091,6 +1100,14 @@ class MirroringFeatureUi extends FeatureUi {
     viewerViewModel.answer(request, allow: actionId == _showAction);
   }
 
+  /// What saying yes means here: the mouse and keyboard on a computer,
+  /// the fingers on a phone or tablet.
+  String _displayAllowBody(MirroringLocalizations l10n) =>
+      switch (DisplayHere.isTouch) {
+        true => l10n.displayAllowBodyTouch,
+        false => l10n.displayAllowBody,
+      };
+
   /// The owner let a computer use this one as its display: its window
   /// comes up full screen, once per time.
   void _openDisplayWhenAllowed(FeatureContext context) {
@@ -1104,7 +1121,9 @@ class MirroringFeatureUi extends FeatureUi {
       return;
     }
 
-    if (_displayShown == current.target && stageWindow.deviceId != null) {
+    final open =
+        stageWindow.deviceId != null || (_displayPage?.isActive ?? false);
+    if (_displayShown == current.target && open) {
       return;
     }
 
@@ -1139,21 +1158,34 @@ class MirroringFeatureUi extends FeatureUi {
     }
 
     final navigator = context.navigatorKey.currentState;
-    if (navigator == null) {
+    if (navigator == null || (_displayPage?.isActive ?? false)) {
       return;
     }
 
-    await navigator.push(
-      PageRouteBuilder<void>(
-        pageBuilder: (pageContext, _, _) => _withViewModels(
-          DisplayWindowPage(
-            deviceId: deviceId,
-            deviceName: deviceName,
-            onClose: () => Navigator.of(pageContext).maybePop(),
-          ),
+    final page = PageRouteBuilder<void>(
+      pageBuilder: (pageContext, _, _) => _withViewModels(
+        DisplayWindowPage(
+          deviceId: deviceId,
+          deviceName: deviceName,
+          onClose: () {
+            final route = ModalRoute.of(pageContext);
+            if (route == null || !route.isActive) {
+              return;
+            }
+
+            // Past the page's own "Stop being its display?" on Back.
+            if (route.isCurrent) {
+              Navigator.of(pageContext).pop();
+              return;
+            }
+
+            Navigator.of(pageContext).removeRoute(route);
+          },
         ),
       ),
     );
+    _displayPage = page;
+    await navigator.push(page);
   }
 
   Future<void> _openPage(FeatureContext context, MirrorTarget target) =>

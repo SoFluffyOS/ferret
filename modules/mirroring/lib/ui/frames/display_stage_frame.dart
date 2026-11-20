@@ -13,16 +13,17 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Another computer's extra display, filling this screen: its picture
 /// edge to edge, the pointer and keys going there, and a bar at the top
-/// edge with the ways out. Before the first picture it says it is
-/// connecting; after the last, how it ended.
+/// edge with the ways out. On a phone or tablet, fingers are the mouse
+/// and a small handle at the top brings the bar. Before the first picture
+/// it says it is connecting; after the last, how it ended.
 class DisplayStageFrame extends StatefulWidget {
   const DisplayStageFrame({
     super.key,
     required this.deviceId,
     required this.deviceName,
     required this.onClose,
-    required this.onToggleFullScreen,
-    required this.onExitFullScreen,
+    this.onToggleFullScreen,
+    this.onExitFullScreen,
   });
 
   final String deviceId;
@@ -30,8 +31,10 @@ class DisplayStageFrame extends StatefulWidget {
 
   /// Closes what hosts the display, which stops it.
   final VoidCallback onClose;
-  final VoidCallback onToggleFullScreen;
-  final VoidCallback onExitFullScreen;
+
+  /// Null where the display always fills the screen: a phone's.
+  final VoidCallback? onToggleFullScreen;
+  final VoidCallback? onExitFullScreen;
 
   @override
   State<DisplayStageFrame> createState() => _DisplayStageFrameState();
@@ -41,7 +44,17 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
   /// How close to the top edge the pointer brings the bar.
   static final double _edge = Spacing.d4;
 
+  /// How long the bar a finger brought stays.
+  static const _barTime = Duration(seconds: 6);
+
   bool _barShown = false;
+  Timer? _hideBar;
+
+  @override
+  void dispose() {
+    _hideBar?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +83,7 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
     if (phase == .ended && end != null) {
       return MirrorMessage(
         icon: LucideIcons.monitorOff,
-        title: l10n.displayViewEnded(name, end.name, ThisComputer.here),
+        title: l10n.displayViewEnded(name, end.name, DisplayHere.value),
         actions: [MessageAction(label: l10n.close, onPressed: widget.onClose)],
       );
     }
@@ -93,6 +106,12 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
     );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
+    final touch = DisplayHere.isTouch;
+    final top = switch (touch) {
+      true => MediaQuery.paddingOf(context).top,
+      false => 0.0,
+    };
+    final toggleFullScreen = widget.onToggleFullScreen;
 
     return Listener(
       behavior: .translucent,
@@ -100,36 +119,68 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
       child: Stack(
         fit: .expand,
         children: [
-          MirrorSurface(
-            picture: picture,
-            builder: (context, shown) => MirrorInput(
-              abilities: abilities,
-              onAction: viewModel.perform,
-              onEscape: widget.onExitFullScreen,
-              child: shown,
+          Listener(
+            onPointerDown: (_) => _showBar(false),
+            child: MirrorSurface(
+              picture: picture,
+              builder: (context, shown) => MirrorInput(
+                abilities: abilities,
+                onAction: viewModel.perform,
+                onEscape: widget.onExitFullScreen,
+                touchPointsPerPixel: _pointsPerPixel(context),
+                child: shown,
+              ),
             ),
           ),
+          if (touch && !_barShown)
+            Positioned(
+              top: top,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: _Handle(
+                  label: l10n.displayHandleLabel(widget.deviceName),
+                  onTap: () => _showBar(true),
+                ),
+              ),
+            ),
           Positioned(
-            top: 0,
+            top: top,
             left: 0,
             right: 0,
             child: DisplayBar(
               shown: _barShown,
               onLeave: () => _showBar(false),
               title: l10n.displayBarTitle(widget.deviceName),
-              hint: l10n.displayEscHint,
-              fullScreenLabel: switch (isFullScreen) {
-                true => l10n.exitFullScreen,
-                false => l10n.fullScreen,
+              hint: switch (touch) {
+                true => l10n.displayTouchHint,
+                false => l10n.displayEscHint,
+              },
+              fullScreenLabel: switch ((toggleFullScreen, isFullScreen)) {
+                (null, _) => null,
+                (_, true) => l10n.exitFullScreen,
+                (_, false) => l10n.fullScreen,
               },
               stopLabel: l10n.stop,
-              onFullScreen: widget.onToggleFullScreen,
+              onFullScreen: toggleFullScreen,
               onStop: stop,
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// Points of the computer's display per pixel here: it is made the
+  /// size of this screen, at 2 pixels per point on a sharp one.
+  double _pointsPerPixel(BuildContext context) {
+    final ratio = MediaQuery.devicePixelRatioOf(context);
+    final scale = DisplayScreen.panelOf(
+      physicalSize: Size.zero,
+      devicePixelRatio: ratio,
+      refreshRate: 0,
+    ).scale;
+    return ratio / scale;
   }
 
   void _onHover(double y) {
@@ -139,10 +190,60 @@ class _DisplayStageFrameState extends State<DisplayStageFrame> {
   }
 
   void _showBar(bool shown) {
-    if (_barShown == shown) {
+    _hideBar?.cancel();
+    if (shown && DisplayHere.isTouch) {
+      _hideBar = Timer(_barTime, () => _showBar(false));
+    }
+
+    if (_barShown == shown || !mounted) {
       return;
     }
 
     setState(() => _barShown = shown);
+  }
+}
+
+/// A small grip at the top edge of a computer's display on a phone: the
+/// way to its bar, where a pointer would reach the edge on a computer.
+class _Handle extends StatelessWidget {
+  const _Handle({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        behavior: .opaque,
+        onTap: onTap,
+        child: SizedBox(
+          width: Spacing.d64,
+          height: Spacing.d32,
+          child: Center(
+            child: DecoratedBox(
+              decoration: ShapeDecoration(
+                // Dark on a halo of light (or the other way round), so it
+                // shows on whatever the computer draws under it.
+                color: palette.text.withValues(alpha: 0.6),
+                shape: const StadiumBorder(),
+                shadows: [
+                  BoxShadow(
+                    color: palette.surface.withValues(alpha: 0.8),
+                    blurRadius: Spacing.d2,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: SizedBox(width: Spacing.d40, height: Spacing.d6),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
