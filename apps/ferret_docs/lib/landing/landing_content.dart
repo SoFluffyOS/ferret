@@ -127,7 +127,7 @@ abstract final class LandingContent {
           '**Show screen** puts your Android phone on your computer, over '
           'Wi-Fi. Its sound comes along too.',
       points: [
-        'Over a cable, click, scroll and type on it. No Ferret needed on the phone.',
+        'Click, scroll and type on it: over Wi-Fi once the phone says yes, or over a cable with no Ferret on the phone.',
         'iPhone and iPad through AirPlay.',
         'A full-size screenshot in one click.',
       ],
