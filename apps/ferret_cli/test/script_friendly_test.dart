@@ -232,6 +232,13 @@ void main() {
     expect(err.toString(), contains('Pixel 7, Pixel Tablet'));
   });
 
+  test('unpair of an unknown name exits 67 and says where to look', () async {
+    final exit = await buildRunner(environment()).run(['unpair', 'Toaster']);
+
+    expect(exit, ExitCodes.noDevice);
+    expect(err.toString(), contains('ferret-cli devices'));
+  });
+
   test('an older app says to update it', () async {
     await runApp(answer: {'ok': false, 'error': 'unknown_command'});
     final file = File('${home.path}/a.txt')..writeAsStringSync('a');

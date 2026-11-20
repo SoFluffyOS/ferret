@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:ferret_cli/cli_environment.dart';
+import 'package:ferret_cli/exit_codes.dart';
 
 /// Forgets a paired device, by name or id, and tells it if it is reachable.
 class UnpairCommand extends Command<int> {
@@ -40,16 +39,18 @@ class UnpairCommand extends Command<int> {
     );
     final device = matches.firstOrNull;
     if (device == null) {
-      stderr.writeln(
-        'No paired device called "$query". Run "ferret-cli devices" to see them.',
+      _environment.err.writeln(
+        'No device paired with ferret-cli is called "$query". Run '
+        '"ferret-cli devices" to see them. Devices paired with the Ferret '
+        'app are unpaired there.',
       );
-      return 1;
+      return ExitCodes.noDevice;
     }
 
     final everywhere = argResults?['everywhere'] as bool? ?? false;
     if (!everywhere) {
       await engine.unpair(device.id);
-      stdout.writeln('Forgot ${device.name}.');
+      _environment.out.writeln('Forgot ${device.name}.');
       return 0;
     }
 
@@ -59,7 +60,7 @@ class UnpairCommand extends Command<int> {
     await engine.unpair(device.id, everywhere: true);
     await Future<void>.delayed(_sendWait);
     await engine.stop();
-    stdout.writeln(
+    _environment.out.writeln(
       'Removed ${device.name} from your devices. '
       'Ones that are off hear about it when they connect to this computer.',
     );
