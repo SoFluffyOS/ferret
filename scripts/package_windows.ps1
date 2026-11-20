@@ -132,6 +132,9 @@ function Build-Inno {
     (Join-Path $Packaging 'ferret.iss')
   )
   $installer = Join-Path $Out "Ferret-$Version-$Arch-setup.exe"
+  # The landing page's Download button points at a name that never changes:
+  # releases/latest/download/Ferret-windows-x64-setup.exe.
+  Copy-Item -Force $installer (Join-Path $Out "Ferret-windows-$Arch-setup.exe")
   $hash = (Get-FileHash $installer -Algorithm SHA256).Hash
   Write-Host "    $installer"
   Write-Host "    SHA256 $hash (InstallerSha256 in the winget manifest)"

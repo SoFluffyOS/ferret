@@ -699,7 +699,7 @@ h2 {
 
 .platforms {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--s4);
   margin: 0;
   padding: 0;
@@ -721,11 +721,6 @@ h2 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.platform:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-big);
-}
-
 .platform-name {
   font-weight: 800;
   font-size: 20px;
@@ -740,6 +735,40 @@ h2 {
 .platform-go {
   color: var(--link);
   font-weight: 800;
+  font-size: 15px;
+}
+
+.platform:has(.platform-go:hover) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-big);
+}
+
+.platform-download {
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
+.platform-command {
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  overflow-x: auto;
+  border-radius: 14px;
+  background: var(--fill);
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.platform-command code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.platform-soon {
+  color: var(--ink-2);
+  font-weight: 700;
   font-size: 15px;
 }
 

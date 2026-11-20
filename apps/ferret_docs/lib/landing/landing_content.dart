@@ -25,30 +25,47 @@ abstract final class LandingContent {
       name: 'Android',
       how: 'App with a quiet background service and a Quick Settings tile.',
       guide: '/docs/getting-started/android',
+      download: '${SiteLinks.latest}/Ferret-android.apk',
+      downloadLabel: 'Download .apk',
+      command: null,
     ),
     (
       icon: 'apple',
       name: 'iPhone',
-      how: 'App, share sheet and Shortcuts. Syncs while Ferret is open.',
+      how: 'Not in the first release yet. It builds from source today.',
       guide: '/docs/getting-started/iphone',
+      download: null,
+      downloadLabel: null,
+      command: null,
     ),
     (
       icon: 'apple',
       name: 'Mac',
-      how: 'Menubar app with a popover and a full window. macOS 12 or later.',
+      how:
+          'Menubar app with a popover and a full window. macOS 12 or later, signed and notarized.',
       guide: '/docs/getting-started/mac',
+      download: '${SiteLinks.latest}/Ferret-mac.dmg',
+      downloadLabel: 'Download .dmg',
+      command: null,
     ),
     (
       icon: 'windows',
       name: 'Windows',
       how: 'Window and tray icon. Installs just for you, no admin.',
       guide: '/docs/getting-started/windows',
+      download: '${SiteLinks.latest}/Ferret-windows-x64-setup.exe',
+      downloadLabel: 'Download .exe',
+      command: null,
     ),
     (
       icon: 'linux',
       name: 'Linux',
-      how: 'Window and tray icon. Flatpak, AppImage or .deb.',
+      how:
+          'Window and tray icon. One line installs the AppImage, or get the Flatpak or .deb.',
       guide: '/docs/getting-started/linux',
+      download: null,
+      downloadLabel: null,
+      command: 'curl -fsSL ferret.sofluffy.io/install.sh | sh',
     ),
   ];
 
@@ -225,6 +242,16 @@ abstract final class LandingContent {
 
   static const faq = <FaqEntry>[
     (
+      question: 'Why a ferret?',
+      answer:
+          'Ferrets carry things off and stash them somewhere else. Your keys, '
+          'a sock, the TV remote. That’s Ferret’s whole job, minus the '
+          'stealing: it carries your clipboard, files and calls from one '
+          'device to the next. And the name spells F.E.R.R.E.T.: Fast '
+          'Encrypted Relay for Resuming Every Task.',
+      link: null,
+    ),
+    (
       question: 'Is it really free?',
       answer:
           'Yes. No paid tier, no ads, no account. If Ferret saves you time, '
@@ -280,11 +307,12 @@ abstract final class LandingContent {
       link: '/docs/android-modes/standard',
     ),
     (
-      question: 'When can I download it?',
+      question: 'Where do I get it?',
       answer:
-          'Binaries come with the first release on GitHub. Until then, you can '
-          'build it from source in a few commands.',
-      link: SiteLinks.releases,
+          'Right here, under Get Ferret: Mac, Windows, Linux and Android, '
+          'always the newest release from GitHub. iPhone comes later; it '
+          'builds from source today.',
+      link: '#download',
     ),
   ];
 }

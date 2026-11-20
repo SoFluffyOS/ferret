@@ -1,10 +1,12 @@
+import 'package:ferret_docs/landing/feature_story.dart';
 import 'package:ferret_docs/landing/landing_content.dart';
 import 'package:ferret_docs/landing/marker.dart';
 import 'package:ferret_docs/landing/site_links.dart';
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
-/// One card per platform, each leading to its install guide.
+/// One card per platform: the download, or the line to paste, and the
+/// install guide.
 class DownloadSection extends StatelessComponent {
   const DownloadSection();
 
@@ -21,29 +23,47 @@ class DownloadSection extends StatelessComponent {
             Component.text('Get Ferret.'),
           ]),
           p([
-            Component.text('Binaries come with the first release on '),
-            a(href: SiteLinks.releases, [Component.text('GitHub')]),
             Component.text(
-              '. Until then, each guide shows how to build it from source.',
+              'Free, no account. Pick your system. Every '
+              'download is the newest release on ',
             ),
+            a(href: SiteLinks.releases, [Component.text('GitHub')]),
+            Component.text('.'),
           ]),
         ]),
         ul(classes: 'platforms', [
           for (final platform in LandingContent.platforms)
-            li([
-              a(classes: 'platform reveal', href: platform.guide, [
-                span(classes: 'platform-name', [
-                  Marker(platform.icon),
-                  Component.text(platform.name),
-                ]),
-                span(classes: 'platform-how', [Component.text(platform.how)]),
-                const span(classes: 'platform-go', [
-                  Component.text('Install guide →'),
-                ]),
-              ]),
-            ]),
+            li([_card(platform)]),
         ]),
       ]),
     ],
   );
+
+  Component _card(PlatformEntry platform) => div(classes: 'platform reveal', [
+    span(classes: 'platform-name', [
+      Marker(platform.icon),
+      Component.text(platform.name),
+    ]),
+    span(classes: 'platform-how', [Component.text(platform.how)]),
+    ...switch ((platform.download, platform.command)) {
+      (final download?, _) => [
+        a(
+          classes: 'button primary platform-download',
+          href: download,
+          [Component.text(platform.downloadLabel ?? 'Download')],
+        ),
+      ],
+      (null, final command?) => [
+        pre(classes: 'platform-command', [
+          code([Component.text(command)]),
+        ]),
+      ],
+      (null, null) => [
+        const span(classes: 'platform-soon', [Component.text('Not yet')]),
+      ],
+    },
+    a(classes: 'platform-go', href: platform.guide, [
+      const Component.text('Install guide →'),
+    ]),
+  ]);
 }

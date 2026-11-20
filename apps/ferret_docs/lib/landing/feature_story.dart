@@ -40,9 +40,16 @@ typedef FeatureExtra = ({String icon, String title, String body, String docs});
 typedef FaqEntry = ({String question, String answer, String? link});
 
 /// One platform in the download section.
+///
+/// [download] is a file in the latest GitHub release, named the same on
+/// every release; [command] is a line to paste instead (Linux); with
+/// neither, the platform isn't out yet.
 typedef PlatformEntry = ({
   String icon,
   String name,
   String how,
   String guide,
+  String? download,
+  String? downloadLabel,
+  String? command,
 });

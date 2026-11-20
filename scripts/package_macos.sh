@@ -256,9 +256,13 @@ EOF
   fi
   ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
+  # The landing page's Download button points at a name that never changes:
+  # releases/latest/download/Ferret-mac.dmg.
+  cp -f "$DMG" "$OUT/Ferret-mac.dmg"
+
   echo
   echo "Done:"
-  shasum -a 256 "$DMG" "$ZIP"
+  shasum -a 256 "$DMG" "$ZIP" "$OUT/Ferret-mac.dmg"
 }
 
 case "$target" in
