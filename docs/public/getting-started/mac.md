@@ -46,10 +46,12 @@ Why not the App Store? Apps there must run in Apple's sandbox, and a sandboxed a
 
 ## 🍎 First run
 
-1. Open Ferret. Its icon (⇆) appears in the menubar and Ferret opens under it, this one time, so you know where it lives.
+1. Open Ferret. Its icon, the ferret, appears in the menubar and Ferret opens under it, this one time, so you know where it lives.
 2. No setup screens. Your other devices running Ferret show up under **Nearby**: tap **Pair**. See [Pair your devices](pairing.md).
 
 Your Mac's name is the one from System Settings. Change it any time in **Settings**.
+
+Want it there every morning? Turn on **Start Ferret when I log in** in **Settings → This device** (macOS 13 or later).
 
 macOS asks two things the first time:
 
