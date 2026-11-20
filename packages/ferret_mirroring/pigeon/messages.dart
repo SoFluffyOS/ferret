@@ -419,3 +419,116 @@ abstract class MirrorAudioHostApi {
 
   void close();
 }
+
+/// What this computer can do as the source of an extra display.
+class NativeDisplaySupport {
+  NativeDisplaySupport({
+    required this.canExtend,
+    required this.screenRecordingGranted,
+    required this.inputGranted,
+  });
+
+  /// The system lets an app make a display, capture it and encode it.
+  bool canExtend;
+
+  /// The system lets this app see what is on its screens.
+  bool screenRecordingGranted;
+
+  /// The system lets this app move the pointer and press keys.
+  bool inputGranted;
+}
+
+class NativeDisplayOptions {
+  NativeDisplayOptions({
+    required this.name,
+    required this.serial,
+    required this.width,
+    required this.height,
+    required this.scale,
+    required this.refreshHz,
+    required this.bitrate,
+  });
+
+  /// What the display is called in the system's display settings.
+  String name;
+
+  /// The same for the same viewer every time, so the system keeps where
+  /// its owner put the display.
+  int serial;
+
+  /// The viewer's screen in pixels.
+  int width;
+  int height;
+
+  /// Pixels per point: 1 or 2.
+  int scale;
+  int refreshHz;
+
+  /// Bits per second the encoder starts with.
+  int bitrate;
+}
+
+enum NativePointerPhase { down, move, up, hover, scroll }
+
+/// The viewer's pointer on the extra display. [x] and [y] are fractions
+/// of the display's width and height.
+class NativeDisplayPointer {
+  NativeDisplayPointer({
+    required this.phase,
+    required this.x,
+    required this.y,
+    required this.button,
+    required this.scrollX,
+    required this.scrollY,
+  });
+
+  NativePointerPhase phase;
+  double x;
+  double y;
+
+  /// 0 primary, 1 secondary, 2 middle.
+  int button;
+
+  /// Points to scroll; positive is right and down.
+  double scrollX;
+  double scrollY;
+}
+
+/// macOS: makes an extra display, captures only it with ScreenCaptureKit
+/// and encodes it as real-time H.264 with VideoToolbox.
+@HostApi()
+abstract class DisplayCaptureHostApi {
+  NativeDisplaySupport support();
+
+  /// Asks for Screen Recording, with the system's prompt the first time.
+  /// Answers whether it is granted now.
+  bool requestScreenRecording();
+
+  /// Asks for Accessibility, which moving the pointer needs.
+  bool requestInput();
+
+  void openScreenRecordingSettings();
+
+  /// Makes the display and starts sending it. Throws when it can't.
+  @async
+  void start(NativeDisplayOptions options);
+
+  /// Stops sending and takes the display away.
+  @async
+  void stop();
+
+  void requestKeyframe();
+
+  void setBitrate(int bitrate);
+
+  void pointer(NativeDisplayPointer event);
+}
+
+@FlutterApi()
+abstract class DisplayCaptureFlutterApi {
+  void onConfig(NativeStreamConfig config);
+
+  void onFrame(NativeFrame frame);
+
+  void onEnded(NativeCaptureEnd end);
+}

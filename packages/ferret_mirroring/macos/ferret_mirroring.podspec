@@ -25,6 +25,7 @@ Decodes H.264 with VideoToolbox into a Flutter texture.
   s.dependency 'FlutterMacOS'
   s.dependency 'sofluffy_texture'
   s.frameworks = 'VideoToolbox', 'CoreMedia', 'CoreVideo'
+  s.weak_frameworks = 'ScreenCaptureKit'
 
   s.platform = :osx, '12.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }

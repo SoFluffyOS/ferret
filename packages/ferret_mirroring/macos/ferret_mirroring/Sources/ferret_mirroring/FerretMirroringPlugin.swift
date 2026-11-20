@@ -5,13 +5,15 @@ import sofluffy_texture
 
 /// Shows a mirrored phone screen: H.264 decoded with VideoToolbox into a
 /// Flutter texture, the picture on it saved to a file, full screen for the
-/// window Flutter is in, and the phone's sound played here.
+/// window Flutter is in, and the phone's sound played here. Also lends
+/// this Mac's desktop to another device as an extra display.
 public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostApi {
   private let registrar: FlutterPluginRegistrar
   private let flutterApi: MirrorDecoderFlutterApi
   private var texture: OpaquePointer?
   private var decoder: H264Decoder?
   private let audioSink = MirrorAudioSink()
+  private var displayCapture: DisplayCapture?
 
   init(registrar: FlutterPluginRegistrar) {
     self.registrar = registrar
@@ -22,6 +24,9 @@ public class FerretMirroringPlugin: NSObject, FlutterPlugin, MirrorDecoderHostAp
     let instance = FerretMirroringPlugin(registrar: registrar)
     MirrorDecoderHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: instance)
     MirrorAudioHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: instance.audioSink)
+    let displayCapture = DisplayCapture(binaryMessenger: registrar.messenger)
+    instance.displayCapture = displayCapture
+    DisplayCaptureHostApiSetup.setUp(binaryMessenger: registrar.messenger, api: displayCapture)
   }
 
   func create() throws -> Int64 {

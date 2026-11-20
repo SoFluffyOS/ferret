@@ -305,6 +305,22 @@ enum class NativeAudioCodec(val raw: Int) {
   }
 }
 
+enum class NativePointerPhase(val raw: Int) {
+  DOWN(0),
+  MOVE(1),
+  UP(2),
+  HOVER(3),
+  SCROLL(4);
+
+  companion object {
+    private val pigeonValues = values()
+
+    fun ofRaw(raw: Int): NativePointerPhase? {
+      return pigeonValues.getOrNull(raw)
+    }
+  }
+}
+
 /**
  * What this device can capture with.
  *
@@ -815,6 +831,191 @@ data class NativeAudioStats (
     return "NativeAudioStats(frames=$frames, peak=$peak)"
   }
 }
+
+/**
+ * What this computer can do as the source of an extra display.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeDisplaySupport (
+  /** The system lets an app make a display, capture it and encode it. */
+  val canExtend: Boolean,
+  /** The system lets this app see what is on its screens. */
+  val screenRecordingGranted: Boolean,
+  /** The system lets this app move the pointer and press keys. */
+  val inputGranted: Boolean
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeDisplaySupport {
+      val canExtend = pigeonVar_list[0] as Boolean
+      val screenRecordingGranted = pigeonVar_list[1] as Boolean
+      val inputGranted = pigeonVar_list[2] as Boolean
+      return NativeDisplaySupport(canExtend, screenRecordingGranted, inputGranted)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      canExtend,
+      screenRecordingGranted,
+      inputGranted,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeDisplaySupport
+    return MessagesPigeonUtils.deepEquals(this.canExtend, other.canExtend) && MessagesPigeonUtils.deepEquals(this.screenRecordingGranted, other.screenRecordingGranted) && MessagesPigeonUtils.deepEquals(this.inputGranted, other.inputGranted)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.canExtend)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.screenRecordingGranted)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.inputGranted)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeDisplaySupport(canExtend=$canExtend, screenRecordingGranted=$screenRecordingGranted, inputGranted=$inputGranted)"
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeDisplayOptions (
+  /** What the display is called in the system's display settings. */
+  val name: String,
+  /**
+   * The same for the same viewer every time, so the system keeps where
+   * its owner put the display.
+   */
+  val serial: Long,
+  /** The viewer's screen in pixels. */
+  val width: Long,
+  val height: Long,
+  /** Pixels per point: 1 or 2. */
+  val scale: Long,
+  val refreshHz: Long,
+  /** Bits per second the encoder starts with. */
+  val bitrate: Long
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeDisplayOptions {
+      val name = pigeonVar_list[0] as String
+      val serial = pigeonVar_list[1] as Long
+      val width = pigeonVar_list[2] as Long
+      val height = pigeonVar_list[3] as Long
+      val scale = pigeonVar_list[4] as Long
+      val refreshHz = pigeonVar_list[5] as Long
+      val bitrate = pigeonVar_list[6] as Long
+      return NativeDisplayOptions(name, serial, width, height, scale, refreshHz, bitrate)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      name,
+      serial,
+      width,
+      height,
+      scale,
+      refreshHz,
+      bitrate,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeDisplayOptions
+    return MessagesPigeonUtils.deepEquals(this.name, other.name) && MessagesPigeonUtils.deepEquals(this.serial, other.serial) && MessagesPigeonUtils.deepEquals(this.width, other.width) && MessagesPigeonUtils.deepEquals(this.height, other.height) && MessagesPigeonUtils.deepEquals(this.scale, other.scale) && MessagesPigeonUtils.deepEquals(this.refreshHz, other.refreshHz) && MessagesPigeonUtils.deepEquals(this.bitrate, other.bitrate)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.name)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.serial)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.width)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.height)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.scale)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.refreshHz)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.bitrate)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeDisplayOptions(name=$name, serial=$serial, width=$width, height=$height, scale=$scale, refreshHz=$refreshHz, bitrate=$bitrate)"
+  }
+}
+
+/**
+ * The viewer's pointer on the extra display. [x] and [y] are fractions
+ * of the display's width and height.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeDisplayPointer (
+  val phase: NativePointerPhase,
+  val x: Double,
+  val y: Double,
+  /** 0 primary, 1 secondary, 2 middle. */
+  val button: Long,
+  /** Points to scroll; positive is right and down. */
+  val scrollX: Double,
+  val scrollY: Double
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeDisplayPointer {
+      val phase = pigeonVar_list[0] as NativePointerPhase
+      val x = pigeonVar_list[1] as Double
+      val y = pigeonVar_list[2] as Double
+      val button = pigeonVar_list[3] as Long
+      val scrollX = pigeonVar_list[4] as Double
+      val scrollY = pigeonVar_list[5] as Double
+      return NativeDisplayPointer(phase, x, y, button, scrollX, scrollY)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      phase,
+      x,
+      y,
+      button,
+      scrollX,
+      scrollY,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeDisplayPointer
+    return MessagesPigeonUtils.deepEquals(this.phase, other.phase) && MessagesPigeonUtils.deepEquals(this.x, other.x) && MessagesPigeonUtils.deepEquals(this.y, other.y) && MessagesPigeonUtils.deepEquals(this.button, other.button) && MessagesPigeonUtils.deepEquals(this.scrollX, other.scrollX) && MessagesPigeonUtils.deepEquals(this.scrollY, other.scrollY)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.phase)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.x)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.y)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.button)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.scrollX)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.scrollY)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeDisplayPointer(phase=$phase, x=$x, y=$y, button=$button, scrollX=$scrollX, scrollY=$scrollY)"
+  }
+}
 private open class MessagesPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
@@ -849,48 +1050,68 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         }
       }
       135.toByte() -> {
-        (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureSupport.fromList(it)
+        (readValue(buffer) as Long?)?.let {
+          NativePointerPhase.ofRaw(it.toInt())
         }
       }
       136.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeConsentTexts.fromList(it)
+          NativeCaptureSupport.fromList(it)
         }
       }
       137.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCaptureOptions.fromList(it)
+          NativeConsentTexts.fromList(it)
         }
       }
       138.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeStreamConfig.fromList(it)
+          NativeCaptureOptions.fromList(it)
         }
       }
       139.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeFrame.fromList(it)
+          NativeStreamConfig.fromList(it)
         }
       }
       140.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCameraSupport.fromList(it)
+          NativeFrame.fromList(it)
         }
       }
       141.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCameraOptions.fromList(it)
+          NativeCameraSupport.fromList(it)
         }
       }
       142.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
-          NativeCameraTexts.fromList(it)
+          NativeCameraOptions.fromList(it)
         }
       }
       143.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
+          NativeCameraTexts.fromList(it)
+        }
+      }
+      144.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
           NativeAudioStats.fromList(it)
+        }
+      }
+      145.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeDisplaySupport.fromList(it)
+        }
+      }
+      146.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeDisplayOptions.fromList(it)
+        }
+      }
+      147.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
+          NativeDisplayPointer.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -922,40 +1143,56 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(134)
         writeValue(stream, value.raw.toLong())
       }
-      is NativeCaptureSupport -> {
+      is NativePointerPhase -> {
         stream.write(135)
-        writeValue(stream, value.toList())
+        writeValue(stream, value.raw.toLong())
       }
-      is NativeConsentTexts -> {
+      is NativeCaptureSupport -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is NativeCaptureOptions -> {
+      is NativeConsentTexts -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
-      is NativeStreamConfig -> {
+      is NativeCaptureOptions -> {
         stream.write(138)
         writeValue(stream, value.toList())
       }
-      is NativeFrame -> {
+      is NativeStreamConfig -> {
         stream.write(139)
         writeValue(stream, value.toList())
       }
-      is NativeCameraSupport -> {
+      is NativeFrame -> {
         stream.write(140)
         writeValue(stream, value.toList())
       }
-      is NativeCameraOptions -> {
+      is NativeCameraSupport -> {
         stream.write(141)
         writeValue(stream, value.toList())
       }
-      is NativeCameraTexts -> {
+      is NativeCameraOptions -> {
         stream.write(142)
         writeValue(stream, value.toList())
       }
-      is NativeAudioStats -> {
+      is NativeCameraTexts -> {
         stream.write(143)
+        writeValue(stream, value.toList())
+      }
+      is NativeAudioStats -> {
+        stream.write(144)
+        writeValue(stream, value.toList())
+      }
+      is NativeDisplaySupport -> {
+        stream.write(145)
+        writeValue(stream, value.toList())
+      }
+      is NativeDisplayOptions -> {
+        stream.write(146)
+        writeValue(stream, value.toList())
+      }
+      is NativeDisplayPointer -> {
+        stream.write(147)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -1958,6 +2195,259 @@ interface MirrorAudioHostApi {
         } else {
           channel.setMessageHandler(null)
         }
+      }
+    }
+  }
+}
+/**
+ * macOS: makes an extra display, captures only it with ScreenCaptureKit
+ * and encodes it as real-time H.264 with VideoToolbox.
+ *
+ * Generated interface from Pigeon that represents a handler of messages from Flutter.
+ */
+interface DisplayCaptureHostApi {
+  fun support(): NativeDisplaySupport
+  /**
+   * Asks for Screen Recording, with the system's prompt the first time.
+   * Answers whether it is granted now.
+   */
+  fun requestScreenRecording(): Boolean
+  /** Asks for Accessibility, which moving the pointer needs. */
+  fun requestInput(): Boolean
+  fun openScreenRecordingSettings()
+  /** Makes the display and starts sending it. Throws when it can't. */
+  suspend fun start(options: NativeDisplayOptions)
+  /** Stops sending and takes the display away. */
+  suspend fun stop()
+  fun requestKeyframe()
+  fun setBitrate(bitrate: Long)
+  fun pointer(event: NativeDisplayPointer)
+
+  companion object {
+    /** The codec used by DisplayCaptureHostApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+    /** Sets up an instance of `DisplayCaptureHostApi` to handle messages through the `binaryMessenger`. */
+    @JvmOverloads
+    fun setUp(binaryMessenger: BinaryMessenger, api: DisplayCaptureHostApi?, messageChannelSuffix: String = "") {
+      val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.support$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.support())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestScreenRecording$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.requestScreenRecording())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestInput$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.requestInput())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.openScreenRecordingSettings$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.openScreenRecordingSettings()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.start$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val optionsArg = args[0] as NativeDisplayOptions
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                api.start(optionsArg)
+                listOf(null)
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.stop$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            CoroutineScope(Dispatchers.Main).launch {
+              val wrapped: List<Any?> = try {
+                api.stop()
+                listOf(null)
+              } catch (exception: Throwable) {
+                MessagesPigeonUtils.wrapError(exception)
+              }
+              reply.reply(wrapped)
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestKeyframe$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.requestKeyframe()
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.setBitrate$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val bitrateArg = args[0] as Long
+            val wrapped: List<Any?> = try {
+              api.setBitrate(bitrateArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.pointer$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val eventArg = args[0] as NativeDisplayPointer
+            val wrapped: List<Any?> = try {
+              api.pointer(eventArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+    }
+  }
+}
+/** Generated class from Pigeon that represents Flutter messages that can be called from Kotlin. */
+class DisplayCaptureFlutterApi(private val binaryMessenger: BinaryMessenger, private val messageChannelSuffix: String = "") {
+  companion object {
+    /** The codec used by DisplayCaptureFlutterApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+  }
+  suspend fun onConfig(configArg: NativeStreamConfig)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onConfig$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(configArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  suspend fun onFrame(frameArg: NativeFrame)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onFrame$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(frameArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
+      }
+    }
+  }
+  suspend fun onEnded(endArg: NativeCaptureEnd)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    return suspendCancellableCoroutine { continuation ->
+      val channelName = "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onEnded$separatedMessageChannelSuffix"
+      val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+      channel.send(listOf(endArg)) {
+        if (it is List<*>) {
+          if (it.size > 1) {
+            continuation.resumeWithException(FlutterError(it[0] as String, it[1] as String, it[2] as String?))
+          } else {
+            continuation.resume(Unit)
+          }
+        } else {
+          continuation.resumeWithException(MessagesPigeonUtils.createConnectionError(channelName))
+        } 
       }
     }
   }

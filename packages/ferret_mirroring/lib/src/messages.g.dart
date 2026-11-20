@@ -159,6 +159,14 @@ enum NativeAudioCodec {
   pcm;
 }
 
+enum NativePointerPhase {
+  down,
+  move,
+  up,
+  hover,
+  scroll;
+}
+
 /// What this device can capture with.
 class NativeCaptureSupport {
   NativeCaptureSupport({
@@ -757,6 +765,220 @@ class NativeAudioStats {
   }
 }
 
+/// What this computer can do as the source of an extra display.
+class NativeDisplaySupport {
+  NativeDisplaySupport({
+    required this.canExtend,
+    required this.screenRecordingGranted,
+    required this.inputGranted,
+  });
+
+  /// The system lets an app make a display, capture it and encode it.
+  bool canExtend;
+
+  /// The system lets this app see what is on its screens.
+  bool screenRecordingGranted;
+
+  /// The system lets this app move the pointer and press keys.
+  bool inputGranted;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      canExtend,
+      screenRecordingGranted,
+      inputGranted,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeDisplaySupport decode(Object result) {
+    result as List<Object?>;
+    return NativeDisplaySupport(
+      canExtend: result[0]! as bool,
+      screenRecordingGranted: result[1]! as bool,
+      inputGranted: result[2]! as bool,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeDisplaySupport || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(canExtend, other.canExtend) && _deepEquals(screenRecordingGranted, other.screenRecordingGranted) && _deepEquals(inputGranted, other.inputGranted);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeDisplaySupport(canExtend: $canExtend, screenRecordingGranted: $screenRecordingGranted, inputGranted: $inputGranted)';
+  }
+}
+
+class NativeDisplayOptions {
+  NativeDisplayOptions({
+    required this.name,
+    required this.serial,
+    required this.width,
+    required this.height,
+    required this.scale,
+    required this.refreshHz,
+    required this.bitrate,
+  });
+
+  /// What the display is called in the system's display settings.
+  String name;
+
+  /// The same for the same viewer every time, so the system keeps where
+  /// its owner put the display.
+  int serial;
+
+  /// The viewer's screen in pixels.
+  int width;
+
+  int height;
+
+  /// Pixels per point: 1 or 2.
+  int scale;
+
+  int refreshHz;
+
+  /// Bits per second the encoder starts with.
+  int bitrate;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      name,
+      serial,
+      width,
+      height,
+      scale,
+      refreshHz,
+      bitrate,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeDisplayOptions decode(Object result) {
+    result as List<Object?>;
+    return NativeDisplayOptions(
+      name: result[0]! as String,
+      serial: result[1]! as int,
+      width: result[2]! as int,
+      height: result[3]! as int,
+      scale: result[4]! as int,
+      refreshHz: result[5]! as int,
+      bitrate: result[6]! as int,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeDisplayOptions || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(name, other.name) && _deepEquals(serial, other.serial) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(scale, other.scale) && _deepEquals(refreshHz, other.refreshHz) && _deepEquals(bitrate, other.bitrate);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeDisplayOptions(name: $name, serial: $serial, width: $width, height: $height, scale: $scale, refreshHz: $refreshHz, bitrate: $bitrate)';
+  }
+}
+
+/// The viewer's pointer on the extra display. [x] and [y] are fractions
+/// of the display's width and height.
+class NativeDisplayPointer {
+  NativeDisplayPointer({
+    required this.phase,
+    required this.x,
+    required this.y,
+    required this.button,
+    required this.scrollX,
+    required this.scrollY,
+  });
+
+  NativePointerPhase phase;
+
+  double x;
+
+  double y;
+
+  /// 0 primary, 1 secondary, 2 middle.
+  int button;
+
+  /// Points to scroll; positive is right and down.
+  double scrollX;
+
+  double scrollY;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      phase,
+      x,
+      y,
+      button,
+      scrollX,
+      scrollY,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static NativeDisplayPointer decode(Object result) {
+    result as List<Object?>;
+    return NativeDisplayPointer(
+      phase: result[0]! as NativePointerPhase,
+      x: result[1]! as double,
+      y: result[2]! as double,
+      button: result[3]! as int,
+      scrollX: result[4]! as double,
+      scrollY: result[5]! as double,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! NativeDisplayPointer || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(phase, other.phase) && _deepEquals(x, other.x) && _deepEquals(y, other.y) && _deepEquals(button, other.button) && _deepEquals(scrollX, other.scrollX) && _deepEquals(scrollY, other.scrollY);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'NativeDisplayPointer(phase: $phase, x: $x, y: $y, button: $button, scrollX: $scrollX, scrollY: $scrollY)';
+  }
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -783,32 +1005,44 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is NativeAudioCodec) {
       buffer.putUint8(134);
       writeValue(buffer, value.index);
-    }    else if (value is NativeCaptureSupport) {
+    }    else if (value is NativePointerPhase) {
       buffer.putUint8(135);
-      writeValue(buffer, value.encode());
-    }    else if (value is NativeConsentTexts) {
+      writeValue(buffer, value.index);
+    }    else if (value is NativeCaptureSupport) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCaptureOptions) {
+    }    else if (value is NativeConsentTexts) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeStreamConfig) {
+    }    else if (value is NativeCaptureOptions) {
       buffer.putUint8(138);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeFrame) {
+    }    else if (value is NativeStreamConfig) {
       buffer.putUint8(139);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCameraSupport) {
+    }    else if (value is NativeFrame) {
       buffer.putUint8(140);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCameraOptions) {
+    }    else if (value is NativeCameraSupport) {
       buffer.putUint8(141);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeCameraTexts) {
+    }    else if (value is NativeCameraOptions) {
       buffer.putUint8(142);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeAudioStats) {
+    }    else if (value is NativeCameraTexts) {
       buffer.putUint8(143);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeAudioStats) {
+      buffer.putUint8(144);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeDisplaySupport) {
+      buffer.putUint8(145);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeDisplayOptions) {
+      buffer.putUint8(146);
+      writeValue(buffer, value.encode());
+    }    else if (value is NativeDisplayPointer) {
+      buffer.putUint8(147);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -837,23 +1071,32 @@ class _PigeonCodec extends StandardMessageCodec {
         final value = readValue(buffer) as int?;
         return value == null ? null : NativeAudioCodec.values[value];
       case 135:
-        return NativeCaptureSupport.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : NativePointerPhase.values[value];
       case 136:
-        return NativeConsentTexts.decode(readValue(buffer)!);
+        return NativeCaptureSupport.decode(readValue(buffer)!);
       case 137:
-        return NativeCaptureOptions.decode(readValue(buffer)!);
+        return NativeConsentTexts.decode(readValue(buffer)!);
       case 138:
-        return NativeStreamConfig.decode(readValue(buffer)!);
+        return NativeCaptureOptions.decode(readValue(buffer)!);
       case 139:
-        return NativeFrame.decode(readValue(buffer)!);
+        return NativeStreamConfig.decode(readValue(buffer)!);
       case 140:
-        return NativeCameraSupport.decode(readValue(buffer)!);
+        return NativeFrame.decode(readValue(buffer)!);
       case 141:
-        return NativeCameraOptions.decode(readValue(buffer)!);
+        return NativeCameraSupport.decode(readValue(buffer)!);
       case 142:
-        return NativeCameraTexts.decode(readValue(buffer)!);
+        return NativeCameraOptions.decode(readValue(buffer)!);
       case 143:
+        return NativeCameraTexts.decode(readValue(buffer)!);
+      case 144:
         return NativeAudioStats.decode(readValue(buffer)!);
+      case 145:
+        return NativeDisplaySupport.decode(readValue(buffer)!);
+      case 146:
+        return NativeDisplayOptions.decode(readValue(buffer)!);
+      case 147:
+        return NativeDisplayPointer.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -1886,5 +2129,267 @@ class MirrorAudioHostApi {
         isNullValid: true,
     )
     ;
+  }
+}
+
+/// macOS: makes an extra display, captures only it with ScreenCaptureKit
+/// and encodes it as real-time H.264 with VideoToolbox.
+class DisplayCaptureHostApi {
+  /// Constructor for [DisplayCaptureHostApi]. The [binaryMessenger] named argument is
+  /// available for dependency injection. If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  DisplayCaptureHostApi({
+      BinaryMessenger? binaryMessenger, 
+      String messageChannelSuffix = '', 
+      })
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+
+  final BinaryMessenger? pigeonVar_binaryMessenger;
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  final String pigeonVar_messageChannelSuffix;
+
+
+  Future<NativeDisplaySupport> support() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.support$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as NativeDisplaySupport;
+  }
+
+  /// Asks for Screen Recording, with the system's prompt the first time.
+  /// Answers whether it is granted now.
+  Future<bool> requestScreenRecording() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestScreenRecording$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Asks for Accessibility, which moving the pointer needs.
+  Future<bool> requestInput() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestInput$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  Future<void> openScreenRecordingSettings() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.openScreenRecordingSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// Makes the display and starts sending it. Throws when it can't.
+  Future<void> start(NativeDisplayOptions options) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.start$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[options]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// Stops sending and takes the display away.
+  Future<void> stop() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.stop$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> requestKeyframe() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.requestKeyframe$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> setBitrate(int bitrate) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.setBitrate$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[bitrate]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> pointer(NativeDisplayPointer event) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.pointer$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[event]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+}
+
+abstract class DisplayCaptureFlutterApi {
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  void onConfig(NativeStreamConfig config);
+
+  void onFrame(NativeFrame frame);
+
+  void onEnded(NativeCaptureEnd end);
+
+  static void setUp(DisplayCaptureFlutterApi? api, {
+    BinaryMessenger? binaryMessenger, 
+    String messageChannelSuffix = '',
+  }) 
+{
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onConfig$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeStreamConfig arg_config = args[0]! as NativeStreamConfig;
+          try {
+            api.onConfig(arg_config);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onFrame$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeFrame arg_frame = args[0]! as NativeFrame;
+          try {
+            api.onFrame(arg_frame);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_mirroring.DisplayCaptureFlutterApi.onEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final NativeCaptureEnd arg_end = args[0]! as NativeCaptureEnd;
+          try {
+            api.onEnded(arg_end);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
   }
 }
