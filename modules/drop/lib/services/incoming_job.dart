@@ -52,6 +52,11 @@ class IncomingJob {
   RandomAccessFile? _open;
   int? _openIndex;
 
+  /// Verified files being saved, by index, with the answer each one gets.
+  final Map<int, Future<FileVerified>> _saving = {};
+  int _savesRunning = 0;
+  final List<Completer<void>> _saveSlots = [];
+
   int sizeOf(int index) => files[index].size.toInt();
 
   int get receivedBytes => written.fold(0, (sum, bytes) => sum + bytes);
@@ -71,6 +76,44 @@ class IncomingJob {
   /// Waits for queued work to finish.
   Future<void> get idle => _queue;
 
+  /// Waits for queued work and for every save under way, so what is on
+  /// disk and in [saved] agrees.
+  Future<void> get settled async {
+    await _queue;
+    while (_saving.isNotEmpty) {
+      await Future.wait([..._saving.values]);
+    }
+  }
+
+  /// The answer for file [index] while it is being saved, or null.
+  Future<FileVerified>? savingOf(int index) => _saving[index];
+
+  /// Keeps [save] as file [index]'s answer until it is done.
+  Future<FileVerified> track(int index, Future<FileVerified> save) {
+    _saving[index] = save;
+    return save.whenComplete(() => _saving.remove(index));
+  }
+
+  /// Runs [work] once fewer than [limit] saves run, so a burst of small
+  /// files doesn't start hundreds of copies at once.
+  Future<T> withSaveSlot<T>(int limit, Future<T> Function() work) async {
+    while (_savesRunning >= limit) {
+      final slot = Completer<void>();
+      _saveSlots.add(slot);
+      await slot.future;
+    }
+
+    _savesRunning++;
+    try {
+      return await work();
+    } finally {
+      _savesRunning--;
+      if (_saveSlots.isNotEmpty) {
+        _saveSlots.removeAt(0).complete();
+      }
+    }
+  }
+
   /// Where the sender should continue: the first file not saved yet and the
   /// bytes already on disk for it.
   ({int fileIndex, int offset}) get resumePoint {
@@ -81,6 +124,20 @@ class IncomingJob {
     }
 
     return (fileIndex: files.length, offset: 0);
+  }
+
+  /// [resumePoint], once files after it that aren't saved start over: the
+  /// sender sends every later file from its start. Call it once [settled].
+  ({int fileIndex, int offset}) resumeFromHere() {
+    final resume = resumePoint;
+    for (var index = resume.fileIndex + 1; index < files.length; index++) {
+      if (saved[index] == null && written[index] > 0) {
+        written[index] = 0;
+        hasher.forget(index);
+      }
+    }
+
+    return resume;
   }
 
   /// The part file for [index], open for appending.

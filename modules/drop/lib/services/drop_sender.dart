@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 
@@ -37,6 +38,10 @@ class DropSender {
   /// Every this many chunks one is sent as a request, and the next window
   /// waits for its answer, so at most two windows are in flight.
   static const defaultAckEvery = 8;
+
+  /// Files that may wait on the receiver's check and save at once, while
+  /// the next ones go.
+  static const checksInFlight = 16;
 
   /// The flag a receiver's drop `FeatureSupport` carries when it can build
   /// a sent folder's tree. Older receivers would flatten it.
@@ -322,16 +327,30 @@ class DropSender {
         ),
       );
 
+      final checks = _Checks();
+      final throttle = ProgressThrottle();
       for (var index = start.fileIndex; index < job.files.length; index++) {
         final from = switch (index == start.fileIndex) {
           true => start.offset,
           false => 0,
         };
-        await _sendFile(session, job, index, from);
+        await _sendFile(session, job, index, from, checks, throttle);
         if (job.cancelled) {
           return;
         }
       }
+
+      if (checks.isNotEmpty) {
+        _set(
+          job,
+          (transfer) => transfer.copyWith(
+            status: .verifying,
+            bytesDone: transfer.totalBytes,
+          ),
+        );
+      }
+
+      await _settle(session, job, checks, keep: 0);
 
       await _whileOpen(
         session,
@@ -388,17 +407,22 @@ class DropSender {
     }
   }
 
+  /// Sends file [index] from byte [from], then says it is complete without
+  /// waiting for the receiver to check and save it: up to [checksInFlight]
+  /// files wait on that at once ([checks]), so many small files don't each
+  /// cost a round trip and a save.
   Future<void> _sendFile(
     Session session,
     OutgoingJob job,
     int index,
     int from,
+    _Checks checks,
+    ProgressThrottle throttle,
   ) async {
     final file = job.files[index];
     final input = await File(file.path).open();
     final digest = DigestSink();
     final hash = sha256.startChunkedConversion(digest);
-    final throttle = ProgressThrottle();
     final base = job.bytesBefore(index);
 
     try {
@@ -422,6 +446,10 @@ class DropSender {
       while (position < file.size) {
         if (job.cancelled) {
           throw const _Stop();
+        }
+
+        if (checks.anyFailed) {
+          await _settle(session, job, checks, keep: 0);
         }
 
         final bytes = await input.read(min(chunkSize, file.size - position));
@@ -462,13 +490,10 @@ class DropSender {
       throw const _Stop();
     }
 
-    _set(
-      job,
-      (transfer) =>
-          transfer.copyWith(status: .verifying, bytesDone: base + file.size),
-    );
-    final verified = await _whileOpen(
-      session,
+    await _settle(session, job, checks, keep: checksInFlight - 1);
+    final waiting = checks.bytes + file.size;
+    checks.add(
+      file.size,
       session.call(
         featureId,
         FileComplete(
@@ -477,19 +502,30 @@ class DropSender {
           sha256: digest.value.bytes,
         ),
         FileVerified.new,
-        timeout: _verifyTimeout(file.size),
+        timeout: _verifyTimeout(waiting),
       ),
     );
-    if (job.cancelled) {
-      throw const _Stop();
-    }
+  }
 
-    if (!verified.ok) {
-      _fail(job, FailureCodes.fromWire(verified.reason));
-      throw const _Stop();
-    }
+  /// Waits, oldest first, until at most [keep] files wait on their check.
+  /// A file that didn't check out stops the transfer with its reason.
+  Future<void> _settle(
+    Session session,
+    OutgoingJob job,
+    _Checks checks, {
+    required int keep,
+  }) async {
+    while (checks.length > keep) {
+      final verified = await _whileOpen(session, checks.takeOldest());
+      if (job.cancelled) {
+        throw const _Stop();
+      }
 
-    _set(job, (transfer) => transfer.copyWith(status: .transferring));
+      if (!verified.ok) {
+        _fail(job, FailureCodes.fromWire(verified.reason));
+        throw const _Stop();
+      }
+    }
   }
 
   /// Sends [chunk]. A chunk that [wantsAck] goes as a request, but only
@@ -559,7 +595,8 @@ class DropSender {
     return offset <= job.files[fileIndex].size;
   }
 
-  /// Hashing on the receiver reads the file again, so big files get longer.
+  /// The receiver may read a resumed file again to hash it, and saves the
+  /// files queued before this one first, so more bytes get longer.
   Duration _verifyTimeout(int size) =>
       ackTimeout + Duration(seconds: size ~/ (20 * 1024 * 1024));
 
@@ -636,6 +673,33 @@ class DropSender {
       return;
     }
   }
+}
+
+/// Files sent whose check and save the receiver hasn't answered yet,
+/// oldest first.
+class _Checks {
+  final Queue<({int size, Future<FileVerified> verified})> _waiting = Queue();
+
+  /// Set as soon as any answer says a file didn't check out, so the send
+  /// stops without waiting for its turn.
+  bool anyFailed = false;
+
+  int get length => _waiting.length;
+
+  bool get isNotEmpty => _waiting.isNotEmpty;
+
+  /// Bytes of the files still waiting.
+  int get bytes => _waiting.fold(0, (sum, check) => sum + check.size);
+
+  void add(int size, Future<FileVerified> verified) {
+    verified.then(
+      (answer) => anyFailed = anyFailed || !answer.ok,
+      onError: (Object _) => anyFailed = true,
+    );
+    _waiting.add((size: size, verified: verified));
+  }
+
+  Future<FileVerified> takeOldest() => _waiting.removeFirst().verified;
 }
 
 class _Stop implements Exception {

@@ -75,7 +75,7 @@ class DropReceiver {
         return _decline(id, .DECLINE_REASON_INVALID);
       }
 
-      await existing.idle;
+      await existing.settled;
       await existing.syncWithDisk();
       return _resumeAnswer(existing);
     }
@@ -221,7 +221,8 @@ class DropReceiver {
       );
     }
 
-    return job.enqueue(() => _verify(job, complete));
+    final check = await job.enqueue(() => _verify(job, complete));
+    return check.answer;
   }
 
   Future<void> onTransferComplete(
@@ -233,7 +234,7 @@ class DropReceiver {
       return;
     }
 
-    await job.idle;
+    await job.settled;
     if (job.isComplete) {
       _finish(job);
     }
@@ -352,12 +353,12 @@ class DropReceiver {
       return;
     }
 
-    await job.idle;
+    await job.settled;
     await job.syncWithDisk();
     job
       ..halted = false
       ..speed.reset();
-    final resume = job.resumePoint;
+    final resume = job.resumeFromHere();
     _set(
       id,
       (transfer) => transfer.copyWith(
@@ -439,12 +440,33 @@ class DropReceiver {
     IncomingJob job,
     Chunk chunk,
   ) async {
-    if (job.cancelled || job.halted) {
+    if (job.cancelled) {
       return null;
+    }
+
+    if (job.halted) {
+      // A file before this one didn't check out or couldn't be saved; the
+      // sender hears so from its answer. Until then its next file's chunks
+      // are let through unwritten, so it isn't left waiting on them.
+      return ChunkReceived(
+        transferId: job.id,
+        fileIndex: chunk.fileIndex,
+        offset: Int64(chunk.offset.toInt() + chunk.data.length),
+      );
     }
 
     final index = chunk.fileIndex;
     final offset = chunk.offset.toInt();
+    if (index < job.files.length && job.saved[index] != null) {
+      // Saves finish out of order, so a resume can start before a file
+      // that is already here. Its bytes are let through unwritten.
+      return ChunkReceived(
+        transferId: job.id,
+        fileIndex: index,
+        offset: Int64(offset + chunk.data.length),
+      );
+    }
+
     final valid =
         index < job.files.length &&
         job.saved[index] == null &&
@@ -485,13 +507,16 @@ class DropReceiver {
     );
   }
 
-  Future<FileVerified> _verify(IncomingJob job, FileComplete complete) async {
+  /// Checks file [FileComplete.fileIndex] in the job's queue, then saves it
+  /// outside the queue, so the next file's chunks are written while this
+  /// one is copied into place. The answer comes once it is saved.
+  Future<({Future<FileVerified> answer})> _verify(
+    IncomingJob job,
+    FileComplete complete,
+  ) async {
     final index = complete.fileIndex;
-    FileVerified answer({FailureReason? reason}) => FileVerified(
-      transferId: job.id,
-      fileIndex: index,
-      ok: reason == null,
-      reason: reason,
+    ({Future<FileVerified> answer}) answer({FailureReason? reason}) => (
+      answer: Future.value(_verified(job, index, reason: reason)),
     );
 
     if (job.cancelled || index >= job.files.length) {
@@ -502,15 +527,29 @@ class DropReceiver {
       return answer();
     }
 
+    if (job.halted) {
+      // A file before this one failed and the sender stops at its answer;
+      // this one's bytes were let through unwritten.
+      return answer(reason: .FAILURE_REASON_CANCELLED);
+    }
+
+    if (job.savingOf(index) case final saving?) {
+      return (answer: saving);
+    }
+
     if (job.written[index] != job.sizeOf(index)) {
       return answer(reason: .FAILURE_REASON_PROTOCOL);
     }
 
     await job.closePart();
+    final total = job.files.fold(0, (sum, file) => sum + file.size.toInt());
     _set(
       job.id,
       (transfer) => transfer.copyWith(
-        status: .verifying,
+        status: switch (job.receivedBytes >= total) {
+          true => .verifying,
+          false => null,
+        },
         bytesDone: job.receivedBytes,
       ),
     );
@@ -529,6 +568,7 @@ class DropReceiver {
           FileHasher.same(hash, complete.sha256) &&
           (promised.isEmpty || FileHasher.same(hash, promised));
       if (!matches) {
+        job.halted = true;
         await job.resetPart(index);
         _set(
           job.id,
@@ -541,50 +581,85 @@ class DropReceiver {
         );
         return answer(reason: .FAILURE_REASON_CHECKSUM);
       }
-
-      final saved = await store.save(
-        part,
-        name: job.names[index],
-        mime: job.files[index].mime,
-        folder: job.folders[index],
-        modified: _modifiedOf(job.files[index]),
-      );
-      job.saved[index] = saved;
-      _set(
-        job.id,
-        (transfer) => transfer.copyWith(
-          status: .transferring,
-          files: [
-            for (final (fileIndex, file) in transfer.files.indexed)
-              switch (fileIndex == index) {
-                true => file.copyWith(
-                  name: saved.name,
-                  location: saved.location,
-                ),
-                false => file,
-              },
-          ],
-        ),
-      );
     } on Object catch (error) {
-      printWarning('Drop could not save a received file: ${error.runtimeType}');
-      _set(
-        job.id,
-        (transfer) => transfer.copyWith(
-          status: .failed,
-          failure: .storage,
-          bytesPerSecond: 0,
-        ),
-      );
-      return answer(reason: .FAILURE_REASON_STORAGE);
+      return answer(reason: _failStorage(job, error));
     }
 
-    if (job.isComplete) {
-      _finish(job);
-    }
-
-    return answer();
+    return (answer: job.track(index, _save(job, index, part)));
   }
+
+  Future<FileVerified> _save(IncomingJob job, int index, File part) =>
+      job.withSaveSlot(savesAtOnce, () async {
+        if (job.cancelled) {
+          return _verified(job, index, reason: .FAILURE_REASON_CANCELLED);
+        }
+
+        final ReceivedFile saved;
+        try {
+          saved = await store.save(
+            part,
+            name: job.names[index],
+            mime: job.files[index].mime,
+            folder: job.folders[index],
+            modified: _modifiedOf(job.files[index]),
+          );
+        } on Object catch (error) {
+          if (job.cancelled) {
+            return _verified(job, index, reason: .FAILURE_REASON_CANCELLED);
+          }
+
+          return _verified(job, index, reason: _failStorage(job, error));
+        }
+
+        job.saved[index] = saved;
+        _set(
+          job.id,
+          (transfer) => transfer.copyWith(
+            files: [
+              for (final (fileIndex, file) in transfer.files.indexed)
+                switch (fileIndex == index) {
+                  true => file.copyWith(
+                    name: saved.name,
+                    location: saved.location,
+                  ),
+                  false => file,
+                },
+            ],
+          ),
+        );
+        if (job.isComplete && !job.cancelled) {
+          _finish(job);
+        }
+
+        return _verified(job, index);
+      });
+
+  /// Stops [job] after a file couldn't be saved; chunks still in flight
+  /// are refused until a retry.
+  FailureReason _failStorage(IncomingJob job, Object error) {
+    printWarning('Drop could not save a received file: ${error.runtimeType}');
+    job.halted = true;
+    _set(
+      job.id,
+      (transfer) => transfer.copyWith(
+        status: .failed,
+        failure: .storage,
+        bytesPerSecond: 0,
+      ),
+    );
+    return .FAILURE_REASON_STORAGE;
+  }
+
+  FileVerified _verified(
+    IncomingJob job,
+    int index, {
+    FailureReason? reason,
+  }) => FileVerified(
+    transferId: job.id,
+    fileIndex: index,
+    ok: reason == null,
+    reason: reason,
+  );
 
   /// The bytes free here when [transfer] doesn't fit, or null when it does
   /// or the free space can't be told. Saving that copies a part needs the
@@ -665,7 +740,7 @@ class DropReceiver {
     job
       ..halted = false
       ..speed.reset();
-    final resume = job.resumePoint;
+    final resume = job.resumeFromHere();
     _set(
       job.id,
       (transfer) => transfer.copyWith(
@@ -684,7 +759,10 @@ class DropReceiver {
   }
 
   void _finish(IncomingJob job) {
-    _jobs.remove(job.id);
+    if (_jobs.remove(job.id) == null) {
+      return;
+    }
+
     job.hasher.dispose();
     _throttles.remove(job.id);
     _set(
@@ -706,6 +784,7 @@ class DropReceiver {
       (transfer) => transfer.copyWith(
         status: .failed,
         failure: .disconnected,
+        bytesDone: job.receivedBytes,
         bytesPerSecond: 0,
       ),
     );

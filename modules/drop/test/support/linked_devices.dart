@@ -18,6 +18,10 @@ class LinkedDevices {
   /// after a number of chunks.
   void Function(String from, GeneratedMessage message)? onDeliver;
 
+  /// How long each envelope and each reply takes to arrive, to stand in
+  /// for a Wi-Fi link. Zero delivers on the next turn of the event loop.
+  Duration latency = Duration.zero;
+
   static Future<LinkedDevices> start({
     required ReceiveStoreFactory laptopStore,
     required ReceiveStoreFactory phoneStore,
@@ -238,7 +242,7 @@ class LinkedSession implements Session {
       await Completer<void>().future;
     }
 
-    await Future<void>.delayed(Duration.zero);
+    await Future<void>.delayed(link.latency);
     if (closedByTest) {
       throw const SessionClosedException();
     }
@@ -256,6 +260,10 @@ class LinkedSession implements Session {
     }
 
     final reply = await handled;
+    if (link.latency > Duration.zero) {
+      await Future<void>.delayed(link.latency);
+    }
+
     if (closedByTest) {
       throw const SessionClosedException();
     }
