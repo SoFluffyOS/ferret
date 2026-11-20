@@ -5,7 +5,8 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// How to use an Android phone as this computer's webcam with the phone's
-/// own USB webcam mode, since Ferret can't stream a camera yet.
+/// own USB webcam mode; over Wi-Fi, Ferret shows the camera in its own
+/// window only.
 class WebcamHelpPage extends StatelessWidget {
   const WebcamHelpPage({
     super.key,
@@ -52,7 +53,7 @@ class WebcamHelpPage extends StatelessWidget {
         Spacing.v12,
         Text(l10n.webcamMissing(deviceName), style: muted),
         Spacing.v8,
-        Text(l10n.webcamNotOverWifi, style: muted),
+        Text(l10n.webcamOverWifi(deviceName), style: muted),
       ],
     );
   }

@@ -2750,11 +2750,11 @@ abstract class ShellLocalizations {
   /// **'No Webcam in that list? {device} doesn\'t have it yet. Pixel phones from the Pixel 6 on do.'**
   String webcamMissing(String device);
 
-  /// No description provided for @webcamNotOverWifi.
+  /// Last line of the phone-as-a-webcam help page. "Use {device}'s camera" is the name of the device page's action.
   ///
   /// In en, this message translates to:
-  /// **'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.'**
-  String get webcamNotOverWifi;
+  /// **'No cable? Use {device}\'s camera sends it over Wi-Fi, into a Ferret window. Video apps can\'t pick it from there yet.'**
+  String webcamOverWifi(String device);
 
   /// No description provided for @batteryLevel.
   ///

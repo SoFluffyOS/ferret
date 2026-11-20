@@ -1596,7 +1596,15 @@
       }
     }
   },
-  "webcamNotOverWifi": "Ferret doesn't send a phone's camera over Wi-Fi yet.",
+  "webcamOverWifi": "No cable? Use {device}'s camera sends it over Wi-Fi, into a Ferret window. Video apps can't pick it from there yet.",
+  "@webcamOverWifi": {
+    "description": "Last line of the phone-as-a-webcam help page. \"Use {device}'s camera\" is the name of the device page's action.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "batteryLevel": "Battery {percent}",
   "@batteryLevel": {
     "placeholders": {

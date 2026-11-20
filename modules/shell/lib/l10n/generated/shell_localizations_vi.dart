@@ -2058,8 +2058,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get webcamNotOverWifi =>
-      'Ferret chưa gửi camera của điện thoại qua Wi-Fi.';
+  String webcamOverWifi(String device) {
+    return 'Không có cáp? Dùng camera của $device gửi camera qua Wi-Fi, vào một cửa sổ Ferret. Ứng dụng gọi video chưa chọn được nó từ đó.';
+  }
 
   @override
   String batteryLevel(String percent) {

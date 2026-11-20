@@ -2066,8 +2066,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get webcamNotOverWifi =>
-      'Ferret doesn\'t send a phone\'s camera over Wi-Fi yet.';
+  String webcamOverWifi(String device) {
+    return 'No cable? Use $device\'s camera sends it over Wi-Fi, into a Ferret window. Video apps can\'t pick it from there yet.';
+  }
 
   @override
   String batteryLevel(String percent) {

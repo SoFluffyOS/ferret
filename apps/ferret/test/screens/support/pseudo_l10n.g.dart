@@ -2196,6 +2196,8 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get notNow => pseudo(super.notNow);
   @override
+  String get cameraSavePicture => pseudo(super.cameraSavePicture);
+  @override
   String get cameraSwitch => pseudo(super.cameraSwitch);
   @override
   String get cameraUseAgain => pseudo(super.cameraUseAgain);
@@ -4235,8 +4237,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get webcamIntro => pseudo(super.webcamIntro);
   @override
-  String get webcamNotOverWifi => pseudo(super.webcamNotOverWifi);
-  @override
   String get lowBatteryBody => pseudo(super.lowBatteryBody);
   @override
   String get settingsLowBattery => pseudo(super.settingsLowBattery);
@@ -4608,6 +4608,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.webcamSteps(device, here));
   @override
   String webcamMissing(String device) => pseudo(super.webcamMissing(device));
+  @override
+  String webcamOverWifi(String device) => pseudo(super.webcamOverWifi(device));
   @override
   String batteryLevel(String percent) => pseudo(super.batteryLevel(percent));
   @override
