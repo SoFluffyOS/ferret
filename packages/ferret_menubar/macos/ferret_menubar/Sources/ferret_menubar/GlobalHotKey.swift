@@ -8,6 +8,9 @@ import Cocoa
 /// Accessibility (Input Monitoring) access first, while a hot key hears only
 /// its own combination and needs no permission at all.
 final class GlobalHotKey {
+    /// Tells this combination apart from the app's others: each handler
+    /// hears every hot key, and acts only on its own.
+    private let id: UInt32
     private var hotKey: EventHotKeyRef?
     private var handler: EventHandlerRef?
     private var registered: MenubarShortcut?
@@ -16,6 +19,10 @@ final class GlobalHotKey {
 
     /// "FRRT": tells Ferret's hot key apart from any other in the process.
     private static let signature: OSType = 0x4652_5254
+
+    init(id: UInt32 = 1) {
+        self.id = id
+    }
 
     deinit {
         unregister()
@@ -50,9 +57,9 @@ final class GlobalHotKey {
         guard let shortcut = registered else { return true }
 
         installHandler()
-        let id = EventHotKeyID(signature: Self.signature, id: 1)
+        let hotKeyId = EventHotKeyID(signature: Self.signature, id: id)
         let status = RegisterEventHotKey(
-            UInt32(shortcut.keyCode), Self.carbonModifiers(of: shortcut), id,
+            UInt32(shortcut.keyCode), Self.carbonModifiers(of: shortcut), hotKeyId,
             GetApplicationEventTarget(), 0, &hotKey)
         guard status == noErr else {
             hotKey = nil
@@ -77,10 +84,19 @@ final class GlobalHotKey {
         let me = Unmanaged.passUnretained(self).toOpaque()
         InstallEventHandler(
             GetApplicationEventTarget(),
-            { _, _, userData in
-                guard let userData else { return noErr }
+            { _, event, userData in
+                guard let userData, let event else { return OSStatus(eventNotHandledErr) }
 
+                var pressedId = EventHotKeyID()
+                GetEventParameter(
+                    event, EventParamName(kEventParamDirectObject),
+                    EventParamType(typeEventHotKeyID), nil,
+                    MemoryLayout<EventHotKeyID>.size, nil, &pressedId)
                 let hotKey = Unmanaged<GlobalHotKey>.fromOpaque(userData).takeUnretainedValue()
+                guard pressedId.signature == GlobalHotKey.signature, pressedId.id == hotKey.id else {
+                    return OSStatus(eventNotHandledErr)
+                }
+
                 DispatchQueue.main.async { hotKey.onPressed?() }
                 return noErr
             }, 1, &pressed, me, &handler)

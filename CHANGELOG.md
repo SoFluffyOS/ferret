@@ -32,6 +32,7 @@
 - 🍎 **Says where it is**: Ferret calls your computer **this Mac** or **this PC** everywhere, from Show screen to Control, instead of "this computer".
 - 📷 **Pair with the phone's camera**: scan your computer's QR code with the camera app, tap the link, and Ferret opens and pairs. No need to find the scanner inside Ferret first.
 - 🌅 **Start at login on a Mac**: turn on **Start Ferret when I log in** in **Settings → This device** and it's in the menu bar every morning (macOS 13 or later).
+- ⌨️ **Recent clips from anywhere on a Mac**: press **⌃⌥V** in any app and Ferret opens on the last things you copied, on any device.
 - 🪟 **Menus that look at home**: title case on a Mac, sentence case on Windows, Linux and Android.
 - 📡 **What leaves this device**: the privacy page lists every byte that goes anywhere, and how long Ferret keeps things.
 - 📱 **Lots of devices, still tidy**: recently used devices come first, **Pin to Top** keeps one there, and two phones called **Pixel 7** read as **Pixel 7 (0718)** and **Pixel 7 (3F2A)** until you **Rename…** one, on this device only. Every feature uses that same name, a small pin marks a pinned device, and a row you just used waits a moment before it moves up.

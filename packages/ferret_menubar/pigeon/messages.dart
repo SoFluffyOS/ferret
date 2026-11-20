@@ -172,6 +172,10 @@ abstract class MenubarHostApi {
   /// doing so when it is null. False when the Mac refused it.
   bool setGlobalShortcut(MenubarShortcut? shortcut);
 
+  /// A second combination that shows Recent clips from anywhere. False when
+  /// the Mac refused it.
+  bool setClipsShortcut(MenubarShortcut? shortcut);
+
   /// The next key with a modifier pressed in the app, for a new global
   /// shortcut; null when Esc was pressed or it was cancelled. The global
   /// shortcut rests meanwhile, so pressing it records it.
@@ -193,6 +197,9 @@ abstract class MenubarHostApi {
 @FlutterApi()
 abstract class MenubarFlutterApi {
   void onMenuItemSelected(String id);
+
+  /// The Recent clips combination was pressed.
+  void onClipsShortcut();
 
   void onPopoverVisibilityChanged(bool shown);
 

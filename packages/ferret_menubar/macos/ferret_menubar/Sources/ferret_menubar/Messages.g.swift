@@ -467,6 +467,9 @@ protocol MenubarHostApi {
   /// Opens or closes the popover with [shortcut] from any app, or stops
   /// doing so when it is null. False when the Mac refused it.
   func setGlobalShortcut(shortcut: MenubarShortcut?) throws -> Bool
+  /// A second combination that shows Recent clips from anywhere. False when
+  /// the Mac refused it.
+  func setClipsShortcut(shortcut: MenubarShortcut?) throws -> Bool
   /// The next key with a modifier pressed in the app, for a new global
   /// shortcut; null when Esc was pressed or it was cancelled. The global
   /// shortcut rests meanwhile, so pressing it records it.
@@ -820,6 +823,23 @@ class MenubarHostApiSetup {
     } else {
       setGlobalShortcutChannel.setMessageHandler(nil)
     }
+    /// A second combination that shows Recent clips from anywhere. False when
+    /// the Mac refused it.
+    let setClipsShortcutChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setClipsShortcut\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setClipsShortcutChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let shortcutArg: MenubarShortcut? = nilOrValue(args[0])
+        do {
+          let result = try api.setClipsShortcut(shortcut: shortcutArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setClipsShortcutChannel.setMessageHandler(nil)
+    }
     /// The next key with a modifier pressed in the app, for a new global
     /// shortcut; null when Esc was pressed or it was cancelled. The global
     /// shortcut rests meanwhile, so pressing it records it.
@@ -893,6 +913,8 @@ class MenubarHostApiSetup {
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
 protocol MenubarFlutterApiProtocol {
   @MainActor func onMenuItemSelected(id idArg: String) async throws
+  /// The Recent clips combination was pressed.
+  @MainActor func onClipsShortcut() async throws
   @MainActor func onPopoverVisibilityChanged(shown shownArg: Bool) async throws
   /// Files dropped on the menubar icon.
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws
@@ -932,6 +954,27 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onMenuItemSelected\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([idArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The Recent clips combination was pressed.
+  @MainActor func onClipsShortcut() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onClipsShortcut\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

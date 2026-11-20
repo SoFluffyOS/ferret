@@ -78,9 +78,15 @@ class MenubarBinding {
     await _menubar.setGlobalShortcut(
       GlobalShortcut.read(featureContext.engine.settings),
     );
+    await _menubar.setClipsShortcut(GlobalShortcut.recentClips);
 
     _subscriptions
       ..add(_menubar.menuSelections.listen(_onMenu))
+      ..add(
+        _menubar.clipsShortcutPresses.listen(
+          (_) => unawaited(_openRecentClips()),
+        ),
+      )
       ..add(
         _menubar.visibility
             .where((shown) => !shown)
@@ -175,6 +181,25 @@ class MenubarBinding {
         await _quitter.quit();
     }
   }
+
+  /// ⌃⌥V from any app: the popover, on Recent clips. The clipboard feature
+  /// offers that page as an app action; the shell only finds it by id.
+  Future<void> _openRecentClips() async {
+    await views.reveal();
+    final context = featureContext.navigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+
+    final action = [
+      for (final feature in features)
+        ...feature.appActions(context, featureContext),
+    ].where((action) => action.id == recentClipsAction).firstOrNull;
+    action?.onPressed?.call();
+  }
+
+  /// The clipboard feature's "Recent clips…" app action.
+  static const recentClipsAction = 'clipboard.recent';
 
   Locale _supportedLocale() =>
       AppLocale.pick(ShellLocalizations.supportedLocales);

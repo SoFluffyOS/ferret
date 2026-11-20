@@ -796,6 +796,28 @@ class MenubarHostApi {
     return pigeonVar_replyValue! as bool;
   }
 
+  /// A second combination that shows Recent clips from anywhere. False when
+  /// the Mac refused it.
+  Future<bool> setClipsShortcut(MenubarShortcut? shortcut) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setClipsShortcut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[shortcut],
+    );
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return pigeonVar_replyValue! as bool;
+  }
+
   /// The next key with a modifier pressed in the app, for a new global
   /// shortcut; null when Esc was pressed or it was cancelled. The global
   /// shortcut rests meanwhile, so pressing it records it.
@@ -884,6 +906,9 @@ abstract class MenubarFlutterApi {
 
   void onMenuItemSelected(String id);
 
+  /// The Recent clips combination was pressed.
+  void onClipsShortcut();
+
   void onPopoverVisibilityChanged(bool shown);
 
   /// Files dropped on the menubar icon.
@@ -946,6 +971,29 @@ abstract class MenubarFlutterApi {
           final String arg_id = args[0]! as String;
           try {
             api.onMenuItemSelected(arg_id);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onClipsShortcut$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          try {
+            api.onClipsShortcut();
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

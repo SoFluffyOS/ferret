@@ -17,6 +17,14 @@ abstract final class GlobalShortcut {
     option: true,
   );
 
+  /// ⌃⌥V: Recent clips from any app, next to ⌃⌥Space for the popover.
+  static final MenubarShortcut recentClips = MenubarShortcut(
+    keyCode: 9,
+    label: '⌃⌥V',
+    control: true,
+    option: true,
+  );
+
   /// The shortcut in [settings], the default when none was picked, or
   /// null when it is off.
   static MenubarShortcut? read(SettingsStore settings) {

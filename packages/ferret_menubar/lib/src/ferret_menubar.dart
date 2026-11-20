@@ -17,6 +17,7 @@ class FerretMenubar implements MenubarFlutterApi {
 
   final MenubarHostApi _api;
   final StreamController<String> _menuSelections = .broadcast();
+  final StreamController<void> _clipsShortcut = .broadcast();
   final StreamController<bool> _visibility = .broadcast();
   final StreamController<List<String>> _drops = .broadcast();
   final StreamController<PopoverDrag> _drags = .broadcast();
@@ -27,6 +28,9 @@ class FerretMenubar implements MenubarFlutterApi {
 
   /// Ids of menu items people pick.
   Stream<String> get menuSelections => _menuSelections.stream;
+
+  /// Fires when the Recent clips combination is pressed, in any app.
+  Stream<void> get clipsShortcutPresses => _clipsShortcut.stream;
 
   /// Whether the popover is showing, each time it changes.
   Stream<bool> get visibility => _visibility.stream;
@@ -172,6 +176,16 @@ class FerretMenubar implements MenubarFlutterApi {
     return _api.setGlobalShortcut(shortcut);
   }
 
+  /// Shows Recent clips with [shortcut] from any app, or stops when it is
+  /// null. A second Carbon hot key, like [setGlobalShortcut].
+  Future<bool> setClipsShortcut(MenubarShortcut? shortcut) async {
+    if (!isSupported) {
+      return false;
+    }
+
+    return _api.setClipsShortcut(shortcut);
+  }
+
   /// The next key with a modifier (⌘, ⌃ or ⌥; F-keys alone) pressed in
   /// the app, for a new global shortcut. Null when Esc was pressed, it was
   /// [cancelRecording]-ed, or where there is no menubar.
@@ -211,6 +225,9 @@ class FerretMenubar implements MenubarFlutterApi {
 
   @override
   void onMenuItemSelected(String id) => _menuSelections.add(id);
+
+  @override
+  void onClipsShortcut() => _clipsShortcut.add(null);
 
   @override
   void onPopoverVisibilityChanged(bool shown) => _visibility.add(shown);

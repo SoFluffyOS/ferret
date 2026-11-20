@@ -15,6 +15,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static let dock = DockPresence()
     private static var flutterApi: MenubarFlutterApi?
     private static let hotKey = GlobalHotKey()
+    /// A second combination, for Recent clips.
+    private static let clipsHotKey = GlobalHotKey(id: 2)
     private static let recorder = ShortcutRecorder()
     private static let quickLook = QuickLookPreview()
     private static var fileDrags: FileDragSource?
@@ -91,6 +93,9 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         self.pictureController = pictureController
 
         hotKey.onPressed = { [weak controller] in controller?.togglePopover() }
+        clipsHotKey.onPressed = {
+            Task { @MainActor in try? await flutterApi?.onClipsShortcut() }
+        }
     }
 
     /// Opens the desktop window, or brings it to the front: for the Dock
@@ -240,6 +245,10 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
 
     func setGlobalShortcut(shortcut: MenubarShortcut?) throws -> Bool {
         Self.hotKey.register(shortcut)
+    }
+
+    func setClipsShortcut(shortcut: MenubarShortcut?) throws -> Bool {
+        Self.clipsHotKey.register(shortcut)
     }
 
     func recordShortcut() async throws -> MenubarShortcut? {
