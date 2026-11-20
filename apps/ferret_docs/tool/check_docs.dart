@@ -4,12 +4,12 @@ import 'package:path/path.dart' as p;
 
 import 'gen_proto_reference.dart' as reference;
 
-/// Checks docs/public before a build: every relative link and image points at
-/// a file that exists, and the protocol
-/// reference matches proto/. Exits with 1 when something is wrong.
+/// Checks docs before a build: every relative link and image points at
+/// a file that exists, and the protocol reference matches proto/. Exits
+/// with 1 when something is wrong.
 Future<void> main(List<String> args) async {
   final repo = p.normalize(p.join(Directory.current.path, '..', '..'));
-  final public = p.join(repo, 'docs', 'public');
+  final public = p.join(repo, 'docs');
   final problems = <String>[];
 
   final pages = Directory(public)
@@ -33,7 +33,7 @@ Future<void> main(List<String> args) async {
 
   final assets = Link(p.join(repo, 'apps', 'ferret_docs', 'web', 'assets'));
   if (!assets.existsSync() || !Directory(assets.path).existsSync()) {
-    problems.add('apps/ferret_docs/web/assets must link to docs/public/assets');
+    problems.add('apps/ferret_docs/web/assets must link to docs/assets');
   }
 
   final expected = reference.render(p.join(repo, 'proto'));
@@ -74,7 +74,7 @@ String? _checkTarget(String target, File page, String public) {
 
   final resolved = p.normalize(p.join(p.dirname(page.path), path));
   if (!p.isWithin(public, resolved)) {
-    return 'links outside docs/public, which is never published';
+    return 'links outside docs, which is never published';
   }
 
   if (!File(resolved).existsSync() && !Directory(resolved).existsSync()) {

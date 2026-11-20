@@ -2,7 +2,7 @@
 
 Send the tab you're on to your phone, and open the pages your phone sends in the browser you're using. Chrome, Edge, Brave, Opera, Vivaldi and Firefox, from one codebase.
 
-The extension only talks to the Ferret app on the same computer, over `ws://127.0.0.1`. How that works and why it's safe: [PROTOCOL.md](PROTOCOL.md). How people use it: [the user guide](../../docs/public/getting-started/browser.md).
+The extension only talks to the Ferret app on the same computer, over `ws://127.0.0.1`. How that works and why it's safe: [PROTOCOL.md](PROTOCOL.md). How people use it: [the user guide](../../docs/getting-started/browser.md).
 
 ## 📦 Build
 

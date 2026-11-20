@@ -32,8 +32,8 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/assets/readme/window-overview-dark.png">
-    <img src="docs/public/assets/readme/window-overview-light.png" alt="The Ferret window: a phone's Overview with a call, a song and a file on the way" width="720">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/window-overview-dark.png">
+    <img src="docs/assets/readme/window-overview-light.png" alt="The Ferret window: a phone's Overview with a call, a song and a file on the way" width="720">
   </picture>
 </p>
 
@@ -76,8 +76,8 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/assets/readme/screen-mirroring-dark.png">
-    <img src="docs/public/assets/readme/screen-mirroring-light.png" alt="A phone's screen in its own window, with Back, Home, Rotate, Screenshot and Stop next to it" width="420">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/screen-mirroring-dark.png">
+    <img src="docs/assets/readme/screen-mirroring-light.png" alt="A phone's screen in its own window, with Back, Home, Rotate, Screenshot and Stop next to it" width="420">
   </picture>
 </p>
 
@@ -105,24 +105,24 @@ You copy something on your phone and need it on your laptop. A file sits on the 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/assets/readme/popover-home-dark.png">
-    <img src="docs/public/assets/readme/popover-home-light.png" alt="The Mac menubar popover: a file waiting, a call ringing, and your devices" width="320">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/popover-home-dark.png">
+    <img src="docs/assets/readme/popover-home-light.png" alt="The Mac menubar popover: a file waiting, a call ringing, and your devices" width="320">
   </picture>
   &nbsp;
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/assets/readme/phone-photos-dark.png">
-    <img src="docs/public/assets/readme/phone-photos-light.png" alt="A phone's recent photos in the Ferret window" width="440">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/phone-photos-dark.png">
+    <img src="docs/assets/readme/phone-photos-light.png" alt="A phone's recent photos in the Ferret window" width="440">
   </picture>
 </p>
 
-Every feature has its own page in the [docs](docs/public/index.md).
+Every feature has its own page in the [docs](docs/index.md).
 
 ## 💻 Platforms
 
 | Platform | How it runs | Good to know |
 |---|---|---|
-| 🤖 **Android** | App with a quiet background service and a Quick Settings tile | Android stops apps reading the clipboard in the background: send with the tile, or let Ferret do it alone with [Shizuku or root](docs/public/android-modes/shizuku.md). Some phone makers kill background apps: [here's the fix](docs/public/getting-started/android-keep-running.md). |
-| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, as an experiment, a Mac) can show its notifications and media over [Bluetooth](docs/public/iphone/index.md). |
+| 🤖 **Android** | App with a quiet background service and a Quick Settings tile | Android stops apps reading the clipboard in the background: send with the tile, or let Ferret do it alone with [Shizuku or root](docs/android-modes/shizuku.md). Some phone makers kill background apps: [here's the fix](docs/getting-started/android-keep-running.md). |
+| 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, as an experiment, a Mac) can show its notifications and media over [Bluetooth](docs/iphone/index.md). |
 | 🍏 **macOS** | Menubar app with a popover and a full window | macOS 12 or later (13 or later to start at login). Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
 | 🪟 **Windows** | Window and tray icon | Installs just for you, no admin. Tick one box and Windows Firewall lets your devices in. |
 | 🐧 **Linux** | Window and tray icon. Flatpak, AppImage or .deb | On GNOME Wayland, copies go out while Ferret's window is in front (KDE Plasma and Sway watch by themselves with `wl-clipboard`). Stock GNOME needs the AppIndicator extension for the tray. |
@@ -133,19 +133,19 @@ Binaries come with the first release, on the [releases page](https://github.com/
 
 Then follow the guide for your device:
 
-- [Android](docs/public/getting-started/android.md)
-- [iPhone and iPad](docs/public/getting-started/iphone.md)
-- [Mac](docs/public/getting-started/mac.md)
-- [Windows](docs/public/getting-started/windows.md)
-- [Linux](docs/public/getting-started/linux.md)
+- [Android](docs/getting-started/android.md)
+- [iPhone and iPad](docs/getting-started/iphone.md)
+- [Mac](docs/getting-started/mac.md)
+- [Windows](docs/getting-started/windows.md)
+- [Linux](docs/getting-started/linux.md)
 
-Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. An iPhone pairs by scanning your computer's QR code, with Ferret or the Camera app. See [Pair your devices](docs/public/getting-started/pairing.md).
+Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. An iPhone pairs by scanning your computer's QR code, with Ferret or the Camera app. See [Pair your devices](docs/getting-started/pairing.md).
 
 ## 🔒 Privacy
 
 Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. Nothing goes through a server.
 
-Every byte that goes anywhere else is listed under **What leaves this device** on the [privacy page](docs/public/privacy.md).
+Every byte that goes anywhere else is listed under **What leaves this device** on the [privacy page](docs/privacy.md).
 
 ## 🛠️ Build from source
 
@@ -177,7 +177,7 @@ The command line lives in `apps/ferret_cli`: `dart run bin/ferret.dart --help`.
 Bug reports, translations and pull requests are all welcome.
 
 - 🐛 **A bug?** Open an issue. Devices won't connect? Open **Fix connection** on the device and paste its **Copy diagnostics** report: no names, no addresses, no content.
-- 🌐 **Your language?** Ferret speaks English and Vietnamese so far. [Translate Ferret](docs/public/contributing/translating.md), no code needed.
+- 🌐 **Your language?** Ferret speaks English and Vietnamese so far. [Translate Ferret](docs/contributing/translating.md), no code needed.
 - 💻 **Code?** Read [CONTRIBUTING.md](CONTRIBUTING.md) and [CONVENTIONS.md](CONVENTIONS.md), then run `scripts/check.sh` before you open a pull request.
 - 🔐 **A security problem?** Please report it privately. See [SECURITY.md](SECURITY.md).
 
@@ -187,6 +187,6 @@ Ferret is free and always will be. If it saves you time, you can [sponsor me on 
 
 ## 📜 License
 
-The apps are [GPL-3.0](LICENSE). The protocol (`proto/` and the [spec](docs/public/spec/reference.md)) is [MIT](proto/LICENSE), so you can build your own compatible client.
+The apps are [GPL-3.0](LICENSE). The protocol (`proto/` and the [spec](docs/spec/reference.md)) is [MIT](proto/LICENSE), so you can build your own compatible client.
 
 ## Happy Coding 🦊

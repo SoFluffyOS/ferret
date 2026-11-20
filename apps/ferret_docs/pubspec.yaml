@@ -1,5 +1,5 @@
 name: ferret_docs
-description: Ferret's docs site. Renders docs/public in place with Jaspr.
+description: Ferret's docs site. Renders docs in place with Jaspr.
 version: 0.1.0
 publish_to: none
 

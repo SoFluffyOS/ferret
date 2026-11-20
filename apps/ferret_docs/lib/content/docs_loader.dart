@@ -1,7 +1,7 @@
 import 'package:jaspr_content/jaspr_content.dart';
 import 'package:path/path.dart' as p;
 
-/// Loads `docs/public` like [FilesystemLoader], but serves every page under
+/// Loads `docs` like [FilesystemLoader], but serves every page under
 /// [prefix], so the landing page can own `/` and the docs live at `/docs/...`.
 /// The Markdown stays where it is; only the routes move. Only `.md` files are
 /// pages: images under `assets/` are served as files.

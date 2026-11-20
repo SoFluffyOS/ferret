@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# The site: the landing page at /, and the docs read from docs/public in
+# The site: the landing page at /, and the docs read from docs in
 # place (nothing is copied) and served under /docs.
 #   scripts/docs.sh serve       live preview on http://localhost:8080
 #   scripts/docs.sh check       links, images, internal links, protocol reference
-#   scripts/docs.sh reference   regenerate docs/public/spec/reference.md from proto/
+#   scripts/docs.sh reference   regenerate docs/spec/reference.md from proto/
 #   scripts/docs.sh build [dir] check, then a static site (default apps/ferret_docs/build/jaspr)
 set -euo pipefail
 

@@ -4,7 +4,7 @@ Guidance for Claude Code and other agents working in this repository. Follow [CO
 
 ## Project
 
-**F.E.R.R.E.T.** (Fast Encrypted Relay for Resuming Every Task) lets you continue what you were doing on another of your devices: web pages, media, clipboard, files, notifications, messages and calls, between Android, iOS, macOS, Linux and Windows. It works on the local network, with no account and **no telemetry**. Licensed GPL-3.0; the protocol spec (`docs/public/spec`, `proto/`) is MIT.
+**F.E.R.R.E.T.** (Fast Encrypted Relay for Resuming Every Task) lets you continue what you were doing on another of your devices: web pages, media, clipboard, files, notifications, messages and calls, between Android, iOS, macOS, Linux and Windows. It works on the local network, with no account and **no telemetry**. Licensed GPL-3.0; the protocol spec (`docs/spec`, `proto/`) is MIT.
 
 ## Commands
 
@@ -27,7 +27,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 |---|---|
 | `apps/ferret/` | The Flutter app for every platform: `main.dart`, wiring, platform folders. Entry point only |
 | `apps/ferret_cli/` | `ferret-cli` command line and headless daemon (pure Dart). The app binary is `ferret` |
-| `apps/ferret_docs/` | The site, ferret.sofluffy.io (Jaspr, pinned to its own Flutter in `.fvmrc`): the landing page at `/` (`lib/landing/`) and `docs/public` read in place under `/docs`, sidebar built from its folders. |
+| `apps/ferret_docs/` | The site, ferret.sofluffy.io (Jaspr, pinned to its own Flutter in `.fvmrc`): the landing page at `/` (`lib/landing/`) and `docs` read in place under `/docs`, sidebar built from its folders. |
 | `modules/<feature>/` | One feature each: its `Feature` (engine side) and its UI. Features never import each other |
 | `modules/shell/` | App shell: onboarding, devices, pairing, settings, tier detection; hosts feature UIs |
 | `packages/core/` | Injector, logging, settings, secret storage (pure Dart) |
@@ -40,7 +40,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 | `packages/sofluffy_ui/` | Design system (git submodule). Edit it here when Ferret needs a new component, then commit and push inside the submodule |
 | `packages/sofluffy_texture/` | Shared GPU-texture plugin (git submodule, public repo `SoFluffyOS/sofluffy_texture`): shows decoded video frames as a Flutter texture. Edit it here, then commit and push inside the submodule |
 | `proto/` | Protobuf source of truth, linted and checked for breaking changes with `buf` |
-| `docs/public/` | The docs site, and the only copy of each page. `docs/public/spec/` is the protocol spec |
+| `docs/` | The docs site, and the only copy of each page. `docs/spec/` is the protocol spec |
 | `extensions/browser/` | WebExtension (TypeScript) |
 | `magisk/`, `lsposed/` | Android root modules |
 | `branding/` | Logo sources (SVG): plated icon, dark icon, glyph, one-colour template. `scripts/generate_icons.sh` renders every app icon, the menubar glyph and the docs logo from them |
@@ -65,5 +65,5 @@ Dependencies point one way: `apps` → `modules` → `packages`. Packages never 
 - `scripts/check.sh <package>` passes: format, no analyzer issues, tests green
 - New behaviour has tests; protocol changes pass `buf lint` and `buf breaking`
 - The rules in CONVENTIONS.md hold (no `!`, no `else`, no ternary, braces on every `if`, barrels, no redundant comments)
-- A user-facing feature has its page in `docs/public` and a line in `CHANGELOG.md` under `## [Unreleased]`
+- A user-facing feature has its page in `docs` and a line in `CHANGELOG.md` under `## [Unreleased]`
 - One logical change per commit, Gitmoji message

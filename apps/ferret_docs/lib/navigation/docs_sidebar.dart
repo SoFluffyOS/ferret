@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:jaspr_content/components/sidebar.dart';
 import 'package:path/path.dart' as p;
 
-/// Builds the sidebar from the folders in `docs/public`, so a new page shows
+/// Builds the sidebar from the folders in `docs`, so a new page shows
 /// up without editing a list. Each folder is a group; each page's title is
 /// its first `# ` heading. Pages can set `order: 3` in front matter. Every
 /// link starts with [base], where the docs are served.

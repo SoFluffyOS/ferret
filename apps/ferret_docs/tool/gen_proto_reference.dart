@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-/// Writes docs/public/spec/reference.md from the .proto files, so the
+/// Writes docs/spec/reference.md from the .proto files, so the
 /// protocol reference can never drift from the source.
 void main() {
   final repo = p.normalize(p.join(Directory.current.path, '..', '..'));
-  final output = File(p.join(repo, 'docs', 'public', 'spec', 'reference.md'));
+  final output = File(p.join(repo, 'docs', 'spec', 'reference.md'));
   output.parent.createSync(recursive: true);
   output.writeAsStringSync(render(p.join(repo, 'proto')));
   stdout.writeln('Wrote ${p.relative(output.path, from: repo)}');

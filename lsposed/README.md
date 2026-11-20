@@ -9,4 +9,4 @@ An [LSPosed](https://github.com/LSPosed/LSPosed) module could read it at the sou
 - [`DESIGN.md`](DESIGN.md): what it would hook, what it would send, and what must be true before it ships.
 - [`app/`](app): the skeleton. The hooks are named and wired; the bodies only say what they will do.
 
-The user page is [LSPosed (experimental)](../docs/public/android-modes/lsposed-experimental.md).
+The user page is [LSPosed (experimental)](../docs/android-modes/lsposed-experimental.md).

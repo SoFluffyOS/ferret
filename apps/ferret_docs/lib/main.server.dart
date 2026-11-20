@@ -1,4 +1,4 @@
-/// Ferret's site: the landing page at `/`, and `docs/public` pre-rendered
+/// Ferret's site: the landing page at `/`, and `docs` pre-rendered
 /// under `/docs`.
 library;
 
@@ -20,8 +20,8 @@ import 'package:jaspr_content/jaspr_content.dart';
 import 'package:jaspr_content/theme.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-/// The docs live in the repository's `docs/public`; nothing is copied.
-const docsRoot = '../../docs/public';
+/// The docs live in the repository's `docs`; nothing is copied.
+const docsRoot = '../../docs';
 
 void main() {
   Jaspr.initializeApp(options: defaultServerOptions);

@@ -10,7 +10,7 @@
 
 Some Android permissions are only for apps that live on the system partition. This module puts Ferret there, as a privileged app, without touching the partition itself.
 
-You don't need it for anything Ferret does today. Clipboard in the background works with [Shizuku](../docs/public/android-modes/shizuku.md) or plain [root](../docs/public/android-modes/root-magisk.md). The module is groundwork for later features.
+You don't need it for anything Ferret does today. Clipboard in the background works with [Shizuku](../docs/android-modes/shizuku.md) or plain [root](../docs/android-modes/root-magisk.md). The module is groundwork for later features.
 
 ## 📦 What is inside
 
