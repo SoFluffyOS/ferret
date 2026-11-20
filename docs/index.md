@@ -37,6 +37,8 @@ Ferret carries what you're doing between your own devices: pages, media, your cl
 
 Every other feature has its page in the sidebar.
 
+Used another phone app for years? [Coming from another app](getting-started/coming-from-another-app.md) shows where each feature you know lives in Ferret.
+
 ## 🔒 Your data
 
 Your devices talk straight to each other. No server sits in the middle. The [privacy page](privacy.md) lists every byte that goes anywhere else.

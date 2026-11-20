@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.
+- 🧭 **Coming from another app?** A new guide lists the features you used every day under the names you know, where they live in Ferret, and what isn't there yet. See [Coming from another app](docs/getting-started/coming-from-another-app.md).
 - 📱 **Your Android tablet or phone as a second display**: open it in Ferret on your Mac and click **Use Pixel Tablet as a display**. Tap **Allow** on the tablet, and its screen becomes one more display for your Mac. Tap to click, drag, hold to right-click, two fingers to scroll. Back on the tablet asks before it stops. See [A second display](docs/features/second-display.md).
 - 🖥️ **Another Mac as a second display**: open your other Mac in Ferret and click **Use MacBook Air as a display**. Click **Allow** there, and its screen becomes a real extra display for your Mac: drag windows onto it, its mouse and keyboard work on it. **Stop** on either Mac ends it. Windows and Linux are coming. See [Another Mac as a second display](docs/features/second-display.md).
 - ⌨️ **One keyboard and mouse for your computers**: turn it on in **Settings → Control** on your Mac, then press **⌃⌥→** and your Mac's keyboard and mouse work on the PC or Mac next to it. **⌃⌥⎋** brings them back, every time. The other computer asks the first time. See [Control](docs/features/remote-input.md).
