@@ -81,8 +81,15 @@ class ActivityRow extends StatelessWidget {
       true => 3,
       false => 1,
     };
-    // A problem's detail says what to do, so it gets a second line.
+    // A question is read whole: who asks and for what.
+    final titleLines = switch ((hasLargeText, item.needsYou)) {
+      (false, true) => 2,
+      _ => textLines,
+    };
+    // A problem's detail says what to do, so it gets a second line. A
+    // question's says what a yes means, so it is never cut short.
     final detailLines = switch ((hasLargeText, item.tone)) {
+      (false, _) when item.needsYou => 3,
       (false, .warning || .danger) => 2,
       _ => textLines,
     };
@@ -146,7 +153,7 @@ class ActivityRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.title,
-                        maxLines: textLines,
+                        maxLines: titleLines,
                         overflow: .ellipsis,
                         style: typography.base2.copyWith(color: palette.text),
                       ),

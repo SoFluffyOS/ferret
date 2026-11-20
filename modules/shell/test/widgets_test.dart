@@ -299,6 +299,34 @@ void main() {
     }
   });
 
+  testWidgets('a question gives its title two lines and its detail three, so '
+      'what a yes means is never cut', (tester) async {
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: DateTime(2026, 11, 18, 12),
+          item: const ActivityItem(
+            id: 'ask',
+            icon: LucideIcons.monitor,
+            title: 'MacBook Pro wants to use this Mac as a display',
+            detail: 'What a yes means',
+            needsYou: true,
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.widget<Text>(find.text('What a yes means')).maxLines, 3);
+    expect(
+      tester
+          .widget<Text>(
+            find.text('MacBook Pro wants to use this Mac as a display'),
+          )
+          .maxLines,
+      2,
+    );
+  });
+
   testWidgets('a right-click on an activity line offers what the line does', (
     tester,
   ) async {
