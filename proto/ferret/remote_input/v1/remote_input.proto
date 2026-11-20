@@ -13,12 +13,28 @@ package ferret.remote_input.v1;
 // answers with its own. Fields and `InputEvent` kinds added later in the same
 // major version are optional: a receiver ignores what it doesn't know.
 
+// What kind of controller asks.
+enum ControlMode {
+  // A phone or tablet used as a touchpad and keyboard. Every controller
+  // sent this before modes existed.
+  CONTROL_MODE_UNSPECIFIED = 0;
+  // Another computer lending its own keyboard and mouse: it sends
+  // `EnterScreen` when its person switches over, `LeaveScreen` when they
+  // switch back, and modifier keys as `ModifierState`. Send it only to a
+  // computer whose `FeatureSupport` flags for this feature include
+  // "screen"; older computers treat it as a phone.
+  CONTROL_MODE_SCREEN = 1;
+}
+
 // Asks the computer for control. Expects a `ControlPending`, `ControlGrant`
 // or `ControlDeny` reply. After `ControlPending`, the computer sends the
 // `ControlGrant` or `ControlDeny` later, without expecting a reply.
 message ControlRequest {
   // The version of these messages the controller speaks.
   uint32 version = 1;
+  // What kind of controller asks, which the computer's owner sees in the
+  // question.
+  ControlMode mode = 2;
 }
 
 // The computer is asking its owner. The answer follows as `ControlGrant` or
@@ -213,6 +229,26 @@ message TextInput {
   string text = 1;
 }
 
+// The modifier keys held down right now, on their own, such as Shift for
+// a Shift-click. The computer holds exactly these until the next
+// `ModifierState`, `LeaveScreen` or `ControlStop`. Keys in `KeyEvent` still
+// list their modifiers, for computers that don't know this message.
+message ModifierState {
+  repeated Modifier held = 1;
+}
+
+// The controlling computer's person switched over to this computer: input
+// that follows is meant for it. `held` are the modifier keys already down,
+// as in `ModifierState`.
+message EnterScreen {
+  repeated Modifier held = 1;
+}
+
+// The controlling computer's person switched away. The computer lets go of
+// every button, key and modifier still held, and keeps the control: the
+// next `EnterScreen` needs no new `ControlRequest`.
+message LeaveScreen {}
+
 // One input action.
 message InputEvent {
   oneof kind {
@@ -221,6 +257,9 @@ message InputEvent {
     Scroll scroll = 3;
     KeyEvent key = 4;
     TextInput text = 5;
+    ModifierState modifiers = 6;
+    EnterScreen enter = 7;
+    LeaveScreen leave = 8;
   }
 }
 

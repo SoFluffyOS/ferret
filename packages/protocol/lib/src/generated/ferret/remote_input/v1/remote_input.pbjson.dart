@@ -15,6 +15,20 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use controlModeDescriptor instead')
+const ControlMode$json = {
+  '1': 'ControlMode',
+  '2': [
+    {'1': 'CONTROL_MODE_UNSPECIFIED', '2': 0},
+    {'1': 'CONTROL_MODE_SCREEN', '2': 1},
+  ],
+};
+
+/// Descriptor for `ControlMode`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List controlModeDescriptor = $convert.base64Decode(
+    'CgtDb250cm9sTW9kZRIcChhDT05UUk9MX01PREVfVU5TUEVDSUZJRUQQABIXChNDT05UUk9MX0'
+    '1PREVfU0NSRUVOEAE=');
+
 @$core.Deprecated('Use denyReasonDescriptor instead')
 const DenyReason$json = {
   '1': 'DenyReason',
@@ -217,12 +231,21 @@ const ControlRequest$json = {
   '1': 'ControlRequest',
   '2': [
     {'1': 'version', '3': 1, '4': 1, '5': 13, '10': 'version'},
+    {
+      '1': 'mode',
+      '3': 2,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.remote_input.v1.ControlMode',
+      '10': 'mode'
+    },
   ],
 };
 
 /// Descriptor for `ControlRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List controlRequestDescriptor = $convert
-    .base64Decode('Cg5Db250cm9sUmVxdWVzdBIYCgd2ZXJzaW9uGAEgASgNUgd2ZXJzaW9u');
+final $typed_data.Uint8List controlRequestDescriptor = $convert.base64Decode(
+    'Cg5Db250cm9sUmVxdWVzdBIYCgd2ZXJzaW9uGAEgASgNUgd2ZXJzaW9uEjcKBG1vZGUYAiABKA'
+    '4yIy5mZXJyZXQucmVtb3RlX2lucHV0LnYxLkNvbnRyb2xNb2RlUgRtb2Rl');
 
 @$core.Deprecated('Use controlPendingDescriptor instead')
 const ControlPending$json = {
@@ -380,6 +403,55 @@ const TextInput$json = {
 final $typed_data.Uint8List textInputDescriptor =
     $convert.base64Decode('CglUZXh0SW5wdXQSEgoEdGV4dBgBIAEoCVIEdGV4dA==');
 
+@$core.Deprecated('Use modifierStateDescriptor instead')
+const ModifierState$json = {
+  '1': 'ModifierState',
+  '2': [
+    {
+      '1': 'held',
+      '3': 1,
+      '4': 3,
+      '5': 14,
+      '6': '.ferret.remote_input.v1.Modifier',
+      '10': 'held'
+    },
+  ],
+};
+
+/// Descriptor for `ModifierState`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List modifierStateDescriptor = $convert.base64Decode(
+    'Cg1Nb2RpZmllclN0YXRlEjQKBGhlbGQYASADKA4yIC5mZXJyZXQucmVtb3RlX2lucHV0LnYxLk'
+    '1vZGlmaWVyUgRoZWxk');
+
+@$core.Deprecated('Use enterScreenDescriptor instead')
+const EnterScreen$json = {
+  '1': 'EnterScreen',
+  '2': [
+    {
+      '1': 'held',
+      '3': 1,
+      '4': 3,
+      '5': 14,
+      '6': '.ferret.remote_input.v1.Modifier',
+      '10': 'held'
+    },
+  ],
+};
+
+/// Descriptor for `EnterScreen`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List enterScreenDescriptor = $convert.base64Decode(
+    'CgtFbnRlclNjcmVlbhI0CgRoZWxkGAEgAygOMiAuZmVycmV0LnJlbW90ZV9pbnB1dC52MS5Nb2'
+    'RpZmllclIEaGVsZA==');
+
+@$core.Deprecated('Use leaveScreenDescriptor instead')
+const LeaveScreen$json = {
+  '1': 'LeaveScreen',
+};
+
+/// Descriptor for `LeaveScreen`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List leaveScreenDescriptor =
+    $convert.base64Decode('CgtMZWF2ZVNjcmVlbg==');
+
 @$core.Deprecated('Use inputEventDescriptor instead')
 const InputEvent$json = {
   '1': 'InputEvent',
@@ -429,6 +501,33 @@ const InputEvent$json = {
       '9': 0,
       '10': 'text'
     },
+    {
+      '1': 'modifiers',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.ferret.remote_input.v1.ModifierState',
+      '9': 0,
+      '10': 'modifiers'
+    },
+    {
+      '1': 'enter',
+      '3': 7,
+      '4': 1,
+      '5': 11,
+      '6': '.ferret.remote_input.v1.EnterScreen',
+      '9': 0,
+      '10': 'enter'
+    },
+    {
+      '1': 'leave',
+      '3': 8,
+      '4': 1,
+      '5': 11,
+      '6': '.ferret.remote_input.v1.LeaveScreen',
+      '9': 0,
+      '10': 'leave'
+    },
   ],
   '8': [
     {'1': 'kind'},
@@ -442,7 +541,11 @@ final $typed_data.Uint8List inputEventDescriptor = $convert.base64Decode(
     'MS5CdXR0b25FdmVudEgAUgZidXR0b24SOAoGc2Nyb2xsGAMgASgLMh4uZmVycmV0LnJlbW90ZV'
     '9pbnB1dC52MS5TY3JvbGxIAFIGc2Nyb2xsEjQKA2tleRgEIAEoCzIgLmZlcnJldC5yZW1vdGVf'
     'aW5wdXQudjEuS2V5RXZlbnRIAFIDa2V5EjcKBHRleHQYBSABKAsyIS5mZXJyZXQucmVtb3RlX2'
-    'lucHV0LnYxLlRleHRJbnB1dEgAUgR0ZXh0QgYKBGtpbmQ=');
+    'lucHV0LnYxLlRleHRJbnB1dEgAUgR0ZXh0EkUKCW1vZGlmaWVycxgGIAEoCzIlLmZlcnJldC5y'
+    'ZW1vdGVfaW5wdXQudjEuTW9kaWZpZXJTdGF0ZUgAUgltb2RpZmllcnMSOwoFZW50ZXIYByABKA'
+    'syIy5mZXJyZXQucmVtb3RlX2lucHV0LnYxLkVudGVyU2NyZWVuSABSBWVudGVyEjsKBWxlYXZl'
+    'GAggASgLMiMuZmVycmV0LnJlbW90ZV9pbnB1dC52MS5MZWF2ZVNjcmVlbkgAUgVsZWF2ZUIGCg'
+    'RraW5k');
 
 @$core.Deprecated('Use inputBatchDescriptor instead')
 const InputBatch$json = {

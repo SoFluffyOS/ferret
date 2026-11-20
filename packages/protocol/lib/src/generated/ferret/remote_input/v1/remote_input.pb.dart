@@ -26,9 +26,11 @@ export 'remote_input.pbenum.dart';
 class ControlRequest extends $pb.GeneratedMessage {
   factory ControlRequest({
     $core.int? version,
+    ControlMode? mode,
   }) {
     final result = ControlRequest._();
     if (version != null) result.version = version;
+    if (mode != null) result.mode = mode;
     return result;
   }
 
@@ -47,6 +49,8 @@ class ControlRequest extends $pb.GeneratedMessage {
           _omitMessageNames ? '' : 'ferret.remote_input.v1'),
       createEmptyInstance: ControlRequest.$_createMessage)
     ..aI(1, _omitFieldNames ? '' : 'version', fieldType: $pb.PbFieldType.OU3)
+    ..aE<ControlMode>(2, _omitFieldNames ? '' : 'mode',
+        enumValues: ControlMode.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -80,6 +84,17 @@ class ControlRequest extends $pb.GeneratedMessage {
   $core.bool hasVersion() => $_has(0);
   @$pb.TagNumber(1)
   void clearVersion() => $_clearField(1);
+
+  /// What kind of controller asks, which the computer's owner sees in the
+  /// question.
+  @$pb.TagNumber(2)
+  ControlMode get mode => $_getN(1);
+  @$pb.TagNumber(2)
+  set mode(ControlMode value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMode() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMode() => $_clearField(2);
 }
 
 /// The computer is asking its owner. The answer follows as `ControlGrant` or
@@ -689,7 +704,179 @@ class TextInput extends $pb.GeneratedMessage {
   void clearText() => $_clearField(1);
 }
 
-enum InputEvent_Kind { move, button, scroll, key, text, notSet }
+/// The modifier keys held down right now, on their own, such as Shift for
+/// a Shift-click. The computer holds exactly these until the next
+/// `ModifierState`, `LeaveScreen` or `ControlStop`. Keys in `KeyEvent` still
+/// list their modifiers, for computers that don't know this message.
+class ModifierState extends $pb.GeneratedMessage {
+  factory ModifierState({
+    $core.Iterable<Modifier>? held,
+  }) {
+    final result = ModifierState._();
+    if (held != null) result.held.addAll(held);
+    return result;
+  }
+
+  ModifierState._();
+
+  factory ModifierState.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ModifierState()..mergeFromBuffer(data, registry);
+  factory ModifierState.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ModifierState()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ModifierState',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'ferret.remote_input.v1'),
+      createEmptyInstance: ModifierState.$_createMessage)
+    ..pc<Modifier>(1, _omitFieldNames ? '' : 'held', $pb.PbFieldType.KE,
+        valueOf: Modifier.valueOf,
+        enumValues: Modifier.values,
+        defaultEnumValue: Modifier.MODIFIER_UNSPECIFIED)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ModifierState clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ModifierState copyWith(void Function(ModifierState) updates) =>
+      super.copyWith((message) => updates(message as ModifierState))
+          as ModifierState;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use ModifierState() / ModifierState.new instead')
+  static ModifierState create() => ModifierState._();
+  static $pb.GeneratedMessage $_createMessage() => ModifierState._();
+  @$core.override
+  ModifierState createEmptyInstance() => ModifierState._();
+  @$core.pragma('dart2js:noInline')
+  static ModifierState getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ModifierState>(
+          ModifierState.$_createMessage);
+  static ModifierState? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<Modifier> get held => $_getList(0);
+}
+
+/// The controlling computer's person switched over to this computer: input
+/// that follows is meant for it. `held` are the modifier keys already down,
+/// as in `ModifierState`.
+class EnterScreen extends $pb.GeneratedMessage {
+  factory EnterScreen({
+    $core.Iterable<Modifier>? held,
+  }) {
+    final result = EnterScreen._();
+    if (held != null) result.held.addAll(held);
+    return result;
+  }
+
+  EnterScreen._();
+
+  factory EnterScreen.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      EnterScreen()..mergeFromBuffer(data, registry);
+  factory EnterScreen.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      EnterScreen()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'EnterScreen',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'ferret.remote_input.v1'),
+      createEmptyInstance: EnterScreen.$_createMessage)
+    ..pc<Modifier>(1, _omitFieldNames ? '' : 'held', $pb.PbFieldType.KE,
+        valueOf: Modifier.valueOf,
+        enumValues: Modifier.values,
+        defaultEnumValue: Modifier.MODIFIER_UNSPECIFIED)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  EnterScreen clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  EnterScreen copyWith(void Function(EnterScreen) updates) =>
+      super.copyWith((message) => updates(message as EnterScreen))
+          as EnterScreen;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use EnterScreen() / EnterScreen.new instead')
+  static EnterScreen create() => EnterScreen._();
+  static $pb.GeneratedMessage $_createMessage() => EnterScreen._();
+  @$core.override
+  EnterScreen createEmptyInstance() => EnterScreen._();
+  @$core.pragma('dart2js:noInline')
+  static EnterScreen getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<EnterScreen>(
+          EnterScreen.$_createMessage);
+  static EnterScreen? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<Modifier> get held => $_getList(0);
+}
+
+/// The controlling computer's person switched away. The computer lets go of
+/// every button, key and modifier still held, and keeps the control: the
+/// next `EnterScreen` needs no new `ControlRequest`.
+class LeaveScreen extends $pb.GeneratedMessage {
+  factory LeaveScreen() => LeaveScreen._();
+
+  LeaveScreen._();
+
+  factory LeaveScreen.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LeaveScreen()..mergeFromBuffer(data, registry);
+  factory LeaveScreen.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LeaveScreen()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LeaveScreen',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'ferret.remote_input.v1'),
+      createEmptyInstance: LeaveScreen.$_createMessage)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LeaveScreen clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LeaveScreen copyWith(void Function(LeaveScreen) updates) =>
+      super.copyWith((message) => updates(message as LeaveScreen))
+          as LeaveScreen;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LeaveScreen() / LeaveScreen.new instead')
+  static LeaveScreen create() => LeaveScreen._();
+  static $pb.GeneratedMessage $_createMessage() => LeaveScreen._();
+  @$core.override
+  LeaveScreen createEmptyInstance() => LeaveScreen._();
+  @$core.pragma('dart2js:noInline')
+  static LeaveScreen getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LeaveScreen>(
+          LeaveScreen.$_createMessage);
+  static LeaveScreen? _defaultInstance;
+}
+
+enum InputEvent_Kind {
+  move,
+  button,
+  scroll,
+  key,
+  text,
+  modifiers,
+  enter,
+  leave,
+  notSet
+}
 
 /// One input action.
 class InputEvent extends $pb.GeneratedMessage {
@@ -699,6 +886,9 @@ class InputEvent extends $pb.GeneratedMessage {
     Scroll? scroll,
     KeyEvent? key,
     TextInput? text,
+    ModifierState? modifiers,
+    EnterScreen? enter,
+    LeaveScreen? leave,
   }) {
     final result = InputEvent._();
     if (move != null) result.move = move;
@@ -706,6 +896,9 @@ class InputEvent extends $pb.GeneratedMessage {
     if (scroll != null) result.scroll = scroll;
     if (key != null) result.key = key;
     if (text != null) result.text = text;
+    if (modifiers != null) result.modifiers = modifiers;
+    if (enter != null) result.enter = enter;
+    if (leave != null) result.leave = leave;
     return result;
   }
 
@@ -724,6 +917,9 @@ class InputEvent extends $pb.GeneratedMessage {
     3: InputEvent_Kind.scroll,
     4: InputEvent_Kind.key,
     5: InputEvent_Kind.text,
+    6: InputEvent_Kind.modifiers,
+    7: InputEvent_Kind.enter,
+    8: InputEvent_Kind.leave,
     0: InputEvent_Kind.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -731,7 +927,7 @@ class InputEvent extends $pb.GeneratedMessage {
       package: const $pb.PackageName(
           _omitMessageNames ? '' : 'ferret.remote_input.v1'),
       createEmptyInstance: InputEvent.$_createMessage)
-    ..oo(0, [1, 2, 3, 4, 5])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8])
     ..aOM<PointerMove>(1, _omitFieldNames ? '' : 'move',
         subBuilder: PointerMove.$_createMessage)
     ..aOM<ButtonEvent>(2, _omitFieldNames ? '' : 'button',
@@ -742,6 +938,12 @@ class InputEvent extends $pb.GeneratedMessage {
         subBuilder: KeyEvent.$_createMessage)
     ..aOM<TextInput>(5, _omitFieldNames ? '' : 'text',
         subBuilder: TextInput.$_createMessage)
+    ..aOM<ModifierState>(6, _omitFieldNames ? '' : 'modifiers',
+        subBuilder: ModifierState.$_createMessage)
+    ..aOM<EnterScreen>(7, _omitFieldNames ? '' : 'enter',
+        subBuilder: EnterScreen.$_createMessage)
+    ..aOM<LeaveScreen>(8, _omitFieldNames ? '' : 'leave',
+        subBuilder: LeaveScreen.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -769,12 +971,18 @@ class InputEvent extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
   InputEvent_Kind whichKind() => _InputEvent_KindByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
   void clearKind() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -831,6 +1039,39 @@ class InputEvent extends $pb.GeneratedMessage {
   void clearText() => $_clearField(5);
   @$pb.TagNumber(5)
   TextInput ensureText() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  ModifierState get modifiers => $_getN(5);
+  @$pb.TagNumber(6)
+  set modifiers(ModifierState value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasModifiers() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearModifiers() => $_clearField(6);
+  @$pb.TagNumber(6)
+  ModifierState ensureModifiers() => $_ensure(5);
+
+  @$pb.TagNumber(7)
+  EnterScreen get enter => $_getN(6);
+  @$pb.TagNumber(7)
+  set enter(EnterScreen value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasEnter() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearEnter() => $_clearField(7);
+  @$pb.TagNumber(7)
+  EnterScreen ensureEnter() => $_ensure(6);
+
+  @$pb.TagNumber(8)
+  LeaveScreen get leave => $_getN(7);
+  @$pb.TagNumber(8)
+  set leave(LeaveScreen value) => $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasLeave() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearLeave() => $_clearField(8);
+  @$pb.TagNumber(8)
+  LeaveScreen ensureLeave() => $_ensure(7);
 }
 
 /// Input from the controller, in order, without expecting a reply. The

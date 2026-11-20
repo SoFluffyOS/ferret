@@ -14,6 +14,34 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
+/// What kind of controller asks.
+class ControlMode extends $pb.ProtobufEnum {
+  /// A phone or tablet used as a touchpad and keyboard. Every controller
+  /// sent this before modes existed.
+  static const ControlMode CONTROL_MODE_UNSPECIFIED =
+      ControlMode._(0, _omitEnumNames ? '' : 'CONTROL_MODE_UNSPECIFIED');
+
+  /// Another computer lending its own keyboard and mouse: it sends
+  /// `EnterScreen` when its person switches over, `LeaveScreen` when they
+  /// switch back, and modifier keys as `ModifierState`. Send it only to a
+  /// computer whose `FeatureSupport` flags for this feature include
+  /// "screen"; older computers treat it as a phone.
+  static const ControlMode CONTROL_MODE_SCREEN =
+      ControlMode._(1, _omitEnumNames ? '' : 'CONTROL_MODE_SCREEN');
+
+  static const $core.List<ControlMode> values = <ControlMode>[
+    CONTROL_MODE_UNSPECIFIED,
+    CONTROL_MODE_SCREEN,
+  ];
+
+  static final $core.List<ControlMode?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 1);
+  static ControlMode? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const ControlMode._(super.value, super.name);
+}
+
 /// Why a computer said no.
 class DenyReason extends $pb.ProtobufEnum {
   static const DenyReason DENY_REASON_UNSPECIFIED =
