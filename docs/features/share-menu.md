@@ -122,7 +122,7 @@ Either way the transfer shows in **Activity** like any other, with progress and 
 | iPhone, iPad | **Share → Ferret** | In the share sheet | Files, photos, videos, text and links. Ferret opens to send them |
 | Linux | **Open With → Send with Ferret** | In Ferret, when there are several | You copy one `.desktop` file |
 | Windows | **Send to → Ferret** | In Ferret, when there are several | The installer adds it |
-| Android | **Share → Send with Ferret** | In Ferret, when there are several | See [Drop](drop.md) |
+| Android | **Share → your device**, or **Send with Ferret** | Your connected devices sit in the share sheet's top row | See [Drop](drop.md) |
 
 Folders aren't sent yet: pick the files inside them.
 

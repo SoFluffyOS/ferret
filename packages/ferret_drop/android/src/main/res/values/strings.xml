@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ferret_drop_share_label">Send with Ferret</string>
+    <string name="ferret_drop_sending_to">Sending to %1$s…</string>
 </resources>

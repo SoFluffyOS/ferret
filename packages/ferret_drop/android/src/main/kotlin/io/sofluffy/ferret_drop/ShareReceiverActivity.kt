@@ -5,30 +5,44 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.core.content.pm.ShortcutManagerCompat
 import java.util.concurrent.Executors
 
 /**
- * The "Send with Ferret" share target. It opens Ferret right away, copies the
- * shared content into the cache in the background, then hands it to Dart.
+ * The "Send with Ferret" share target. It copies the shared content into the
+ * cache in the background, then hands it to Dart. Picked as Ferret, it opens
+ * Ferret to ask where; picked as a device in the share sheet's top row, it
+ * sends there without opening Ferret, when Ferret is already running.
  */
 class ShareReceiverActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val uris = sharedUris(intent)
-        val text = intent.getStringExtra(Intent.EXTRA_TEXT)?.takeIf { uris.isEmpty() }
+        val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        val uris = sharedUris(intent, sharedText)
+        val text = sharedText?.takeIf { uris.isEmpty() }
         val appContext = applicationContext
+        val deviceId = ShareShortcuts.deviceId(intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID))
 
-        packageManager.getLaunchIntentForPackage(packageName)?.let { launch ->
-            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-            startActivity(launch)
+        if (deviceId != null) {
+            ShareShortcuts.reportUsed(appContext, deviceId)
+        }
+        val name = deviceId?.let(ShareShortcuts::name)
+        if (name != null && ShareInbox.isListening) {
+            Toast.makeText(appContext, getString(R.string.ferret_drop_sending_to, name), Toast.LENGTH_SHORT).show()
+        } else {
+            packageManager.getLaunchIntentForPackage(packageName)?.let { launch ->
+                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                startActivity(launch)
+            }
         }
 
         if (uris.isNotEmpty() || !text.isNullOrEmpty()) {
             copier.execute {
                 val paths = SharedFileCopier(appContext).copyAll(uris)
                 if (paths.isNotEmpty() || !text.isNullOrEmpty()) {
-                    ShareInbox.deliver(SharedItems(paths = paths, text = text))
+                    ShareInbox.deliver(SharedItems(paths = paths, text = text, deviceId = deviceId))
                 }
             }
         }
@@ -36,21 +50,19 @@ class ShareReceiverActivity : Activity() {
         finish()
     }
 
-    private fun sharedUris(intent: Intent): List<Uri> {
-        val uris = linkedSetOf<Uri>()
-        when (intent.action) {
-            Intent.ACTION_SEND -> streamExtra(intent)?.let { uris.add(it) }
-            Intent.ACTION_SEND_MULTIPLE -> streamListExtra(intent)?.let { uris.addAll(it) }
+    private fun sharedUris(intent: Intent, text: String?): List<Uri> {
+        val streams = when (intent.action) {
+            Intent.ACTION_SEND -> listOfNotNull(streamExtra(intent))
+            Intent.ACTION_SEND_MULTIPLE -> streamListExtra(intent).orEmpty()
+            else -> emptyList()
         }
-
         val clip = intent.clipData
-        if (clip != null && uris.isEmpty()) {
-            for (index in 0 until clip.itemCount) {
-                clip.getItemAt(index).uri?.let { uris.add(it) }
-            }
+        val clipItems = when (clip) {
+            null -> emptyList()
+            else -> (0 until clip.itemCount).mapNotNull { clip.getItemAt(it).uri }
         }
 
-        return uris.toList()
+        return SharedContent.files(streams, clipItems, text)
     }
 
     @Suppress("DEPRECATION")

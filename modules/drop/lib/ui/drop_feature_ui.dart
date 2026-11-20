@@ -183,7 +183,7 @@ class DropFeatureUi extends FeatureUi {
   }
 
   /// Keeps the system's share sheet in step with the connected devices,
-  /// where it lists them (Finder's Share menu).
+  /// where it lists them (Finder's Share menu, Android's Direct Share row).
   void _publishShareTargets() {
     final targets = [
       for (final target in _dropViewModel.targets)

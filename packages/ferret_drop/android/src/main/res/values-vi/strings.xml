@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ferret_drop_share_label">Gửi bằng Ferret</string>
+    <string name="ferret_drop_sending_to">Đang gửi tới %1$s…</string>
 </resources>

@@ -17,6 +17,10 @@ object ShareInbox {
     private var listener: Listener? = null
     private val main by lazy { Handler(Looper.getMainLooper()) }
 
+    /** Whether Ferret is running and takes shares right away. */
+    val isListening: Boolean
+        get() = synchronized(lock) { listener != null }
+
     fun setListener(value: Listener?) {
         synchronized(lock) { listener = value }
     }

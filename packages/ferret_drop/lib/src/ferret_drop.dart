@@ -28,7 +28,7 @@ class FerretDrop implements FerretDropFlutterApi {
   void onShared(SharedItems items) => _shares.add(items);
 
   /// Tells the system's share sheet which devices to offer, where it lists
-  /// them: Finder's Share menu on macOS.
+  /// them: Finder's Share menu on macOS, the Direct Share row on Android.
   Future<void> setShareTargets(List<ShareTarget> targets) =>
       _soft(() => _api.setShareTargets(targets), fallback: null);
 

@@ -53,8 +53,10 @@ class FerretDropPlugin :
 
     override fun takePendingShares(): List<SharedItems> = ShareInbox.takeAll()
 
-    // Android's share sheet lists apps, not Ferret's devices.
-    override fun setShareTargets(targets: List<ShareTarget>) {}
+    override fun setShareTargets(targets: List<ShareTarget>) {
+        val context = context ?: return
+        ShareShortcuts.publish(context, targets)
+    }
 
     override fun canSaveToDownloads(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
