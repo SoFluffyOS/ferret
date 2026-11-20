@@ -93,6 +93,46 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('a Do more row puts its button under its words when text is '
+      'set large', (tester) async {
+    Future<void> pump(double scale) async {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      await tester.pumpWidget(
+        testApp(
+          Center(
+            child: SizedBox(
+              width: 360,
+              child: OfferRow(
+                offer: FeatureOffer(
+                  title: 'Receive a file from a guest',
+                  description: 'A phone without Ferret can send one file here',
+                  actionLabel: 'Allow once',
+                  onAction: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pump(1);
+    final words = find.text('Receive a file from a guest');
+    expect(
+      tester.getTopLeft(find.text('Allow once')).dx,
+      greaterThan(tester.getTopRight(words).dx),
+    );
+
+    await pump(2);
+    expect(
+      tester.getTopLeft(find.text('Allow once')).dy,
+      greaterThan(tester.getBottomLeft(words).dy),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a switch row is one stop that says its name and state', (
     tester,
   ) async {

@@ -81,15 +81,18 @@ class ActivityRow extends StatelessWidget {
       true => 3,
       false => 1,
     };
-    // A question is read whole: who asks and for what.
-    final titleLines = switch ((hasLargeText, item.needsYou)) {
+    // A question is read whole: who asks and for what. At large text it
+    // takes all the lines it needs.
+    final int? titleLines = switch ((hasLargeText, item.needsYou)) {
       (false, true) => 2,
+      (true, true) => null,
       _ => textLines,
     };
     // A problem's detail says what to do, so it gets a second line. A
     // question's says what a yes means, so it is never cut short.
-    final detailLines = switch ((hasLargeText, item.tone)) {
+    final int? detailLines = switch ((hasLargeText, item.tone)) {
       (false, _) when item.needsYou => 3,
+      (true, _) when item.needsYou => null,
       (false, .warning || .danger) => 2,
       _ => textLines,
     };
@@ -154,7 +157,7 @@ class ActivityRow extends StatelessWidget {
                       child: Text(
                         item.title,
                         maxLines: titleLines,
-                        overflow: .ellipsis,
+                        overflow: _overflow(titleLines),
                         style: typography.base2.copyWith(color: palette.text),
                       ),
                     ),
@@ -200,7 +203,7 @@ class ActivityRow extends StatelessWidget {
                         child: Text(
                           detail ?? '',
                           maxLines: detailLines,
-                          overflow: .ellipsis,
+                          overflow: _overflow(detailLines),
                           style: typography.caption1.copyWith(
                             color: palette.mutedText,
                           ),
@@ -353,3 +356,10 @@ class ActivityRow extends StatelessWidget {
     .danger => palette.danger,
   };
 }
+
+/// Ellipsis cuts a text without a line limit to one line, so text that
+/// may take all the lines it needs just wraps.
+TextOverflow _overflow(int? maxLines) => switch (maxLines) {
+  null => .clip,
+  _ => .ellipsis,
+};

@@ -37,7 +37,7 @@ class OffersCard extends StatelessWidget {
             children: [
               for (final (index, offer) in offers.indexed) ...[
                 if (index > 0) Spacing.v8,
-                _OfferRow(offer: offer),
+                OfferRow(offer: offer),
               ],
             ],
           ),
@@ -47,8 +47,10 @@ class OffersCard extends StatelessWidget {
   }
 }
 
-class _OfferRow extends StatelessWidget {
-  const _OfferRow({required this.offer});
+/// One thing to set up: what it is, and its button beside it, or under it
+/// at large text.
+class OfferRow extends StatelessWidget {
+  const OfferRow({super.key, required this.offer});
 
   final FeatureOffer offer;
 
@@ -57,25 +59,37 @@ class _OfferRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
+    final text = Column(
+      crossAxisAlignment: .start,
+      children: [
+        Text(
+          offer.title,
+          style: typography.base2.copyWith(color: palette.text),
+        ),
+        Text(
+          offer.description,
+          style: typography.caption1.copyWith(color: palette.mutedText),
+        ),
+      ],
+    );
+    final button = RowActionButton(
+      label: offer.actionLabel,
+      onPressed: offer.onAction,
+    );
+
+    // At large text the words beside the button would wrap a word a line.
+    if (context.hasLargeText) {
+      return Column(
+        crossAxisAlignment: .start,
+        children: [text, Spacing.v8, button],
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(
-                offer.title,
-                style: typography.base2.copyWith(color: palette.text),
-              ),
-              Text(
-                offer.description,
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-            ],
-          ),
-        ),
+        Expanded(child: text),
         Spacing.h12,
-        RowActionButton(label: offer.actionLabel, onPressed: offer.onAction),
+        button,
       ],
     );
   }

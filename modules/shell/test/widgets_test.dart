@@ -327,6 +327,33 @@ void main() {
     );
   });
 
+  testWidgets('at large text a question is never cut: its title and detail '
+      'take the lines they need', (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    const title = 'Night Harness wants to use this phone as a display';
+    await tester.pumpWidget(
+      testApp(
+        ActivityRow(
+          now: DateTime(2026, 11, 18, 12),
+          item: const ActivityItem(
+            id: 'ask',
+            icon: LucideIcons.monitor,
+            title: title,
+            detail: 'What a yes means',
+            trailing: Text('0:28'),
+            needsYou: true,
+          ),
+        ),
+      ),
+    );
+
+    final line = tester.getSize(find.text('0:28')).height;
+    expect(tester.getSize(find.text(title)).height, greaterThan(line * 1.5));
+    expect(tester.widget<Text>(find.text('What a yes means')).maxLines, isNull);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a right-click on an activity line offers what the line does', (
     tester,
   ) async {

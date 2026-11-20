@@ -43,6 +43,65 @@ class DisplayBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
+    // At large text the words take the bar's whole width and wrap, and
+    // the buttons go under them.
+    final largeText = context.hasLargeText;
+    final words = Column(
+      mainAxisSize: .min,
+      crossAxisAlignment: .start,
+      children: [
+        Row(
+          mainAxisSize: .min,
+          children: [
+            Flexible(
+              child: Text(
+                title,
+                maxLines: switch (largeText) {
+                  true => 2,
+                  false => 1,
+                },
+                overflow: .ellipsis,
+                style: typography.base2.copyWith(
+                  color: palette.text,
+                  fontWeight: .w600,
+                ),
+              ),
+            ),
+            if (badge case final badge?) ...[Spacing.h8, badge],
+          ],
+        ),
+        Text(
+          hint,
+          maxLines: switch (largeText) {
+            true => null,
+            false => 2,
+          },
+          // Ellipsis would cut a text with no line limit to one line.
+          overflow: switch (largeText) {
+            true => .clip,
+            false => .ellipsis,
+          },
+          style: typography.caption1.copyWith(color: palette.mutedText),
+        ),
+      ],
+    );
+    final buttons = [
+      if (fullScreenLabel case final label?) ...[
+        GhostButton(
+          mainAxisSize: .min,
+          radius: Corners.control,
+          label: label,
+          onPressed: onFullScreen,
+        ),
+        Spacing.h4,
+      ],
+      GhostButton(
+        mainAxisSize: .min,
+        radius: Corners.control,
+        label: stopLabel,
+        onPressed: onStop,
+      ),
+    ];
 
     return AnimatedOpacity(
       opacity: switch (shown) {
@@ -84,63 +143,31 @@ class DisplayBar extends StatelessWidget {
                     Spacing.d8,
                     Spacing.d8,
                   ),
-                  child: Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Flexible(
-                        child: Column(
-                          mainAxisSize: .min,
-                          crossAxisAlignment: .start,
-                          children: [
-                            Row(
-                              mainAxisSize: .min,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    title,
-                                    maxLines: 1,
-                                    overflow: .ellipsis,
-                                    style: typography.base2.copyWith(
-                                      color: palette.text,
-                                      fontWeight: .w600,
-                                    ),
-                                  ),
-                                ),
-                                if (badge case final badge?) ...[
-                                  Spacing.h8,
-                                  badge,
-                                ],
-                              ],
-                            ),
-                            Text(
-                              hint,
-                              maxLines: 2,
-                              overflow: .ellipsis,
-                              style: typography.caption1.copyWith(
-                                color: palette.mutedText,
-                              ),
-                            ),
-                          ],
+                  child: switch (largeText) {
+                    true => Column(
+                      mainAxisSize: .min,
+                      crossAxisAlignment: .stretch,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(end: Spacing.d8),
+                          child: words,
                         ),
-                      ),
-                      Spacing.h16,
-                      if (fullScreenLabel case final label?) ...[
-                        GhostButton(
-                          mainAxisSize: .min,
-                          radius: Corners.control,
-                          label: label,
-                          onPressed: onFullScreen,
+                        Spacing.v8,
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Row(mainAxisSize: .min, children: buttons),
                         ),
-                        Spacing.h4,
                       ],
-                      GhostButton(
-                        mainAxisSize: .min,
-                        radius: Corners.control,
-                        label: stopLabel,
-                        onPressed: onStop,
-                      ),
-                    ],
-                  ),
+                    ),
+                    false => Row(
+                      mainAxisSize: .min,
+                      children: [
+                        Flexible(child: words),
+                        Spacing.h16,
+                        ...buttons,
+                      ],
+                    ),
+                  },
                 ),
               ),
             ),
