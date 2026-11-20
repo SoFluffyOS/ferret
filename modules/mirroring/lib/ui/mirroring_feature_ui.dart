@@ -22,6 +22,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// paired. On a
 /// phone: the "Sharing screen with MacBook · Stop" card (next to Android's
 /// own ongoing notice), the audit line, and Settings with the history.
+/// Between two Macs: "Use MacBook Air as a display" on the one that lends
+/// its desktop, the question and the full-screen display on the other.
 class MirroringFeatureUi extends FeatureUi {
   /// [routes] and [receivers] are more ways a screen can arrive here,
   /// next to Ferret's own. They go to the feature this creates; a
@@ -47,6 +49,7 @@ class MirroringFeatureUi extends FeatureUi {
   static const sectionId = 'screen';
 
   static const _requestCategory = 'mirroring.request';
+  static const _displayRequestCategory = 'mirroring.display_request';
   static const _requestNotice = 'mirroring.request';
   static const _showAction = 'mirroring.show';
   static const _denyAction = 'mirroring.deny';
@@ -90,6 +93,11 @@ class MirroringFeatureUi extends FeatureUi {
   ControlRequest? _controlAskShown;
   ControlRequest? _controlledShown;
 
+  StreamSubscription<void>? _openOnDisplay;
+
+  /// The display the window was last opened for, so it opens once.
+  MirrorTarget? _displayShown;
+
   /// The mirror page that is open, so a second one takes its place
   /// instead of piling up on it.
   Route<void>? _page;
@@ -114,6 +122,13 @@ class MirroringFeatureUi extends FeatureUi {
         id: _requestCategory,
         actions: [
           NoticeAction(id: _showAction, label: l10n.allow),
+          NoticeAction(id: _denyAction, label: l10n.dontAllow),
+        ],
+      ),
+      NoticeCategory(
+        id: _displayRequestCategory,
+        actions: [
+          NoticeAction(id: _showAction, label: l10n.displayAllow),
           NoticeAction(id: _denyAction, label: l10n.dontAllow),
         ],
       ),
@@ -153,6 +168,9 @@ class MirroringFeatureUi extends FeatureUi {
       (feed) => unawaited(_openIncoming(context, feed.target)),
     );
     _askOnRequest = feature.changes.listen((_) => _askWhenRequested(context));
+    _openOnDisplay = feature.changes.listen(
+      (_) => _openDisplayWhenAllowed(context),
+    );
     _noticeResponses = context.notifier.responses
         .where((response) => response.noticeId == _requestNotice)
         .listen(_onNoticeResponse);
@@ -180,13 +198,21 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   Listenable get uiChanges => _changes;
 
-  /// While a device sees this screen, the menubar icon says so.
+  /// While a device sees this screen, or shows this Mac's extra display,
+  /// the menubar icon says so.
   @override
-  FeatureBusy? busyState(FeatureContext feature) =>
-      switch (shareViewModel.active) {
-        final active? => FeatureBusy(screenSeenBy: active.deviceName),
-        null => null,
-      };
+  FeatureBusy? busyState(FeatureContext feature) {
+    if (shareViewModel.active case final active?) {
+      return FeatureBusy(screenSeenBy: active.deviceName);
+    }
+
+    final lent = this.feature.display?.current;
+    if (lent != null && lent.phase == .extending) {
+      return FeatureBusy(screenSeenBy: lent.deviceName);
+    }
+
+    return null;
+  }
 
   /// A phone's card while its screen is asked for or shared, or just
   /// was. A computer has none: what it can show is on its devices.
@@ -250,8 +276,21 @@ class MirroringFeatureUi extends FeatureUi {
         for (final request in viewerViewModel.requests)
           ActivityItem(
             id: 'mirroring.request.${request.askedAt.millisecondsSinceEpoch}',
-            icon: LucideIcons.screenShare,
-            title: l10n.allowTitle(request.deviceName),
+            icon: switch (request.display) {
+              true => LucideIcons.monitor,
+              false => LucideIcons.screenShare,
+            },
+            title: switch (request.display) {
+              true => l10n.displayAllowTitle(
+                request.deviceName,
+                ThisComputer.here,
+              ),
+              false => l10n.allowTitle(request.deviceName),
+            },
+            detail: switch (request.display) {
+              true => l10n.displayAllowBody,
+              false => null,
+            },
             needsYou: true,
             tone: .accent,
             trailing: Countdown(
@@ -265,7 +304,10 @@ class MirroringFeatureUi extends FeatureUi {
             ),
             actions: [
               ActivityAction(
-                label: l10n.allow,
+                label: switch (request.display) {
+                  true => l10n.displayAllow,
+                  false => l10n.allow,
+                },
                 primary: true,
                 onPressed: () => viewerViewModel.answer(request, allow: true),
               ),
@@ -275,7 +317,35 @@ class MirroringFeatureUi extends FeatureUi {
               ),
             ],
           ),
-      if (current != null && current.isLive)
+      if (current != null && current.isLive && current.isDisplay)
+        ActivityItem(
+          id: 'mirroring.live',
+          icon: LucideIcons.monitor,
+          title: switch (current.startedAt) {
+            null => l10n.displayConnectingTitle(current.deviceName),
+            _ => l10n.displayShowingTitle(
+              current.deviceName,
+              ThisComputer.here,
+            ),
+          },
+          detail: switch (current.startedAt) {
+            final startedAt? => l10n.displayShowingDetail(l10n.time(startedAt)),
+            null => null,
+          },
+          at: current.startedAt,
+          pinned: true,
+          tone: .accent,
+          onTap: () => unawaited(
+            _openDisplay(feature, current.deviceId, current.deviceName),
+          ),
+          actions: [
+            ActivityAction(
+              label: l10n.stop,
+              onPressed: () => unawaited(viewerViewModel.stop()),
+            ),
+          ],
+        ),
+      if (current != null && current.isLive && !current.isDisplay)
         ActivityItem(
           id: 'mirroring.live',
           icon: switch (current.isCamera) {
@@ -317,6 +387,104 @@ class MirroringFeatureUi extends FeatureUi {
           tone: .muted,
           onDismiss: viewerViewModel.dismissRecord,
         ),
+      ..._lendingActivity(l10n),
+    ];
+  }
+
+  /// This computer's side of lending its desktop: the question waiting
+  /// there, the display while it shows, and how the last time ended.
+  List<ActivityItem> _lendingActivity(MirroringLocalizations l10n) {
+    final display = feature.display;
+    if (display == null) {
+      return const [];
+    }
+
+    final lent = display.current;
+    final record = display.lastRecord;
+    if (lent != null) {
+      final extending = lent.phase == .extending;
+      return [
+        ActivityItem(
+          id: 'mirroring.display',
+          icon: LucideIcons.monitor,
+          deviceId: lent.deviceId,
+          title: switch (lent.phase) {
+            .asking => l10n.displayAskingTitle(lent.deviceName),
+            .starting => l10n.displayStartingTitle(lent.deviceName),
+            .extending => l10n.displayExtendingTitle(
+              lent.deviceName,
+              ThisComputer.here,
+            ),
+          },
+          detail: switch ((lent.phase, lent.startedAt)) {
+            (.asking, _) => l10n.displayAskingBody(lent.deviceName),
+            (.extending, final startedAt?) => l10n.displayExtendingDetail(
+              l10n.time(startedAt),
+            ),
+            _ => null,
+          },
+          at: lent.startedAt,
+          pinned: true,
+          tone: .accent,
+          trailing: switch (lent.answerBy) {
+            final until? when lent.phase == .asking => Countdown(
+              until: until,
+              builder: (context, left) => Text(
+                Countdown.clockText(left),
+                style: context.fluffyTheme.typography.caption1.copyWith(
+                  color: context.palette.mutedText,
+                ),
+              ),
+            ),
+            _ => null,
+          },
+          actions: [
+            ActivityAction(
+              label: switch (extending) {
+                true => l10n.stop,
+                false => l10n.cancel,
+              },
+              onPressed: () => unawaited(display.stop()),
+            ),
+          ],
+        ),
+      ];
+    }
+
+    if (record == null) {
+      return const [];
+    }
+
+    final needsPermission = record.end == .needsScreenRecording;
+    return [
+      ActivityItem(
+        id: 'mirroring.display.${record.at.millisecondsSinceEpoch}',
+        icon: switch (needsPermission) {
+          true => LucideIcons.monitor,
+          false => LucideIcons.monitorOff,
+        },
+        deviceId: record.deviceId,
+        title: l10n.displayEnded(record.deviceName, record.end.name),
+        detail: switch (needsPermission) {
+          true => l10n.displayScreenRecordingBody,
+          false => null,
+        },
+        at: record.at,
+        needsYou: needsPermission,
+        tone: switch (needsPermission) {
+          true => .warning,
+          false => .muted,
+        },
+        actions: [
+          if (needsPermission)
+            ActivityAction(
+              label: l10n.displayOpenSettings,
+              primary: true,
+              onPressed: () => unawaited(display.openScreenRecordingSettings()),
+            ),
+        ],
+        onDismiss: display.dismissRecord,
+      ),
     ];
   }
 
@@ -368,7 +536,31 @@ class MirroringFeatureUi extends FeatureUi {
           icon: LucideIcons.video,
           onPressed: () => unawaited(_openCamera(feature, device.device)),
         ),
+      if (_canLendTo(device)) _displayAction(l10n, device.device),
     ];
+  }
+
+  /// "Use MacBook Air as a display", or the way to stop while it is one
+  /// or is being asked.
+  FeatureAction _displayAction(
+    MirroringLocalizations l10n,
+    TrustedDevice device,
+  ) {
+    final display = feature.display;
+    final lentHere = display?.current?.deviceId == device.id;
+
+    return FeatureAction(
+      id: 'mirroring.use_as_display',
+      label: switch (lentHere) {
+        true => l10n.displayStopUsing(device.name),
+        false => l10n.displayUse(device.name),
+      },
+      icon: LucideIcons.monitor,
+      onPressed: switch (lentHere) {
+        true => () => unawaited(display?.stop()),
+        false => () => unawaited(display?.offer(device.id)),
+      },
+    );
   }
 
   /// Screen is a section of every device that gets "Show screen": the
@@ -521,6 +713,13 @@ class MirroringFeatureUi extends FeatureUi {
         feature.canUseCameraOf(session);
   }
 
+  /// Whether this computer can lend its desktop to [device]: a connected
+  /// computer that can be a display.
+  bool _canLendTo(DeviceStatus device) {
+    final session = device.session;
+    return session != null && feature.canExtendTo(session);
+  }
+
   /// An iPhone or iPad shows its screen by picking this computer itself.
   bool _viaAirplay(TrustedDevice device) =>
       device.platform == .PLATFORM_IOS && viewerViewModel.hasReceivers;
@@ -645,6 +844,7 @@ class MirroringFeatureUi extends FeatureUi {
     await _revealOnAsk?.cancel();
     await _openOnIncoming?.cancel();
     await _askOnRequest?.cancel();
+    await _openOnDisplay?.cancel();
     await _noticeResponses?.cancel();
     await _controlNotices?.cancel();
     await _controlResponses?.cancel();
@@ -861,9 +1061,21 @@ class MirroringFeatureUi extends FeatureUi {
         LocalNotice(
           id: _requestNotice,
           channel: .incoming,
-          title: l10n.allowTitle(request.deviceName),
-          body: l10n.allowNoticeBody,
-          category: _requestCategory,
+          title: switch (request.display) {
+            true => l10n.displayAllowTitle(
+              request.deviceName,
+              ThisComputer.here,
+            ),
+            false => l10n.allowTitle(request.deviceName),
+          },
+          body: switch (request.display) {
+            true => l10n.displayAllowBody,
+            false => l10n.allowNoticeBody,
+          },
+          category: switch (request.display) {
+            true => _displayRequestCategory,
+            false => _requestCategory,
+          },
         ),
       ),
     );
@@ -877,6 +1089,71 @@ class MirroringFeatureUi extends FeatureUi {
     }
 
     viewerViewModel.answer(request, allow: actionId == _showAction);
+  }
+
+  /// The owner let a computer use this one as its display: its window
+  /// comes up full screen, once per time.
+  void _openDisplayWhenAllowed(FeatureContext context) {
+    final current = feature.viewer?.current;
+    final starts =
+        current != null &&
+        current.isDisplay &&
+        current.isLive &&
+        current.startedAt == null;
+    if (!starts) {
+      return;
+    }
+
+    if (_displayShown == current.target && stageWindow.deviceId != null) {
+      return;
+    }
+
+    _displayShown = current.target;
+    unawaited(context.reveal());
+    unawaited(_openDisplay(context, current.deviceId, current.deviceName));
+  }
+
+  /// Another computer's display, full screen in a window of its own, or
+  /// as a page where there is no such window.
+  Future<void> _openDisplay(
+    FeatureContext context,
+    String deviceId,
+    String deviceName,
+  ) async {
+    final l10n = platformMirroringL10n();
+    final opened = await stageWindow.open(
+      deviceId: deviceId,
+      title: l10n.displayWindowTitle(deviceName),
+      shape: StageWindowViewModel.displayShape,
+      fullScreen: true,
+      builder: (_) => _withViewModels(
+        DisplayWindowPage(
+          deviceId: deviceId,
+          deviceName: deviceName,
+          onClose: () => unawaited(stageWindow.close()),
+        ),
+      ),
+    );
+    if (opened) {
+      return;
+    }
+
+    final navigator = context.navigatorKey.currentState;
+    if (navigator == null) {
+      return;
+    }
+
+    await navigator.push(
+      PageRouteBuilder<void>(
+        pageBuilder: (pageContext, _, _) => _withViewModels(
+          DisplayWindowPage(
+            deviceId: deviceId,
+            deviceName: deviceName,
+            onClose: () => Navigator.of(pageContext).maybePop(),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _openPage(FeatureContext context, MirrorTarget target) =>

@@ -435,4 +435,60 @@ void main() {
       expect(FerretControl.keyOf(0x2F), input.Key.KEY_BRACKET_LEFT);
     });
   });
+
+  group('a computer\'s display', () {
+    late List<ControlInput> sent;
+    late FerretControl control;
+
+    setUp(() {
+      sent = [];
+      control = FerretControl.of(
+        ControlState(
+          status: .CONTROL_STATUS_ALLOWED,
+          kinds: const [
+            .CONTROL_KIND_POINTER,
+            .CONTROL_KIND_KEYS,
+            .CONTROL_KIND_TEXT,
+            .CONTROL_KIND_MOUSE,
+          ],
+        ),
+        send: (message) async => sent.add(message as ControlInput),
+      );
+    });
+
+    test('takes the mouse as a mouse: hovering moves its pointer, and the '
+        'button a press is for goes along', () async {
+      expect(control.abilities, contains(ControlAbility.mouse));
+
+      control
+        ..pointer(
+          const MirrorPointer(phase: .hover, x: 0.1, y: 0.2, buttons: 0),
+        )
+        ..pointer(const MirrorPointer(phase: .down, x: 0.1, y: 0.2, buttons: 2))
+        ..pointer(const MirrorPointer(phase: .up, x: 0.1, y: 0.2, buttons: 2))
+        ..pointer(const MirrorPointer(phase: .down, x: 0.5, y: 0.5));
+      await settle();
+
+      final events = sent.single.events;
+      expect(events[0].pointer.phase, TouchPhase.TOUCH_PHASE_HOVER);
+      expect(events[1].pointer.button, input.MouseButton.MOUSE_BUTTON_RIGHT);
+      expect(events[2].pointer.button, input.MouseButton.MOUSE_BUTTON_RIGHT);
+      expect(events[3].pointer.hasButton(), isFalse, reason: 'the primary');
+    });
+
+    test('a phone never hears a hover', () async {
+      final phone = FerretControl.of(
+        ControlState(
+          status: .CONTROL_STATUS_ALLOWED,
+          kinds: const [.CONTROL_KIND_POINTER],
+        ),
+        send: (message) async => sent.add(message as ControlInput),
+      );
+
+      phone.pointer(const MirrorPointer(phase: .hover, x: 0.1, y: 0.2));
+      await settle();
+
+      expect(sent, isEmpty);
+    });
+  });
 }

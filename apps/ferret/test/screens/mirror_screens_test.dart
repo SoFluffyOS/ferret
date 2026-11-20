@@ -87,6 +87,54 @@ class _Rig {
 
   Future<void> ask() => viewModel.show('pixel', 'Pixel 9');
 
+  /// A MacBook Pro that can lend its desktop.
+  final MirrorSession pro = MirrorSession(
+    'pro',
+    name: 'MacBook Pro',
+    answer: (_) => StartPending(),
+    flags: const [MirrorProtocol.extendFlag],
+  );
+
+  /// The owner said yes to being the MacBook Pro's display: asking it.
+  Future<void> showDisplay() async {
+    host.setSessions([...host.sessions, pro]);
+    await feature.viewer?.showDisplay('pro');
+  }
+
+  /// The MacBook Pro's display shows, and takes the mouse.
+  Future<void> streamDisplay() async {
+    await showDisplay();
+    ferret
+      ..onAccept(pro, StartAccept(version: 1, codec: .CODEC_H264))
+      ..onControlState(
+        pro,
+        ControlState(
+          status: .CONTROL_STATUS_ALLOWED,
+          kinds: const [
+            .CONTROL_KIND_POINTER,
+            .CONTROL_KIND_KEYS,
+            .CONTROL_KIND_TEXT,
+            .CONTROL_KIND_MOUSE,
+          ],
+        ),
+      )
+      ..onConfig(
+        pro,
+        StreamConfig(
+          configId: 1,
+          codec: .CODEC_H264,
+          width: 2560,
+          height: 1664,
+          sps: [0x67],
+          pps: [0x68],
+        ),
+      )
+      ..onFrame(
+        pro,
+        Frame(configId: 1, sequence: Int64(0), keyframe: true, data: [1]),
+      );
+  }
+
   /// Ends what runs and every timer with it, so the test can finish.
   Future<void> letGo() async {
     final routes = feature.routes;
@@ -189,6 +237,7 @@ class _Screen {
     this.body,
     this.windows = _windows,
     this.turned = false,
+    this.desktop = false,
   });
 
   final String name;
@@ -207,6 +256,9 @@ class _Screen {
 
   /// The phone is turned on its side.
   final bool turned;
+
+  /// A Mac's desktop instead of a phone's screen.
+  final bool desktop;
 }
 
 Finder _tool(IconData icon) => find.widgetWithIcon(ToolbarButton, icon);
@@ -729,6 +781,53 @@ final _screens = <_Screen>[
     windows: _turnedWindows,
   ),
   _Screen(
+    'mirror_56_display_connecting',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _displayWindows,
+    before: (rig) => rig.showDisplay(),
+  ),
+  _Screen(
+    'mirror_57_display_live',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _displayWindows,
+    desktop: true,
+    before: (rig) => rig.streamDisplay(),
+  ),
+  _Screen(
+    'mirror_58_display_bar',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _displayWindows,
+    desktop: true,
+    before: (rig) => rig.streamDisplay(),
+    after: (tester, rig) async {
+      final mouse = await tester.createGesture(kind: .mouse);
+      await mouse.addPointer(location: const Offset(640, 400));
+      await tester.pump();
+      await mouse.moveTo(const Offset(640, 1));
+      await tester.pump();
+      await mouse.moveTo(const Offset(640, 24));
+      await tester.pump(const Duration(milliseconds: 200));
+    },
+  ),
+  _Screen(
+    'mirror_59_display_stopped',
+    deviceId: 'pro',
+    deviceName: 'MacBook Pro',
+    body: _displayWindow,
+    windows: _displayWindows,
+    desktop: true,
+    before: (rig) async {
+      await rig.streamDisplay();
+      rig.ferret.onStop(rig.pro, Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE));
+    },
+  ),
+  _Screen(
     'mirror_55_camera_stopped',
     before: (rig) async {
       await rig.streamCamera();
@@ -747,6 +846,13 @@ Future<void> _openSound(WidgetTester tester, _Rig rig) async {
   await _tap(tester, find.text('Sound'));
 }
 
+/// Another Mac's extra display, filling this Mac's screen.
+Widget _displayWindow(_Rig rig) => DisplayWindowPage(
+  deviceId: 'pro',
+  deviceName: 'MacBook Pro',
+  onClose: () {},
+);
+
 /// The phone's own window as a Mac draws it: the bar on top, the picture
 /// in its own shape under it.
 Widget _ownWindow(_Rig rig) => MirrorWindowPage(
@@ -763,6 +869,9 @@ const _uprightWindows = [
   _Window('upright', 360, 360 * 2400 / 1080 + _bar),
   _Window('upright_small', 240, 240 * 2400 / 1080 + _bar),
 ];
+
+/// A Mac's screen, full of another Mac's extra display.
+const _displayWindows = [_Window('display', 1280, 832)];
 
 const _turnedWindows = [
   _Window('turned', 800, 800 * 540 / 1200 + _bar),
@@ -800,6 +909,12 @@ class _Windows extends ChangeNotifier implements FeatureWindows {
     _window = null;
     notifyListeners();
   }
+
+  @override
+  Future<void> setFullScreen(bool fullScreen) async {}
+
+  @override
+  Future<bool> isFullScreen() async => false;
 }
 
 /// A frame as it sits on Home or in Settings: on the page's background,
@@ -819,6 +934,7 @@ class _Listed extends StatelessWidget {
 void main() {
   ui.Image? drawn;
   ui.Image? drawnTurned;
+  ui.Image? drawnDesktop;
 
   setUpAll(loadScreenFonts);
 
@@ -855,9 +971,12 @@ void main() {
               fail('The phone screen should be drawn.');
             }
 
-            final phoneScreen = switch (screen.turned) {
-              false => upright,
-              true => drawnTurned ??= await tester.runAsync(
+            final phoneScreen = switch ((screen.desktop, screen.turned)) {
+              (true, _) => drawnDesktop ??= await tester.runAsync(
+                _drawDesktop,
+              ),
+              (false, false) => upright,
+              (false, true) => drawnTurned ??= await tester.runAsync(
                 () => _turn(upright),
               ),
             };
@@ -968,6 +1087,7 @@ Future<_Rig> _startRig(
     audioCodecs: const [.opus, .pcm],
     routes: [cable],
     receivers: [receiver],
+    display: StillDisplay.new,
     canShare: false,
     canView: true,
     clock: () => rig.now,
@@ -1077,6 +1197,57 @@ Future<ui.Image> _turn(ui.Image upright) async {
 
 /// A stand-in for a phone's home screen: a wallpaper, a status bar, rows
 /// of app icons and a dock, so the picture reads as a phone at a glance.
+/// A Mac's desktop: wallpaper, the menu bar and one window.
+Future<ui.Image> _drawDesktop() async {
+  const width = 1280.0;
+  const height = 832.0;
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  canvas
+    ..drawRect(
+      const Rect.fromLTWH(0, 0, width, height),
+      Paint()
+        ..shader = ui.Gradient.linear(
+          Offset.zero,
+          const Offset(width, height),
+          const [Color(0xFF3A1C71), Color(0xFFD76D77), Color(0xFFFFAF7B)],
+          const [0, 0.55, 1],
+        ),
+    )
+    ..drawRect(
+      const Rect.fromLTWH(0, 0, width, 24),
+      Paint()..color = const Color(0xCCFFFFFF),
+    )
+    ..drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(220, 140, 760, 480),
+        const Radius.circular(12),
+      ),
+      Paint()..color = const Color(0xFFF5F5F7),
+    )
+    ..drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(220, 140, 760, 40),
+        const Radius.circular(12),
+      ),
+      Paint()..color = const Color(0xFFE5E5EA),
+    );
+  for (final (index, color) in const [
+    Color(0xFFFF5F57),
+    Color(0xFFFEBC2E),
+    Color(0xFF28C840),
+  ].indexed) {
+    canvas.drawCircle(
+      Offset(244.0 + index * 20, 160),
+      6,
+      Paint()..color = color,
+    );
+  }
+
+  final picture = recorder.endRecording();
+  return picture.toImage(width.toInt(), height.toInt());
+}
+
 Future<ui.Image> _drawPhoneScreen() async {
   const width = 540.0;
   const height = 1200.0;

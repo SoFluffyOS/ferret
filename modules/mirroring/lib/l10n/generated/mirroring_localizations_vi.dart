@@ -1521,4 +1521,170 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get cameraTitle => 'Camera';
+
+  @override
+  String displayUse(String device) {
+    return 'Dùng $device làm màn hình phụ';
+  }
+
+  @override
+  String displayStopUsing(String device) {
+    return 'Thôi dùng $device làm màn hình phụ';
+  }
+
+  @override
+  String displayAskingTitle(String device) {
+    return 'Đang hỏi $device làm màn hình phụ…';
+  }
+
+  @override
+  String displayAskingBody(String device) {
+    return 'Người ở $device cần đồng ý trên máy đó.';
+  }
+
+  @override
+  String displayStartingTitle(String device) {
+    return 'Đang tạo màn hình phụ cho $device…';
+  }
+
+  @override
+  String displayExtendingTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device đang là màn hình phụ của $_temp0';
+  }
+
+  @override
+  String displayExtendingDetail(String time) {
+    return 'Từ $time · Sắp xếp trong Cài đặt hệ thống → Màn hình';
+  }
+
+  @override
+  String displayEnded(String device, String end) {
+    String _temp0 = intl.Intl.selectLogic(
+      end,
+      {
+        'declined': '$device không đồng ý làm màn hình phụ',
+        'timedOut': 'Không ai trả lời trên $device',
+        'busy': '$device đang là màn hình phụ của máy khác',
+        'unsupported':
+            '$device chưa thể làm màn hình phụ. Hãy cập nhật Ferret trên máy đó.',
+        'notConnected': '$device chưa kết nối',
+        'noAnswer': '$device không trả lời',
+        'cannotExtend':
+            'Mac này không tạo được màn hình phụ. Cần macOS 12.3 trở lên.',
+        'needsScreenRecording':
+            'Hãy cho phép Ferret trong Ghi màn hình để dùng $device làm màn hình phụ',
+        'stoppedHere': 'Đã thôi dùng $device làm màn hình phụ',
+        'stoppedThere': '$device đã thôi làm màn hình phụ',
+        'lostConnection': 'Mất kết nối với $device nên màn hình phụ đã tắt',
+        'systemEnded': 'macOS đã tắt màn hình phụ trên $device',
+        'other': 'Màn hình phụ trên $device đã ngừng hoạt động',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get displayScreenRecordingBody =>
+      'Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Ghi màn hình. Bật Ferret, rồi thoát và mở lại.';
+
+  @override
+  String get displayOpenSettings => 'Mở Cài đặt';
+
+  @override
+  String displayAllowTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$device muốn dùng $_temp0 làm màn hình phụ';
+  }
+
+  @override
+  String get displayAllowBody =>
+      'Màn hình này nối vào màn hình nền của nó, và chuột, bàn phím ở đây điều khiển nó. Chỉ đồng ý nếu đó là máy của bạn.';
+
+  @override
+  String get displayAllow => 'Cho phép';
+
+  @override
+  String displayShowingTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 đang là màn hình phụ của $device';
+  }
+
+  @override
+  String displayShowingDetail(String time) {
+    return 'Từ $time · Esc để thoát toàn màn hình';
+  }
+
+  @override
+  String displayWindowTitle(String device) {
+    return '$device — Màn hình phụ';
+  }
+
+  @override
+  String displayConnectingTitle(String device) {
+    return 'Đang kết nối với $device…';
+  }
+
+  @override
+  String displayConnectingBody(String device) {
+    return '$device đang tạo một màn hình phụ vừa với màn hình này.';
+  }
+
+  @override
+  String displayBarTitle(String device) {
+    return 'Màn hình phụ của $device';
+  }
+
+  @override
+  String get displayEscHint => 'Esc để thoát toàn màn hình';
+
+  @override
+  String displayViewEnded(String device, String end, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      end,
+      {
+        'stoppedOnPhone': '$device đã thôi dùng $_temp0 làm màn hình phụ',
+        'stoppedHere': 'Đã thôi làm màn hình phụ của $device',
+        'lostConnection': 'Mất kết nối với $device',
+        'noAnswer': '$device không gửi màn hình phụ',
+        'denied': '$device đã rút lại lời mời',
+        'other': 'Màn hình phụ của $device đã ngừng hoạt động',
+      },
+    );
+    return '$_temp1';
+  }
+
+  @override
+  String displayNoInput(String device) {
+    return '$device chưa nhận được thao tác của bạn: hãy cho phép Ferret trong Trợ năng trên máy đó.';
+  }
 }

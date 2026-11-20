@@ -17,7 +17,17 @@ abstract interface class MirrorControl {
   void setClipboard(String text, {bool paste = false});
 }
 
-enum ControlAbility { pointer, keys, text, buttons, clipboard }
+enum ControlAbility {
+  pointer,
+  keys,
+  text,
+  buttons,
+  clipboard,
+
+  /// A computer's own mouse: hovering moves its pointer, and every button
+  /// clicks. Keys go as they are, shortcuts included.
+  mouse,
+}
 
 enum PointerPhase { down, move, up, cancel, hover, scroll }
 

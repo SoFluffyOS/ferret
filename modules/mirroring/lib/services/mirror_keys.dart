@@ -118,6 +118,10 @@ abstract final class MirrorKeys {
     KeyModifier shortcut,
   ) {
     final key = event.logicalKey;
+    if (abilities.contains(ControlAbility.mouse)) {
+      return _computerShortcutOf(event, modifiers, abilities);
+    }
+
     final plain = modifiers.length == 1;
     final withShift =
         modifiers.length == 2 && modifiers.contains(KeyModifier.shift);
@@ -146,6 +150,21 @@ abstract final class MirrorKeys {
     }
 
     return _sendKey(event, const {.control});
+  }
+
+  /// A computer has the same shortcuts as this one: they go as they are,
+  /// all but quitting this app.
+  static InputAction? _computerShortcutOf(
+    KeyEvent event,
+    Set<KeyModifier> modifiers,
+    Set<ControlAbility> abilities,
+  ) {
+    if (event.logicalKey == LogicalKeyboardKey.keyQ ||
+        !abilities.contains(ControlAbility.keys)) {
+      return null;
+    }
+
+    return _sendKey(event, modifiers);
   }
 
   static InputAction? _ownShortcut(

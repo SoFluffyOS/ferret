@@ -1,16 +1,25 @@
 import 'dart:async';
 
-/// A device asking to show its screen on this computer, until its owner
-/// answers or the question runs out.
+/// A device asking to show its screen on this computer, or to use it as
+/// its extra display, until its owner answers or the question runs out.
 class IncomingRequest {
   IncomingRequest({
     required this.receiverId,
     required this.deviceName,
     required this.askedAt,
     required this.deadline,
+    this.deviceId,
+    this.display = false,
   });
 
   final String receiverId;
+
+  /// The paired device asking, when it asks over Ferret.
+  final String? deviceId;
+
+  /// It asks to be shown as an extra display of its desktop, not its
+  /// screen.
+  final bool display;
 
   /// What the device calls itself. Nothing proves it.
   final String deviceName;

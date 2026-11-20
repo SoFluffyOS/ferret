@@ -402,7 +402,9 @@ class MirrorRoutes {
     }
 
     for (final request in List.of(_requests)) {
-      answer(request, allow: false);
+      if (!request.display) {
+        answer(request, allow: false);
+      }
     }
   }
 
@@ -441,9 +443,38 @@ class MirrorRoutes {
     byDefault: receiver.listensByDefault,
   );
 
+  /// Asks the owner whether the paired computer [deviceId] may use this
+  /// one as its extra display. No answer within [askTimeout] is a no.
+  Future<bool> askDisplay(String deviceId, String deviceName) =>
+      _ask(ferret.id, deviceName, deviceId: deviceId, display: true);
+
+  /// The question from [deviceId] about being its display, while it is
+  /// asked.
+  IncomingRequest? displayRequestFrom(String deviceId) {
+    for (final request in _requests) {
+      if (request.display && request.deviceId == deviceId) {
+        return request;
+      }
+    }
+
+    return null;
+  }
+
+  /// [deviceId] took its offer back: the question goes away as a no.
+  void withdrawDisplay(String deviceId) {
+    if (displayRequestFrom(deviceId) case final request?) {
+      answer(request, allow: false);
+    }
+  }
+
   /// Puts a device's question in front of the owner. No answer within
   /// [askTimeout] is a no.
-  Future<bool> _ask(String receiverId, String deviceName) async {
+  Future<bool> _ask(
+    String receiverId,
+    String deviceName, {
+    String? deviceId,
+    bool display = false,
+  }) async {
     if (_disposed) {
       return false;
     }
@@ -454,6 +485,8 @@ class MirrorRoutes {
       deviceName: deviceName,
       askedAt: askedAt,
       deadline: askedAt.add(askTimeout),
+      deviceId: deviceId,
+      display: display,
     );
     _requests.add(request);
     _emit();

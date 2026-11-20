@@ -12,12 +12,14 @@ import 'package:flutter/services.dart';
 /// macOS: CGVirtualDisplay, captured with ScreenCaptureKit and encoded
 /// with VideoToolbox.
 class MacDisplayCapture implements DisplayCapture, DisplayCaptureFlutterApi {
-  MacDisplayCapture({DisplayCaptureHostApi? api})
-    : _api = api ?? DisplayCaptureHostApi() {
-    DisplayCaptureFlutterApi.setUp(this);
-  }
+  MacDisplayCapture({DisplayCaptureHostApi? api}) : _api = api;
 
-  final DisplayCaptureHostApi _api;
+  DisplayCaptureHostApi? _api;
+  bool _listening = false;
+
+  /// Made on first use, so an app that never lends its desktop never
+  /// talks to the platform for it.
+  DisplayCaptureHostApi get _host => _api ??= DisplayCaptureHostApi();
   final StreamController<CaptureEvent> _events = .broadcast(sync: true);
 
   @override
@@ -25,7 +27,7 @@ class MacDisplayCapture implements DisplayCapture, DisplayCaptureFlutterApi {
 
   @override
   Future<DisplaySupport> support() async {
-    final support = await _api.support();
+    final support = await _host.support();
     return DisplaySupport(
       canExtend: support.canExtend,
       screenRecordingGranted: support.screenRecordingGranted,
@@ -34,19 +36,39 @@ class MacDisplayCapture implements DisplayCapture, DisplayCaptureFlutterApi {
   }
 
   @override
-  Future<bool> requestScreenRecording() => _api.requestScreenRecording();
+  Future<ScreenPanel?> screen() async {
+    final screen = await _host.screen();
+    if (screen.width == 0 || screen.height == 0) {
+      return null;
+    }
+
+    return ScreenPanel(
+      width: screen.width,
+      height: screen.height,
+      scale: screen.scale,
+      refreshHz: screen.refreshHz,
+    );
+  }
 
   @override
-  Future<bool> requestInput() => _api.requestInput();
+  Future<bool> requestScreenRecording() => _host.requestScreenRecording();
+
+  @override
+  Future<bool> requestInput() => _host.requestInput();
 
   @override
   Future<void> openScreenRecordingSettings() =>
-      _api.openScreenRecordingSettings();
+      _host.openScreenRecordingSettings();
 
   @override
   Future<bool> start(DisplayCaptureOptions options) async {
+    if (!_listening) {
+      DisplayCaptureFlutterApi.setUp(this);
+      _listening = true;
+    }
+
     try {
-      await _api.start(
+      await _host.start(
         NativeDisplayOptions(
           name: options.name,
           serial: options.serial,
@@ -64,16 +86,16 @@ class MacDisplayCapture implements DisplayCapture, DisplayCaptureFlutterApi {
   }
 
   @override
-  Future<void> stop() => _api.stop();
+  Future<void> stop() => _host.stop();
 
   @override
-  Future<void> requestKeyframe() => _api.requestKeyframe();
+  Future<void> requestKeyframe() => _host.requestKeyframe();
 
   @override
-  Future<void> setBitrate(int bitrate) => _api.setBitrate(bitrate);
+  Future<void> setBitrate(int bitrate) => _host.setBitrate(bitrate);
 
   @override
-  Future<void> pointer(MirrorPointer event) => _api.pointer(
+  Future<void> pointer(MirrorPointer event) => _host.pointer(
     NativeDisplayPointer(
       phase: switch (event.phase) {
         .down => .down,
@@ -92,7 +114,10 @@ class MacDisplayCapture implements DisplayCapture, DisplayCaptureFlutterApi {
 
   @override
   Future<void> dispose() async {
-    DisplayCaptureFlutterApi.setUp(null);
+    if (_listening) {
+      DisplayCaptureFlutterApi.setUp(null);
+    }
+
     await _events.close();
   }
 

@@ -881,6 +881,61 @@ struct NativeDisplayOptions: Hashable, CustomStringConvertible {
   }
 }
 
+/// This computer's own screen, for another computer that makes a display
+/// to fill it.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeScreenPanel: Hashable, CustomStringConvertible {
+  /// In pixels.
+  var width: Int64
+  var height: Int64
+  /// Pixels per point.
+  var scale: Int64
+  var refreshHz: Int64
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeScreenPanel? {
+    let width = pigeonVar_list[0] as! Int64
+    let height = pigeonVar_list[1] as! Int64
+    let scale = pigeonVar_list[2] as! Int64
+    let refreshHz = pigeonVar_list[3] as! Int64
+
+    return NativeScreenPanel(
+      width: width,
+      height: height,
+      scale: scale,
+      refreshHz: refreshHz
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      width,
+      height,
+      scale,
+      refreshHz,
+    ]
+  }
+  static func == (lhs: NativeScreenPanel, rhs: NativeScreenPanel) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.width, rhs.width) && MessagesPigeonInternal.deepEquals(lhs.height, rhs.height) && MessagesPigeonInternal.deepEquals(lhs.scale, rhs.scale) && MessagesPigeonInternal.deepEquals(lhs.refreshHz, rhs.refreshHz)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("NativeScreenPanel")
+    MessagesPigeonInternal.deepHash(value: width, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: height, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: scale, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: refreshHz, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "NativeScreenPanel(width: \(String(describing: width)), height: \(String(describing: height)), scale: \(String(describing: scale)), refreshHz: \(String(describing: refreshHz)))"
+  }
+}
+
 /// The viewer's pointer on the extra display. [x] and [y] are fractions
 /// of the display's width and height.
 ///
@@ -1014,6 +1069,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 146:
       return NativeDisplayOptions.fromList(self.readValue() as! [Any?])
     case 147:
+      return NativeScreenPanel.fromList(self.readValue() as! [Any?])
+    case 148:
       return NativeDisplayPointer.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
@@ -1077,8 +1134,11 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? NativeDisplayOptions {
       super.writeByte(146)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeDisplayPointer {
+    } else if let value = value as? NativeScreenPanel {
       super.writeByte(147)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeDisplayPointer {
+      super.writeByte(148)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -2079,6 +2139,8 @@ class MirrorAudioHostApiSetup {
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol DisplayCaptureHostApi {
   func support() throws -> NativeDisplaySupport
+  /// The screen Ferret's window is on, or the main one.
+  func screen() throws -> NativeScreenPanel
   /// Asks for Screen Recording, with the system's prompt the first time.
   /// Answers whether it is granted now.
   func requestScreenRecording() throws -> Bool
@@ -2112,6 +2174,20 @@ class DisplayCaptureHostApiSetup {
       }
     } else {
       supportChannel.setMessageHandler(nil)
+    }
+    /// The screen Ferret's window is on, or the main one.
+    let screenChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.screen\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      screenChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.screen()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      screenChannel.setMessageHandler(nil)
     }
     /// Asks for Screen Recording, with the system's prompt the first time.
     /// Answers whether it is granted now.

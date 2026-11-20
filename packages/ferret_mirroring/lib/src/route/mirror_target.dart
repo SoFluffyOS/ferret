@@ -7,6 +7,7 @@ class MirrorTarget {
     this.ferretDeviceId,
     this.wireless = false,
     this.camera = false,
+    this.display = false,
   });
 
   final String routeId;
@@ -26,13 +27,18 @@ class MirrorTarget {
   /// Its camera and microphone rather than its screen.
   final bool camera;
 
+  /// The extra display the device lends this one: this screen shows it,
+  /// and the pointer and keys here drive it.
+  final bool display;
+
   @override
   bool operator ==(Object other) =>
       other is MirrorTarget &&
       other.routeId == routeId &&
       other.id == id &&
-      other.camera == camera;
+      other.camera == camera &&
+      other.display == display;
 
   @override
-  int get hashCode => Object.hash(routeId, id, camera);
+  int get hashCode => Object.hash(routeId, id, camera, display);
 }

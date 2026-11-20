@@ -17,10 +17,12 @@ class FerretRoute implements MirrorRoute {
     required FeatureHost host,
     required String featureId,
     DateTime Function()? clock,
+    Future<DisplayPanel> Function()? panel,
     this.requestTimeout = const Duration(seconds: 10),
   }) : _host = host,
        _featureId = featureId,
-       _clock = clock ?? DateTime.now;
+       _clock = clock ?? DateTime.now,
+       _panel = panel ?? _noPanel;
 
   static const routeId = 'ferret';
 
@@ -32,6 +34,9 @@ class FerretRoute implements MirrorRoute {
   final FeatureHost _host;
   final String _featureId;
   final DateTime Function() _clock;
+
+  /// This computer's screen, for a computer that makes a display to fit.
+  final Future<DisplayPanel> Function() _panel;
   final Map<String, FerretFeed> _feeds = {};
   final Map<String, DateTime> _strayNoticeAt = {};
 
@@ -70,6 +75,24 @@ class FerretRoute implements MirrorRoute {
     camera: true,
   );
 
+  /// The extra display [deviceId] lends this computer, as a target.
+  MirrorTarget displayTargetFor(String deviceId) => MirrorTarget(
+    routeId: routeId,
+    id: deviceId,
+    name: _host.displayNameOf(deviceId),
+    ferretDeviceId: deviceId,
+    wireless: true,
+    display: true,
+  );
+
+  /// Whether [session]'s device can extend its desktop onto this one.
+  bool canExtend(Session session) =>
+      session
+          .remoteFeature(_featureId)
+          ?.flags
+          .contains(MirrorProtocol.extendFlag) ??
+      false;
+
   /// Whether [deviceId] is connected and offers its screen right now.
   bool isConnected(String deviceId) {
     final session = _host.sessionFor(deviceId);
@@ -86,6 +109,10 @@ class FerretRoute implements MirrorRoute {
 
     if (target.camera) {
       return canSendCamera(session);
+    }
+
+    if (target.display) {
+      return canExtend(session);
     }
 
     return canShow(session);
@@ -132,33 +159,45 @@ class FerretRoute implements MirrorRoute {
       return feed;
     }
 
+    if (target.display && !canExtend(session)) {
+      feed.end(.unsupported);
+      return feed;
+    }
+
     _feeds[deviceId] = feed;
     final longSide = MirrorProtocol.sideFor(
       options.maxSize,
       MirrorProtocol.maxLongSide,
     );
+    final panel = switch (target.display) {
+      true => await _panel(),
+      false => null,
+    };
     final Envelope reply;
     try {
       reply = await session.request(
         _featureId,
-        StartRequest(
-          version: MirrorProtocol.version,
-          codecs: options.codecs.map(MirrorProtocol.toProto),
-          maxWidth: longSide,
-          maxHeight: longSide,
-          maxFps: options.maxFps,
-          audioCodecs: options.audioCodecs.map(MirrorProtocol.audioToProto),
-          source: switch (target.camera) {
-            true => .SOURCE_CAMERA,
-            false => null,
-          },
-          camera: switch ((target.camera, options.lens)) {
-            (true, final lens?) => CameraOptions(
-              lens: MirrorProtocol.lensToProto(lens),
-            ),
-            _ => null,
-          },
-        ),
+        switch (panel) {
+          final panel? => _displayRequest(panel, options),
+          null => StartRequest(
+            version: MirrorProtocol.version,
+            codecs: options.codecs.map(MirrorProtocol.toProto),
+            maxWidth: longSide,
+            maxHeight: longSide,
+            maxFps: options.maxFps,
+            audioCodecs: options.audioCodecs.map(MirrorProtocol.audioToProto),
+            source: switch (target.camera) {
+              true => .SOURCE_CAMERA,
+              false => null,
+            },
+            camera: switch ((target.camera, options.lens)) {
+              (true, final lens?) => CameraOptions(
+                lens: MirrorProtocol.lensToProto(lens),
+              ),
+              _ => null,
+            },
+          ),
+        },
         timeout: requestTimeout,
       );
     } on SessionClosedException {
@@ -183,6 +222,24 @@ class FerretRoute implements MirrorRoute {
     feed.end(.noAnswer);
     return feed;
   }
+
+  /// The yes to a computer's offer: its display, the size of this
+  /// computer's screen.
+  StartRequest _displayRequest(DisplayPanel panel, FeedOptions options) =>
+      StartRequest(
+        version: MirrorProtocol.version,
+        codecs: [
+          for (final codec in options.codecs)
+            if (codec == .h264) MirrorProtocol.toProto(codec),
+        ],
+        maxWidth: panel.width,
+        maxHeight: panel.height,
+        maxFps: panel.refreshHz,
+        source: .SOURCE_DISPLAY,
+        display: panel,
+      );
+
+  static Future<DisplayPanel> _noPanel() async => DisplayPanel();
 
   void onAccept(Session session, StartAccept accept) {
     final accepted = _feeds[session.remoteDeviceId]?.onAccept(accept) ?? false;

@@ -279,4 +279,39 @@ void main() {
       expect(MirrorKeys.textAction('señor 你好', all), isA<PasteText>());
     });
   });
+
+  group('a computer\'s display', () {
+    const computer = <ControlAbility>{.pointer, .keys, .text, .mouse};
+
+    test('shortcuts go as they are, Command and all', () {
+      final action = act(
+        down(PhysicalKeyboardKey.keyC, LogicalKeyboardKey.keyC, character: 'c'),
+        modifiers: const {.meta},
+        abilities: computer,
+      );
+
+      final key = (action as SendKey).key;
+      expect(key.usage, 0x06);
+      expect(key.modifiers, {KeyModifier.meta});
+    });
+
+    test('Command-Q stays with this Mac', () {
+      final action = act(
+        down(PhysicalKeyboardKey.keyQ, LogicalKeyboardKey.keyQ, character: 'q'),
+        modifiers: const {.meta},
+        abilities: computer,
+      );
+
+      expect(action, isNull);
+    });
+
+    test('typing still types', () {
+      final action = act(
+        down(PhysicalKeyboardKey.keyA, LogicalKeyboardKey.keyA, character: 'a'),
+        abilities: computer,
+      );
+
+      expect((action as SendText).text, 'a');
+    });
+  });
 }

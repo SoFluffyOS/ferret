@@ -2238,6 +2238,17 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get cameraTitle => pseudo(super.cameraTitle);
   @override
+  String get displayScreenRecordingBody =>
+      pseudo(super.displayScreenRecordingBody);
+  @override
+  String get displayOpenSettings => pseudo(super.displayOpenSettings);
+  @override
+  String get displayAllowBody => pseudo(super.displayAllowBody);
+  @override
+  String get displayAllow => pseudo(super.displayAllow);
+  @override
+  String get displayEscHint => pseudo(super.displayEscHint);
+  @override
   String windowTitle(String device) => pseudo(super.windowTitle(device));
   @override
   String inWindowTitle(String device) => pseudo(super.inWindowTitle(device));
@@ -2620,6 +2631,55 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String settingsCameraAlwaysCount(int count) =>
       pseudo(super.settingsCameraAlwaysCount(count));
+  @override
+  String displayUse(String device) => pseudo(super.displayUse(device));
+  @override
+  String displayStopUsing(String device) =>
+      pseudo(super.displayStopUsing(device));
+  @override
+  String displayAskingTitle(String device) =>
+      pseudo(super.displayAskingTitle(device));
+  @override
+  String displayAskingBody(String device) =>
+      pseudo(super.displayAskingBody(device));
+  @override
+  String displayStartingTitle(String device) =>
+      pseudo(super.displayStartingTitle(device));
+  @override
+  String displayExtendingTitle(String device, String here) =>
+      pseudo(super.displayExtendingTitle(device, here));
+  @override
+  String displayExtendingDetail(String time) =>
+      pseudo(super.displayExtendingDetail(time));
+  @override
+  String displayEnded(String device, String end) =>
+      pseudo(super.displayEnded(device, end));
+  @override
+  String displayAllowTitle(String device, String here) =>
+      pseudo(super.displayAllowTitle(device, here));
+  @override
+  String displayShowingTitle(String device, String here) =>
+      pseudo(super.displayShowingTitle(device, here));
+  @override
+  String displayShowingDetail(String time) =>
+      pseudo(super.displayShowingDetail(time));
+  @override
+  String displayWindowTitle(String device) =>
+      pseudo(super.displayWindowTitle(device));
+  @override
+  String displayConnectingTitle(String device) =>
+      pseudo(super.displayConnectingTitle(device));
+  @override
+  String displayConnectingBody(String device) =>
+      pseudo(super.displayConnectingBody(device));
+  @override
+  String displayBarTitle(String device) =>
+      pseudo(super.displayBarTitle(device));
+  @override
+  String displayViewEnded(String device, String end, String here) =>
+      pseudo(super.displayViewEnded(device, end, here));
+  @override
+  String displayNoInput(String device) => pseudo(super.displayNoInput(device));
 }
 
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {

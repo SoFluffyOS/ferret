@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fake_async/fake_async.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -420,6 +422,53 @@ void main() {
         async.flushMicrotasks();
         async.elapse(const Duration(seconds: 31));
         expect(answers, [true, false, false]);
+        expect(routes.requests, isEmpty);
+      });
+    });
+  });
+
+  group('a computer asking to use this one as its display', () {
+    test('waits for the owner, whatever the receivers do', () async {
+      await create();
+      final answer = routes.askDisplay('pro', 'MacBook Pro');
+
+      final request = routes.displayRequestFrom('pro');
+      expect(request?.display, isTrue);
+      expect(request?.deviceId, 'pro');
+      expect(request?.deviceName, 'MacBook Pro');
+
+      await routes.refreshReceivers();
+      expect(routes.requests, [request], reason: 'no receiver is asking');
+
+      routes.answer(routes.requests.single, allow: true);
+      expect(await answer, isTrue);
+      expect(routes.displayRequestFrom('pro'), isNull);
+    });
+
+    test('a computer that takes its offer back gets a no', () async {
+      await create();
+      final answer = routes.askDisplay('pro', 'MacBook Pro');
+
+      routes.withdrawDisplay('pro');
+
+      expect(await answer, isFalse);
+      expect(routes.requests, isEmpty);
+    });
+
+    test('nobody answering in time is a no', () {
+      fakeAsync((async) {
+        unawaited(create());
+        async.flushMicrotasks();
+        bool? allowed;
+        unawaited(
+          routes
+              .askDisplay('pro', 'MacBook Pro')
+              .then((answer) => allowed = answer),
+        );
+
+        async.elapse(routes.askTimeout);
+
+        expect(allowed, isFalse);
         expect(routes.requests, isEmpty);
       });
     });

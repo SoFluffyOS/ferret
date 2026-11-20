@@ -28,6 +28,7 @@ class FerretControl implements MirrorControl {
           .CONTROL_KIND_KEYS => ControlAbility.keys,
           .CONTROL_KIND_TEXT => ControlAbility.text,
           .CONTROL_KIND_BUTTONS => ControlAbility.buttons,
+          .CONTROL_KIND_MOUSE => ControlAbility.mouse,
           _ => null,
         },
     },
@@ -51,18 +52,24 @@ class FerretControl implements MirrorControl {
       return;
     }
 
-    final phase = switch (event.phase) {
-      .down => TouchPhase.TOUCH_PHASE_DOWN,
-      .move => TouchPhase.TOUCH_PHASE_MOVE,
-      .up => TouchPhase.TOUCH_PHASE_UP,
-      .cancel => TouchPhase.TOUCH_PHASE_CANCEL,
-      .scroll => TouchPhase.TOUCH_PHASE_SCROLL,
-      .hover => null,
+    final mouse = abilities.contains(ControlAbility.mouse);
+    final phase = switch ((event.phase, mouse)) {
+      (.down, _) => TouchPhase.TOUCH_PHASE_DOWN,
+      (.move, _) => TouchPhase.TOUCH_PHASE_MOVE,
+      (.up, _) => TouchPhase.TOUCH_PHASE_UP,
+      (.cancel, _) => TouchPhase.TOUCH_PHASE_CANCEL,
+      (.scroll, _) => TouchPhase.TOUCH_PHASE_SCROLL,
+      (.hover, true) => TouchPhase.TOUCH_PHASE_HOVER,
+      (.hover, false) => null,
     };
     if (phase == null) {
       return;
     }
 
+    final pressing =
+        phase == .TOUCH_PHASE_DOWN ||
+        phase == .TOUCH_PHASE_MOVE ||
+        phase == .TOUCH_PHASE_UP;
     _queue(
       ControlEvent(
         pointer: PointerInput(
@@ -71,6 +78,10 @@ class FerretControl implements MirrorControl {
           y: event.y,
           scrollX: event.scrollX,
           scrollY: event.scrollY,
+          button: switch (mouse && pressing) {
+            true => _mouseButtonOf(event.buttons),
+            false => null,
+          },
         ),
       ),
     );
@@ -179,6 +190,22 @@ class FerretControl implements MirrorControl {
   static const _digit9 = 0x26;
   static const _f1 = 0x3A;
   static const _f12 = 0x45;
+
+  /// The button in Flutter's button bits; the primary one goes unset.
+  static input.MouseButton? _mouseButtonOf(int buttons) {
+    if (buttons & _secondaryButton != 0) {
+      return .MOUSE_BUTTON_RIGHT;
+    }
+
+    if (buttons & _middleButton != 0) {
+      return .MOUSE_BUTTON_MIDDLE;
+    }
+
+    return null;
+  }
+
+  static const _secondaryButton = 0x02;
+  static const _middleButton = 0x04;
 
   static DeviceButton? _buttonFrom(ControlButton button) => switch (button) {
     .CONTROL_BUTTON_BACK => .back,

@@ -1501,5 +1501,173 @@
   },
   "permissionCameraAsk": "Ask to use this phone's camera",
   "permissionCameraAskOff": "Camera is off for every computer. Turn it on in Settings → To your computer.",
-  "cameraTitle": "Camera"
+  "cameraTitle": "Camera",
+  "displayUse": "Use {device} as a display",
+  "@displayUse": {
+    "description": "Device action on a paired computer: extends this computer's desktop onto it",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayStopUsing": "Stop using {device} as a display",
+  "@displayStopUsing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayAskingTitle": "Asking {device} to be a display…",
+  "@displayAskingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayAskingBody": "Someone on {device} has to say yes there.",
+  "@displayAskingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayStartingTitle": "Making a display for {device}…",
+  "@displayStartingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayExtendingTitle": "{device} is a display for {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@displayExtendingTitle": {
+    "description": "Pinned Activity line on the computer whose desktop is extended",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "displayExtendingDetail": "Since {time} · Arrange it in System Settings → Displays",
+  "@displayExtendingDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "displayEnded": "{end, select, declined{{device} said no to being a display} timedOut{Nobody answered on {device}} busy{{device} is already another computer's display} unsupported{{device} can't be a display yet. Update Ferret there.} notConnected{{device} isn't connected} noAnswer{{device} didn't answer} cannotExtend{This Mac can't make an extra display. It needs macOS 12.3 or later.} needsScreenRecording{Allow Ferret in Screen Recording to use {device} as a display} stoppedHere{Stopped using {device} as a display} stoppedThere{{device} stopped being a display} lostConnection{Lost {device}, so its display went away} systemEnded{macOS ended the display on {device}} other{The display on {device} stopped working}}",
+  "@displayEnded": {
+    "description": "Activity line after using another computer as a display, by how it ended",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "displayScreenRecordingBody": "System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.",
+  "displayOpenSettings": "Open Settings",
+  "displayAllowTitle": "{device} wants to use {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display",
+  "@displayAllowTitle": {
+    "description": "Question on the computer that would become another computer's extra display",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "displayAllowBody": "This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.",
+  "displayAllow": "Allow",
+  "@displayAllow": {
+    "description": "Button that lets another computer use this one as its display"
+  },
+  "displayShowingTitle": "{here, select, macOS{This Mac} windows{This PC} other{This computer}} is {device}'s display",
+  "@displayShowingTitle": {
+    "description": "Pinned Activity line on the computer showing another computer's extra display",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "displayShowingDetail": "Since {time} · Esc leaves full screen",
+  "@displayShowingDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "displayWindowTitle": "{device} — Display",
+  "@displayWindowTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayConnectingTitle": "Connecting to {device}…",
+  "@displayConnectingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayConnectingBody": "{device} is making a display the size of this screen.",
+  "@displayConnectingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayBarTitle": "{device}'s display",
+  "@displayBarTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "displayEscHint": "Esc leaves full screen",
+  "displayViewEnded": "{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display} stoppedHere{Stopped being {device}'s display} lostConnection{Lost {device}} noAnswer{{device} didn't send its display} denied{{device} took its offer back} other{{device}'s display stopped working}}",
+  "@displayViewEnded": {
+    "description": "What the display window says when it ended, by how",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "displayNoInput": "{device} can't take your clicks yet: allow Ferret in Accessibility there.",
+  "@displayNoInput": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -29,6 +29,24 @@ class DisplaySupport {
   final bool inputGranted;
 }
 
+/// A screen as another computer sizes its display to fill it.
+class ScreenPanel {
+  const ScreenPanel({
+    required this.width,
+    required this.height,
+    this.scale = 1,
+    this.refreshHz = 60,
+  });
+
+  /// In pixels.
+  final int width;
+  final int height;
+
+  /// Pixels per point: 2 for a sharp (Retina) screen.
+  final int scale;
+  final int refreshHz;
+}
+
 class DisplayCaptureOptions {
   const DisplayCaptureOptions({
     required this.name,
@@ -76,6 +94,10 @@ abstract interface class DisplayCapture {
   static bool get isSupportedPlatform => Platform.isMacOS;
 
   Future<DisplaySupport> support();
+
+  /// This computer's own screen, the one Ferret's window is on, for being
+  /// another computer's display. Null where it can't say.
+  Future<ScreenPanel?> screen();
 
   /// Asks for the system's screen recording permission, with its own
   /// prompt the first time. Answers whether it is granted now.

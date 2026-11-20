@@ -48,6 +48,21 @@ final class DisplayCapture: NSObject, DisplayCaptureHostApi {
       inputGranted: AXIsProcessTrusted())
   }
 
+  func screen() throws -> NativeScreenPanel {
+    let shown = NSApp.keyWindow?.screen ?? NSApp.mainWindow?.screen ?? NSScreen.main
+    guard let shown else {
+      return NativeScreenPanel(width: 0, height: 0, scale: 1, refreshHz: 60)
+    }
+
+    let scale = shown.backingScaleFactor
+    let refreshHz = shown.maximumFramesPerSecond
+    return NativeScreenPanel(
+      width: Int64((shown.frame.width * scale).rounded()),
+      height: Int64((shown.frame.height * scale).rounded()),
+      scale: Int64(scale.rounded()),
+      refreshHz: Int64(refreshHz > 0 ? refreshHz : 60))
+  }
+
   func requestScreenRecording() throws -> Bool {
     if CGPreflightScreenCaptureAccess() {
       return true

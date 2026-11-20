@@ -17,12 +17,19 @@ class StageWindowViewModel extends ChangeNotifier {
   /// A camera's picture as a phone on its side sends it.
   static const cameraShape = Size(1280, 720);
 
+  /// A laptop's screen, until the computer lending its display says.
+  static const displayShape = Size(2560, 1600);
+
   final ViewerViewModel _viewer;
   FeatureWindows? _windows;
   String? _deviceId;
   Size? _shape;
   bool _opening = false;
   bool _disposed = false;
+  bool _fullScreen = false;
+
+  /// Whether the window fills its screen, as far as this side put it so.
+  bool get isFullScreen => _fullScreen;
 
   /// Whether Show screen opens a window of its own here.
   bool get canOpen => _windows?.canOpen ?? false;
@@ -50,6 +57,7 @@ class StageWindowViewModel extends ChangeNotifier {
     required WidgetBuilder builder,
     double barHeight = 0,
     Size shape = firstShape,
+    bool fullScreen = false,
   }) async {
     final windows = _windows;
     if (windows == null || !windows.canOpen) {
@@ -68,9 +76,11 @@ class StageWindowViewModel extends ChangeNotifier {
         contentSize: content,
         barHeight: barHeight,
         builder: builder,
+        fullScreen: fullScreen,
       ),
     );
     _opening = false;
+    _fullScreen = opened && fullScreen;
     if (!opened && _deviceId == deviceId) {
       _deviceId = null;
       _shape = null;
@@ -87,6 +97,29 @@ class StageWindowViewModel extends ChangeNotifier {
 
   /// Closes the window, which stops what it showed.
   Future<void> close() async => _windows?.close();
+
+  /// Puts the window in full screen, or takes it out.
+  Future<void> setFullScreen(bool fullScreen) async {
+    final windows = _windows;
+    if (windows == null) {
+      return;
+    }
+
+    await windows.setFullScreen(fullScreen);
+    _fullScreen = fullScreen;
+    _notify();
+  }
+
+  /// Full screen when it isn't, and back. Asks the window, which may have
+  /// left full screen its own way.
+  Future<void> toggleFullScreen() async {
+    final windows = _windows;
+    if (windows == null) {
+      return;
+    }
+
+    await setFullScreen(!await windows.isFullScreen());
+  }
 
   @override
   void dispose() {
@@ -134,6 +167,7 @@ class StageWindowViewModel extends ChangeNotifier {
 
     _deviceId = null;
     _shape = null;
+    _fullScreen = false;
     _notify();
   }
 

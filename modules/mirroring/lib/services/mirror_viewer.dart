@@ -179,6 +179,11 @@ class MirrorViewer {
   Future<void> showCamera(String deviceId) =>
       startTarget(_routes.ferret.cameraTargetFor(deviceId));
 
+  /// Shows the extra display the paired computer [deviceId] lends this
+  /// one, after its owner said yes here.
+  Future<void> showDisplay(String deviceId) =>
+      startTarget(_routes.ferret.displayTargetFor(deviceId));
+
   /// Switches the camera being shown to [lens], and starts with it next
   /// time.
   Future<void> setLens(MirrorLens lens) async {
@@ -355,7 +360,10 @@ class MirrorViewer {
         target: target,
         phase: .requesting,
         viaFallback: viaFallback,
-        sound: _askedSound,
+        sound: switch (target.display) {
+          true => .off,
+          false => _askedSound,
+        },
       ),
     );
     final status = await _routes.statusOf(route);
@@ -440,6 +448,15 @@ class MirrorViewer {
       true => audioCodecs,
       false => const <MirrorAudioCodec>[],
     };
+    if (target.display) {
+      return FeedOptions(
+        codecs: [
+          for (final codec in _codecs)
+            if (codec == .h264) codec,
+        ],
+      );
+    }
+
     if (!target.camera) {
       return _settings.quality.options(_codecs, audioCodecs: sound);
     }
@@ -849,7 +866,9 @@ class MirrorViewer {
       return;
     }
 
-    if (end == .lostConnection && current.isMirroring && _reopenable) {
+    // A computer takes its display away the moment the connection drops.
+    final reopens = _reopenable && !current.isDisplay;
+    if (end == .lostConnection && current.isMirroring && reopens) {
       _reconnect(current);
       return;
     }
@@ -886,7 +905,8 @@ class MirrorViewer {
   /// reach or ask it. Never after its owner answered, and never twice.
   MirrorTarget? _fallbackFor(ViewSession session, ViewEnd end) {
     final overFerret = session.target.routeId == _routes.ferret.id;
-    final tried = session.startedAt != null || session.isCamera;
+    final tried =
+        session.startedAt != null || session.isCamera || session.isDisplay;
     if (!overFerret || tried || !end.mayFallBack) {
       return null;
     }
@@ -969,7 +989,7 @@ class MirrorViewer {
 
   MirrorRecord? _recordOf(ViewSession session, ViewEnd end) {
     final startedAt = session.startedAt;
-    if (startedAt == null) {
+    if (startedAt == null || session.isDisplay) {
       return null;
     }
 

@@ -954,6 +954,62 @@ data class NativeDisplayOptions (
 }
 
 /**
+ * This computer's own screen, for another computer that makes a display
+ * to fill it.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeScreenPanel (
+  /** In pixels. */
+  val width: Long,
+  val height: Long,
+  /** Pixels per point. */
+  val scale: Long,
+  val refreshHz: Long
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeScreenPanel {
+      val width = pigeonVar_list[0] as Long
+      val height = pigeonVar_list[1] as Long
+      val scale = pigeonVar_list[2] as Long
+      val refreshHz = pigeonVar_list[3] as Long
+      return NativeScreenPanel(width, height, scale, refreshHz)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      width,
+      height,
+      scale,
+      refreshHz,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as NativeScreenPanel
+    return MessagesPigeonUtils.deepEquals(this.width, other.width) && MessagesPigeonUtils.deepEquals(this.height, other.height) && MessagesPigeonUtils.deepEquals(this.scale, other.scale) && MessagesPigeonUtils.deepEquals(this.refreshHz, other.refreshHz)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.width)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.height)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.scale)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.refreshHz)
+    return result
+  }
+  override fun toString(): String {
+    return "NativeScreenPanel(width=$width, height=$height, scale=$scale, refreshHz=$refreshHz)"
+  }
+}
+
+/**
  * The viewer's pointer on the extra display. [x] and [y] are fractions
  * of the display's width and height.
  *
@@ -1111,6 +1167,11 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       147.toByte() -> {
         (readValue(buffer) as? List<Any?>)?.let {
+          NativeScreenPanel.fromList(it)
+        }
+      }
+      148.toByte() -> {
+        (readValue(buffer) as? List<Any?>)?.let {
           NativeDisplayPointer.fromList(it)
         }
       }
@@ -1191,8 +1252,12 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(146)
         writeValue(stream, value.toList())
       }
-      is NativeDisplayPointer -> {
+      is NativeScreenPanel -> {
         stream.write(147)
+        writeValue(stream, value.toList())
+      }
+      is NativeDisplayPointer -> {
+        stream.write(148)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -2207,6 +2272,8 @@ interface MirrorAudioHostApi {
  */
 interface DisplayCaptureHostApi {
   fun support(): NativeDisplaySupport
+  /** The screen Ferret's window is on, or the main one. */
+  fun screen(): NativeScreenPanel
   /**
    * Asks for Screen Recording, with the system's prompt the first time.
    * Answers whether it is granted now.
@@ -2238,6 +2305,21 @@ interface DisplayCaptureHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               listOf(api.support())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.ferret_mirroring.DisplayCaptureHostApi.screen$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.screen())
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

@@ -468,6 +468,25 @@ class NativeDisplayOptions {
   int bitrate;
 }
 
+/// This computer's own screen, for another computer that makes a display
+/// to fill it.
+class NativeScreenPanel {
+  NativeScreenPanel({
+    required this.width,
+    required this.height,
+    required this.scale,
+    required this.refreshHz,
+  });
+
+  /// In pixels.
+  int width;
+  int height;
+
+  /// Pixels per point.
+  int scale;
+  int refreshHz;
+}
+
 enum NativePointerPhase { down, move, up, hover, scroll }
 
 /// The viewer's pointer on the extra display. [x] and [y] are fractions
@@ -499,6 +518,9 @@ class NativeDisplayPointer {
 @HostApi()
 abstract class DisplayCaptureHostApi {
   NativeDisplaySupport support();
+
+  /// The screen Ferret's window is on, or the main one.
+  NativeScreenPanel screen();
 
   /// Asks for Screen Recording, with the system's prompt the first time.
   /// Answers whether it is granted now.

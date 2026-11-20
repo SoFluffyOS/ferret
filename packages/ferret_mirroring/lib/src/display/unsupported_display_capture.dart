@@ -13,6 +13,9 @@ class UnsupportedDisplayCapture implements DisplayCapture {
   Future<DisplaySupport> support() async => const .none();
 
   @override
+  Future<ScreenPanel?> screen() async => null;
+
+  @override
   Future<bool> requestScreenRecording() async => false;
 
   @override

@@ -1539,4 +1539,168 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get cameraTitle => 'Camera';
+
+  @override
+  String displayUse(String device) {
+    return 'Use $device as a display';
+  }
+
+  @override
+  String displayStopUsing(String device) {
+    return 'Stop using $device as a display';
+  }
+
+  @override
+  String displayAskingTitle(String device) {
+    return 'Asking $device to be a display…';
+  }
+
+  @override
+  String displayAskingBody(String device) {
+    return 'Someone on $device has to say yes there.';
+  }
+
+  @override
+  String displayStartingTitle(String device) {
+    return 'Making a display for $device…';
+  }
+
+  @override
+  String displayExtendingTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device is a display for $_temp0';
+  }
+
+  @override
+  String displayExtendingDetail(String time) {
+    return 'Since $time · Arrange it in System Settings → Displays';
+  }
+
+  @override
+  String displayEnded(String device, String end) {
+    String _temp0 = intl.Intl.selectLogic(
+      end,
+      {
+        'declined': '$device said no to being a display',
+        'timedOut': 'Nobody answered on $device',
+        'busy': '$device is already another computer\'s display',
+        'unsupported': '$device can\'t be a display yet. Update Ferret there.',
+        'notConnected': '$device isn\'t connected',
+        'noAnswer': '$device didn\'t answer',
+        'cannotExtend': 'This Mac can\'t make an extra display. It needs macOS 12.3 or later.',
+        'needsScreenRecording':
+            'Allow Ferret in Screen Recording to use $device as a display',
+        'stoppedHere': 'Stopped using $device as a display',
+        'stoppedThere': '$device stopped being a display',
+        'lostConnection': 'Lost $device, so its display went away',
+        'systemEnded': 'macOS ended the display on $device',
+        'other': 'The display on $device stopped working',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get displayScreenRecordingBody =>
+      'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.';
+
+  @override
+  String get displayOpenSettings => 'Open Settings';
+
+  @override
+  String displayAllowTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return '$device wants to use $_temp0 as a display';
+  }
+
+  @override
+  String get displayAllowBody =>
+      'This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.';
+
+  @override
+  String get displayAllow => 'Allow';
+
+  @override
+  String displayShowingTitle(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'This Mac',
+        'windows': 'This PC',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is $device\'s display';
+  }
+
+  @override
+  String displayShowingDetail(String time) {
+    return 'Since $time · Esc leaves full screen';
+  }
+
+  @override
+  String displayWindowTitle(String device) {
+    return '$device — Display';
+  }
+
+  @override
+  String displayConnectingTitle(String device) {
+    return 'Connecting to $device…';
+  }
+
+  @override
+  String displayConnectingBody(String device) {
+    return '$device is making a display the size of this screen.';
+  }
+
+  @override
+  String displayBarTitle(String device) {
+    return '$device\'s display';
+  }
+
+  @override
+  String get displayEscHint => 'Esc leaves full screen';
+
+  @override
+  String displayViewEnded(String device, String end, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    String _temp1 = intl.Intl.selectLogic(
+      end,
+      {
+        'stoppedOnPhone': '$device stopped using $_temp0 as a display',
+        'stoppedHere': 'Stopped being $device\'s display',
+        'lostConnection': 'Lost $device',
+        'noAnswer': '$device didn\'t send its display',
+        'denied': '$device took its offer back',
+        'other': '$device\'s display stopped working',
+      },
+    );
+    return '$_temp1';
+  }
+
+  @override
+  String displayNoInput(String device) {
+    return '$device can\'t take your clicks yet: allow Ferret in Accessibility there.';
+  }
 }

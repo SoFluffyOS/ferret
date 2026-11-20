@@ -73,11 +73,22 @@ class MirrorHost implements FeatureHost {
 /// A connected phone that offers its screen and answers requests with
 /// [answer].
 class MirrorSession implements Session {
-  MirrorSession(this.remoteDeviceId, {required this.name, this.answer});
+  MirrorSession(
+    this.remoteDeviceId, {
+    required this.name,
+    this.answer,
+    this.flags = const [
+      MirroringFeature.shareFlag,
+      MirroringFeature.cameraFlag,
+    ],
+  });
 
   @override
   final String remoteDeviceId;
   final String name;
+
+  /// What the device says it can do for mirroring.
+  final List<String> flags;
   FutureOr<GeneratedMessage> Function(GeneratedMessage request)? answer;
 
   @override
@@ -93,11 +104,8 @@ class MirrorSession implements Session {
   bool supports(String featureId) => featureId == MirroringFeature.featureId;
 
   @override
-  FeatureSupport? remoteFeature(String featureId) => FeatureSupport(
-    id: featureId,
-    version: 1,
-    flags: const [MirroringFeature.shareFlag, MirroringFeature.cameraFlag],
-  );
+  FeatureSupport? remoteFeature(String featureId) =>
+      FeatureSupport(id: featureId, version: 1, flags: flags);
 
   @override
   Future<void> send(String feature, GeneratedMessage message) async {}
@@ -377,4 +385,54 @@ class StillCamera implements CameraCapture {
 
   @override
   Future<void> dispose() async => _events.close();
+}
+
+/// A Mac's extra display that never touches the system: it starts, stops
+/// and measures a laptop screen. [screenRecording] says whether Screen
+/// Recording is allowed.
+class StillDisplay implements DisplayCapture {
+  StillDisplay({this.screenRecording = true});
+
+  final bool screenRecording;
+
+  @override
+  Stream<CaptureEvent> get events => const .empty();
+
+  @override
+  Future<DisplaySupport> support() async => DisplaySupport(
+    canExtend: true,
+    screenRecordingGranted: screenRecording,
+    inputGranted: true,
+  );
+
+  @override
+  Future<ScreenPanel?> screen() async =>
+      const ScreenPanel(width: 2560, height: 1664, scale: 2, refreshHz: 60);
+
+  @override
+  Future<bool> requestScreenRecording() async => screenRecording;
+
+  @override
+  Future<bool> requestInput() async => true;
+
+  @override
+  Future<void> openScreenRecordingSettings() async {}
+
+  @override
+  Future<bool> start(DisplayCaptureOptions options) async => true;
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  Future<void> requestKeyframe() async {}
+
+  @override
+  Future<void> setBitrate(int bitrate) async {}
+
+  @override
+  Future<void> pointer(MirrorPointer event) async {}
+
+  @override
+  Future<void> dispose() async {}
 }

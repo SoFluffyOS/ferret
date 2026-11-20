@@ -10,7 +10,9 @@ import 'package:mirroring/services/services.dart';
 /// into what its device understands: a click is a touch, a right-click is
 /// Back, a middle-click is Home, the wheel and two fingers scroll, and
 /// typing types. Positions are fractions of [child], so they hold whatever
-/// size the picture is drawn at.
+/// size the picture is drawn at. A computer's extra display takes the
+/// mouse as a mouse instead: hovering moves its pointer, which it draws
+/// itself, and every button clicks.
 class MirrorInput extends StatefulWidget {
   const MirrorInput({
     super.key,
@@ -18,6 +20,7 @@ class MirrorInput extends StatefulWidget {
     required this.abilities,
     this.onAction,
     this.onViewOnlyTap,
+    this.onEscape,
     this.focusNode,
   });
 
@@ -34,6 +37,10 @@ class MirrorInput extends StatefulWidget {
   /// A click on a picture that takes none, to say so.
   final VoidCallback? onViewOnlyTap;
 
+  /// Esc on a computer's display, where it leaves full screen instead of
+  /// reaching that computer. Null lets Esc through.
+  final VoidCallback? onEscape;
+
   final FocusNode? focusNode;
 
   @override
@@ -47,6 +54,11 @@ class _MirrorInputState extends State<MirrorInput> {
 
   /// Keys whose press went as text: their release has nothing to send.
   final Set<PhysicalKeyboardKey> _typedKeys = {};
+
+  /// The mouse buttons each pointer pressed, for its moves and release.
+  final Map<int, int> _pressed = {};
+
+  bool get _isMouse => widget.abilities.contains(ControlAbility.mouse);
 
   bool get _canPoint => widget.abilities.contains(ControlAbility.pointer);
 
@@ -78,16 +90,23 @@ class _MirrorInputState extends State<MirrorInput> {
         builder: (context, constraints) {
           final size = constraints.biggest;
 
-          return Listener(
+          final listener = Listener(
             behavior: .opaque,
             onPointerDown: (event) => _onDown(event, size),
             onPointerMove: (event) => _onTouch(.move, event, size),
             onPointerUp: (event) => _onTouch(.up, event, size),
             onPointerCancel: (event) => _onTouch(.cancel, event, size),
+            onPointerHover: (event) => _onHover(event, size),
             onPointerSignal: (event) => _onSignal(event, size),
             onPointerPanZoomUpdate: (event) => _onPan(event, size),
             child: widget.child,
           );
+          if (!_isMouse) {
+            return listener;
+          }
+
+          // The display draws its own pointer into the picture.
+          return MouseRegion(cursor: SystemMouseCursors.none, child: listener);
         },
       ),
     };
@@ -110,7 +129,16 @@ class _MirrorInputState extends State<MirrorInput> {
       return;
     }
 
+    _pressed[event.pointer] = event.buttons;
     _send(SendPointer(_pointerOf(.down, event, size)));
+  }
+
+  void _onHover(PointerHoverEvent event, Size size) {
+    if (!_isMouse) {
+      return;
+    }
+
+    _send(SendPointer(_pointerOf(.hover, event, size)));
   }
 
   void _onTouch(PointerPhase phase, PointerEvent event, Size size) {
@@ -124,6 +152,9 @@ class _MirrorInputState extends State<MirrorInput> {
     }
 
     _send(SendPointer(_pointerOf(phase, event, size)));
+    if (phase != .move) {
+      _pressed.remove(event.pointer);
+    }
   }
 
   void _onSignal(PointerSignalEvent event, Size size) {
@@ -184,6 +215,19 @@ class _MirrorInputState extends State<MirrorInput> {
       return .handled;
     }
 
+    final onEscape = widget.onEscape;
+    final leaves =
+        onEscape != null &&
+        _isMouse &&
+        event.logicalKey == LogicalKeyboardKey.escape;
+    if (leaves && event is KeyDownEvent) {
+      onEscape();
+    }
+
+    if (leaves) {
+      return .handled;
+    }
+
     final action = MirrorKeys.actionOf(
       event,
       modifiers: MirrorKeys.modifiersOf(HardwareKeyboard.instance),
@@ -208,7 +252,10 @@ class _MirrorInputState extends State<MirrorInput> {
         x: _fraction(event.localPosition.dx, size.width),
         y: _fraction(event.localPosition.dy, size.height),
         pointerId: event.device,
-        buttons: kPrimaryButton,
+        buttons: switch (_isMouse) {
+          true => _pressed[event.pointer] ?? 0,
+          false => kPrimaryButton,
+        },
       );
 
   double _fraction(double position, double length) {

@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:ferret_remote_input/ferret_remote_input.dart' as remote;
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -366,6 +367,15 @@ class FakeWindows extends ChangeNotifier implements FeatureWindows {
     window = null;
     notifyListeners();
   }
+
+  bool fullScreen = false;
+
+  @override
+  Future<void> setFullScreen(bool fullScreen) async =>
+      this.fullScreen = fullScreen;
+
+  @override
+  Future<bool> isFullScreen() async => fullScreen;
 }
 
 /// A window that remembers whether it is full screen.
@@ -816,4 +826,133 @@ class FakeAudioSink implements AudioSink {
 
   @override
   Future<void> dispose() async => disposed = true;
+}
+
+/// A Mac's extra display in memory: the test says what is allowed and
+/// makes the frames.
+class FakeDisplayCapture implements DisplayCapture {
+  FakeDisplayCapture({
+    this.supportNow = const DisplaySupport(
+      canExtend: true,
+      screenRecordingGranted: true,
+      inputGranted: true,
+    ),
+    this.grantsScreenRecording = false,
+    this.screenNow = const ScreenPanel(
+      width: 2560,
+      height: 1664,
+      scale: 2,
+      refreshHz: 60,
+    ),
+    this.startSucceeds = true,
+  });
+
+  DisplaySupport supportNow;
+  bool grantsScreenRecording;
+  ScreenPanel? screenNow;
+  bool startSucceeds;
+  final List<DisplayCaptureOptions> started = [];
+  final List<MirrorPointer> pointers = [];
+  final List<int> bitrates = [];
+  int screenRecordingAsks = 0;
+  int inputAsks = 0;
+  int stops = 0;
+  int keyframeRequests = 0;
+  int settingsOpened = 0;
+  bool disposed = false;
+  final StreamController<CaptureEvent> _events = .broadcast(sync: true);
+
+  void emit(CaptureEvent event) => _events.add(event);
+
+  /// The first config and a keyframe, as the encoder sends them.
+  void play() {
+    emit(
+      CaptureConfigured(
+        MirrorStreamConfig(
+          codec: .h264,
+          width: 2560,
+          height: 1664,
+          fps: 60,
+          sps: Uint8List.fromList([0x67, 0x64]),
+          pps: Uint8List.fromList([0x68, 0xee]),
+        ),
+      ),
+    );
+    emit(
+      CaptureFrame(
+        MirrorFrame(
+          data: Uint8List.fromList([0, 0, 0, 1, 0x65, 1, 2, 3]),
+          ptsUs: 1000,
+          keyframe: true,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Stream<CaptureEvent> get events => _events.stream;
+
+  @override
+  Future<DisplaySupport> support() async => supportNow;
+
+  @override
+  Future<ScreenPanel?> screen() async => screenNow;
+
+  @override
+  Future<bool> requestScreenRecording() async {
+    screenRecordingAsks++;
+    return grantsScreenRecording;
+  }
+
+  @override
+  Future<bool> requestInput() async {
+    inputAsks++;
+    return supportNow.inputGranted;
+  }
+
+  @override
+  Future<void> openScreenRecordingSettings() async => settingsOpened++;
+
+  @override
+  Future<bool> start(DisplayCaptureOptions options) async {
+    started.add(options);
+    return startSucceeds;
+  }
+
+  @override
+  Future<void> stop() async => stops++;
+
+  @override
+  Future<void> requestKeyframe() async => keyframeRequests++;
+
+  @override
+  Future<void> setBitrate(int bitrate) async => bitrates.add(bitrate);
+
+  @override
+  Future<void> pointer(MirrorPointer event) async => pointers.add(event);
+
+  @override
+  Future<void> dispose() async => disposed = true;
+}
+
+/// Keys and text that would have been pressed on this computer.
+class FakeInjector implements remote.InputInjector {
+  final List<remote.InputAction> injected = [];
+
+  @override
+  Future<remote.InjectorStatus> status() async =>
+      const .ready(remote.InjectorBackend.quartz);
+
+  @override
+  Future<remote.InjectorStatus> requestAccess() => status();
+
+  @override
+  Future<void> openAccessSettings() async {}
+
+  @override
+  Future<void> inject(List<remote.InputAction> actions) async =>
+      injected.addAll(actions);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

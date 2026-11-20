@@ -19,6 +19,8 @@ dependencies:
     path: ../../packages/ferret_mirroring
   ferret_phone_control:
     path: ../../packages/ferret_phone_control
+  ferret_remote_input:
+    path: ../../packages/ferret_remote_input
   fixnum: ^1.1.1
   flutter:
     sdk: flutter

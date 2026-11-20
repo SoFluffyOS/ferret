@@ -1,0 +1,239 @@
+import 'package:core/core.dart';
+import 'package:engine/engine.dart';
+import 'package:ferret_mirroring/ferret_mirroring.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mirroring/mirroring.dart';
+
+import 'helpers/fakes.dart';
+import 'helpers/memory_discovery.dart';
+
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  late MemoryDiscoveryBus bus;
+  final engines = <FerretEngine>[];
+
+  setUp(() => bus = MemoryDiscoveryBus());
+
+  tearDown(() async {
+    for (final engine in engines) {
+      await engine.stop();
+    }
+
+    engines.clear();
+  });
+
+  Future<FerretEngine> startEngine(
+    String name,
+    MirroringFeature feature,
+  ) async {
+    final engine = await FerretEngine.create(
+      secrets: MemorySecretStore(),
+      settings: MemorySettingsStore(),
+      device: LocalDevice(
+        name: name,
+        platform: .PLATFORM_MACOS,
+        formFactor: .FORM_FACTOR_LAPTOP,
+      ),
+      features: [feature],
+      discovery: bus.join(),
+      port: 0,
+    );
+    await engine.start();
+    engines.add(engine);
+    return engine;
+  }
+
+  Future<void> until(bool Function() condition) async {
+    for (var attempt = 0; attempt < 300; attempt++) {
+      if (condition()) {
+        return;
+      }
+
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+
+    fail('Timed out waiting');
+  }
+
+  Future<String> pair(FerretEngine one, FerretEngine other) async {
+    final handle = await one.createPairingOffer();
+    final offer = PairingCodes.parseOffer(handle.qrText);
+    if (offer == null) {
+      fail('The pairing offer should parse');
+    }
+
+    offer
+      ..hosts.clear()
+      ..hosts.add('127.0.0.1');
+    expect(await other.pairWithOffer(offer), isA<Paired>());
+    await until(() => one.sessions.isNotEmpty && other.sessions.isNotEmpty);
+    return one.sessions.single.remoteDeviceId;
+  }
+
+  /// The Mac that lends its desktop, and the one that becomes its display.
+  Future<
+    ({
+      MirroringFeature pro,
+      MirroringFeature air,
+      FakeDisplayCapture capture,
+      FakeInjector injector,
+      FakeDecoder decoder,
+      String airId,
+    })
+  >
+  twoMacs() async {
+    final capture = FakeDisplayCapture();
+    final injector = FakeInjector();
+    final decoder = FakeDecoder();
+    final pro = MirroringFeature(
+      display: () => capture,
+      injector: () => injector,
+      decoder: FakeDecoder.new,
+      codecs: const [.h264],
+      canShare: false,
+      canView: true,
+      canExtend: true,
+      canBeDisplay: false,
+    );
+    final air = MirroringFeature(
+      display: () => FakeDisplayCapture(
+        screenNow: const ScreenPanel(
+          width: 2940,
+          height: 1912,
+          scale: 2,
+          refreshHz: 120,
+        ),
+      ),
+      decoder: () => decoder,
+      codecs: const [.h264],
+      canShare: false,
+      canView: true,
+      canExtend: false,
+      canBeDisplay: true,
+    );
+    final proEngine = await startEngine('MacBook Pro', pro);
+    final airEngine = await startEngine('MacBook Air', air);
+    final airId = await pair(proEngine, airEngine);
+    return (
+      pro: pro,
+      air: air,
+      capture: capture,
+      injector: injector,
+      decoder: decoder,
+      airId: airId,
+    );
+  }
+
+  test('the Pro offers, the Air says yes, its screen becomes the Pro\'s '
+      'display, and its pointer drives it until the Air stops', () async {
+    final macs = await twoMacs();
+    final display = macs.pro.display;
+    final routes = macs.air.routes;
+    final viewer = macs.air.viewer;
+    if (display == null || routes == null || viewer == null) {
+      fail('Both sides should be set up');
+    }
+
+    expect(macs.pro.flags, contains(MirrorProtocol.extendFlag));
+    expect(macs.air.flags, contains(MirrorProtocol.displayFlag));
+    expect(macs.pro.flags, isNot(contains(MirrorProtocol.displayFlag)));
+
+    await display.offer(macs.airId);
+    await until(() => routes.requests.isNotEmpty);
+    final request = routes.requests.single;
+    expect(request.display, isTrue);
+    expect(request.deviceName, 'MacBook Pro');
+    expect(display.current?.phase, ExtendPhase.asking);
+
+    routes.answer(request, allow: true);
+    await until(() => display.current?.phase == .extending);
+    final options = macs.capture.started.single;
+    expect(options.width, 2940, reason: "the Air's own screen");
+    expect(options.height, 1912);
+    expect(options.scale, 2);
+    expect(options.refreshHz, 120);
+    expect(viewer.current?.isDisplay, isTrue);
+
+    macs.capture.play();
+    await until(() => macs.decoder.frames.isNotEmpty);
+    expect(macs.decoder.configs.single.width, 2560);
+    await until(() => viewer.control != null);
+    expect(viewer.control?.abilities, contains(ControlAbility.mouse));
+
+    viewer.control?.pointer(
+      const MirrorPointer(phase: .hover, x: 0.3, y: 0.4, buttons: 0),
+    );
+    viewer.control?.pointer(
+      const MirrorPointer(phase: .down, x: 0.3, y: 0.4, buttons: 2),
+    );
+    await until(() => macs.capture.pointers.length == 2);
+    expect(macs.capture.pointers.first.phase, PointerPhase.hover);
+    expect(macs.capture.pointers.first.x, closeTo(0.3, 0.0001));
+    expect(macs.capture.pointers.last.buttons, 2);
+
+    await viewer.stop();
+    await until(() => macs.capture.stops == 1);
+    expect(display.lastRecord?.end, ExtendEnd.stoppedThere);
+  });
+
+  test(
+    'a no on the Air ends the offer on the Pro, and nothing is made',
+    () async {
+      final macs = await twoMacs();
+      final display = macs.pro.display;
+      final routes = macs.air.routes;
+      if (display == null || routes == null) {
+        fail('Both sides should be set up');
+      }
+
+      await display.offer(macs.airId);
+      await until(() => routes.requests.isNotEmpty);
+      routes.answer(routes.requests.single, allow: false);
+
+      await until(() => display.lastRecord != null);
+      expect(display.lastRecord?.end, ExtendEnd.declined);
+      expect(display.current, isNull);
+      expect(macs.capture.started, isEmpty);
+    },
+  );
+
+  test('Stop on the Pro takes its offer back on the Air', () async {
+    final macs = await twoMacs();
+    final display = macs.pro.display;
+    final routes = macs.air.routes;
+    if (display == null || routes == null) {
+      fail('Both sides should be set up');
+    }
+
+    await display.offer(macs.airId);
+    await until(() => routes.requests.isNotEmpty);
+    await display.stop();
+
+    await until(() => routes.requests.isEmpty);
+    expect(display.lastRecord?.end, ExtendEnd.stoppedHere);
+  });
+
+  test('Stop on the Pro takes the display off the Air', () async {
+    final macs = await twoMacs();
+    final display = macs.pro.display;
+    final routes = macs.air.routes;
+    final viewer = macs.air.viewer;
+    if (display == null || routes == null || viewer == null) {
+      fail('Both sides should be set up');
+    }
+
+    await display.offer(macs.airId);
+    await until(() => routes.requests.isNotEmpty);
+    routes.answer(routes.requests.single, allow: true);
+    await until(() => display.current?.phase == .extending);
+    macs.capture.play();
+    await until(() => viewer.current?.isMirroring ?? false);
+
+    await display.stop();
+
+    await until(() => viewer.current?.phase == .ended);
+    expect(viewer.current?.end, ViewEnd.stoppedOnPhone);
+    expect(macs.capture.stops, 1);
+  });
+}

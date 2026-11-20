@@ -246,6 +246,10 @@ class ViewSession {
   /// It is the device's camera and microphone, not its screen.
   bool get isCamera => target.camera;
 
+  /// It is the extra display a computer lends this one: this screen is
+  /// part of that computer's desktop.
+  bool get isDisplay => target.display;
+
   /// The camera a switch goes to: the next of [lenses] after [lens]. Null
   /// when there is no other.
   MirrorLens? get nextLens {

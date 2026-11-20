@@ -2092,6 +2092,138 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Camera'**
   String get cameraTitle;
+
+  /// Device action on a paired computer: extends this computer's desktop onto it
+  ///
+  /// In en, this message translates to:
+  /// **'Use {device} as a display'**
+  String displayUse(String device);
+
+  /// No description provided for @displayStopUsing.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop using {device} as a display'**
+  String displayStopUsing(String device);
+
+  /// No description provided for @displayAskingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking {device} to be a display…'**
+  String displayAskingTitle(String device);
+
+  /// No description provided for @displayAskingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone on {device} has to say yes there.'**
+  String displayAskingBody(String device);
+
+  /// No description provided for @displayStartingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Making a display for {device}…'**
+  String displayStartingTitle(String device);
+
+  /// Pinned Activity line on the computer whose desktop is extended
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is a display for {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String displayExtendingTitle(String device, String here);
+
+  /// No description provided for @displayExtendingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Since {time} · Arrange it in System Settings → Displays'**
+  String displayExtendingDetail(String time);
+
+  /// Activity line after using another computer as a display, by how it ended
+  ///
+  /// In en, this message translates to:
+  /// **'{end, select, declined{{device} said no to being a display} timedOut{Nobody answered on {device}} busy{{device} is already another computer\'s display} unsupported{{device} can\'t be a display yet. Update Ferret there.} notConnected{{device} isn\'t connected} noAnswer{{device} didn\'t answer} cannotExtend{This Mac can\'t make an extra display. It needs macOS 12.3 or later.} needsScreenRecording{Allow Ferret in Screen Recording to use {device} as a display} stoppedHere{Stopped using {device} as a display} stoppedThere{{device} stopped being a display} lostConnection{Lost {device}, so its display went away} systemEnded{macOS ended the display on {device}} other{The display on {device} stopped working}}'**
+  String displayEnded(String device, String end);
+
+  /// No description provided for @displayScreenRecordingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.'**
+  String get displayScreenRecordingBody;
+
+  /// No description provided for @displayOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get displayOpenSettings;
+
+  /// Question on the computer that would become another computer's extra display
+  ///
+  /// In en, this message translates to:
+  /// **'{device} wants to use {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display'**
+  String displayAllowTitle(String device, String here);
+
+  /// No description provided for @displayAllowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen joins its desktop, and your mouse and keyboard work there. Say yes only if it is yours.'**
+  String get displayAllowBody;
+
+  /// Button that lets another computer use this one as its display
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get displayAllow;
+
+  /// Pinned Activity line on the computer showing another computer's extra display
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, macOS{This Mac} windows{This PC} other{This computer}} is {device}\'s display'**
+  String displayShowingTitle(String device, String here);
+
+  /// No description provided for @displayShowingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Since {time} · Esc leaves full screen'**
+  String displayShowingDetail(String time);
+
+  /// No description provided for @displayWindowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} — Display'**
+  String displayWindowTitle(String device);
+
+  /// No description provided for @displayConnectingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to {device}…'**
+  String displayConnectingTitle(String device);
+
+  /// No description provided for @displayConnectingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is making a display the size of this screen.'**
+  String displayConnectingBody(String device);
+
+  /// No description provided for @displayBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}\'s display'**
+  String displayBarTitle(String device);
+
+  /// No description provided for @displayEscHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Esc leaves full screen'**
+  String get displayEscHint;
+
+  /// What the display window says when it ended, by how
+  ///
+  /// In en, this message translates to:
+  /// **'{end, select, stoppedOnPhone{{device} stopped using {here, select, macOS{this Mac} windows{this PC} other{this computer}} as a display} stoppedHere{Stopped being {device}\'s display} lostConnection{Lost {device}} noAnswer{{device} didn\'t send its display} denied{{device} took its offer back} other{{device}\'s display stopped working}}'**
+  String displayViewEnded(String device, String end, String here);
+
+  /// No description provided for @displayNoInput.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} can\'t take your clicks yet: allow Ferret in Accessibility there.'**
+  String displayNoInput(String device);
 }
 
 class _MirroringLocalizationsDelegate

@@ -16,6 +16,23 @@ abstract final class MirrorProtocol {
   /// microphone.
   static const cameraFlag = 'camera';
 
+  /// Flag in a device's feature support: it can be another computer's
+  /// extra display.
+  static const displayFlag = 'display';
+
+  /// Flag in a device's feature support: it can extend its desktop onto
+  /// a device with [displayFlag].
+  static const extendFlag = 'extend';
+
+  /// An extra display is a whole desktop of small text: it needs more
+  /// bits than a phone's screen.
+  static const displayMinBitrate = 3000000;
+  static const displayMaxBitrate = 30000000;
+  static const displayStartBitrate = 12000000;
+
+  /// One wheel notch in points, the same as the viewer's own.
+  static const pointsPerNotch = 50.0;
+
   /// What a camera sends unless the viewer asks for less: 720p at 30
   /// frames per second, light enough for an hour on a phone's battery.
   static const cameraLongSide = 1280;

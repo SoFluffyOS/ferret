@@ -13,11 +13,32 @@ void main() {
   });
 
   test('a phone offers its screen, a computer offers to show it', () {
-    final phone = MirroringFeature(canShare: true, canView: false);
-    final computer = MirroringFeature(canShare: false, canView: true);
+    final phone = MirroringFeature(
+      canShare: true,
+      canView: false,
+      canExtend: false,
+      canBeDisplay: false,
+    );
+    final computer = MirroringFeature(
+      canShare: false,
+      canView: true,
+      canExtend: false,
+      canBeDisplay: false,
+    );
+    final mac = MirroringFeature(
+      canShare: false,
+      canView: true,
+      canExtend: true,
+      canBeDisplay: true,
+    );
 
     expect(phone.flags, [MirroringFeature.shareFlag]);
     expect(computer.flags, [MirroringFeature.viewFlag]);
+    expect(mac.flags, [
+      MirroringFeature.viewFlag,
+      MirrorProtocol.extendFlag,
+      MirrorProtocol.displayFlag,
+    ]);
   });
 
   test('a computer only shows devices that can share', () async {
