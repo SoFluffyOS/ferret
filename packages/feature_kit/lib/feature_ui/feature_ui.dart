@@ -7,6 +7,7 @@ export 'package:feature_kit/feature_ui/feature_nearby_row.dart';
 export 'package:feature_kit/feature_ui/feature_offer.dart';
 export 'package:feature_kit/feature_ui/feature_section.dart';
 export 'package:feature_kit/feature_ui/feature_settings.dart';
+export 'package:feature_kit/feature_ui/feature_shortcut.dart';
 export 'package:feature_kit/feature_ui/feature_ui_base.dart';
 export 'package:feature_kit/feature_ui/feature_window.dart';
 export 'package:feature_kit/feature_ui/files_send_progress.dart';

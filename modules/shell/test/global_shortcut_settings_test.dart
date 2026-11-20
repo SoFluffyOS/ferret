@@ -183,4 +183,26 @@ void main() {
     );
     semantics.dispose();
   }, skip: !Platform.isMacOS);
+
+  testWidgets('the shortcuts page lists the keys set for any app', (
+    tester,
+  ) async {
+    await GlobalShortcut.write(
+      engine.settings,
+      null,
+      key: GlobalShortcut.clipsKey,
+    );
+    await pump(tester, settings: const KeyboardShortcutsPage());
+    await tester.scrollUntilVisible(
+      find.text('Recent clips'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.text('From any app'), findsOneWidget);
+    expect(find.text('Open Ferret'), findsOneWidget);
+    expect(find.text('⌃⌥Space'), findsOneWidget);
+    expect(find.text('Recent clips'), findsOneWidget);
+    expect(find.text('Off'), findsOneWidget);
+  }, skip: !Platform.isMacOS);
 }

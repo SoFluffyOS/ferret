@@ -662,6 +662,15 @@
     }
   },
   "settingsScreenTitle": "One keyboard and mouse",
+  "shortcutScreenNext": "Keyboard and mouse to the next computer",
+  "shortcutScreenHome": "Keyboard and mouse back to {here, select, macOS{this Mac} windows{this PC} other{this computer}}",
+  "@shortcutScreenHome": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsScreenSwitch": "Use {here, select, macOS{this Mac's} windows{this PC's} other{this computer's}} keyboard and mouse on my other computers",
   "@settingsScreenSwitch": {
     "placeholders": {
@@ -682,8 +691,8 @@
     }
   },
   "settingsScreenKeysTaken": "Another app uses ⌃⌥→ or ⌃⌥⎋, so they don't reach Ferret.",
-  "healthScreenKeys": "⌃⌥→ to go there, ⌃⌥⎋ to come back",
-  "healthScreenKeysHelp": "Press ⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to use its keyboard and mouse on {device}, and ⌃⌥⎋ to bring them back. {device} asks the first time.",
+  "healthScreenKeys": "⌃⌥→ to the next computer, ⌃⌥⎋ back here",
+  "healthScreenKeysHelp": "⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} sends its keyboard and mouse to the next connected computer, in order of name. Press it again until you reach {device}. ⌃⌥⎋ brings them back. {device} asks the first time.",
   "@healthScreenKeysHelp": {
     "placeholders": {
       "here": {

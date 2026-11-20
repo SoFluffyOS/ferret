@@ -164,13 +164,48 @@ void main() {
     );
   });
 
+  testWidgets('the switch keys are listed only while it is on', (
+    tester,
+  ) async {
+    await start(tester);
+    Future<List<FeatureShortcut>> listed() async {
+      var shortcuts = <FeatureShortcut>[];
+      await tester.pumpWidget(
+        KeyedSubtree(
+          key: UniqueKey(),
+          child: testApp(
+            Builder(
+              builder: (context) {
+                shortcuts = ui.globalShortcuts(context, _context);
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+      );
+
+      return shortcuts;
+    }
+
+    expect(await listed(), isEmpty);
+
+    await tester.runAsync(() => ui.feature.settings.setScreenSwitch(true));
+    final shortcuts = await listed();
+    expect(shortcuts.map((shortcut) => shortcut.keys), ['⌃⌥→', '⌃⌥⎋']);
+    expect(shortcuts.first.label, 'Keyboard and mouse to the next computer');
+  });
+
   testWidgets('a computer that takes the keyboard shows the keys on its '
       'page', (tester) async {
     await start(tester, settings: {RemoteInputSettings.screenSwitchKey: true});
 
     final health = ui.healthFor(_context, statusOf(pc()));
     expect(health?.state, FeatureHealthState.ok);
-    expect(health?.reason, '⌃⌥→ to go there, ⌃⌥⎋ to come back');
+    expect(
+      health?.reason,
+      '⌃⌥→ to the next computer, ⌃⌥⎋ back here',
+    );
 
     await tester.runAsync(
       () => ui.feature.settings.setScreenSwitch(false),

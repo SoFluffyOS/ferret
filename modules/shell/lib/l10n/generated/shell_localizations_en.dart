@@ -1798,6 +1798,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get shortcutActivityPane => 'Show or hide the Activity pane';
 
   @override
+  String get shortcutsInWindow => 'In the window';
+
+  @override
+  String get shortcutsAnyApp => 'From any app';
+
+  @override
+  String get shortcutRecentClips => 'Recent clips';
+
+  @override
   String accessTitle(String device) {
     return 'What $device can use';
   }

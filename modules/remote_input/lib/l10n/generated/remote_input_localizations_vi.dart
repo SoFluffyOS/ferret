@@ -792,6 +792,22 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get settingsScreenTitle => 'Một bộ bàn phím và chuột';
 
   @override
+  String get shortcutScreenNext => 'Bàn phím và chuột sang máy tính kế tiếp';
+
+  @override
+  String shortcutScreenHome(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Bàn phím và chuột về lại $_temp0';
+  }
+
+  @override
   String settingsScreenSwitch(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
@@ -833,7 +849,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       'Một ứng dụng khác đang dùng ⌃⌥→ hoặc ⌃⌥⎋, nên Ferret không nhận được.';
 
   @override
-  String get healthScreenKeys => '⌃⌥→ để chuyển sang, ⌃⌥⎋ để quay về';
+  String get healthScreenKeys => '⌃⌥→ sang máy tính kế tiếp, ⌃⌥⎋ về lại đây';
 
   @override
   String healthScreenKeysHelp(String here, String device) {
@@ -845,7 +861,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Nhấn ⌃⌥→ trên $_temp0 để dùng bàn phím và chuột của nó trên $device, và ⌃⌥⎋ để đưa về. $device sẽ hỏi ở lần đầu.';
+    return '⌃⌥→ trên $_temp0 chuyển bàn phím và chuột của nó sang máy tính kế tiếp đang kết nối, theo thứ tự tên. Nhấn tiếp cho đến khi tới $device. ⌃⌥⎋ đưa chúng về. $device sẽ hỏi ở lần đầu.';
   }
 
   @override

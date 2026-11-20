@@ -995,6 +995,18 @@ abstract class RemoteInputLocalizations {
   /// **'One keyboard and mouse'**
   String get settingsScreenTitle;
 
+  /// No description provided for @shortcutScreenNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard and mouse to the next computer'**
+  String get shortcutScreenNext;
+
+  /// No description provided for @shortcutScreenHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard and mouse back to {here, select, macOS{this Mac} windows{this PC} other{this computer}}'**
+  String shortcutScreenHome(String here);
+
   /// No description provided for @settingsScreenSwitch.
   ///
   /// In en, this message translates to:
@@ -1034,13 +1046,13 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @healthScreenKeys.
   ///
   /// In en, this message translates to:
-  /// **'⌃⌥→ to go there, ⌃⌥⎋ to come back'**
+  /// **'⌃⌥→ to the next computer, ⌃⌥⎋ back here'**
   String get healthScreenKeys;
 
   /// No description provided for @healthScreenKeysHelp.
   ///
   /// In en, this message translates to:
-  /// **'Press ⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} to use its keyboard and mouse on {device}, and ⌃⌥⎋ to bring them back. {device} asks the first time.'**
+  /// **'⌃⌥→ on {here, select, macOS{this Mac} windows{this PC} other{this computer}} sends its keyboard and mouse to the next connected computer, in order of name. Press it again until you reach {device}. ⌃⌥⎋ brings them back. {device} asks the first time.'**
   String healthScreenKeysHelp(String here, String device);
 
   /// No description provided for @healthScreenOffHelp.

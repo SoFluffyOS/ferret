@@ -2462,6 +2462,24 @@ abstract class ShellLocalizations {
   /// **'Show or hide the Activity pane'**
   String get shortcutActivityPane;
 
+  /// No description provided for @shortcutsInWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'In the window'**
+  String get shortcutsInWindow;
+
+  /// No description provided for @shortcutsAnyApp.
+  ///
+  /// In en, this message translates to:
+  /// **'From any app'**
+  String get shortcutsAnyApp;
+
+  /// No description provided for @shortcutRecentClips.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent clips'**
+  String get shortcutRecentClips;
+
   /// No description provided for @accessTitle.
   ///
   /// In en, this message translates to:

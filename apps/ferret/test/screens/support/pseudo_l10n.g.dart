@@ -3354,6 +3354,8 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String get settingsScreenTitle => pseudo(super.settingsScreenTitle);
   @override
+  String get shortcutScreenNext => pseudo(super.shortcutScreenNext);
+  @override
   String get settingsScreenSwitchBody => pseudo(super.settingsScreenSwitchBody);
   @override
   String get settingsScreenReady => pseudo(super.settingsScreenReady);
@@ -3538,6 +3540,9 @@ class PseudoRemoteInputLocalizations extends RemoteInputLocalizationsEn {
   @override
   String screenConsentBody(String device) =>
       pseudo(super.screenConsentBody(device));
+  @override
+  String shortcutScreenHome(String here) =>
+      pseudo(super.shortcutScreenHome(here));
   @override
   String settingsScreenSwitch(String here) =>
       pseudo(super.settingsScreenSwitch(here));
@@ -4182,6 +4187,12 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get shortcutSidebar => pseudo(super.shortcutSidebar);
   @override
   String get shortcutActivityPane => pseudo(super.shortcutActivityPane);
+  @override
+  String get shortcutsInWindow => pseudo(super.shortcutsInWindow);
+  @override
+  String get shortcutsAnyApp => pseudo(super.shortcutsAnyApp);
+  @override
+  String get shortcutRecentClips => pseudo(super.shortcutRecentClips);
   @override
   String get accessSummaryAll => pseudo(super.accessSummaryAll);
   @override

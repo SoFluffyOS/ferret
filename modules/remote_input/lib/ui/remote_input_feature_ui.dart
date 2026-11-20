@@ -97,7 +97,12 @@ class RemoteInputFeatureUi extends FeatureUi {
   }
 
   @override
-  Listenable get uiChanges => hostViewModel;
+  Listenable get uiChanges => _uiChanges;
+
+  late final Listenable _uiChanges = Listenable.merge([
+    hostViewModel,
+    screenViewModel,
+  ]);
 
   /// While a device controls this computer, the menubar icon says so.
   @override
@@ -232,6 +237,26 @@ class RemoteInputFeatureUi extends FeatureUi {
             false => () => unawaited(this.feature.lockDevice(deviceId)),
           },
         ),
+    ];
+  }
+
+  @override
+  List<FeatureShortcut> globalShortcuts(
+    BuildContext context,
+    FeatureContext feature,
+  ) {
+    if (!screenViewModel.isAvailable || !screenViewModel.enabled) {
+      return const [];
+    }
+
+    final l10n = context.remoteInputL10n;
+
+    return [
+      FeatureShortcut(keys: '⌃⌥→', label: l10n.shortcutScreenNext),
+      FeatureShortcut(
+        keys: '⌃⌥⎋',
+        label: l10n.shortcutScreenHome(ThisComputer.here),
+      ),
     ];
   }
 

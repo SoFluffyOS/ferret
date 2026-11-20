@@ -793,6 +793,22 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
   String get settingsScreenTitle => 'One keyboard and mouse';
 
   @override
+  String get shortcutScreenNext => 'Keyboard and mouse to the next computer';
+
+  @override
+  String shortcutScreenHome(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'Keyboard and mouse back to $_temp0';
+  }
+
+  @override
   String settingsScreenSwitch(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
@@ -834,7 +850,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
       'Another app uses ⌃⌥→ or ⌃⌥⎋, so they don\'t reach Ferret.';
 
   @override
-  String get healthScreenKeys => '⌃⌥→ to go there, ⌃⌥⎋ to come back';
+  String get healthScreenKeys => '⌃⌥→ to the next computer, ⌃⌥⎋ back here';
 
   @override
   String healthScreenKeysHelp(String here, String device) {
@@ -846,7 +862,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
         'other': 'this computer',
       },
     );
-    return 'Press ⌃⌥→ on $_temp0 to use its keyboard and mouse on $device, and ⌃⌥⎋ to bring them back. $device asks the first time.';
+    return '⌃⌥→ on $_temp0 sends its keyboard and mouse to the next connected computer, in order of name. Press it again until you reach $device. ⌃⌥⎋ brings them back. $device asks the first time.';
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:feature_kit/feature_ui/feature_nearby_row.dart';
 import 'package:feature_kit/feature_ui/feature_offer.dart';
 import 'package:feature_kit/feature_ui/feature_section.dart';
 import 'package:feature_kit/feature_ui/feature_settings.dart';
+import 'package:feature_kit/feature_ui/feature_shortcut.dart';
 import 'package:feature_kit/feature_ui/files_send_progress.dart';
 import 'package:feature_kit/feature_ui/settings_group.dart';
 import 'package:feature_kit/services/services.dart';
@@ -139,6 +140,14 @@ abstract class FeatureUi {
   /// still act on, such as a phone on a cable. The shell lists them under
   /// Nearby and asks again whenever [uiChanges] fires.
   List<FeatureNearbyRow> nearbyRows(
+    BuildContext context,
+    FeatureContext feature,
+  ) => const [];
+
+  /// Keys this feature answers to from any app, while they work. The
+  /// shell lists them on the Keyboard shortcuts page and asks again
+  /// whenever [uiChanges] fires.
+  List<FeatureShortcut> globalShortcuts(
     BuildContext context,
     FeatureContext feature,
   ) => const [];

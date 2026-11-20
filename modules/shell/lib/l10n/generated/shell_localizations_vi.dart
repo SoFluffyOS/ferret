@@ -1791,6 +1791,15 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get shortcutActivityPane => 'Hiện hoặc ẩn khung Hoạt động';
 
   @override
+  String get shortcutsInWindow => 'Trong cửa sổ';
+
+  @override
+  String get shortcutsAnyApp => 'Từ mọi ứng dụng';
+
+  @override
+  String get shortcutRecentClips => 'Mục đã chép gần đây';
+
+  @override
   String accessTitle(String device) {
     return 'Những gì $device được dùng';
   }

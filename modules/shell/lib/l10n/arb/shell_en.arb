@@ -1366,6 +1366,9 @@
   "shortcutSections": "Sections of the selected device",
   "shortcutSidebar": "Show or hide the device list",
   "shortcutActivityPane": "Show or hide the Activity pane",
+  "shortcutsInWindow": "In the window",
+  "shortcutsAnyApp": "From any app",
+  "shortcutRecentClips": "Recent clips",
   "accessTitle": "What {device} can use",
   "@accessTitle": {
     "placeholders": {

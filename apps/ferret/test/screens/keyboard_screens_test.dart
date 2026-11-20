@@ -1,6 +1,7 @@
 // One keyboard and mouse for several computers: the Settings line, the keys
-// on a computer's page, Activity while they are away or came back, and the
-// question on the computer that receives them. Renders into temp/screens
+// on the Keyboard shortcuts page and on a computer's page, Activity while
+// they are away or came back, and the question on the computer that
+// receives them. Renders into temp/screens
 // as `keyboard_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/keyboard_screens_test.dart
@@ -11,11 +12,13 @@ library;
 import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_remote_input/ferret_remote_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
@@ -181,6 +184,19 @@ final _screens = <String, _Script>{
     });
     await _openKeyboardSettings(tester, rig);
   },
+  'shortcuts': (tester, rig, macs) async {
+    await tester.runAsync(() async {
+      await macs.here.screenSwitch?.setEnabled(true);
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await rig.open(
+      tester,
+      Provider<FerretMenubar?>.value(
+        value: FerretMenubar(),
+        child: const KeyboardShortcutsPage(),
+      ),
+    );
+  },
   'device': (tester, rig, macs) async {
     final otherId = await _pairOther(tester, rig, macs);
     await tester.runAsync(() async {
@@ -188,7 +204,7 @@ final _screens = <String, _Script>{
       await Future<void>.delayed(const Duration(milliseconds: 100));
     });
     await rig.open(tester, DevicePage(deviceId: otherId));
-    final hint = find.text('⌃⌥→ to go there, ⌃⌥⎋ to come back').first;
+    final hint = find.text('⌃⌥→ to the next computer, ⌃⌥⎋ back here').first;
     await tester.scrollUntilVisible(
       hint,
       300,
