@@ -26,8 +26,27 @@ class PopoverKeysFrame extends StatelessWidget {
 
   final Widget child;
 
+  /// Tab goes on from the last thing on a page to what sits outside the
+  /// pages, such as the shelf, and around again: a page's own scope and
+  /// the navigator's would keep it in the page.
+  static void letTabLeavePages(NavigatorState? navigator) {
+    FocusScopeNode? scope = navigator?.focusNode.enclosingScope;
+    while (scope != null) {
+      final parent = scope.enclosingScope;
+      if (parent == null || parent == FocusManager.instance.rootScope) {
+        return;
+      }
+
+      scope.traversalEdgeBehavior = .parentScope;
+      scope = parent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => letTabLeavePages(navigatorKey.currentState),
+    );
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.keyN, meta: true): _addDevice,

@@ -195,16 +195,14 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       ),
     };
     final showsRing = _focus.hasFocus && !_byPointer;
-    final shape = Corners.shape(
+    // The ring is drawn over the box, so the tiles never move for it.
+    final ring = Corners.shape(
       ShelfBoxFrame.radius,
-      side: switch (isDropOver || showsRing) {
-        true => BorderSide(
-          color: palette.accent,
-          width: Spacing.d2,
-          strokeAlign: BorderSide.strokeAlignInside,
-        ),
-        false => BorderSide.none,
-      },
+      side: BorderSide(
+        color: palette.accent,
+        width: Spacing.d2,
+        strokeAlign: BorderSide.strokeAlignInside,
+      ),
     );
     final box = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
@@ -218,8 +216,12 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
           true => palette.accent.withValues(alpha: 0.12),
           false => palette.surface,
         },
-        shape: shape,
+        shape: Corners.shape(ShelfBoxFrame.radius),
       ),
+      foregroundDecoration: switch (isDropOver || showsRing) {
+        true => ShapeDecoration(shape: ring),
+        false => null,
+      },
       clipBehavior: .antiAlias,
       child: content,
     );
