@@ -10,6 +10,11 @@ Your phone rings in another room. Or in your bag. You dig it out, and it was a c
 
 With Ferret, your computer shows who's calling the moment your phone rings. Answer, decline, hang up, or start a call, without touching the phone.
 
+<figure class="shot">
+  <img src="/assets/landing/calls-light.webp" alt="The Calls page in the window: a number to call from the phone and recent calls" width="700" height="470" loading="lazy">
+  <img src="/assets/landing/calls-dark.webp" alt="The Calls page in the window: a number to call from the phone and recent calls" width="700" height="470" loading="lazy">
+</figure>
+
 ## 📞 When your phone rings
 
 - A notification pops up on your computer with the caller's name and two buttons: **Answer** and **Decline**.

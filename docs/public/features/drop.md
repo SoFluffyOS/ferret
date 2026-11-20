@@ -10,6 +10,11 @@ You need a photo from your phone on your laptop, or a PDF from your laptop on yo
 
 With Ferret, files and text go straight from one of your devices to another, over your own network. Nothing is uploaded anywhere.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/landing/popover-home-light.webp" alt="The Ferret popover on a Mac: a file waiting to be accepted, a call ringing and your devices" width="380" height="560" loading="lazy">
+  <img src="/assets/landing/popover-home-dark.webp" alt="The Ferret popover on a Mac: a file waiting to be accepted, a call ringing and your devices" width="380" height="560" loading="lazy">
+</figure>
+
 ## 📦 Send files
 
 - **In the window:** drag files onto a device in the list on the left. The device under the pointer lights up and says **Send to Pixel 9**. Hold still for a moment and it opens, so you can see where they go. Or drop on the page itself: it goes to the device you have open, or to all your connected devices on **Activity** and **Settings**. The page stays where it was, and a card in the corner shows how sending goes.

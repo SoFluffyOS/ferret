@@ -26,3 +26,37 @@
     display: none;
   }
 }
+
+/* Screenshots on docs pages: the light one, or the dark one with the dark
+   theme. The docs theme wraps each image in its own zoomable figure and
+   drops the image's classes, so the file name tells them apart. */
+
+.shot {
+  margin: 1.5rem auto;
+  max-width: 100%;
+}
+
+.shot-narrow {
+  max-width: 340px;
+}
+
+.shot figure {
+  margin: 0;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.18);
+}
+
+.shot figure:has(img[src$="-dark.webp"]),
+:root[data-theme="dark"] .shot:has(img[src$="-dark.webp"]) figure:has(img[src$="-light.webp"]) {
+  display: none;
+}
+
+:root[data-theme="dark"] .shot figure:has(img[src$="-dark.webp"]) {
+  display: block;
+}

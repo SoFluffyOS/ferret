@@ -10,6 +10,11 @@ You're on the couch. The laptop is across the room, playing a movie. You want to
 
 With Ferret, your phone becomes the computer's touchpad and keyboard. Over your own Wi-Fi, nothing else.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/landing/presentation-light.webp" alt="A phone as a touchpad and presentation remote for a computer" width="390" height="844" loading="lazy">
+  <img src="/assets/landing/presentation-dark.webp" alt="A phone as a touchpad and presentation remote for a computer" width="390" height="844" loading="lazy">
+</figure>
+
 ## 🖱️ The touchpad
 
 - **One finger** moves the pointer. A quick flick goes further.

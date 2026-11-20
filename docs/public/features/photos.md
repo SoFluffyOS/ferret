@@ -10,6 +10,11 @@ You took a screenshot on your phone. Now you need it on your computer. Emailing 
 
 Ferret shows your phone's recent photos and screenshots on the computer, newest first. Save the ones you want. They land in your receive folder.
 
+<figure class="shot">
+  <img src="/assets/landing/phone-photos-light.webp" alt="A phone's recent photos in a grid in the Ferret window" width="700" height="504" loading="lazy">
+  <img src="/assets/landing/phone-photos-dark.webp" alt="A phone's recent photos in a grid in the Ferret window" width="700" height="504" loading="lazy">
+</figure>
+
 ## 🔑 Turn it on (on the phone)
 
 Photos never leave your phone until you say so, one computer at a time.

@@ -10,6 +10,11 @@ You copy a link on your phone and need it on your laptop. Emailing it to yoursel
 
 With Ferret, what you copy on one device lands on the clipboard of your other devices. Text, links and images. No button to press on your computers.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/landing/recent-clips-light.webp" alt="Recent clips: the last things copied on your devices, each with Copy" width="380" height="320" loading="lazy">
+  <img src="/assets/landing/recent-clips-dark.webp" alt="Recent clips: the last things copied on your devices, each with Copy" width="380" height="320" loading="lazy">
+</figure>
+
 ## 📋 How it works
 
 - Copy something on your Mac, Windows or Linux computer.

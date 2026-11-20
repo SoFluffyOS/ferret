@@ -8,6 +8,10 @@
 
 An iPhone plays by Apple's rules. Ferret follows them, and tells you where they bite instead of failing in silence.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected computer with Send files and Send clipboard" width="380" height="822" loading="lazy">
+</figure>
+
 ## 📷 Pair by scanning
 
 An iPhone can't look for devices on the network by itself: Apple keeps that for apps it hands a special permission. So your iPhone never shows up under **Nearby** on your computer, and the computer never shows up on the iPhone.

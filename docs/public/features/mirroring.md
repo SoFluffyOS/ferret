@@ -10,6 +10,11 @@ Your phone is charging across the desk. A message comes in, or you want to show 
 
 With Ferret, the phone's screen shows up on your computer. Over your own Wi-Fi, nothing else.
 
+<figure class="shot">
+  <img src="/assets/landing/screen-mirroring-light.webp" alt="A phone's screen in its own window, with Back, Home, Rotate, Screenshot and Stop next to it" width="500" height="700" loading="lazy">
+  <img src="/assets/landing/screen-mirroring-dark.webp" alt="A phone's screen in its own window, with Back, Home, Rotate, Screenshot and Stop next to it" width="500" height="700" loading="lazy">
+</figure>
+
 ## 🚀 One button
 
 **Show screen** is on every phone and tablet in Ferret, connected or not. It is all you need to know.

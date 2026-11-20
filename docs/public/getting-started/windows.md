@@ -6,6 +6,10 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 > 2. From 600 wide: your devices on the left, the page you picked on the right.
 > 3. From 1200 wide: an Activity pane joins on the right.
 
+<figure class="shot">
+  <img src="/assets/docs/windows-overview-light.webp" alt="The Ferret window on Windows: a phone's Overview" width="700" height="504" loading="lazy">
+</figure>
+
 ## 📦 Install
 
 > 1. Download `Ferret-0.1.0-x64-setup.exe` from the [releases](https://github.com/simonpham/ferret/releases), or run `winget install SoFluffy.Ferret`

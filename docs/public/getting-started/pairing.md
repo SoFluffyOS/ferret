@@ -9,6 +9,12 @@ Pairing is how your devices learn to trust each other. You do it **once**: pair 
 
 No QR code to scan, no address to type.
 
+
+<figure class="shot shot-narrow">
+  <img src="/assets/landing/pair-code-light.webp" alt="Pairing on a phone: the six-digit code to check on the other device, with They match and Cancel" width="380" height="560" loading="lazy">
+  <img src="/assets/landing/pair-code-dark.webp" alt="Pairing on a phone: the six-digit code to check on the other device, with They match and Cancel" width="380" height="560" loading="lazy">
+</figure>
+
 ## 📡 Nearby
 
 Ferret looks for your other devices by itself. Open it on both, and each one shows the other under **Nearby**, on the home screen and under **+** (Add a device).

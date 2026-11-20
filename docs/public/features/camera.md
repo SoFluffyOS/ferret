@@ -10,6 +10,11 @@ You need a picture of a receipt, a whiteboard or a cable in a slide. Your phone 
 
 Ferret asks your phone for one photo and puts it straight on your computer's clipboard.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/docs/camera-ask-light.webp" alt="The phone asked for a photo by a computer, with Take photo and Not now" width="380" height="822" loading="lazy">
+  <img src="/assets/docs/camera-ask-dark.webp" alt="The phone asked for a photo by a computer, with Take photo and Not now" width="380" height="822" loading="lazy">
+</figure>
+
 ## 📸 Take a photo
 
 On the computer, pick one:

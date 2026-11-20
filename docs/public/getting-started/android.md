@@ -11,6 +11,11 @@ Android loves to stop apps in the background. That is the number one reason apps
 
 Ferret runs a small background service, shows one quiet notification while it does, and reconnects the moment your phone wakes up or changes network.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/docs/android-home-light.webp" alt="Ferret on an Android phone: a connected Mac with Send files, Send clipboard and Ring" width="380" height="822" loading="lazy">
+  <img src="/assets/docs/android-home-dark.webp" alt="Ferret on an Android phone: a connected Mac with Send files, Send clipboard and Ring" width="380" height="822" loading="lazy">
+</figure>
+
 ## 📦 Install
 
 Install the Ferret APK on your phone and open it. Open Ferret on your computer too, on the same Wi-Fi: it shows up under **Nearby**. Tap **Pair** and check that both screens show the same six digits. See [Pair your devices](pairing.md).

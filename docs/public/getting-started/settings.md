@@ -7,6 +7,11 @@ Ferret has four places: **Home**, a page per **device**, **Add a device** and **
 > 2. Tap **+** to add a device.
 > 3. Open **Settings** for everything else. Each row shows its state before you open it.
 
+<figure class="shot">
+  <img src="/assets/docs/settings-light.webp" alt="Settings in the window: This device next to the list of settings groups" width="700" height="504" loading="lazy">
+  <img src="/assets/docs/settings-dark.webp" alt="Settings in the window: This device next to the list of settings groups" width="700" height="504" loading="lazy">
+</figure>
+
 ## 📱 A device's page
 
 Tap a device on Home. Its page answers three questions.

@@ -10,6 +10,11 @@ Your desktop is asleep in the other room. The file you need is on it. Walking ov
 
 Ferret can wake it from any of your devices.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/docs/wake-light.webp" alt="A sleeping computer on the phone, waking" width="380" height="822" loading="lazy">
+  <img src="/assets/docs/wake-dark.webp" alt="A sleeping computer on the phone, waking" width="380" height="822" loading="lazy">
+</figure>
+
 ## ⚡ How it works
 
 - Each computer tells your paired devices how to wake it: the hardware (MAC) address and network of its cable and Wi-Fi cards. It says it again when they change.

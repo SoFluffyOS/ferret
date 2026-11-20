@@ -10,6 +10,11 @@ You're in bed. The computer in the other room is still on, playing music to nobo
 
 With Ferret, your phone puts it to sleep, turns the volume down, or runs that backup script you always forget. Another computer of yours can ask too. Over your own Wi-Fi, nothing else.
 
+<figure class="shot shot-narrow">
+  <img src="/assets/docs/computer-actions-light.webp" alt="A computer's power and sound buttons on the phone" width="380" height="822" loading="lazy">
+  <img src="/assets/docs/computer-actions-dark.webp" alt="A computer's power and sound buttons on the phone" width="380" height="822" loading="lazy">
+</figure>
+
 ## 💻 What a computer offers
 
 Open a computer in Ferret on another device. Under **Power and sound**:

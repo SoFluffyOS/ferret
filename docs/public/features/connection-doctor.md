@@ -2,6 +2,11 @@
 
 When a paired device won't connect, Ferret tells you why. No guessing.
 
+<figure class="shot">
+  <img src="/assets/docs/fix-connection-light.webp" alt="Fix connection in the window: the network checks for a phone that is offline, with Try again" width="700" height="504" loading="lazy">
+  <img src="/assets/docs/fix-connection-dark.webp" alt="Fix connection in the window: the network checks for a phone that is offline, with Try again" width="700" height="504" loading="lazy">
+</figure>
+
 ## How to open it
 
 Tap **Fix** next to a device that isn't connected, or open the device and tap **Why isn't it connecting?**.

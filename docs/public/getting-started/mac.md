@@ -2,6 +2,11 @@
 
 Ferret lives in your menubar. No Dock icon, no window in the way. Want a real window? It has one too.
 
+<figure class="shot">
+  <img src="/assets/landing/window-overview-light.webp" alt="The Ferret window on a Mac: a phone's Overview with a call, a song and a file on the way" width="700" height="504" loading="lazy">
+  <img src="/assets/landing/window-overview-dark.webp" alt="The Ferret window on a Mac: a phone's Overview with a call, a song and a file on the way" width="700" height="504" loading="lazy">
+</figure>
+
 ## 📦 Installing on a Mac
 
 > 1. Download `Ferret-<version>.dmg` from the releases page
