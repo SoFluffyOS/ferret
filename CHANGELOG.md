@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- ⌨️ **One keyboard and mouse for your computers**: turn it on in **Settings → Control** on your Mac, then press **⌃⌥→** and your Mac's keyboard and mouse work on the PC or Mac next to it. **⌃⌥⎋** brings them back, every time. The other computer asks the first time. See [Control](docs/public/features/remote-input.md).
 - 🎥 **Your phone's camera over Wi-Fi**: click **Use Pixel 7's camera** on your phone's page and its camera and microphone show up in a Ferret window. Tap **Once** or **Always** on the phone, which says **Camera on for MacBook Air** with **Stop** while it's on. Front or back with **Switch camera**. Android only. See [Your Android phone as a webcam](docs/public/features/android-webcam.md).
 - 🌍 **Reach your devices away from home**: already on Tailscale, ZeroTier or WireGuard? Open your phone in Ferret, tap **Reach away from home** and turn on **Also reach Pixel 7 over your VPN**. When your Wi-Fi doesn't find it, Ferret goes through your own VPN, and back home it moves to the Wi-Fi by itself. No Ferret account, no server. See [Reach your devices away from home](docs/public/features/away-from-home.md).
 - 📶 **Fix connection knows mobile data**: on a phone with Wi-Fi off, it says so instead of "no network", and offers **Reach over your VPN**.

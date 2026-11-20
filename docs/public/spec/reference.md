@@ -1531,6 +1531,15 @@ Asks the phone's owner to share photos with the sender, or more of them. The pho
 
 ## `ferret.remote_input.v1`
 
+### enum `ControlMode`
+
+What kind of controller asks.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CONTROL_MODE_UNSPECIFIED` | 0 | A phone or tablet used as a touchpad and keyboard. Every controller sent this before modes existed. |
+| `CONTROL_MODE_SCREEN` | 1 | Another computer lending its own keyboard and mouse: it sends `EnterScreen` when its person switches over, `LeaveScreen` when they switch back, and modifier keys as `ModifierState`. Send it only to a computer whose `FeatureSupport` flags for this feature include "screen"; older computers treat it as a phone. |
+
 ### message `ControlRequest`
 
 Asks the computer for control. Expects a `ControlPending`, `ControlGrant` or `ControlDeny` reply. After `ControlPending`, the computer sends the `ControlGrant` or `ControlDeny` later, without expecting a reply.
@@ -1538,6 +1547,7 @@ Asks the computer for control. Expects a `ControlPending`, `ControlGrant` or `Co
 | Field | Type | Number | Meaning |
 |---|---|---|---|
 | `version` | `uint32` | 1 | The version of these messages the controller speaks. |
+| `mode` | `ControlMode` | 2 | What kind of controller asks, which the computer's owner sees in the question. |
 
 ### message `ControlPending`
 
@@ -1743,6 +1753,27 @@ Types text as it is, whatever the computer's keyboard layout.
 |---|---|---|---|
 | `text` | `string` | 1 |  |
 
+### message `ModifierState`
+
+The modifier keys held down right now, on their own, such as Shift for a Shift-click. The computer holds exactly these until the next `ModifierState`, `LeaveScreen` or `ControlStop`. Keys in `KeyEvent` still list their modifiers, for computers that don't know this message.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `held` | `repeated Modifier` | 1 |  |
+
+### message `EnterScreen`
+
+The controlling computer's person switched over to this computer: input that follows is meant for it. `held` are the modifier keys already down, as in `ModifierState`.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `held` | `repeated Modifier` | 1 |  |
+
+### message `LeaveScreen`
+
+The controlling computer's person switched away. The computer lets go of every button, key and modifier still held, and keeps the control: the next `EnterScreen` needs no new `ControlRequest`.
+
+
 ### message `InputEvent`
 
 One input action.
@@ -1754,6 +1785,9 @@ One input action.
 | `scroll` | `Scroll` | 3 |  |
 | `key` | `KeyEvent` | 4 |  |
 | `text` | `TextInput` | 5 |  |
+| `modifiers` | `ModifierState` | 6 |  |
+| `enter` | `EnterScreen` | 7 |  |
+| `leave` | `LeaveScreen` | 8 |  |
 
 ### message `InputBatch`
 

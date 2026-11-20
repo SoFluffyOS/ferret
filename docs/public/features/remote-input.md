@@ -57,6 +57,26 @@ The first time, the computer asks: **Let Pixel 7 lock this Mac?** Pick **Always 
 
 Only locking, never unlocking. Sleep, restart, shut down and your own commands are [Computer actions](computer-actions.md). Want it to lock by itself when you walk off with your phone? See **Lock when your phone leaves** in [Computer actions](computer-actions.md). Change your mind in the computer's **What Pixel 7 can use → Lock this Mac without asking**.
 
+## 💻 One keyboard and mouse for your computers
+
+A Mac on the desk, a PC next to it. Two keyboards, two mice, and you always grab the wrong one.
+
+On the Mac, turn on **Use this Mac's keyboard and mouse on my other computers** in **Settings → Control**. Then:
+
+- **⌃⌥→** sends the Mac's keyboard and mouse to the next connected computer. Press it again for the one after. After the last one, they come home.
+- **⌃⌥⎋** brings them back to the Mac. ALWAYS, whatever happens on the other computer.
+
+That's it. Type on the PC with your Mac keyboard: **⌘C** is Ctrl+C there, so copy and paste feel the same.
+
+- 🔐 The other computer asks the first time: **Let MacBook Air use this PC with its keyboard and mouse?** Pick **Always allow** and the next switch is instant. While it's allowed, that computer says **MacBook Air is controlling this PC**, with **Stop**.
+- 🔌 Lose the connection and the keyboard and mouse are back on the Mac right away. Same when someone presses **Stop** on the other computer.
+- 🙈 While they're away, the Mac's pointer freezes and nothing you type lands on the Mac.
+- 🍎 The Mac needs **Input Monitoring** and **Accessibility** for this. Ferret asks the first time you turn it on or press ⌃⌥→. Still asking after you allowed both? Quit and reopen Ferret.
+- 🔑 A password field on the Mac turns on macOS secure input, which hides your typing from Ferret. Ferret won't switch while one is active, and brings everything home if one turns on, with a notice that says why.
+- ♿ VoiceOver uses ⌃⌥ too. While this is on, ⌃⌥→ and ⌃⌥⎋ belong to Ferret.
+
+For now a Mac sends, and a Mac, a PC or a Linux computer receives. Pushing the pointer off the edge of the screen comes next.
+
 ## 🔐 You stay in charge
 
 Nobody takes over your computer without you knowing.
@@ -97,7 +117,7 @@ With uinput, text types through a US keyboard layout. Ferret hands anything else
 
 | Computer | Works | Needs |
 |---|---|---|
-| macOS | Yes | Accessibility access |
+| macOS | Yes. Also sends its own keyboard and mouse | Accessibility access. Input Monitoring to send |
 | Windows | Yes | Nothing. Apps running as administrator ignore it, a Windows rule |
 | Linux | Yes | uinput access, ydotool or xdotool |
 
