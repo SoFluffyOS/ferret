@@ -79,6 +79,17 @@ abstract final class MacKeyCodes {
     .digit7: (code: 0x1A, isMedia: false),
     .digit8: (code: 0x1C, isMedia: false),
     .digit0: (code: 0x1D, isMedia: false),
+    .equal: (code: 0x18, isMedia: false),
+    .minus: (code: 0x1B, isMedia: false),
+    .bracketRight: (code: 0x1E, isMedia: false),
+    .bracketLeft: (code: 0x21, isMedia: false),
+    .quote: (code: 0x27, isMedia: false),
+    .semicolon: (code: 0x29, isMedia: false),
+    .backslash: (code: 0x2A, isMedia: false),
+    .comma: (code: 0x2B, isMedia: false),
+    .slash: (code: 0x2C, isMedia: false),
+    .period: (code: 0x2F, isMedia: false),
+    .backquote: (code: 0x32, isMedia: false),
   };
 
   static const Map<KeyModifier, int> modifiers = {

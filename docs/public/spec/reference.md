@@ -1695,6 +1695,17 @@ A key, by what it is rather than by any platform's code. Text goes as `TextInput
 | `KEY_DIGIT_7` | 107 |  |
 | `KEY_DIGIT_8` | 108 |  |
 | `KEY_DIGIT_9` | 109 |  |
+| `KEY_MINUS` | 110 | Punctuation keys by where they sit on a US keyboard, for shortcuts such as Cmd+, or Ctrl+/. Typed punctuation still goes as text. |
+| `KEY_EQUAL` | 111 |  |
+| `KEY_BRACKET_LEFT` | 112 |  |
+| `KEY_BRACKET_RIGHT` | 113 |  |
+| `KEY_BACKSLASH` | 114 |  |
+| `KEY_SEMICOLON` | 115 |  |
+| `KEY_QUOTE` | 116 |  |
+| `KEY_BACKQUOTE` | 117 |  |
+| `KEY_COMMA` | 118 |  |
+| `KEY_PERIOD` | 119 |  |
+| `KEY_SLASH` | 120 |  |
 
 ### enum `Modifier`
 

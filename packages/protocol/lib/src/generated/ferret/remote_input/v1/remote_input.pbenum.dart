@@ -268,6 +268,25 @@ class Key extends $pb.ProtobufEnum {
   static const Key KEY_DIGIT_9 =
       Key._(109, _omitEnumNames ? '' : 'KEY_DIGIT_9');
 
+  /// Punctuation keys by where they sit on a US keyboard, for shortcuts
+  /// such as Cmd+, or Ctrl+/. Typed punctuation still goes as text.
+  static const Key KEY_MINUS = Key._(110, _omitEnumNames ? '' : 'KEY_MINUS');
+  static const Key KEY_EQUAL = Key._(111, _omitEnumNames ? '' : 'KEY_EQUAL');
+  static const Key KEY_BRACKET_LEFT =
+      Key._(112, _omitEnumNames ? '' : 'KEY_BRACKET_LEFT');
+  static const Key KEY_BRACKET_RIGHT =
+      Key._(113, _omitEnumNames ? '' : 'KEY_BRACKET_RIGHT');
+  static const Key KEY_BACKSLASH =
+      Key._(114, _omitEnumNames ? '' : 'KEY_BACKSLASH');
+  static const Key KEY_SEMICOLON =
+      Key._(115, _omitEnumNames ? '' : 'KEY_SEMICOLON');
+  static const Key KEY_QUOTE = Key._(116, _omitEnumNames ? '' : 'KEY_QUOTE');
+  static const Key KEY_BACKQUOTE =
+      Key._(117, _omitEnumNames ? '' : 'KEY_BACKQUOTE');
+  static const Key KEY_COMMA = Key._(118, _omitEnumNames ? '' : 'KEY_COMMA');
+  static const Key KEY_PERIOD = Key._(119, _omitEnumNames ? '' : 'KEY_PERIOD');
+  static const Key KEY_SLASH = Key._(120, _omitEnumNames ? '' : 'KEY_SLASH');
+
   static const $core.List<Key> values = <Key>[
     KEY_UNSPECIFIED,
     KEY_ENTER,
@@ -338,6 +357,17 @@ class Key extends $pb.ProtobufEnum {
     KEY_DIGIT_7,
     KEY_DIGIT_8,
     KEY_DIGIT_9,
+    KEY_MINUS,
+    KEY_EQUAL,
+    KEY_BRACKET_LEFT,
+    KEY_BRACKET_RIGHT,
+    KEY_BACKSLASH,
+    KEY_SEMICOLON,
+    KEY_QUOTE,
+    KEY_BACKQUOTE,
+    KEY_COMMA,
+    KEY_PERIOD,
+    KEY_SLASH,
   ];
 
   static final $core.Map<$core.int, Key> _byValue =

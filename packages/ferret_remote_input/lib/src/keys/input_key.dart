@@ -68,7 +68,43 @@ enum InputKey {
   digit6,
   digit7,
   digit8,
-  digit9;
+  digit9,
+  minus,
+  equal,
+  bracketLeft,
+  bracketRight,
+  backslash,
+  semicolon,
+  quote,
+  backquote,
+  comma,
+  period,
+  slash;
+
+  /// Punctuation keys and what each types on a US keyboard without Shift.
+  static const Map<InputKey, String> punctuation = {
+    minus: '-',
+    equal: '=',
+    bracketLeft: '[',
+    bracketRight: ']',
+    backslash: '\\',
+    semicolon: ';',
+    quote: "'",
+    backquote: '`',
+    comma: ',',
+    period: '.',
+    slash: '/',
+  };
+
+  /// What this key types on a US keyboard without Shift, or null for a
+  /// key that types nothing.
+  String? get character => switch (this) {
+    space => ' ',
+    final digit when digit.name.startsWith('digit') => digit.name.substring(5),
+    final letter when letter.index >= a.index && letter.index <= z.index =>
+      letter.name,
+    _ => punctuation[this],
+  };
 
   /// Media and volume keys, which macOS sends as system events.
   bool get isMedia => switch (this) {
@@ -81,7 +117,8 @@ enum InputKey {
     _ => false,
   };
 
-  /// The key for a letter or digit, ignoring case, or null.
+  /// The key for a letter, digit or US punctuation mark, ignoring case,
+  /// or null.
   static InputKey? ofCharacter(String character) {
     if (character.length != 1) {
       return null;
@@ -99,6 +136,12 @@ enum InputKey {
 
     if (lower == ' ') {
       return space;
+    }
+
+    for (final MapEntry(:key, :value) in punctuation.entries) {
+      if (value == lower) {
+        return key;
+      }
     }
 
     return null;

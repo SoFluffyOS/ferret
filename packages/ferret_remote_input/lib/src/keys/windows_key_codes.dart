@@ -30,6 +30,17 @@ abstract final class WindowsKeyCodes {
       InputKey.values.byName(String.fromCharCode(0x61 + index)): 0x41 + index,
     for (var index = 0; index < 10; index++)
       InputKey.values.byName('digit$index'): 0x30 + index,
+    .semicolon: 0xBA,
+    .equal: 0xBB,
+    .comma: 0xBC,
+    .minus: 0xBD,
+    .period: 0xBE,
+    .slash: 0xBF,
+    .backquote: 0xC0,
+    .bracketLeft: 0xDB,
+    .backslash: 0xDC,
+    .bracketRight: 0xDD,
+    .quote: 0xDE,
   };
 
   static const Map<KeyModifier, int> modifiers = {

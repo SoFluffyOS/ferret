@@ -60,6 +60,20 @@ void main() {
       ]);
     });
 
+    test('punctuation shortcuts use keysym names', () {
+      final injector = CommandInjector(.xdotool);
+
+      expect(
+        injector.commandsOf(const [
+          KeyAction(.slash, pressed: true, modifiers: {.control}),
+          KeyAction(.bracketLeft, pressed: true, modifiers: {.control}),
+        ]),
+        [
+          ['keydown', 'ctrl+slash', 'keydown', 'ctrl+bracketleft'],
+        ],
+      );
+    });
+
     test('scrolls by whole notches and keeps the rest', () {
       final injector = CommandInjector(.xdotool);
 
@@ -109,6 +123,17 @@ void main() {
         ['type', '--', 'ok'],
       ]);
     });
+  });
+
+  test('ydotool presses punctuation by its input event code', () {
+    expect(
+      CommandInjector(.ydotool).commandsOf(const [
+        KeyAction(.comma, pressed: true, modifiers: {.control}),
+      ]),
+      [
+        ['key', '29:1', '51:1'],
+      ],
+    );
   });
 
   test('runs commands one at a time and merges what piles up', () async {

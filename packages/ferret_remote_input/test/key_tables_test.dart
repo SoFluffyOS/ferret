@@ -56,19 +56,67 @@ void main() {
     expect(XdotoolKeyNames.keys[InputKey.f3], 'F3');
   });
 
+  test('punctuation keys sit where a US keyboard has them', () {
+    final expected = <InputKey, (int, int, int, String)>{
+      .minus: (0x1B, 0xBD, 12, 'minus'),
+      .equal: (0x18, 0xBB, 13, 'equal'),
+      .bracketLeft: (0x21, 0xDB, 26, 'bracketleft'),
+      .bracketRight: (0x1E, 0xDD, 27, 'bracketright'),
+      .backslash: (0x2A, 0xDC, 43, 'backslash'),
+      .semicolon: (0x29, 0xBA, 39, 'semicolon'),
+      .quote: (0x27, 0xDE, 40, 'apostrophe'),
+      .backquote: (0x32, 0xC0, 41, 'grave'),
+      .comma: (0x2B, 0xBC, 51, 'comma'),
+      .period: (0x2F, 0xBE, 52, 'period'),
+      .slash: (0x2C, 0xBF, 53, 'slash'),
+    };
+
+    expect(expected.keys.toSet(), InputKey.punctuation.keys.toSet());
+    for (final MapEntry(:key, value: (mac, windows, linux, xdotool))
+        in expected.entries) {
+      expect(MacKeyCodes.keys[key], (code: mac, isMedia: false));
+      expect(WindowsKeyCodes.keys[key], windows, reason: key.name);
+      expect(LinuxKeyCodes.keys[key], linux, reason: key.name);
+      expect(XdotoolKeyNames.keys[key], xdotool, reason: key.name);
+      expect(
+        UsLayout.keyOf(InputKey.punctuation[key]!),
+        (code: linux, shift: false),
+      );
+    }
+  });
+
   test('media keys are marked as media', () {
     for (final key in InputKey.values) {
       expect(MacKeyCodes.keys[key]?.isMedia, key.isMedia, reason: key.name);
     }
   });
 
-  test('letters, digits and space map from characters', () {
+  test('letters, digits, punctuation and space map from characters', () {
     expect(InputKey.ofCharacter('c'), InputKey.c);
     expect(InputKey.ofCharacter('C'), InputKey.c);
     expect(InputKey.ofCharacter('4'), InputKey.digit4);
     expect(InputKey.ofCharacter(' '), InputKey.space);
+    expect(InputKey.ofCharacter(','), InputKey.comma);
+    expect(InputKey.ofCharacter('/'), InputKey.slash);
+    expect(InputKey.ofCharacter('\\'), InputKey.backslash);
+    expect(InputKey.ofCharacter('?'), isNull);
     expect(InputKey.ofCharacter('é'), isNull);
     expect(InputKey.ofCharacter('ab'), isNull);
+  });
+
+  test('a key knows what it types without Shift', () {
+    for (final key in InputKey.values) {
+      final character = key.character;
+      if (character != null) {
+        expect(InputKey.ofCharacter(character), key, reason: key.name);
+      }
+    }
+
+    expect(InputKey.a.character, 'a');
+    expect(InputKey.digit3.character, '3');
+    expect(InputKey.quote.character, "'");
+    expect(InputKey.enter.character, isNull);
+    expect(InputKey.f1.character, isNull);
   });
 
   test('the US layout types ASCII with Shift where needed', () {

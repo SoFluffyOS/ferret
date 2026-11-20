@@ -40,6 +40,17 @@ abstract final class PhoneInputs {
       .KEY_VOLUME_UP => AndroidKeys.volumeUp,
       .KEY_VOLUME_DOWN => AndroidKeys.volumeDown,
       .KEY_VOLUME_MUTE => AndroidKeys.volumeMute,
+      .KEY_MINUS => AndroidKeys.minus,
+      .KEY_EQUAL => AndroidKeys.equals,
+      .KEY_BRACKET_LEFT => AndroidKeys.leftBracket,
+      .KEY_BRACKET_RIGHT => AndroidKeys.rightBracket,
+      .KEY_BACKSLASH => AndroidKeys.backslash,
+      .KEY_SEMICOLON => AndroidKeys.semicolon,
+      .KEY_QUOTE => AndroidKeys.apostrophe,
+      .KEY_BACKQUOTE => AndroidKeys.grave,
+      .KEY_COMMA => AndroidKeys.comma,
+      .KEY_PERIOD => AndroidKeys.period,
+      .KEY_SLASH => AndroidKeys.slash,
       _ => null,
     };
   }

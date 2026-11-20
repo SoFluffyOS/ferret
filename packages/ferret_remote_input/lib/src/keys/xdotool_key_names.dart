@@ -31,6 +31,17 @@ abstract final class XdotoolKeyNames {
           String.fromCharCode(0x61 + index),
     for (var index = 0; index < 10; index++)
       InputKey.values.byName('digit$index'): '$index',
+    .minus: 'minus',
+    .equal: 'equal',
+    .bracketLeft: 'bracketleft',
+    .bracketRight: 'bracketright',
+    .backslash: 'backslash',
+    .semicolon: 'semicolon',
+    .quote: 'apostrophe',
+    .backquote: 'grave',
+    .comma: 'comma',
+    .period: 'period',
+    .slash: 'slash',
   };
 
   static const Map<KeyModifier, String> modifiers = {

@@ -52,6 +52,18 @@ void main() {
       expect(api.events.last.modifiers, 9);
     });
 
+    test('punctuation shortcuts post their ANSI key codes', () async {
+      final api = FakeHostApi();
+
+      await NativeInjector.macos(api: api).inject(const [
+        KeyAction(.comma, pressed: true, modifiers: {.meta}),
+        KeyAction(.bracketRight, pressed: true, modifiers: {.meta}),
+      ]);
+
+      expect([for (final event in api.events) event.code], [0x2B, 0x1E]);
+      expect(api.events.first.modifiers, 8);
+    });
+
     test('media keys are system events', () async {
       final api = FakeHostApi();
 
@@ -95,6 +107,20 @@ void main() {
         [(0x11, true), (0x56, true), (0x56, false), (0x11, false)],
       );
       expect(api.events.every((event) => event.modifiers == 0), isTrue);
+    });
+
+    test('punctuation shortcuts press their OEM virtual keys', () async {
+      final api = FakeHostApi();
+
+      await NativeInjector.windows(api: api).inject(const [
+        KeyAction(.slash, pressed: true, modifiers: {.control}),
+        KeyAction(.slash, pressed: false),
+      ]);
+
+      expect(
+        [for (final event in api.events) (event.code, event.pressed)],
+        [(0x11, true), (0xBF, true), (0xBF, false), (0x11, false)],
+      );
     });
 
     test('is ready without asking', () async {

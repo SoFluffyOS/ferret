@@ -89,8 +89,8 @@ class TouchpadViewModel extends ChangeNotifier implements TouchpadSink {
   }
 
   /// What the keyboard field typed: Backspace for each deleted character,
-  /// then the new text. With a modifier armed, a letter or digit goes as a
-  /// shortcut, such as Ctrl+C.
+  /// then the new text. With a modifier armed, a letter, digit or
+  /// punctuation mark goes as a shortcut, such as Ctrl+C or Ctrl+/.
   void typed(TextChange change) {
     for (var count = 0; count < change.deleted; count++) {
       _client?.tapKey(.backspace);

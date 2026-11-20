@@ -410,12 +410,29 @@ void main() {
       expect(viewer.current?.control?.canAskNow, isTrue);
     });
 
+    test('punctuation keys reach the phone as its key codes', () {
+      expect(PhoneInputs.keyCodeOf(input.Key.KEY_COMMA), AndroidKeys.comma);
+      expect(PhoneInputs.keyCodeOf(input.Key.KEY_SLASH), AndroidKeys.slash);
+      expect(PhoneInputs.keyCodeOf(input.Key.KEY_QUOTE), 75);
+      expect(PhoneInputs.keyCodeOf(input.Key.KEY_BACKQUOTE), 68);
+      for (final usage in [
+        for (var u = 0x2D; u <= 0x38; u++) u,
+      ]..remove(0x32)) {
+        final key = FerretControl.keyOf(usage);
+        expect(key, isNotNull, reason: '$usage');
+        expect(PhoneInputs.keyCodeOf(key!), isNotNull, reason: '$key');
+      }
+    });
+
     test('keys the phone has no use for stay here', () {
       expect(FerretControl.keyOf(0x04), input.Key.KEY_A);
       expect(FerretControl.keyOf(0x27), input.Key.KEY_DIGIT_0);
       expect(FerretControl.keyOf(0x3A), input.Key.KEY_F1);
       expect(FerretControl.keyOf(0x52), input.Key.KEY_ARROW_UP);
       expect(FerretControl.keyOf(0x39), isNull);
+      expect(FerretControl.keyOf(0x36), input.Key.KEY_COMMA);
+      expect(FerretControl.keyOf(0x38), input.Key.KEY_SLASH);
+      expect(FerretControl.keyOf(0x2F), input.Key.KEY_BRACKET_LEFT);
     });
   });
 }

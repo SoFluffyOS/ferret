@@ -16,6 +16,8 @@ abstract final class LinuxKeyCodes {
     .digit8: 9,
     .digit9: 10,
     .digit0: 11,
+    .minus: minus,
+    .equal: equal,
     .backspace: 14,
     .tab: 15,
     .q: 16,
@@ -28,6 +30,8 @@ abstract final class LinuxKeyCodes {
     .i: 23,
     .o: 24,
     .p: 25,
+    .bracketLeft: leftBrace,
+    .bracketRight: rightBrace,
     .enter: 28,
     .a: 30,
     .s: 31,
@@ -38,6 +42,10 @@ abstract final class LinuxKeyCodes {
     .j: 36,
     .k: 37,
     .l: 38,
+    .semicolon: semicolon,
+    .quote: apostrophe,
+    .backquote: grave,
+    .backslash: backslash,
     .z: 44,
     .x: 45,
     .c: 46,
@@ -45,6 +53,9 @@ abstract final class LinuxKeyCodes {
     .b: 48,
     .n: 49,
     .m: 50,
+    .comma: comma,
+    .period: dot,
+    .slash: slash,
     .space: 57,
     .f1: 59,
     .f2: 60,
@@ -82,7 +93,7 @@ abstract final class LinuxKeyCodes {
     .meta: 125,
   };
 
-  /// Punctuation on a US keyboard, to type text through uinput.
+  /// Punctuation on a US keyboard.
   static const minus = 12;
   static const equal = 13;
   static const leftBrace = 26;

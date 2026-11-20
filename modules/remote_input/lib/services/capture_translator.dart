@@ -104,13 +104,7 @@ class CaptureTranslator {
     sink.add(InputCodec.text(text));
   }
 
-  bool _typesText(InputKey key) => InputKey.ofCharacter(_nameOf(key)) == key;
-
-  String _nameOf(InputKey key) => switch (key) {
-    .space => ' ',
-    final digit when digit.name.startsWith('digit') => digit.name.substring(5),
-    final other => other.name,
-  };
+  bool _typesText(InputKey key) => key.character != null;
 
   /// Not a control character, nor one of macOS's private codes for keys
   /// such as F13.

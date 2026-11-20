@@ -120,6 +120,63 @@ void main() {
     ]);
   });
 
+  test('punctuation shortcuts go as keys, typed punctuation as text', () {
+    const comma = 0x2B;
+    const slash = 0x2C;
+    const bracketLeft = 0x21;
+    const backquote = 0x32;
+    final sink = _Sink();
+    CaptureTranslator()
+      ..translate(
+        captured(.key, code: comma, pressed: true, modifiers: _command),
+        sink,
+      )
+      ..translate(
+        captured(.key, code: bracketLeft, pressed: true, modifiers: _command),
+        sink,
+      )
+      ..translate(
+        captured(
+          .key,
+          code: backquote,
+          pressed: true,
+          modifiers: _command | _shift,
+        ),
+        sink,
+      )
+      ..translate(
+        captured(
+          .key,
+          code: slash,
+          pressed: true,
+          modifiers: _shift,
+          text: '?',
+        ),
+        sink,
+      )
+      ..translate(captured(.key, code: slash, pressed: true, text: '/'), sink);
+
+    expect(sink.actions, const [
+      KeyAction(.comma, pressed: true, modifiers: {.meta}),
+      KeyAction(.bracketLeft, pressed: true, modifiers: {.meta}),
+      KeyAction(.backquote, pressed: true, modifiers: {.meta, .shift}),
+      TextAction('?'),
+      TextAction('/'),
+    ]);
+  });
+
+  test('on a PC, ⌘/ is Ctrl+/', () {
+    final sink = _Sink();
+    CaptureTranslator(swapCommandAndControl: true).translate(
+      captured(.key, code: 0x2C, pressed: true, modifiers: _command),
+      sink,
+    );
+
+    expect(sink.actions, const [
+      KeyAction(.slash, pressed: true, modifiers: {.control}),
+    ]);
+  });
+
   test('entering leaves out the switch keys, and their release sends '
       'nothing', () {
     final sink = _Sink();
