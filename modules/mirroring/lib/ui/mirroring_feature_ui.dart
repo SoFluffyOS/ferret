@@ -792,11 +792,12 @@ class MirroringFeatureUi extends FeatureUi {
   );
 
   /// A computer's part is there once it has a switch to show (the cable,
-  /// a receiver) or a history to keep.
+  /// a receiver) or a history to keep. A phone that can be a display has
+  /// a viewer too, but its history already shows under what it shares.
   bool get _hasViewerSettings =>
       viewerViewModel.hasCable ||
       viewerViewModel.hasReceivers ||
-      viewerViewModel.history.isNotEmpty;
+      (feature.canView && viewerViewModel.history.isNotEmpty);
 
   /// Whether [session]'s device can show another's screen.
   bool _isViewer(Session? session) =>

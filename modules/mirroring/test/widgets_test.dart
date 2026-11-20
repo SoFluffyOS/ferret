@@ -105,6 +105,7 @@ void main() {
     AudioCaptureSupport sound = .unsupported,
     FakeControlService? controlService,
     FakeCamera? camera,
+    bool canBeDisplay = false,
   }) async {
     final created = await tester.runAsync(FakeHost.create);
     if (created == null) {
@@ -134,6 +135,10 @@ void main() {
       canShare: true,
       canShareCamera: camera != null,
       canView: false,
+      canBeDisplay: canBeDisplay,
+      display: () => FakeDisplayCapture(screenNow: null),
+      decoder: FakeDecoder.new,
+      codecs: const [.h264],
       clock: () => now,
     );
     ui = MirroringFeatureUi(feature: feature);
@@ -896,6 +901,27 @@ void main() {
       expect(part.isOn, isTrue);
       expect(part.needsAttention, isFalse);
       expect(find.text('Beta'), findsWidgets);
+    });
+
+    testWidgets('a phone that can be a display keeps one Screen part, with '
+        'its history once', (tester) async {
+      await startPhone(tester, canBeDisplay: true);
+      await MirroringSettings(host.settings).addRecord(
+        MirrorRecord(
+          deviceId: 'mac',
+          deviceName: 'MacBook',
+          role: .shared,
+          startedAt: now,
+          endedAt: now.add(const Duration(minutes: 3)),
+          end: .viewerDone,
+        ),
+      );
+
+      final parts = await partsOf(tester);
+
+      expect(feature.viewer, isNotNull);
+      expect(parts, hasLength(1));
+      expect(find.text('Clear history'), findsOneWidget);
     });
 
     testWidgets('turned off on the phone reads Off, and the row hears about '
