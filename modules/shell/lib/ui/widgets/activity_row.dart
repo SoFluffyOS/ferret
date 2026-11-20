@@ -81,6 +81,11 @@ class ActivityRow extends StatelessWidget {
       true => 3,
       false => 1,
     };
+    // A problem's detail says what to do, so it gets a second line.
+    final detailLines = switch ((hasLargeText, item.tone)) {
+      (false, .warning || .danger) => 2,
+      _ => textLines,
+    };
     final actionsOwnLine =
         hasLargeText || textActions.length > _actionsBesideDetail;
     // Links and icons take the pointer on more height than the words next
@@ -187,7 +192,7 @@ class ActivityRow extends StatelessWidget {
                       Expanded(
                         child: Text(
                           detail ?? '',
-                          maxLines: textLines,
+                          maxLines: detailLines,
                           overflow: .ellipsis,
                           style: typography.caption1.copyWith(
                             color: palette.mutedText,

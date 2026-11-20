@@ -269,6 +269,36 @@ void main() {
     expect(copied, 1);
   });
 
+  testWidgets('a problem line gives its detail two lines, others one', (
+    tester,
+  ) async {
+    final now = DateTime(2026, 11, 18, 12);
+    int? detailLines() => tester.widget<Text>(find.text('What to do')).maxLines;
+
+    for (final (tone, lines) in [
+      (FeatureTone.normal, 1),
+      (FeatureTone.warning, 2),
+      (FeatureTone.danger, 2),
+    ]) {
+      await tester.pumpWidget(
+        testApp(
+          ActivityRow(
+            key: ValueKey(tone),
+            now: now,
+            item: ActivityItem(
+              id: 'line',
+              icon: LucideIcons.keyboard,
+              title: 'Something happened',
+              detail: 'What to do',
+              tone: tone,
+            ),
+          ),
+        ),
+      );
+      expect(detailLines(), lines, reason: '$tone');
+    }
+  });
+
   testWidgets('a right-click on an activity line offers what the line does', (
     tester,
   ) async {
