@@ -31,10 +31,13 @@ class DownloadSection extends StatelessComponent {
             Component.text('.'),
           ]),
         ]),
-        ul(classes: 'platforms', [
-          for (final platform in LandingContent.platforms)
-            li([_card(platform)]),
-        ]),
+        for (final (label, names) in _rows) ...[
+          h3(classes: 'platforms-label', [Component.text(label)]),
+          ul(classes: 'platforms', [
+            for (final platform in LandingContent.platforms)
+              if (names.contains(platform.name)) li([_card(platform)]),
+          ]),
+        ],
       ]),
     ],
   );
@@ -66,4 +69,10 @@ class DownloadSection extends StatelessComponent {
       const Component.text('Install guide →'),
     ]),
   ]);
+
+  /// Computers on one row, phones on the next, so each card has room.
+  static const _rows = [
+    ('Computers', {'Mac', 'Windows', 'Linux'}),
+    ('Phones', {'Android', 'iPhone'}),
+  ];
 }

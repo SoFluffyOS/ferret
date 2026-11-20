@@ -699,11 +699,19 @@ h2 {
 
 .platforms {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--s4);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.platforms-label {
+  margin: var(--s8) 0 var(--s3);
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
 }
 
 .platforms li {
