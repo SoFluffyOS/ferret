@@ -9,3 +9,16 @@
 /interop/*               /docs/interop/:splat             301
 /spec/*                  /docs/spec/:splat                301
 /contributing/*          /docs/contributing/:splat        301
+# Folders without a page of their own: a trimmed link lands somewhere useful.
+/docs/getting-started    /docs#-get-started               302
+/docs/getting-started/   /docs#-get-started               302
+/docs/features           /docs#-get-started               302
+/docs/features/          /docs#-get-started               302
+/docs/android-modes      /docs/android-modes/standard     302
+/docs/android-modes/     /docs/android-modes/standard     302
+/docs/interop            /docs/interop/localsend          302
+/docs/interop/           /docs/interop/localsend          302
+/docs/spec               /docs/spec/reference             302
+/docs/spec/              /docs/spec/reference             302
+/docs/contributing       /docs/contributing/translating   302
+/docs/contributing/      /docs/contributing/translating   302

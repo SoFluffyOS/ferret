@@ -33,6 +33,14 @@ class FerretDocsLayout extends DocsLayout {
       href: '/images/apple-touch-icon.png',
     );
     yield const dom.meta(
+      attributes: {'property': 'og:type'},
+      content: 'article',
+    );
+    yield const dom.meta(
+      attributes: {'property': 'og:site_name'},
+      content: 'Ferret',
+    );
+    yield const dom.meta(
       attributes: {'property': 'og:image'},
       content: '${SiteLinks.origin}/images/social.png',
     );
@@ -47,4 +55,25 @@ class FerretDocsLayout extends DocsLayout {
     yield const dom.meta(name: 'twitter:card', content: 'summary_large_image');
     yield const dom.meta(name: 'theme-color', content: '#2B2320');
   }
+
+  /// The title and description are for the head (see `PageMetaExtension`).
+  /// The page's own `#` heading already says both, so the layout's header
+  /// above the content stays empty.
+  ///
+  /// A keyboard user's first Tab lands on "Skip to content", past the header
+  /// and the long sidebar.
+  @override
+  Component buildBody(Page page, Component child) => dom.div([
+    const dom.a(classes: 'skip', href: '#content', [
+      Component.text('Skip to content'),
+    ]),
+    super.buildBody(
+      page.copy()..apply(
+        data: {
+          'page': {'title': null, 'description': null},
+        },
+      ),
+      dom.div(id: 'content', attributes: {'tabindex': '-1'}, [child]),
+    ),
+  ]);
 }

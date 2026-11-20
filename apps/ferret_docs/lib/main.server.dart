@@ -5,6 +5,7 @@ library;
 import 'package:ferret_docs/content/docs_loader.dart';
 import 'package:ferret_docs/content/plain_grammar.dart';
 import 'package:ferret_docs/extensions/markdown_links_extension.dart';
+import 'package:ferret_docs/extensions/page_meta_extension.dart';
 import 'package:ferret_docs/landing/landing.dart';
 import 'package:ferret_docs/layouts/ferret_docs_layout.dart';
 import 'package:ferret_docs/main.server.options.dart';
@@ -33,6 +34,7 @@ void main() {
         parsers: const [MarkdownParser()],
         extensions: [
           const MarkdownLinksExtension(),
+          const PageMetaExtension(),
           HeadingAnchorsExtension(),
           const TableOfContentsExtension(),
         ],

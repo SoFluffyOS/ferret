@@ -21,6 +21,27 @@
   opacity: 1;
 }
 
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: #e39a33;
+  color: #2b2320;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip:focus {
+  top: 0.75rem;
+}
+
+#content:focus {
+  outline: none;
+}
+
 @media (max-width: 520px) {
   .docs-nav-link:nth-child(3) {
     display: none;
