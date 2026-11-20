@@ -1,6 +1,7 @@
-// The shelf at the bottom of the Mac popover: empty, with files, a phone
-// photo, text and a link, opened, while something is dragged over it, and
-// with previews hidden. Renders into temp/screens as `shelf_<name>_*.png`.
+// The shelf box at the bottom of the Mac popover: empty, with files, a
+// phone photo, text and a link, with a selection, under the pointer, while
+// something is dragged over it, with a missing file, with previews hidden,
+// and its list page. Renders into temp/screens as `shelf_<name>_*.png`.
 // Run from apps/ferret:
 //
 //   fvm flutter test test/screens/shelf_screens_test.dart
@@ -12,12 +13,15 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_shelf/local_shelf.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
 import 'support/screen_fonts.dart';
@@ -50,14 +54,10 @@ Future<List<int>> _picture(int width, int height) async {
   return bytes?.buffer.asUint8List() ?? const [];
 }
 
-/// Puts a document, a folder, a photo from the phone, a copied picture,
-/// text and a link on the shelf, newest last.
 /// Fills the shelf with a few dropped things and two copies, kept since
 /// Keep copies is on.
 Future<void> _fill(WidgetTester tester, ShelfStore store) async {
-  final viewModel = tester
-      .element(find.byType(ShelfBarFrame))
-      .read<ShelfViewModel>();
+  final viewModel = _viewModel(tester);
   await tester.runAsync(() async {
     await viewModel.setKeepCopies(true);
     final home = Directory(p.join(p.dirname(store.folder), 'home'))
@@ -85,35 +85,69 @@ Future<void> _fill(WidgetTester tester, ShelfStore store) async {
   });
 }
 
+ShelfViewModel _viewModel(WidgetTester tester) =>
+    tester.element(find.byType(ShelfBoxFrame)).read<ShelfViewModel>();
+
+Finder _tile(String label) => find.byWidgetPredicate(
+  (widget) => widget is ShelfTile && widget.tooltip == label,
+);
+
+Future<void> _openList(WidgetTester tester, ScreenRig rig) async {
+  await rig.settle(tester);
+  await tester.tap(
+    find.byWidgetPredicate(
+      (widget) => widget is Tappable && widget.tooltip == 'Open the list',
+    ),
+  );
+}
+
 final _screens = <String, _Script>{
   'empty': (tester, rig, store) async {},
+  'empty_drop_over': (tester, rig, store) async =>
+      _viewModel(tester).hover(over: true),
   'items': (tester, rig, store) => _fill(tester, store),
   'drop_over': (tester, rig, store) async {
-    final viewModel = tester
-        .element(find.byType(ShelfBarFrame))
-        .read<ShelfViewModel>();
-    viewModel.hover(over: true);
-  },
-  'open': (tester, rig, store) async {
     await _fill(tester, store);
     await rig.settle(tester);
-    await tester.tap(find.byType(ShelfBarFrame));
+    _viewModel(tester).hover(over: true);
+  },
+  'selection': (tester, rig, store) async {
+    await _fill(tester, store);
+    await rig.settle(tester);
+    await tester.tap(_tile('IMG_2041.png'));
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.metaLeft);
+    await tester.tap(_tile('Trip to Da Lat'));
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.metaLeft);
+  },
+  'hover': (tester, rig, store) async {
+    await _fill(tester, store);
+    await rig.settle(tester);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: tester.getCenter(_tile('Trip to Da Lat')));
+  },
+  'missing': (tester, rig, store) async {
+    await _fill(tester, store);
+    final folder = store.items.firstWhere(
+      (item) => item.name == 'Trip to Da Lat',
+    );
+    await tester.runAsync(() async {
+      Directory(folder.path).deleteSync();
+      await store.refresh();
+    });
+  },
+  'hidden': (tester, rig, store) => _fill(tester, store),
+  'list': (tester, rig, store) async {
+    await _fill(tester, store);
+    await _openList(tester, rig);
     await rig.settle(tester);
     final viewModel = tester
         .element(find.byType(ShelfListFrame))
         .read<ShelfViewModel>();
     viewModel.select(viewModel.items[1].id);
   },
-  'empty_open': (tester, rig, store) async {
-    await rig.settle(tester);
-    await tester.tap(find.byType(ShelfBarFrame));
-  },
-  'copies_open': (tester, rig, store) async {
-    final viewModel = tester
-        .element(find.byType(ShelfBarFrame))
-        .read<ShelfViewModel>();
-    await tester.runAsync(() => viewModel.setKeepCopies(true));
-    await tester.runAsync(() => store.clear());
+  'empty_list': (tester, rig, store) => _openList(tester, rig),
+  'copies_list': (tester, rig, store) async {
+    await tester.runAsync(() => _viewModel(tester).setKeepCopies(true));
     await tester.runAsync(
       () => store.keepText(
         'https://example.org/tickets/4471',
@@ -121,14 +155,11 @@ final _screens = <String, _Script>{
         source: .copied,
       ),
     );
-    await rig.settle(tester);
-    await tester.tap(find.byType(ShelfBarFrame));
+    await _openList(tester, rig);
   },
-  'hidden': (tester, rig, store) => _fill(tester, store),
-  'hidden_open': (tester, rig, store) async {
+  'hidden_list': (tester, rig, store) async {
     await _fill(tester, store);
-    await rig.settle(tester);
-    await tester.tap(find.byType(ShelfBarFrame));
+    await _openList(tester, rig);
   },
 };
 

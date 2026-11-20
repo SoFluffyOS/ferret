@@ -1579,6 +1579,12 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   @override
   String get remove => pseudo(super.remove);
   @override
+  String get quickLook => pseudo(super.quickLook);
+  @override
+  String get showInFinder => pseudo(super.showInFinder);
+  @override
+  String get copy => pseudo(super.copy);
+  @override
   String get missing => pseudo(super.missing);
   @override
   String get kindFile => pseudo(super.kindFile);
@@ -1624,6 +1630,8 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   String barHidden(int count) => pseudo(super.barHidden(count));
   @override
   String dragAll(int count) => pseudo(super.dragAll(count));
+  @override
+  String allTile(int count) => pseudo(super.allTile(count));
   @override
   String clearConfirm(int count) => pseudo(super.clearConfirm(count));
   @override

@@ -39,14 +39,24 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   }
 
   @override
-  String get barOpen => 'Mở kệ tạm';
+  String get barOpen => 'Mở danh sách';
 
   @override
   String dragAll(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Kéo cả $count mục ra, hoặc bấm để mở',
+      other: 'Kéo cả $count mục ra',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String allTile(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Cả $count',
     );
     return '$_temp0';
   }
@@ -89,6 +99,15 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   }
 
   @override
+  String get quickLook => 'Xem nhanh';
+
+  @override
+  String get showInFinder => 'Hiện trong Finder';
+
+  @override
+  String get copy => 'Sao chép';
+
+  @override
   String get missing => 'Đã chuyển đi hoặc bị xoá';
 
   @override
@@ -125,7 +144,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get emptyNote =>
-      'Thả tệp, ảnh, chữ hay liên kết lên thanh ở dưới cùng. Mọi thứ chỉ nằm trên máy tính này.';
+      'Thả tệp, ảnh, chữ hay liên kết vào hộp ở dưới cùng. Mọi thứ chỉ nằm trên máy tính này.';
 
   @override
   String get hiddenNote =>

@@ -9,15 +9,16 @@ import 'package:local_shelf/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The shelf opened from its bar: everything on it, to drag out, preview
-/// or take off. Clear asks once more when it would take many things.
+/// The shelf as a list, opened from its box: everything on it with where
+/// it came from, to drag out, preview or take off, and Keep copies. Clear
+/// asks once more when it would take many things.
 class ShelfPage extends StatefulWidget {
   const ShelfPage({super.key, required this.viewModel});
 
   final ShelfViewModel viewModel;
 
   /// From this many items on, Clear asks once more.
-  static const confirmsFrom = 6;
+  static const confirmsFrom = ShelfBoxFrame.confirmsFrom;
 
   @override
   State<ShelfPage> createState() => _ShelfPageState();
@@ -25,17 +26,41 @@ class ShelfPage extends StatefulWidget {
 
 class _ShelfPageState extends State<ShelfPage> {
   bool _confirmsClear = false;
+  bool _isCounted = false;
 
   @override
   void initState() {
     super.initState();
     unawaited(widget.viewModel.refresh());
+    // Told after this frame: the box below is built in the same one.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      _isCounted = true;
+      widget.viewModel.listOpened();
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_isCounted) {
+      final viewModel = widget.viewModel;
+      // Not while the tree is being torn down: the box rebuilds on it.
+      scheduleMicrotask(viewModel.listClosed);
+    }
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(
     value: widget.viewModel,
-    child: Builder(builder: _page),
+    child: DropReceiverRegion(
+      receiver: widget.viewModel,
+      child: Builder(builder: _page),
+    ),
   );
 
   Widget _page(BuildContext context) {

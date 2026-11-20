@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:local_shelf/models/models.dart';
 import 'package:local_shelf/services/services.dart';
 
@@ -17,6 +18,8 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
     this.dragOut,
     this.quickLook,
     this.settings,
+    this.reveal = _revealInFinder,
+    this.copyText = _copyToClipboard,
   });
 
   /// This computer's device id: its own copies show as long as previews
@@ -35,18 +38,49 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
   /// Whether and how long copies are kept; none in tests that don't ask.
   final ShelfSettings? settings;
 
+  /// Shows a file in Finder, selected.
+  final Future<void> Function(String path) reveal;
+
+  /// Puts text on the clipboard.
+  final Future<void> Function(String text) copyText;
+
   ShelfStore? _store;
   StreamSubscription<void>? _changes;
   List<ShelfItem> _items = const [];
   Set<String> _selected = const {};
   bool _isDropOver = false;
+  int _openLists = 0;
 
   static bool _always(String _) => true;
   static String _sameName(String deviceId) => deviceId;
 
+  static Future<void> _revealInFinder(String path) async {
+    if (!Platform.isMacOS) {
+      return;
+    }
+
+    await Process.run('open', ['-R', path]);
+  }
+
+  static Future<void> _copyToClipboard(String text) =>
+      Clipboard.setData(ClipboardData(text: text));
+
   List<ShelfItem> get items => _items;
 
   Set<String> get selected => _selected;
+
+  /// Whether the shelf's list page is open: the box steps aside for it.
+  bool get isListOpen => _openLists > 0;
+
+  void listOpened() {
+    _openLists++;
+    notifyListeners();
+  }
+
+  void listClosed() {
+    _openLists = (_openLists - 1).clamp(0, _openLists);
+    notifyListeners();
+  }
 
   /// Whether a drag is over the shelf and would land on it.
   bool get isDropOver => _isDropOver;
@@ -225,18 +259,60 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
   }
 
   /// Shows the selected files in a quick preview, or closes it.
-  Future<void> previewSelected() async {
+  Future<void> previewSelected() => preview([
+    for (final item in _items)
+      if (_selected.contains(item.id)) item,
+  ]);
+
+  /// Shows [items] in a quick preview, or closes it. Hidden or missing
+  /// items stay out.
+  Future<void> preview(List<ShelfItem> items) async {
     final quickLook = this.quickLook;
     final paths = [
-      for (final item in _items)
-        if (_selected.contains(item.id) && !item.isMissing && !hides(item))
-          item.path,
+      for (final item in items)
+        if (canPreview(item)) item.path,
     ];
     if (quickLook == null || paths.isEmpty) {
       return;
     }
 
     await quickLook(paths);
+  }
+
+  bool canPreview(ShelfItem item) => !item.isMissing && !hides(item);
+
+  /// Whether [item] is a file of the person's own that Finder can show.
+  bool canReveal(ShelfItem item) =>
+      !item.isCached && !item.isMissing && !hides(item);
+
+  /// Whether [item] is text or a link to put on the clipboard.
+  bool canCopy(ShelfItem item) =>
+      (item.kind == .text || item.kind == .link) && !hides(item);
+
+  Future<void> showInFinder(ShelfItem item) async {
+    if (!canReveal(item)) {
+      return;
+    }
+
+    await reveal(item.path);
+  }
+
+  /// Puts [item]'s text or web address on the clipboard.
+  Future<bool> copy(ShelfItem item) async {
+    if (!canCopy(item)) {
+      return false;
+    }
+
+    final text = switch (item.kind) {
+      .link => item.text,
+      _ => await _readText(item),
+    };
+    if (text == null || text.isEmpty) {
+      return false;
+    }
+
+    await copyText(text);
+    return true;
   }
 
   Future<String?> _readText(ShelfItem item) async {

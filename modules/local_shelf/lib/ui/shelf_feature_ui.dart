@@ -15,8 +15,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
-/// The shelf in the app: its bar under the Mac popover's pages, and its
-/// page. Its files live in Ferret's cache folder, under `shelf`.
+/// The shelf in the app: its box under the Mac popover's pages, and its
+/// list page. Its files live in Ferret's cache folder, under `shelf`.
 class ShelfFeatureUi extends FeatureUi {
   ShelfFeatureUi({ShelfFeature? feature, this.store, this.showsPreviewsFrom})
     : feature = feature ?? ShelfFeature();
@@ -123,8 +123,9 @@ class ShelfFeatureUi extends FeatureUi {
 
     return ChangeNotifierProvider.value(
       value: viewModel,
-      child: ShelfBarFrame(
-        onOpen: () => unawaited(feature.push(ShelfPage(viewModel: viewModel))),
+      child: ShelfBoxFrame(
+        onOpenList: () =>
+            unawaited(feature.push(ShelfPage(viewModel: viewModel))),
       ),
     );
   }

@@ -41,15 +41,25 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
   }
 
   @override
-  String get barOpen => 'Open the shelf';
+  String get barOpen => 'Open the list';
 
   @override
   String dragAll(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Drag all $count out, or click to open',
-      one: 'Drag it out, or click to open',
+      other: 'Drag all $count out',
+      one: 'Drag it out',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String allTile(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'All $count',
     );
     return '$_temp0';
   }
@@ -93,6 +103,15 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
   }
 
   @override
+  String get quickLook => 'Quick Look';
+
+  @override
+  String get showInFinder => 'Show in Finder';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
   String get missing => 'Moved or deleted';
 
   @override
@@ -129,7 +148,7 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
 
   @override
   String get emptyNote =>
-      'Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.';
+      'Drop files, photos, text or links on the box at the bottom. It all stays on this computer.';
 
   @override
   String get hiddenNote =>

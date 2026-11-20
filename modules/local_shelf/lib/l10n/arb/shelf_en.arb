@@ -6,11 +6,11 @@
   },
   "barEmpty": "Drop here to keep it for later",
   "@barEmpty": {
-    "description": "Hint on the empty shelf bar at the bottom of the popover. Keep it short."
+    "description": "Hint in the empty shelf box at the bottom of the popover. Keep it short."
   },
   "barDropOver": "Drop to keep it",
   "@barDropOver": {
-    "description": "The shelf bar while something is dragged over it."
+    "description": "The shelf box while something is dragged over it."
   },
   "barCount": "{count, plural, =1{1 item} other{{count} items}}",
   "@barCount": {
@@ -23,20 +23,29 @@
   },
   "barHidden": "{count, plural, =1{1 item, hidden} other{{count} items, hidden}}",
   "@barHidden": {
-    "description": "The shelf bar while private previews are off on this computer: only how many things are on it.",
+    "description": "The shelf box while private previews are off on this computer: only how many things are on it.",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "barOpen": "Open the shelf",
+  "barOpen": "Open the list",
   "@barOpen": {
-    "description": "Tooltip of the shelf bar: clicking it opens the shelf."
+    "description": "Tooltip of the small button in the shelf box's header: opens the shelf as a list, with Keep copies."
   },
-  "dragAll": "{count, plural, =1{Drag it out, or click to open} other{Drag all {count} out, or click to open}}",
+  "dragAll": "{count, plural, =1{Drag it out} other{Drag all {count} out}}",
   "@dragAll": {
-    "description": "Tooltip of the stack at the left of the shelf bar.",
+    "description": "Tooltip of the stack tile at the start of the shelf box.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "allTile": "{count, plural, other{All {count}}}",
+  "@allTile": {
+    "description": "Label under the stack tile at the start of the shelf box: drags everything. Keep it very short.",
     "placeholders": {
       "count": {
         "type": "int"
@@ -78,6 +87,18 @@
       }
     }
   },
+  "quickLook": "Quick Look",
+  "@quickLook": {
+    "description": "Menu entry: preview the item with macOS Quick Look. Apple's own name for it."
+  },
+  "showInFinder": "Show in Finder",
+  "@showInFinder": {
+    "description": "Menu entry: show the file in Finder, selected."
+  },
+  "copy": "Copy",
+  "@copy": {
+    "description": "Menu entry: put the text or link on the clipboard."
+  },
   "missing": "Moved or deleted",
   "@missing": {
     "description": "A file on the shelf that isn't where it was anymore."
@@ -108,7 +129,7 @@
     "description": "Title of a shelf item whose contents are hidden because previews are off."
   },
   "empty": "Nothing on the shelf yet",
-  "emptyNote": "Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.",
+  "emptyNote": "Drop files, photos, text or links on the box at the bottom. It all stays on this computer.",
   "hiddenNote": "Hidden while private previews are off on this computer.",
   "dragNote": "Drag anything out to another app, or onto a device to send it. Space shows a preview.",
   "selectedCount": "{count, plural, other{{count} selected}}",

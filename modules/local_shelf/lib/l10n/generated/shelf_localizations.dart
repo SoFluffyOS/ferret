@@ -104,13 +104,13 @@ abstract class ShelfLocalizations {
   /// **'Shelf'**
   String get title;
 
-  /// Hint on the empty shelf bar at the bottom of the popover. Keep it short.
+  /// Hint in the empty shelf box at the bottom of the popover. Keep it short.
   ///
   /// In en, this message translates to:
   /// **'Drop here to keep it for later'**
   String get barEmpty;
 
-  /// The shelf bar while something is dragged over it.
+  /// The shelf box while something is dragged over it.
   ///
   /// In en, this message translates to:
   /// **'Drop to keep it'**
@@ -122,23 +122,29 @@ abstract class ShelfLocalizations {
   /// **'{count, plural, =1{1 item} other{{count} items}}'**
   String barCount(int count);
 
-  /// The shelf bar while private previews are off on this computer: only how many things are on it.
+  /// The shelf box while private previews are off on this computer: only how many things are on it.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 item, hidden} other{{count} items, hidden}}'**
   String barHidden(int count);
 
-  /// Tooltip of the shelf bar: clicking it opens the shelf.
+  /// Tooltip of the small button in the shelf box's header: opens the shelf as a list, with Keep copies.
   ///
   /// In en, this message translates to:
-  /// **'Open the shelf'**
+  /// **'Open the list'**
   String get barOpen;
 
-  /// Tooltip of the stack at the left of the shelf bar.
+  /// Tooltip of the stack tile at the start of the shelf box.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{Drag it out, or click to open} other{Drag all {count} out, or click to open}}'**
+  /// **'{count, plural, =1{Drag it out} other{Drag all {count} out}}'**
   String dragAll(int count);
+
+  /// Label under the stack tile at the start of the shelf box: drags everything. Keep it very short.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{All {count}}}'**
+  String allTile(int count);
 
   /// Button: takes everything off the shelf. Keep it short.
   ///
@@ -181,6 +187,24 @@ abstract class ShelfLocalizations {
   /// In en, this message translates to:
   /// **'Take {name} off the shelf'**
   String removeTooltip(String name);
+
+  /// Menu entry: preview the item with macOS Quick Look. Apple's own name for it.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Look'**
+  String get quickLook;
+
+  /// Menu entry: show the file in Finder, selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Finder'**
+  String get showInFinder;
+
+  /// Menu entry: put the text or link on the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
 
   /// A file on the shelf that isn't where it was anymore.
   ///
@@ -251,7 +275,7 @@ abstract class ShelfLocalizations {
   /// No description provided for @emptyNote.
   ///
   /// In en, this message translates to:
-  /// **'Drop files, photos, text or links on the bar at the bottom. It all stays on this computer.'**
+  /// **'Drop files, photos, text or links on the box at the bottom. It all stays on this computer.'**
   String get emptyNote;
 
   /// No description provided for @hiddenNote.
