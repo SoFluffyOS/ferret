@@ -32,7 +32,7 @@
   "callAction": "Gọi…",
   "dialerTitle": "Gọi từ {device}",
   "numberLabel": "Số điện thoại",
-  "numberHint": "+1 555 0100",
+  "numberHint": "Nhập số cần gọi",
   "call": "Gọi",
   "callStarted": "{device} đang gọi. Hiện âm thanh vẫn ở trên {device}.",
   "dialSection": "Cuộc gọi mới",

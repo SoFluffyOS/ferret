@@ -139,7 +139,7 @@ class CallsLocalizationsVi extends CallsLocalizations {
   String get numberLabel => 'Số điện thoại';
 
   @override
-  String get numberHint => '+1 555 0100';
+  String get numberHint => 'Nhập số cần gọi';
 
   @override
   String get call => 'Gọi';

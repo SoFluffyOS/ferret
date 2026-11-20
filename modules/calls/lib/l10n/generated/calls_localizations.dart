@@ -287,7 +287,7 @@ abstract class CallsLocalizations {
   /// No description provided for @numberHint.
   ///
   /// In en, this message translates to:
-  /// **'+1 555 0100'**
+  /// **'Type the number to call'**
   String get numberHint;
 
   /// No description provided for @call.

@@ -169,7 +169,7 @@
     }
   },
   "numberLabel": "Phone number",
-  "numberHint": "+1 555 0100",
+  "numberHint": "Type the number to call",
   "call": "Call",
   "callStarted": "{device} is calling. Audio stays on {device} for now.",
   "@callStarted": {

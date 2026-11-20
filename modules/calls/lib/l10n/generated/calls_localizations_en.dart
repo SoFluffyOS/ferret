@@ -139,7 +139,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
   String get numberLabel => 'Phone number';
 
   @override
-  String get numberHint => '+1 555 0100';
+  String get numberHint => 'Type the number to call';
 
   @override
   String get call => 'Call';
