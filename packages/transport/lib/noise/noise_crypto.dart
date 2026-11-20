@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:transport/noise/chacha_poly.dart';
 
 /// The primitives of `Noise_XX_25519_ChaChaPoly_SHA256`.
 abstract final class NoiseCrypto {
@@ -10,7 +11,6 @@ abstract final class NoiseCrypto {
   static const dhLength = 32;
 
   static final _x25519 = X25519();
-  static final _aead = Chacha20.poly1305Aead();
   static final _sha256 = Sha256();
   static final _hmac = Hmac.sha256();
 
@@ -72,15 +72,8 @@ abstract final class NoiseCrypto {
     int nonce,
     List<int> associatedData,
     List<int> plaintext,
-  ) async {
-    final box = await _aead.encrypt(
-      plaintext,
-      secretKey: SecretKey(key),
-      nonce: _nonceBytes(nonce),
-      aad: associatedData,
-    );
-    return Uint8List.fromList([...box.cipherText, ...box.mac.bytes]);
-  }
+  ) async =>
+      ChaChaPoly.encrypt(key, _nonceBytes(nonce), associatedData, plaintext);
 
   /// Throws [SecretBoxAuthenticationError] when the message was tampered with.
   static Future<Uint8List> decrypt(
@@ -89,25 +82,20 @@ abstract final class NoiseCrypto {
     List<int> associatedData,
     List<int> ciphertext,
   ) async {
-    if (ciphertext.length < tagLength) {
+    final plaintext = ChaChaPoly.decrypt(
+      key,
+      _nonceBytes(nonce),
+      associatedData,
+      ciphertext,
+    );
+    if (plaintext == null) {
       throw SecretBoxAuthenticationError();
     }
 
-    final split = ciphertext.length - tagLength;
-    final box = SecretBox(
-      ciphertext.sublist(0, split),
-      nonce: _nonceBytes(nonce),
-      mac: Mac(ciphertext.sublist(split)),
-    );
-    final plaintext = await _aead.decrypt(
-      box,
-      secretKey: SecretKey(key),
-      aad: associatedData,
-    );
-    return Uint8List.fromList(plaintext);
+    return plaintext;
   }
 
-  static List<int> _nonceBytes(int nonce) {
+  static Uint8List _nonceBytes(int nonce) {
     final bytes = ByteData(12)..setUint64(4, nonce, Endian.little);
     return bytes.buffer.asUint8List();
   }
