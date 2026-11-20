@@ -217,6 +217,14 @@ enum MenubarDragKind: Int, CaseIterable {
   case link = 2
 }
 
+/// How the floating panel comes in and goes out. With Reduce Motion on,
+/// it fades.
+enum MenubarPanelMotion: Int, CaseIterable {
+  case fromRight = 0
+  case fromLeft = 1
+  case inPlace = 2
+}
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode: Int, CaseIterable {
   /// Only while the desktop window is open.
@@ -396,6 +404,228 @@ struct MenubarPromisedFile: Hashable, CustomStringConvertible {
   }
 }
 
+/// A screen in global screen points, y going up from the bottom of the
+/// main screen: all of it, and what the menu bar and Dock leave.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarScreen: Hashable, CustomStringConvertible {
+  var x: Double
+  var y: Double
+  var width: Double
+  var height: Double
+  var visibleX: Double
+  var visibleY: Double
+  var visibleWidth: Double
+  var visibleHeight: Double
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarScreen? {
+    let x = pigeonVar_list[0] as! Double
+    let y = pigeonVar_list[1] as! Double
+    let width = pigeonVar_list[2] as! Double
+    let height = pigeonVar_list[3] as! Double
+    let visibleX = pigeonVar_list[4] as! Double
+    let visibleY = pigeonVar_list[5] as! Double
+    let visibleWidth = pigeonVar_list[6] as! Double
+    let visibleHeight = pigeonVar_list[7] as! Double
+
+    return MenubarScreen(
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      visibleX: visibleX,
+      visibleY: visibleY,
+      visibleWidth: visibleWidth,
+      visibleHeight: visibleHeight
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      x,
+      y,
+      width,
+      height,
+      visibleX,
+      visibleY,
+      visibleWidth,
+      visibleHeight,
+    ]
+  }
+  static func == (lhs: MenubarScreen, rhs: MenubarScreen) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.x, rhs.x) && MessagesPigeonInternal.deepEquals(lhs.y, rhs.y) && MessagesPigeonInternal.deepEquals(lhs.width, rhs.width) && MessagesPigeonInternal.deepEquals(lhs.height, rhs.height) && MessagesPigeonInternal.deepEquals(lhs.visibleX, rhs.visibleX) && MessagesPigeonInternal.deepEquals(lhs.visibleY, rhs.visibleY) && MessagesPigeonInternal.deepEquals(lhs.visibleWidth, rhs.visibleWidth) && MessagesPigeonInternal.deepEquals(lhs.visibleHeight, rhs.visibleHeight)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarScreen")
+    MessagesPigeonInternal.deepHash(value: x, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: y, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: width, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: height, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: visibleX, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: visibleY, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: visibleWidth, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: visibleHeight, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarScreen(x: \(String(describing: x)), y: \(String(describing: y)), width: \(String(describing: width)), height: \(String(describing: height)), visibleX: \(String(describing: visibleX)), visibleY: \(String(describing: visibleY)), visibleWidth: \(String(describing: visibleWidth)), visibleHeight: \(String(describing: visibleHeight)))"
+  }
+}
+
+/// Where a drag in another app is, and the keys held with it.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarDragPoint: Hashable, CustomStringConvertible {
+  var x: Double
+  var y: Double
+  /// The screen under the pointer.
+  var screen: MenubarScreen
+  var fn: Bool
+  var shift: Bool
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarDragPoint? {
+    let x = pigeonVar_list[0] as! Double
+    let y = pigeonVar_list[1] as! Double
+    let screen = pigeonVar_list[2] as! MenubarScreen
+    let fn = pigeonVar_list[3] as! Bool
+    let shift = pigeonVar_list[4] as! Bool
+
+    return MenubarDragPoint(
+      x: x,
+      y: y,
+      screen: screen,
+      fn: fn,
+      shift: shift
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      x,
+      y,
+      screen,
+      fn,
+      shift,
+    ]
+  }
+  static func == (lhs: MenubarDragPoint, rhs: MenubarDragPoint) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.x, rhs.x) && MessagesPigeonInternal.deepEquals(lhs.y, rhs.y) && MessagesPigeonInternal.deepEquals(lhs.screen, rhs.screen) && MessagesPigeonInternal.deepEquals(lhs.fn, rhs.fn) && MessagesPigeonInternal.deepEquals(lhs.shift, rhs.shift)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarDragPoint")
+    MessagesPigeonInternal.deepHash(value: x, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: y, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: screen, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: fn, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: shift, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarDragPoint(x: \(String(describing: x)), y: \(String(describing: y)), screen: \(String(describing: screen)), fn: \(String(describing: fn)), shift: \(String(describing: shift)))"
+  }
+}
+
+/// A drag that started in another app: what it carries by its types
+/// alone, and the app it started in.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarSystemDrag: Hashable, CustomStringConvertible {
+  var kind: MenubarDragKind
+  var point: MenubarDragPoint
+  /// The bundle id of the app in front when the drag started.
+  var sourceApp: String? = nil
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarSystemDrag? {
+    let kind = pigeonVar_list[0] as! MenubarDragKind
+    let point = pigeonVar_list[1] as! MenubarDragPoint
+    let sourceApp: String? = nilOrValue(pigeonVar_list[2])
+
+    return MenubarSystemDrag(
+      kind: kind,
+      point: point,
+      sourceApp: sourceApp
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      kind,
+      point,
+      sourceApp,
+    ]
+  }
+  static func == (lhs: MenubarSystemDrag, rhs: MenubarSystemDrag) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.kind, rhs.kind) && MessagesPigeonInternal.deepEquals(lhs.point, rhs.point) && MessagesPigeonInternal.deepEquals(lhs.sourceApp, rhs.sourceApp)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarSystemDrag")
+    MessagesPigeonInternal.deepHash(value: kind, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: point, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: sourceApp, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarSystemDrag(kind: \(String(describing: kind)), point: \(String(describing: point)), sourceApp: \(String(describing: sourceApp)))"
+  }
+}
+
+/// An app that runs now, to pick from.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarApp: Hashable, CustomStringConvertible {
+  var bundleId: String
+  var name: String
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarApp? {
+    let bundleId = pigeonVar_list[0] as! String
+    let name = pigeonVar_list[1] as! String
+
+    return MenubarApp(
+      bundleId: bundleId,
+      name: name
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      bundleId,
+      name,
+    ]
+  }
+  static func == (lhs: MenubarApp, rhs: MenubarApp) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.bundleId, rhs.bundleId) && MessagesPigeonInternal.deepEquals(lhs.name, rhs.name)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarApp")
+    MessagesPigeonInternal.deepHash(value: bundleId, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: name, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarApp(bundleId: \(String(describing: bundleId)), name: \(String(describing: name)))"
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -414,15 +644,29 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 131:
       let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
       if let enumResultAsInt = enumResultAsInt {
-        return MenubarDockMode(rawValue: enumResultAsInt)
+        return MenubarPanelMotion(rawValue: enumResultAsInt)
       }
       return nil
     case 132:
-      return MenubarMenuItem.fromList(self.readValue() as! [Any?])
+      let enumResultAsInt: Int? = nilOrValue(self.readValue() as! Int?)
+      if let enumResultAsInt = enumResultAsInt {
+        return MenubarDockMode(rawValue: enumResultAsInt)
+      }
+      return nil
     case 133:
-      return MenubarShortcut.fromList(self.readValue() as! [Any?])
+      return MenubarMenuItem.fromList(self.readValue() as! [Any?])
     case 134:
+      return MenubarShortcut.fromList(self.readValue() as! [Any?])
+    case 135:
       return MenubarPromisedFile.fromList(self.readValue() as! [Any?])
+    case 136:
+      return MenubarScreen.fromList(self.readValue() as! [Any?])
+    case 137:
+      return MenubarDragPoint.fromList(self.readValue() as! [Any?])
+    case 138:
+      return MenubarSystemDrag.fromList(self.readValue() as! [Any?])
+    case 139:
+      return MenubarApp.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -437,17 +681,32 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? MenubarDragKind {
       super.writeByte(130)
       super.writeValue(value.rawValue)
-    } else if let value = value as? MenubarDockMode {
+    } else if let value = value as? MenubarPanelMotion {
       super.writeByte(131)
       super.writeValue(value.rawValue)
-    } else if let value = value as? MenubarMenuItem {
+    } else if let value = value as? MenubarDockMode {
       super.writeByte(132)
-      super.writeValue(value.toList())
-    } else if let value = value as? MenubarShortcut {
+      super.writeValue(value.rawValue)
+    } else if let value = value as? MenubarMenuItem {
       super.writeByte(133)
       super.writeValue(value.toList())
-    } else if let value = value as? MenubarPromisedFile {
+    } else if let value = value as? MenubarShortcut {
       super.writeByte(134)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarPromisedFile {
+      super.writeByte(135)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarScreen {
+      super.writeByte(136)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarDragPoint {
+      super.writeByte(137)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarSystemDrag {
+      super.writeByte(138)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarApp {
+      super.writeByte(139)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -550,6 +809,28 @@ protocol MenubarHostApi {
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   func toggleQuickLook(paths: [String]) throws
+  /// Starts or stops watching drags in other apps. Mouse events and the
+  /// drag pasteboard's types only, so the Mac asks for no permission.
+  func watchSystemDrags(on: Bool) throws
+  /// How a drag over the menubar icon opens the popover: after resting
+  /// there for the Mac's spring-loading delay when [springOnHover], at
+  /// once when [opensAtOnce].
+  func setIconDragBehavior(springOnHover: Bool, opensAtOnce: Bool) throws
+  /// What a small label under the icon says while a drag of files, or of
+  /// text and links, rests on it, such as "Send to Pixel 7". Null shows
+  /// none.
+  func setIconDropLabels(files: String?, text: String?) throws
+  /// A small notice under the icon for [seconds], with a button that says
+  /// [action] when there is one, such as Undo.
+  func showIconNotice(text: String, action: String?, seconds: Double) throws
+  func hideIconNotice() throws
+  /// Shows the floating panel at [x], [y] (its bottom left in global
+  /// screen points) and [width] by [height], over every app and Space,
+  /// without taking focus. Returns the id of its Flutter view.
+  func showFloatingPanel(x: Double, y: Double, width: Double, height: Double, radius: Double, motion: MenubarPanelMotion) throws -> Int64
+  func hideFloatingPanel() throws
+  /// The apps that run now with a window or a Dock icon.
+  func runningApps() throws -> [MenubarApp]
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -1044,6 +1325,143 @@ class MenubarHostApiSetup {
     } else {
       toggleQuickLookChannel.setMessageHandler(nil)
     }
+    /// Starts or stops watching drags in other apps. Mouse events and the
+    /// drag pasteboard's types only, so the Mac asks for no permission.
+    let watchSystemDragsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.watchSystemDrags\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      watchSystemDragsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let onArg = args[0] as! Bool
+        do {
+          try api.watchSystemDrags(on: onArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      watchSystemDragsChannel.setMessageHandler(nil)
+    }
+    /// How a drag over the menubar icon opens the popover: after resting
+    /// there for the Mac's spring-loading delay when [springOnHover], at
+    /// once when [opensAtOnce].
+    let setIconDragBehaviorChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconDragBehavior\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setIconDragBehaviorChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let springOnHoverArg = args[0] as! Bool
+        let opensAtOnceArg = args[1] as! Bool
+        do {
+          try api.setIconDragBehavior(springOnHover: springOnHoverArg, opensAtOnce: opensAtOnceArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setIconDragBehaviorChannel.setMessageHandler(nil)
+    }
+    /// What a small label under the icon says while a drag of files, or of
+    /// text and links, rests on it, such as "Send to Pixel 7". Null shows
+    /// none.
+    let setIconDropLabelsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconDropLabels\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setIconDropLabelsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let filesArg: String? = nilOrValue(args[0])
+        let textArg: String? = nilOrValue(args[1])
+        do {
+          try api.setIconDropLabels(files: filesArg, text: textArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setIconDropLabelsChannel.setMessageHandler(nil)
+    }
+    /// A small notice under the icon for [seconds], with a button that says
+    /// [action] when there is one, such as Undo.
+    let showIconNoticeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showIconNotice\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      showIconNoticeChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let textArg = args[0] as! String
+        let actionArg: String? = nilOrValue(args[1])
+        let secondsArg = args[2] as! Double
+        do {
+          try api.showIconNotice(text: textArg, action: actionArg, seconds: secondsArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      showIconNoticeChannel.setMessageHandler(nil)
+    }
+    let hideIconNoticeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hideIconNotice\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      hideIconNoticeChannel.setMessageHandler { _, reply in
+        do {
+          try api.hideIconNotice()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      hideIconNoticeChannel.setMessageHandler(nil)
+    }
+    /// Shows the floating panel at [x], [y] (its bottom left in global
+    /// screen points) and [width] by [height], over every app and Space,
+    /// without taking focus. Returns the id of its Flutter view.
+    let showFloatingPanelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showFloatingPanel\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      showFloatingPanelChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let xArg = args[0] as! Double
+        let yArg = args[1] as! Double
+        let widthArg = args[2] as! Double
+        let heightArg = args[3] as! Double
+        let radiusArg = args[4] as! Double
+        let motionArg = args[5] as! MenubarPanelMotion
+        do {
+          let result = try api.showFloatingPanel(x: xArg, y: yArg, width: widthArg, height: heightArg, radius: radiusArg, motion: motionArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      showFloatingPanelChannel.setMessageHandler(nil)
+    }
+    let hideFloatingPanelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hideFloatingPanel\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      hideFloatingPanelChannel.setMessageHandler { _, reply in
+        do {
+          try api.hideFloatingPanel()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      hideFloatingPanelChannel.setMessageHandler(nil)
+    }
+    /// The apps that run now with a window or a Dock icon.
+    let runningAppsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.runningApps\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      runningAppsChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.runningApps()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      runningAppsChannel.setMessageHandler(nil)
+    }
   }
 }
 
@@ -1076,6 +1494,14 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws
   /// The picture window closed and its Flutter view [viewId] is gone.
   @MainActor func onPictureWindowClosed(viewId viewIdArg: Int64) async throws
+  /// A drag started in another app. Ferret's own drags never show here.
+  @MainActor func onSystemDragStarted(drag dragArg: MenubarSystemDrag) async throws
+  @MainActor func onSystemDragMoved(point pointArg: MenubarDragPoint) async throws
+  @MainActor func onSystemDragEnded() async throws
+  /// Text, or a link when [isLink], dropped on the menubar icon.
+  @MainActor func onIconTextDropped(text textArg: String, isLink isLinkArg: Bool) async throws
+  /// The button on the icon's notice was pressed.
+  @MainActor func onIconNoticeAction() async throws
   /// A promised file [id] was dropped: the path of a local copy to copy
   /// where it landed, once there is one, or null when it couldn't be had.
   @MainActor func onPromisedFileWanted(id idArg: String) async throws -> String?
@@ -1349,6 +1775,109 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPictureWindowClosed\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
       channel.sendMessage([viewIdArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// A drag started in another app. Ferret's own drags never show here.
+  @MainActor func onSystemDragStarted(drag dragArg: MenubarSystemDrag) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragStarted\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([dragArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onSystemDragMoved(point pointArg: MenubarDragPoint) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragMoved\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([pointArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  @MainActor func onSystemDragEnded() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragEnded\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// Text, or a link when [isLink], dropped on the menubar icon.
+  @MainActor func onIconTextDropped(text textArg: String, isLink isLinkArg: Bool) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onIconTextDropped\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([textArg, isLinkArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          continuation.resume()
+        }
+      }
+    }
+  }
+  /// The button on the icon's notice was pressed.
+  @MainActor func onIconNoticeAction() async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onIconNoticeAction\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage(nil) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

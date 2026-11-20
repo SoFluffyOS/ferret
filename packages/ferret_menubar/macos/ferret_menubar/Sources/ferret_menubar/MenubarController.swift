@@ -14,6 +14,13 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     private var iconState: MenubarIconState = .alone
     private var iconProgress: Double = 0
     private var isDragOverIcon = false
+    private let notice = IconNotice()
+    private var filesLabel: String?
+    private var textLabel: String?
+    /// Set when something was dropped in the popover or on the icon after
+    /// a drag opened it, so it stays open.
+    private var droppedSinceSpring = false
+    private var releaseCheck: Timer?
 
     /// How long the popover waits after a drag leaves it, since people
     /// overshoot, before it closes (only when the drag opened it).
@@ -29,6 +36,15 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     var onDragExited: (() -> Void)?
     var onDragPerformed: (([String], NSPoint) -> Void)?
     var onTextDropped: ((String, Bool, NSPoint) -> Void)?
+    /// Text, or a link when the flag is set, let go on the icon.
+    var onIconTextDropped: ((String, Bool) -> Void)?
+    /// A drag sprang the popover open.
+    var onSprungOpen: (() -> Void)?
+    /// The notice's button was pressed.
+    var onNoticeAction: (() -> Void)? {
+        get { notice.onAction }
+        set { notice.onAction = newValue }
+    }
 
     init(contentViewController: NSViewController, size: NSSize) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -103,6 +119,27 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         dragView.dropAllowed = allowed
     }
 
+    func setIconDragBehavior(springOnHover: Bool, opensAtOnce: Bool) {
+        iconView.springOnHover = springOnHover
+        iconView.opensAtOnce = opensAtOnce
+    }
+
+    /// What the label under the icon says while a drag rests on it.
+    func setIconDropLabels(files: String?, text: String?) {
+        filesLabel = files
+        textLabel = text
+    }
+
+    func showNotice(_ text: String, action: String?, seconds: TimeInterval) {
+        guard let button = statusItem.button else { return }
+
+        notice.show(text, action: action, seconds: seconds, under: button)
+    }
+
+    func hideNotice() {
+        notice.hide()
+    }
+
     /// After a drop is sent: closes the popover if a drag opened it.
     func closeIfOpenedByDrag() {
         guard openedByDrag else { return }
@@ -113,8 +150,43 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     private func springOpen() {
         guard !popover.isShown else { return }
 
+        notice.hide()
         showPopover()
         openedByDrag = true
+        droppedSinceSpring = false
+        onSprungOpen?()
+        closeWhenDragEndsElsewhere()
+    }
+
+    /// Like a spring-loaded folder in Finder: let go anywhere but in the
+    /// popover or on the icon, and it closes again.
+    private func closeWhenDragEndsElsewhere() {
+        releaseCheck?.invalidate()
+        releaseCheck = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+            guard NSEvent.pressedMouseButtons & 1 == 0 else { return }
+
+            timer.invalidate()
+            // The drop lands a moment after the release.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                guard let self, self.openedByDrag, !self.droppedSinceSpring else { return }
+
+                self.hidePopover()
+            }
+        }
+    }
+
+    private func showDropLabel(for kind: MenubarDragKind?) {
+        let label: String? = switch kind {
+        case .files: filesLabel
+        case .text, .link: textLabel
+        case nil: nil
+        }
+        guard let label, !popover.isShown, let button = statusItem.button else {
+            notice.hide()
+            return
+        }
+
+        notice.show(label, action: nil, seconds: 0, under: button)
     }
 
     // MARK: - NSPopoverDelegate
@@ -130,6 +202,8 @@ final class MenubarController: NSObject, NSPopoverDelegate {
 
     func popoverDidClose(_ notification: Notification) {
         openedByDrag = false
+        releaseCheck?.invalidate()
+        releaseCheck = nil
         dragLeaveTimer?.invalidate()
         statusItem.button?.highlight(false)
         onVisibilityChanged?(false)
@@ -200,6 +274,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
             self?.onDragExited?()
             self?.closeAfterDragLeft()
         }
+        dragView.onDropping = { [weak self] in self?.droppedSinceSpring = true }
         dragView.onPerformed = { [weak self] paths, point in self?.onDragPerformed?(paths, point) }
         dragView.onTextPerformed = { [weak self] text, isLink, point in
             self?.onTextDropped?(text, isLink, point)
@@ -237,9 +312,20 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         iconView.onClick = { [weak self] in self?.togglePopover() }
         iconView.onSecondaryClick = { [weak self] in self?.showMenu() }
         iconView.onDragHeld = { [weak self] in self?.springOpen() }
-        iconView.onFilesDropped = { [weak self] paths in self?.onFilesDropped?(paths) }
-        iconView.onDragOverChanged = { [weak self] isOver in
-            guard let self, self.isDragOverIcon != isOver else { return }
+        iconView.onFilesDropped = { [weak self] paths in
+            self?.droppedSinceSpring = true
+            self?.onFilesDropped?(paths)
+        }
+        iconView.onTextDropped = { [weak self] text, isLink in
+            self?.droppedSinceSpring = true
+            self?.onIconTextDropped?(text, isLink)
+        }
+        iconView.onDragOverChanged = { [weak self] kind in
+            guard let self else { return }
+
+            self.showDropLabel(for: kind)
+            let isOver = kind != nil
+            guard self.isDragOverIcon != isOver else { return }
 
             self.isDragOverIcon = isOver
             self.renderIcon()

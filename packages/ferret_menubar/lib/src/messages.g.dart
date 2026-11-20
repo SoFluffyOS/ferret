@@ -136,6 +136,14 @@ enum MenubarDragKind {
   link;
 }
 
+/// How the floating panel comes in and goes out. With Reduce Motion on,
+/// it fades.
+enum MenubarPanelMotion {
+  fromRight,
+  fromLeft,
+  inPlace;
+}
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode {
   /// Only while the desktop window is open.
@@ -343,6 +351,264 @@ class MenubarPromisedFile {
   }
 }
 
+/// A screen in global screen points, y going up from the bottom of the
+/// main screen: all of it, and what the menu bar and Dock leave.
+class MenubarScreen {
+  MenubarScreen({
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+    required this.visibleX,
+    required this.visibleY,
+    required this.visibleWidth,
+    required this.visibleHeight,
+  });
+
+  double x;
+
+  double y;
+
+  double width;
+
+  double height;
+
+  double visibleX;
+
+  double visibleY;
+
+  double visibleWidth;
+
+  double visibleHeight;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      x,
+      y,
+      width,
+      height,
+      visibleX,
+      visibleY,
+      visibleWidth,
+      visibleHeight,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MenubarScreen decode(Object result) {
+    result as List<Object?>;
+    return MenubarScreen(
+      x: result[0]! as double,
+      y: result[1]! as double,
+      width: result[2]! as double,
+      height: result[3]! as double,
+      visibleX: result[4]! as double,
+      visibleY: result[5]! as double,
+      visibleWidth: result[6]! as double,
+      visibleHeight: result[7]! as double,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarScreen || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(x, other.x) && _deepEquals(y, other.y) && _deepEquals(width, other.width) && _deepEquals(height, other.height) && _deepEquals(visibleX, other.visibleX) && _deepEquals(visibleY, other.visibleY) && _deepEquals(visibleWidth, other.visibleWidth) && _deepEquals(visibleHeight, other.visibleHeight);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarScreen(x: $x, y: $y, width: $width, height: $height, visibleX: $visibleX, visibleY: $visibleY, visibleWidth: $visibleWidth, visibleHeight: $visibleHeight)';
+  }
+}
+
+/// Where a drag in another app is, and the keys held with it.
+class MenubarDragPoint {
+  MenubarDragPoint({
+    required this.x,
+    required this.y,
+    required this.screen,
+    required this.fn,
+    required this.shift,
+  });
+
+  double x;
+
+  double y;
+
+  /// The screen under the pointer.
+  MenubarScreen screen;
+
+  bool fn;
+
+  bool shift;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      x,
+      y,
+      screen,
+      fn,
+      shift,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MenubarDragPoint decode(Object result) {
+    result as List<Object?>;
+    return MenubarDragPoint(
+      x: result[0]! as double,
+      y: result[1]! as double,
+      screen: result[2]! as MenubarScreen,
+      fn: result[3]! as bool,
+      shift: result[4]! as bool,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarDragPoint || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(x, other.x) && _deepEquals(y, other.y) && _deepEquals(screen, other.screen) && _deepEquals(fn, other.fn) && _deepEquals(shift, other.shift);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarDragPoint(x: $x, y: $y, screen: $screen, fn: $fn, shift: $shift)';
+  }
+}
+
+/// A drag that started in another app: what it carries by its types
+/// alone, and the app it started in.
+class MenubarSystemDrag {
+  MenubarSystemDrag({
+    required this.kind,
+    required this.point,
+    this.sourceApp,
+  });
+
+  MenubarDragKind kind;
+
+  MenubarDragPoint point;
+
+  /// The bundle id of the app in front when the drag started.
+  String? sourceApp;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      kind,
+      point,
+      sourceApp,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MenubarSystemDrag decode(Object result) {
+    result as List<Object?>;
+    return MenubarSystemDrag(
+      kind: result[0]! as MenubarDragKind,
+      point: result[1]! as MenubarDragPoint,
+      sourceApp: result[2] as String?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarSystemDrag || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(kind, other.kind) && _deepEquals(point, other.point) && _deepEquals(sourceApp, other.sourceApp);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarSystemDrag(kind: $kind, point: $point, sourceApp: $sourceApp)';
+  }
+}
+
+/// An app that runs now, to pick from.
+class MenubarApp {
+  MenubarApp({
+    required this.bundleId,
+    required this.name,
+  });
+
+  String bundleId;
+
+  String name;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      bundleId,
+      name,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MenubarApp decode(Object result) {
+    result as List<Object?>;
+    return MenubarApp(
+      bundleId: result[0]! as String,
+      name: result[1]! as String,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarApp || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(bundleId, other.bundleId) && _deepEquals(name, other.name);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarApp(bundleId: $bundleId, name: $name)';
+  }
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -357,17 +623,32 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is MenubarDragKind) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    }    else if (value is MenubarDockMode) {
+    }    else if (value is MenubarPanelMotion) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    }    else if (value is MenubarMenuItem) {
+    }    else if (value is MenubarDockMode) {
       buffer.putUint8(132);
-      writeValue(buffer, value.encode());
-    }    else if (value is MenubarShortcut) {
+      writeValue(buffer, value.index);
+    }    else if (value is MenubarMenuItem) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    }    else if (value is MenubarPromisedFile) {
+    }    else if (value is MenubarShortcut) {
       buffer.putUint8(134);
+      writeValue(buffer, value.encode());
+    }    else if (value is MenubarPromisedFile) {
+      buffer.putUint8(135);
+      writeValue(buffer, value.encode());
+    }    else if (value is MenubarScreen) {
+      buffer.putUint8(136);
+      writeValue(buffer, value.encode());
+    }    else if (value is MenubarDragPoint) {
+      buffer.putUint8(137);
+      writeValue(buffer, value.encode());
+    }    else if (value is MenubarSystemDrag) {
+      buffer.putUint8(138);
+      writeValue(buffer, value.encode());
+    }    else if (value is MenubarApp) {
+      buffer.putUint8(139);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -385,13 +666,24 @@ class _PigeonCodec extends StandardMessageCodec {
         return value == null ? null : MenubarDragKind.values[value];
       case 131:
         final value = readValue(buffer) as int?;
-        return value == null ? null : MenubarDockMode.values[value];
+        return value == null ? null : MenubarPanelMotion.values[value];
       case 132:
-        return MenubarMenuItem.decode(readValue(buffer)!);
+        final value = readValue(buffer) as int?;
+        return value == null ? null : MenubarDockMode.values[value];
       case 133:
-        return MenubarShortcut.decode(readValue(buffer)!);
+        return MenubarMenuItem.decode(readValue(buffer)!);
       case 134:
+        return MenubarShortcut.decode(readValue(buffer)!);
+      case 135:
         return MenubarPromisedFile.decode(readValue(buffer)!);
+      case 136:
+        return MenubarScreen.decode(readValue(buffer)!);
+      case 137:
+        return MenubarDragPoint.decode(readValue(buffer)!);
+      case 138:
+        return MenubarSystemDrag.decode(readValue(buffer)!);
+      case 139:
+        return MenubarApp.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -984,6 +1276,158 @@ class MenubarHostApi {
     )
     ;
   }
+
+  /// Starts or stops watching drags in other apps. Mouse events and the
+  /// drag pasteboard's types only, so the Mac asks for no permission.
+  Future<void> watchSystemDrags(bool on) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.watchSystemDrags$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[on]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// How a drag over the menubar icon opens the popover: after resting
+  /// there for the Mac's spring-loading delay when [springOnHover], at
+  /// once when [opensAtOnce].
+  Future<void> setIconDragBehavior(bool springOnHover, bool opensAtOnce) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconDragBehavior$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[springOnHover, opensAtOnce]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// What a small label under the icon says while a drag of files, or of
+  /// text and links, rests on it, such as "Send to Pixel 7". Null shows
+  /// none.
+  Future<void> setIconDropLabels(String? files, String? text) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.setIconDropLabels$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[files, text]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// A small notice under the icon for [seconds], with a button that says
+  /// [action] when there is one, such as Undo.
+  Future<void> showIconNotice(String text, String? action, double seconds) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showIconNotice$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[text, action, seconds]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> hideIconNotice() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hideIconNotice$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// Shows the floating panel at [x], [y] (its bottom left in global
+  /// screen points) and [width] by [height], over every app and Space,
+  /// without taking focus. Returns the id of its Flutter view.
+  Future<int> showFloatingPanel(double x, double y, double width, double height, double radius, MenubarPanelMotion motion) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.showFloatingPanel$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[x, y, width, height, radius, motion]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as int;
+  }
+
+  Future<void> hideFloatingPanel() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.hideFloatingPanel$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// The apps that run now with a window or a Dock icon.
+  Future<List<MenubarApp>> runningApps() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.runningApps$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return (pigeonVar_replyValue! as List<Object?>).cast<MenubarApp>();
+  }
 }
 
 abstract class MenubarFlutterApi {
@@ -1028,6 +1472,19 @@ abstract class MenubarFlutterApi {
 
   /// The picture window closed and its Flutter view [viewId] is gone.
   void onPictureWindowClosed(int viewId);
+
+  /// A drag started in another app. Ferret's own drags never show here.
+  void onSystemDragStarted(MenubarSystemDrag drag);
+
+  void onSystemDragMoved(MenubarDragPoint point);
+
+  void onSystemDragEnded();
+
+  /// Text, or a link when [isLink], dropped on the menubar icon.
+  void onIconTextDropped(String text, bool isLink);
+
+  /// The button on the icon's notice was pressed.
+  void onIconNoticeAction();
 
   /// A promised file [id] was dropped: the path of a local copy to copy
   /// where it landed, once there is one, or null when it couldn't be had.
@@ -1315,6 +1772,108 @@ abstract class MenubarFlutterApi {
           final int arg_viewId = args[0]! as int;
           try {
             api.onPictureWindowClosed(arg_viewId);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragStarted$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final MenubarSystemDrag arg_drag = args[0]! as MenubarSystemDrag;
+          try {
+            api.onSystemDragStarted(arg_drag);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragMoved$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final MenubarDragPoint arg_point = args[0]! as MenubarDragPoint;
+          try {
+            api.onSystemDragMoved(arg_point);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onSystemDragEnded$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          try {
+            api.onSystemDragEnded();
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onIconTextDropped$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_text = args[0]! as String;
+          final bool arg_isLink = args[1]! as bool;
+          try {
+            api.onIconTextDropped(arg_text, arg_isLink);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onIconNoticeAction$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          try {
+            api.onIconNoticeAction();
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

@@ -14,6 +14,8 @@ final class DragDestinationView: NSView {
     var onPerformed: (([String], NSPoint) -> Void)?
     /// Text, or a link when the flag is set, dropped at the point.
     var onTextPerformed: ((String, Bool, NSPoint) -> Void)?
+    /// Something is being dropped, before promised files arrive.
+    var onDropping: (() -> Void)?
 
     private var accepting = false
 
@@ -81,6 +83,7 @@ final class DragDestinationView: NSView {
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         accepting = false
+        onDropping?()
         let point = flutterPoint(sender)
         let paths = fileURLs(from: sender).map(\.path)
         let promises = filePromises(from: sender)

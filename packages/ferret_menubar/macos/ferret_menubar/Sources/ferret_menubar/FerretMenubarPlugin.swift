@@ -11,6 +11,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     private static var controller: MenubarController?
     private static var windowController: AppWindowController?
     private static var pictureController: PictureWindowController?
+    private static var panelController: FloatingPanelController?
+    private static let dragWatcher = DragWatcher()
     private static var popoverViewId: Int64 = 0
     private static let dock = DockPresence()
     private static var flutterApi: MenubarFlutterApi?
@@ -67,6 +69,12 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         controller.onTextDropped = { text, isLink, point in
             textDropped(popoverViewId, text, isLink, point)
         }
+        controller.onIconTextDropped = { text, isLink in
+            Task { @MainActor in try? await flutterApi?.onIconTextDropped(text: text, isLink: isLink) }
+        }
+        controller.onNoticeAction = {
+            Task { @MainActor in try? await flutterApi?.onIconNoticeAction() }
+        }
         self.popoverViewId = popoverViewId
         self.controller = controller
 
@@ -94,6 +102,26 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
             Task { @MainActor in try? await flutterApi?.onPictureWindowClosed(viewId: viewId) }
         }
         self.pictureController = pictureController
+
+        let panelController = FloatingPanelController(engine: flutterViewController.engine)
+        panelController.onDragEntered = dragEntered
+        panelController.onDragUpdated = dragUpdated
+        panelController.onDragExited = dragExited
+        panelController.onDragPerformed = dragPerformed
+        panelController.onTextDropped = textDropped
+        self.panelController = panelController
+        // One place to drop at a time: the popover wins.
+        controller.onSprungOpen = { [weak panelController] in panelController?.hide() }
+
+        dragWatcher.onStarted = { drag in
+            Task { @MainActor in try? await flutterApi?.onSystemDragStarted(drag: drag) }
+        }
+        dragWatcher.onMoved = { point in
+            Task { @MainActor in try? await flutterApi?.onSystemDragMoved(point: point) }
+        }
+        dragWatcher.onEnded = {
+            Task { @MainActor in try? await flutterApi?.onSystemDragEnded() }
+        }
 
         hotKey.onPressed = { [weak controller] in controller?.togglePopover() }
         clipsHotKey.onPressed = {
@@ -248,6 +276,11 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
             return
         }
 
+        if viewId == Self.panelController?.viewId {
+            Self.panelController?.setDropAllowed(allowed)
+            return
+        }
+
         guard viewId == Self.windowController?.viewId else { return }
 
         Self.windowController?.setDropAllowed(allowed)
@@ -309,12 +342,73 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         switch viewId {
         case popoverViewId: popoverViewController
         case windowController?.viewId: windowController?.flutterViewController
+        case panelController?.viewId: panelController?.flutterViewController
         default: nil
         }
     }
 
     func toggleQuickLook(paths: [String]) throws {
         Self.quickLook.toggle(paths: paths)
+    }
+
+    func watchSystemDrags(on: Bool) throws {
+        if on {
+            Self.dragWatcher.start()
+        } else {
+            Self.dragWatcher.stop()
+        }
+    }
+
+    func setIconDragBehavior(springOnHover: Bool, opensAtOnce: Bool) throws {
+        Self.controller?.setIconDragBehavior(springOnHover: springOnHover, opensAtOnce: opensAtOnce)
+    }
+
+    func setIconDropLabels(files: String?, text: String?) throws {
+        Self.controller?.setIconDropLabels(files: files, text: text)
+    }
+
+    func showIconNotice(text: String, action: String?, seconds: Double) throws {
+        Self.controller?.showNotice(text, action: action, seconds: seconds)
+    }
+
+    func hideIconNotice() throws {
+        Self.controller?.hideNotice()
+    }
+
+    func showFloatingPanel(
+        x: Double, y: Double, width: Double, height: Double, radius: Double,
+        motion: MenubarPanelMotion
+    ) throws -> Int64 {
+        let frame = NSRect(x: x, y: y, width: width, height: height)
+        guard
+            let viewId = Self.panelController?.show(
+                frame: frame, radius: CGFloat(radius), motion: motion)
+        else {
+            throw PigeonError(
+                code: "window-unsupported",
+                message: "This Flutter can't draw one more view.",
+                details: nil)
+        }
+
+        return viewId
+    }
+
+    func hideFloatingPanel() throws {
+        Self.panelController?.hide()
+    }
+
+    func runningApps() throws -> [MenubarApp] {
+        let ownId = Bundle.main.bundleIdentifier
+        var seen = Set<String>()
+        return NSWorkspace.shared.runningApplications.compactMap { app in
+            guard app.activationPolicy == .regular,
+                  let bundleId = app.bundleIdentifier, bundleId != ownId,
+                  seen.insert(bundleId).inserted
+            else { return nil }
+
+            return MenubarApp(bundleId: bundleId, name: app.localizedName ?? bundleId)
+        }
+        .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
     func setDetachable(detachable: Bool) throws {

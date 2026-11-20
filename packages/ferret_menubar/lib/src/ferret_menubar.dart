@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:ferret_menubar/src/messages.g.dart';
 import 'package:ferret_menubar/src/popover_drag.dart';
+import 'package:ferret_menubar/src/system_drag.dart';
 import 'package:ferret_menubar/src/window_event.dart';
 
 /// The menubar icon, its popover and the desktop window on macOS. Elsewhere
@@ -24,6 +25,9 @@ class FerretMenubar implements MenubarFlutterApi {
   final StreamController<PopoverDrag> _drags = .broadcast();
   final StreamController<MenubarWindowEvent> _windowEvents = .broadcast();
   final StreamController<int> _pictureWindowClosed = .broadcast();
+  final StreamController<MenubarSystemDragEvent> _systemDrags = .broadcast();
+  final StreamController<(String, bool)> _iconTextDrops = .broadcast();
+  final StreamController<void> _noticeActions = .broadcast();
 
   /// How each promised file still out on a drag is fetched, by its id.
   final Map<String, Future<String?> Function()> _promises = {};
@@ -42,6 +46,15 @@ class FerretMenubar implements MenubarFlutterApi {
 
   /// Paths of files dropped on the menubar icon.
   Stream<List<String>> get drops => _drops.stream;
+
+  /// Text, and whether it is a link, dropped on the menubar icon.
+  Stream<(String, bool)> get iconTextDrops => _iconTextDrops.stream;
+
+  /// The button on the icon's notice, such as Undo, was pressed.
+  Stream<void> get noticeActions => _noticeActions.stream;
+
+  /// Drags in other apps, while [watchSystemDrags] is on.
+  Stream<MenubarSystemDragEvent> get systemDrags => _systemDrags.stream;
 
   /// Files, text and links dragged over and dropped on the popover (docked
   /// or detached) or the desktop window; each event names its view.
@@ -293,6 +306,72 @@ class FerretMenubar implements MenubarFlutterApi {
   Future<void> toggleQuickLook(List<String> paths) =>
       _call(() => _api.toggleQuickLook(paths));
 
+  /// Starts or stops watching drags in other apps, for [systemDrags]. It
+  /// asks for no permission: mouse events and the drag's types only.
+  Future<void> watchSystemDrags({required bool on}) =>
+      _call(() => _api.watchSystemDrags(on));
+
+  /// How a drag over the icon opens the popover: after the Mac's own
+  /// spring-loading delay when [springOnHover], at once when [opensAtOnce].
+  Future<void> setIconDragBehavior({
+    required bool springOnHover,
+    required bool opensAtOnce,
+  }) => _call(() => _api.setIconDragBehavior(springOnHover, opensAtOnce));
+
+  /// What the label under the icon says while a drag of [files], or of
+  /// [text] and links, rests on it. Null shows none.
+  Future<void> setIconDropLabels({String? files, String? text}) =>
+      _call(() => _api.setIconDropLabels(files, text));
+
+  /// A small notice under the icon for [duration], with a button when
+  /// [action] is set; [noticeActions] hears it pressed.
+  Future<void> showIconNotice(
+    String text, {
+    String? action,
+    Duration duration = const Duration(seconds: 2),
+  }) => _call(
+    () => _api.showIconNotice(
+      text,
+      action,
+      duration.inMilliseconds / Duration.millisecondsPerSecond,
+    ),
+  );
+
+  Future<void> hideIconNotice() => _call(_api.hideIconNotice);
+
+  /// Shows the floating panel at [frame] (global screen points, y up),
+  /// over every app and Space, without taking focus. Gives the id of its
+  /// Flutter view, or null where there is none.
+  Future<int?> showFloatingPanel(
+    Rect frame, {
+    required double radius,
+    required MenubarPanelMotion motion,
+  }) async {
+    if (!isSupported || !await isWindowSupported()) {
+      return null;
+    }
+
+    return _api.showFloatingPanel(
+      frame.left,
+      frame.top,
+      frame.width,
+      frame.height,
+      radius,
+      motion,
+    );
+  }
+
+  Future<void> hideFloatingPanel() => _call(_api.hideFloatingPanel);
+
+  /// The apps running now with a window or a Dock icon, by name.
+  Future<List<MenubarApp>> runningApps() async {
+    if (!isSupported) {
+      return const [];
+    }
+
+    return _api.runningApps();
+  }
+
   Future<void> _call(Future<void> Function() call) async {
     if (!isSupported) {
       return;
@@ -367,6 +446,24 @@ class FerretMenubar implements MenubarFlutterApi {
 
   @override
   void onPictureWindowClosed(int viewId) => _pictureWindowClosed.add(viewId);
+
+  @override
+  void onSystemDragStarted(MenubarSystemDrag drag) =>
+      _systemDrags.add(MenubarSystemDragStarted(drag));
+
+  @override
+  void onSystemDragMoved(MenubarDragPoint point) =>
+      _systemDrags.add(MenubarSystemDragMoved(point));
+
+  @override
+  void onSystemDragEnded() => _systemDrags.add(const MenubarSystemDragEnded());
+
+  @override
+  void onIconTextDropped(String text, bool isLink) =>
+      _iconTextDrops.add((text, isLink));
+
+  @override
+  void onIconNoticeAction() => _noticeActions.add(null);
 
   @override
   Future<String?> onPromisedFileWanted(String id) async {

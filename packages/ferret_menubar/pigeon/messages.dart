@@ -98,6 +98,73 @@ enum MenubarDragKind {
   link,
 }
 
+/// A screen in global screen points, y going up from the bottom of the
+/// main screen: all of it, and what the menu bar and Dock leave.
+class MenubarScreen {
+  MenubarScreen({
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+    required this.visibleX,
+    required this.visibleY,
+    required this.visibleWidth,
+    required this.visibleHeight,
+  });
+
+  double x;
+  double y;
+  double width;
+  double height;
+  double visibleX;
+  double visibleY;
+  double visibleWidth;
+  double visibleHeight;
+}
+
+/// Where a drag in another app is, and the keys held with it.
+class MenubarDragPoint {
+  MenubarDragPoint({
+    required this.x,
+    required this.y,
+    required this.screen,
+    required this.fn,
+    required this.shift,
+  });
+
+  double x;
+  double y;
+
+  /// The screen under the pointer.
+  MenubarScreen screen;
+  bool fn;
+  bool shift;
+}
+
+/// A drag that started in another app: what it carries by its types
+/// alone, and the app it started in.
+class MenubarSystemDrag {
+  MenubarSystemDrag({required this.kind, required this.point, this.sourceApp});
+
+  MenubarDragKind kind;
+  MenubarDragPoint point;
+
+  /// The bundle id of the app in front when the drag started.
+  String? sourceApp;
+}
+
+/// An app that runs now, to pick from.
+class MenubarApp {
+  MenubarApp({required this.bundleId, required this.name});
+
+  String bundleId;
+  String name;
+}
+
+/// How the floating panel comes in and goes out. With Reduce Motion on,
+/// it fades.
+enum MenubarPanelMotion { fromRight, fromLeft, inPlace }
+
 /// When the app shows in the Dock and the app switcher.
 enum MenubarDockMode {
   /// Only while the desktop window is open.
@@ -224,6 +291,43 @@ abstract class MenubarHostApi {
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   void toggleQuickLook(List<String> paths);
+
+  /// Starts or stops watching drags in other apps. Mouse events and the
+  /// drag pasteboard's types only, so the Mac asks for no permission.
+  void watchSystemDrags(bool on);
+
+  /// How a drag over the menubar icon opens the popover: after resting
+  /// there for the Mac's spring-loading delay when [springOnHover], at
+  /// once when [opensAtOnce].
+  void setIconDragBehavior(bool springOnHover, bool opensAtOnce);
+
+  /// What a small label under the icon says while a drag of files, or of
+  /// text and links, rests on it, such as "Send to Pixel 7". Null shows
+  /// none.
+  void setIconDropLabels(String? files, String? text);
+
+  /// A small notice under the icon for [seconds], with a button that says
+  /// [action] when there is one, such as Undo.
+  void showIconNotice(String text, String? action, double seconds);
+
+  void hideIconNotice();
+
+  /// Shows the floating panel at [x], [y] (its bottom left in global
+  /// screen points) and [width] by [height], over every app and Space,
+  /// without taking focus. Returns the id of its Flutter view.
+  int showFloatingPanel(
+    double x,
+    double y,
+    double width,
+    double height,
+    double radius,
+    MenubarPanelMotion motion,
+  );
+
+  void hideFloatingPanel();
+
+  /// The apps that run now with a window or a Dock icon.
+  List<MenubarApp> runningApps();
 }
 
 @FlutterApi()
@@ -274,6 +378,19 @@ abstract class MenubarFlutterApi {
 
   /// The picture window closed and its Flutter view [viewId] is gone.
   void onPictureWindowClosed(int viewId);
+
+  /// A drag started in another app. Ferret's own drags never show here.
+  void onSystemDragStarted(MenubarSystemDrag drag);
+
+  void onSystemDragMoved(MenubarDragPoint point);
+
+  void onSystemDragEnded();
+
+  /// Text, or a link when [isLink], dropped on the menubar icon.
+  void onIconTextDropped(String text, bool isLink);
+
+  /// The button on the icon's notice was pressed.
+  void onIconNoticeAction();
 
   /// A promised file [id] was dropped: the path of a local copy to copy
   /// where it landed, once there is one, or null when it couldn't be had.
