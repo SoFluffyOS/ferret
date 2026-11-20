@@ -12,8 +12,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// One paired device on Home: its name, the one thing that is true about its
 /// connection, and what to do with it right there. Connected, that is up
 /// to three actions; offline, a way to fix it. An iPhone that isn't
-/// connected says it connects while Ferret is open on it: iOS stops Ferret
-/// in the background, and "Last seen" would read like a fault. While a
+/// connected says it connects while Ferret is open on it, with no Fix: iOS
+/// stops Ferret in the background, and "Last seen" would read like a fault.
+/// Heard on the network yet not connected, it gets Fix again. While a
 /// dropped link redials it says "Reconnecting…" and keeps its buttons,
 /// greyed out, so the row doesn't jump on a flaky Wi-Fi.
 class DeviceTile extends StatelessWidget {
@@ -147,6 +148,7 @@ class DeviceTile extends StatelessWidget {
                 ),
                 if (!showsActions &&
                     status.versionMismatch == null &&
+                    !_waitsForIosApp &&
                     onFix != null) ...[
                   Spacing.h8,
                   RowActionButton(label: l10n.deviceFix, onPressed: onFix),
@@ -189,6 +191,10 @@ class DeviceTile extends StatelessWidget {
     );
   }
 
+  /// An iPhone or iPad whose Ferret isn't open: nothing is broken.
+  bool get _waitsForIosApp =>
+      status.device.platform == .PLATFORM_IOS && !status.isHeard;
+
   String _statusLine(ShellLocalizations l10n) {
     if (status.isConnected) {
       return switch ((attention, status.isWeak, status.isAway)) {
@@ -214,7 +220,7 @@ class DeviceTile extends StatelessWidget {
       return line;
     }
 
-    if (status.device.platform == .PLATFORM_IOS) {
+    if (_waitsForIosApp) {
       return l10n.deviceConnectsWhenOpen;
     }
 

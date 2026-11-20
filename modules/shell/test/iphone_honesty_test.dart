@@ -25,6 +25,40 @@ void main() {
 
     expect(find.text('Connects when Ferret is open on it'), findsOneWidget);
     expect(find.text('Last seen 5 min ago'), findsNothing);
+    expect(find.text('Fix'), findsNothing);
+  });
+
+  testWidgets('an iPhone heard on the network yet not connected gets Fix', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      testApp(
+        DeviceTile(
+          status: DeviceStatus(_iphone(), null, isHeard: true),
+          onFix: () {},
+        ),
+      ),
+    );
+
+    expect(find.text('Connects when Ferret is open on it'), findsNothing);
+    expect(find.text('Last seen 5 min ago'), findsOneWidget);
+    expect(find.text('Fix'), findsOneWidget);
+  });
+
+  testWidgets('a computer that is not connected keeps Fix', (tester) async {
+    final mac = TrustedDevice(
+      id: 'efefefefefefefef',
+      name: 'MacBook',
+      platform: .PLATFORM_MACOS,
+      formFactor: .FORM_FACTOR_LAPTOP,
+      publicKey: Uint8List(32),
+      pairedAt: DateTime(2026),
+      lastSeen: DateTime.now().subtract(const Duration(minutes: 5)),
+    );
+    await tester.pumpWidget(
+      testApp(DeviceTile(status: DeviceStatus(mac, null), onFix: () {})),
+    );
+
     expect(find.text('Fix'), findsOneWidget);
   });
 

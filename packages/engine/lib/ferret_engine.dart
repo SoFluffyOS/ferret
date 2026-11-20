@@ -124,6 +124,10 @@ class FerretEngine implements FeatureHost {
   final Set<String> _dialing = {};
   final Set<PairingExchange> _pairing = {};
   final Map<String, ({DiscoveredPeer peer, DateTime seen})> _nearby = {};
+
+  /// When each paired device last announced itself here since its last
+  /// session ended.
+  final Map<String, DateTime> _heardPaired = {};
   final List<PairingOfferHandle> _offers = [];
   final StreamController<List<Session>> _sessionChanges = .broadcast();
   final StreamController<List<DeviceStatus>> _deviceChanges = .broadcast();
@@ -210,8 +214,14 @@ class FerretEngine implements FeatureHost {
             _ready[device.id] == null && _droppedRecently.contains(device.id),
         versionMismatch: _mismatches[device.id],
         reachedOverVpn: _isOverVpn(device, _ready[device.id]),
+        isHeard: _heardRecently(device.id),
       ),
   ];
+
+  bool _heardRecently(String deviceId) => switch (_heardPaired[deviceId]) {
+    final heard? => DateTime.now().difference(heard) < _nearbyLifetime,
+    null => false,
+  };
 
   /// Turns "Also reach it over my VPN" on or off for the paired
   /// [deviceId]. On, it is dialed at its VPN addresses when the local
@@ -956,6 +966,12 @@ class FerretEngine implements FeatureHost {
     }
 
     if (trustStore.isTrusted(peer.deviceId)) {
+      final wasHeard = _heardRecently(peer.deviceId);
+      _heardPaired[peer.deviceId] = DateTime.now();
+      if (!wasHeard && _ready[peer.deviceId] == null) {
+        _emitDevices();
+      }
+
       if (_stillMismatched(peer)) {
         return;
       }
@@ -1022,6 +1038,10 @@ class FerretEngine implements FeatureHost {
   }
 
   void _onDeparture(String deviceId) {
+    if (_heardPaired.remove(deviceId) != null) {
+      _emitDevices();
+    }
+
     if (_nearby.remove(deviceId) == null) {
       return;
     }
@@ -1784,6 +1804,8 @@ class FerretEngine implements FeatureHost {
     final wasReady = _ready[session.remoteDeviceId] == session;
     if (wasReady) {
       _ready.remove(session.remoteDeviceId);
+      // Only an announce after the drop says Ferret is still open there.
+      _heardPaired.remove(session.remoteDeviceId);
       unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());
       unawaited(_presenceWatches.remove(session.remoteDeviceId)?.cancel());
       if (_running && session.remoteGoodbye == null) {

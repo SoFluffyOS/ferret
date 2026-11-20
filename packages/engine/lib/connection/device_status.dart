@@ -10,6 +10,7 @@ class DeviceStatus {
     this.isReconnecting = false,
     this.versionMismatch,
     this.reachedOverVpn = false,
+    this.isHeard = false,
   });
 
   final TrustedDevice device;
@@ -27,6 +28,12 @@ class DeviceStatus {
   /// The session runs over the user's VPN rather than the local network,
   /// such as with a phone away from home. Large transfers may be slower.
   final bool reachedOverVpn;
+
+  /// It announced itself on this network in the last two minutes, and since
+  /// its last session ended: Ferret is open and running there. An iPhone
+  /// that is heard yet not connected has a real problem; one that isn't
+  /// heard is only waiting for Ferret to be opened.
+  final bool isHeard;
 
   bool get isConnected => session != null;
 

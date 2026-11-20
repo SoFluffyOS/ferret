@@ -294,6 +294,29 @@ class ScreenRig {
     await settle(tester);
   }
 
+  /// Makes the paired device [id] announce itself, as one with Ferret open
+  /// does. Nobody answers at its address, so it stays offline.
+  Future<void> hearPaired(
+    WidgetTester tester, {
+    required String id,
+    required String name,
+    Platform platform = .PLATFORM_IOS,
+  }) async {
+    _discovery.find(
+      DiscoveredPeer(
+        announce: Announce(
+          deviceId: id,
+          name: name,
+          platform: platform,
+          formFactor: .FORM_FACTOR_PHONE,
+          port: 9,
+        ),
+        host: '127.0.0.1',
+      ),
+    );
+    await settle(tester);
+  }
+
   /// Starts a real second device and shows it under "Devices near you", so
   /// pairing with it gets as far as the code. Returns its engine.
   Future<FerretEngine?> startNearby(
