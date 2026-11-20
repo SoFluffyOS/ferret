@@ -70,9 +70,66 @@ class AudioCodec extends $pb.ProtobufEnum {
   const AudioCodec._(super.value, super.name);
 }
 
-/// What a source says to a viewer that asked for sound. Only what plays on
-/// the source is ever sent, never its microphone, and only while its screen
-/// is shown.
+/// What a source sends.
+class Source extends $pb.ProtobufEnum {
+  /// A viewer that doesn't know the field: the screen.
+  static const Source SOURCE_UNSPECIFIED =
+      Source._(0, _omitEnumNames ? '' : 'SOURCE_UNSPECIFIED');
+
+  /// Its screen, and what it plays.
+  static const Source SOURCE_SCREEN =
+      Source._(1, _omitEnumNames ? '' : 'SOURCE_SCREEN');
+
+  /// Its camera, and its microphone.
+  static const Source SOURCE_CAMERA =
+      Source._(2, _omitEnumNames ? '' : 'SOURCE_CAMERA');
+
+  static const $core.List<Source> values = <Source>[
+    SOURCE_UNSPECIFIED,
+    SOURCE_SCREEN,
+    SOURCE_CAMERA,
+  ];
+
+  static final $core.List<Source?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
+  static Source? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const Source._(super.value, super.name);
+}
+
+/// One of a source's cameras.
+class CameraLens extends $pb.ProtobufEnum {
+  /// Leaves it to the source, which starts with the one on its back.
+  static const CameraLens CAMERA_LENS_UNSPECIFIED =
+      CameraLens._(0, _omitEnumNames ? '' : 'CAMERA_LENS_UNSPECIFIED');
+
+  /// Faces away from the screen.
+  static const CameraLens CAMERA_LENS_BACK =
+      CameraLens._(1, _omitEnumNames ? '' : 'CAMERA_LENS_BACK');
+
+  /// Faces whoever looks at the screen.
+  static const CameraLens CAMERA_LENS_FRONT =
+      CameraLens._(2, _omitEnumNames ? '' : 'CAMERA_LENS_FRONT');
+
+  static const $core.List<CameraLens> values = <CameraLens>[
+    CAMERA_LENS_UNSPECIFIED,
+    CAMERA_LENS_BACK,
+    CAMERA_LENS_FRONT,
+  ];
+
+  static final $core.List<CameraLens?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
+  static CameraLens? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const CameraLens._(super.value, super.name);
+}
+
+/// What a source says to a viewer that asked for sound. With its screen,
+/// only what plays on the source is ever sent, never its microphone, and
+/// only while its screen is shown. With its camera, the sound is its
+/// microphone, and only while the camera is on.
 class AudioAnswer extends $pb.ProtobufEnum {
   /// The source doesn't know about sound (an older build), or wasn't asked.
   static const AudioAnswer AUDIO_ANSWER_UNSPECIFIED =
@@ -82,7 +139,8 @@ class AudioAnswer extends $pb.ProtobufEnum {
   static const AudioAnswer AUDIO_ANSWER_SENDING =
       AudioAnswer._(1, _omitEnumNames ? '' : 'AUDIO_ANSWER_SENDING');
 
-  /// The source's owner hasn't turned sending sound on.
+  /// The source's owner hasn't turned sending sound on, or didn't allow
+  /// the microphone to go with the camera.
   static const AudioAnswer AUDIO_ANSWER_OFF =
       AudioAnswer._(2, _omitEnumNames ? '' : 'AUDIO_ANSWER_OFF');
 
@@ -141,7 +199,8 @@ class DenyReason extends $pb.ProtobufEnum {
       DenyReason._(7, _omitEnumNames ? '' : 'DENY_REASON_NO_CODEC');
 
   /// The source couldn't show the question, such as when its app is in the
-  /// background and may not post notices.
+  /// background and may not post notices. For a camera: its owner has to
+  /// open the app first, to allow the camera or to let it start.
   static const DenyReason DENY_REASON_CANNOT_ASK =
       DenyReason._(8, _omitEnumNames ? '' : 'DENY_REASON_CANNOT_ASK');
 

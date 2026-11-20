@@ -45,6 +45,36 @@ final $typed_data.Uint8List audioCodecDescriptor = $convert.base64Decode(
     'CgpBdWRpb0NvZGVjEhsKF0FVRElPX0NPREVDX1VOU1BFQ0lGSUVEEAASFAoQQVVESU9fQ09ERU'
     'NfT1BVUxABEhkKFUFVRElPX0NPREVDX1BDTV9TMTZMRRAC');
 
+@$core.Deprecated('Use sourceDescriptor instead')
+const Source$json = {
+  '1': 'Source',
+  '2': [
+    {'1': 'SOURCE_UNSPECIFIED', '2': 0},
+    {'1': 'SOURCE_SCREEN', '2': 1},
+    {'1': 'SOURCE_CAMERA', '2': 2},
+  ],
+};
+
+/// Descriptor for `Source`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List sourceDescriptor = $convert.base64Decode(
+    'CgZTb3VyY2USFgoSU09VUkNFX1VOU1BFQ0lGSUVEEAASEQoNU09VUkNFX1NDUkVFThABEhEKDV'
+    'NPVVJDRV9DQU1FUkEQAg==');
+
+@$core.Deprecated('Use cameraLensDescriptor instead')
+const CameraLens$json = {
+  '1': 'CameraLens',
+  '2': [
+    {'1': 'CAMERA_LENS_UNSPECIFIED', '2': 0},
+    {'1': 'CAMERA_LENS_BACK', '2': 1},
+    {'1': 'CAMERA_LENS_FRONT', '2': 2},
+  ],
+};
+
+/// Descriptor for `CameraLens`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List cameraLensDescriptor = $convert.base64Decode(
+    'CgpDYW1lcmFMZW5zEhsKF0NBTUVSQV9MRU5TX1VOU1BFQ0lGSUVEEAASFAoQQ0FNRVJBX0xFTl'
+    'NfQkFDSxABEhUKEUNBTUVSQV9MRU5TX0ZST05UEAI=');
+
 @$core.Deprecated('Use audioAnswerDescriptor instead')
 const AudioAnswer$json = {
   '1': 'AudioAnswer',
@@ -108,6 +138,26 @@ final $typed_data.Uint8List stopReasonDescriptor = $convert.base64Decode(
     'T1BfUkVBU09OX1NZU1RFTV9FTkRFRBADEhoKFlNUT1BfUkVBU09OX1RVUk5FRF9PRkYQBBIWCh'
     'JTVE9QX1JFQVNPTl9GQUlMRUQQBRIdChlTVE9QX1JFQVNPTl9OT1RfTUlSUk9SSU5HEAY=');
 
+@$core.Deprecated('Use cameraOptionsDescriptor instead')
+const CameraOptions$json = {
+  '1': 'CameraOptions',
+  '2': [
+    {
+      '1': 'lens',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.CameraLens',
+      '10': 'lens'
+    },
+  ],
+};
+
+/// Descriptor for `CameraOptions`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cameraOptionsDescriptor = $convert.base64Decode(
+    'Cg1DYW1lcmFPcHRpb25zEjMKBGxlbnMYASABKA4yHy5mZXJyZXQubWlycm9yaW5nLnYxLkNhbW'
+    'VyYUxlbnNSBGxlbnM=');
+
 @$core.Deprecated('Use startRequestDescriptor instead')
 const StartRequest$json = {
   '1': 'StartRequest',
@@ -132,6 +182,22 @@ const StartRequest$json = {
       '6': '.ferret.mirroring.v1.AudioCodec',
       '10': 'audioCodecs'
     },
+    {
+      '1': 'source',
+      '3': 7,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.Source',
+      '10': 'source'
+    },
+    {
+      '1': 'camera',
+      '3': 8,
+      '4': 1,
+      '5': 11,
+      '6': '.ferret.mirroring.v1.CameraOptions',
+      '10': 'camera'
+    },
   ],
 };
 
@@ -141,7 +207,9 @@ final $typed_data.Uint8List startRequestDescriptor = $convert.base64Decode(
     '4yGi5mZXJyZXQubWlycm9yaW5nLnYxLkNvZGVjUgZjb2RlY3MSGwoJbWF4X3dpZHRoGAMgASgN'
     'UghtYXhXaWR0aBIdCgptYXhfaGVpZ2h0GAQgASgNUgltYXhIZWlnaHQSFwoHbWF4X2ZwcxgFIA'
     'EoDVIGbWF4RnBzEkIKDGF1ZGlvX2NvZGVjcxgGIAMoDjIfLmZlcnJldC5taXJyb3JpbmcudjEu'
-    'QXVkaW9Db2RlY1ILYXVkaW9Db2RlY3M=');
+    'QXVkaW9Db2RlY1ILYXVkaW9Db2RlY3MSMwoGc291cmNlGAcgASgOMhsuZmVycmV0Lm1pcnJvcm'
+    'luZy52MS5Tb3VyY2VSBnNvdXJjZRI6CgZjYW1lcmEYCCABKAsyIi5mZXJyZXQubWlycm9yaW5n'
+    'LnYxLkNhbWVyYU9wdGlvbnNSBmNhbWVyYQ==');
 
 @$core.Deprecated('Use startPendingDescriptor instead')
 const StartPending$json = {
@@ -234,6 +302,7 @@ const StreamConfig$json = {
     {'1': 'fps', '3': 6, '4': 1, '5': 13, '10': 'fps'},
     {'1': 'sps', '3': 7, '4': 1, '5': 12, '10': 'sps'},
     {'1': 'pps', '3': 8, '4': 1, '5': 12, '10': 'pps'},
+    {'1': 'turn', '3': 9, '4': 1, '5': 13, '10': 'turn'},
   ],
 };
 
@@ -242,7 +311,8 @@ final $typed_data.Uint8List streamConfigDescriptor = $convert.base64Decode(
     'CgxTdHJlYW1Db25maWcSGwoJY29uZmlnX2lkGAEgASgNUghjb25maWdJZBIwCgVjb2RlYxgCIA'
     'EoDjIaLmZlcnJldC5taXJyb3JpbmcudjEuQ29kZWNSBWNvZGVjEhQKBXdpZHRoGAMgASgNUgV3'
     'aWR0aBIWCgZoZWlnaHQYBCABKA1SBmhlaWdodBIaCghyb3RhdGlvbhgFIAEoDVIIcm90YXRpb2'
-    '4SEAoDZnBzGAYgASgNUgNmcHMSEAoDc3BzGAcgASgMUgNzcHMSEAoDcHBzGAggASgMUgNwcHM=');
+    '4SEAoDZnBzGAYgASgNUgNmcHMSEAoDc3BzGAcgASgMUgNzcHMSEAoDcHBzGAggASgMUgNwcHMS'
+    'EgoEdHVybhgJIAEoDVIEdHVybg==');
 
 @$core.Deprecated('Use frameDescriptor instead')
 const Frame$json = {
@@ -308,6 +378,55 @@ const AudioEnded$json = {
 /// Descriptor for `AudioEnded`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List audioEndedDescriptor =
     $convert.base64Decode('CgpBdWRpb0VuZGVk');
+
+@$core.Deprecated('Use cameraStateDescriptor instead')
+const CameraState$json = {
+  '1': 'CameraState',
+  '2': [
+    {
+      '1': 'lens',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.CameraLens',
+      '10': 'lens'
+    },
+    {
+      '1': 'lenses',
+      '3': 2,
+      '4': 3,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.CameraLens',
+      '10': 'lenses'
+    },
+  ],
+};
+
+/// Descriptor for `CameraState`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cameraStateDescriptor = $convert.base64Decode(
+    'CgtDYW1lcmFTdGF0ZRIzCgRsZW5zGAEgASgOMh8uZmVycmV0Lm1pcnJvcmluZy52MS5DYW1lcm'
+    'FMZW5zUgRsZW5zEjcKBmxlbnNlcxgCIAMoDjIfLmZlcnJldC5taXJyb3JpbmcudjEuQ2FtZXJh'
+    'TGVuc1IGbGVuc2Vz');
+
+@$core.Deprecated('Use cameraSwitchDescriptor instead')
+const CameraSwitch$json = {
+  '1': 'CameraSwitch',
+  '2': [
+    {
+      '1': 'lens',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.ferret.mirroring.v1.CameraLens',
+      '10': 'lens'
+    },
+  ],
+};
+
+/// Descriptor for `CameraSwitch`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cameraSwitchDescriptor = $convert.base64Decode(
+    'CgxDYW1lcmFTd2l0Y2gSMwoEbGVucxgBIAEoDjIfLmZlcnJldC5taXJyb3JpbmcudjEuQ2FtZX'
+    'JhTGVuc1IEbGVucw==');
 
 @$core.Deprecated('Use keyframeRequestDescriptor instead')
 const KeyframeRequest$json = {

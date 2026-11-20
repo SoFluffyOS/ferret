@@ -6,6 +6,7 @@ package ferret.mirroring.v1;
 // on another (the viewer, a computer). The viewer asks; the source's owner
 // answers the system's own screen capture prompt every time, sees that the
 // screen is shared while it lasts, and either side can stop at any moment.
+// The same messages carry the source's camera and microphone instead.
 //
 // Versioning: `StartRequest.version` and `StartAccept.version` carry the
 // version of these messages each side speaks, currently 1. A source serves
@@ -17,6 +18,14 @@ package ferret.mirroring.v1;
 // `StartRequest.audio_codecs`; a source that doesn't know the field sends
 // pictures only and leaves `StartAccept.audio` unset. A source never sends
 // `AudioConfig` or `AudioFrame` to a viewer that didn't ask.
+//
+// The camera came later in version 1 too. A source that can send its
+// camera says so with the `camera` flag in its feature support, and a
+// viewer only sets `StartRequest.source` to `SOURCE_CAMERA` for one that
+// does: an older source doesn't know the field and would show its screen.
+// The camera's owner answers the source's own question (once, always or
+// no) instead of the system's screen capture prompt. Everything after
+// `StartAccept` is the same stream, with the microphone as its sound.
 
 // How the pictures are encoded.
 enum Codec {
@@ -38,8 +47,36 @@ enum AudioCodec {
   AUDIO_CODEC_PCM_S16LE = 2;
 }
 
-// Asks the source to show its screen. Expects a `StartPending` or
-// `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
+// What a source sends.
+enum Source {
+  // A viewer that doesn't know the field: the screen.
+  SOURCE_UNSPECIFIED = 0;
+  // Its screen, and what it plays.
+  SOURCE_SCREEN = 1;
+  // Its camera, and its microphone.
+  SOURCE_CAMERA = 2;
+}
+
+// One of a source's cameras.
+enum CameraLens {
+  // Leaves it to the source, which starts with the one on its back.
+  CAMERA_LENS_UNSPECIFIED = 0;
+  // Faces away from the screen.
+  CAMERA_LENS_BACK = 1;
+  // Faces whoever looks at the screen.
+  CAMERA_LENS_FRONT = 2;
+}
+
+// What a viewer wants from the camera. The size and frame rate come from
+// `StartRequest.max_width`, `max_height` and `max_fps` like a screen's; a
+// source left to itself sends 1280 by 720 at 30 frames per second.
+message CameraOptions {
+  // The camera to start with. A source that doesn't have it uses another.
+  CameraLens lens = 1;
+}
+
+// Asks the source to show its screen, or its camera. Expects a
+// `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
 // or `StartDeny` later, without expecting a reply.
 message StartRequest {
   // The version of these messages the viewer speaks.
@@ -55,6 +92,11 @@ message StartRequest {
   // What the viewer can play of the source's sound, best first. Empty asks
   // for pictures only.
   repeated AudioCodec audio_codecs = 6;
+  // What to send. Only set to `SOURCE_CAMERA` for a source whose feature
+  // support has the `camera` flag.
+  Source source = 7;
+  // With `SOURCE_CAMERA` only.
+  CameraOptions camera = 8;
 }
 
 // The source is asking its owner. The answer follows as `StartAccept` or
@@ -79,15 +121,17 @@ message StartAccept {
   AudioCodec audio_codec = 4;
 }
 
-// What a source says to a viewer that asked for sound. Only what plays on
-// the source is ever sent, never its microphone, and only while its screen
-// is shown.
+// What a source says to a viewer that asked for sound. With its screen,
+// only what plays on the source is ever sent, never its microphone, and
+// only while its screen is shown. With its camera, the sound is its
+// microphone, and only while the camera is on.
 enum AudioAnswer {
   // The source doesn't know about sound (an older build), or wasn't asked.
   AUDIO_ANSWER_UNSPECIFIED = 0;
   // An `AudioConfig` and `AudioFrame`s follow.
   AUDIO_ANSWER_SENDING = 1;
-  // The source's owner hasn't turned sending sound on.
+  // The source's owner hasn't turned sending sound on, or didn't allow
+  // the microphone to go with the camera.
   AUDIO_ANSWER_OFF = 2;
   // The source can't capture what it plays, or can't encode any of
   // `StartRequest.audio_codecs`.
@@ -113,7 +157,8 @@ enum DenyReason {
   // The source can't encode any of `StartRequest.codecs`.
   DENY_REASON_NO_CODEC = 7;
   // The source couldn't show the question, such as when its app is in the
-  // background and may not post notices.
+  // background and may not post notices. For a camera: its owner has to
+  // open the app first, to allow the camera or to let it start.
   DENY_REASON_CANNOT_ASK = 8;
   // Capturing or encoding failed to start.
   DENY_REASON_FAILED = 9;
@@ -142,6 +187,11 @@ message StreamConfig {
   // without a start code.
   bytes sps = 7;
   bytes pps = 8;
+  // A camera only: how far the viewer turns the picture clockwise to show
+  // it upright, in degrees: 0, 90, 180 or 270. `width` and `height` are
+  // the picture's before it is turned. A camera sends its pictures as its
+  // sensor sees them, and a new config when the phone is turned.
+  uint32 turn = 9;
 }
 
 // One picture. Sent without expecting a reply.
@@ -189,6 +239,22 @@ message AudioFrame {
 // The source's sound stopped, such as when capturing it failed. The
 // pictures go on. Sent without expecting a reply.
 message AudioEnded {}
+
+// Sent by a source that sends its camera, after `StartAccept` and again
+// whenever the camera changes. Expects no reply.
+message CameraState {
+  // The camera that is on.
+  CameraLens lens = 1;
+  // Every camera a `CameraSwitch` can pick.
+  repeated CameraLens lenses = 2;
+}
+
+// The viewer picks another of the source's cameras. The source answers
+// with a `CameraState` and a new `StreamConfig`. Ignored unless the
+// source's camera is on for this viewer. Expects no reply.
+message CameraSwitch {
+  CameraLens lens = 1;
+}
 
 // The viewer lost its place, such as after a decoding error, and asks for a
 // frame that decodes on its own. Sent without expecting a reply.

@@ -21,8 +21,71 @@ export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 export 'mirroring.pbenum.dart';
 
-/// Asks the source to show its screen. Expects a `StartPending` or
-/// `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
+/// What a viewer wants from the camera. The size and frame rate come from
+/// `StartRequest.max_width`, `max_height` and `max_fps` like a screen's; a
+/// source left to itself sends 1280 by 720 at 30 frames per second.
+class CameraOptions extends $pb.GeneratedMessage {
+  factory CameraOptions({
+    CameraLens? lens,
+  }) {
+    final result = CameraOptions._();
+    if (lens != null) result.lens = lens;
+    return result;
+  }
+
+  CameraOptions._();
+
+  factory CameraOptions.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraOptions()..mergeFromBuffer(data, registry);
+  factory CameraOptions.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraOptions()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CameraOptions',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: CameraOptions.$_createMessage)
+    ..aE<CameraLens>(1, _omitFieldNames ? '' : 'lens',
+        enumValues: CameraLens.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraOptions clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraOptions copyWith(void Function(CameraOptions) updates) =>
+      super.copyWith((message) => updates(message as CameraOptions))
+          as CameraOptions;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use CameraOptions() / CameraOptions.new instead')
+  static CameraOptions create() => CameraOptions._();
+  static $pb.GeneratedMessage $_createMessage() => CameraOptions._();
+  @$core.override
+  CameraOptions createEmptyInstance() => CameraOptions._();
+  @$core.pragma('dart2js:noInline')
+  static CameraOptions getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CameraOptions>(
+          CameraOptions.$_createMessage);
+  static CameraOptions? _defaultInstance;
+
+  /// The camera to start with. A source that doesn't have it uses another.
+  @$pb.TagNumber(1)
+  CameraLens get lens => $_getN(0);
+  @$pb.TagNumber(1)
+  set lens(CameraLens value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLens() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLens() => $_clearField(1);
+}
+
+/// Asks the source to show its screen, or its camera. Expects a
+/// `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept`
 /// or `StartDeny` later, without expecting a reply.
 class StartRequest extends $pb.GeneratedMessage {
   factory StartRequest({
@@ -32,6 +95,8 @@ class StartRequest extends $pb.GeneratedMessage {
     $core.int? maxHeight,
     $core.int? maxFps,
     $core.Iterable<AudioCodec>? audioCodecs,
+    Source? source,
+    CameraOptions? camera,
   }) {
     final result = StartRequest._();
     if (version != null) result.version = version;
@@ -40,6 +105,8 @@ class StartRequest extends $pb.GeneratedMessage {
     if (maxHeight != null) result.maxHeight = maxHeight;
     if (maxFps != null) result.maxFps = maxFps;
     if (audioCodecs != null) result.audioCodecs.addAll(audioCodecs);
+    if (source != null) result.source = source;
+    if (camera != null) result.camera = camera;
     return result;
   }
 
@@ -70,6 +137,9 @@ class StartRequest extends $pb.GeneratedMessage {
         valueOf: AudioCodec.valueOf,
         enumValues: AudioCodec.values,
         defaultEnumValue: AudioCodec.AUDIO_CODEC_UNSPECIFIED)
+    ..aE<Source>(7, _omitFieldNames ? '' : 'source', enumValues: Source.values)
+    ..aOM<CameraOptions>(8, _omitFieldNames ? '' : 'camera',
+        subBuilder: CameraOptions.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -142,6 +212,29 @@ class StartRequest extends $pb.GeneratedMessage {
   /// for pictures only.
   @$pb.TagNumber(6)
   $pb.PbList<AudioCodec> get audioCodecs => $_getList(5);
+
+  /// What to send. Only set to `SOURCE_CAMERA` for a source whose feature
+  /// support has the `camera` flag.
+  @$pb.TagNumber(7)
+  Source get source => $_getN(6);
+  @$pb.TagNumber(7)
+  set source(Source value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasSource() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearSource() => $_clearField(7);
+
+  /// With `SOURCE_CAMERA` only.
+  @$pb.TagNumber(8)
+  CameraOptions get camera => $_getN(7);
+  @$pb.TagNumber(8)
+  set camera(CameraOptions value) => $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasCamera() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearCamera() => $_clearField(8);
+  @$pb.TagNumber(8)
+  CameraOptions ensureCamera() => $_ensure(7);
 }
 
 /// The source is asking its owner. The answer follows as `StartAccept` or
@@ -380,6 +473,7 @@ class StreamConfig extends $pb.GeneratedMessage {
     $core.int? fps,
     $core.List<$core.int>? sps,
     $core.List<$core.int>? pps,
+    $core.int? turn,
   }) {
     final result = StreamConfig._();
     if (configId != null) result.configId = configId;
@@ -390,6 +484,7 @@ class StreamConfig extends $pb.GeneratedMessage {
     if (fps != null) result.fps = fps;
     if (sps != null) result.sps = sps;
     if (pps != null) result.pps = pps;
+    if (turn != null) result.turn = turn;
     return result;
   }
 
@@ -417,6 +512,7 @@ class StreamConfig extends $pb.GeneratedMessage {
         7, _omitFieldNames ? '' : 'sps', $pb.PbFieldType.OY)
     ..a<$core.List<$core.int>>(
         8, _omitFieldNames ? '' : 'pps', $pb.PbFieldType.OY)
+    ..aI(9, _omitFieldNames ? '' : 'turn', fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -519,6 +615,19 @@ class StreamConfig extends $pb.GeneratedMessage {
   $core.bool hasPps() => $_has(7);
   @$pb.TagNumber(8)
   void clearPps() => $_clearField(8);
+
+  /// A camera only: how far the viewer turns the picture clockwise to show
+  /// it upright, in degrees: 0, 90, 180 or 270. `width` and `height` are
+  /// the picture's before it is turned. A camera sends its pictures as its
+  /// sensor sees them, and a new config when the phone is turned.
+  @$pb.TagNumber(9)
+  $core.int get turn => $_getIZ(8);
+  @$pb.TagNumber(9)
+  set turn($core.int value) => $_setUnsignedInt32(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasTurn() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearTurn() => $_clearField(9);
 }
 
 /// One picture. Sent without expecting a reply.
@@ -856,6 +965,140 @@ class AudioEnded extends $pb.GeneratedMessage {
   static AudioEnded getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<AudioEnded>(AudioEnded.$_createMessage);
   static AudioEnded? _defaultInstance;
+}
+
+/// Sent by a source that sends its camera, after `StartAccept` and again
+/// whenever the camera changes. Expects no reply.
+class CameraState extends $pb.GeneratedMessage {
+  factory CameraState({
+    CameraLens? lens,
+    $core.Iterable<CameraLens>? lenses,
+  }) {
+    final result = CameraState._();
+    if (lens != null) result.lens = lens;
+    if (lenses != null) result.lenses.addAll(lenses);
+    return result;
+  }
+
+  CameraState._();
+
+  factory CameraState.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraState()..mergeFromBuffer(data, registry);
+  factory CameraState.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraState()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CameraState',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: CameraState.$_createMessage)
+    ..aE<CameraLens>(1, _omitFieldNames ? '' : 'lens',
+        enumValues: CameraLens.values)
+    ..pc<CameraLens>(2, _omitFieldNames ? '' : 'lenses', $pb.PbFieldType.KE,
+        valueOf: CameraLens.valueOf,
+        enumValues: CameraLens.values,
+        defaultEnumValue: CameraLens.CAMERA_LENS_UNSPECIFIED)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraState clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraState copyWith(void Function(CameraState) updates) =>
+      super.copyWith((message) => updates(message as CameraState))
+          as CameraState;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use CameraState() / CameraState.new instead')
+  static CameraState create() => CameraState._();
+  static $pb.GeneratedMessage $_createMessage() => CameraState._();
+  @$core.override
+  CameraState createEmptyInstance() => CameraState._();
+  @$core.pragma('dart2js:noInline')
+  static CameraState getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CameraState>(
+          CameraState.$_createMessage);
+  static CameraState? _defaultInstance;
+
+  /// The camera that is on.
+  @$pb.TagNumber(1)
+  CameraLens get lens => $_getN(0);
+  @$pb.TagNumber(1)
+  set lens(CameraLens value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLens() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLens() => $_clearField(1);
+
+  /// Every camera a `CameraSwitch` can pick.
+  @$pb.TagNumber(2)
+  $pb.PbList<CameraLens> get lenses => $_getList(1);
+}
+
+/// The viewer picks another of the source's cameras. The source answers
+/// with a `CameraState` and a new `StreamConfig`. Ignored unless the
+/// source's camera is on for this viewer. Expects no reply.
+class CameraSwitch extends $pb.GeneratedMessage {
+  factory CameraSwitch({
+    CameraLens? lens,
+  }) {
+    final result = CameraSwitch._();
+    if (lens != null) result.lens = lens;
+    return result;
+  }
+
+  CameraSwitch._();
+
+  factory CameraSwitch.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraSwitch()..mergeFromBuffer(data, registry);
+  factory CameraSwitch.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      CameraSwitch()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CameraSwitch',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'ferret.mirroring.v1'),
+      createEmptyInstance: CameraSwitch.$_createMessage)
+    ..aE<CameraLens>(1, _omitFieldNames ? '' : 'lens',
+        enumValues: CameraLens.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraSwitch clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CameraSwitch copyWith(void Function(CameraSwitch) updates) =>
+      super.copyWith((message) => updates(message as CameraSwitch))
+          as CameraSwitch;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use CameraSwitch() / CameraSwitch.new instead')
+  static CameraSwitch create() => CameraSwitch._();
+  static $pb.GeneratedMessage $_createMessage() => CameraSwitch._();
+  @$core.override
+  CameraSwitch createEmptyInstance() => CameraSwitch._();
+  @$core.pragma('dart2js:noInline')
+  static CameraSwitch getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CameraSwitch>(
+          CameraSwitch.$_createMessage);
+  static CameraSwitch? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  CameraLens get lens => $_getN(0);
+  @$pb.TagNumber(1)
+  set lens(CameraLens value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLens() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLens() => $_clearField(1);
 }
 
 /// The viewer lost its place, such as after a decoding error, and asks for a
