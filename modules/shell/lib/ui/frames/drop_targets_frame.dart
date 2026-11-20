@@ -22,12 +22,15 @@ class DropTargetsFrame extends StatelessWidget {
     final phase = context.select<OsDropViewModel, DropPhase>(
       (drop) => drop.phase,
     );
+    final fromApp = context.select<OsDropViewModel, bool>(
+      (drop) => drop.fromApp,
+    );
     final isWindow = WindowLayout.splits(context);
     if (phase is DropIdle) {
       return const SizedBox.shrink();
     }
 
-    if (phase case DropChoosing(held: false) when isWindow) {
+    if (phase case DropChoosing(held: false) when isWindow || fromApp) {
       return const SizedBox.shrink();
     }
 

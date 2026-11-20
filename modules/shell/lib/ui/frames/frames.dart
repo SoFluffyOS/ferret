@@ -32,6 +32,7 @@ export 'package:shell/ui/frames/pairing_settings.dart';
 export 'package:shell/ui/frames/pairing_status_card.dart';
 export 'package:shell/ui/frames/pane_drop_frame.dart';
 export 'package:shell/ui/frames/pane_toolbar_frame.dart';
+export 'package:shell/ui/frames/popover_bar_frame.dart';
 export 'package:shell/ui/frames/popover_keys_frame.dart';
 export 'package:shell/ui/frames/private_previews_card.dart';
 export 'package:shell/ui/frames/settings_list_frame.dart';

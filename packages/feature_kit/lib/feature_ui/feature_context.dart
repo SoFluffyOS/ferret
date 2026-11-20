@@ -44,6 +44,10 @@ class FeatureContext {
   /// and where the platform has none.
   DragOut? dragOut;
 
+  /// Shows files in the system's quick preview (Quick Look on a Mac), or
+  /// closes it when it is open. Null where there is none.
+  Future<void> Function(List<String> paths)? quickLook;
+
   /// Brings Ferret to the front (the menubar popover on macOS), such as when
   /// this device starts ringing.
   Future<void> reveal() async {

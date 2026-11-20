@@ -17,6 +17,8 @@ import 'package:handoff/l10n/generated/handoff_localizations_en.dart';
 import 'package:handoff/l10n/generated/handoff_localizations.dart';
 import 'package:iphone/l10n/generated/iphone_localizations_en.dart';
 import 'package:iphone/l10n/generated/iphone_localizations.dart';
+import 'package:local_shelf/l10n/generated/shelf_localizations_en.dart';
+import 'package:local_shelf/l10n/generated/shelf_localizations.dart';
 import 'package:media/l10n/generated/media_localizations_en.dart';
 import 'package:media/l10n/generated/media_localizations.dart';
 import 'package:messages/l10n/generated/messages_localizations_en.dart';
@@ -51,6 +53,7 @@ List<LocalizationsDelegate<Object?>> pseudoDelegates() => [
   _PseudoDelegate<FindLocalizations>(PseudoFindLocalizations.new),
   _PseudoDelegate<HandoffLocalizations>(PseudoHandoffLocalizations.new),
   _PseudoDelegate<IphoneLocalizations>(PseudoIphoneLocalizations.new),
+  _PseudoDelegate<ShelfLocalizations>(PseudoShelfLocalizations.new),
   _PseudoDelegate<MediaLocalizations>(PseudoMediaLocalizations.new),
   _PseudoDelegate<MessagesLocalizations>(PseudoMessagesLocalizations.new),
   _PseudoDelegate<MirroringLocalizations>(PseudoMirroringLocalizations.new),
@@ -1556,6 +1559,70 @@ class PseudoIphoneLocalizations extends IphoneLocalizationsEn {
   @override
   String actionFailedBody(String device, String here) =>
       pseudo(super.actionFailedBody(device, here));
+}
+
+class PseudoShelfLocalizations extends ShelfLocalizationsEn {
+  @override
+  String get title => pseudo(super.title);
+  @override
+  String get barEmpty => pseudo(super.barEmpty);
+  @override
+  String get barDropOver => pseudo(super.barDropOver);
+  @override
+  String get barOpen => pseudo(super.barOpen);
+  @override
+  String get clear => pseudo(super.clear);
+  @override
+  String get clearTooltip => pseudo(super.clearTooltip);
+  @override
+  String get cancel => pseudo(super.cancel);
+  @override
+  String get remove => pseudo(super.remove);
+  @override
+  String get missing => pseudo(super.missing);
+  @override
+  String get kindFile => pseudo(super.kindFile);
+  @override
+  String get kindFolder => pseudo(super.kindFolder);
+  @override
+  String get kindImage => pseudo(super.kindImage);
+  @override
+  String get kindText => pseudo(super.kindText);
+  @override
+  String get kindLink => pseudo(super.kindLink);
+  @override
+  String get copiedHere => pseudo(super.copiedHere);
+  @override
+  String get droppedHere => pseudo(super.droppedHere);
+  @override
+  String get hiddenItem => pseudo(super.hiddenItem);
+  @override
+  String get empty => pseudo(super.empty);
+  @override
+  String get emptyNote => pseudo(super.emptyNote);
+  @override
+  String get hiddenNote => pseudo(super.hiddenNote);
+  @override
+  String get dragNote => pseudo(super.dragNote);
+  @override
+  String get back => pseudo(super.back);
+  @override
+  String barCount(int count) => pseudo(super.barCount(count));
+  @override
+  String barHidden(int count) => pseudo(super.barHidden(count));
+  @override
+  String dragAll(int count) => pseudo(super.dragAll(count));
+  @override
+  String clearConfirm(int count) => pseudo(super.clearConfirm(count));
+  @override
+  String clearConfirmTooltip(int count) =>
+      pseudo(super.clearConfirmTooltip(count));
+  @override
+  String removeTooltip(String name) => pseudo(super.removeTooltip(name));
+  @override
+  String fromDevice(String name) => pseudo(super.fromDevice(name));
+  @override
+  String selectedCount(int count) => pseudo(super.selectedCount(count));
 }
 
 class PseudoMediaLocalizations extends MediaLocalizationsEn {

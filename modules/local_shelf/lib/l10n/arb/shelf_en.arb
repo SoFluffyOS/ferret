@@ -1,0 +1,123 @@
+{
+  "@@locale": "en",
+  "title": "Shelf",
+  "@title": {
+    "description": "Name of the place at the bottom of the menubar popover where dropped and copied things are kept for later."
+  },
+  "barEmpty": "Drop here to keep it for later",
+  "@barEmpty": {
+    "description": "Hint on the empty shelf bar at the bottom of the popover. Keep it short."
+  },
+  "barDropOver": "Drop to keep it",
+  "@barDropOver": {
+    "description": "The shelf bar while something is dragged over it."
+  },
+  "barCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@barCount": {
+    "description": "How many things are on the shelf.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "barHidden": "{count, plural, =1{1 item, hidden} other{{count} items, hidden}}",
+  "@barHidden": {
+    "description": "The shelf bar while private previews are off on this computer: only how many things are on it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "barOpen": "Open the shelf",
+  "@barOpen": {
+    "description": "Tooltip of the shelf bar: clicking it opens the shelf."
+  },
+  "dragAll": "{count, plural, =1{Drag it out, or click to open} other{Drag all {count} out, or click to open}}",
+  "@dragAll": {
+    "description": "Tooltip of the stack at the left of the shelf bar.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clear": "Clear",
+  "@clear": {
+    "description": "Button: takes everything off the shelf. Keep it short."
+  },
+  "clearTooltip": "Take everything off the shelf",
+  "clearConfirm": "{count, plural, other{Clear {count}}}",
+  "@clearConfirm": {
+    "description": "The Clear button asking once more before many things go. Keep it short.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearConfirmTooltip": "{count, plural, =1{Take it off the shelf. The file stays where it is.} other{Take all {count} off the shelf. Files stay where they are.}}",
+  "@clearConfirmTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "remove": "Remove",
+  "@remove": {
+    "description": "Button on one shelf item: takes it off the shelf. The file itself stays."
+  },
+  "removeTooltip": "Take {name} off the shelf",
+  "@removeTooltip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "missing": "Moved or deleted",
+  "@missing": {
+    "description": "A file on the shelf that isn't where it was anymore."
+  },
+  "kindFile": "File",
+  "kindFolder": "Folder",
+  "kindImage": "Picture",
+  "kindText": "Text",
+  "kindLink": "Link",
+  "copiedHere": "Copied",
+  "@copiedHere": {
+    "description": "Where a shelf item came from: copied on this computer."
+  },
+  "droppedHere": "Dropped",
+  "@droppedHere": {
+    "description": "Where a shelf item came from: dragged onto the shelf."
+  },
+  "fromDevice": "From {name}",
+  "@fromDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hiddenItem": "Hidden",
+  "@hiddenItem": {
+    "description": "Title of a shelf item whose contents are hidden because previews are off."
+  },
+  "empty": "Nothing on the shelf yet",
+  "emptyNote": "Drop files, photos, text or links on the bar at the bottom. What you copy shows up here too. It all stays on this computer.",
+  "hiddenNote": "Hidden while private previews are off on this computer.",
+  "dragNote": "Drag anything out to another app, or onto a device to send it. Space shows a preview.",
+  "selectedCount": "{count, plural, other{{count} selected}}",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "back": "Back"
+}

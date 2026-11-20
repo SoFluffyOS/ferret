@@ -6,7 +6,9 @@ import Cocoa
 /// popover doesn't have yet, so drags are caught here and handed to Dart.
 /// It never takes clicks: `hitTest` returns nil.
 final class DragDestinationView: NSView {
-    var onEntered: ((NSPoint, Int, MenubarDragKind) -> Void)?
+    /// Where it is, how many files, what kind, and whether it started in
+    /// this app.
+    var onEntered: ((NSPoint, Int, MenubarDragKind, Bool) -> Void)?
     var onUpdated: ((NSPoint) -> Void)?
     var onExited: (() -> Void)?
     var onPerformed: (([String], NSPoint) -> Void)?
@@ -45,9 +47,11 @@ final class DragDestinationView: NSView {
         accepting = kind != nil
         guard let kind else { return [] }
 
-        dropAllowed = true
-        onEntered?(flutterPoint(sender), max(count, 1), kind)
-        return .copy
+        // A drag out of Ferret itself lands only where Dart says yes.
+        let fromApp = sender.draggingSource != nil
+        dropAllowed = !fromApp
+        onEntered?(flutterPoint(sender), max(count, 1), kind, fromApp)
+        return dropAllowed ? .copy : []
     }
 
     override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
@@ -81,6 +85,13 @@ final class DragDestinationView: NSView {
         let paths = fileURLs(from: sender).map(\.path)
         let promises = filePromises(from: sender)
         guard !paths.isEmpty || !promises.isEmpty else {
+            if webLink(from: sender) == nil, text(from: sender) == nil,
+                let picture = writeImage(from: sender)
+            {
+                onPerformed?([picture], point)
+                return true
+            }
+
             return performText(sender, at: point)
         }
 
@@ -97,7 +108,7 @@ final class DragDestinationView: NSView {
 
     private func registerTypes() {
         registerForDraggedTypes(
-            [.fileURL, .URL, .string]
+            [.fileURL, .URL, .string, .png, .tiff]
                 + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
     }
 
@@ -116,7 +127,41 @@ final class DragDestinationView: NSView {
             return .text
         }
 
+        if hasImage(info) {
+            return .files
+        }
+
         return nil
+    }
+
+    /// A picture dragged as data only, such as from an app that offers no
+    /// file for it.
+    private func hasImage(_ info: NSDraggingInfo) -> Bool {
+        info.draggingPasteboard.availableType(from: [.png, .tiff]) != nil
+    }
+
+    /// Writes a picture dragged as data to a fresh temporary folder as a
+    /// PNG, so it goes on like a dropped file.
+    private func writeImage(from info: NSDraggingInfo) -> String? {
+        let pasteboard = info.draggingPasteboard
+        let png = pasteboard.data(forType: .png)
+            ?? pasteboard.data(forType: .tiff)
+                .flatMap { NSBitmapImageRep(data: $0) }
+                .flatMap { $0.representation(using: .png, properties: [:]) }
+        guard let png else { return nil }
+
+        let folder = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ferret-drops", isDirectory: true)
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let file = folder.appendingPathComponent("Image.png")
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try png.write(to: file)
+        } catch {
+            return nil
+        }
+
+        return file.path
     }
 
     private func performText(_ info: NSDraggingInfo, at point: NSPoint) -> Bool {

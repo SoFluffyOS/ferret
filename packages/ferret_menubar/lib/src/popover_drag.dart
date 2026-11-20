@@ -19,6 +19,7 @@ final class PopoverDragEntered extends PopoverDrag {
     this.position,
     this.fileCount, {
     this.kind = .files,
+    this.fromApp = false,
   });
 
   final Offset position;
@@ -26,6 +27,10 @@ final class PopoverDragEntered extends PopoverDrag {
   /// How many files, or 1 for text and links.
   final int fileCount;
   final MenubarDragKind kind;
+
+  /// The drag started in this app, such as an item off the shelf or a
+  /// photo from a phone's grid.
+  final bool fromApp;
 }
 
 /// The pointer moved while dragging files over the view.

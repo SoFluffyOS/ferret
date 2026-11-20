@@ -320,8 +320,15 @@ class FerretMenubar implements MenubarFlutterApi {
     double y,
     int fileCount,
     MenubarDragKind kind,
+    bool fromApp,
   ) => _drags.add(
-    PopoverDragEntered(viewId, Offset(x, y), fileCount, kind: kind),
+    PopoverDragEntered(
+      viewId,
+      Offset(x, y),
+      fileCount,
+      kind: kind,
+      fromApp: fromApp,
+    ),
   );
 
   @override

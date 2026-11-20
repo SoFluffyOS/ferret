@@ -1,0 +1,94 @@
+import 'dart:async';
+
+import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/widgets.dart';
+import 'package:local_shelf/feature/shelf_feature.dart';
+import 'package:local_shelf/l10n/l10n.dart';
+import 'package:local_shelf/services/services.dart';
+import 'package:local_shelf/ui/frames/frames.dart';
+import 'package:local_shelf/ui/pages/pages.dart';
+import 'package:local_shelf/view_models/view_models.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:path/path.dart' as p;
+import 'package:provider/provider.dart';
+
+/// The shelf in the app: its bar under the Mac popover's pages, and its
+/// page. Its files live in Ferret's cache folder, under `shelf`.
+class ShelfFeatureUi extends FeatureUi {
+  ShelfFeatureUi({ShelfFeature? feature, this.store, this.showsPreviewsFrom})
+    : feature = feature ?? ShelfFeature();
+
+  @override
+  final ShelfFeature feature;
+
+  /// Where the shelf keeps its things; the app's cache folder when null.
+  final ShelfStore? store;
+
+  /// Whether private things from a device may show here; the app's own
+  /// answer when null.
+  final bool Function(String deviceId)? showsPreviewsFrom;
+
+  ShelfViewModel? _viewModel;
+  StreamSubscription<String>? _settings;
+
+  @override
+  String get featureId => ShelfFeature.featureId;
+
+  @override
+  List<LocalizationsDelegate<Object>> get localizationsDelegates => const [
+    ShelfLocalizations.delegate,
+  ];
+
+  @override
+  String title(BuildContext context) => context.shelfL10n.title;
+
+  @override
+  IconData get icon => LucideIcons.inbox;
+
+  @override
+  bool hasHomeCard(FeatureContext feature) => false;
+
+  @override
+  Future<void> onAppStarted(FeatureContext context) async {
+    final engine = context.engine;
+    final viewModel = ShelfViewModel(
+      localDeviceId: engine.identity.deviceId,
+      showsPreviewsFrom: showsPreviewsFrom ?? context.showsPreviewsFrom,
+      nameOf: engine.displayNameOf,
+      dragOut: context.dragOut,
+      quickLook: context.quickLook,
+    );
+    _viewModel = viewModel;
+    await _settings?.cancel();
+    _settings = engine.settings.changes.listen(
+      (_) => viewModel.previewsChanged(),
+    );
+
+    final store =
+        this.store ?? ShelfStore(p.join((await AppPaths.get()).cache, 'shelf'));
+    feature.use(store);
+    final shelf = feature.store ?? store;
+    await shelf.load();
+    viewModel.attach(shelf);
+  }
+
+  @override
+  Widget? buildPopoverBar(BuildContext context, FeatureContext feature) {
+    final viewModel = _viewModel;
+    if (viewModel == null) {
+      return null;
+    }
+
+    viewModel
+      ..dragOut = feature.dragOut
+      ..quickLook = feature.quickLook;
+
+    return ChangeNotifierProvider.value(
+      value: viewModel,
+      child: ShelfBarFrame(
+        onOpen: () => unawaited(feature.push(ShelfPage(viewModel: viewModel))),
+      ),
+    );
+  }
+}

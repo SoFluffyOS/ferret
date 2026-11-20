@@ -19,7 +19,7 @@ final class AppWindowController: NSObject, NSWindowDelegate {
     var onOpened: ((Int64) -> Void)?
     var onClosed: ((Int64) -> Void)?
     var onFocusChanged: ((Bool) -> Void)?
-    var onDragEntered: ((Int64, NSPoint, Int, MenubarDragKind) -> Void)?
+    var onDragEntered: ((Int64, NSPoint, Int, MenubarDragKind, Bool) -> Void)?
     var onDragUpdated: ((Int64, NSPoint) -> Void)?
     var onDragExited: ((Int64) -> Void)?
     var onDragPerformed: ((Int64, [String], NSPoint) -> Void)?
@@ -145,8 +145,8 @@ final class AppWindowController: NSObject, NSWindowDelegate {
     private func addDragView(over view: NSView, viewId: Int64) {
         let dragView = DragDestinationView(frame: view.bounds)
         dragView.autoresizingMask = [.width, .height]
-        dragView.onEntered = { [weak self] point, count, kind in
-            self?.onDragEntered?(viewId, point, count, kind)
+        dragView.onEntered = { [weak self] point, count, kind, fromApp in
+            self?.onDragEntered?(viewId, point, count, kind, fromApp)
         }
         dragView.onUpdated = { [weak self] point in self?.onDragUpdated?(viewId, point) }
         dragView.onExited = { [weak self] in self?.onDragExited?(viewId) }

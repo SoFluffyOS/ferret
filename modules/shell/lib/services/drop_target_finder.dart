@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/models/models.dart';
@@ -8,7 +9,8 @@ abstract interface class DropTargetFinder {
 }
 
 /// Hit-tests one view and takes the innermost widget tagged with a
-/// [FilesDropTarget] (see `DropTargetRegion`). [viewId] names the view at
+/// [FilesDropTarget] (see `DropTargetRegion`) or a feature's
+/// [DropReceiver] (see `DropReceiverRegion`). [viewId] names the view at
 /// the time of the drag; without it the app's only view is tested.
 class RenderTreeDropTargetFinder implements DropTargetFinder {
   const RenderTreeDropTargetFinder({this.viewId});
@@ -29,10 +31,11 @@ class RenderTreeDropTargetFinder implements DropTargetFinder {
 
     for (final entry in result.path) {
       final renderObject = entry.target;
-      if (renderObject case RenderMetaData(
-        metaData: final FilesDropTarget target,
-      )) {
-        return target;
+      switch (renderObject) {
+        case RenderMetaData(metaData: final FilesDropTarget target):
+          return target;
+        case RenderMetaData(metaData: final DropReceiver receiver):
+          return ReceiverDropTarget(receiver);
       }
     }
 

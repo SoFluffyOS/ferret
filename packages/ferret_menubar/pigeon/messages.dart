@@ -240,13 +240,15 @@ abstract class MenubarFlutterApi {
 
   /// Something of [kind] dragged into the view [viewId] (the popover's or
   /// the window's), at [x], [y] in logical pixels from its top left.
-  /// [fileCount] is 1 for text and links.
+  /// [fileCount] is 1 for text and links. [fromApp] when the drag started
+  /// in this app, such as an item dragged off the shelf.
   void onDragEntered(
     int viewId,
     double x,
     double y,
     int fileCount,
     MenubarDragKind kind,
+    bool fromApp,
   );
 
   void onDragUpdated(int viewId, double x, double y);

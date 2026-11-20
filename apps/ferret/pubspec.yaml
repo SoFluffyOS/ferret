@@ -26,6 +26,8 @@ dependencies:
     path: ../../modules/actions
   iphone:
     path: ../../modules/iphone
+  local_shelf:
+    path: ../../modules/local_shelf
   power:
     path: ../../modules/power
   find:

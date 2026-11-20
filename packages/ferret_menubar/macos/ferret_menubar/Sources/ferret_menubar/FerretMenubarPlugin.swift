@@ -58,8 +58,8 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
             Task { @MainActor in try? await flutterApi?.onFilesDropped(paths: paths) }
         }
         let popoverViewId = flutterViewController.viewIdentifier
-        controller.onDragEntered = { point, count, kind in
-            dragEntered(popoverViewId, point, count, kind)
+        controller.onDragEntered = { point, count, kind, fromApp in
+            dragEntered(popoverViewId, point, count, kind, fromApp)
         }
         controller.onDragUpdated = { point in dragUpdated(popoverViewId, point) }
         controller.onDragExited = { dragExited(popoverViewId) }
@@ -109,11 +109,12 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     }
 
     private static func dragEntered(
-        _ viewId: Int64, _ point: NSPoint, _ count: Int, _ kind: MenubarDragKind
+        _ viewId: Int64, _ point: NSPoint, _ count: Int, _ kind: MenubarDragKind, _ fromApp: Bool
     ) {
         Task { @MainActor in
             try? await flutterApi?.onDragEntered(
-                viewId: viewId, x: point.x, y: point.y, fileCount: Int64(count), kind: kind)
+                viewId: viewId, x: point.x, y: point.y, fileCount: Int64(count), kind: kind,
+                fromApp: fromApp)
         }
     }
 

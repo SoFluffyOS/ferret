@@ -1057,8 +1057,9 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onFilesDropped(paths pathsArg: [String]) async throws
   /// Something of [kind] dragged into the view [viewId] (the popover's or
   /// the window's), at [x], [y] in logical pixels from its top left.
-  /// [fileCount] is 1 for text and links.
-  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind) async throws
+  /// [fileCount] is 1 for text and links. [fromApp] when the drag started
+  /// in this app, such as an item dragged off the shelf.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind, fromApp fromAppArg: Bool) async throws
   @MainActor func onDragUpdated(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double) async throws
   /// The drag left the view or was cancelled.
   @MainActor func onDragExited(viewId viewIdArg: Int64) async throws
@@ -1173,12 +1174,13 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
   }
   /// Something of [kind] dragged into the view [viewId] (the popover's or
   /// the window's), at [x], [y] in logical pixels from its top left.
-  /// [fileCount] is 1 for text and links.
-  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind) async throws {
+  /// [fileCount] is 1 for text and links. [fromApp] when the drag started
+  /// in this app, such as an item dragged off the shelf.
+  @MainActor func onDragEntered(viewId viewIdArg: Int64, x xArg: Double, y yArg: Double, fileCount fileCountArg: Int64, kind kindArg: MenubarDragKind, fromApp fromAppArg: Bool) async throws {
     return try await withCheckedThrowingContinuation { continuation in
       let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onDragEntered\(messageChannelSuffix)"
       let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
-      channel.sendMessage([viewIdArg, xArg, yArg, fileCountArg, kindArg] as [Any?]) { response in
+      channel.sendMessage([viewIdArg, xArg, yArg, fileCountArg, kindArg, fromAppArg] as [Any?]) { response in
         guard let listResponse = response as? [Any?] else {
           continuation.resume(throwing: createConnectionError(withChannelName: channelName))
           return

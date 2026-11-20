@@ -143,7 +143,9 @@ Future<void> runFerret({
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
   featureContext.windows = featureWindows;
   if (ferretMenubar.isSupported) {
-    featureContext.dragOut = MenubarDragOut(ferretMenubar);
+    featureContext
+      ..dragOut = MenubarDragOut(ferretMenubar)
+      ..quickLook = ferretMenubar.toggleQuickLook;
   }
   final navigation = WindowNavRegistry(featureContext, views: views);
   for (final feature in features) {

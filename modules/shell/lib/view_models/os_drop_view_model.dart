@@ -75,6 +75,7 @@ class OsDropViewModel extends ChangeNotifier {
   FilesDropTarget? _sendTarget;
   List<String> _paths = const [];
   DropKind _kind = .files;
+  bool _fromApp = false;
   String _text = '';
   Timer? _timer;
   StreamSubscription<FilesSendProgress>? _progress;
@@ -90,6 +91,11 @@ class OsDropViewModel extends ChangeNotifier {
 
   /// What is dragged, or was dropped.
   DropKind get kind => _kind;
+
+  /// Whether the drag started in Ferret itself, such as an item off the
+  /// shelf: the view keeps its page, and only the shelf and device rows
+  /// take it, never a pane.
+  bool get fromApp => _fromApp;
 
   /// The target under the pointer, highlighted while dragging.
   FilesDropTarget? get hovered => _hovered;
@@ -107,12 +113,18 @@ class OsDropViewModel extends ChangeNotifier {
     _ => false,
   };
 
-  void enter(Offset position, {int fileCount = 0, DropKind kind = .files}) {
+  void enter(
+    Offset position, {
+    int fileCount = 0,
+    DropKind kind = .files,
+    bool fromApp = false,
+  }) {
     _timer?.cancel();
     if (!_isDragging) {
       _stopSending();
       _fileCount = fileCount;
       _kind = kind;
+      _fromApp = fromApp;
     }
 
     _phase = const DropChoosing();
@@ -144,7 +156,7 @@ class OsDropViewModel extends ChangeNotifier {
       return;
     }
 
-    _hovered = null;
+    _setHovered(null);
     notifyListeners();
     _timer?.cancel();
     _timer = Timer(leaveGrace, cancel);
@@ -154,6 +166,15 @@ class OsDropViewModel extends ChangeNotifier {
   Future<void> drop(List<String> paths, Offset position) async {
     _locate(position);
     final target = _hovered;
+    if (target case ReceiverDropTarget(:final receiver)) {
+      cancel();
+      if (paths.isNotEmpty) {
+        await receiver.takeFiles(paths);
+      }
+
+      return;
+    }
+
     if (paths.isEmpty || target == null || !target.acceptsDrop) {
       cancel();
       return;
@@ -173,6 +194,18 @@ class OsDropViewModel extends ChangeNotifier {
   }) async {
     _locate(position);
     final target = _hovered;
+    if (target case ReceiverDropTarget(:final receiver)) {
+      cancel();
+      if (text.trim().isNotEmpty) {
+        await receiver.takeText(
+          text,
+          isLink: DropKind.ofText(text, isLink: isLink) == .link,
+        );
+      }
+
+      return;
+    }
+
     if (text.trim().isEmpty ||
         _sendText == null ||
         target == null ||
@@ -223,8 +256,9 @@ class OsDropViewModel extends ChangeNotifier {
     _stopSending();
     _paths = paths;
     _kind = .files;
+    _fromApp = false;
     _fileCount = paths.length;
-    _hovered = null;
+    _setHovered(null);
     _phase = const DropChoosing(held: true);
     notifyListeners();
   }
@@ -262,7 +296,8 @@ class OsDropViewModel extends ChangeNotifier {
     _phase = const DropIdle();
     _fileCount = 0;
     _folderCount = 0;
-    _hovered = null;
+    _fromApp = false;
+    _setHovered(null);
     _sendTarget = null;
     _paths = const [];
     _text = '';
@@ -288,14 +323,16 @@ class OsDropViewModel extends ChangeNotifier {
       .files => _paths.where(FileSystemEntity.isDirectorySync).length,
       .text || .link => 0,
     };
-    _hovered = null;
+    _setHovered(null);
     _sendTarget = target;
     _phase = const DropSending(0);
     notifyListeners();
 
     final deviceId = switch (target) {
       DeviceDropTarget(:final deviceId) => deviceId,
-      AllDevicesDropTarget() || PaneDropTarget() => null,
+      AllDevicesDropTarget() ||
+      PaneDropTarget() ||
+      ReceiverDropTarget() => null,
     };
     if (deviceId != null && _kind == .files) {
       unawaited(_settings?.set(lastDeviceKey, deviceId));
@@ -359,10 +396,31 @@ class OsDropViewModel extends ChangeNotifier {
   }
 
   bool _locate(Offset position) {
-    final target = _finder.find(position);
+    final found = _finder.find(position);
+    final target = switch (found) {
+      PaneDropTarget() when _fromApp => null,
+      _ => found,
+    };
     final changed = target != _hovered;
-    _hovered = target;
+    _setHovered(target);
     return changed;
+  }
+
+  /// Tells a feature's receiver when the drag comes over it or leaves.
+  void _setHovered(FilesDropTarget? target) {
+    final before = _hovered;
+    _hovered = target;
+    if (before == target) {
+      return;
+    }
+
+    if (before case ReceiverDropTarget(:final receiver)) {
+      receiver.hover(over: false);
+    }
+
+    if (target case ReceiverDropTarget(:final receiver)) {
+      receiver.hover(over: true);
+    }
   }
 
   void _reportAllowed() {

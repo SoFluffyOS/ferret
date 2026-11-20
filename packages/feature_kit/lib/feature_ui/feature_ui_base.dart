@@ -74,6 +74,11 @@ abstract class FeatureUi {
   /// A card on the home screen (the menubar popover on macOS), or null.
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) => null;
 
+  /// A slim bar along the bottom of the Mac's menubar popover, in view
+  /// under every page, such as the shelf. Null for none. Keep it to one
+  /// line: the pages scroll above it.
+  Widget? buildPopoverBar(BuildContext context, FeatureContext feature) => null;
+
   /// What this feature did lately and what it is doing right now, for Home's
   /// Activity list: the visible trace of things that otherwise just happen,
   /// such as a clip that synced or a file that arrived. Any order; the shell

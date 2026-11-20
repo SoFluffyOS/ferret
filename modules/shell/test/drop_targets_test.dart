@@ -149,7 +149,7 @@ void main() {
     await pumpZone(tester, devices: [pixel, ipad, tablet]);
     expect(find.byType(DropTargetTile), findsNothing);
 
-    menubar.onDragEntered(_viewId, 10, 10, 3, .files);
+    menubar.onDragEntered(_viewId, 10, 10, 3, .files, false);
     await settle(tester);
 
     expect(find.text('Send 3 files to…'), findsOneWidget);
@@ -163,7 +163,7 @@ void main() {
     tester,
   ) async {
     await pumpZone(tester, devices: [pixel, ipad]);
-    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files, false);
     await settle(tester);
 
     final overIpad = tester.getCenter(find.text('iPad'));
@@ -188,9 +188,42 @@ void main() {
     expect(api.closed, 1);
   });
 
+  testWidgets('a drag from Ferret keeps the page and lands on a receiver', (
+    tester,
+  ) async {
+    final receiver = _Receiver();
+    await pumpZone(
+      tester,
+      devices: [pixel, ipad],
+      child: Align(
+        alignment: .bottomCenter,
+        child: DropReceiverRegion(
+          receiver: receiver,
+          child: const SizedBox(height: 40, child: Text('Shelf')),
+        ),
+      ),
+    );
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files, true);
+    await settle(tester);
+
+    expect(find.byType(DropTargetTile), findsNothing);
+    expect(api.allowed.last, isFalse);
+
+    final overShelf = tester.getCenter(find.text('Shelf'));
+    menubar.onDragUpdated(_viewId, overShelf.dx, overShelf.dy);
+    await settle(tester);
+    expect(api.allowed.last, isTrue);
+    expect(receiver.hovers, [true]);
+
+    menubar.onDragPerformed(_viewId, ['/a.jpg'], overShelf.dx, overShelf.dy);
+    await settle(tester);
+    expect(receiver.files.single, ['/a.jpg']);
+    expect(feature.drops, isEmpty);
+  });
+
   testWidgets('an offline tile refuses the drop', (tester) async {
     await pumpZone(tester, devices: [pixel, tablet]);
-    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files, false);
     await settle(tester);
 
     final overTablet = tester.getCenter(find.text('Old tablet'));
@@ -206,7 +239,7 @@ void main() {
 
   testWidgets('a failure says why and can be tried again', (tester) async {
     await pumpZone(tester, devices: [pixel]);
-    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files, false);
     await settle(tester);
     final overPixel = tester.getCenter(find.text('Pixel 7'));
     menubar.onDragPerformed(_viewId, ['/a.jpg'], overPixel.dx, overPixel.dy);
@@ -244,7 +277,7 @@ void main() {
     tester,
   ) async {
     await pumpZone(tester, devices: [tablet]);
-    menubar.onDragEntered(_viewId, 10, 10, 1, .files);
+    menubar.onDragEntered(_viewId, 10, 10, 1, .files, false);
     await settle(tester);
 
     expect(find.text('No device to send to'), findsOneWidget);
@@ -292,7 +325,7 @@ void main() {
         size: windowSize,
         child: page,
       );
-      menubar.onDragEntered(_viewId, 600, 300, 1, .files);
+      menubar.onDragEntered(_viewId, 600, 300, 1, .files, false);
       await settle(tester);
 
       expect(find.byType(DropTargetTile), findsNothing);
@@ -323,7 +356,14 @@ void main() {
         child: page,
       );
       final overPage = tester.getCenter(find.text('Page'));
-      menubar.onDragEntered(_viewId, overPage.dx, overPage.dy, 1, .files);
+      menubar.onDragEntered(
+        _viewId,
+        overPage.dx,
+        overPage.dy,
+        1,
+        .files,
+        false,
+      );
       await settle(tester);
       expect(api.allowed.last, isTrue);
 
@@ -383,4 +423,21 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(opened, 1);
   });
+}
+
+class _Receiver implements DropReceiver {
+  final List<bool> hovers = [];
+  final List<List<String>> files = [];
+
+  @override
+  void hover({required bool over}) => hovers.add(over);
+
+  @override
+  Future<bool> takeFiles(List<String> paths) async {
+    files.add(paths);
+    return true;
+  }
+
+  @override
+  Future<bool> takeText(String text, {required bool isLink}) async => true;
 }

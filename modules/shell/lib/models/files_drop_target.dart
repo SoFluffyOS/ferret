@@ -1,3 +1,5 @@
+import 'package:feature_kit/feature_kit.dart';
+
 /// Something on screen that dragged files can be dropped on. Tag its widget
 /// with `DropTargetRegion` so a drag over it finds it.
 sealed class FilesDropTarget {
@@ -45,6 +47,24 @@ final class AllDevicesDropTarget extends FilesDropTarget {
 
   @override
   int get hashCode => (AllDevicesDropTarget).hashCode;
+}
+
+/// A feature's own place to drop things, such as the shelf: what lands
+/// there is kept by [receiver], not sent.
+final class ReceiverDropTarget extends FilesDropTarget {
+  const ReceiverDropTarget(this.receiver);
+
+  final DropReceiver receiver;
+
+  @override
+  bool get acceptsDrop => true;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ReceiverDropTarget && identical(other.receiver, receiver);
+
+  @override
+  int get hashCode => identityHashCode(receiver);
 }
 
 /// A window's content pane, which sends to [target]: the device it shows,

@@ -88,7 +88,9 @@ class _Hint extends StatelessWidget {
       DeviceDropTarget(isConnected: false, :final name) =>
         l10n.dropDeviceOffline(name),
       DeviceDropTarget(:final name) => l10n.dropSendTo(name),
-      AllDevicesDropTarget() || PaneDropTarget() => l10n.dropSendToAll(
+      AllDevicesDropTarget() ||
+      PaneDropTarget() ||
+      ReceiverDropTarget() => l10n.dropSendToAll(
         connectedCount,
       ),
     };

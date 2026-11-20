@@ -126,7 +126,7 @@ void main() {
     final subscription = menubar.drags.listen(drags.add);
 
     menubar
-      ..onDragEntered(7, 10, 20, 3, .files)
+      ..onDragEntered(7, 10, 20, 3, .files, false)
       ..onDragUpdated(7, 12, 24)
       ..onDragPerformed(7, ['/tmp/a.txt'], 12, 24)
       ..onDragExited(7);
@@ -165,17 +165,15 @@ void main() {
     final subscription = menubar.drags.listen(drags.add);
 
     menubar
-      ..onDragEntered(7, 10, 20, 1, .link)
+      ..onDragEntered(7, 10, 20, 1, .link, true)
       ..onTextDropped(7, 'https://example.com', true, 12, 24);
     await pumpEventQueue();
 
     expect(
       drags.first,
-      isA<PopoverDragEntered>().having(
-        (drag) => drag.kind,
-        'kind',
-        MenubarDragKind.link,
-      ),
+      isA<PopoverDragEntered>()
+          .having((drag) => drag.kind, 'kind', MenubarDragKind.link)
+          .having((drag) => drag.fromApp, 'fromApp', true),
     );
     expect(
       drags.last,

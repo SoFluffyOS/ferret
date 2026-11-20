@@ -9,6 +9,7 @@ import 'package:ferret/wiring/wiring.dart';
 import 'package:find/find.dart';
 import 'package:handoff/handoff.dart';
 import 'package:iphone/iphone.dart';
+import 'package:local_shelf/local_shelf.dart';
 import 'package:media/media.dart';
 import 'package:messages/messages.dart';
 import 'package:notifications/notifications.dart';
@@ -41,6 +42,7 @@ Future<void> main(List<String> arguments) async {
       PowerFeatureUi(),
       RemoteInputFeatureUi(),
       ScriptingFeatureUi(),
+      ShelfFeatureUi(),
       WakeFeatureUi(),
     ],
     appVersion: '0.1.0',
@@ -49,6 +51,7 @@ Future<void> main(List<String> arguments) async {
       CameraLinks.attach(engine);
       DropPhotoTransfers.attach(engine);
       ScriptRequests.attach(engine);
+      ShelfClips.attach(engine);
       unawaited(
         CliControl.attach(
           engine,

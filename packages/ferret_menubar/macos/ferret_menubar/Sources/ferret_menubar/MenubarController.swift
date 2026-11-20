@@ -24,7 +24,7 @@ final class MenubarController: NSObject, NSPopoverDelegate {
     var onMouseForwarded: ((NSEvent) -> Void)?
     var onVisibilityChanged: ((Bool) -> Void)?
     var onFilesDropped: (([String]) -> Void)?
-    var onDragEntered: ((NSPoint, Int, MenubarDragKind) -> Void)?
+    var onDragEntered: ((NSPoint, Int, MenubarDragKind, Bool) -> Void)?
     var onDragUpdated: ((NSPoint) -> Void)?
     var onDragExited: (() -> Void)?
     var onDragPerformed: (([String], NSPoint) -> Void)?
@@ -191,9 +191,9 @@ final class MenubarController: NSObject, NSPopoverDelegate {
         dragView.autoresizingMask = [.width, .height]
         view.addSubview(dragView)
 
-        dragView.onEntered = { [weak self] point, count, kind in
+        dragView.onEntered = { [weak self] point, count, kind, fromApp in
             self?.dragLeaveTimer?.invalidate()
-            self?.onDragEntered?(point, count, kind)
+            self?.onDragEntered?(point, count, kind, fromApp)
         }
         dragView.onUpdated = { [weak self] point in self?.onDragUpdated?(point) }
         dragView.onExited = { [weak self] in

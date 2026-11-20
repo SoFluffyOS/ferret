@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app_localizations.dart';
@@ -119,6 +120,19 @@ class _Themed extends StatelessWidget {
     );
   }
 
+  /// The shelf and the like sit under the Mac popover's pages, in view on
+  /// every page. Phones and other computers' windows have none yet.
+  Widget? _popoverBar(BuildContext context) {
+    final isMainView =
+        View.of(context).viewId ==
+        WidgetsBinding.instance.platformDispatcher.implicitView?.viewId;
+    if (defaultTargetPlatform != .macOS || !isMainView) {
+      return null;
+    }
+
+    return const PopoverBarFrame();
+  }
+
   @override
   Widget build(BuildContext context) {
     final onTitle = _windowTitle(context);
@@ -127,6 +141,7 @@ class _Themed extends StatelessWidget {
       child: ScreenSizeScope(
         child: FileDropZone(
           menubar: menubar,
+          footer: _popoverBar(context),
           child: PairingPromptListener(
             navigatorKey: navigatorKey,
             child: _UnderTitleBar(

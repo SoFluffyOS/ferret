@@ -1001,8 +1001,9 @@ abstract class MenubarFlutterApi {
 
   /// Something of [kind] dragged into the view [viewId] (the popover's or
   /// the window's), at [x], [y] in logical pixels from its top left.
-  /// [fileCount] is 1 for text and links.
-  void onDragEntered(int viewId, double x, double y, int fileCount, MenubarDragKind kind);
+  /// [fileCount] is 1 for text and links. [fromApp] when the drag started
+  /// in this app, such as an item dragged off the shelf.
+  void onDragEntered(int viewId, double x, double y, int fileCount, MenubarDragKind kind, bool fromApp);
 
   void onDragUpdated(int viewId, double x, double y);
 
@@ -1134,8 +1135,9 @@ abstract class MenubarFlutterApi {
           final double arg_y = args[2]! as double;
           final int arg_fileCount = args[3]! as int;
           final MenubarDragKind arg_kind = args[4]! as MenubarDragKind;
+          final bool arg_fromApp = args[5]! as bool;
           try {
-            api.onDragEntered(arg_viewId, arg_x, arg_y, arg_fileCount, arg_kind);
+            api.onDragEntered(arg_viewId, arg_x, arg_y, arg_fileCount, arg_kind, arg_fromApp);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);

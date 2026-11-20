@@ -244,15 +244,13 @@ final class FileDragSource: NSObject, NSDraggingSource, NSFilePromiseProviderDel
 
     // MARK: - NSDraggingSource
 
-    /// A copy for other apps. Dropped back on Ferret it would send the file
-    /// it just received, so the app itself takes nothing.
+    /// A copy, for other apps and for Ferret's own shelf and device rows.
+    /// Ferret's views refuse it anywhere else (see `DragDestinationView`),
+    /// so a drag let go where it started sends nothing.
     func draggingSession(
         _ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext
     ) -> NSDragOperation {
-        switch context {
-        case .outsideApplication: return .copy
-        default: return []
-        }
+        .copy
     }
 
     /// The drag ate the release Flutter waits for, which would leave its

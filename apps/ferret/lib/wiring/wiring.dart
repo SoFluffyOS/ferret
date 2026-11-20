@@ -7,3 +7,4 @@ export 'package:ferret/wiring/recent_clips_keys.dart';
 export 'package:ferret/wiring/script_events.dart';
 export 'package:ferret/wiring/script_requests.dart';
 export 'package:ferret/wiring/send_command.dart';
+export 'package:ferret/wiring/shelf_clips.dart';

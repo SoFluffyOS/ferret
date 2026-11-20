@@ -10,6 +10,7 @@ import 'package:shell/app/app.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/drop_targets_frame.dart';
+import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
 
 /// On computers: files dragged from the system over the window (or the
@@ -18,9 +19,18 @@ import 'package:shell/view_models/view_models.dart';
 /// sending goes. The zone must sit at its view's top left, since drag
 /// positions are view coordinates.
 class FileDropZone extends StatefulWidget {
-  const FileDropZone({super.key, required this.child, this.menubar});
+  const FileDropZone({
+    super.key,
+    required this.child,
+    this.menubar,
+    this.footer,
+  });
 
   final Widget child;
+
+  /// A bar under [child] that drag tiles never cover, such as the
+  /// popover's shelf, so things can be dropped on it too.
+  final Widget? footer;
 
   /// The macOS menubar, whose popover and icon take the drags there.
   final FerretMenubar? menubar;
@@ -92,11 +102,13 @@ class _FileDropZoneState extends State<FileDropZone> {
   Widget build(BuildContext context) {
     final content = ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Stack(
-        children: [
-          widget.child,
-          const Positioned.fill(child: DropTargetsFrame()),
-        ],
+      child: _withFooter(
+        Stack(
+          children: [
+            widget.child,
+            const Positioned.fill(child: DropTargetsFrame()),
+          ],
+        ),
       ),
     );
     if (!_usesDesktopDrop) {
@@ -116,6 +128,23 @@ class _FileDropZoneState extends State<FileDropZone> {
     );
   }
 
+  Widget _withFooter(Widget content) {
+    final footer = widget.footer;
+    if (footer == null) {
+      return content;
+    }
+
+    return FooterOverlay(
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          Expanded(child: content),
+          footer,
+        ],
+      ),
+    );
+  }
+
   void _onAllowedChanged(bool allowed) {
     final viewId = _viewId;
     if (viewId == null) {
@@ -132,7 +161,12 @@ class _FileDropZoneState extends State<FileDropZone> {
     }
 
     switch (drag) {
-      case PopoverDragEntered(:final position, :final fileCount, :final kind):
+      case PopoverDragEntered(
+        :final position,
+        :final fileCount,
+        :final kind,
+        :final fromApp,
+      ):
         _viewModel.enter(
           position,
           fileCount: fileCount,
@@ -141,6 +175,7 @@ class _FileDropZoneState extends State<FileDropZone> {
             .text => .text,
             .link => .link,
           },
+          fromApp: fromApp,
         );
       case PopoverDragMoved(:final position):
         _viewModel.move(position);
