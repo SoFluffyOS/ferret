@@ -28,7 +28,7 @@ Open the phone in Ferret and click **Photos**.
 
 - The grid shows the newest first, and loads more as you scroll.
 - Thumbnails come from the phone only when a tile shows up on screen. Nothing travels while you aren't looking.
-- Click a photo to see it bigger, then **Save**.
+- Click a photo to see it bigger, then **Save**. Once it's here, **Open** shows it in its app (that's how a video plays) and **Show in folder** finds the file.
 - Click **Select**, pick a few, then **Save 3 photos**.
 
 Saved photos go through the same transfer as [Drop](drop.md): checked end to end, and they pick up where they stopped if the Wi-Fi drops. Activity says **Saved 3 photos from Pixel 7**. Drag that line to Finder, or press Space to look at it.
