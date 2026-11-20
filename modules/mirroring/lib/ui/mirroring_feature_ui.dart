@@ -930,6 +930,7 @@ class MirroringFeatureUi extends FeatureUi {
           ),
           body: l10n.controlAskBody(asking.deviceName),
           category: _controlAskCategory,
+          public: true,
         ),
         null => null,
       });
@@ -952,6 +953,7 @@ class MirroringFeatureUi extends FeatureUi {
         category: _controlledCategory,
         silent: true,
         ongoing: true,
+        public: true,
       ),
       null => null,
     });

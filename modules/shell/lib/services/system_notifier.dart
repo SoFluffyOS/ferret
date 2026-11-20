@@ -228,6 +228,7 @@ class SystemNotifier implements LocalNotifier {
       onlyAlertOnce: notice.progress != null || notice.ongoing,
       ongoing: notice.ongoing,
       autoCancel: !notice.ongoing,
+      visibility: androidVisibility(notice),
       showProgress: notice.progress != null,
       maxProgress: 100,
       progress: ((notice.progress ?? 0) * 100).round(),

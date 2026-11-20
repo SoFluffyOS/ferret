@@ -46,4 +46,40 @@ void main() {
       expect(darwinButton(deny).placeholder, isNull);
     });
   });
+
+  group('Who may read a notice on Android', () {
+    test('a public notice stays readable on a locked or shared screen', () {
+      const ask = LocalNotice(
+        id: 'ask',
+        channel: .incoming,
+        title: 'Let MacBook control Pixel 7?',
+        public: true,
+      );
+
+      expect(androidVisibility(ask), NotificationVisibility.public);
+    });
+
+    test('any other notice is left to its private channel', () {
+      const offer = LocalNotice(
+        id: 'offer',
+        channel: .incoming,
+        title: 'MacBook wants to send you something',
+      );
+
+      expect(androidVisibility(offer), isNull);
+    });
+
+    test('private content is never made public', () {
+      const text = LocalNotice(
+        id: 'text',
+        channel: .incoming,
+        title: 'Anna',
+        body: 'The code is 1234',
+        public: true,
+        private: PrivateContent('pixel', cover: 'New message'),
+      );
+
+      expect(androidVisibility(text), isNull);
+    });
+  });
 }

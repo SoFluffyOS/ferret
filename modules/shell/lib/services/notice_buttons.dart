@@ -38,3 +38,12 @@ DarwinNotificationAction darwinButton(NoticeAction action) {
     ),
   };
 }
+
+/// Who may read [notice] on Android. Android hides a private notice on a
+/// locked phone and, since Android 15, while the screen is shared; null
+/// leaves it to the channel, which is private.
+NotificationVisibility? androidVisibility(LocalNotice notice) =>
+    switch (notice.public && notice.private == null) {
+      true => NotificationVisibility.public,
+      false => null,
+    };

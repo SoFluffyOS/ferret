@@ -68,6 +68,7 @@ class LocalNotice {
     this.progress,
     this.ongoing = false,
     this.private,
+    this.public = false,
   });
 
   /// Unique per notice; showing the same id again updates it.
@@ -96,6 +97,12 @@ class LocalNotice {
   /// Set when the title, body or image say something private, such as a
   /// mirrored notification or a text.
   final PrivateContent? private;
+
+  /// Says nothing private and must stay readable everywhere: in full on a
+  /// locked phone, and while the phone's screen is shared, where Android
+  /// hides the rest. For a question asked during sharing, such as "Let
+  /// MacBook control Pixel?", and "Controlled by MacBook · Stop".
+  final bool public;
 
   /// This notice with [private]'s cover as its title, [body] in place of
   /// the content and no image. Actions stay, so a call can still be
