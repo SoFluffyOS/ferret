@@ -229,4 +229,151 @@ class ShelfLocalizationsEn extends ShelfLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get reachTitle => 'While you drag';
+
+  @override
+  String get springOpen => 'Open on hover';
+
+  @override
+  String get springOpenBody =>
+      'Rest a drag on the menubar icon and Ferret opens with the shelf, after your Mac\'s spring-loading delay.';
+
+  @override
+  String get boxOnDrag => 'Box on drag';
+
+  @override
+  String get boxOnDragBody =>
+      'A small shelf slides in at the side of the screen while you drag files or photos. Hold fn to skip it once.';
+
+  @override
+  String get boxShows => 'Shows';
+
+  @override
+  String get boxShowsTooltip =>
+      'When the box slides in: once your drag nears the side of the screen, or as soon as you start dragging.';
+
+  @override
+  String boxShowsShort(String when) {
+    String _temp0 = intl.Intl.selectLogic(
+      when,
+      {
+        'atEdge': 'At the edge',
+        'other': 'Right away',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boxShowsChoice(String when) {
+    String _temp0 = intl.Intl.selectLogic(
+      when,
+      {
+        'atEdge': 'When I drag to the edge',
+        'other': 'As soon as I drag',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shake => 'Shake to show';
+
+  @override
+  String get shakeBody =>
+      'Shake the pointer while dragging and the shelf shows up right next to it.';
+
+  @override
+  String get sensitivity => 'Sensitivity';
+
+  @override
+  String get sensitivityTooltip =>
+      'How much shaking it takes. High needs the least.';
+
+  @override
+  String sensitivityChoice(String level) {
+    String _temp0 = intl.Intl.selectLogic(
+      level,
+      {
+        'low': 'Low',
+        'normal': 'Normal',
+        'other': 'High',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shiftSummons => 'Hold ⇧ instead';
+
+  @override
+  String get shiftSummonsBody =>
+      'Hold ⇧ while dragging to bring the shelf without shaking.';
+
+  @override
+  String get ignoredTitle => 'Ignore drags from';
+
+  @override
+  String get ignoredNone =>
+      'No apps. Drags from every app can bring the shelf.';
+
+  @override
+  String get ignoredAdd => 'Add app';
+
+  @override
+  String get ignoredAddTooltip =>
+      'Pick an open app whose drags never bring the shelf.';
+
+  @override
+  String ignoredRemove(String app) {
+    return 'Stop ignoring $app';
+  }
+
+  @override
+  String get iconDropTitle => 'Dropping on the icon';
+
+  @override
+  String get iconDropTooltip =>
+      'What happens when you let go on the menubar icon without waiting for it to open.';
+
+  @override
+  String iconDropShort(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Last device',
+        'shelf': 'Shelf',
+        'other': 'Ask',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String iconDropChoice(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Send to my last device',
+        'shelf': 'Put it on the shelf',
+        'other': 'Ask every time',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String iconDropBody(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Files go to your only connected device, or the one you used last, with 3 seconds to undo. Text and links go on the shelf.',
+        'shelf': 'Everything you drop stays on this Mac, on the shelf.',
+        'other': 'Ferret opens as soon as your drag reaches the icon, so you pick a device or the shelf.',
+      },
+    );
+    return '$_temp0';
+  }
 }

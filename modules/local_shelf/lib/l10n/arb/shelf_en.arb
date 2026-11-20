@@ -188,5 +188,144 @@
   "@summaryDropped": {
     "description": "Settings row value: the shelf keeps only what is dropped on it."
   },
-  "back": "Back"
+  "back": "Back",
+  "reachTitle": "While you drag",
+  "@reachTitle": {
+    "description": "Heading in Settings → Shelf over the ways to reach the shelf while dragging something in another app."
+  },
+  "springOpen": "Open on hover",
+  "@springOpen": {
+    "description": "Switch in Settings → Shelf: a drag resting on the menubar icon opens the popover with the shelf. Keep it short."
+  },
+  "springOpenBody": "Rest a drag on the menubar icon and Ferret opens with the shelf, after your Mac's spring-loading delay.",
+  "@springOpenBody": {
+    "description": "Under the Open on hover switch."
+  },
+  "boxOnDrag": "Box on drag",
+  "@boxOnDrag": {
+    "description": "Switch in Settings → Shelf: a small floating shelf slides in from the side of the screen while files are dragged. Keep it short."
+  },
+  "boxOnDragBody": "A small shelf slides in at the side of the screen while you drag files or photos. Hold fn to skip it once.",
+  "@boxOnDragBody": {
+    "description": "Under the Box on drag switch."
+  },
+  "boxShows": "Shows",
+  "@boxShows": {
+    "description": "Row title in Settings → Shelf: when the floating shelf slides in."
+  },
+  "boxShowsTooltip": "When the box slides in: once your drag nears the side of the screen, or as soon as you start dragging.",
+  "@boxShowsTooltip": {
+    "description": "Tooltip of the Shows menu."
+  },
+  "boxShowsShort": "{when, select, atEdge{At the edge} other{Right away}}",
+  "@boxShowsShort": {
+    "description": "Label of the Shows menu button. Keep it short.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "boxShowsChoice": "{when, select, atEdge{When I drag to the edge} other{As soon as I drag}}",
+  "@boxShowsChoice": {
+    "description": "Menu entries: when the floating shelf slides in.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "shake": "Shake to show",
+  "@shake": {
+    "description": "Switch in Settings → Shelf: shaking the pointer while dragging brings the floating shelf next to it. Keep it short."
+  },
+  "shakeBody": "Shake the pointer while dragging and the shelf shows up right next to it.",
+  "@shakeBody": {
+    "description": "Under the Shake to show switch."
+  },
+  "sensitivity": "Sensitivity",
+  "@sensitivity": {
+    "description": "Row title in Settings → Shelf: how hard the shake must be."
+  },
+  "sensitivityTooltip": "How much shaking it takes. High needs the least.",
+  "@sensitivityTooltip": {
+    "description": "Tooltip of the Sensitivity menu."
+  },
+  "sensitivityChoice": "{level, select, low{Low} normal{Normal} other{High}}",
+  "@sensitivityChoice": {
+    "description": "Shake sensitivity levels, in the menu and on its button.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftSummons": "Hold ⇧ instead",
+  "@shiftSummons": {
+    "description": "Switch in Settings → Shelf: holding Shift while dragging brings the floating shelf, for people who can't shake. Keep it short."
+  },
+  "shiftSummonsBody": "Hold ⇧ while dragging to bring the shelf without shaking.",
+  "@shiftSummonsBody": {
+    "description": "Under the Hold ⇧ instead switch."
+  },
+  "ignoredTitle": "Ignore drags from",
+  "@ignoredTitle": {
+    "description": "Heading over the apps whose drags never bring the floating shelf."
+  },
+  "ignoredNone": "No apps. Drags from every app can bring the shelf.",
+  "@ignoredNone": {
+    "description": "In the ignored apps card while it is empty."
+  },
+  "ignoredAdd": "Add app",
+  "@ignoredAdd": {
+    "description": "Button that opens a menu of running apps to ignore. Keep it short."
+  },
+  "ignoredAddTooltip": "Pick an open app whose drags never bring the shelf.",
+  "@ignoredAddTooltip": {
+    "description": "Tooltip of the Add app button."
+  },
+  "ignoredRemove": "Stop ignoring {app}",
+  "@ignoredRemove": {
+    "description": "Tooltip and screen reader label of the button that takes an app off the ignored list.",
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "iconDropTitle": "Dropping on the icon",
+  "@iconDropTitle": {
+    "description": "Row title in Settings → Shelf: what a quick drop on the menubar icon does."
+  },
+  "iconDropTooltip": "What happens when you let go on the menubar icon without waiting for it to open.",
+  "@iconDropTooltip": {
+    "description": "Tooltip of the Dropping on the icon menu."
+  },
+  "iconDropShort": "{mode, select, sendToLast{Last device} shelf{Shelf} other{Ask}}",
+  "@iconDropShort": {
+    "description": "Label of the Dropping on the icon menu button. Keep it short.",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "iconDropChoice": "{mode, select, sendToLast{Send to my last device} shelf{Put it on the shelf} other{Ask every time}}",
+  "@iconDropChoice": {
+    "description": "Menu entries: what a quick drop on the menubar icon does.",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "iconDropBody": "{mode, select, sendToLast{Files go to your only connected device, or the one you used last, with 3 seconds to undo. Text and links go on the shelf.} shelf{Everything you drop stays on this Mac, on the shelf.} other{Ferret opens as soon as your drag reaches the icon, so you pick a device or the shelf.}}",
+  "@iconDropBody": {
+    "description": "Under the Dropping on the icon row, for the choice made.",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  }
 }

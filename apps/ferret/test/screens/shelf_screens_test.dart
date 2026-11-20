@@ -1,7 +1,8 @@
 // The shelf box at the bottom of the Mac popover: empty, with files, a
 // phone photo, text and a link, with a selection, under the pointer, while
 // something is dragged over it, with a missing file, with previews hidden,
-// and its list page. Renders into temp/screens as `shelf_<name>_*.png`.
+// its list page, the floating panel a drag brings over other apps, and
+// Settings → Shelf with the ways to reach it while dragging. Renders into temp/screens as `shelf_<name>_*.png`.
 // Run from apps/ferret:
 //
 //   fvm flutter test test/screens/shelf_screens_test.dart
@@ -12,6 +13,7 @@ library;
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +23,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_shelf/local_shelf.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:shell/shell.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
@@ -86,7 +89,67 @@ Future<void> _fill(WidgetTester tester, ShelfStore store) async {
 }
 
 ShelfViewModel _viewModel(WidgetTester tester) =>
-    tester.element(find.byType(ShelfBoxFrame)).read<ShelfViewModel>();
+    tester.element(find.byType(ShelfBoxFrame).first).read<ShelfViewModel>();
+
+/// The floating panel as it shows over another app: its size, its corner
+/// and the system's shadow, on a plain desktop.
+class _PanelPreview extends StatelessWidget {
+  const _PanelPreview(this.viewModel);
+
+  final ShelfViewModel viewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: const Color(0xFF7A8794),
+      child: Center(
+        child: Container(
+          width: ShelfPanelFrame.size.width,
+          height: ShelfPanelFrame.size.height,
+          clipBehavior: .antiAlias,
+          decoration: ShapeDecoration(
+            shape: Corners.shape(ShelfPanelFrame.radius),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 24,
+                offset: Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ChangeNotifierProvider.value(
+            value: viewModel,
+            child: ShelfPanelFrame(onOpenList: () {}, onHover: (_) {}),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _openPanel(WidgetTester tester, ScreenRig rig) async {
+  await rig.settle(tester);
+  await rig.open(tester, _PanelPreview(_viewModel(tester)));
+}
+
+Future<void> _openSettings(
+  WidgetTester tester,
+  ScreenRig rig, {
+  String at = 'While you drag',
+}) async {
+  await rig.open(tester, const SettingsGroupPage(group: .clipboard));
+  await tester.scrollUntilVisible(
+    find.text(at),
+    200,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await rig.settle(tester);
+  await tester.drag(find.byType(Scrollable).last, const Offset(0, -2000));
+  await rig.settle(tester);
+  final top = tester.getTopLeft(find.text(at)).dy;
+  await tester.drag(find.byType(Scrollable).last, Offset(0, 120 - top));
+  await rig.settle(tester);
+}
 
 Finder _tile(String label) => find.byWidgetPredicate(
   (widget) => widget is ShelfTile && widget.tooltip == label,
@@ -160,6 +223,34 @@ final _screens = <String, _Script>{
   'hidden_list': (tester, rig, store) async {
     await _fill(tester, store);
     await _openList(tester, rig);
+  },
+  'panel_empty': (tester, rig, store) => _openPanel(tester, rig),
+  'panel_items': (tester, rig, store) async {
+    await _fill(tester, store);
+    await _openPanel(tester, rig);
+  },
+  'panel_drop_over': (tester, rig, store) async {
+    await _fill(tester, store);
+    await _openPanel(tester, rig);
+    _viewModel(tester).hover(over: true);
+  },
+  'settings': (tester, rig, store) => _openSettings(tester, rig),
+  'settings_all_on': (tester, rig, store) async {
+    final settings = ShelfSettings(
+      ShellScope.read(
+        tester.element(find.byType(ShelfBoxFrame).first),
+      ).featureContext.engine.settings,
+    );
+    await tester.runAsync(() async {
+      await settings.setBoxOnDrag(true);
+      await settings.setShiftSummons(true);
+      await settings.setShakeSensitivity(.high);
+      await settings.setIgnoredApps(const [
+        IgnoredApp(id: 'com.figma.Desktop', name: 'Figma'),
+        IgnoredApp(id: 'com.apple.Safari', name: 'Safari'),
+      ]);
+    });
+    await _openSettings(tester, rig, at: 'Shake to show');
   },
 };
 

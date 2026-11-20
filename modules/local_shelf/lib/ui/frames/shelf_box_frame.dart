@@ -21,10 +21,23 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 /// selection. While previews are hidden here it shows only how many
 /// things it holds.
 class ShelfBoxFrame extends StatefulWidget {
-  const ShelfBoxFrame({super.key, required this.onOpenList});
+  const ShelfBoxFrame({
+    super.key,
+    required this.onOpenList,
+    this.padding,
+    this.expands = false,
+  });
 
   /// Opens the shelf as a list, with Keep copies.
   final VoidCallback onOpenList;
+
+  /// Around the box; the page's side inset when null, with a little room
+  /// below.
+  final EdgeInsetsGeometry? padding;
+
+  /// The box takes all the height it is given, such as in the floating
+  /// panel, with what it holds centred.
+  final bool expands;
 
   /// From this many items on, Clear asks once more.
   static const confirmsFrom = 6;
@@ -147,6 +160,10 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     final box = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
       constraints: BoxConstraints(minHeight: ShelfBoxFrame.compactHeight),
+      alignment: switch (widget.expands) {
+        true => Alignment.center,
+        false => null,
+      },
       decoration: ShapeDecoration(
         color: switch (isDropOver) {
           true => palette.accent.withValues(alpha: 0.12),
@@ -161,25 +178,29 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     return ColoredBox(
       color: palette.background,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(side, 0, side, Spacing.d8),
+        padding:
+            widget.padding ?? EdgeInsets.fromLTRB(side, 0, side, Spacing.d8),
         child: DropReceiverRegion(
           receiver: viewModel,
           child: Semantics(
             container: true,
             label: l10n.title,
             child: Column(
-              mainAxisSize: .min,
+              mainAxisSize: switch (widget.expands) {
+                true => .max,
+                false => .min,
+              },
               crossAxisAlignment: .stretch,
               children: [
                 _header(context, viewModel, items, selected, isHidden),
-                switch (items.isEmpty && !isDropOver) {
+                _fill(switch (items.isEmpty && !isDropOver) {
                   true => DashedOutline(
                     radius: ShelfBoxFrame.radius,
                     color: palette.mutedText.withValues(alpha: 0.45),
                     child: box,
                   ),
                   false => box,
-                },
+                }),
               ],
             ),
           ),
@@ -187,6 +208,11 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       ),
     );
   }
+
+  Widget _fill(Widget box) => switch (widget.expands) {
+    true => Expanded(child: box),
+    false => box,
+  };
 
   /// "Shelf · 5 items", with Clear and the list at the end.
   Widget _header(

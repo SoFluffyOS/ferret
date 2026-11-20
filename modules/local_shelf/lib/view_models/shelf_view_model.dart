@@ -50,6 +50,10 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
   Set<String> _selected = const {};
   bool _isDropOver = false;
   int _openLists = 0;
+  final StreamController<void> _taken = .broadcast();
+
+  /// Fires each time something dropped was kept.
+  Stream<void> get taken => _taken.stream;
 
   static bool _always(String _) => true;
   static String _sameName(String deviceId) => deviceId;
@@ -148,6 +152,7 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
     }
 
     await store.keepFiles(paths, source: .dropped);
+    _taken.add(null);
     return true;
   }
 
@@ -164,6 +169,10 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
       isLink: isLink || ShelfNames.isWebAddress(text),
       source: .dropped,
     );
+    if (item != null) {
+      _taken.add(null);
+    }
+
     return item != null;
   }
 
@@ -337,6 +346,7 @@ class ShelfViewModel extends ChangeNotifier implements DropReceiver {
 
   @override
   void dispose() {
+    unawaited(_taken.close());
     unawaited(_changes?.cancel());
     super.dispose();
   }

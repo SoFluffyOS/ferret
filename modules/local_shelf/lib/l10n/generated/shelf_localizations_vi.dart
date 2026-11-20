@@ -225,4 +225,150 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get back => 'Quay lại';
+
+  @override
+  String get reachTitle => 'Khi bạn kéo';
+
+  @override
+  String get springOpen => 'Mở khi giữ chuột';
+
+  @override
+  String get springOpenBody =>
+      'Giữ một thao tác kéo trên biểu tượng ở thanh menu, Ferret sẽ mở kèm kệ tạm, theo độ trễ nạp lò xo của máy Mac.';
+
+  @override
+  String get boxOnDrag => 'Hộp khi kéo';
+
+  @override
+  String get boxOnDragBody =>
+      'Một kệ tạm nhỏ trượt vào ở cạnh màn hình khi bạn kéo tệp hoặc ảnh. Giữ fn để bỏ qua một lần.';
+
+  @override
+  String get boxShows => 'Hiện khi';
+
+  @override
+  String get boxShowsTooltip =>
+      'Khi nào hộp trượt vào: khi thao tác kéo tới gần cạnh màn hình, hoặc ngay khi bạn bắt đầu kéo.';
+
+  @override
+  String boxShowsShort(String when) {
+    String _temp0 = intl.Intl.selectLogic(
+      when,
+      {
+        'atEdge': 'Ở cạnh',
+        'other': 'Ngay lập tức',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boxShowsChoice(String when) {
+    String _temp0 = intl.Intl.selectLogic(
+      when,
+      {
+        'atEdge': 'Khi tôi kéo tới cạnh',
+        'other': 'Ngay khi tôi kéo',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shake => 'Lắc để hiện';
+
+  @override
+  String get shakeBody =>
+      'Lắc con trỏ khi đang kéo, kệ tạm sẽ hiện ngay bên cạnh.';
+
+  @override
+  String get sensitivity => 'Độ nhạy';
+
+  @override
+  String get sensitivityTooltip => 'Cần lắc nhiều hay ít. Cao là ít nhất.';
+
+  @override
+  String sensitivityChoice(String level) {
+    String _temp0 = intl.Intl.selectLogic(
+      level,
+      {
+        'low': 'Thấp',
+        'normal': 'Vừa',
+        'other': 'Cao',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shiftSummons => 'Giữ ⇧ thay vì lắc';
+
+  @override
+  String get shiftSummonsBody =>
+      'Giữ ⇧ khi đang kéo để gọi kệ tạm mà không cần lắc.';
+
+  @override
+  String get ignoredTitle => 'Bỏ qua thao tác kéo từ';
+
+  @override
+  String get ignoredNone =>
+      'Chưa có ứng dụng nào. Kéo từ mọi ứng dụng đều có thể gọi kệ tạm.';
+
+  @override
+  String get ignoredAdd => 'Thêm ứng dụng';
+
+  @override
+  String get ignoredAddTooltip =>
+      'Chọn một ứng dụng đang mở mà thao tác kéo từ đó không bao giờ gọi kệ tạm.';
+
+  @override
+  String ignoredRemove(String app) {
+    return 'Thôi bỏ qua $app';
+  }
+
+  @override
+  String get iconDropTitle => 'Thả lên biểu tượng';
+
+  @override
+  String get iconDropTooltip =>
+      'Điều gì xảy ra khi bạn thả lên biểu tượng ở thanh menu mà không chờ nó mở.';
+
+  @override
+  String iconDropShort(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Thiết bị gần nhất',
+        'shelf': 'Kệ tạm',
+        'other': 'Hỏi',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String iconDropChoice(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Gửi đến thiết bị dùng gần nhất',
+        'shelf': 'Để lên kệ tạm',
+        'other': 'Luôn hỏi',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String iconDropBody(String mode) {
+    String _temp0 = intl.Intl.selectLogic(
+      mode,
+      {
+        'sendToLast': 'Tệp được gửi đến thiết bị duy nhất đang kết nối, hoặc thiết bị bạn dùng gần nhất, với 3 giây để hoàn tác. Văn bản và liên kết được để lên kệ tạm.',
+        'shelf': 'Mọi thứ bạn thả đều ở lại máy Mac này, trên kệ tạm.',
+        'other': 'Ferret mở ngay khi bạn kéo tới biểu tượng, để bạn chọn thiết bị hoặc kệ tạm.',
+      },
+    );
+    return '$_temp0';
+  }
 }

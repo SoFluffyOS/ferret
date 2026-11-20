@@ -355,6 +355,162 @@ abstract class ShelfLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// Heading in Settings → Shelf over the ways to reach the shelf while dragging something in another app.
+  ///
+  /// In en, this message translates to:
+  /// **'While you drag'**
+  String get reachTitle;
+
+  /// Switch in Settings → Shelf: a drag resting on the menubar icon opens the popover with the shelf. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on hover'**
+  String get springOpen;
+
+  /// Under the Open on hover switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest a drag on the menubar icon and Ferret opens with the shelf, after your Mac\'s spring-loading delay.'**
+  String get springOpenBody;
+
+  /// Switch in Settings → Shelf: a small floating shelf slides in from the side of the screen while files are dragged. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Box on drag'**
+  String get boxOnDrag;
+
+  /// Under the Box on drag switch.
+  ///
+  /// In en, this message translates to:
+  /// **'A small shelf slides in at the side of the screen while you drag files or photos. Hold fn to skip it once.'**
+  String get boxOnDragBody;
+
+  /// Row title in Settings → Shelf: when the floating shelf slides in.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows'**
+  String get boxShows;
+
+  /// Tooltip of the Shows menu.
+  ///
+  /// In en, this message translates to:
+  /// **'When the box slides in: once your drag nears the side of the screen, or as soon as you start dragging.'**
+  String get boxShowsTooltip;
+
+  /// Label of the Shows menu button. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'{when, select, atEdge{At the edge} other{Right away}}'**
+  String boxShowsShort(String when);
+
+  /// Menu entries: when the floating shelf slides in.
+  ///
+  /// In en, this message translates to:
+  /// **'{when, select, atEdge{When I drag to the edge} other{As soon as I drag}}'**
+  String boxShowsChoice(String when);
+
+  /// Switch in Settings → Shelf: shaking the pointer while dragging brings the floating shelf next to it. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake to show'**
+  String get shake;
+
+  /// Under the Shake to show switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake the pointer while dragging and the shelf shows up right next to it.'**
+  String get shakeBody;
+
+  /// Row title in Settings → Shelf: how hard the shake must be.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitivity'**
+  String get sensitivity;
+
+  /// Tooltip of the Sensitivity menu.
+  ///
+  /// In en, this message translates to:
+  /// **'How much shaking it takes. High needs the least.'**
+  String get sensitivityTooltip;
+
+  /// Shake sensitivity levels, in the menu and on its button.
+  ///
+  /// In en, this message translates to:
+  /// **'{level, select, low{Low} normal{Normal} other{High}}'**
+  String sensitivityChoice(String level);
+
+  /// Switch in Settings → Shelf: holding Shift while dragging brings the floating shelf, for people who can't shake. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold ⇧ instead'**
+  String get shiftSummons;
+
+  /// Under the Hold ⇧ instead switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold ⇧ while dragging to bring the shelf without shaking.'**
+  String get shiftSummonsBody;
+
+  /// Heading over the apps whose drags never bring the floating shelf.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore drags from'**
+  String get ignoredTitle;
+
+  /// In the ignored apps card while it is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No apps. Drags from every app can bring the shelf.'**
+  String get ignoredNone;
+
+  /// Button that opens a menu of running apps to ignore. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Add app'**
+  String get ignoredAdd;
+
+  /// Tooltip of the Add app button.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick an open app whose drags never bring the shelf.'**
+  String get ignoredAddTooltip;
+
+  /// Tooltip and screen reader label of the button that takes an app off the ignored list.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop ignoring {app}'**
+  String ignoredRemove(String app);
+
+  /// Row title in Settings → Shelf: what a quick drop on the menubar icon does.
+  ///
+  /// In en, this message translates to:
+  /// **'Dropping on the icon'**
+  String get iconDropTitle;
+
+  /// Tooltip of the Dropping on the icon menu.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens when you let go on the menubar icon without waiting for it to open.'**
+  String get iconDropTooltip;
+
+  /// Label of the Dropping on the icon menu button. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode, select, sendToLast{Last device} shelf{Shelf} other{Ask}}'**
+  String iconDropShort(String mode);
+
+  /// Menu entries: what a quick drop on the menubar icon does.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode, select, sendToLast{Send to my last device} shelf{Put it on the shelf} other{Ask every time}}'**
+  String iconDropChoice(String mode);
+
+  /// Under the Dropping on the icon row, for the choice made.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode, select, sendToLast{Files go to your only connected device, or the one you used last, with 3 seconds to undo. Text and links go on the shelf.} shelf{Everything you drop stays on this Mac, on the shelf.} other{Ferret opens as soon as your drag reaches the icon, so you pick a device or the shelf.}}'**
+  String iconDropBody(String mode);
 }
 
 class _ShelfLocalizationsDelegate

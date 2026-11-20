@@ -1625,6 +1625,44 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   @override
   String get back => pseudo(super.back);
   @override
+  String get reachTitle => pseudo(super.reachTitle);
+  @override
+  String get springOpen => pseudo(super.springOpen);
+  @override
+  String get springOpenBody => pseudo(super.springOpenBody);
+  @override
+  String get boxOnDrag => pseudo(super.boxOnDrag);
+  @override
+  String get boxOnDragBody => pseudo(super.boxOnDragBody);
+  @override
+  String get boxShows => pseudo(super.boxShows);
+  @override
+  String get boxShowsTooltip => pseudo(super.boxShowsTooltip);
+  @override
+  String get shake => pseudo(super.shake);
+  @override
+  String get shakeBody => pseudo(super.shakeBody);
+  @override
+  String get sensitivity => pseudo(super.sensitivity);
+  @override
+  String get sensitivityTooltip => pseudo(super.sensitivityTooltip);
+  @override
+  String get shiftSummons => pseudo(super.shiftSummons);
+  @override
+  String get shiftSummonsBody => pseudo(super.shiftSummonsBody);
+  @override
+  String get ignoredTitle => pseudo(super.ignoredTitle);
+  @override
+  String get ignoredNone => pseudo(super.ignoredNone);
+  @override
+  String get ignoredAdd => pseudo(super.ignoredAdd);
+  @override
+  String get ignoredAddTooltip => pseudo(super.ignoredAddTooltip);
+  @override
+  String get iconDropTitle => pseudo(super.iconDropTitle);
+  @override
+  String get iconDropTooltip => pseudo(super.iconDropTooltip);
+  @override
   String barCount(int count) => pseudo(super.barCount(count));
   @override
   String barHidden(int count) => pseudo(super.barHidden(count));
@@ -1649,6 +1687,21 @@ class PseudoShelfLocalizations extends ShelfLocalizationsEn {
   String copiesForShort(String keep) => pseudo(super.copiesForShort(keep));
   @override
   String copiesForChoice(String keep) => pseudo(super.copiesForChoice(keep));
+  @override
+  String boxShowsShort(String when) => pseudo(super.boxShowsShort(when));
+  @override
+  String boxShowsChoice(String when) => pseudo(super.boxShowsChoice(when));
+  @override
+  String sensitivityChoice(String level) =>
+      pseudo(super.sensitivityChoice(level));
+  @override
+  String ignoredRemove(String app) => pseudo(super.ignoredRemove(app));
+  @override
+  String iconDropShort(String mode) => pseudo(super.iconDropShort(mode));
+  @override
+  String iconDropChoice(String mode) => pseudo(super.iconDropChoice(mode));
+  @override
+  String iconDropBody(String mode) => pseudo(super.iconDropBody(mode));
 }
 
 class PseudoMediaLocalizations extends MediaLocalizationsEn {
@@ -4533,6 +4586,14 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get doctorFixReachOverVpn => pseudo(super.doctorFixReachOverVpn);
   @override
+  String get iconDropChoose => pseudo(super.iconDropChoose);
+  @override
+  String get iconDropShelf => pseudo(super.iconDropShelf);
+  @override
+  String get iconDropKept => pseudo(super.iconDropKept);
+  @override
+  String get iconDropUndo => pseudo(super.iconDropUndo);
+  @override
   String pairExpiresIn(int minutes) => pseudo(super.pairExpiresIn(minutes));
   @override
   String pairSuccess(String device) => pseudo(super.pairSuccess(device));
@@ -4915,6 +4976,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String doctorVpnReachOff(String device) =>
       pseudo(super.doctorVpnReachOff(device));
+  @override
+  String iconDropSending(int count, String name) =>
+      pseudo(super.iconDropSending(count, name));
 }
 
 class PseudoWakeLocalizations extends WakeLocalizationsEn {

@@ -10,6 +10,7 @@ import 'package:local_shelf/models/models.dart';
 import 'package:local_shelf/services/services.dart';
 import 'package:local_shelf/ui/frames/frames.dart';
 import 'package:local_shelf/ui/pages/pages.dart';
+import 'package:local_shelf/ui/shelf_reach_host.dart';
 import 'package:local_shelf/view_models/view_models.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:path/path.dart' as p;
@@ -32,6 +33,8 @@ class ShelfFeatureUi extends FeatureUi {
   final bool Function(String deviceId)? showsPreviewsFrom;
 
   ShelfViewModel? _viewModel;
+  ShelfReachViewModel? _reachViewModel;
+  ShelfReachHost? _reach;
   StreamSubscription<String>? _settings;
 
   @override
@@ -63,6 +66,12 @@ class ShelfFeatureUi extends FeatureUi {
       settings: ShelfSettings(engine.settings),
     );
     _viewModel = viewModel;
+    context.dropKeeper = viewModel;
+    _reachViewModel = ShelfReachViewModel(
+      store: engine.settings,
+      runningApps: context.systemDrags?.runningApps,
+    );
+    await _startReach(context, viewModel);
     await _settings?.cancel();
     _settings = engine.settings.changes.listen(
       (_) => viewModel.previewsChanged(),
@@ -75,6 +84,37 @@ class ShelfFeatureUi extends FeatureUi {
     await shelf.load();
     await feature.tidyOnLaunch();
     viewModel.attach(shelf);
+  }
+
+  /// The shelf over other apps while dragging, on a Mac.
+  Future<void> _startReach(
+    FeatureContext context,
+    ShelfViewModel viewModel,
+  ) async {
+    final drags = context.systemDrags;
+    final panel = context.floatingPanel;
+    if (drags == null || panel == null || defaultTargetPlatform != .macOS) {
+      return;
+    }
+
+    await _reach?.stop();
+    final reach = ShelfReachHost(
+      drags: drags,
+      panel: panel,
+      settings: ShelfSettings(context.engine.settings),
+      viewModel: viewModel,
+      onOpenList: () => unawaited(_openList(context, viewModel)),
+    );
+    _reach = reach;
+    await reach.start();
+  }
+
+  Future<void> _openList(
+    FeatureContext context,
+    ShelfViewModel viewModel,
+  ) async {
+    await context.reveal();
+    await context.push<void>(ShelfPage(viewModel: viewModel));
   }
 
   @override
@@ -97,9 +137,19 @@ class ShelfFeatureUi extends FeatureUi {
       FeatureSettings(
         group: settingsGroup,
         title: l10n.title,
-        child: ChangeNotifierProvider.value(
-          value: viewModel,
-          child: const ShelfCopiesFrame(),
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: viewModel),
+            if (_reachViewModel case final reach?)
+              ChangeNotifierProvider.value(value: reach),
+          ],
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              const ShelfCopiesFrame(),
+              if (_reachViewModel != null) const ShelfReachFrame(),
+            ],
+          ),
         ),
         summary: switch (viewModel.keepsCopies) {
           true => l10n.summaryCopies,
