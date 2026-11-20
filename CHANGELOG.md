@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- 📥 **Shelf**: a bar at the bottom of the Mac popover to put things down for a moment. Drop files, photos, text or links on it, and what you copy lands there too. Drag the stack to take everything out, one thumbnail to take just that one, or drop it on a device to send it. It never leaves your computer. See [Shelf](docs/features/shelf.md).
 - 🖱️ **Drag photos and clips into any app**: on a Mac, drag a phone photo out of **Photos**, or a clip out of **Recent clips**, and drop it in Mail, Slack, Finder or wherever you want it. Works from the popover too, where your phone's page now has a **Photos** button. The photo comes from the phone only once you drop it.
 - 🎵 **Now playing on the device's page**: while something plays on your phone or computer, its page has a **Now playing** button with play, pause, skip and **Continue here**.
 - 🧭 **Coming from another app?** A new guide lists the features you used every day under the names you know, where they live in Ferret, and what isn't there yet. See [Coming from another app](docs/getting-started/coming-from-another-app.md).
