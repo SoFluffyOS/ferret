@@ -204,6 +204,7 @@ final _screens = <String, _Script>{
       await Future<void>.delayed(const Duration(milliseconds: 100));
     });
     await rig.open(tester, DevicePage(deviceId: otherId));
+    await rig.settle(tester);
     final hint = find.text('⌃⌥→ to the next computer, ⌃⌥⎋ back here').first;
     await tester.scrollUntilVisible(
       hint,
@@ -215,10 +216,7 @@ final _screens = <String, _Script>{
           )
           .first,
     );
-    await tester.drag(
-      find.ancestor(of: hint, matching: find.byType(Scrollable)).first,
-      const Offset(0, -300),
-    );
+    await Scrollable.ensureVisible(tester.element(hint), alignment: 0.5);
     await rig.settle(tester);
   },
   'away': _goAway,
