@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:ferret_menubar/src/messages.g.dart';
@@ -23,6 +24,10 @@ class FerretMenubar implements MenubarFlutterApi {
   final StreamController<PopoverDrag> _drags = .broadcast();
   final StreamController<MenubarWindowEvent> _windowEvents = .broadcast();
   final StreamController<int> _pictureWindowClosed = .broadcast();
+
+  /// How each promised file still out on a drag is fetched, by its id.
+  final Map<String, Future<String?> Function()> _promises = {};
+  var _promiseCount = 0;
 
   bool get isSupported => Platform.isMacOS;
 
@@ -226,6 +231,64 @@ class FerretMenubar implements MenubarFlutterApi {
     return _api.startFileDrag(viewId, paths);
   }
 
+  /// Drags files that aren't on this Mac yet out of the view [viewId],
+  /// like [startFileDrag]. Each is a name, a picture to drag, and how to
+  /// get a local copy: that runs only once the file is dropped somewhere,
+  /// and the copy is then copied there. False when it couldn't start.
+  Future<bool> startPromisedFileDrag(
+    int viewId,
+    List<PromisedDragFile> files,
+  ) async {
+    if (!isSupported || files.isEmpty) {
+      return false;
+    }
+
+    final promised = [
+      for (final file in files)
+        MenubarPromisedFile(
+          id: _promise(file.fetch),
+          name: file.name,
+          image: file.image,
+        ),
+    ];
+    final started = await _api.startPromisedFileDrag(viewId, promised);
+    if (!started) {
+      for (final file in promised) {
+        _promises.remove(file.id);
+      }
+    }
+
+    return started;
+  }
+
+  /// Drags [text] out of the view [viewId] to another app, like
+  /// [startFileDrag]; a link goes as a web address too. False when it
+  /// couldn't start, or where there is no menubar.
+  Future<bool> startTextDrag(
+    int viewId,
+    String text, {
+    bool isLink = false,
+  }) async {
+    if (!isSupported || text.isEmpty) {
+      return false;
+    }
+
+    return _api.startTextDrag(viewId, text, isLink);
+  }
+
+  String _promise(Future<String?> Function() fetch) {
+    // A drag cancelled before it landed never asks: keep only the latest.
+    if (_promises.length >= _keptPromises) {
+      _promises.remove(_promises.keys.first);
+    }
+
+    final id = 'promise.${++_promiseCount}';
+    _promises[id] = fetch;
+    return id;
+  }
+
+  static const _keptPromises = 64;
+
   /// Shows the files at [paths] in Quick Look, or closes it when open.
   Future<void> toggleQuickLook(List<String> paths) =>
       _call(() => _api.toggleQuickLook(paths));
@@ -297,4 +360,33 @@ class FerretMenubar implements MenubarFlutterApi {
 
   @override
   void onPictureWindowClosed(int viewId) => _pictureWindowClosed.add(viewId);
+
+  @override
+  Future<String?> onPromisedFileWanted(String id) async {
+    final fetch = _promises.remove(id);
+    if (fetch == null) {
+      return null;
+    }
+
+    try {
+      return await fetch();
+    } on Object {
+      return null;
+    }
+  }
+}
+
+/// A file to drag out that is fetched only once it is dropped, such as a
+/// photo still on a phone.
+class PromisedDragFile {
+  const PromisedDragFile({required this.name, required this.fetch, this.image});
+
+  /// Its name where it lands, such as "IMG_2041.jpg".
+  final String name;
+
+  /// A picture to drag, such as a thumbnail.
+  final Uint8List? image;
+
+  /// The path of a local copy, or null when there is none to be had.
+  final Future<String?> Function() fetch;
 }

@@ -45,6 +45,22 @@ class MenubarShortcut {
   bool shift;
 }
 
+/// A file that isn't on this Mac yet, such as a photo on a phone: dragged
+/// out, the app it lands on asks for it, and only then is it fetched.
+class MenubarPromisedFile {
+  MenubarPromisedFile({required this.id, required this.name, this.image});
+
+  /// What [MenubarFlutterApi.onPromisedFileWanted] asks for.
+  String id;
+
+  /// The file's name where it lands, such as "IMG_2041.jpg".
+  String name;
+
+  /// A picture of it to drag, such as a thumbnail; the icon of its type
+  /// when null.
+  Uint8List? image;
+}
+
 /// What the menubar icon says, one at a time.
 enum MenubarIconState {
   /// At least one device is connected: the plain glyph.
@@ -196,6 +212,15 @@ abstract class MenubarHostApi {
   /// when no press in that view is under way.
   bool startFileDrag(int viewId, List<String> paths);
 
+  /// Starts dragging [files] that aren't here yet out of the view
+  /// [viewId], like [startFileDrag]. Where they land, each is asked for
+  /// with [MenubarFlutterApi.onPromisedFileWanted] and copied there.
+  bool startPromisedFileDrag(int viewId, List<MenubarPromisedFile> files);
+
+  /// Starts dragging [text] out of the view [viewId], like
+  /// [startFileDrag]: plain text, and a web link as well when [isLink].
+  bool startTextDrag(int viewId, String text, bool isLink);
+
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   void toggleQuickLook(List<String> paths);
@@ -247,4 +272,9 @@ abstract class MenubarFlutterApi {
 
   /// The picture window closed and its Flutter view [viewId] is gone.
   void onPictureWindowClosed(int viewId);
+
+  /// A promised file [id] was dropped: the path of a local copy to copy
+  /// where it landed, once there is one, or null when it couldn't be had.
+  @async
+  String? onPromisedFileWanted(String id);
 }

@@ -1,4 +1,5 @@
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_ui/drag_out.dart';
 import 'package:feature_kit/feature_ui/feature_window.dart';
 import 'package:feature_kit/navigation/navigation.dart';
 import 'package:feature_kit/services/services.dart';
@@ -38,6 +39,10 @@ class FeatureContext {
   /// Windows a feature can open for itself, such as one in the shape of a
   /// phone's screen. Null until the shell set it, and where it has none.
   FeatureWindows? windows;
+
+  /// Drags out of Ferret into other apps. Null until the shell set it,
+  /// and where the platform has none.
+  DragOut? dragOut;
 
   /// Brings Ferret to the front (the menubar popover on macOS), such as when
   /// this device starts ringing.

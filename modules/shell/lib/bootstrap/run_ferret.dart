@@ -142,6 +142,9 @@ Future<void> runFerret({
   }
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
   featureContext.windows = featureWindows;
+  if (ferretMenubar.isSupported) {
+    featureContext.dragOut = MenubarDragOut(ferretMenubar);
+  }
   final navigation = WindowNavRegistry(featureContext, views: views);
   for (final feature in features) {
     unawaited(feature.onAppStarted(featureContext));

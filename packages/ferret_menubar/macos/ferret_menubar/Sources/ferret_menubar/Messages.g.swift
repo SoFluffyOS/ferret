@@ -344,6 +344,58 @@ struct MenubarShortcut: Hashable, CustomStringConvertible {
   }
 }
 
+/// A file that isn't on this Mac yet, such as a photo on a phone: dragged
+/// out, the app it lands on asks for it, and only then is it fetched.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MenubarPromisedFile: Hashable, CustomStringConvertible {
+  /// What [MenubarFlutterApi.onPromisedFileWanted] asks for.
+  var id: String
+  /// The file's name where it lands, such as "IMG_2041.jpg".
+  var name: String
+  /// A picture of it to drag, such as a thumbnail; the icon of its type
+  /// when null.
+  var image: FlutterStandardTypedData? = nil
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MenubarPromisedFile? {
+    let id = pigeonVar_list[0] as! String
+    let name = pigeonVar_list[1] as! String
+    let image: FlutterStandardTypedData? = nilOrValue(pigeonVar_list[2])
+
+    return MenubarPromisedFile(
+      id: id,
+      name: name,
+      image: image
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      id,
+      name,
+      image,
+    ]
+  }
+  static func == (lhs: MenubarPromisedFile, rhs: MenubarPromisedFile) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return MessagesPigeonInternal.deepEquals(lhs.id, rhs.id) && MessagesPigeonInternal.deepEquals(lhs.name, rhs.name) && MessagesPigeonInternal.deepEquals(lhs.image, rhs.image)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MenubarPromisedFile")
+    MessagesPigeonInternal.deepHash(value: id, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: name, hasher: &hasher)
+    MessagesPigeonInternal.deepHash(value: image, hasher: &hasher)
+  }
+
+  public var description: String {
+    return "MenubarPromisedFile(id: \(String(describing: id)), name: \(String(describing: name)), image: \(String(describing: image)))"
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -369,6 +421,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       return MenubarMenuItem.fromList(self.readValue() as! [Any?])
     case 133:
       return MenubarShortcut.fromList(self.readValue() as! [Any?])
+    case 134:
+      return MenubarPromisedFile.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -391,6 +445,9 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
       super.writeValue(value.toList())
     } else if let value = value as? MenubarShortcut {
       super.writeByte(133)
+      super.writeValue(value.toList())
+    } else if let value = value as? MenubarPromisedFile {
+      super.writeByte(134)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -483,6 +540,13 @@ protocol MenubarHostApi {
   /// where the mouse is pressed in it, to Finder or another app. False
   /// when no press in that view is under way.
   func startFileDrag(viewId: Int64, paths: [String]) throws -> Bool
+  /// Starts dragging [files] that aren't here yet out of the view
+  /// [viewId], like [startFileDrag]. Where they land, each is asked for
+  /// with [MenubarFlutterApi.onPromisedFileWanted] and copied there.
+  func startPromisedFileDrag(viewId: Int64, files: [MenubarPromisedFile]) throws -> Bool
+  /// Starts dragging [text] out of the view [viewId], like
+  /// [startFileDrag]: plain text, and a web link as well when [isLink].
+  func startTextDrag(viewId: Int64, text: String, isLink: Bool) throws -> Bool
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   func toggleQuickLook(paths: [String]) throws
@@ -925,6 +989,44 @@ class MenubarHostApiSetup {
     } else {
       startFileDragChannel.setMessageHandler(nil)
     }
+    /// Starts dragging [files] that aren't here yet out of the view
+    /// [viewId], like [startFileDrag]. Where they land, each is asked for
+    /// with [MenubarFlutterApi.onPromisedFileWanted] and copied there.
+    let startPromisedFileDragChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startPromisedFileDrag\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startPromisedFileDragChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let viewIdArg = args[0] as! Int64
+        let filesArg = args[1] as! [MenubarPromisedFile]
+        do {
+          let result = try api.startPromisedFileDrag(viewId: viewIdArg, files: filesArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      startPromisedFileDragChannel.setMessageHandler(nil)
+    }
+    /// Starts dragging [text] out of the view [viewId], like
+    /// [startFileDrag]: plain text, and a web link as well when [isLink].
+    let startTextDragChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startTextDrag\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      startTextDragChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let viewIdArg = args[0] as! Int64
+        let textArg = args[1] as! String
+        let isLinkArg = args[2] as! Bool
+        do {
+          let result = try api.startTextDrag(viewId: viewIdArg, text: textArg, isLink: isLinkArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      startTextDragChannel.setMessageHandler(nil)
+    }
     /// Shows the files at [paths] in Quick Look, or closes it when it is
     /// open.
     let toggleQuickLookChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.ferret_menubar.MenubarHostApi.toggleQuickLook\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
@@ -973,6 +1075,9 @@ protocol MenubarFlutterApiProtocol {
   @MainActor func onWindowClosed(viewId viewIdArg: Int64) async throws
   /// The picture window closed and its Flutter view [viewId] is gone.
   @MainActor func onPictureWindowClosed(viewId viewIdArg: Int64) async throws
+  /// A promised file [id] was dropped: the path of a local copy to copy
+  /// where it landed, once there is one, or null when it couldn't be had.
+  @MainActor func onPromisedFileWanted(id idArg: String) async throws -> String?
 }
 class MenubarFlutterApi: MenubarFlutterApiProtocol {
   private let binaryMessenger: FlutterBinaryMessenger
@@ -1253,6 +1358,29 @@ class MenubarFlutterApi: MenubarFlutterApiProtocol {
           continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
         } else {
           continuation.resume()
+        }
+      }
+    }
+  }
+  /// A promised file [id] was dropped: the path of a local copy to copy
+  /// where it landed, once there is one, or null when it couldn't be had.
+  @MainActor func onPromisedFileWanted(id idArg: String) async throws -> String? {
+    return try await withCheckedThrowingContinuation { continuation in
+      let channelName: String = "dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPromisedFileWanted\(messageChannelSuffix)"
+      let channel = FlutterBasicMessageChannel(name: channelName, binaryMessenger: binaryMessenger, codec: codec)
+      channel.sendMessage([idArg] as [Any?]) { response in
+        guard let listResponse = response as? [Any?] else {
+          continuation.resume(throwing: createConnectionError(withChannelName: channelName))
+          return
+        }
+        if listResponse.count > 1 {
+          let code: String = listResponse[0] as! String
+          let message: String? = nilOrValue(listResponse[1])
+          let details: String? = nilOrValue(listResponse[2])
+          continuation.resume(throwing: PigeonError(code: code, message: message, details: details))
+        } else {
+          let result: String? = nilOrValue(listResponse[0])
+          continuation.resume(returning: result)
         }
       }
     }

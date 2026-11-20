@@ -282,6 +282,67 @@ class MenubarShortcut {
   }
 }
 
+/// A file that isn't on this Mac yet, such as a photo on a phone: dragged
+/// out, the app it lands on asks for it, and only then is it fetched.
+class MenubarPromisedFile {
+  MenubarPromisedFile({
+    required this.id,
+    required this.name,
+    this.image,
+  });
+
+  /// What [MenubarFlutterApi.onPromisedFileWanted] asks for.
+  String id;
+
+  /// The file's name where it lands, such as "IMG_2041.jpg".
+  String name;
+
+  /// A picture of it to drag, such as a thumbnail; the icon of its type
+  /// when null.
+  Uint8List? image;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      id,
+      name,
+      image,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MenubarPromisedFile decode(Object result) {
+    result as List<Object?>;
+    return MenubarPromisedFile(
+      id: result[0]! as String,
+      name: result[1]! as String,
+      image: result[2] as Uint8List?,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MenubarPromisedFile || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(id, other.id) && _deepEquals(name, other.name) && _deepEquals(image, other.image);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+
+  @override
+  String toString() {
+    return 'MenubarPromisedFile(id: $id, name: $name, image: $image)';
+  }
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -305,6 +366,9 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is MenubarShortcut) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
+    }    else if (value is MenubarPromisedFile) {
+      buffer.putUint8(134);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -326,6 +390,8 @@ class _PigeonCodec extends StandardMessageCodec {
         return MenubarMenuItem.decode(readValue(buffer)!);
       case 133:
         return MenubarShortcut.decode(readValue(buffer)!);
+      case 134:
+        return MenubarPromisedFile.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -859,6 +925,47 @@ class MenubarHostApi {
     return pigeonVar_replyValue! as bool;
   }
 
+  /// Starts dragging [files] that aren't here yet out of the view
+  /// [viewId], like [startFileDrag]. Where they land, each is asked for
+  /// with [MenubarFlutterApi.onPromisedFileWanted] and copied there.
+  Future<bool> startPromisedFileDrag(int viewId, List<MenubarPromisedFile> files) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startPromisedFileDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[viewId, files]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
+  /// Starts dragging [text] out of the view [viewId], like
+  /// [startFileDrag]: plain text, and a web link as well when [isLink].
+  Future<bool> startTextDrag(int viewId, String text, bool isLink) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.ferret_menubar.MenubarHostApi.startTextDrag$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[viewId, text, isLink]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
   /// Shows the files at [paths] in Quick Look, or closes it when it is
   /// open.
   Future<void> toggleQuickLook(List<String> paths) async {
@@ -920,6 +1027,10 @@ abstract class MenubarFlutterApi {
 
   /// The picture window closed and its Flutter view [viewId] is gone.
   void onPictureWindowClosed(int viewId);
+
+  /// A promised file [id] was dropped: the path of a local copy to copy
+  /// where it landed, once there is one, or null when it couldn't be had.
+  Future<String?> onPromisedFileWanted(String id);
 
   static void setUp(MenubarFlutterApi? api, {
     BinaryMessenger? binaryMessenger, 
@@ -1203,6 +1314,27 @@ abstract class MenubarFlutterApi {
           try {
             api.onPictureWindowClosed(arg_viewId);
             return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
+    }
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ferret_menubar.MenubarFlutterApi.onPromisedFileWanted$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          final List<Object?> args = message! as List<Object?>;
+          final String arg_id = args[0]! as String;
+          try {
+            final String? output = await api.onPromisedFileWanted(arg_id);
+            return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
           }          catch (e) {

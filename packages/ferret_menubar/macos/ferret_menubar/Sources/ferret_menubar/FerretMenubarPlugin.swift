@@ -38,6 +38,9 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
         window.contentViewController = nil
         window.orderOut(nil)
         let fileDrags = FileDragSource()
+        fileDrags.providePromised = { id in
+            (try? await flutterApi?.onPromisedFileWanted(id: id)) ?? nil
+        }
         self.fileDrags = fileDrags
         popoverViewController = flutterViewController
 
@@ -280,14 +283,33 @@ public class FerretMenubarPlugin: NSObject, FlutterPlugin, MenubarHostApi {
     }
 
     func startFileDrag(viewId: Int64, paths: [String]) throws -> Bool {
-        let controller: FlutterViewController? = switch viewId {
-        case Self.popoverViewId: Self.popoverViewController
-        case Self.windowController?.viewId: Self.windowController?.flutterViewController
-        default: nil
-        }
-        guard let controller, let fileDrags = Self.fileDrags else { return false }
+        guard let controller = Self.dragController(viewId), let fileDrags = Self.fileDrags
+        else { return false }
 
         return fileDrags.start(paths: paths, in: controller)
+    }
+
+    func startPromisedFileDrag(viewId: Int64, files: [MenubarPromisedFile]) throws -> Bool {
+        guard let controller = Self.dragController(viewId), let fileDrags = Self.fileDrags
+        else { return false }
+
+        return fileDrags.startPromised(files: files, in: controller)
+    }
+
+    func startTextDrag(viewId: Int64, text: String, isLink: Bool) throws -> Bool {
+        guard let controller = Self.dragController(viewId), let fileDrags = Self.fileDrags
+        else { return false }
+
+        return fileDrags.startText(text, isLink: isLink, in: controller)
+    }
+
+    /// The view a drag out can start from: the popover's or the window's.
+    private static func dragController(_ viewId: Int64) -> FlutterViewController? {
+        switch viewId {
+        case popoverViewId: popoverViewController
+        case windowController?.viewId: windowController?.flutterViewController
+        default: nil
+        }
     }
 
     func toggleQuickLook(paths: [String]) throws {

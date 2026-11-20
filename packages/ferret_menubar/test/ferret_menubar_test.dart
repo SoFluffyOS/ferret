@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:ferret_menubar/ferret_menubar.dart';
@@ -41,6 +42,25 @@ class _RecordingApi implements MenubarHostApi {
 
   @override
   Future<void> dragPictureWindow() async => drags++;
+
+  final List<List<MenubarPromisedFile>> promisedDrags = [];
+  final List<(String, bool)> textDrags = [];
+  bool dragStarts = true;
+
+  @override
+  Future<bool> startPromisedFileDrag(
+    int viewId,
+    List<MenubarPromisedFile> files,
+  ) async {
+    promisedDrags.add(files);
+    return dragStarts;
+  }
+
+  @override
+  Future<bool> startTextDrag(int viewId, String text, bool isLink) async {
+    textDrags.add((text, isLink));
+    return dragStarts;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -166,4 +186,77 @@ void main() {
     );
     await subscription.cancel();
   });
+
+  test(
+    'a promised file is fetched only when the Mac asks for it, once',
+    () async {
+      final api = _RecordingApi();
+      final menubar = FerretMenubar(api: api);
+      var fetches = 0;
+
+      final started = await menubar.startPromisedFileDrag(7, [
+        PromisedDragFile(
+          name: 'IMG_2041.jpg',
+          image: Uint8List.fromList([1, 2, 3]),
+          fetch: () async {
+            fetches++;
+            return '/tmp/IMG_2041.jpg';
+          },
+        ),
+      ]);
+      final promised = api.promisedDrags.single.single;
+
+      expect(started, isTrue);
+      expect(promised.name, 'IMG_2041.jpg');
+      expect(promised.image, [1, 2, 3]);
+      expect(fetches, 0);
+      expect(
+        await menubar.onPromisedFileWanted(promised.id),
+        '/tmp/IMG_2041.jpg',
+      );
+      expect(await menubar.onPromisedFileWanted(promised.id), isNull);
+      expect(fetches, 1);
+    },
+    skip: !Platform.isMacOS,
+  );
+
+  test(
+    'a promised drag that never started is forgotten, and a failed fetch '
+    'gives nothing',
+    () async {
+      final api = _RecordingApi()..dragStarts = false;
+      final menubar = FerretMenubar(api: api);
+
+      await menubar.startPromisedFileDrag(7, [
+        PromisedDragFile(name: 'a.jpg', fetch: () async => '/tmp/a.jpg'),
+      ]);
+      expect(
+        await menubar.onPromisedFileWanted(
+          api.promisedDrags.single.single.id,
+        ),
+        isNull,
+      );
+
+      api.dragStarts = true;
+      await menubar.startPromisedFileDrag(7, [
+        PromisedDragFile(name: 'b.jpg', fetch: () => throw StateError('gone')),
+      ]);
+      expect(
+        await menubar.onPromisedFileWanted(api.promisedDrags.last.single.id),
+        isNull,
+      );
+    },
+    skip: !Platform.isMacOS,
+  );
+
+  test('text drags say whether they are a link', () async {
+    final api = _RecordingApi();
+    final menubar = FerretMenubar(api: api);
+
+    await menubar.startTextDrag(7, 'hello');
+    await menubar.startTextDrag(7, 'https://example.com', isLink: true);
+    await menubar.startTextDrag(7, '');
+
+    expect(api.textDrags, [('hello', false), ('https://example.com', true)]);
+  }, skip: !Platform.isMacOS);
 }
