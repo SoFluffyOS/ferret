@@ -2,8 +2,9 @@
 // sound with MacBook Air", a computer asking for control ("Let MacBook Air
 // control Pixel 7 while showing its screen?"), "Being controlled by
 // MacBook Air" with Stop control, and the Control from a computer
-// settings with what Ferret control is, said before Android opens. Renders
-// into temp/screens as `mirror_phone_<name>_*.png`. Run from apps/ferret:
+// settings with what Ferret control is, said before Android opens. Then the
+// camera: MacBook Air asking to use it, "Camera on for MacBook Air" with
+// Stop, and the Camera for a computer settings. Renders into temp/screens as `mirror_phone_<name>_*.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/mirror_phone_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
@@ -25,6 +26,7 @@ import 'package:mirroring/mirroring.dart';
 import 'package:protocol/mirroring.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
+import 'support/mirror_fakes.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
 
@@ -80,12 +82,14 @@ MirroringFeatureUi _phoneMirroring({required bool serviceOn}) =>
     MirroringFeatureUi(
       feature: MirroringFeature(
         capture: _ScreenCapture.new,
+        camera: StillCamera.new,
         phoneControl: () => PhoneControl(
           power: PowerCapabilities.withPlatform(FakePowerPlatform()),
           service: FakeControlService(enabled: serviceOn),
           supported: true,
         ),
         canShare: true,
+        canShareCamera: true,
         canView: false,
       ),
     );
@@ -132,6 +136,49 @@ Future<String> _shareWithComputer(
   });
   await rig.settle(tester);
   return computerId;
+}
+
+/// The paired MacBook Air asks for the phone's camera; [answer] says what
+/// the owner tapped, or nothing yet.
+Future<void> _askForCamera(
+  WidgetTester tester,
+  ScreenRig rig,
+  MirroringFeatureUi mirroring, {
+  ControlChoice? answer,
+}) async {
+  final computerId =
+      await rig.pairConnectedComputer(
+        tester,
+        computerFeatures: [
+          for (final feature in appFeatures())
+            if (feature.featureId != MirroringFeature.featureId) feature,
+        ],
+      ) ??
+      '';
+  await rig.settle(tester);
+  await tester.runAsync(() async {
+    final camera = mirroring.feature.camera;
+    final session = rig.engine.sessionFor(computerId);
+    if (camera == null || session == null) {
+      return;
+    }
+
+    await camera.onRequest(
+      session,
+      StartRequest(
+        version: 1,
+        codecs: const [.CODEC_H264],
+        audioCodecs: const [.AUDIO_CODEC_OPUS],
+        source: .SOURCE_CAMERA,
+      ),
+    );
+    if (answer != null) {
+      await camera.answer(answer);
+    }
+
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+  });
+  await rig.settle(tester);
 }
 
 Future<void> _openSettings(
@@ -195,6 +242,22 @@ final _screens = <String, _Script>{
       scrollable: find.byType(Scrollable).last,
     );
     await rig.tapText(tester, 'Turn on Ferret control…');
+  },
+  'camera_ask': (tester, rig, mirroring) async {
+    await _askForCamera(tester, rig, mirroring);
+  },
+  'camera_on': (tester, rig, mirroring) async {
+    await _askForCamera(tester, rig, mirroring, answer: .once);
+  },
+  'camera_setting': (tester, rig, mirroring) async {
+    await _askForCamera(tester, rig, mirroring, answer: .always);
+    await tester.runAsync(() async => mirroring.feature.camera?.stop());
+    await _openSettings(tester, rig, mirroring);
+    await tester.scrollUntilVisible(
+      find.text('Let my computers ask to use this camera'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
   },
 };
 

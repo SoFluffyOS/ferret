@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -325,4 +327,138 @@ void main() {
     await until(() => phoneFeature.source?.active?.reconnecting ?? false);
     expect(capture.stops, 0);
   });
+
+  test('a computer uses the phone\'s camera: Once on the phone, the '
+      'picture turned upright with the microphone\'s sound, a lens switch, '
+      'and Stop on the phone', () async {
+    final camera = FakeCamera();
+    final decoder = FakeDecoder();
+    final speaker = FakeAudioSink();
+    final phoneFeature = MirroringFeature(
+      camera: () => camera,
+      canShare: false,
+      canShareCamera: true,
+      canView: false,
+      cameraTexts: cameraTextsFor,
+    );
+    final macFeature = MirroringFeature(
+      decoder: () => decoder,
+      codecs: const [.h264],
+      audioSink: () => speaker,
+      audioCodecs: const [.opus],
+      canShare: false,
+      canShareCamera: false,
+      canView: true,
+    );
+    final mac = await startEngine('MacBook', macFeature);
+    final phone = await startEngine('Pixel', phoneFeature);
+    final phoneId = await pair(mac, phone);
+    final viewer = macFeature.viewer;
+    final source = phoneFeature.camera;
+    if (viewer == null || source == null) {
+      fail('Both sides should be set up');
+    }
+
+    expect(macFeature.canUseCameraOf(mac.sessions.single), isTrue);
+    expect(macFeature.canViewDevice(mac.sessions.single), isFalse);
+    expect(phoneFeature.canUseCameraOf(phone.sessions.single), isFalse);
+
+    await viewer.showCamera(phoneId);
+    await until(() => source.pending != null);
+    expect(source.pending?.deviceName, 'MacBook');
+    expect(viewer.current?.phase, ViewPhase.waitingForPhone);
+    expect(viewer.current?.isCamera, isTrue);
+
+    await source.answer(.once);
+    await until(() => camera.started.isNotEmpty);
+    expect(camera.started.single.maxLongSide, 1280);
+    expect(camera.started.single.maxShortSide, 720);
+    expect(camera.started.single.audioCodec, MirrorAudioCodec.opus);
+    expect(camera.texts.single.title, 'Camera on for MacBook');
+
+    camera.play(turn: 90);
+    await until(() => decoder.frames.length == 1);
+    await until(() => viewer.current?.lenses.length == 2);
+    expect(viewer.current?.lens, MirrorLens.back);
+    expect(viewer.current?.nextLens, MirrorLens.front);
+    final picture = viewer.picture.value;
+    expect(picture, isA<TurnedPicture>());
+    expect(picture?.width, 720);
+    expect(picture?.height, 1280);
+
+    final image = await createTestImage(width: 4, height: 2);
+    final png = await image.toByteData(format: ui.ImageByteFormat.png);
+    decoder.png = png?.buffer.asUint8List();
+    final folder = await Directory.systemTemp.createTemp('ferret_camera');
+    addTearDown(() => folder.delete(recursive: true));
+    final path = '${folder.path}/camera.png';
+    expect(await viewer.savePicture(path), isTrue);
+    final saved = await ui.instantiateImageCodec(
+      await File(path).readAsBytes(),
+    );
+    final turned = (await saved.getNextFrame()).image;
+    expect((turned.width, turned.height), (2, 4));
+
+    camera.emit(const CaptureAudioConfigured(MirrorAudioConfig(codec: .opus)));
+    await until(() => viewer.current?.sound == .playing);
+    for (var index = 0; index < 5; index++) {
+      camera.emit(
+        CaptureAudio(
+          MirrorAudioPacket(
+            data: Uint8List.fromList([0xFC, index]),
+            ptsUs: index * 20000,
+          ),
+        ),
+      );
+    }
+
+    await until(() => speaker.played.length == 5);
+
+    await viewer.setLens(.front);
+    await until(() => viewer.current?.lens == MirrorLens.front);
+    expect(camera.switches, [MirrorLens.front]);
+    expect(macFeature.settings.cameraLens, MirrorLens.front);
+
+    await source.stop();
+    await until(() => viewer.current?.phase == .ended);
+    expect(viewer.current?.end, ViewEnd.stoppedOnPhone);
+    expect(camera.stops, 1);
+    expect(phoneFeature.settings.history.single.camera, isTrue);
+    expect(macFeature.settings.history.single.camera, isTrue);
+  });
+
+  test(
+    'a phone without the camera flag is never asked for its camera',
+    () async {
+      final capture = FakeCapture();
+      final phoneFeature = MirroringFeature(
+        capture: () => capture,
+        canShare: true,
+        canShareCamera: false,
+        canView: false,
+        texts: textsFor,
+      );
+      final macFeature = MirroringFeature(
+        decoder: FakeDecoder.new,
+        codecs: const [.h264],
+        canShare: false,
+        canShareCamera: false,
+        canView: true,
+      );
+      final mac = await startEngine('MacBook', macFeature);
+      final phone = await startEngine('Pixel', phoneFeature);
+      final phoneId = await pair(mac, phone);
+      final viewer = macFeature.viewer;
+      if (viewer == null) {
+        fail('The computer should be able to view');
+      }
+
+      expect(macFeature.canUseCameraOf(mac.sessions.single), isFalse);
+
+      await viewer.showCamera(phoneId);
+      await until(() => viewer.current?.phase == .ended);
+      expect(viewer.current?.end, ViewEnd.unsupported);
+      expect(capture.asked, isEmpty, reason: 'its screen is not asked for');
+    },
+  );
 }

@@ -12,7 +12,9 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The phone's card: a computer asking, "Sharing screen with MacBook" with
 /// Stop while it lasts (also while that computer dropped off for a
-/// moment), and the audit line once it is over.
+/// moment), and the audit line once it is over. The same for its camera:
+/// the question with Once, Always and No, then "Camera on for MacBook"
+/// with Stop.
 class ShareCardFrame extends StatelessWidget {
   const ShareCardFrame({super.key});
 
@@ -33,8 +35,60 @@ class ShareCardFrame extends StatelessWidget {
     final controller = context.select<ShareViewModel, ControlRequest?>(
       (viewModel) => viewModel.controller,
     );
+    final cameraPending = context.select<ShareViewModel, ShareRequest?>(
+      (viewModel) => viewModel.cameraPending,
+    );
+    final cameraActive = context.select<ShareViewModel, ActiveCamera?>(
+      (viewModel) => viewModel.cameraActive,
+    );
     final viewModel = context.read<ShareViewModel>();
     final l10n = context.mirroringL10n;
+
+    if (cameraPending != null) {
+      return FeatureCard(
+        icon: LucideIcons.video,
+        iconTone: .accent,
+        title: l10n.cameraAskTitle(cameraPending.deviceName),
+        subtitle: l10n.cameraAskBody,
+        actions: [
+          Button(
+            variant: .primary,
+            label: l10n.controlOnce,
+            onPressed: () => unawaited(viewModel.answerCamera(.once)),
+          ),
+          Button(
+            variant: .ghost,
+            label: l10n.controlAlways,
+            onPressed: () => unawaited(viewModel.answerCamera(.always)),
+          ),
+          Button(
+            variant: .ghost,
+            label: l10n.controlNo,
+            onPressed: () => unawaited(viewModel.answerCamera(.no)),
+          ),
+        ],
+      );
+    }
+
+    if (cameraActive != null) {
+      final since = l10n.time(cameraActive.startedAt);
+      return FeatureCard(
+        icon: LucideIcons.video,
+        iconTone: .warning,
+        title: l10n.cameraOnTitle(cameraActive.deviceName),
+        subtitle: switch (cameraActive.withSound) {
+          true => l10n.cameraOnBody(since),
+          false => l10n.cameraOnBodySilent(since),
+        },
+        actions: [
+          Button(
+            variant: .primary,
+            label: l10n.stop,
+            onPressed: () => unawaited(viewModel.stopCamera()),
+          ),
+        ],
+      );
+    }
 
     if (controlPending != null) {
       return FeatureCard(
@@ -125,7 +179,10 @@ class ShareCardFrame extends StatelessWidget {
     return FeatureCard(
       icon: LucideIcons.history,
       iconTone: .muted,
-      title: l10n.title,
+      title: switch (record.camera) {
+        true => l10n.cameraTitle,
+        false => l10n.title,
+      },
       subtitle: l10n.audit(record),
       trailing: DismissButton(
         label: l10n.dismiss,

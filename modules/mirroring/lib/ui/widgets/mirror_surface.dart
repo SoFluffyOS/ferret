@@ -13,10 +13,7 @@ class MirrorSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = switch (picture) {
-      TexturePicture(:final textureId) => Texture(textureId: textureId),
-      ImagePicture(:final image) => RawImage(image: image, fit: .fill),
-    };
+    final content = _draw(picture);
 
     return Center(
       child: AspectRatio(
@@ -25,4 +22,13 @@ class MirrorSurface extends StatelessWidget {
       ),
     );
   }
+
+  Widget _draw(MirrorPicture picture) => switch (picture) {
+    TexturePicture(:final textureId) => Texture(textureId: textureId),
+    ImagePicture(:final image) => RawImage(image: image, fit: .fill),
+    TurnedPicture(:final picture, :final quarterTurns) => RotatedBox(
+      quarterTurns: quarterTurns,
+      child: _draw(picture),
+    ),
+  };
 }

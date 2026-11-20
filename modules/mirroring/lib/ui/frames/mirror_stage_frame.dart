@@ -87,6 +87,13 @@ class MirrorStageFrame extends StatelessWidget {
     final picture = context.select<ViewerViewModel, MirrorPicture?>(
       (viewModel) => viewModel.picture,
     );
+    final isCamera = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.sessionFor(deviceId)?.isCamera ?? false,
+    );
+    final icon = switch (isCamera) {
+      true => LucideIcons.video,
+      false => LucideIcons.screenShare,
+    };
     final isFirstTime = context.select<ViewerViewModel, bool>(
       (viewModel) => viewModel.history.isEmpty,
     );
@@ -167,7 +174,8 @@ class MirrorStageFrame extends StatelessWidget {
       .waitingForPhone => MirrorWaitingFrame(
         deviceName: deviceName,
         until: waitingUntil,
-        asksEveryTime: isFirstTime,
+        asksEveryTime: isFirstTime && !isCamera,
+        camera: isCamera,
         onCancel: stop,
         clock: clock,
       ),
@@ -181,7 +189,7 @@ class MirrorStageFrame extends StatelessWidget {
         actions: [MessageAction(label: l10n.stop, onPressed: stop)],
       ),
       .starting || .streaming => MirrorMessage(
-        icon: LucideIcons.screenShare,
+        icon: icon,
         tone: .success,
         title: switch (way) {
           .wifi => l10n.startingTitle(deviceName),
@@ -191,7 +199,7 @@ class MirrorStageFrame extends StatelessWidget {
         actions: [MessageAction(label: l10n.cancel, onPressed: stop)],
       ),
       _ => MirrorMessage(
-        icon: LucideIcons.screenShare,
+        icon: icon,
         title: l10n.requestingTitle(deviceName),
         actions: [MessageAction(label: l10n.cancel, onPressed: stop)],
       ),

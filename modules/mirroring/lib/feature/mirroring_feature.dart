@@ -16,6 +16,7 @@ import 'package:protocol/protocol.dart';
 class MirroringFeature extends Feature {
   MirroringFeature({
     ScreenCapture Function()? capture,
+    CameraCapture Function()? camera,
     PhoneControl Function()? phoneControl,
     MirrorDecoder Function()? decoder,
     List<MirrorCodec>? codecs,
@@ -24,13 +25,16 @@ class MirroringFeature extends Feature {
     List<MirrorRoute> routes = const [],
     List<MirrorReceiver> receivers = const [],
     bool? canShare,
+    bool? canShareCamera,
     bool? canView,
     ConsentTexts Function(String deviceName, {bool withSound})? texts,
+    CameraTexts Function(String deviceName, {bool withSound})? cameraTexts,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.requestTimeout = const Duration(seconds: 10),
     this.firstPictureTimeout = const Duration(seconds: 10),
   }) : _createCapture = capture ?? ScreenCapture.current,
+       _createCamera = camera ?? CameraCapture.current,
        _createPhoneControl = phoneControl ?? PhoneControl.new,
        _createDecoder = decoder ?? MirrorDecoder.current,
        _codecs = codecs,
@@ -39,6 +43,7 @@ class MirroringFeature extends Feature {
        _extraRoutes = routes,
        _receivers = receivers,
        canShare = canShare ?? ScreenCapture.isSupportedPlatform,
+       canShareCamera = canShareCamera ?? CameraCapture.isSupportedPlatform,
        canView =
            canView ??
            (io.Platform.isMacOS ||
@@ -47,6 +52,10 @@ class MirroringFeature extends Feature {
        _clock = clock ?? DateTime.now {
     if (texts != null) {
       this.texts = texts;
+    }
+
+    if (cameraTexts != null) {
+      this.cameraTexts = cameraTexts;
     }
   }
 
@@ -58,8 +67,15 @@ class MirroringFeature extends Feature {
   /// Flag in [FeatureSupport]: this device can show another's screen.
   static const viewFlag = MirrorProtocol.viewFlag;
 
+  /// Flag in [FeatureSupport]: this device can send its camera and
+  /// microphone.
+  static const cameraFlag = MirrorProtocol.cameraFlag;
+
   /// This device's screen can be captured: Android phones and tablets.
   final bool canShare;
+
+  /// This device's camera can be sent: Android phones and tablets.
+  final bool canShareCamera;
 
   /// This device shows other screens: computers.
   final bool canView;
@@ -73,7 +89,12 @@ class MirroringFeature extends Feature {
   ConsentTexts Function(String deviceName, {bool withSound}) texts =
       _plainTexts;
 
+  /// The words on the phone's ongoing notice while its camera is on.
+  CameraTexts Function(String deviceName, {bool withSound}) cameraTexts =
+      _plainCameraTexts;
+
   final ScreenCapture Function() _createCapture;
+  final CameraCapture Function() _createCamera;
   final PhoneControl Function() _createPhoneControl;
   final MirrorDecoder Function() _createDecoder;
   final List<MirrorCodec>? _codecs;
@@ -86,6 +107,7 @@ class MirroringFeature extends Feature {
   final List<StreamSubscription<void>> _subscriptions = [];
 
   MirrorSource? _source;
+  CameraSource? _camera;
   MirrorViewer? _viewer;
   MirrorRoutes? _routes;
 
@@ -93,12 +115,20 @@ class MirroringFeature extends Feature {
   String get id => featureId;
 
   @override
-  List<String> get flags => [if (canShare) shareFlag, if (canView) viewFlag];
+  List<String> get flags => [
+    if (canShare) shareFlag,
+    if (canShareCamera) cameraFlag,
+    if (canView) viewFlag,
+  ];
 
   MirroringSettings get settings => MirroringSettings(host.settings);
 
   /// The phone's side, or null on computers.
   MirrorSource? get source => _source;
+
+  /// The phone's side of "use this phone's camera", or null on computers
+  /// and iPhones.
+  CameraSource? get camera => _camera;
 
   /// The computer's side, or null on phones.
   MirrorViewer? get viewer => _viewer;
@@ -115,6 +145,10 @@ class MirroringFeature extends Feature {
   bool canViewDevice(Session session) =>
       canView && (_routes?.ferret.canShow(session) ?? false);
 
+  /// Whether [session]'s device can send its camera here.
+  bool canUseCameraOf(Session session) =>
+      canView && (_routes?.ferret.canSendCamera(session) ?? false);
+
   @override
   Future<void> onStart() async {
     if (canShare) {
@@ -126,12 +160,30 @@ class MirroringFeature extends Feature {
         settings: settings,
         texts: (deviceName, {withSound = false}) =>
             texts(deviceName, withSound: withSound),
+        isBusy: () => _camera?.isBusy ?? false,
         clock: _clock,
         consentTimeout: consentTimeout,
       );
       _source = source;
       _subscriptions.add(source.changes.listen((_) => _emit()));
       await source.start();
+    }
+
+    if (canShareCamera) {
+      final camera = CameraSource(
+        host: host,
+        featureId: featureId,
+        capture: _createCamera(),
+        settings: settings,
+        texts: (deviceName, {withSound = false}) =>
+            cameraTexts(deviceName, withSound: withSound),
+        isBusy: () => _source?.active != null || _source?.pending != null,
+        clock: _clock,
+        askTimeout: consentTimeout,
+      );
+      _camera = camera;
+      _subscriptions.add(camera.changes.listen((_) => _emit()));
+      await camera.start();
     }
 
     if (canView) {
@@ -184,6 +236,7 @@ class MirroringFeature extends Feature {
 
     _subscriptions.clear();
     await _source?.dispose();
+    await _camera?.dispose();
     await _viewer?.dispose();
     await _routes?.dispose();
   }
@@ -192,6 +245,7 @@ class MirroringFeature extends Feature {
   void onSessionClosed(Session session) {
     final deviceId = session.remoteDeviceId;
     unawaited(_source?.onSessionClosed(deviceId));
+    unawaited(_camera?.onSessionClosed(deviceId));
     _routes?.ferret.onSessionClosed(deviceId);
   }
 
@@ -231,12 +285,17 @@ class MirroringFeature extends Feature {
     }
 
     if (payloadOf(envelope, StartRequest.new) case final request?) {
-      final source = _source;
-      if (source == null) {
-        return StartDeny(reason: .DENY_REASON_UNSUPPORTED);
-      }
+      return _onRequest(session, request);
+    }
 
-      return source.onRequest(session, request);
+    if (payloadOf(envelope, CameraState.new) case final state?) {
+      _routes?.ferret.onCameraState(session, state);
+      return null;
+    }
+
+    if (payloadOf(envelope, CameraSwitch.new) case final change?) {
+      await _camera?.onSwitch(session, change);
+      return null;
     }
 
     if (payloadOf(envelope, StreamConfig.new) case final config?) {
@@ -256,12 +315,14 @@ class MirroringFeature extends Feature {
 
     if (payloadOf(envelope, Stats.new) case final stats?) {
       await _source?.onStats(session, stats);
+      await _camera?.onStats(session, stats);
       _routes?.ferret.onStats(session, stats);
       return null;
     }
 
     if (payloadOf(envelope, KeyframeRequest.new) != null) {
       await _source?.onKeyframeRequest(session);
+      await _camera?.onKeyframeRequest(session);
       return null;
     }
 
@@ -272,6 +333,7 @@ class MirroringFeature extends Feature {
 
     if (payloadOf(envelope, Stop.new) case final stop?) {
       await _source?.onStop(session);
+      await _camera?.onStop(session);
       _routes?.ferret.onStop(session, stop);
       return null;
     }
@@ -286,6 +348,28 @@ class MirroringFeature extends Feature {
     }
 
     return null;
+  }
+
+  /// A computer asks for this device's screen, or for its camera.
+  Future<GeneratedMessage> _onRequest(
+    Session session,
+    StartRequest request,
+  ) async {
+    if (request.source == Source.SOURCE_CAMERA) {
+      final camera = _camera;
+      if (camera == null) {
+        return StartDeny(reason: .DENY_REASON_UNSUPPORTED);
+      }
+
+      return camera.onRequest(session, request);
+    }
+
+    final source = _source;
+    if (source == null) {
+      return StartDeny(reason: .DENY_REASON_UNSUPPORTED);
+    }
+
+    return source.onRequest(session, request);
   }
 
   /// The paired Android devices, which a cable may reach too.
@@ -311,6 +395,19 @@ class MirroringFeature extends Feature {
     },
     stopLabel: 'Stop',
     sharingChannelName: 'Screen sharing',
+  );
+
+  static CameraTexts _plainCameraTexts(
+    String deviceName, {
+    bool withSound = false,
+  }) => CameraTexts(
+    title: 'Camera on for $deviceName',
+    body: switch (withSound) {
+      true => 'It sees and hears through this phone',
+      false => 'It sees through this phone\'s camera',
+    },
+    stopLabel: 'Stop',
+    channelName: 'Camera for a computer',
   );
 
   void _emit() {

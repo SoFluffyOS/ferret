@@ -1273,5 +1273,229 @@
   "controlDisclosureBody": "Ferret control is an Android accessibility service. With it, a computer you paired can tap, swipe, press Back and Home, and type on this phone.\n\nIt acts only while you show this screen to that computer and said yes to control. A notice says so the whole time, with Stop.\n\nTo type, it reads the text field you type into. It reads nothing else, keeps nothing, and sends nothing anywhere.",
   "controlDisclosureSteps": "Next, in Accessibility, tap Ferret control and turn it on.",
   "controlDisclosureOpen": "Open settings",
-  "notNow": "Not now"
+  "notNow": "Not now",
+  "useCamera": "Use {device}'s camera",
+  "@useCamera": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraWindowTitle": "{device} — Camera",
+  "@cameraWindowTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraSwitch": "Switch camera",
+  "cameraUseAgain": "Use again",
+  "cameraPictureNote": "720p at 30 frames a second, like a webcam.",
+  "cameraWaitingBody": "On {device}, tap Once or Always to turn its camera on.",
+  "@cameraWaitingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraWaitingNothing": "Nothing on {device}? Open Ferret there.",
+  "@cameraWaitingNothing": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraDeniedBody": "Someone tapped No on {device}.",
+  "@cameraDeniedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraBusyTitle": "{device} is busy",
+  "@cameraBusyTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraBusyBody": "Its screen or its camera is already on for a device. Stop that one first.",
+  "cameraUnsupportedTitle": "{device} can't share its camera",
+  "@cameraUnsupportedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraUnsupportedBody": "Using a phone's camera needs an Android phone with the latest Ferret.",
+  "cameraTurnedOffTitle": "Camera is off on {device}",
+  "@cameraTurnedOffTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraTurnedOffBody": "On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to use this camera. Then open {here, select, macOS{this Mac} windows{this PC} other{this computer}} there and check that it may ask.",
+  "@cameraTurnedOffBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraCannotStartTitle": "{device} couldn't turn its camera on",
+  "@cameraCannotStartTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraCannotStartBody": "On {device}: open Ferret and allow the camera. Then ask again.",
+  "@cameraCannotStartBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraStoppedHereBody": "{device}'s camera is off.",
+  "@cameraStoppedHereBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraSystemEndedTitle": "{device} turned its camera off",
+  "@cameraSystemEndedTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraSystemEndedBody": "Android closed the camera, or another app took it. Use it again when {device} is ready.",
+  "@cameraSystemEndedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraFailedBody": "{device} couldn't start its camera.",
+  "@cameraFailedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraViewingTitle": "Using {device}'s camera",
+  "@cameraViewingTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraAuditViewed": "You used {device}'s camera for {duration} at {time}",
+  "@cameraAuditViewed": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraAuditShared": "{device} used this phone's camera for {duration} at {time}",
+  "@cameraAuditShared": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraLeaveTitle": "Stop using {device}'s camera?",
+  "@cameraLeaveTitle": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraLeaveBody": "Leaving this page turns the camera off.",
+  "cameraKeep": "Keep it on",
+  "cameraAskTitle": "{computer} wants to use your camera",
+  "@cameraAskTitle": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraAskBody": "It will see through the camera and hear the microphone, until you stop it.",
+  "cameraOnTitle": "Camera on for {computer}",
+  "@cameraOnTitle": {
+    "placeholders": {
+      "computer": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraOnBody": "It sees and hears through this phone. Since {time}.",
+  "@cameraOnBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraOnBodySilent": "It sees through this phone's camera. The microphone is off. Since {time}.",
+  "@cameraOnBodySilent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeCameraBody": "It sees and hears through this phone",
+  "noticeCameraBodySilent": "It sees through this phone's camera",
+  "noticeCameraChannel": "Camera for a computer",
+  "settingsCameraTitle": "Camera for a computer",
+  "settingsCameraAllow": "Let my computers ask to use this camera",
+  "settingsCameraAllowBody": "You answer Once, Always or No. A notice with Stop stays up while the camera is on.",
+  "settingsCameraAlwaysCount": "{count, plural, =1{1 computer uses this camera without asking.} other{{count} computers use this camera without asking.}}",
+  "@settingsCameraAlwaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionCameraAsk": "Ask to use this phone's camera",
+  "permissionCameraAskOff": "Camera is off for every computer. Turn it on in Settings → To your computer.",
+  "cameraTitle": "Camera"
 }

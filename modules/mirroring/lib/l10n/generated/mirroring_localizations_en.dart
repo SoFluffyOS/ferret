@@ -1346,4 +1346,194 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get notNow => 'Not now';
+
+  @override
+  String useCamera(String device) {
+    return 'Use $device\'s camera';
+  }
+
+  @override
+  String cameraWindowTitle(String device) {
+    return '$device — Camera';
+  }
+
+  @override
+  String get cameraSwitch => 'Switch camera';
+
+  @override
+  String get cameraUseAgain => 'Use again';
+
+  @override
+  String get cameraPictureNote => '720p at 30 frames a second, like a webcam.';
+
+  @override
+  String cameraWaitingBody(String device) {
+    return 'On $device, tap Once or Always to turn its camera on.';
+  }
+
+  @override
+  String cameraWaitingNothing(String device) {
+    return 'Nothing on $device? Open Ferret there.';
+  }
+
+  @override
+  String cameraDeniedBody(String device) {
+    return 'Someone tapped No on $device.';
+  }
+
+  @override
+  String cameraBusyTitle(String device) {
+    return '$device is busy';
+  }
+
+  @override
+  String get cameraBusyBody =>
+      'Its screen or its camera is already on for a device. Stop that one first.';
+
+  @override
+  String cameraUnsupportedTitle(String device) {
+    return '$device can\'t share its camera';
+  }
+
+  @override
+  String get cameraUnsupportedBody =>
+      'Using a phone\'s camera needs an Android phone with the latest Ferret.';
+
+  @override
+  String cameraTurnedOffTitle(String device) {
+    return 'Camera is off on $device';
+  }
+
+  @override
+  String cameraTurnedOffBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'other': 'this computer',
+      },
+    );
+    return 'On $device: open Ferret → Settings → To your computer and turn on Let my computers ask to use this camera. Then open $_temp0 there and check that it may ask.';
+  }
+
+  @override
+  String cameraCannotStartTitle(String device) {
+    return '$device couldn\'t turn its camera on';
+  }
+
+  @override
+  String cameraCannotStartBody(String device) {
+    return 'On $device: open Ferret and allow the camera. Then ask again.';
+  }
+
+  @override
+  String cameraStoppedHereBody(String device) {
+    return '$device\'s camera is off.';
+  }
+
+  @override
+  String cameraSystemEndedTitle(String device) {
+    return '$device turned its camera off';
+  }
+
+  @override
+  String cameraSystemEndedBody(String device) {
+    return 'Android closed the camera, or another app took it. Use it again when $device is ready.';
+  }
+
+  @override
+  String cameraFailedBody(String device) {
+    return '$device couldn\'t start its camera.';
+  }
+
+  @override
+  String cameraViewingTitle(String device) {
+    return 'Using $device\'s camera';
+  }
+
+  @override
+  String cameraAuditViewed(String device, String duration, String time) {
+    return 'You used $device\'s camera for $duration at $time';
+  }
+
+  @override
+  String cameraAuditShared(String device, String duration, String time) {
+    return '$device used this phone\'s camera for $duration at $time';
+  }
+
+  @override
+  String cameraLeaveTitle(String device) {
+    return 'Stop using $device\'s camera?';
+  }
+
+  @override
+  String get cameraLeaveBody => 'Leaving this page turns the camera off.';
+
+  @override
+  String get cameraKeep => 'Keep it on';
+
+  @override
+  String cameraAskTitle(String computer) {
+    return '$computer wants to use your camera';
+  }
+
+  @override
+  String get cameraAskBody =>
+      'It will see through the camera and hear the microphone, until you stop it.';
+
+  @override
+  String cameraOnTitle(String computer) {
+    return 'Camera on for $computer';
+  }
+
+  @override
+  String cameraOnBody(String time) {
+    return 'It sees and hears through this phone. Since $time.';
+  }
+
+  @override
+  String cameraOnBodySilent(String time) {
+    return 'It sees through this phone\'s camera. The microphone is off. Since $time.';
+  }
+
+  @override
+  String get noticeCameraBody => 'It sees and hears through this phone';
+
+  @override
+  String get noticeCameraBodySilent => 'It sees through this phone\'s camera';
+
+  @override
+  String get noticeCameraChannel => 'Camera for a computer';
+
+  @override
+  String get settingsCameraTitle => 'Camera for a computer';
+
+  @override
+  String get settingsCameraAllow => 'Let my computers ask to use this camera';
+
+  @override
+  String get settingsCameraAllowBody =>
+      'You answer Once, Always or No. A notice with Stop stays up while the camera is on.';
+
+  @override
+  String settingsCameraAlwaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count computers use this camera without asking.',
+      one: '1 computer uses this camera without asking.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get permissionCameraAsk => 'Ask to use this phone\'s camera';
+
+  @override
+  String get permissionCameraAskOff =>
+      'Camera is off for every computer. Turn it on in Settings → To your computer.';
+
+  @override
+  String get cameraTitle => 'Camera';
 }

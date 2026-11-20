@@ -1,4 +1,5 @@
 export 'package:mirroring/services/bitrate_controller.dart';
+export 'package:mirroring/services/camera_source.dart';
 export 'package:mirroring/services/feed_player.dart';
 export 'package:mirroring/services/ferret_control.dart';
 export 'package:mirroring/services/ferret_feed.dart';

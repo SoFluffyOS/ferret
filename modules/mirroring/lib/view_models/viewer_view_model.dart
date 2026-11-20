@@ -276,6 +276,34 @@ class ViewerViewModel extends ChangeNotifier {
     await _showNow(deviceId);
   }
 
+  /// Uses the camera and microphone of the paired device [deviceId].
+  /// With another device on screen, that one is asked about first.
+  Future<void> showCamera(String deviceId, String deviceName) async {
+    final target = _routes?.ferret.cameraTargetFor(deviceId);
+    if (target == null) {
+      return;
+    }
+
+    if (_replaces(deviceId)) {
+      _pendingTarget = target;
+      _pendingShow = PendingShow(deviceId: deviceId, deviceName: deviceName);
+      _notify();
+      return;
+    }
+
+    await _startTarget(target);
+  }
+
+  /// Goes to the other camera of the phone whose camera is on stage.
+  Future<void> switchLens() async {
+    final next = current?.nextLens;
+    if (next == null) {
+      return;
+    }
+
+    await _viewer?.setLens(next);
+  }
+
   /// Shows a phone on a cable that isn't paired.
   Future<void> showTarget(MirrorTarget target) async {
     final deviceId = ViewSession.deviceIdOf(target);
@@ -316,6 +344,11 @@ class ViewerViewModel extends ChangeNotifier {
   /// Asks or shows again after the attempt for [deviceId] ended.
   Future<void> again(String deviceId) async {
     final session = sessionFor(deviceId);
+    if (session != null && session.isCamera) {
+      await _startTarget(session.target);
+      return;
+    }
+
     if (session == null || session.target.ferretDeviceId != null) {
       await _showNow(deviceId);
       return;
@@ -507,7 +540,7 @@ class ViewerViewModel extends ChangeNotifier {
 
   /// A click on a picture that can only be looked at: said once.
   void noteViewOnlyTap() {
-    if (_viewOnlyTold) {
+    if (_viewOnlyTold || (current?.isCamera ?? false)) {
       return;
     }
 
@@ -842,7 +875,19 @@ class ViewerViewModel extends ChangeNotifier {
         session != null &&
         session.end == .notConnected &&
         session.target.ferretDeviceId != null;
-    if (!waits || !routes.isReachable(routes.bestTargetFor(deviceId))) {
+    if (!waits) {
+      return;
+    }
+
+    if (session.isCamera) {
+      if (routes.isReachable(session.target)) {
+        unawaited(_startTarget(session.target));
+      }
+
+      return;
+    }
+
+    if (!routes.isReachable(routes.bestTargetFor(deviceId))) {
       return;
     }
 

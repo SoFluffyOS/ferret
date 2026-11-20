@@ -48,7 +48,21 @@ class ShareViewModel extends ChangeNotifier {
 
   ActiveShare? get active => _source?.active;
 
-  MirrorRecord? get lastRecord => _source?.lastRecord;
+  /// The audit line to show: the screen's or the camera's, whichever
+  /// ended last.
+  MirrorRecord? get lastRecord {
+    final screen = _source?.lastRecord;
+    final camera = _camera?.lastRecord;
+    if (screen == null || camera == null) {
+      return screen ?? camera;
+    }
+
+    if (camera.endedAt.isAfter(screen.endedAt)) {
+      return camera;
+    }
+
+    return screen;
+  }
 
   bool get enabled => feature.settings.enabled;
 
@@ -58,7 +72,9 @@ class ShareViewModel extends ChangeNotifier {
       pending != null ||
       active != null ||
       lastRecord != null ||
-      controlPending != null;
+      controlPending != null ||
+      cameraPending != null ||
+      cameraActive != null;
 
   Future<void> stop() async => _source?.stop();
 
@@ -70,7 +86,43 @@ class ShareViewModel extends ChangeNotifier {
   Future<void> setMayAsk(String deviceId, bool value) async =>
       _source?.setBlocked(deviceId, !value);
 
-  void dismissRecord() => _source?.dismissRecord();
+  void dismissRecord() {
+    _source?.dismissRecord();
+    _camera?.dismissRecord();
+  }
+
+  CameraSource? get _camera => feature.camera;
+
+  /// Whether this phone has a camera it can send to a computer.
+  bool get canSendCamera => _camera?.support.canCapture ?? false;
+
+  /// Computers may ask for the camera.
+  bool get cameraEnabled => _camera?.enabled ?? false;
+
+  Future<void> setCameraEnabled(bool value) async => _camera?.setEnabled(value);
+
+  /// A computer asking to use this phone's camera.
+  ShareRequest? get cameraPending => _camera?.pending;
+
+  /// The computer this phone's camera is on for right now.
+  ActiveCamera? get cameraActive => _camera?.active;
+
+  /// How many computers turn the camera on without asking.
+  int get cameraAlwaysCount => _camera?.alwaysAllowed.length ?? 0;
+
+  Future<void> answerCamera(ControlChoice choice) async =>
+      _camera?.answer(choice);
+
+  Future<void> stopCamera() async => _camera?.stop();
+
+  Future<void> forgetCameraAlways() async => _camera?.forgetAlways();
+
+  /// Whether the computer [deviceId] may ask for this phone's camera.
+  bool mayAskCamera(String deviceId) =>
+      !feature.settings.isCameraBlocked(deviceId);
+
+  Future<void> setMayAskCamera(String deviceId, bool value) async =>
+      _camera?.setBlocked(deviceId, !value);
 
   SourceControl? get _control => _source?.control;
 

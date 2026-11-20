@@ -25,6 +25,7 @@ class MirrorSource {
     required MirroringSettings settings,
     required ConsentTexts Function(String deviceName, {bool withSound}) texts,
     PhoneControl? phoneControl,
+    bool Function()? isBusy,
     DateTime Function()? clock,
     this.consentTimeout = const Duration(seconds: 60),
     this.denyCooldown = const Duration(seconds: 30),
@@ -35,6 +36,7 @@ class MirrorSource {
        _settings = settings,
        _texts = texts,
        _phoneControl = phoneControl,
+       _isBusy = isBusy ?? _never,
        _clock = clock ?? DateTime.now;
 
   /// How long the owner has to answer before the request is denied.
@@ -54,6 +56,9 @@ class MirrorSource {
   final ScreenCapture _capture;
   final MirroringSettings _settings;
   final ConsentTexts Function(String deviceName, {bool withSound}) _texts;
+
+  /// Whether this phone's camera is on for a computer, or asked for.
+  final bool Function() _isBusy;
   final DateTime Function() _clock;
   final StreamController<void> _changes = .broadcast();
   final Map<String, DateTime> _deniedUntil = {};
@@ -212,6 +217,10 @@ class MirrorSource {
 
     if (active != null || _pending != null) {
       return _answerWhileBusy(deviceId);
+    }
+
+    if (_isBusy()) {
+      return StartDeny(reason: .DENY_REASON_BUSY);
     }
 
     final codec = MirrorProtocol.pick(request.codecs, _support.supports);
@@ -385,6 +394,8 @@ class MirrorSource {
     await _capture.dispose();
     await _changes.close();
   }
+
+  static bool _never() => false;
 
   GeneratedMessage _answerWhileBusy(String deviceId) {
     final pending = _pending;

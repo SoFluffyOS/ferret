@@ -12,6 +12,19 @@ abstract final class MirrorProtocol {
   /// Flag in a device's feature support: it can show another's screen.
   static const viewFlag = 'view';
 
+  /// Flag in a device's feature support: it can send its camera and
+  /// microphone.
+  static const cameraFlag = 'camera';
+
+  /// What a camera sends unless the viewer asks for less: 720p at 30
+  /// frames per second, light enough for an hour on a phone's battery.
+  static const cameraLongSide = 1280;
+  static const cameraShortSide = 720;
+  static const cameraFps = 30;
+  static const cameraMinBitrate = 800000;
+  static const cameraMaxBitrate = 4000000;
+  static const cameraStartBitrate = 2500000;
+
   /// The source never sends a bigger picture than this.
   static const maxLongSide = 1920;
   static const maxShortSide = 1080;
@@ -49,6 +62,18 @@ abstract final class MirrorProtocol {
   static MirrorAudioCodec? audioFromProto(AudioCodec codec) => switch (codec) {
     .AUDIO_CODEC_OPUS => .opus,
     .AUDIO_CODEC_PCM_S16LE => .pcm,
+    _ => null,
+  };
+
+  static CameraLens lensToProto(MirrorLens lens) => switch (lens) {
+    .back => .CAMERA_LENS_BACK,
+    .front => .CAMERA_LENS_FRONT,
+  };
+
+  /// Null for a lens this build doesn't know, or none said.
+  static MirrorLens? lensFromProto(CameraLens lens) => switch (lens) {
+    .CAMERA_LENS_BACK => .back,
+    .CAMERA_LENS_FRONT => .front,
     _ => null,
   };
 

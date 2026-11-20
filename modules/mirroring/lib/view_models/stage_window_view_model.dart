@@ -14,6 +14,9 @@ class StageWindowViewModel extends ChangeNotifier {
   /// A phone held upright, until its first picture says what it really is.
   static const firstShape = Size(1080, 2340);
 
+  /// A camera's picture as a phone on its side sends it.
+  static const cameraShape = Size(1280, 720);
+
   final ViewerViewModel _viewer;
   FeatureWindows? _windows;
   String? _deviceId;
@@ -46,22 +49,23 @@ class StageWindowViewModel extends ChangeNotifier {
     required String title,
     required WidgetBuilder builder,
     double barHeight = 0,
+    Size shape = firstShape,
   }) async {
     final windows = _windows;
     if (windows == null || !windows.canOpen) {
       return false;
     }
 
-    final shape = _pictureOf(deviceId) ?? firstShape;
+    final content = _pictureOf(deviceId) ?? shape;
     _deviceId = deviceId;
-    _shape = shape;
+    _shape = content;
     _opening = true;
     _notify();
     final opened = await windows.open(
       FeatureWindow(
         id: _windowId(deviceId),
         title: title,
-        contentSize: shape,
+        contentSize: content,
         barHeight: barHeight,
         builder: builder,
       ),

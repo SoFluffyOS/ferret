@@ -60,11 +60,46 @@ class FerretRoute implements MirrorRoute {
     wireless: true,
   );
 
+  /// The camera of [deviceId] as a target.
+  MirrorTarget cameraTargetFor(String deviceId) => MirrorTarget(
+    routeId: routeId,
+    id: deviceId,
+    name: _host.displayNameOf(deviceId),
+    ferretDeviceId: deviceId,
+    wireless: true,
+    camera: true,
+  );
+
   /// Whether [deviceId] is connected and offers its screen right now.
   bool isConnected(String deviceId) {
     final session = _host.sessionFor(deviceId);
     return session != null && canShow(session);
   }
+
+  /// Whether [target]'s device is connected and offers what the target
+  /// is: its screen, or its camera.
+  bool reaches(MirrorTarget target) {
+    final session = _host.sessionFor(target.id);
+    if (session == null) {
+      return false;
+    }
+
+    if (target.camera) {
+      return canSendCamera(session);
+    }
+
+    return canShow(session);
+  }
+
+  /// Whether [session]'s device offers its camera. Only such a device is
+  /// ever asked for it: an older one would take the request for its
+  /// screen.
+  bool canSendCamera(Session session) =>
+      session
+          .remoteFeature(_featureId)
+          ?.flags
+          .contains(MirrorProtocol.cameraFlag) ??
+      false;
 
   /// Whether [session]'s device offers its screen.
   bool canShow(Session session) =>
@@ -92,6 +127,11 @@ class FerretRoute implements MirrorRoute {
       return feed;
     }
 
+    if (target.camera && !canSendCamera(session)) {
+      feed.end(.unsupported);
+      return feed;
+    }
+
     _feeds[deviceId] = feed;
     final longSide = MirrorProtocol.sideFor(
       options.maxSize,
@@ -108,6 +148,16 @@ class FerretRoute implements MirrorRoute {
           maxHeight: longSide,
           maxFps: options.maxFps,
           audioCodecs: options.audioCodecs.map(MirrorProtocol.audioToProto),
+          source: switch (target.camera) {
+            true => .SOURCE_CAMERA,
+            false => null,
+          },
+          camera: switch ((target.camera, options.lens)) {
+            (true, final lens?) => CameraOptions(
+              lens: MirrorProtocol.lensToProto(lens),
+            ),
+            _ => null,
+          },
         ),
         timeout: requestTimeout,
       );
@@ -166,6 +216,9 @@ class FerretRoute implements MirrorRoute {
 
   void onAudioEnded(Session session) =>
       _feeds[session.remoteDeviceId]?.onAudioEnded();
+
+  void onCameraState(Session session, CameraState state) =>
+      _feeds[session.remoteDeviceId]?.onCameraState(state);
 
   void onControlState(Session session, ControlState state) =>
       _feeds[session.remoteDeviceId]?.onControlState(state);

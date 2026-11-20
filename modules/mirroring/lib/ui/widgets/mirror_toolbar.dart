@@ -32,6 +32,7 @@ class MirrorToolbar extends StatefulWidget {
     this.soundMuted = false,
     this.askingControl = false,
     this.quality = .good,
+    this.qualityStays = false,
     this.moreButtons = const [],
     this.isFullScreen = false,
     this.pinned,
@@ -67,6 +68,10 @@ class MirrorToolbar extends StatefulWidget {
   /// the Control chip waits.
   final bool askingControl;
   final ViewQuality quality;
+
+  /// The quality mark stays in the window's bar while there is room,
+  /// good or not: a camera's toolbar has little else.
+  final bool qualityStays;
 
   /// The device's keys that sit behind More: volume, power, its
   /// notifications panel.
@@ -232,7 +237,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   Widget _fittingBar(BuildContext context, double width) {
     final withQuality = ToolbarFold.forBar(
       widget.items,
-      showsQuality: widget.quality != .good,
+      showsQuality: widget.quality != .good || widget.qualityStays,
     );
     final plain = ToolbarFold.forBar(widget.items);
     for (final (fold, names) in [
@@ -453,6 +458,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     .home => LucideIcons.circle,
     .recents => LucideIcons.square,
     .rotate => LucideIcons.rotateCw,
+    .switchLens => LucideIcons.switchCamera,
     .screenshot => LucideIcons.camera,
     .keyboard => LucideIcons.keyboard,
     .fullScreen => switch (widget.isFullScreen) {
@@ -483,6 +489,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
         .home => l10n.buttonHome,
         .recents => l10n.buttonRecents,
         .rotate => l10n.buttonRotate,
+        .switchLens => l10n.cameraSwitch,
         .screenshot => l10n.buttonScreenshot,
         .keyboard => l10n.buttonKeyboard,
         .fullScreen => switch (widget.isFullScreen) {

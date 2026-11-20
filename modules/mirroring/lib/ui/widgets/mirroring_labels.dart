@@ -11,9 +11,11 @@ extension MirroringLabels on MirroringLocalizations {
   String audit(MirrorRecord record) {
     final length = duration(record.duration);
     final at = time(record.startedAt);
-    return switch (record.role) {
-      .shared => auditShared(record.deviceName, length, at),
-      .viewed => auditViewed(record.deviceName, length, at),
+    return switch ((record.role, record.camera)) {
+      (.shared, false) => auditShared(record.deviceName, length, at),
+      (.viewed, false) => auditViewed(record.deviceName, length, at),
+      (.shared, true) => cameraAuditShared(record.deviceName, length, at),
+      (.viewed, true) => cameraAuditViewed(record.deviceName, length, at),
     };
   }
 
@@ -85,6 +87,30 @@ extension MirroringLabels on MirroringLocalizations {
       .noOutput => soundNoOutput,
     };
   }
+
+  /// Why the computer isn't showing the phone's camera, in a few words.
+  /// What reads the same for a screen is said the same.
+  String cameraEndTitle(ViewEnd end, String device) => switch (end) {
+    .busy => cameraBusyTitle(device),
+    .unsupported => cameraUnsupportedTitle(device),
+    .turnedOff => cameraTurnedOffTitle(device),
+    .cannotAsk => cameraCannotStartTitle(device),
+    .systemEnded => cameraSystemEndedTitle(device),
+    _ => endTitle(end, device),
+  };
+
+  /// What to do about it.
+  String cameraEndBody(ViewEnd end, String device) => switch (end) {
+    .denied => cameraDeniedBody(device),
+    .busy => cameraBusyBody,
+    .unsupported => cameraUnsupportedBody,
+    .turnedOff => cameraTurnedOffBody(device, ThisComputer.here),
+    .cannotAsk => cameraCannotStartBody(device),
+    .stoppedHere => cameraStoppedHereBody(device),
+    .systemEnded => cameraSystemEndedBody(device),
+    .failed || .needsSetup => cameraFailedBody(device),
+    _ => endBody(end, device),
+  };
 
   /// Why the computer isn't showing the phone's screen, in a few words.
   String endTitle(ViewEnd end, String device) => switch (end) {

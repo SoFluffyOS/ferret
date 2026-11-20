@@ -31,14 +31,18 @@ class QualityPanelFrame extends StatelessWidget {
     final way = context.select<ViewerViewModel, MirrorWay?>(
       (viewModel) => viewModel.current?.way,
     );
+    final isCamera = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.current?.isCamera ?? false,
+    );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final caption = typography.caption1.copyWith(color: palette.mutedText);
-    final presetNote = switch (way) {
-      .cable => l10n.presetRestarts,
-      .airplay => l10n.presetAirplay,
+    final presetNote = switch ((isCamera, way)) {
+      (true, _) => l10n.cameraPictureNote,
+      (false, .cable) => l10n.presetRestarts,
+      (false, .airplay) => l10n.presetAirplay,
       _ => l10n.presetNextTime(deviceName),
     };
 
@@ -69,7 +73,7 @@ class QualityPanelFrame extends StatelessWidget {
                 ],
               ),
             ),
-            if (way != .airplay)
+            if (way != .airplay && !isCamera)
               for (final choice in QualityPreset.values)
                 PopupRow(
                   label: l10n.presetName(choice),

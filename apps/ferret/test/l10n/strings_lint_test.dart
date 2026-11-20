@@ -41,6 +41,7 @@ const _allowed = {
     'Everything on this screen is visible there',
     'Stop',
     'Screen sharing',
+    r'Camera on for $deviceName',
   },
   // The app's name in the window list and the task switcher.
   'modules/shell/lib/app/app_view.dart': {'Ferret'},

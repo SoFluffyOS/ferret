@@ -91,6 +91,7 @@ void main() {
     CaptureSupport support = const CaptureSupport(h264: true, jpeg: true),
     AudioCaptureSupport sound = .unsupported,
     FakeControlService? controlService,
+    FakeCamera? camera,
   }) async {
     final created = await tester.runAsync(FakeHost.create);
     if (created == null) {
@@ -113,7 +114,12 @@ void main() {
           supported: true,
         ),
       },
+      camera: switch (camera) {
+        null => null,
+        final fake => () => fake,
+      },
       canShare: true,
+      canShareCamera: camera != null,
       canView: false,
       clock: () => now,
     );
@@ -1038,6 +1044,187 @@ void main() {
 
       await startComputer(tester);
       expect(await permissionsFor(tester, pixel), isEmpty);
+    });
+  });
+
+  group('this phone\'s camera for a computer', () {
+    Future<void> pumpCard(WidgetTester tester) => tester.pumpWidget(
+      testApp(
+        ChangeNotifierProvider.value(
+          value: ui.shareViewModel,
+          child: const ShareCardFrame(),
+        ),
+      ),
+    );
+
+    Future<void> askForCamera() => feature.onEnvelope(
+      mac,
+      envelopeOf(
+        StartRequest(
+          version: 1,
+          codecs: const [.CODEC_H264],
+          audioCodecs: const [.AUDIO_CODEC_OPUS],
+          source: .SOURCE_CAMERA,
+        ),
+        expectsReply: true,
+      ),
+    );
+
+    testWidgets('a computer asking gets Once, Always and No; Once turns the '
+        'camera on with Stop, then leaves the audit line', (tester) async {
+      final camera = FakeCamera();
+      await startPhone(tester, camera: camera);
+      var reveals = 0;
+      final context = featureContext(onReveal: () async => reveals++);
+      await ui.onAppStarted(context);
+
+      await tester.runAsync(askForCamera);
+      await pumpCard(tester);
+      expect(find.text('MacBook wants to use your camera'), findsOneWidget);
+      expect(find.text('Always'), findsOneWidget);
+      expect(find.text('No'), findsOneWidget);
+      expect(ui.hasHomeCard(context), isTrue);
+      expect(ui.homeCardHoldsPrimary(context), isTrue);
+      expect(reveals, 1);
+      expect(camera.started, isEmpty);
+
+      await tester.tap(find.text('Once'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('Camera on for MacBook'), findsOneWidget);
+      expect(find.textContaining('sees and hears'), findsOneWidget);
+      expect(find.textContaining('Since 21:10'), findsOneWidget);
+      expect(camera.texts.single.title, 'Camera on for MacBook');
+
+      now = now.add(const Duration(minutes: 5));
+      await tester.tap(find.text('Stop'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(camera.stops, 1);
+      expect(
+        find.text("MacBook used this phone's camera for 5 min at 21:10"),
+        findsOneWidget,
+      );
+      await tester.runAsync(ui.dispose);
+    });
+
+    testWidgets('with the microphone kept closed, the card says so', (
+      tester,
+    ) async {
+      final camera = FakeCamera(microphoneGranted: false)
+        ..grantsMicrophone = false;
+      await startPhone(tester, camera: camera);
+      await tester.runAsync(askForCamera);
+      await feature.camera?.answer(.once);
+      await pumpCard(tester);
+
+      expect(find.textContaining('The microphone is off'), findsOneWidget);
+      await feature.camera?.stop();
+    });
+
+    testWidgets('settings: computers may ask, and Ask every time forgets '
+        'each Always', (tester) async {
+      await startPhone(tester, camera: FakeCamera());
+      await tester.runAsync(askForCamera);
+      await feature.camera?.answer(.always);
+      await feature.camera?.stop();
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) =>
+                ui.buildSettings(context, featureContext()) ??
+                const SizedBox.shrink(),
+          ),
+        ),
+      );
+
+      expect(find.text('Camera for a computer'), findsOneWidget);
+      expect(
+        find.text('Let my computers ask to use this camera'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('1 computer uses this camera without asking.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Ask every time').last);
+      await tester.pump();
+      await tester.pump();
+
+      expect(feature.camera?.alwaysAllowed, isEmpty);
+      expect(
+        find.text('1 computer uses this camera without asking.'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('a phone without a camera has no Camera settings', (
+      tester,
+    ) async {
+      await startPhone(tester, camera: FakeCamera(lenses: const []));
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (context) =>
+                ui.buildSettings(context, featureContext()) ??
+                const SizedBox.shrink(),
+          ),
+        ),
+      );
+
+      expect(find.text('Camera for a computer'), findsNothing);
+    });
+
+    testWidgets('a computer offers "Use Pixel\'s camera" only for a phone '
+        'that says it can send one', (tester) async {
+      await startComputer(tester);
+      final withCamera = FakeSession(
+        'pixel',
+        flags: const [MirroringFeature.shareFlag, MirroringFeature.cameraFlag],
+      );
+      final older = FakeSession('old', name: 'Old phone');
+      host.sessions = [withCamera, older];
+      DeviceStatus status(FakeSession session) => DeviceStatus(
+        TrustedDevice(
+          id: session.remoteDeviceId,
+          name: session.name,
+          platform: .PLATFORM_ANDROID,
+          formFactor: .FORM_FACTOR_PHONE,
+          publicKey: Uint8List(32),
+          pairedAt: now,
+        ),
+        session,
+      );
+      final context = featureContext();
+      late List<FeatureAction> pixelActions;
+      late List<FeatureAction> olderActions;
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (buildContext) {
+              pixelActions = ui.deviceActions(
+                buildContext,
+                context,
+                status(withCamera),
+              );
+              olderActions = ui.deviceActions(
+                buildContext,
+                context,
+                status(older),
+              );
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      expect(pixelActions.map((action) => action.label), [
+        'Show screen',
+        "Use Pixel's camera",
+      ]);
+      expect(olderActions.map((action) => action.label), ['Show screen']);
     });
   });
 }

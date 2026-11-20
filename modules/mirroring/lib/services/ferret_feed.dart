@@ -13,7 +13,8 @@ enum _FeedState { requesting, waiting, mirroring, ended }
 
 /// One phone's screen arriving over Ferret's own session: the messages of
 /// `ferret.mirroring.v1` turned into feed events, and back.
-class FerretFeed implements MirrorFeed, ViewerStatsSink, ControlAsking {
+class FerretFeed
+    implements MirrorFeed, ViewerStatsSink, ControlAsking, CameraSwitching {
   FerretFeed({
     required this.target,
     required Future<void> Function(GeneratedMessage message) send,
@@ -177,6 +178,7 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink, ControlAsking {
           fps: config.fps,
           sps: Uint8List.fromList(config.sps),
           pps: Uint8List.fromList(config.pps),
+          turn: config.turn,
         ),
       ),
     );
@@ -203,6 +205,34 @@ class FerretFeed implements MirrorFeed, ViewerStatsSink, ControlAsking {
       ),
     );
     return true;
+  }
+
+  /// The phone says which of its cameras is on.
+  void onCameraState(CameraState state) {
+    final lens = MirrorProtocol.lensFromProto(state.lens);
+    if (_state != .mirroring || lens == null) {
+      return;
+    }
+
+    _events.add(
+      FeedCameraChanged(
+        lens,
+        lenses: [
+          for (final other in state.lenses)
+            ?MirrorProtocol.lensFromProto(other),
+        ],
+      ),
+    );
+  }
+
+  /// Asks the phone for another of its cameras.
+  @override
+  Future<void> setLens(MirrorLens lens) async {
+    if (_state != .mirroring || !target.camera) {
+      return;
+    }
+
+    await _send(CameraSwitch(lens: MirrorProtocol.lensToProto(lens)));
   }
 
   /// The phone says where control stands.

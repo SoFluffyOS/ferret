@@ -61,18 +61,29 @@ class _MirrorPageState extends State<MirrorPage> {
   }
 
   Future<void> _back() async {
-    final isLive = _viewModel.sessionFor(widget.deviceId)?.isMirroring ?? false;
+    final session = _viewModel.sessionFor(widget.deviceId);
+    final isLive = session?.isMirroring ?? false;
     if (!isLive) {
       _close();
       return;
     }
 
     final l10n = context.mirroringL10n;
+    final isCamera = session?.isCamera ?? false;
     final answer = await ConfirmDialog.show(
       context,
-      title: l10n.leaveTitle(widget.deviceName),
-      message: l10n.leaveBody,
-      negativeText: l10n.keepShowing,
+      title: switch (isCamera) {
+        true => l10n.cameraLeaveTitle(widget.deviceName),
+        false => l10n.leaveTitle(widget.deviceName),
+      },
+      message: switch (isCamera) {
+        true => l10n.cameraLeaveBody,
+        false => l10n.leaveBody,
+      },
+      negativeText: switch (isCamera) {
+        true => l10n.cameraKeep,
+        false => l10n.keepShowing,
+      },
       positiveText: l10n.stop,
     );
     if (answer == .positive && mounted) {

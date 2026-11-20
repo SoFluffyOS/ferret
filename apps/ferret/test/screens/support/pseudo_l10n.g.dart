@@ -2196,6 +2196,40 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String get notNow => pseudo(super.notNow);
   @override
+  String get cameraSwitch => pseudo(super.cameraSwitch);
+  @override
+  String get cameraUseAgain => pseudo(super.cameraUseAgain);
+  @override
+  String get cameraPictureNote => pseudo(super.cameraPictureNote);
+  @override
+  String get cameraBusyBody => pseudo(super.cameraBusyBody);
+  @override
+  String get cameraUnsupportedBody => pseudo(super.cameraUnsupportedBody);
+  @override
+  String get cameraLeaveBody => pseudo(super.cameraLeaveBody);
+  @override
+  String get cameraKeep => pseudo(super.cameraKeep);
+  @override
+  String get cameraAskBody => pseudo(super.cameraAskBody);
+  @override
+  String get noticeCameraBody => pseudo(super.noticeCameraBody);
+  @override
+  String get noticeCameraBodySilent => pseudo(super.noticeCameraBodySilent);
+  @override
+  String get noticeCameraChannel => pseudo(super.noticeCameraChannel);
+  @override
+  String get settingsCameraTitle => pseudo(super.settingsCameraTitle);
+  @override
+  String get settingsCameraAllow => pseudo(super.settingsCameraAllow);
+  @override
+  String get settingsCameraAllowBody => pseudo(super.settingsCameraAllowBody);
+  @override
+  String get permissionCameraAsk => pseudo(super.permissionCameraAsk);
+  @override
+  String get permissionCameraAskOff => pseudo(super.permissionCameraAskOff);
+  @override
+  String get cameraTitle => pseudo(super.cameraTitle);
+  @override
   String windowTitle(String device) => pseudo(super.windowTitle(device));
   @override
   String inWindowTitle(String device) => pseudo(super.inWindowTitle(device));
@@ -2508,6 +2542,76 @@ class PseudoMirroringLocalizations extends MirroringLocalizationsEn {
   @override
   String settingsControlAlwaysCount(int count) =>
       pseudo(super.settingsControlAlwaysCount(count));
+  @override
+  String useCamera(String device) => pseudo(super.useCamera(device));
+  @override
+  String cameraWindowTitle(String device) =>
+      pseudo(super.cameraWindowTitle(device));
+  @override
+  String cameraWaitingBody(String device) =>
+      pseudo(super.cameraWaitingBody(device));
+  @override
+  String cameraWaitingNothing(String device) =>
+      pseudo(super.cameraWaitingNothing(device));
+  @override
+  String cameraDeniedBody(String device) =>
+      pseudo(super.cameraDeniedBody(device));
+  @override
+  String cameraBusyTitle(String device) =>
+      pseudo(super.cameraBusyTitle(device));
+  @override
+  String cameraUnsupportedTitle(String device) =>
+      pseudo(super.cameraUnsupportedTitle(device));
+  @override
+  String cameraTurnedOffTitle(String device) =>
+      pseudo(super.cameraTurnedOffTitle(device));
+  @override
+  String cameraTurnedOffBody(String device, String here) =>
+      pseudo(super.cameraTurnedOffBody(device, here));
+  @override
+  String cameraCannotStartTitle(String device) =>
+      pseudo(super.cameraCannotStartTitle(device));
+  @override
+  String cameraCannotStartBody(String device) =>
+      pseudo(super.cameraCannotStartBody(device));
+  @override
+  String cameraStoppedHereBody(String device) =>
+      pseudo(super.cameraStoppedHereBody(device));
+  @override
+  String cameraSystemEndedTitle(String device) =>
+      pseudo(super.cameraSystemEndedTitle(device));
+  @override
+  String cameraSystemEndedBody(String device) =>
+      pseudo(super.cameraSystemEndedBody(device));
+  @override
+  String cameraFailedBody(String device) =>
+      pseudo(super.cameraFailedBody(device));
+  @override
+  String cameraViewingTitle(String device) =>
+      pseudo(super.cameraViewingTitle(device));
+  @override
+  String cameraAuditViewed(String device, String duration, String time) =>
+      pseudo(super.cameraAuditViewed(device, duration, time));
+  @override
+  String cameraAuditShared(String device, String duration, String time) =>
+      pseudo(super.cameraAuditShared(device, duration, time));
+  @override
+  String cameraLeaveTitle(String device) =>
+      pseudo(super.cameraLeaveTitle(device));
+  @override
+  String cameraAskTitle(String computer) =>
+      pseudo(super.cameraAskTitle(computer));
+  @override
+  String cameraOnTitle(String computer) =>
+      pseudo(super.cameraOnTitle(computer));
+  @override
+  String cameraOnBody(String time) => pseudo(super.cameraOnBody(time));
+  @override
+  String cameraOnBodySilent(String time) =>
+      pseudo(super.cameraOnBodySilent(time));
+  @override
+  String settingsCameraAlwaysCount(int count) =>
+      pseudo(super.settingsCameraAlwaysCount(count));
 }
 
 class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {

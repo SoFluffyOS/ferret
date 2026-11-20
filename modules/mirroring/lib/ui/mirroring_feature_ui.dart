@@ -35,6 +35,7 @@ class MirroringFeatureUi extends FeatureUi {
            feature ?? MirroringFeature(routes: routes, receivers: receivers),
        _window = window {
     this.feature.texts = _noticeTexts;
+    this.feature.cameraTexts = _cameraNoticeTexts;
   }
 
   @override
@@ -57,6 +58,11 @@ class MirroringFeatureUi extends FeatureUi {
   static const _onceAction = 'mirroring.control_once';
   static const _noAction = 'mirroring.control_no';
   static const _stopControlAction = 'mirroring.control_stop';
+  static const _cameraAskCategory = 'mirroring.camera_ask';
+  static const _cameraAskNotice = 'mirroring.camera_ask';
+  static const _cameraOnceAction = 'mirroring.camera_once';
+  static const _cameraAlwaysAction = 'mirroring.camera_always';
+  static const _cameraNoAction = 'mirroring.camera_no';
 
   /// Where "Show screen" sits among a device's first actions: right
   /// after Send files.
@@ -77,6 +83,9 @@ class MirroringFeatureUi extends FeatureUi {
   StreamSubscription<NoticeResponse>? _noticeResponses;
   StreamSubscription<void>? _controlNotices;
   StreamSubscription<NoticeResponse>? _controlResponses;
+  StreamSubscription<void>? _cameraNotices;
+  StreamSubscription<NoticeResponse>? _cameraResponses;
+  ShareRequest? _cameraAskShown;
   final Set<IncomingRequest> _asked = {};
   ControlRequest? _controlAskShown;
   ControlRequest? _controlledShown;
@@ -120,6 +129,14 @@ class MirroringFeatureUi extends FeatureUi {
         id: _controlledCategory,
         actions: [NoticeAction(id: _stopControlAction, label: l10n.stop)],
       ),
+      NoticeCategory(
+        id: _cameraAskCategory,
+        actions: [
+          NoticeAction(id: _cameraOnceAction, label: l10n.controlOnce),
+          NoticeAction(id: _cameraAlwaysAction, label: l10n.controlAlways),
+          NoticeAction(id: _cameraNoAction, label: l10n.controlNo),
+        ],
+      ),
     ];
   }
 
@@ -154,6 +171,10 @@ class MirroringFeatureUi extends FeatureUi {
               response.noticeId == _controlledNotice,
         )
         .listen(_onControlResponse);
+    _cameraNotices = feature.changes.listen((_) => _syncCameraNotice(context));
+    _cameraResponses = context.notifier.responses
+        .where((response) => response.noticeId == _cameraAskNotice)
+        .listen(_onCameraResponse);
   }
 
   @override
@@ -176,7 +197,10 @@ class MirroringFeatureUi extends FeatureUi {
   @override
   bool homeCardHoldsPrimary(FeatureContext feature) =>
       shareViewModel.isAvailable &&
-      (shareViewModel.controlPending != null || shareViewModel.active != null);
+      (shareViewModel.controlPending != null ||
+          shareViewModel.active != null ||
+          shareViewModel.cameraPending != null ||
+          shareViewModel.cameraActive != null);
 
   @override
   Widget? buildHomeCard(BuildContext context, FeatureContext feature) {
@@ -254,10 +278,14 @@ class MirroringFeatureUi extends FeatureUi {
       if (current != null && current.isLive)
         ActivityItem(
           id: 'mirroring.live',
-          icon: LucideIcons.screenShare,
-          title: switch (current.startedAt) {
-            null => l10n.viewingAsking(current.deviceName),
-            _ => l10n.viewingTitle(current.deviceName),
+          icon: switch (current.isCamera) {
+            true => LucideIcons.video,
+            false => LucideIcons.screenShare,
+          },
+          title: switch ((current.startedAt, current.isCamera)) {
+            (null, _) => l10n.viewingAsking(current.deviceName),
+            (_, true) => l10n.cameraViewingTitle(current.deviceName),
+            (_, false) => l10n.viewingTitle(current.deviceName),
           },
           detail: switch (current.startedAt) {
             final startedAt? => l10n.viewingDetail(
@@ -269,7 +297,7 @@ class MirroringFeatureUi extends FeatureUi {
           at: current.startedAt,
           pinned: true,
           tone: .accent,
-          onTap: () => unawaited(_openPage(feature, current.target)),
+          onTap: () => unawaited(_openLive(feature, current)),
           actions: [
             ActivityAction(
               label: l10n.stop,
@@ -280,7 +308,10 @@ class MirroringFeatureUi extends FeatureUi {
       if (record != null && !(current?.isLive ?? false))
         ActivityItem(
           id: 'mirroring.record.${record.startedAt.millisecondsSinceEpoch}',
-          icon: LucideIcons.screenShare,
+          icon: switch (record.camera) {
+            true => LucideIcons.video,
+            false => LucideIcons.screenShare,
+          },
           title: l10n.audit(record),
           at: record.endedAt,
           tone: .muted,
@@ -319,18 +350,24 @@ class MirroringFeatureUi extends FeatureUi {
     FeatureContext feature,
     DeviceStatus device,
   ) {
-    if (!_canShow(device)) {
-      return const [];
-    }
+    final l10n = context.mirroringL10n;
 
     return [
-      FeatureAction(
-        id: 'mirroring.show_screen',
-        label: context.mirroringL10n.showScreen,
-        icon: LucideIcons.screenShare,
-        homeOrder: _homeOrder,
-        onPressed: () => unawaited(_openMirror(feature, device.device)),
-      ),
+      if (_canShow(device))
+        FeatureAction(
+          id: 'mirroring.show_screen',
+          label: l10n.showScreen,
+          icon: LucideIcons.screenShare,
+          homeOrder: _homeOrder,
+          onPressed: () => unawaited(_openMirror(feature, device.device)),
+        ),
+      if (_canUseCamera(device))
+        FeatureAction(
+          id: 'mirroring.use_camera',
+          label: l10n.useCamera(device.device.name),
+          icon: LucideIcons.video,
+          onPressed: () => unawaited(_openCamera(feature, device.device)),
+        ),
     ];
   }
 
@@ -428,24 +465,39 @@ class MirroringFeatureUi extends FeatureUi {
     DeviceStatus device,
   ) {
     final deviceId = device.device.id;
-    final applies =
-        _isViewer(device.session) || !shareViewModel.mayAsk(deviceId);
-    if (!shareViewModel.isAvailable || !applies) {
+    final isViewer = _isViewer(device.session);
+    final applies = isViewer || !shareViewModel.mayAsk(deviceId);
+    final cameraApplies =
+        shareViewModel.canSendCamera &&
+        (isViewer || !shareViewModel.mayAskCamera(deviceId));
+    if (!shareViewModel.isAvailable) {
       return const [];
     }
 
     final l10n = context.mirroringL10n;
     return [
-      DevicePermission(
-        label: l10n.permissionAsk,
-        detail: switch (shareViewModel.enabled) {
-          true => l10n.settingsAllowBody,
-          false => l10n.permissionAskOff,
-        },
-        value: shareViewModel.mayAsk(deviceId),
-        onChanged: (value) =>
-            unawaited(shareViewModel.setMayAsk(deviceId, value)),
-      ),
+      if (applies)
+        DevicePermission(
+          label: l10n.permissionAsk,
+          detail: switch (shareViewModel.enabled) {
+            true => l10n.settingsAllowBody,
+            false => l10n.permissionAskOff,
+          },
+          value: shareViewModel.mayAsk(deviceId),
+          onChanged: (value) =>
+              unawaited(shareViewModel.setMayAsk(deviceId, value)),
+        ),
+      if (cameraApplies)
+        DevicePermission(
+          label: l10n.permissionCameraAsk,
+          detail: switch (shareViewModel.cameraEnabled) {
+            true => l10n.settingsCameraAllowBody,
+            false => l10n.permissionCameraAskOff,
+          },
+          value: shareViewModel.mayAskCamera(deviceId),
+          onChanged: (value) =>
+              unawaited(shareViewModel.setMayAskCamera(deviceId, value)),
+        ),
     ];
   }
 
@@ -457,6 +509,16 @@ class MirroringFeatureUi extends FeatureUi {
 
     return viewerViewModel.isAvailable &&
         (shares || platform == .PLATFORM_ANDROID || _viaAirplay(device.device));
+  }
+
+  /// Whether [device] gets "Use its camera" on this computer: a connected
+  /// phone that says it can send one. An older Ferret never sees it.
+  bool _canUseCamera(DeviceStatus device) {
+    final session = device.session;
+
+    return viewerViewModel.isAvailable &&
+        session != null &&
+        feature.canUseCameraOf(session);
   }
 
   /// An iPhone or iPad shows its screen by picking this computer itself.
@@ -586,6 +648,8 @@ class MirroringFeatureUi extends FeatureUi {
     await _noticeResponses?.cancel();
     await _controlNotices?.cancel();
     await _controlResponses?.cancel();
+    await _cameraNotices?.cancel();
+    await _cameraResponses?.cancel();
     _changes.dispose();
     stageWindow.dispose();
     viewerViewModel.dispose();
@@ -636,6 +700,44 @@ class MirroringFeatureUi extends FeatureUi {
       ),
       null => null,
     });
+  }
+
+  /// On the phone: the question while a computer asks for its camera.
+  /// "Camera on for MacBook" with Stop is Android's own ongoing notice,
+  /// from the service that keeps the camera open.
+  void _syncCameraNotice(FeatureContext context) {
+    final pending = feature.camera?.pending;
+    if (identical(pending, _cameraAskShown)) {
+      return;
+    }
+
+    _cameraAskShown = pending;
+    final l10n = platformMirroringL10n();
+    _showOrCancel(context, _cameraAskNotice, switch (pending) {
+      final asking? => LocalNotice(
+        id: _cameraAskNotice,
+        channel: .incoming,
+        title: l10n.cameraAskTitle(asking.deviceName),
+        body: l10n.cameraAskBody,
+        category: _cameraAskCategory,
+      ),
+      null => null,
+    });
+    if (pending != null) {
+      unawaited(context.reveal());
+    }
+  }
+
+  void _onCameraResponse(NoticeResponse response) {
+    final choice = switch (response.actionId) {
+      _cameraOnceAction => ControlChoice.once,
+      _cameraAlwaysAction => ControlChoice.always,
+      _cameraNoAction => ControlChoice.no,
+      _ => null,
+    };
+    if (choice != null) {
+      unawaited(feature.camera?.answer(choice));
+    }
   }
 
   void _showOrCancel(FeatureContext context, String id, LocalNotice? notice) {
@@ -691,6 +793,22 @@ class MirroringFeatureUi extends FeatureUi {
 
     await opened;
   }
+
+  /// Opens the stage for a phone's camera and asks the phone for it.
+  Future<void> _openCamera(FeatureContext context, TrustedDevice device) async {
+    final opened = _openStage(context, device.id, device.name, camera: true);
+    unawaited(viewerViewModel.showCamera(device.id, device.name));
+    await opened;
+  }
+
+  /// Back to the stage of what is shown right now.
+  Future<void> _openLive(FeatureContext context, ViewSession session) =>
+      _openStage(
+        context,
+        session.deviceId,
+        session.deviceName,
+        camera: session.isCamera,
+      );
 
   Future<void> _showTarget(FeatureContext context, MirrorTarget target) async {
     final opened = _openPage(context, target);
@@ -772,9 +890,10 @@ class MirroringFeatureUi extends FeatureUi {
   Future<void> _openStage(
     FeatureContext context,
     String deviceId,
-    String deviceName,
-  ) async {
-    if (await _openWindow(deviceId, deviceName)) {
+    String deviceName, {
+    bool camera = false,
+  }) async {
+    if (await _openWindow(deviceId, deviceName, camera: camera)) {
       return;
     }
 
@@ -831,15 +950,27 @@ class MirroringFeatureUi extends FeatureUi {
   /// The stage in a window in the phone's shape. The stage is said to be
   /// this device's before the window is there, so the one it replaces
   /// leaves everything alone as it goes.
-  Future<bool> _openWindow(String deviceId, String deviceName) async {
+  Future<bool> _openWindow(
+    String deviceId,
+    String deviceName, {
+    bool camera = false,
+  }) async {
     if (!stageWindow.canOpen) {
       return false;
     }
 
+    final l10n = platformMirroringL10n();
     viewerViewModel.openStage(deviceId);
     return stageWindow.open(
       deviceId: deviceId,
-      title: platformMirroringL10n().windowTitle(deviceName),
+      title: switch (camera) {
+        true => l10n.cameraWindowTitle(deviceName),
+        false => l10n.windowTitle(deviceName),
+      },
+      shape: switch (camera) {
+        true => StageWindowViewModel.cameraShape,
+        false => StageWindowViewModel.firstShape,
+      },
       barHeight: MirrorWindowBar.height,
       builder: (_) => _withViewModels(
         MirrorWindowPage(
@@ -848,6 +979,19 @@ class MirroringFeatureUi extends FeatureUi {
           onClose: () => unawaited(stageWindow.close()),
         ),
       ),
+    );
+  }
+
+  CameraTexts _cameraNoticeTexts(String deviceName, {bool withSound = false}) {
+    final l10n = platformMirroringL10n();
+    return CameraTexts(
+      title: l10n.cameraOnTitle(deviceName),
+      body: switch (withSound) {
+        true => l10n.noticeCameraBody,
+        false => l10n.noticeCameraBodySilent,
+      },
+      stopLabel: l10n.stop,
+      channelName: l10n.noticeCameraChannel,
     );
   }
 

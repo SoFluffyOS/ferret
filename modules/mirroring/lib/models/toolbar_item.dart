@@ -5,6 +5,9 @@ enum ToolbarItem {
   recents,
   rotate,
 
+  /// For a camera: goes to the phone's other camera.
+  switchLens,
+
   /// Saves the picture as it is now to a file.
   screenshot,
   keyboard,
@@ -46,6 +49,7 @@ class ToolbarFold {
   };
 
   static const _alwaysShown = {
+    ToolbarItem.switchLens,
     ToolbarItem.back,
     ToolbarItem.home,
     ToolbarItem.recents,

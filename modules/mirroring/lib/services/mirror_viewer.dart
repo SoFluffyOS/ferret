@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:core/core.dart';
 import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mirroring/models/models.dart';
 import 'package:mirroring/services/feed_player.dart';
+import 'package:mirroring/services/mirror_protocol.dart';
 import 'package:mirroring/services/mirror_routes.dart';
 import 'package:mirroring/services/viewer_stats_sink.dart';
 
@@ -103,10 +107,27 @@ class MirrorViewer {
   /// The picture to draw, or null before the first frame.
   ValueListenable<MirrorPicture?> get picture => _picture;
 
-  /// Saves the picture shown right now as a PNG file at [path]. False
-  /// when nothing is shown or the file couldn't be written.
-  Future<bool> savePicture(String path) async =>
-      await _player?.savePicture(path) ?? false;
+  /// Saves the picture shown right now as a PNG file at [path], turned
+  /// upright like on screen. False when nothing is shown or the file
+  /// couldn't be written.
+  Future<bool> savePicture(String path) async {
+    final saved = await _player?.savePicture(path) ?? false;
+    final quarterTurns = switch (_picture.value) {
+      TurnedPicture(:final quarterTurns) => quarterTurns,
+      _ => 0,
+    };
+    if (!saved || quarterTurns == 0) {
+      return saved;
+    }
+
+    try {
+      await _turnFile(path, quarterTurns);
+      return true;
+    } on Object catch (error) {
+      printWarning('Could not turn the saved picture', error);
+      return false;
+    }
+  }
 
   /// Mouse, keyboard and buttons on the device being shown, when its route
   /// has them. Null means view only.
@@ -152,6 +173,25 @@ class MirrorViewer {
       startTarget(
         _routes.bestTargetFor(deviceId, preferControl: preferControl),
       );
+
+  /// Shows the camera of the paired device [deviceId], with its
+  /// microphone, where its owner is asked first.
+  Future<void> showCamera(String deviceId) =>
+      startTarget(_routes.ferret.cameraTargetFor(deviceId));
+
+  /// Switches the camera being shown to [lens], and starts with it next
+  /// time.
+  Future<void> setLens(MirrorLens lens) async {
+    final current = _current;
+    if (current == null || !current.isCamera || !current.isMirroring) {
+      return;
+    }
+
+    await _settings.setCameraLens(lens);
+    if (_feed case final CameraSwitching switching) {
+      await switching.setLens(lens);
+    }
+  }
 
   /// Shows [target] through its route. A live attempt with the same device
   /// the same way is kept; anything else is stopped first.
@@ -344,7 +384,7 @@ class MirrorViewer {
 
     final MirrorFeed feed;
     try {
-      feed = await route.open(target, _options);
+      feed = await route.open(target, _optionsFor(target));
     } on Object catch (error) {
       printWarning('Opening a screen through ${route.id} failed', error);
       await _endAttempt(attempt, .failed);
@@ -375,7 +415,7 @@ class MirrorViewer {
 
     final MirrorFeed feed;
     try {
-      feed = await route.open(target, _options);
+      feed = await route.open(target, _optionsFor(target));
     } on Object catch (error) {
       printWarning('Opening a screen through ${route.id} failed', error);
       await _endAttempt(attempt, .lostConnection);
@@ -393,14 +433,28 @@ class MirrorViewer {
   }
 
   /// What a route is asked for: the picture as the settings say, and the
-  /// sound when it plays here.
-  FeedOptions get _options => _settings.quality.options(
-    _codecs,
-    audioCodecs: switch (soundOn) {
+  /// sound when it plays here. A camera comes as video only, at the size
+  /// a webcam has, starting with the camera used last.
+  FeedOptions _optionsFor(MirrorTarget target) {
+    final sound = switch (soundOn) {
       true => audioCodecs,
-      false => const [],
-    },
-  );
+      false => const <MirrorAudioCodec>[],
+    };
+    if (!target.camera) {
+      return _settings.quality.options(_codecs, audioCodecs: sound);
+    }
+
+    return FeedOptions(
+      codecs: [
+        for (final codec in _codecs)
+          if (codec == .h264) codec,
+      ],
+      maxSize: MirrorProtocol.cameraLongSide,
+      maxFps: MirrorProtocol.cameraFps,
+      audioCodecs: sound,
+      lens: _settings.cameraLens,
+    );
+  }
 
   ViewSound get _askedSound => switch (soundOn) {
     true => .starting,
@@ -444,6 +498,8 @@ class MirrorViewer {
         _onSourceState(screenOff);
       case FeedControlChanged(:final access):
         _onControlChanged(access);
+      case FeedCameraChanged(:final lens, :final lenses):
+        _onCameraChanged(lens, lenses);
       case FeedAudioConfigured(:final config):
         _audioConfig = config;
         unawaited(_playSound(config));
@@ -465,6 +521,15 @@ class MirrorViewer {
     }
 
     _set(current.copyWith(control: access));
+  }
+
+  void _onCameraChanged(MirrorLens lens, List<MirrorLens> lenses) {
+    final current = _current;
+    if (current == null || !current.isLive) {
+      return;
+    }
+
+    _set(current.copyWith(lens: lens, lenses: lenses));
   }
 
   void _onWaiting(Duration timeout) {
@@ -542,6 +607,7 @@ class MirrorViewer {
     }
 
     _set(_current?.copyWith(config: config));
+    _onPicture();
   }
 
   /// Plays the feed's sound as [config] says, unless it is turned off
@@ -663,7 +729,47 @@ class MirrorViewer {
     await player.close();
   }
 
-  void _onPicture() => _picture.value = _player?.picture.value;
+  static Future<void> _turnFile(String path, int quarterTurns) async {
+    final file = File(path);
+    final codec = await ui.instantiateImageCodec(await file.readAsBytes());
+    final image = (await codec.getNextFrame()).image;
+    final odd = quarterTurns.isOdd;
+    final width = switch (odd) {
+      true => image.height,
+      false => image.width,
+    };
+    final height = switch (odd) {
+      true => image.width,
+      false => image.height,
+    };
+    final recorder = ui.PictureRecorder();
+    ui.Canvas(recorder)
+      ..translate(width / 2, height / 2)
+      ..rotate(quarterTurns * math.pi / 2)
+      ..translate(-image.width / 2, -image.height / 2)
+      ..drawImage(image, ui.Offset.zero, ui.Paint());
+    final turned = await recorder.endRecording().toImage(width, height);
+    final bytes = await turned.toByteData(format: .png);
+    image.dispose();
+    turned.dispose();
+    if (bytes == null) {
+      throw StateError('The turned picture has no bytes');
+    }
+
+    await file.writeAsBytes(bytes.buffer.asUint8List());
+  }
+
+  /// A camera's picture is turned the way its config says, to show
+  /// upright however the phone is held.
+  void _onPicture() {
+    final picture = _player?.picture.value;
+    if (picture == null) {
+      _picture.value = null;
+      return;
+    }
+
+    _picture.value = TurnedPicture.of(picture, _current?.config?.turn ?? 0);
+  }
 
   void _onShown() {
     final current = _current;
@@ -780,7 +886,8 @@ class MirrorViewer {
   /// reach or ask it. Never after its owner answered, and never twice.
   MirrorTarget? _fallbackFor(ViewSession session, ViewEnd end) {
     final overFerret = session.target.routeId == _routes.ferret.id;
-    if (!overFerret || session.startedAt != null || !end.mayFallBack) {
+    final tried = session.startedAt != null || session.isCamera;
+    if (!overFerret || tried || !end.mayFallBack) {
       return null;
     }
 
@@ -880,6 +987,7 @@ class MirrorViewer {
         .lostConnection => .lostConnection,
         _ => .failed,
       },
+      camera: session.isCamera,
     );
   }
 

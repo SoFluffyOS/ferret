@@ -176,6 +176,8 @@ class ViewSession {
     this.viaFallback = false,
     this.sound = .off,
     this.control,
+    this.lens,
+    this.lenses = const [],
     this.stats = const ViewStats(),
   });
 
@@ -227,6 +229,12 @@ class ViewSession {
   /// that asks its owner first. Null for a route that never asks: a cable
   /// controls at once, AirPlay never.
   final ControlAccess? control;
+
+  /// For a camera: the one that is on, once the phone said.
+  final MirrorLens? lens;
+
+  /// For a camera: every one the phone can switch to.
+  final List<MirrorLens> lenses;
   final ViewStats stats;
 
   String get deviceId => deviceIdOf(target);
@@ -234,6 +242,24 @@ class ViewSession {
   String get deviceName => target.name;
 
   MirrorWay get way => .of(target);
+
+  /// It is the device's camera and microphone, not its screen.
+  bool get isCamera => target.camera;
+
+  /// The camera a switch goes to: the next of [lenses] after [lens]. Null
+  /// when there is no other.
+  MirrorLens? get nextLens {
+    final lens = this.lens;
+    final others = [
+      for (final other in lenses)
+        if (other != lens) other,
+    ];
+    if (lens == null || others.isEmpty) {
+      return null;
+    }
+
+    return others.first;
+  }
 
   /// The phone was asked and hasn't said no or stopped.
   bool get isLive => phase != .ended;
@@ -255,6 +281,8 @@ class ViewSession {
     bool? viaFallback,
     ViewSound? sound,
     ControlAccess? control,
+    MirrorLens? lens,
+    List<MirrorLens>? lenses,
     ViewStats? stats,
   }) => ViewSession(
     target: target,
@@ -271,6 +299,8 @@ class ViewSession {
     viaFallback: viaFallback ?? this.viaFallback,
     sound: sound ?? this.sound,
     control: control ?? this.control,
+    lens: lens ?? this.lens,
+    lenses: lenses ?? this.lenses,
     stats: stats ?? this.stats,
   );
 }

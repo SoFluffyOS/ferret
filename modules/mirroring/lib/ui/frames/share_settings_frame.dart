@@ -4,14 +4,16 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mirroring/l10n/l10n.dart';
 import 'package:mirroring/models/models.dart';
+import 'package:mirroring/ui/frames/camera_settings_frame.dart';
 import 'package:mirroring/ui/frames/control_settings_frame.dart';
 import 'package:mirroring/ui/widgets/widgets.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The phone's screen settings: on or off, what it can't do, and the
-/// history of who saw the screen.
+/// The phone's screen settings: on or off, what it can't do, its camera
+/// for a computer, and the history of who saw the screen or used the
+/// camera.
 class ShareSettingsFrame extends StatelessWidget {
   const ShareSettingsFrame({super.key});
 
@@ -97,6 +99,7 @@ class ShareSettingsFrame extends StatelessWidget {
           ],
         ),
         const ControlSettingsFrame(),
+        const CameraSettingsFrame(),
         HistoryList(
           history: history,
           emptyText: l10n.settingsHistoryEmptyShared,

@@ -128,6 +128,43 @@ class _Rig {
       );
   }
 
+  /// The owner said yes to the camera, held on its side: the picture
+  /// comes as it shows, with the back and front lenses to switch.
+  Future<void> streamCamera() async {
+    await viewModel.showCamera('pixel', 'Pixel 9');
+    ferret
+      ..onAccept(
+        pixel,
+        StartAccept(
+          version: 1,
+          codec: .CODEC_H264,
+          audio: .AUDIO_ANSWER_SENDING,
+        ),
+      )
+      ..onCameraState(
+        pixel,
+        CameraState(
+          lens: .CAMERA_LENS_BACK,
+          lenses: const [.CAMERA_LENS_BACK, .CAMERA_LENS_FRONT],
+        ),
+      )
+      ..onConfig(
+        pixel,
+        StreamConfig(
+          configId: 1,
+          codec: .CODEC_H264,
+          width: 1200,
+          height: 540,
+          sps: [0x67],
+          pps: [0x68],
+        ),
+      )
+      ..onFrame(
+        pixel,
+        Frame(configId: 1, sequence: Int64(0), keyframe: true, data: [1]),
+      );
+  }
+
   /// Pixel 9 plugged in with debugging allowed, shown over the cable.
   Future<void> streamOverCable() async {
     host.setSessions([]);
@@ -674,6 +711,33 @@ final _screens = <_Screen>[
       );
     },
     after: (tester, rig) => _tap(tester, find.text('View only')),
+  ),
+  _Screen(
+    'mirror_52_camera_asking',
+    before: (rig) => rig.viewModel.showCamera('pixel', 'Pixel 9'),
+  ),
+  _Screen(
+    'mirror_53_camera_on',
+    before: (rig) => rig.streamCamera(),
+    turned: true,
+  ),
+  _Screen(
+    'mirror_54_camera_own_window',
+    body: _ownWindow,
+    before: (rig) => rig.streamCamera(),
+    turned: true,
+    windows: _turnedWindows,
+  ),
+  _Screen(
+    'mirror_55_camera_stopped',
+    before: (rig) async {
+      await rig.streamCamera();
+      rig.ferret.onStop(
+        rig.pixel,
+        Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE),
+      );
+    },
+    turned: true,
   ),
 ];
 

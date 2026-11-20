@@ -1,8 +1,9 @@
 import 'package:mirroring/models/mirror_end.dart';
 import 'package:mirroring/models/mirror_role.dart';
 
-/// One time a screen was mirrored: the audit line people see afterwards,
-/// such as "MacBook viewed your screen for 12 min at 21:10".
+/// One time a screen was mirrored, or a camera used: the audit line people
+/// see afterwards, such as "MacBook viewed your screen for 12 min at
+/// 21:10".
 class MirrorRecord {
   const MirrorRecord({
     required this.deviceId,
@@ -11,6 +12,7 @@ class MirrorRecord {
     required this.startedAt,
     required this.endedAt,
     required this.end,
+    this.camera = false,
   });
 
   /// The other device.
@@ -21,6 +23,9 @@ class MirrorRecord {
   final DateTime endedAt;
   final MirrorEnd end;
 
+  /// It was the camera and microphone, not the screen.
+  final bool camera;
+
   Duration get duration => endedAt.difference(startedAt);
 
   Map<String, Object?> toJson() => {
@@ -30,6 +35,7 @@ class MirrorRecord {
     'started_at': startedAt.millisecondsSinceEpoch,
     'ended_at': endedAt.millisecondsSinceEpoch,
     'end': end.name,
+    if (camera) 'camera': true,
   };
 
   /// Null for anything that isn't a stored record.
@@ -56,6 +62,7 @@ class MirrorRecord {
       startedAt: .fromMillisecondsSinceEpoch(startedAt),
       endedAt: .fromMillisecondsSinceEpoch(endedAt),
       end: MirrorEnd.values.asNameMap()[json['end']] ?? .viewerDone,
+      camera: json['camera'] == true,
     );
   }
 }

@@ -96,7 +96,7 @@ class MirrorSession implements Session {
   FeatureSupport? remoteFeature(String featureId) => FeatureSupport(
     id: featureId,
     version: 1,
-    flags: const [MirroringFeature.shareFlag],
+    flags: const [MirroringFeature.shareFlag, MirroringFeature.cameraFlag],
   );
 
   @override
@@ -336,4 +336,45 @@ class AirReceiver implements MirrorReceiver {
 
   @override
   Future<void> dispose() async {}
+}
+
+/// A phone camera that starts at once and sends nothing.
+class StillCamera implements CameraCapture {
+  final StreamController<CaptureEvent> _events = .broadcast();
+
+  @override
+  Stream<CaptureEvent> get events => _events.stream;
+
+  @override
+  Future<CameraSupport> support() async => const CameraSupport(
+    h264: true,
+    lenses: [.back, .front],
+    cameraGranted: true,
+    microphoneGranted: true,
+  );
+
+  @override
+  Future<CameraSupport> requestAccess({required bool withMicrophone}) =>
+      support();
+
+  @override
+  Future<MirrorLens?> start(
+    CameraCaptureOptions options,
+    CameraTexts texts,
+  ) async => options.lens;
+
+  @override
+  Future<MirrorLens?> setLens(MirrorLens lens) async => lens;
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  Future<void> requestKeyframe() async {}
+
+  @override
+  Future<void> setBitrate(int bitrate) async {}
+
+  @override
+  Future<void> dispose() async => _events.close();
 }

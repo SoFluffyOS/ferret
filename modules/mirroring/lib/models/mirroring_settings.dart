@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:mirroring/models/mirror_record.dart';
 import 'package:mirroring/models/quality_preset.dart';
 
@@ -16,6 +17,10 @@ class MirroringSettings {
   static const soundVolumeKey = 'mirroring.sound_volume';
   static const sendSoundKey = 'mirroring.send_sound';
   static const controlAlwaysKey = 'mirroring.control_always';
+  static const cameraEnabledKey = 'mirroring.camera_enabled';
+  static const cameraAlwaysKey = 'mirroring.camera_always';
+  static const cameraBlockedKey = 'mirroring.camera_blocked';
+  static const cameraLensKey = 'mirroring.camera_lens';
 
   /// The one switch the cable and the receivers used to share. Only read,
   /// so a computer that had it on keeps both.
@@ -111,6 +116,54 @@ class MirroringSettings {
 
   Future<void> clearControlAlways() =>
       _store.set(controlAlwaysKey, const <Object?>[]);
+
+  /// Paired computers may ask to use this phone's camera. On by default:
+  /// the owner still answers every computer that wasn't told Always.
+  bool get cameraEnabled => _store.get<bool>(cameraEnabledKey) ?? true;
+
+  Future<void> setCameraEnabled(bool value) =>
+      _store.set(cameraEnabledKey, value);
+
+  /// Paired computers the owner turned away for good: they can't even
+  /// ask for the camera.
+  List<String> get cameraBlocked => [
+    for (final id in _store.get<List<Object?>>(cameraBlockedKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  bool isCameraBlocked(String deviceId) => cameraBlocked.contains(deviceId);
+
+  Future<void> setCameraBlocked(String deviceId, bool blocked) =>
+      _store.set(cameraBlockedKey, [
+        for (final id in cameraBlocked)
+          if (id != deviceId) id,
+        if (blocked) deviceId,
+      ]);
+
+  /// The computers this phone's owner answered Always: its camera turns
+  /// on for them without asking.
+  List<String> get cameraAlways => [
+    for (final id in _store.get<List<Object?>>(cameraAlwaysKey) ?? const [])
+      if (id case final String deviceId) deviceId,
+  ];
+
+  Future<void> setCameraAlways(String deviceId, bool always) =>
+      _store.set(cameraAlwaysKey, [
+        for (final id in cameraAlways)
+          if (id != deviceId) id,
+        if (always) deviceId,
+      ]);
+
+  Future<void> clearCameraAlways() =>
+      _store.set(cameraAlwaysKey, const <Object?>[]);
+
+  /// The camera this computer asked a phone for last, to start with it
+  /// again.
+  MirrorLens get cameraLens =>
+      MirrorLens.values.asNameMap()[_store.get<String>(cameraLensKey)] ?? .back;
+
+  Future<void> setCameraLens(MirrorLens lens) =>
+      _store.set(cameraLensKey, lens.name);
 
   /// The phones whose owner was told once that a cable doesn't ask.
   List<String> get cableTold => [

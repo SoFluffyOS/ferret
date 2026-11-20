@@ -78,15 +78,45 @@ class MirrorToolbarFrame extends StatelessWidget {
     final soundWay = context.select<ViewerViewModel, SoundWay>(
       (viewModel) => viewModel.soundWay,
     );
+    final isCamera = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.current?.isCamera ?? false,
+    );
+    final canSwitchLens = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.current?.nextLens != null,
+    );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
     // Only the window's bar fades, so only there is keeping it a choice.
     final canPin = place == .bar;
     final hasMore = canPress || canPlaySound || place != .beside;
+    // A camera has nothing to press: its other camera, the picture's
+    // quality, and Stop.
+    final items = switch (isCamera) {
+      true => <ToolbarItem>[
+        if (canSwitchLens) .switchLens,
+        .screenshot,
+        .quality,
+        if (canFullScreen) .fullScreen,
+        if (place != .beside) .more,
+        .stop,
+      ],
+      false => <ToolbarItem>[
+        if (canPress) ...const [.back, .home, .recents, .rotate],
+        if (canAskControl) .askControl,
+        if (viewOnly && !canAskControl) .viewOnly,
+        .screenshot,
+        if (canText) .keyboard,
+        .quality,
+        if (canFullScreen) .fullScreen,
+        if (hasMore) .more,
+        .stop,
+      ],
+    };
 
     return MirrorToolbar(
       place: place,
       quality: quality,
+      qualityStays: isCamera,
       isFullScreen: isFullScreen,
       pinned: switch (canPin) {
         true => pinned,
@@ -98,23 +128,14 @@ class MirrorToolbarFrame extends StatelessWidget {
         true => _moreButtons,
         false => const [],
       },
-      items: [
-        if (canPress) ...const [.back, .home, .recents, .rotate],
-        if (canAskControl) .askControl,
-        if (viewOnly && !canAskControl) .viewOnly,
-        .screenshot,
-        if (canText) .keyboard,
-        .quality,
-        if (canFullScreen) .fullScreen,
-        if (hasMore) .more,
-        .stop,
-      ],
+      items: items,
       onButton: viewModel.press,
       onItem: (item) => switch (item) {
         .back => viewModel.press(.back),
         .home => viewModel.press(.home),
         .recents => viewModel.press(.recents),
         .rotate => viewModel.press(.rotate),
+        .switchLens => unawaited(viewModel.switchLens()),
         .screenshot => unawaited(viewModel.screenshot()),
         .keyboard => viewModel.openTextField(),
         .fullScreen => unawaited(viewModel.setFullScreen(!isFullScreen)),
@@ -123,7 +144,7 @@ class MirrorToolbarFrame extends StatelessWidget {
         .viewOnly || .quality || .more => null,
       },
       qualityPanel: (_) => QualityPanelFrame(deviceName: deviceName),
-      soundPanel: switch (canPlaySound) {
+      soundPanel: switch (canPlaySound && !isCamera) {
         true => (_) => SoundPanelFrame(deviceName: deviceName),
         false => null,
       },

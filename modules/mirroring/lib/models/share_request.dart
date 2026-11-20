@@ -1,4 +1,5 @@
-/// A computer waiting for this phone's owner to answer the system prompt.
+/// A computer waiting for this phone's owner to answer: the system prompt
+/// for its screen, Ferret's own question for its camera.
 class ShareRequest {
   const ShareRequest({
     required this.deviceId,

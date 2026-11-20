@@ -126,7 +126,7 @@ class MirrorRoutes {
   /// Whether [target]'s route sees the device right now.
   bool isReachable(MirrorTarget target) {
     if (target.routeId == ferret.id) {
-      return ferret.isConnected(target.id);
+      return ferret.reaches(target);
     }
 
     return _cableTargets.contains(target);

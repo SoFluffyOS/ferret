@@ -42,11 +42,23 @@ class MirrorEndedFrame extends StatelessWidget {
       (viewModel) =>
           viewModel.sessionFor(deviceId)?.target.ferretDeviceId != null,
     );
+    final isCamera = context.select<ViewerViewModel, bool>(
+      (viewModel) => viewModel.sessionFor(deviceId)?.isCamera ?? false,
+    );
+    // A cable shows a phone's screen, never its camera.
     final hasCable = context.select<ViewerViewModel, bool>(
-      (viewModel) => viewModel.hasCable,
+      (viewModel) => viewModel.hasCable && !isCamera,
     );
     final viewModel = context.read<ViewerViewModel>();
     final l10n = context.mirroringL10n;
+    final title = switch (isCamera) {
+      true => l10n.cameraEndTitle(end, deviceName),
+      false => l10n.endTitle(end, deviceName),
+    };
+    final body = switch (isCamera) {
+      true => l10n.cameraEndBody(end, deviceName),
+      false => l10n.endBody(end, deviceName),
+    };
     void again() => unawaited(viewModel.again(deviceId));
     final close = [
       if (onClose case final onClose?)
@@ -93,8 +105,8 @@ class MirrorEndedFrame extends StatelessWidget {
         builder: (context, left) => MirrorMessage(
           icon: LucideIcons.smartphone,
           tone: .warning,
-          title: l10n.endTitle(end, deviceName),
-          body: l10n.endBody(end, deviceName),
+          title: title,
+          body: body,
           actions: [
             ...close,
             MessageAction(
@@ -115,14 +127,21 @@ class MirrorEndedFrame extends StatelessWidget {
     }
 
     return MirrorMessage(
-      icon: _iconOf(end),
+      icon: switch ((isCamera, end)) {
+        (true, .stoppedHere || .stoppedOnPhone || .systemEnded) =>
+          LucideIcons.videoOff,
+        _ => _iconOf(end),
+      },
       tone: _toneOf(end),
-      title: l10n.endTitle(end, deviceName),
-      body: l10n.endBody(end, deviceName),
+      title: title,
+      body: body,
       actions: [
         ...close,
         MessageAction(
           label: switch (end) {
+            .stoppedHere ||
+            .stoppedOnPhone ||
+            .systemEnded when isCamera => l10n.cameraUseAgain,
             .stoppedHere || .stoppedOnPhone || .systemEnded => l10n.showAgain,
             .denied ||
             .timedOut ||

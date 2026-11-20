@@ -1327,4 +1327,195 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get notNow => 'Để sau';
+
+  @override
+  String useCamera(String device) {
+    return 'Dùng camera của $device';
+  }
+
+  @override
+  String cameraWindowTitle(String device) {
+    return '$device — Camera';
+  }
+
+  @override
+  String get cameraSwitch => 'Đổi camera';
+
+  @override
+  String get cameraUseAgain => 'Dùng lại';
+
+  @override
+  String get cameraPictureNote =>
+      '720p, 30 khung hình mỗi giây, như một webcam.';
+
+  @override
+  String cameraWaitingBody(String device) {
+    return 'Trên $device, nhấn Một lần hoặc Luôn luôn để bật camera.';
+  }
+
+  @override
+  String cameraWaitingNothing(String device) {
+    return 'Không thấy gì trên $device? Mở Ferret trên đó.';
+  }
+
+  @override
+  String cameraDeniedBody(String device) {
+    return 'Có người đã nhấn Không trên $device.';
+  }
+
+  @override
+  String cameraBusyTitle(String device) {
+    return '$device đang bận';
+  }
+
+  @override
+  String get cameraBusyBody =>
+      'Màn hình hoặc camera của nó đang bật cho một thiết bị. Hãy dừng thiết bị đó trước.';
+
+  @override
+  String cameraUnsupportedTitle(String device) {
+    return '$device không thể chia sẻ camera';
+  }
+
+  @override
+  String get cameraUnsupportedBody =>
+      'Dùng camera của điện thoại cần một điện thoại Android có Ferret mới nhất.';
+
+  @override
+  String cameraTurnedOffTitle(String device) {
+    return 'Camera đang tắt trên $device';
+  }
+
+  @override
+  String cameraTurnedOffBody(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'Mac này',
+        'windows': 'PC này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Trên $device: mở Ferret → Cài đặt → Đến máy tính của bạn và bật “Cho máy tính của tôi hỏi dùng camera này”. Sau đó mở $_temp0 ở đó và kiểm tra xem nó có được phép hỏi không.';
+  }
+
+  @override
+  String cameraCannotStartTitle(String device) {
+    return '$device không bật được camera';
+  }
+
+  @override
+  String cameraCannotStartBody(String device) {
+    return 'Trên $device: mở Ferret và cho phép dùng camera. Sau đó hỏi lại.';
+  }
+
+  @override
+  String cameraStoppedHereBody(String device) {
+    return 'Camera của $device đã tắt.';
+  }
+
+  @override
+  String cameraSystemEndedTitle(String device) {
+    return '$device đã tắt camera';
+  }
+
+  @override
+  String cameraSystemEndedBody(String device) {
+    return 'Android đã đóng camera, hoặc một ứng dụng khác đang dùng nó. Hãy dùng lại khi $device sẵn sàng.';
+  }
+
+  @override
+  String cameraFailedBody(String device) {
+    return '$device không khởi động được camera.';
+  }
+
+  @override
+  String cameraViewingTitle(String device) {
+    return 'Đang dùng camera của $device';
+  }
+
+  @override
+  String cameraAuditViewed(String device, String duration, String time) {
+    return 'Bạn đã dùng camera của $device trong $duration lúc $time';
+  }
+
+  @override
+  String cameraAuditShared(String device, String duration, String time) {
+    return '$device đã dùng camera của điện thoại này trong $duration lúc $time';
+  }
+
+  @override
+  String cameraLeaveTitle(String device) {
+    return 'Dừng dùng camera của $device?';
+  }
+
+  @override
+  String get cameraLeaveBody => 'Rời trang này sẽ tắt camera.';
+
+  @override
+  String get cameraKeep => 'Cứ để bật';
+
+  @override
+  String cameraAskTitle(String computer) {
+    return '$computer muốn dùng camera của bạn';
+  }
+
+  @override
+  String get cameraAskBody =>
+      'Nó sẽ thấy qua camera và nghe qua micro, cho đến khi bạn dừng lại.';
+
+  @override
+  String cameraOnTitle(String computer) {
+    return 'Camera đang bật cho $computer';
+  }
+
+  @override
+  String cameraOnBody(String time) {
+    return 'Nó đang thấy và nghe qua điện thoại này. Từ $time.';
+  }
+
+  @override
+  String cameraOnBodySilent(String time) {
+    return 'Nó đang thấy qua camera của điện thoại này. Micro đang tắt. Từ $time.';
+  }
+
+  @override
+  String get noticeCameraBody => 'Nó đang thấy và nghe qua điện thoại này';
+
+  @override
+  String get noticeCameraBodySilent =>
+      'Nó đang thấy qua camera của điện thoại này';
+
+  @override
+  String get noticeCameraChannel => 'Camera cho máy tính';
+
+  @override
+  String get settingsCameraTitle => 'Camera cho máy tính';
+
+  @override
+  String get settingsCameraAllow => 'Cho máy tính của tôi hỏi dùng camera này';
+
+  @override
+  String get settingsCameraAllowBody =>
+      'Bạn trả lời Một lần, Luôn luôn hoặc Không. Một thông báo có nút Dừng luôn hiện khi camera đang bật.';
+
+  @override
+  String settingsCameraAlwaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count máy tính dùng camera này mà không cần hỏi.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get permissionCameraAsk => 'Hỏi dùng camera của điện thoại này';
+
+  @override
+  String get permissionCameraAskOff =>
+      'Camera đang tắt với mọi máy tính. Bật trong Cài đặt → Đến máy tính của bạn.';
+
+  @override
+  String get cameraTitle => 'Camera';
 }

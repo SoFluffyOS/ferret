@@ -1,6 +1,7 @@
 // Camera: Take a photo on a phone's page on the Mac, the Activity lines
 // while waiting and after ("Photo from Pixel 7 · On your clipboard"), and
-// the request card on the phone ("MacBook Air wants a photo"). Renders into
+// the request card on the phone ("MacBook Air wants a photo"). Also Use
+// Pixel 7's camera on the phone's page, from Show screen. Renders into
 // temp/screens as `camera_<name>_*.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/camera_screens_test.dart
@@ -16,9 +17,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mirroring/mirroring.dart'
+    show MirroringFeature, MirroringFeatureUi;
 import 'package:phone_camera/phone_camera.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
+import 'support/mirror_fakes.dart' show StillCamera;
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
 
@@ -77,7 +81,30 @@ Future<String> _pairPixel(WidgetTester tester, ScreenRig rig) async {
   return phoneId;
 }
 
+/// A phone whose Ferret can send its camera to a computer.
+List<FeatureUi> _phoneWithWebcam() => [
+  for (final feature in phoneFeatures())
+    if (feature.featureId != MirroringFeature.featureId) feature,
+  MirroringFeatureUi(
+    feature: MirroringFeature(
+      camera: StillCamera.new,
+      canShare: true,
+      canShareCamera: true,
+      canView: false,
+    ),
+  ),
+];
+
 final _screens = <String, _Script>{
+  'webcam_action': (tester, rig, features) async {
+    await rig.pairConnectedPhone(
+      tester,
+      phoneFeatures: _phoneWithWebcam(),
+      name: 'Pixel 7',
+    );
+    await rig.settle(tester);
+    await rig.tapText(tester, 'More');
+  },
   'action': (tester, rig, features) async {
     await _pairPixel(tester, rig);
     await rig.tapText(tester, 'More');

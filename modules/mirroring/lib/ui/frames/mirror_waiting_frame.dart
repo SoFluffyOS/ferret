@@ -15,6 +15,7 @@ class MirrorWaitingFrame extends StatefulWidget {
     required this.until,
     required this.onCancel,
     this.asksEveryTime = false,
+    this.camera = false,
     this.clock,
   });
 
@@ -29,6 +30,10 @@ class MirrorWaitingFrame extends StatefulWidget {
 
   /// Says once why the phone asks every single time.
   final bool asksEveryTime;
+
+  /// The phone's camera is asked for: its owner answers in Ferret, not
+  /// Android's screen capture prompt.
+  final bool camera;
   final DateTime Function()? clock;
 
   @override
@@ -57,7 +62,10 @@ class _MirrorWaitingFrameState extends State<MirrorWaitingFrame> {
       icon: LucideIcons.smartphone,
       tone: .accent,
       title: l10n.waitingTitle(deviceName),
-      body: l10n.waitingBody(deviceName),
+      body: switch (widget.camera) {
+        true => l10n.cameraWaitingBody(deviceName),
+        false => l10n.waitingBody(deviceName),
+      },
       actions: [MessageAction(label: l10n.cancel, onPressed: widget.onCancel)],
       children: [
         if (until != null)
@@ -70,7 +78,10 @@ class _MirrorWaitingFrameState extends State<MirrorWaitingFrame> {
                 if (_isQuiet) ...[
                   Spacing.v8,
                   Text(
-                    l10n.waitingNothing(deviceName),
+                    switch (widget.camera) {
+                      true => l10n.cameraWaitingNothing(deviceName),
+                      false => l10n.waitingNothing(deviceName),
+                    },
                     textAlign: .center,
                     style: caption,
                   ),

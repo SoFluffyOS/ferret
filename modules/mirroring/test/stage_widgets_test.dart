@@ -79,6 +79,7 @@ void main() {
     bool systemMirrors = false,
     bool canFullScreen = false,
     Size size = phoneWindow,
+    List<String> flags = const [MirroringFeature.shareFlag],
   }) async {
     tester.view
       ..devicePixelRatio = 1
@@ -108,6 +109,7 @@ void main() {
     );
     pixel = FakeSession(
       'pixel',
+      flags: flags,
       answer: answer ?? (_) => StartPending(timeoutSeconds: 60),
     );
     host.sessions = [if (connected) pixel];
@@ -1886,6 +1888,103 @@ void main() {
       await tester.tap(find.byType(SwitchToggle).last);
       await tester.pumpAndSettle();
       expect(receiver.isListening, isTrue);
+    });
+  });
+
+  group('a phone\'s camera', () {
+    Future<void> startCamera(WidgetTester tester) => start(
+      tester,
+      size: const Size(800, 600),
+      flags: const [MirroringFeature.shareFlag, MirroringFeature.cameraFlag],
+    );
+
+    Future<void> streamCamera(WidgetTester tester) async {
+      await viewModel.showCamera('pixel', 'Pixel');
+      ferret()
+        ..onAccept(pixel, StartAccept(version: 1, codec: .CODEC_H264))
+        ..onCameraState(
+          pixel,
+          CameraState(
+            lens: .CAMERA_LENS_BACK,
+            lenses: const [.CAMERA_LENS_BACK, .CAMERA_LENS_FRONT],
+          ),
+        )
+        ..onConfig(
+          pixel,
+          StreamConfig(
+            configId: 1,
+            codec: .CODEC_H264,
+            width: 1280,
+            height: 720,
+            sps: [0x67],
+            pps: [0x68],
+            turn: 90,
+          ),
+        )
+        ..onFrame(
+          pixel,
+          Frame(configId: 1, sequence: Int64(1), keyframe: true, data: [1]),
+        );
+      await tester.pump();
+    }
+
+    testWidgets('asks the phone for its camera, and says where to answer', (
+      tester,
+    ) async {
+      await startCamera(tester);
+      await viewModel.showCamera('pixel', 'Pixel');
+      await pumpStage(tester);
+
+      final request = pixel.requests.whereType<StartRequest>().single;
+      expect(request.source, Source.SOURCE_CAMERA);
+      expect(request.camera.lens, CameraLens.CAMERA_LENS_BACK);
+      expect(request.maxHeight, 1280);
+      expect(
+        find.text('On Pixel, tap Once or Always to turn its camera on.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('shows the picture upright, with the lens switch, the '
+        'quality mark and Stop, and none of the phone\'s keys', (tester) async {
+      await startCamera(tester);
+      await streamCamera(tester);
+      await pumpStage(tester);
+
+      expect(
+        tester.widget<RotatedBox>(find.byType(RotatedBox)).quarterTurns,
+        1,
+      );
+      expect(tool(LucideIcons.switchCamera), findsOneWidget);
+      expect(find.byType(QualityMark), findsOneWidget);
+      expect(tool(LucideIcons.circleStop), findsOneWidget);
+      expect(find.text('Back'), findsNothing);
+      expect(find.text('Keyboard'), findsNothing);
+
+      await tester.tap(tool(LucideIcons.switchCamera));
+      await tester.pump();
+
+      expect(
+        pixel.sentOf<CameraSwitch>().single.lens,
+        CameraLens.CAMERA_LENS_FRONT,
+      );
+      expect(feature.settings.cameraLens, MirrorLens.front);
+    });
+
+    testWidgets('Stop on the phone says the camera is off, with Use again', (
+      tester,
+    ) async {
+      await startCamera(tester);
+      await streamCamera(tester);
+      await pumpStage(tester);
+
+      ferret().onStop(pixel, Stop(reason: .STOP_REASON_STOPPED_ON_SOURCE));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text('Stopped on Pixel'), findsOneWidget);
+      expect(find.text('Use again'), findsOneWidget);
+      expect(find.text('Show again'), findsNothing);
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -104,6 +105,134 @@ class FakeCapture implements ScreenCapture {
   Future<void> dispose() async => disposed = true;
 }
 
+/// A phone's cameras in memory: the test grants Android's permissions and
+/// makes the frames.
+class FakeCamera implements CameraCapture {
+  FakeCamera({
+    this.lenses = const [.back, .front],
+    this.cameraGranted = true,
+    this.microphoneGranted = true,
+  });
+
+  List<MirrorLens> lenses;
+  bool cameraGranted;
+  bool microphoneGranted;
+
+  /// What the owner answers when Android asks for the camera and the
+  /// microphone.
+  bool grantsCamera = true;
+  bool grantsMicrophone = true;
+
+  /// False for a phone that can't start its camera, as from the
+  /// background.
+  bool starts = true;
+  final StreamController<CaptureEvent> _events = .broadcast(sync: true);
+  final List<bool> accessAsks = [];
+  final List<CameraCaptureOptions> started = [];
+  final List<CameraTexts> texts = [];
+  final List<MirrorLens> switches = [];
+  final List<int> bitrates = [];
+  int keyframeRequests = 0;
+  int stops = 0;
+  bool disposed = false;
+
+  void emit(CaptureEvent event) => _events.add(event);
+
+  /// A config and a first keyframe, as a camera that just opened sends.
+  void play({int turn = 0}) {
+    emit(
+      CaptureConfigured(
+        MirrorStreamConfig(
+          codec: .h264,
+          width: 1280,
+          height: 720,
+          fps: 30,
+          sps: Uint8List.fromList([0x67, 0x42]),
+          pps: Uint8List.fromList([0x68, 0xce]),
+          turn: turn,
+        ),
+      ),
+    );
+    emit(
+      CaptureFrame(
+        MirrorFrame(
+          data: Uint8List.fromList([0, 0, 0, 1, 0x65, 9]),
+          ptsUs: 1000,
+          keyframe: true,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Stream<CaptureEvent> get events => _events.stream;
+
+  @override
+  Future<CameraSupport> support() async => CameraSupport(
+    h264: true,
+    lenses: lenses,
+    cameraGranted: cameraGranted,
+    microphoneGranted: microphoneGranted,
+  );
+
+  @override
+  Future<CameraSupport> requestAccess({required bool withMicrophone}) {
+    accessAsks.add(withMicrophone);
+    cameraGranted = cameraGranted || grantsCamera;
+    microphoneGranted =
+        microphoneGranted || (withMicrophone && grantsMicrophone);
+    return support();
+  }
+
+  @override
+  Future<MirrorLens?> start(
+    CameraCaptureOptions options,
+    CameraTexts texts,
+  ) async {
+    if (!starts) {
+      return null;
+    }
+
+    started.add(options);
+    this.texts.add(texts);
+    if (lenses.contains(options.lens)) {
+      return options.lens;
+    }
+
+    return lenses.first;
+  }
+
+  @override
+  Future<MirrorLens?> setLens(MirrorLens lens) async {
+    switches.add(lens);
+    return lens;
+  }
+
+  @override
+  Future<void> stop() async => stops++;
+
+  @override
+  Future<void> requestKeyframe() async => keyframeRequests++;
+
+  @override
+  Future<void> setBitrate(int bitrate) async => bitrates.add(bitrate);
+
+  @override
+  Future<void> dispose() async => disposed = true;
+}
+
+/// The words a test phone puts on its camera notice.
+CameraTexts cameraTextsFor(String deviceName, {bool withSound = false}) =>
+    CameraTexts(
+      title: 'Camera on for $deviceName',
+      body: switch (withSound) {
+        true => 'Sees and hears',
+        false => 'Sees',
+      },
+      stopLabel: 'Stop',
+      channelName: 'Camera',
+    );
+
 /// A decoder in memory: shows a picture for each frame when told to.
 class FakeDecoder implements MirrorDecoder {
   FakeDecoder({this.failConfigure = false, this.autoShow = true});
@@ -124,6 +253,9 @@ class FakeDecoder implements MirrorDecoder {
   final List<String> saved = [];
   bool canSave = true;
 
+  /// What a save writes to the file, when the test reads it back.
+  List<int>? png;
+
   @override
   Future<bool> savePicture(String path) async {
     if (!canSave || _picture.value == null) {
@@ -131,6 +263,10 @@ class FakeDecoder implements MirrorDecoder {
     }
 
     saved.add(path);
+    if (png case final bytes?) {
+      await File(path).writeAsBytes(bytes);
+    }
+
     return true;
   }
 

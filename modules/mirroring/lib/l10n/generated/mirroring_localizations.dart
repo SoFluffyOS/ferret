@@ -1840,6 +1840,252 @@ abstract class MirroringLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get notNow;
+
+  /// No description provided for @useCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {device}\'s camera'**
+  String useCamera(String device);
+
+  /// No description provided for @cameraWindowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} — Camera'**
+  String cameraWindowTitle(String device);
+
+  /// No description provided for @cameraSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch camera'**
+  String get cameraSwitch;
+
+  /// No description provided for @cameraUseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Use again'**
+  String get cameraUseAgain;
+
+  /// No description provided for @cameraPictureNote.
+  ///
+  /// In en, this message translates to:
+  /// **'720p at 30 frames a second, like a webcam.'**
+  String get cameraPictureNote;
+
+  /// No description provided for @cameraWaitingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}, tap Once or Always to turn its camera on.'**
+  String cameraWaitingBody(String device);
+
+  /// No description provided for @cameraWaitingNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on {device}? Open Ferret there.'**
+  String cameraWaitingNothing(String device);
+
+  /// No description provided for @cameraDeniedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone tapped No on {device}.'**
+  String cameraDeniedBody(String device);
+
+  /// No description provided for @cameraBusyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is busy'**
+  String cameraBusyTitle(String device);
+
+  /// No description provided for @cameraBusyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its screen or its camera is already on for a device. Stop that one first.'**
+  String get cameraBusyBody;
+
+  /// No description provided for @cameraUnsupportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} can\'t share its camera'**
+  String cameraUnsupportedTitle(String device);
+
+  /// No description provided for @cameraUnsupportedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Using a phone\'s camera needs an Android phone with the latest Ferret.'**
+  String get cameraUnsupportedBody;
+
+  /// No description provided for @cameraTurnedOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera is off on {device}'**
+  String cameraTurnedOffTitle(String device);
+
+  /// No description provided for @cameraTurnedOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret → Settings → To your computer and turn on Let my computers ask to use this camera. Then open {here, select, macOS{this Mac} windows{this PC} other{this computer}} there and check that it may ask.'**
+  String cameraTurnedOffBody(String device, String here);
+
+  /// No description provided for @cameraCannotStartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t turn its camera on'**
+  String cameraCannotStartTitle(String device);
+
+  /// No description provided for @cameraCannotStartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On {device}: open Ferret and allow the camera. Then ask again.'**
+  String cameraCannotStartBody(String device);
+
+  /// No description provided for @cameraStoppedHereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}\'s camera is off.'**
+  String cameraStoppedHereBody(String device);
+
+  /// No description provided for @cameraSystemEndedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} turned its camera off'**
+  String cameraSystemEndedTitle(String device);
+
+  /// No description provided for @cameraSystemEndedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Android closed the camera, or another app took it. Use it again when {device} is ready.'**
+  String cameraSystemEndedBody(String device);
+
+  /// No description provided for @cameraFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t start its camera.'**
+  String cameraFailedBody(String device);
+
+  /// No description provided for @cameraViewingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Using {device}\'s camera'**
+  String cameraViewingTitle(String device);
+
+  /// No description provided for @cameraAuditViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'You used {device}\'s camera for {duration} at {time}'**
+  String cameraAuditViewed(String device, String duration, String time);
+
+  /// No description provided for @cameraAuditShared.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} used this phone\'s camera for {duration} at {time}'**
+  String cameraAuditShared(String device, String duration, String time);
+
+  /// No description provided for @cameraLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop using {device}\'s camera?'**
+  String cameraLeaveTitle(String device);
+
+  /// No description provided for @cameraLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaving this page turns the camera off.'**
+  String get cameraLeaveBody;
+
+  /// No description provided for @cameraKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it on'**
+  String get cameraKeep;
+
+  /// No description provided for @cameraAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{computer} wants to use your camera'**
+  String cameraAskTitle(String computer);
+
+  /// No description provided for @cameraAskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will see through the camera and hear the microphone, until you stop it.'**
+  String get cameraAskBody;
+
+  /// No description provided for @cameraOnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera on for {computer}'**
+  String cameraOnTitle(String computer);
+
+  /// No description provided for @cameraOnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It sees and hears through this phone. Since {time}.'**
+  String cameraOnBody(String time);
+
+  /// No description provided for @cameraOnBodySilent.
+  ///
+  /// In en, this message translates to:
+  /// **'It sees through this phone\'s camera. The microphone is off. Since {time}.'**
+  String cameraOnBodySilent(String time);
+
+  /// No description provided for @noticeCameraBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It sees and hears through this phone'**
+  String get noticeCameraBody;
+
+  /// No description provided for @noticeCameraBodySilent.
+  ///
+  /// In en, this message translates to:
+  /// **'It sees through this phone\'s camera'**
+  String get noticeCameraBodySilent;
+
+  /// No description provided for @noticeCameraChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera for a computer'**
+  String get noticeCameraChannel;
+
+  /// No description provided for @settingsCameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera for a computer'**
+  String get settingsCameraTitle;
+
+  /// No description provided for @settingsCameraAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Let my computers ask to use this camera'**
+  String get settingsCameraAllow;
+
+  /// No description provided for @settingsCameraAllowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You answer Once, Always or No. A notice with Stop stays up while the camera is on.'**
+  String get settingsCameraAllowBody;
+
+  /// No description provided for @settingsCameraAlwaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 computer uses this camera without asking.} other{{count} computers use this camera without asking.}}'**
+  String settingsCameraAlwaysCount(int count);
+
+  /// No description provided for @permissionCameraAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask to use this phone\'s camera'**
+  String get permissionCameraAsk;
+
+  /// No description provided for @permissionCameraAskOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera is off for every computer. Turn it on in Settings → To your computer.'**
+  String get permissionCameraAskOff;
+
+  /// No description provided for @cameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get cameraTitle;
 }
 
 class _MirroringLocalizationsDelegate

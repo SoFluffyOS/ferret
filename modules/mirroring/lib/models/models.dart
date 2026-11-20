@@ -1,3 +1,4 @@
+export 'package:mirroring/models/active_camera.dart';
 export 'package:mirroring/models/active_share.dart';
 export 'package:mirroring/models/cable_setup.dart';
 export 'package:mirroring/models/control_choice.dart';
