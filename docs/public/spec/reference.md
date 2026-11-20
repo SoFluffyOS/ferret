@@ -1051,9 +1051,37 @@ How the source's sound is encoded.
 | `AUDIO_CODEC_OPUS` | 1 | Opus, timed at 48 kHz. `AudioFrame.data` is one Opus packet. |
 | `AUDIO_CODEC_PCM_S16LE` | 2 | Signed 16-bit little-endian samples, channels interleaved, for viewers without an Opus decoder. |
 
+### enum `Source`
+
+What a source sends.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `SOURCE_UNSPECIFIED` | 0 | A viewer that doesn't know the field: the screen. |
+| `SOURCE_SCREEN` | 1 | Its screen, and what it plays. |
+| `SOURCE_CAMERA` | 2 | Its camera, and its microphone. |
+
+### enum `CameraLens`
+
+One of a source's cameras.
+
+| Value | Number | Meaning |
+|---|---|---|
+| `CAMERA_LENS_UNSPECIFIED` | 0 | Leaves it to the source, which starts with the one on its back. |
+| `CAMERA_LENS_BACK` | 1 | Faces away from the screen. |
+| `CAMERA_LENS_FRONT` | 2 | Faces whoever looks at the screen. |
+
+### message `CameraOptions`
+
+What a viewer wants from the camera. The size and frame rate come from `StartRequest.max_width`, `max_height` and `max_fps` like a screen's; a source left to itself sends 1280 by 720 at 30 frames per second.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `lens` | `CameraLens` | 1 | The camera to start with. A source that doesn't have it uses another. |
+
 ### message `StartRequest`
 
-Asks the source to show its screen. Expects a `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept` or `StartDeny` later, without expecting a reply.
+Asks the source to show its screen, or its camera. Expects a `StartPending` or `StartDeny` reply. After `StartPending`, the source sends `StartAccept` or `StartDeny` later, without expecting a reply.
 
 | Field | Type | Number | Meaning |
 |---|---|---|---|
@@ -1063,6 +1091,8 @@ Asks the source to show its screen. Expects a `StartPending` or `StartDeny` repl
 | `max_height` | `uint32` | 4 |  |
 | `max_fps` | `uint32` | 5 | 0 leaves it to the source. |
 | `audio_codecs` | `repeated AudioCodec` | 6 | What the viewer can play of the source's sound, best first. Empty asks for pictures only. |
+| `source` | `Source` | 7 | What to send. Only set to `SOURCE_CAMERA` for a source whose feature support has the `camera` flag. |
+| `camera` | `CameraOptions` | 8 | With `SOURCE_CAMERA` only. |
 
 ### message `StartPending`
 
@@ -1085,13 +1115,13 @@ The owner said yes. A `StreamConfig` and `Frame`s follow until either side sends
 
 ### enum `AudioAnswer`
 
-What a source says to a viewer that asked for sound. Only what plays on the source is ever sent, never its microphone, and only while its screen is shown.
+What a source says to a viewer that asked for sound. With its screen, only what plays on the source is ever sent, never its microphone, and only while its screen is shown. With its camera, the sound is its microphone, and only while the camera is on.
 
 | Value | Number | Meaning |
 |---|---|---|
 | `AUDIO_ANSWER_UNSPECIFIED` | 0 | The source doesn't know about sound (an older build), or wasn't asked. |
 | `AUDIO_ANSWER_SENDING` | 1 | An `AudioConfig` and `AudioFrame`s follow. |
-| `AUDIO_ANSWER_OFF` | 2 | The source's owner hasn't turned sending sound on. |
+| `AUDIO_ANSWER_OFF` | 2 | The source's owner hasn't turned sending sound on, or didn't allow the microphone to go with the camera. |
 | `AUDIO_ANSWER_UNSUPPORTED` | 3 | The source can't capture what it plays, or can't encode any of `StartRequest.audio_codecs`. |
 
 ### enum `DenyReason`
@@ -1108,7 +1138,7 @@ Why a source said no.
 | `DENY_REASON_TURNED_OFF` | 5 | Its owner turned screen mirroring off. |
 | `DENY_REASON_VERSION` | 6 | The viewer speaks a newer version. |
 | `DENY_REASON_NO_CODEC` | 7 | The source can't encode any of `StartRequest.codecs`. |
-| `DENY_REASON_CANNOT_ASK` | 8 | The source couldn't show the question, such as when its app is in the background and may not post notices. |
+| `DENY_REASON_CANNOT_ASK` | 8 | The source couldn't show the question, such as when its app is in the background and may not post notices. For a camera: its owner has to open the app first, to allow the camera or to let it start. |
 | `DENY_REASON_FAILED` | 9 | Capturing or encoding failed to start. |
 
 ### message `StartDeny`
@@ -1131,6 +1161,7 @@ How to decode the frames that follow. The source sends it before the first frame
 | `fps` | `uint32` | 6 | The most frames per second the source sends. |
 | `sps` | `bytes` | 7 | H.264 only: the sequence and picture parameter sets, each one NAL unit without a start code. |
 | `pps` | `bytes` | 8 |  |
+| `turn` | `uint32` | 9 | A camera only: how far the viewer turns the picture clockwise to show it upright, in degrees: 0, 90, 180 or 270. `width` and `height` are the picture's before it is turned. A camera sends its pictures as its sensor sees them, and a new config when the phone is turned. |
 
 ### message `Frame`
 
@@ -1168,6 +1199,23 @@ A few milliseconds of what plays on the source. Sent without expecting a reply. 
 
 The source's sound stopped, such as when capturing it failed. The pictures go on. Sent without expecting a reply.
 
+
+### message `CameraState`
+
+Sent by a source that sends its camera, after `StartAccept` and again whenever the camera changes. Expects no reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `lens` | `CameraLens` | 1 | The camera that is on. |
+| `lenses` | `repeated CameraLens` | 2 | Every camera a `CameraSwitch` can pick. |
+
+### message `CameraSwitch`
+
+The viewer picks another of the source's cameras. The source answers with a `CameraState` and a new `StreamConfig`. Ignored unless the source's camera is on for this viewer. Expects no reply.
+
+| Field | Type | Number | Meaning |
+|---|---|---|---|
+| `lens` | `CameraLens` | 1 |  |
 
 ### message `KeyframeRequest`
 
