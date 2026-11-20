@@ -1,3 +1,6 @@
+---
+order: 2
+---
 # Ferret on Windows
 
 On Windows, Ferret is one window. Give it the size you like and it arranges itself to fit.
@@ -12,7 +15,7 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 
 ## 📦 Install
 
-> 1. Download `Ferret-0.1.0-x64-setup.exe` from the [releases](https://github.com/simonpham/ferret/releases), or run `winget install SoFluffy.Ferret`
+> 1. Download [Ferret-windows-x64-setup.exe](https://github.com/simonpham/ferret/releases/latest/download/Ferret-windows-x64-setup.exe), the newest release, or run `winget install SoFluffy.Ferret`
 > 2. Run it. No admin needed: it installs just for you
 > 3. Keep **Allow Ferret through Windows Firewall** ticked and say **Yes** when Windows asks
 

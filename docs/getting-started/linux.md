@@ -1,3 +1,6 @@
+---
+order: 3
+---
 # Ferret on Linux
 
 On Linux, Ferret is one window. Give it the size you like and it arranges itself to fit. That includes a tiling window manager: the layout follows the width it is given, not the kind of computer.
@@ -17,6 +20,8 @@ The quickest way, one line, no sudo:
 ```sh
 curl -fsSL ferret.sofluffy.io/install.sh | sh
 ```
+
+Want to read it before you run it? Good habit. [It's short](https://ferret.sofluffy.io/install.sh).
 
 It puts the newest AppImage in `~/.local/opt/ferret`, links `ferret` and `ferret-cli` in `~/.local/bin`, and adds Ferret to your app menu. Run it again to update. AppImages need FUSE 2: the script tells you the package if it's missing.
 

@@ -1,3 +1,6 @@
+---
+order: 5
+---
 # Ferret on iPhone
 
 > **TL;DR**
@@ -7,6 +10,8 @@
 > 3. Keep Ferret open on the iPhone while you use it with your computer.
 
 An iPhone plays by Apple's rules. Ferret follows them, and tells you where they bite instead of failing in silence.
+
+> ⏳ **Not in the first release yet.** The iPhone app isn't on the App Store. Today you build it from source with Xcode, like any Flutter app: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's on your phone.
 
 <figure class="shot shot-narrow">
   <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected computer with Send files and Send clipboard" width="380" height="822" loading="lazy">

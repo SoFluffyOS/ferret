@@ -1,3 +1,6 @@
+---
+order: 7
+---
 # Find your way around
 
 Ferret has four places: **Home**, a page per **device**, **Add a device** and **Settings**. Everything else is one tap below one of them.

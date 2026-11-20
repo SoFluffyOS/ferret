@@ -1,3 +1,6 @@
+---
+order: 4
+---
 # Ferret on Android
 
 > **TL;DR**
@@ -18,7 +21,9 @@ Ferret runs a small background service, shows one quiet notification while it do
 
 ## 📦 Install
 
-Install the Ferret APK on your phone and open it. Open Ferret on your computer too, on the same Wi-Fi: it shows up under **Nearby**. Tap **Pair** and check that both screens show the same six digits. See [Pair your devices](pairing.md).
+Download [Ferret-android.apk](https://github.com/simonpham/ferret/releases/latest/download/Ferret-android.apk) on your phone and open it. Android asks once whether your browser may install apps: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**. It comes from GitHub, not the Play Store, so Android asks.
+
+Then open Ferret on the phone and on your computer, on the same Wi-Fi. Each shows the other under **Nearby**. Tap **Pair** and check that both screens show the same six digits. See [Pair your devices](pairing.md).
 
 That's it. Ferret now keeps running when you close the app.
 

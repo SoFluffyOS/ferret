@@ -1,3 +1,6 @@
+---
+order: 6
+---
 # Pair your devices
 
 Pairing is how your devices learn to trust each other. You do it **once**: pair a new device with any one of yours and it joins all of them.
