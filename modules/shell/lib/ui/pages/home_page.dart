@@ -127,6 +127,11 @@ class HomePage extends StatelessWidget {
     }
 
     final navigator = Navigator.of(context);
+    final featureContext = ShellScope.read(context).featureContext;
+    if (!await featureContext.askLocalNetwork(context)) {
+      return;
+    }
+
     final link = await navigator.push(ferretRoute<String>(const ScanPage()));
     if (link == null) {
       return;

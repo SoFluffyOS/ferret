@@ -13,5 +13,6 @@ export 'package:feature_kit/feature_ui/feature_shortcut.dart';
 export 'package:feature_kit/feature_ui/feature_ui_base.dart';
 export 'package:feature_kit/feature_ui/feature_window.dart';
 export 'package:feature_kit/feature_ui/files_send_progress.dart';
+export 'package:feature_kit/feature_ui/local_network_gate.dart';
 export 'package:feature_kit/feature_ui/settings_group.dart';
 export 'package:feature_kit/feature_ui/system_drags.dart';

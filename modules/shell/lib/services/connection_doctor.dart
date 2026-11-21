@@ -5,6 +5,7 @@ import 'package:engine/engine.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shell/services/linux_firewall.dart';
+import 'package:shell/services/local_network_ask.dart';
 
 /// How one check came out.
 enum DoctorStatus { running, ok, warning, problem }
@@ -29,8 +30,13 @@ enum DoctorFix {
   /// permission turned down for good can still be allowed.
   openAppSettings,
 
-  /// Opens Privacy & Security, Local Network in macOS System Settings.
+  /// Opens Privacy & Security, Local Network in macOS System Settings, or
+  /// Ferret's page in the iPhone's Settings.
   openLocalNetworkSettings,
+
+  /// Says why Ferret needs the local network on an iPhone, then lets it
+  /// look, which is when iOS asks.
+  explainLocalNetwork,
 }
 
 /// One line of Fix connection: what was checked and what it found.
@@ -118,7 +124,9 @@ class ConnectionDoctor {
     bool? hearsOthers,
     bool? isMacOS,
     bool Function()? isDiscoveryBlocked,
-  }) : _isWindows = isWindows ?? Platform.isWindows,
+    LocalNetworkAsk? iphoneAsk,
+  }) : _iphoneAsk = iphoneAsk,
+       _isWindows = isWindows ?? Platform.isWindows,
        _isMacOS = isMacOS ?? Platform.isMacOS,
        _isDiscoveryBlocked =
            isDiscoveryBlocked ?? (() => _engine.isDiscoveryBlocked),
@@ -152,6 +160,16 @@ class ConnectionDoctor {
   /// [DoctorCheck.detail] of the local network line when macOS blocks
   /// Ferret.
   static const macOSBlocked = 'macos';
+
+  /// On an iPhone: Ferret hasn't looked on the network yet, or Local
+  /// Network is off for it. Nothing else gets through either way.
+  final LocalNetworkAsk? _iphoneAsk;
+
+  /// [DoctorCheck.detail] while Ferret hasn't said why it looks yet.
+  static const iphoneNotAsked = 'iphone_not_asked';
+
+  /// [DoctorCheck.detail] when Local Network is off for Ferret.
+  static const iphoneDenied = 'iphone_denied';
 
   /// ufw and firewalld block everything they weren't told about, and on
   /// Linux nothing ever asks. Named only when one of them is on.
@@ -230,6 +248,28 @@ class ConnectionDoctor {
         ),
       ];
       return;
+    }
+
+    if (_iphoneAsk case final ask?) {
+      final detail = switch ((ask.needsAsk, await ask.checkDenied())) {
+        (true, _) => iphoneNotAsked,
+        (false, true) => iphoneDenied,
+        _ => null,
+      };
+      if (detail != null) {
+        yield [
+          DoctorCheck(
+            kind: .localNetwork,
+            status: .problem,
+            detail: detail,
+            fixes: switch (detail) {
+              iphoneNotAsked => const [DoctorFix.explainLocalNetwork],
+              _ => const [DoctorFix.openLocalNetworkSettings],
+            },
+          ),
+        ];
+        return;
+      }
     }
 
     if (_isMacOS && _isDiscoveryBlocked()) {

@@ -43,7 +43,7 @@ class _DoctorPageState extends State<DoctorPage> {
     final engine = ShellScope.read(context).featureContext.engine;
     _doctor = switch (widget.doctorFor) {
       final doctorFor? => doctorFor(engine),
-      null => ConnectionDoctor(engine),
+      null => ConnectionDoctor(engine, iphoneAsk: _iphoneAsk),
     };
     _run();
   }
@@ -53,6 +53,13 @@ class _DoctorPageState extends State<DoctorPage> {
     unawaited(_subscription?.cancel());
     super.dispose();
   }
+
+  /// What says why Ferret looks on an iPhone, while there is one.
+  LocalNetworkAsk? get _iphoneAsk =>
+      switch (ShellScope.read(context).featureContext.localNetwork) {
+        final LocalNetworkAsk ask => ask,
+        _ => null,
+      };
 
   void _run() {
     unawaited(_subscription?.cancel());
@@ -271,11 +278,18 @@ class _DoctorPageState extends State<DoctorPage> {
         await FerretSystem().openAppSettings();
       case .openLocalNetworkSettings:
         await launchUrl(
-          Uri.parse(
-            'x-apple.systempreferences:com.apple.preference.security'
-            '?Privacy_LocalNetwork',
-          ),
+          Uri.parse(switch (defaultTargetPlatform) {
+            .iOS => 'app-settings:',
+            _ =>
+              'x-apple.systempreferences:com.apple.preference.security'
+                  '?Privacy_LocalNetwork',
+          }),
         );
+      case .explainLocalNetwork:
+        await _iphoneAsk?.allow();
+        if (mounted) {
+          _run();
+        }
       case .reachOverVpn:
         if (widget.deviceId case final deviceId?) {
           await Navigator.of(context).push(
@@ -323,6 +337,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .allowLocalNetwork => l10n.doctorFixAllowLocalNetwork,
     .openAppSettings => l10n.localNetworkOpenSettings,
     .openLocalNetworkSettings => l10n.nearbyOpenSettings,
+    .explainLocalNetwork => l10n.localNetworkAskContinue,
   };
 
   /// Ferret never heard where this device is, so there was nothing to
@@ -395,6 +410,10 @@ class _DoctorPageState extends State<DoctorPage> {
         l10n.doctorLocalNetworkBlocked,
       (.localNetwork, _) when check.detail == ConnectionDoctor.macOSBlocked =>
         l10n.doctorLocalNetworkMac,
+      (.localNetwork, _) when check.detail == ConnectionDoctor.iphoneNotAsked =>
+        '${l10n.localNetworkAskBody} ${l10n.localNetworkAskDetail}',
+      (.localNetwork, _) when check.detail == ConnectionDoctor.iphoneDenied =>
+        l10n.doctorLocalNetworkIphone,
       (.localNetwork, _) => l10n.doctorLocalNetwork,
       (.network, .problem) => l10n.doctorNetworkProblem(here),
       (.network, _) => l10n.doctorNetworkOk(here),

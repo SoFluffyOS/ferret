@@ -4632,6 +4632,22 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get doctorFixAllowLocalNetwork =>
       pseudo(super.doctorFixAllowLocalNetwork);
   @override
+  String get localNetworkAskTitle => pseudo(super.localNetworkAskTitle);
+  @override
+  String get localNetworkAskBody => pseudo(super.localNetworkAskBody);
+  @override
+  String get localNetworkAskDetail => pseudo(super.localNetworkAskDetail);
+  @override
+  String get localNetworkAskContinue => pseudo(super.localNetworkAskContinue);
+  @override
+  String get localNetworkAskNotNow => pseudo(super.localNetworkAskNotNow);
+  @override
+  String get localNetworkDeniedTitle => pseudo(super.localNetworkDeniedTitle);
+  @override
+  String get localNetworkDeniedBody => pseudo(super.localNetworkDeniedBody);
+  @override
+  String get doctorLocalNetworkIphone => pseudo(super.doctorLocalNetworkIphone);
+  @override
   String pairExpiresIn(int minutes) => pseudo(super.pairExpiresIn(minutes));
   @override
   String pairSuccess(String device) => pseudo(super.pairSuccess(device));

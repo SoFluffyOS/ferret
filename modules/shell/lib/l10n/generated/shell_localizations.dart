@@ -3037,6 +3037,54 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Allow on this Wi-Fi'**
   String get doctorFixAllowLocalNetwork;
+
+  /// Explainer before iOS asks about the local network: title.
+  ///
+  /// In en, this message translates to:
+  /// **'Find your devices on this Wi-Fi'**
+  String get localNetworkAskTitle;
+
+  /// Explainer before iOS asks about the local network: why Ferret needs it.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret looks for your devices on this Wi-Fi. iOS asks once.'**
+  String get localNetworkAskBody;
+
+  /// Explainer before iOS asks about the local network: a reassuring second line.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing leaves your network, and Ferret looks only while it\'s open.'**
+  String get localNetworkAskDetail;
+
+  /// Explainer button: lets Ferret look, which makes iOS ask.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get localNetworkAskContinue;
+
+  /// Explainer dialog button: Ferret stays off the local network.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get localNetworkAskNotNow;
+
+  /// Nearby on an iPhone: the person said no to the local network.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Network is off for Ferret'**
+  String get localNetworkDeniedTitle;
+
+  /// Nearby on an iPhone after a no: where to turn it back on.
+  ///
+  /// In en, this message translates to:
+  /// **'So Ferret can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.'**
+  String get localNetworkDeniedBody;
+
+  /// Fix connection line on an iPhone: the Local Network switch is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Network is off for Ferret, so it can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.'**
+  String get doctorLocalNetworkIphone;
 }
 
 class _ShellLocalizationsDelegate

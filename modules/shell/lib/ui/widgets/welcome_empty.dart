@@ -18,11 +18,16 @@ class WelcomeEmpty extends StatefulWidget {
     super.key,
     required this.onPairWithCode,
     required this.onCantSee,
+    this.network,
     this.patience = const Duration(seconds: 10),
   });
 
   final VoidCallback onPairWithCode;
   final VoidCallback onCantSee;
+
+  /// On an iPhone that can't look yet: why it would, or where to let it.
+  /// It takes the screen's one primary button while it shows.
+  final Widget? network;
 
   /// How long "Looking…" shows before the way out takes its place, so
   /// nobody stares at a search that never ends.
@@ -115,9 +120,16 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
               onTap: widget.onCantSee,
             ),
           },
-          Spacing.v16,
+          if (widget.network case final network?) ...[
+            network,
+            Spacing.v16,
+          ] else
+            Spacing.v16,
           Button(
-            variant: .primary,
+            variant: switch (widget.network) {
+              null => .primary,
+              _ => .ghost,
+            },
             label: switch (isIphone) {
               true => l10n.scanButtonShort,
               false => l10n.pairShowCode,

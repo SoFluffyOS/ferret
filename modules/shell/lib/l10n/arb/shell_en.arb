@@ -1834,5 +1834,37 @@
   "doctorFixAllowLocalNetwork": "Allow on this Wi-Fi",
   "@doctorFixAllowLocalNetwork": {
     "description": "Fix connection button: shows Android's local network question."
+  },
+  "localNetworkAskTitle": "Find your devices on this Wi-Fi",
+  "@localNetworkAskTitle": {
+    "description": "Explainer before iOS asks about the local network: title."
+  },
+  "localNetworkAskBody": "Ferret looks for your devices on this Wi-Fi. iOS asks once.",
+  "@localNetworkAskBody": {
+    "description": "Explainer before iOS asks about the local network: why Ferret needs it."
+  },
+  "localNetworkAskDetail": "Nothing leaves your network, and Ferret looks only while it's open.",
+  "@localNetworkAskDetail": {
+    "description": "Explainer before iOS asks about the local network: a reassuring second line."
+  },
+  "localNetworkAskContinue": "Continue",
+  "@localNetworkAskContinue": {
+    "description": "Explainer button: lets Ferret look, which makes iOS ask."
+  },
+  "localNetworkAskNotNow": "Not now",
+  "@localNetworkAskNotNow": {
+    "description": "Explainer dialog button: Ferret stays off the local network."
+  },
+  "localNetworkDeniedTitle": "Local Network is off for Ferret",
+  "@localNetworkDeniedTitle": {
+    "description": "Nearby on an iPhone: the person said no to the local network."
+  },
+  "localNetworkDeniedBody": "So Ferret can't find or reach your devices. In Settings, open Ferret and turn on Local Network.",
+  "@localNetworkDeniedBody": {
+    "description": "Nearby on an iPhone after a no: where to turn it back on."
+  },
+  "doctorLocalNetworkIphone": "Local Network is off for Ferret, so it can't find or reach your devices. In Settings, open Ferret and turn on Local Network.",
+  "@doctorLocalNetworkIphone": {
+    "description": "Fix connection line on an iPhone: the Local Network switch is off."
   }
 }

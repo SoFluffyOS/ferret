@@ -33,7 +33,29 @@ class _LinkPairPageState extends State<LinkPairPage> {
   @override
   void initState() {
     super.initState();
-    _isLink = _viewModel.pairWithLink(widget.link);
+    _isLink = true;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => unawaited(_pairAfterAsking()),
+    );
+  }
+
+  /// On an iPhone that hasn't looked on the network yet, says why first.
+  /// Turned down, nothing is dialed and the page goes away.
+  Future<void> _pairAfterAsking() async {
+    if (!mounted) {
+      return;
+    }
+
+    final navigator = Navigator.of(context);
+    final featureContext = ShellScope.read(context).featureContext;
+    if (!await featureContext.askLocalNetwork(context)) {
+      navigator.maybePop();
+      return;
+    }
+
+    if (mounted) {
+      _pair(widget.link);
+    }
   }
 
   void _pair(String link) =>

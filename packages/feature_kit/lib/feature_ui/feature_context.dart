@@ -2,6 +2,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/drag_out.dart';
 import 'package:feature_kit/feature_ui/drop_receiver.dart';
 import 'package:feature_kit/feature_ui/feature_window.dart';
+import 'package:feature_kit/feature_ui/local_network_gate.dart';
 import 'package:feature_kit/feature_ui/system_drags.dart';
 import 'package:feature_kit/navigation/navigation.dart';
 import 'package:feature_kit/services/services.dart';
@@ -57,6 +58,15 @@ class FeatureContext {
   /// A small panel over every app, such as the shelf while dragging. Null
   /// where the platform has none.
   FloatingPanel? floatingPanel;
+
+  /// Says why Ferret needs the local network before iOS asks. Null where
+  /// nothing asks, or once the shell has none to give.
+  LocalNetworkGate? localNetwork;
+
+  /// Lets Ferret on the local network, saying why first where that is
+  /// still needed. True when it may go ahead.
+  Future<bool> askLocalNetwork(BuildContext context) async =>
+      await localNetwork?.ask(context) ?? true;
 
   /// Where things dropped on the menubar icon stay when they aren't sent,
   /// such as the shelf. Set by the feature that keeps them.

@@ -2270,4 +2270,32 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get doctorFixAllowLocalNetwork => 'Cho phép trên Wi-Fi này';
+
+  @override
+  String get localNetworkAskTitle => 'Tìm thiết bị của bạn trên Wi-Fi này';
+
+  @override
+  String get localNetworkAskBody =>
+      'Ferret tìm các thiết bị của bạn trên Wi-Fi này. iOS sẽ hỏi một lần.';
+
+  @override
+  String get localNetworkAskDetail =>
+      'Không có gì rời khỏi mạng của bạn, và Ferret chỉ tìm khi đang mở.';
+
+  @override
+  String get localNetworkAskContinue => 'Tiếp tục';
+
+  @override
+  String get localNetworkAskNotNow => 'Để sau';
+
+  @override
+  String get localNetworkDeniedTitle => 'Mạng cục bộ đang tắt cho Ferret';
+
+  @override
+  String get localNetworkDeniedBody =>
+      'Nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ.';
+
+  @override
+  String get doctorLocalNetworkIphone =>
+      'Mạng cục bộ đang tắt cho Ferret, nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ.';
 }

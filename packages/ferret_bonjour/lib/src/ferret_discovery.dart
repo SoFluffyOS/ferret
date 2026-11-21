@@ -15,16 +15,29 @@ abstract final class FerretDiscovery {
   static bool get usesBonjour =>
       Platform.isMacOS || Platform.isIOS || Platform.isAndroid;
 
+  /// Whether discovery waits for [HeldDiscovery.release]: on an iPhone the
+  /// first packet makes iOS ask about the local network, so Ferret holds
+  /// back until the person reached a place that looks for devices.
+  static bool get holdsUntilAsked => Platform.isIOS;
+
+  /// [released] lets a held discovery run from the start, such as once
+  /// something is paired.
   static Discovery forPlatform({
     BonjourBackend backend = const BonsoirBackend(),
+    bool released = false,
   }) {
     if (!usesBonjour) {
       return CombinedDiscovery.standard();
     }
 
-    return CombinedDiscovery([
+    final discovery = CombinedDiscovery([
       MulticastDiscovery(),
       FallbackDiscovery(BonjourDiscovery(backend: backend), MdnsDiscovery()),
     ]);
+    if (!holdsUntilAsked) {
+      return discovery;
+    }
+
+    return HeldDiscovery(discovery, released: released);
   }
 }

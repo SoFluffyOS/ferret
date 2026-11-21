@@ -38,6 +38,20 @@ class _PairPageState extends State<PairPage> {
   void initState() {
     super.initState();
     if (widget.link case final link?) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => unawaited(_pairAfterAsking(link)),
+      );
+    }
+  }
+
+  /// On an iPhone that hasn't looked on the network yet, says why first.
+  Future<void> _pairAfterAsking(String link) async {
+    if (!mounted) {
+      return;
+    }
+
+    final featureContext = ShellScope.read(context).featureContext;
+    if (await featureContext.askLocalNetwork(context) && mounted) {
       _viewModel.pairWithLink(link);
     }
   }
@@ -143,6 +157,11 @@ class _PairPageState extends State<PairPage> {
     };
     if (!isPhone) {
       _open(const QrPairPage());
+      return;
+    }
+
+    final featureContext = ShellScope.read(context).featureContext;
+    if (!await featureContext.askLocalNetwork(context) || !mounted) {
       return;
     }
 

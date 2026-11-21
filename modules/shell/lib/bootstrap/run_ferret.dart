@@ -18,6 +18,7 @@ import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/pages.dart';
+import 'package:transport/transport.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
 /// the app. [onStarted] gets the running engine, for wiring between
@@ -64,14 +65,16 @@ Future<void> runFerret({
     await FerretSystem().acquireMulticastLock();
   }
 
+  final discovery = FerretDiscovery.forPlatform();
   final engine = await FerretEngine.create(
     secrets: secrets,
     settings: settings,
     device: device,
     features: [for (final feature in features) feature.feature],
-    discovery: FerretDiscovery.forPlatform(),
+    discovery: discovery,
     sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
   );
+  final localNetwork = await _localNetworkAsk(discovery, engine, settings);
   sharedComputer.follow(engine, computerName: described.name);
   await engine.start();
   final quit = AppQuit(shutdown: engine.shutdown)..start();
@@ -143,7 +146,9 @@ Future<void> runFerret({
     );
   }
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
-  featureContext.windows = featureWindows;
+  featureContext
+    ..windows = featureWindows
+    ..localNetwork = localNetwork;
   if (ferretMenubar.isSupported) {
     featureContext
       ..dragOut = MenubarDragOut(ferretMenubar)
@@ -199,6 +204,30 @@ Future<void> runFerret({
     ),
   );
   onStarted?.call(engine);
+}
+
+/// On an iPhone, discovery waits for the person unless they went on
+/// before or something is paired. Elsewhere nothing asks.
+Future<LocalNetworkAsk?> _localNetworkAsk(
+  Discovery discovery,
+  FerretEngine engine,
+  SettingsStore settings,
+) async {
+  if (discovery is! HeldDiscovery) {
+    return null;
+  }
+
+  bool hasDevices() => engine.trustStore.devices.isNotEmpty;
+  if (LocalNetworkAsk.releasedAtLaunch(settings, hasDevices: hasDevices())) {
+    await discovery.release();
+  }
+
+  return LocalNetworkAsk(
+    settings: settings,
+    held: discovery,
+    hasDevices: hasDevices,
+    deviceChanges: engine.trustStore.changes,
+  );
 }
 
 /// With several views the app places each one itself; with one, Flutter

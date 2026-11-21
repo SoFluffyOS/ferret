@@ -2278,4 +2278,32 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixAllowLocalNetwork => 'Allow on this Wi-Fi';
+
+  @override
+  String get localNetworkAskTitle => 'Find your devices on this Wi-Fi';
+
+  @override
+  String get localNetworkAskBody =>
+      'Ferret looks for your devices on this Wi-Fi. iOS asks once.';
+
+  @override
+  String get localNetworkAskDetail =>
+      'Nothing leaves your network, and Ferret looks only while it\'s open.';
+
+  @override
+  String get localNetworkAskContinue => 'Continue';
+
+  @override
+  String get localNetworkAskNotNow => 'Not now';
+
+  @override
+  String get localNetworkDeniedTitle => 'Local Network is off for Ferret';
+
+  @override
+  String get localNetworkDeniedBody =>
+      'So Ferret can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.';
+
+  @override
+  String get doctorLocalNetworkIphone =>
+      'Local Network is off for Ferret, so it can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.';
 }

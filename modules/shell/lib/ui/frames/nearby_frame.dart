@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:shell/view_models/view_models.dart';
@@ -42,11 +43,45 @@ class NearbyFrame extends StatefulWidget {
   State<NearbyFrame> createState() => _NearbyFrameState();
 }
 
-class _NearbyFrameState extends State<NearbyFrame> {
+class _NearbyFrameState extends State<NearbyFrame> with WidgetsBindingObserver {
   late final NearbyViewModel _viewModel = NearbyViewModel(
     ShellScope.read(context).featureContext.engine,
     watch: widget.watch,
   );
+
+  /// On an iPhone: says why Ferret looks before iOS asks, and whether
+  /// the person said no.
+  late final LocalNetworkAsk? _ask = switch (ShellScope.read(context)
+      .featureContext
+      .localNetwork) {
+    final LocalNetworkAsk ask => ask,
+    _ => null,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (_ask case final ask?) {
+      ask.addListener(_askChanged);
+      unawaited(ask.refresh());
+    }
+  }
+
+  /// Back from Settings or from iOS's question.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == .resumed) {
+      unawaited(_ask?.refresh());
+    }
+  }
+
+  void _askChanged() {
+    if (mounted) {
+      setState(() {});
+      unawaited(_viewModel.lookAgain());
+    }
+  }
 
   @override
   void didUpdateWidget(NearbyFrame oldWidget) {
@@ -58,6 +93,8 @@ class _NearbyFrameState extends State<NearbyFrame> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _ask?.removeListener(_askChanged);
     _viewModel.dispose();
     super.dispose();
   }
@@ -73,6 +110,12 @@ class _NearbyFrameState extends State<NearbyFrame> {
         features: scope.features,
         builder: (context) => _Nearby(
           watch: widget.watch,
+          network: switch (_ask) {
+            final ask? when ask.needsAsk => .notAsked,
+            final ask? when ask.isDenied => .denied,
+            _ => .fine,
+          },
+          onContinue: () => unawaited(_ask?.allow()),
           onPairWithCode: widget.onPairWithCode,
           onCantSee: widget.onCantSee,
           rows: [
@@ -86,15 +129,24 @@ class _NearbyFrameState extends State<NearbyFrame> {
   }
 }
 
+/// Whether an iPhone may look on the local network.
+enum _Network { fine, notAsked, denied }
+
 class _Nearby extends StatelessWidget {
   const _Nearby({
     required this.watch,
+    required this.network,
+    required this.onContinue,
     required this.onPairWithCode,
     required this.onCantSee,
     required this.rows,
   });
 
   final bool watch;
+  final _Network network;
+
+  /// Lets an iPhone look, once it said why.
+  final VoidCallback onContinue;
   final VoidCallback? onPairWithCode;
   final VoidCallback? onCantSee;
 
@@ -121,6 +173,21 @@ class _Nearby extends StatelessWidget {
     final viewModel = context.read<NearbyViewModel>();
     final l10n = context.shellL10n;
 
+    final onPairWithCode = this.onPairWithCode;
+    if (_networkNotice(context) case final notice?) {
+      return switch (onPairWithCode) {
+        null => Padding(
+          padding: EdgeInsets.only(bottom: Spacing.d16),
+          child: notice,
+        ),
+        _ => WelcomeEmpty(
+          onPairWithCode: onPairWithCode,
+          onCantSee: onCantSee ?? onPairWithCode,
+          network: notice,
+        ),
+      };
+    }
+
     final waitsForPeers = watch || isBlocked;
     if (peers.isEmpty && rows.isEmpty && !waitsForPeers) {
       return const SizedBox.shrink();
@@ -130,7 +197,6 @@ class _Nearby extends StatelessWidget {
     // is open on both, so "Looking…" or "allow Local Network" would
     // mislead on an empty list: it offers scanning the computer's code.
     final isIphone = defaultTargetPlatform == .iOS;
-    final onPairWithCode = this.onPairWithCode;
     if (peers.isEmpty && rows.isEmpty && isIphone && onPairWithCode == null) {
       return const SizedBox.shrink();
     }
@@ -189,6 +255,28 @@ class _Nearby extends StatelessWidget {
           WelcomeNearby(onPairWithCode: onPairWithCode),
       ],
     );
+  }
+
+  /// On an iPhone that hasn't looked yet, why it would, with Continue; one
+  /// where Local Network is off, where to turn it on. Null otherwise.
+  Widget? _networkNotice(BuildContext context) {
+    final l10n = context.shellL10n;
+    return switch (network) {
+      .fine => null,
+      .notAsked => NearbyNotice(
+        title: l10n.localNetworkAskTitle,
+        body: '${l10n.localNetworkAskBody}\n${l10n.localNetworkAskDetail}',
+        actionLabel: l10n.localNetworkAskContinue,
+        onAction: onContinue,
+        isPrimary: onPairWithCode != null,
+      ),
+      .denied => NearbyNotice(
+        title: l10n.localNetworkDeniedTitle,
+        body: l10n.localNetworkDeniedBody,
+        actionLabel: l10n.nearbyOpenSettings,
+        onAction: _openLocalNetworkSettings,
+      ),
+    };
   }
 
   /// macOS and iOS keep the switch in System Settings; elsewhere there is
