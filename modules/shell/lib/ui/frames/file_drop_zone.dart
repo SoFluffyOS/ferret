@@ -146,7 +146,14 @@ class _FileDropZoneState extends State<FileDropZone> {
         crossAxisAlignment: .stretch,
         children: [
           Expanded(child: content),
-          footer,
+          Builder(
+            builder: (context) => DragOverScope(
+              isDragging: context.select<OsDropViewModel, bool>(
+                (viewModel) => viewModel.isChoosing,
+              ),
+              child: footer,
+            ),
+          ),
         ],
       ),
     );

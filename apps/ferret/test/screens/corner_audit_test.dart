@@ -578,6 +578,9 @@ void main() {
             features: [...appFeatures(), shelf],
             tipsDone: true,
           );
+          // The popover's box waits for the first pairing while it is
+          // empty.
+          await rig.pairConnectedPhone(tester, phoneFeatures: phoneFeatures());
           await rig.show(tester);
           final store = shelf.feature.store;
           if (store == null) {

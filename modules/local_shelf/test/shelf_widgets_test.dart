@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:core/core.dart';
+import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -452,5 +454,76 @@ void main() {
     expect(settings.keepCopies, isTrue);
     expect(find.text('Keep them'), findsOneWidget);
     expect(find.text('Until quit'), findsOneWidget);
+  });
+
+  group('in the popover before anything is paired', () {
+    late TrustStore trust;
+
+    Widget popoverBar({bool dragging = false}) => testApp(
+      Align(
+        alignment: .bottomCenter,
+        child: SizedBox(
+          width: 380,
+          child: ChangeNotifierProvider.value(
+            value: viewModel,
+            child: DragOverScope(
+              isDragging: dragging,
+              child: ShelfPopoverBarFrame(
+                trustStore: trust,
+                child: ShelfBoxFrame(onOpenList: () => opened++),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    setUp(() => trust = TrustStore.memory());
+
+    testWidgets('an empty shelf stays out of the welcome', (tester) async {
+      await setUpShelf(tester);
+      await tester.pumpWidget(popoverBar());
+      await settle(tester);
+
+      expect(find.byType(ShelfBoxFrame), findsNothing);
+    });
+
+    testWidgets('it shows up for a drag over the popover', (tester) async {
+      await setUpShelf(tester);
+      await tester.pumpWidget(popoverBar(dragging: true));
+      await settle(tester);
+
+      expect(find.byType(ShelfBoxFrame), findsOneWidget);
+    });
+
+    testWidgets('a shelf that holds something stays', (tester) async {
+      await setUpShelf(tester);
+      await keep(tester, ['Meet at the north entrance']);
+      await tester.pumpWidget(popoverBar());
+      await settle(tester);
+
+      expect(find.byType(ShelfBoxFrame), findsOneWidget);
+    });
+
+    testWidgets('the first pairing brings it in', (tester) async {
+      await setUpShelf(tester);
+      await tester.pumpWidget(popoverBar());
+      await settle(tester);
+      await tester.runAsync(
+        () => trust.save(
+          TrustedDevice(
+            id: 'pixel',
+            name: 'Pixel 9',
+            platform: .PLATFORM_ANDROID,
+            formFactor: .FORM_FACTOR_PHONE,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime(2026, 11),
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.byType(ShelfBoxFrame), findsOneWidget);
+    });
   });
 }

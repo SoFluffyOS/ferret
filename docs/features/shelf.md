@@ -9,7 +9,7 @@
 
 You're moving a few things from one place to another: two PDFs from Downloads, a photo from your phone, a link from Slack. You drag one, then go back for the next, and the first window is gone. Or you copy something, copy something else, and the first copy is lost.
 
-The shelf is a box to put things down for a moment. It lives at the bottom of the Ferret popover, always open, so you see what's in it at a glance and take it out in one move.
+The shelf is a box to put things down for a moment. It lives at the bottom of the Ferret popover, always open, so you see what's in it at a glance and take it out in one move. Nothing paired yet? The empty box waits until your first device, or until you drag something over the popover.
 
 <figure class="shot shot-narrow">
   <img src="/assets/docs/shelf-items-light.webp" alt="The Ferret popover with the shelf box at the bottom with Shelf, 5 items and Clear along its top, and tiles below: a link showing its site, text showing its first words, a photo, a folder and a file" width="380" height="560" loading="lazy">

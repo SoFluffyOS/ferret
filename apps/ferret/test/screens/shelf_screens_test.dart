@@ -88,8 +88,17 @@ Future<void> fillShelf(WidgetTester tester, ShelfStore store) async {
   });
 }
 
-ShelfViewModel shelfViewModel(WidgetTester tester) =>
-    tester.element(find.byType(ShelfBoxFrame).first).read<ShelfViewModel>();
+/// The shelf's view model, also while its box waits for the first pairing.
+ShelfViewModel shelfViewModel(WidgetTester tester) => tester
+    .element(
+      find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ShelfPopoverBarFrame || widget is ShelfBoxFrame,
+          )
+          .first,
+    )
+    .read<ShelfViewModel>();
 
 /// The floating panel as it shows over another app: its size, its corner
 /// and the system's shadow, on a plain desktop.

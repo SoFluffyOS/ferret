@@ -173,9 +173,12 @@ class ShelfFeatureUi extends FeatureUi {
 
     return ChangeNotifierProvider.value(
       value: viewModel,
-      child: ShelfBoxFrame(
-        onOpenList: () =>
-            unawaited(feature.push(ShelfPage(viewModel: viewModel))),
+      child: ShelfPopoverBarFrame(
+        trustStore: feature.engine.trustStore,
+        child: ShelfBoxFrame(
+          onOpenList: () =>
+              unawaited(feature.push(ShelfPage(viewModel: viewModel))),
+        ),
       ),
     );
   }

@@ -110,6 +110,10 @@ class OsDropViewModel extends ChangeNotifier {
   /// Where the files are going, once dropped.
   FilesDropTarget? get sendTarget => _sendTarget;
 
+  /// Whether something is dragged over the view, or held there after a
+  /// drop to pick where it goes.
+  bool get isChoosing => _phase is DropChoosing;
+
   bool get _isDragging => switch (_phase) {
     DropChoosing(held: false) => true,
     _ => false,
