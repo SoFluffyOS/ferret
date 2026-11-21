@@ -32,6 +32,7 @@ class LinkedDevices {
     SecretStore? laptopSecrets,
     LocalSendOptions localSend = const LocalSendOptions(),
     QuickShareOptions quickShare = const QuickShareOptions(),
+    SendSources laptopSources = const SendSources(),
   }) async {
     final laptop = LinkedDevice(
       'laptop-id',
@@ -43,6 +44,7 @@ class LinkedDevices {
         secrets: laptopSecrets,
         localSendOptions: localSend,
         quickShareOptions: quickShare,
+        sources: laptopSources,
       ),
       MemorySettingsStore({...laptopSettings}),
     );

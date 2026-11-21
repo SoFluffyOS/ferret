@@ -14,9 +14,10 @@ import io.flutter.plugin.common.PluginRegistry
 import java.util.concurrent.Executors
 
 /**
- * Picks files to send with the system's document picker and copies them
- * into the cache with streams. A picker that hands the bytes over the
- * platform channel runs out of memory at about 100 MB picked.
+ * Picks files to send with the system's document picker and hands back
+ * their URIs, which [ContentChannel] reads while sending. A picker that
+ * hands the bytes over the platform channel runs out of memory at about
+ * 100 MB picked; copying them first makes a big pick wait.
  */
 internal class FilePickChannel(
     messenger: BinaryMessenger,
@@ -84,8 +85,10 @@ internal class FilePickChannel(
         }
 
         copier.execute {
-            val paths = SharedFileCopier(context, "picked").copyAll(uris)
-            main.post { result.success(paths) }
+            val picked = uris.mapNotNull { uri ->
+                if (SharePermissions.keep(context, uri)) uri.toString() else SharedFileCopier(context, "picked").copyAll(listOf(uri)).firstOrNull()
+            }
+            main.post { result.success(picked) }
         }
         return true
     }

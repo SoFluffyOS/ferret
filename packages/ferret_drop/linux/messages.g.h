@@ -11,8 +11,8 @@ G_BEGIN_DECLS
 /**
  * FerretDropSharedItems:
  *
- * Files or text another app shared with "Send with Ferret". Files are
- * already copied to the app's cache, so [paths] are plain file paths.
+ * Files or text another app shared with "Send with Ferret". [paths] are
+ * file paths, or on Android `content://` URIs read while sending.
  */
 
 G_DECLARE_FINAL_TYPE(FerretDropSharedItems, ferret_drop_shared_items, FERRET_DROP, SHARED_ITEMS, GObject)
@@ -77,7 +77,7 @@ gboolean* ferret_drop_shared_items_get_every_device(FerretDropSharedItems* objec
  * @object: a #FerretDropSharedItems.
  *
  * True when [paths] are the files themselves, which must stay where they
- * are. Otherwise they are copies, to delete once sent.
+ * are. Otherwise they are copies to delete, or URIs to let go, once sent.
  *
  * Returns: the field value.
  */

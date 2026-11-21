@@ -27,7 +27,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 📦 Files and folders
 - **Drop**: drag files or a whole folder onto a device. Checked with SHA-256, never overwrites, and a transfer cut off by the Wi-Fi goes on by itself when the device is back.
-- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption.
+- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption. Sharing a big file from Android starts at once, with no copy first and no extra space needed.
 - **Room first**: a file that doesn't fit is turned down before a byte moves, with how much space it needs.
 - **Share menus**: **Share → Ferret** on Mac and iPhone, **Send with Ferret** on Windows and Linux. On Android, your connected devices sit right in the share sheet's top row.
 - **Needs you**: files from a device you didn't pair wait for **Accept**. **Allow once** lets a guest's phone send you one file.

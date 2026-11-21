@@ -6,6 +6,7 @@ import 'package:drop/models/models.dart';
 import 'package:drop/services/localsend/localsend_ids.dart';
 import 'package:drop/services/localsend/localsend_outgoing_job.dart';
 import 'package:drop/services/outgoing_file.dart';
+import 'package:drop/services/send_sources.dart';
 import 'package:drop/services/transfer_ids.dart';
 import 'package:drop/services/transfer_registry.dart';
 import 'package:interop_localsend/interop_localsend.dart';
@@ -17,6 +18,7 @@ class LocalSendSender {
     required this.registry,
     required this.client,
     required this.self,
+    this.sources = const SendSources(),
   });
 
   final TransferRegistry registry;
@@ -26,6 +28,9 @@ class LocalSendSender {
 
   /// How this device describes itself to the receiver.
   final Future<LocalSendInfo> Function() self;
+
+  /// Opens the files to send, on disk or shared by another app.
+  final SendSources sources;
 
   final Map<String, LocalSendOutgoingJob> _jobs = {};
 
@@ -203,7 +208,7 @@ class LocalSendSender {
               false => file.mime,
             },
           ),
-          open: () => File(file.path).openRead(),
+          open: () => sources.openRead(file.path),
         ),
     ];
   }
@@ -268,11 +273,7 @@ class LocalSendSender {
     }
 
     for (final file in job.files) {
-      try {
-        await File(file.path).delete();
-      } on FileSystemException {
-        continue;
-      }
+      await sources.discard(file.path);
     }
   }
 }

@@ -9,6 +9,7 @@ import 'package:drop/services/localsend/localsend_receiver.dart';
 import 'package:drop/services/localsend/localsend_sender.dart';
 import 'package:drop/services/outgoing_file.dart';
 import 'package:drop/services/receive_store.dart';
+import 'package:drop/services/send_sources.dart';
 import 'package:drop/services/transfer_registry.dart';
 import 'package:interop_localsend/interop_localsend.dart';
 
@@ -26,6 +27,7 @@ class LocalSendBridge {
     SecretStore? secrets,
     this.options = const LocalSendOptions(),
     DateTime Function()? clock,
+    SendSources sources = const SendSources(),
   }) : _identities = LocalSendIdentityStore(secrets),
        _clock = clock ?? DateTime.now,
        receiver = LocalSendReceiver(
@@ -37,6 +39,7 @@ class LocalSendBridge {
       registry: registry,
       client: _readyClient,
       self: _selfInfo,
+      sources: sources,
     );
     receiver.cancelSession = (sessionId) async =>
         _server?.cancelSession(sessionId);

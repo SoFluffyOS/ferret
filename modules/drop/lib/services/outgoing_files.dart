@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:drop/services/outgoing_file.dart';
+import 'package:drop/services/send_sources.dart';
 import 'package:path/path.dart' as p;
 
 /// What a list of dropped, shared or picked paths sends: every file, and
@@ -25,12 +26,24 @@ class OutgoingFiles {
 
   /// Reads [paths] in order. Files go as they are; a folder goes as its
   /// tree, sorted by path. Links to folders, missing paths and special
-  /// files at the top are ignored.
-  static Future<OutgoingFiles> fromPaths(List<String> paths) async {
+  /// files at the top are ignored. Android `content://` URIs are read
+  /// through [sources].
+  static Future<OutgoingFiles> fromPaths(
+    List<String> paths, {
+    SendSources sources = const SendSources(),
+  }) async {
     final files = <OutgoingFile>[];
     var skipped = 0;
 
     for (final path in paths) {
+      if (SendSources.isContent(path)) {
+        if (await sources.describe(path) case final file?) {
+          files.add(file);
+        }
+
+        continue;
+      }
+
       final type = await FileSystemEntity.type(path, followLinks: false);
       if (type == FileSystemEntityType.directory) {
         final tree = await _tree(path);

@@ -202,8 +202,8 @@ class FlutterError (
 ) : RuntimeException()
 
 /**
- * Files or text another app shared with "Send with Ferret". Files are
- * already copied to the app's cache, so [paths] are plain file paths.
+ * Files or text another app shared with "Send with Ferret". [paths] are
+ * file paths, or on Android `content://` URIs read while sending.
  *
  * Generated class from Pigeon that represents data sent in messages.
  */
@@ -219,7 +219,7 @@ data class SharedItems (
   val everyDevice: Boolean? = null,
   /**
    * True when [paths] are the files themselves, which must stay where they
-   * are. Otherwise they are copies, to delete once sent.
+   * are. Otherwise they are copies to delete, or URIs to let go, once sent.
    */
   val keepFiles: Boolean? = null
 )

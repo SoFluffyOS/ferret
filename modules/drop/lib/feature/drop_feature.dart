@@ -31,6 +31,7 @@ class DropFeature extends Feature {
     this.localSendOptions = const LocalSendOptions(),
     this.quickShareOptions = const QuickShareOptions(),
     SecretStore? secrets,
+    this.sources = const SendSources(),
   }) : _storeFactory = store ?? _defaultStore,
        _secrets = secrets;
 
@@ -40,6 +41,9 @@ class DropFeature extends Feature {
   final int ackEvery;
   final LocalSendOptions localSendOptions;
   final QuickShareOptions quickShareOptions;
+
+  /// Opens files to send, on disk or shared by another app.
+  final SendSources sources;
   final ReceiveStoreFactory _storeFactory;
 
   /// Keeps this device's LocalSend certificate. Without it, the device
@@ -98,6 +102,7 @@ class DropFeature extends Feature {
       describeSelf: _describeSelf,
       secrets: _secrets,
       options: localSendOptions,
+      sources: sources,
     );
     unawaited(localSend.start());
     if (localSendOptions.pausesInBackground) {
@@ -121,6 +126,7 @@ class DropFeature extends Feature {
       deviceName: _deviceName,
       chunkSize: chunkSize,
       ackEvery: ackEvery,
+      sources: sources,
     );
     _receiver = DropReceiver(
       featureId: featureId,
@@ -147,13 +153,14 @@ class DropFeature extends Feature {
 
   /// Sends the files at [paths] to [deviceId]. A folder sends its whole
   /// tree; missing files are skipped. Returns null when nothing is left to
-  /// send. [temporary] files are deleted once the transfer ends.
+  /// send. [temporary] files are deleted once the transfer ends, and
+  /// shared `content://` URIs let go.
   Future<Transfer?> sendFiles(
     String deviceId,
     List<String> paths, {
     bool temporary = false,
   }) async {
-    final outgoing = await OutgoingFiles.fromPaths(paths);
+    final outgoing = await OutgoingFiles.fromPaths(paths, sources: sources);
     if (outgoing.isEmpty) {
       return null;
     }
@@ -185,7 +192,7 @@ class DropFeature extends Feature {
 
     final files = [
       for (final file in transfer.files)
-        if (file.location case final path?) ?await OutgoingFile.fromPath(path),
+        if (file.location case final path?) ?await sources.describe(path),
     ];
     if (files.isEmpty) {
       return null;

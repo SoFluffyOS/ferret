@@ -28,6 +28,7 @@ class FerretDropPlugin :
     private var flutterApi: FerretDropFlutterApi? = null
     private var freeSpace: FreeSpaceChannel? = null
     private var picker: FilePickChannel? = null
+    private var content: ContentChannel? = null
     private var activityBinding: ActivityPluginBinding? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -37,6 +38,7 @@ class FerretDropPlugin :
         FerretDropHostApi.setUp(binding.binaryMessenger, this)
         freeSpace = FreeSpaceChannel(binding.binaryMessenger, binding.applicationContext)
         picker = FilePickChannel(binding.binaryMessenger, binding.applicationContext)
+        content = ContentChannel(binding.binaryMessenger, binding.applicationContext)
         ShareInbox.setListener(this)
     }
 
@@ -47,6 +49,8 @@ class FerretDropPlugin :
         freeSpace = null
         picker?.dispose()
         picker = null
+        content?.dispose()
+        content = null
         scope.cancel()
         flutterApi = null
         context = null

@@ -4,6 +4,7 @@
 /// where they land.
 library;
 
+export 'package:ferret_drop/src/content_files.dart';
 export 'package:ferret_drop/src/ferret_drop.dart';
 export 'package:ferret_drop/src/file_picks.dart';
 export 'package:ferret_drop/src/free_space.dart';

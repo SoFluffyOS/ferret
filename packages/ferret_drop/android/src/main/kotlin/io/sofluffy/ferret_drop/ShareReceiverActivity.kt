@@ -10,8 +10,8 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import java.util.concurrent.Executors
 
 /**
- * The "Send with Ferret" share target. It copies the shared content into the
- * cache in the background, then hands it to Dart. Picked as Ferret, it opens
+ * The "Send with Ferret" share target. It keeps the permission to read the
+ * shared URIs and hands them to Dart, which reads them while sending. Picked as Ferret, it opens
  * Ferret to ask where; picked as a device in the share sheet's top row, it
  * sends there without opening Ferret, when Ferret is already running.
  */
@@ -38,16 +38,29 @@ class ShareReceiverActivity : Activity() {
             }
         }
 
-        if (uris.isNotEmpty() || !text.isNullOrEmpty()) {
-            copier.execute {
-                val paths = SharedFileCopier(appContext).copyAll(uris)
-                if (paths.isNotEmpty() || !text.isNullOrEmpty()) {
-                    ShareInbox.deliver(SharedItems(paths = paths, text = text, deviceId = deviceId))
-                }
-            }
+        if (uris.isEmpty() && text.isNullOrEmpty()) {
+            finish()
+            return
         }
 
-        finish()
+        // A URI whose grant can't be kept is copied into the cache instead,
+        // before this activity finishes: its grant ends with the activity.
+        val kept = uris.map { uri -> uri to SharePermissions.keep(appContext, uri) }
+        if (kept.all { it.second }) {
+            ShareInbox.deliver(SharedItems(paths = uris.map(Uri::toString), text = text, deviceId = deviceId))
+            finish()
+            return
+        }
+
+        copier.execute {
+            val paths = kept.mapNotNull { (uri, readable) ->
+                if (readable) uri.toString() else SharedFileCopier(appContext).copyAll(listOf(uri)).firstOrNull()
+            }
+            if (paths.isNotEmpty() || !text.isNullOrEmpty()) {
+                ShareInbox.deliver(SharedItems(paths = paths, text = text, deviceId = deviceId))
+            }
+            runOnUiThread { finish() }
+        }
     }
 
     private fun sharedUris(intent: Intent, text: String?): List<Uri> {

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ferret_drop/ferret_drop.dart';
 import 'package:ferret_drop/src/messages.g.dart';
 import 'package:flutter/services.dart';
@@ -58,16 +61,16 @@ void main() {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     tearDown(() => messenger.setMockMethodCallHandler(channel, null));
 
-    test('hands back the paths of the copies', () async {
+    test('hands back the picked URIs', () async {
       final calls = <String>[];
       messenger.setMockMethodCallHandler(channel, (call) async {
         calls.add(call.method);
-        return ['/cache/picked/1/a.jpg', '/cache/picked/1/b.jpg'];
+        return ['content://docs/a.jpg', 'content://docs/b.jpg'];
       });
 
       expect(await FilePicks.open(), [
-        '/cache/picked/1/a.jpg',
-        '/cache/picked/1/b.jpg',
+        'content://docs/a.jpg',
+        'content://docs/b.jpg',
       ]);
       expect(calls, ['pickFiles']);
     });
@@ -81,6 +84,96 @@ void main() {
 
       messenger.setMockMethodCallHandler(channel, null);
       expect(await FilePicks.open(), isEmpty);
+    });
+  });
+
+  group('ContentFiles', () {
+    const channel = MethodChannel('io.sofluffy.ferret_drop/content');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    tearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+    test('describes a URI', () async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'describe');
+        expect(call.arguments, 'content://docs/movie.mp4');
+        return {
+          'name': 'movie.mp4',
+          'size': 1 << 30,
+          'mime': 'video/mp4',
+          'modified': 1700000000000,
+        };
+      });
+
+      final info = await const ContentFiles().describe(
+        'content://docs/movie.mp4',
+      );
+
+      expect(info?.name, 'movie.mp4');
+      expect(info?.size, 1 << 30);
+      expect(info?.mime, 'video/mp4');
+      expect(info?.modified?.millisecondsSinceEpoch, 1700000000000);
+    });
+
+    test(
+      'reads in blocks, one ahead, and slices them to the asked size',
+      () async {
+        final source = Uint8List.fromList([
+          for (var i = 0; i < 2 * 1024 * 1024 + 10; i++) i % 251,
+        ]);
+        var at = 0;
+        final calls = <String>[];
+        messenger.setMockMethodCallHandler(channel, (call) async {
+          calls.add(call.method);
+          switch (call.method) {
+            case 'open':
+              return {'handle': 7, 'length': source.length};
+            case 'read':
+              final args = call.arguments as Map<Object?, Object?>;
+              expect(args['handle'], 7);
+              final end = (at + (args['length']! as int)).clamp(
+                0,
+                source.length,
+              );
+              final block = Uint8List.sublistView(source, at, end);
+              at = end;
+              return block;
+            case 'close':
+              return null;
+          }
+          return null;
+        });
+
+        final reader = await const ContentFiles().open('content://docs/a');
+        expect(reader.length, source.length);
+        final read = BytesBuilder(copy: false);
+        while (true) {
+          final bytes = await reader.read(256 * 1024);
+          if (bytes.isEmpty) {
+            break;
+          }
+          expect(bytes.length, lessThanOrEqualTo(256 * 1024));
+          read.add(bytes);
+        }
+        await reader.close();
+
+        expect(read.takeBytes(), source);
+        expect(calls.where((call) => call == 'read').length, 4);
+        expect(calls.last, 'close');
+      },
+    );
+
+    test('an unreadable URI throws a FileSystemException', () async {
+      messenger.setMockMethodCallHandler(
+        channel,
+        (call) async => throw PlatformException(code: 'unreadable'),
+      );
+
+      await expectLater(
+        const ContentFiles().open('content://gone'),
+        throwsA(isA<FileSystemException>()),
+      );
+      expect(await const ContentFiles().describe('content://gone'), isNull);
     });
   });
 }

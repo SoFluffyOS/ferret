@@ -11,6 +11,7 @@ import 'package:drop/services/failure_codes.dart';
 import 'package:drop/services/outgoing_file.dart';
 import 'package:drop/services/outgoing_job.dart';
 import 'package:drop/services/progress_throttle.dart';
+import 'package:drop/services/send_sources.dart';
 import 'package:drop/services/transfer_ids.dart';
 import 'package:drop/services/transfer_registry.dart';
 import 'package:engine/engine.dart';
@@ -31,6 +32,7 @@ class DropSender {
     this.offerTimeout = const Duration(minutes: 2),
     this.ackTimeout = const Duration(seconds: 60),
     this.resumeGrace = const Duration(seconds: 3),
+    this.sources = const SendSources(),
   });
 
   static const defaultChunkSize = 256 * 1024;
@@ -60,6 +62,9 @@ class DropSender {
   /// before this side offers again. An offer also resumes, but the
   /// receiver knows best where it stopped.
   final Duration resumeGrace;
+
+  /// Opens the files to send, on disk or shared by another app.
+  final SendSources sources;
 
   final Map<String, OutgoingJob> _jobs = {};
 
@@ -420,16 +425,19 @@ class DropSender {
     ProgressThrottle throttle,
   ) async {
     final file = job.files[index];
-    final input = await File(file.path).open();
+    final input = await sources.open(file.path);
     final digest = DigestSink();
     final hash = sha256.startChunkedConversion(digest);
     final base = job.bytesBefore(index);
 
     try {
-      if (await input.length() != file.size) {
+      final length = await input.length();
+      if (length != null && length != file.size) {
         throw const _SourceChanged();
       }
 
+      // A resume reads the part already sent again, for the hash: shared
+      // content can't seek, and the hash needs those bytes anyway.
       var position = 0;
       while (position < from) {
         final bytes = await input.read(min(chunkSize, from - position));
@@ -658,11 +666,7 @@ class DropSender {
     }
 
     for (final file in job.files) {
-      try {
-        await File(file.path).delete();
-      } on FileSystemException {
-        continue;
-      }
+      await sources.discard(file.path);
     }
   }
 
