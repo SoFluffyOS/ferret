@@ -1436,35 +1436,89 @@ abstract class ShellLocalizations {
   /// **'Open Ferret to compare the code.'**
   String get promptNoticeBody;
 
-  /// No description provided for @joinedNotice.
+  /// No description provided for @groupJoinAsk.
   ///
   /// In en, this message translates to:
-  /// **'{device} joined your devices'**
-  String joinedNotice(String device);
+  /// **'{asker} wants to add {device} to your devices'**
+  String groupJoinAsk(String asker, String device);
 
-  /// No description provided for @joinedNoticeBody.
+  /// No description provided for @groupJoinAskDetail.
   ///
   /// In en, this message translates to:
-  /// **'Added by {introducer}'**
-  String joinedNoticeBody(String introducer);
+  /// **'It gets what {asker} may use here. Not now keeps it off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.'**
+  String groupJoinAskDetail(String asker, String here);
 
-  /// No description provided for @joinedBanner.
+  /// Short button on groupJoinAsk; groupJoinAddTooltip is its tooltip
   ///
   /// In en, this message translates to:
-  /// **'{device} joined your devices (added by {introducer})'**
-  String joinedBanner(String device, String introducer);
+  /// **'Add'**
+  String get groupJoinAdd;
 
-  /// No description provided for @joinedUndo.
+  /// No description provided for @groupJoinAddTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Undo'**
-  String get joinedUndo;
+  /// **'Add {device} to {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  String groupJoinAddTooltip(String device, String here);
 
-  /// No description provided for @joinedKeep.
+  /// Short button on groupJoinAsk; groupJoinNotNowTooltip is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get groupJoinNotNow;
+
+  /// No description provided for @groupJoinNotNowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep {device} off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  String groupJoinNotNowTooltip(String device, String here);
+
+  /// No description provided for @groupRemoveAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'{asker} wants to remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  String groupRemoveAsk(String asker, String device, String here);
+
+  /// No description provided for @groupRemoveAskDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'It was removed from all your devices there. Keep leaves it paired here.'**
+  String get groupRemoveAskDetail;
+
+  /// Short button on groupRemoveAsk; groupRemoveTooltip is its tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get groupRemove;
+
+  /// No description provided for @groupRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  String groupRemoveTooltip(String device, String here);
+
+  /// Short button on groupRemoveAsk; groupKeepTooltip is its tooltip
   ///
   /// In en, this message translates to:
   /// **'Keep'**
-  String get joinedKeep;
+  String get groupKeep;
+
+  /// No description provided for @groupKeepTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep {device} paired with {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  String groupKeepTooltip(String device, String here);
+
+  /// No description provided for @groupRequestNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ferret to answer.'**
+  String get groupRequestNoticeBody;
+
+  /// No description provided for @groupRequestsNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change to your devices needs you} other{{count} changes to your devices need you}}'**
+  String groupRequestsNotice(int count);
 
   /// No description provided for @devicePairedThrough.
   ///
@@ -1511,7 +1565,7 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsSharePairingsBody.
   ///
   /// In en, this message translates to:
-  /// **'A device you pair here joins all your devices. Remove it once and it leaves them all.'**
+  /// **'A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.'**
   String get settingsSharePairingsBody;
 
   /// No description provided for @doctorIsolated.
@@ -1993,36 +2047,6 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get activityFilterAll;
-
-  /// No description provided for @joinedManyNotice.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 device joined your devices} other{{count} devices joined your devices}}'**
-  String joinedManyNotice(int count);
-
-  /// No description provided for @joinedManyBanner.
-  ///
-  /// In en, this message translates to:
-  /// **'{names} joined your devices'**
-  String joinedManyBanner(String names);
-
-  /// No description provided for @joinedManyAddedBy.
-  ///
-  /// In en, this message translates to:
-  /// **'Added by {introducer}'**
-  String joinedManyAddedBy(String introducer);
-
-  /// No description provided for @joinedReview.
-  ///
-  /// In en, this message translates to:
-  /// **'Review'**
-  String get joinedReview;
-
-  /// No description provided for @joinedKeepAll.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep all'**
-  String get joinedKeepAll;
 
   /// No description provided for @sidebarFind.
   ///

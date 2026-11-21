@@ -1,3 +1,4 @@
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
@@ -8,7 +9,8 @@ import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What waits for the person's answer, such as a file from a device that
-/// isn't paired, at the top of Home. Takes no space when nothing waits.
+/// isn't paired or another device that wants to add one, at the top of
+/// Home. Takes no space when nothing waits.
 class NeedsYouFrame extends StatelessWidget {
   const NeedsYouFrame({super.key});
 
@@ -16,51 +18,55 @@ class NeedsYouFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
 
-    return FeatureChangesListener(
-      features: scope.features,
-      builder: (context) {
-        final feed = ActivityFeed.gather(
-          context,
-          scope.features,
-          scope.featureContext,
-        );
-        final waiting = feed.needsYou;
-        if (waiting.isEmpty) {
-          return const SizedBox.shrink();
-        }
+    // The other devices' requests come from the engine, not a feature.
+    return StreamBuilder<List<GroupRequest>>(
+      stream: scope.featureContext.engine.groupRequestChanges,
+      builder: (context, _) => FeatureChangesListener(
+        features: scope.features,
+        builder: (context) {
+          final feed = ActivityFeed.gather(
+            context,
+            scope.features,
+            scope.featureContext,
+          );
+          final waiting = feed.needsYou;
+          if (waiting.isEmpty) {
+            return const SizedBox.shrink();
+          }
 
-        final now = DateTime.now();
+          final now = DateTime.now();
 
-        return Padding(
-          padding: EdgeInsets.only(bottom: Spacing.d8),
-          child: Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              SectionTitle(context.shellL10n.needsYouTitle),
-              SurfaceCard(
-                padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  children: [
-                    // Spoken when it shows up: it waits for an answer.
-                    for (final item in waiting)
-                      Semantics(
-                        key: ValueKey(item.id),
-                        container: true,
-                        liveRegion: true,
-                        child: ActivityRow(
-                          item: item,
-                          now: now,
-                          holdsPrimary: identical(item, feed.primaryItem),
+          return Padding(
+            padding: EdgeInsets.only(bottom: Spacing.d8),
+            child: Column(
+              crossAxisAlignment: .stretch,
+              children: [
+                SectionTitle(context.shellL10n.needsYouTitle),
+                SurfaceCard(
+                  padding: EdgeInsets.symmetric(vertical: Spacing.d6),
+                  child: Column(
+                    crossAxisAlignment: .stretch,
+                    children: [
+                      // Spoken when it shows up: it waits for an answer.
+                      for (final item in waiting)
+                        Semantics(
+                          key: ValueKey(item.id),
+                          container: true,
+                          liveRegion: true,
+                          child: ActivityRow(
+                            item: item,
+                            now: now,
+                            holdsPrimary: identical(item, feed.primaryItem),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

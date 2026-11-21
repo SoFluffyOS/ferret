@@ -22,6 +22,8 @@ void main() {
   Future<FerretEngine> startEngine(
     String name, {
     bool sharesPairings = true,
+    Duration justPaired = FerretEngine.defaultJustPaired,
+    Duration groupRequestLifetime = FerretEngine.defaultGroupRequestLifetime,
   }) async {
     final settings = MemorySettingsStore();
     if (!sharesPairings) {
@@ -39,6 +41,8 @@ void main() {
       features: [_CopyFeature()],
       discovery: _SilentDiscovery(),
       port: 0,
+      justPaired: justPaired,
+      groupRequestLifetime: groupRequestLifetime,
     );
     await engine.start();
     engines.add(engine);
@@ -53,6 +57,17 @@ void main() {
       ..hosts.add('127.0.0.1');
     expect(await asking.pairWithOffer(offer ?? PairingOffer()), isA<Paired>());
   }
+
+  Future<T> requestOn<T extends GroupRequest>(FerretEngine engine) async {
+    await _until(() => engine.groupRequests.whereType<T>().isNotEmpty);
+    return engine.groupRequests.whereType<T>().first;
+  }
+
+  Future<void> removeWhenAsked(FerretEngine engine) async =>
+      engine.answerGroupRequest(
+        await requestOn<RemovalRequest>(engine),
+        yes: true,
+      );
 
   bool connected(FerretEngine engine, List<FerretEngine> others) =>
       others.every(
@@ -161,23 +176,105 @@ void main() {
     },
   );
 
-  test('a device it vouches for gets no more than the one vouching', () async {
+  test(
+    'a device added elsewhere joins only after a yes, with no more access',
+    () async {
+      final mac = await startEngine('MacBook Pro', justPaired: Duration.zero);
+      final pixel = await startEngine('Pixel 7');
+      final tablet = await startEngine('Tablet');
+      await pair(pixel, mac);
+      await _until(() => connected(mac, [pixel]));
+      await mac.access.setAllowed(
+        pixel.identity.deviceId,
+        'copy',
+        allowed: false,
+      );
+
+      await pair(tablet, pixel);
+      final request = await requestOn<JoinRequest>(mac);
+      expect(request.device.name, 'Tablet');
+      expect(request.introducer.name, 'Pixel 7');
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      expect(mac.trustStore.isTrusted(tablet.identity.deviceId), isFalse);
+      expect(connected(mac, [tablet]), isFalse);
+      // The tablet just paired with the phone by hand, so it takes the
+      // phone's other devices in without a question.
+      expect(tablet.trustStore.isTrusted(mac.identity.deviceId), isTrue);
+
+      final joined = mac.joins.first;
+      await mac.answerGroupRequest(request, yes: true);
+
+      expect((await joined).device.name, 'Tablet');
+      await _until(() => connected(mac, [tablet]) && connected(tablet, [mac]));
+      expect(mac.groupRequests, isEmpty);
+      expect(mac.access.isBlocked(tablet.identity.deviceId, 'copy'), isTrue);
+      expect(
+        pixel.access.isBlocked(tablet.identity.deviceId, 'copy'),
+        isFalse,
+      );
+    },
+  );
+
+  test('not now keeps it out, and it lets go of this device', () async {
+    final mac = await startEngine('MacBook Pro', justPaired: Duration.zero);
+    final pixel = await startEngine('Pixel 7');
+    final tablet = await startEngine('Tablet');
+    await pair(pixel, mac);
+    await _until(() => connected(mac, [pixel]));
+    await pair(tablet, pixel);
+
+    await mac.answerGroupRequest(await requestOn<JoinRequest>(mac), yes: false);
+    // As when it next finds the Mac on the network.
+    await tablet.reconnectNow();
+
+    await _until(() => !tablet.trustStore.isTrusted(mac.identity.deviceId));
+    await pixel.setSharesPairings(true);
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    expect(mac.groupRequests, isEmpty);
+    expect(mac.trustStore.isTrusted(tablet.identity.deviceId), isFalse);
+    expect(connected(pixel, [mac, tablet]), isTrue);
+  });
+
+  test('a request nobody answers is a no', () async {
+    final mac = await startEngine(
+      'MacBook Pro',
+      justPaired: Duration.zero,
+      groupRequestLifetime: const Duration(milliseconds: 300),
+    );
+    final pixel = await startEngine('Pixel 7');
+    final tablet = await startEngine('Tablet');
+    await pair(pixel, mac);
+    await _until(() => connected(mac, [pixel]));
+    await pair(tablet, pixel);
+    await requestOn<JoinRequest>(mac);
+
+    await _until(() => mac.groupRequests.isEmpty);
+
+    expect(mac.trustStore.isTrusted(tablet.identity.deviceId), isFalse);
+    expect(mac.trustStore.forgottenOf(tablet.identity.deviceId), isNotNull);
+  });
+
+  test('a removal elsewhere asks first, and keep sticks', () async {
     final mac = await startEngine('MacBook Pro');
     final pixel = await startEngine('Pixel 7');
     final tablet = await startEngine('Tablet');
     await pair(pixel, mac);
     await _until(() => connected(mac, [pixel]));
-    await mac.access.setAllowed(
-      pixel.identity.deviceId,
-      'copy',
-      allowed: false,
-    );
+    await pair(tablet, mac);
+    await _until(() => connected(pixel, [mac, tablet]));
 
-    await pair(tablet, pixel);
-    await _until(() => mac.trustStore.isTrusted(tablet.identity.deviceId));
+    await mac.unpair(tablet.identity.deviceId, everywhere: true);
 
-    expect(mac.access.isBlocked(tablet.identity.deviceId, 'copy'), isTrue);
-    expect(pixel.access.isBlocked(tablet.identity.deviceId, 'copy'), isFalse);
+    final request = await requestOn<RemovalRequest>(pixel);
+    expect(request.device.name, 'Tablet');
+    expect(request.introducer.name, 'MacBook Pro');
+    expect(pixel.trustStore.isTrusted(tablet.identity.deviceId), isTrue);
+    await pixel.answerGroupRequest(request, yes: false);
+
+    await mac.setSharesPairings(true);
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    expect(pixel.groupRequests, isEmpty);
+    expect(pixel.trustStore.isTrusted(tablet.identity.deviceId), isTrue);
   });
 
   test('removing a device from all of them reaches every one', () async {
@@ -192,6 +289,7 @@ void main() {
     );
 
     await mac.unpair(tablet.identity.deviceId, everywhere: true);
+    await removeWhenAsked(pixel);
 
     await _until(
       () =>
@@ -223,6 +321,7 @@ void main() {
     await pair(newPixel, mac);
     await _until(() => connected(mac, [newPixel]));
     await mac.replace(oldId, newId: newId);
+    await removeWhenAsked(tablet);
 
     expect(mac.trustStore.isTrusted(oldId), isFalse);
     expect(mac.trustStore[newId]?.name, 'My Pixel');
@@ -269,6 +368,7 @@ void main() {
     await mac.unpair(tablet.identity.deviceId, everywhere: true);
     expect(pixel.trustStore.isTrusted(tablet.identity.deviceId), isTrue);
     await pixel.start();
+    await removeWhenAsked(pixel);
 
     await _until(
       () => !pixel.trustStore.isTrusted(tablet.identity.deviceId),
@@ -286,6 +386,7 @@ void main() {
     await pair(tablet, mac);
     await _until(() => connected(pixel, [mac, tablet]));
     await mac.unpair(tablet.identity.deviceId, everywhere: true);
+    await removeWhenAsked(pixel);
     await _until(
       () =>
           !pixel.trustStore.isTrusted(tablet.identity.deviceId) &&
@@ -344,6 +445,41 @@ void main() {
       expect(changes.joined.single.device.name, 'Pixel 7');
       expect(trustStore[pixel.id]?.introducedBy, mac.id);
       expect(trustStore[pixel.id]?.lastHost, '192.168.1.9');
+    });
+
+    test('a review proposes without trusting or dropping', () async {
+      final pixel = await introduced(
+        'Pixel 7',
+        pairedAt: DateTime(2026, 11, 2),
+      );
+      await roster.apply(Introduce(devices: [pixel]), mac);
+      final tablet = await introduced('Tablet');
+
+      final proposal = await roster.review(
+        Introduce(
+          devices: [tablet],
+          forgotten: [
+            .new(
+              id: pixel.id,
+              forgottenAtMs: Int64(
+                DateTime(2026, 11, 3).millisecondsSinceEpoch,
+              ),
+            ),
+          ],
+        ),
+        mac,
+      );
+
+      expect(proposal.joins.single.device.name, 'Tablet');
+      expect(proposal.removals.single.device.id, pixel.id);
+      expect(trustStore.isTrusted(tablet.id), isFalse);
+      expect(trustStore.isTrusted(pixel.id), isTrue);
+      expect(trustStore.forgottenOf(pixel.id), isNull);
+
+      expect(await roster.join(proposal.joins.single), isTrue);
+      expect(await roster.remove(proposal.removals.single), isTrue);
+      expect(trustStore.isTrusted(tablet.id), isTrue);
+      expect(trustStore.isTrusted(pixel.id), isFalse);
     });
 
     test('drops an entry whose id does not come from its key', () async {

@@ -2,6 +2,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/row_action_button.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class ActivityTextAction extends StatelessWidget {
   const ActivityTextAction({
@@ -29,17 +30,19 @@ class ActivityTextAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spoken = switch (subject) {
-      final subject? => context.shellL10n.activityActionFor(
+    final spoken = switch ((action.tooltip, subject)) {
+      (final tooltip?, _) => tooltip,
+      (null, final subject?) => context.shellL10n.activityActionFor(
         action.label,
         subject,
       ),
-      null => null,
+      (null, null) => null,
     };
     if (action.primary) {
       return RowActionButton(
         label: action.label,
         semanticLabel: spoken,
+        tooltip: action.tooltip,
         isPrimary: filled,
         onPressed: action.onPressed,
       );
@@ -51,15 +54,22 @@ class ActivityTextAction extends StatelessWidget {
         false => 0,
       },
       alwaysIncludeSemantics: true,
-      child: TextLink(
-        label: action.label,
-        semanticLabel: spoken,
-        onTap: action.onPressed,
-        alignment: switch (reachesDown) {
-          true => Alignment.topCenter,
-          false => Alignment.center,
-        },
+      child: _withTooltip(
+        TextLink(
+          label: action.label,
+          semanticLabel: spoken,
+          onTap: action.onPressed,
+          alignment: switch (reachesDown) {
+            true => Alignment.topCenter,
+            false => Alignment.center,
+          },
+        ),
       ),
     );
   }
+
+  Widget _withTooltip(Widget child) => switch (action.tooltip) {
+    final tooltip? => FluffyTooltip(message: tooltip, child: child),
+    null => child,
+  };
 }

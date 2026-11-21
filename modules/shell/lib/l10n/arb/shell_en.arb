@@ -821,35 +821,112 @@
     }
   },
   "promptNoticeBody": "Open Ferret to compare the code.",
-  "joinedNotice": "{device} joined your devices",
-  "@joinedNotice": {
+  "groupJoinAsk": "{asker} wants to add {device} to your devices",
+  "@groupJoinAsk": {
     "placeholders": {
+      "asker": {
+        "type": "String"
+      },
       "device": {
         "type": "String"
       }
     }
   },
-  "joinedNoticeBody": "Added by {introducer}",
-  "@joinedNoticeBody": {
+  "groupJoinAskDetail": "It gets what {asker} may use here. Not now keeps it off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.",
+  "@groupJoinAskDetail": {
     "placeholders": {
-      "introducer": {
+      "asker": {
+        "type": "String"
+      },
+      "here": {
         "type": "String"
       }
     }
   },
-  "joinedBanner": "{device} joined your devices (added by {introducer})",
-  "@joinedBanner": {
+  "groupJoinAdd": "Add",
+  "@groupJoinAdd": {
+    "description": "Short button on groupJoinAsk; groupJoinAddTooltip is its tooltip"
+  },
+  "groupJoinAddTooltip": "Add {device} to {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
+  "@groupJoinAddTooltip": {
     "placeholders": {
       "device": {
         "type": "String"
       },
-      "introducer": {
+      "here": {
         "type": "String"
       }
     }
   },
-  "joinedUndo": "Undo",
-  "joinedKeep": "Keep",
+  "groupJoinNotNow": "Not now",
+  "@groupJoinNotNow": {
+    "description": "Short button on groupJoinAsk; groupJoinNotNowTooltip is its tooltip"
+  },
+  "groupJoinNotNowTooltip": "Keep {device} off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
+  "@groupJoinNotNowTooltip": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "groupRemoveAsk": "{asker} wants to remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
+  "@groupRemoveAsk": {
+    "placeholders": {
+      "asker": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "groupRemoveAskDetail": "It was removed from all your devices there. Keep leaves it paired here.",
+  "groupRemove": "Remove",
+  "@groupRemove": {
+    "description": "Short button on groupRemoveAsk; groupRemoveTooltip is its tooltip"
+  },
+  "groupRemoveTooltip": "Remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
+  "@groupRemoveTooltip": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "groupKeep": "Keep",
+  "@groupKeep": {
+    "description": "Short button on groupRemoveAsk; groupKeepTooltip is its tooltip"
+  },
+  "groupKeepTooltip": "Keep {device} paired with {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}",
+  "@groupKeepTooltip": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "groupRequestNoticeBody": "Open Ferret to answer.",
+  "groupRequestsNotice": "{count, plural, =1{1 change to your devices needs you} other{{count} changes to your devices need you}}",
+  "@groupRequestsNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "devicePairedThrough": "Paired through {device}",
   "@devicePairedThrough": {
     "placeholders": {
@@ -884,7 +961,7 @@
     "description": "Short button for deviceForgetHere; the full sentence is its tooltip"
   },
   "settingsSharePairings": "Pair once for all my devices",
-  "settingsSharePairingsBody": "A device you pair here joins all your devices. Remove it once and it leaves them all.",
+  "settingsSharePairingsBody": "A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.",
   "doctorIsolated": "This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
   "@doctorIsolated": {
     "placeholders": {
@@ -1169,32 +1246,6 @@
     }
   },
   "activityFilterAll": "All",
-  "joinedManyNotice": "{count, plural, =1{1 device joined your devices} other{{count} devices joined your devices}}",
-  "@joinedManyNotice": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "joinedManyBanner": "{names} joined your devices",
-  "@joinedManyBanner": {
-    "placeholders": {
-      "names": {
-        "type": "String"
-      }
-    }
-  },
-  "joinedManyAddedBy": "Added by {introducer}",
-  "@joinedManyAddedBy": {
-    "placeholders": {
-      "introducer": {
-        "type": "String"
-      }
-    }
-  },
-  "joinedReview": "Review",
-  "joinedKeepAll": "Keep all",
   "sidebarFind": "Find a device",
   "sidebarNoMatch": "No device called “{query}”",
   "@sidebarNoMatch": {

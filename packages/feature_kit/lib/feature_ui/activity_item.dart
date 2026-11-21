@@ -124,10 +124,15 @@ class ActivityAction {
     required this.onPressed,
     this.icon,
     this.primary = false,
+    this.tooltip,
   });
 
   /// A verb, such as "Copy" or "Open". With an [icon] it is the tooltip.
   final String label;
+
+  /// The whole sentence a short [label] stands for, such as "Add iPad to
+  /// this Mac" for "Add". Shown on hover and read out instead of [label].
+  final String? tooltip;
 
   /// Draws the action as an icon button, for controls everyone knows by
   /// sight such as play and next.

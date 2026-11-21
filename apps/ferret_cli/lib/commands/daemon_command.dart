@@ -48,6 +48,7 @@ class DaemonCommand extends Command<int> {
         .transform(utf8.decoder)
         .transform(const LineSplitter())
         .asBroadcastStream();
+    final asked = <GroupRequest>{};
     final subscriptions = [
       engine.sessionChanges.listen(
         (sessions) => stdout.writeln('Connected: ${_names(sessions)}'),
@@ -59,6 +60,13 @@ class DaemonCommand extends Command<int> {
           '(added by ${joined.introducer.name}).',
         ),
       ),
+      engine.groupRequestChanges.listen((requests) {
+        for (final request in requests) {
+          if (asked.add(request)) {
+            unawaited(_answer(engine, request, lines));
+          }
+        }
+      }),
       engine.nearbyChanges.listen(
         (nearby) => stdout.writeln('Nearby: ${_nearbyNames(nearby)}'),
       ),
@@ -112,6 +120,28 @@ class DaemonCommand extends Command<int> {
     }
 
     return nearby.map((peer) => peer.announce.name).join(', ');
+  }
+
+  /// Another device wants to add or remove one here. Nothing changes
+  /// until the person says yes.
+  Future<void> _answer(
+    FerretEngine engine,
+    GroupRequest request,
+    Stream<String> lines,
+  ) async {
+    final asker = request.introducer.name;
+    final device = request.device.name;
+    stdout.write(switch (request) {
+      JoinRequest() =>
+        '$asker wants to add $device to your devices. Add? [y/N] ',
+      RemovalRequest() =>
+        '$asker wants to remove $device from this device. Remove? [y/N] ',
+    });
+    final answer = await lines.first;
+    await engine.answerGroupRequest(
+      request,
+      yes: answer.trim().toLowerCase().startsWith('y'),
+    );
   }
 
   Future<void> _ask(PairingPrompt prompt, Stream<String> lines) async {

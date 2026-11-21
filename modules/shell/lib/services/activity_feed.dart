@@ -1,6 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/group_request_items.dart';
 import 'package:shell/services/private_previews.dart';
 
 /// Every feature's activity as Home shows it: what waits for the person's
@@ -13,7 +14,8 @@ class ActivityFeed {
     this.needsYou = const [],
   });
 
-  /// Asks each of [features] what it did, and sorts the answers. Private
+  /// Asks each of [features] what it did, adds what the person's other
+  /// devices ask of this one, and sorts the answers. Private
   /// lines from a device whose previews are off here show their cover.
   factory ActivityFeed.gather(
     BuildContext context,
@@ -24,6 +26,7 @@ class ActivityFeed {
     final hidden = context.shellL10n.privateCoverDetail(ThisComputer.here);
 
     return ActivityFeed.of([
+      ...GroupRequestItems.of(context, featureContext.engine),
       for (final feature in features)
         for (final item in feature.activity(context, featureContext))
           switch (item.private) {

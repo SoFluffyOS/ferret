@@ -1062,25 +1062,122 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get promptNoticeBody => 'Mở Ferret để so mã.';
 
   @override
-  String joinedNotice(String device) {
-    return '$device đã tham gia các thiết bị của bạn';
+  String groupJoinAsk(String asker, String device) {
+    return '$asker muốn thêm $device vào các thiết bị của bạn';
   }
 
   @override
-  String joinedNoticeBody(String introducer) {
-    return 'Được thêm bởi $introducer';
+  String groupJoinAskDetail(String asker, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Nó được dùng những gì $asker được dùng ở đây. Để sau sẽ giữ nó ngoài $_temp0.';
   }
 
   @override
-  String joinedBanner(String device, String introducer) {
-    return '$device đã tham gia các thiết bị của bạn (được thêm bởi $introducer)';
+  String get groupJoinAdd => 'Thêm';
+
+  @override
+  String groupJoinAddTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Thêm $device vào $_temp0';
   }
 
   @override
-  String get joinedUndo => 'Hoàn tác';
+  String get groupJoinNotNow => 'Để sau';
 
   @override
-  String get joinedKeep => 'Giữ';
+  String groupJoinNotNowTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Giữ $device ngoài $_temp0';
+  }
+
+  @override
+  String groupRemoveAsk(String asker, String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return '$asker muốn gỡ $device khỏi $_temp0';
+  }
+
+  @override
+  String get groupRemoveAskDetail =>
+      'Nó đã bị gỡ khỏi tất cả thiết bị của bạn ở đó. Giữ sẽ để nó vẫn ghép đôi ở đây.';
+
+  @override
+  String get groupRemove => 'Gỡ';
+
+  @override
+  String groupRemoveTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Gỡ $device khỏi $_temp0';
+  }
+
+  @override
+  String get groupKeep => 'Giữ';
+
+  @override
+  String groupKeepTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'máy Mac này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
+      },
+    );
+    return 'Giữ $device ghép đôi với $_temp0';
+  }
+
+  @override
+  String get groupRequestNoticeBody => 'Mở Ferret để trả lời.';
+
+  @override
+  String groupRequestsNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count thay đổi về thiết bị của bạn cần bạn',
+    );
+    return '$_temp0';
+  }
 
   @override
   String devicePairedThrough(String device) {
@@ -1121,7 +1218,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get settingsSharePairingsBody =>
-      'Thiết bị bạn ghép đôi ở đây sẽ tham gia tất cả thiết bị của bạn. Gỡ một lần là rời khỏi tất cả.';
+      'Thiết bị bạn ghép đôi ở đây cũng tham gia các thiết bị khác của bạn. Khi một trong số đó thêm hoặc gỡ một thiết bị, Ferret ở đây sẽ hỏi bạn trước.';
 
   @override
   String doctorIsolated(String device, String here) {
@@ -1497,32 +1594,6 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get activityFilterAll => 'Tất cả';
-
-  @override
-  String joinedManyNotice(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count thiết bị đã tham gia các thiết bị của bạn',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String joinedManyBanner(String names) {
-    return '$names đã tham gia các thiết bị của bạn';
-  }
-
-  @override
-  String joinedManyAddedBy(String introducer) {
-    return 'Được thêm bởi $introducer';
-  }
-
-  @override
-  String get joinedReview => 'Xem lại';
-
-  @override
-  String get joinedKeepAll => 'Giữ tất cả';
 
   @override
   String get sidebarFind => 'Tìm thiết bị';

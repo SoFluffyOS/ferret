@@ -30,7 +30,11 @@ class FerretEngine implements FeatureHost {
     required Future<List<String>> Function() vpnAddressSource,
     required List<Duration> vpnDelays,
     required SameAccount sameAccount,
+    required Duration justPaired,
+    required Duration groupRequestLifetime,
   }) : _device = device,
+       _justPaired = justPaired,
+       _groupRequestLifetime = groupRequestLifetime,
        _sameAccount = sameAccount,
        _vpnFilter = vpnFilter,
        _vpnAddressSource = vpnAddressSource,
@@ -83,6 +87,8 @@ class FerretEngine implements FeatureHost {
         VpnAddresses.ofThisDevice,
     List<Duration> vpnDelays = VpnReacher.defaultDelays,
     SameAccount? sameAccount,
+    Duration justPaired = defaultJustPaired,
+    Duration groupRequestLifetime = defaultGroupRequestLifetime,
   }) async {
     final identity = await DeviceIdentity.loadOrCreate(secrets);
     final trustStore = await TrustStore.open(secrets);
@@ -98,8 +104,22 @@ class FerretEngine implements FeatureHost {
       vpnAddressSource: vpnAddressSource,
       vpnDelays: vpnDelays,
       sameAccount: sameAccount ?? SameAccount(),
+      justPaired: justPaired,
+      groupRequestLifetime: groupRequestLifetime,
     );
   }
+
+  /// A device paired by hand here this recently brings its other devices
+  /// along without a question: the user is pairing right now, and the
+  /// pairing prompt named them.
+  static const defaultJustPaired = Duration(minutes: 2);
+
+  /// How long a [GroupRequest] waits for an answer.
+  static const defaultGroupRequestLifetime = Duration(hours: 24);
+
+  /// Removals the user turned down, by device id, with the time of the
+  /// removal, so the same word isn't asked about again.
+  static const keptRemovalsKey = 'pairing.keptRemovals';
 
   @override
   final DeviceIdentity identity;
@@ -130,6 +150,12 @@ class FerretEngine implements FeatureHost {
     beforeJoin: _inheritAccess,
   );
   final StreamController<DeviceJoined> _joins = .broadcast();
+  final Duration _justPaired;
+  final Duration _groupRequestLifetime;
+  final Map<String, GroupRequest> _groupRequests = {};
+  final Map<String, Timer> _groupRequestTimers = {};
+  final StreamController<List<GroupRequest>> _groupRequestChanges =
+      .broadcast();
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
   final Map<Session, List<Feature>> _openedFeatures = {};
@@ -306,15 +332,72 @@ class FerretEngine implements FeatureHost {
   /// Devices that joined through another of the user's devices.
   Stream<DeviceJoined> get joins => _joins.stream;
 
+  /// Devices another of the user's devices wants to add or remove here,
+  /// waiting for the user's answer, oldest first.
+  List<GroupRequest> get groupRequests => [..._groupRequests.values];
+
+  Stream<List<GroupRequest>> get groupRequestChanges =>
+      _groupRequestChanges.stream;
+
   /// Whether pairings are shared between the user's devices.
   bool get sharesPairings => settings.get<bool>(sharePairingsKey) ?? true;
 
   /// Turns sharing pairings on or off. Turning it on tells the connected
-  /// devices about each other right away.
+  /// devices about each other right away; turning it off lets go of what
+  /// waits for an answer.
   Future<void> setSharesPairings(bool shares) async {
     await settings.set(sharePairingsKey, shares);
     if (shares) {
       await _introduceEveryone();
+      return;
+    }
+
+    _dropGroupRequests((_) => true);
+  }
+
+  /// Answers [request]. Yes adds or removes the device here, and the
+  /// device added gets no more than the one that asked may use. No to an
+  /// addition keeps the device out until it is paired here by hand; no to
+  /// a removal keeps it, and the same removal isn't asked about again.
+  Future<void> answerGroupRequest(
+    GroupRequest request, {
+    required bool yes,
+  }) async {
+    if (!identical(_groupRequests[request.device.id], request)) {
+      return;
+    }
+
+    _dropGroupRequests((each) => identical(each, request));
+    final introducer = trustStore[request.introducer.id];
+    switch ((request, yes)) {
+      case (JoinRequest(), true) when introducer != null:
+        final joined = DeviceJoined(
+          device: request.device,
+          introducer: introducer,
+        );
+        if (await _admit(joined)) {
+          _nearbyChanges.add(nearby);
+          _emitDevices();
+          await _introduceEveryone();
+        }
+      case (JoinRequest(), _):
+        await trustStore.forget(
+          .new(
+            id: request.device.id,
+            at: _afterPairing(request.device),
+            by: .here,
+          ),
+        );
+      case (final RemovalRequest removal, true):
+        await _removeIntroduced((
+          device: removal.device,
+          at: removal.forgottenAt,
+        ));
+      case (final RemovalRequest removal, false):
+        await settings.set(keptRemovalsKey, {
+          ..._keptRemovals(),
+          removal.device.id: removal.forgottenAt.millisecondsSinceEpoch,
+        });
     }
   }
 
@@ -414,6 +497,8 @@ class FerretEngine implements FeatureHost {
     _running = false;
     _droppedRecently.clear();
     _vpnReacher.stopAll();
+    // Whoever asked asks again on the next connection.
+    _dropGroupRequests((_) => true);
     await _discovery.stop();
     for (final subscription in _subscriptions) {
       await subscription.cancel();
@@ -652,6 +737,10 @@ class FerretEngine implements FeatureHost {
     );
     await trustStore.remove(deviceId);
     _mismatches.remove(deviceId);
+    _dropGroupRequests(
+      (request) =>
+          request.device.id == deviceId || request.introducer.id == deviceId,
+    );
     await session?.close(.GOODBYE_REASON_UNPAIRED);
     _emitDevices();
     if (everywhere) {
@@ -1780,6 +1869,9 @@ class FerretEngine implements FeatureHost {
   Future<void> _inheritAccess(String deviceId, TrustedDevice introducer) =>
       access.blockAll(deviceId, access.blockedFor(introducer.id));
 
+  /// Takes in what a paired device says about the user's other devices.
+  /// Additions from a device just paired by hand here come in right away;
+  /// every other addition, and every removal, waits for the user here.
   Future<void> _onIntroduce(Session session, Envelope envelope) async {
     final introduce = payloadOf(envelope, Introduce.new);
     final introducer = trustStore[session.remoteDeviceId];
@@ -1787,32 +1879,139 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
-    final changes = await _roster.apply(introduce, introducer);
-    for (final deviceId in changes.removed) {
-      await _sessions[deviceId]?.close(.GOODBYE_REASON_UNPAIRED);
-    }
+    final proposal = await _roster.review(introduce, introducer);
+    final now = DateTime.now();
+    final kept = _keptRemovals();
+    final asked = <GroupRequest>[
+      for (final removal in proposal.removals)
+        if (!_groupRequests.containsKey(removal.device.id) &&
+            kept[removal.device.id] != removal.at.millisecondsSinceEpoch)
+          RemovalRequest(
+            device: removal.device,
+            introducer: introducer,
+            askedAt: now,
+            expiresAt: now.add(_groupRequestLifetime),
+            forgottenAt: removal.at,
+          ),
+    ];
 
-    for (final joined in changes.joined) {
-      printLog(
-        '${joined.device.name} joined through ${joined.introducer.name}',
-      );
-      _nearby.remove(joined.device.id);
-      _joins.add(joined);
-      if ((joined.device.lastHost, joined.device.lastPort) case (
-        final host?,
-        final port?,
-      )) {
-        unawaited(_dial(host, port, expectedDeviceId: joined.device.id));
+    var joined = false;
+    final withoutAsking =
+        introducer.introducedBy == null &&
+        now.difference(introducer.pairedAt) < _justPaired;
+    for (final join in proposal.joins) {
+      if (withoutAsking) {
+        joined = await _admit(join) || joined;
+        continue;
+      }
+
+      if (!_groupRequests.containsKey(join.device.id)) {
+        asked.add(
+          JoinRequest(
+            device: join.device,
+            introducer: introducer,
+            askedAt: now,
+            expiresAt: now.add(_groupRequestLifetime),
+          ),
+        );
       }
     }
 
-    if (changes.removed.isEmpty && changes.joined.isEmpty) {
+    for (final request in asked) {
+      printLog(
+        '${request.introducer.name} asks about ${request.device.name}',
+      );
+      _groupRequests[request.device.id] = request;
+      _groupRequestTimers[request.device.id] = Timer(
+        request.expiresAt.difference(now),
+        () => unawaited(answerGroupRequest(request, yes: false)),
+      );
+    }
+
+    // What was forgotten meanwhile, or paired by hand, needs no answer.
+    final settled = _dropGroupRequests(
+      (request) => switch (request) {
+        JoinRequest(:final device) =>
+          trustStore.isTrusted(device.id) ||
+              switch (trustStore.forgottenOf(device.id)) {
+                final forgotten? => !device.pairedAt.isAfter(forgotten.at),
+                null => false,
+              },
+        RemovalRequest(:final device) => !trustStore.isTrusted(device.id),
+      },
+      announce: false,
+    );
+    if (asked.isNotEmpty || settled) {
+      _groupRequestChanges.add(groupRequests);
+    }
+
+    if (!joined) {
       return;
     }
 
     _nearbyChanges.add(nearby);
     _emitDevices();
     await _introduceEveryone();
+  }
+
+  /// Trusts a device another one vouched for, and dials it.
+  Future<bool> _admit(DeviceJoined joined) async {
+    if (!await _roster.join(joined)) {
+      return false;
+    }
+
+    printLog('${joined.device.name} joined through ${joined.introducer.name}');
+    _nearby.remove(joined.device.id);
+    _joins.add(joined);
+    if ((joined.device.lastHost, joined.device.lastPort) case (
+      final host?,
+      final port?,
+    )) {
+      unawaited(_dial(host, port, expectedDeviceId: joined.device.id));
+    }
+
+    return true;
+  }
+
+  Future<void> _removeIntroduced(RosterRemoval removal) async {
+    if (!await _roster.remove(removal)) {
+      return;
+    }
+
+    await _sessions[removal.device.id]?.close(.GOODBYE_REASON_UNPAIRED);
+    _nearbyChanges.add(nearby);
+    _emitDevices();
+    await _introduceEveryone();
+  }
+
+  Map<String, int> _keptRemovals() =>
+      switch (settings.get<Object?>(keptRemovalsKey)) {
+        final Map<String, Object?> stored => {
+          for (final MapEntry(:key, :value) in stored.entries)
+            if (value case final int at) key: at,
+        },
+        _ => const {},
+      };
+
+  /// Returns whether any request was dropped.
+  bool _dropGroupRequests(
+    bool Function(GroupRequest request) test, {
+    bool announce = true,
+  }) {
+    final dropped = [
+      for (final request in _groupRequests.values)
+        if (test(request)) request,
+    ];
+    for (final request in dropped) {
+      _groupRequests.remove(request.device.id);
+      _groupRequestTimers.remove(request.device.id)?.cancel();
+    }
+
+    if (dropped.isNotEmpty && announce) {
+      _groupRequestChanges.add(groupRequests);
+    }
+
+    return dropped.isNotEmpty;
   }
 
   Future<void> _route(Session session, Envelope envelope) async {
@@ -1943,6 +2142,10 @@ class FerretEngine implements FeatureHost {
       .new(id: deviceId, at: _afterPairing(trusted), by: .them),
     );
     await trustStore.remove(deviceId);
+    _dropGroupRequests(
+      (request) =>
+          request.device.id == deviceId || request.introducer.id == deviceId,
+    );
   }
 
   /// Only the newest drop of a device redials; an older run that wakes up

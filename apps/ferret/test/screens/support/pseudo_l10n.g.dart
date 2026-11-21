@@ -4259,9 +4259,17 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get promptNoticeBody => pseudo(super.promptNoticeBody);
   @override
-  String get joinedUndo => pseudo(super.joinedUndo);
+  String get groupJoinAdd => pseudo(super.groupJoinAdd);
   @override
-  String get joinedKeep => pseudo(super.joinedKeep);
+  String get groupJoinNotNow => pseudo(super.groupJoinNotNow);
+  @override
+  String get groupRemoveAskDetail => pseudo(super.groupRemoveAskDetail);
+  @override
+  String get groupRemove => pseudo(super.groupRemove);
+  @override
+  String get groupKeep => pseudo(super.groupKeep);
+  @override
+  String get groupRequestNoticeBody => pseudo(super.groupRequestNoticeBody);
   @override
   String get deviceForgetEverywhere => pseudo(super.deviceForgetEverywhere);
   @override
@@ -4393,10 +4401,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get deviceRenameReset => pseudo(super.deviceRenameReset);
   @override
   String get activityFilterAll => pseudo(super.activityFilterAll);
-  @override
-  String get joinedReview => pseudo(super.joinedReview);
-  @override
-  String get joinedKeepAll => pseudo(super.joinedKeepAll);
   @override
   String get sidebarFind => pseudo(super.sidebarFind);
   @override
@@ -4849,13 +4853,29 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String promptNotice(String device) => pseudo(super.promptNotice(device));
   @override
-  String joinedNotice(String device) => pseudo(super.joinedNotice(device));
+  String groupJoinAsk(String asker, String device) =>
+      pseudo(super.groupJoinAsk(asker, device));
   @override
-  String joinedNoticeBody(String introducer) =>
-      pseudo(super.joinedNoticeBody(introducer));
+  String groupJoinAskDetail(String asker, String here) =>
+      pseudo(super.groupJoinAskDetail(asker, here));
   @override
-  String joinedBanner(String device, String introducer) =>
-      pseudo(super.joinedBanner(device, introducer));
+  String groupJoinAddTooltip(String device, String here) =>
+      pseudo(super.groupJoinAddTooltip(device, here));
+  @override
+  String groupJoinNotNowTooltip(String device, String here) =>
+      pseudo(super.groupJoinNotNowTooltip(device, here));
+  @override
+  String groupRemoveAsk(String asker, String device, String here) =>
+      pseudo(super.groupRemoveAsk(asker, device, here));
+  @override
+  String groupRemoveTooltip(String device, String here) =>
+      pseudo(super.groupRemoveTooltip(device, here));
+  @override
+  String groupKeepTooltip(String device, String here) =>
+      pseudo(super.groupKeepTooltip(device, here));
+  @override
+  String groupRequestsNotice(int count) =>
+      pseudo(super.groupRequestsNotice(count));
   @override
   String devicePairedThrough(String device) =>
       pseudo(super.devicePairedThrough(device));
@@ -4922,14 +4942,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String deviceSameName(String name) => pseudo(super.deviceSameName(name));
   @override
   String deviceOwnName(String name) => pseudo(super.deviceOwnName(name));
-  @override
-  String joinedManyNotice(int count) => pseudo(super.joinedManyNotice(count));
-  @override
-  String joinedManyBanner(String names) =>
-      pseudo(super.joinedManyBanner(names));
-  @override
-  String joinedManyAddedBy(String introducer) =>
-      pseudo(super.joinedManyAddedBy(introducer));
   @override
   String sidebarNoMatch(String query) => pseudo(super.sidebarNoMatch(query));
   @override

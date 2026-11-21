@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
         children: [
           const LocalNetworkCard(),
           const NeedsYouFrame(),
-          const JoinedNoticesFrame(),
+          const GroupRequestNoticesFrame(),
           const SuccessorsFrame(),
           // Where there is a device list, the line sits under it, so it
           // shows whatever the pane is on.

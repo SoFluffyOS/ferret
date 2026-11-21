@@ -1065,25 +1065,123 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get promptNoticeBody => 'Open Ferret to compare the code.';
 
   @override
-  String joinedNotice(String device) {
-    return '$device joined your devices';
+  String groupJoinAsk(String asker, String device) {
+    return '$asker wants to add $device to your devices';
   }
 
   @override
-  String joinedNoticeBody(String introducer) {
-    return 'Added by $introducer';
+  String groupJoinAskDetail(String asker, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'It gets what $asker may use here. Not now keeps it off $_temp0.';
   }
 
   @override
-  String joinedBanner(String device, String introducer) {
-    return '$device joined your devices (added by $introducer)';
+  String get groupJoinAdd => 'Add';
+
+  @override
+  String groupJoinAddTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Add $device to $_temp0';
   }
 
   @override
-  String get joinedUndo => 'Undo';
+  String get groupJoinNotNow => 'Not now';
 
   @override
-  String get joinedKeep => 'Keep';
+  String groupJoinNotNowTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Keep $device off $_temp0';
+  }
+
+  @override
+  String groupRemoveAsk(String asker, String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return '$asker wants to remove $device from $_temp0';
+  }
+
+  @override
+  String get groupRemoveAskDetail =>
+      'It was removed from all your devices there. Keep leaves it paired here.';
+
+  @override
+  String get groupRemove => 'Remove';
+
+  @override
+  String groupRemoveTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Remove $device from $_temp0';
+  }
+
+  @override
+  String get groupKeep => 'Keep';
+
+  @override
+  String groupKeepTooltip(String device, String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
+      },
+    );
+    return 'Keep $device paired with $_temp0';
+  }
+
+  @override
+  String get groupRequestNoticeBody => 'Open Ferret to answer.';
+
+  @override
+  String groupRequestsNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes to your devices need you',
+      one: '1 change to your devices needs you',
+    );
+    return '$_temp0';
+  }
 
   @override
   String devicePairedThrough(String device) {
@@ -1123,7 +1221,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsSharePairingsBody =>
-      'A device you pair here joins all your devices. Remove it once and it leaves them all.';
+      'A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.';
 
   @override
   String doctorIsolated(String device, String here) {
@@ -1500,33 +1598,6 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get activityFilterAll => 'All';
-
-  @override
-  String joinedManyNotice(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count devices joined your devices',
-      one: '1 device joined your devices',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String joinedManyBanner(String names) {
-    return '$names joined your devices';
-  }
-
-  @override
-  String joinedManyAddedBy(String introducer) {
-    return 'Added by $introducer';
-  }
-
-  @override
-  String get joinedReview => 'Review';
-
-  @override
-  String get joinedKeepAll => 'Keep all';
 
   @override
   String get sidebarFind => 'Find a device';
