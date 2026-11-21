@@ -97,6 +97,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Watched? You know**: the menubar icon keeps a dot while a device sees your screen or controls your Mac.
 - **No hiding in file names**: received names lose the marks that flip text direction.
 - **Logs stay clean**: never a path, link or text you copied.
+- **Your Mac's key in the keychain**: other apps can't just copy it from a file anymore. It moves there by itself, and your devices stay paired.
 - **Privacy** and **Security** pages: every byte that leaves a device, and what Ferret protects you from.
 
 #### ❤️ Sponsor

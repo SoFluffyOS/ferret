@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:core/core.dart';
-import 'package:engine/identity/device_identity.dart';
+import 'package:engine/identity/identity.dart';
 import 'package:transport/transport.dart';
 
 /// Whether something of this account listens for connections on a TCP port
@@ -54,6 +54,11 @@ class SameAccount {
           folder,
         ).read(DeviceIdentity.storageKey);
         if (saved == null) {
+          continue;
+        }
+
+        if (KeychainIdentityStore.markedDeviceId(saved) case final id?) {
+          ids.add(id);
           continue;
         }
 

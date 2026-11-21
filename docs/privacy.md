@@ -10,7 +10,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 - A pairing QR code works once, for 5 minutes, and whoever scans it in that time pairs without a question. Show it, don't post it.
 - Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one, and each of your other devices asks you first: **Pixel 7 wants to add Anna's iPad to your devices**, with **Add** or **Not now**. Removing a device from another one asks too. A device added this way starts with the same features turned off as the one that added it. Turn it all off with **Settings → Advanced → Pair once for all my devices**.
 - To find each other, your devices announce their name, kind and device id (a fingerprint of their key) on the Wi-Fi you're on. The id is the same on every network. Nothing else, and never outside your network. **Pause** stops it.
-- Each device has its own key, kept in the system keychain on phones. On computers it's a file only your user account can read, like your SSH keys, so apps you run yourself can read it too.
+- Each device has its own key, kept in the system keychain on phones and on a Mac. On Windows and Linux it's a file only your user account can read, like your SSH keys, so apps you run yourself can read it too.
 
 ## 🙅 What Ferret never does
 
@@ -90,7 +90,7 @@ On a computer, everything Ferret saves sits in **one folder**: `~/.sofluffy/ferr
 | Folder | What's in it |
 |---|---|
 | `settings` | Your settings |
-| `secrets` | This device's key and your paired devices, readable only by you |
+| `secrets` | Your paired devices and this device's key, readable only by you. On a Mac the key itself is in your login keychain, and the file only says so |
 | `features` | What features save, such as your saved texts |
 | `tools` | Android's platform tools, if you downloaded them |
 | `cache` | Things Ferret can rebuild |
@@ -98,7 +98,7 @@ On a computer, everything Ferret saves sits in **one folder**: `~/.sofluffy/ferr
 | `hooks` | Your own [hook scripts](features/scripting.md#-hooks), if you add any. Ferret never writes here |
 | `app_control.json` | While the app runs: the loopback port and one-time secret `ferret-cli` uses, readable only by you |
 
-On phones, Ferret keeps its data in its own app storage, and its key in the system keychain.
+On a Mac, the key sits in your login keychain as `io.sofluffy.ferret`. On phones, Ferret keeps its data in its own app storage, and its key in the system keychain.
 
 ## ⏳ How long Ferret keeps things
 
@@ -117,7 +117,10 @@ Ferret writes no log file. Release builds print only short status lines to the s
 
 1. **Unpair** this computer on your other devices.
 2. Quit Ferret and delete the app.
-3. Delete `~/.sofluffy/ferret`. That's it, nothing is left behind.
+3. Delete `~/.sofluffy/ferret`.
+4. On a Mac, open **Keychain Access**, search for `io.sofluffy.ferret` and delete it.
+
+That's it, nothing is left behind.
 
 On a phone, uninstalling the app removes everything.
 
