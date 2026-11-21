@@ -54,13 +54,13 @@ class QuickShareBridge {
   /// Fires when the receive state changes.
   Stream<void> get changes => _changes.stream;
 
-  /// Whether this platform can be found by Quick Share at all. iOS keeps
-  /// the multicast it takes for apps with a special entitlement.
-  bool get isSupported => options.supported ?? !Platform.isIOS;
+  /// Whether Drop offers Quick Share here: only on computers, where phones
+  /// have no other built-in way to send. Android phones and tablets have
+  /// Quick Share themselves, and iOS keeps the multicast it takes for apps
+  /// with a special entitlement.
+  bool get isSupported => options.supported ?? _isComputer;
 
-  /// Whether Drop offers Quick Share. On by default on computers, where
-  /// phones have no other built-in way to send; phones and tablets have
-  /// Quick Share themselves.
+  /// Whether Quick Share is on: by default wherever it is supported.
   bool get isEnabled =>
       isSupported &&
       (settings.get<bool>(DropSettings.quickShareEnabled) ?? _isComputer);

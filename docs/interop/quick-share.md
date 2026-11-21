@@ -10,6 +10,8 @@ A friend has an Android phone and three photos for you. Installing an app on the
 
 Every Android phone already has **Quick Share** (it used to be called Nearby Share). Ferret speaks it, so the phone can send to your computer with **nothing installed** on it. No pairing, no Google account, and nothing leaves your network.
 
+This is a computer thing. On an Android phone or tablet, Ferret leaves Quick Share to the phone's own, so you won't find it in Ferret there.
+
 ## 📥 Send from an Android phone to your computer
 
 1. In Ferret on the computer, under **Do more**, tap **Turn on** next to **Let other phones send you files**.

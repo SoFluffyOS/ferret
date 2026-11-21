@@ -63,7 +63,7 @@ List<FeatureUi> androidFeatures() => [
   DropFeatureUi(
     feature: DropFeature(
       quickShareOptions: const QuickShareOptions(
-        supported: true,
+        supported: false,
         onComputer: false,
       ),
     ),

@@ -45,6 +45,18 @@ void main() {
       expect(laptop.quickShare.port, isNull);
     });
 
+    test('a phone or tablet leaves Quick Share to its own', () async {
+      await laptop.feature.stop();
+      laptop = await SoloDevice.start(
+        'Pixel 7',
+        inbox,
+        quickShare: const QuickShareOptions(onComputer: false),
+      );
+
+      expect(laptop.quickShare.isSupported, isFalse);
+      expect(laptop.quickShare.isEnabled, isFalse);
+    });
+
     test('turns on for 10 minutes, with the time left', () async {
       await laptop.quickShare.receiveForAWhile();
 
