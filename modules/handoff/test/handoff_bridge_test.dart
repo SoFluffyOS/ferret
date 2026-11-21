@@ -153,6 +153,15 @@ void main() {
     expect(setup.notifier.shown.single.title, "Couldn't send to gone");
   });
 
+  test('a link from the send picker to an offline device says so', () async {
+    final setup = await build();
+
+    expect(setup.bridge.canOpenOn('gone'), isFalse);
+    await setup.bridge.open('gone', 'https://example.org');
+
+    expect(setup.notifier.shown.single.title, "Couldn't send to gone");
+  });
+
   test(
     'a browser asking to pair brings Ferret forward with a notice',
     () async {

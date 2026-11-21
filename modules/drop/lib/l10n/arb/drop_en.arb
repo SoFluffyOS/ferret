@@ -542,6 +542,19 @@
   "pickerNoLocalSend": "No LocalSend devices found. On the other device: open LocalSend, on the same Wi-Fi.",
   "pickerNoDevices": "None of your devices is connected.",
   "pickerSearchAgain": "Search again",
+  "pickerLinkTitle": "Send the link to which device?",
+  "pickerOpenTitle": "Or open it there",
+  "@pickerOpenTitle": {
+    "description": "In the send picker for a shared link, above devices that can open the link right away instead of getting it as text"
+  },
+  "pickerOpenOn": "Open on {device}",
+  "@pickerOpenOn": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "noticeGone": "Couldn't find {device}",
   "@noticeGone": {
     "placeholders": {

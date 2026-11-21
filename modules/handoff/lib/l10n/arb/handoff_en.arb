@@ -84,7 +84,7 @@
   "settingsAssistantOn": "Ferret is your assistant",
   "settingsAssistantOff": "Ferret isn't your assistant yet",
   "settingsAssistantOpen": "Assistant settings",
-  "settingsShareHint": "You can also share any link to “Continue on…”.",
+  "settingsShareHint": "You can also share any link to “Send with Ferret” and pick “Open on…”.",
   "summaryPassive": "Offers the page you're on",
   "summarySendsOnly": "Only what you send",
   "summaryBrowserOff": "Off",

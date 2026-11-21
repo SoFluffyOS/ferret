@@ -11,21 +11,39 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Asks which device should get the files: a connected paired device, or
 /// a LocalSend device on the network. Opening it looks for LocalSend
-/// devices, and the list fills in as they answer.
+/// devices, and the list fills in as they answer. For a shared link it
+/// also offers to open the link on the devices in [opensOn].
 class DevicePickerDialog extends StatefulWidget {
-  const DevicePickerDialog({super.key});
+  const DevicePickerDialog({super.key, this.opensOn = const []});
+
+  /// Devices that can open a shared link right away.
+  final List<DropTarget> opensOn;
 
   static Future<DropTarget?> show(
     BuildContext context,
     DropViewModel viewModel,
-  ) => showGeneralDialog<DropTarget>(
+  ) async => (await _show(context, viewModel, const []))?.target;
+
+  /// Asks where a shared link goes: as text to a device, or open on one of
+  /// [opensOn].
+  static Future<DropPick?> showForLink(
+    BuildContext context,
+    DropViewModel viewModel, {
+    required List<DropTarget> opensOn,
+  }) => _show(context, viewModel, opensOn);
+
+  static Future<DropPick?> _show(
+    BuildContext context,
+    DropViewModel viewModel,
+    List<DropTarget> opensOn,
+  ) => showGeneralDialog<DropPick>(
     context: context,
     barrierDismissible: true,
     barrierLabel: context.dropL10n.actionCancel,
     barrierColor: FluffyColors.barrier,
     pageBuilder: (_, _, _) => ChangeNotifierProvider.value(
       value: viewModel,
-      child: const DevicePickerDialog(),
+      child: DevicePickerDialog(opensOn: opensOn),
     ),
   );
 
@@ -70,7 +88,10 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
               crossAxisAlignment: .stretch,
               children: [
                 Text(
-                  l10n.pickerTitle,
+                  switch (widget.opensOn.isEmpty) {
+                    true => l10n.pickerTitle,
+                    false => l10n.pickerLinkTitle,
+                  },
                   textAlign: .center,
                   style: typography.title3.copyWith(color: palette.text),
                 ),
@@ -81,6 +102,20 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
                     child: Text(l10n.pickerNoDevices, style: hint),
                   ),
                 for (final target in paired) TargetButton(target: target),
+                if (widget.opensOn.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: Spacing.d8,
+                      bottom: Spacing.d8,
+                    ),
+                    child: Text(l10n.pickerOpenTitle, style: hint),
+                  ),
+                for (final target in widget.opensOn)
+                  TargetButton(
+                    target: target,
+                    opens: true,
+                    label: l10n.pickerOpenOn(target.name),
+                  ),
                 for (final target in nearby)
                   TargetButton(
                     target: target,

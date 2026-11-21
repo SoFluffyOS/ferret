@@ -1,6 +1,7 @@
 // Home on an Android phone paired with a Mac and an iPhone: the iPhone row
 // with and without Fix, the Stay connected card next to Do more with the
-// Quick Settings tile offer, and Do more with only an iPhone paired. Renders into temp/screens as
+// Quick Settings tile offer, Do more with only an iPhone paired, and the
+// send picker for a shared link. Renders into temp/screens as
 // `home_phone_<name>_*.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/home_phone_screens_test.dart
@@ -8,7 +9,10 @@
 @Tags(['screens'])
 library;
 
+import 'dart:async';
+
 import 'package:clipboard/clipboard.dart';
+import 'package:drop/drop.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
@@ -132,6 +136,28 @@ final _screens = <String, _Script>{
     expect(find.text('Calls'), findsNothing);
     expect(find.text('Messages'), findsNothing);
     expect(find.text('Notifications'), findsNothing);
+  },
+  // Send with Ferret on a shared link: send it as text, or open it there.
+  'share_link_picker': (tester, rig) async {
+    await rig.pairConnectedComputer(
+      tester,
+      computerFeatures: appFeatures(),
+      name: 'Simon’s MacBook Pro',
+    );
+    await rig.settle(tester);
+    final drop = rig.app.features.whereType<DropFeatureUi>().single;
+    // Off, so the picker doesn't scan the test machine's network.
+    final viewModel = DropViewModel(feature: drop.feature);
+    await tester.runAsync(() => viewModel.setLocalSendEnabled(false));
+    unawaited(
+      DevicePickerDialog.showForLink(
+        rig.navigator!.context,
+        viewModel,
+        opensOn: viewModel.targets,
+      ),
+    );
+    await rig.settle(tester);
+    expect(find.text('Open on Simon’s MacBook Pro'), findsOneWidget);
   },
   'local_network_ask': (tester, rig) async {
     await rig.open(

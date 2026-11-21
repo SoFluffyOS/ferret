@@ -448,6 +448,17 @@ class DropLocalizationsEn extends DropLocalizations {
   String get pickerSearchAgain => 'Search again';
 
   @override
+  String get pickerLinkTitle => 'Send the link to which device?';
+
+  @override
+  String get pickerOpenTitle => 'Or open it there';
+
+  @override
+  String pickerOpenOn(String device) {
+    return 'Open on $device';
+  }
+
+  @override
   String noticeGone(String device) {
     return 'Couldn\'t find $device';
   }

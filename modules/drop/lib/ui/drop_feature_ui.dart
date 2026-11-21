@@ -594,6 +594,10 @@ class DropFeatureUi extends FeatureUi {
   }) async {
     await _untilConnected(deviceId);
     if (!pickedInSheet) {
+      if (text != null && await _shareLink(context, text)) {
+        return;
+      }
+
       await _send(context, paths: paths, text: text, temporary: temporary);
       return;
     }
@@ -618,6 +622,50 @@ class DropFeatureUi extends FeatureUi {
       );
     }
   }
+
+  /// A shared link asks where it goes, even with one device connected:
+  /// as text to a device, or open on one that can open it (Continue on).
+  /// False when [text] has no link or no device can open it, so it is
+  /// sent as text the usual way.
+  Future<bool> _shareLink(FeatureContext context, String text) async {
+    final opener = context.linkOpener;
+    if (opener == null || !_webLink.hasMatch(text)) {
+      return false;
+    }
+
+    final viewModel = _dropViewModel;
+    final opensOn = [
+      for (final target in viewModel.targets)
+        if (opener.canOpenOn(target.deviceId)) target,
+    ];
+    if (opensOn.isEmpty) {
+      return false;
+    }
+
+    await context.reveal();
+    final navigatorContext = context.navigatorKey.currentContext;
+    if (navigatorContext == null || !navigatorContext.mounted) {
+      return true;
+    }
+
+    final pick = await DevicePickerDialog.showForLink(
+      navigatorContext,
+      viewModel,
+      opensOn: opensOn,
+    );
+    switch (pick) {
+      case null:
+        break;
+      case DropPick(opens: true, :final target):
+        await opener.open(target.deviceId, text);
+      case DropPick(:final target):
+        await _sendTo(context, target, text: text);
+    }
+
+    return true;
+  }
+
+  static final _webLink = RegExp(r'https?://\S', caseSensitive: false);
 
   /// Right after starting, or after a share sheet brought Ferret back, devices
   /// are still connecting: waits for [deviceId] (or any device) until

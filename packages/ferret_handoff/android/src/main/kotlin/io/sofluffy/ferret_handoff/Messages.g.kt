@@ -203,7 +203,7 @@ class FlutterError (
 
 /** Where a shared item came from. */
 enum class ShareOrigin(val raw: Int) {
-  /** The Android share sheet ("Continue on…"). */
+  /** The share sheet: Send with Ferret, then "Open on…". */
   SHARE_SHEET(0),
   /** The Android assistant, reading what is on screen. */
   ASSISTANT(1);

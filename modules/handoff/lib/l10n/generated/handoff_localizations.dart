@@ -302,7 +302,7 @@ abstract class HandoffLocalizations {
   /// No description provided for @settingsShareHint.
   ///
   /// In en, this message translates to:
-  /// **'You can also share any link to “Continue on…”.'**
+  /// **'You can also share any link to “Send with Ferret” and pick “Open on…”.'**
   String get settingsShareHint;
 
   /// No description provided for @summaryPassive.

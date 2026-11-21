@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ferret_handoff_share_label">Continue on…</string>
     <string name="ferret_handoff_assistant_label">Ferret</string>
     <string name="ferret_handoff_choose_device">Continue on</string>
-    <string name="ferret_handoff_nothing_to_send">There is nothing to continue here.</string>
     <string name="ferret_handoff_nothing_on_screen">This screen didn\'t share a page or link. Check that \"Use text from screen\" is on in the assistant settings.</string>
     <string name="ferret_handoff_no_devices">No paired devices yet. Open Ferret to pair one.</string>
     <string name="ferret_handoff_open_app">Open Ferret</string>
-    <string name="ferret_handoff_cancel">Cancel</string>
     <string name="ferret_handoff_sent">Sent to %1$s</string>
     <string name="ferret_handoff_sending">Sending to %1$s…</string>
     <string name="ferret_handoff_not_sent">Couldn\'t reach %1$s. Is it on and on the same network?</string>

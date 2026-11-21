@@ -130,7 +130,7 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get settingsShareHint =>
-      'You can also share any link to “Continue on…”.';
+      'You can also share any link to “Send with Ferret” and pick “Open on…”.';
 
   @override
   String get summaryPassive => 'Offers the page you\'re on';

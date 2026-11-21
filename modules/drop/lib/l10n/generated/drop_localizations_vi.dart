@@ -447,6 +447,17 @@ class DropLocalizationsVi extends DropLocalizations {
   String get pickerSearchAgain => 'Tìm lại';
 
   @override
+  String get pickerLinkTitle => 'Gửi liên kết đến thiết bị nào?';
+
+  @override
+  String get pickerOpenTitle => 'Hoặc mở ngay trên đó';
+
+  @override
+  String pickerOpenOn(String device) {
+    return 'Mở trên $device';
+  }
+
+  @override
   String noticeGone(String device) {
     return 'Không tìm thấy $device';
   }

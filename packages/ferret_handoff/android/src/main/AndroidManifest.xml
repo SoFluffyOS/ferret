@@ -1,22 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <!-- "Continue on…" in the share sheet, for text and links. -->
-        <activity
-            android:name="io.sofluffy.ferret_handoff.ContinueShareActivity"
-            android:excludeFromRecents="true"
-            android:exported="true"
-            android:label="@string/ferret_handoff_share_label"
-            android:noHistory="true"
-            android:taskAffinity=""
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
         <!-- Lets Ferret be picked as the default digital assistant, so it can
              read what is on screen (AssistContent) when the user asks. -->
         <service

@@ -716,6 +716,24 @@ abstract class DropLocalizations {
   /// **'Search again'**
   String get pickerSearchAgain;
 
+  /// No description provided for @pickerLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the link to which device?'**
+  String get pickerLinkTitle;
+
+  /// In the send picker for a shared link, above devices that can open the link right away instead of getting it as text
+  ///
+  /// In en, this message translates to:
+  /// **'Or open it there'**
+  String get pickerOpenTitle;
+
+  /// No description provided for @pickerOpenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on {device}'**
+  String pickerOpenOn(String device);
+
   /// No description provided for @noticeGone.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,7 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_ui/drag_out.dart';
 import 'package:feature_kit/feature_ui/drop_receiver.dart';
 import 'package:feature_kit/feature_ui/feature_window.dart';
+import 'package:feature_kit/feature_ui/link_opener.dart';
 import 'package:feature_kit/feature_ui/local_network_gate.dart';
 import 'package:feature_kit/feature_ui/system_drags.dart';
 import 'package:feature_kit/navigation/navigation.dart';
@@ -71,6 +72,10 @@ class FeatureContext {
   /// Where things dropped on the menubar icon stay when they aren't sent,
   /// such as the shelf. Set by the feature that keeps them.
   DropReceiver? dropKeeper;
+
+  /// Opens a shared link on another device. Set by the feature that
+  /// continues links there; null where none does.
+  LinkOpener? linkOpener;
 
   /// Brings Ferret to the front (the menubar popover on macOS), such as when
   /// this device starts ringing.

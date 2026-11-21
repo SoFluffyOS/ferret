@@ -1,3 +1,4 @@
+export 'package:drop/models/drop_pick.dart';
 export 'package:drop/models/drop_settings.dart';
 export 'package:drop/models/drop_target.dart';
 export 'package:drop/models/localsend_options.dart';

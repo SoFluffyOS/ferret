@@ -49,6 +49,19 @@ class _FakePlugin extends FerretDrop {
       published.add(targets);
 }
 
+/// Handoff's side: whether a device opens links.
+class _FakeOpener implements LinkOpener {
+  _FakeOpener({required this.opens});
+
+  final bool opens;
+
+  @override
+  bool canOpenOn(String deviceId) => opens;
+
+  @override
+  Future<void> open(String deviceId, String text) async {}
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -312,6 +325,47 @@ void main() {
         expect(sentTo(), isEmpty);
       },
     );
+
+    test('a link no device can open goes as text, as before', () async {
+      context.linkOpener = _FakeOpener(opens: false);
+      await start();
+
+      plugin.incoming.add(
+        SharedItems(paths: const [], text: 'https://example.com/a'),
+      );
+      await until(() => sentTo().isNotEmpty);
+
+      expect(sentTo(), ['phone-id']);
+    });
+
+    test('a link a device can open asks first, even with one device', () async {
+      var revealed = 0;
+      context = FeatureContext(
+        engine: _FakeEngine(),
+        navigatorKey: GlobalKey<NavigatorState>(),
+        notifier: notifier,
+        onReveal: () async => revealed++,
+      )..linkOpener = _FakeOpener(opens: true);
+      await start();
+
+      plugin.incoming.add(
+        SharedItems(paths: const [], text: 'Read this https://example.com'),
+      );
+      await until(() => revealed > 0);
+      await pumpEventQueue();
+
+      expect(sentTo(), isEmpty);
+    });
+
+    test('plain text still goes straight to the one device', () async {
+      context.linkOpener = _FakeOpener(opens: true);
+      await start();
+
+      plugin.incoming.add(SharedItems(paths: const [], text: 'see you at 6'));
+      await until(() => sentTo().isNotEmpty);
+
+      expect(sentTo(), ['phone-id']);
+    });
 
     test('files a later run hands over are sent and kept', () async {
       final handoff = SendHandoff(root.path);

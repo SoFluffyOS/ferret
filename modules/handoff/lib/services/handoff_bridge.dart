@@ -19,7 +19,8 @@ typedef DevicePicker = Future<String?> Function(List<HandoffPeer> devices);
 
 /// Connects Handoff to the rest of this device: notices for things that
 /// arrive, the Android share target and assistant, and the macOS browser.
-class HandoffBridge {
+/// It also opens links that Drop's send picker hands over.
+class HandoffBridge implements LinkOpener {
   HandoffBridge({
     required this.feature,
     required this.engine,
@@ -129,6 +130,22 @@ class HandoffBridge {
 
     return feature.sendTo(deviceId, activity);
   }
+
+  @override
+  bool canOpenOn(String deviceId) =>
+      engine.sessionFor(deviceId)?.supports(HandoffFeature.featureId) ?? false;
+
+  /// A link shared with Send with Ferret, picked to open on [deviceId]
+  /// instead of arriving there as text.
+  @override
+  Future<void> open(String deviceId, String text) => onShared(
+    SharedItem(
+      origin: .shareSheet,
+      text: text,
+      targetDeviceId: deviceId,
+      createdAtMs: DateTime.now().millisecondsSinceEpoch,
+    ),
+  );
 
   /// Something came from the share sheet or the assistant. Answers true
   /// once it reached the other device.

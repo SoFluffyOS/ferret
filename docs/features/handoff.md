@@ -3,7 +3,7 @@
 > **TL;DR**
 >
 > 1. Pair your devices.
-> 2. On your phone, share a link to **Continue on…** and pick your laptop. It opens there.
+> 2. On your Android phone, share a link to **Send with Ferret** and tap **Open on MacBook**. It opens there.
 > 3. On your Mac, open a device in Ferret and pick **Send a link…** (or **Send current page**).
 > 4. Walk away from a page and your other device quietly offers **Continue “title” from Pixel**.
 
@@ -15,7 +15,7 @@ With Ferret, you send it over in two taps, or your laptop simply offers to conti
 
 This always works, on every device.
 
-- **Android:** share a link or some text, then pick **Continue on…** in the share sheet. Pick a device in the small list and you're done. A short message says "Sent to MacBook".
+- **Android:** share a link, then pick **Send with Ferret** in the share sheet. Ferret asks where it goes: tap **Open on MacBook** and it opens there. Tap the device itself and the link arrives as text to copy instead.
 - **Any device:** open a device in Ferret, then **Send a link…**. Paste a link or type some text.
 - **macOS:** turn on **Read the current browser page** in **Settings → Continue & media**, then use **Send current page** on a device.
 - **macOS, by dragging:** drag a link from your browser (its address bar, or a link on the page) onto a device in Ferret's popover or window. It opens there.

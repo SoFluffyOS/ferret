@@ -804,6 +804,10 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get pickerSearchAgain => pseudo(super.pickerSearchAgain);
   @override
+  String get pickerLinkTitle => pseudo(super.pickerLinkTitle);
+  @override
+  String get pickerOpenTitle => pseudo(super.pickerOpenTitle);
+  @override
   String get receiveTitle => pseudo(super.receiveTitle);
   @override
   String get receiveOff => pseudo(super.receiveOff);
@@ -1016,6 +1020,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String pickerLocalSendModel(String model) =>
       pseudo(super.pickerLocalSendModel(model));
+  @override
+  String pickerOpenOn(String device) => pseudo(super.pickerOpenOn(device));
   @override
   String noticeGone(String device) => pseudo(super.noticeGone(device));
   @override

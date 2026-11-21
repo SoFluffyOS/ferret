@@ -78,7 +78,7 @@ LocalSend and Quick Share carry folders too: a folder you send to LocalSend arri
 
 ## 💬 Send text
 
-Share text to **Send with Ferret** on Android and it arrives as a notice on your other device, with a **Copy** button.
+Share text to **Send with Ferret** on Android and it arrives as a notice on your other device, with a **Copy** button. A link asks first: send it as text, or **Open on MacBook** to open it there, like [Handoff](handoff.md).
 
 On a Mac, drag text onto a device in the popover or the window: it lands on that device's clipboard. Drag a link and it opens there. See [Clipboard](clipboard.md) and [Handoff](handoff.md).
 

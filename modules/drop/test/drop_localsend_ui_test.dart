@@ -287,13 +287,18 @@ void main() {
 
   group('the device picker', () {
     final picked = <DropTarget?>[];
+    final linkPicks = <DropPick?>[];
 
-    setUp(picked.clear);
+    setUp(() {
+      picked.clear();
+      linkPicks.clear();
+    });
 
     Future<void> openPicker(
       WidgetTester tester,
-      DropViewModel viewModel,
-    ) async {
+      DropViewModel viewModel, {
+      bool forLink = false,
+    }) async {
       await tester.pumpWidget(
         WidgetsApp(
           color: const Color(0xFFFFFFFF),
@@ -310,9 +315,22 @@ void main() {
                 onGenerateRoute: (_) => PageRouteBuilder<void>(
                   pageBuilder: (context, _, _) => Center(
                     child: Tappable(
-                      onTap: () async => picked.add(
-                        await DevicePickerDialog.show(context, viewModel),
-                      ),
+                      onTap: () async {
+                        if (!forLink) {
+                          picked.add(
+                            await DevicePickerDialog.show(context, viewModel),
+                          );
+                          return;
+                        }
+
+                        linkPicks.add(
+                          await DevicePickerDialog.showForLink(
+                            context,
+                            viewModel,
+                            opensOn: viewModel.targets,
+                          ),
+                        );
+                      },
                       child: const Text('open'),
                     ),
                   ),
@@ -374,6 +392,36 @@ void main() {
       expect(target.isLocalSend, isTrue);
       expect(target.deviceId, LocalSendIds.deviceId(_fingerprint));
       expect(viewModel.isGone(target), isFalse);
+    });
+
+    testWidgets('a shared link can also open on a device', (tester) async {
+      await start();
+      final viewModel = newViewModel();
+      await openPicker(tester, viewModel, forLink: true);
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(find.text('Send the link to which device?'), findsOneWidget);
+      expect(find.text('Phone'), findsOneWidget);
+      expect(find.text('Or open it there'), findsOneWidget);
+      expect(find.text('Open on Phone'), findsOneWidget);
+
+      await tester.tap(find.text('Open on Phone'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(linkPicks.single?.target.deviceId, 'phone-id');
+      expect(linkPicks.single?.opens, isTrue);
+    });
+
+    testWidgets('tapping the device sends the link as text', (tester) async {
+      await start();
+      final viewModel = newViewModel();
+      await openPicker(tester, viewModel, forLink: true);
+      await tester.pump(const Duration(milliseconds: 50));
+
+      await tester.tap(find.text('Phone'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(linkPicks.single?.opens, isFalse);
     });
   });
 

@@ -15,7 +15,7 @@ import 'package:pigeon/pigeon.dart';
 )
 /// Where a shared item came from.
 enum ShareOrigin {
-  /// The Android share sheet ("Continue on…").
+  /// The share sheet: Send with Ferret, then "Open on…".
   shareSheet,
 
   /// The Android assistant, reading what is on screen.

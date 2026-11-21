@@ -81,6 +81,7 @@ class HandoffFeatureUi extends FeatureUi {
   @override
   Future<void> onAppStarted(FeatureContext context) async {
     final viewModel = viewModelFor(context);
+    context.linkOpener = viewModel.bridge;
     await viewModel.bridge.start();
     await browser.start();
     if (!viewModel.supportsAssistant) {

@@ -130,7 +130,7 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
 
   @override
   String get settingsShareHint =>
-      'Bạn cũng có thể chia sẻ bất kỳ liên kết nào đến “Tiếp tục trên…”.';
+      'Bạn cũng có thể chia sẻ bất kỳ liên kết nào đến “Gửi bằng Ferret” rồi chọn “Mở trên…”.';
 
   @override
   String get summaryPassive => 'Gợi ý trang bạn đang xem';

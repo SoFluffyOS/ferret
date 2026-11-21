@@ -58,6 +58,17 @@ Why does Ferret open? iOS stops apps in the background, so Ferret only sends whi
 
 Some iOS versions don't let the share sheet open another app. Your files are ready anyway: open Ferret yourself and it sends them right away.
 
+## 🤖 Android: Share → Send with Ferret
+
+Your connected devices sit in the share sheet's top row. Tap one and it goes straight there, no Ferret screen in between.
+
+Or pick **Send with Ferret** and Ferret asks which device. That's the only Ferret entry in the share sheet.
+
+Sharing a link? Ferret asks what it should do with it:
+
+- **Tap a device** and the link arrives there as text, with a **Copy** button.
+- **Open on MacBook** opens it right there, in the browser or the app it belongs to. Same as [Handoff](handoff.md).
+
 ## 🐧 Linux: Open With → Send with Ferret
 
 Ferret understands `ferret send`, followed by files:
@@ -122,7 +133,7 @@ Either way the transfer shows in **Activity** like any other, with progress and 
 | iPhone, iPad | **Share → Ferret** | In the share sheet | Files, photos, videos, text and links. Ferret opens to send them |
 | Linux | **Open With → Send with Ferret** | In Ferret, when there are several | You copy one `.desktop` file |
 | Windows | **Send to → Ferret** | In Ferret, when there are several | The installer adds it |
-| Android | **Share → your device**, or **Send with Ferret** | Your connected devices sit in the share sheet's top row | See [Drop](drop.md) |
+| Android | **Share → your device**, or **Send with Ferret** | Your connected devices sit in the share sheet's top row | A link can also open on the device. See [Drop](drop.md) |
 
 Folders aren't sent yet: pick the files inside them.
 
