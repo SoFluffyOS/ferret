@@ -25,8 +25,15 @@ class SystemBinding with WidgetsBindingObserver {
   /// the Stay connected card's question; see [BootChoice].
   static const startOnBootKey = BootChoice.startKey;
 
-  /// Network callbacks come in bursts; one reconnect covers them.
-  static const _settle = Duration(milliseconds: 500);
+  /// Network callbacks come in bursts; one reconnect covers them. Android
+  /// says a network is there before it has handed this device an address,
+  /// so the reconnect runs again a little later rather than leaving it to
+  /// the slow redial backoff.
+  static const _reconnectAfter = [
+    Duration(milliseconds: 500),
+    Duration(seconds: 3),
+    Duration(seconds: 8),
+  ];
 
   final FerretEngine engine;
   final EngineHost host;
@@ -34,7 +41,7 @@ class SystemBinding with WidgetsBindingObserver {
   final FerretSystem _system;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
-  Timer? _reconnectTimer;
+  final List<Timer> _reconnectTimers = [];
   List<String>? _shownDevices;
   PauseState? _shownPause;
 
@@ -60,7 +67,7 @@ class SystemBinding with WidgetsBindingObserver {
   }
 
   Future<void> dispose() async {
-    _reconnectTimer?.cancel();
+    _cancelReconnects();
     WidgetsBinding.instance.removeObserver(this);
     host.removeListener(_onHostChanged);
     pause.removeListener(_onPauseChanged);
@@ -101,14 +108,25 @@ class SystemBinding with WidgetsBindingObserver {
   }
 
   void _scheduleReconnect() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(_settle, () {
-      if (pause.isPaused || !engine.isRunning) {
-        return;
-      }
+    _cancelReconnects();
+    for (final delay in _reconnectAfter) {
+      _reconnectTimers.add(
+        Timer(delay, () {
+          if (pause.isPaused || !engine.isRunning) {
+            return;
+          }
 
-      unawaited(engine.reconnectNow());
-    });
+          unawaited(engine.reconnectNow());
+        }),
+      );
+    }
+  }
+
+  void _cancelReconnects() {
+    for (final timer in _reconnectTimers) {
+      timer.cancel();
+    }
+    _reconnectTimers.clear();
   }
 
   void _onHostChanged() => unawaited(_showDevices());
