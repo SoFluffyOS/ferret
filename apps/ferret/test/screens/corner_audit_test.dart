@@ -34,6 +34,11 @@
 // screen is a capsule with at least 16 of margin (SCREEN-SHAPE,
 // SCREEN-MARGIN), as Apple asks on phones: no app knows the device's own
 // corner. Only these, with --plain-name "touch_".
+//
+// Desktop dialogs (desk_…: in the Mac popover and in the window on a
+// Mac, Windows and Linux) are measured the same way against their own
+// corner (Corners.dialog on that platform), and so is every dialog a
+// popover or window screen opens. Only these, with --plain-name "desk_".
 @Tags(['screens'])
 library;
 
@@ -43,6 +48,7 @@ import 'dart:io';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -50,6 +56,7 @@ import 'package:local_shelf/local_shelf.dart';
 import 'package:mirroring/mirroring.dart';
 import 'package:protocol/protocol.dart';
 import 'package:provider/provider.dart';
+import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -244,13 +251,33 @@ String _shapeName(Element element) {
   };
 }
 
+/// What a button draws: its fill, which can be narrower than the box
+/// it is given (a button sized to its label starts at the box's left).
+Rect? _fillOf(Element button) {
+  Rect? fill;
+  void visit(Element child) {
+    if (fill != null) return;
+    if (child.widget case DecoratedBox(decoration: ShapeDecoration())) {
+      fill = _rectOf(child);
+      return;
+    }
+    child.visitChildren(visit);
+  }
+
+  button.visitChildren(visit);
+  return fill ?? _rectOf(button);
+}
+
 List<_Shape> _shapesIn(Rect window, {Element? root}) {
   final shapes = <_Shape>[];
   final seen = <RenderObject>{};
   void visit(Element element) {
     final radius = _visibleRadius(element.widget);
     if (radius != null) {
-      final rect = _rectOf(element);
+      final rect = switch (element.widget) {
+        Button() => _fillOf(element),
+        _ => _rectOf(element),
+      };
       final render = element.renderObject;
       if (rect != null &&
           render != null &&
@@ -496,6 +523,7 @@ void main() {
   });
 
   _touchMain();
+  _desktopMain();
 
   for (final screen in screens) {
     for (final size in [popover]) {
@@ -520,6 +548,7 @@ void main() {
           await screen.script(tester, rig);
           await rig.settle(tester);
           _audit(tester, '${screen.name} ${size.name}');
+          _auditDialogs('${screen.name} ${size.name}');
           if (size == popover) {
             _auditWindow(
               '${screen.name} ${size.name}',
@@ -649,6 +678,7 @@ Future<void> _windowScreen(
   await screen.script(tester, rig);
   await rig.settle(tester);
   _audit(tester, label);
+  _auditDialogs(label);
   _auditWindow(
     label,
     Offset.zero & Size(size.width, size.height),
@@ -785,9 +815,8 @@ BuildContext _homeContext(ScreenRig rig) {
   return context;
 }
 
-/// The dialogs Ferret draws on a phone or a tablet, and the bar over a
-/// computer's display on one.
-final _touchScenes = <String, _TouchScene>{
+/// The dialogs Ferret draws, on any screen.
+final _dialogScenes = <String, _TouchScene>{
   'dialog_confirm': (tester, rig) async {
     unawaited(
       FerretConfirmDialog.show(
@@ -840,6 +869,12 @@ final _touchScenes = <String, _TouchScene>{
       ),
     );
   },
+};
+
+/// The dialogs Ferret draws on a phone or a tablet, and the bar over a
+/// computer's display on one.
+final _touchScenes = <String, _TouchScene>{
+  ..._dialogScenes,
   // As the display's stage places it: under the status bar (24 on
   // Android, 59 on an iPhone with a Dynamic Island).
   'display_bar': (tester, rig) => rig.open(
@@ -907,6 +942,82 @@ void _touchMain() {
             await rig.settle(tester);
             if (brightness == .light) _measureTouch(tester, label, size);
             await rig.capture(tester, 'touch_$name', size, brightness);
+            await rig.dispose(tester);
+          }
+        });
+      });
+    }
+  }
+}
+
+/// The Mac popover, and the window on a Mac, Windows and Linux.
+const _desktopSizes = [
+  popover,
+  _window,
+  CaptureSize('window', 1000, 720, platform: .windows),
+  CaptureSize('window', 1000, 720, platform: .linux),
+];
+
+/// What a computer adds to the dialogs every screen has: a button with
+/// the keyboard's focus, and a consent dialog with its buttons stacked.
+final _desktopScenes = <String, _TouchScene>{
+  ..._dialogScenes,
+  // Tab to the first button: one focus ring, on it.
+  'dialog_focus': (tester, rig) async {
+    await _dialogScenes['dialog_confirm']!(tester, rig);
+    await rig.settle(tester);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+  },
+  'dialog_consent': (tester, rig) async {
+    unawaited(
+      rig.navigator?.push(
+        RawDialogRoute<void>(
+          barrierDismissible: true,
+          barrierColor: FluffyColors.barrier,
+          pageBuilder: (_, _, _) => ConsentDialog(
+            request: ConsentRequest(
+              deviceId: 'abcdabcdabcdabcd',
+              deviceName: 'Pixel 9',
+              askedAt: DateTime(2026, 11, 21, 9),
+            ),
+            onAnswer: (_) {},
+          ),
+        ),
+      ),
+    );
+  },
+};
+
+String _desktopPrefix(CaptureSize size) => switch (size.platform) {
+  .windows => 'windows_',
+  .linux => 'linux_',
+  _ => '',
+};
+
+void _desktopMain() {
+  for (final MapEntry(key: name, value: scene) in _desktopScenes.entries) {
+    for (final size in _desktopSizes) {
+      final shot = 'desk_${_desktopPrefix(size)}$name';
+      final label = '$shot ${size.name}';
+      testWidgets(label, (tester) async {
+        await _onScreen(tester, size, () async {
+          for (final brightness in Brightness.values) {
+            tester.platformDispatcher.platformBrightnessTestValue = brightness;
+            final rig = await ScreenRig.create(
+              tester,
+              features: appFeatures(),
+              tipsDone: true,
+            );
+            await rig.show(tester);
+            await scene(tester, rig);
+            await rig.settle(tester);
+            // A focused button grows a little and draws its ring outside,
+            // so it is rendered, not measured.
+            if (brightness == .light && name != 'dialog_focus') {
+              _audit(tester, label);
+              _auditDialogs(label);
+            }
+            await rig.capture(tester, shot, size, brightness);
             await rig.dispose(tester);
           }
         });

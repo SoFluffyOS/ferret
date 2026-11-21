@@ -1,6 +1,5 @@
 import 'package:feature_kit/layout/corners.dart';
 import 'package:feature_kit/theme/theme.dart';
-import 'package:feature_kit/widgets/surface_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -11,10 +10,22 @@ bool get _underPointer => switch (defaultTargetPlatform) {
   .android || .iOS || .fuchsia => false,
 };
 
-/// The shape of a dialog Ferret draws. On a phone or a tablet it is
-/// [Corners.dialog], with its content [Corners.dialogInset] from the sides
-/// and the bottom, so a button at the bottom corner is concentric with the
-/// dialog. Under a pointer it is a [SurfaceCard], as before.
+/// How far a dialog's first line sits from its top.
+double get _dialogTop => switch (_underPointer) {
+  true => Spacing.d20,
+  false => Spacing.d24,
+};
+
+/// How far a dialog's words sit from its sides. On a computer they sit a
+/// little further in than its buttons, as on a Mac's alerts (20 and 16).
+double get _textInset => switch (_underPointer) {
+  true => Spacing.d20,
+  false => Corners.dialogInset,
+};
+
+/// The shape of a dialog Ferret draws: [Corners.dialog], with its content
+/// [Corners.dialogInset] from the sides and the bottom, so a button at the
+/// bottom corner is concentric with the dialog.
 class DialogShape extends StatelessWidget {
   const DialogShape({super.key, required this.child});
 
@@ -22,10 +33,6 @@ class DialogShape extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_underPointer) {
-      return SurfaceCard(padding: EdgeInsets.all(Spacing.d20), child: child);
-    }
-
     final palette = context.palette;
     final inset = Corners.dialogInset;
 
@@ -40,16 +47,15 @@ class DialogShape extends StatelessWidget {
         shape: Corners.shape(Corners.dialog),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(inset, Spacing.d24, inset, inset),
+        padding: EdgeInsets.fromLTRB(inset, _dialogTop, inset, inset),
         child: child,
       ),
     );
   }
 }
 
-/// The design system's `DialogCard` with Ferret's dialog shape on a phone
-/// or a tablet ([DialogShape]), and no border. Under a pointer it is the
-/// design system's own.
+/// The design system's `DialogCard` in Ferret's dialog shape
+/// ([DialogShape]), with no border.
 class FerretDialogCard extends StatelessWidget {
   const FerretDialogCard({
     super.key,
@@ -66,20 +72,14 @@ class FerretDialogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_underPointer) {
-      return DialogCard(
-        title: title,
-        content: content,
-        actions: actions,
-        maxWidth: maxWidth,
-      );
-    }
-
     final theme = context.fluffyTheme;
     final text = switch (context.isDark) {
       true => theme.colors.neutral1,
       false => theme.colors.neutral7,
     };
+    final words = EdgeInsets.symmetric(
+      horizontal: _textInset - Corners.dialogInset,
+    );
 
     return Center(
       child: Padding(
@@ -99,24 +99,33 @@ class FerretDialogCard extends StatelessWidget {
               crossAxisAlignment: .stretch,
               children: [
                 if (title case final heading?) ...[
-                  DefaultTextStyle(
-                    style: theme.typography.headline6.copyWith(
-                      color: text,
-                      fontWeight: .w600,
+                  Padding(
+                    padding: words,
+                    child: DefaultTextStyle(
+                      style: theme.typography.headline6.copyWith(
+                        color: text,
+                        fontWeight: .w600,
+                      ),
+                      child: heading,
                     ),
-                    child: heading,
                   ),
                   Spacing.v16,
                 ],
                 if (content case final body?)
                   Flexible(
-                    child: DefaultTextStyle(
-                      style: theme.typography.base2.copyWith(color: text),
-                      child: body,
+                    child: Padding(
+                      padding: words,
+                      child: DefaultTextStyle(
+                        style: theme.typography.base2.copyWith(color: text),
+                        child: body,
+                      ),
                     ),
                   ),
                 if (actions case final buttons? when buttons.isNotEmpty) ...[
-                  Spacing.v24,
+                  switch (_underPointer) {
+                    true => Spacing.vertical(Spacing.d20),
+                    false => Spacing.v24,
+                  },
                   ...buttons,
                 ],
               ],
@@ -149,8 +158,8 @@ Future<T?> _showDialog<T>(
   );
 }
 
-/// Two buttons side by side, each half the dialog's width, as the design
-/// system lays them out on a phone.
+/// Two buttons side by side, each half the dialog's width, as a Mac's,
+/// Windows' and GNOME's alerts lay them out too.
 Widget _answers({
   String? ghost,
   VoidCallback? onGhost,
@@ -165,6 +174,7 @@ Widget _answers({
           tooltip: label,
           label: label,
           titleExpand: .shrink,
+          mainAxisSize: .max,
           onPressed: onGhost,
         ),
       ),
@@ -176,6 +186,7 @@ Widget _answers({
         tooltip: primary,
         label: primary,
         titleExpand: .shrink,
+        mainAxisSize: .max,
         onPressed: onPrimary,
       ),
     ),
@@ -193,18 +204,6 @@ abstract final class FerretConfirmDialog {
     bool barrierDismissible = true,
     String barrierLabel = 'Dismiss',
   }) async {
-    if (_underPointer) {
-      return ConfirmDialog.show(
-        context,
-        title: title,
-        message: message,
-        negativeText: negativeText,
-        positiveText: positiveText,
-        barrierDismissible: barrierDismissible,
-        barrierLabel: barrierLabel,
-      );
-    }
-
     final result = await _showDialog<ConfirmAction>(
       context,
       barrierDismissible: barrierDismissible,
@@ -218,6 +217,8 @@ abstract final class FerretConfirmDialog {
                 answer(.positive),
             const SingleActivator(LogicalKeyboardKey.numpadEnter): () =>
                 answer(.positive),
+            const SingleActivator(LogicalKeyboardKey.escape): () =>
+                answer(.negative),
           },
           child: Focus(
             autofocus: true,
@@ -257,19 +258,6 @@ abstract final class FerretTextDialog {
     String initialValue = '',
     String barrierLabel = 'Dismiss',
   }) async {
-    if (_underPointer) {
-      return InputTextDialog.show(
-        context,
-        title: title,
-        labelText: labelText,
-        hintText: hintText,
-        cancelText: cancelText,
-        confirmText: confirmText,
-        initialValue: initialValue,
-        barrierLabel: barrierLabel,
-      );
-    }
-
     // A prefilled value starts selected, so typing replaces it.
     final controller = TextEditingController.fromValue(
       TextEditingValue(
@@ -289,10 +277,14 @@ abstract final class FerretTextDialog {
         builder: (context) {
           void confirm() => context.navigator.pop(controller.text);
 
+          // Esc cancels too, though a click outside doesn't: a click
+          // outside shouldn't throw away what was typed.
           return CallbackShortcuts(
             bindings: {
               const SingleActivator(LogicalKeyboardKey.enter): confirm,
               const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
+              const SingleActivator(LogicalKeyboardKey.escape): () =>
+                  context.navigator.pop(),
             },
             child: FerretDialogCard(
               title: Text(title),
@@ -335,17 +327,6 @@ abstract final class FerretContentDialog {
     required String neutralText,
     String barrierLabel = 'Dismiss',
   }) async {
-    if (_underPointer) {
-      await ContentDialog.show(
-        context,
-        title: title,
-        content: content,
-        neutralText: neutralText,
-        barrierLabel: barrierLabel,
-      );
-      return;
-    }
-
     final controller = ScrollController();
     try {
       await _showDialog<void>(
@@ -359,6 +340,7 @@ abstract final class FerretContentDialog {
             bindings: {
               const SingleActivator(LogicalKeyboardKey.enter): close,
               const SingleActivator(LogicalKeyboardKey.numpadEnter): close,
+              const SingleActivator(LogicalKeyboardKey.escape): close,
             },
             child: Focus(
               autofocus: true,

@@ -42,7 +42,7 @@ class CountdownDialog extends StatelessWidget {
       content: Text(l10n.countdownBody(countdown.deviceName)),
       actions: [
         Button(
-          mainAxisSize: .min,
+          mainAxisSize: .max,
           variant: .primary,
           label: l10n.cancel,
           tooltip: l10n.cancel,

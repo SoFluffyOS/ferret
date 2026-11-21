@@ -26,7 +26,7 @@ class ConsentDialog extends StatelessWidget {
       content: Text(l10n.consentBodyOf(request)),
       actions: [
         Button(
-          mainAxisSize: .min,
+          mainAxisSize: .max,
           variant: .primary,
           label: l10n.allowAlways,
           tooltip: l10n.allowAlways,
@@ -34,14 +34,14 @@ class ConsentDialog extends StatelessWidget {
         ),
         Spacing.v8,
         GhostButton(
-          mainAxisSize: .min,
+          mainAxisSize: .max,
           label: l10n.allowOnce,
           tooltip: l10n.allowOnce,
           onPressed: () => onAnswer(.allowOnce),
         ),
         Spacing.v8,
         GhostButton(
-          mainAxisSize: .min,
+          mainAxisSize: .max,
           label: l10n.dontAllow,
           tooltip: l10n.dontAllow,
           onPressed: () => onAnswer(.deny),

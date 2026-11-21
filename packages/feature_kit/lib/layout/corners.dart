@@ -61,19 +61,22 @@ abstract final class Corners {
   /// the two read as one family and the same box fits both.
   static double get floatingPanel => popover;
 
-  /// A dialog Ferret draws over a phone's or a tablet's screen: Material
-  /// 3's dialog corner (Extra large, 28 dp), which is also its buttons'
-  /// corner plus the dialog's inset (28 = 12 + 16), so a button at the
-  /// dialog's bottom corner shares its centre. Under a pointer it is the
-  /// design system's dialog, 12.
-  static double get dialog => switch (defaultTargetPlatform) {
-    .android || .iOS || .fuchsia => around(control, dialogInset),
-    .macOS || .windows || .linux => Spacing.d12,
-  };
+  /// A dialog's corner: its buttons' corner plus the dialog's inset, so a
+  /// button at the dialog's bottom corner shares its centre. On a phone or
+  /// a tablet that is Material 3's dialog corner (Extra large, 28 dp =
+  /// 12 + 16). On a computer see [dialogInset].
+  static double get dialog => around(control, dialogInset);
 
-  /// How far a dialog's buttons sit from its sides and its bottom on a
-  /// phone or a tablet; see [dialog].
-  static double get dialogInset => Spacing.d16;
+  /// How far a dialog's buttons sit from its sides and its bottom; see
+  /// [dialog]. 16 on a phone or a tablet, and on a Mac, where an alert
+  /// keeps its buttons 16 from the edges with a 26-point corner since
+  /// macOS 26 (28 here, so the buttons' 12 nests exactly). Windows 11
+  /// (8 px dialogs, 4 px buttons) and GNOME (18 px alerts, 12 px buttons)
+  /// round less, so there the dialog is 24, at 12.
+  static double get dialogInset => switch (defaultTargetPlatform) {
+    .windows || .linux => Spacing.d12,
+    _ => Spacing.d16,
+  };
 
   /// Shapes inside the popover or the floating panel never go under this,
   /// like a concentric shape's minimum on Apple's platforms.
