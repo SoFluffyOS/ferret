@@ -337,6 +337,22 @@ final screens = <Screen>[
     await rig.engine.access.setAllowed(phoneId, 'clipboard', allowed: false);
     await rig.open(tester, DeviceAccessPage(deviceId: phoneId));
   }, tall: true),
+  Screen(
+    'mac_iphone_access',
+    (tester, rig) async {
+      final iphoneId = await rig.pairConnectedIphone(
+        tester,
+        iphoneFeatures: iosFeatures(),
+      );
+      if (iphoneId == null) {
+        return;
+      }
+
+      await rig.open(tester, DeviceAccessPage(deviceId: iphoneId));
+    },
+    only: popover,
+    withPhotos: true,
+  ),
   Screen('device_access_offline', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.engine.access.blockAll(_offlineId, ['mirroring', 'messages']);

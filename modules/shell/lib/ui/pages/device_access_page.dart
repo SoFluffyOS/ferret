@@ -17,21 +17,27 @@ class DeviceAccessPage extends StatefulWidget {
 
   final String deviceId;
 
-  /// The features on this device that a paired device can reach, in
-  /// Settings order.
+  /// The features on this device that the paired [deviceId] can reach,
+  /// in Settings order: only those that do something between the two,
+  /// such as no texts or calls between a Mac and an iPhone.
   static List<FeatureUi> listedFeatures(
     List<FeatureUi> features,
     FerretEngine engine,
+    String deviceId,
   ) {
     final available = {
       for (final feature in engine.features)
         if (feature.isAvailable) feature.id,
     };
+    final here = engine.device.platform;
+    final there = engine.trustStore[deviceId]?.platform;
 
     return [
       for (final feature in features)
         if (available.contains(feature.featureId) &&
-            !FeatureAccess.localOnly.contains(feature.featureId))
+            !FeatureAccess.localOnly.contains(feature.featureId) &&
+            (there == null ||
+                FeatureAccess.reaches(feature.featureId, here, there)))
           feature,
     ];
   }
@@ -44,7 +50,7 @@ class DeviceAccessPage extends StatefulWidget {
     String deviceId,
   ) {
     final l10n = context.shellL10n;
-    final listed = listedFeatures(features, engine);
+    final listed = listedFeatures(features, engine, deviceId);
     final off = listed
         .where(
           (feature) => engine.access.isBlocked(deviceId, feature.featureId),
@@ -75,7 +81,11 @@ class _DeviceAccessPageState extends State<DeviceAccessPage> {
     super.initState();
     final scope = ShellScope.read(context);
     final engine = scope.featureContext.engine;
-    _features = DeviceAccessPage.listedFeatures(scope.features, engine);
+    _features = DeviceAccessPage.listedFeatures(
+      scope.features,
+      engine,
+      widget.deviceId,
+    );
     _viewModel = DeviceAccessViewModel(
       access: engine.access,
       deviceId: widget.deviceId,
