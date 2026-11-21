@@ -30,7 +30,10 @@ class AndroidPageRoute<T> extends PageRoute<T> {
 
   final WidgetBuilder builder;
 
-  static const _timing = PredictiveBackPageTransitionsBuilder();
+  /// Material's fade-forward runs 800 ms, which feels slow on a tap; a
+  /// back swipe follows the finger anyway, so only taps and the gesture's
+  /// finish use this: Material 3's medium duration.
+  static const _duration = Duration(milliseconds: 300);
 
   @override
   Color? get barrierColor => null;
@@ -42,7 +45,7 @@ class AndroidPageRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => _timing.transitionDuration;
+  Duration get transitionDuration => _duration;
 
   @override
   Widget buildPage(
