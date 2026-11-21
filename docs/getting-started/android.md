@@ -31,6 +31,8 @@ That's it. Ferret now keeps running when you close the app.
 
 That's why the ••• menu and **Settings → Advanced** say **Close Ferret**, not Quit: it closes the screen, and your devices stay connected. Want it fully off? **Pause** it from the notification, or stop it in **Settings → Apps → Ferret → Force stop**.
 
+Going back works like in Android's own apps: swipe from the edge and the page shrinks to show the one behind it (Android 14 and later). Let go to go back, or swipe back the other way to stay.
+
 ## 🔔 The notification
 
 Android requires a notification while an app runs in the background. Ferret keeps it useful and silent:

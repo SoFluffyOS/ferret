@@ -61,10 +61,18 @@ class _AppViewState extends State<AppView> {
       localizationsDelegates: appLocalizationsDelegates(features),
       supportedLocales: ShellLocalizations.supportedLocales,
       locale: chosenLocale(context),
-      pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
-        settings: settings,
-        pageBuilder: (context, _, _) => builder(context),
-      ),
+      // On Android, Home takes part in the back gesture's preview too.
+      pageRouteBuilder: <T>(settings, builder) =>
+          switch (defaultTargetPlatform) {
+            .android => AndroidPageRoute<T>(
+              builder: builder,
+              settings: settings,
+            ),
+            _ => PageRouteBuilder<T>(
+              settings: settings,
+              pageBuilder: (context, _, _) => builder(context),
+            ),
+          },
       home: const WindowHomePage(),
       builder: (context, child) => ChangeNotifierProvider.value(
         value: _nav,
