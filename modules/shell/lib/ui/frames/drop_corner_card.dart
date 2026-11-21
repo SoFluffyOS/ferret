@@ -33,7 +33,12 @@ class DropCornerCard extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: PaneWidths.narrowContent),
           child: DecoratedBox(
             decoration: ShapeDecoration(
-              color: palette.background,
+              // In dark mode a shadow doesn't show on the black pane, so the
+              // fill lifts the card, as a dialog's does.
+              color: switch (context.isDark) {
+                true => palette.surface,
+                false => palette.background,
+              },
               shape: Corners.shape(radius),
               shadows: [
                 BoxShadow(
