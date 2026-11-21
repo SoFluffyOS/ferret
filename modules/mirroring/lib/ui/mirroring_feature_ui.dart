@@ -769,7 +769,10 @@ class MirroringFeatureUi extends FeatureUi {
     final platform = device.device.platform;
     final shares = session != null && feature.canViewDevice(session);
 
-    return viewerViewModel.isAvailable &&
+    // A phone that can be a computer's display has a viewer too, but never
+    // shows another phone's screen.
+    return feature.canView &&
+        viewerViewModel.isAvailable &&
         (shares || platform == .PLATFORM_ANDROID || _viaAirplay(device.device));
   }
 

@@ -137,7 +137,7 @@
   "settingsBackground": "Chạy nền",
   "settingsKeepRunning": "Tiếp tục chạy nền",
   "settingsKeepRunningBody": "Giữ kết nối khi Ferret đã đóng. Hiện một thông báo im lặng.",
-  "settingsStartOnBoot": "Khởi động cùng điện thoại",
+  "settingsStartOnBoot": "Khởi động cùng {here, select, tablet{máy tính bảng} other{điện thoại}}",
   "dropTitle": "{count, plural, =0{Gửi tệp đến…} other{Gửi {count} tệp đến…}}",
   "dropTileDrop": "Thả để gửi",
   "dropTilePick": "Gửi đến đây",

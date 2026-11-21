@@ -620,7 +620,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Giữ kết nối khi Ferret đã đóng. Hiện một thông báo im lặng.';
 
   @override
-  String get settingsStartOnBoot => 'Khởi động cùng điện thoại';
+  String settingsStartOnBoot(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'máy tính bảng',
+        'other': 'điện thoại',
+      },
+    );
+    return 'Khởi động cùng $_temp0';
+  }
 
   @override
   String dropTitle(int count) {

@@ -408,7 +408,14 @@
   "settingsBackground": "Background",
   "settingsKeepRunning": "Keep running in the background",
   "settingsKeepRunningBody": "Stays connected when Ferret is closed. Shows a quiet notification.",
-  "settingsStartOnBoot": "Start when the phone starts",
+  "settingsStartOnBoot": "Start when the {here, select, tablet{tablet} other{phone}} starts",
+  "@settingsStartOnBoot": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "dropTitle": "{count, plural, =0{Send files to…} =1{Send a file to…} other{Send {count} files to…}}",
   "@dropTitle": {
     "placeholders": {

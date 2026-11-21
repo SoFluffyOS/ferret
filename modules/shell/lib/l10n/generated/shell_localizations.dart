@@ -917,8 +917,8 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsStartOnBoot.
   ///
   /// In en, this message translates to:
-  /// **'Start when the phone starts'**
-  String get settingsStartOnBoot;
+  /// **'Start when the {here, select, tablet{tablet} other{phone}} starts'**
+  String settingsStartOnBoot(String here);
 
   /// No description provided for @dropTitle.
   ///

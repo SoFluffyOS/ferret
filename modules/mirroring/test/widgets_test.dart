@@ -605,6 +605,38 @@ void main() {
       session,
     );
 
+    testWidgets('a phone that can be a display never offers "Show screen" '
+        'for another phone', (tester) async {
+      await startPhone(tester, canBeDisplay: true);
+      final other = FakeSession(
+        'galaxy',
+        name: 'Galaxy',
+        flags: const ['share'],
+      );
+      final context = featureContext();
+      late List<FeatureAction> actions;
+      late List<FeatureSection> sections;
+      await tester.pumpWidget(
+        testApp(
+          Builder(
+            builder: (buildContext) {
+              actions = ui.deviceActions(buildContext, context, status(other));
+              sections = ui.deviceSections(
+                buildContext,
+                context,
+                status(other),
+              );
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      expect(feature.viewer, isNotNull, reason: 'it can be a display');
+      expect(actions, isEmpty);
+      expect(sections, isEmpty);
+    });
+
     testWidgets('"Show screen" on every Android phone, connected or not, '
         'and health follows the last try', (tester) async {
       await startComputer(tester);

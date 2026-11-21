@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
-import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/bootstrap/bootstrap.dart';
@@ -40,7 +39,7 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
       return const SizedBox.shrink();
     }
 
-    if (!FerretSystem().isAndroid) {
+    if (defaultTargetPlatform != .android) {
       return LoginSettings(settings: widget.settings);
     }
 
@@ -63,7 +62,7 @@ class _BackgroundSettingsState extends State<BackgroundSettings> {
               ),
             ),
             SettingSwitchRow(
-              title: l10n.settingsStartOnBoot,
+              title: l10n.settingsStartOnBoot(ThisComputer.handheld),
               value: _startOnBoot,
               onChanged: (value) {
                 setState(() => _startOnBoot = value);

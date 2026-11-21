@@ -622,7 +622,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Stays connected when Ferret is closed. Shows a quiet notification.';
 
   @override
-  String get settingsStartOnBoot => 'Start when the phone starts';
+  String settingsStartOnBoot(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'tablet',
+        'other': 'phone',
+      },
+    );
+    return 'Start when the $_temp0 starts';
+  }
 
   @override
   String dropTitle(int count) {

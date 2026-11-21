@@ -4153,8 +4153,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsKeepRunningBody => pseudo(super.settingsKeepRunningBody);
   @override
-  String get settingsStartOnBoot => pseudo(super.settingsStartOnBoot);
-  @override
   String get dropTileDrop => pseudo(super.dropTileDrop);
   @override
   String get dropTilePick => pseudo(super.dropTilePick);
@@ -4720,6 +4718,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String stayStops(int count) => pseudo(super.stayStops(count));
   @override
   String stayBootAsk(String device) => pseudo(super.stayBootAsk(device));
+  @override
+  String settingsStartOnBoot(String here) =>
+      pseudo(super.settingsStartOnBoot(here));
   @override
   String dropTitle(int count) => pseudo(super.dropTitle(count));
   @override
