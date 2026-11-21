@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/corners.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/ghost_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -169,13 +170,15 @@ Widget _answers({
   children: [
     if (ghost case final label?) ...[
       Expanded(
-        child: Button(
-          variant: .ghost,
-          tooltip: label,
-          label: label,
-          titleExpand: .shrink,
-          mainAxisSize: .max,
-          onPressed: onGhost,
+        child: GhostFill(
+          child: Button(
+            variant: .ghost,
+            tooltip: label,
+            label: label,
+            titleExpand: .shrink,
+            mainAxisSize: .max,
+            onPressed: onGhost,
+          ),
         ),
       ),
       Spacing.h8,
