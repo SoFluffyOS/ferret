@@ -35,20 +35,24 @@ The other device waits 30 seconds for your answer. Too slow? Tap **Try again**.
 
 Anyone on the Wi-Fi could pretend to be your phone. The digits come from the encrypted connection between the two devices plus a random number from each side, so they only match when the two screens really talk to each other. Different digits? Tap **Cancel** or **Not now**. Nothing is paired.
 
+Said no by mistake? That device can ask again in a minute. Ferret turns down its requests without a prompt until then, and a bit longer each time it keeps asking, so a neighbour can't flood your screen.
+
 ## 👨‍👩‍👧 Pair once, join them all
 
 You have a Mac and a tablet that already work together, and you get a new phone. Pair the phone with the Mac. Done: the tablet knows the phone too, with no second pairing.
 
-- The device you pair on tells you first: **You'll also be connected to Tablet.**
-- Your other devices say **Pixel 7 joined your devices (added by MacBook Pro)**, with **Undo**. Undo forgets the phone on that device only.
-- Several at once? One card and one notification: **iPad, ThinkPad X1, DESKTOP joined your devices**, with **Keep all** or **Review** to undo just one.
-- A device that was off catches up the next time it connects.
+- The device you pair on tells you first: **You'll also be connected to Tablet.** It takes them in right away.
+- Your other devices ask before they trust it: **MacBook Pro wants to add Pixel 7 to your devices**. It waits under **Needs you**, with a notification.
+- **Add** connects them. The phone gets no more there than the Mac may use.
+- **Not now** keeps it off that device. Pair it there by hand whenever you like.
+- No answer within a day? That's a **Not now**.
+- A device that was off asks the next time it connects.
 
 Copy something on any of them and it reaches all the others.
 
 Removing works the same way. Open a device, tap **Forget Pixel 7** at the bottom, and choose:
 
-- **Remove everywhere**: every device forgets it.
+- **Remove everywhere**: every device forgets it. Each of your other devices asks first: **MacBook Pro wants to remove Pixel 7 from this tablet**, with **Remove** or **Keep**.
 - **Forget here only**: just this one does.
 
 The question opens right there on the page. Changed your mind? **Cancel**.

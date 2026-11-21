@@ -10,7 +10,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 🔑 Pair and stay connected
 - **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. Or scan a QR code, from Ferret or the phone's own camera. No account, ever.
-- **Pair once, join them all**: a device you pair with one of yours joins all of them. **Forget** removes it everywhere, or only here.
+- **Pair once, join them all**: a device you pair with one of yours joins all of them, once each asks you. **Forget** removes it everywhere (each one asks too), or only here.
 - **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** instead of offline, and comes back right after sleep or a network change. A slow link says **weak connection**.
 - **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
 - **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
@@ -92,7 +92,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 🔒 Privacy and security
 - **Local network only**: your devices talk directly, end-to-end encrypted with Noise. Nothing goes through a server.
-- **Strangers can only ask to pair**, in short messages and a few at a time.
+- **Strangers can only ask to pair**, in short messages and a few at a time. Say no and they wait before they can ask again.
 - **What a device can use**: a switch per feature on each device. **Turn everything off** keeps it paired.
 - **Watched? You know**: the menubar icon keeps a dot while a device sees your screen or controls your Mac.
 - **No hiding in file names**: received names lose the marks that flip text direction.
