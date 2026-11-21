@@ -13,9 +13,16 @@ import 'package:shell/view_models/view_models.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class DropSendingStatus extends StatelessWidget {
-  const DropSendingStatus({super.key, required this.phase});
+  const DropSendingStatus({
+    super.key,
+    required this.phase,
+    this.isFlat = false,
+  });
 
   final DropPhase phase;
+
+  /// The target's progress without a card of its own.
+  final bool isFlat;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +75,7 @@ class DropSendingStatus extends StatelessWidget {
           folderCount: folderCount,
           kind: kind,
           phase: phase,
+          isFlat: isFlat,
         ),
         if (phase is DropFailed) ...[
           Spacing.v12,

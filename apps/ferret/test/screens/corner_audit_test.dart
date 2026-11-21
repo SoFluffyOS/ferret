@@ -19,6 +19,11 @@
 // goes one level in, and further, for every shape in a corner of one of
 // those (NESTED-…), such as the tiles in the shelf box. Shapes in a list
 // that scrolls are left out at the window: they only pass its corner.
+//
+// A desktop window has its own corner too (Corners.window: 16 on a Mac,
+// 8 on Windows, 12 on Linux, drawn by the system): every window screen,
+// at each window size and on Windows and Linux, is measured against it
+// the same way.
 @Tags(['screens'])
 library;
 
@@ -38,7 +43,7 @@ import 'shelf_screens_test.dart' show fillShelf, shelfViewModel;
 import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
-import 'window_screens_test.dart' show windowScreens;
+import 'window_screens_test.dart' show WindowScreen, windowScreens, windowSizes;
 
 const _window = CaptureSize('window', 1000, 720);
 final _findings = <String>{};
@@ -245,6 +250,8 @@ List<_Shape> _shapesIn(Rect window) {
         ));
       }
     }
+    // A button is one shape: the fill it draws inside is its own corner.
+    if (element.widget is Button) return;
     element.visitChildren(visit);
   }
 
@@ -529,22 +536,67 @@ void main() {
   }
 
   for (final screen in windowScreens) {
-    testWidgets('window_${screen.name}', (tester) async {
-      await _onScreen(tester, _window, () async {
-        final rig = await ScreenRig.create(
+    for (final size in windowSizes) {
+      final label = 'window_${screen.name} ${size.name}';
+      testWidgets(label, (tester) async {
+        await _onScreen(
           tester,
-          features: [
-            ...appFeatures(),
-            if (screen.sampleActivity) SampleActivityFeatureUi(),
-          ],
-          tipsDone: true,
+          size,
+          () => _windowScreen(tester, screen, label, size),
         );
-        await rig.show(tester);
-        await screen.script(tester, rig);
-        await rig.settle(tester);
-        _audit(tester, 'window_${screen.name}');
-        await rig.dispose(tester);
       });
-    });
+    }
   }
+
+  // Windows and Linux round their windows less than a Mac does.
+  for (final screen in windowScreens.where(
+    (screen) => _onWindows.contains(screen.name),
+  )) {
+    for (final platform in [TargetPlatform.windows, TargetPlatform.linux]) {
+      final size = CaptureSize(
+        _window.name,
+        _window.width,
+        _window.height,
+        platform: platform,
+      );
+      final label = '${platform.name}_${screen.name} ${size.name}';
+      testWidgets(label, (tester) async {
+        await _onScreen(
+          tester,
+          size,
+          () => _windowScreen(tester, screen, label, size),
+        );
+      });
+    }
+  }
+}
+
+const _onWindows = {'overview', 'device_menu', 'settings', 'activity'};
+
+/// Shows [screen] in the window and measures its corners: buttons in
+/// cards, and every shape at the window's edge against [Corners.window].
+Future<void> _windowScreen(
+  WidgetTester tester,
+  WindowScreen screen,
+  String label,
+  CaptureSize size,
+) async {
+  final rig = await ScreenRig.create(
+    tester,
+    features: [
+      ...appFeatures(),
+      if (screen.sampleActivity) SampleActivityFeatureUi(),
+    ],
+    tipsDone: true,
+  );
+  await rig.show(tester);
+  await screen.script(tester, rig);
+  await rig.settle(tester);
+  _audit(tester, label);
+  _auditWindow(
+    label,
+    Offset.zero & Size(size.width, size.height),
+    Corners.window,
+  );
+  await rig.dispose(tester);
 }

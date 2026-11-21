@@ -16,6 +16,7 @@ class DropProgressCard extends StatelessWidget {
     required this.phase,
     this.folderCount = 0,
     this.kind = .files,
+    this.isFlat = false,
   });
 
   final IconData icon;
@@ -30,6 +31,11 @@ class DropProgressCard extends StatelessWidget {
   /// What was dropped: files, text or a link.
   final DropKind kind;
   final DropPhase phase;
+
+  /// Drawn straight on what holds it, without a card of its own: inside a
+  /// panel that is already the card, a second fill would need a corner
+  /// too small to read as one.
+  final bool isFlat;
 
   @override
   Widget build(BuildContext context) {
@@ -69,53 +75,59 @@ class DropProgressCard extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    return SurfaceCard(
-      padding: EdgeInsets.all(Spacing.d16),
-      child: Row(
-        children: [
-          Icon(icon, size: Spacing.d24, color: palette.text),
-          Spacing.h12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              mainAxisSize: .min,
-              children: [
-                Text(
-                  name,
-                  style: typography.base1.copyWith(
-                    color: palette.text,
-                    fontWeight: .w600,
-                  ),
-                  overflow: .ellipsis,
+    final row = Row(
+      children: [
+        Icon(icon, size: Spacing.d24, color: palette.text),
+        Spacing.h12,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
+            children: [
+              Text(
+                name,
+                style: typography.base1.copyWith(
+                  color: palette.text,
+                  fontWeight: .w600,
                 ),
-                Spacing.vertical(Spacing.d2),
-                Text(
-                  detail,
-                  style: typography.caption1.copyWith(
-                    color: palette.mutedText,
-                  ),
+                overflow: .ellipsis,
+              ),
+              Spacing.vertical(Spacing.d2),
+              Text(
+                detail,
+                style: typography.caption1.copyWith(
+                  color: palette.mutedText,
                 ),
-                if (phase case DropSending(:final fraction)) ...[
-                  Spacing.v8,
-                  FluffyProgressBar(
-                    value: fraction.clamp(0, 1).toDouble(),
-                    color: context.palette.accent,
-                    backgroundColor: context.palette.background,
-                  ),
-                ],
+              ),
+              if (phase case DropSending(:final fraction)) ...[
+                Spacing.v8,
+                FluffyProgressBar(
+                  value: fraction.clamp(0, 1).toDouble(),
+                  color: context.palette.accent,
+                  backgroundColor: switch (isFlat) {
+                    true => palette.surface,
+                    false => palette.background,
+                  },
+                ),
               ],
-            ),
+            ],
           ),
-          if (phase is DropSent) ...[
-            Spacing.h12,
-            Icon(
-              LucideIcons.circleCheck,
-              size: Spacing.d24,
-              color: palette.success,
-            ),
-          ],
+        ),
+        if (phase is DropSent) ...[
+          Spacing.h12,
+          Icon(
+            LucideIcons.circleCheck,
+            size: Spacing.d24,
+            color: palette.success,
+          ),
         ],
-      ),
+      ],
     );
+
+    if (isFlat) {
+      return row;
+    }
+
+    return SurfaceCard(padding: EdgeInsets.all(Spacing.d16), child: row);
   }
 }

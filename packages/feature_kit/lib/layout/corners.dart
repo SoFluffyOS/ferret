@@ -45,6 +45,17 @@ abstract final class Corners {
   /// concentric with 20.
   static double get popover => Spacing.d20;
 
+  /// A desktop window's own corner, which the system draws round
+  /// Ferret's window and its feature windows. On a Mac it is a continuous
+  /// 16-point curve since macOS 26, with or without a toolbar; Windows 11
+  /// rounds windows by 8 and GNOME by 12. A shape at the window's edge is
+  /// concentric with it: a selected list line 8 in from the side is 8.
+  static double get window => switch (defaultTargetPlatform) {
+    .windows => Spacing.d8,
+    .linux => Spacing.d12,
+    _ => Spacing.d16,
+  };
+
   /// The windows Ferret draws itself next to the popover, such as the
   /// shelf panel a drag brings over other apps: the popover's corner, so
   /// the two read as one family and the same box fits both.

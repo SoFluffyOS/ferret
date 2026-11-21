@@ -40,6 +40,19 @@ void main() {
     expect(Corners.concentric(8, 8, minimum: 12), 12);
   });
 
+  test('a window\'s corner is the system\'s: 16 on a Mac, 8 on Windows, 12 '
+      'on Linux, and a list line 8 in from its side is concentric', () {
+    debugDefaultTargetPlatformOverride = .macOS;
+    expect(Corners.window, 16);
+    expect(Corners.concentric(Corners.window, 8), Corners.row);
+    expect(Corners.concentric(Corners.window, 4), 12);
+    debugDefaultTargetPlatformOverride = .windows;
+    expect(Corners.window, 8);
+    debugDefaultTargetPlatformOverride = .linux;
+    expect(Corners.window, 12);
+    debugDefaultTargetPlatformOverride = null;
+  });
+
   test('a control in a card shares its corner on touch screens', () {
     for (final platform in TargetPlatform.values) {
       debugDefaultTargetPlatformOverride = platform;

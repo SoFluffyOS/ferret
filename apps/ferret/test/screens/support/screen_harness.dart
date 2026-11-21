@@ -642,9 +642,9 @@ class ScreenRig {
 
     await tester.runAsync(() async {
       final shot = await boundary.toImage(pixelRatio: capturePixelRatio);
-      final image = switch (size.isPopover) {
-        true => await _inPopoverWindow(shot, brightness),
-        false => shot,
+      final image = switch (size.windowCorner) {
+        final radius? => await _inWindow(shot, brightness, radius),
+        null => shot,
       };
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
@@ -834,20 +834,35 @@ class QuietNotifier implements LocalNotifier {
 extension on CaptureSize {
   /// The Mac menubar popover, in any of its heights.
   bool get isPopover => platform == .macOS && name.startsWith('popover');
+
+  /// The corner the system clips this view's window to: the popover's on
+  /// a Mac, a desktop window's elsewhere on a computer (Windows and Linux
+  /// renders run as a Mac size with their platform set), none on a phone
+  /// or a tablet, whose screen is the window.
+  double? get windowCorner {
+    if (platform != .macOS) return null;
+    if (isPopover) return Corners.popover;
+    return Corners.window;
+  }
 }
 
-/// [shot] as the Mac popover shows it: macOS clips its window to a
-/// continuous corner of [Corners.popover] and draws a hairline round it,
-/// so the corners of a popover render are see-through and what sits at the
-/// window's edge can be checked against its real corner.
-Future<ui.Image> _inPopoverWindow(ui.Image shot, Brightness brightness) async {
+/// [shot] as the system shows its window: clipped to a continuous corner
+/// of [radius] (macOS draws the popover's at [Corners.popover] and a
+/// window's at [Corners.window]) with a hairline round it, so the corners
+/// of a render are see-through and what sits at the window's edge can be
+/// checked against its real corner.
+Future<ui.Image> _inWindow(
+  ui.Image shot,
+  Brightness brightness,
+  double radius,
+) async {
   final recorder = ui.PictureRecorder();
   final canvas = ui.Canvas(recorder);
   final width = shot.width.toDouble();
   final height = shot.height.toDouble();
   final window = RSuperellipse.fromRectAndRadius(
     Rect.fromLTWH(0, 0, width, height),
-    Radius.circular(Corners.popover * capturePixelRatio),
+    Radius.circular(radius * capturePixelRatio),
   );
   canvas
     ..clipRSuperellipse(window)
