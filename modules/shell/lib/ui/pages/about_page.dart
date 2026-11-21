@@ -2,6 +2,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -37,7 +38,12 @@ class AboutPage extends StatelessWidget {
           ),
         ),
         Spacing.v24,
-        const GroupedCard(children: [TipsAgainRow(), SponsorRow()]),
+        GroupedCard(
+          children: [
+            const TipsAgainRow(),
+            if (Sponsor.isOffered) const SponsorRow(),
+          ],
+        ),
         Spacing.v16,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: PageInsets.row),

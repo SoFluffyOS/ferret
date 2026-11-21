@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shell/shell.dart';
@@ -40,5 +41,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(opened, ['https://github.com/sponsors/simonpham']);
+  });
+
+  test('the iPhone build leaves the sponsor page out, others keep it', () {
+    for (final platform in TargetPlatform.values) {
+      debugDefaultTargetPlatformOverride = platform;
+      expect(Sponsor.isOffered, platform != .iOS, reason: platform.name);
+    }
+
+    debugDefaultTargetPlatformOverride = null;
   });
 }
