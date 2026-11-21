@@ -759,4 +759,8 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get folderFilesApp => 'Files › Ferret';
+
+  @override
+  String get iphoneKeepOpen =>
+      'Keep Ferret open on this iPhone while they send.';
 }

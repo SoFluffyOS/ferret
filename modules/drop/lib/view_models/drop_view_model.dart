@@ -124,6 +124,10 @@ class DropViewModel extends ChangeNotifier {
   /// and LocalSend open for their usual 10 minutes, and close as soon as a
   /// file from one of them is saved.
   Future<void> receiveFromGuest() async {
+    if (!await _mayUseNetwork()) {
+      return;
+    }
+
     _guestOnce = true;
     notifyListeners();
     await openToOthers();
@@ -351,7 +355,20 @@ class DropViewModel extends ChangeNotifier {
   Future<void> scan() => feature.localSend.scan();
 
   /// Lets LocalSend devices send here for the next 10 minutes.
-  Future<void> receiveFromLocalSend() => feature.localSend.receiveForAWhile();
+  Future<void> receiveFromLocalSend() async {
+    if (!await _mayUseNetwork()) {
+      return;
+    }
+
+    await feature.localSend.receiveForAWhile();
+  }
+
+  /// Says why Ferret needs the local network before iOS asks, where that
+  /// is still needed, such as an iPhone that hasn't looked for devices
+  /// yet. Set by the app; true when it may go ahead.
+  Future<bool> Function()? askLocalNetwork;
+
+  Future<bool> _mayUseNetwork() async => await askLocalNetwork?.call() ?? true;
 
   /// Stops receiving from LocalSend, also when it was set to stay on.
   Future<void> stopReceiving() async {
@@ -363,8 +380,13 @@ class DropViewModel extends ChangeNotifier {
     await feature.localSend.stopReceiving();
   }
 
-  Future<void> setReceiveAlways(bool value) =>
-      feature.localSend.setReceiveAlways(value);
+  Future<void> setReceiveAlways(bool value) async {
+    if (value && !await _mayUseNetwork()) {
+      return;
+    }
+
+    await feature.localSend.setReceiveAlways(value);
+  }
 
   Future<void> setLocalSendEnabled(bool value) =>
       feature.localSend.setEnabled(value);

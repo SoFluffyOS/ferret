@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/services.dart';
 import 'package:engine/engine.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:interop_localsend/interop_localsend.dart';
 import 'package:interop_quickshare/interop_quickshare.dart'
     show QuickShareDeviceKind;
@@ -99,6 +100,13 @@ class DropFeature extends Feature {
       options: localSendOptions,
     );
     unawaited(localSend.start());
+    if (localSendOptions.pausesInBackground) {
+      _lifecycle = AppLifecycleListener(
+        onHide: () => unawaited(localSend.suspend()),
+        onShow: () => unawaited(localSend.resume()),
+      );
+    }
+
     quickShare = QuickShareBridge(
       registry: registry,
       store: store,
@@ -124,8 +132,14 @@ class DropFeature extends Feature {
     );
   }
 
+  /// Stops and resumes receiving from LocalSend as Ferret leaves and comes
+  /// back to the front, where [LocalSendOptions.pausesInBackground].
+  AppLifecycleListener? _lifecycle;
+
   @override
   Future<void> stop() async {
+    _lifecycle?.dispose();
+    _lifecycle = null;
     await localSend.dispose();
     await quickShare.dispose();
     await _receiver.dispose();

@@ -78,6 +78,8 @@ class LocalSendBridge {
   Timer? _discoveryTimer;
   LocalSendProblem? _problem;
   bool _starting = false;
+  bool _suspended = false;
+  DateTime? _suspendedUntil;
   int _scans = 0;
   bool _disposed = false;
 
@@ -147,6 +149,8 @@ class LocalSendBridge {
   /// Stops receiving now. Offers waiting for an answer are declined and
   /// running LocalSend receives stop.
   Future<void> stopReceiving() async {
+    _suspended = false;
+    _suspendedUntil = null;
     _windowTimer?.cancel();
     _windowTimer = null;
     _until = null;
@@ -157,6 +161,49 @@ class LocalSendBridge {
     await server?.stop();
     _releaseDiscoverySoon();
     _emit();
+  }
+
+  /// Whether receiving waits for Ferret to come back to the front.
+  bool get isSuspended => _suspended;
+
+  /// Ferret went to the background where the system stops it, such as on
+  /// an iPhone: stops listening cleanly so LocalSend devices stop seeing
+  /// this one, and remembers to listen again in [resume]. Offers waiting
+  /// for an answer are declined; a transfer running now can't go on.
+  Future<void> suspend() async {
+    if (_suspended || !(_server?.isRunning ?? false)) {
+      return;
+    }
+
+    _suspended = true;
+    _suspendedUntil = _until;
+    _windowTimer?.cancel();
+    _windowTimer = null;
+    _until = null;
+    await receiver.cancelAll();
+    final server = _server;
+    _server = null;
+    await server?.stop();
+    await _discovery.stop();
+    _emit();
+  }
+
+  /// Ferret is in front again: listens again when it did before
+  /// [suspend], unless the window it was open for ran out meanwhile.
+  Future<void> resume() async {
+    if (!_suspended) {
+      return;
+    }
+
+    _suspended = false;
+    final until = _suspendedUntil;
+    _suspendedUntil = null;
+    if (until != null && !until.isAfter(_clock())) {
+      _emit();
+      return;
+    }
+
+    await _startReceiving(until: until);
   }
 
   /// Looks for LocalSend devices: asks over multicast, then, when nobody
@@ -174,9 +221,12 @@ class LocalSendBridge {
         return;
       }
 
-      await _startDiscovery();
-      await _discovery.announce();
-      await Future<void>.delayed(options.multicastWait);
+      if (options.useMulticast) {
+        await _startDiscovery();
+        await _discovery.announce();
+        await Future<void>.delayed(options.multicastWait);
+      }
+
       if (_discovery.peers.isNotEmpty || !options.scanAddresses) {
         return;
       }
@@ -321,7 +371,9 @@ class LocalSendBridge {
       _until = until;
       _armWindow();
       await _startDiscovery();
-      unawaited(_discovery.announce());
+      if (options.useMulticast) {
+        unawaited(_discovery.announce());
+      }
     } on SocketException catch (error) {
       printWarning('LocalSend receiving could not start', error.osError);
       _server = null;

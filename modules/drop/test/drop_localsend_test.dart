@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drop/drop.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interop_localsend/interop_localsend.dart';
+import 'package:lan_discovery/lan_discovery.dart';
 import 'package:path/path.dart' as p;
 
 import 'support/files.dart';
@@ -110,6 +111,69 @@ void main() {
 
       await until(() => laptop.localSend.receiveState.isOn);
       expect(laptop.localSend.receiveState.until, isNull);
+    });
+
+    test('in the background it stops listening, then comes back', () async {
+      await laptop.localSend.setReceiveAlways(true);
+
+      await laptop.localSend.suspend();
+      expect(laptop.localSend.isSuspended, isTrue);
+      expect(laptop.localSend.receiveState.isOn, isFalse);
+      expect(
+        await phone.localSend.findAt(InternetAddress.loopbackIPv4, port: 1),
+        isFalse,
+      );
+
+      await laptop.localSend.resume();
+      expect(laptop.localSend.isSuspended, isFalse);
+      expect(laptop.localSend.receiveState.isOn, isTrue);
+      expect(laptop.localSend.receiveState.until, isNull);
+      expect(
+        await phone.localSend.findAt(
+          InternetAddress.loopbackIPv4,
+          port: laptop.localSend.receiveState.port,
+        ),
+        isTrue,
+      );
+    });
+
+    test('a window that ran out in the background stays closed', () async {
+      await laptop.feature.stop();
+      laptop = await SoloDevice.start(
+        'Laptop',
+        inbox,
+        identity: laptopIdentity,
+        options: const LocalSendOptions(
+          port: 0,
+          useMulticast: false,
+          receiveWindow: Duration(milliseconds: 50),
+        ),
+      );
+
+      await laptop.localSend.receiveForAWhile();
+      await laptop.localSend.suspend();
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+      await laptop.localSend.resume();
+
+      expect(laptop.localSend.receiveState.isOn, isFalse);
+    });
+
+    test('nothing to come back to when it was not receiving', () async {
+      await laptop.localSend.suspend();
+      expect(laptop.localSend.isSuspended, isFalse);
+
+      await laptop.localSend.resume();
+      expect(laptop.localSend.receiveState.isOn, isFalse);
+    });
+
+    test('multicast follows the entitlement switch unless set', () {
+      expect(const LocalSendOptions(useMulticast: true).useMulticast, isTrue);
+      expect(const LocalSendOptions(useMulticast: false).useMulticast, isFalse);
+      expect(MulticastEntitlement.allowedOn(isIos: false), isTrue);
+      expect(
+        MulticastEntitlement.allowedOn(isIos: true),
+        MulticastEntitlement.iosGranted,
+      );
     });
 
     test('turning LocalSend off stops receiving and forgets devices', () async {

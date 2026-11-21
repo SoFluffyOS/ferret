@@ -29,6 +29,8 @@ dependencies:
   interop_quickshare:
     path: ../../packages/interop_quickshare
   intl: ^0.20.3
+  lan_discovery:
+    path: ../../packages/lan_discovery
   lucide_icons_flutter: ^4.0.3
   mime: ^2.0.0
   path: ^1.9.1

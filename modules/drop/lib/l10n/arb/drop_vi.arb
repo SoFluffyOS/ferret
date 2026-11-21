@@ -172,5 +172,6 @@
   "folderFilesDone": "{done} trên {total} tệp",
   "folderProgressDone": "{files} · {size}",
   "folderSkipped": "Đã bỏ qua {count} liên kết hoặc tệp đặc biệt",
-  "folderFilesApp": "Tệp › Ferret"
+  "folderFilesApp": "Tệp › Ferret",
+  "iphoneKeepOpen": "Hãy giữ Ferret mở trên iPhone này trong lúc họ gửi."
 }

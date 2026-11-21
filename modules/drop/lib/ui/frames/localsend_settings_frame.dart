@@ -2,6 +2,7 @@ import 'package:drop/l10n/l10n.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -36,7 +37,11 @@ class LocalSendSettingsFrame extends StatelessWidget {
         if (localSend)
           SettingSwitchRow(
             title: l10n.settingsReceiveAlways,
-            body: l10n.settingsReceiveAlwaysBody,
+            body: switch (defaultTargetPlatform) {
+              .iOS =>
+                '${l10n.settingsReceiveAlwaysBody} ${l10n.iphoneKeepOpen}',
+              _ => l10n.settingsReceiveAlwaysBody,
+            },
             value: receiveAlways,
             onChanged: viewModel.setReceiveAlways,
           ),

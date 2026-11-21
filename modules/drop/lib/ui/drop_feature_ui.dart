@@ -15,6 +15,7 @@ import 'package:drop/view_models/view_models.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_drop/ferret_drop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -138,7 +139,15 @@ class DropFeatureUi extends FeatureUi {
 
   @override
   Future<void> onAppStarted(FeatureContext context) async {
-    final viewModel = _dropViewModel;
+    final viewModel = _dropViewModel
+      ..askLocalNetwork = () async {
+        final here = context.navigatorKey.currentContext;
+        if (here == null || !here.mounted) {
+          return true;
+        }
+
+        return context.askLocalNetwork(here);
+      };
     final notices = DropNotices(
       feature: feature,
       notifier: context.notifier,
@@ -299,11 +308,15 @@ class DropFeatureUi extends FeatureUi {
     }
 
     final l10n = context.dropL10n;
+    final body = switch (_dropViewModel.quickShareSupported) {
+      true => l10n.guestBody,
+      false => l10n.guestBodyLocalSend,
+    };
     return FeatureOffer(
       title: l10n.guestTitle,
-      description: switch (_dropViewModel.quickShareSupported) {
-        true => l10n.guestBody,
-        false => l10n.guestBodyLocalSend,
+      description: switch (defaultTargetPlatform) {
+        .iOS => '$body ${l10n.iphoneKeepOpen}',
+        _ => body,
       },
       actionLabel: l10n.guestAction,
       onAction: () => unawaited(_dropViewModel.receiveFromGuest()),

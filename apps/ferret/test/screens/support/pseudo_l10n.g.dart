@@ -876,6 +876,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get folderFilesApp => pseudo(super.folderFilesApp);
   @override
+  String get iphoneKeepOpen => pseudo(super.iphoneKeepOpen);
+  @override
   String activityFrom(String what, String device) =>
       pseudo(super.activityFrom(what, device));
   @override

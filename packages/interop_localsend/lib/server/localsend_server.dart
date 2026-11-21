@@ -146,6 +146,14 @@ class LocalSendServer {
 
     const prefix = '${LocalSendDefaults.apiPath}/';
     final path = request.uri.path;
+    if (path.startsWith(_legacyPrefix)) {
+      return _routeLegacy(
+        request,
+        remote,
+        path.substring(_legacyPrefix.length),
+      );
+    }
+
     if (!path.startsWith(prefix)) {
       return _respond(request, HttpStatus.notFound);
     }
@@ -159,6 +167,20 @@ class LocalSendServer {
       _ => _respond(request, HttpStatus.notFound),
     };
   }
+
+  /// Older LocalSend apps look for receivers over HTTP on the version 1
+  /// paths. Only finding is answered there: files go through version 2.
+  static const _legacyPrefix = '/api/localsend/v1/';
+
+  Future<void> _routeLegacy(
+    HttpRequest request,
+    InternetAddress remote,
+    String route,
+  ) => switch ((request.method, route)) {
+    ('GET', 'info') => _respondJson(request, _self().toAnswerJson()),
+    ('POST', 'register') => _register(request, remote),
+    _ => _respond(request, HttpStatus.notFound),
+  };
 
   Future<void> _register(HttpRequest request, InternetAddress remote) async {
     final info = LocalSendInfo.fromJson(await _readJson(request));

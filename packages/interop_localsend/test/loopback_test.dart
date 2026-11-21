@@ -426,7 +426,10 @@ void main() {
     }
 
     expect(await status('GET', '/'), HttpStatus.notFound);
-    expect(await status('GET', '/api/localsend/v1/info'), HttpStatus.notFound);
+    expect(
+      await status('POST', '/api/localsend/v1/send-request'),
+      HttpStatus.notFound,
+    );
     expect(
       await status('GET', '/api/localsend/v2/upload'),
       HttpStatus.notFound,
