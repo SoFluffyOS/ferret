@@ -7,6 +7,7 @@ export 'package:shell/ui/pages/device_access_page.dart';
 export 'package:shell/ui/pages/device_page.dart';
 export 'package:shell/ui/pages/device_section_page.dart';
 export 'package:shell/ui/pages/device_vpn_page.dart';
+export 'package:shell/ui/pages/do_more_page.dart';
 export 'package:shell/ui/pages/doctor_page.dart';
 export 'package:shell/ui/pages/home_page.dart';
 export 'package:shell/ui/pages/keyboard_shortcuts_page.dart';

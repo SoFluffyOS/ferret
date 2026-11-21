@@ -23,6 +23,11 @@ final class GroupPick extends SettingsPick {
   int get hashCode => group.hashCode;
 }
 
+/// Every extra that could be turned on, also once Home's card is waved off.
+final class DoMorePick extends SettingsPick {
+  const DoMorePick();
+}
+
 final class AdvancedPick extends SettingsPick {
   const AdvancedPick();
 }

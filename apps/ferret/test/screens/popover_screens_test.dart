@@ -73,6 +73,18 @@ final _screens = <String, _Screen>{
     full: true,
     script: (tester, rig, _) => rig.open(tester, const SettingsPage()),
   ),
+  // Do more waved off with its ✕: Home goes straight to the devices.
+  'one_offers_dismissed': _Screen(
+    .one,
+    script: (tester, rig, _) async {
+      await tester.tap(find.bySemanticsLabel('Not now'));
+    },
+  ),
+  // Settings → Do more keeps the extras after the card is gone.
+  'settings_do_more': _Screen(
+    .one,
+    script: (tester, rig, _) => rig.open(tester, const DoMorePage()),
+  ),
   'activity_full': _Screen(
     .one,
     full: true,

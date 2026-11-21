@@ -4209,6 +4209,12 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get offersSubtitle => pseudo(super.offersSubtitle);
   @override
+  String get offersNotNow => pseudo(super.offersNotNow);
+  @override
+  String get offersNotNowTooltip => pseudo(super.offersNotNowTooltip);
+  @override
+  String get offersAllOn => pseudo(super.offersAllOn);
+  @override
   String get onboardNameLabel => pseudo(super.onboardNameLabel);
   @override
   String get settingsRename => pseudo(super.settingsRename);

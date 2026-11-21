@@ -784,6 +784,17 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Các tính năng bổ sung bạn có thể bật. Đều không bắt buộc.';
 
   @override
+  String get offersNotNow => 'Để sau';
+
+  @override
+  String get offersNotNowTooltip =>
+      'Để sau. Mục Làm được nhiều hơn vẫn có trong Cài đặt.';
+
+  @override
+  String get offersAllOn =>
+      'Mọi thứ ở đây đã bật. Tính năng mới sẽ hiện ở đây.';
+
+  @override
   String get onboardNameLabel => 'Tên thiết bị';
 
   @override

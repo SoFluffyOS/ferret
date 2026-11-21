@@ -66,6 +66,7 @@ class _SettingsSplitFrameState extends State<SettingsSplitFrame> {
                 child: switch (_pick) {
                   ThisDevicePick() => const ThisDeviceSettingsPage(),
                   GroupPick(:final group) => SettingsGroupPage(group: group),
+                  DoMorePick() => const DoMorePage(),
                   AdvancedPick() => const AdvancedSettingsPage(),
                   AboutPick() => const AboutPage(),
                 },

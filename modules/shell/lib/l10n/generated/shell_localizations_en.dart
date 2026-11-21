@@ -789,6 +789,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get offersSubtitle => 'Extras you can turn on. All optional.';
 
   @override
+  String get offersNotNow => 'Not now';
+
+  @override
+  String get offersNotNowTooltip => 'Not now. Do more stays in Settings.';
+
+  @override
+  String get offersAllOn => 'Everything here is on. New extras show up here.';
+
+  @override
   String get onboardNameLabel => 'Device name';
 
   @override

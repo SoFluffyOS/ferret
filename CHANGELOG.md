@@ -83,6 +83,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 💎 Easy to use, for everyone
 - **Your devices are the home screen**, with **Send files**, **Send clipboard** and **Ring** on each row. **Activity** says what just happened.
+- **Do more, once**: the extras card on Home goes away with its ✕ and stays in **Settings → Do more**. It only comes back when something new is on offer.
 - **Short buttons**: the whole sentence is in the tooltip and what screen readers say.
 - **Large text**: up to 200%, and pages grow with it.
 - **Accessibility**: VoiceOver and TalkBack, a keyboard alone, and readable contrast in light and dark.

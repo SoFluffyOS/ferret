@@ -4,6 +4,7 @@ import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/models/models.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
+import 'package:shell/ui/frames/offers_card.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -59,12 +60,20 @@ class SettingsListFrame extends StatelessWidget {
         FeatureChangesListener(features: scope.features, builder: _groups),
         ...between,
         Spacing.v24,
-        GroupedCard(
-          separatorIndent: NavRow.placeIndent,
-          children: [
-            _row(l10n.settingsAdvanced, const AdvancedPick()),
-            _row(l10n.settingsAbout, const AboutPick()),
-          ],
+        OffersBuilder(
+          builder: (context, offers) => GroupedCard(
+            separatorIndent: NavRow.placeIndent,
+            children: [
+              if (offers.isNotEmpty)
+                _row(
+                  l10n.offersTitle,
+                  const DoMorePick(),
+                  value: '${offers.length}',
+                ),
+              _row(l10n.settingsAdvanced, const AdvancedPick()),
+              _row(l10n.settingsAbout, const AboutPick()),
+            ],
+          ),
         ),
       ],
     );

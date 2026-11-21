@@ -1130,6 +1130,24 @@ abstract class ShellLocalizations {
   /// **'Extras you can turn on. All optional.'**
   String get offersSubtitle;
 
+  /// Tooltip name of the small x on the Do more card; it hides the card
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get offersNotNow;
+
+  /// Tooltip of the small x on the Do more card
+  ///
+  /// In en, this message translates to:
+  /// **'Not now. Do more stays in Settings.'**
+  String get offersNotNowTooltip;
+
+  /// Settings → Do more when there is nothing left to turn on
+  ///
+  /// In en, this message translates to:
+  /// **'Everything here is on. New extras show up here.'**
+  String get offersAllOn;
+
   /// No description provided for @onboardNameLabel.
   ///
   /// In en, this message translates to:

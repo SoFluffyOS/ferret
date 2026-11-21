@@ -22,6 +22,7 @@ extension SettingsPickPlace on SettingsPick {
   SettingsPlace get place => switch (this) {
     ThisDevicePick() => (icon: LucideIcons.monitor, color: .indigo),
     GroupPick(:final group) => group.place,
+    DoMorePick() => (icon: LucideIcons.sparkles, color: .orange),
     AdvancedPick() => (icon: LucideIcons.slidersHorizontal, color: .grey),
     AboutPick() => (icon: LucideIcons.info, color: .brown),
   };

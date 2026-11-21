@@ -7,6 +7,7 @@ import 'package:shell/models/models.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:shell/ui/pages/about_page.dart';
 import 'package:shell/ui/pages/advanced_settings_page.dart';
+import 'package:shell/ui/pages/do_more_page.dart';
 import 'package:shell/ui/pages/settings_group_page.dart';
 import 'package:shell/ui/pages/this_device_settings_page.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -50,6 +51,7 @@ class SettingsPage extends StatelessWidget {
           onPick: (pick) => _open(context, switch (pick) {
             ThisDevicePick() => const ThisDeviceSettingsPage(),
             GroupPick(:final group) => SettingsGroupPage(group: group),
+            DoMorePick() => const DoMorePage(),
             AdvancedPick() => const AdvancedSettingsPage(),
             AboutPick() => const AboutPage(),
           }),

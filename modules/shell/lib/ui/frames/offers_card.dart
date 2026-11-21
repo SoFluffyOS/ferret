@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:core/core.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -10,10 +13,15 @@ import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Every feature that could be set up, in one compact card, instead of a
-/// setup card per feature.
-class OffersCard extends StatelessWidget {
-  const OffersCard({super.key});
+/// One feature's offer, with the feature it comes from.
+typedef OfferOf = ({String featureId, FeatureOffer offer});
+
+/// Builds with every offer that fits the devices paired now, and again
+/// whenever a pairing or a feature changes what is on offer.
+class OffersBuilder extends StatelessWidget {
+  const OffersBuilder({super.key, required this.builder});
+
+  final Widget Function(BuildContext context, List<OfferOf> offers) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +39,56 @@ class OffersCard extends StatelessWidget {
 
     return FeatureChangesListener(
       features: scope.features,
-      builder: (context) {
-        final offers = [
-          for (final feature in scope.features)
-            if (offered.contains(feature.featureId))
-              ?feature.offerFor(context, scope.featureContext),
-        ];
-        if (offers.isEmpty) {
+      builder: (context) => builder(context, [
+        for (final feature in scope.features)
+          if (offered.contains(feature.featureId))
+            if (feature.offerFor(context, scope.featureContext)
+                case final offer?)
+              (featureId: feature.featureId, offer: offer),
+      ]),
+    );
+  }
+}
+
+/// Every feature that could be set up, in one compact card, instead of a
+/// setup card per feature. The ✕ hides it until a feature that wasn't on
+/// offer then has something new; Settings → Do more keeps them all.
+class OffersCard extends StatefulWidget {
+  const OffersCard({super.key});
+
+  @override
+  State<OffersCard> createState() => _OffersCardState();
+}
+
+class _OffersCardState extends State<OffersCard> {
+  late final SettingsStore _settings;
+  StreamSubscription<String>? _settingChanges;
+
+  @override
+  void initState() {
+    super.initState();
+    _settings = ShellScope.read(context).featureContext.engine.settings;
+    _settingChanges = _settings.changes.listen((key) {
+      if (key == OffersDismissal.dismissedKey && mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_settingChanges?.cancel());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dismissal = OffersDismissal(_settings);
+
+    return OffersBuilder(
+      builder: (context, offers) {
+        final ids = {for (final offer in offers) offer.featureId};
+        if (offers.isEmpty || dismissal.hides(ids)) {
           return const SizedBox.shrink();
         }
 
@@ -48,15 +99,59 @@ class OffersCard extends StatelessWidget {
             icon: LucideIcons.sparkles,
             title: l10n.offersTitle,
             subtitle: l10n.offersSubtitle,
-            children: [
-              for (final (index, offer) in offers.indexed) ...[
-                if (index > 0) Spacing.v8,
-                OfferRow(offer: offer),
-              ],
-            ],
+            trailing: _NotNowButton(
+              onTap: () => unawaited(dismissal.dismiss(ids)),
+            ),
+            children: [OffersList(offers: offers)],
           ),
         );
       },
+    );
+  }
+}
+
+/// The small ✕ at the end of the card's title row.
+class _NotNowButton extends StatelessWidget {
+  const _NotNowButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.shellL10n;
+
+    return Tappable(
+      tooltip: l10n.offersNotNowTooltip,
+      semanticLabel: l10n.offersNotNow,
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d4),
+        child: Icon(
+          LucideIcons.x,
+          size: Spacing.d14,
+          color: context.palette.mutedText,
+        ),
+      ),
+    );
+  }
+}
+
+/// The offers one under the other, on Home's card and in Settings.
+class OffersList extends StatelessWidget {
+  const OffersList({super.key, required this.offers});
+
+  final List<OfferOf> offers;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        for (final (index, offer) in offers.indexed) ...[
+          if (index > 0) Spacing.v8,
+          OfferRow(offer: offer.offer),
+        ],
+      ],
     );
   }
 }

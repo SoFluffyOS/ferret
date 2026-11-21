@@ -544,6 +544,18 @@
     "description": "Title of the Home card that suggests features to turn on"
   },
   "offersSubtitle": "Extras you can turn on. All optional.",
+  "offersNotNow": "Not now",
+  "@offersNotNow": {
+    "description": "Tooltip name of the small x on the Do more card; it hides the card"
+  },
+  "offersNotNowTooltip": "Not now. Do more stays in Settings.",
+  "@offersNotNowTooltip": {
+    "description": "Tooltip of the small x on the Do more card"
+  },
+  "offersAllOn": "Everything here is on. New extras show up here.",
+  "@offersAllOn": {
+    "description": "Settings → Do more when there is nothing left to turn on"
+  },
   "onboardNameLabel": "Device name",
   "settingsRename": "Rename",
   "settingsRenameTitle": "Name this device",

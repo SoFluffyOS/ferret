@@ -50,6 +50,7 @@ One screen, no scrolling. Each row shows where things stand and opens its own pa
 | **From your phone** | [Notifications](../features/notifications.md), [messages](../features/messages.md), [calls](../features/calls.md) and the phone's [screen](../features/mirroring.md). On the phone itself this row is **To your computer**. |
 | **Control** | [Control](../features/remote-input.md) a computer from your phone, [sleep, restart or run your own actions](../features/computer-actions.md) on it, [find](../features/find.md) a device, and Power-ups on Android. |
 | **Other apps** | [LocalSend](../interop/localsend.md), [Quick Share](../interop/quick-share.md), the [browser extension](browser.md) and an [iPhone](../iphone/index.md). |
+| **Do more** | The extras you can turn on, also after you close the **Do more** card on Home with its ✕. Only there while something is left to turn on. |
 | **Advanced** | This device's ID and address, **Pair once for all my devices**, on a Mac the keys that **Open Ferret from anywhere** (⌃⌥Space), **Language**, **Low battery notice**, **Check my network** and **Quit Ferret**. |
 | **About · Privacy** | The [privacy](../privacy.md) promise, **Show tips again** for the short hints you waved off, **Sponsor Ferret**, the version and the licence. |
 
