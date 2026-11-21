@@ -213,6 +213,17 @@ final windowScreens = <WindowScreen>[
     await rig.settle(tester);
     _dragOver(tester, find.text('Pixel 9').first);
     await tester.pump();
+    // The label fades in.
+    await tester.pump(const Duration(milliseconds: 200));
+  }),
+  WindowScreen('drop_on_offline_row', (tester, rig) async {
+    await _pairPhone(tester, rig);
+    await rig.addOfflinePhone(tester, name: 'iPad');
+    await rig.settle(tester);
+    _dragOver(tester, find.text('iPad').first);
+    await tester.pump();
+    // The label fades in.
+    await tester.pump(const Duration(milliseconds: 200));
   }),
   WindowScreen('drop_on_pane', (tester, rig) async {
     await _pairPhone(tester, rig);

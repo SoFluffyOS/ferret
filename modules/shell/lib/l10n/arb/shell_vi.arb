@@ -162,6 +162,7 @@
   "dropCancel": "Huỷ",
   "dropSendTo": "Gửi đến {name}",
   "dropSendToAll": "Gửi đến cả {count, plural, other{{count} thiết bị}}",
+  "dropToSendTo": "Thả để gửi đến {name}",
   "dropDeviceOffline": "{name} đang ngoại tuyến",
   "scanTitle": "Quét mã",
   "scanBody": "Trên máy tính, mở Ferret và chọn Ghép đôi bằng mã QR. Sau đó hướng camera vào mã.",

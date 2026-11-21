@@ -62,6 +62,9 @@ class DeviceTile extends StatelessWidget {
 
   static const _waitingOpacity = 0.5;
 
+  /// Below the card, before the next one.
+  static double get gap => Spacing.d8;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -84,7 +87,7 @@ class DeviceTile extends StatelessWidget {
     };
 
     return Padding(
-      padding: EdgeInsets.only(bottom: Spacing.d8),
+      padding: EdgeInsets.only(bottom: gap),
       child: SurfaceCard(
         onTap: onTap,
         focusNode: focusNode,

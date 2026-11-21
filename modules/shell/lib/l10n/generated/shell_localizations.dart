@@ -1064,6 +1064,12 @@ abstract class ShellLocalizations {
   /// **'Send to all {count, plural, other{{count} devices}}'**
   String dropSendToAll(int count);
 
+  /// Over a device's card or row while something it can take is dragged over it
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to send to {name}'**
+  String dropToSendTo(String name);
+
   /// No description provided for @dropDeviceOffline.
   ///
   /// In en, this message translates to:

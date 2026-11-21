@@ -4741,6 +4741,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String dropSendToAll(int count) => pseudo(super.dropSendToAll(count));
   @override
+  String dropToSendTo(String name) => pseudo(super.dropToSendTo(name));
+  @override
   String dropDeviceOffline(String name) =>
       pseudo(super.dropDeviceOffline(name));
   @override

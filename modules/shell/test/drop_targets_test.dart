@@ -221,6 +221,56 @@ void main() {
     expect(feature.drops, isEmpty);
   });
 
+  testWidgets('a drag from Ferret over a device card says where it goes, '
+      'or that the device is offline, without moving the card', (
+    tester,
+  ) async {
+    Widget card(DeviceStatus status) => DeviceDropHover(
+      target: WindowDropTargets.device(status),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: DeviceTile.gap),
+        child: SizedBox(height: 80, child: Text(status.device.name)),
+      ),
+    );
+    await pumpZone(
+      tester,
+      devices: [pixel, tablet],
+      child: Column(children: [card(pixel), card(tablet)]),
+    );
+    final cards = find.byType(DeviceDropHover);
+    final before = tester.getRect(cards.first);
+    menubar.onDragEntered(_viewId, 10, 400, 1, .files, true);
+    await settle(tester);
+    expect(find.byType(DropOverlay), findsNWidgets(2));
+    expect(find.text('Drop to send to Pixel 7'), findsNothing);
+
+    final overPixel = tester.getCenter(find.text('Pixel 7'));
+    menubar.onDragUpdated(_viewId, overPixel.dx, overPixel.dy);
+    await settle(tester);
+    expect(find.text('Drop to send to Pixel 7'), findsOneWidget);
+    expect(api.allowed.last, isTrue);
+    expect(tester.getRect(cards.first), before);
+    // Over the card, not the gap under it.
+    expect(
+      tester.getRect(find.byType(DropOverlay).first).height,
+      before.height - DeviceTile.gap,
+    );
+
+    final overTablet = tester.getCenter(find.text('Old tablet'));
+    menubar.onDragUpdated(_viewId, overTablet.dx, overTablet.dy);
+    await settle(tester);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Drop to send to Pixel 7'), findsNothing);
+    expect(find.text('Old tablet is offline'), findsOneWidget);
+    expect(api.allowed.last, isFalse);
+
+    menubar.onDragPerformed(_viewId, ['/a.jpg'], overTablet.dx, overTablet.dy);
+    await settle(tester);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(feature.drops, isEmpty);
+    expect(find.text('Old tablet is offline'), findsNothing);
+  });
+
   testWidgets('an offline tile refuses the drop', (tester) async {
     await pumpZone(tester, devices: [pixel, tablet]);
     menubar.onDragEntered(_viewId, 10, 10, 1, .files, false);

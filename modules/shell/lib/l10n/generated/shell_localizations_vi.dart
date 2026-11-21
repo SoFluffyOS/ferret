@@ -743,6 +743,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String dropToSendTo(String name) {
+    return 'Thả để gửi đến $name';
+  }
+
+  @override
   String dropDeviceOffline(String name) {
     return '$name đang ngoại tuyến';
   }

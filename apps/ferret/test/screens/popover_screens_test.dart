@@ -15,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_shelf/local_shelf.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/shell.dart';
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
@@ -42,6 +43,15 @@ Finder _tile(String label) => find.byWidgetPredicate(
   (widget) => widget is ShelfTile && widget.tooltip == label,
 );
 
+/// Something dragged off the shelf, resting over the card of [device].
+void _dragOver(WidgetTester tester, String device) {
+  final over = tester.getCenter(find.text(device).first);
+  tester
+      .element(find.byType(DeviceTile).first)
+      .read<OsDropViewModel>()
+      .enter(over, fileCount: 1, fromApp: true);
+}
+
 final _screens = <String, _Screen>{
   'none_empty': const _Screen(.none),
   'none_full': const _Screen(.none, full: true),
@@ -67,6 +77,17 @@ final _screens = <String, _Screen>{
     .one,
     full: true,
     script: (tester, rig, _) => rig.open(tester, const ActivityPage()),
+  ),
+  // A shelf item dragged over a device's card, and over an offline one.
+  'drop_device': _Screen(
+    .three,
+    full: true,
+    script: (tester, rig, _) async => _dragOver(tester, 'Pixel 9'),
+  ),
+  'drop_device_offline': _Screen(
+    .three,
+    full: true,
+    script: (tester, rig, _) async => _dragOver(tester, 'iPhone 15'),
   ),
   // Clicked a tile, then moved on with the arrow keys.
   'keys_arrows': _Screen(

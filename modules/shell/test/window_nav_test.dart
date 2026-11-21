@@ -617,7 +617,14 @@ void main() {
 
       expect(find.byType(DropTargetTile), findsNothing);
       expect(find.byType(DevicePage), findsOneWidget);
-      expect(find.text('Offline'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(SidebarDeviceRow),
+          matching: find.text('Pixel 9 is offline'),
+        ),
+        findsOneWidget,
+      );
+      expect(drop.hovered?.acceptsDrop, isFalse);
 
       drop.move(tester.getCenter(find.byType(DevicePage)));
       await tester.pump();

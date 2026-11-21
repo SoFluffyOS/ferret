@@ -1,6 +1,7 @@
 export 'package:feature_kit/widgets/beta_tag.dart';
 export 'package:feature_kit/widgets/device_icon.dart';
 export 'package:feature_kit/widgets/directional_icon.dart';
+export 'package:feature_kit/widgets/drop_overlay.dart';
 export 'package:feature_kit/widgets/feature_card.dart';
 export 'package:feature_kit/widgets/ferret_logo.dart';
 export 'package:feature_kit/widgets/ferret_page.dart';

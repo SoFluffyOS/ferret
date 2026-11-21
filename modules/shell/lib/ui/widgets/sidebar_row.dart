@@ -16,7 +16,8 @@ class SidebarRow extends StatelessWidget {
     this.isSelected = false,
     this.isDimmed = false,
     this.isIndented = false,
-    this.isDropTarget = false,
+    this.dropLabel,
+    this.dropRefused = false,
     this.tooltip,
   });
 
@@ -34,8 +35,13 @@ class SidebarRow extends StatelessWidget {
   /// A level below the line above, such as a device's section.
   final bool isIndented;
 
-  /// Files dragged over the line would go where it points.
-  final bool isDropTarget;
+  /// While something is dragged over the line: what a drop does, such as
+  /// "Drop to send to Pixel 7", shown over the line without moving it.
+  final String? dropLabel;
+
+  /// The line can't take what is dragged over it: [dropLabel] says why,
+  /// in grey.
+  final bool dropRefused;
   final String? tooltip;
 
   /// Lines are a finger high on touch screens, and denser under a pointer.
@@ -74,56 +80,66 @@ class SidebarRow extends StatelessWidget {
         enableHover: true,
         // The line draws its own ring, on the shape of its fill.
         enableFocusBorder: false,
-        builder: (context, state) => Container(
-          // At least a line high, and taller when text is set large:
-          // a fixed height would cut the letters.
-          constraints: BoxConstraints(minHeight: height),
-          margin: EdgeInsets.symmetric(
+        builder: (context, state) => Padding(
+          padding: EdgeInsets.symmetric(
             horizontal: margin,
             vertical: Spacing.d1,
           ),
-          padding: EdgeInsetsDirectional.only(
-            start: switch (isIndented) {
-              true => Spacing.d32,
-              false => inset,
-            },
-            end: inset,
-          ),
-          decoration: ShapeDecoration(
-            color: _fill(palette, state),
-            shape: Corners.shape(
-              Corners.row,
-              side: BorderSide(
-                color: switch (state) {
-                  .focus => palette.accent,
-                  _ => const Color(0x00000000),
+          child: DropOverlay(
+            radius: Corners.row,
+            label: dropLabel,
+            refused: dropRefused,
+            compact: true,
+            child: Container(
+              // At least a line high, and taller when text is set large:
+              // a fixed height would cut the letters.
+              constraints: BoxConstraints(minHeight: height),
+              padding: EdgeInsetsDirectional.only(
+                start: switch (isIndented) {
+                  true => Spacing.d32,
+                  false => inset,
                 },
-                width: Spacing.d2,
+                end: inset,
               ),
-            ),
-          ),
-          child: Row(
-            children: [
-              if (icon case final icon?) ...[
-                Icon(
-                  icon,
-                  size: textScaler.clamp(maxScaleFactor: 2).scale(Spacing.d16),
-                  color: textColor,
-                ),
-                Spacing.h8,
-              ],
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: .ellipsis,
-                  style: context.fluffyTheme.typography.base2.copyWith(
-                    color: textColor,
+              decoration: ShapeDecoration(
+                color: _fill(palette, state),
+                shape: Corners.shape(
+                  Corners.row,
+                  side: BorderSide(
+                    color: switch (state) {
+                      .focus => palette.accent,
+                      _ => const Color(0x00000000),
+                    },
+                    width: Spacing.d2,
                   ),
                 ),
               ),
-              if (trailing case final trailing?) ...[Spacing.h8, trailing],
-            ],
+              child: Row(
+                children: [
+                  if (icon case final icon?) ...[
+                    Icon(
+                      icon,
+                      size: textScaler
+                          .clamp(maxScaleFactor: 2)
+                          .scale(Spacing.d16),
+                      color: textColor,
+                    ),
+                    Spacing.h8,
+                  ],
+                  Expanded(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                      style: context.fluffyTheme.typography.base2.copyWith(
+                        color: textColor,
+                      ),
+                    ),
+                  ),
+                  if (trailing case final trailing?) ...[Spacing.h8, trailing],
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -131,10 +147,6 @@ class SidebarRow extends StatelessWidget {
   }
 
   Color? _fill(FerretPalette palette, TappableState state) {
-    if (isDropTarget) {
-      return palette.accent.withValues(alpha: 0.4);
-    }
-
     if (isSelected) {
       return palette.accent.withValues(alpha: 0.18);
     }

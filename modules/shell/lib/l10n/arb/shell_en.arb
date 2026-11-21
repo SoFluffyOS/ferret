@@ -509,6 +509,15 @@
       }
     }
   },
+  "dropToSendTo": "Drop to send to {name}",
+  "@dropToSendTo": {
+    "description": "Over a device's card or row while something it can take is dragged over it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dropDeviceOffline": "{name} is offline",
   "@dropDeviceOffline": {
     "placeholders": {

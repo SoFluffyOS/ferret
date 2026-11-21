@@ -73,18 +73,17 @@ class SidebarDeviceRow extends StatelessWidget {
       (true, false) => l10n.deviceConnected,
     };
 
-    final takesDrop = isDropHovered && status.isConnected;
-    final refusesDrop = isDropHovered && !status.isConnected;
-
     return SidebarRow(
-      label: switch (takesDrop) {
-        true => l10n.dropSendTo(device.name),
-        false => device.name,
-      },
+      label: device.name,
       icon: deviceIconFor(device.formFactor, device.platform),
       isSelected: isSelected,
       isDimmed: !status.isConnected && !status.isReconnecting,
-      isDropTarget: takesDrop,
+      dropLabel: switch ((isDropHovered, status.isConnected)) {
+        (false, _) => null,
+        (true, true) => l10n.dropToSendTo(device.name),
+        (true, false) => l10n.dropDeviceOffline(device.name),
+      },
+      dropRefused: !status.isConnected,
       tooltip: tooltip ?? dotInWords,
       onTap: onTap,
       trailing: Row(
@@ -92,22 +91,14 @@ class SidebarDeviceRow extends StatelessWidget {
         children: [
           if (isPinned) ...[const PinMarker(), Spacing.h8],
           if (badge > 0) ...[SidebarBadge(badge), Spacing.h8],
-          if (status.battery case final battery? when !refusesDrop) ...[
+          if (status.battery case final battery?) ...[
             BatteryBadge(battery: battery),
             Spacing.h8,
           ],
-          if (refusesDrop)
-            Text(
-              l10n.dropTileOffline,
-              style: context.fluffyTheme.typography.caption1.copyWith(
-                color: palette.mutedText,
-              ),
-            ),
-          if (!refusesDrop)
-            DecoratedBox(
-              decoration: BoxDecoration(color: dotColor, shape: .circle),
-              child: SizedBox.square(dimension: Spacing.d8),
-            ),
+          DecoratedBox(
+            decoration: BoxDecoration(color: dotColor, shape: .circle),
+            child: SizedBox.square(dimension: Spacing.d8),
+          ),
         ],
       ),
     );

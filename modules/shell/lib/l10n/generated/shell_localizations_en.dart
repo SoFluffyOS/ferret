@@ -749,6 +749,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String dropToSendTo(String name) {
+    return 'Drop to send to $name';
+  }
+
+  @override
   String dropDeviceOffline(String name) {
     return '$name is offline';
   }
