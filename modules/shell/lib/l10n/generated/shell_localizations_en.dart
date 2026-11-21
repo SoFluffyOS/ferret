@@ -2273,5 +2273,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'Ferret isn\'t allowed on this Wi-Fi, and Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.';
 
   @override
+  String get doctorLocalNetworkMac =>
+      'macOS is blocking Ferret on the local network, so it can\'t find or reach your devices. Open System Settings, then Privacy & Security, then Local Network, and turn on Ferret.';
+
+  @override
   String get doctorFixAllowLocalNetwork => 'Allow on this Wi-Fi';
 }

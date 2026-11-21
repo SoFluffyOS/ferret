@@ -82,7 +82,8 @@ class MulticastDiscovery implements ActiveDiscovery {
 
     final packet = encodeAnnounce(self.deepCopy()..reply = false);
     var sent = 0;
-    for (final address in await LocalInterfaces.addresses()) {
+    final addresses = await LocalInterfaces.addresses();
+    for (final address in addresses) {
       if (!LocalInterfaces.sendMulticastFrom(socket, address)) {
         continue;
       }
@@ -92,11 +93,35 @@ class MulticastDiscovery implements ActiveDiscovery {
       }
     }
 
-    if (_send(socket, packet, _everyone)) {
-      sent++;
+    for (final target in broadcastTargets(addresses)) {
+      if (_send(socket, packet, target)) {
+        sent++;
+      }
     }
 
     _blocked = sent == 0;
+  }
+
+  /// Where an announce is broadcast besides the multicast group: each
+  /// network's own broadcast address, which reaches routers that drop
+  /// multicast and goes out of every interface. macOS refuses the
+  /// everyone address (255.255.255.255) with "no route to host" when it
+  /// has no default route for it, so that one is only the last resort.
+  static List<InternetAddress> broadcastTargets(
+    List<InternetAddress> addresses,
+  ) {
+    final broadcasts = [
+      for (final address in addresses)
+        ?LocalInterfaces.subnetBroadcast(address),
+    ];
+    final targets = {
+      for (final target in broadcasts) target.address: target,
+    };
+    if (targets.isEmpty) {
+      return [_everyone];
+    }
+
+    return [...targets.values];
   }
 
   /// A failed send returns 0 and reports the reason on the socket's stream.

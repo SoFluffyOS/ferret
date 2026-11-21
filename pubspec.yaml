@@ -31,6 +31,7 @@ workspace:
   - packages/feature_kit
   - packages/ferret_actions
   - packages/ferret_battery
+  - packages/ferret_bonjour
   - packages/ferret_calls
   - packages/ferret_camera
   - packages/ferret_clipboard

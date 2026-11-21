@@ -20,6 +20,8 @@ dependencies:
     path: ../../packages/feature_kit
   ferret_battery:
     path: ../../packages/ferret_battery
+  ferret_bonjour:
+    path: ../../packages/ferret_bonjour
   ferret_menubar:
     path: ../../packages/ferret_menubar
   ferret_system:

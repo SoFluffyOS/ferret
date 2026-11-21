@@ -28,6 +28,9 @@ enum DoctorFix {
   /// Opens Ferret's page in Android's settings, where a local network
   /// permission turned down for good can still be allowed.
   openAppSettings,
+
+  /// Opens Privacy & Security, Local Network in macOS System Settings.
+  openLocalNetworkSettings,
 }
 
 /// One line of Fix connection: what was checked and what it found.
@@ -49,7 +52,8 @@ class DoctorCheck {
 
 enum DoctorCheckKind {
   /// Android 17 keeps Ferret off the local network until it is allowed.
-  /// [DoctorCheck.detail] is the [LocalNetworkAccess] name.
+  /// [DoctorCheck.detail] is the [LocalNetworkAccess] name, or
+  /// [ConnectionDoctor.macOSBlocked] when macOS refuses Ferret's packets.
   localNetwork,
 
   network,
@@ -112,7 +116,12 @@ class ConnectionDoctor {
     DateTime Function()? clock,
     Future<LocalNetworkAccess> Function()? localNetwork,
     bool? hearsOthers,
+    bool? isMacOS,
+    bool Function()? isDiscoveryBlocked,
   }) : _isWindows = isWindows ?? Platform.isWindows,
+       _isMacOS = isMacOS ?? Platform.isMacOS,
+       _isDiscoveryBlocked =
+           isDiscoveryBlocked ?? (() => _engine.isDiscoveryBlocked),
        _hearsOthers = hearsOthers ?? defaultTargetPlatform != .iOS,
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
@@ -133,6 +142,16 @@ class ConnectionDoctor {
   /// it happened, so it is named as a likely cause whenever the other
   /// device can't be found or doesn't answer.
   final bool _isWindows;
+
+  /// macOS asks once about the local network and then silently drops
+  /// everything Ferret sends while the switch is off. Discovery notices
+  /// when nothing got out.
+  final bool _isMacOS;
+  final bool Function() _isDiscoveryBlocked;
+
+  /// [DoctorCheck.detail] of the local network line when macOS blocks
+  /// Ferret.
+  static const macOSBlocked = 'macos';
 
   /// ufw and firewalld block everything they weren't told about, and on
   /// Linux nothing ever asks. Named only when one of them is on.
@@ -211,6 +230,18 @@ class ConnectionDoctor {
         ),
       ];
       return;
+    }
+
+    if (_isMacOS && _isDiscoveryBlocked()) {
+      checks.add(
+        const DoctorCheck(
+          kind: .localNetwork,
+          status: .problem,
+          detail: macOSBlocked,
+          fixes: [DoctorFix.openLocalNetworkSettings],
+        ),
+      );
+      yield [...checks];
     }
 
     final firewall = await _firewallHint();

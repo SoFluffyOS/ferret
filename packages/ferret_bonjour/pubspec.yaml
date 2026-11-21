@@ -1,0 +1,27 @@
+name: ferret_bonjour
+description: Finds and offers Ferret devices with the system's own Bonjour (NSNetService/NWBrowser on Apple, NsdManager on Android), so an iPhone can be found without Apple's multicast entitlement.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  bonsoir: 7.1.5
+  core:
+    path: ../core
+  flutter:
+    sdk: flutter
+  protocol:
+    path: ../protocol
+  transport:
+    path: ../transport
+
+dev_dependencies:
+  engine:
+    path: ../engine
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0

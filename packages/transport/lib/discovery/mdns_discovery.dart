@@ -150,24 +150,40 @@ class MdnsDiscovery implements ActiveDiscovery {
     instance: self.deviceId,
     host: 'ferret-${self.deviceId}',
     port: self.port,
-    txt: {
-      'id': self.deviceId,
-      'v': '${self.protocolVersion}',
-      'p': '${self.platform.value}',
-      'f': '${self.formFactor.value}',
-      'n': _fit(self.name),
-    },
+    txt: txtFor(self),
   );
+
+  /// The TXT entries that say what [self]'s announce says, and nothing
+  /// more. The system's Bonjour offers the same ones.
+  static Map<String, String> txtFor(Announce self) => {
+    'id': self.deviceId,
+    'v': '${self.protocolVersion}',
+    'p': '${self.platform.value}',
+    'f': '${self.formFactor.value}',
+    'n': _fit(self.name),
+  };
 
   /// What [instance] says about its device, or null when it isn't a Ferret
   /// device or contradicts itself.
-  static Announce? announceFrom(MdnsInstance instance) {
-    final txt = instance.txt;
+  static Announce? announceFrom(MdnsInstance instance) => announceFromRecord(
+    name: instance.name,
+    txt: instance.txt,
+    port: instance.port,
+  );
+
+  /// What a DNS-SD record with this instance [name], [txt] and [port] says
+  /// about its device, or null when it isn't a Ferret device or contradicts
+  /// itself: its id has to be its instance name.
+  static Announce? announceFromRecord({
+    required String name,
+    required Map<String, String> txt,
+    required int port,
+  }) {
     final deviceId = txt['id'];
     if (deviceId == null ||
         deviceId.isEmpty ||
-        deviceId.toLowerCase() != instance.name.toLowerCase() ||
-        instance.port <= 0) {
+        deviceId.toLowerCase() != name.toLowerCase() ||
+        port <= 0) {
       return null;
     }
 
@@ -177,7 +193,7 @@ class MdnsDiscovery implements ActiveDiscovery {
       name: txt['n'] ?? '',
       platform: Platform.valueOf(int.tryParse(txt['p'] ?? '') ?? 0),
       formFactor: FormFactor.valueOf(int.tryParse(txt['f'] ?? '') ?? 0),
-      port: instance.port,
+      port: port,
     );
   }
 

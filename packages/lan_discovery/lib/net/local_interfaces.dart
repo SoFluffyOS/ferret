@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 /// The addresses this device has on its local networks.
 abstract final class LocalInterfaces {
@@ -18,6 +19,20 @@ abstract final class LocalInterfaces {
     } on Object {
       return const [];
     }
+  }
+
+  /// The broadcast address of [local]'s network, taken as a /24: Dart
+  /// doesn't give an interface's netmask, and home networks are nearly
+  /// always /24. Null for anything but IPv4.
+  static InternetAddress? subnetBroadcast(InternetAddress local) {
+    if (local.type != InternetAddressType.IPv4) {
+      return null;
+    }
+
+    final bytes = local.rawAddress;
+    return InternetAddress.fromRawAddress(
+      Uint8List.fromList([bytes[0], bytes[1], bytes[2], 255]),
+    );
   }
 
   /// Joins [group] on every interface of [socket], so packets arrive from

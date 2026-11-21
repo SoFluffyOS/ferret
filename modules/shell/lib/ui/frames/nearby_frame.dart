@@ -126,9 +126,9 @@ class _Nearby extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // An iPhone never finds anyone without Apple's multicast entitlement,
-    // so "Looking…" or "allow Local Network" would mislead: it pairs by
-    // scanning the computer's code.
+    // An iPhone finds others only through Bonjour, and only while Ferret
+    // is open on both, so "Looking…" or "allow Local Network" would
+    // mislead on an empty list: it offers scanning the computer's code.
     final isIphone = defaultTargetPlatform == .iOS;
     final onPairWithCode = this.onPairWithCode;
     if (peers.isEmpty && rows.isEmpty && isIphone && onPairWithCode == null) {

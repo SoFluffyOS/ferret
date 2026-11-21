@@ -14,6 +14,7 @@ import 'package:shell/ui/pages/device_vpn_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Fix connection: explains why a paired device isn't connected, with fixes
 /// as buttons. With no device, it checks this device's own network, for
@@ -262,6 +263,13 @@ class _DoctorPageState extends State<DoctorPage> {
         }
       case .openAppSettings:
         await FerretSystem().openAppSettings();
+      case .openLocalNetworkSettings:
+        await launchUrl(
+          Uri.parse(
+            'x-apple.systempreferences:com.apple.preference.security'
+            '?Privacy_LocalNetwork',
+          ),
+        );
       case .reachOverVpn:
         if (widget.deviceId case final deviceId?) {
           await Navigator.of(context).push(
@@ -308,6 +316,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .reachOverVpn => l10n.doctorFixReachOverVpn,
     .allowLocalNetwork => l10n.doctorFixAllowLocalNetwork,
     .openAppSettings => l10n.localNetworkOpenSettings,
+    .openLocalNetworkSettings => l10n.nearbyOpenSettings,
   };
 
   /// Ferret never heard where this device is, so there was nothing to
@@ -378,6 +387,8 @@ class _DoctorPageState extends State<DoctorPage> {
     return switch ((check.kind, check.status)) {
       (.localNetwork, _) when check.detail == LocalNetworkAccess.blocked.name =>
         l10n.doctorLocalNetworkBlocked,
+      (.localNetwork, _) when check.detail == ConnectionDoctor.macOSBlocked =>
+        l10n.doctorLocalNetworkMac,
       (.localNetwork, _) => l10n.doctorLocalNetwork,
       (.network, .problem) => l10n.doctorNetworkProblem(here),
       (.network, _) => l10n.doctorNetworkOk(here),

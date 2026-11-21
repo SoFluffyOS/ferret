@@ -132,6 +132,36 @@ void main() {
     expect(checks.where((check) => check.kind == .localNetwork), isEmpty);
   });
 
+  test('on a Mac that drops everything Ferret sends, Fix connection says '
+      'macOS blocks it and opens Local Network', () async {
+    final checks = await ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      isMacOS: true,
+      isDiscoveryBlocked: () => true,
+    ).diagnose(null).last;
+
+    final line = checks.first;
+    expect(line.kind, DoctorCheckKind.localNetwork);
+    expect(line.status, DoctorStatus.problem);
+    expect(line.detail, ConnectionDoctor.macOSBlocked);
+    expect(line.fixes, [DoctorFix.openLocalNetworkSettings]);
+    expect(checks.where((check) => check.kind == .network), isNotEmpty);
+  });
+
+  test('on a Mac whose discovery gets out, no local network line', () async {
+    final checks = await ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      isMacOS: true,
+      isDiscoveryBlocked: () => false,
+    ).diagnose(null).last;
+
+    expect(checks.where((check) => check.kind == .localNetwork), isEmpty);
+  });
+
   test('on Windows with the installer\'s rules in place, the firewall line '
       'says so and offers nothing', () async {
     final checks = await diagnose(null, isWindows: true, rulesInstalled: true);

@@ -1827,6 +1827,10 @@
   "@doctorLocalNetworkBlocked": {
     "description": "Fix connection line: the local network permission was turned down for good."
   },
+  "doctorLocalNetworkMac": "macOS is blocking Ferret on the local network, so it can't find or reach your devices. Open System Settings, then Privacy & Security, then Local Network, and turn on Ferret.",
+  "@doctorLocalNetworkMac": {
+    "description": "Fix connection line on a Mac: nothing Ferret sends gets out, which is what the Local Network switch being off looks like."
+  },
   "doctorFixAllowLocalNetwork": "Allow on this Wi-Fi",
   "@doctorFixAllowLocalNetwork": {
     "description": "Fix connection button: shows Android's local network question."

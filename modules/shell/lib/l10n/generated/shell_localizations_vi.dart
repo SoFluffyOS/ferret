@@ -2265,5 +2265,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Ferret không được phép dùng Wi-Fi này, và Android sẽ không hỏi lại. Trong Cài đặt, mở Quyền, rồi Thiết bị ở gần, và chọn Cho phép.';
 
   @override
+  String get doctorLocalNetworkMac =>
+      'macOS đang chặn Ferret trên mạng cục bộ, nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Mở Cài đặt hệ thống, rồi Quyền riêng tư & Bảo mật, rồi Mạng cục bộ, và bật Ferret.';
+
+  @override
   String get doctorFixAllowLocalNetwork => 'Cho phép trên Wi-Fi này';
 }

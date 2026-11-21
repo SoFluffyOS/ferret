@@ -4627,6 +4627,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get doctorLocalNetworkBlocked =>
       pseudo(super.doctorLocalNetworkBlocked);
   @override
+  String get doctorLocalNetworkMac => pseudo(super.doctorLocalNetworkMac);
+  @override
   String get doctorFixAllowLocalNetwork =>
       pseudo(super.doctorFixAllowLocalNetwork);
   @override

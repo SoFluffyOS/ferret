@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_battery/ferret_battery.dart';
+import 'package:ferret_bonjour/ferret_bonjour.dart';
 import 'package:ferret_menubar/ferret_menubar.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
@@ -68,6 +69,7 @@ Future<void> runFerret({
     settings: settings,
     device: device,
     features: [for (final feature in features) feature.feature],
+    discovery: FerretDiscovery.forPlatform(),
     sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
   );
   sharedComputer.follow(engine, computerName: described.name);

@@ -3026,6 +3026,12 @@ abstract class ShellLocalizations {
   /// **'Ferret isn\'t allowed on this Wi-Fi, and Android won\'t ask again. In Settings, open Permissions, then Nearby devices, and pick Allow.'**
   String get doctorLocalNetworkBlocked;
 
+  /// Fix connection line on a Mac: nothing Ferret sends gets out, which is what the Local Network switch being off looks like.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS is blocking Ferret on the local network, so it can\'t find or reach your devices. Open System Settings, then Privacy & Security, then Local Network, and turn on Ferret.'**
+  String get doctorLocalNetworkMac;
+
   /// Fix connection button: shows Android's local network question.
   ///
   /// In en, this message translates to:
