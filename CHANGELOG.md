@@ -17,6 +17,8 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
 - **Says who needs an update** instead of staying offline.
 - **Your iPhone under Nearby**: with Ferret open, an iPhone now shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
+- **iPhone asks about the local network when it makes sense**: a short card says why before iOS asks, not at first launch. Said no? Nearby and Fix connection take you to Settings.
+- **What a device can use** lists only what does something between the two. No calls or texts rows for an iPhone.
 
 #### 📋 Clipboard
 - **Clipboard sync**: copy on one device, paste on another. Text, links and images. Password-manager items stay put.
@@ -74,7 +76,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 #### 💻 At home on every platform
 - 🍏 **Mac**: a menubar app with a popover and a full window, **⌃⌥Space** from any app, a real menu bar with keys, and start at login.
 - 🤖 **Android**: a quiet background service and a Quick Settings tile. **Stay connected** says when Android limits Ferret and how to fix it. Swipe Ferret's notice away and it stays away. Ready for Android 17's local network permission.
-- 🍎 **iPhone**: the share sheet, Shortcuts, and a tip for the Allow Paste question. A Windows or Linux computer shows an iPhone's notifications over Bluetooth.
+- 🍎 **iPhone**: the share sheet, Shortcuts, a tip for the Allow Paste question, and files from LocalSend while Ferret is open. A Windows or Linux computer shows an iPhone's notifications over Bluetooth.
 - 🪟 **Windows**: an installer just for you, no admin, a tray icon, and one box for the firewall.
 - 🐧 **Linux**: Flatpak, AppImage and `.deb`, a tray icon, and the one line your firewall needs.
 - 👪 **A computer the family shares**: one Ferret per account, each under its own name.
@@ -97,4 +99,4 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Privacy** and **Security** pages: every byte that leaves a device, and what Ferret protects you from.
 
 #### ❤️ Sponsor
-- Ferret is free and always will be. **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page. Never a popup, never a reminder.
+- Ferret is free and always will be. **Settings → About → Sponsor Ferret** opens my GitHub Sponsors page on Mac, Windows, Linux and Android. Never a popup, never a reminder.

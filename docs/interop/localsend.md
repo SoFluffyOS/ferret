@@ -107,6 +107,6 @@ In **Settings → Other apps**, under **LocalSend**, turn off **Work with LocalS
 - **Windows and Linux.** A firewall may ask to allow Ferret, or block it silently. Allow it on **private** networks.
 - **macOS.** Allow **Local Network** access for Ferret when macOS asks.
 - **Android.** Receiving works while Ferret runs. Battery savers can stop it in the background.
-- **iPhone.** Ferret on iOS can only receive while it's open on screen.
+- **iPhone.** Ferret on iOS receives while it's open on screen, and stops listening when you switch away. LocalSend finds it by asking each address on the Wi-Fi, so give it a few seconds.
 
 More about files between your own devices: [Drop](../features/drop.md).

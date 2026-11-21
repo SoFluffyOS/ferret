@@ -23,7 +23,15 @@ While Ferret is open on your iPhone, it shows up under **Nearby** on your comput
 
 Ferret finds it with Bonjour, the same way your Mac finds AirPlay speakers and printers. No special permission from Apple needed.
 
-The first time, iOS asks whether Ferret may find and connect to devices on your local network. Tap **Allow**. Said no? Turn on **Local Network** for Ferret in **Settings → Privacy & Security**.
+## 🔑 The Local Network question
+
+iOS asks once whether Ferret may find and connect to devices on your local network. Ferret doesn't spring that on you at launch.
+
+It waits until you get somewhere that needs it: Home before anything is paired, **Add a device**, **Fix connection**, or scanning a code. First it shows a short card: **Ferret looks for your devices on this Wi-Fi. iOS asks once.** Tap **Continue**, then **Allow** when iOS asks.
+
+Once a device is paired, Ferret looks from launch. Your paired devices reconnect by themselves.
+
+Said no? **Nearby** and **Fix connection** say **Local Network is off for Ferret**, with an **Open Settings** button. Turn on **Local Network** there and come back. That's it.
 
 ## 📷 Or scan the code
 
@@ -35,7 +43,7 @@ Not showing up? Scan instead:
 
 The iPhone's **Camera** app works too: point it at the code and tap **Open in Ferret**.
 
-Said no to Local Network? The pairing says it couldn't reach the computer, with an **Open Settings** button: turn on **Local Network** for Ferret.
+Haven't tapped **Continue** yet? Scanning shows the same short card first, so iOS asks with you knowing why.
 
 More about codes and the other ways in [Pair your devices](pairing.md).
 
@@ -58,6 +66,14 @@ iOS stops apps soon after you leave them. So Ferret on an iPhone syncs **while i
 | Your iPhone's screen on the Mac | Use AirPlay: see [Mirroring from an iPhone](../features/mirroring-from-iphone.md) |
 
 Ferret feels like an iPhone app where it matters: swipe from the left edge to go back.
+
+## 📥 Files from LocalSend
+
+A friend with [LocalSend](../interop/localsend.md) can send to your iPhone too. Tap **Allow once** next to **Receive a file from a guest**, or turn on **Always receive from LocalSend** in **Settings → Other apps**.
+
+It works **while Ferret is open**. Keep it on screen while they send. Switch away and Ferret stops listening cleanly, then listens again the moment you're back.
+
+Your friend's LocalSend finds the iPhone by asking each address on the Wi-Fi. That takes a few seconds longer than usual. Not showing up? Tap refresh in LocalSend.
 
 ## 🍎 With a Mac
 
