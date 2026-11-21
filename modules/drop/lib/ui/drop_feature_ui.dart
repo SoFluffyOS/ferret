@@ -644,7 +644,12 @@ class DropFeatureUi extends FeatureUi {
       return;
     }
 
-    await _sendTo(context, target, paths: paths);
+    await _sendTo(
+      context,
+      target,
+      paths: paths,
+      temporary: viewModel.picksCopies,
+    );
   }
 
   /// Sends [paths] or [text] to the one connected device, or asks which.

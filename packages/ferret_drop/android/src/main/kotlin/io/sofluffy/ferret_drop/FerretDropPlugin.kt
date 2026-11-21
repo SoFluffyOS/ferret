@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +18,17 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Share target, MediaStore saving, free space, and opening received files on Android. */
+/** Share target, file picking, MediaStore saving, free space, and opening received files on Android. */
 class FerretDropPlugin :
     FlutterPlugin,
+    ActivityAware,
     FerretDropHostApi,
     ShareInbox.Listener {
     private var context: Context? = null
     private var flutterApi: FerretDropFlutterApi? = null
     private var freeSpace: FreeSpaceChannel? = null
+    private var picker: FilePickChannel? = null
+    private var activityBinding: ActivityPluginBinding? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -31,6 +36,7 @@ class FerretDropPlugin :
         flutterApi = FerretDropFlutterApi(binding.binaryMessenger)
         FerretDropHostApi.setUp(binding.binaryMessenger, this)
         freeSpace = FreeSpaceChannel(binding.binaryMessenger, binding.applicationContext)
+        picker = FilePickChannel(binding.binaryMessenger, binding.applicationContext)
         ShareInbox.setListener(this)
     }
 
@@ -39,9 +45,28 @@ class FerretDropPlugin :
         FerretDropHostApi.setUp(binding.binaryMessenger, null)
         freeSpace?.dispose()
         freeSpace = null
+        picker?.dispose()
+        picker = null
         scope.cancel()
         flutterApi = null
         context = null
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        val picker = picker ?: return
+        activityBinding = binding
+        picker.attach(binding.activity)
+        binding.addActivityResultListener(picker)
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() = onDetachedFromActivity()
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) = onAttachedToActivity(binding)
+
+    override fun onDetachedFromActivity() {
+        picker?.let { activityBinding?.removeActivityResultListener(it) }
+        picker?.attach(null)
+        activityBinding = null
     }
 
     override fun onShared(items: SharedItems) {

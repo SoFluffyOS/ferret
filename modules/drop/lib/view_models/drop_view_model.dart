@@ -20,12 +20,16 @@ class DropViewModel extends ChangeNotifier {
     required this.feature,
     FerretDrop? plugin,
     Future<List<String>> Function()? pickFiles,
+    bool? picksCopies,
     Future<String?> Function()? pickFolder,
     Future<String> Function()? describeFolder,
     DateTime Function()? clock,
   }) : _plugin = plugin ?? FerretDrop(),
        _clock = clock ?? DateTime.now,
        _pickFiles = pickFiles ?? _openFiles,
+       picksCopies =
+           picksCopies ??
+           (pickFiles == null && defaultTargetPlatform == .android),
        _pickFolder = pickFolder ?? getDirectoryPath,
        _describeFolder = describeFolder {
     _transfers = feature.transfers;
@@ -49,6 +53,10 @@ class DropViewModel extends ChangeNotifier {
   final DropFeature feature;
   final FerretDrop _plugin;
   final Future<List<String>> Function() _pickFiles;
+
+  /// Whether picked files are copies made for sending (Android's picker),
+  /// which go once they are sent.
+  final bool picksCopies;
   final Future<String?> Function() _pickFolder;
   final Future<String> Function()? _describeFolder;
   final DateTime Function() _clock;
@@ -259,7 +267,7 @@ class DropViewModel extends ChangeNotifier {
       return null;
     }
 
-    return feature.sendFiles(deviceId, paths);
+    return feature.sendFiles(deviceId, paths, temporary: picksCopies);
   }
 
   /// Asks for files to send. Empty when nothing was picked.
@@ -612,6 +620,10 @@ class DropViewModel extends ChangeNotifier {
   ];
 
   static Future<List<String>> _openFiles() async {
+    if (defaultTargetPlatform == .android) {
+      return FilePicks.open();
+    }
+
     final files = await openFiles();
     return [for (final file in files) file.path];
   }

@@ -7,14 +7,20 @@ import android.util.Log
 import java.io.File
 import java.io.IOException
 
-/** Copies shared content URIs into the app cache with streams. */
-internal class SharedFileCopier(private val context: Context) {
+/**
+ * Copies shared or picked content URIs into the app cache with streams, so
+ * no file is ever held in memory whole.
+ */
+internal class SharedFileCopier(
+    private val context: Context,
+    private val subfolder: String = "shared",
+) {
     fun copyAll(uris: List<Uri>): List<String> {
         if (uris.isEmpty()) {
             return emptyList()
         }
 
-        val folder = File(context.cacheDir, "ferret_drop/shared/${System.currentTimeMillis()}")
+        val folder = File(context.cacheDir, "ferret_drop/$subfolder/${System.currentTimeMillis()}")
         if (!folder.mkdirs() && !folder.isDirectory) {
             Log.w(TAG, "Could not create the share cache folder")
             return emptyList()

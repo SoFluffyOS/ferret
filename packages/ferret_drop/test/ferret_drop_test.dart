@@ -51,6 +51,38 @@ void main() {
     expect(await drop.reveal('/missing'), isFalse);
     expect(await drop.canSaveToDownloads(), isFalse);
   });
+
+  group('FilePicks', () {
+    const channel = MethodChannel('io.sofluffy.ferret_drop/pick');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    tearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+    test('hands back the paths of the copies', () async {
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        return ['/cache/picked/1/a.jpg', '/cache/picked/1/b.jpg'];
+      });
+
+      expect(await FilePicks.open(), [
+        '/cache/picked/1/a.jpg',
+        '/cache/picked/1/b.jpg',
+      ]);
+      expect(calls, ['pickFiles']);
+    });
+
+    test('a picker that fails or is missing picks nothing', () async {
+      messenger.setMockMethodCallHandler(
+        channel,
+        (call) async => throw PlatformException(code: 'busy'),
+      );
+      expect(await FilePicks.open(), isEmpty);
+
+      messenger.setMockMethodCallHandler(channel, null);
+      expect(await FilePicks.open(), isEmpty);
+    });
+  });
 }
 
 class _FakeApi implements FerretDropHostApi {
