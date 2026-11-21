@@ -72,7 +72,7 @@ Checked against the code, line by line:
 
 | What | Where it goes | When |
 |---|---|---|
-| Your device's name, kind and device id, and the port Ferret listens on | Your Wi-Fi only (mDNS and a broadcast), so your devices find each other | While Ferret runs and isn't paused |
+| Your device's name, kind and device id, and the port Ferret listens on | Your Wi-Fi only (Bonjour/mDNS and a broadcast), so your devices find each other. On a Mac, an iPhone and Android the system's own Bonjour answers for Ferret, under the local host name it already uses for its other services, such as AirPlay | While Ferret runs and isn't paused |
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
 | Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
 | A computer's network card (MAC) addresses and network, so your devices can wake it | Only to devices you paired, end-to-end encrypted. Turn it off with **Let my devices wake this computer** | When a device connects, and when the cards change |

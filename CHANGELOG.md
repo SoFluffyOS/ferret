@@ -16,6 +16,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
 - **Says who needs an update** instead of staying offline.
+- **Your iPhone under Nearby**: with Ferret open, an iPhone now shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
 
 #### 📋 Clipboard
 - **Clipboard sync**: copy on one device, paste on another. Text, links and images. Password-manager items stay put.

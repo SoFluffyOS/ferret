@@ -73,7 +73,7 @@ Two phones, a tablet and three computers? The list stays easy to read.
 1. Ferret is open on the other device.
 2. Both are on the same Wi-Fi. Guest networks and some office networks keep devices apart.
 
-An iPhone never shows up here: it can't look for devices by itself. Pair it with a QR code. See [Ferret on iPhone](iphone.md).
+An iPhone shows up here only while Ferret is open on it. Not there? Pair it with a QR code. See [Ferret on iPhone](iphone.md).
 
 Not sure about your network? **Check my network** looks at this device's Wi-Fi and VPN and tells you what it found.
 

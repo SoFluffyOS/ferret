@@ -155,7 +155,7 @@ Then follow the guide for your device:
 - [Windows](docs/getting-started/windows.md)
 - [Linux](docs/getting-started/linux.md)
 
-Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. An iPhone pairs by scanning your computer's QR code, with Ferret or the Camera app. See [Pair your devices](docs/getting-started/pairing.md).
+Open Ferret on two devices on the same Wi-Fi, tap **Pair**, and check that both screens show the same six digits. That's it. An iPhone shows up too while Ferret is open on it, or pairs by scanning your computer's QR code. See [Pair your devices](docs/getting-started/pairing.md).
 
 ## 🔒 Privacy
 

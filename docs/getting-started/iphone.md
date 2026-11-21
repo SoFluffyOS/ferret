@@ -6,7 +6,7 @@ order: 5
 > **TL;DR**
 >
 > 1. Install Ferret on your iPhone and on your computer, and open both.
-> 2. On the iPhone, tap **Scan the code**. On the computer, click **Pair with a QR code**. Point the camera at it.
+> 2. Tap **Pair** next to the iPhone under **Nearby** on your computer. Not there? Tap **Scan the code** on the iPhone and point it at the computer's QR code.
 > 3. Keep Ferret open on the iPhone while you use it with your computer.
 
 An iPhone plays by Apple's rules. Ferret follows them, and tells you where they bite instead of failing in silence.
@@ -17,11 +17,17 @@ An iPhone plays by Apple's rules. Ferret follows them, and tells you where they 
   <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected Mac with Send files, Send clipboard and Ring" width="390" height="844" loading="lazy">
 </figure>
 
-## 📷 Pair by scanning
+## 👀 Find it nearby
 
-An iPhone can't look for devices on the network by itself: Apple keeps that for apps it hands a special permission. So your iPhone never shows up under **Nearby** on your computer, and the computer never shows up on the iPhone.
+While Ferret is open on your iPhone, it shows up under **Nearby** on your computer, and your computer shows up on the iPhone. Tap **Pair** and check that both screens show the same six digits.
 
-Scan instead:
+Ferret finds it with Bonjour, the same way your Mac finds AirPlay speakers and printers. No special permission from Apple needed.
+
+The first time, iOS asks whether Ferret may find and connect to devices on your local network. Tap **Allow**. Said no? Turn on **Local Network** for Ferret in **Settings → Privacy & Security**.
+
+## 📷 Or scan the code
+
+Not showing up? Scan instead:
 
 1. On your computer, open Ferret and click **+**, then **Pair with a QR code**.
 2. On the iPhone, open Ferret and tap **Scan the code**. The camera opens straight away.
@@ -29,7 +35,7 @@ Scan instead:
 
 The iPhone's **Camera** app works too: point it at the code and tap **Open in Ferret**.
 
-The first time, iOS asks whether Ferret may find and connect to devices on your local network. Tap **Allow**. Said no? The pairing says it couldn't reach the computer, with an **Open Settings** button: turn on **Local Network** for Ferret.
+Said no to Local Network? The pairing says it couldn't reach the computer, with an **Open Settings** button: turn on **Local Network** for Ferret.
 
 More about codes and the other ways in [Pair your devices](pairing.md).
 
