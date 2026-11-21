@@ -150,6 +150,7 @@ class FerretEngine implements FeatureHost {
     beforeJoin: _inheritAccess,
   );
   final StreamController<DeviceJoined> _joins = .broadcast();
+  final PairingCooldown _pairingCooldown = PairingCooldown();
   final Duration _justPaired;
   final Duration _groupRequestLifetime;
   final Map<String, GroupRequest> _groupRequests = {};
@@ -1523,7 +1524,7 @@ class FerretEngine implements FeatureHost {
     final accepted = await _whilePairing(
       exchange,
       () => switch (request.proof.isEmpty) {
-        true => _answerComparison(exchange, envelope, request),
+        true => _answerComparison(exchange, envelope, request, host),
         false => _answerProof(exchange, envelope, request),
       },
     );
@@ -1591,12 +1592,18 @@ class FerretEngine implements FeatureHost {
   /// Answers a request to compare codes: holds the requester's commitment,
   /// sends this side's nonce, checks the revealed one, then asks the user.
   /// True only when the user here agreed and the requester's did too.
+  ///
+  /// A device turned down, or left without an answer, waits before it may
+  /// ask again: until then its requests are turned down without a prompt.
   Future<bool> _answerComparison(
     PairingExchange exchange,
     Envelope envelope,
     PairingRequest request,
+    String host,
   ) async {
-    if (request.commitment.isEmpty) {
+    final deviceId = request.device.id;
+    if (request.commitment.isEmpty ||
+        _pairingCooldown.holds(host: host, deviceId: deviceId)) {
       return _respond(exchange, envelope, .PAIRING_RESULT_REJECTED);
     }
 
@@ -1653,6 +1660,9 @@ class FerretEngine implements FeatureHost {
     _pairingPrompts.add(prompt);
     final answer = await prompt.answer;
     timeout.cancel();
+    if (answer == .rejected || answer == .expired) {
+      _pairingCooldown.strike(host: host, deviceId: deviceId);
+    }
 
     final result = switch (answer) {
       .accepted => PairingResult.PAIRING_RESULT_ACCEPTED,

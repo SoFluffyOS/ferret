@@ -234,6 +234,46 @@ void main() {
     expect(phone.trustStore.devices, isEmpty);
   });
 
+  test('after a no, the same device waits before it can ask again, but a '
+      'QR code still pairs', () async {
+    final laptop = await startEngine('Laptop');
+    final phone = await startEngine('Phone');
+    unawaited(laptop.pairingPrompts.first.then((prompt) => prompt.reject()));
+    await phone.pairWithAddress(
+      '127.0.0.1',
+      laptop.port,
+      onCode: (_) => true,
+    );
+
+    var prompted = false;
+    final prompts = laptop.pairingPrompts.listen((prompt) {
+      prompted = true;
+      prompt.accept();
+    });
+    var codeShown = false;
+    final again = await phone.pairWithAddress(
+      '127.0.0.1',
+      laptop.port,
+      onCode: (_) {
+        codeShown = true;
+        return true;
+      },
+    );
+    await prompts.cancel();
+
+    expect((again as PairingFailed).reason, PairingFailure.rejected);
+    expect(prompted, isFalse);
+    expect(codeShown, isFalse);
+
+    final offer = PairingCodes.parseOffer(
+      (await laptop.createPairingOffer()).qrText,
+    );
+    offer
+      ?..hosts.clear()
+      ..hosts.add('127.0.0.1');
+    expect(await phone.pairWithOffer(offer ?? PairingOffer()), isA<Paired>());
+  });
+
   test('the asking side saying no trusts no one, even after a yes', () async {
     final laptop = await startEngine('Laptop');
     final phone = await startEngine('Phone');
