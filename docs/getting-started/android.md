@@ -29,6 +29,8 @@ Then open Ferret on the phone and on your computer, on the same Wi-Fi. Each show
 
 That's it. Ferret now keeps running when you close the app.
 
+That's why the ••• menu and **Settings → Advanced** say **Close Ferret**, not Quit: it closes the screen, and your devices stay connected. Want it fully off? **Pause** it from the notification, or stop it in **Settings → Apps → Ferret → Force stop**.
+
 ## 🔔 The notification
 
 Android requires a notification while an app runs in the background. Ferret keeps it useful and silent:

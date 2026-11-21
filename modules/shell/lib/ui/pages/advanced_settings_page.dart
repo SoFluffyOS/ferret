@@ -10,7 +10,8 @@ import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// What few people need: this device's ID and address, whether pairings
-/// are shared, the low battery notice, a network check, and quitting.
+/// are shared, the low battery notice, a network check, and quitting
+/// (closing the screen on Android).
 class AdvancedSettingsPage extends StatelessWidget {
   const AdvancedSettingsPage({super.key});
 
@@ -18,6 +19,8 @@ class AdvancedSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final engine = ShellScope.of(context).featureContext.engine;
     final l10n = context.shellL10n;
+    // Android's service keeps Ferret running after the screen closes.
+    final closesOnly = defaultTargetPlatform == .android;
 
     return FerretPage(
       title: l10n.settingsAdvanced,
@@ -49,7 +52,8 @@ class AdvancedSettingsPage extends StatelessWidget {
         if (defaultTargetPlatform != .iOS) ...[
           Spacing.v24,
           GhostButton(
-            label: l10n.settingsQuit,
+            label: closesOnly ? l10n.settingsClose : l10n.settingsQuit,
+            tooltip: closesOnly ? l10n.settingsCloseTip : null,
             onPressed: SystemNavigator.pop,
           ),
         ],

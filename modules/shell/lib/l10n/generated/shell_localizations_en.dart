@@ -203,6 +203,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsQuit => 'Quit Ferret';
 
   @override
+  String get settingsClose => 'Close Ferret';
+
+  @override
+  String get settingsCloseTip =>
+      'Closes this screen. Ferret keeps running in the background, so your devices stay connected.';
+
+  @override
   String get back => 'Back';
 
   @override

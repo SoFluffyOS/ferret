@@ -84,8 +84,15 @@ class HomeMenu extends StatelessWidget {
         ),
         if (canQuit)
           MenuEntry(
-            label: l10n.settingsQuit,
-            icon: LucideIcons.power,
+            label: switch (defaultTargetPlatform) {
+              // The service keeps Ferret running after the screen closes.
+              .android => l10n.settingsClose,
+              _ => l10n.settingsQuit,
+            },
+            icon: switch (defaultTargetPlatform) {
+              .android => LucideIcons.x,
+              _ => LucideIcons.power,
+            },
             onSelected: () => unawaited(context.read<AppQuit>().quit()),
           ),
       ],

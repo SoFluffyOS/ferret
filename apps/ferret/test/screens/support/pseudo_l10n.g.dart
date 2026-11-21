@@ -4044,6 +4044,10 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsQuit => pseudo(super.settingsQuit);
   @override
+  String get settingsClose => pseudo(super.settingsClose);
+  @override
+  String get settingsCloseTip => pseudo(super.settingsCloseTip);
+  @override
   String get back => pseudo(super.back);
   @override
   String get cancel => pseudo(super.cancel);

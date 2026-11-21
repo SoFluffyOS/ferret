@@ -422,6 +422,18 @@ abstract class ShellLocalizations {
   /// **'Quit Ferret'**
   String get settingsQuit;
 
+  /// On Android, in Advanced and the ••• menu, where computers say Quit Ferret. It closes the screen only; the background service keeps running
+  ///
+  /// In en, this message translates to:
+  /// **'Close Ferret'**
+  String get settingsClose;
+
+  /// No description provided for @settingsCloseTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes this screen. Ferret keeps running in the background, so your devices stay connected.'**
+  String get settingsCloseTip;
+
   /// No description provided for @back.
   ///
   /// In en, this message translates to:

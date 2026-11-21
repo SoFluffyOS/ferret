@@ -203,6 +203,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsQuit => 'Thoát Ferret';
 
   @override
+  String get settingsClose => 'Đóng Ferret';
+
+  @override
+  String get settingsCloseTip =>
+      'Đóng màn hình này. Ferret vẫn chạy nền để các thiết bị luôn kết nối.';
+
+  @override
   String get back => 'Quay lại';
 
   @override

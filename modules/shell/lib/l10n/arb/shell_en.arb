@@ -115,6 +115,11 @@
   "settingsPrivacy": "Privacy",
   "settingsPrivacyBody": "Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.",
   "settingsQuit": "Quit Ferret",
+  "settingsClose": "Close Ferret",
+  "@settingsClose": {
+    "description": "On Android, in Advanced and the ••• menu, where computers say Quit Ferret. It closes the screen only; the background service keeps running"
+  },
+  "settingsCloseTip": "Closes this screen. Ferret keeps running in the background, so your devices stay connected.",
   "back": "Back",
   "cancel": "Cancel",
   "menuOpen": "Open Ferret",
