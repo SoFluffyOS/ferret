@@ -12,7 +12,10 @@ import 'package:transport/discovery/discovered_peer.dart';
 /// which is a fingerprint of the device's public key, so whoever answers at
 /// that address has to hold that key or the connection is dropped. Like an
 /// announce, it carries no secrets.
-class MdnsDiscovery implements ActiveDiscovery {
+///
+/// While it isn't announcing, it only asks: nothing it sends names this
+/// device.
+class MdnsDiscovery implements ActiveDiscovery, QuietDiscovery {
   MdnsDiscovery({
     this.rescanEvery = const Duration(seconds: 30),
     this.collectFor = const Duration(seconds: 2),
@@ -36,6 +39,7 @@ class MdnsDiscovery implements ActiveDiscovery {
   MdnsAdvertiser? _advertiser;
   MdnsBrowser? _browser;
   Announce? _self;
+  bool _announcing = true;
 
   static Future<MdnsLink> _bind() => MdnsSocket.bind(orAnyPort: true);
 
@@ -47,6 +51,26 @@ class MdnsDiscovery implements ActiveDiscovery {
 
   @override
   bool get isBlocked => _link?.isBlocked ?? false;
+
+  @override
+  bool get isAnnouncing => _announcing;
+
+  @override
+  Future<void> setAnnouncing(bool announcing) async {
+    if (announcing == _announcing) {
+      return;
+    }
+
+    _announcing = announcing;
+    if (announcing) {
+      await _offer();
+      return;
+    }
+
+    final advertiser = _advertiser;
+    _advertiser = null;
+    await advertiser?.stop();
+  }
 
   /// Starts offering [self] and looking for others. Called again with new
   /// details, such as another name, it takes the old offer back first.
@@ -77,10 +101,18 @@ class MdnsDiscovery implements ActiveDiscovery {
       ..add(browser.scans.listen((_) => _onScanned(browser)))
       ..add(browser.left.listen(_departures.add));
     await browser.start();
+    await _offer();
+  }
 
-    // Without the mDNS port nobody's questions arrive, so there is nothing
-    // to answer. Looking still works.
-    if (!link.sharesPort) {
+  /// Offers this device while it announces. Without the mDNS port nobody's
+  /// questions arrive, so there is nothing to answer. Looking still works.
+  Future<void> _offer() async {
+    final (link, self) = (_link, _self);
+    if (!_announcing ||
+        _advertiser != null ||
+        link == null ||
+        self == null ||
+        !link.sharesPort) {
       return;
     }
 

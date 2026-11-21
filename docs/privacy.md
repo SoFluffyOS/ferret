@@ -9,7 +9,12 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 - A device can only connect after you **paired** it, by comparing six digits or scanning a code. Strangers on the same Wi-Fi can't read anything. All they can send is a request to pair, which you have to accept.
 - A pairing QR code works once, for 5 minutes, and whoever scans it in that time pairs without a question. Show it, don't post it.
 - Devices you paired tell each other about your other devices, so you pair once. Only a device you already paired can add one, and each of your other devices asks you first: **Pixel 7 wants to add Anna's iPad to your devices**, with **Add** or **Not now**. Removing a device from another one asks too. A device added this way starts with the same features turned off as the one that added it. Turn it all off with **Settings → Advanced → Pair once for all my devices**.
-- To find each other, your devices announce their name, kind and device id (a fingerprint of their key) on the Wi-Fi you're on. The id is the same on every network. Nothing else, and never outside your network. **Pause** stops it.
+- To find each other, your devices announce their name, kind and device id (a fingerprint of their key) on the Wi-Fi you're on. Nothing else, and never outside your network. The id is the same on every network, so a device announces only where it's needed:
+  - on a network where it met one of your devices before,
+  - while **Add a device** or **Fix connection** is open,
+  - before anything is paired.
+- Everywhere else it just listens, so nobody at the café can tell it's the same laptop as yesterday. Your devices still find it: one that announces is heard, and the quiet one calls it. Want the old way? Turn on **Settings → Advanced → Always visible**. **Pause** stops it all.
+- To know a network again, Ferret keeps a salted hash of its addresses and, on a Mac and Linux, of its router's hardware address. No Wi-Fi name: that takes the location permission everywhere.
 - Each device has its own key, kept in the system keychain on phones and on a Mac. On Windows and Linux it's a file only your user account can read, like your SSH keys, so apps you run yourself can read it too.
 
 ## 🙅 What Ferret never does
@@ -72,7 +77,7 @@ Checked against the code, line by line:
 
 | What | Where it goes | When |
 |---|---|---|
-| Your device's name, kind and device id, and the port Ferret listens on | Your Wi-Fi only (Bonjour/mDNS and a broadcast), so your devices find each other. On a Mac, an iPhone and Android the system's own Bonjour answers for Ferret, under the local host name it already uses for its other services, such as AirPlay | While Ferret runs and isn't paused |
+| Your device's name, kind and device id, and the port Ferret listens on | Your Wi-Fi only (Bonjour/mDNS and a broadcast), so your devices find each other. On a Mac, an iPhone and Android the system's own Bonjour answers for Ferret, under the local host name it already uses for its other services, such as AirPlay | On networks where it met your devices, while you add a device or fix a connection, before anything is paired, or always with **Always visible**. Elsewhere only a question with nothing about you in it |
 | What your features carry (table above) | Only to devices you paired, end-to-end encrypted | When you use the feature |
 | Whether someone is at this device, and its battery level and charging | Only to devices you paired, end-to-end encrypted | When it changes: the battery in 5% steps, each percent below 20% |
 | A computer's network card (MAC) addresses and network, so your devices can wake it | Only to devices you paired, end-to-end encrypted. Turn it off with **Let my devices wake this computer** | When a device connects, and when the cards change |

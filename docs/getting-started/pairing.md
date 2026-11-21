@@ -22,6 +22,8 @@ No QR code to scan, no address to type.
 
 Ferret looks for your other devices by itself. Open it on both, and each one shows the other under **Nearby**, on the home screen and under **+** (Add a device).
 
+A device that's already paired only shows itself on networks where it met your devices before (see [Privacy](../privacy.md)). Somewhere new? Open **+** on it too, and it shows up while that screen is open.
+
 1. Tap **Pair** on the row of the device you want.
 2. Both screens now show the **same six digits**, like `482 913`.
 3. On the device where you tapped Pair: check the digits and tap **They match**.
@@ -74,7 +76,7 @@ Two phones, a tablet and three computers? The list stays easy to read.
 
 **Add a device** goes from the least effort to the most. Nearby devices first. Not listed? Check the two usual suspects:
 
-1. Ferret is open on the other device.
+1. Ferret is open on the other device. Already paired with your other devices? Open **+** there too.
 2. Both are on the same Wi-Fi. Guest networks and some office networks keep devices apart.
 
 An iPhone shows up here only while Ferret is open on it. Not there? Pair it with a QR code. See [Ferret on iPhone](iphone.md).

@@ -15,7 +15,9 @@ import 'package:transport/transport.dart';
 /// Apple's multicast entitlement and which macOS and Android keep working
 /// across sleep and network changes. Like an announce, it carries no
 /// secrets: whoever answers has to hold the device id's key.
-class BonjourDiscovery implements ActiveDiscovery {
+///
+/// While it isn't announcing it only browses, which names nobody.
+class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
   BonjourDiscovery({
     BonjourBackend backend = const BonsoirBackend(),
     this.repeatEvery = const Duration(seconds: 30),
@@ -38,10 +40,12 @@ class BonjourDiscovery implements ActiveDiscovery {
   /// Devices seen, by instance name.
   final Map<String, DiscoveredPeer> _seen = {};
   BonjourOffer? _offer;
+  StreamSubscription<Object?>? _offerFailures;
   BonjourBrowser? _browser;
   Timer? _repeat;
   Announce? _self;
   bool _denied = false;
+  bool _announcing = true;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
@@ -55,6 +59,32 @@ class BonjourDiscovery implements ActiveDiscovery {
   /// multicast announce, which can tell, is blocked as well.
   @override
   bool get isBlocked => _denied || _seen.isEmpty;
+
+  @override
+  bool get isAnnouncing => _announcing;
+
+  @override
+  Future<void> setAnnouncing(bool announcing) async {
+    if (announcing == _announcing) {
+      return;
+    }
+
+    _announcing = announcing;
+    if (announcing) {
+      await _offerSelf();
+      return;
+    }
+
+    await _withdraw();
+  }
+
+  Future<void> _withdraw() async {
+    final offer = _offer;
+    _offer = null;
+    await _offerFailures?.cancel();
+    _offerFailures = null;
+    await _quietly(offer?.stop);
+  }
 
   @override
   Future<void> start(Announce self) async {
@@ -72,6 +102,14 @@ class BonjourDiscovery implements ActiveDiscovery {
     _browser = browser;
     _subscriptions.add(browser.events.listen(_onEvent));
     _repeat = .periodic(repeatEvery, (_) => _repeatSeen());
+    await _offerSelf();
+  }
+
+  Future<void> _offerSelf() async {
+    final self = _self;
+    if (!_announcing || _offer != null || _browser == null || self == null) {
+      return;
+    }
 
     try {
       final offer = await _backend.offer(
@@ -81,7 +119,7 @@ class BonjourDiscovery implements ActiveDiscovery {
         txt: MdnsDiscovery.txtFor(self),
       );
       _offer = offer;
-      _subscriptions.add(offer.failures.listen(_onFailed));
+      _offerFailures = offer.failures.listen(_onFailed);
     } on Object catch (error) {
       // Looking still works without being seen.
       printDebug('Bonjour could not offer this device: $error');
@@ -109,11 +147,10 @@ class BonjourDiscovery implements ActiveDiscovery {
     }
 
     _subscriptions.clear();
-    final (offer, browser) = (_offer, _browser);
-    _offer = null;
+    final browser = _browser;
     _browser = null;
     _seen.clear();
-    await _quietly(offer?.stop);
+    await _withdraw();
     await _quietly(browser?.stop);
   }
 

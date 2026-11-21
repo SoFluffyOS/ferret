@@ -146,4 +146,39 @@ void main() {
 
     expect(seen.last.announce.name, 'Simon’s Pixel');
   });
+
+  test('a quiet device finds others and nobody finds it', () async {
+    final mac = join();
+    final pixel = join();
+    final seenByMac = <DiscoveredPeer>[];
+    final seenByPixel = <DiscoveredPeer>[];
+    mac.peers.listen(seenByMac.add);
+    pixel.peers.listen(seenByPixel.add);
+
+    await pixel.setAnnouncing(false);
+    await mac.start(_announce('macmacmacmacmac2', 'MacBook Pro'));
+    await pixel.start(_announce('pixelpixelpixel2', 'Pixel 7'));
+    await Future.wait([mac.scan(), pixel.scan()]);
+
+    expect(seenByPixel.last.deviceId, 'macmacmacmacmac2');
+    expect(seenByMac, isEmpty);
+
+    await pixel.setAnnouncing(true);
+    await mac.scan();
+
+    expect(seenByMac.last.deviceId, 'pixelpixelpixel2');
+  });
+
+  test('going quiet says goodbye', () async {
+    final mac = join();
+    final pixel = join();
+    await mac.start(_announce('macmacmacmacmac2', 'MacBook Pro'));
+    await pixel.start(_announce('pixelpixelpixel2', 'Pixel 7'));
+    await mac.scan();
+    final gone = mac.departures.first;
+
+    await pixel.setAnnouncing(false);
+
+    expect(await gone.timeout(const Duration(seconds: 1)), 'pixelpixelpixel2');
+  });
 }

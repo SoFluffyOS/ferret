@@ -37,11 +37,21 @@ class SecureChannel {
   static const _moreSegments = 1;
 
   /// Runs the handshake as the side that connected.
+  ///
+  /// With [acceptRemote], the other side's static key is checked before
+  /// this side sends its own (XX sends the initiator's last): a device that
+  /// isn't the one expected never learns who called.
   static Future<SecureChannel> initiate(
     ByteConnection connection,
     SimpleKeyPair staticKeyPair, {
     Duration timeout = const Duration(seconds: 10),
-  }) => _handshake(connection, staticKeyPair, initiator: true).timeout(timeout);
+    bool Function(List<int> remoteStaticKey)? acceptRemote,
+  }) => _handshake(
+    connection,
+    staticKeyPair,
+    initiator: true,
+    acceptRemote: acceptRemote,
+  ).timeout(timeout);
 
   /// Runs the handshake as the side that accepted the connection.
   static Future<SecureChannel> respond(
@@ -55,6 +65,7 @@ class SecureChannel {
     ByteConnection connection,
     SimpleKeyPair staticKeyPair, {
     required bool initiator,
+    bool Function(List<int> remoteStaticKey)? acceptRemote,
   }) async {
     final reader = FrameReader(connection.input);
     final handshake = await NoiseXXHandshake.create(
@@ -66,6 +77,17 @@ class SecureChannel {
     try {
       while (!handshake.isFinished) {
         if (handshake.isMyTurn) {
+          if ((acceptRemote, handshake.remoteStatic)
+              case (
+                final accept?,
+                final remote?,
+              )
+              when !accept(remote)) {
+            throw const NoiseHandshakeException(
+              'Not the device this side called.',
+            );
+          }
+
           connection.add(encodeFrame(await handshake.writeMessage()));
           await connection.flush();
           continue;

@@ -962,6 +962,8 @@
   },
   "settingsSharePairings": "Pair once for all my devices",
   "settingsSharePairingsBody": "A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.",
+  "settingsAlwaysVisible": "Always visible",
+  "settingsAlwaysVisibleBody": "Show this device on every Wi-Fi. Off, it only shows itself where it met your devices before, or while you add one. Elsewhere it just listens, and your devices still find it.",
   "doctorIsolated": "This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
   "@doctorIsolated": {
     "placeholders": {

@@ -40,3 +40,15 @@ abstract interface class ActiveDiscovery implements Discovery {
   /// missing local network permission looks like.
   bool get isBlocked;
 }
+
+/// A [Discovery] that can stop telling the network about this device while
+/// it keeps looking for others, so it isn't recognised on every network it
+/// joins.
+abstract interface class QuietDiscovery implements Discovery {
+  /// Whether this device announces itself. On until told otherwise.
+  bool get isAnnouncing;
+
+  /// Starts or stops announcing. Looking for others goes on either way, and
+  /// it can be set before [start].
+  Future<void> setAnnouncing(bool announcing);
+}

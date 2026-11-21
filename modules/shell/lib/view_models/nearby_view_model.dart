@@ -38,8 +38,9 @@ final class NearbyFailed extends NearbyAttempt {
 /// and pairing with one of them by comparing codes.
 class NearbyViewModel extends ChangeNotifier {
   /// With [watch], looks every few seconds for a while, for screens where
-  /// the user waits for a device to show up. Without it, the list follows
-  /// what the engine finds on its own.
+  /// the user waits for a device to show up, and keeps this device visible
+  /// to the other one meanwhile. Without it, the list follows what the
+  /// engine finds on its own.
   NearbyViewModel(
     this._engine, {
     bool watch = true,
@@ -48,6 +49,7 @@ class NearbyViewModel extends ChangeNotifier {
   }) {
     _changes = _engine.nearbyChanges.listen((_) => notifyListeners());
     if (watch) {
+      stayVisible();
       unawaited(lookAgain());
     }
   }
@@ -72,6 +74,7 @@ class NearbyViewModel extends ChangeNotifier {
   bool _isLooking = false;
   bool _hasLooked = false;
   bool _disposed = false;
+  VisibleHold? _visible;
 
   /// Unpaired devices found on the network, by name. The one being paired
   /// comes first, where its code is in view, and stays listed even after it
@@ -105,6 +108,22 @@ class NearbyViewModel extends ChangeNotifier {
 
   /// Whether the system keeps Ferret off the local network.
   bool get isBlocked => _engine.isDiscoveryBlocked;
+
+  /// Announces this device while the person pairs, even on a network where
+  /// it would only listen: the other device has to find it too.
+  void stayVisible() {
+    if (_disposed) {
+      return;
+    }
+
+    _visible ??= _engine.stayVisible();
+  }
+
+  /// Lets this device go quiet again where it would be.
+  void letGo() {
+    _visible?.release();
+    _visible = null;
+  }
 
   /// Looks now, then a few more times.
   Future<void> lookAgain() {
@@ -215,6 +234,7 @@ class NearbyViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    letGo();
     cancel();
     _nextLook?.cancel();
     _clearPaired?.cancel();

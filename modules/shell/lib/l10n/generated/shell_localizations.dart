@@ -1568,6 +1568,18 @@ abstract class ShellLocalizations {
   /// **'A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.'**
   String get settingsSharePairingsBody;
 
+  /// No description provided for @settingsAlwaysVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Always visible'**
+  String get settingsAlwaysVisible;
+
+  /// No description provided for @settingsAlwaysVisibleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this device on every Wi-Fi. Off, it only shows itself where it met your devices before, or while you add one. Elsewhere it just listens, and your devices still find it.'**
+  String get settingsAlwaysVisibleBody;
+
   /// No description provided for @doctorIsolated.
   ///
   /// In en, this message translates to:

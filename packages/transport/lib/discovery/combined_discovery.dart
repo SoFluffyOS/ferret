@@ -8,7 +8,7 @@ import 'package:transport/discovery/multicast_discovery.dart';
 
 /// Looks for devices in several ways at once, so one that a network blocks
 /// doesn't hide them. A way that can't start is left out.
-class CombinedDiscovery implements ActiveDiscovery {
+class CombinedDiscovery implements ActiveDiscovery, QuietDiscovery {
   CombinedDiscovery(this._ways);
 
   /// Ferret's own multicast announce and DNS-SD, side by side.
@@ -20,6 +20,7 @@ class CombinedDiscovery implements ActiveDiscovery {
   final StreamController<DiscoveredPeer> _peers = .broadcast();
   final StreamController<String> _departures = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
+  bool _announcing = true;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
@@ -32,6 +33,19 @@ class CombinedDiscovery implements ActiveDiscovery {
   bool get isBlocked {
     final active = _ways.whereType<ActiveDiscovery>();
     return active.isNotEmpty && active.every((way) => way.isBlocked);
+  }
+
+  @override
+  bool get isAnnouncing => _announcing;
+
+  @override
+  Future<void> setAnnouncing(bool announcing) async {
+    _announcing = announcing;
+    await Future.wait([
+      for (final way in _ways)
+        if (way is QuietDiscovery)
+          _quietly(() => way.setAnnouncing(announcing)),
+    ]);
   }
 
   @override

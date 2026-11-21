@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 import 'package:transport/transport.dart';
 
@@ -21,5 +22,23 @@ void main() {
     final targets = MulticastDiscovery.broadcastTargets(const []);
 
     expect(targets.single.address, '255.255.255.255');
+  });
+
+  test('a question names nobody, and older versions ignore it', () {
+    expect(MulticastDiscovery.question, [0x46, 0x52, 0x54, 0x02]);
+    expect(isQuestion(MulticastDiscovery.question), isTrue);
+    expect(decodeAnnounce(MulticastDiscovery.question), isNull);
+    expect(
+      isQuestion(encodeAnnounce(Announce(deviceId: 'abcdabcdabcdabcd'))),
+      isFalse,
+    );
+  });
+
+  test('announcing can be turned off before it starts', () async {
+    final discovery = MulticastDiscovery();
+
+    await discovery.setAnnouncing(false);
+
+    expect(discovery.isAnnouncing, isFalse);
   });
 }

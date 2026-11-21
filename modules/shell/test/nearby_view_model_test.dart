@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -49,6 +50,42 @@ void main() {
     viewModels.add(viewModel);
     return viewModel;
   }
+
+  test('keeps this device visible while the person pairs, not after', () async {
+    final engine = await FerretEngine.create(
+      secrets: MemorySecretStore(),
+      settings: MemorySettingsStore({KnownNetworks.settingsKey: <String>[]}),
+      device: const LocalDevice(
+        name: 'MacBook Pro',
+        platform: .PLATFORM_MACOS,
+        formFactor: .FORM_FACTOR_LAPTOP,
+      ),
+      discovery: bus.join(),
+      port: 0,
+      networks: () async => const [LocalNetwork(subnet: '10.0.7')],
+    );
+    engines.add(engine);
+    await engine.trustStore.save(
+      TrustedDevice(
+        id: 'abcdabcdabcdabcd',
+        name: 'Pixel 7',
+        platform: .PLATFORM_ANDROID,
+        formFactor: .FORM_FACTOR_PHONE,
+        publicKey: Uint8List(32),
+        pairedAt: DateTime(2026),
+      ),
+    );
+    await engine.start();
+    expect(engine.isAnnouncing, isFalse);
+
+    final pairing = NearbyViewModel(engine, looks: 1);
+    final passive = NearbyViewModel(engine, watch: false);
+    expect(engine.isAnnouncing, isTrue);
+
+    pairing.dispose();
+    expect(engine.isAnnouncing, isFalse);
+    passive.dispose();
+  });
 
   test('lists the devices near you, without any scanning by hand', () async {
     final mac = await startEngine('MacBook Pro');

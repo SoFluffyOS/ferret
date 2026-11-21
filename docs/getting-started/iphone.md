@@ -19,7 +19,7 @@ An iPhone plays by Apple's rules. Ferret follows them, and tells you where they 
 
 ## 👀 Find it nearby
 
-While Ferret is open on your iPhone, it shows up under **Nearby** on your computer, and your computer shows up on the iPhone. Tap **Pair** and check that both screens show the same six digits.
+While Ferret is open on your iPhone, it shows up under **Nearby** on your computer. Open **+** on the computer and it shows up on the iPhone too. Tap **Pair** and check that both screens show the same six digits.
 
 Ferret finds it with Bonjour, the same way your Mac finds AirPlay speakers and printers. No special permission from Apple needed.
 

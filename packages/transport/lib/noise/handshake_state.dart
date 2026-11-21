@@ -84,6 +84,10 @@ class NoiseXXHandshake {
 
   bool get isFinished => _step == 3;
 
+  /// The other side's static key, once its message carried it: after the
+  /// second message for the initiator, before it shows its own.
+  Uint8List? get remoteStatic => _remoteStatic;
+
   /// Whether this side writes the next handshake message.
   bool get isMyTurn => switch (initiator) {
     true => _step.isEven,

@@ -7,7 +7,7 @@ import 'package:transport/discovery/discovered_peer.dart';
 /// Uses [preferred], or [fallback] when that can't start. Only one of them
 /// runs, for two ways that must not both offer the same thing, such as the
 /// system's Bonjour and Ferret's own DNS-SD offering one service name.
-class FallbackDiscovery implements ActiveDiscovery {
+class FallbackDiscovery implements ActiveDiscovery, QuietDiscovery {
   FallbackDiscovery(this.preferred, this.fallback) {
     for (final way in [preferred, fallback]) {
       way.peers.listen(_peers.add);
@@ -22,6 +22,7 @@ class FallbackDiscovery implements ActiveDiscovery {
   final StreamController<DiscoveredPeer> _peers = .broadcast();
   final StreamController<String> _departures = .broadcast();
   Discovery? _active;
+  bool _announcing = true;
 
   /// The way that runs, once started.
   Discovery? get active => _active;
@@ -37,6 +38,24 @@ class FallbackDiscovery implements ActiveDiscovery {
     ActiveDiscovery(:final isBlocked) => isBlocked,
     _ => false,
   };
+
+  @override
+  bool get isAnnouncing => _announcing;
+
+  /// Both ways hear it, so the one that ends up running already knows.
+  @override
+  Future<void> setAnnouncing(bool announcing) async {
+    _announcing = announcing;
+    for (final way in [preferred, fallback]) {
+      if (way is QuietDiscovery) {
+        try {
+          await way.setAnnouncing(announcing);
+        } on Object catch (error) {
+          printDebug('${way.runtimeType} did not change: $error');
+        }
+      }
+    }
+  }
 
   @override
   Future<void> start(Announce self) async {

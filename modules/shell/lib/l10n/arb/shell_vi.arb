@@ -246,6 +246,8 @@
   "deviceForgetHereShort": "Chỉ quên ở đây",
   "settingsSharePairings": "Ghép đôi một lần cho tất cả thiết bị của tôi",
   "settingsSharePairingsBody": "Thiết bị bạn ghép đôi ở đây cũng tham gia các thiết bị khác của bạn. Khi một trong số đó thêm hoặc gỡ một thiết bị, Ferret ở đây sẽ hỏi bạn trước.",
+  "settingsAlwaysVisible": "Luôn hiển thị",
+  "settingsAlwaysVisibleBody": "Hiện thiết bị này trên mọi mạng Wi-Fi. Khi tắt, nó chỉ hiện ở nơi đã gặp các thiết bị của bạn, hoặc khi bạn đang thêm thiết bị. Ở nơi khác nó chỉ lắng nghe, và các thiết bị của bạn vẫn tìm thấy nó.",
   "doctorIsolated": "Mạng này tách các thiết bị khỏi nhau. {here, select, mac{Mac này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} tới được bộ định tuyến nhưng không tới được {device}. Wi-Fi quán cà phê, khách sạn, trường học và Wi-Fi khách thường như vậy. Hãy cho cả hai dùng điểm phát sóng của điện thoại hoặc mạng ở nhà.",
   "doctorIsolatedMaybe": "Ferret chưa thấy thiết bị nào khác trên mạng này. Nếu thiết bị kia đang dùng chung Wi-Fi, có thể mạng này tách các thiết bị khỏi nhau, như Wi-Fi quán cà phê, khách sạn và Wi-Fi khách thường làm. Hãy cho cả hai dùng điểm phát sóng của điện thoại hoặc mạng ở nhà.",
   "doctorNothingWrong": "Mọi thứ trên {here, select, mac{Mac này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} đều ổn. Trên {device}, hãy mở Ferret.",

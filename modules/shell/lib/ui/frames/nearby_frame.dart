@@ -87,7 +87,12 @@ class _NearbyFrameState extends State<NearbyFrame> with WidgetsBindingObserver {
   void didUpdateWidget(NearbyFrame oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.watch && !oldWidget.watch) {
+      _viewModel.stayVisible();
       unawaited(_viewModel.lookAgain());
+    }
+
+    if (!widget.watch && oldWidget.watch) {
+      _viewModel.letGo();
     }
   }
 

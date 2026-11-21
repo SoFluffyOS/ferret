@@ -37,6 +37,48 @@ void main() {
     return (client, responder);
   }
 
+  test('a caller that refuses the answering key never shows its own', () async {
+    final clientKeys = await NoiseCrypto.generateKeyPair();
+    final serverKeys = await NoiseCrypto.generateKeyPair();
+    final seen = <List<int>>[];
+
+    final accepted = server.first.then(
+      (socket) => SecureChannel.respond(SocketConnection(socket), serverKeys),
+    );
+    final client = SecureChannel.initiate(
+      await SocketConnection.connect('127.0.0.1', server.port),
+      clientKeys,
+      acceptRemote: (key) {
+        seen.add(key);
+        return false;
+      },
+    );
+
+    await expectLater(client, throwsA(isA<NoiseHandshakeException>()));
+    await expectLater(accepted, throwsA(anything));
+    expect(seen.single, await NoiseCrypto.publicKeyOf(serverKeys));
+  });
+
+  test('a caller that accepts the answering key connects', () async {
+    final clientKeys = await NoiseCrypto.generateKeyPair();
+    final serverKeys = await NoiseCrypto.generateKeyPair();
+    final expected = await NoiseCrypto.publicKeyOf(serverKeys);
+
+    final accepted = server.first.then(
+      (socket) => SecureChannel.respond(SocketConnection(socket), serverKeys),
+    );
+    final client = await SecureChannel.initiate(
+      await SocketConnection.connect('127.0.0.1', server.port),
+      clientKeys,
+      acceptRemote: (key) => _same(key, expected),
+    );
+    final responder = await accepted;
+
+    expect(client.handshakeHash, responder.handshakeHash);
+    await client.close();
+    await responder.close();
+  });
+
   test('closing does not wait for a send the other side never reads', () async {
     final (client, responder) = await connectPair();
     final reading = responder.messages.listen((_) {})..pause();
@@ -232,4 +274,18 @@ class _TamperingConnection implements ByteConnection {
 
   @override
   String get remoteAddress => _inner.remoteAddress;
+}
+
+bool _same(List<int> a, List<int> b) {
+  if (a.length != b.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }

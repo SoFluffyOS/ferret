@@ -249,6 +249,57 @@ void main() {
     expect(bonjour.browsers.single.stopped, isTrue);
   });
 
+  group('quiet', () {
+    test('a quiet device browses but offers nothing', () async {
+      await discovery.setAnnouncing(false);
+      await discovery.start(_announce(_selfId, 'Mac'));
+      final found = discovery.peers.first;
+
+      bonjour.find(_service(_pixelId));
+
+      expect(bonjour.offers, isEmpty);
+      expect((await found).deviceId, _pixelId);
+      expect(discovery.isAnnouncing, isFalse);
+    });
+
+    test('announcing again offers it, going quiet takes it back', () async {
+      await discovery.setAnnouncing(false);
+      await discovery.start(_announce(_selfId, 'Mac'));
+
+      await discovery.setAnnouncing(true);
+      expect(bonjour.offers.single.name, _selfId);
+
+      await discovery.setAnnouncing(false);
+      expect(bonjour.offers.single.stopped, isTrue);
+      expect(bonjour.browsers.single.stopped, isFalse);
+    });
+
+    test('a restart while quiet stays quiet', () async {
+      await discovery.setAnnouncing(false);
+      await discovery.start(_announce(_selfId, 'Mac'));
+      await discovery.stop();
+
+      await discovery.start(_announce(_selfId, 'Mac'));
+
+      expect(bonjour.offers, isEmpty);
+    });
+
+    test('the platform discovery passes quiet on to every way', () async {
+      final announce = FakeAnnounce();
+      final combined = CombinedDiscovery([
+        announce,
+        FallbackDiscovery(discovery, FakeAnnounce()),
+      ]);
+
+      await combined.setAnnouncing(false);
+      await combined.start(_announce(_selfId, 'Mac'));
+
+      expect(bonjour.offers, isEmpty);
+      expect(combined.isAnnouncing, isFalse);
+      await combined.stop();
+    });
+  });
+
   group('next to the multicast announce', () {
     test('an old device on the announce and a new one on Bonjour both '
         'arrive, and one device on both is one id', () async {

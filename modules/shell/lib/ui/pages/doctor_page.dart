@@ -37,10 +37,15 @@ class _DoctorPageState extends State<DoctorPage> {
   StreamSubscription<List<DoctorCheck>>? _subscription;
   List<DoctorCheck> _checks = const [];
 
+  /// A device that can't find this one may be on a network where neither
+  /// announces: while this page is open, this one does.
+  late final VisibleHold _visible;
+
   @override
   void initState() {
     super.initState();
     final engine = ShellScope.read(context).featureContext.engine;
+    _visible = engine.stayVisible();
     _doctor = switch (widget.doctorFor) {
       final doctorFor? => doctorFor(engine),
       null => ConnectionDoctor(engine, iphoneAsk: _iphoneAsk),
@@ -50,6 +55,7 @@ class _DoctorPageState extends State<DoctorPage> {
 
   @override
   void dispose() {
+    _visible.release();
     unawaited(_subscription?.cancel());
     super.dispose();
   }

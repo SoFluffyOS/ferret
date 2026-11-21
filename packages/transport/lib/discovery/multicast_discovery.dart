@@ -11,7 +11,11 @@ import 'package:transport/discovery/discovered_peer.dart';
 ///
 /// Each packet is `FRT` + a version byte + an `Announce`. Announces carry no
 /// secrets; trust comes from the Noise handshake that follows.
-class MulticastDiscovery implements ActiveDiscovery {
+///
+/// While it isn't announcing, it sends only `FRT` + 2, a question with
+/// nothing about this device in it: devices that announce answer it, and
+/// older versions ignore it.
+class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
   MulticastDiscovery({
     InternetAddress? group,
     this.port = defaultPort,
@@ -21,6 +25,7 @@ class MulticastDiscovery implements ActiveDiscovery {
   static const defaultGroup = '239.255.70.84';
   static const defaultPort = 47641;
   static const _magic = [0x46, 0x52, 0x54, 0x01];
+  static const question = [0x46, 0x52, 0x54, 0x02];
 
   final InternetAddress group;
   final int port;
@@ -33,6 +38,7 @@ class MulticastDiscovery implements ActiveDiscovery {
   final StreamController<String> _departures = .broadcast();
   final Set<String> _logged = {};
   bool _blocked = false;
+  bool _announcing = true;
   RawDatagramSocket? _socket;
   Timer? _timer;
   Announce? _self;
@@ -47,7 +53,23 @@ class MulticastDiscovery implements ActiveDiscovery {
   @override
   bool get isBlocked => _blocked;
 
-  /// An announce is also a question: everyone who hears it answers.
+  @override
+  bool get isAnnouncing => _announcing;
+
+  @override
+  Future<void> setAnnouncing(bool announcing) async {
+    if (announcing == _announcing) {
+      return;
+    }
+
+    _announcing = announcing;
+    if (announcing) {
+      await announceNow();
+    }
+  }
+
+  /// An announce is also a question: everyone who hears it answers. While
+  /// quiet, the question goes alone.
   @override
   Future<void> scan() async {
     await announceNow();
@@ -73,6 +95,7 @@ class MulticastDiscovery implements ActiveDiscovery {
     await announceNow();
   }
 
+  /// Announces this device, or only asks who is there while it's quiet.
   @override
   Future<void> announceNow() async {
     final (socket, self) = (_socket, _self);
@@ -80,7 +103,10 @@ class MulticastDiscovery implements ActiveDiscovery {
       return;
     }
 
-    final packet = encodeAnnounce(self.deepCopy()..reply = false);
+    final packet = switch (_announcing) {
+      true => encodeAnnounce(self.deepCopy()..reply = false),
+      false => question,
+    };
     var sent = 0;
     final addresses = await LocalInterfaces.addresses();
     for (final address in addresses) {
@@ -196,8 +222,20 @@ class MulticastDiscovery implements ActiveDiscovery {
       return;
     }
 
-    final announce = decodeAnnounce(datagram.data);
     final self = _self;
+    if (isQuestion(datagram.data)) {
+      if (self != null && _announcing) {
+        _socket?.send(
+          encodeAnnounce(self.deepCopy()..reply = true),
+          datagram.address,
+          port,
+        );
+      }
+
+      return;
+    }
+
+    final announce = decodeAnnounce(datagram.data);
     if (announce == null ||
         self == null ||
         announce.deviceId == self.deviceId) {
@@ -207,7 +245,7 @@ class MulticastDiscovery implements ActiveDiscovery {
     _peers.add(
       DiscoveredPeer(announce: announce, host: datagram.address.address),
     );
-    if (!announce.reply) {
+    if (!announce.reply && _announcing) {
       _socket?.send(
         encodeAnnounce(self.deepCopy()..reply = true),
         datagram.address,
@@ -215,6 +253,22 @@ class MulticastDiscovery implements ActiveDiscovery {
       );
     }
   }
+}
+
+/// Whether [packet] is a question from a device that doesn't announce.
+bool isQuestion(List<int> packet) {
+  const question = MulticastDiscovery.question;
+  if (packet.length != question.length) {
+    return false;
+  }
+
+  for (var i = 0; i < question.length; i++) {
+    if (packet[i] != question[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /// `FRT` + version + the announce.

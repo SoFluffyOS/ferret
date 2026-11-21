@@ -59,6 +59,16 @@ void main() {
     expect(inner.stops, 0);
   });
 
+  test('quiet reaches the way held back, even before release', () async {
+    final inner = MulticastDiscovery();
+    final held = HeldDiscovery(inner);
+
+    await held.setAnnouncing(false);
+
+    expect(inner.isAnnouncing, isFalse);
+    expect(held.isAnnouncing, isFalse);
+  });
+
   test('passes on what the way held back finds', () async {
     final inner = _CountingDiscovery();
     final held = HeldDiscovery(inner, released: true);

@@ -1221,6 +1221,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Thiết bị bạn ghép đôi ở đây cũng tham gia các thiết bị khác của bạn. Khi một trong số đó thêm hoặc gỡ một thiết bị, Ferret ở đây sẽ hỏi bạn trước.';
 
   @override
+  String get settingsAlwaysVisible => 'Luôn hiển thị';
+
+  @override
+  String get settingsAlwaysVisibleBody =>
+      'Hiện thiết bị này trên mọi mạng Wi-Fi. Khi tắt, nó chỉ hiện ở nơi đã gặp các thiết bị của bạn, hoặc khi bạn đang thêm thiết bị. Ở nơi khác nó chỉ lắng nghe, và các thiết bị của bạn vẫn tìm thấy nó.';
+
+  @override
   String doctorIsolated(String device, String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,

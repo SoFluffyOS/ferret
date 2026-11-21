@@ -4283,6 +4283,11 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String get settingsSharePairingsBody =>
       pseudo(super.settingsSharePairingsBody);
   @override
+  String get settingsAlwaysVisible => pseudo(super.settingsAlwaysVisible);
+  @override
+  String get settingsAlwaysVisibleBody =>
+      pseudo(super.settingsAlwaysVisibleBody);
+  @override
   String get doctorIsolatedMaybe => pseudo(super.doctorIsolatedMaybe);
   @override
   String get connectAction => pseudo(super.connectAction);

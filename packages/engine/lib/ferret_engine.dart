@@ -32,7 +32,11 @@ class FerretEngine implements FeatureHost {
     required SameAccount sameAccount,
     required Duration justPaired,
     required Duration groupRequestLifetime,
+    required LocalNetworkSource? networks,
+    required Future<Set<String>> Function()? ownAddresses,
   }) : _device = device,
+       _networkSource = networks,
+       _ownAddressOverride = ownAddresses,
        _justPaired = justPaired,
        _groupRequestLifetime = groupRequestLifetime,
        _sameAccount = sameAccount,
@@ -71,6 +75,10 @@ class FerretEngine implements FeatureHost {
   /// Setting: whether devices paired here are shared with the user's other
   /// devices, and theirs taken in. On unless set to false.
   static const sharePairingsKey = 'pairing.share_with_devices';
+
+  /// Setting: whether this device announces itself on every network, not
+  /// only where it met a paired device. Off unless set to true.
+  static const alwaysVisibleKey = 'discovery.always_visible';
   static const _helloTimeout = Duration(seconds: 15);
   static const _nearbyLifetime = Duration(minutes: 2);
   static const _probeTimeout = Duration(seconds: 3);
@@ -89,6 +97,8 @@ class FerretEngine implements FeatureHost {
     SameAccount? sameAccount,
     Duration justPaired = defaultJustPaired,
     Duration groupRequestLifetime = defaultGroupRequestLifetime,
+    LocalNetworkSource? networks,
+    Future<Set<String>> Function()? ownAddresses,
   }) async {
     final identity = await DeviceIdentity.loadOrCreate(secrets);
     final trustStore = await TrustStore.open(secrets);
@@ -106,6 +116,8 @@ class FerretEngine implements FeatureHost {
       sameAccount: sameAccount ?? SameAccount(),
       justPaired: justPaired,
       groupRequestLifetime: groupRequestLifetime,
+      networks: networks,
+      ownAddresses: ownAddresses,
     );
   }
 
@@ -144,6 +156,18 @@ class FerretEngine implements FeatureHost {
   final Future<List<String>> Function() _vpnAddressSource;
   late final VpnReacher _vpnReacher;
   final Discovery _discovery;
+  final LocalNetworkSource? _networkSource;
+  final Future<Set<String>> Function()? _ownAddressOverride;
+
+  Future<Set<String>> _ownAddressSource() =>
+      (_ownAddressOverride ?? _systemOwnAddresses)();
+  late final KnownNetworks _knownNetworks = KnownNetworks(
+    settings,
+    salt: identity.deviceId,
+    source: _networkSource,
+  );
+  int _visibleHolds = 0;
+  bool _onKnownNetwork = false;
   late final DeviceRoster _roster = DeviceRoster(
     trustStore,
     identity.deviceId,
@@ -356,6 +380,79 @@ class FerretEngine implements FeatureHost {
     _dropGroupRequests((_) => true);
   }
 
+  /// Whether this device announces itself on every network, instead of
+  /// only where it met a paired device.
+  bool get alwaysVisible => settings.get<bool>(alwaysVisibleKey) ?? false;
+
+  Future<void> setAlwaysVisible(bool visible) async {
+    await settings.set(alwaysVisibleKey, visible);
+    await _updateVisibility();
+  }
+
+  /// Whether this device announces itself on the network right now: while
+  /// someone pairs a device ([stayVisible]), before anything is paired, on
+  /// a network where it met a paired device, or everywhere with
+  /// [alwaysVisible]. Elsewhere it only listens, so paired devices that
+  /// announce still find it, and it them.
+  bool get isAnnouncing =>
+      alwaysVisible ||
+      _visibleHolds > 0 ||
+      trustStore.devices.isEmpty ||
+      _knownNetworks.isLearning ||
+      _onKnownNetwork;
+
+  /// Announces this device until the hold is released, for screens where
+  /// the person is pairing one: the other device has to see this one.
+  VisibleHold stayVisible() {
+    _visibleHolds++;
+    unawaited(_updateVisibility());
+    return VisibleHold(() {
+      _visibleHolds--;
+      unawaited(_updateVisibility());
+    });
+  }
+
+  Future<void> _refreshNetworks() async {
+    await _knownNetworks.refresh();
+    _onKnownNetwork = await _knownNetworks.isOnKnown();
+  }
+
+  Future<void> _updateVisibility() async {
+    if (_discovery case final QuietDiscovery quiet) {
+      final announcing = isAnnouncing;
+      if (quiet.isAnnouncing == announcing) {
+        return;
+      }
+
+      printLog(switch (announcing) {
+        true => 'Announcing this device on the network',
+        false => 'Listening only: no paired device met on this network',
+      });
+      try {
+        await quiet.setAnnouncing(announcing);
+      } on Object catch (error) {
+        printWarning('Discovery did not change', error);
+      }
+    }
+  }
+
+  /// A paired device was reached at [host]: its network is one to announce
+  /// on from now on. Not this device's own address, where its ferret-cli
+  /// calls from.
+  Future<void> _rememberNetwork(String host) async {
+    try {
+      final own = _ownAddresses ??= await _ownAddressSource();
+      if (own.contains(host) || !await _knownNetworks.rememberHost(host)) {
+        return;
+      }
+
+      _onKnownNetwork = await _knownNetworks.isOnKnown();
+      await _updateVisibility();
+    } on Object catch (error) {
+      printDebug('Could not remember this network: $error');
+    }
+  }
+
   /// Answers [request]. Yes adds or removes the device here, and the
   /// device added gets no more than the one that asked may use. No to an
   /// addition keeps the device out until it is paired here by hand; no to
@@ -460,7 +557,8 @@ class FerretEngine implements FeatureHost {
       ..add(_departures.listen(_onDeparture))
       ..add(trustStore.changes.listen((_) => _emitDevices()))
       ..add(trustStore.changes.listen((_) => unawaited(_forgetOldAccess())))
-      ..add(access.changes.listen((id) => unawaited(_applyAccess(id))));
+      ..add(access.changes.listen((id) => unawaited(_applyAccess(id))))
+      ..add(trustStore.changes.listen((_) => unawaited(_updateVisibility())));
 
     if (!_featuresStarted) {
       _featuresStarted = true;
@@ -469,6 +567,8 @@ class FerretEngine implements FeatureHost {
       }
     }
 
+    await _refreshNetworks();
+    await _updateVisibility();
     await _discovery.start(_announce());
     printLog(
       'Ferret ${DeviceIdentity.format(identity.deviceId)} listening on port $port',
@@ -538,10 +638,13 @@ class FerretEngine implements FeatureHost {
   @override
   Stream<Presence> get localPresenceChanges => _presenceChanges.stream;
 
-  /// Announces again, such as after the network changed.
-  Future<void> refresh() {
+  /// Announces again, such as after the network changed, or only listens
+  /// on a network where no paired device was met.
+  Future<void> refresh() async {
     _ownAddresses = null;
-    return _discovery.announceNow();
+    await _refreshNetworks();
+    await _updateVisibility();
+    await _discovery.announceNow();
   }
 
   /// Reconnects right away, for when this device woke from sleep or its
@@ -828,6 +931,8 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
+    await _refreshNetworks();
+    await _updateVisibility();
     await _restartDiscovery();
 
     final dials = <Future<void>>[];
@@ -1045,9 +1150,23 @@ class FerretEngine implements FeatureHost {
     ];
   }
 
-  Future<SecureChannel> _openChannel(String host, int port) async {
+  /// With [expected], a device that answers with another key never learns
+  /// this device's own: a forged announce of a paired device can't find out
+  /// who heard it.
+  Future<SecureChannel> _openChannel(
+    String host,
+    int port, {
+    String? expected,
+  }) async {
     final connection = await SocketConnection.connect(host, port);
-    return SecureChannel.initiate(connection, identity.keyPair);
+    return SecureChannel.initiate(
+      connection,
+      identity.keyPair,
+      acceptRemote: switch (expected) {
+        final id? => (key) => _isTrustedKey(id, key),
+        null => null,
+      },
+    );
   }
 
   void _onPeer(DiscoveredPeer peer) {
@@ -1056,15 +1175,18 @@ class FerretEngine implements FeatureHost {
 
   Set<String>? _ownAddresses;
 
+  /// This device's own addresses, loopback included.
+  Future<Set<String>> _systemOwnAddresses() async => {
+    '127.0.0.1',
+    ...await _localAddresses(),
+  };
+
   Future<void> _onPeerFrom(DiscoveredPeer peer) async {
     // A virtual machine behind this computer's NAT (an Android emulator)
     // announces through this computer's own address. Dialing that reaches
     // this device itself, never the announcer.
     if (peer.port == port && peer.deviceId != identity.deviceId) {
-      final own = _ownAddresses ??= {
-        '127.0.0.1',
-        ...await _localAddresses(),
-      };
+      final own = _ownAddresses ??= await _ownAddressSource();
       if (own.contains(peer.host)) {
         return;
       }
@@ -1123,7 +1245,7 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
-    final own = _ownAddresses ??= {'127.0.0.1', ...await _localAddresses()};
+    final own = _ownAddresses ??= await _ownAddressSource();
     if (!own.contains(peer.host) || !_ownAccount.add(deviceId)) {
       return;
     }
@@ -1186,7 +1308,11 @@ class FerretEngine implements FeatureHost {
     }
 
     try {
-      final channel = await _openChannel(host, port);
+      final channel = await _openChannel(
+        host,
+        port,
+        expected: expectedDeviceId,
+      );
       final remoteId = await DeviceIdentity.deviceIdFor(
         channel.remoteStaticKey,
       );
@@ -1810,6 +1936,9 @@ class FerretEngine implements FeatureHost {
           },
         ),
       );
+      if (!overVpn) {
+        unawaited(_rememberNetwork(host));
+      }
     }
 
     if (VersionMismatch.between(localDevice, hello.device)
