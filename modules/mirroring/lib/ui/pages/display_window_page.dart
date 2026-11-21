@@ -9,7 +9,6 @@ import 'package:mirroring/ui/frames/frames.dart';
 import 'package:mirroring/ui/widgets/widgets.dart';
 import 'package:mirroring/view_models/view_models.dart';
 import 'package:provider/provider.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Another computer's extra display in a window of its own, full screen
 /// from the start. Closing the window stops being that computer's
@@ -130,7 +129,7 @@ class _DisplayWindowPageState extends State<DisplayWindowPage> {
     }
 
     final l10n = context.mirroringL10n;
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: l10n.displayStopTitle(widget.deviceName),
       message: l10n.displayStopBody(widget.deviceName),

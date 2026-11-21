@@ -44,6 +44,22 @@ Widget _titled(String title, FerretPageTitle style) => MediaQuery(
 );
 
 void main() {
+  testWidgets('a first page keeps no way back while a dialog is over it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_titled('Ferret', .large));
+    expect(find.byType(DirectionalIcon), findsNothing);
+
+    final context = tester.element(find.byType(FerretPage));
+    showGeneralDialog<void>(
+      context: context,
+      pageBuilder: (_, _, _) => const SizedBox(width: 10, height: 10),
+    ).ignore();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DirectionalIcon), findsNothing);
+  });
+
   const longName = 'PXL_20261119_093512345.NIGHT.from-the-team-wiki-export.jpg';
 
   testWidgets('an inline title keeps one line and both ends of a name', (

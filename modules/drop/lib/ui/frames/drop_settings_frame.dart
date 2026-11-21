@@ -1,6 +1,7 @@
 import 'package:drop/l10n/l10n.dart';
 import 'package:drop/view_models/view_models.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -37,9 +38,14 @@ class DropSettingsFrame extends StatelessWidget {
         ConstrainedBox(
           constraints: BoxConstraints(minHeight: GroupedRow.minHeight),
           child: Padding(
+            // On a touch screen Change… sits in the card's corner: as far
+            // from its top as from its side, like every button there.
             padding: EdgeInsets.symmetric(
               horizontal: PageInsets.row,
-              vertical: Spacing.d8,
+              vertical: switch ((viewModel.canChangeFolder, _touch)) {
+                (true, true) => PageInsets.row,
+                _ => Spacing.d8,
+              },
             ),
             child: Row(
               children: [
@@ -108,7 +114,7 @@ class DropSettingsFrame extends StatelessWidget {
     }
 
     final l10n = context.dropL10n;
-    final name = await InputTextDialog.show(
+    final name = await FerretTextDialog.show(
       context,
       title: l10n.settingsReceiveFolder,
       labelText: l10n.settingsFolderName,
@@ -123,3 +129,8 @@ class DropSettingsFrame extends StatelessWidget {
     await viewModel.setFolderName(name);
   }
 }
+
+bool get _touch => switch (defaultTargetPlatform) {
+  .android || .iOS || .fuchsia => true,
+  .macOS || .windows || .linux => false,
+};

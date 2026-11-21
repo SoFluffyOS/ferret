@@ -17,7 +17,7 @@ class ThisDeviceCard extends StatefulWidget {
   /// Asks for a new name for this device and tells the other devices.
   static Future<void> rename(BuildContext context, FerretEngine engine) async {
     final l10n = context.shellL10n;
-    final name = await InputTextDialog.show(
+    final name = await FerretTextDialog.show(
       context,
       title: l10n.settingsRenameTitle,
       labelText: l10n.onboardNameLabel,

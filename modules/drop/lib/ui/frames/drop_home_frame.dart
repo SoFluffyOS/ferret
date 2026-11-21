@@ -281,7 +281,7 @@ class DropHomeFrame extends StatelessWidget {
     Transfer transfer,
   ) async {
     final l10n = context.dropL10n;
-    final pin = await InputTextDialog.show(
+    final pin = await FerretTextDialog.show(
       context,
       title: l10n.pinTitle(transfer.deviceName),
       labelText: l10n.pinLabel,

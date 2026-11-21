@@ -63,8 +63,7 @@ class _DevicePickerDialogState extends State<DevicePickerDialog> {
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: Spacing.d320),
-        child: SurfaceCard(
-          padding: EdgeInsets.all(Spacing.d20),
+        child: DialogShape(
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: .min,

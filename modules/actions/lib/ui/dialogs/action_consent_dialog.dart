@@ -28,7 +28,7 @@ class ActionConsentDialog extends StatelessWidget {
     final l10n = context.actionsL10n;
     final commandLine = ask.action.commandLine;
 
-    return DialogCard(
+    return FerretDialogCard(
       title: Text(l10n.consentTitleOf(ask, computer ?? ComputerKind.here)),
       content: Column(
         crossAxisAlignment: .stretch,

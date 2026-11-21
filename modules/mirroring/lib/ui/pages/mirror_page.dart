@@ -70,7 +70,7 @@ class _MirrorPageState extends State<MirrorPage> {
 
     final l10n = context.mirroringL10n;
     final isCamera = session?.isCamera ?? false;
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: switch (isCamera) {
         true => l10n.cameraLeaveTitle(widget.deviceName),

@@ -61,6 +61,20 @@ abstract final class Corners {
   /// the two read as one family and the same box fits both.
   static double get floatingPanel => popover;
 
+  /// A dialog Ferret draws over a phone's or a tablet's screen: Material
+  /// 3's dialog corner (Extra large, 28 dp), which is also its buttons'
+  /// corner plus the dialog's inset (28 = 12 + 16), so a button at the
+  /// dialog's bottom corner shares its centre. Under a pointer it is the
+  /// design system's dialog, 12.
+  static double get dialog => switch (defaultTargetPlatform) {
+    .android || .iOS || .fuchsia => around(control, dialogInset),
+    .macOS || .windows || .linux => Spacing.d12,
+  };
+
+  /// How far a dialog's buttons sit from its sides and its bottom on a
+  /// phone or a tablet; see [dialog].
+  static double get dialogInset => Spacing.d16;
+
   /// Shapes inside the popover or the floating panel never go under this,
   /// like a concentric shape's minimum on Apple's platforms.
   static double get windowMinimum => Spacing.d4;

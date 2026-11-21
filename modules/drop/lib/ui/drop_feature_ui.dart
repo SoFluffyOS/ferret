@@ -18,7 +18,6 @@ import 'package:ferret_drop/ferret_drop.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The app side of Drop: transfers in Activity, "Send files" on each device,
 /// files dropped on the window or menubar icon, shares from other apps and
@@ -266,7 +265,7 @@ class DropFeatureUi extends FeatureUi {
   ) async {
     final l10n = context.dropL10n;
     final texts = TransferTexts(l10n);
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: l10n.activityOffer(transfer.deviceName),
       message: [

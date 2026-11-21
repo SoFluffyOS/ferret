@@ -111,8 +111,7 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
         padding: EdgeInsets.all(Spacing.d16),
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: Spacing.d320),
-          child: SurfaceCard(
-            padding: EdgeInsets.all(Spacing.d20),
+          child: DialogShape(
             child: Column(
               mainAxisSize: .min,
               children: [

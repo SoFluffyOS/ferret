@@ -126,7 +126,7 @@ class DeviceActionsFrame extends StatelessWidget {
         l10n.actionRestart,
       ),
     };
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: title,
       message: message,

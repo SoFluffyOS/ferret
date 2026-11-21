@@ -1,4 +1,5 @@
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
@@ -14,7 +15,7 @@ abstract final class SendFlows {
   ) async {
     final l10n = context.handoffL10n;
     final name = device.device.name;
-    final text = await InputTextDialog.show(
+    final text = await FerretTextDialog.show(
       context,
       title: l10n.sendLinkTitle(name),
       labelText: l10n.sendLinkLabel,

@@ -56,7 +56,10 @@ class FerretPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
-    final canPop = Navigator.of(context).canPop();
+    // This page's own route: a dialog over a first page makes the
+    // navigator poppable, but the page underneath still has no way back.
+    final canPop =
+        ModalRoute.of(context)?.canPop ?? Navigator.of(context).canPop();
     final screenSize = context.screenSize;
     final side = PageInsets.side(screenSize);
     // A first page that names itself in its body, such as a device in a

@@ -134,7 +134,7 @@ class InboxCardFrame extends StatelessWidget {
   Future<void> _explain(BuildContext context, String phoneName) async {
     final l10n = context.notificationsL10n;
 
-    await ContentDialog.show(
+    await FerretContentDialog.show(
       context,
       title: l10n.howTitle(phoneName),
       content: l10n.howBody(phoneName),

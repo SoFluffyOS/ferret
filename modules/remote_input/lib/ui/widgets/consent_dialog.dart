@@ -21,7 +21,7 @@ class ConsentDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.remoteInputL10n;
 
-    return DialogCard(
+    return FerretDialogCard(
       title: Text(l10n.consentTitleOf(request, HostKind.here)),
       content: Text(l10n.consentBodyOf(request)),
       actions: [

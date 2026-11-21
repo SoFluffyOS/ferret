@@ -1,6 +1,7 @@
 import 'package:actions/l10n/l10n.dart';
 import 'package:actions/models/models.dart';
 import 'package:actions/ui/widgets/widgets.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -26,7 +27,7 @@ class LeaveCountdownDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.actionsL10n;
 
-    return DialogCard(
+    return FerretDialogCard(
       title: SecondsLeft(
         endsAt: countdown.endsAt,
         clock: clock,

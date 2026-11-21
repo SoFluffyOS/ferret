@@ -122,7 +122,7 @@ class ControlSettingsFrame extends StatelessWidget {
     }
 
     final l10n = context.mirroringL10n;
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: l10n.controlDisclosureTitle,
       message:

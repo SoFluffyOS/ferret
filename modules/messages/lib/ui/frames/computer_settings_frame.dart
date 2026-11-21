@@ -67,7 +67,7 @@ class ComputerSettingsFrame extends StatelessWidget {
     ComputerSettingsViewModel viewModel,
   ) async {
     final l10n = context.messagesL10n;
-    final answer = await ConfirmDialog.show(
+    final answer = await FerretConfirmDialog.show(
       context,
       title: l10n.forgetConfirmTitle,
       message: l10n.forgetConfirmBody(ThisComputer.here),

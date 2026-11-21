@@ -24,22 +24,38 @@
 // 8 on Windows, 12 on Linux, drawn by the system): every window screen,
 // at each window size and on Windows and Linux, is measured against it
 // the same way.
+//
+// Touch screens (touch_…: the Android build on a phone and on a tablet
+// held both ways, the iPhone build on an iPhone) have no window corner:
+// the screen is the window. There every dialog is measured against its
+// own corner (Corners.dialog; DIALOG-RADIUS otherwise), and what sits at
+// its edge nests in it (DIALOG-…), a button exactly concentric because the
+// dialog's corner follows its buttons. A shape in a corner of the physical
+// screen is a capsule with at least 16 of margin (SCREEN-SHAPE,
+// SCREEN-MARGIN), as Apple asks on phones: no app knows the device's own
+// corner. Only these, with --plain-name "touch_".
 @Tags(['screens'])
 library;
 
+import 'dart:async';
 import 'dart:io';
 
+import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_shelf/local_shelf.dart';
+import 'package:mirroring/mirroring.dart';
+import 'package:protocol/protocol.dart';
 import 'package:provider/provider.dart';
+import 'package:shell/shell.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'screens_test.dart' show Screen, appFeatures, phoneFeatures, screens;
 import 'shelf_screens_test.dart' show fillShelf, shelfViewModel;
+import 'support/ios_features.dart';
 import 'support/sample_activity.dart';
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
@@ -135,8 +151,9 @@ void _audit(WidgetTester tester, String label) {
     final inset = h < v ? h : v;
     if (radius != 'switch' && h <= 24 && v <= 24 && cardRadius != null) {
       final concentric = Corners.inner(cardRadius!, inset);
-      final r = (widget as Button).radius;
-      if (r == null || r > concentric + 0.5 && r > 12.5) {
+      // A button without a radius takes the design system's 12.
+      final r = (widget as Button).radius ?? 12;
+      if (r > concentric + 0.5 && r > 12.5) {
         _findings.add(
           'ROUND $label · "$name" in $where at inset '
           '${inset.toStringAsFixed(1)}: button r=$radius, concentric '
@@ -227,7 +244,7 @@ String _shapeName(Element element) {
   };
 }
 
-List<_Shape> _shapesIn(Rect window) {
+List<_Shape> _shapesIn(Rect window, {Element? root}) {
   final shapes = <_Shape>[];
   final seen = <RenderObject>{};
   void visit(Element element) {
@@ -255,7 +272,12 @@ List<_Shape> _shapesIn(Rect window) {
     element.visitChildren(visit);
   }
 
-  WidgetsBinding.instance.rootElement?.visitChildren(visit);
+  switch (root) {
+    case final root?:
+      visit(root);
+    case null:
+      WidgetsBinding.instance.rootElement?.visitChildren(visit);
+  }
   return shapes;
 }
 
@@ -285,8 +307,9 @@ void _checkCorner(
   _Shape shape,
   String where,
   double outerRadius,
-  (String, double, double) corner,
-) {
+  (String, double, double) corner, {
+  bool strict = false,
+}) {
   final (name, side, end) = corner;
   final size =
       '${shape.rect.width.toStringAsFixed(0)}x'
@@ -298,15 +321,20 @@ void _checkCorner(
     );
   }
   final inset = side < end ? side : end;
-  // Buttons keep the design system's 12 at the least, as in a card.
-  final concentric = Corners.concentric(
-    outerRadius,
-    inset,
-    minimum: switch (shape.element.widget) {
-      Button() => 12,
-      _ => null,
-    },
-  );
+  // Buttons keep the design system's 12 at the least, as in a card. In a
+  // container Ferret draws itself, such as a dialog, the container follows
+  // its buttons instead, so there a button is exactly concentric.
+  final concentric = switch ((strict, shape.element.widget)) {
+    (true, Button()) => Corners.inner(outerRadius, inset),
+    _ => Corners.concentric(
+      outerRadius,
+      inset,
+      minimum: switch (shape.element.widget) {
+        Button() => 12,
+        _ => null,
+      },
+    ),
+  };
   final verdict = switch (shape.radius - concentric) {
     > 0.5 => 'ROUND',
     < -0.5 => 'SQUARE',
@@ -321,10 +349,28 @@ void _checkCorner(
   );
 }
 
+bool _scrolls(Element element, {required bool strict}) {
+  if (!strict) {
+    return element.findAncestorWidgetOfExactType<Scrollable>() != null;
+  }
+  final position = Scrollable.maybeOf(element)?.position;
+  return position != null &&
+      position.hasContentDimensions &&
+      position.maxScrollExtent > 0.5;
+}
+
 /// Measures every shape in a corner of [window] against its corner, then
 /// every shape in a corner of one of those against that shape, and on in.
-void _auditWindow(String label, Rect window, double windowRadius) {
-  final shapes = _shapesIn(window);
+void _auditWindow(
+  String label,
+  Rect window,
+  double windowRadius, {
+  Element? root,
+  String kind = 'WINDOW',
+  String where = 'the window',
+  bool strict = false,
+}) {
+  final shapes = _shapesIn(window, root: root);
   final byElement = {for (final shape in shapes) shape.element: shape};
   _Shape? parentOf(_Shape shape) {
     _Shape? parent;
@@ -345,13 +391,20 @@ void _auditWindow(String label, Rect window, double windowRadius) {
         shape.rect.height >= window.height - 1) {
       continue;
     }
-    // What scrolls only passes the corner; the list clips it there.
-    if (shape.element.findAncestorWidgetOfExactType<Scrollable>() != null) {
-      continue;
-    }
+    // What scrolls only passes the corner; the list clips it there. In a
+    // dialog, a list that fits stays put, so it counts.
+    if (_scrolls(shape.element, strict: strict)) continue;
     for (final corner in _cornersOf(window, shape.rect)) {
       atWindow.add(shape);
-      _checkCorner('WINDOW', label, shape, 'the window', windowRadius, corner);
+      _checkCorner(
+        kind,
+        label,
+        shape,
+        where,
+        windowRadius,
+        corner,
+        strict: strict,
+      );
     }
   }
 
@@ -372,6 +425,7 @@ void _auditWindow(String label, Rect window, double windowRadius) {
           '${parent.name} r=${parent.radius.toStringAsFixed(0)}',
           parent.radius,
           corner,
+          strict: strict,
         );
       }
     }
@@ -441,8 +495,10 @@ void main() {
     );
   });
 
+  _touchMain();
+
   for (final screen in screens) {
-    for (final size in [phone, popover]) {
+    for (final size in [popover]) {
       testWidgets('${screen.name} ${size.name}', (tester) async {
         final tall = switch (screen.tall && size != popover) {
           true => CaptureSize(
@@ -599,4 +655,262 @@ Future<void> _windowScreen(
     Corners.window,
   );
   await rig.dispose(tester);
+}
+
+/// Phones, an iPhone and an Android tablet held both ways: the screen is
+/// the window, and what Ferret draws over it (dialogs, the display bar)
+/// is a container of its own.
+const _touchSizes = [phone, iphone, tabletPortrait, tabletLandscape];
+
+bool _onTablet(CaptureSize size) => size.name.startsWith('tablet');
+
+/// Screens whose script only works on a phone: it taps the one ••• a
+/// phone shows, and a tablet shows two.
+const _phoneScripts = {'home_menu'};
+
+/// Every dialog on screen, measured against its own corner: the dialog is
+/// the outermost shape in a popup route (`showGeneralDialog`). On touch
+/// screens its corner is [Corners.dialog] (DIALOG-RADIUS otherwise), and
+/// a shape at its edge nests in it (DIALOG-…); a button there is exactly
+/// concentric, because the dialog's corner follows its buttons.
+void _auditDialogs(String label) {
+  final all = _shapesIn(Offset.zero & const Size(1e5, 1e5));
+  final inPopup = <Element, _Shape>{
+    for (final shape in all)
+      if (ModalRoute.of(shape.element) is PopupRoute) shape.element: shape,
+  };
+  for (final shape in inPopup.values) {
+    var nested = false;
+    shape.element.visitAncestorElements((ancestor) {
+      if (inPopup.containsKey(ancestor)) {
+        nested = true;
+        return false;
+      }
+      return true;
+    });
+    if (nested) continue;
+    final size =
+        '${shape.rect.width.toStringAsFixed(0)}x'
+        '${shape.rect.height.toStringAsFixed(0)}';
+    if ((shape.radius - Corners.dialog).abs() > 0.5) {
+      _findings.add(
+        'DIALOG-RADIUS $label · ${shape.name} ($size): '
+        'r=${shape.radius.toStringAsFixed(1)}, a dialog is '
+        '${Corners.dialog.toStringAsFixed(0)}',
+      );
+    }
+    _auditWindow(
+      label,
+      shape.rect,
+      shape.radius,
+      root: shape.element,
+      kind: 'DIALOG',
+      where: 'the dialog r=${shape.radius.toStringAsFixed(0)}',
+      strict: true,
+    );
+  }
+}
+
+/// Anything in a corner of the physical screen, off the screen's edges:
+/// Apple's guidance for phones is a capsule with extra margin there, as
+/// no app knows the device's own corner (WWDC25 "Get to know the new
+/// design system"). Full-bleed shapes (0 from both edges) are clipped by
+/// the screen and left out. SCREEN-SHAPE: not a capsule. SCREEN-MARGIN:
+/// nearer than 16 to either edge.
+void _auditScreen(String label, CaptureSize size) {
+  final screen = Offset.zero & Size(size.width, size.height);
+  for (final shape in _shapesIn(screen)) {
+    if (shape.rect.width >= screen.width - 1 &&
+        shape.rect.height >= screen.height - 1) {
+      continue;
+    }
+    if (shape.element.findAncestorWidgetOfExactType<Scrollable>() != null) {
+      continue;
+    }
+    if (ModalRoute.of(shape.element) is PopupRoute) continue;
+    for (final (name, side, end) in _cornersOf(screen, shape.rect)) {
+      if (side < 0.5 && end < 0.5) continue;
+      final rect = shape.rect;
+      final capsule = rect.shortestSide / 2;
+      final where =
+          '${shape.name} (${rect.width.toStringAsFixed(0)}x'
+          '${rect.height.toStringAsFixed(0)}) at the $name of the screen: '
+          'side ${side.toStringAsFixed(1)} end ${end.toStringAsFixed(1)}';
+      if (shape.radius < capsule - 0.5) {
+        _findings.add(
+          'SCREEN-SHAPE $label · $where, r=${shape.radius.toStringAsFixed(1)}'
+          ' (a capsule is ${capsule.toStringAsFixed(1)})',
+        );
+      }
+      if (side < 15.5 || end < 15.5) {
+        _findings.add('SCREEN-MARGIN $label · $where');
+      }
+    }
+  }
+}
+
+/// Builds the app as [size]'s device builds it: the Android build on a
+/// phone or a tablet, the iPhone build on an iPhone.
+Future<ScreenRig> _touchRig(
+  WidgetTester tester,
+  CaptureSize size, {
+  bool tipsDone = true,
+  bool sampleActivity = false,
+}) => ScreenRig.create(
+  tester,
+  features: [
+    ...switch (size == iphone) {
+      true => iosFeatures(),
+      false => phoneFeatures(),
+    },
+    if (sampleActivity) SampleActivityFeatureUi(),
+  ],
+  tipsDone: tipsDone,
+  asPhone: size == phone,
+  asIphone: size == iphone,
+  asTablet: _onTablet(size),
+);
+
+void _measureTouch(WidgetTester tester, String label, CaptureSize size) {
+  _audit(tester, label);
+  _auditDialogs(label);
+  _auditScreen(label, size);
+}
+
+typedef _TouchScene = Future<void> Function(WidgetTester tester, ScreenRig rig);
+
+BuildContext _homeContext(ScreenRig rig) {
+  final context = rig.navigator?.context;
+  if (context == null) throw StateError('No navigator.');
+  return context;
+}
+
+/// The dialogs Ferret draws on a phone or a tablet, and the bar over a
+/// computer's display on one.
+final _touchScenes = <String, _TouchScene>{
+  'dialog_confirm': (tester, rig) async {
+    unawaited(
+      FerretConfirmDialog.show(
+        _homeContext(rig),
+        title: 'Shut down MacBook Air?',
+        message:
+            'It counts down 10 seconds first, and anyone at MacBook Air '
+            'can cancel.',
+        negativeText: 'Cancel',
+        positiveText: 'Shut down',
+      ),
+    );
+  },
+  'dialog_text': (tester, rig) async {
+    unawaited(
+      FerretTextDialog.show(
+        _homeContext(rig),
+        title: 'Rename this phone',
+        labelText: 'Name',
+        cancelText: 'Cancel',
+        confirmText: 'Rename',
+        initialValue: 'Pixel 9',
+      ),
+    );
+  },
+  'dialog_content': (tester, rig) async {
+    unawaited(
+      FerretContentDialog.show(
+        _homeContext(rig),
+        title: 'How notifications get here',
+        content: 'Pixel 9 sends its notifications while Ferret runs on it.',
+        neutralText: 'OK',
+      ),
+    );
+  },
+  'dialog_pairing': (tester, rig) async {
+    unawaited(
+      PairingPromptDialog.show(
+        _homeContext(rig),
+        PairingPrompt(
+          device: DeviceInfo(
+            id: 'abcdabcdabcdabcd',
+            name: 'MacBook Air',
+            platform: .PLATFORM_MACOS,
+            formFactor: .FORM_FACTOR_LAPTOP,
+          ),
+          code: '123456',
+          expiresAt: DateTime.now().add(const Duration(minutes: 1)),
+        ),
+      ),
+    );
+  },
+  // As the display's stage places it: under the status bar (24 on
+  // Android, 59 on an iPhone with a Dynamic Island).
+  'display_bar': (tester, rig) => rig.open(
+    tester,
+    Stack(
+      children: [
+        Positioned(
+          top: switch (defaultTargetPlatform) {
+            .iOS => 59,
+            _ => 24,
+          },
+          left: 0,
+          right: 0,
+          child: DisplayBar(
+            shown: true,
+            onLeave: () {},
+            title: "MacBook Pro's display",
+            hint: 'Tap the handle at the top to show this bar.',
+            stopLabel: 'Stop',
+            onStop: () {},
+          ),
+        ),
+      ],
+    ),
+  ),
+};
+
+void _touchMain() {
+  for (final screen in screens) {
+    for (final size in _touchSizes) {
+      if (size == iphone && !screen.onIphone) continue;
+      if (screen.only case final only? when only != size) continue;
+      if (_onTablet(size) && _phoneScripts.contains(screen.name)) continue;
+      final label = 'touch_${screen.name} ${size.name}';
+      testWidgets(label, (tester) async {
+        await _onScreen(tester, size, () async {
+          final rig = await _touchRig(
+            tester,
+            size,
+            tipsDone: screen.tipsDone,
+            sampleActivity: screen.sampleActivity,
+          );
+          await rig.show(tester);
+          await screen.script(tester, rig);
+          await rig.settle(tester);
+          _measureTouch(tester, label, size);
+          await rig.dispose(tester);
+        });
+      });
+    }
+  }
+
+  for (final MapEntry(key: name, value: scene) in _touchScenes.entries) {
+    for (final size in _touchSizes) {
+      final label = 'touch_$name ${size.name}';
+      testWidgets(label, (tester) async {
+        await _onScreen(tester, size, () async {
+          // Measured in light mode, and rendered in both to crop the
+          // corners from. A dialog takes the theme it opened in.
+          for (final brightness in Brightness.values) {
+            tester.platformDispatcher.platformBrightnessTestValue = brightness;
+            final rig = await _touchRig(tester, size);
+            await rig.show(tester);
+            await scene(tester, rig);
+            await rig.settle(tester);
+            if (brightness == .light) _measureTouch(tester, label, size);
+            await rig.capture(tester, 'touch_$name', size, brightness);
+            await rig.dispose(tester);
+          }
+        });
+      });
+    }
+  }
 }
