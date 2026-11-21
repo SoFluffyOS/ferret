@@ -144,9 +144,13 @@ void main() {
           try {
             final rig = await ScreenRig.create(
               tester,
-              features: appFeatures(),
+              features: switch (size == phone) {
+                true => phoneFeatures(),
+                false => appFeatures(),
+              },
               name: 'MacBook Pro',
               tipsDone: true,
+              asPhone: size == phone,
             );
             await tester.runAsync(
               () => rig.engine.settings.set(WhatsNew.seenVersionKey, '0.0.9'),

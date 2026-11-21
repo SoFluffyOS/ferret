@@ -40,6 +40,7 @@ import 'package:remote_input/remote_input.dart';
 import 'package:shell/shell.dart';
 
 import 'support/action_fakes.dart';
+import 'support/android_features.dart';
 import 'support/ios_features.dart';
 import 'support/phone_fakes.dart';
 import 'support/sample_activity.dart';
@@ -63,23 +64,8 @@ List<FeatureUi> appFeatures() => [
   RemoteInputFeatureUi(),
 ];
 
-/// The app as an Android phone would build it, as far as a macOS host
-/// allows: notifications and messages get fake phone sources so their setup
-/// offers show. Everything that checks `Platform.isAndroid` still renders
-/// its computer variant.
-List<FeatureUi> phoneFeatures() => [
-  for (final feature in appFeatures())
-    switch (feature.featureId) {
-      'notifications' => NotificationsFeatureUi.withFeature(
-        NotificationsFeature(source: OffNotificationSource()),
-        access: OffNotificationSource(),
-      ),
-      'messages' => MessagesFeatureUi.withFeature(
-        MessagesFeature(source: OffSmsSource()),
-      ),
-      _ => feature,
-    },
-];
+/// The app as an Android phone builds it: see [androidFeatures].
+List<FeatureUi> phoneFeatures() => androidFeatures();
 
 typedef ScreenScript = Future<void> Function(
   WidgetTester tester,
@@ -90,8 +76,9 @@ typedef ScreenScript = Future<void> Function(
 /// (`<name>_full_<mode>.png`) so nothing below the fold is missed.
 ///
 /// At the `iphone` size the app is the iPhone build (`iosFeatures()`) on an
-/// iPhone, and the device a script pairs or adds without naming it is a
-/// Mac (see [ScreenRig.otherName]).
+/// iPhone, and at the `phone` size the Android build (`androidFeatures()`)
+/// on a Pixel 9; there the device a script pairs or adds without naming it
+/// is a Mac (see [ScreenRig.otherName]).
 class Screen {
   const Screen(
     this.name,
@@ -117,7 +104,8 @@ class Screen {
   final bool sampleActivity;
   final bool tall;
 
-  /// Runs as an Android phone paired with a computer (see [phoneFeatures]).
+  /// Runs as an Android phone paired with a computer (see [phoneFeatures])
+  /// at every size, not only at the `phone` size.
   final bool phone;
 
   /// Whether the screen exists on an iPhone. False for what only Android
@@ -599,10 +587,11 @@ Future<void> _run(
 ) async {
   final name = screen.name;
   final onIphone = size == iphone;
+  final onAndroid = !onIphone && (size == phone || screen.phone);
   final rig = await ScreenRig.create(
     tester,
     features: [
-      ...switch ((onIphone, screen.phone)) {
+      ...switch ((onIphone, onAndroid)) {
         (true, _) => iosFeatures(),
         (false, true) => phoneFeatures(),
         (false, false) => appFeatures(),
@@ -618,7 +607,7 @@ Future<void> _run(
       ],
     ],
     tipsDone: screen.tipsDone,
-    asPhone: screen.phone && !onIphone,
+    asPhone: onAndroid,
     asIphone: onIphone,
   );
   await rig.show(tester);

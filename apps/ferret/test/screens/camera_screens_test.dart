@@ -23,6 +23,7 @@ import 'package:phone_camera/phone_camera.dart';
 import 'package:shell/shell.dart' show DevicePage;
 
 import 'screens_test.dart' show appFeatures, phoneFeatures;
+import 'support/android_features.dart' show withFeatures;
 import 'support/mirror_fakes.dart' show StillCamera;
 import 'support/screen_fonts.dart';
 import 'support/screen_harness.dart';
@@ -74,7 +75,7 @@ Future<String> _pairPixel(WidgetTester tester, ScreenRig rig) async {
   final phoneId =
       await rig.pairConnectedPhone(
         tester,
-        phoneFeatures: [...phoneFeatures(), _phoneCamera()],
+        phoneFeatures: withFeatures(phoneFeatures(), [_phoneCamera()]),
         name: 'Pixel 7',
       ) ??
       '';
@@ -211,7 +212,7 @@ void main() {
           };
           try {
             final features = switch (asPhone) {
-              true => [...phoneFeatures(), _phoneCamera()],
+              true => withFeatures(phoneFeatures(), [_phoneCamera()]),
               false => [...appFeatures(), _computerCamera()],
             };
             final rig = await ScreenRig.create(

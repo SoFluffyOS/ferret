@@ -436,3 +436,45 @@ class StillDisplay implements DisplayCapture {
   @override
   Future<void> dispose() async {}
 }
+
+/// A phone screen that says yes at once and sends nothing.
+class PhoneScreenCapture implements ScreenCapture {
+  final StreamController<CaptureEvent> _events = .broadcast();
+
+  @override
+  Stream<CaptureEvent> get events => _events.stream;
+
+  @override
+  Future<CaptureSupport> support() async =>
+      const CaptureSupport(h264: true, jpeg: true);
+
+  @override
+  Future<AudioCaptureSupport> audioSupport() async => .ready;
+
+  @override
+  Future<bool> requestAudioPermission() async => true;
+
+  @override
+  Future<ConsentResult> requestConsent(
+    ConsentTexts texts,
+    Duration timeout,
+  ) async => .granted;
+
+  @override
+  Future<void> cancelConsent() async {}
+
+  @override
+  Future<bool> start(CaptureOptions options) async => true;
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  Future<void> requestKeyframe() async {}
+
+  @override
+  Future<void> setBitrate(int bitrate) async {}
+
+  @override
+  Future<void> dispose() async => _events.close();
+}

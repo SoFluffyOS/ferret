@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 /// Where received files go on each platform, honouring the setting.
 abstract final class ReceiveFolders {
   /// Android keeps a folder name inside Downloads; desktops keep a path.
-  static bool get usesFolderName => Platform.isAndroid;
+  static bool get usesFolderName => defaultTargetPlatform == .android;
 
   /// Whether people can pick another folder here.
   static bool get canChange => defaultTargetPlatform != .iOS;

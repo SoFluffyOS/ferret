@@ -65,17 +65,16 @@ class _NoInput implements InputInjector {
   Future<void> dispose() async {}
 }
 
-/// The app's features with a remote input that can't lock for real, as a
-/// computer ([asPhone] false) or a phone.
-List<FeatureUi> _safeFeatures({bool asPhone = false}) => [
+/// The computer's features with a remote input that can't lock for real.
+List<FeatureUi> _safeFeatures() => [
   for (final feature in appFeatures())
     switch (feature) {
       RemoteInputFeatureUi() => RemoteInputFeatureUi(
         feature: RemoteInputFeature(
           injector: _NoInput.new,
           locker: _NoLock(),
-          canBeControlled: !asPhone,
-          canControl: asPhone,
+          canBeControlled: true,
+          canControl: false,
         ),
       ),
       _ => feature,
@@ -348,7 +347,13 @@ void main() {
   });
 
   for (final MapEntry(key: name, value: script) in _screens.entries) {
+    final asPhone = _phoneScreens.contains(name);
     for (final size in const [popover, phone]) {
+      // A Mac's screens at a phone's size would be neither.
+      if (!asPhone && size == phone) {
+        continue;
+      }
+
       for (final brightness in Brightness.values) {
         if (brightness == .dark && !size.darkToo) {
           continue;
@@ -370,10 +375,13 @@ void main() {
             reportError?.call(details);
           };
           try {
-            final asPhone = _phoneScreens.contains(name);
-            final features = switch (_clipboardScreens.contains(name)) {
-              true => _withCopiedText(),
-              false => _safeFeatures(asPhone: asPhone),
+            final features = switch ((
+              asPhone,
+              _clipboardScreens.contains(name),
+            )) {
+              (true, _) => phoneFeatures(),
+              (false, true) => _withCopiedText(),
+              (false, false) => _safeFeatures(),
             };
             final rig = await ScreenRig.create(
               tester,

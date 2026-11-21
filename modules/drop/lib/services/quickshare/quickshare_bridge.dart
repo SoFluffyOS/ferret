@@ -218,7 +218,8 @@ class QuickShareBridge {
   }
 
   bool get _isComputer =>
-      Platform.isMacOS || Platform.isLinux || Platform.isWindows;
+      options.onComputer ??
+      (Platform.isMacOS || Platform.isLinux || Platform.isWindows);
 
   void _emit() {
     if (_changes.isClosed) {

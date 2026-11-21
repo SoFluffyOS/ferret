@@ -11,10 +11,7 @@
 @Tags(['screens'])
 library;
 
-import 'dart:async';
-
 import 'package:feature_kit/feature_kit.dart';
-import 'package:ferret_mirroring/ferret_mirroring.dart';
 import 'package:ferret_phone_control/ferret_phone_control.dart';
 import 'package:ferret_phone_control/testing.dart';
 import 'package:ferret_power/testing.dart';
@@ -36,52 +33,10 @@ typedef _Script = Future<void> Function(
   MirroringFeatureUi mirroring,
 );
 
-/// A phone screen that says yes at once and sends nothing.
-class _ScreenCapture implements ScreenCapture {
-  final StreamController<CaptureEvent> _events = .broadcast();
-
-  @override
-  Stream<CaptureEvent> get events => _events.stream;
-
-  @override
-  Future<CaptureSupport> support() async =>
-      const CaptureSupport(h264: true, jpeg: true);
-
-  @override
-  Future<AudioCaptureSupport> audioSupport() async => .ready;
-
-  @override
-  Future<bool> requestAudioPermission() async => true;
-
-  @override
-  Future<ConsentResult> requestConsent(
-    ConsentTexts texts,
-    Duration timeout,
-  ) async => .granted;
-
-  @override
-  Future<void> cancelConsent() async {}
-
-  @override
-  Future<bool> start(CaptureOptions options) async => true;
-
-  @override
-  Future<void> stop() async {}
-
-  @override
-  Future<void> requestKeyframe() async {}
-
-  @override
-  Future<void> setBitrate(int bitrate) async {}
-
-  @override
-  Future<void> dispose() async => _events.close();
-}
-
 MirroringFeatureUi _phoneMirroring({required bool serviceOn}) =>
     MirroringFeatureUi(
       feature: MirroringFeature(
-        capture: _ScreenCapture.new,
+        capture: PhoneScreenCapture.new,
         camera: StillCamera.new,
         phoneControl: () => PhoneControl(
           power: PowerCapabilities.withPlatform(FakePowerPlatform()),

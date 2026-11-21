@@ -13,6 +13,7 @@ class QuickShareOptions {
     this.answerTimeout = const Duration(minutes: 2),
     this.timeouts = const QuickShareTimeouts(),
     this.supported,
+    this.onComputer,
   });
 
   /// The port phones connect to. Quick Share has no fixed one, so any
@@ -37,4 +38,8 @@ class QuickShareOptions {
   /// Whether this device can take Quick Share at all; this platform's
   /// answer when null.
   final bool? supported;
+
+  /// Whether this device is a computer, where Quick Share is on by
+  /// default; this platform's answer when null.
+  final bool? onComputer;
 }

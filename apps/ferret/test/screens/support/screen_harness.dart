@@ -96,7 +96,7 @@ class ScreenRig {
     this.app,
     this.featureContext,
     this._discovery, {
-    required this.isIphone,
+    required this.isHandheld,
   });
 
   final FerretEngine engine;
@@ -105,13 +105,14 @@ class ScreenRig {
   final SilentDiscovery _discovery;
   final List<FerretEngine> _others = [];
 
-  /// Whether this is an iPhone. Its owner's other device is then a Mac:
-  /// the phone a script pairs or adds without naming it becomes one.
-  final bool isIphone;
+  /// Whether this is a phone or a tablet, Android or iPhone. Its owner's
+  /// other device is then a Mac: the device a script pairs or adds without
+  /// naming it becomes one.
+  final bool isHandheld;
 
-  /// The device a script gets when it names none: a Pixel 9 for a computer
-  /// or an Android phone, a MacBook Air for an iPhone.
-  String get otherName => switch (isIphone) {
+  /// The device a script gets when it names none: a Pixel 9 for a
+  /// computer, a MacBook Air for a phone or a tablet.
+  String get otherName => switch (isHandheld) {
     true => 'MacBook Air',
     false => 'Pixel 9',
   };
@@ -202,7 +203,7 @@ class ScreenRig {
         app,
         featureContext,
         discovery,
-        isIphone: asIphone,
+        isHandheld: asPhone || asTablet || asIphone,
       );
     });
     if (rig == null) {
@@ -212,8 +213,8 @@ class ScreenRig {
     return rig;
   }
 
-  /// Adds an offline paired phone straight to the trust store; on an
-  /// iPhone, a Mac unless [name] says which.
+  /// Adds an offline paired phone straight to the trust store; on a phone
+  /// or a tablet, a Mac unless [name] says which.
   Future<void> addOfflinePhone(
     WidgetTester tester, {
     String? name,
@@ -246,7 +247,7 @@ class ScreenRig {
     String? name,
     String id = 'a1b2c3d4e5f60718',
   }) {
-    final (other, kind) = _otherOr(switch (isIphone) {
+    final (other, kind) = _otherOr(switch (isHandheld) {
       true => name,
       false => name ?? 'Pixel 7',
     }, null);
@@ -270,8 +271,9 @@ class ScreenRig {
   }
 
   /// Pairs a second engine (an Android phone) over loopback with a QR offer,
-  /// so the app shows a real connected device with a live session. On an
-  /// iPhone it is a Mac with [phoneFeatures] unless [name] says which:
+  /// so the app shows a real connected device with a live session. On a
+  /// phone or a tablet it is a Mac with [phoneFeatures] unless [name] says
+  /// which:
   /// scripts written for a computer pass the computer's features.
   Future<String?> pairConnectedPhone(
     WidgetTester tester, {
@@ -314,7 +316,7 @@ class ScreenRig {
     String? name,
     Platform? platform,
   ) {
-    if (name == null && platform == null && isIphone) {
+    if (name == null && platform == null && isHandheld) {
       return (
         otherName,
         (platform: Platform.PLATFORM_MACOS, formFactor: .FORM_FACTOR_LAPTOP),

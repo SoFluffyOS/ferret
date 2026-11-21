@@ -38,12 +38,14 @@ class DropFeatureUi extends FeatureUi {
     List<String> filesToSend = const [],
     SendHandoff? handoff,
     Duration connectGrace = const Duration(seconds: 10),
+    Future<String> Function()? describeFolder,
   }) : this._(
          plugin ?? FerretDrop(),
          feature,
          filesToSend,
          handoff,
          connectGrace,
+         describeFolder,
        );
 
   DropFeatureUi._(
@@ -52,6 +54,7 @@ class DropFeatureUi extends FeatureUi {
     this._filesToSend,
     this._handoff,
     this._connectGrace,
+    this._describeFolder,
   ) : feature =
           feature ??
           DropFeature(
@@ -66,6 +69,10 @@ class DropFeatureUi extends FeatureUi {
   final FerretDrop _plugin;
   final List<String> _filesToSend;
   final Duration _connectGrace;
+
+  /// Where received files go, as the receive folder says it; this
+  /// platform's answer when null.
+  final Future<String> Function()? _describeFolder;
   final Stopwatch _sinceAwake = Stopwatch();
   final SendHandoff? _handoff;
   DropViewModel? _viewModel;
@@ -747,8 +754,11 @@ class DropFeatureUi extends FeatureUi {
     return null;
   }
 
-  DropViewModel get _dropViewModel =>
-      _viewModel ??= DropViewModel(feature: feature, plugin: _plugin);
+  DropViewModel get _dropViewModel => _viewModel ??= DropViewModel(
+    feature: feature,
+    plugin: _plugin,
+    describeFolder: _describeFolder,
+  );
 
   DropLocalizations _l10n() => lookupDropLocalizations(
     AppLocale.pick(DropLocalizations.supportedLocales),
