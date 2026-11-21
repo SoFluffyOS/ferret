@@ -12,14 +12,16 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// The shelf as an open box along the bottom of the popover, on every
-/// page: what it holds shows as tiles, newest first. Drag a tile out to
-/// take it, the stack at the start to take everything, or a selection
-/// (⌘- or ⇧-click) to take that. Drop anything on the box to keep it.
-/// Under the pointer a tile shows ⓧ to take it off; right-click for
-/// Quick Look, Show in Finder, Copy and Remove. From the keyboard the
-/// row is one Tab stop: the arrow keys move the selection (⇧ adds to it),
-/// Space or Return previews it, and Delete takes it off. While previews are hidden here it shows only how many
+/// The shelf as one panel along the bottom of the popover, on every
+/// page: "Shelf", how many and Clear along its top, what it holds as
+/// tiles under them, newest first. The page above fades out where it
+/// meets the panel. Drag a tile out to take it, the stack at the start to
+/// take everything, or a selection (⌘- or ⇧-click) to take that. Drop
+/// anything on the box to keep it. Under the pointer a tile shows ⓧ to
+/// take it off; right-click for Quick Look, Show in Finder, Copy and
+/// Remove. From the keyboard the row is one Tab stop: the arrow keys move
+/// the selection (⇧ adds to it), Space or Return previews it, and Delete
+/// takes it off. While previews are hidden here it shows only how many
 /// things it holds.
 class ShelfBoxFrame extends StatefulWidget {
   const ShelfBoxFrame({
@@ -34,7 +36,7 @@ class ShelfBoxFrame extends StatefulWidget {
 
   /// Around the box; when null, the same gap from the popover's sides and
   /// bottom ([ShelfCorners.boxInset]), so the box is concentric with the
-  /// window's corner.
+  /// window's corner, and the page above fades out over [fadeHeight].
   final EdgeInsetsGeometry? padding;
 
   /// The box takes all the height it is given, such as in the floating
@@ -49,8 +51,15 @@ class ShelfBoxFrame extends StatefulWidget {
   static double get inset => ShelfCorners.tileInset;
   static double get radius => ShelfCorners.box;
 
-  /// The empty and the hidden box: one short line.
-  static double get compactHeight => Spacing.d56;
+  /// The line under the header in the empty and the hidden box.
+  static double get lineHeight => Spacing.d36;
+
+  /// The header along the box's top: one row of small buttons, [inset]
+  /// from the box's top and end, so their corner follows the box's.
+  static double get headerHeight => TextLink.minHeight;
+
+  /// How far up the page fades out over the box in the popover.
+  static double get fadeHeight => Spacing.d16;
 
   @override
   State<ShelfBoxFrame> createState() => _ShelfBoxFrameState();
@@ -153,7 +162,6 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     final viewModel = context.read<ShelfViewModel>();
     final l10n = context.shelfL10n;
     final palette = context.palette;
-    final side = PageInsets.side(context.screenSize);
     if (isListOpen) {
       return const SizedBox.shrink();
     }
@@ -205,16 +213,25 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
         strokeAlign: BorderSide.strokeAlignInside,
       ),
     );
+    final isLine = items.isEmpty || isHidden;
+    final body = Column(
+      mainAxisSize: switch (widget.expands) {
+        true => .max,
+        false => .min,
+      },
+      crossAxisAlignment: .stretch,
+      children: [
+        _header(context, viewModel, items, selected, isHidden),
+        // In the panel a row of tiles stays under the header; one line
+        // sits in the middle of what is left.
+        switch ((widget.expands, isLine)) {
+          (true, true) => Expanded(child: Center(child: content)),
+          _ => content,
+        },
+      ],
+    );
     final box = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
-      constraints: BoxConstraints(minHeight: ShelfBoxFrame.compactHeight),
-      // In the panel a row of tiles stays in the box's top corner, at the
-      // same gap from its side and top; one line sits in the middle.
-      alignment: switch ((widget.expands, items.isEmpty || isHidden)) {
-        (true, true) => Alignment.center,
-        (true, false) => AlignmentDirectional.topStart,
-        (false, _) => null,
-      },
       decoration: ShapeDecoration(
         color: switch (isDropOver) {
           true => palette.accent.withValues(alpha: 0.12),
@@ -227,77 +244,82 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
         false => null,
       },
       clipBehavior: .antiAlias,
-      child: content,
+      child: body,
+    );
+    final isPopover = widget.padding == null;
+    final panel = Padding(
+      padding:
+          widget.padding ??
+          EdgeInsets.fromLTRB(
+            ShelfCorners.boxInset,
+            0,
+            ShelfCorners.boxInset,
+            ShelfCorners.boxInset,
+          ),
+      child: DropReceiverRegion(
+        receiver: viewModel,
+        child: Semantics(
+          container: true,
+          label: l10n.title,
+          hint: l10n.barEmpty,
+          child: switch (items.isEmpty && !isDropOver) {
+            true => DashedOutline(
+              radius: ShelfBoxFrame.radius,
+              color: palette.mutedText.withValues(alpha: 0.45),
+              child: box,
+            ),
+            false => box,
+          },
+        ),
+      ),
     );
 
     return ColoredBox(
       color: palette.background,
-      child: Padding(
-        padding:
-            widget.padding ??
-            EdgeInsets.fromLTRB(
-              ShelfCorners.boxInset,
-              0,
-              ShelfCorners.boxInset,
-              ShelfCorners.boxInset,
-            ),
-        child: DropReceiverRegion(
-          receiver: viewModel,
-          child: Semantics(
-            container: true,
-            label: l10n.title,
-            hint: l10n.barEmpty,
-            child: Column(
-              mainAxisSize: switch (widget.expands) {
-                true => .max,
-                false => .min,
-              },
-              crossAxisAlignment: .stretch,
-              children: [
-                _header(
-                  context,
-                  viewModel,
-                  items,
-                  selected,
-                  isHidden,
-                  // In the popover the box reaches out past the page's
-                  // side; its header stays in line with the page's
-                  // headings.
-                  outset: switch (widget.padding) {
-                    null => side - ShelfCorners.boxInset,
-                    _ => 0,
-                  },
-                ),
-                _fill(switch (items.isEmpty && !isDropOver) {
-                  true => DashedOutline(
-                    radius: ShelfBoxFrame.radius,
-                    color: palette.mutedText.withValues(alpha: 0.45),
-                    child: box,
+      child: switch (isPopover) {
+        false => panel,
+        // The page scrolls under nothing: it fades into the popover's
+        // background just above the panel, so a card going down there
+        // never looks cut off.
+        true => Stack(
+          clipBehavior: .none,
+          children: [
+            panel,
+            Positioned(
+              top: -ShelfBoxFrame.fadeHeight,
+              left: 0,
+              right: 0,
+              height: ShelfBoxFrame.fadeHeight,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: .topCenter,
+                      end: .bottomCenter,
+                      colors: [
+                        palette.background.withValues(alpha: 0),
+                        palette.background,
+                      ],
+                    ),
                   ),
-                  false => box,
-                }),
-              ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ),
+      },
     );
   }
 
-  Widget _fill(Widget box) => switch (widget.expands) {
-    true => Expanded(child: box),
-    false => box,
-  };
-
-  /// "Shelf · 5 items", with Clear and the list at the end.
+  /// "Shelf · 5 items" along the box's top, with Clear and the list at
+  /// the end, [ShelfBoxFrame.inset] from the box's top and end edges.
   Widget _header(
     BuildContext context,
     ShelfViewModel viewModel,
     List<ShelfItem> items,
     Set<String> selected,
-    bool isHidden, {
-    required double outset,
-  }) {
+    bool isHidden,
+  ) {
     final l10n = context.shelfL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -311,12 +333,12 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
 
     return Padding(
       padding: EdgeInsetsDirectional.only(
-        start: outset + PageInsets.row,
-        end: outset + Spacing.d2,
-        bottom: Spacing.d2,
+        start: PageInsets.row,
+        top: ShelfBoxFrame.inset,
+        end: ShelfBoxFrame.inset,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: TextLink.minHeight),
+        constraints: BoxConstraints(minHeight: ShelfBoxFrame.headerHeight),
         child: Row(
           children: [
             Text(l10n.title, style: titleStyle),
@@ -369,9 +391,10 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
               tooltip: l10n.barOpen,
               semanticLabel: l10n.barOpen,
               semanticButton: true,
+              hoverOverlayBorderRadius: ShelfCorners.tile,
               onTap: widget.onOpenList,
               child: SizedBox.square(
-                dimension: TextLink.minHeight,
+                dimension: ShelfBoxFrame.headerHeight,
                 child: Icon(
                   LucideIcons.list,
                   size: Spacing.d16,
@@ -405,9 +428,14 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     );
 
     return SizedBox(
-      height: ShelfBoxFrame.compactHeight,
+      height: ShelfBoxFrame.lineHeight,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Spacing.d16),
+        padding: EdgeInsets.fromLTRB(
+          Spacing.d16,
+          0,
+          Spacing.d16,
+          ShelfBoxFrame.inset,
+        ),
         child: Row(
           mainAxisAlignment: .center,
           children: [
@@ -439,7 +467,12 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       child: SingleChildScrollView(
         controller: _scroll,
         scrollDirection: .horizontal,
-        padding: EdgeInsets.all(ShelfBoxFrame.inset),
+        padding: EdgeInsets.fromLTRB(
+          ShelfBoxFrame.inset,
+          0,
+          ShelfBoxFrame.inset,
+          ShelfBoxFrame.inset,
+        ),
         child: Row(
           crossAxisAlignment: .start,
           children: [
@@ -518,7 +551,10 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
                   true => 0.3,
                   false => 1,
                 },
-                child: row,
+                child: Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: row,
+                ),
               ),
               if (isDropOver)
                 IgnorePointer(
@@ -578,6 +614,16 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     };
     final dragged = viewModel.dragged(item);
     final removeLabel = l10n.removeTooltip(name);
+    // Text and links show what they say in the square, so the name under
+    // it says only what kind of thing it is.
+    final showsWords =
+        !isHidden &&
+        !item.isMissing &&
+        switch (item.kind) {
+          .text => item.text.trim().isNotEmpty,
+          .link => ShelfThumb.hostOf(item.text) != null,
+          _ => false,
+        };
 
     return ContextMenuRegion(
       key: _tileKeys.putIfAbsent(item.id, GlobalKey.new),
@@ -620,14 +666,18 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
             size: ShelfTile.thumbSize,
             radius: ShelfTile.thumbRadius,
             isHidden: isHidden,
+            showsContent: true,
           ),
         ),
-        label: name,
+        label: switch (showsWords) {
+          true => ShelfLabels.kindOf(l10n, item.kind),
+          false => name,
+        },
         tooltip: switch (item.isMissing) {
           true => '$name · ${l10n.missing}',
           false => name,
         },
-        labelStyle: switch (item.isMissing || isHidden) {
+        labelStyle: switch (item.isMissing || isHidden || showsWords) {
           true => TextStyle(color: palette.mutedText),
           false => null,
         },

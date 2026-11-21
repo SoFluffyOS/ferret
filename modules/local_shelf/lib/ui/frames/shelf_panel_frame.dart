@@ -5,8 +5,9 @@ import 'package:local_shelf/ui/widgets/shelf_corners.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The shelf in the floating panel that a drag brings over other apps:
-/// the same box as in the popover, filling the panel. The panel takes the
-/// popover's corner, so the box sits in it at the same gap and corner.
+/// the same panel as in the popover, header inside, filling the window.
+/// The window takes the popover's corner, so the box sits in it at the
+/// same gap on every side and the same corner.
 class ShelfPanelFrame extends StatelessWidget {
   const ShelfPanelFrame({
     super.key,
@@ -24,8 +25,9 @@ class ShelfPanelFrame extends StatelessWidget {
 
   static double get radius => Corners.floatingPanel;
 
-  /// Room for the header and one row of tiles.
-  static Size get size => Size(Spacing.d16 * 20, Spacing.d8 * 19);
+  /// Room for the box with its header and one row of tiles, [inset] from
+  /// every edge.
+  static Size get size => Size(Spacing.d16 * 20, Spacing.d4 * 35);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class ShelfPanelFrame extends StatelessWidget {
         child: ShelfBoxFrame(
           onOpenList: onOpenList,
           expands: true,
-          padding: EdgeInsets.fromLTRB(inset, Spacing.d4, inset, inset),
+          padding: EdgeInsets.all(inset),
         ),
       ),
     );

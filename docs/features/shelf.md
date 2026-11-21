@@ -12,8 +12,8 @@ You're moving a few things from one place to another: two PDFs from Downloads, a
 The shelf is a box to put things down for a moment. It lives at the bottom of the Ferret popover, always open, so you see what's in it at a glance and take it out in one move.
 
 <figure class="shot shot-narrow">
-  <img src="/assets/docs/shelf-items-light.webp" alt="The Ferret popover with the shelf box at the bottom showing a link, text, a photo, a folder and a file as tiles with their names" width="380" height="560" loading="lazy">
-  <img src="/assets/docs/shelf-items-dark.webp" alt="The Ferret popover with the shelf box at the bottom showing a link, text, a photo, a folder and a file as tiles with their names" width="380" height="560" loading="lazy">
+  <img src="/assets/docs/shelf-items-light.webp" alt="The Ferret popover with the shelf box at the bottom with Shelf, 5 items and Clear along its top, and tiles below: a link showing its site, text showing its first words, a photo, a folder and a file" width="380" height="560" loading="lazy">
+  <img src="/assets/docs/shelf-items-dark.webp" alt="The Ferret popover with the shelf box at the bottom with Shelf, 5 items and Clear along its top, and tiles below: a link showing its site, text showing its first words, a photo, a folder and a file" width="380" height="560" loading="lazy">
 </figure>
 
 ## 📥 Put things in
@@ -67,6 +67,8 @@ All of this lives in **Settings → Clipboard → Shelf**, on a Mac.
 
 Every tile is the real thing. No clicking first.
 
+Text shows its first words right in the tile, and a link shows its site. Five clips never look the same.
+
 - **Drag a tile** to take just that one.
 - **Drag All** at the start of the box: everything goes at once.
 - **⌘-click** a few tiles (or **⇧-click** for a range), then drag one of them: the whole selection goes.
@@ -74,7 +76,7 @@ Every tile is the real thing. No clicking first.
 
 Point at a tile and a ⓧ shows up in its corner to take it off. Right-click for **Quick Look**, **Show in Finder**, **Copy** (text and links) or **Remove**. **Space** previews what you selected, **Delete** takes it off.
 
-**Clear** in the box's corner takes everything off. With six things or more, it asks once more. Your files stay where they are either way.
+**Clear** at the top of the box takes everything off. With six things or more, it asks once more. Your files stay where they are either way.
 
 ## 📋 The list
 

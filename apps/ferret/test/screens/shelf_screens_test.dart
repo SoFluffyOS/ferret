@@ -1,5 +1,5 @@
 // The shelf box at the bottom of the Mac popover: empty, with files, a
-// phone photo, text and a link, with a selection, under the pointer, while
+// phone photo, text and a link, five texts, with a selection, under the pointer, while
 // something is dragged over it, with a missing file, with previews hidden,
 // its list page, the floating panel a drag brings over other apps, and
 // Settings → Shelf with the ways to reach it while dragging. Renders into temp/screens as `shelf_<name>_*.png`.
@@ -168,6 +168,25 @@ final _screens = <String, _Script>{
   'empty_drop_over': (tester, rig, store) async =>
       shelfViewModel(tester).hover(over: true),
   'items': (tester, rig, store) => fillShelf(tester, store),
+  // Five copied texts: each tile shows its own first words.
+  'texts': (tester, rig, store) async {
+    await tester.runAsync(() async {
+      await shelfViewModel(tester).setKeepCopies(true);
+      for (final text in const [
+        'ssh simon@192.168.1.20 -p 2222',
+        'Meet at the north entrance, 7:30. Bring the tickets.',
+        'https://github.com/simonpham/ferret/issues/42',
+        'Wi-Fi password: blue-otter-1984',
+        'Order #A-55102 ships on Friday',
+      ]) {
+        await store.keepText(
+          text,
+          isLink: text.startsWith('https://'),
+          source: .copied,
+        );
+      }
+    });
+  },
   'drop_over': (tester, rig, store) async {
     await fillShelf(tester, store);
     await rig.settle(tester);

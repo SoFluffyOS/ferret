@@ -85,8 +85,14 @@ void main() {
     await tester.pump();
   }
 
-  Finder tile(String name) =>
-      find.ancestor(of: find.text(name), matching: find.byType(ShelfTile));
+  Finder tile(String name) => find.byWidgetPredicate(
+    (widget) => widget is ShelfTile && widget.tooltip == name,
+  );
+
+  final allTile = find.ancestor(
+    of: find.text('All 2'),
+    matching: find.byType(ShelfTile),
+  );
 
   tearDown(() => root.deleteSync(recursive: true));
 
@@ -110,8 +116,8 @@ void main() {
     expect(find.text('2 items'), findsOneWidget);
     expect(find.text('All 2'), findsOneWidget);
     expect(find.byType(ShelfThumb), findsNWidgets(2));
-    expect(find.text('note'), findsOneWidget);
-    expect(find.text('ex.co/a'), findsOneWidget);
+    expect(tile('note'), findsOneWidget);
+    expect(tile('ex.co/a'), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Open the list'));
     expect(opened, 1);
@@ -134,7 +140,7 @@ void main() {
     await keep(tester, ['note', 'https://ex.co/a']);
     await tester.pumpWidget(boxApp());
 
-    await dragFrom(tester, tile('All 2'));
+    await dragFrom(tester, allTile);
     await settle(tester);
 
     expect(dragOut.fileDrags, hasLength(1));
@@ -210,8 +216,8 @@ void main() {
     await settle(tester);
     await mouse.removePointer();
 
-    expect(find.text('take me'), findsNothing);
-    expect(find.text('keep me'), findsOneWidget);
+    expect(tile('take me'), findsNothing);
+    expect(tile('keep me'), findsOneWidget);
   });
 
   testWidgets('Clear in the box asks once more for many items', (
@@ -241,6 +247,150 @@ void main() {
     expect(find.text('1 item, hidden'), findsOneWidget);
     expect(find.byType(ShelfThumb), findsNothing);
     expect(find.text('Clear'), findsNothing);
+  });
+
+  testWidgets('the header sits inside the box, along its top', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    await keep(tester, ['note', 'https://ex.co/a']);
+    await tester.pumpWidget(boxApp());
+
+    final box = tester.getRect(
+      find
+          .descendant(
+            of: find.byType(ShelfBoxFrame),
+            matching: find.byType(AnimatedContainer),
+          )
+          .first,
+    );
+    final title = tester.getRect(find.text('Shelf'));
+    final list = tester.getRect(
+      find.byWidgetPredicate(
+        (widget) => widget is Tappable && widget.tooltip == 'Open the list',
+      ),
+    );
+    final firstTile = tester.getRect(allTile);
+
+    expect(box.contains(title.center), isTrue);
+    expect(box.contains(tester.getCenter(find.text('Clear'))), isTrue);
+    expect(title.bottom, lessThanOrEqualTo(firstTile.top));
+    // The list button sits in the box's top corner, as far from the top
+    // as from the end, so its corner follows the box's.
+    expect(list.top - box.top, ShelfBoxFrame.inset);
+    expect(box.right - list.right, ShelfBoxFrame.inset);
+    expect(firstTile.left - box.left, ShelfBoxFrame.inset);
+
+    expect(box.bottom - firstTile.bottom, ShelfBoxFrame.inset);
+  });
+
+  testWidgets('text shows its first words in the tile, a link its site', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    await keep(tester, [
+      'Meet at the north entrance',
+      'https://www.example.org/tickets/4471',
+    ]);
+    await tester.pumpWidget(boxApp());
+
+    final text = find.descendant(
+      of: find.byType(ShelfThumb),
+      matching: find.text('Meet at the north entrance'),
+    );
+    expect(text, findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(ShelfThumb),
+        matching: find.text('example.\u200Borg'),
+      ),
+      findsOneWidget,
+    );
+    // The name under the square says only what kind it is, not the
+    // words again.
+    expect(find.text('Text'), findsOneWidget);
+    expect(find.text('Link'), findsOneWidget);
+    expect(tile('Meet at the north entrance'), findsOneWidget);
+    expect(tile('example.org/tickets/4471'), findsOneWidget);
+    final square = tester.getRect(find.byType(ShelfThumb).last);
+    final words = tester.getRect(text);
+    expect(words.left - square.left, ShelfThumb.textInset);
+    expect(words.top - square.top, ShelfThumb.textInset);
+    expect(words.right, lessThanOrEqualTo(square.right));
+  });
+
+  testWidgets('the box is one Tab stop; Clear and the list are reachable', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    await keep(tester, ['first', 'second']);
+    await tester.pumpWidget(boxApp());
+
+    final labels = <String?>[];
+    for (var press = 0; press < 6; press++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      labels.add(FocusManager.instance.primaryFocus?.debugLabel);
+    }
+    expect(labels.where((label) => label == 'shelf box'), isNotEmpty);
+
+    final semantics = tester.ensureSemantics();
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Open the list').first),
+      isSemantics(
+        label: 'Open the list',
+        isButton: true,
+        hasTapAction: true,
+      ),
+    );
+    expect(find.bySemanticsLabel('Clear'), findsWidgets);
+    semantics.dispose();
+  });
+
+  testWidgets('the floating panel holds the header and a row of tiles', (
+    tester,
+  ) async {
+    await setUpShelf(tester);
+    await keep(tester, ['a note that runs long enough for two lines']);
+    await tester.runAsync(() async {
+      final file = File(p.join(root.path, 'a file with a long name.pdf'))
+        ..writeAsStringSync('%PDF');
+      await store.keepFiles([file.path], source: .dropped);
+    });
+    await tester.pumpWidget(
+      testApp(
+        Center(
+          child: SizedBox.fromSize(
+            size: ShelfPanelFrame.size,
+            child: ChangeNotifierProvider.value(
+              value: viewModel,
+              child: ShelfPanelFrame(onOpenList: () {}, onHover: (_) {}),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    final panel = tester.getRect(find.byType(ShelfPanelFrame));
+    final box = tester.getRect(
+      find
+          .descendant(
+            of: find.byType(ShelfBoxFrame),
+            matching: find.byType(AnimatedContainer),
+          )
+          .first,
+    );
+    // The box sits as far from every edge of the panel.
+    for (final gap in [
+      box.left - panel.left,
+      box.top - panel.top,
+      panel.right - box.right,
+      panel.bottom - box.bottom,
+    ]) {
+      expect(gap, ShelfPanelFrame.inset);
+    }
   });
 
   testWidgets('the page lists items and takes one off', (tester) async {
