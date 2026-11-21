@@ -51,6 +51,17 @@ abstract final class FeatureAccess {
         (offers.contains(second) && uses.contains(first));
   }
 
+  /// Whether a phone offers to set up [featureId] in Do more. Notifications,
+  /// texts and calls promise to show "on your computer", so they wait
+  /// until a computer is among the [paired] devices.
+  static bool offeredWith(String featureId, Iterable<Platform> paired) =>
+      switch (featureId) {
+        'notifications' || 'messages' || 'calls' => paired.any(
+          (platform) => _computers.contains(_kindOf(platform)),
+        ),
+        _ => true,
+      };
+
   static const _everyone = {
     _Kind.android,
     _Kind.iphone,

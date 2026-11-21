@@ -112,4 +112,19 @@ void main() {
     expect(listed(mac, Platform.PLATFORM_UNSPECIFIED), shared);
     expect(FeatureAccess.reaches('someday', iphone, iphone), isTrue);
   });
+
+  test('a phone offers calls, texts and notifications once a computer is '
+      'paired', () {
+    const promised = ['notifications', 'messages', 'calls'];
+    for (final feature in promised) {
+      expect(FeatureAccess.offeredWith(feature, const []), isFalse);
+      expect(FeatureAccess.offeredWith(feature, const [iphone]), isFalse);
+      expect(FeatureAccess.offeredWith(feature, const [android]), isFalse);
+      expect(FeatureAccess.offeredWith(feature, const [iphone, mac]), isTrue);
+      expect(FeatureAccess.offeredWith(feature, const [windows]), isTrue);
+      expect(FeatureAccess.offeredWith(feature, const [linux]), isTrue);
+    }
+    expect(FeatureAccess.offeredWith('drop', const [iphone]), isTrue);
+    expect(FeatureAccess.offeredWith('clipboard', const []), isTrue);
+  });
 }

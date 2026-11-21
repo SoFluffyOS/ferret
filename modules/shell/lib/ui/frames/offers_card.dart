@@ -1,8 +1,11 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
+import 'package:shell/services/services.dart';
 import 'package:shell/ui/frames/feature_changes_listener.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -15,13 +18,24 @@ class OffersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
+    // Rebuilds when a pairing brings the first computer, or takes the last.
+    final offered = context.select<EngineHost, Set<String>>(
+      (host) => {
+        for (final feature in scope.features)
+          if (FeatureAccess.offeredWith(feature.featureId, [
+            for (final status in host.devices) status.device.platform,
+          ]))
+            feature.featureId,
+      },
+    );
 
     return FeatureChangesListener(
       features: scope.features,
       builder: (context) {
         final offers = [
           for (final feature in scope.features)
-            ?feature.offerFor(context, scope.featureContext),
+            if (offered.contains(feature.featureId))
+              ?feature.offerFor(context, scope.featureContext),
         ];
         if (offers.isEmpty) {
           return const SizedBox.shrink();

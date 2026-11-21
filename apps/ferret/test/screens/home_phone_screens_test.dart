@@ -1,6 +1,6 @@
 // Home on an Android phone paired with a Mac and an iPhone: the iPhone row
-// with and without Fix, and the Stay connected card next to Do more with the
-// Quick Settings tile offer. Renders into temp/screens as
+// with and without Fix, the Stay connected card next to Do more with the
+// Quick Settings tile offer, and Do more with only an iPhone paired. Renders into temp/screens as
 // `home_phone_<name>_*.png`. Run from apps/ferret:
 //
 //   fvm flutter test test/screens/home_phone_screens_test.dart
@@ -100,6 +100,11 @@ final _screens = <String, _Script>{
     expect(find.text('Fix'), findsOneWidget);
   },
   'stay_and_offers': (tester, rig) async {
+    await rig.pairConnectedComputer(
+      tester,
+      computerFeatures: appFeatures(),
+      name: 'Simon’s MacBook Pro',
+    );
     await rig.open(
       tester,
       FerretPage(
@@ -111,7 +116,22 @@ final _screens = <String, _Script>{
         ],
       ),
     );
-    expect(find.text('Add tile'), findsOneWidget);
+    expect(find.text('Add tile'), findsWidgets);
+    expect(find.text('Calls'), findsWidgets);
+  },
+  // Calls, texts and notifications promise a computer, so a phone paired
+  // only with an iPhone isn't offered them.
+  'iphone_only': (tester, rig) async {
+    await rig.addOfflinePhone(
+      tester,
+      name: 'iPhone 12 mini',
+      id: _iphoneId,
+      platform: .PLATFORM_IOS,
+    );
+    await rig.settle(tester);
+    expect(find.text('Calls'), findsNothing);
+    expect(find.text('Messages'), findsNothing);
+    expect(find.text('Notifications'), findsNothing);
   },
   'local_network_ask': (tester, rig) async {
     await rig.open(
