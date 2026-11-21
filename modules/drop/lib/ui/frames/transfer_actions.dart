@@ -7,12 +7,9 @@ import 'package:drop/view_models/view_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Where to make room after files didn't fit: Open Settings on Android,
-/// Show in Finder (or folder) on a computer.
-String makeRoomLabel(DropLocalizations l10n) => switch (defaultTargetPlatform) {
-  .android => l10n.actionStorageSettings,
-  _ => TransferTexts(l10n).revealLabel(),
-};
+/// Where to make room after files didn't fit, as [TransferTexts] says it.
+String makeRoomLabel(DropLocalizations l10n) =>
+    TransferTexts(l10n).makeRoomLabel();
 
 /// The buttons each transfer offers, given where it stands.
 List<TransferAction> transferActions(

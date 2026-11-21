@@ -138,6 +138,14 @@ class TransferTexts {
         _ => l10n.actionReveal,
       };
 
+  /// Where to make room after files didn't fit: Open Settings on Android,
+  /// Show in Finder (or folder) on a computer.
+  String makeRoomLabel({TargetPlatform? platform}) =>
+      switch (platform ?? defaultTargetPlatform) {
+        .android => l10n.actionStorageSettings,
+        final other => revealLabel(platform: other),
+      };
+
   /// Speed and time left while bytes move, or null. Over a slow link
   /// ([isWeak]) it says so.
   String? speed(Transfer transfer, {bool isWeak = false}) {

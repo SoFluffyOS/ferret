@@ -147,6 +147,7 @@ class DropFeatureUi extends FeatureUi {
       onOpen: viewModel.open,
       onReveal: viewModel.reveal,
       onCopy: viewModel.copyText,
+      onMakeRoom: viewModel.makeRoom,
       folderLabel: () => viewModel.receiveFolderText(_l10n()),
     )..start();
     _notices = notices;

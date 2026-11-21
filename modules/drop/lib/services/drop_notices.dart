@@ -15,6 +15,7 @@ class DropNotices {
     required this.onOpen,
     required this.onReveal,
     required this.onCopy,
+    this.onMakeRoom,
     this.folderLabel,
     this.progressInterval = const Duration(seconds: 1),
   });
@@ -24,6 +25,7 @@ class DropNotices {
   static const textCategory = 'drop.text';
   static const failedCategory = 'drop.failed';
   static const offerCategory = 'drop.offer';
+  static const roomCategory = 'drop.room';
 
   static const openAction = 'open';
   static const revealAction = 'reveal';
@@ -32,6 +34,7 @@ class DropNotices {
   static const cancelAction = 'cancel';
   static const acceptAction = 'accept';
   static const declineAction = 'decline';
+  static const roomAction = 'room';
 
   static const _prefix = 'drop.';
 
@@ -41,6 +44,11 @@ class DropNotices {
   final Future<void> Function(Transfer transfer) onOpen;
   final Future<void> Function(Transfer transfer) onReveal;
   final Future<void> Function(String text) onCopy;
+
+  /// Opens the place to make room after files didn't fit here: storage
+  /// settings on Android, the receive folder on a computer. Without it,
+  /// the notice has no button for that.
+  final Future<void> Function()? onMakeRoom;
 
   /// Where received files land, as people know the folder, for "Saved to
   /// Downloads › Ferret". Null or empty says just "Saved".
@@ -74,6 +82,16 @@ class DropNotices {
     NoticeCategory(
       id: failedCategory,
       actions: [NoticeAction(id: retryAction, label: l10n.actionRetry)],
+    ),
+    NoticeCategory(
+      id: roomCategory,
+      actions: [
+        NoticeAction(
+          id: roomAction,
+          label: TransferTexts(l10n).makeRoomLabel(),
+          opensApp: true,
+        ),
+      ],
     ),
     NoticeCategory(
       id: offerCategory,
@@ -188,6 +206,18 @@ class DropNotices {
         groupKey: transfer.deviceId,
         silent: true,
       ),
+      .failed when transfer.failure == .outOfSpace && !transfer.isOutgoing =>
+        LocalNotice(
+          id: id,
+          channel: .transfers,
+          title: l10n.activityFrom(title, device),
+          body: texts.failure(transfer),
+          category: switch (onMakeRoom) {
+            null => null,
+            _ => roomCategory,
+          },
+          groupKey: transfer.deviceId,
+        ),
       .failed => LocalNotice(
         id: id,
         channel: .transfers,
@@ -272,6 +302,8 @@ class DropNotices {
         feature.answer(transfer.id, accept: true);
       case declineAction:
         feature.answer(transfer.id, accept: false);
+      case roomAction:
+        await onMakeRoom?.call();
     }
   }
 }

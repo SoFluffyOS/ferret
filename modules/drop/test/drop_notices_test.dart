@@ -124,6 +124,70 @@ void main() {
     expect(opened, ['t1']);
   });
 
+  group('files that did not fit here', () {
+    Transfer turnedDown() => sampleTransfer(
+      status: .failed,
+      failure: .outOfSpace,
+    ).copyWith(freeBytes: 1024 * 1024);
+
+    test(
+      'say what came and how short it is, with a way to make room',
+      () async {
+        final rooms = <String>[];
+        final withRoom = DropNotices(
+          feature: link.laptop.feature,
+          notifier: notifier,
+          l10n: lookupDropLocalizations(const Locale('en')),
+          onOpen: (transfer) async {},
+          onReveal: (transfer) async {},
+          onCopy: (text) async {},
+          onMakeRoom: () async => rooms.add('room'),
+        )..start();
+        addTearDown(withRoom.dispose);
+        await notices.dispose();
+
+        put(turnedDown());
+        await pumpEventQueue();
+
+        final notice = notifier.shown.single;
+        expect(notice.title, 'photo.jpg from Pixel');
+        expect(
+          notice.body,
+          'Not enough space for photo.jpg: needs 4 MB, 1 MB free',
+        );
+        expect(notice.category, DropNotices.roomCategory);
+
+        notifier.respond(
+          NoticeResponse(noticeId: notice.id, actionId: DropNotices.roomAction),
+        );
+        await pumpEventQueue();
+        expect(rooms, ['room']);
+      },
+    );
+
+    test('have no button when there is no place to make room', () async {
+      put(turnedDown());
+      await pumpEventQueue();
+
+      expect(notifier.shown.single.category, isNull);
+    });
+
+    test('Open Settings on Android, Show in Finder on a Mac', () {
+      final l10n = lookupDropLocalizations(const Locale('en'));
+      String labelOn(TargetPlatform platform) {
+        debugDefaultTargetPlatformOverride = platform;
+        final room = DropNotices.categories(
+          l10n,
+        ).firstWhere((category) => category.id == DropNotices.roomCategory);
+        debugDefaultTargetPlatformOverride = null;
+        return room.actions.single.label;
+      }
+
+      expect(labelOn(.android), 'Open Settings');
+      expect(labelOn(.macOS), 'Show in Finder');
+    });
+  });
+
   test('a cancelled transfer removes its notice', () async {
     put(sampleTransfer());
     put(sampleTransfer(status: .cancelled));
