@@ -119,17 +119,30 @@ class _NotNowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.shellL10n;
+    final isTouch = switch (context.fluffyTargetPlatform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => false,
+      _ => true,
+    };
+    // A finger needs the HIG's 44 points; the icon stays small inside.
+    final target = switch (isTouch) {
+      true => Spacing.d44,
+      false => Spacing.d24,
+    };
 
     return Tappable(
       tooltip: l10n.offersNotNowTooltip,
       semanticLabel: l10n.offersNotNow,
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.all(Spacing.d4),
-        child: Icon(
-          LucideIcons.x,
-          size: Spacing.d14,
-          color: context.palette.mutedText,
+      child: SizedBox.square(
+        dimension: target,
+        child: Center(
+          child: Icon(
+            LucideIcons.x,
+            size: Spacing.d14,
+            color: context.palette.mutedText,
+          ),
         ),
       ),
     );

@@ -11,6 +11,7 @@ enum PlaceColor {
   pink(Color(0xFFD8315B)),
   purple(Color(0xFF8944AB)),
   indigo(Color(0xFF5856D6)),
+  cyan(Color(0xFF0071A4)),
   brown(Color(0xFF96785A)),
   grey(Color(0xFF6C6C70));
 
