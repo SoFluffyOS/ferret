@@ -13,6 +13,7 @@ class FeatureStory {
     required this.docs,
     required this.docsLabel,
     required this.frame,
+    this.isBeta = false,
   });
 
   final String id;
@@ -27,6 +28,9 @@ class FeatureStory {
   final String docs;
   final String docsLabel;
   final ShotFrame frame;
+
+  /// Works in my tests but hasn't met enough real devices yet.
+  final bool isBeta;
 }
 
 /// What a render shows, so it gets the right corners around it: a computer

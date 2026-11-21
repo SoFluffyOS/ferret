@@ -115,6 +115,28 @@ abstract final class LandingContent {
       docsLabel: 'Send files and folders',
     ),
     FeatureStory(
+      id: 'shelf',
+      icon: 'inbox',
+      title: 'A shelf on your Mac',
+      lead:
+          'You drag one file, go back for the next, and the first window is '
+          'gone. Put things on the shelf instead.',
+      points: [
+        'Files, photos, text and links wait at the bottom of the popover. Drag them out into any app, or onto a device.',
+        'Mid-drag and the popover is closed? Rest on the menubar icon, or **shake** the pointer.',
+        'Turn on **Keep copies** and what you copy lands there too.',
+      ],
+      shot: 'shelf',
+      frame: ShotFrame.popover,
+      alt:
+          'The Ferret popover with the shelf at the bottom: a link, a note, a '
+          'photo, a folder and a PDF, with Clear and the list',
+      width: 760,
+      height: 1120,
+      docs: '/docs/features/shelf',
+      docsLabel: 'How the shelf works',
+    ),
+    FeatureStory(
       id: 'phone',
       icon: 'bell',
       title: 'Your phone, on your computer',
@@ -160,6 +182,29 @@ abstract final class LandingContent {
       docsLabel: 'Show your phone’s screen',
     ),
     FeatureStory(
+      id: 'second-display',
+      icon: 'monitor',
+      title: 'A second display',
+      lead:
+          'One screen is never enough. The old MacBook or Android tablet on '
+          'your desk becomes one more for your Mac.',
+      points: [
+        'Not a mirror: macOS sees a real monitor. Drag windows onto it and arrange it in **Displays**.',
+        'Sharp at the screen’s own size, Retina included.',
+        'The other device asks first. Tap **Allow**, and **Stop** whenever you like.',
+      ],
+      shot: 'second-display',
+      frame: ShotFrame.window,
+      alt:
+          'The Ferret window on a MacBook Air: MacBook Pro wants to use this '
+          'Mac as a display, with Allow and Don’t allow',
+      width: 1400,
+      height: 728,
+      docs: '/docs/features/second-display',
+      docsLabel: 'Use another device as a display',
+      isBeta: true,
+    ),
+    FeatureStory(
       id: 'photos',
       icon: 'images',
       title: 'Phone photos, no cable',
@@ -202,23 +247,6 @@ abstract final class LandingContent {
   ];
 
   static const extras = <FeatureExtra>[
-    (
-      icon: 'inbox',
-      title: 'A shelf on your Mac',
-      body:
-          'Put files, photos, text and links down for a moment at the bottom '
-          'of the popover. Drag them out again into any app, or onto a '
-          'device.',
-      docs: '/docs/features/shelf',
-    ),
-    (
-      icon: 'monitor',
-      title: 'A second display',
-      body:
-          'Your other Mac or your Android tablet becomes one more screen for '
-          'your Mac. In beta.',
-      docs: '/docs/features/second-display',
-    ),
     (
       icon: 'arrow-right-left',
       title: 'Continue where you left off',
