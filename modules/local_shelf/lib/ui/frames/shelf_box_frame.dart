@@ -32,21 +32,22 @@ class ShelfBoxFrame extends StatefulWidget {
   /// Opens the shelf as a list, with Keep copies.
   final VoidCallback onOpenList;
 
-  /// Around the box; the page's side inset when null, with a little room
-  /// below.
+  /// Around the box; when null, the same gap from the popover's sides and
+  /// bottom ([ShelfCorners.boxInset]), so the box is concentric with the
+  /// window's corner.
   final EdgeInsetsGeometry? padding;
 
   /// The box takes all the height it is given, such as in the floating
-  /// panel, with what it holds centred.
+  /// panel: its tiles in its top corner, one line in the middle.
   final bool expands;
 
   /// From this many items on, Clear asks once more.
   static const confirmsFrom = 6;
 
-  /// How far the tiles sit inside the box. The box's corner is
-  /// concentric with theirs.
-  static double get inset => Spacing.d8;
-  static double get radius => Corners.around(ShelfTile.radius, inset);
+  /// How far the tiles sit inside the box, and the box's corner:
+  /// concentric with the window's at its gap from the window's edges.
+  static double get inset => ShelfCorners.tileInset;
+  static double get radius => ShelfCorners.box;
 
   /// The empty and the hidden box: one short line.
   static double get compactHeight => Spacing.d56;
@@ -207,9 +208,12 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     final box = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
       constraints: BoxConstraints(minHeight: ShelfBoxFrame.compactHeight),
-      alignment: switch (widget.expands) {
-        true => Alignment.center,
-        false => null,
+      // In the panel a row of tiles stays in the box's top corner, at the
+      // same gap from its side and top; one line sits in the middle.
+      alignment: switch ((widget.expands, items.isEmpty || isHidden)) {
+        (true, true) => Alignment.center,
+        (true, false) => AlignmentDirectional.topStart,
+        (false, _) => null,
       },
       decoration: ShapeDecoration(
         color: switch (isDropOver) {
@@ -230,7 +234,13 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
       color: palette.background,
       child: Padding(
         padding:
-            widget.padding ?? EdgeInsets.fromLTRB(side, 0, side, Spacing.d8),
+            widget.padding ??
+            EdgeInsets.fromLTRB(
+              ShelfCorners.boxInset,
+              0,
+              ShelfCorners.boxInset,
+              ShelfCorners.boxInset,
+            ),
         child: DropReceiverRegion(
           receiver: viewModel,
           child: Semantics(
@@ -244,7 +254,20 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
               },
               crossAxisAlignment: .stretch,
               children: [
-                _header(context, viewModel, items, selected, isHidden),
+                _header(
+                  context,
+                  viewModel,
+                  items,
+                  selected,
+                  isHidden,
+                  // In the popover the box reaches out past the page's
+                  // side; its header stays in line with the page's
+                  // headings.
+                  outset: switch (widget.padding) {
+                    null => side - ShelfCorners.boxInset,
+                    _ => 0,
+                  },
+                ),
                 _fill(switch (items.isEmpty && !isDropOver) {
                   true => DashedOutline(
                     radius: ShelfBoxFrame.radius,
@@ -272,8 +295,9 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
     ShelfViewModel viewModel,
     List<ShelfItem> items,
     Set<String> selected,
-    bool isHidden,
-  ) {
+    bool isHidden, {
+    required double outset,
+  }) {
     final l10n = context.shelfL10n;
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
@@ -287,8 +311,8 @@ class _ShelfBoxFrameState extends State<ShelfBoxFrame>
 
     return Padding(
       padding: EdgeInsetsDirectional.only(
-        start: PageInsets.row,
-        end: Spacing.d2,
+        start: outset + PageInsets.row,
+        end: outset + Spacing.d2,
         bottom: Spacing.d2,
       ),
       child: ConstrainedBox(

@@ -1,6 +1,7 @@
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
+import 'package:local_shelf/ui/widgets/shelf_corners.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -45,11 +46,11 @@ class ShelfTile extends StatefulWidget {
   final bool middleEllipsis;
 
   /// The thumbnail's side, its corner, and how far it sits inside the
-  /// tile. The tile's corner is concentric with the thumbnail's.
+  /// tile. Both corners follow the box's ([ShelfCorners]).
   static double get thumbSize => Spacing.d52;
-  static double get thumbRadius => Spacing.d8;
-  static double get inset => Spacing.d4;
-  static double get radius => Corners.around(thumbRadius, inset);
+  static double get thumbRadius => ShelfCorners.thumb;
+  static double get inset => ShelfCorners.thumbInset;
+  static double get radius => ShelfCorners.tile;
   static double get width => thumbSize + inset * 2;
 
   @override

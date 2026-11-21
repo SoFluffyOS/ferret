@@ -29,6 +29,17 @@ void main() {
     expect(Corners.inner(12, 10), 0);
   });
 
+  test('the popover\'s corner is macOS\'s 20, and what sits in it keeps '
+      'a floor', () {
+    expect(Corners.popover, 20);
+    expect(Corners.floatingPanel, Corners.popover);
+    expect(Corners.concentric(Corners.popover, 8), 12);
+    expect(Corners.concentric(12, 4), 8);
+    expect(Corners.concentric(8, 4), 4);
+    expect(Corners.concentric(8, 8), Corners.windowMinimum);
+    expect(Corners.concentric(8, 8, minimum: 12), 12);
+  });
+
   test('a control in a card shares its corner on touch screens', () {
     for (final platform in TargetPlatform.values) {
       debugDefaultTargetPlatformOverride = platform;

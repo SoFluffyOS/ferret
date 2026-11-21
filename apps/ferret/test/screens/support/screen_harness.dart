@@ -641,7 +641,11 @@ class ScreenRig {
     }
 
     await tester.runAsync(() async {
-      final image = await boundary.toImage(pixelRatio: capturePixelRatio);
+      final shot = await boundary.toImage(pixelRatio: capturePixelRatio);
+      final image = switch (size.isPopover) {
+        true => await _inPopoverWindow(shot, brightness),
+        false => shot,
+      };
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
       if (bytes == null) {
@@ -825,4 +829,43 @@ class QuietNotifier implements LocalNotifier {
 
   @override
   Stream<NoticeResponse> get responses => const Stream.empty();
+}
+
+extension on CaptureSize {
+  /// The Mac menubar popover, in any of its heights.
+  bool get isPopover => platform == .macOS && name.startsWith('popover');
+}
+
+/// [shot] as the Mac popover shows it: macOS clips its window to a
+/// continuous corner of [Corners.popover] and draws a hairline round it,
+/// so the corners of a popover render are see-through and what sits at the
+/// window's edge can be checked against its real corner.
+Future<ui.Image> _inPopoverWindow(ui.Image shot, Brightness brightness) async {
+  final recorder = ui.PictureRecorder();
+  final canvas = ui.Canvas(recorder);
+  final width = shot.width.toDouble();
+  final height = shot.height.toDouble();
+  final window = RSuperellipse.fromRectAndRadius(
+    Rect.fromLTWH(0, 0, width, height),
+    Radius.circular(Corners.popover * capturePixelRatio),
+  );
+  canvas
+    ..clipRSuperellipse(window)
+    ..drawImage(shot, Offset.zero, ui.Paint())
+    ..drawRSuperellipse(
+      window.deflate(0.5),
+      ui.Paint()
+        ..style = .stroke
+        ..strokeWidth = 1
+        ..color = switch (brightness) {
+          Brightness.light => const Color(0x26000000),
+          Brightness.dark => const Color(0x33FFFFFF),
+        },
+    );
+  final image = await recorder.endRecording().toImage(
+    shot.width,
+    shot.height,
+  );
+  shot.dispose();
+  return image;
 }

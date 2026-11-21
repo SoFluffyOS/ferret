@@ -39,6 +39,26 @@ abstract final class Corners {
   /// Panels that float over a pane, such as the drop sheet or a QR frame.
   static double get panel => Spacing.d16;
 
+  /// The Mac menubar popover's own corner. macOS draws that window
+  /// (NSPopover), not Ferret: since macOS 26 its glass is a continuous
+  /// 20-point curve around the content, so anything at its edge is
+  /// concentric with 20.
+  static double get popover => Spacing.d20;
+
+  /// The windows Ferret draws itself next to the popover, such as the
+  /// shelf panel a drag brings over other apps: the popover's corner, so
+  /// the two read as one family and the same box fits both.
+  static double get floatingPanel => popover;
+
+  /// Shapes inside the popover or the floating panel never go under this,
+  /// like a concentric shape's minimum on Apple's platforms.
+  static double get windowMinimum => Spacing.d4;
+
+  /// [inner] with a floor: where the concentric radius would be smaller
+  /// than [minimum], the shape keeps [minimum].
+  static double concentric(double outer, double inset, {double? minimum}) =>
+      math.max(inner(outer, inset), minimum ?? windowMinimum);
+
   /// Under this a curve next to a bigger one looks like a mistake.
   static const double _smallest = 4;
 
