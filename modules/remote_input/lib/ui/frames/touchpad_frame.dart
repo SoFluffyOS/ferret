@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_input/l10n/l10n.dart';
 import 'package:remote_input/models/models.dart';
@@ -80,9 +79,9 @@ class _Asking extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(
-          LucideIcons.loaderCircle,
-          size: Spacing.d16,
+        FluffySpinner(
+          size: Spacing.d12,
+          strokeWidth: Spacing.d1 + Spacing.d0,
           color: palette.accent,
         ),
         Spacing.h8,

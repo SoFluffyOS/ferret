@@ -41,7 +41,27 @@ class DoctorCheckRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: .start,
           children: [
-            Icon(icon, size: Spacing.d18, color: color, semanticLabel: spoken),
+            switch (status) {
+              .running => Semantics(
+                label: spoken,
+                child: SizedBox.square(
+                  dimension: Spacing.d18,
+                  child: Center(
+                    child: FluffySpinner(
+                      size: Spacing.d14,
+                      strokeWidth: Spacing.d1 + Spacing.d0,
+                      color: color,
+                    ),
+                  ),
+                ),
+              ),
+              _ => Icon(
+                icon,
+                size: Spacing.d18,
+                color: color,
+                semanticLabel: spoken,
+              ),
+            },
             Spacing.h12,
             Expanded(
               child: Text(
