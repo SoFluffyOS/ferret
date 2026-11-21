@@ -19,7 +19,7 @@
   "pairTitle": "Thêm thiết bị",
   "pairShowCode": "Ghép bằng mã QR",
   "pairEnterCode": "Cách khác",
-  "pairIphoneBody": "iPhone không thể tự tìm thiết bị trên mạng. Trên máy tính, mở Ferret, bấm + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.",
+  "pairIphoneBody": "Máy tính sẽ hiện trong mục Lân cận khi Ferret đang mở trên cả hai. Không thấy? Trên máy tính, mở Ferret, bấm + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.",
   "pairShowCodeBody": "Trên điện thoại, mở Ferret và chạm +, rồi chọn Ghép đôi bằng mã QR.",
   "pairCopyLink": "Sao chép liên kết",
   "pairLinkCopied": "Đã sao chép",

@@ -65,7 +65,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairIphoneBody =>
-      'An iPhone can\'t look for devices on the network by itself. On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone\'s Camera.';
+      'Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone\'s Camera.';
 
   @override
   String get pairShowCodeBody =>

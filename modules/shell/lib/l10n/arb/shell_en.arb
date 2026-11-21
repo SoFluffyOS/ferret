@@ -21,7 +21,7 @@
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
   "pairEnterCode": "Other ways",
-  "pairIphoneBody": "An iPhone can't look for devices on the network by itself. On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone's Camera.",
+  "pairIphoneBody": "Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone's Camera.",
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Copied",
