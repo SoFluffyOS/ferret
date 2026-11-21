@@ -129,20 +129,23 @@ class TransferTile extends StatelessWidget {
             runSpacing: Spacing.d8,
             children: [
               for (final action in actions)
-                ButtonFocusRing(
-                  builder: (context, keyboardFocused) => Button(
-                    mainAxisSize: .min,
-                    variant: switch (action.primary) {
-                      true => ButtonVariant.primary,
-                      false => ButtonVariant.ghost,
-                    },
-                    borderWidth: switch (keyboardFocused) {
-                      true => 0,
-                      false => null,
-                    },
-                    label: action.label,
-                    icon: Icon(action.icon, size: Spacing.d14),
-                    onPressed: action.onPressed,
+                GhostFill(
+                  applies: !action.primary,
+                  child: ButtonFocusRing(
+                    builder: (context, keyboardFocused) => Button(
+                      mainAxisSize: .min,
+                      variant: switch (action.primary) {
+                        true => ButtonVariant.primary,
+                        false => ButtonVariant.ghost,
+                      },
+                      borderWidth: switch (keyboardFocused) {
+                        true => 0,
+                        false => null,
+                      },
+                      label: action.label,
+                      icon: Icon(action.icon, size: Spacing.d14),
+                      onPressed: action.onPressed,
+                    ),
                   ),
                 ),
             ],

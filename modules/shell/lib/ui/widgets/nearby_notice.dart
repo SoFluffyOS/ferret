@@ -46,19 +46,22 @@ class NearbyNotice extends StatelessWidget {
           ),
           if (actionLabel case final label?) ...[
             Spacing.v12,
-            ButtonFocusRing(
-              builder: (context, keyboardFocused) => Button(
-                mainAxisSize: .min,
-                variant: switch (isPrimary) {
-                  true => .primary,
-                  false => .ghost,
-                },
-                borderWidth: switch (keyboardFocused) {
-                  true => 0,
-                  false => null,
-                },
-                label: label,
-                onPressed: onAction,
+            GhostFill(
+              applies: !isPrimary,
+              child: ButtonFocusRing(
+                builder: (context, keyboardFocused) => Button(
+                  mainAxisSize: .min,
+                  variant: switch (isPrimary) {
+                    true => .primary,
+                    false => .ghost,
+                  },
+                  borderWidth: switch (keyboardFocused) {
+                    true => 0,
+                    false => null,
+                  },
+                  label: label,
+                  onPressed: onAction,
+                ),
               ),
             ),
           ],

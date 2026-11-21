@@ -39,26 +39,29 @@ class DeviceActions extends StatelessWidget {
       runSpacing: Spacing.d8,
       children: [
         for (final (position, action) in buttons.indexed)
-          ButtonFocusRing(
-            builder: (context, keyboardFocused) => Button(
-              mainAxisSize: .min,
-              // A label longer than the pane, at large text or in split
-              // screen, ends in "…" instead of running off the button.
-              titleExpand: .shrink,
-              variant: switch (position == 0 && hasPrimary) {
-                true => .primary,
-                false => .ghost,
-              },
-              // One ring when focused: the focus ring, not the outline too.
-              borderWidth: switch (keyboardFocused) {
-                true => 0,
-                false => null,
-              },
-              label: action.label,
-              tooltip: action.tooltip,
-              semanticLabel: action.tooltip,
-              icon: Icon(action.icon, size: Spacing.d16),
-              onPressed: action.onPressed,
+          GhostFill(
+            applies: !(position == 0 && hasPrimary),
+            child: ButtonFocusRing(
+              builder: (context, keyboardFocused) => Button(
+                mainAxisSize: .min,
+                // A label longer than the pane, at large text or in split
+                // screen, ends in "…" instead of running off the button.
+                titleExpand: .shrink,
+                variant: switch (position == 0 && hasPrimary) {
+                  true => .primary,
+                  false => .ghost,
+                },
+                // One ring when focused: the focus ring, not the outline too.
+                borderWidth: switch (keyboardFocused) {
+                  true => 0,
+                  false => null,
+                },
+                label: action.label,
+                tooltip: action.tooltip,
+                semanticLabel: action.tooltip,
+                icon: Icon(action.icon, size: Spacing.d16),
+                onPressed: action.onPressed,
+              ),
             ),
           ),
         if (behindMore.isNotEmpty)

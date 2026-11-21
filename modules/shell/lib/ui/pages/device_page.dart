@@ -254,22 +254,25 @@ class _Offline extends StatelessWidget {
           DeviceActions(actions: actions, moreLabel: l10n.homeMore),
           Spacing.v8,
         ],
-        ButtonFocusRing(
-          builder: (context, keyboardFocused) => Button(
-            variant: switch (actions.isEmpty) {
-              true => .primary,
-              false => .ghost,
-            },
-            borderWidth: switch (keyboardFocused) {
-              true => 0,
-              false => null,
-            },
-            titleExpand: .shrink,
-            label: l10n.deviceWhyShort,
-            tooltip: l10n.deviceWhyLong,
-            semanticLabel: l10n.deviceWhyLong,
-            onPressed: () => Navigator.of(context).push(
-              ferretRoute<void>(DoctorPage(deviceId: status.device.id)),
+        GhostFill(
+          applies: actions.isNotEmpty,
+          child: ButtonFocusRing(
+            builder: (context, keyboardFocused) => Button(
+              variant: switch (actions.isEmpty) {
+                true => .primary,
+                false => .ghost,
+              },
+              borderWidth: switch (keyboardFocused) {
+                true => 0,
+                false => null,
+              },
+              titleExpand: .shrink,
+              label: l10n.deviceWhyShort,
+              tooltip: l10n.deviceWhyLong,
+              semanticLabel: l10n.deviceWhyLong,
+              onPressed: () => Navigator.of(context).push(
+                ferretRoute<void>(DoctorPage(deviceId: status.device.id)),
+              ),
             ),
           ),
         ),

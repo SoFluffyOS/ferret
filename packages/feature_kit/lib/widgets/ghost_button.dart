@@ -4,7 +4,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The design system's outlined (ghost) button that wears one ring at a
 /// time: focused from the keyboard, its grey outline gives way to the
-/// accent focus ring. Takes the same arguments as `Button`.
+/// accent focus ring. Takes the same arguments as `Button`. In dark mode
+/// it shows the surface under it inside its outline ([GhostFill]).
 class GhostButton extends StatelessWidget {
   const GhostButton({
     super.key,
@@ -51,7 +52,7 @@ class GhostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonFocusRing(
+    final button = ButtonFocusRing(
       builder: (context, keyboardFocused) => Button(
         variant: .ghost,
         label: label,
@@ -77,6 +78,40 @@ class GhostButton extends StatelessWidget {
         labelTextAlign: labelTextAlign,
         child: child,
       ),
+    );
+    return GhostFill(child: button);
+  }
+}
+
+/// Under [child], the kit's ghost (outlined) buttons show the surface they
+/// sit on instead of a fill of their own. In dark mode the kit fills them
+/// with the page's black, which reads as a hole on a lifted surface such
+/// as a card or a dialog. Light mode keeps the kit's white fill. Wrap only
+/// ghost buttons: a filled button picks its label colour from the same
+/// theme colour.
+class GhostFill extends StatelessWidget {
+  const GhostFill({super.key, required this.child, this.applies = true});
+
+  final Widget child;
+
+  /// False leaves [child] as it is, for a button that is only sometimes
+  /// a ghost.
+  final bool applies;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.fluffyTheme;
+    if (!applies || !theme.isDark) {
+      return child;
+    }
+
+    // The kit's ghost fill in dark mode is neutral7; nothing else a ghost
+    // button draws there uses it, so only the fill turns see-through.
+    return FluffyTheme(
+      data: theme.copyWith(
+        colors: theme.colors.copyWith(neutral7: const Color(0x00000000)),
+      ),
+      child: child,
     );
   }
 }

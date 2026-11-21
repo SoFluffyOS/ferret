@@ -128,38 +128,44 @@ class _DoctorPageState extends State<DoctorPage> {
         for (final (index, fix) in realFixes.indexed)
           Padding(
             padding: EdgeInsets.only(bottom: Spacing.d8),
+            child: GhostFill(
+              applies: index != 0,
+              child: ButtonFocusRing(
+                builder: (context, keyboardFocused) => Button(
+                  variant: switch (index) {
+                    0 => .primary,
+                    _ => .ghost,
+                  },
+                  borderWidth: switch (keyboardFocused) {
+                    true => 0,
+                    false => null,
+                  },
+                  label: _fixLabel(l10n, fix),
+                  onPressed: () => _apply(fix),
+                ),
+              ),
+            ),
+          ),
+        _tryAgainAndLinks(
+          tryAgain: GhostFill(
+            applies: realFixes.isNotEmpty,
             child: ButtonFocusRing(
               builder: (context, keyboardFocused) => Button(
-                variant: switch (index) {
-                  0 => .primary,
-                  _ => .ghost,
+                variant: switch (realFixes.isEmpty) {
+                  true => .primary,
+                  false => .ghost,
                 },
                 borderWidth: switch (keyboardFocused) {
                   true => 0,
                   false => null,
                 },
-                label: _fixLabel(l10n, fix),
-                onPressed: () => _apply(fix),
+                mainAxisSize: switch (_isTouch) {
+                  true => .max,
+                  false => .min,
+                },
+                label: l10n.doctorTryAgainPrimary,
+                onPressed: _run,
               ),
-            ),
-          ),
-        _tryAgainAndLinks(
-          tryAgain: ButtonFocusRing(
-            builder: (context, keyboardFocused) => Button(
-              variant: switch (realFixes.isEmpty) {
-                true => .primary,
-                false => .ghost,
-              },
-              borderWidth: switch (keyboardFocused) {
-                true => 0,
-                false => null,
-              },
-              mainAxisSize: switch (_isTouch) {
-                true => .max,
-                false => .min,
-              },
-              label: l10n.doctorTryAgainPrimary,
-              onPressed: _run,
             ),
           ),
           links: [
