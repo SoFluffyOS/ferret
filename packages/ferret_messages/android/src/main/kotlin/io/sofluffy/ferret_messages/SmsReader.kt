@@ -106,6 +106,25 @@ class SmsReader(private val context: Context, private val contacts: ContactLooku
         return MessageRules.recipientIds(raw).mapNotNull { addresses[it] }
     }
 
+    /**
+     * The SIM the newest text in [threadId] used, so a reply goes out the
+     * same way on a dual-SIM phone; null when the phone didn't record one.
+     */
+    fun lastSubscriptionOf(threadId: Long): Int? = runCatching {
+        resolver.query(
+            Telephony.Sms.CONTENT_URI,
+            arrayOf(Telephony.Sms.SUBSCRIPTION_ID),
+            "${Telephony.Sms.THREAD_ID} = ?",
+            arrayOf(threadId.toString()),
+            "${Telephony.Sms.DATE} DESC",
+        )?.use { cursor ->
+            when (cursor.moveToFirst() && !cursor.isNull(0)) {
+                true -> cursor.getInt(0)
+                false -> null
+            }
+        }
+    }.getOrNull()?.takeIf { it >= 0 }
+
     private data class ThreadRow(
         val id: Long,
         val dateMs: Long,

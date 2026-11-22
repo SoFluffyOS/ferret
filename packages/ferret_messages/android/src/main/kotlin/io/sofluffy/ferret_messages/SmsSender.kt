@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.provider.Telephony
 import android.telephony.SmsManager
+import android.telephony.SubscriptionManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicInteger
@@ -32,7 +33,7 @@ class SmsSender(private val context: Context, private val reader: SmsReader) {
         }
 
         val address = recipients.first()
-        val manager = smsManager()
+        val manager = smsManager(subscriptionFor(threadId))
         val parts = manager.divideMessage(text)
         val token = nextToken.incrementAndGet()
         val action = "$SENT_ACTION.$token"
@@ -99,10 +100,36 @@ class SmsSender(private val context: Context, private val reader: SmsReader) {
         context.registerReceiver(receiver, filter)
     }
 
+    /**
+     * A reply leaves from the SIM the conversation last used, like the
+     * phone's own messaging app does, as long as that SIM is still in the
+     * phone. Otherwise the phone's default SIM for texts.
+     */
+    private fun subscriptionFor(threadId: Long): Int? {
+        if (threadId <= 0 || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return null
+        }
+
+        val subscription = reader.lastSubscriptionOf(threadId) ?: return null
+        val inPhone = runCatching { SubscriptionManager.getSlotIndex(subscription) >= 0 }.getOrDefault(false)
+        return subscription.takeIf { inPhone }
+    }
+
     @Suppress("DEPRECATION")
-    private fun smsManager(): SmsManager = when (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        true -> context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
-        false -> SmsManager.getDefault()
+    private fun smsManager(subscription: Int?): SmsManager {
+        if (subscription != null) {
+            return when (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                true -> context.getSystemService(SmsManager::class.java)
+                    ?.createForSubscriptionId(subscription)
+                    ?: SmsManager.getSmsManagerForSubscriptionId(subscription)
+                false -> SmsManager.getSmsManagerForSubscriptionId(subscription)
+            }
+        }
+
+        return when (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            true -> context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
+            false -> SmsManager.getDefault()
+        }
     }
 
     companion object {
