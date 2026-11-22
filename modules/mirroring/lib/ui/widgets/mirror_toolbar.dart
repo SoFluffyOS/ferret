@@ -155,7 +155,8 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
   /// How wide the pill is with [shown] in it: its buttons, the names two
   /// of them carry unless [names] is off, and the lines between its
   /// groups. The bar has no padding of its own, and Stop has no name
-  /// there.
+  /// there. For a finger, every button takes at least the density's
+  /// target.
   double _widthOf(
     BuildContext context,
     List<ToolbarItem> shown, {
@@ -164,6 +165,8 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
     final l10n = context.mirroringL10n;
     final style = context.fluffyTheme.typography.base2;
     final scaler = MediaQuery.textScalerOf(context);
+    final density = context.fluffyDensity;
+    final icon = density.extent(Spacing.d28);
     double named(String name) {
       final painter = TextPainter(
         text: TextSpan(text: name, style: style),
@@ -173,7 +176,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       )..layout();
       final width = painter.width;
       painter.dispose();
-      return Spacing.d28 + Spacing.d4 + width + Spacing.d8;
+      return density.extent(Spacing.d28 + Spacing.d4 + width + Spacing.d8);
     }
 
     final inBar = widget.place == .bar;
@@ -190,7 +193,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
         .viewOnly when names => named(l10n.viewOnly),
         .askControl when names => named(_askControlName(l10n)),
         .stop when names && !inBar => named(l10n.stop),
-        _ => Spacing.d28,
+        _ => icon,
       };
     }
 
@@ -217,7 +220,7 @@ class _MirrorToolbarState extends State<MirrorToolbar> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: Spacing.d6),
         child: SizedBox(
-          height: Spacing.d40,
+          height: context.fluffyDensity.extent(Spacing.d40),
           child: Row(
             mainAxisSize: .min,
             children: [

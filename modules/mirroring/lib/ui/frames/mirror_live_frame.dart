@@ -179,20 +179,33 @@ class _MirrorLiveFrameState extends State<MirrorLiveFrame> {
   );
 
   /// The notice above the picture, the picture, and the field for
-  /// composed text under it.
-  Widget _stage(BuildContext context, bool textFieldOpen) => Column(
-    crossAxisAlignment: .stretch,
-    children: [
-      _NoticeFrame(deviceId: widget.deviceId, deviceName: widget.deviceName),
-      Expanded(child: _picture(context)),
-      if (textFieldOpen)
-        Padding(
-          padding: EdgeInsets.all(Spacing.d8),
-          child: Center(
-            child: MirrorTextFieldFrame(onClosed: _pictureFocus.requestFocus),
+  /// composed text under it. A notice longer than half a short window,
+  /// such as at large text, scrolls, so the picture keeps its room.
+  Widget _stage(BuildContext context, bool textFieldOpen) => LayoutBuilder(
+    builder: (context, constraints) => Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: constraints.maxHeight / 2),
+          child: SingleChildScrollView(
+            child: _NoticeFrame(
+              deviceId: widget.deviceId,
+              deviceName: widget.deviceName,
+            ),
           ),
         ),
-    ],
+        Expanded(child: _picture(context)),
+        if (textFieldOpen)
+          Padding(
+            padding: EdgeInsets.all(Spacing.d8),
+            child: Center(
+              child: MirrorTextFieldFrame(
+                onClosed: _pictureFocus.requestFocus,
+              ),
+            ),
+          ),
+      ],
+    ),
   );
 
   /// The picture and what is said over it while it stands still.

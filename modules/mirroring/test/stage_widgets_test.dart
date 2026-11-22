@@ -161,6 +161,7 @@ void main() {
     String deviceName = 'Pixel',
     bool fillsWindow = false,
     VoidCallback? onDragWindow,
+    FluffyDensity density = .pointer,
   }) async {
     viewModel.openStage(deviceId);
     await tester.pumpWidget(
@@ -177,6 +178,9 @@ void main() {
           ),
         ),
         scroll: false,
+        // The stage shows only on computers, so a mouse unless a test
+        // asks for a finger.
+        density: density,
       ),
     );
     await tester.pump();
@@ -985,6 +989,41 @@ void main() {
   });
 
   group('the toolbar', () {
+    testWidgets('fits at 130% and 200% text, in narrow windows and with a '
+        'finger\'s targets: what doesn\'t fit goes behind More', (
+      tester,
+    ) async {
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await start(tester, lookForCable: true);
+      final target = await streamOverCable(tester);
+      const spaces = [Size(390, 844), Size(320, 320), Size(1000, 640)];
+      for (final density in FluffyDensity.values) {
+        for (final scale in [1.0, 1.3, 2.0]) {
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          await pumpStage(
+            tester,
+            deviceId: ViewSession.deviceIdOf(target),
+            deviceName: 'Old tablet',
+            density: density,
+          );
+          for (final space in spaces) {
+            tester.view.physicalSize = space;
+            await tester.pump();
+
+            final where = '$density at $scale in $space';
+            expect(tester.takeException(), isNull, reason: where);
+            final toolbar = tester.getRect(find.byType(MirrorToolbar));
+            expect(
+              (Offset.zero & space).intersect(toolbar),
+              toolbar,
+              reason: where,
+            );
+            expect(tool(LucideIcons.circleStop), findsOneWidget, reason: where);
+          }
+        }
+      }
+    });
+
     testWidgets('never covers the picture: under it or beside it, at every '
         'size, with the phone upright or turned', (tester) async {
       await start(tester);

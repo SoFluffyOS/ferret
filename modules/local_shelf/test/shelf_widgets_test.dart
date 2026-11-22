@@ -349,9 +349,9 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('the floating panel holds the header and a row of tiles', (
-    tester,
-  ) async {
+  testWidgets('the floating panel holds the header and a row of tiles, '
+      'and grows for 130% and 200% text', (tester) async {
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     await setUpShelf(tester);
     await keep(tester, ['a note that runs long enough for two lines']);
     await tester.runAsync(() async {
@@ -359,40 +359,49 @@ void main() {
         ..writeAsStringSync('%PDF');
       await store.keepFiles([file.path], source: .dropped);
     });
-    await tester.pumpWidget(
-      testApp(
-        Center(
-          child: SizedBox.fromSize(
-            size: ShelfPanelFrame.size,
-            child: ChangeNotifierProvider.value(
-              value: viewModel,
-              child: ShelfPanelFrame(onOpenList: () {}, onHover: (_) {}),
+    for (final scale in [1.0, 1.3, 2.0]) {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      final size = ShelfPanelFrame.sizeFor(TextScaler.linear(scale));
+      await tester.pumpWidget(
+        testApp(
+          Center(
+            child: SizedBox.fromSize(
+              key: ValueKey(scale),
+              size: size,
+              child: ChangeNotifierProvider.value(
+                value: viewModel,
+                child: ShelfPanelFrame(onOpenList: () {}, onHover: (_) {}),
+              ),
             ),
           ),
         ),
-      ),
-    );
-    await tester.pump();
+      );
+      await tester.pump();
 
-    expect(tester.takeException(), isNull);
-    final panel = tester.getRect(find.byType(ShelfPanelFrame));
-    final box = tester.getRect(
-      find
-          .descendant(
-            of: find.byType(ShelfBoxFrame),
-            matching: find.byType(AnimatedContainer),
-          )
-          .first,
-    );
-    // The box sits as far from every edge of the panel.
-    for (final gap in [
-      box.left - panel.left,
-      box.top - panel.top,
-      panel.right - box.right,
-      panel.bottom - box.bottom,
-    ]) {
-      expect(gap, ShelfPanelFrame.inset);
+      expect(tester.takeException(), isNull, reason: 'at $scale');
+      final panel = tester.getRect(find.byType(ShelfPanelFrame));
+      final box = tester.getRect(
+        find
+            .descendant(
+              of: find.byType(ShelfBoxFrame),
+              matching: find.byType(AnimatedContainer),
+            )
+            .first,
+      );
+      // The box sits as far from every edge of the panel.
+      for (final gap in [
+        box.left - panel.left,
+        box.top - panel.top,
+        panel.right - box.right,
+        panel.bottom - box.bottom,
+      ]) {
+        expect(gap, ShelfPanelFrame.inset, reason: 'at $scale');
+      }
     }
+    expect(
+      ShelfPanelFrame.sizeFor(TextScaler.noScaling),
+      ShelfPanelFrame.size,
+    );
   });
 
   testWidgets('the page lists items and takes one off', (tester) async {

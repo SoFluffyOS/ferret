@@ -34,7 +34,7 @@ class ShelfReachHost {
 
   late final ShelfReach reach = ShelfReach(
     options: () => _settings.reach,
-    panelSize: ShelfPanelFrame.size,
+    panelSize: _panelSize,
     show: (frame, motion) => _panel.show(
       frame: frame,
       motion: motion,
@@ -44,13 +44,25 @@ class ShelfReachHost {
     hide: _panel.hide,
   );
 
+  /// The panel's size at the text size the system asks for now.
+  static Size get _panelSize => ShelfPanelFrame.sizeFor(
+    TextScaler.linear(
+      WidgetsBinding.instance.platformDispatcher.textScaleFactor,
+    ),
+  );
+
   Future<void> start() async {
     if (!_panel.canShow) {
       return;
     }
 
     _subscriptions
-      ..add(_drags.events.listen(reach.handle))
+      ..add(
+        _drags.events.listen((event) {
+          reach.panelSize = _panelSize;
+          reach.handle(event);
+        }),
+      )
       ..add(_viewModel.taken.listen((_) => reach.dropped()))
       ..add(_settings.changes.listen((_) => unawaited(_sync())));
     await _sync();
