@@ -917,6 +917,18 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceWhyLong => 'Vì sao không kết nối được?';
 
   @override
+  String deviceIsolatedWifi(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'phone': 'Hãy bật điểm phát sóng của điện thoại này và cho thiết bị kia kết nối vào.',
+        'other': 'Hãy thử điểm phát sóng của điện thoại.',
+      },
+    );
+    return 'Wi-Fi này có vẻ tách các thiết bị khỏi nhau. $_temp0';
+  }
+
+  @override
   String get deviceWhyShort => 'Sửa kết nối';
 
   @override

@@ -194,6 +194,7 @@
   "settingsAddress": "Địa chỉ: {address}",
   "settingsAddressHint": "Nếu thiết bị khác không tìm thấy thiết bị này: trên thiết bị đó, mở Thêm thiết bị, chọn Cách khác rồi nhập địa chỉ này.",
   "deviceWhyLong": "Vì sao không kết nối được?",
+  "deviceIsolatedWifi": "Wi-Fi này có vẻ tách các thiết bị khỏi nhau. {here, select, phone{Hãy bật điểm phát sóng của điện thoại này và cho thiết bị kia kết nối vào.} other{Hãy thử điểm phát sóng của điện thoại.}}",
   "deviceWhyShort": "Sửa kết nối",
   "deviceWhatWorks": "Những gì dùng được với {device}",
   "deviceDetails": "Chi tiết",

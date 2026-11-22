@@ -479,7 +479,9 @@ void main() {
             clock: () => (engine.startedAt ?? DateTime.now()).add(since),
           );
 
+      ConnectionDoctor.isolatedSubnet.value = null;
       final checks = await inCafe().diagnose('phonephonephonep').last;
+      expect(ConnectionDoctor.isolatedSubnet.value, '10.0.7');
       expect(
         checks.singleWhere((check) => check.kind == .isolated).status,
         DoctorStatus.warning,

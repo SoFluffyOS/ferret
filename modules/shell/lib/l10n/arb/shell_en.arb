@@ -660,6 +660,15 @@
   },
   "settingsAddressHint": "If another device can't find this one: on it, open Add a device, then Other ways, and type this address.",
   "deviceWhyLong": "Why isn't it connecting?",
+  "deviceIsolatedWifi": "This Wi-Fi seems to keep devices apart. {here, select, phone{Turn on this phone's hotspot and join it from the other device.} other{Try your phone's hotspot.}}",
+  "@deviceIsolatedWifi": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    },
+    "description": "On an offline device's page after Fix connection found that this network keeps devices apart (client isolation), while this device is still on it"
+  },
   "deviceWhyShort": "Fix connection",
   "@deviceWhyShort": {
     "description": "Short button for deviceWhyLong; the full question is its tooltip"

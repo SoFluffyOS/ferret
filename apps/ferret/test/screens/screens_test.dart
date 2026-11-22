@@ -336,6 +336,17 @@ final screens = <Screen>[
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
   }),
+  Screen('device_offline_isolated', (tester, rig) async {
+    await rig.addOfflinePhone(tester);
+    await tester.runAsync(() async {
+      final networks = rig.engine.localNetworks;
+      ConnectionDoctor.isolatedSubnet.value = switch (networks.isEmpty) {
+        true => null,
+        false => networks.first.subnet,
+      };
+    });
+    await rig.open(tester, const DevicePage(deviceId: _offlineId));
+  }),
   Screen('device_details', (tester, rig) async {
     await rig.addOfflinePhone(tester);
     await rig.open(tester, const DevicePage(deviceId: _offlineId));
@@ -578,6 +589,7 @@ void main() {
     await loadScreenFonts();
     await initializeDateFormatting();
   });
+  tearDown(() => ConnectionDoctor.isolatedSubnet.value = null);
   tearDownAll(() async {
     await screensDirectory.create(recursive: true);
     await File('${screensDirectory.path}/overflows.txt').writeAsString(

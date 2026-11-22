@@ -1256,6 +1256,12 @@ abstract class ShellLocalizations {
   /// **'Why isn\'t it connecting?'**
   String get deviceWhyLong;
 
+  /// On an offline device's page after Fix connection found that this network keeps devices apart (client isolation), while this device is still on it
+  ///
+  /// In en, this message translates to:
+  /// **'This Wi-Fi seems to keep devices apart. {here, select, phone{Turn on this phone\'s hotspot and join it from the other device.} other{Try your phone\'s hotspot.}}'**
+  String deviceIsolatedWifi(String here);
+
   /// Short button for deviceWhyLong; the full question is its tooltip
   ///
   /// In en, this message translates to:

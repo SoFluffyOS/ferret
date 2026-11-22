@@ -922,6 +922,19 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceWhyLong => 'Why isn\'t it connecting?';
 
   @override
+  String deviceIsolatedWifi(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'phone':
+            'Turn on this phone\'s hotspot and join it from the other device.',
+        'other': 'Try your phone\'s hotspot.',
+      },
+    );
+    return 'This Wi-Fi seems to keep devices apart. $_temp0';
+  }
+
+  @override
   String get deviceWhyShort => 'Fix connection';
 
   @override

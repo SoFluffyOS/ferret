@@ -370,6 +370,9 @@ class FerretEngine implements FeatureHost {
   /// lets one through.
   DateTime? get lastHeardOthers => _lastHeardOthers;
 
+  /// The local networks found when the network last changed.
+  List<LocalNetwork> get localNetworks => _knownNetworks.current;
+
   Stream<List<DeviceStatus>> get deviceChanges => _deviceChanges.stream;
 
   /// Requests to pair by comparing codes, for the UI to confirm.

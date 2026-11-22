@@ -253,6 +253,24 @@ class _Offline extends StatelessWidget {
     return TwoColumns(
       leading: [
         DeviceHeader(status: status, offlineStatus: offlineStatus),
+        ValueListenableBuilder(
+          valueListenable: ConnectionDoctor.isolatedSubnet,
+          builder: (context, _, _) =>
+              switch (ConnectionDoctor.isOnIsolated(featureContext.engine)) {
+                true => Padding(
+                  padding: EdgeInsets.only(bottom: Spacing.d12),
+                  child: Text(
+                    l10n.deviceIsolatedWifi(
+                      l10n.here(featureContext.engine.device),
+                    ),
+                    style: context.fluffyTheme.typography.base2.copyWith(
+                      color: context.palette.mutedText,
+                    ),
+                  ),
+                ),
+                false => const SizedBox.shrink(),
+              },
+        ),
         if (actions.isNotEmpty) ...[
           DeviceActions(actions: actions, moreLabel: l10n.homeMore),
           Spacing.v8,

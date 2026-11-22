@@ -4854,6 +4854,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String settingsAddress(String address) =>
       pseudo(super.settingsAddress(address));
   @override
+  String deviceIsolatedWifi(String here) =>
+      pseudo(super.deviceIsolatedWifi(here));
+  @override
   String deviceWhatWorks(String device) =>
       pseudo(super.deviceWhatWorks(device));
   @override

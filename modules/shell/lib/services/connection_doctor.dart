@@ -164,6 +164,18 @@ class ConnectionDoctor {
 
   final FerretEngine _engine;
 
+  /// The /24 of the network the last check found keeping devices apart,
+  /// so an offline device's page can say so while this device is still
+  /// on it, without checking again.
+  static final isolatedSubnet = ValueNotifier<String?>(null);
+
+  /// Whether [engine] is still on the network [isolatedSubnet] names.
+  static bool isOnIsolated(FerretEngine engine) {
+    final subnet = isolatedSubnet.value;
+    return subnet != null &&
+        engine.localNetworks.any((network) => network.subnet == subnet);
+  }
+
   /// Whether discovery hears other devices here at all. An iPhone never
   /// does, so its silence says nothing about the Wi-Fi.
   final bool _hearsOthers;
@@ -405,6 +417,7 @@ class ConnectionDoctor {
     final online = local.isNotEmpty;
     if (deviceId == null) {
       if (online && await _seemsIsolated(local)) {
+        isolatedSubnet.value = LocalNetwork.subnetOf(local.first.address);
         checks.add(const DoctorCheck(kind: .isolated, status: .warning));
         yield [...checks];
       }
@@ -514,6 +527,13 @@ class ConnectionDoctor {
 
       if (maybeIsolated) {
         checks.add(const DoctorCheck(kind: .isolated, status: .warning));
+      }
+
+      if (isolated || maybeIsolated) {
+        isolatedSubnet.value = LocalNetwork.subnetOf(switch (isolated) {
+          true => host,
+          false => local.first.address,
+        });
       }
 
       if (firewall != null) {
