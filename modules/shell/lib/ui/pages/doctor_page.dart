@@ -275,6 +275,8 @@ class _DoctorPageState extends State<DoctorPage> {
         }
       case .openFirewall:
         await WindowsFirewall.openAllowedApps();
+      case .openNetworkSettings:
+        await launchUrl(Uri.parse(WindowsFirewall.networkSettings));
       case .copyFirewallCommand:
         await _copyFirewallCommand();
       case .copyDiagnostics:
@@ -363,6 +365,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .pairAgain => l10n.doctorFixPairAgain,
     .allowFirewall => l10n.doctorFixAllowFirewall,
     .openFirewall => l10n.doctorFixOpenFirewall,
+    .openNetworkSettings => l10n.doctorFixOpenNetworkSettings,
     .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
     .copyDiagnostics when _copied != null => l10n.pairLinkCopied,
     .copyDiagnostics => l10n.doctorFixCopy,
@@ -461,6 +464,13 @@ class _DoctorPageState extends State<DoctorPage> {
         l10n.doctorFirewallLinux('ufw'),
       (.firewall, _) when check.detail == LinuxFirewallKind.firewalld.name =>
         l10n.doctorFirewallLinux('firewalld'),
+      (.firewall, _)
+          when check.detail == ConnectionDoctor.windowsPublicNetwork =>
+        l10n.doctorFirewallPublicNetwork,
+      (.firewall, _)
+          when check.detail == ConnectionDoctor.windowsBlocked &&
+              !_firewallRefused =>
+        l10n.doctorFirewallBlocked,
       (.firewall, .ok) => l10n.doctorFirewallAllowed,
       (.firewall, _) when _firewallRefused => l10n.doctorFirewallRefused,
       (.firewall, _) => l10n.doctorFirewall,

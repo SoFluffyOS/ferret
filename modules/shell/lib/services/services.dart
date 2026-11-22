@@ -47,3 +47,4 @@ export 'package:shell/services/window_intents.dart';
 export 'package:shell/services/window_layout.dart';
 export 'package:shell/services/window_nav_registry.dart';
 export 'package:shell/services/windows_firewall.dart';
+export 'package:shell/services/windows_toasts.dart';

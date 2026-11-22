@@ -2,6 +2,7 @@
 
 #include <flutter/standard_method_codec.h>
 #include <shellapi.h>
+#include <windowsx.h>
 
 #include "resource.h"
 
@@ -104,7 +105,7 @@ void DesktopWindow::ShowAtStart() {
 }
 
 std::optional<LRESULT> DesktopWindow::HandleMessage(UINT message,
-                                                    WPARAM /*wparam*/,
+                                                    WPARAM wparam,
                                                     LPARAM lparam) {
   if (message == WM_CLOSE) {
     SavePlacement();
@@ -127,13 +128,23 @@ std::optional<LRESULT> DesktopWindow::HandleMessage(UINT message,
     return std::nullopt;
   }
 
+  // NOTIFYICON_VERSION_4: a click or Enter/Space on the icon (Win+B, then
+  // the arrow keys) is NIN_SELECT / NIN_KEYSELECT; a right-click, Shift+F10
+  // or the Menu key is WM_CONTEXTMENU with the icon's anchor in wparam.
   switch (LOWORD(lparam)) {
-    case WM_LBUTTONUP:
+    case NIN_SELECT:
+    case NIN_KEYSELECT: {
+      // Enter sends NIN_KEYSELECT twice; one press opens Ferret once.
+      DWORD now = ::GetTickCount();
+      if (now - last_activate_ < ::GetDoubleClickTime()) {
+        return 0;
+      }
+      last_activate_ = now;
       Invoke("tray.activate");
       return 0;
-    case WM_RBUTTONUP:
+    }
     case WM_CONTEXTMENU:
-      ShowTrayMenu();
+      ShowTrayMenu(GET_X_LPARAM(wparam), GET_Y_LPARAM(wparam));
       return 0;
   }
   return 0;
@@ -243,7 +254,7 @@ bool DesktopWindow::ShowIcon() {
   data.cbSize = sizeof(data);
   data.hWnd = window_;
   data.uID = kTrayId;
-  data.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+  data.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_SHOWTIP;
   data.uCallbackMessage = kTrayMessage;
   data.hIcon = ::LoadIconW(::GetModuleHandleW(nullptr),
                            MAKEINTRESOURCEW(IDI_APP_ICON));
@@ -253,6 +264,10 @@ bool DesktopWindow::ShowIcon() {
     return ::Shell_NotifyIconW(NIM_MODIFY, &data) == TRUE;
   }
   tray_added_ = ::Shell_NotifyIconW(NIM_ADD, &data) == TRUE;
+  if (tray_added_) {
+    data.uVersion = NOTIFYICON_VERSION_4;
+    ::Shell_NotifyIconW(NIM_SETVERSION, &data);
+  }
   return tray_added_;
 }
 
@@ -268,7 +283,7 @@ void DesktopWindow::RemoveTray() {
   tray_added_ = false;
 }
 
-void DesktopWindow::ShowTrayMenu() {
+void DesktopWindow::ShowTrayMenu(int x, int y) {
   HMENU menu = ::CreatePopupMenu();
   if (menu == nullptr) {
     return;
@@ -285,14 +300,21 @@ void DesktopWindow::ShowTrayMenu() {
     }
     ::AppendMenuW(menu, flags, index + 1, item.title.c_str());
   }
+  // The first entry (Open Ferret) is what clicking the icon does: bold, as
+  // Windows marks a tray menu's default.
+  if (!tray_items_.empty() && !tray_items_[0].separator &&
+      tray_items_[0].enabled) {
+    ::SetMenuDefaultItem(menu, 1, FALSE);
+  }
 
-  POINT point;
-  ::GetCursorPos(&point);
+  UINT align = ::GetSystemMetrics(SM_MENUDROPALIGNMENT) != 0 ? TPM_RIGHTALIGN
+                                                             : TPM_LEFTALIGN;
   // Without this the menu stays open after clicking elsewhere.
   ::SetForegroundWindow(window_);
   UINT picked = static_cast<UINT>(::TrackPopupMenu(
-      menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY, point.x, point.y,
-      0, window_, nullptr));
+      menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_BOTTOMALIGN |
+                align,
+      x, y, 0, window_, nullptr));
   ::PostMessage(window_, WM_NULL, 0, 0);
   ::DestroyMenu(menu);
 

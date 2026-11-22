@@ -96,6 +96,7 @@ class CallNotices {
           category: incomingCategory,
           groupKey: 'calls.${call.deviceId}',
           silent: isUpdate,
+          ringing: true,
           private: PrivateContent(
             call.deviceId,
             cover: l10n.noticeIncomingBody(call.deviceName),

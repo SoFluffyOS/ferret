@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/notice_buttons.dart';
 import 'package:shell/services/notice_relay.dart';
+import 'package:shell/services/windows_toasts.dart';
 
 /// The app's one [LocalNotifier], on the platform notification centre.
 class SystemNotifier implements LocalNotifier {
@@ -88,6 +89,7 @@ class SystemNotifier implements LocalNotifier {
 
   final FlutterLocalNotificationsPlugin _plugin;
   final Map<String, NoticeCategory> _categories;
+  final WindowsToasts _windowsToasts = WindowsToasts();
   late final StreamController<NoticeResponse> _responses = .broadcast(
     onListen: _deliverLaunchResponse,
   );
@@ -110,12 +112,22 @@ class SystemNotifier implements LocalNotifier {
   Future<void> show(LocalNotice notice) async {
     final category = _categories[notice.category];
     final actions = category?.actions ?? const <NoticeAction>[];
+    final id = _numericId(notice.id);
 
     try {
+      if (Platform.isWindows && await _movedWindowsToast(id, notice)) {
+        return;
+      }
+
+      final windows = _windowsToasts.toast(id, notice, actions);
+      final (title, body) = switch (Platform.isWindows) {
+        true => (windows.title, windows.body),
+        false => (notice.title, notice.body),
+      };
       await _plugin.show(
-        id: _numericId(notice.id),
-        title: notice.title,
-        body: notice.body,
+        id: id,
+        title: title,
+        body: body,
         payload: notice.id,
         notificationDetails: NotificationDetails(
           android: _android(notice, actions),
@@ -127,24 +139,7 @@ class SystemNotifier implements LocalNotifier {
                 LinuxNotificationAction(key: action.id, label: action.label),
             ],
           ),
-          windows: WindowsNotificationDetails(
-            actions: [
-              for (final action in actions)
-                WindowsAction(
-                  content: action.label,
-                  arguments: action.id,
-                  inputId: _inputIdFor(action),
-                ),
-            ],
-            inputs: [
-              for (final action in actions)
-                if (action.isReply)
-                  WindowsTextInput(
-                    id: action.id,
-                    placeHolderContent: action.label,
-                  ),
-            ],
-          ),
+          windows: windows.details,
         ),
       );
     } on Object catch (error) {
@@ -152,10 +147,29 @@ class SystemNotifier implements LocalNotifier {
     }
   }
 
+  /// Moves the progress toast already showing for [id]. True when there is
+  /// one, or there was and the person closed it: a closed one stays closed
+  /// until the transfer ends.
+  Future<bool> _movedWindowsToast(int id, LocalNotice notice) async {
+    final bindings = _windowsToasts.update(id, notice);
+    if (bindings == null) {
+      return false;
+    }
+
+    final result = await _plugin
+        .resolvePlatformSpecificImplementation<
+          FlutterLocalNotificationsWindows
+        >()
+        ?.updateBindings(id: id, bindings: bindings);
+    return result == .success || result == .notFound;
+  }
+
   @override
   Future<void> cancel(String id) async {
+    final numeric = _numericId(id);
+    _windowsToasts.forget(numeric);
     try {
-      await _plugin.cancel(id: _numericId(id));
+      await _plugin.cancel(id: numeric);
     } on Object catch (error) {
       printDebug('Could not cancel notification $id: $error');
     }
@@ -261,11 +275,6 @@ class SystemNotifier implements LocalNotifier {
   static ShellLocalizations _l10n() => lookupShellLocalizations(
     AppLocale.pick(ShellLocalizations.supportedLocales),
   );
-
-  String? _inputIdFor(NoticeAction action) => switch (action.isReply) {
-    true => action.id,
-    false => null,
-  };
 
   void _onResponse(NotificationResponse response) {
     final noticeId = response.payload;

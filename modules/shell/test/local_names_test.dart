@@ -31,8 +31,21 @@ void main() {
     );
     expect(
       en.here(device(.PLATFORM_WINDOWS, .FORM_FACTOR_DESKTOP)),
+      LocalNames.hereWindows,
+    );
+    expect(
+      en.here(device(.PLATFORM_LINUX, .FORM_FACTOR_LAPTOP)),
       LocalNames.hereComputer,
     );
+  });
+
+  test('Windows calls itself a PC, in every sentence that says this Mac', () {
+    expect(en.deviceRenameTitle(LocalNames.hereWindows), 'Name on this PC');
+    expect(
+      en.doctorNetworkOk(LocalNames.hereWindows),
+      'This PC is on Wi-Fi or a cable',
+    );
+    expect(vi.deviceRenameTitle(LocalNames.hereWindows), contains('PC này'));
   });
 
   test('a sentence spells this device itself, small inside it', () {

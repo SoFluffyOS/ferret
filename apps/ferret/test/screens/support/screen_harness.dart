@@ -84,6 +84,9 @@ const tabletSizes = [
   tabletPortraitHalf,
 ];
 
+/// Windows 11 rounds a window's corners by 8 px, as a plain circle.
+const windowsCorner = 8.0;
+
 /// Pixel ratio of the saved PNGs.
 const capturePixelRatio = 2.0;
 
@@ -180,7 +183,11 @@ class ScreenRig {
           ),
           false => LocalDevice(
             name: name,
-            platform: .PLATFORM_MACOS,
+            platform: switch (defaultTargetPlatform) {
+              .windows => .PLATFORM_WINDOWS,
+              .linux => .PLATFORM_LINUX,
+              _ => .PLATFORM_MACOS,
+            },
             formFactor: .FORM_FACTOR_LAPTOP,
             appVersion: '0.1.0',
           ),
@@ -664,7 +671,12 @@ class ScreenRig {
     await tester.runAsync(() async {
       final shot = await boundary.toImage(pixelRatio: capturePixelRatio);
       final image = switch (size.windowCorner) {
-        final radius? => await _inWindow(shot, brightness, radius),
+        final radius? => await _inWindow(
+          shot,
+          brightness,
+          radius,
+          continuous: defaultTargetPlatform != .windows,
+        ),
         null => shot,
       };
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -862,6 +874,7 @@ extension on CaptureSize {
   /// or a tablet, whose screen is the window.
   double? get windowCorner {
     if (platform != .macOS) return null;
+    if (defaultTargetPlatform == .windows) return windowsCorner;
     if (isPopover) return Corners.popover;
     return Corners.window;
   }
@@ -875,29 +888,36 @@ extension on CaptureSize {
 Future<ui.Image> _inWindow(
   ui.Image shot,
   Brightness brightness,
-  double radius,
-) async {
+  double radius, {
+  bool continuous = true,
+}) async {
   final recorder = ui.PictureRecorder();
   final canvas = ui.Canvas(recorder);
   final width = shot.width.toDouble();
   final height = shot.height.toDouble();
-  final window = RSuperellipse.fromRectAndRadius(
-    Rect.fromLTWH(0, 0, width, height),
-    Radius.circular(radius * capturePixelRatio),
-  );
-  canvas
-    ..clipRSuperellipse(window)
-    ..drawImage(shot, Offset.zero, ui.Paint())
-    ..drawRSuperellipse(
-      window.deflate(0.5),
-      ui.Paint()
-        ..style = .stroke
-        ..strokeWidth = 1
-        ..color = switch (brightness) {
-          Brightness.light => const Color(0x26000000),
-          Brightness.dark => const Color(0x33FFFFFF),
-        },
-    );
+  final bounds = Rect.fromLTWH(0, 0, width, height);
+  final corner = Radius.circular(radius * capturePixelRatio);
+  final edge = ui.Paint()
+    ..style = .stroke
+    ..strokeWidth = 1
+    ..color = switch (brightness) {
+      Brightness.light => const Color(0x26000000),
+      Brightness.dark => const Color(0x33FFFFFF),
+    };
+  switch (continuous) {
+    case true:
+      final window = RSuperellipse.fromRectAndRadius(bounds, corner);
+      canvas
+        ..clipRSuperellipse(window)
+        ..drawImage(shot, Offset.zero, ui.Paint())
+        ..drawRSuperellipse(window.deflate(0.5), edge);
+    case false:
+      final window = RRect.fromRectAndRadius(bounds, corner);
+      canvas
+        ..clipRRect(window)
+        ..drawImage(shot, Offset.zero, ui.Paint())
+        ..drawRRect(window.deflate(0.5), edge);
+  }
   final image = await recorder.endRecording().toImage(
     shot.width,
     shot.height,

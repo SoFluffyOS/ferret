@@ -386,6 +386,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac is on Wi-Fi or a cable',
+        'windows': 'This PC is on Wi-Fi or a cable',
         'phone': 'This phone is on Wi-Fi',
         'tablet': 'This tablet is on Wi-Fi',
         'other': 'This computer is on Wi-Fi or a cable',
@@ -400,6 +401,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac',
+        'windows': 'This PC',
         'phone': 'This phone',
         'tablet': 'This tablet',
         'other': 'This computer',
@@ -414,6 +416,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac',
+        'windows': 'This PC',
         'phone': 'This phone',
         'tablet': 'This tablet',
         'other': 'This computer',
@@ -428,6 +431,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac',
+        'windows': 'This PC',
         'phone': 'This phone',
         'tablet': 'This tablet',
         'other': 'This computer',
@@ -442,6 +446,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac',
+        'windows': 'This PC',
         'phone': 'This phone',
         'tablet': 'This tablet',
         'other': 'This computer',
@@ -466,6 +471,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -480,6 +486,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -515,6 +522,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -939,6 +947,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -956,6 +965,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1086,6 +1096,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1103,6 +1114,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1120,6 +1132,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1134,6 +1147,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1155,6 +1169,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1172,6 +1187,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1216,6 +1232,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1247,6 +1264,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1265,6 +1283,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1279,6 +1298,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1293,6 +1313,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1552,6 +1573,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1576,6 +1598,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1590,6 +1613,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -1960,6 +1984,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2071,6 +2096,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2085,6 +2111,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2099,6 +2126,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2157,6 +2185,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2171,6 +2200,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'your other device',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2204,6 +2234,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'this Mac',
+        'windows': 'this PC',
         'phone': 'this phone',
         'tablet': 'this tablet',
         'other': 'this computer',
@@ -2297,6 +2328,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
       here,
       {
         'mac': 'This Mac\'s',
+        'windows': 'This PC\'s',
         'phone': 'This phone\'s',
         'tablet': 'This tablet\'s',
         'other': 'This computer\'s',
@@ -2420,4 +2452,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get doctorFirewallRefused =>
       'Windows didn\'t add the firewall rules. That takes an administrator. On a work PC, ask your IT team to allow Ferret on private networks: TCP 47640 and 47642–47649, UDP 47641 and 5353.';
+
+  @override
+  String get doctorFirewallPublicNetwork =>
+      'Windows calls this network Public, so it hides this PC from your other devices. Good at a café. At home or at work:\n1. Click Open network settings, then Properties.\n2. Choose Private network.\n3. Try again.';
+
+  @override
+  String get doctorFirewallBlocked =>
+      'A Windows Firewall rule blocks Ferret. Windows adds one when someone clicks Cancel on its question about network access.\n1. Click Allow through firewall, then Yes when Windows asks.\n2. Try again.';
+
+  @override
+  String get doctorFixOpenNetworkSettings => 'Open network settings';
 }

@@ -4682,6 +4682,14 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get doctorFirewallRefused => pseudo(super.doctorFirewallRefused);
   @override
+  String get doctorFirewallPublicNetwork =>
+      pseudo(super.doctorFirewallPublicNetwork);
+  @override
+  String get doctorFirewallBlocked => pseudo(super.doctorFirewallBlocked);
+  @override
+  String get doctorFixOpenNetworkSettings =>
+      pseudo(super.doctorFixOpenNetworkSettings);
+  @override
   String deviceStatusSpoken(String device, String status) =>
       pseudo(super.deviceStatusSpoken(device, status));
   @override

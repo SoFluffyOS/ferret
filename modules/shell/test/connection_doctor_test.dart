@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -32,13 +33,29 @@ void main() {
   WindowsFirewallRules windowsRules({
     required bool installed,
     List<String>? elevated,
+    String categories = '',
+    int blockRules = 0,
   }) {
     var present = installed;
+    var blocks = blockRules;
     return WindowsFirewallRules(
       run: (executable, arguments) async {
+        if (arguments.contains('-Command')) {
+          final script = arguments.last;
+          return ProcessResult(
+            0,
+            0,
+            switch (script.contains('Get-NetConnectionProfile')) {
+              true => categories,
+              false => '$blocks\n',
+            },
+            '',
+          );
+        }
         if (executable == 'powershell.exe') {
-          elevated?.add(executable);
+          elevated?.add(arguments.last);
           present = true;
+          blocks = 0;
         }
         return ProcessResult(
           0,
@@ -193,12 +210,94 @@ void main() {
       final checks = await doctor.diagnose(null).last;
 
       expect(allowed, isTrue);
-      expect(elevated, ['powershell.exe']);
+      expect(elevated, hasLength(1));
       for (final check in checks.where((check) => check.kind == .firewall)) {
         expect(check.status, DoctorStatus.ok);
       }
     },
   );
+
+  test('a rule that blocks Ferret is the problem, and Allow through '
+      'firewall removes it in the same prompt', () async {
+    final elevated = <String>[];
+    final doctor = ConnectionDoctor(
+      engine,
+      isWindows: true,
+      isLinux: false,
+      program: r'C:\Users\An\AppData\Local\Programs\Ferret\ferret.exe',
+      windowsFirewallRules: windowsRules(
+        installed: true,
+        blockRules: 2,
+        elevated: elevated,
+      ),
+    );
+
+    final before = await doctor.diagnose(null).last;
+    final blocked = before.where((check) => check.kind == .firewall);
+    expect(blocked, hasLength(isOnline(before) ? 1 : 0));
+    for (final check in blocked) {
+      expect(check.status, DoctorStatus.problem);
+      expect(check.detail, ConnectionDoctor.windowsBlocked);
+      expect(check.fixes.first, DoctorFix.allowFirewall);
+    }
+
+    if (!isOnline(before)) {
+      return;
+    }
+
+    await doctor.allowThroughFirewall();
+    final bytes = base64.decode(elevated.single);
+    final script = String.fromCharCodes([
+      for (var index = 0; index < bytes.length; index += 2)
+        bytes[index] | bytes[index + 1] << 8,
+    ]);
+    expect(
+      script,
+      contains(
+        'netsh advfirewall firewall delete rule name=all dir=in '
+        r'program=C:\Users\An\AppData\Local\Programs\Ferret\ferret.exe',
+      ),
+    );
+    final after = await doctor.diagnose(null).last;
+    for (final check in after.where((check) => check.kind == .firewall)) {
+      expect(check.status, DoctorStatus.ok);
+    }
+  });
+
+  test('with the rules in place on a Public network, the line says to make '
+      'it Private', () async {
+    final checks = await ConnectionDoctor(
+      engine,
+      isWindows: true,
+      isLinux: false,
+      windowsFirewallRules: windowsRules(
+        installed: true,
+        categories: 'Wi-Fi|Public\nvEthernet (WSL)|Public\n',
+      ),
+    ).diagnose(null).last;
+
+    for (final check in checks.where((check) => check.kind == .firewall)) {
+      expect(check.status, DoctorStatus.warning);
+      expect(check.detail, ConnectionDoctor.windowsPublicNetwork);
+      expect(check.fixes, [DoctorFix.openNetworkSettings]);
+    }
+  });
+
+  test('the network Ferret uses decides Public or Private', () {
+    const categories = {'Wi-Fi': 'Private', 'vEthernet (WSL)': 'Public'};
+
+    expect(ConnectionDoctor.isPublicNetwork(categories, ['Wi-Fi']), isFalse);
+    expect(
+      ConnectionDoctor.isPublicNetwork({'Wi-Fi': 'Public'}, ['wi-fi']),
+      isTrue,
+    );
+    expect(
+      ConnectionDoctor.isPublicNetwork({'Ethernet 2': 'Public'}, ['Wi-Fi']),
+      isTrue,
+    );
+    expect(ConnectionDoctor.isPublicNetwork(categories, ['Ethernet']), isFalse);
+    expect(ConnectionDoctor.isPublicNetwork(const {}, ['Wi-Fi']), isFalse);
+  });
 
   test('a device that was never reached gets the firewall hint on Windows '
       'too', () async {

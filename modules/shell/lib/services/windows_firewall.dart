@@ -13,6 +13,10 @@ abstract final class WindowsFirewall {
     'pageConfigureApps',
   ];
 
+  /// Network & internet in Settings: Properties there switches a network
+  /// between Public and Private.
+  static const networkSettings = 'ms-settings:network-status';
+
   static Future<void> openAllowedApps() async {
     try {
       await Process.start(

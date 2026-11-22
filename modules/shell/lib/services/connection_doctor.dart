@@ -30,6 +30,10 @@ enum DoctorFix {
   /// permission turned down for good can still be allowed.
   openAppSettings,
 
+  /// Opens Network & internet in Windows Settings, where a network's
+  /// profile goes from Public to Private.
+  openNetworkSettings,
+
   /// Opens Privacy & Security, Local Network in macOS System Settings, or
   /// Ferret's page in the iPhone's Settings.
   openLocalNetworkSettings,
@@ -127,6 +131,7 @@ class ConnectionDoctor {
     bool? isLinux,
     LinuxFirewall? linuxFirewall,
     WindowsFirewallRules? windowsFirewallRules,
+    String? program,
     NetworkInterfaces? interfaces,
     ReachProbe? probe,
     RouteLookup? route,
@@ -145,6 +150,7 @@ class ConnectionDoctor {
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
        _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
+       _program = program ?? Platform.resolvedExecutable,
        _listInterfaces = interfaces ?? _systemInterfaces,
        _route =
            route ??
@@ -196,6 +202,13 @@ class ConnectionDoctor {
   /// The rules the installer, or [allowThroughFirewall], adds. With them
   /// in place the firewall line turns green.
   final WindowsFirewallRules _windowsFirewallRules;
+
+  /// This running Ferret, which a Windows block rule names.
+  final String _program;
+
+  /// Whether the last check found a rule blocking [_program], so Allow
+  /// through firewall removes it too.
+  bool _blocked = false;
   final NetworkInterfaces _listInterfaces;
 
   /// Only asks the system when the interfaces are the system's too, so a
@@ -233,6 +246,13 @@ class ConnectionDoctor {
   /// [DoctorCheck.detail] of the firewall line once Ferret's Windows rules
   /// are in place.
   static const windowsRulesInstalled = 'windows-rules';
+
+  /// [DoctorCheck.detail] when a Windows Firewall rule blocks Ferret itself.
+  static const windowsBlocked = 'windows-blocked';
+
+  /// [DoctorCheck.detail] when the rules are in place but Windows calls
+  /// this network Public, where they don't apply.
+  static const windowsPublicNetwork = 'windows-public';
 
   static const _vpnPrefixes = [
     'utun',
@@ -305,8 +325,6 @@ class ConnectionDoctor {
       yield [...checks];
     }
 
-    final firewall = await _firewallHint();
-
     final interfaces = await _interfaces();
     final cellular = interfaces.any(
       (entry) => VpnAddresses.isCellularInterface(entry.name),
@@ -318,6 +336,7 @@ class ConnectionDoctor {
               !VpnAddresses.isCellularInterface(entry.name),
         )
         .toList();
+    final firewall = await _firewallHint(local);
     final reachesOverVpn = device?.reachOverVpn ?? false;
     final onMobileData = local.isEmpty && cellular;
     checks.add(
@@ -578,16 +597,11 @@ class ConnectionDoctor {
 
   /// The firewall line for this computer: Windows Firewall always, a Linux
   /// firewall when one is on, with its name in [DoctorCheck.detail].
-  Future<DoctorCheck?> _firewallHint() async {
+  Future<DoctorCheck?> _firewallHint(
+    List<({String name, String address})> local,
+  ) async {
     if (_isWindows) {
-      if (await _windowsFirewallRules.areInstalled()) {
-        return const DoctorCheck(
-          kind: .firewall,
-          status: .ok,
-          detail: windowsRulesInstalled,
-        );
-      }
-      return _windowsFirewall;
+      return _windowsFirewallHint(local);
     }
 
     if (!_isLinux) {
@@ -607,9 +621,72 @@ class ConnectionDoctor {
     );
   }
 
-  /// Adds Ferret's Windows Firewall rules behind a UAC prompt. False when
-  /// the prompt was declined or the rules still aren't there.
-  Future<bool> allowThroughFirewall() => _windowsFirewallRules.allow();
+  /// A rule blocking Ferret first, since it beats every allow rule; then
+  /// missing rules; then a Public network, where the rules don't apply.
+  Future<DoctorCheck> _windowsFirewallHint(
+    List<({String name, String address})> local,
+  ) async {
+    _blocked = await _windowsFirewallRules.blocksProgram(_program);
+    if (_blocked) {
+      return const DoctorCheck(
+        kind: .firewall,
+        status: .problem,
+        detail: windowsBlocked,
+        fixes: [.allowFirewall, .openFirewall],
+      );
+    }
+
+    if (!await _windowsFirewallRules.areInstalled()) {
+      return _windowsFirewall;
+    }
+
+    final categories = await _windowsFirewallRules.networkCategories();
+    if (isPublicNetwork(categories, [for (final entry in local) entry.name])) {
+      return const DoctorCheck(
+        kind: .firewall,
+        status: .warning,
+        detail: windowsPublicNetwork,
+        fixes: [.openNetworkSettings],
+      );
+    }
+
+    return const DoctorCheck(
+      kind: .firewall,
+      status: .ok,
+      detail: windowsRulesInstalled,
+    );
+  }
+
+  /// Whether Windows calls the network Ferret uses Public: the category of
+  /// [interfaces] by name, or, when none of them is listed (Windows' and
+  /// Dart's names differ), every listed network being Public.
+  @visibleForTesting
+  static bool isPublicNetwork(
+    Map<String, String> categories,
+    List<String> interfaces,
+  ) {
+    bool isPublic(String category) => category.toLowerCase() == 'public';
+    final names = {for (final name in interfaces) name.toLowerCase()};
+    final ours = [
+      for (final MapEntry(:key, :value) in categories.entries)
+        if (names.contains(key.toLowerCase())) value,
+    ];
+    if (ours.isNotEmpty) {
+      return ours.any(isPublic);
+    }
+
+    return categories.isNotEmpty && categories.values.every(isPublic);
+  }
+
+  /// Adds Ferret's Windows Firewall rules behind a UAC prompt, removing a
+  /// rule that blocks Ferret in the same prompt. False when the prompt was
+  /// declined or the rules still aren't there.
+  Future<bool> allowThroughFirewall() => _windowsFirewallRules.allow(
+    unblock: switch (_blocked) {
+      true => _program,
+      false => null,
+    },
+  );
 
   /// A report to paste into an issue: no names, addresses only by their kind.
   /// It says what kind of device was checked and when it was last seen, so

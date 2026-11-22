@@ -17,6 +17,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
+  // A second launch hands over to the running Ferret, which then brings
+  // its window up. Windows lets a background app take the foreground only
+  // when the app the person just started allows it, so this one does.
+  HANDLE running =
+      ::CreateMutexW(nullptr, FALSE, L"Local\\io.sofluffy.ferret.running");
+  if (running != nullptr && ::GetLastError() == ERROR_ALREADY_EXISTS) {
+    ::AllowSetForegroundWindow(ASFW_ANY);
+  }
+
   flutter::DartProject project(L"data");
 
   std::vector<std::string> command_line_arguments =
@@ -45,5 +54,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   }
 
   ::CoUninitialize();
+  if (running != nullptr) {
+    ::CloseHandle(running);
+  }
   return EXIT_SUCCESS;
 }

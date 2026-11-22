@@ -48,7 +48,7 @@ class DesktopWindow {
   bool SetTray(const flutter::EncodableMap& arguments);
   bool ShowIcon();
   void RemoveTray();
-  void ShowTrayMenu();
+  void ShowTrayMenu(int x, int y);
   void Invoke(const std::string& method,
               std::unique_ptr<flutter::EncodableValue> arguments = nullptr);
 
@@ -57,6 +57,7 @@ class DesktopWindow {
   bool hide_on_close_ = false;
   bool show_maximized_ = false;
   bool tray_added_ = false;
+  DWORD last_activate_ = 0;
   std::wstring tray_tooltip_;
   std::vector<TrayItem> tray_items_;
   UINT taskbar_created_;

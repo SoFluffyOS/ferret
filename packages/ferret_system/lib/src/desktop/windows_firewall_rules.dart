@@ -76,11 +76,81 @@ class WindowsFirewallRules {
     return true;
   }
 
+  /// The category Windows gives each connected network, by interface
+  /// alias, such as `Wi-Fi` → `Public`. A new network starts out Public,
+  /// where the rules don't apply. Empty when Windows won't say.
+  Future<Map<String, String>> networkCategories() async {
+    final result = await _quietly('powershell.exe', [
+      '-NoProfile',
+      '-NonInteractive',
+      '-Command',
+      networkCategoriesScript,
+    ]);
+    if (result == null || result.exitCode != 0) {
+      return const {};
+    }
+
+    return {
+      for (final line in '${result.stdout}'.split('\n'))
+        if (line.trim().split('|') case [final alias, final category]
+            when alias.isNotEmpty)
+          alias: category.trim(),
+    };
+  }
+
+  static const networkCategoriesScript =
+      r'Get-NetConnectionProfile | ForEach-Object '
+      r'{ "$($_.InterfaceAlias)|$($_.NetworkCategory)" }';
+
+  /// Whether an inbound rule blocks [program]. Windows adds one when
+  /// someone picks Cancel on its "allow access" question, and a block
+  /// beats every allow rule, so Ferret stays hidden with the rules in
+  /// place.
+  Future<bool> blocksProgram(String program) async {
+    final result = await _quietly('powershell.exe', [
+      '-NoProfile',
+      '-NonInteractive',
+      '-Command',
+      blockRulesScript(program),
+    ]);
+    if (result == null || result.exitCode != 0) {
+      return false;
+    }
+
+    final count = int.tryParse('${result.stdout}'.trim().split('\n').last);
+    return (count ?? 0) > 0;
+  }
+
+  /// Counts the enabled inbound block rules whose program is [program],
+  /// with environment variables in the rule's path expanded and case
+  /// ignored, as Windows compares paths.
+  static String blockRulesScript(String program) =>
+      "\$p = '${program.replaceAll("'", "''")}'; "
+      r'@(Get-NetFirewallRule -Direction Inbound -Action Block -Enabled True '
+      r'-ErrorAction SilentlyContinue | Get-NetFirewallApplicationFilter | '
+      r'Where-Object { [Environment]::ExpandEnvironmentVariables($_.Program) '
+      r'-ieq $p }).Count';
+
+  /// The `netsh` arguments that remove every inbound rule for [program],
+  /// the block rules a cancelled question left among them.
+  static List<String> unblockArguments(String program) => [
+    'advfirewall',
+    'firewall',
+    'delete',
+    'rule',
+    'name=all',
+    'dir=in',
+    'program=$program',
+  ];
+
   /// Adds the rules as administrator: Windows shows its UAC prompt once
-  /// for all three. Returns whether they are in place afterwards, so a
-  /// declined prompt reads as false.
-  Future<bool> allow() async {
+  /// for all three. With [unblock], the same prompt first removes the
+  /// rules that block that program. Returns whether they are in place
+  /// afterwards, so a declined prompt reads as false.
+  Future<bool> allow({String? unblock}) async {
     final commands = [
+      if (unblock != null)
+        'netsh ${unblockArguments(unblock).map(_quoted).join(' ')} >nul',
       for (final rule in rules) ...[
         'netsh ${deleteArguments(rule).map(_quoted).join(' ')} >nul',
         'netsh ${addArguments(rule).map(_quoted).join(' ')}',

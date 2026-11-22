@@ -67,6 +67,7 @@ class LocalNotice {
     this.silent = false,
     this.progress,
     this.ongoing = false,
+    this.ringing = false,
     this.private,
     this.public = false,
   });
@@ -94,6 +95,11 @@ class LocalNotice {
   /// "Controlled by Pixel · Stop".
   final bool ongoing;
 
+  /// Rings until someone answers, like an incoming call: Windows shows it
+  /// as a call, which stays on screen and gets through Do not disturb's
+  /// priority list.
+  final bool ringing;
+
   /// Set when the title, body or image say something private, such as a
   /// mirrored notification or a text.
   final PrivateContent? private;
@@ -117,6 +123,7 @@ class LocalNotice {
     silent: silent,
     progress: progress,
     ongoing: ongoing,
+    ringing: ringing,
   );
 }
 

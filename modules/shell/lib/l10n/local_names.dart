@@ -15,13 +15,15 @@ extension LocalNames on ShellLocalizations {
     (.PLATFORM_MACOS, _) => hereMac,
     (_, .FORM_FACTOR_PHONE) => herePhone,
     (_, .FORM_FACTOR_TABLET) => hereTablet,
+    (.PLATFORM_WINDOWS, _) => hereWindows,
     (.PLATFORM_ANDROID || .PLATFORM_IOS, _) => herePhone,
     _ => hereComputer,
   };
 
-  /// The values [here] takes. Strings name the first three and keep
-  /// `other` for a computer.
+  /// The values [here] takes. Strings name the first four and keep
+  /// `other` for a computer: "this PC" is what Windows calls itself.
   static const hereMac = 'mac';
+  static const hereWindows = 'windows';
   static const herePhone = 'phone';
   static const hereTablet = 'tablet';
   static const hereComputer = 'computer';

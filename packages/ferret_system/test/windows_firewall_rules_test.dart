@@ -77,6 +77,46 @@ void main() {
     expect(script, contains('localport=5353'));
   });
 
+  test('networks come back by name with their category', () async {
+    final rules = WindowsFirewallRules(
+      run: (executable, arguments) async => ProcessResult(
+        0,
+        0,
+        'Wi-Fi|Public\r\nvEthernet (WSL)|Private\r\n',
+        '',
+      ),
+    );
+
+    expect(await rules.networkCategories(), {
+      'Wi-Fi': 'Public',
+      'vEthernet (WSL)': 'Private',
+    });
+  });
+
+  test('a block rule for the program counts; none, or no PowerShell, '
+      'does not', () async {
+    WindowsFirewallRules answering(String output) => WindowsFirewallRules(
+      run: (executable, arguments) async => ProcessResult(0, 0, output, ''),
+    );
+    final noPowerShell = WindowsFirewallRules(
+      run: (executable, arguments) =>
+          throw const ProcessException('powershell.exe', []),
+    );
+
+    expect(await answering('2\r\n').blocksProgram(r'C:\F\ferret.exe'), isTrue);
+    expect(await answering('0\r\n').blocksProgram(r'C:\F\ferret.exe'), isFalse);
+    expect(await noPowerShell.blocksProgram(r'C:\F\ferret.exe'), isFalse);
+  });
+
+  test('the block check quotes the path for PowerShell', () {
+    final script = WindowsFirewallRules.blockRulesScript(
+      r"C:\O'Neil\ferret.exe",
+    );
+
+    expect(script, startsWith(r"$p = 'C:\O''Neil\ferret.exe'; "));
+    expect(script, contains('-Action Block'));
+  });
+
   test('a declined UAC prompt reads as not allowed', () async {
     final rules = WindowsFirewallRules(
       run: (executable, arguments) async => ProcessResult(0, 1, '', ''),

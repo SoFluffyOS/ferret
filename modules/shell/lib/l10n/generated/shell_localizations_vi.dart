@@ -383,6 +383,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Máy Mac này đang có Wi-Fi hoặc cáp mạng',
+        'windows': 'PC này đang có Wi-Fi hoặc cáp mạng',
         'phone': 'Điện thoại này đang có Wi-Fi',
         'tablet': 'Máy tính bảng này đang có Wi-Fi',
         'other': 'Máy tính này đang có Wi-Fi hoặc cáp mạng',
@@ -397,6 +398,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Máy Mac này',
+        'windows': 'PC này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -411,6 +413,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Máy Mac này',
+        'windows': 'PC này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -425,6 +428,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Máy Mac này',
+        'windows': 'PC này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -439,6 +443,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Máy Mac này',
+        'windows': 'PC này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -463,6 +468,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -477,6 +483,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -512,6 +519,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -934,6 +942,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -951,6 +960,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1080,6 +1090,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1097,6 +1108,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1114,6 +1126,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1128,6 +1141,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1149,6 +1163,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1166,6 +1181,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1209,6 +1225,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1241,6 +1258,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1259,6 +1277,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1273,6 +1292,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1287,6 +1307,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1545,6 +1566,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1569,6 +1591,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1583,6 +1606,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1952,6 +1976,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2062,6 +2087,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2076,6 +2102,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2090,6 +2117,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2148,6 +2176,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2162,6 +2191,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'thiết bị kia',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2195,6 +2225,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2288,6 +2319,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'máy Mac này',
+        'windows': 'PC này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2411,4 +2443,15 @@ class ShellLocalizationsVi extends ShellLocalizations {
   @override
   String get doctorFirewallRefused =>
       'Windows chưa thêm quy tắc tường lửa. Việc này cần quyền quản trị viên. Trên máy tính công ty, hãy nhờ bộ phận IT cho phép Ferret trên mạng riêng tư: TCP 47640 và 47642–47649, UDP 47641 và 5353.';
+
+  @override
+  String get doctorFirewallPublicNetwork =>
+      'Windows coi mạng này là mạng công cộng, nên ẩn PC này khỏi các thiết bị khác của bạn. Ở quán cà phê thì vậy là tốt. Ở nhà hay ở chỗ làm:\n1. Nhấn Mở cài đặt mạng, rồi Thuộc tính.\n2. Chọn Mạng riêng tư.\n3. Thử lại.';
+
+  @override
+  String get doctorFirewallBlocked =>
+      'Một quy tắc của Windows Firewall đang chặn Ferret. Windows thêm quy tắc này khi ai đó nhấn Hủy ở câu hỏi về quyền truy cập mạng.\n1. Nhấn Cho phép qua tường lửa, rồi Có khi Windows hỏi.\n2. Thử lại.';
+
+  @override
+  String get doctorFixOpenNetworkSettings => 'Mở cài đặt mạng';
 }

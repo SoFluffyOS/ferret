@@ -671,31 +671,31 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac is on Wi-Fi or a cable} phone{This phone is on Wi-Fi} tablet{This tablet is on Wi-Fi} other{This computer is on Wi-Fi or a cable}}'**
+  /// **'{here, select, mac{This Mac is on Wi-Fi or a cable} windows{This PC is on Wi-Fi or a cable} phone{This phone is on Wi-Fi} tablet{This tablet is on Wi-Fi} other{This computer is on Wi-Fi or a cable}}'**
   String doctorNetworkOk(String here);
 
   /// No description provided for @doctorNetworkProblem.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} isn\'t on a network. Connect to Wi-Fi or Ethernet.'**
   String doctorNetworkProblem(String here);
 
   /// No description provided for @doctorMobileDataAny.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find your devices. Join the same Wi-Fi as them.'**
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find your devices. Join the same Wi-Fi as them.'**
   String doctorMobileDataAny(String here);
 
   /// No description provided for @doctorMobileData.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find {device}. Join the same Wi-Fi, or reach {device} over your own VPN.'**
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data, and Ferret needs Wi-Fi to find {device}. Join the same Wi-Fi, or reach {device} over your own VPN.'**
   String doctorMobileData(String here, String device);
 
   /// No description provided for @doctorMobileDataVpn.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data. Ferret will try {device} over your VPN.'**
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is on mobile data. Ferret will try {device} over your VPN.'**
   String doctorMobileDataVpn(String here, String device);
 
   /// No description provided for @doctorVpn.
@@ -713,13 +713,13 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorSameNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same Wi-Fi last time'**
+  /// **'{device} and {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} were on the same Wi-Fi last time'**
   String doctorSameNetworkOk(String device, String here);
 
   /// No description provided for @doctorSameNetworkWarning.
   ///
   /// In en, this message translates to:
-  /// **'{device} was last seen on a different network ({address}). Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.'**
+  /// **'{device} was last seen on a different network ({address}). Put {device} and {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.'**
   String doctorSameNetworkWarning(String device, String address, String here);
 
   /// No description provided for @doctorReachableRunning.
@@ -755,7 +755,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorAcceptedProblem.
   ///
   /// In en, this message translates to:
-  /// **'{device} answered but doesn\'t know {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} any more. It may have been reset or reinstalled. Pair them again.'**
+  /// **'{device} answered but doesn\'t know {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} any more. It may have been reset or reinstalled. Pair them again.'**
   String doctorAcceptedProblem(String device, String here);
 
   /// No description provided for @doctorFixTryAgain.
@@ -1289,7 +1289,7 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} forget each other. You can pair them again any time.'**
+  /// **'{device} and {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} forget each other. You can pair them again any time.'**
   String deviceForgetConfirmBody(String device, String here);
 
   /// No description provided for @doctorTryAgainPrimary.
@@ -1301,7 +1301,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNotAnsweringSteps.
   ///
   /// In en, this message translates to:
-  /// **'Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
+  /// **'Try this:\n1. On {device}, open Ferret.\n2. Put {device} and {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} on the same Wi-Fi.\n3. Guest and office Wi-Fi often keep devices apart. Try your home Wi-Fi or a phone hotspot.'**
   String doctorNotAnsweringSteps(String device, String here);
 
   /// No description provided for @nearbyLooking.
@@ -1457,7 +1457,7 @@ abstract class ShellLocalizations {
   /// No description provided for @groupJoinAskDetail.
   ///
   /// In en, this message translates to:
-  /// **'It gets what {asker} may use here. Not now keeps it off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.'**
+  /// **'It gets what {asker} may use here. Not now keeps it off {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}.'**
   String groupJoinAskDetail(String asker, String here);
 
   /// Short button on groupJoinAsk; groupJoinAddTooltip is its tooltip
@@ -1469,7 +1469,7 @@ abstract class ShellLocalizations {
   /// No description provided for @groupJoinAddTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Add {device} to {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Add {device} to {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String groupJoinAddTooltip(String device, String here);
 
   /// Short button on groupJoinAsk; groupJoinNotNowTooltip is its tooltip
@@ -1481,13 +1481,13 @@ abstract class ShellLocalizations {
   /// No description provided for @groupJoinNotNowTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Keep {device} off {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Keep {device} off {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String groupJoinNotNowTooltip(String device, String here);
 
   /// No description provided for @groupRemoveAsk.
   ///
   /// In en, this message translates to:
-  /// **'{asker} wants to remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'{asker} wants to remove {device} from {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String groupRemoveAsk(String asker, String device, String here);
 
   /// No description provided for @groupRemoveAskDetail.
@@ -1505,7 +1505,7 @@ abstract class ShellLocalizations {
   /// No description provided for @groupRemoveTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Remove {device} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Remove {device} from {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String groupRemoveTooltip(String device, String here);
 
   /// Short button on groupRemoveAsk; groupKeepTooltip is its tooltip
@@ -1517,7 +1517,7 @@ abstract class ShellLocalizations {
   /// No description provided for @groupKeepTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Keep {device} paired with {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Keep {device} paired with {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String groupKeepTooltip(String device, String here);
 
   /// No description provided for @groupRequestNoticeBody.
@@ -1559,7 +1559,7 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceForgetHere.
   ///
   /// In en, this message translates to:
-  /// **'Forget on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only'**
+  /// **'Forget on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} only'**
   String deviceForgetHere(String here);
 
   /// Short button for deviceForgetHere; the full sentence is its tooltip
@@ -1595,7 +1595,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorIsolated.
   ///
   /// In en, this message translates to:
-  /// **'This Wi-Fi keeps devices apart, so {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t reach {device}. Café, hotel and guest Wi-Fi often do this. Put both on your home Wi-Fi or your phone\'s hotspot.'**
+  /// **'This Wi-Fi keeps devices apart, so {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} can\'t reach {device}. Café, hotel and guest Wi-Fi often do this. Put both on your home Wi-Fi or your phone\'s hotspot.'**
   String doctorIsolated(String device, String here);
 
   /// No description provided for @doctorIsolatedMaybe.
@@ -1607,19 +1607,19 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNothingWrong.
   ///
   /// In en, this message translates to:
-  /// **'Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. On {device}, open Ferret.'**
+  /// **'Everything looks right on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}. On {device}, open Ferret.'**
   String doctorNothingWrong(String here, String device);
 
   /// No description provided for @doctorNetworkIntro.
   ///
   /// In en, this message translates to:
-  /// **'Checking the network on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}.'**
+  /// **'Checking the network on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}.'**
   String doctorNetworkIntro(String here);
 
   /// No description provided for @doctorNetworkAllGood.
   ///
   /// In en, this message translates to:
-  /// **'Everything looks right on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Open Ferret on your other device, on the same Wi-Fi.'**
+  /// **'Everything looks right on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}. Open Ferret on your other device, on the same Wi-Fi.'**
   String doctorNetworkAllGood(String here);
 
   /// No description provided for @connectAction.
@@ -2009,7 +2009,7 @@ abstract class ShellLocalizations {
   /// No description provided for @devicesStaleConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Remove {names} from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}?'**
+  /// **'Remove {names} from {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}?'**
   String devicesStaleConfirm(String names, String here);
 
   /// No description provided for @devicesStaleConfirmBody.
@@ -2033,13 +2033,13 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceRenameTitle.
   ///
   /// In en, this message translates to:
-  /// **'Name on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Name on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String deviceRenameTitle(String here);
 
   /// No description provided for @deviceRenameBody.
   ///
   /// In en, this message translates to:
-  /// **'Only {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} uses this name. {device} keeps its own.'**
+  /// **'Only {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} uses this name. {device} keeps its own.'**
   String deviceRenameBody(String here, String device);
 
   /// No description provided for @deviceRenameSave.
@@ -2603,7 +2603,7 @@ abstract class ShellLocalizations {
   /// No description provided for @accessIntro.
   ///
   /// In en, this message translates to:
-  /// **'{device} reaches {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.'**
+  /// **'{device} reaches {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} only through what\'s on here, directly on your network. Turn one off and it stops right away, on both devices.'**
   String accessIntro(String device, String here);
 
   /// No description provided for @accessOffline.
@@ -2747,19 +2747,19 @@ abstract class ShellLocalizations {
   /// No description provided for @updateThereBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} has an older Ferret ({version}) that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.'**
+  /// **'{name} has an older Ferret ({version}) that {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to anymore. Update it from where you installed it, then open it once. They connect again by themselves.'**
   String updateThereBody(String name, String version, String here);
 
   /// No description provided for @updateHereTitle.
   ///
   /// In en, this message translates to:
-  /// **'Update Ferret on {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}'**
+  /// **'Update Ferret on {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}'**
   String updateHereTitle(String here);
 
   /// No description provided for @updateHereBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} has a newer Ferret that {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to yet. Update Ferret here, and they connect again by themselves.'**
+  /// **'{name} has a newer Ferret that {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} can\'t talk to yet. Update Ferret here, and they connect again by themselves.'**
   String updateHereBody(String name, String here);
 
   /// No description provided for @updateGet.
@@ -2837,13 +2837,13 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorHotspot.
   ///
   /// In en, this message translates to:
-  /// **'No shared Wi-Fi? Turn on {phone}\'s hotspot and join it from {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
+  /// **'No shared Wi-Fi? Turn on {phone}\'s hotspot and join it from {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
   String doctorHotspot(String phone, String here);
 
   /// No description provided for @doctorHotspotAny.
   ///
   /// In en, this message translates to:
-  /// **'No shared Wi-Fi? Turn on your phone\'s hotspot and join it from {here, select, mac{this Mac} phone{your other device} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
+  /// **'No shared Wi-Fi? Turn on your phone\'s hotspot and join it from {here, select, mac{this Mac} windows{this PC} phone{your other device} tablet{this tablet} other{this computer}}. Ferret works over it, and what goes between your devices uses no mobile data.'**
   String doctorHotspotAny(String here);
 
   /// No description provided for @doctorHotspotHere.
@@ -2873,7 +2873,7 @@ abstract class ShellLocalizations {
   /// No description provided for @webcamSteps.
   ///
   /// In en, this message translates to:
-  /// **'1. Plug {device} into {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} with a USB cable.\n2. On {device}, pull down from the top and tap the USB notification.\n3. Choose Webcam.\n4. In your video app, pick the phone as the camera.'**
+  /// **'1. Plug {device} into {here, select, mac{this Mac} windows{this PC} phone{this phone} tablet{this tablet} other{this computer}} with a USB cable.\n2. On {device}, pull down from the top and tap the USB notification.\n3. Choose Webcam.\n4. In your video app, pick the phone as the camera.'**
   String webcamSteps(String device, String here);
 
   /// No description provided for @webcamMissing.
@@ -2993,7 +2993,7 @@ abstract class ShellLocalizations {
   /// No description provided for @vpnPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'This asks {device} for its VPN addresses. {here, select, mac{This Mac\'s} phone{This phone\'s} tablet{This tablet\'s} other{This computer\'s}} own go only to devices that have this switch on for it.'**
+  /// **'This asks {device} for its VPN addresses. {here, select, mac{This Mac\'s} windows{This PC\'s} phone{This phone\'s} tablet{This tablet\'s} other{This computer\'s}} own go only to devices that have this switch on for it.'**
   String vpnPrivacy(String device, String here);
 
   /// No description provided for @deviceReachedOverVpn.
@@ -3175,6 +3175,24 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Windows didn\'t add the firewall rules. That takes an administrator. On a work PC, ask your IT team to allow Ferret on private networks: TCP 47640 and 47642–47649, UDP 47641 and 5353.'**
   String get doctorFirewallRefused;
+
+  /// Fix connection line on Windows: Ferret's firewall rules are in place, but the network the PC is on is set to Public, where they don't apply. Use Windows' own words: Properties, Private network.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows calls this network Public, so it hides this PC from your other devices. Good at a café. At home or at work:\n1. Click Open network settings, then Properties.\n2. Choose Private network.\n3. Try again.'**
+  String get doctorFirewallPublicNetwork;
+
+  /// Fix connection line on Windows: an inbound block rule names ferret.exe. Allow through firewall removes it and adds Ferret's rules.
+  ///
+  /// In en, this message translates to:
+  /// **'A Windows Firewall rule blocks Ferret. Windows adds one when someone clicks Cancel on its question about network access.\n1. Click Allow through firewall, then Yes when Windows asks.\n2. Try again.'**
+  String get doctorFirewallBlocked;
+
+  /// Button in Fix connection on Windows: opens Settings → Network & internet. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Open network settings'**
+  String get doctorFixOpenNetworkSettings;
 }
 
 class _ShellLocalizationsDelegate
