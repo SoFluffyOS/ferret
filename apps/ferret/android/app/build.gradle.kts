@@ -47,6 +47,13 @@ android {
         }
     }
 
+    // Release lint crashes inside camera_android_camerax's sources when
+    // Gradle runs on JDK 17 (lint calls List.removeLast, a JDK 21 method),
+    // which failed every release build. `./gradlew lint` still checks.
+    lint {
+        checkReleaseBuilds = false
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.findByName("release")

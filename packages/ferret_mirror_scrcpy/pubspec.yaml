@@ -29,6 +29,8 @@ dev_dependencies:
 flutter:
   assets:
     # scrcpy's released server, unmodified (Apache-2.0), with its licence.
-    - assets/scrcpy-server-v5.0.1
+    # Only computers push it to a phone, so phones don't carry its 730 KB.
+    - path: assets/scrcpy-server-v5.0.1
+      platforms: [macos, windows, linux]
     - assets/scrcpy-LICENSE.txt
     - assets/scrcpy-NOTICE.txt
