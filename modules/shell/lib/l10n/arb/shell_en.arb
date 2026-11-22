@@ -555,6 +555,10 @@
     "description": "Short button for scanButton; the full sentence is its tooltip"
   },
   "scanNotFerret": "That's not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.",
+  "scanCameraOff": "Ferret can't use the camera. Allow it in Settings, then come back here.",
+  "@scanCameraOff": {
+    "description": "Scan page, when the camera permission was denied"
+  },
   "offersTitle": "Do more",
   "@offersTitle": {
     "description": "Title of the Home card that suggests features to turn on"
@@ -1281,8 +1285,8 @@
       }
     }
   },
-  "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
-  "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
+  "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.",
+  "emptyBodyIphone": "Install Ferret on your computer too, and open it. It shows up here when both are on the same Wi-Fi.",
   "emptyCantSee": "Can't see it?",
   "emptyGetForComputer": "Get Ferret for your computer",
   "welcomeNearbyBody": "Tap Pair next to your other device. You only do it once.",

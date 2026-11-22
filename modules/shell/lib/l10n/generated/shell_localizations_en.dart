@@ -801,6 +801,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
       'That\'s not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.';
 
   @override
+  String get scanCameraOff =>
+      'Ferret can\'t use the camera. Allow it in Settings, then come back here.';
+
+  @override
   String get offersTitle => 'Do more';
 
   @override
@@ -1662,11 +1666,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get emptyBody =>
-      'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.';
+      'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.';
 
   @override
   String get emptyBodyIphone =>
-      'Install Ferret on your computer too, and open it. Then scan the code it shows.';
+      'Install Ferret on your computer too, and open it. It shows up here when both are on the same Wi-Fi.';
 
   @override
   String get emptyCantSee => 'Can\'t see it?';

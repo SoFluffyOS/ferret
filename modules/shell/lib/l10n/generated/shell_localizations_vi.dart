@@ -793,6 +793,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Đây không phải mã của Ferret. Trên máy tính, mở Ferret và nhấp +, rồi chọn Ghép đôi bằng mã QR.';
 
   @override
+  String get scanCameraOff =>
+      'Ferret chưa được phép dùng camera. Hãy cho phép trong Cài đặt, rồi quay lại đây.';
+
+  @override
   String get offersTitle => 'Làm được nhiều hơn';
 
   @override
@@ -1654,11 +1658,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get emptyBody =>
-      'Cài Ferret trên cả thiết bị kia rồi mở lên. Thiết bị sẽ hiện ở đây khi cả hai dùng chung Wi-Fi. Riêng iPhone thì ghép đôi bằng mã QR.';
+      'Cài Ferret trên cả thiết bị kia rồi mở lên. Thiết bị sẽ hiện ở đây khi cả hai dùng chung Wi-Fi.';
 
   @override
   String get emptyBodyIphone =>
-      'Cài Ferret trên cả máy tính rồi mở lên. Sau đó quét mã hiện ra.';
+      'Cài Ferret trên cả máy tính rồi mở lên. Máy tính sẽ hiện ở đây khi cả hai dùng chung Wi-Fi.';
 
   @override
   String get emptyCantSee => 'Không thấy thiết bị?';

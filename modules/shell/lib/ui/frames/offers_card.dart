@@ -52,7 +52,9 @@ class OffersBuilder extends StatelessWidget {
 
 /// Every feature that could be set up, in one compact card, instead of a
 /// setup card per feature. The ✕ hides it until a feature that wasn't on
-/// offer then has something new; Settings → Do more keeps them all.
+/// offer then has something new; Settings → Do more keeps them all. Right
+/// after the first pairing it waits until Ferret has worked once
+/// ([FirstUse]), so the first thing to try stands alone.
 class OffersCard extends StatefulWidget {
   const OffersCard({super.key});
 
@@ -69,7 +71,9 @@ class _OffersCardState extends State<OffersCard> {
     super.initState();
     _settings = ShellScope.read(context).featureContext.engine.settings;
     _settingChanges = _settings.changes.listen((key) {
-      if (key == OffersDismissal.dismissedKey && mounted) {
+      final matters =
+          key == OffersDismissal.dismissedKey || Tips.doneKeys.contains(key);
+      if (matters && mounted) {
         setState(() {});
       }
     });
@@ -88,7 +92,7 @@ class _OffersCardState extends State<OffersCard> {
     return OffersBuilder(
       builder: (context, offers) {
         final ids = {for (final offer in offers) offer.featureId};
-        if (offers.isEmpty || dismissal.hides(ids)) {
+        if (offers.isEmpty || dismissal.hides(ids) || !_hasWorked(context)) {
           return const SizedBox.shrink();
         }
 
@@ -106,6 +110,15 @@ class _OffersCardState extends State<OffersCard> {
           ),
         );
       },
+    );
+  }
+
+  bool _hasWorked(BuildContext context) {
+    final scope = ShellScope.of(context);
+    return FirstUse.seen(
+      tips: Tips(_settings),
+      devices: scope.featureContext.engine.trustStore.devices,
+      feed: ActivityFeed.gather(context, scope.features, scope.featureContext),
     );
   }
 }

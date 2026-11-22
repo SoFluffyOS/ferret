@@ -4213,6 +4213,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get scanNotFerret => pseudo(super.scanNotFerret);
   @override
+  String get scanCameraOff => pseudo(super.scanCameraOff);
+  @override
   String get offersTitle => pseudo(super.offersTitle);
   @override
   String get offersSubtitle => pseudo(super.offersSubtitle);

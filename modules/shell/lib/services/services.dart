@@ -12,6 +12,7 @@ export 'package:shell/services/device_successors.dart';
 export 'package:shell/services/drop_target_finder.dart';
 export 'package:shell/services/engine_host.dart';
 export 'package:shell/services/feature_window_host.dart';
+export 'package:shell/services/first_use.dart';
 export 'package:shell/services/floating_panel_host.dart';
 export 'package:shell/services/global_shortcut.dart';
 export 'package:shell/services/group_request_items.dart';

@@ -430,17 +430,22 @@ final screens = <Screen>[
       tall: true,
     ),
   ],
-  Screen('iphone_guest_offer', (tester, rig) async {
-    await rig.pairConnectedComputer(tester, computerFeatures: appFeatures());
-    await rig.open(
-      tester,
-      const FerretPage(
-        title: 'Ferret',
-        backLabel: 'Back',
-        children: [OffersCard()],
-      ),
-    );
-  }, only: iphone),
+  Screen(
+    'iphone_guest_offer',
+    (tester, rig) async {
+      await rig.pairConnectedComputer(tester, computerFeatures: appFeatures());
+      await rig.open(
+        tester,
+        const FerretPage(
+          title: 'Ferret',
+          backLabel: 'Back',
+          children: [OffersCard()],
+        ),
+      );
+    },
+    only: iphone,
+    tipsDone: true,
+  ),
   Screen('settings_advanced', (tester, rig) async {
     await rig.open(tester, const AdvancedSettingsPage());
   }),

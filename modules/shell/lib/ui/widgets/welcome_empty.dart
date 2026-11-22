@@ -12,8 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 /// welcome: what Ferret is for, the one thing to do now, whether it is
 /// still looking, and the privacy promise.
 ///
-/// An iPhone can't look for devices on the network, so there it says so
-/// plainly: scan the code on the computer, and where to get Ferret for it.
+/// On an iPhone it also says where to get Ferret for the computer, and
+/// the code to scan stays one tap away while iOS hasn't let it look yet.
 class WelcomeEmpty extends StatefulWidget {
   const WelcomeEmpty({
     super.key,

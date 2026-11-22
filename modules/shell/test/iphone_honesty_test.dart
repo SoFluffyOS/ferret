@@ -78,7 +78,7 @@ void main() {
     expect(
       find.text(
         'Install Ferret on your computer too, and open it. '
-        'Then scan the code it shows.',
+        'It shows up here when both are on the same Wi-Fi.',
       ),
       findsOneWidget,
     );

@@ -1130,6 +1130,12 @@ abstract class ShellLocalizations {
   /// **'That\'s not a Ferret code. On your computer, open Ferret and click +, then Pair with a QR code.'**
   String get scanNotFerret;
 
+  /// Scan page, when the camera permission was denied
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret can\'t use the camera. Allow it in Settings, then come back here.'**
+  String get scanCameraOff;
+
   /// Title of the Home card that suggests features to turn on
   ///
   /// In en, this message translates to:
@@ -2093,13 +2099,13 @@ abstract class ShellLocalizations {
   /// No description provided for @emptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.'**
+  /// **'Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi.'**
   String get emptyBody;
 
   /// No description provided for @emptyBodyIphone.
   ///
   /// In en, this message translates to:
-  /// **'Install Ferret on your computer too, and open it. Then scan the code it shows.'**
+  /// **'Install Ferret on your computer too, and open it. It shows up here when both are on the same Wi-Fi.'**
   String get emptyBodyIphone;
 
   /// No description provided for @emptyCantSee.
