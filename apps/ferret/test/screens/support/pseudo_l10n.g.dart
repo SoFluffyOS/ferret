@@ -733,6 +733,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get guestWaiting => pseudo(super.guestWaiting);
   @override
+  String get guestUnseen => pseudo(super.guestUnseen);
+  @override
   String get clearFinished => pseudo(super.clearFinished);
   @override
   String get transferText => pseudo(super.transferText);

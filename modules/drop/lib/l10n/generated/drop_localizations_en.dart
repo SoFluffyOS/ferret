@@ -93,6 +93,10 @@ class DropLocalizationsEn extends DropLocalizations {
       'Open for one file from a guest. On their device they pick the name below, and you say yes first. Closes once the file arrives.';
 
   @override
+  String get guestUnseen =>
+      'Not showing up for them? Hotel and guest Wi-Fi often keep devices apart. Try a phone\'s hotspot.';
+
+  @override
   String get clearFinished => 'Clear finished';
 
   @override

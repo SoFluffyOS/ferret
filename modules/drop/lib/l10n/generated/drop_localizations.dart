@@ -230,6 +230,12 @@ abstract class DropLocalizations {
   /// **'Open for one file from a guest. On their device they pick the name below, and you say yes first. Closes once the file arrives.'**
   String get guestWaiting;
 
+  /// Shown under an open guest window after 30 seconds without hearing any other device
+  ///
+  /// In en, this message translates to:
+  /// **'Not showing up for them? Hotel and guest Wi-Fi often keep devices apart. Try a phone\'s hotspot.'**
+  String get guestUnseen;
+
   /// Button: remove finished transfers from the list
   ///
   /// In en, this message translates to:

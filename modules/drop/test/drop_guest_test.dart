@@ -101,4 +101,48 @@ void main() {
       expect(laptop.localSend.receiveState.isOn, isTrue);
     },
   );
+
+  group('a guest window that hears nobody', () {
+    late DateTime now;
+    late DropViewModel quiet;
+
+    setUp(() {
+      now = DateTime.now();
+      quiet = DropViewModel(
+        feature: laptop.feature,
+        describeFolder: () async => inbox.path,
+        clock: () => now,
+      );
+    });
+
+    tearDown(() => quiet.dispose());
+
+    test('suggests a hotspot after 30 seconds', () async {
+      await quiet.receiveFromGuest();
+      expect(quiet.guestSeemsUnseen, isFalse);
+
+      now = now.add(const Duration(seconds: 29));
+      expect(quiet.guestSeemsUnseen, isFalse);
+
+      now = now.add(const Duration(seconds: 2));
+      expect(quiet.guestSeemsUnseen, isTrue);
+
+      await quiet.stopReceiving();
+      await until(() => !quiet.isOpenToOthers);
+      expect(quiet.guestSeemsUnseen, isFalse);
+    });
+
+    test('stays quiet once a LocalSend app was heard', () async {
+      await quiet.receiveFromGuest();
+      final found = await phone.localSend.findAt(
+        InternetAddress.loopbackIPv4,
+        port: laptop.localSend.receiveState.port,
+      );
+      expect(found, isTrue);
+      await until(() => laptop.localSend.peers.isNotEmpty);
+
+      now = now.add(const Duration(minutes: 1));
+      expect(quiet.guestSeemsUnseen, isFalse);
+    });
+  });
 }

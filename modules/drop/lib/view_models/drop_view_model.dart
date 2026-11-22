@@ -72,6 +72,8 @@ class DropViewModel extends ChangeNotifier {
   Timer? _countdown;
   String _receiveFolder = '';
   bool _guestOnce = false;
+  DateTime? _guestSince;
+  bool _guestHeard = false;
 
   /// Newest first.
   List<Transfer> get transfers => _transfers;
@@ -120,6 +122,22 @@ class DropViewModel extends ChangeNotifier {
   /// only, and closes once it arrives.
   bool get isGuestOnce => _guestOnce && isOpenToOthers;
 
+  /// How long a guest window waits for any sign of another device before
+  /// suggesting a phone hotspot.
+  static const guestQuietAfter = Duration(seconds: 30);
+
+  /// Whether a guest window has heard nothing from any device for
+  /// [guestQuietAfter]: no LocalSend app announced or registered and no
+  /// offer came. Hotel and guest Wi-Fi often keep devices apart.
+  bool get guestSeemsUnseen {
+    final since = _guestSince;
+    if (!isGuestOnce || _guestHeard || since == null) {
+      return false;
+    }
+
+    return _clock().difference(since) >= guestQuietAfter;
+  }
+
   /// Lets a guest's phone without Ferret send one file here: Quick Share
   /// and LocalSend open for their usual 10 minutes, and close as soon as a
   /// file from one of them is saved.
@@ -129,6 +147,8 @@ class DropViewModel extends ChangeNotifier {
     }
 
     _guestOnce = true;
+    _guestSince = _clock();
+    _guestHeard = false;
     notifyListeners();
     await openToOthers();
   }
@@ -494,6 +514,7 @@ class DropViewModel extends ChangeNotifier {
 
     _runningIds = _idsOfRunning(transfers);
     _transfers = transfers;
+    _noteGuestContact();
     notifyListeners();
   }
 
@@ -550,6 +571,7 @@ class DropViewModel extends ChangeNotifier {
     final wasOpen = isOpenToOthers;
     _receiveState = feature.localSend.receiveState;
     _localSendTargets = _readLocalSendTargets();
+    _noteGuestContact();
     _endGuestOnceWhenClosed(wasOpen);
     _restartCountdown();
     notifyListeners();
@@ -561,6 +583,26 @@ class DropViewModel extends ChangeNotifier {
     _endGuestOnceWhenClosed(wasOpen);
     _restartCountdown();
     notifyListeners();
+  }
+
+  /// Any LocalSend app heard, or any offer from a device without Ferret,
+  /// since the guest window opened shows this network lets devices meet.
+  void _noteGuestContact() {
+    final since = _guestSince;
+    if (!_guestOnce || _guestHeard || since == null) {
+      return;
+    }
+
+    final heardPeer =
+        localSendEnabled &&
+        feature.localSend.peers.any((peer) => !peer.lastSeen.isBefore(since));
+    final offered = _transfers.any(
+      (transfer) =>
+          transfer.isUnpaired &&
+          !transfer.isOutgoing &&
+          !transfer.startedAt.isBefore(since),
+    );
+    _guestHeard = heardPeer || offered;
   }
 
   /// A guest window that ran out or was stopped before a file came must

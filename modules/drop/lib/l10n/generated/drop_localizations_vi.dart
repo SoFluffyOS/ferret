@@ -93,6 +93,10 @@ class DropLocalizationsVi extends DropLocalizations {
       'Đang mở để nhận một tệp từ khách. Trên máy của họ, họ chọn tên bên dưới, và bạn đồng ý trước. Tự đóng khi tệp tới.';
 
   @override
+  String get guestUnseen =>
+      'Họ chưa thấy máy này? Wi-Fi khách sạn và Wi-Fi cho khách thường ngăn các thiết bị thấy nhau. Hãy thử điểm phát sóng của điện thoại.';
+
+  @override
   String get clearFinished => 'Xóa mục đã xong';
 
   @override

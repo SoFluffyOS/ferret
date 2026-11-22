@@ -23,6 +23,7 @@
   "guestBodyLocalSend": "Người không có Ferret có thể gửi một tệp tới đây bằng LocalSend. Họ không xem được gì khác ở đây. Tự đóng sau 10 phút hoặc khi tệp tới.",
   "guestAction": "Cho phép một lần",
   "guestWaiting": "Đang mở để nhận một tệp từ khách. Trên máy của họ, họ chọn tên bên dưới, và bạn đồng ý trước. Tự đóng khi tệp tới.",
+  "guestUnseen": "Họ chưa thấy máy này? Wi-Fi khách sạn và Wi-Fi cho khách thường ngăn các thiết bị thấy nhau. Hãy thử điểm phát sóng của điện thoại.",
   "clearFinished": "Xóa mục đã xong",
   "transferFiles": "{count, plural, =1{{name}} other{{count} tệp}}",
   "transferText": "Văn bản",
