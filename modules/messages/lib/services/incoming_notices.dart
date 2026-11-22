@@ -166,6 +166,10 @@ class IncomingNotices {
 
     final (deviceId, threadId) = target;
     switch (response.actionId) {
+      // Linux notifications have no text field, so Reply opens the thread.
+      case replyActionId when response.replyText == null:
+        await clear(deviceId, threadId);
+        _onOpen(deviceId, threadId);
       case replyActionId:
         await _reply(deviceId, threadId, response.replyText ?? '');
       case markReadActionId:

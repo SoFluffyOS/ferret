@@ -162,6 +162,31 @@ void main() {
     expect(control.invoked, [('phone', 'k1', '0', 'On my way')]);
   });
 
+  test('Reply from a notice with no text field (Linux) opens the inbox to '
+      'answer there', () async {
+    final opened = <String>[];
+    inbox.dispose();
+    inbox = InboxViewModel(
+      feature: control,
+      notifier: notifier,
+      deviceName: (deviceId) => 'Pixel',
+      strings: NotificationsLocalizationsEn.new,
+      onOpen: opened.add,
+    );
+    control.emit(MirrorPosted('phone', mirrored()));
+
+    notifier.respond(
+      const NoticeResponse(
+        noticeId: 'notifications/phone/k1',
+        actionId: InboxViewModel.replyActionId,
+      ),
+    );
+    await pumpEventQueue();
+
+    expect(opened, ['phone']);
+    expect(control.invoked, isEmpty);
+  });
+
   test('a reply that fails says so', () async {
     control
       ..actionResult = false

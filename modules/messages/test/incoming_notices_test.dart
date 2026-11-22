@@ -167,6 +167,23 @@ void main() {
     },
   );
 
+  test('Reply from a notice with no text field (Linux) opens the '
+      'conversation', () async {
+    await receive('sms:1');
+
+    notifier.respond(
+      NoticeResponse(
+        noticeId: noticeId(1),
+        actionId: IncomingNotices.replyActionId,
+      ),
+    );
+    await settle();
+
+    expect(opened, [(phoneId, 1)]);
+    expect(source.sent, isEmpty);
+    expect(notifier.cancelled, contains(noticeId(1)));
+  });
+
   test('a failed reply shows why on the problems channel', () async {
     await receive('sms:1');
     source.sendResult = SendResult(failure: .SEND_FAILURE_NO_SERVICE);

@@ -353,6 +353,9 @@ class InboxViewModel extends ChangeNotifier {
     switch (response.actionId) {
       case dismissActionId:
         await dismiss(notification);
+      // Linux notifications have no text field, so Reply opens the inbox.
+      case replyActionId when response.replyText == null:
+        _onOpen?.call(notification.deviceId);
       case replyActionId:
         await _reply(notification, response.replyText ?? '');
     }
