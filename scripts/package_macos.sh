@@ -260,9 +260,14 @@ EOF
   # releases/latest/download/Ferret-mac.dmg.
   cp -f "$DMG" "$OUT/Ferret-mac.dmg"
 
+  # Ferret's updater refuses a download whose SHA-256 isn't in the
+  # release's SHA256SUMS. Merge this file with the other platforms' into
+  # the one SHA256SUMS the release carries.
+  (cd "$OUT" && shasum -a 256 "$(basename "$DMG")" "$(basename "$ZIP")" Ferret-mac.dmg >SHA256SUMS)
+
   echo
   echo "Done:"
-  shasum -a 256 "$DMG" "$ZIP" "$OUT/Ferret-mac.dmg"
+  cat "$OUT/SHA256SUMS"
 }
 
 case "$target" in

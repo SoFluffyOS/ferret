@@ -100,6 +100,23 @@ build_appimage() {
   ln -sf "$APP_ID.png" "$appdir/.DirIcon"
 
   ARCH="$appimage_arch" "$tool" "$appdir" "$OUT/Ferret-$version-$appimage_arch.AppImage"
+  # install.sh and Ferret's updater look for a name that never changes:
+  # releases/latest/download/Ferret-linux-x86_64.AppImage.
+  cp -f "$OUT/Ferret-$version-$appimage_arch.AppImage" "$OUT/Ferret-linux-$appimage_arch.AppImage"
+}
+
+# Ferret's updater refuses a download whose SHA-256 isn't in the release's
+# SHA256SUMS. Merge this file with the other platforms' into the one
+# SHA256SUMS the release carries.
+write_sums() {
+  local files=() file
+  for file in "$OUT"/*"$version"* "$OUT"/Ferret-linux-*.AppImage; do
+    if [ -f "$file" ]; then
+      files+=("$(basename "$file")")
+    fi
+  done
+  (cd "$OUT" && sha256sum "${files[@]}" >SHA256SUMS)
+  cat "$OUT/SHA256SUMS"
 }
 
 build_flatpak() {
@@ -121,4 +138,5 @@ case "$target" in
   *) echo "Usage: $0 [deb|appimage|flatpak|all]" >&2; exit 64 ;;
 esac
 
+write_sums
 echo "Packages are in $OUT."

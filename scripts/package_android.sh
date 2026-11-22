@@ -37,6 +37,11 @@ mkdir -p "$OUT"
 cp -f "$APP/build/app/outputs/flutter-apk/app-release.apk" "$OUT/Ferret-$version.apk"
 cp -f "$OUT/Ferret-$version.apk" "$OUT/Ferret-android.apk"
 
+# Ferret's updater refuses a download whose SHA-256 isn't in the release's
+# SHA256SUMS. Merge this file with the other platforms' into the one
+# SHA256SUMS the release carries.
+(cd "$OUT" && shasum -a 256 "Ferret-$version.apk" Ferret-android.apk >SHA256SUMS)
+
 echo
 echo "Done:"
-shasum -a 256 "$OUT/Ferret-$version.apk" "$OUT/Ferret-android.apk"
+cat "$OUT/SHA256SUMS"

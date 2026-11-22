@@ -14,6 +14,14 @@
 #          FERRET_MSIX_PUBLISHER to the certificate's subject ("CN=...");
 #          set FERRET_MSIX_CERT (a .pfx) and FERRET_MSIX_CERT_PASSWORD to sign.
 #          An unsigned .msix won't install outside developer mode.
+#
+# FERRET_WINDOWS_CERT (a .pfx) and FERRET_WINDOWS_CERT_PASSWORD sign
+# ferret.exe, ferret-cli.exe and the setup with Authenticode. Ferret's
+# updater installs a new setup only when it is validly signed by the same
+# publisher as the running ferret.exe, so release builds need them.
+#
+# Every run writes SHA256SUMS next to the packages; merge it with the other
+# platforms' into the one SHA256SUMS the release carries.
 [CmdletBinding()]
 param(
   [ValidateSet('inno', 'msix', 'all')]
@@ -82,6 +90,9 @@ function Build-Stage {
     Pop-Location
   }
 
+  Set-Signature (Join-Path $Stage 'ferret.exe')
+  Set-Signature (Join-Path $Stage 'ferret-cli.exe')
+
   # Flutter's runner links the MSVC runtime dynamically. Shipping the DLLs
   # next to ferret.exe (app-local) spares users the VC++ redistributable.
   $system = Join-Path $env:SystemRoot 'System32'
@@ -91,6 +102,28 @@ function Build-Stage {
       Copy-Item $source $Stage
     }
   }
+}
+
+function Set-Signature {
+  param([string]$Path)
+  if (-not $env:FERRET_WINDOWS_CERT) {
+    Write-Warning "FERRET_WINDOWS_CERT not set: $Path is unsigned, and Ferret's updater won't install it."
+    return
+  }
+  Invoke-Checked (Find-SdkTool 'signtool.exe') @(
+    'sign', '/fd', 'SHA256', '/tr', 'http://timestamp.digicert.com', '/td', 'SHA256',
+    '/f', $env:FERRET_WINDOWS_CERT, '/p', $env:FERRET_WINDOWS_CERT_PASSWORD, $Path
+  )
+}
+
+function Write-Sums {
+  $lines = Get-ChildItem -Path $Out -File |
+    Where-Object { $_.Name -like "*$Version*" -or $_.Name -like 'Ferret-windows-*-setup.exe' } |
+    Sort-Object Name |
+    ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" }
+  $text = ($lines -join "`n") + "`n"
+  [System.IO.File]::WriteAllText((Join-Path $Out 'SHA256SUMS'), $text, (New-Object System.Text.UTF8Encoding $false))
+  Write-Host $text
 }
 
 function Find-Iscc {
@@ -132,6 +165,7 @@ function Build-Inno {
     (Join-Path $Packaging 'ferret.iss')
   )
   $installer = Join-Path $Out "Ferret-$Version-$Arch-setup.exe"
+  Set-Signature $installer
   # The landing page's Download button points at a name that never changes:
   # releases/latest/download/Ferret-windows-x64-setup.exe.
   Copy-Item -Force $installer (Join-Path $Out "Ferret-windows-$Arch-setup.exe")
@@ -180,4 +214,5 @@ switch ($Target) {
   'all' { Build-Inno; Build-Msix }
 }
 
+Write-Sums
 Write-Host "Done: $Out"
