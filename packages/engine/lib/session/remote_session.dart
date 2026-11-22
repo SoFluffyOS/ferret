@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:engine/session/session_exception.dart';
 import 'package:fixnum/fixnum.dart';
@@ -21,6 +22,7 @@ class Session {
     this.remoteHost,
     this.keepAlive = const Duration(seconds: 20),
     this.idleTimeout = const Duration(seconds: 65),
+    this.roundTripRefresh = const Duration(minutes: 2),
     bool Function(String feature)? isBlocked,
   }) : _isBlocked = isBlocked ?? _allowsAll {
     _subscription = messages.listen(
@@ -29,7 +31,7 @@ class Session {
       onDone: _onDone,
     );
     _keepAliveTimer = .periodic(keepAlive, (_) => _sendPing());
-    _lastReceived = DateTime.now();
+    _lastReceived = clock.now();
   }
 
   final SecureChannel channel;
@@ -48,6 +50,10 @@ class Session {
 
   final Duration keepAlive;
   final Duration idleTimeout;
+
+  /// How old the last timed round trip may get before this side pings
+  /// even though the other side's pings already show the link is alive.
+  final Duration roundTripRefresh;
 
   /// Features the person turned off for this device: nothing goes out for
   /// them, as if the other side didn't offer them.
@@ -73,6 +79,7 @@ class Session {
   late final StreamSubscription<List<int>> _subscription;
   late final Timer _keepAliveTimer;
   late DateTime _lastReceived;
+  DateTime? _lastPong;
   int _nextId = 1;
 
   /// What the remote device said about itself, once its `Hello` arrived.
@@ -240,7 +247,7 @@ class Session {
     final heard = Completer<void>();
     _listeners.add(heard);
     try {
-      final now = Int64(DateTime.now().millisecondsSinceEpoch);
+      final now = Int64(clock.now().millisecondsSinceEpoch);
       await send(sessionFeature, Ping(sentAtMs: now)).timeout(timeout);
       await heard.future.timeout(timeout);
       return true;
@@ -283,7 +290,7 @@ class Session {
   Int64 _takeId() => Int64(_nextId++);
 
   void _onMessage(List<int> bytes) {
-    _lastReceived = DateTime.now();
+    _lastReceived = clock.now();
     for (final listener in _listeners) {
       if (!listener.isCompleted) {
         listener.complete();
@@ -364,8 +371,9 @@ class Session {
   /// The ping carried this device's own clock, so the echo times the round
   /// trip without trusting the other device's clock.
   void _onPong(Pong pong) {
+    _lastPong = clock.now();
     final sentAt = pong.pingSentAtMs.toInt();
-    final sample = DateTime.now().millisecondsSinceEpoch - sentAt;
+    final sample = clock.now().millisecondsSinceEpoch - sentAt;
     if (sentAt <= 0 || sample < 0) {
       return;
     }
@@ -388,14 +396,32 @@ class Session {
     _weakChanges.add(weak);
   }
 
+  /// Both sides ping, so each hears from the other well within
+  /// [keepAlive]: a side that just heard something skips its own ping, and
+  /// one ping goes each way instead of two. It still pings once its last
+  /// round trip is older than [roundTripRefresh], so [isWeak] stays true to
+  /// the link on both sides.
+  bool get _heardLately {
+    final now = clock.now();
+    final timed = switch (_lastPong) {
+      final pong? => now.difference(pong) < roundTripRefresh,
+      null => false,
+    };
+    return timed && now.difference(_lastReceived) < keepAlive;
+  }
+
   void _sendPing() {
-    if (DateTime.now().difference(_lastReceived) > idleTimeout) {
+    if (clock.now().difference(_lastReceived) > idleTimeout) {
       printLog('Session with $remoteDeviceId went quiet; closing');
       unawaited(_shutDown());
       return;
     }
 
-    final now = Int64(DateTime.now().millisecondsSinceEpoch);
+    if (_heardLately) {
+      return;
+    }
+
+    final now = Int64(clock.now().millisecondsSinceEpoch);
     unawaited(
       send(sessionFeature, Ping(sentAtMs: now)).catchError((Object _) {}),
     );
