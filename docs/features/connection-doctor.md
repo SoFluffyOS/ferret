@@ -63,6 +63,10 @@ Fix connection spots it: the router answers, your other device doesn't, and Ferr
 
 **Check my network** says it too, as a "may", when Ferret hasn't heard any other device for a while.
 
+Last time you saw the device at home, and now you're both in a café? Ferret can't tell for sure, since its old address is from home. It still says the network **may** keep devices apart when it's that quiet.
+
+Once Fix connection found it, the device's page says **This Wi-Fi seems to keep devices apart** for as long as you stay on that network. No need to run it again.
+
 ## Reconnecting… and weak connection
 
 A device whose connection just dropped, say the Wi-Fi hopped to another access point, says **Reconnecting…** and keeps its place in the list. Ferret dials it again after 1, 3, 10 and 30 seconds, then every few minutes. After that it reads **Last seen**.

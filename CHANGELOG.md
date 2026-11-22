@@ -16,7 +16,8 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
 - **Work laptops**: Fix connection says when a work VPN carries everything, even traffic to your phone, and when the firewall needs an administrator. A [page for your IT team](docs/getting-started/work-computer.md) lists ports, what leaves the device and the Mac permissions.
 - **Easy to read for anyone**: plain words, calm colors and short buttons that still fit at 200% text. **Copy details for a helper** puts a short report on the clipboard for whoever helps you.
-- **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
+- **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server. The page says how much went over it, since that's your mobile data.
+- **On the road**: your laptop on your phone's hotspot finds the phone right away, even on a hotspot it never joined before. On café or hotel Wi-Fi that keeps devices apart, the device's page says so and points to the hotspot.
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
 - **New computer?** Migration Assistant or a restored backup brings Ferret along, and it starts there as a new device with a list of what to pair again. Two computers never answer as one.
 - **Forget means forget**: a removed device loses its "Always allow" answers, and its notifications and clips leave this one.

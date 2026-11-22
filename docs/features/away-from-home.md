@@ -21,6 +21,20 @@ If you already run a VPN between your devices, Ferret can use it. No Ferret acco
 
 Big files over a VPN can be slower than at home, especially from a phone on mobile data. When the link is slow, Ferret says so, the same way it does far from the Wi-Fi.
 
+## 📶 Mobile data
+
+Away from Wi-Fi, everything that goes over your VPN counts toward your mobile data. On BOTH ends, if both are on mobile data.
+
+- Clipboard, notifications and texts are tiny.
+- Files and photos cost what they weigh.
+- **Show screen** uses the most. Keep it for Wi-Fi.
+
+While a device is reached over your VPN, **Reach away from home** shows how much went over it since it connected.
+
+Both on mobile data? Your VPN may not get a direct path, and passes the traffic through its own relay (Tailscale calls them DERP). It stays encrypted end to end, by Ferret and by the VPN. It's only slower.
+
+Your laptop on your phone's hotspot is different: that's a local network, and what goes between the laptop and the phone uses NO mobile data. Ferret finds the phone there by itself, no VPN needed.
+
 ## 🦎 Tailscale
 
 1. Install [Tailscale](https://tailscale.com/download) on both devices and sign in to the same tailnet.
