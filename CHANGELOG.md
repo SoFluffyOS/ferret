@@ -49,6 +49,10 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 #### 🔔 From your Android phone
 - **Notifications** on your computer, with **Reply** and **Dismiss** synced both ways. One-time codes stay on the phone as **Code hidden**. A busy group chat can't flood your screen: past 3 popups a minute per app, the rest wait quietly in Ferret, where you can reply too.
 - **Messages**: read and reply to your texts, with names, photos and pictures.
+- **Search your texts**: names, numbers and words, accents or not ("nguyen" finds "Nguyễn").
+- **Copy code**: a text with a sign-in code puts just the digits on your clipboard.
+- **One notification per text**, even when Google Messages' own notification is mirrored too. Same for a missed call.
+- **Call back** from a missed call: your phone dials. Two SIMs? Replies leave from the SIM the conversation used.
 - **Calls**: see who's calling, then answer, decline, silence or hang up. Your music pauses while you talk.
 - **Private previews**: texts, callers and copied text hide while the computer is locked or someone else's account is in front.
 

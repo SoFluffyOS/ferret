@@ -24,7 +24,7 @@ With Ferret, your computer shows who's calling the moment your phone rings. Answ
 - The home screen shows a call card with the name, the number and the contact's photo.
 - **Silence** stops the ringtone without declining.
 
-The notification goes away the moment the call is answered or ends, wherever that happened. Nobody picked up? You get one quiet **Missed call** instead.
+The notification goes away the moment the call is answered or ends, wherever that happened. Nobody picked up? You get one quiet **Missed call** instead, with **Call back**: your phone calls them, and you talk on the phone.
 
 In Ferret a ringing call sits under **Needs you**, at the very top, with the caller's photo or initials: **Answer**, **Decline** and **Silence**. Answer it and it moves to the top of **Activity**, with a running timer and **Hang up**.
 

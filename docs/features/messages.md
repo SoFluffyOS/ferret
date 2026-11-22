@@ -22,9 +22,23 @@ With Ferret, your phone's texts are on your computer. Every conversation, with n
 
 Didn't go out? Ferret says why, in plain words ("Pixel 9 has no signal"), with **Send again**.
 
+Two SIMs? Your reply leaves from the SIM that conversation used last, the same as on your phone.
+
+## 🔍 Search
+
+Type in the box above your conversations. Names, numbers and words in your texts all count, and accents don't matter: "nguyen" finds "Nguyễn".
+
+Search looks through the conversations on your computer. Need older ones? Click **Look further back** and Ferret fetches them from your phone.
+
+## 🔑 Sign-in codes
+
+A text with a code (your bank, a sign-in) gets **Copy code**, under the text and on its notification. Just the digits go on your clipboard. Paste and you're in. That's it.
+
 ## 🔔 New texts
 
 When a text arrives and that conversation isn't open on your computer, you get a notification with **Reply** and **Mark as read**. Several texts in the same conversation update one notification ("Alex · 3 new"). No floods.
+
+Mirror your phone's notifications too? You still get ONE notification per text: the Messages one, with **Reply**. Google Messages' own copy stays quietly in the Notifications list.
 
 Texts that arrived while your computer was off are not replayed as notifications. They're simply there when you open Messages.
 
