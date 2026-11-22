@@ -52,9 +52,6 @@ class _SlowStore extends FolderReceiveStore {
       running--;
     }
   }
-
-  @override
-  Future<bool> copiesOnSave() async => true;
 }
 
 void main() {

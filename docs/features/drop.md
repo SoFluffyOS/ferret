@@ -40,6 +40,8 @@ Files from a phone that isn't paired (LocalSend or Quick Share) wait under **Nee
 
 Every file is checked with a SHA-256 hash before it is saved. A transfer only says **Saved ✓** once the check passed. If the file arrived damaged, Ferret deletes it and says so, and **Try again** sends it again.
 
+On Android, files are written straight into **Download/Ferret** while they arrive, hidden until that check passes. No copy at the end, so a 2 GB video is there the moment its last byte is, and it needs 2 GB of room, not 4.
+
 Ferret never overwrites a file. If `photo.jpg` already exists, the new one becomes `photo (1).jpg`.
 
 ### 💾 Not enough space?

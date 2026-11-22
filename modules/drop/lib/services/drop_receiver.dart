@@ -10,6 +10,7 @@ import 'package:drop/services/file_names.dart';
 import 'package:drop/services/folder_plan.dart';
 import 'package:drop/services/incoming_job.dart';
 import 'package:drop/services/progress_throttle.dart';
+import 'package:drop/services/receive_part.dart';
 import 'package:drop/services/receive_store.dart';
 import 'package:drop/services/transfer_registry.dart';
 import 'package:engine/engine.dart';
@@ -155,11 +156,14 @@ class DropReceiver {
       return TransferAnswer(transferId: id, accepted: true);
     }
 
-    final Directory parts;
+    final List<ReceivePart> parts;
     final List<String?> folders;
     try {
-      parts = await store.partsDirectory();
       folders = await plan.place(store);
+      parts = await store.partsFor(id, [
+        for (final (index, file) in transfer.files.indexed)
+          (name: file.name, mime: file.mime, folder: folders[index]),
+      ]);
     } on Object catch (error) {
       printWarning(
         'Drop could not prepare the receive folder: ${error.runtimeType}',
@@ -478,8 +482,8 @@ class DropReceiver {
     }
 
     try {
-      final file = await job.openPart(index);
-      await file.writeFrom(chunk.data);
+      final part = await job.openPart(index);
+      await part.write(chunk.data);
       job.hasher.add(index, offset, chunk.data);
     } on FileSystemException catch (error) {
       printWarning('Drop could not write a received file', error.osError);
@@ -509,7 +513,7 @@ class DropReceiver {
 
   /// Checks file [FileComplete.fileIndex] in the job's queue, then saves it
   /// outside the queue, so the next file's chunks are written while this
-  /// one is copied into place. The answer comes once it is saved.
+  /// one is put in place. The answer comes once it is saved.
   Future<({Future<FileVerified> answer})> _verify(
     IncomingJob job,
     FileComplete complete,
@@ -554,15 +558,10 @@ class DropReceiver {
       ),
     );
 
-    final part = job.partFor(index);
     try {
-      if (job.sizeOf(index) == 0) {
-        await part.create();
-      }
-
       final hash =
           await job.hasher.digest(index, job.written[index]) ??
-          await FileHasher.hashFile(part.path);
+          await job.parts[index].hash();
       final promised = job.files[index].sha256;
       final matches =
           FileHasher.same(hash, complete.sha256) &&
@@ -585,10 +584,10 @@ class DropReceiver {
       return answer(reason: _failStorage(job, error));
     }
 
-    return (answer: job.track(index, _save(job, index, part)));
+    return (answer: job.track(index, _save(job, index)));
   }
 
-  Future<FileVerified> _save(IncomingJob job, int index, File part) =>
+  Future<FileVerified> _save(IncomingJob job, int index) =>
       job.withSaveSlot(savesAtOnce, () async {
         if (job.cancelled) {
           return _verified(job, index, reason: .FAILURE_REASON_CANCELLED);
@@ -596,11 +595,7 @@ class DropReceiver {
 
         final ReceivedFile saved;
         try {
-          saved = await store.save(
-            part,
-            name: job.names[index],
-            mime: job.files[index].mime,
-            folder: job.folders[index],
+          saved = await job.parts[index].save(
             modified: _modifiedOf(job.files[index]),
           );
         } on Object catch (error) {
@@ -662,18 +657,16 @@ class DropReceiver {
   );
 
   /// The bytes free here when [transfer] doesn't fit, or null when it does
-  /// or the free space can't be told. Saving that copies a part needs the
-  /// biggest files' room twice while they are copied.
+  /// or the free space can't be told. Files are written where they end up,
+  /// so each needs its room once.
   Future<int?> _shortOfSpace(Transfer transfer) async {
     if (transfer.files.isEmpty) {
       return null;
     }
 
     final int? free;
-    final bool copies;
     try {
       free = await store.freeBytes();
-      copies = await store.copiesOnSave();
     } on Object catch (error) {
       printDebug('Drop could not read the free space: ${error.runtimeType}');
       return null;
@@ -683,13 +676,7 @@ class DropReceiver {
       return null;
     }
 
-    final biggest = [for (final file in transfer.files) file.size]
-      ..sort((a, b) => b.compareTo(a));
-    final copied = switch (copies) {
-      true => biggest.take(savesAtOnce).fold(0, (sum, size) => sum + size),
-      false => 0,
-    };
-    final needed = transfer.totalBytes + copied + spaceMargin;
+    final needed = transfer.totalBytes + spaceMargin;
     return switch (free < needed) {
       true => free,
       false => null,

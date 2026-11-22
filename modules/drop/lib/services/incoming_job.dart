@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:drop/models/models.dart';
 import 'package:drop/services/part_hasher.dart';
+import 'package:drop/services/receive_part.dart';
 import 'package:drop/services/speed_meter.dart';
-import 'package:path/path.dart' as p;
 import 'package:protocol/drop.dart';
 
-/// What the receiver keeps about one incoming transfer: where each part
-/// file is, how much of it arrived, and what was saved.
+/// What the receiver keeps about one incoming transfer: where each file is
+/// written while it arrives, how much of it arrived, and what was saved.
 class IncomingJob {
   IncomingJob({
     required this.id,
@@ -31,9 +30,11 @@ class IncomingJob {
   /// The folder each file goes to inside the receive folder, null for a
   /// file sent on its own.
   final List<String?> folders;
-  final Directory parts;
 
-  /// Bytes written to each part file.
+  /// Where each file is written while it arrives, one per file.
+  final List<ReceivePart> parts;
+
+  /// Bytes written to each part.
   final List<int> written;
   final List<ReceivedFile?> saved;
   final SpeedMeter speed = SpeedMeter();
@@ -49,7 +50,7 @@ class IncomingJob {
   bool halted = false;
 
   Future<void> _queue = Future.value();
-  RandomAccessFile? _open;
+  PartWriter? _open;
   int? _openIndex;
 
   /// Verified files being saved, by index, with the answer each one gets.
@@ -62,8 +63,6 @@ class IncomingJob {
   int get receivedBytes => written.fold(0, (sum, bytes) => sum + bytes);
 
   bool get isComplete => saved.every((file) => file != null);
-
-  File partFor(int index) => File(p.join(parts.path, '$id-$index.part'));
 
   /// Runs [work] after everything queued before it, in arrival order. The
   /// engine handles envelopes concurrently, so writes go through here.
@@ -140,25 +139,18 @@ class IncomingJob {
     return resume;
   }
 
-  /// The part file for [index], open for appending.
-  Future<RandomAccessFile> openPart(int index) async {
+  /// Part [index], open to write after the bytes already there.
+  Future<PartWriter> openPart(int index) async {
     if ((_open, _openIndex) case (final open?, final openIndex)
         when openIndex == index) {
       return open;
     }
 
     await closePart();
-    final part = partFor(index);
-    final file = await part.open(mode: FileMode.append);
-    final length = await file.length();
-    if (length != written[index]) {
-      await file.truncate(written[index]);
-      await file.setPosition(written[index]);
-    }
-
-    _open = file;
+    final writer = await parts[index].open(written[index]);
+    _open = writer;
     _openIndex = index;
-    return file;
+    return writer;
   }
 
   Future<void> closePart() async {
@@ -176,15 +168,15 @@ class IncomingJob {
 
     written[index] = 0;
     hasher.forget(index);
-    await _deleteQuietly(partFor(index));
+    await parts[index].delete();
   }
 
-  /// Closes and deletes every part file.
+  /// Closes and deletes every part not saved yet.
   Future<void> discard() async {
     await closePart();
     for (var index = 0; index < files.length; index++) {
       if (saved[index] == null) {
-        await _deleteQuietly(partFor(index));
+        await parts[index].delete();
       }
     }
   }
@@ -197,11 +189,7 @@ class IncomingJob {
         continue;
       }
 
-      final part = partFor(index);
-      final length = switch (await part.exists()) {
-        true => await part.length(),
-        false => 0,
-      };
+      final length = await parts[index].length();
       if (length < written[index]) {
         written[index] = length;
         hasher.forget(index);
@@ -213,13 +201,5 @@ class IncomingJob {
   Future<void> close() async {
     hasher.dispose();
     await closePart();
-  }
-
-  Future<void> _deleteQuietly(File file) async {
-    try {
-      await file.delete();
-    } on FileSystemException {
-      return;
-    }
   }
 }

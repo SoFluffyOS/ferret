@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
 import 'package:drop/services/file_names.dart';
+import 'package:drop/services/receive_part.dart';
 import 'package:drop/services/receive_store.dart';
 import 'package:path/path.dart' as p;
 
@@ -92,13 +93,28 @@ class FolderReceiveStore implements ReceiveStore {
   }
 
   @override
+  Future<List<ReceivePart>> partsFor(String id, List<PartTarget> files) async {
+    final parts = await partsDirectory();
+    return [
+      for (final (index, target) in files.indexed)
+        FilePart(
+          File(p.join(parts.path, '$id-$index.part')),
+          onSave: (part, {modified}) => save(
+            part,
+            name: target.name,
+            mime: target.mime,
+            folder: target.folder,
+            modified: modified,
+          ),
+        ),
+    ];
+  }
+
+  @override
   Future<int?> freeBytes() async => switch (freeSpace) {
     final read? => read(await folder()),
     null => null,
   };
-
-  @override
-  Future<bool> copiesOnSave() async => false;
 
   /// Creates an empty placeholder so two files saved at once never pick the
   /// same name. Returns false when the name is taken.

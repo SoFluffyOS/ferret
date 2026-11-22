@@ -9,7 +9,7 @@ import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_drop/ferret_drop.dart';
 
 /// Picks the right [ReceiveStore] for this device: MediaStore Downloads on
-/// Android 10+, otherwise a plain folder.
+/// Android 10+, written in place, otherwise a plain folder.
 class PlatformReceiveStore implements ReceiveStore {
   PlatformReceiveStore(this.settings, {FerretDrop? plugin})
     : _plugin = plugin ?? FerretDrop();
@@ -45,7 +45,8 @@ class PlatformReceiveStore implements ReceiveStore {
   Future<int?> freeBytes() async => (await _resolve()).freeBytes();
 
   @override
-  Future<bool> copiesOnSave() async => (await _resolve()).copiesOnSave();
+  Future<List<ReceivePart>> partsFor(String id, List<PartTarget> files) async =>
+      (await _resolve()).partsFor(id, files);
 
   Future<ReceiveStore> _resolve() => _store ??= _pick();
 

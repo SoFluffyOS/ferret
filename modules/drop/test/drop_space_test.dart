@@ -15,23 +15,18 @@ import 'support/linked_devices.dart';
 const _megabyte = 1024 * 1024;
 
 /// A plain folder store whose free space the test sets, standing in for the
-/// platform's reading. [copies] makes it save like MediaStore does.
+/// platform's reading.
 class _SpaceStore extends FolderReceiveStore {
-  _SpaceStore(Directory folder, {this.copies = false})
-    : super(() async => folder.path);
+  _SpaceStore(Directory folder) : super(() async => folder.path);
 
   int? free;
   int reads = 0;
-  final bool copies;
 
   @override
   Future<int?> freeBytes() async {
     reads++;
     return free;
   }
-
-  @override
-  Future<bool> copiesOnSave() async => copies;
 }
 
 void main() {
@@ -54,11 +49,10 @@ void main() {
   });
 
   Future<void> startLink({
-    bool copies = false,
     int? free,
     bool autoAccept = true,
   }) async {
-    phoneStore = _SpaceStore(phoneInbox, copies: copies)..free = free;
+    phoneStore = _SpaceStore(phoneInbox)..free = free;
     link = await LinkedDevices.start(
       laptopStore: folderStore(Directory(p.join(root.path, 'laptop'))),
       phoneStore: (_) => phoneStore,
@@ -191,25 +185,18 @@ void main() {
     expect(onLaptop(sent.id)?.failure, TransferFailure.outOfSpace);
   });
 
-  test(
-    'where saving copies, the biggest files need their room twice',
-    () async {
-      const big = 4000;
-      const small = 100;
-      const total = big + small;
-      await startLink(copies: true, free: DropReceiver.spaceMargin + total);
-      final first = await randomFile(sources, 'big.bin', big);
-      final second = await randomFile(sources, 'small.bin', small);
+  test('each file needs its room once, as it is written in place', () async {
+    const big = 4000;
+    const small = 100;
+    await startLink(free: DropReceiver.spaceMargin + big + small);
+    final first = await randomFile(sources, 'big.bin', big);
+    final second = await randomFile(sources, 'small.bin', small);
 
-      final short = await send([first, second]);
-      await until(() => onLaptop(short.id)?.status == .failed);
-      expect(onLaptop(short.id)?.failure, TransferFailure.outOfSpace);
+    final sent = await send([first, second]);
+    await until(() => onPhone(sent.id)?.status == .done);
 
-      phoneStore.free = DropReceiver.spaceMargin + total + big + small;
-      final fits = await send([first, second]);
-      await until(() => onPhone(fits.id)?.status == .done);
-    },
-  );
+    expect(onLaptop(sent.id)?.failure, isNull);
+  });
 
   test(
     'without auto accept, nobody is asked about files that cannot fit',

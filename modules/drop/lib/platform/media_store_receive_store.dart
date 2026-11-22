@@ -1,22 +1,27 @@
 import 'dart:io';
 
 import 'package:drop/models/models.dart';
+import 'package:drop/platform/media_store_part.dart';
 import 'package:drop/services/services.dart';
 import 'package:ferret_drop/ferret_drop.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-/// Android 10 and newer: parts stay in app storage, and verified files move
-/// into the shared Downloads folder through MediaStore.
+/// Android 10 and newer: Ferret transfers write straight into the shared
+/// Downloads folder as pending MediaStore items ([MediaStorePart]).
+/// LocalSend and Quick Share parts stay in app storage and are copied into
+/// Downloads once verified.
 class MediaStoreReceiveStore implements ReceiveStore {
   MediaStoreReceiveStore({
     required this.plugin,
     required this.folderName,
     required this.appDirectory,
+    this.downloads = const MediaStoreDownloads(),
     this.downloadsDirectory = _sharedDownloads,
   });
 
   final FerretDrop plugin;
+  final PendingDownloads downloads;
   final String Function() folderName;
   final Future<String> Function() appDirectory;
 
@@ -74,13 +79,24 @@ class MediaStoreReceiveStore implements ReceiveStore {
     return ReceivedFile(location: saved.location, name: saved.name);
   }
 
-  /// Parts and the shared Downloads folder sit on the same storage, so the
-  /// parts folder tells for both.
   @override
-  Future<int?> freeBytes() async => FreeSpace.of((await partsDirectory()).path);
+  Future<List<ReceivePart>> partsFor(String id, List<PartTarget> files) async {
+    final base = folderName();
+    return [
+      for (final target in files)
+        MediaStorePart(
+          downloads,
+          folder: [base, ?target.folder].join('/'),
+          name: target.name,
+          mime: target.mime,
+        ),
+    ];
+  }
 
+  /// App storage and the shared Downloads folder sit on the same storage,
+  /// so the app's folder tells for both.
   @override
-  Future<bool> copiesOnSave() async => true;
+  Future<int?> freeBytes() async => FreeSpace.of(await appDirectory());
 
   /// `/storage/emulated/0/Download`, found from the app's own external
   /// folder, which sits under the same storage root.

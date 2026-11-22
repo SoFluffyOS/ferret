@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:drop/models/models.dart';
+import 'package:drop/services/receive_part.dart';
 
-/// Where received files land. Transports write each file to a part file in
-/// [partsDirectory], then [save] moves it in place once it verified. Every
-/// transport, Ferret, LocalSend and Quick Share, uses the same store.
+/// Where received files land. Ferret transfers write each file to a
+/// [ReceivePart] from [partsFor] and save it from there once it verified.
+/// LocalSend and Quick Share write a part file in [partsDirectory], then
+/// [save] moves it in place.
 abstract interface class ReceiveStore {
   /// A folder for files still arriving. Parts stay there across dropped
   /// sessions so transfers can resume.
@@ -28,12 +30,13 @@ abstract interface class ReceiveStore {
     DateTime? modified,
   });
 
+  /// Where each file of Ferret transfer [id] is written while it arrives,
+  /// one part per entry of [files], in order. Nothing is made on disk
+  /// until a part is opened.
+  Future<List<ReceivePart>> partsFor(String id, List<PartTarget> files);
+
   /// Bytes free where parts and saved files land, or null when that can't
   /// be told here. Offers that don't fit are turned down before anything
   /// is written.
   Future<int?> freeBytes();
-
-  /// Whether [save] copies a verified part instead of moving it, so a file
-  /// briefly takes its room twice.
-  Future<bool> copiesOnSave();
 }

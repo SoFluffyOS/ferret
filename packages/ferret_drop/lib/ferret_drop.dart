@@ -10,3 +10,4 @@ export 'package:ferret_drop/src/file_picks.dart';
 export 'package:ferret_drop/src/free_space.dart';
 export 'package:ferret_drop/src/messages.g.dart'
     show SavedFile, ShareTarget, SharedItems;
+export 'package:ferret_drop/src/pending_downloads.dart';
