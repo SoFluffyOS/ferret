@@ -56,7 +56,7 @@ Dependencies point one way: `apps` → `modules` → `packages`. Packages never 
 
 ## Rules that matter most here
 
-- **Privacy is the product.** No analytics, crash reporting SDKs, Firebase, Google Play Services or network calls other than to the user's own paired devices (and a self-hosted relay they configured). Never log message contents, clipboard contents, SMS, notification text, keys or secrets.
+- **Privacy is the product.** No analytics, crash reporting SDKs, Firebase, Google Play Services or network calls other than to the user's own paired devices (and a self-hosted relay they configured), except the update check (`modules/updates`: GitHub's latest release once a day with `User-Agent: Ferret` and nothing else, off with one switch, see `docs/privacy.md`). Never log message contents, clipboard contents, SMS, notification text, keys or secrets.
 - **Device testing**: use emulators and simulators, or a QA build with its own application ID (`io.sofluffy.ferret.qa`). Always pass `--no-uninstall` to `flutter test -d <device>`. Never uninstall, clear or overwrite the user's installed app.
 - Generated files (`*.pb*.dart`, `lib/<feature>.dart` barrels in `packages/protocol`) come from `scripts/gen.sh` only.
 

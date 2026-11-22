@@ -24,6 +24,17 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 - No analytics, no crash reporting service, no ads, no tracking of any kind.
 - It never logs what you copy, the files you send, your messages or your notifications.
 
+## 🔄 The one thing that talks to the internet
+
+Ferret checks for a new version once a day: it asks GitHub for Ferret's latest release (`api.github.com/repos/simonpham/ferret/releases/latest`). That's the only time Ferret reaches the internet on its own.
+
+- **What it sends**: a plain `User-Agent: Ferret`, nothing else. No device id, no name, no settings, nothing about your devices. GitHub sees your IP address, as with any website.
+- **When**: once a day, and when you click **Check now**. Not while Ferret is **paused** (Check now still works). Never on an iPhone or a store install, where the store updates Ferret.
+- **Installing**: only when you click **Install**. Then Ferret downloads the file and its `SHA256SUMS` from the same GitHub release, over HTTPS.
+- **Turn it off**: **Settings → About → Check for updates**. One switch.
+
+See [Updates](getting-started/updates.md).
+
 ## 🛂 You stay in control
 
 - **Pause** Ferret any time, for an hour or until you resume.
@@ -85,8 +96,10 @@ Checked against the code, line by line:
 | A Wake-on-LAN magic packet (only the MAC address, repeated) | Your network, as a broadcast and to the computer's last address | Only when you tap **Wake**, or a phone of yours asks this computer to |
 | Files and links | Phones you share with through Quick Share or LocalSend, on your Wi-Fi | Only when you turn that on in Drop |
 | A download of Android's platform tools | `dl.google.com` | Only when you click **Download**, for [mirroring with a cable](features/mirroring-with-a-cable.md) |
+| A request for Ferret's latest release, with `User-Agent: Ferret` and nothing about you | `api.github.com` | Once a day while **Check for updates** is on and Ferret isn't paused, and when you click **Check now** |
+| A download of the new version and its `SHA256SUMS` | `github.com` (GitHub's release files) | Only when you click **Install** |
 
-That's the whole list. Links you tap (like the Shizuku download page) open in your browser, not in Ferret. No update checks, no crash reports, no fonts or images from the internet.
+That's the whole list. Links you tap (like the Shizuku download page) open in your browser, not in Ferret. No crash reports, no fonts or images from the internet.
 
 ## 🗂️ Where Ferret keeps its data
 

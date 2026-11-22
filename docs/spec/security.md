@@ -48,6 +48,18 @@ There are two ways, and both bind the pairing to one Noise handshake, so nobody 
 - **Hook scripts that trust their input.** A [hook](../features/scripting.md#-hooks) gets the other device's name in `FERRET_DEVICE_NAME`. That device picks its own name, so quote it in your script.
 - **Denial of service.** Anyone on your network can keep Ferret busy, fill its 4 pairing slots, or flood it. Ferret limits what that costs, but can't stop it.
 
+## 🔄 Updates
+
+Ferret checks GitHub's latest release once a day (off with **Settings → About → Check for updates**) and installs only when you click **Install**. A download installs only after these checks, and is deleted when one fails:
+
+- **Checksum.** The file's SHA-256 must match its line in the release's `SHA256SUMS`, fetched over HTTPS from the same release. No `SHA256SUMS`, or no line for the file, is a refusal too.
+- **Mac.** `codesign --verify --deep --strict` on the new app, its `TeamIdentifier` must be `66UZUS2MST` with a Developer ID Application certificate and the bundle id `io.sofluffy.ferret`, and `spctl` must accept it as notarized. It's checked on the mounted DMG and again on the copy next to the old app, which is then swapped in by renaming.
+- **Windows.** `Get-AuthenticodeSignature` must say `Valid` for the setup, signed by the same publisher as the running `ferret.exe`. An unsigned `ferret.exe` never installs updates by itself.
+- **Linux AppImage.** The checksum only: an AppImage has no signature the system checks.
+- **Android.** Android's PackageInstaller installs only an APK signed with the same key as the installed Ferret, after its own prompt.
+
+What this doesn't cover: someone who controls the GitHub repository can publish a release and its `SHA256SUMS` together. On a Mac and Windows they would still need Ferret's signing certificate, and on Android its signing key. On Linux the checksum is all there is.
+
 ## 🔑 Where the key lives
 
 | Device | The key | Your paired devices |

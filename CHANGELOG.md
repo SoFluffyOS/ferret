@@ -92,6 +92,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Beta tags** on what hasn't met enough real devices yet.
 
 #### 🔒 Privacy and security
+- **Updates, when you say so**: once a day Ferret asks GitHub whether a new version is out (one switch in About turns it off). **Install** downloads it, checks it against the release's checksums and its signature, and restarts. Mac, Windows, the Linux AppImage and the Android APK.
 - **Local network only**: your devices talk directly, end-to-end encrypted with Noise. Nothing goes through a server.
 - **Strangers can only ask to pair**, in short messages and a few at a time. Say no and they wait before they can ask again.
 - **What a device can use**: a switch per feature on each device. **Turn everything off** keeps it paired.
