@@ -53,7 +53,7 @@ void main() {
 
       expect(jsonDecode(utf8.decode(packet)), {
         'alias': 'Ferret Mac',
-        'version': '2.0',
+        'version': '2.2',
         'deviceModel': null,
         'deviceType': 'desktop',
         'fingerprint': 'AA11',

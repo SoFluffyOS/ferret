@@ -209,13 +209,13 @@ abstract class DropLocalizations {
   /// No description provided for @guestBody.
   ///
   /// In en, this message translates to:
-  /// **'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.'**
+  /// **'Someone without Ferret can send one file here with Quick Share or LocalSend. They can\'t see anything else here. Closes after 10 minutes or once the file arrives.'**
   String get guestBody;
 
   /// No description provided for @guestBodyLocalSend.
   ///
   /// In en, this message translates to:
-  /// **'A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.'**
+  /// **'Someone without Ferret can send one file here with LocalSend. They can\'t see anything else here. Closes after 10 minutes or once the file arrives.'**
   String get guestBodyLocalSend;
 
   /// No description provided for @guestAction.
@@ -227,7 +227,7 @@ abstract class DropLocalizations {
   /// No description provided for @guestWaiting.
   ///
   /// In en, this message translates to:
-  /// **'Open for one file from a guest. It closes once the file arrives.'**
+  /// **'Open for one file from a guest. On their device they pick the name below, and you say yes first. Closes once the file arrives.'**
   String get guestWaiting;
 
   /// Button: remove finished transfers from the list
@@ -593,7 +593,7 @@ abstract class DropLocalizations {
   /// No description provided for @failurePinRequired.
   ///
   /// In en, this message translates to:
-  /// **'{device} asks for a PIN. Enter the one it shows.'**
+  /// **'{device} asks for a PIN. Ask its owner for it, then enter it.'**
   String failurePinRequired(String device);
 
   /// No description provided for @failureTooManyAttempts.

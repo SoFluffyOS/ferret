@@ -79,18 +79,18 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String get guestBody =>
-      'Điện thoại không có Ferret có thể gửi một tệp tới đây bằng Quick Share hoặc LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.';
+      'Người không có Ferret có thể gửi một tệp tới đây bằng Quick Share hoặc LocalSend. Họ không xem được gì khác ở đây. Tự đóng sau 10 phút hoặc khi tệp tới.';
 
   @override
   String get guestBodyLocalSend =>
-      'Điện thoại không có Ferret có thể gửi một tệp tới đây bằng LocalSend, trong 10 phút hoặc đến khi tệp đầu tiên tới.';
+      'Người không có Ferret có thể gửi một tệp tới đây bằng LocalSend. Họ không xem được gì khác ở đây. Tự đóng sau 10 phút hoặc khi tệp tới.';
 
   @override
   String get guestAction => 'Cho phép một lần';
 
   @override
   String get guestWaiting =>
-      'Đang mở để nhận một tệp từ khách. Sẽ tự đóng khi tệp tới.';
+      'Đang mở để nhận một tệp từ khách. Trên máy của họ, họ chọn tên bên dưới, và bạn đồng ý trước. Tự đóng khi tệp tới.';
 
   @override
   String get clearFinished => 'Xóa mục đã xong';
@@ -348,7 +348,7 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String failurePinRequired(String device) {
-    return '$device yêu cầu mã PIN. Hãy nhập mã hiển thị trên đó.';
+    return '$device yêu cầu mã PIN. Hãy hỏi chủ máy rồi nhập mã.';
   }
 
   @override

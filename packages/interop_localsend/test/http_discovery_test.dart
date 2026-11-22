@@ -147,4 +147,104 @@ void main() {
 
     expect(() => call('GET', '/api/localsend/v2/info'), throwsA(anything));
   });
+
+  test('reads a register as LocalSend 1.18 writes it', () async {
+    final (status, _) = await call(
+      'POST',
+      '/api/localsend/v2/register',
+      body: {
+        'alias': 'Colleague PC',
+        'version': '2.2',
+        'deviceType': 'desktop',
+        'fingerprint': 'f00d',
+        'port': 53317,
+        'protocol': 'https',
+        'download': false,
+      },
+    );
+
+    expect(status, HttpStatus.ok);
+    expect(registered.single.$1.alias, 'Colleague PC');
+    expect(registered.single.$1.deviceModel, isNull);
+    expect(registered.single.$1.port, 53317);
+  });
+
+  group('learn only', () {
+    late LocalSendServer lookout;
+    late int lookoutPort;
+
+    setUp(() async {
+      lookout = LocalSendServer(
+        identity: identity,
+        self: (port) => infoFor(identity, 'Mac', port: port),
+        delegate: RecordingDelegate(inbox),
+        port: 0,
+        fallbackPorts: 0,
+        onRegister: (info, address) => registered.add((info, address)),
+        address: InternetAddress.loopbackIPv4,
+        learnOnly: true,
+      );
+      lookoutPort = await lookout.start();
+    });
+
+    tearDown(() => lookout.stop());
+
+    Future<int> ask(String method, String path, [Object? body]) async {
+      final request = await http.openUrl(
+        method,
+        Uri.parse('https://127.0.0.1:$lookoutPort$path'),
+      );
+      if (body != null) {
+        request.headers.contentType = ContentType.json;
+        request.write(jsonEncode(body));
+      }
+
+      final response = await request.close();
+      await response.drain<void>();
+      return response.statusCode;
+    }
+
+    test('hears who registers and refuses them', () async {
+      expect(
+        await ask('POST', '/api/localsend/v2/register', sender),
+        HttpStatus.forbidden,
+      );
+      expect(
+        await ask('POST', '/api/localsend/v1/register', sender),
+        HttpStatus.forbidden,
+      );
+      expect(registered.map((entry) => entry.$1.alias), [
+        'Pixel 7',
+        'Pixel 7',
+      ]);
+    });
+
+    test('answers nothing else', () async {
+      final offer = {
+        'info': sender,
+        'files': {
+          'a': {
+            'id': 'a',
+            'fileName': 'a.txt',
+            'size': 1,
+            'fileType': 'text/plain',
+          },
+        },
+      };
+      expect(
+        await ask('POST', '/api/localsend/v2/prepare-upload', offer),
+        HttpStatus.forbidden,
+      );
+      expect(await ask('GET', '/api/localsend/v2/info'), HttpStatus.forbidden);
+      expect(
+        await ask(
+          'POST',
+          '/api/localsend/v2/upload?sessionId=a&fileId=a&token=a',
+        ),
+        HttpStatus.forbidden,
+      );
+      expect(registered, isEmpty);
+      expect(inbox.listSync(), isEmpty);
+    });
+  });
 }

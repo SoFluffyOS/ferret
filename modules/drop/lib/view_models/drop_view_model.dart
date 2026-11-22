@@ -547,16 +547,28 @@ class DropViewModel extends ChangeNotifier {
   }
 
   void _onLocalSend() {
+    final wasOpen = isOpenToOthers;
     _receiveState = feature.localSend.receiveState;
     _localSendTargets = _readLocalSendTargets();
+    _endGuestOnceWhenClosed(wasOpen);
     _restartCountdown();
     notifyListeners();
   }
 
   void _onQuickShare() {
+    final wasOpen = isOpenToOthers;
     _quickShareState = feature.quickShare.receiveState;
+    _endGuestOnceWhenClosed(wasOpen);
     _restartCountdown();
     notifyListeners();
+  }
+
+  /// A guest window that ran out or was stopped before a file came must
+  /// not make the next, usual window close after one file.
+  void _endGuestOnceWhenClosed(bool wasOpen) {
+    if (wasOpen && !isOpenToOthers) {
+      _guestOnce = false;
+    }
   }
 
   /// Ticks every second while a receive window is counting down.

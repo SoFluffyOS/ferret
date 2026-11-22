@@ -14,6 +14,7 @@ class LocalSendOptions {
     this.receiveWindow = const Duration(minutes: 10),
     this.answerTimeout = const Duration(minutes: 2),
     this.multicastWait = const Duration(milliseconds: 1500),
+    this.hearsRegisters = false,
   }) : _useMulticast = useMulticast,
        _pausesInBackground = pausesInBackground;
 
@@ -50,4 +51,8 @@ class LocalSendOptions {
 
   /// How long multicast gets to find someone before addresses are asked.
   final Duration multicastWait;
+
+  /// Whether a scan listens for `/register` calls even without multicast,
+  /// for tests on loopback. With multicast it always does.
+  final bool hearsRegisters;
 }

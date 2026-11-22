@@ -233,7 +233,7 @@ void main() {
     await put(tester, failed(.pinRequired));
     expect(
       find.text(
-        'Nice Orange (LocalSend) asks for a PIN. Enter the one it shows.',
+        'Nice Orange (LocalSend) asks for a PIN. Ask its owner for it, then enter it.',
       ),
       findsOneWidget,
     );
@@ -508,7 +508,8 @@ void main() {
 
     expect(
       find.text(
-        'Open for one file from a guest. It closes once the file arrives.',
+        'Open for one file from a guest. On their device they pick the name '
+        'below, and you say yes first. Closes once the file arrives.',
       ),
       findsOneWidget,
     );

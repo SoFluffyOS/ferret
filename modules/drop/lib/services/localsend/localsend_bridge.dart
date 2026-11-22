@@ -11,6 +11,7 @@ import 'package:drop/services/outgoing_file.dart';
 import 'package:drop/services/receive_store.dart';
 import 'package:drop/services/send_sources.dart';
 import 'package:drop/services/transfer_registry.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:interop_localsend/interop_localsend.dart';
 import 'package:transport/transport.dart' show MulticastHold, MulticastNeed;
 
@@ -82,6 +83,7 @@ class LocalSendBridge {
   LocalSendIdentity? _identity;
   LocalSendClient? _client;
   LocalSendServer? _server;
+  LocalSendServer? _lookout;
   DateTime? _until;
   Timer? _windowTimer;
   Timer? _discoveryTimer;
@@ -232,9 +234,16 @@ class LocalSendBridge {
         return;
       }
 
+      if (options.useMulticast || options.hearsRegisters) {
+        await _startLookout(identity);
+      }
+
       if (options.useMulticast) {
         await _startDiscovery();
         await _discovery.announce();
+      }
+
+      if (options.useMulticast || options.hearsRegisters) {
         await Future<void>.delayed(options.multicastWait);
       }
 
@@ -255,9 +264,51 @@ class LocalSendBridge {
       );
     } finally {
       _scans--;
+      if (_scans == 0) {
+        await _stopLookout();
+      }
+
       _releaseDiscoverySoon();
       _emit();
     }
+  }
+
+  /// The port the scan listens on for `/register`, while one runs and this
+  /// device isn't receiving.
+  @visibleForTesting
+  int? get lookoutPort => _lookout?.boundPort;
+
+  /// Newer LocalSend apps answer an announcement only by calling
+  /// `/register` on the port it names, never over multicast. While this
+  /// device looks without receiving, a learn-only server hears those
+  /// calls, lists who made them, and refuses them, so nobody lists this
+  /// device or can send here.
+  Future<void> _startLookout(LocalSendIdentity identity) async {
+    if (_lookout != null || (_server?.isRunning ?? false)) {
+      return;
+    }
+
+    final lookout = LocalSendServer(
+      identity: identity,
+      self: _infoFor,
+      delegate: receiver,
+      port: options.port,
+      address: options.bindAddress,
+      onRegister: remember,
+      learnOnly: true,
+    );
+    try {
+      await lookout.start();
+      _lookout = lookout;
+    } on SocketException catch (error) {
+      printDebug('LocalSend lookout could not start: ${error.osError}');
+    }
+  }
+
+  Future<void> _stopLookout() async {
+    final lookout = _lookout;
+    _lookout = null;
+    await lookout?.stop();
   }
 
   /// Asks whether a LocalSend device listens at [address] and lists it
@@ -348,6 +399,7 @@ class LocalSendBridge {
 
     await sender.dispose();
     await receiver.cancelAll();
+    await _stopLookout();
     await _server?.stop();
     _server = null;
     await _discovery.dispose();
@@ -372,6 +424,7 @@ class LocalSendBridge {
         return;
       }
 
+      await _stopLookout();
       final server = _server ??= LocalSendServer(
         identity: identity,
         self: _infoFor,
@@ -512,7 +565,7 @@ class LocalSendBridge {
       return null;
     }
 
-    return _infoFor(_server?.boundPort ?? _idlePort);
+    return _infoFor(_server?.boundPort ?? _lookout?.boundPort ?? _idlePort);
   }
 
   /// The port to name while nothing listens: the configured one, or

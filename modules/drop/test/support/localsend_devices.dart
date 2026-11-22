@@ -64,6 +64,7 @@ class SoloDevice implements FeatureHost {
           receiveWindow: options.receiveWindow,
           answerTimeout: options.answerTimeout,
           multicastWait: options.multicastWait,
+          hearsRegisters: options.hearsRegisters,
         ),
         quickShareOptions: quickShare ?? loopbackQuickShare,
         multicastNeed: multicastNeed,

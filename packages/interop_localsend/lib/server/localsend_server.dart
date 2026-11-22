@@ -28,6 +28,7 @@ class LocalSendServer {
     this.pin,
     this.onRegister,
     this.idleTimeout = const Duration(seconds: 60),
+    this.learnOnly = false,
     InternetAddress? address,
   }) : _address = address ?? InternetAddress.anyIPv4;
 
@@ -55,6 +56,13 @@ class LocalSendServer {
   /// How long an accepted session may sit without any upload before it is
   /// given up.
   final Duration idleTimeout;
+
+  /// Only hears who is out there: a `/register` reaches [onRegister] and is
+  /// refused, so the member doesn't list this device, and every other
+  /// route is refused too. Newer LocalSend apps answer an announcement only
+  /// with `/register`, never over multicast, so a device that looks for
+  /// them without receiving listens like this while it looks.
+  final bool learnOnly;
 
   final InternetAddress _address;
   final Map<String, int> _pinFailures = {};
@@ -146,6 +154,10 @@ class LocalSendServer {
 
     const prefix = '${LocalSendDefaults.apiPath}/';
     final path = request.uri.path;
+    if (learnOnly) {
+      return _learn(request, remote, path);
+    }
+
     if (path.startsWith(_legacyPrefix)) {
       return _routeLegacy(
         request,
@@ -181,6 +193,27 @@ class LocalSendServer {
     ('POST', 'register') => _register(request, remote),
     _ => _respond(request, HttpStatus.notFound),
   };
+
+  Future<void> _learn(
+    HttpRequest request,
+    InternetAddress remote,
+    String path,
+  ) async {
+    final registers =
+        request.method == 'POST' &&
+        (path == '${LocalSendDefaults.apiPath}/register' ||
+            path == '${_legacyPrefix}register');
+    if (!registers) {
+      await request.drain<void>();
+      return _respond(request, HttpStatus.forbidden);
+    }
+
+    if (LocalSendInfo.fromJson(await _readJson(request)) case final info?) {
+      onRegister?.call(info, remote);
+    }
+
+    return _respond(request, HttpStatus.forbidden);
+  }
 
   Future<void> _register(HttpRequest request, InternetAddress remote) async {
     final info = LocalSendInfo.fromJson(await _readJson(request));

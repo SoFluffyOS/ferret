@@ -94,10 +94,10 @@
   "@guestTitle": {
     "description": "Offer on Home: let one person without Ferret send one file here"
   },
-  "guestBody": "A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.",
-  "guestBodyLocalSend": "A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.",
+  "guestBody": "Someone without Ferret can send one file here with Quick Share or LocalSend. They can't see anything else here. Closes after 10 minutes or once the file arrives.",
+  "guestBodyLocalSend": "Someone without Ferret can send one file here with LocalSend. They can't see anything else here. Closes after 10 minutes or once the file arrives.",
   "guestAction": "Allow once",
-  "guestWaiting": "Open for one file from a guest. It closes once the file arrives.",
+  "guestWaiting": "Open for one file from a guest. On their device they pick the name below, and you say yes first. Closes once the file arrives.",
   "clearFinished": "Clear finished",
   "@clearFinished": {
     "description": "Button: remove finished transfers from the list"
@@ -419,7 +419,7 @@
   "settingsSave": "Save",
   "settingsAutoAccept": "Accept from my devices",
   "settingsAutoAcceptBody": "Files from your paired devices go straight to the receive folder. Turn this off to approve each one.",
-  "failurePinRequired": "{device} asks for a PIN. Enter the one it shows.",
+  "failurePinRequired": "{device} asks for a PIN. Ask its owner for it, then enter it.",
   "@failurePinRequired": {
     "placeholders": {
       "device": {

@@ -81,7 +81,7 @@ In **Settings → Other apps**, under **LocalSend**, turn off **Work with LocalS
 ## 🔒 Privacy
 
 - **Nothing on a schedule.** Ferret sends LocalSend packets in two cases only: while you look for devices to send to, and while receiving is on.
-- **Looking makes you visible for a moment.** To find LocalSend devices, Ferret has to announce itself, so it can show up in their lists while you search. They can't send you anything unless receiving is on.
+- **Looking makes you visible for a moment.** To find LocalSend devices, Ferret has to announce itself, so older LocalSend apps can show it in their lists while you search. LocalSend 1.18 and newer don't. Nobody can send you anything unless receiving is on.
 - **Local network only.** The receive server refuses every address that isn't on a private network.
 - **Encrypted.** Transfers use HTTPS with a certificate made on your device. Its SHA-256 is your LocalSend fingerprint. When sending, Ferret checks that the device shows the same certificate it announced, and sends nothing if it doesn't.
 - **Not the same as pairing.** A paired Ferret device proved who it is. A LocalSend sender only claims a name and a fingerprint. That is why every LocalSend offer asks first.

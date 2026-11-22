@@ -82,4 +82,23 @@ void main() {
     expect(viewModel.isGuestOnce, isFalse);
     expect(laptop.localSend.receiveState.isOn, isTrue);
   });
+
+  test(
+    'a guest window closed without a file leaves the next one usual',
+    () async {
+      await viewModel.receiveFromGuest();
+      expect(viewModel.isGuestOnce, isTrue);
+      await viewModel.stopReceiving();
+      await until(() => !viewModel.isOpenToOthers);
+
+      await viewModel.openToOthers();
+      await until(() => laptop.localSend.receiveState.isOn);
+      expect(viewModel.isGuestOnce, isFalse);
+
+      await guestSends();
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      expect(laptop.localSend.receiveState.isOn, isTrue);
+    },
+  );
 }

@@ -79,18 +79,18 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String get guestBody =>
-      'A phone without Ferret can send one file here with Quick Share or LocalSend, for 10 minutes or until the first file arrives.';
+      'Someone without Ferret can send one file here with Quick Share or LocalSend. They can\'t see anything else here. Closes after 10 minutes or once the file arrives.';
 
   @override
   String get guestBodyLocalSend =>
-      'A phone without Ferret can send one file here with LocalSend, for 10 minutes or until the first file arrives.';
+      'Someone without Ferret can send one file here with LocalSend. They can\'t see anything else here. Closes after 10 minutes or once the file arrives.';
 
   @override
   String get guestAction => 'Allow once';
 
   @override
   String get guestWaiting =>
-      'Open for one file from a guest. It closes once the file arrives.';
+      'Open for one file from a guest. On their device they pick the name below, and you say yes first. Closes once the file arrives.';
 
   @override
   String get clearFinished => 'Clear finished';
@@ -348,7 +348,7 @@ class DropLocalizationsEn extends DropLocalizations {
 
   @override
   String failurePinRequired(String device) {
-    return '$device asks for a PIN. Enter the one it shows.';
+    return '$device asks for a PIN. Ask its owner for it, then enter it.';
   }
 
   @override
