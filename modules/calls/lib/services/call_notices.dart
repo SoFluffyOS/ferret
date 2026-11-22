@@ -23,8 +23,10 @@ class CallNotices {
   }
 
   static const incomingCategory = 'calls.incoming';
+  static const missedCategory = 'calls.missed';
   static const answerAction = 'answer';
   static const declineAction = 'decline';
+  static const callBackAction = 'callBack';
 
   final CallsControl _control;
   final LocalNotifier _notifier;
@@ -34,6 +36,9 @@ class CallNotices {
   /// home card has Answer and Decline.
   final Future<void> Function()? _onOpen;
   final Map<String, RemoteCall> _ringing = {};
+
+  /// The last missed call per notice, for Call back.
+  final Map<String, RemoteCall> _missed = {};
   late final StreamSubscription<RemoteCall> _calls;
   late final StreamSubscription<NoticeResponse> _responses;
 
@@ -44,6 +49,10 @@ class CallNotices {
         NoticeAction(id: answerAction, label: l10n.answer),
         NoticeAction(id: declineAction, label: l10n.decline),
       ],
+    ),
+    NoticeCategory(
+      id: missedCategory,
+      actions: [NoticeAction(id: callBackAction, label: l10n.callBack)],
     ),
   ];
 
@@ -108,29 +117,47 @@ class CallNotices {
 
   void _showMissed(RemoteCall call) {
     final l10n = _strings();
+    final noticeId = missedId(call.deviceId);
+    final number = call.call.number;
+    _missed[noticeId] = call;
 
     unawaited(
       _notifier.show(
         LocalNotice(
-          id: missedId(call.deviceId),
+          id: noticeId,
           channel: .incoming,
           title: l10n.noticeMissedTitle,
           body: l10n.noticeMissedBody(
             l10n.callerOf(call.call),
             call.deviceName,
           ),
+          category: switch (number.isEmpty) {
+            true => null,
+            false => missedCategory,
+          },
           groupKey: 'calls.${call.deviceId}',
           silent: true,
           private: PrivateContent(
             call.deviceId,
             cover: l10n.noticeMissedTitle,
           ),
+          // The phone app's own "Missed call", mirrored here, says the same.
+          echo: NoticeEcho({
+            for (final caller in [number, call.call.contactName])
+              if (caller.isNotEmpty)
+                NoticeEcho.callerKey(call.deviceId, caller),
+          }, wins: true),
         ),
       ),
     );
   }
 
   void _onResponse(NoticeResponse response) {
+    if (_missed[response.noticeId] case final missed?) {
+      _onMissedResponse(response, missed);
+      return;
+    }
+
     final call = _ringing[response.noticeId];
     if (call == null) {
       return;
@@ -141,6 +168,24 @@ class CallNotices {
         unawaited(_run(call, _control.answer));
       case declineAction:
         unawaited(_run(call, _control.end));
+      case null:
+        if (_onOpen case final onOpen?) {
+          unawaited(onOpen());
+        }
+    }
+  }
+
+  void _onMissedResponse(NoticeResponse response, RemoteCall missed) {
+    switch (response.actionId) {
+      case callBackAction:
+        _missed.remove(response.noticeId);
+        unawaited(_notifier.cancel(response.noticeId));
+        unawaited(
+          _run(
+            missed,
+            (call) => _control.dial(call.deviceId, call.call.number),
+          ),
+        );
       case null:
         if (_onOpen case final onOpen?) {
           unawaited(onOpen());

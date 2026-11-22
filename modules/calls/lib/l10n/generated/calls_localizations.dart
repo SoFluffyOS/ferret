@@ -619,6 +619,12 @@ abstract class CallsLocalizations {
   /// In en, this message translates to:
   /// **'{device} sees this phone\'s calls'**
   String healthLocalOk(String device);
+
+  /// Button on a Missed call notification on the computer: calls the person back from the phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Call back'**
+  String get callBack;
 }
 
 class _CallsLocalizationsDelegate

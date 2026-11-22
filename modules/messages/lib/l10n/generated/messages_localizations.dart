@@ -658,6 +658,42 @@ abstract class MessagesLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// Search box above a phone's conversation list on a computer. Ignores accents: 'nguyen' finds 'Nguyễn'.
+  ///
+  /// In en, this message translates to:
+  /// **'Search names, numbers and texts'**
+  String get searchHint;
+
+  /// No description provided for @searchNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations match.'**
+  String get searchNoMatch;
+
+  /// Under search results when older conversations are still on the phone only.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Looked through 1 conversation on this computer.} other{Looked through {count} conversations on this computer.}}'**
+  String searchLookedThrough(int count);
+
+  /// Link that loads older conversations from the phone so the search covers them.
+  ///
+  /// In en, this message translates to:
+  /// **'Look further back'**
+  String get searchFurther;
+
+  /// Button on a text's notification and under a text in the conversation when it holds a one-time code (OTP): puts the digits on the computer's clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get copyCode;
+
+  /// Copy code turns into this for two seconds after the code went on the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get codeCopied;
 }
 
 class _MessagesLocalizationsDelegate

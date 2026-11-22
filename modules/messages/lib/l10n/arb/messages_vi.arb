@@ -93,5 +93,11 @@
   "forgetConfirmTitle": "Xóa tin nhắn đã lưu?",
   "forgetConfirmBody": "Thao tác này xóa các tin nhắn đã lưu trên {here, select, macOS{máy Mac này} windows{máy tính này} other{máy tính này}}. Điện thoại của bạn vẫn giữ nguyên tất cả.",
   "forgetConfirm": "Xóa",
-  "cancel": "Hủy"
+  "cancel": "Hủy",
+  "searchHint": "Tìm tên, số điện thoại hoặc tin nhắn",
+  "searchNoMatch": "Không có cuộc trò chuyện nào khớp.",
+  "searchLookedThrough": "{count, plural, other{Đã tìm trong {count} cuộc trò chuyện trên máy này.}}",
+  "searchFurther": "Tìm xa hơn",
+  "copyCode": "Sao chép mã",
+  "codeCopied": "Đã sao chép"
 }

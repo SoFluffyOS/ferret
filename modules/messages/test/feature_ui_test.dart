@@ -63,6 +63,7 @@ void main() {
     expect(ui.noticeCategories.map((category) => category.id), [
       'messages.message',
       'messages.group',
+      'messages.code',
     ]);
   });
 

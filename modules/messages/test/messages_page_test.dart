@@ -121,6 +121,53 @@ void main() {
     await finish(tester);
   });
 
+  testWidgets('search finds names without accents, numbers and words in '
+      'texts', (tester) async {
+    source.addConversation(
+      conversationOf(
+        3,
+        lastDateMs: now - 3000,
+        name: 'Nguyễn Thị Ánh',
+        address: '+84901234567',
+        snippet: 'Cảm ơn',
+      ),
+    );
+    await pumpPage(tester);
+    final box = find.byType(EditableText).first;
+
+    await tester.enterText(box, 'nguyen anh');
+    await tester.pump();
+    expect(find.text('Nguyễn Thị Ánh'), findsOneWidget);
+    expect(find.text('Alex'), findsNothing);
+
+    await tester.enterText(box, '0901 234');
+    await tester.pump();
+    expect(find.text('Nguyễn Thị Ánh'), findsOneWidget);
+
+    await tester.enterText(box, 'LUNCH');
+    await tester.pump();
+    expect(find.text('Bo, Cy'), findsOneWidget);
+    expect(find.text('Alex'), findsNothing);
+
+    await tester.enterText(box, '');
+    await tester.pump();
+    await tester.tap(find.text('Alex'));
+    await tester.pumpAndSettle();
+    await tester.enterText(box, 'hello');
+    await tester.pump();
+    expect(find.text('Alex'), findsWidgets);
+    expect(find.text('Bo, Cy'), findsNothing);
+
+    await tester.enterText(box, 'nobody');
+    await tester.pump();
+    expect(find.text('No conversations match.'), findsOneWidget);
+
+    await tester.enterText(box, '');
+    await tester.pump();
+    expect(find.text('Bo, Cy'), findsOneWidget);
+    await finish(tester);
+  });
+
   testWidgets('a thread shows bubbles, a day, a picture and marks read', (
     tester,
   ) async {
@@ -140,7 +187,7 @@ void main() {
   ) async {
     await pumpPage(tester, threadId: 1);
 
-    await tester.enterText(find.byType(EditableText), 'On my way');
+    await tester.enterText(find.byType(EditableText).last, 'On my way');
     source.addMessage(
       messageOf(
         'sms:5',
@@ -164,7 +211,7 @@ void main() {
     await pumpPage(tester, threadId: 1);
     source.sendResult = SendResult(failure: .SEND_FAILURE_NO_SERVICE);
 
-    await tester.enterText(find.byType(EditableText), 'Anyone?');
+    await tester.enterText(find.byType(EditableText).last, 'Anyone?');
     await tester.pump();
     await tester.tap(find.text('Send'));
     await tester.pumpAndSettle();
@@ -186,7 +233,8 @@ void main() {
     await pumpPage(tester, threadId: 2);
 
     expect(find.textContaining('Group texts need MMS'), findsOneWidget);
-    expect(find.byType(EditableText), findsNothing);
+    // Only the search box: no composer.
+    expect(find.byType(EditableText), findsOneWidget);
     expect(find.text('Cy'), findsOneWidget);
     await finish(tester);
   });

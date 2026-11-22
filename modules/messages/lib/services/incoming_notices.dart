@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:messages/l10n/l10n.dart';
 import 'package:messages/models/models.dart';
 import 'package:messages/services/message_library.dart';
@@ -19,13 +19,15 @@ class IncomingNotices {
     required MessagesLocalizations Function() strings,
     required String Function(String deviceId) deviceName,
     required void Function(String deviceId, int threadId) onOpen,
+    Future<void> Function(String text)? copy,
   }) : _library = library,
        _notifier = notifier,
        _enabled = enabled,
        _isShowing = isShowing,
        _strings = strings,
        _deviceName = deviceName,
-       _onOpen = onOpen;
+       _onOpen = onOpen,
+       _copy = copy ?? _copyToClipboard;
 
   /// Notices with Reply and Mark as read.
   static const messageCategory = 'messages.message';
@@ -33,8 +35,12 @@ class IncomingNotices {
   /// Group conversations: SMS can't answer them, so only Mark as read.
   static const groupCategory = 'messages.group';
 
+  /// A text with a one-time code: Copy code first.
+  static const codeCategory = 'messages.code';
+
   static const replyActionId = 'reply';
   static const markReadActionId = 'mark_read';
+  static const copyCodeActionId = 'copy_code';
 
   static const _prefix = 'messages/';
 
@@ -45,7 +51,11 @@ class IncomingNotices {
   final MessagesLocalizations Function() _strings;
   final String Function(String deviceId) _deviceName;
   final void Function(String deviceId, int threadId) _onOpen;
+  final Future<void> Function(String text) _copy;
   final List<StreamSubscription<Object?>> _subscriptions = [];
+
+  /// The code of each notice that offers Copy code.
+  final Map<String, String> _codes = {};
 
   /// Texts shown per notice since it was last cleared.
   final Map<String, int> _counts = {};
@@ -65,6 +75,13 @@ class IncomingNotices {
     NoticeCategory(
       id: groupCategory,
       actions: [
+        NoticeAction(id: markReadActionId, label: strings.markReadAction),
+      ],
+    ),
+    NoticeCategory(
+      id: codeCategory,
+      actions: [
+        NoticeAction(id: copyCodeActionId, label: strings.copyCode),
         NoticeAction(id: markReadActionId, label: strings.markReadAction),
       ],
     ),
@@ -100,6 +117,7 @@ class IncomingNotices {
   /// Clears the notice of a conversation, such as when it is opened here.
   Future<void> clear(String deviceId, int threadId) async {
     final noticeId = noticeIdFor(deviceId, threadId);
+    _codes.remove(noticeId);
     if (_counts.remove(noticeId) == null) {
       return;
     }
@@ -127,6 +145,14 @@ class IncomingNotices {
       _ => message.senderAddress,
     };
     final text = strings.preview(message);
+    final code = OneTimeCode.find(message.body);
+    switch (code) {
+      case final String found:
+        _codes[noticeId] = found;
+      case null:
+        _codes.remove(noticeId);
+    }
+
     final body = switch (isGroup) {
       true => strings.noticeGroupBody(
         conversation?.nameFor(message.senderAddress) ?? message.senderAddress,
@@ -144,9 +170,10 @@ class IncomingNotices {
           false => name,
         },
         body: body,
-        category: switch (isGroup) {
-          true => groupCategory,
-          false => messageCategory,
+        category: switch ((code, isGroup)) {
+          (String(), _) => codeCategory,
+          (null, true) => groupCategory,
+          (null, false) => messageCategory,
         },
         groupKey: '$_prefix$deviceId',
         image: _avatarOf(conversation, message.senderAddress),
@@ -154,6 +181,12 @@ class IncomingNotices {
           deviceId,
           cover: strings.privateCover(_deviceName(deviceId)),
         ),
+        // The phone's messaging app posts this text too; with notifications
+        // mirrored here, this notice is the one that shows.
+        echo: switch (message.body.trim().isEmpty) {
+          true => null,
+          false => NoticeEcho.text(deviceId, message.body, wins: true),
+        },
       ),
     );
   }
@@ -172,6 +205,13 @@ class IncomingNotices {
         _onOpen(deviceId, threadId);
       case replyActionId:
         await _reply(deviceId, threadId, response.replyText ?? '');
+      case copyCodeActionId:
+        final code = _codes[response.noticeId];
+        await clear(deviceId, threadId);
+        if (code != null) {
+          await _copy(code);
+        }
+        await _library.markRead(deviceId, threadId);
       case markReadActionId:
         await clear(deviceId, threadId);
         await _library.markRead(deviceId, threadId);
@@ -204,6 +244,9 @@ class IncomingNotices {
       ),
     );
   }
+
+  static Future<void> _copyToClipboard(String text) =>
+      Clipboard.setData(ClipboardData(text: text));
 
   static (String, int)? _parse(String noticeId) {
     final parts = noticeId.substring(_prefix.length).split('/');

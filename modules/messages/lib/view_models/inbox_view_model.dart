@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messages/models/models.dart';
 import 'package:messages/services/services.dart';
@@ -17,7 +18,10 @@ class InboxViewModel extends ChangeNotifier {
        _selectedThreadId = initialThreadId {
     _subscription = library.events
         .where((event) => event.deviceId == deviceId)
-        .listen((_) => _notify());
+        .listen((_) {
+          _searchIndex = null;
+          _notify();
+        });
   }
 
   final String deviceId;
@@ -26,6 +30,8 @@ class InboxViewModel extends ChangeNotifier {
   late final StreamSubscription<LibraryEvent> _subscription;
 
   int? _selectedThreadId;
+  String _query = '';
+  Map<int, String>? _searchIndex;
   bool _loadingMore = false;
   bool _loadFailed = false;
   bool _disposed = false;
@@ -34,8 +40,39 @@ class InboxViewModel extends ChangeNotifier {
 
   PhoneState get phone => _library.phone(deviceId);
 
-  List<Conversation> get conversations =>
-      _library.cache(deviceId).conversations;
+  List<Conversation> get conversations {
+    final all = _library.cache(deviceId).conversations;
+    if (!isSearching) {
+      return all;
+    }
+
+    final index = _searchIndex ??= _indexOf(all);
+    return [
+      for (final conversation in all)
+        if (_matches(conversation, index[conversation.threadId.toInt()] ?? ''))
+          conversation,
+    ];
+  }
+
+  /// What the search box holds; empty when not searching.
+  String get query => _query;
+
+  bool get isSearching => _query.trim().isNotEmpty;
+
+  /// How many conversations a search looks through: the ones on this
+  /// computer, which grow as older ones load.
+  int get searchedCount => _library.cache(deviceId).conversations.length;
+
+  /// Finds conversations by name, number, or words in their texts,
+  /// ignoring case and accents: "nguyen" finds "Nguyễn".
+  void search(String query) {
+    if (query == _query) {
+      return;
+    }
+
+    _query = query;
+    _notify();
+  }
 
   bool get hasMore => _library.cache(deviceId).hasMoreConversations;
 
@@ -80,6 +117,49 @@ class InboxViewModel extends ChangeNotifier {
     _loadFailed = !ok;
     _notify();
   }
+
+  bool _matches(Conversation conversation, String folded) {
+    final words = SearchText.fold(_query).split(RegExp(r'\s+'));
+    final digitsHay = _digits(
+      conversation.participants
+          .map((participant) => participant.address)
+          .join(' '),
+    );
+    return words.where((word) => word.isNotEmpty).every((word) {
+      if (folded.contains(word)) {
+        return true;
+      }
+
+      // "0901 234 567" finds "+84 901 234 567": the national 0 drops out.
+      final digits = _digits(word).replaceFirst(RegExp('^0+'), '');
+      return digits.length >= _minDigits && digitsHay.contains(digits);
+    });
+  }
+
+  Map<int, String> _indexOf(List<Conversation> conversations) {
+    final cache = _library.cache(deviceId);
+    return {
+      for (final conversation in conversations)
+        conversation.threadId.toInt(): SearchText.fold(
+          [
+            conversation.title,
+            for (final participant in conversation.participants) ...[
+              participant.name,
+              participant.address,
+            ],
+            conversation.snippet,
+            for (final message in cache.messages(
+              conversation.threadId.toInt(),
+            ))
+              message.body,
+          ].join('\n'),
+        ),
+    };
+  }
+
+  static const _minDigits = 3;
+
+  static String _digits(String text) => text.replaceAll(RegExp(r'\D'), '');
 
   @override
   void dispose() {

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:feature_kit/services/private_content.dart';
+import 'package:feature_kit/services/search_text.dart';
 
 /// Where a notice belongs, so people can tune each kind in system settings
 /// instead of turning everything off.
@@ -54,6 +55,49 @@ class NoticeCategory {
   final List<NoticeAction> actions;
 }
 
+/// What a notice is about, so two features telling the same news show it
+/// once: a text seen by Messages and by the mirrored Google Messages
+/// notification, or a missed call seen by Calls and by the phone app's
+/// notification. Notices with a key in common within a couple of minutes
+/// are one notice; the one that [wins] stays.
+class NoticeEcho {
+  const NoticeEcho(this.keys, {this.wins = false});
+
+  /// A text [body] that arrived on [deviceId].
+  NoticeEcho.text(String deviceId, String body, {bool wins = false})
+    : this({textKey(deviceId, body)}, wins: wins);
+
+  final Set<String> keys;
+
+  /// This notice is the better of the two, such as Messages' own notice,
+  /// whose Reply sends a text and which opens the conversation.
+  final bool wins;
+
+  static String textKey(String deviceId, String body) =>
+      'text/$deviceId/${_plain(body)}';
+
+  /// Who called, as a name or a number; numbers match on their last digits.
+  static String callerKey(String deviceId, String caller) {
+    final digits = caller.replaceAll(RegExp(r'\D'), '');
+    final who = switch (digits.length >= _callerDigits) {
+      true => digits.substring(digits.length - _callerDigits),
+      false => _plain(caller),
+    };
+    return 'caller/$deviceId/$who';
+  }
+
+  static const _callerDigits = 8;
+  static const _keptLength = 160;
+
+  static String _plain(String text) {
+    final folded = SearchText.fold(text.trim()).replaceAll(RegExp(r'\s+'), ' ');
+    return switch (folded.length > _keptLength) {
+      true => folded.substring(0, _keptLength),
+      false => folded,
+    };
+  }
+}
+
 /// A local system notification shown by a feature.
 class LocalNotice {
   const LocalNotice({
@@ -70,6 +114,7 @@ class LocalNotice {
     this.ringing = false,
     this.private,
     this.public = false,
+    this.echo,
   });
 
   /// Unique per notice; showing the same id again updates it.
@@ -109,6 +154,9 @@ class LocalNotice {
   /// hides the rest. For a question asked during sharing, such as "Let
   /// MacBook control Pixel?", and "Controlled by MacBook · Stop".
   final bool public;
+
+  /// Set when another feature may tell the same news; see [NoticeEcho].
+  final NoticeEcho? echo;
 
   /// This notice with [private]'s cover as its title, [body] in place of
   /// the content and no image. Actions stay, so a call can still be

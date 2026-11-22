@@ -77,8 +77,9 @@ class _MessagesLayout extends StatelessWidget {
             return Column(
               crossAxisAlignment: .stretch,
               children: [
-                // A window's toolbar already says "Messages · Pixel 9".
-                if (onBack != null || !isUnderToolbar)
+                // A window's toolbar already says "Messages · Pixel 9"; a
+                // thread alone there has its back in its own header.
+                if (!isUnderToolbar || (onBack != null && !showsThreadAlone))
                   PageHeader(
                     title: l10n.cardTitle(viewModel.phoneName),
                     backLabel: l10n.back,
@@ -110,6 +111,10 @@ class _MessagesLayout extends StatelessWidget {
                     (false, final int threadId) => _ThreadPane(
                       threadId: threadId,
                       onThreadOpened: onThreadOpened,
+                      onBack: switch (isUnderToolbar) {
+                        true => () => viewModel.select(null),
+                        false => null,
+                      },
                     ),
                     (false, null) => ConversationListFrame(
                       onOpen: viewModel.select,
@@ -126,10 +131,15 @@ class _MessagesLayout extends StatelessWidget {
 }
 
 class _ThreadPane extends StatelessWidget {
-  const _ThreadPane({required this.threadId, required this.onThreadOpened});
+  const _ThreadPane({
+    required this.threadId,
+    required this.onThreadOpened,
+    this.onBack,
+  });
 
   final int? threadId;
   final void Function(int threadId)? onThreadOpened;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +187,7 @@ class _ThreadPane extends StatelessWidget {
       child: Builder(
         builder: (context) => ThreadFrame(
           phoneName: inbox.phoneName,
+          onBack: onBack,
           onOpenImage: (message, attachment) =>
               _openImage(context, inbox.phoneName, message, attachment),
         ),

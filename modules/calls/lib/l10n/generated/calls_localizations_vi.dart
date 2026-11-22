@@ -343,4 +343,7 @@ class CallsLocalizationsVi extends CallsLocalizations {
   String healthLocalOk(String device) {
     return '$device thấy được cuộc gọi của điện thoại này';
   }
+
+  @override
+  String get callBack => 'Gọi lại';
 }

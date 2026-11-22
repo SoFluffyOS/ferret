@@ -1,6 +1,7 @@
-import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:messages/l10n/l10n.dart';
@@ -36,6 +37,10 @@ class MessageBubble extends StatelessWidget {
     final textColor = switch (mine) {
       true => palette.background,
       false => palette.text,
+    };
+    final code = switch (mine) {
+      true => null,
+      false => OneTimeCode.find(message.body),
     };
     final status = switch (message.kind) {
       .MESSAGE_KIND_FAILED => l10n.kindFailed,
@@ -101,8 +106,65 @@ class MessageBubble extends StatelessWidget {
               ),
             ),
           ),
+          if (code != null)
+            Padding(
+              padding: EdgeInsetsDirectional.only(start: Spacing.d8),
+              child: _CopyCodeLink(code: code),
+            ),
         ],
       ),
+    );
+  }
+}
+
+/// Copy code under a received text that holds a one-time code: just the
+/// digits, then "Copied" for a moment.
+class _CopyCodeLink extends StatefulWidget {
+  const _CopyCodeLink({required this.code});
+
+  final String code;
+
+  @override
+  State<_CopyCodeLink> createState() => _CopyCodeLinkState();
+}
+
+class _CopyCodeLinkState extends State<_CopyCodeLink> {
+  static const _copiedFor = Duration(seconds: 2);
+
+  bool _copied = false;
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: widget.code));
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _copied = true);
+    _timer?.cancel();
+    _timer = Timer(_copiedFor, () {
+      if (mounted) {
+        setState(() => _copied = false);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.messagesL10n;
+
+    return TextLink(
+      label: switch (_copied) {
+        true => l10n.codeCopied,
+        false => l10n.copyCode,
+      },
+      onTap: () => unawaited(_copy()),
     );
   }
 }

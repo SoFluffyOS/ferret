@@ -233,6 +233,39 @@ void main() {
     });
   });
 
+  test('a text from the phone\'s texting app carries the text, so the '
+      'Messages notice can stand in for it', () {
+    control
+      ..emit(
+        MirrorPosted(
+          'phone',
+          mirrored(appPackage: 'com.google.android.apps.messaging'),
+        ),
+      )
+      ..emit(MirrorPosted('phone', mirrored(key: 'k2')));
+
+    final echo = notifier.shown['notifications/phone/k1']?.echo;
+    expect(echo?.keys, {NoticeEcho.textKey('phone', 'Are you coming?')});
+    expect(echo?.wins, isFalse);
+  });
+
+  test('a missed call from the phone app carries the caller', () {
+    control.emit(
+      MirrorPosted(
+        'phone',
+        mirrored(
+          appPackage: 'com.google.android.dialer',
+          title: 'Missed call',
+        ),
+      ),
+    );
+
+    expect(
+      notifier.shown['notifications/phone/k1']?.echo?.keys,
+      contains(NoticeEcho.callerKey('phone', 'Missed call')),
+    );
+  });
+
   test('a reply that fails says so', () async {
     control
       ..actionResult = false

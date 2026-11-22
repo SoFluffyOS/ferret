@@ -341,4 +341,7 @@ class CallsLocalizationsEn extends CallsLocalizations {
   String healthLocalOk(String device) {
     return '$device sees this phone\'s calls';
   }
+
+  @override
+  String get callBack => 'Call back';
 }

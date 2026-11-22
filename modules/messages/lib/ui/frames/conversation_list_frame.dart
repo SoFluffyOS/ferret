@@ -35,6 +35,12 @@ class ConversationListFrame extends StatelessWidget {
     final syncing = context.select<InboxViewModel, bool>(
       (viewModel) => viewModel.phone.syncing,
     );
+    final searching = context.select<InboxViewModel, bool>(
+      (viewModel) => viewModel.isSearching,
+    );
+    final hasAny = context.select<InboxViewModel, bool>(
+      (viewModel) => viewModel.searchedCount > 0,
+    );
     final viewModel = context.read<InboxViewModel>();
     final l10n = context.messagesL10n;
     final palette = context.palette;
@@ -42,9 +48,10 @@ class ConversationListFrame extends StatelessWidget {
     final labels = TimeLabels(l10n, l10n.localeName, DateTime.now());
     final showEmpty = conversations.isEmpty && readiness == .ready && !syncing;
 
-    return NotificationListener<ScrollNotification>(
+    final list = NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        if (notification.metrics.extentAfter < _loadAheadPixels) {
+        // A search loads older conversations only when asked to.
+        if (!searching && notification.metrics.extentAfter < _loadAheadPixels) {
           unawaited(viewModel.loadMore());
         }
 
@@ -69,6 +76,13 @@ class ConversationListFrame extends StatelessWidget {
             );
           }
 
+          if (searching) {
+            return _SearchFooter(
+              noMatch: conversations.isEmpty,
+              loadingMore: loadingMore,
+            );
+          }
+
           final footer = switch ((showEmpty, loadingMore)) {
             (true, _) => l10n.conversationsEmpty,
             (_, true) => l10n.loadingOlder,
@@ -83,6 +97,82 @@ class ConversationListFrame extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+
+    if (!hasAny) {
+      return list;
+    }
+
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            Spacing.d8,
+            Spacing.d8,
+            Spacing.d8,
+            Spacing.d4,
+          ),
+          child: InputText(
+            hintText: l10n.searchHint,
+            onChanged: viewModel.search,
+            textInputAction: .search,
+          ),
+        ),
+        Expanded(child: list),
+      ],
+    );
+  }
+}
+
+/// Under search results: nothing matched, and how far back it looked, with
+/// a way to load older conversations from the phone.
+class _SearchFooter extends StatelessWidget {
+  const _SearchFooter({required this.noMatch, required this.loadingMore});
+
+  final bool noMatch;
+  final bool loadingMore;
+
+  @override
+  Widget build(BuildContext context) {
+    final searched = context.select<InboxViewModel, int>(
+      (viewModel) => viewModel.searchedCount,
+    );
+    final hasMore = context.select<InboxViewModel, bool>(
+      (viewModel) => viewModel.hasMore,
+    );
+    final viewModel = context.read<InboxViewModel>();
+    final l10n = context.messagesL10n;
+    final palette = context.palette;
+    final style = context.fluffyTheme.typography.caption1.copyWith(
+      color: palette.mutedText,
+    );
+
+    return Padding(
+      padding: EdgeInsets.all(Spacing.d16),
+      child: Column(
+        children: [
+          if (noMatch)
+            Text(l10n.searchNoMatch, textAlign: .center, style: style),
+          if (hasMore) ...[
+            if (noMatch) Spacing.v4,
+            Text(
+              l10n.searchLookedThrough(searched),
+              textAlign: .center,
+              style: style,
+            ),
+            Spacing.v4,
+            switch (loadingMore) {
+              true => Text(l10n.loadingOlder, style: style),
+              false => TextLink(
+                label: l10n.searchFurther,
+                alignment: .center,
+                onTap: () => unawaited(viewModel.loadMore()),
+              ),
+            },
+          ],
+        ],
       ),
     );
   }

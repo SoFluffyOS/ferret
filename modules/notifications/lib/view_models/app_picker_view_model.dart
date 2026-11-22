@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:notifications/models/models.dart';
 import 'package:protocol/notifications.dart';
@@ -128,9 +129,7 @@ class AppPickerViewModel extends ChangeNotifier {
   }
 
   bool _matches(AppEntry app) =>
-      _query.isEmpty ||
-      app.name.toLowerCase().contains(_query) ||
-      app.package.toLowerCase().contains(_query);
+      SearchText.matches(_query, [app.name, app.package]);
 
   void _notify() {
     if (!_disposed) {

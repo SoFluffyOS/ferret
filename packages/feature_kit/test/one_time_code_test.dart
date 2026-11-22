@@ -1,5 +1,5 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:notifications/notifications.dart';
 
 void main() {
   test('codes next to a word that says so are found', () {
@@ -27,5 +27,15 @@ void main() {
     ]) {
       expect(OneTimeCode.isIn(text), isFalse, reason: text);
     }
+  });
+
+  test('find gives the digits to copy', () {
+    expect(OneTimeCode.find('Your verification code is 482 913'), '482913');
+    expect(
+      OneTimeCode.find('G-482913 is your Google verification code.'),
+      '482913',
+    );
+    expect(OneTimeCode.find('Mã OTP của bạn là 5521. Không chia sẻ.'), '5521');
+    expect(OneTimeCode.find('See you at 10:30'), isNull);
   });
 }

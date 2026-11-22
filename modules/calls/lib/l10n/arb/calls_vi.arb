@@ -87,5 +87,6 @@
   "healthLocalOff": "Đang tắt trên điện thoại này",
   "healthLocalNeedsPermission": "Android đã tắt quyền truy cập của Ferret",
   "healthLocalPushFailed": "Cuộc gọi gần nhất không đến được {device}",
-  "healthLocalOk": "{device} thấy được cuộc gọi của điện thoại này"
+  "healthLocalOk": "{device} thấy được cuộc gọi của điện thoại này",
+  "callBack": "Gọi lại"
 }

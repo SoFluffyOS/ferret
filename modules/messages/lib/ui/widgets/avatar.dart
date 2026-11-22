@@ -32,10 +32,10 @@ class Avatar extends StatelessWidget {
         fit: .cover,
         gaplessPlayback: true,
       ),
-      (_, > 1) => Icon(LucideIcons.users, size: size / 2, color: palette.text),
+      (_, > 1) => Icon(LucideIcons.users, size: size / 2, color: palette.link),
       _ => Text(
         _initialOf(participants),
-        style: typography.base1.copyWith(color: palette.text),
+        style: typography.base1.copyWith(color: palette.link),
       ),
     };
 
@@ -45,7 +45,8 @@ class Avatar extends StatelessWidget {
         child: Container(
           width: size,
           height: size,
-          color: palette.background,
+          // The same tinted circle as a caller in Calls.
+          color: palette.accent.withValues(alpha: 0.15),
           alignment: .center,
           child: content,
         ),

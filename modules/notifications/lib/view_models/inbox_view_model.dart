@@ -226,6 +226,7 @@ class InboxViewModel extends ChangeNotifier {
             deviceId,
             cover: _strings().privateCover(_deviceName(deviceId)),
           ),
+          echo: _echoOf(notification),
         ),
       ),
     );
@@ -424,6 +425,34 @@ class InboxViewModel extends ChangeNotifier {
   }
 
   static const _catchUpSuffix = '/catch-up';
+
+  /// A text or a missed call that Messages or Calls may also show: theirs
+  /// is the notice that pops up (see [NoticeEcho]); this one stays in the
+  /// list.
+  static NoticeEcho? _echoOf(MirroredNotification notification) {
+    final deviceId = notification.deviceId;
+    final text = notification.text.trim();
+    final app = notification.appPackage;
+    if (PhoneApps.calling.contains(app)) {
+      return NoticeEcho({
+        for (final line in [notification.title, text])
+          if (line.isNotEmpty) NoticeEcho.callerKey(deviceId, line),
+      });
+    }
+
+    final texts =
+        PhoneApps.texting.contains(app) || MessagingApps.contains(app);
+    if (!texts || text.isEmpty) {
+      return null;
+    }
+
+    // A group text reads "Bo: Lunch?" in the messaging app's notification.
+    final colon = text.indexOf(': ');
+    return NoticeEcho({
+      NoticeEcho.textKey(deviceId, text),
+      if (colon > 0) NoticeEcho.textKey(deviceId, text.substring(colon + 2)),
+    });
+  }
 
   static String _noticeId(String deviceId, String key) =>
       '$_noticePrefix$deviceId/$key';

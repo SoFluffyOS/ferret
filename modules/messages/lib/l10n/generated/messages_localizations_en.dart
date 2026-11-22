@@ -392,4 +392,30 @@ class MessagesLocalizationsEn extends MessagesLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get searchHint => 'Search names, numbers and texts';
+
+  @override
+  String get searchNoMatch => 'No conversations match.';
+
+  @override
+  String searchLookedThrough(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Looked through $count conversations on this computer.',
+      one: 'Looked through 1 conversation on this computer.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchFurther => 'Look further back';
+
+  @override
+  String get copyCode => 'Copy code';
+
+  @override
+  String get codeCopied => 'Copied';
 }

@@ -477,6 +477,8 @@ class PseudoCallsLocalizations extends CallsLocalizationsEn {
   String get healthLocalNeedsPermission =>
       pseudo(super.healthLocalNeedsPermission);
   @override
+  String get callBack => pseudo(super.callBack);
+  @override
   String incomingOn(String device) => pseudo(super.incomingOn(device));
   @override
   String callingOn(String device) => pseudo(super.callingOn(device));
@@ -1965,6 +1967,16 @@ class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
   @override
   String get cancel => pseudo(super.cancel);
   @override
+  String get searchHint => pseudo(super.searchHint);
+  @override
+  String get searchNoMatch => pseudo(super.searchNoMatch);
+  @override
+  String get searchFurther => pseudo(super.searchFurther);
+  @override
+  String get copyCode => pseudo(super.copyCode);
+  @override
+  String get codeCopied => pseudo(super.codeCopied);
+  @override
   String cardTitle(String phone) => pseudo(super.cardTitle(phone));
   @override
   String unreadCount(int count) => pseudo(super.unreadCount(count));
@@ -2037,6 +2049,9 @@ class PseudoMessagesLocalizations extends MessagesLocalizationsEn {
   @override
   String forgetConfirmBody(String here) =>
       pseudo(super.forgetConfirmBody(here));
+  @override
+  String searchLookedThrough(int count) =>
+      pseudo(super.searchLookedThrough(count));
 }
 
 class PseudoMirroringLocalizations extends MirroringLocalizationsEn {

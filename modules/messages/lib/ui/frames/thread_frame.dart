@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:messages/l10n/l10n.dart';
 import 'package:messages/models/models.dart';
 import 'package:messages/ui/widgets/widgets.dart';
@@ -18,10 +19,15 @@ class ThreadFrame extends StatelessWidget {
     required this.phoneName,
     required this.onOpenImage,
     this.showHeader = true,
+    this.onBack,
   });
 
   final String phoneName;
   final bool showHeader;
+
+  /// Back to the conversation list, in the header, when the thread shows
+  /// alone under a window's toolbar.
+  final VoidCallback? onBack;
   final void Function(Message message, Attachment attachment) onOpenImage;
 
   static const _loadAheadPixels = 400.0;
@@ -61,7 +67,7 @@ class ThreadFrame extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         if (showHeader && conversation != null)
-          _Header(conversation: conversation),
+          _Header(onBack: onBack, conversation: conversation),
         if (loadFailed)
           Padding(
             padding: EdgeInsets.all(Spacing.d8),
@@ -170,9 +176,10 @@ class ThreadFrame extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.conversation});
+  const _Header({required this.conversation, required this.onBack});
 
   final Conversation conversation;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +197,17 @@ class _Header extends StatelessWidget {
       ),
       child: Row(
         children: [
+          if (onBack case final back?) ...[
+            HeaderIconButton(
+              icon: LucideIcons.chevronLeft,
+              tooltip: context.messagesL10n.back,
+              mirrors: true,
+              padding: Spacing.d4,
+              nudge: HeaderIconButton.backNudge,
+              onTap: back,
+            ),
+            Spacing.h8,
+          ],
           Avatar(participants: conversation.participants, size: Spacing.d32),
           Spacing.h12,
           Expanded(

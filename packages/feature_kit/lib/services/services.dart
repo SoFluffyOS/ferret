@@ -5,6 +5,8 @@ export 'package:feature_kit/services/feature_changes.dart';
 export 'package:feature_kit/services/list_text.dart';
 export 'package:feature_kit/services/local_notifier.dart';
 export 'package:feature_kit/services/menubar_drops.dart';
+export 'package:feature_kit/services/one_time_code.dart';
 export 'package:feature_kit/services/private_content.dart';
+export 'package:feature_kit/services/search_text.dart';
 export 'package:feature_kit/services/store_build.dart';
 export 'package:feature_kit/services/this_computer.dart';

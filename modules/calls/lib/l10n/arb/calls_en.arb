@@ -331,5 +331,9 @@
         "type": "String"
       }
     }
+  },
+  "callBack": "Call back",
+  "@callBack": {
+    "description": "Button on a Missed call notification on the computer: calls the person back from the phone."
   }
 }

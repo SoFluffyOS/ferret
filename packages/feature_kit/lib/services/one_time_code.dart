@@ -1,4 +1,4 @@
-/// Spots notifications that carry a one-time code: a sign-in, bank or
+/// Spots texts and notifications that carry a one-time code: a sign-in, bank or
 /// delivery code that shouldn't show up on every computer in the house.
 abstract final class OneTimeCode {
   /// 4 to 8 digits, alone or split once by a space or a dash ("123 456"),
@@ -45,6 +45,20 @@ abstract final class OneTimeCode {
     }
 
     return _code.allMatches(text).any((match) => _digits(match[0]) >= 4);
+  }
+
+  /// The code in [text], digits only ("123 456" gives "123456"), or null
+  /// when [isIn] says there is none.
+  static String? find(String text) {
+    if (!isIn(text)) {
+      return null;
+    }
+
+    final match = _code
+        .allMatches(text)
+        .where((match) => _digits(match[0]) >= 4)
+        .first;
+    return (match[0] ?? '').replaceAll(RegExp(r'[^0-9]'), '');
   }
 
   static int _digits(String? found) =>

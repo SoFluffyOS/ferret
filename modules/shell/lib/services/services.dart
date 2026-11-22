@@ -10,6 +10,7 @@ export 'package:shell/services/device_preferences.dart';
 export 'package:shell/services/device_sections.dart';
 export 'package:shell/services/device_successors.dart';
 export 'package:shell/services/drop_target_finder.dart';
+export 'package:shell/services/echo_notifier.dart';
 export 'package:shell/services/engine_host.dart';
 export 'package:shell/services/feature_window_host.dart';
 export 'package:shell/services/first_use.dart';

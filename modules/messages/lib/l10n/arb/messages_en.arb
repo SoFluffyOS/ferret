@@ -358,5 +358,31 @@
     }
   },
   "forgetConfirm": "Forget",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "searchHint": "Search names, numbers and texts",
+  "@searchHint": {
+    "description": "Search box above a phone's conversation list on a computer. Ignores accents: 'nguyen' finds 'Nguyễn'."
+  },
+  "searchNoMatch": "No conversations match.",
+  "searchLookedThrough": "{count, plural, =1{Looked through 1 conversation on this computer.} other{Looked through {count} conversations on this computer.}}",
+  "@searchLookedThrough": {
+    "description": "Under search results when older conversations are still on the phone only.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFurther": "Look further back",
+  "@searchFurther": {
+    "description": "Link that loads older conversations from the phone so the search covers them."
+  },
+  "copyCode": "Copy code",
+  "@copyCode": {
+    "description": "Button on a text's notification and under a text in the conversation when it holds a one-time code (OTP): puts the digits on the computer's clipboard."
+  },
+  "codeCopied": "Copied",
+  "@codeCopied": {
+    "description": "Copy code turns into this for two seconds after the code went on the clipboard."
+  }
 }

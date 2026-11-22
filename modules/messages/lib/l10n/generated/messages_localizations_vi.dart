@@ -391,4 +391,29 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
 
   @override
   String get cancel => 'Hủy';
+
+  @override
+  String get searchHint => 'Tìm tên, số điện thoại hoặc tin nhắn';
+
+  @override
+  String get searchNoMatch => 'Không có cuộc trò chuyện nào khớp.';
+
+  @override
+  String searchLookedThrough(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã tìm trong $count cuộc trò chuyện trên máy này.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get searchFurther => 'Tìm xa hơn';
+
+  @override
+  String get copyCode => 'Sao chép mã';
+
+  @override
+  String get codeCopied => 'Đã sao chép';
 }

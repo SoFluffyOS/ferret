@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_notifications/ferret_notifications.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:notifications/models/models.dart';

@@ -16,6 +16,7 @@ void main() {
   late Set<int> showing;
   late bool enabled;
   late List<(String, int)> opened;
+  late List<String> copied;
 
   final strings = lookupMessagesLocalizations(const Locale('en'));
 
@@ -40,6 +41,7 @@ void main() {
     showing = {};
     enabled = true;
     opened = [];
+    copied = [];
     notices = IncomingNotices(
       library: devices.library,
       notifier: notifier,
@@ -48,6 +50,7 @@ void main() {
       strings: () => strings,
       deviceName: (_) => 'Pixel',
       onOpen: (deviceId, threadId) => opened.add((deviceId, threadId)),
+      copy: (text) async => copied.add(text),
     )..start();
     await devices.connect();
   });
@@ -100,6 +103,26 @@ void main() {
     expect(notice?.body, 'Are you coming?');
     expect(notice?.channel, NoticeChannel.incoming);
     expect(notice?.category, IncomingNotices.messageCategory);
+  });
+
+  test('a text with a sign-in code offers Copy code, which copies only '
+      'the digits', () async {
+    await receive('sms:1', body: 'Mã OTP của bạn là 482 913. Không chia sẻ.');
+
+    final notice = notifier.shown[noticeId(1)];
+    expect(notice?.category, IncomingNotices.codeCategory);
+    expect(notice?.echo?.wins, isTrue);
+
+    notifier.respond(
+      NoticeResponse(
+        noticeId: noticeId(1),
+        actionId: IncomingNotices.copyCodeActionId,
+      ),
+    );
+    await settle();
+
+    expect(copied, ['482913']);
+    expect(notifier.shown[noticeId(1)], isNull);
   });
 
   test('no notice for the conversation on screen', () async {
@@ -228,6 +251,7 @@ void main() {
     expect(categories.map((category) => category.id), [
       'messages.message',
       'messages.group',
+      'messages.code',
     ]);
     expect(reply.isReply, isTrue);
   });

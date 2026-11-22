@@ -150,13 +150,15 @@ Future<FerretApp> _startApp({
   final systemNotifier = await SystemNotifier.create([
     for (final feature in features) ...feature.noticeCategories,
   ]);
-  final notifier = PrivateNotifier(
-    systemNotifier,
-    previews: PrivatePreviews(settings),
-    isAtScreen: () => screen.isActive,
-    coverBody: () => lookupShellLocalizations(
-      AppLocale.pick(ShellLocalizations.supportedLocales),
-    ).privateCoverBody,
+  final notifier = EchoNotifier(
+    PrivateNotifier(
+      systemNotifier,
+      previews: PrivatePreviews(settings),
+      isAtScreen: () => screen.isActive,
+      coverBody: () => lookupShellLocalizations(
+        AppLocale.pick(ShellLocalizations.supportedLocales),
+      ).privateCoverBody,
+    ),
   );
   unawaited(
     NotificationPermission(

@@ -24,14 +24,17 @@ void main() {
 
   tearDown(() => notices.dispose());
 
-  test('declares Answer and Decline for incoming calls', () {
-    final category = CallNotices.categories(platformCallsL10n()).single;
+  test('declares Answer and Decline for incoming calls, Call back for '
+      'missed ones', () {
+    final [incoming, missed] = CallNotices.categories(platformCallsL10n());
 
-    expect(category.id, 'calls.incoming');
-    expect(category.actions.map((action) => action.label), [
+    expect(incoming.id, 'calls.incoming');
+    expect(incoming.actions.map((action) => action.label), [
       'Answer',
       'Decline',
     ]);
+    expect(missed.id, CallNotices.missedCategory);
+    expect(missed.actions.single.label, 'Call back');
   });
 
   test('shows a notice with the caller when a phone rings', () async {
@@ -102,7 +105,28 @@ void main() {
     expect(missed?.title, 'Missed call');
     expect(missed?.body, 'Alex · Pixel');
     expect(missed?.silent, isTrue);
-    expect(missed?.category, isNull);
+    expect(missed?.category, CallNotices.missedCategory);
+    expect(missed?.echo?.wins, isTrue);
+    expect(
+      missed?.echo?.keys,
+      contains(NoticeEcho.callerKey('phone', '+15550100')),
+    );
+  });
+
+  test('Call back on a missed call dials from the phone', () async {
+    final missedId = CallNotices.missedId('phone');
+    control
+      ..emit(ringing)
+      ..emit(
+        remoteCall(state: .CALL_STATE_ENDED, outcome: .CALL_OUTCOME_MISSED),
+      );
+    await settle();
+
+    notifier.respond(missedId, CallNotices.callBackAction);
+    await settle();
+
+    expect(control.dialed, [('phone', '+15550100')]);
+    expect(notifier.cancelled, contains(missedId));
   });
 
   test('shows nothing for outgoing calls or with notices off', () async {
