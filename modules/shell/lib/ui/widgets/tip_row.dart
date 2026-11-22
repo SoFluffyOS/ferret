@@ -52,6 +52,7 @@ class TipRow extends StatelessWidget {
           ),
           if (actionLabel case final label?)
             Tappable(
+              semanticButton: true,
               onTap: onAction,
               child: Padding(
                 padding: EdgeInsets.all(Spacing.d6),

@@ -88,7 +88,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Do more, once**: the extras card on Home goes away with its ✕ and stays in **Settings → Do more**. It only comes back when something new is on offer.
 - **Short buttons**: the whole sentence is in the tooltip and what screen readers say.
 - **Large text**: up to 200%, and pages grow with it.
-- **Accessibility**: VoiceOver and TalkBack, a keyboard alone, and readable contrast in light and dark.
+- **Accessibility**: VoiceOver and TalkBack (headings to jump between sections, one stop per device or row, a device that connects or drops is spoken), a keyboard alone, and readable contrast in light and dark.
 - **Ferret in Vietnamese**, and ready for every language, right-to-left included. [Translate Ferret](docs/contributing/translating.md).
 - **Beta tags** on what hasn't met enough real devices yet.
 

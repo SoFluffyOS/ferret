@@ -176,6 +176,7 @@ class _QuietLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tappable(
       onTap: onTap,
+      semanticButton: true,
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: PageInsets.row,

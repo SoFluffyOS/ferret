@@ -39,13 +39,16 @@ class Avatar extends StatelessWidget {
       ),
     };
 
-    return ClipOval(
-      child: Container(
-        width: size,
-        height: size,
-        color: palette.background,
-        alignment: .center,
-        child: content,
+    // The name is said next to it; initials alone read as a stray letter.
+    return ExcludeSemantics(
+      child: ClipOval(
+        child: Container(
+          width: size,
+          height: size,
+          color: palette.background,
+          alignment: .center,
+          child: content,
+        ),
       ),
     );
   }

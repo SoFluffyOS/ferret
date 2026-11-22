@@ -21,6 +21,7 @@ class FeatureCard extends StatelessWidget {
     this.onTap,
     this.iconTone = .normal,
     this.subtitleTone = .muted,
+    this.announces = false,
   });
 
   final IconData icon;
@@ -46,6 +47,11 @@ class FeatureCard extends StatelessWidget {
 
   /// Such as accent for an unread count, or danger for missing access.
   final FeatureTone subtitleTone;
+
+  /// A question that showed up by itself and waits for an answer, such as
+  /// a computer asking for the camera: a screen reader says its title as
+  /// it appears.
+  final bool announces;
 
   /// Grows with the text, up to twice its size, so the icon still reads
   /// next to a large title.
@@ -86,11 +92,24 @@ class FeatureCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     // Titles carry device names; two lines keep them whole.
-                    Text(
-                      title,
-                      style: typography.base1.copyWith(color: palette.text),
-                      maxLines: 2,
-                      overflow: .ellipsis,
+                    // A card that is a button reads as one; otherwise its
+                    // title is a heading TalkBack can jump to.
+                    Semantics(
+                      container: onTap == null,
+                      liveRegion: switch (announces) {
+                        true => true,
+                        false => null,
+                      },
+                      header: switch (onTap) {
+                        null => true,
+                        _ => null,
+                      },
+                      child: Text(
+                        title,
+                        style: typography.base1.copyWith(color: palette.text),
+                        maxLines: 2,
+                        overflow: .ellipsis,
+                      ),
                     ),
                     if (subtitle case final subtitle?) ...[
                       Spacing.vertical(Spacing.d2),

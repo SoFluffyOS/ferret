@@ -50,33 +50,52 @@ class _HealthRowState extends State<HealthRow> {
       child: Row(
         crossAxisAlignment: .start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: Spacing.d2),
-            child: Icon(
-              icon,
-              size: Spacing.d16,
-              color: color,
-              semanticLabel: spoken,
-            ),
-          ),
-          Spacing.h12,
+          // One stop, the name first and the state last: "Calls, sees
+          // this phone's calls, OK". As a value, Android would say the
+          // state first.
           Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  widget.title,
-                  style: typography.base2.copyWith(color: palette.text),
-                ),
-                if (health.reason.isNotEmpty) Text(health.reason, style: muted),
-                if (_showsHelp) ...[
-                  Spacing.v4,
-                  Text(
-                    health.help,
-                    style: typography.caption1.copyWith(color: palette.text),
+            child: Semantics(
+              label: [
+                widget.title,
+                if (health.reason.isNotEmpty) health.reason,
+                if (_showsHelp) health.help,
+                spoken,
+              ].join('\n'),
+              excludeSemantics: true,
+              child: Row(
+                crossAxisAlignment: .start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: Spacing.d2),
+                    child: Icon(icon, size: Spacing.d16, color: color),
+                  ),
+                  Spacing.h12,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: typography.base2.copyWith(
+                            color: palette.text,
+                          ),
+                        ),
+                        if (health.reason.isNotEmpty)
+                          Text(health.reason, style: muted),
+                        if (_showsHelp) ...[
+                          Spacing.v4,
+                          Text(
+                            health.help,
+                            style: typography.caption1.copyWith(
+                              color: palette.text,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ],
-              ],
+              ),
             ),
           ),
           if (_action case (final label, final onTap)?)

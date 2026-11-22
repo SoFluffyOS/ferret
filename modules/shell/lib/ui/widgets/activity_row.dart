@@ -174,7 +174,11 @@ class ActivityRow extends StatelessWidget {
                       ),
                     ],
                     for (final action in iconActions)
-                      ActivityIconAction(action: action, reachesUp: hasIcons),
+                      ActivityIconAction(
+                        action: action,
+                        reachesUp: hasIcons,
+                        subject: item.title,
+                      ),
                     if (onDismiss != null)
                       ActivityIconAction(
                         action: ActivityAction(
@@ -184,6 +188,7 @@ class ActivityRow extends StatelessWidget {
                         ),
                         muted: true,
                         reachesUp: hasIcons,
+                        subject: item.title,
                       ),
                   ],
                 ),
@@ -267,6 +272,7 @@ class ActivityRow extends StatelessWidget {
         entries: _menu(context.shellL10n, menubar),
         child: switch (item.onTap) {
           final onTap? => Tappable(
+            semanticButton: true,
             onTap: onTap,
             focusNode: focusNode,
             child: row,

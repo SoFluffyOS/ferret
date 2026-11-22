@@ -72,7 +72,7 @@ class CallLogRow extends StatelessWidget {
       return row;
     }
 
-    return Tappable(onTap: onTap, child: row);
+    return Tappable(semanticButton: true, onTap: onTap, child: row);
   }
 
   String _when(BuildContext context) {

@@ -293,12 +293,14 @@ abstract final class FerretTextDialog {
               title: Text(title),
               content: _AutofocusInput(
                 focusNode: focusNode,
-                child: InputText(
-                  controller: controller,
-                  focusNode: focusNode,
-                  label: labelText,
-                  hintText: hintText,
-                  onSubmitted: (_) => confirm(),
+                child: MergeSemantics(
+                  child: InputText(
+                    controller: controller,
+                    focusNode: focusNode,
+                    label: labelText,
+                    hintText: hintText,
+                    onSubmitted: (_) => confirm(),
+                  ),
                 ),
               ),
               actions: [

@@ -121,33 +121,39 @@ class FerretPage extends StatelessWidget {
                           .inline => Spacing.h8,
                         },
                       Expanded(
-                        child: switch (titleStyle) {
-                          .large => Text.rich(
-                            TextSpan(
-                              text: shownTitle,
-                              children: [
-                                if (status case final status?)
-                                  TextSpan(
-                                    text: '  $status',
-                                    style: typography.base2.copyWith(
-                                      color: palette.mutedText,
+                        // Its own stop, read as the page's heading, not
+                        // folded into the route's name.
+                        child: Semantics(
+                          container: true,
+                          header: true,
+                          child: switch (titleStyle) {
+                            .large => Text.rich(
+                              TextSpan(
+                                text: shownTitle,
+                                children: [
+                                  if (status case final status?)
+                                    TextSpan(
+                                      text: '  $status',
+                                      style: typography.base2.copyWith(
+                                        color: palette.mutedText,
+                                      ),
                                     ),
-                                  ),
-                              ],
+                                ],
+                              ),
+                              style: typography.title2.copyWith(
+                                color: palette.text,
+                              ),
+                              overflow: .ellipsis,
+                              maxLines: 2,
                             ),
-                            style: typography.title2.copyWith(
-                              color: palette.text,
+                            .inline => MiddleEllipsisText(
+                              shownTitle,
+                              style: typography.headline6.copyWith(
+                                color: palette.text,
+                              ),
                             ),
-                            overflow: .ellipsis,
-                            maxLines: 2,
-                          ),
-                          .inline => MiddleEllipsisText(
-                            shownTitle,
-                            style: typography.headline6.copyWith(
-                              color: palette.text,
-                            ),
-                          ),
-                        },
+                          },
+                        ),
                       ),
                       ..._spaced(actions),
                     ],
@@ -176,7 +182,20 @@ class FerretPage extends StatelessWidget {
                       side + margin,
                       Spacing.d24,
                     ),
-                    children: children,
+                    // Without this every line of text on the page, and
+                    // the words next to a button, is folded into one stop
+                    // (or into the button): TalkBack read a device's page
+                    // as a single block. Each text, row and control gets
+                    // its own stop; rows that belong together merge
+                    // themselves.
+                    children: [
+                      for (final child in children)
+                        Semantics(
+                          container: true,
+                          explicitChildNodes: true,
+                          child: child,
+                        ),
+                    ],
                   );
                 },
               ),

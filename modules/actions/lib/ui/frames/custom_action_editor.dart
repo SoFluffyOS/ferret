@@ -79,18 +79,22 @@ class _CustomActionEditorState extends State<CustomActionEditor> {
         crossAxisAlignment: .stretch,
         mainAxisSize: .min,
         children: [
-          InputText(
-            controller: _name,
-            label: l10n.editName,
-            hintText: l10n.editNameHint,
-            textInputAction: .next,
+          MergeSemantics(
+            child: InputText(
+              controller: _name,
+              label: l10n.editName,
+              hintText: l10n.editNameHint,
+              textInputAction: .next,
+            ),
           ),
           Spacing.v12,
-          InputText(
-            controller: _command,
-            label: l10n.editCommand,
-            hintText: _commandHint,
-            onSubmitted: (_) => _save(),
+          MergeSemantics(
+            child: InputText(
+              controller: _command,
+              label: l10n.editCommand,
+              hintText: _commandHint,
+              onSubmitted: (_) => _save(),
+            ),
           ),
           Spacing.v8,
           Text(l10n.editCommandHelp(seconds), style: note),

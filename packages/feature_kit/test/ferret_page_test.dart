@@ -44,6 +44,36 @@ Widget _titled(String title, FerretPageTitle style) => MediaQuery(
 );
 
 void main() {
+  testWidgets('a screen reader gets the title and section titles as headings, '
+      'and each line and link as its own stop', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(_readPage());
+    await tester.pump();
+
+    expect(
+      tester.getSemantics(find.text('Clipboard')),
+      isSemantics(label: 'Clipboard', isHeader: true),
+    );
+    expect(
+      tester.getSemantics(find.text('History')),
+      isSemantics(label: 'History', isHeader: true),
+    );
+    expect(
+      tester.getSemantics(find.text('History is empty.')),
+      isSemantics(label: 'History is empty.'),
+    );
+    expect(
+      tester.getSemantics(find.text('Clear history')),
+      isSemantics(
+        label: 'Clear history',
+        isButton: true,
+        hasTapAction: true,
+        isFocusable: true,
+        hasFocusAction: true,
+      ),
+    );
+    semantics.dispose();
+  });
   testWidgets('a first page keeps no way back while a dialog is over it', (
     tester,
   ) async {
@@ -90,3 +120,25 @@ void main() {
     expect(withKeyboard, withoutKeyboard - 300);
   });
 }
+
+Widget _readPage() => MediaQuery(
+  data: const MediaQueryData(size: Size(400, 800)),
+  child: Directionality(
+    textDirection: .ltr,
+    child: FluffyTheme(
+      data: FluffyThemeData.fallback(brightness: .light),
+      child: Navigator(
+        onGenerateRoute: (_) => PageRouteBuilder<void>(
+          pageBuilder: (_, _, _) => FerretPage(
+            title: 'Clipboard',
+            children: [
+              const SectionTitle('History'),
+              const Text('History is empty.'),
+              TextLink(label: 'Clear history', onTap: () {}),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ),
+);

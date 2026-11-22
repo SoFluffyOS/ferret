@@ -54,6 +54,7 @@ class _DisclosureRowState extends State<DisclosureRow> {
       crossAxisAlignment: .stretch,
       children: [
         Tappable(
+          semanticButton: !widget.keepOpen,
           onTap: switch (widget.keepOpen) {
             true => null,
             false => () => setState(() => _open = !_open),

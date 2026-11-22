@@ -105,6 +105,6 @@ class DropTargetTile extends StatelessWidget {
       return filled;
     }
 
-    return Tappable(onTap: onTap, child: filled);
+    return Tappable(semanticButton: true, onTap: onTap, child: filled);
   }
 }

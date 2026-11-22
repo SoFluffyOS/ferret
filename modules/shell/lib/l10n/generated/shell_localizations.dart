@@ -140,6 +140,12 @@ abstract class ShellLocalizations {
   /// **'Reconnecting…'**
   String get deviceReconnecting;
 
+  /// What a screen reader says when a device connects, starts reconnecting or drops, such as "Pixel 7: Connected".
+  ///
+  /// In en, this message translates to:
+  /// **'{device}: {status}'**
+  String deviceStatusSpoken(String device, String status);
+
   /// No description provided for @deviceWeak.
   ///
   /// In en, this message translates to:

@@ -116,56 +116,59 @@ class DevicePage extends StatelessWidget {
       if (WindowLayout.splits(context)) ...[Spacing.v8, const OffersCard()],
     ];
 
-    return FerretPage(
-      title: '',
-      backLabel: l10n.back,
-      children: [
-        DeviceNowFrame(deviceId: deviceId),
-        SuccessorsFrame(deviceId: deviceId),
-        if (status.versionMismatch case final mismatch?)
-          TwoColumns(
-            leading: [
-              DeviceHeader(status: status),
-              UpdateNeededCard(
-                mismatch: mismatch,
-                deviceName: device.name,
-                here: l10n.here(engine.device),
-                onGetUpdate: _updateSource(),
-              ),
-            ],
-            trailing: [...offers, ...details],
-          ),
-        if (!status.isConnected && status.versionMismatch == null)
-          FeatureChangesListener(
-            features: scope.features,
-            builder: (context) => _Offline(
-              status: status,
-              trailing: [...offers, ...details],
-            ),
-          ),
-        if (status.isConnected)
-          FeatureChangesListener(
-            features: scope.features,
-            builder: (context) => TwoColumns(
+    return ConnectionAnnouncer(
+      status: status,
+      child: FerretPage(
+        title: '',
+        backLabel: l10n.back,
+        children: [
+          DeviceNowFrame(deviceId: deviceId),
+          SuccessorsFrame(deviceId: deviceId),
+          if (status.versionMismatch case final mismatch?)
+            TwoColumns(
               leading: [
                 DeviceHeader(status: status),
-                _Actions(status: status),
-                for (final feature in scope.features)
-                  ?feature.buildDeviceGroup(
-                    context,
-                    scope.featureContext,
-                    status,
-                  ),
-                _WhatWorks(status: status),
+                UpdateNeededCard(
+                  mismatch: mismatch,
+                  deviceName: device.name,
+                  here: l10n.here(engine.device),
+                  onGetUpdate: _updateSource(),
+                ),
               ],
-              trailing: [
-                _May(status: status),
-                ...offers,
-                ...details,
-              ],
+              trailing: [...offers, ...details],
             ),
-          ),
-      ],
+          if (!status.isConnected && status.versionMismatch == null)
+            FeatureChangesListener(
+              features: scope.features,
+              builder: (context) => _Offline(
+                status: status,
+                trailing: [...offers, ...details],
+              ),
+            ),
+          if (status.isConnected)
+            FeatureChangesListener(
+              features: scope.features,
+              builder: (context) => TwoColumns(
+                leading: [
+                  DeviceHeader(status: status),
+                  _Actions(status: status),
+                  for (final feature in scope.features)
+                    ?feature.buildDeviceGroup(
+                      context,
+                      scope.featureContext,
+                      status,
+                    ),
+                  _WhatWorks(status: status),
+                ],
+                trailing: [
+                  _May(status: status),
+                  ...offers,
+                  ...details,
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 

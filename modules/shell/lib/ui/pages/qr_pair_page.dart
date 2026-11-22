@@ -98,6 +98,7 @@ class _QrCard extends StatelessWidget {
             style: muted,
           ),
           Tappable(
+            semanticButton: true,
             onTap: () =>
                 unawaited(context.read<PairingViewModel>().createOffer()),
             child: Padding(

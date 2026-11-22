@@ -200,6 +200,7 @@ class _DoctorPageState extends State<DoctorPage> {
               DoctorFix.copyDiagnostics,
             ])
               Tappable(
+                semanticButton: true,
                 onTap: () => _apply(fix),
                 child: Padding(
                   padding: EdgeInsets.all(Spacing.d8),

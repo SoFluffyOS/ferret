@@ -44,6 +44,7 @@ class ConversationRow extends StatelessWidget {
     };
 
     return Tappable(
+      semanticButton: true,
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(

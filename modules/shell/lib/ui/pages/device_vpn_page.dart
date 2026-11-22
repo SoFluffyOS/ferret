@@ -106,12 +106,14 @@ class _DeviceVpnPageState extends State<DeviceVpnPage> {
         ],
         if (device.reachOverVpn) ...[
           Spacing.v16,
-          InputText(
-            controller: _address,
-            label: l10n.vpnReachAt,
-            hintText: l10n.vpnReachAtHint,
-            keyboardType: .url,
-            onSubmitted: (_) => unawaited(_saveAddress()),
+          MergeSemantics(
+            child: InputText(
+              controller: _address,
+              label: l10n.vpnReachAt,
+              hintText: l10n.vpnReachAtHint,
+              keyboardType: .url,
+              onSubmitted: (_) => unawaited(_saveAddress()),
+            ),
           ),
           Spacing.v8,
           Row(

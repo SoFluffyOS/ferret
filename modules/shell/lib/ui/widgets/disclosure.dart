@@ -26,30 +26,34 @@ class _DisclosureState extends State<Disclosure> {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        Tappable(
-          onTap: () => setState(() => _open = !_open),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: PageInsets.row,
-              vertical: Spacing.d12,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.title,
-                    style: typography.base2.copyWith(color: palette.text),
+        Semantics(
+          expanded: _open,
+          child: Tappable(
+            semanticButton: true,
+            onTap: () => setState(() => _open = !_open),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: PageInsets.row,
+                vertical: Spacing.d12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: typography.base2.copyWith(color: palette.text),
+                    ),
                   ),
-                ),
-                Icon(
-                  switch (_open) {
-                    true => LucideIcons.chevronUp,
-                    false => LucideIcons.chevronDown,
-                  },
-                  size: Spacing.d16,
-                  color: palette.mutedText,
-                ),
-              ],
+                  Icon(
+                    switch (_open) {
+                      true => LucideIcons.chevronUp,
+                      false => LucideIcons.chevronDown,
+                    },
+                    size: Spacing.d16,
+                    color: palette.mutedText,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

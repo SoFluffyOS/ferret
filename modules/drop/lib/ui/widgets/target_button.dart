@@ -34,6 +34,7 @@ class TargetButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: Spacing.d8),
       child: Tappable(
+        semanticButton: true,
         onTap: () => Navigator.of(context).pop(DropPick(target, opens: opens)),
         child: DecoratedBox(
           decoration: ShapeDecoration(

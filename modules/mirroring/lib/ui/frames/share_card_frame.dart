@@ -49,6 +49,7 @@ class ShareCardFrame extends StatelessWidget {
         icon: LucideIcons.video,
         iconTone: .accent,
         title: l10n.cameraAskTitle(cameraPending.deviceName),
+        announces: true,
         subtitle: l10n.cameraAskBody,
         actions: [
           Button(
@@ -97,6 +98,7 @@ class ShareCardFrame extends StatelessWidget {
           controlPending.deviceName,
           viewModel.phoneName,
         ),
+        announces: true,
         subtitle: l10n.controlAskBody(controlPending.deviceName),
         actions: [
           Button(

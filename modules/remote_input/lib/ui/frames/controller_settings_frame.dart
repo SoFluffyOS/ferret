@@ -28,25 +28,28 @@ class ControllerSettingsFrame extends StatelessWidget {
     return GroupedCard(
       children: [
         GroupedCell(
-          child: Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              Text(
-                l10n.settingsSpeed,
-                style: typography.base1.copyWith(color: palette.text),
-              ),
-              Spacing.vertical(Spacing.d2),
-              Text(
-                l10n.settingsSpeedBody,
-                style: typography.caption1.copyWith(color: palette.mutedText),
-              ),
-              FluffySlider(
-                value: speed,
-                min: RemoteInputSettings.minSpeed,
-                max: RemoteInputSettings.maxSpeed,
-                onChanged: (value) => unawaited(viewModel.setSpeed(value)),
-              ),
-            ],
+          // The slider's name is the title above it.
+          child: MergeSemantics(
+            child: Column(
+              crossAxisAlignment: .stretch,
+              children: [
+                Text(
+                  l10n.settingsSpeed,
+                  style: typography.base1.copyWith(color: palette.text),
+                ),
+                Spacing.vertical(Spacing.d2),
+                Text(
+                  l10n.settingsSpeedBody,
+                  style: typography.caption1.copyWith(color: palette.mutedText),
+                ),
+                FluffySlider(
+                  value: speed,
+                  min: RemoteInputSettings.minSpeed,
+                  max: RemoteInputSettings.maxSpeed,
+                  onChanged: (value) => unawaited(viewModel.setSpeed(value)),
+                ),
+              ],
+            ),
           ),
         ),
         SettingSwitchRow(

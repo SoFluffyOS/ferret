@@ -59,16 +59,18 @@ class _DialerFrameState extends State<DialerFrame> {
           child: Column(
             crossAxisAlignment: .stretch,
             children: [
-              InputText(
-                controller: _number,
-                label: l10n.numberLabel,
-                hintText: l10n.numberHint,
-                keyboardType: .phone,
-                errorText: switch (invalidNumber) {
-                  true => l10n.outcomeInvalidNumber,
-                  false => null,
-                },
-                onSubmitted: (_) => _call(),
+              MergeSemantics(
+                child: InputText(
+                  controller: _number,
+                  label: l10n.numberLabel,
+                  hintText: l10n.numberHint,
+                  keyboardType: .phone,
+                  errorText: switch (invalidNumber) {
+                    true => l10n.outcomeInvalidNumber,
+                    false => null,
+                  },
+                  onSubmitted: (_) => _call(),
+                ),
               ),
               Spacing.v12,
               Button(

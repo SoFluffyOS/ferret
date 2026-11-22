@@ -40,12 +40,14 @@ class _ConnectPageState extends State<ConnectPage> {
           ),
         ),
         Spacing.v12,
-        InputText(
-          controller: _address,
-          label: l10n.pairAddressLabel,
-          hintText: l10n.pairAddressHint,
-          keyboardType: .url,
-          onSubmitted: (_) => _connect(),
+        MergeSemantics(
+          child: InputText(
+            controller: _address,
+            label: l10n.pairAddressLabel,
+            hintText: l10n.pairAddressHint,
+            keyboardType: .url,
+            onSubmitted: (_) => _connect(),
+          ),
         ),
         Spacing.v12,
         Button(

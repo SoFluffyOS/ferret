@@ -32,18 +32,21 @@ class CallerAvatar extends StatelessWidget {
       dimension: dimension,
     );
 
-    return ClipOval(
-      child: SizedBox.square(
-        dimension: dimension,
-        child: switch (photoJpeg.isEmpty) {
-          true => placeholder,
-          false => Image.memory(
-            Uint8List.fromList(photoJpeg),
-            fit: .cover,
-            gaplessPlayback: true,
-            errorBuilder: (_, _, _) => placeholder,
-          ),
-        },
+    // The name is said next to it; initials alone read as a stray letter.
+    return ExcludeSemantics(
+      child: ClipOval(
+        child: SizedBox.square(
+          dimension: dimension,
+          child: switch (photoJpeg.isEmpty) {
+            true => placeholder,
+            false => Image.memory(
+              Uint8List.fromList(photoJpeg),
+              fit: .cover,
+              gaplessPlayback: true,
+              errorBuilder: (_, _, _) => placeholder,
+            ),
+          },
+        ),
       ),
     );
   }

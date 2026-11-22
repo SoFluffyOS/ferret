@@ -41,6 +41,7 @@ class CaptureAskCard extends StatelessWidget {
       icon: icon,
       iconTone: .accent,
       title: title,
+      announces: true,
       subtitle: switch (ask.isCapturing) {
         true => l10n.askCapturing,
         false => l10n.askBody,

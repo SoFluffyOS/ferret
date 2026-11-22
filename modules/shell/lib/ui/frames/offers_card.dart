@@ -181,21 +181,28 @@ class OfferRow extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
 
-    final text = Column(
-      crossAxisAlignment: .start,
-      children: [
-        Text(
-          offer.title,
-          style: typography.base2.copyWith(color: palette.text),
-        ),
-        Text(
-          offer.description,
-          style: typography.caption1.copyWith(color: palette.mutedText),
-        ),
-      ],
+    final text = MergeSemantics(
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            offer.title,
+            style: typography.base2.copyWith(color: palette.text),
+          ),
+          Text(
+            offer.description,
+            style: typography.caption1.copyWith(color: palette.mutedText),
+          ),
+        ],
+      ),
     );
+    // Several rows say "Set up": out of context it says which.
     final button = RowActionButton(
       label: offer.actionLabel,
+      semanticLabel: context.shellL10n.activityActionFor(
+        offer.actionLabel,
+        offer.title,
+      ),
       onPressed: offer.onAction,
     );
 

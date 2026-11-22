@@ -50,25 +50,33 @@ class DropSettingsFrame extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    mainAxisSize: .min,
-                    children: [
-                      Text(
-                        l10n.settingsReceiveFolder,
-                        style: titleStyle.copyWith(color: palette.text),
-                      ),
-                      Spacing.vertical(Spacing.d2),
-                      Tappable(
-                        tooltip: folder,
-                        child: Text(
-                          folderLabel,
-                          style: typography.caption1.copyWith(
-                            color: palette.mutedText,
+                  // "Receive folder, Download › Ferret" as one stop; the
+                  // full path is only the pointer's tooltip.
+                  child: MergeSemantics(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
+                      children: [
+                        Text(
+                          l10n.settingsReceiveFolder,
+                          style: titleStyle.copyWith(color: palette.text),
+                        ),
+                        Spacing.vertical(Spacing.d2),
+                        Semantics(
+                          label: folderLabel,
+                          excludeSemantics: true,
+                          child: Tappable(
+                            tooltip: folder,
+                            child: Text(
+                              folderLabel,
+                              style: typography.caption1.copyWith(
+                                color: palette.mutedText,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 if (viewModel.canChangeFolder) ...[

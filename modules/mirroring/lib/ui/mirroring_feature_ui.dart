@@ -345,12 +345,17 @@ class MirroringFeatureUi extends FeatureUi {
                   const MirroringBetaTag(.secondDisplay),
                   Spacing.h8,
                 ],
-                Countdown(
-                  until: request.deadline,
-                  builder: (context, left) => Text(
-                    Countdown.clockText(left),
-                    style: context.fluffyTheme.typography.caption1.copyWith(
-                      color: context.palette.mutedText,
+                // The request is spoken once when it shows up (Needs you
+                // is a live region); a clock in it would be read again
+                // every second.
+                ExcludeSemantics(
+                  child: Countdown(
+                    until: request.deadline,
+                    builder: (context, left) => Text(
+                      Countdown.clockText(left),
+                      style: context.fluffyTheme.typography.caption1.copyWith(
+                        color: context.palette.mutedText,
+                      ),
                     ),
                   ),
                 ),
@@ -486,12 +491,14 @@ class MirroringFeatureUi extends FeatureUi {
           pinned: true,
           tone: .accent,
           trailing: switch (lent.answerBy) {
-            final until? when lent.phase == .asking => Countdown(
-              until: until,
-              builder: (context, left) => Text(
-                Countdown.clockText(left),
-                style: context.fluffyTheme.typography.caption1.copyWith(
-                  color: context.palette.mutedText,
+            final until? when lent.phase == .asking => ExcludeSemantics(
+              child: Countdown(
+                until: until,
+                builder: (context, left) => Text(
+                  Countdown.clockText(left),
+                  style: context.fluffyTheme.typography.caption1.copyWith(
+                    color: context.palette.mutedText,
+                  ),
                 ),
               ),
             ),

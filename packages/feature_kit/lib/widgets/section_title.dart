@@ -37,16 +37,23 @@ class SectionTitle extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: switch (badge) {
-                final badge? => Row(
-                  children: [
-                    Flexible(child: Text(text, style: style)),
-                    Spacing.h8,
-                    badge,
-                  ],
-                ),
-                null => Text(text, style: style),
-              },
+              // A heading of its own, so TalkBack can jump between
+              // sections, and the title isn't read as the first words of
+              // the card under it.
+              child: Semantics(
+                container: true,
+                header: true,
+                child: switch (badge) {
+                  final badge? => Row(
+                    children: [
+                      Flexible(child: Text(text, style: style)),
+                      Spacing.h8,
+                      badge,
+                    ],
+                  ),
+                  null => Text(text, style: style),
+                },
+              ),
             ),
             ?trailing,
           ],

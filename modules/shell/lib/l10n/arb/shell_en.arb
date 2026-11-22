@@ -7,6 +7,18 @@
   "deviceConnected": "Connected",
   "deviceOffline": "Not connected",
   "deviceReconnecting": "Reconnecting…",
+  "deviceStatusSpoken": "{device}: {status}",
+  "@deviceStatusSpoken": {
+    "description": "What a screen reader says when a device connects, starts reconnecting or drops, such as \"Pixel 7: Connected\".",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "deviceWeak": "Connected · weak connection",
   "deviceNeedsAttention": "Connected, needs attention",
   "spokenOk": "OK",

@@ -48,6 +48,7 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
     if (!_asking) {
       return Tappable(
         onTap: () => setState(() => _asking = true),
+        semanticButton: true,
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: PageInsets.row,

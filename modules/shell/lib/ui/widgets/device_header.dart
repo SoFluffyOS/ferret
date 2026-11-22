@@ -29,69 +29,76 @@ class DeviceHeader extends StatelessWidget {
       false => palette.mutedText,
     };
 
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(
-        Spacing.d0,
-        Spacing.d8,
-        Spacing.d0,
-        Spacing.d16,
-      ),
-      child: Row(
-        children: [
-          DecoratedBox(
-            decoration: ShapeDecoration(
-              color: palette.surface,
-              shape: Corners.shape(Corners.iconTile),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d12),
-              child: Icon(
-                deviceIconFor(device.formFactor, device.platform),
-                size: Spacing.d24,
-                color: palette.text,
-              ),
-            ),
+    // The page's heading, read in one go: "Pixel 7, Connected, Battery
+    // 80%".
+    return MergeSemantics(
+      child: Semantics(
+        header: true,
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            Spacing.d0,
+            Spacing.d8,
+            Spacing.d0,
+            Spacing.d16,
           ),
-          Spacing.h12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  device.name,
-                  style: typography.title3.copyWith(color: palette.text),
-                  overflow: .ellipsis,
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: palette.surface,
+                  shape: Corners.shape(Corners.iconTile),
                 ),
-                Spacing.vertical(Spacing.d2),
-                Row(
+                child: Padding(
+                  padding: EdgeInsets.all(Spacing.d12),
+                  child: Icon(
+                    deviceIconFor(device.formFactor, device.platform),
+                    size: Spacing.d24,
+                    color: palette.text,
+                  ),
+                ),
+              ),
+              Spacing.h12,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
                   children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: dotColor,
-                        shape: .circle,
-                      ),
-                      child: SizedBox.square(dimension: Spacing.d8),
+                    Text(
+                      device.name,
+                      style: typography.title3.copyWith(color: palette.text),
+                      overflow: .ellipsis,
                     ),
-                    Spacing.h6,
-                    Flexible(
-                      child: Text(
-                        _statusLine(context.shellL10n),
-                        style: typography.base2.copyWith(
-                          color: palette.mutedText,
+                    Spacing.vertical(Spacing.d2),
+                    Row(
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: dotColor,
+                            shape: .circle,
+                          ),
+                          child: SizedBox.square(dimension: Spacing.d8),
                         ),
-                        overflow: .ellipsis,
-                      ),
+                        Spacing.h6,
+                        Flexible(
+                          child: Text(
+                            _statusLine(context.shellL10n),
+                            style: typography.base2.copyWith(
+                              color: palette.mutedText,
+                            ),
+                            overflow: .ellipsis,
+                          ),
+                        ),
+                        if (status.battery case final battery?) ...[
+                          Spacing.h8,
+                          BatteryBadge(battery: battery),
+                        ],
+                      ],
                     ),
-                    if (status.battery case final battery?) ...[
-                      Spacing.h8,
-                      BatteryBadge(battery: battery),
-                    ],
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -70,12 +70,14 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                 children: [
                   Text(l10n.otherLinkBody, style: body),
                   Spacing.v12,
-                  InputText(
-                    controller: _link,
-                    label: l10n.pairLinkLabel,
-                    hintText: l10n.pairLinkHint,
-                    errorText: _linkError,
-                    onSubmitted: (_) => _pairWithLink(),
+                  MergeSemantics(
+                    child: InputText(
+                      controller: _link,
+                      label: l10n.pairLinkLabel,
+                      hintText: l10n.pairLinkHint,
+                      errorText: _linkError,
+                      onSubmitted: (_) => _pairWithLink(),
+                    ),
                   ),
                   Spacing.v12,
                   Wrap(
@@ -107,12 +109,14 @@ class _OtherWaysPageState extends State<OtherWaysPage> {
                 children: [
                   Text(l10n.otherAddressBody, style: body),
                   Spacing.v12,
-                  InputText(
-                    controller: _address,
-                    label: l10n.pairAddressLabel,
-                    hintText: l10n.pairAddressHint,
-                    keyboardType: .url,
-                    onSubmitted: (_) => _pairWithAddress(),
+                  MergeSemantics(
+                    child: InputText(
+                      controller: _address,
+                      label: l10n.pairAddressLabel,
+                      hintText: l10n.pairAddressHint,
+                      keyboardType: .url,
+                      onSubmitted: (_) => _pairWithAddress(),
+                    ),
                   ),
                   Spacing.v12,
                   Wrap(

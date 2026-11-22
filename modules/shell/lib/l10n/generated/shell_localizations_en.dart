@@ -31,6 +31,11 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceReconnecting => 'Reconnecting…';
 
   @override
+  String deviceStatusSpoken(String device, String status) {
+    return '$device: $status';
+  }
+
+  @override
   String get deviceWeak => 'Connected · weak connection';
 
   @override

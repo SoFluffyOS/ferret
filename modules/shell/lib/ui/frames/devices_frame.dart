@@ -94,16 +94,20 @@ class _DevicesFrameState extends State<DevicesFrame> {
               keys: _keysFor(context, scope, status),
               builder: (context, focusNode) => DeviceDropHover(
                 target: WindowDropTargets.device(status),
-                child: DeviceTile(
+                child: ConnectionAnnouncer(
                   status: status,
-                  focusNode: focusNode,
-                  actions: _actionsFor(context, scope, status),
-                  hasPrimary: index == 0 && !_feedHoldsPrimary(context, scope),
-                  attention: _attentionFor(context, scope, status),
-                  offlineStatus: _offlineStatusFor(context, scope, status),
-                  onTap: () => widget.onOpen(status),
-                  onFix: () => widget.onFix(status),
-                  isPinned: preferences.isPinned(status.device.id),
+                  child: DeviceTile(
+                    status: status,
+                    focusNode: focusNode,
+                    actions: _actionsFor(context, scope, status),
+                    hasPrimary:
+                        index == 0 && !_feedHoldsPrimary(context, scope),
+                    attention: _attentionFor(context, scope, status),
+                    offlineStatus: _offlineStatusFor(context, scope, status),
+                    onTap: () => widget.onOpen(status),
+                    onFix: () => widget.onFix(status),
+                    isPinned: preferences.isPinned(status.device.id),
+                  ),
                 ),
               ),
             ),

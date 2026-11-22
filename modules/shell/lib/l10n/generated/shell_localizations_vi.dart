@@ -31,6 +31,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceReconnecting => 'Đang kết nối lại…';
 
   @override
+  String deviceStatusSpoken(String device, String status) {
+    return '$device: $status';
+  }
+
+  @override
   String get deviceWeak => 'Đã kết nối · kết nối yếu';
 
   @override

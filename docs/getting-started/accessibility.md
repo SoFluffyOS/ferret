@@ -14,8 +14,10 @@ VoiceOver on a Mac or an iPhone, TalkBack on Android. Nothing to set up in Ferre
 - **Buttons have names.** **+** is "Add a device", **•••** is "More", the cross on a tip is "Got it". Not "button, button, button".
 - **Switches say their name and their state.** "Sync clipboard, switch, on". One stop, not two.
 - **The pairing code is read digit by digit.** "Code: 4 8 2 0 1 7", as soon as it shows up, so you can compare it with what your other device says.
-- **Status comes in words.** A device is "Connected" or "Not connected". A line under **What works** says "OK", "Off" or "Needs attention" before its name. The colour is extra.
-- **What changes is spoken.** A file that finished, a transfer that failed, a phone that asks to send you something.
+- **Headings to jump with.** Page titles and section titles such as **Your devices** and **What works** are headings, so you can skip from one to the next.
+- **One stop per thing.** A device reads as one line, "Pixel 7, Connected, Battery 80%", with its buttons after it. A line under **What works** says its name, what it does, then "OK", "Off" or "Needs attention". A text field says its label.
+- **Status comes in words.** A device is "Connected" or "Not connected". The colour is extra.
+- **What changes is spoken.** A device that connects or drops, a file that finished, a transfer that failed, a computer that asks for your camera or to control this phone.
 - **Right-click menus are actions.** What a right-click offers on a device or an Activity line is in your screen reader's actions menu for that line.
 
 In the window, the device list on the left and the page next to it are both there. Move between them like in any other app.

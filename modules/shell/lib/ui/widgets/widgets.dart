@@ -6,6 +6,7 @@ export 'package:shell/ui/widgets/activity_text_action.dart';
 export 'package:shell/ui/widgets/arrow_key_stops.dart';
 export 'package:shell/ui/widgets/battery_badge.dart';
 export 'package:shell/ui/widgets/comparison_code.dart';
+export 'package:shell/ui/widgets/connection_announcer.dart';
 export 'package:shell/ui/widgets/device_actions.dart';
 export 'package:shell/ui/widgets/device_drop_hover.dart';
 export 'package:shell/ui/widgets/device_header.dart';

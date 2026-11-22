@@ -8,6 +8,7 @@
   "deviceConnected": "Đã kết nối",
   "deviceOffline": "Chưa kết nối",
   "deviceReconnecting": "Đang kết nối lại…",
+  "deviceStatusSpoken": "{device}: {status}",
   "deviceWeak": "Đã kết nối · kết nối yếu",
   "deviceNeedsAttention": "Đã kết nối, cần chú ý",
   "spokenOk": "Ổn",

@@ -40,6 +40,8 @@ class TextLink extends StatelessWidget {
     return Tappable(
       onTap: onTap,
       semanticLabel: semanticLabel,
+      // Said as a button: it does something, it doesn't open a web page.
+      semanticButton: onTap != null,
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: minHeight),
         child: Padding(
