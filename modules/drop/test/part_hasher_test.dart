@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
@@ -15,7 +16,7 @@ void main() {
   void feed(int index, int from, int to, {int step = 1000}) {
     for (var offset = from; offset < to; offset += step) {
       final end = offset + step > to ? to : offset + step;
-      hasher.add(index, offset, bytes.sublist(offset, end));
+      unawaited(hasher.add(index, offset, bytes.sublist(offset, end)));
     }
   }
 
@@ -45,7 +46,7 @@ void main() {
   });
 
   test('a part that starts over is hashed again from its start', () async {
-    hasher.add(0, 0, [9, 9, 9]);
+    unawaited(hasher.add(0, 0, [9, 9, 9]));
     hasher.forget(0);
     feed(0, 0, 10000);
 
@@ -60,5 +61,34 @@ void main() {
     hasher.dispose();
     expect(await pending, anyOf(isNull, sha(bytes.sublist(0, 2000))));
     expect(await hasher.digest(0, 2000), isNull);
+  });
+
+  test('waits while too much is still to be hashed, then goes on', () async {
+    final small = PartHasher(maxBacklog: 4000);
+    addTearDown(small.dispose);
+    final big = Uint8List.fromList(List.generate(20000, (i) => i * 7 % 256));
+
+    var first = false;
+    unawaited(small.add(0, 0, big.sublist(0, 3000)).then((_) => first = true));
+    var second = false;
+    final waiting = small
+        .add(0, 3000, big.sublist(3000, 20000))
+        .then((_) => second = true);
+    await Future<void>.delayed(Duration.zero);
+    expect(first, isTrue);
+    expect(second, isFalse);
+    expect(small.backlog, greaterThan(4000));
+
+    await waiting;
+    expect(small.backlog, lessThanOrEqualTo(2000));
+    expect(await small.digest(0, 20000), sha(big));
+  });
+
+  test('dispose lets a waiting add go', () async {
+    final small = PartHasher(maxBacklog: 10);
+    final waiting = small.add(0, 0, bytes);
+    small.dispose();
+    await waiting;
+    expect(small.backlog, 0);
   });
 }

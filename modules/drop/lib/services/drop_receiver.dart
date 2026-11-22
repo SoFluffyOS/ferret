@@ -484,7 +484,7 @@ class DropReceiver {
     try {
       final part = await job.openPart(index);
       await part.write(chunk.data);
-      job.hasher.add(index, offset, chunk.data);
+      await job.hasher.add(index, offset, chunk.data);
     } on FileSystemException catch (error) {
       printWarning('Drop could not write a received file', error.osError);
       await _stop(session, job, .storage);

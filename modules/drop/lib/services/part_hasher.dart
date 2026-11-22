@@ -13,7 +13,16 @@ import 'package:drop/services/digest_sink.dart';
 /// It only follows bytes that arrive in order from the start; when a part
 /// is cut back or skipped ahead, [digest] says so with null and the caller
 /// hashes the file on disk instead.
+///
+/// [add] waits while more than [maxBacklog] bytes are still to be hashed,
+/// so a phone whose CPU is slower than its Wi-Fi or its storage doesn't
+/// keep whole files in memory.
 class PartHasher {
+  PartHasher({this.maxBacklog = defaultMaxBacklog});
+
+  static const defaultMaxBacklog = 8 * 1024 * 1024;
+
+  final int maxBacklog;
   final Map<int, int> _hashed = {};
   final Map<int, Completer<List<int>?>> _answers = {};
   final List<Object?> _waiting = [];
@@ -23,12 +32,18 @@ class PartHasher {
   bool _starting = false;
   bool _disposed = false;
   int _nextAnswer = 0;
+  int _backlog = 0;
+  Completer<void>? _room;
+
+  /// Bytes handed over and not hashed yet.
+  int get backlog => _backlog;
 
   /// [bytes] were written to part [index] at [offset]. Bytes at 0 start
-  /// the part over.
-  void add(int index, int offset, List<int> bytes) {
+  /// the part over. Completes once the backlog is back under
+  /// [maxBacklog].
+  Future<void> add(int index, int offset, List<int> bytes) {
     if (_disposed) {
-      return;
+      return Future.value();
     }
 
     final hashed = _hashed[index];
@@ -36,7 +51,7 @@ class PartHasher {
       _drop(index);
     } else if (offset != 0 && hashed != offset) {
       forget(index);
-      return;
+      return Future.value();
     }
 
     _hashed[index] = offset + bytes.length;
@@ -49,6 +64,20 @@ class PartHasher {
       index,
       TransferableTypedData.fromList([data]),
     ]);
+    _backlog += data.length;
+    if (_backlog <= maxBacklog) {
+      return Future.value();
+    }
+
+    return (_room ??= Completer<void>()).future;
+  }
+
+  void _hashedBytes(int count) {
+    _backlog -= count;
+    if (_backlog <= maxBacklog ~/ 2) {
+      _room?.complete();
+      _room = null;
+    }
   }
 
   /// Part [index] no longer matches what was hashed, such as after it was
@@ -95,6 +124,9 @@ class PartHasher {
     _replies = null;
     _commands = null;
     _waiting.clear();
+    _backlog = 0;
+    _room?.complete();
+    _room = null;
     for (final answer in _answers.values) {
       answer.complete(null);
     }
@@ -127,6 +159,11 @@ class PartHasher {
     replies.listen((message) {
       if (message is SendPort) {
         ready.complete(message);
+        return;
+      }
+
+      if (message case ['hashed', final int count]) {
+        _hashedBytes(count);
         return;
       }
 
@@ -170,7 +207,9 @@ class PartHasher {
               digest: digest,
             );
           });
-          entry.sink.add(data.materialize().asUint8List());
+          final bytes = data.materialize().asUint8List();
+          entry.sink.add(bytes);
+          replies.send(['hashed', bytes.length]);
         case ['forget', final int index]:
           sinks.remove(index)?.sink.close();
         case ['digest', final int index, final int id]:
