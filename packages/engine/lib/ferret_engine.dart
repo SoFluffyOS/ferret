@@ -440,6 +440,31 @@ class FerretEngine implements FeatureHost {
     }
   }
 
+  /// Announces slow down while every paired device is connected: nobody
+  /// paired is left to find, and others are still answered at once. A
+  /// drop brings the usual pace back with an announce.
+  Future<void> _updatePace() async {
+    if (!_running) {
+      return;
+    }
+
+    if (_discovery case final PacedDiscovery paced) {
+      final devices = trustStore.devices;
+      final relaxed =
+          devices.isNotEmpty &&
+          devices.every((device) => _ready.containsKey(device.id));
+      if (paced.isRelaxed == relaxed) {
+        return;
+      }
+
+      try {
+        await paced.setRelaxed(relaxed);
+      } on Object catch (error) {
+        printWarning('Discovery did not change pace', error);
+      }
+    }
+  }
+
   /// A paired device was reached at [host]: its network is one to announce
   /// on from now on. Not this device's own address, where its ferret-cli
   /// calls from.
@@ -563,7 +588,8 @@ class FerretEngine implements FeatureHost {
       ..add(trustStore.changes.listen((_) => _emitDevices()))
       ..add(trustStore.changes.listen((_) => unawaited(_forgetOldAccess())))
       ..add(access.changes.listen((id) => unawaited(_applyAccess(id))))
-      ..add(trustStore.changes.listen((_) => unawaited(_updateVisibility())));
+      ..add(trustStore.changes.listen((_) => unawaited(_updateVisibility())))
+      ..add(trustStore.changes.listen((_) => unawaited(_updatePace())));
 
     if (!_featuresStarted) {
       _featuresStarted = true;
@@ -574,6 +600,7 @@ class FerretEngine implements FeatureHost {
 
     await _refreshNetworks();
     await _updateVisibility();
+    await _updatePace();
     await _discovery.start(_announce());
     printLog(
       'Ferret ${DeviceIdentity.format(identity.deviceId)} listening on port $port',
@@ -1965,6 +1992,7 @@ class FerretEngine implements FeatureHost {
     }
 
     _ready[session.remoteDeviceId] = session;
+    unawaited(_updatePace());
     _vpnReacher.stop(session.remoteDeviceId);
     _droppedRecently.remove(session.remoteDeviceId);
     _watchWeak(session);
@@ -2212,6 +2240,7 @@ class FerretEngine implements FeatureHost {
     final wasReady = _ready[session.remoteDeviceId] == session;
     if (wasReady) {
       _ready.remove(session.remoteDeviceId);
+      unawaited(_updatePace());
       // Only an announce after the drop says Ferret is still open there.
       _heardPaired.remove(session.remoteDeviceId);
       unawaited(_weakWatches.remove(session.remoteDeviceId)?.cancel());

@@ -178,6 +178,48 @@ void main() {
     expect(airWay.isAnnouncing, isTrue);
   });
 
+  test('announces slow down while every paired device is connected, and '
+      'come back with an announce when one drops', () async {
+    final bus = _Bus();
+    final (air, airWay) = await engineOn(bus, 'MacBook Air');
+    final (studio, _) = await engineOn(bus, 'Mac Studio');
+    await pairWith(air, studio);
+    await studio.setAlwaysVisible(true);
+    await air.start();
+    expect(airWay.isRelaxed, isFalse, reason: 'its paired device is away');
+
+    final joined = connected(air);
+    await studio.start();
+    await joined;
+    await pump();
+    expect(airWay.isRelaxed, isTrue);
+
+    final announcedBefore = airWay.announced.length;
+    await studio.stop();
+    await air.deviceChanges
+        .firstWhere((_) => !air.devices.single.isConnected)
+        .timeout(const Duration(seconds: 5));
+    await pump();
+    expect(airWay.isRelaxed, isFalse);
+    expect(airWay.announced.length, greaterThan(announcedBefore));
+  });
+
+  test('announces keep their pace while one paired device is away', () async {
+    final bus = _Bus();
+    final (air, airWay) = await engineOn(bus, 'MacBook Air');
+    final (studio, _) = await engineOn(bus, 'Mac Studio');
+    await pairWith(air, studio);
+    await pairWithStranger(air);
+    await studio.setAlwaysVisible(true);
+    final joined = connected(air);
+    await studio.start();
+    await air.start();
+    await joined;
+    await pump();
+
+    expect(airWay.isRelaxed, isFalse);
+  });
+
   test('two quiet devices meet once one of them opens Add a device', () async {
     final bus = _Bus();
     final (air, _) = await engineOn(bus, 'MacBook Air');
@@ -350,7 +392,7 @@ class _Bus {
   }
 }
 
-class _QuietMember implements QuietDiscovery {
+class _QuietMember implements QuietDiscovery, PacedDiscovery {
   _QuietMember(this.bus);
 
   final _Bus bus;
@@ -358,9 +400,21 @@ class _QuietMember implements QuietDiscovery {
   final List<Announce> announced = [];
   Announce? self;
   bool _announcing = true;
+  bool _relaxed = false;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
+
+  @override
+  bool get isRelaxed => _relaxed;
+
+  @override
+  Future<void> setRelaxed(bool relaxed) async {
+    _relaxed = relaxed;
+    if (!relaxed) {
+      await announceNow();
+    }
+  }
 
   @override
   bool get isAnnouncing => _announcing;

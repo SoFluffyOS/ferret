@@ -7,7 +7,8 @@ import 'package:transport/discovery/discovered_peer.dart';
 /// Uses [preferred], or [fallback] when that can't start. Only one of them
 /// runs, for two ways that must not both offer the same thing, such as the
 /// system's Bonjour and Ferret's own DNS-SD offering one service name.
-class FallbackDiscovery implements ActiveDiscovery, QuietDiscovery {
+class FallbackDiscovery
+    implements ActiveDiscovery, QuietDiscovery, PacedDiscovery {
   FallbackDiscovery(this.preferred, this.fallback) {
     for (final way in [preferred, fallback]) {
       way.peers.listen(_peers.add);
@@ -23,6 +24,7 @@ class FallbackDiscovery implements ActiveDiscovery, QuietDiscovery {
   final StreamController<String> _departures = .broadcast();
   Discovery? _active;
   bool _announcing = true;
+  bool _relaxed = false;
 
   /// The way that runs, once started.
   Discovery? get active => _active;
@@ -52,6 +54,24 @@ class FallbackDiscovery implements ActiveDiscovery, QuietDiscovery {
           await way.setAnnouncing(announcing);
         } on Object catch (error) {
           printDebug('${way.runtimeType} did not change: $error');
+        }
+      }
+    }
+  }
+
+  @override
+  bool get isRelaxed => _relaxed;
+
+  /// Both ways hear it, like [setAnnouncing].
+  @override
+  Future<void> setRelaxed(bool relaxed) async {
+    _relaxed = relaxed;
+    for (final way in [preferred, fallback]) {
+      if (way is PacedDiscovery) {
+        try {
+          await way.setRelaxed(relaxed);
+        } on Object catch (error) {
+          printDebug('${way.runtimeType} did not change pace: $error');
         }
       }
     }

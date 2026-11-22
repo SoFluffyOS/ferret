@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:core/core.dart';
 import 'package:lan_discovery/lan_discovery.dart';
 import 'package:protocol/protocol.dart';
+import 'package:transport/discovery/announce_pacer.dart';
 import 'package:transport/discovery/discovered_peer.dart';
 
 /// Finds devices with UDP multicast on the local network.
@@ -15,12 +16,18 @@ import 'package:transport/discovery/discovered_peer.dart';
 /// While it isn't announcing, it sends only `FRT` + 2, a question with
 /// nothing about this device in it: devices that announce answer it, and
 /// older versions ignore it.
-class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
+class MulticastDiscovery
+    implements ActiveDiscovery, QuietDiscovery, PacedDiscovery {
   MulticastDiscovery({
     InternetAddress? group,
     this.port = defaultPort,
     this.interval = const Duration(seconds: 30),
-  }) : group = group ?? InternetAddress(defaultGroup);
+    this.relaxedInterval = const Duration(minutes: 5),
+  }) : group = group ?? InternetAddress(defaultGroup),
+       _pacer = AnnouncePacer(
+         interval: interval,
+         relaxedInterval: relaxedInterval,
+       );
 
   static const defaultGroup = '239.255.70.84';
   static const defaultPort = 47641;
@@ -31,6 +38,10 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
   final int port;
   final Duration interval;
 
+  /// How often it announces while nothing is left to find. Questions and
+  /// announces from others are answered at once either way.
+  final Duration relaxedInterval;
+
   static const _scanWait = Duration(seconds: 1);
   static final _everyone = InternetAddress('255.255.255.255');
 
@@ -40,7 +51,9 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
   bool _blocked = false;
   bool _announcing = true;
   RawDatagramSocket? _socket;
-  Timer? _timer;
+  final AnnouncePacer _pacer;
+  final RepeatGate _answered = .new();
+  final RepeatGate _passedOn = .new();
   Announce? _self;
 
   @override
@@ -55,6 +68,12 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
 
   @override
   bool get isAnnouncing => _announcing;
+
+  @override
+  bool get isRelaxed => _pacer.isRelaxed;
+
+  @override
+  Future<void> setRelaxed(bool relaxed) async => _pacer.setRelaxed(relaxed);
 
   @override
   Future<void> setAnnouncing(bool announcing) async {
@@ -91,7 +110,7 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
     await _joinGroup(socket);
     _socket = socket;
 
-    _timer = .periodic(interval, (_) => unawaited(announceNow()));
+    _pacer.start(() => unawaited(announceNow()));
     await announceNow();
   }
 
@@ -166,8 +185,7 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
 
   @override
   Future<void> stop() async {
-    _timer?.cancel();
-    _timer = null;
+    _pacer.stop();
     _socket?.close();
     _socket = null;
   }
@@ -224,12 +242,10 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
 
     final self = _self;
     if (isQuestion(datagram.data)) {
-      if (self != null && _announcing) {
-        _socket?.send(
-          encodeAnnounce(self.deepCopy()..reply = true),
-          datagram.address,
-          port,
-        );
+      if (self != null &&
+          _announcing &&
+          _answered.pass('? ${datagram.address.address}')) {
+        _answer(self, datagram.address);
       }
 
       return;
@@ -242,16 +258,23 @@ class MulticastDiscovery implements ActiveDiscovery, QuietDiscovery {
       return;
     }
 
-    _peers.add(
-      DiscoveredPeer(announce: announce, host: datagram.address.address),
-    );
-    if (!announce.reply && _announcing) {
-      _socket?.send(
-        encodeAnnounce(self.deepCopy()..reply = true),
-        datagram.address,
-        port,
-      );
+    final host = datagram.address.address;
+    final said = announce.deepCopy()..reply = false;
+    if (_passedOn.pass('$host ${said.writeToBuffer().join(',')}')) {
+      _peers.add(DiscoveredPeer(announce: announce, host: host));
     }
+
+    if (!announce.reply &&
+        _announcing &&
+        _answered.pass('${announce.deviceId} $host')) {
+      _answer(self, datagram.address);
+    }
+  }
+
+  /// Once per asker within a moment: its announce arrives by multicast and
+  /// by broadcast.
+  void _answer(Announce self, InternetAddress to) {
+    _socket?.send(encodeAnnounce(self.deepCopy()..reply = true), to, port);
   }
 }
 

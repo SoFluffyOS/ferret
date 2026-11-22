@@ -7,7 +7,7 @@ import 'package:transport/discovery/discovered_peer.dart';
 /// announce. For an iPhone, where the first packet on the local network
 /// makes iOS ask about it, so Ferret waits until the person reached a
 /// place that looks for devices and read why.
-class HeldDiscovery implements ActiveDiscovery, QuietDiscovery {
+class HeldDiscovery implements ActiveDiscovery, QuietDiscovery, PacedDiscovery {
   HeldDiscovery(this.inner, {bool released = false}) : _released = released {
     inner.peers.listen(_peers.add);
     if (inner case final ActiveDiscovery active) {
@@ -64,6 +64,20 @@ class HeldDiscovery implements ActiveDiscovery, QuietDiscovery {
   Future<void> setAnnouncing(bool announcing) async {
     if (inner case final QuietDiscovery quiet) {
       await quiet.setAnnouncing(announcing);
+    }
+  }
+
+  @override
+  bool get isRelaxed => switch (inner) {
+    final PacedDiscovery paced => paced.isRelaxed,
+    _ => false,
+  };
+
+  /// Passed on even while held, like [setAnnouncing].
+  @override
+  Future<void> setRelaxed(bool relaxed) async {
+    if (inner case final PacedDiscovery paced) {
+      await paced.setRelaxed(relaxed);
     }
   }
 

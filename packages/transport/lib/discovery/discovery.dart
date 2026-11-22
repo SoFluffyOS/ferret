@@ -1,3 +1,4 @@
+export 'package:transport/discovery/announce_pacer.dart';
 export 'package:transport/discovery/combined_discovery.dart';
 export 'package:transport/discovery/discovered_peer.dart';
 export 'package:transport/discovery/fallback_discovery.dart';

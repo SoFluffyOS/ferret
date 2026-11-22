@@ -52,3 +52,15 @@ abstract interface class QuietDiscovery implements Discovery {
   /// it can be set before [start].
   Future<void> setAnnouncing(bool announcing);
 }
+
+/// A [Discovery] whose own repeated announces can slow down while nothing
+/// is left to find, such as when every paired device is connected. It
+/// still answers others at once, and announces when told to.
+abstract interface class PacedDiscovery implements Discovery {
+  /// Whether announces repeat at the slow pace. Off until told otherwise.
+  bool get isRelaxed;
+
+  /// Slows announces down or brings them back to their usual pace, which
+  /// announces right away. It can be set before [start].
+  Future<void> setRelaxed(bool relaxed);
+}
