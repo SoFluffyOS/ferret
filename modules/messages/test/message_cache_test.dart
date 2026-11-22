@@ -41,6 +41,31 @@ void main() {
       expect(cache.oldestConversationDateMs, 6000);
     });
 
+    test('scrolling past the kept 300 shows older conversations, and the '
+        'file keeps the newest 300', () {
+      cache.mergeConversationPage(
+        conversationPage([for (var id = 500; id > 470; id--) id], more: true),
+        newest: true,
+      );
+      for (var top = 470; top > 0; top -= 30) {
+        cache.mergeConversationPage(
+          conversationPage([
+            for (var id = top; id > top - 30 && id > 0; id--) id,
+          ], more: top > 30),
+          newest: false,
+        );
+      }
+
+      expect(cache.conversations, hasLength(500));
+      expect(cache.oldestConversationDateMs, 1000);
+      expect(cache.hasMoreConversations, isFalse);
+
+      final saved = MessageCache.decode(cache.encode());
+      expect(saved.conversations, hasLength(MessageCache.maxConversations));
+      expect(saved.conversations.last.threadId.toInt(), 201);
+      expect(saved.hasMoreConversations, isTrue);
+    });
+
     test('a page that repeats conversations keeps one of each', () {
       cache
         ..mergeConversationPage(

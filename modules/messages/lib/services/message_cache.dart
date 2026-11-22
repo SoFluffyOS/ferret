@@ -10,8 +10,16 @@ class MessageCache {
   MessageCache();
 
   static const formatVersion = 1;
+
+  /// Conversations kept in the saved file and after a sync. Scrolling
+  /// further back loads more for this run, up to [maxLoadedConversations].
   static const maxConversations = 300;
+  static const maxLoadedConversations = 5000;
   static const maxMessagesPerThread = 300;
+
+  /// How many conversations stay in memory: [maxConversations], or as far
+  /// back as the person scrolled.
+  int _keep = maxConversations;
 
   final Map<int, Conversation> _conversations = {};
   final Map<int, _Thread> _threads = {};
@@ -118,6 +126,12 @@ class MessageCache {
     }
 
     _conversations.addAll(received);
+    if (!newest) {
+      _keep = math.min(
+        math.max(_keep, _conversations.length),
+        maxLoadedConversations,
+      );
+    }
     _trimConversations();
   }
 
@@ -194,28 +208,41 @@ class MessageCache {
     return true;
   }
 
-  Map<String, Object?> toJson() => {
-    'version': formatVersion,
-    'hasMoreConversations': hasMoreConversations,
-    'conversations': [
-      for (final conversation in _conversations.values)
-        base64Encode(conversation.writeToBuffer()),
-    ],
-    'threads': {
-      for (final MapEntry(key: threadId, value: thread) in _threads.entries)
-        '$threadId': {
-          'hasOlder': thread.hasOlder,
-          'messages': [
-            for (final message in thread.messages.values)
-              base64Encode(message.writeToBuffer()),
-          ],
-        },
-    },
-    'readUpTo': {
-      for (final MapEntry(key: threadId, value: dateMs) in _readUpTo.entries)
-        '$threadId': dateMs,
-    },
-  };
+  /// The newest [maxConversations] and their texts: older ones loaded by
+  /// scrolling are fetched again next time.
+  Map<String, Object?> toJson() {
+    final saved = (_conversations.values.toList()..sort(_newestFirst))
+        .take(maxConversations)
+        .toList();
+    final savedIds = {
+      for (final conversation in saved) conversation.threadId.toInt(),
+    };
+
+    return {
+      'version': formatVersion,
+      'hasMoreConversations':
+          hasMoreConversations || saved.length < _conversations.length,
+      'conversations': [
+        for (final conversation in saved)
+          base64Encode(conversation.writeToBuffer()),
+      ],
+      'threads': {
+        for (final MapEntry(key: threadId, value: thread) in _threads.entries)
+          if (savedIds.contains(threadId))
+            '$threadId': {
+              'hasOlder': thread.hasOlder,
+              'messages': [
+                for (final message in thread.messages.values)
+                  base64Encode(message.writeToBuffer()),
+              ],
+            },
+      },
+      'readUpTo': {
+        for (final MapEntry(key: threadId, value: dateMs) in _readUpTo.entries)
+          if (savedIds.contains(threadId)) '$threadId': dateMs,
+      },
+    };
+  }
 
   String encode() => jsonEncode(toJson());
 
@@ -301,12 +328,12 @@ class MessageCache {
   }
 
   void _trimConversations() {
-    if (_conversations.length <= maxConversations) {
+    if (_conversations.length <= _keep) {
       return;
     }
 
     final sorted = _conversations.values.toList()..sort(_newestFirst);
-    for (final conversation in sorted.skip(maxConversations)) {
+    for (final conversation in sorted.skip(_keep)) {
       _forgetConversation(conversation.threadId.toInt());
     }
 
