@@ -51,29 +51,33 @@ class TipRow extends StatelessWidget {
             ),
           ),
           if (actionLabel case final label?)
-            Tappable(
-              semanticButton: true,
-              onTap: onAction,
-              child: Padding(
-                padding: EdgeInsets.all(Spacing.d6),
-                child: Text(
-                  label,
-                  style: context.fluffyTheme.typography.base2.copyWith(
-                    color: palette.link,
+            OutsetTouchTarget(
+              child: Tappable(
+                semanticButton: true,
+                onTap: onAction,
+                child: Padding(
+                  padding: EdgeInsets.all(Spacing.d6),
+                  child: Text(
+                    label,
+                    style: context.fluffyTheme.typography.base2.copyWith(
+                      color: palette.link,
+                    ),
                   ),
                 ),
               ),
             ),
           if (onDismiss != null)
-            Tappable(
-              tooltip: dismissLabel,
-              onTap: onDismiss,
-              child: Padding(
-                padding: EdgeInsets.all(Spacing.d6),
-                child: Icon(
-                  LucideIcons.x,
-                  size: Spacing.d14,
-                  color: palette.mutedText,
+            OutsetTouchTarget(
+              child: Tappable(
+                tooltip: dismissLabel,
+                onTap: onDismiss,
+                child: Padding(
+                  padding: EdgeInsets.all(Spacing.d6),
+                  child: Icon(
+                    LucideIcons.x,
+                    size: Spacing.d14,
+                    color: palette.mutedText,
+                  ),
                 ),
               ),
             ),

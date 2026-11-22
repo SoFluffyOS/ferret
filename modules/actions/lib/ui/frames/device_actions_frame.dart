@@ -211,19 +211,23 @@ class _VolumeRow extends StatelessWidget {
         children: [
           for (final (index, action) in buttons.indexed) ...[
             if (index > 0) Spacing.h8,
-            GhostButton(
+            // 8 apart, their 48 dp targets just meet, and the row stays as
+            // high as its title.
+            OutsetTouchTarget(
               key: ValueKey(action.id),
-              mainAxisSize: .min,
-              // An icon alone needs no text-sized padding; with it the
-              // three buttons squeeze "Volume" apart on a phone or tablet.
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.d12,
-                vertical: Spacing.d8,
+              child: GhostButton(
+                mainAxisSize: .min,
+                // An icon alone needs no text-sized padding; with it the
+                // three buttons squeeze "Volume" apart on a phone or tablet.
+                padding: EdgeInsets.symmetric(
+                  horizontal: Spacing.d12,
+                  vertical: Spacing.d8,
+                ),
+                tooltip: l10n.actionLabel(action.kind, action.title),
+                semanticLabel: l10n.actionLabel(action.kind, action.title),
+                onPressed: () => unawaited(frame.run(context, action)),
+                child: Icon(actionIcon(action.kind), size: Spacing.d16),
               ),
-              tooltip: l10n.actionLabel(action.kind, action.title),
-              semanticLabel: l10n.actionLabel(action.kind, action.title),
-              onPressed: () => unawaited(frame.run(context, action)),
-              child: Icon(actionIcon(action.kind), size: Spacing.d16),
             ),
           ],
         ],

@@ -174,18 +174,20 @@ class _QuietLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      onTap: onTap,
-      semanticButton: true,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: PageInsets.row,
-          vertical: Spacing.d12,
-        ),
-        child: Text(
-          label,
-          style: context.fluffyTheme.typography.base2.copyWith(
-            color: context.palette.link,
+    return OutsetTouchTarget(
+      child: Tappable(
+        onTap: onTap,
+        semanticButton: true,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: PageInsets.row,
+            vertical: Spacing.d12,
+          ),
+          child: Text(
+            label,
+            style: context.fluffyTheme.typography.base2.copyWith(
+              color: context.palette.link,
+            ),
           ),
         ),
       ),

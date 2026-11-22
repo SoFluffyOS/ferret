@@ -51,15 +51,17 @@ class HomePage extends StatelessWidget {
           false => null,
         },
         actions: [
-          Tappable(
-            tooltip: l10n.homePairDevice,
-            onTap: () => _push(context, const PairPage()),
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d6),
-              child: Icon(
-                LucideIcons.plus,
-                size: Spacing.d20,
-                color: context.palette.text,
+          OutsetTouchTarget(
+            child: Tappable(
+              tooltip: l10n.homePairDevice,
+              onTap: () => _push(context, const PairPage()),
+              child: Padding(
+                padding: EdgeInsets.all(Spacing.d6),
+                child: Icon(
+                  LucideIcons.plus,
+                  size: Spacing.d20,
+                  color: context.palette.text,
+                ),
               ),
             ),
           ),

@@ -46,17 +46,19 @@ class _ForgetDeviceCardState extends State<ForgetDeviceCard> {
     final name = widget.deviceName;
 
     if (!_asking) {
-      return Tappable(
-        onTap: () => setState(() => _asking = true),
-        semanticButton: true,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: PageInsets.row,
-            vertical: Spacing.d12,
-          ),
-          child: Text(
-            l10n.deviceForget(name),
-            style: typography.base2.copyWith(color: palette.danger),
+      return OutsetTouchTarget(
+        child: Tappable(
+          onTap: () => setState(() => _asking = true),
+          semanticButton: true,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: PageInsets.row,
+              vertical: Spacing.d12,
+            ),
+            child: Text(
+              l10n.deviceForget(name),
+              style: typography.base2.copyWith(color: palette.danger),
+            ),
           ),
         ),
       );

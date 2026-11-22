@@ -31,10 +31,14 @@ class FilterOptionRow extends StatelessWidget {
         child: GroupedRow(
           title: title,
           subtitle: detail,
-          trailing: RadioIcon<AppFilter>(
-            value: filter,
-            groupValue: selected,
-            onChanged: onSelected,
+          // The whole row takes the tap, so the radio's own 48 dp needn't
+          // push the words aside.
+          trailing: OutsetTouchTarget(
+            child: RadioIcon<AppFilter>(
+              value: filter,
+              groupValue: selected,
+              onChanged: onSelected,
+            ),
           ),
         ),
       ),

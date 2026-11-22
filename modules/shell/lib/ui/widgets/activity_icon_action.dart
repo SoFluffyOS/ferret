@@ -30,35 +30,41 @@ class ActivityIconAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      tooltip: action.label,
-      semanticLabel: switch (subject) {
-        final subject? => context.shellL10n.activityActionFor(
-          action.label,
-          subject,
-        ),
-        null => null,
+    return OutsetTouchTarget(
+      alignment: switch (reachesUp) {
+        true => Alignment.bottomCenter,
+        false => Alignment.center,
       },
-      onTap: action.onPressed,
-      child: Padding(
-        padding: switch (reachesUp) {
-          true => EdgeInsets.only(
-            left: Spacing.d6,
-            right: Spacing.d6,
-            top: ActivityIconAction.rise,
+      child: Tappable(
+        tooltip: action.label,
+        semanticLabel: switch (subject) {
+          final subject? => context.shellL10n.activityActionFor(
+            action.label,
+            subject,
           ),
-          false => EdgeInsets.symmetric(
-            horizontal: Spacing.d6,
-            vertical: ActivityIconAction.rise / 2,
-          ),
+          null => null,
         },
-        child: Icon(
-          action.icon,
-          size: Spacing.d16,
-          color: switch (muted) {
-            true => context.palette.mutedText,
-            false => context.palette.text,
+        onTap: action.onPressed,
+        child: Padding(
+          padding: switch (reachesUp) {
+            true => EdgeInsets.only(
+              left: Spacing.d6,
+              right: Spacing.d6,
+              top: ActivityIconAction.rise,
+            ),
+            false => EdgeInsets.symmetric(
+              horizontal: Spacing.d6,
+              vertical: ActivityIconAction.rise / 2,
+            ),
           },
+          child: Icon(
+            action.icon,
+            size: Spacing.d16,
+            color: switch (muted) {
+              true => context.palette.mutedText,
+              false => context.palette.text,
+            },
+          ),
         ),
       ),
     );

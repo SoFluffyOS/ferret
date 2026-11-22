@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -35,67 +36,73 @@ class HomeMenu extends StatelessWidget {
           ...feature.appActions(context, scope.featureContext),
     ];
 
-    return MenuButton(
-      icon: LucideIcons.ellipsis,
-      tooltip: l10n.homeMore,
-      entries: [
-        if (isPaused)
+    // The menu lines up with the target's right edge, so the target keeps
+    // its width at the page's inset; only its height leaves the layout.
+    return OutsetTouchTarget(
+      keepsWidth: true,
+      child: MenuButton(
+        icon: LucideIcons.ellipsis,
+        tooltip: l10n.homeMore,
+        entries: [
+          if (isPaused)
+            MenuEntry(
+              label: l10n.resume,
+              icon: LucideIcons.play,
+              onSelected: () => unawaited(pause.resume()),
+            ),
+          if (!isPaused) ...[
+            MenuEntry(
+              label: l10n.pauseOneHour,
+              icon: LucideIcons.pause,
+              onSelected: () =>
+                  unawaited(pause.pause(duration: const Duration(hours: 1))),
+            ),
+            MenuEntry(
+              label: l10n.pauseUntilTomorrow,
+              onSelected: () =>
+                  unawaited(pause.pause(duration: _untilTomorrowMorning())),
+            ),
+            MenuEntry(
+              label: l10n.pauseUntilResume,
+              onSelected: () => unawaited(pause.pause()),
+            ),
+          ],
+          for (final (index, action) in featureActions.indexed)
+            MenuEntry(
+              label: WindowCommands.buttonInMenu(l10n, action.fullLabel),
+              icon: action.icon,
+              startsGroup: index == 0,
+              onSelected: action.onPressed ?? () {},
+            ),
+          if (canOpenWindow)
+            MenuEntry(
+              label: l10n.homeOpenWindow,
+              icon: LucideIcons.appWindow,
+              startsGroup: true,
+              onSelected: () =>
+                  unawaited(context.read<AppViews>().openWindow()),
+            ),
           MenuEntry(
-            label: l10n.resume,
-            icon: LucideIcons.play,
-            onSelected: () => unawaited(pause.resume()),
+            label: l10n.settingsTitle,
+            icon: LucideIcons.settings,
+            startsGroup: !canOpenWindow,
+            onSelected: onSettings,
           ),
-        if (!isPaused) ...[
-          MenuEntry(
-            label: l10n.pauseOneHour,
-            icon: LucideIcons.pause,
-            onSelected: () =>
-                unawaited(pause.pause(duration: const Duration(hours: 1))),
-          ),
-          MenuEntry(
-            label: l10n.pauseUntilTomorrow,
-            onSelected: () =>
-                unawaited(pause.pause(duration: _untilTomorrowMorning())),
-          ),
-          MenuEntry(
-            label: l10n.pauseUntilResume,
-            onSelected: () => unawaited(pause.pause()),
-          ),
+          if (canQuit)
+            MenuEntry(
+              label: switch (defaultTargetPlatform) {
+                // The service keeps Ferret running after the screen closes.
+                .android => l10n.settingsClose,
+                _ => l10n.settingsQuit,
+              },
+              icon: switch (defaultTargetPlatform) {
+                .android => LucideIcons.x,
+                _ => LucideIcons.power,
+              },
+              onSelected: () => unawaited(context.read<AppQuit>().quit()),
+            ),
         ],
-        for (final (index, action) in featureActions.indexed)
-          MenuEntry(
-            label: WindowCommands.buttonInMenu(l10n, action.fullLabel),
-            icon: action.icon,
-            startsGroup: index == 0,
-            onSelected: action.onPressed ?? () {},
-          ),
-        if (canOpenWindow)
-          MenuEntry(
-            label: l10n.homeOpenWindow,
-            icon: LucideIcons.appWindow,
-            startsGroup: true,
-            onSelected: () => unawaited(context.read<AppViews>().openWindow()),
-          ),
-        MenuEntry(
-          label: l10n.settingsTitle,
-          icon: LucideIcons.settings,
-          startsGroup: !canOpenWindow,
-          onSelected: onSettings,
-        ),
-        if (canQuit)
-          MenuEntry(
-            label: switch (defaultTargetPlatform) {
-              // The service keeps Ferret running after the screen closes.
-              .android => l10n.settingsClose,
-              _ => l10n.settingsQuit,
-            },
-            icon: switch (defaultTargetPlatform) {
-              .android => LucideIcons.x,
-              _ => LucideIcons.power,
-            },
-            onSelected: () => unawaited(context.read<AppQuit>().quit()),
-          ),
-      ],
+      ),
     );
   }
 

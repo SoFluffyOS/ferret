@@ -2,6 +2,7 @@ import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
 import 'package:feature_kit/widgets/directional_icon.dart';
 import 'package:feature_kit/widgets/middle_ellipsis_text.dart';
+import 'package:feature_kit/widgets/outset_touch_target.dart';
 import 'package:feature_kit/widgets/pane_toolbar_scope.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -102,15 +103,17 @@ class FerretPage extends StatelessWidget {
                         // the page's content.
                         Transform.translate(
                           offset: Offset(-Spacing.d4, 0),
-                          child: Tappable(
-                            tooltip: backLabel,
-                            onTap: () => Navigator.of(context).maybePop(),
-                            child: Padding(
-                              padding: EdgeInsets.all(Spacing.d4),
-                              child: DirectionalIcon(
-                                LucideIcons.chevronLeft,
-                                size: Spacing.d20,
-                                color: palette.text,
+                          child: OutsetTouchTarget(
+                            child: Tappable(
+                              tooltip: backLabel,
+                              onTap: () => Navigator.of(context).maybePop(),
+                              child: Padding(
+                                padding: EdgeInsets.all(Spacing.d4),
+                                child: DirectionalIcon(
+                                  LucideIcons.chevronLeft,
+                                  size: Spacing.d20,
+                                  color: palette.text,
+                                ),
                               ),
                             ),
                           ),

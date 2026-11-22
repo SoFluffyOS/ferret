@@ -97,15 +97,17 @@ class _QrCard extends StatelessWidget {
             textAlign: .center,
             style: muted,
           ),
-          Tappable(
-            semanticButton: true,
-            onTap: () =>
-                unawaited(context.read<PairingViewModel>().createOffer()),
-            child: Padding(
-              padding: EdgeInsets.all(Spacing.d8),
-              child: Text(
-                l10n.pairNewCode,
-                style: typography.base2.copyWith(color: palette.link),
+          OutsetTouchTarget(
+            child: Tappable(
+              semanticButton: true,
+              onTap: () =>
+                  unawaited(context.read<PairingViewModel>().createOffer()),
+              child: Padding(
+                padding: EdgeInsets.all(Spacing.d8),
+                child: Text(
+                  l10n.pairNewCode,
+                  style: typography.base2.copyWith(color: palette.link),
+                ),
               ),
             ),
           ),

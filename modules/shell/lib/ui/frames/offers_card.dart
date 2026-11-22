@@ -131,17 +131,21 @@ class _NotNowButton extends StatelessWidget {
       false => Spacing.d24,
     };
 
-    return Tappable(
-      tooltip: l10n.offersNotNowTooltip,
-      semanticLabel: l10n.offersNotNow,
-      onTap: onTap,
-      child: SizedBox.square(
-        dimension: target,
-        child: Center(
-          child: Icon(
-            LucideIcons.x,
-            size: Spacing.d14,
-            color: context.palette.mutedText,
+    // The kit's 48 dp for a finger reaches around it without growing
+    // the title row past what it had.
+    return OutsetTouchTarget(
+      child: Tappable(
+        tooltip: l10n.offersNotNowTooltip,
+        semanticLabel: l10n.offersNotNow,
+        onTap: onTap,
+        child: SizedBox.square(
+          dimension: target,
+          child: Center(
+            child: Icon(
+              LucideIcons.x,
+              size: Spacing.d14,
+              color: context.palette.mutedText,
+            ),
           ),
         ),
       ),
