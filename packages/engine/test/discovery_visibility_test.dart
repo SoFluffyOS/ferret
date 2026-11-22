@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
-import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
-import 'package:transport/transport.dart';
+
+import 'support/quiet_bus.dart';
 
 const _home = LocalNetwork(subnet: '127.0.0', gatewayMac: 'a4:2b:b0:01:02:03');
 const _cafe = LocalNetwork(subnet: '10.0.7');
@@ -22,8 +22,8 @@ void main() {
   });
 
   /// A device that has met nobody yet on any network, unless [learning].
-  Future<(FerretEngine, _QuietMember)> engineOn(
-    _Bus bus,
+  Future<(FerretEngine, QuietMember)> engineOn(
+    QuietBus bus,
     String name, {
     List<LocalNetwork> Function()? networks,
     bool learning = false,
@@ -81,7 +81,7 @@ void main() {
       .timeout(const Duration(seconds: 5));
 
   test('announces while nothing is paired yet', () async {
-    final (engine, discovery) = await engineOn(_Bus(), 'MacBook Air');
+    final (engine, discovery) = await engineOn(QuietBus(), 'MacBook Air');
     await engine.start();
 
     expect(engine.isAnnouncing, isTrue);
@@ -89,7 +89,7 @@ void main() {
   });
 
   test('a paired device only listens on a network where it met none', () async {
-    final bus = _Bus();
+    final bus = QuietBus();
     final (engine, discovery) = await engineOn(bus, 'MacBook Air');
     await pairWithStranger(engine);
     await engine.start();
@@ -103,7 +103,7 @@ void main() {
     'right after the update it announces until it meets a paired device',
     () async {
       final (engine, discovery) = await engineOn(
-        _Bus(),
+        QuietBus(),
         'MacBook Air',
         learning: true,
       );
@@ -115,7 +115,7 @@ void main() {
   );
 
   test('Add a device makes it visible until the screen closes', () async {
-    final (engine, discovery) = await engineOn(_Bus(), 'MacBook Air');
+    final (engine, discovery) = await engineOn(QuietBus(), 'MacBook Air');
     await pairWithStranger(engine);
     await engine.start();
 
@@ -136,7 +136,7 @@ void main() {
   });
 
   test('Always visible announces on every network', () async {
-    final (engine, discovery) = await engineOn(_Bus(), 'MacBook Air');
+    final (engine, discovery) = await engineOn(QuietBus(), 'MacBook Air');
     await pairWithStranger(engine);
     await engine.start();
 
@@ -150,7 +150,7 @@ void main() {
 
   test('a quiet device still finds a paired one that announces, and then '
       'announces on that network only', () async {
-    final bus = _Bus();
+    final bus = QuietBus();
     var networks = const [_home];
     final (air, airWay) = await engineOn(
       bus,
@@ -180,7 +180,7 @@ void main() {
 
   test('announces slow down while every paired device is connected, and '
       'come back with an announce when one drops', () async {
-    final bus = _Bus();
+    final bus = QuietBus();
     final (air, airWay) = await engineOn(bus, 'MacBook Air');
     final (studio, _) = await engineOn(bus, 'Mac Studio');
     await pairWith(air, studio);
@@ -205,7 +205,7 @@ void main() {
   });
 
   test('announces keep their pace while one paired device is away', () async {
-    final bus = _Bus();
+    final bus = QuietBus();
     final (air, airWay) = await engineOn(bus, 'MacBook Air');
     final (studio, _) = await engineOn(bus, 'Mac Studio');
     await pairWith(air, studio);
@@ -221,7 +221,7 @@ void main() {
   });
 
   test('two quiet devices meet once one of them opens Add a device', () async {
-    final bus = _Bus();
+    final bus = QuietBus();
     final (air, _) = await engineOn(bus, 'MacBook Air');
     final (studio, _) = await engineOn(bus, 'Mac Studio');
     await pairWith(air, studio);
@@ -239,7 +239,7 @@ void main() {
   test(
     'its own ferret-cli calling from this computer marks no network',
     () async {
-      final bus = _Bus();
+      final bus = QuietBus();
       final (air, airWay) = await engineOn(
         bus,
         'MacBook Air',
@@ -379,87 +379,3 @@ destination: default
 }
 
 Future<void> pump() => Future<void>.delayed(const Duration(milliseconds: 50));
-
-/// Devices on one network: an announce reaches every other member, and a
-/// member that announces answers it with its own.
-class _Bus {
-  final List<_QuietMember> members = [];
-
-  _QuietMember join() {
-    final member = _QuietMember(this);
-    members.add(member);
-    return member;
-  }
-}
-
-class _QuietMember implements QuietDiscovery, PacedDiscovery {
-  _QuietMember(this.bus);
-
-  final _Bus bus;
-  final StreamController<DiscoveredPeer> _peers = .broadcast();
-  final List<Announce> announced = [];
-  Announce? self;
-  bool _announcing = true;
-  bool _relaxed = false;
-
-  @override
-  Stream<DiscoveredPeer> get peers => _peers.stream;
-
-  @override
-  bool get isRelaxed => _relaxed;
-
-  @override
-  Future<void> setRelaxed(bool relaxed) async {
-    _relaxed = relaxed;
-    if (!relaxed) {
-      await announceNow();
-    }
-  }
-
-  @override
-  bool get isAnnouncing => _announcing;
-
-  @override
-  Future<void> setAnnouncing(bool announcing) async {
-    _announcing = announcing;
-    if (announcing) {
-      await announceNow();
-    }
-  }
-
-  @override
-  Future<void> start(Announce self) async {
-    this.self = self;
-    await announceNow();
-  }
-
-  /// Announces, or only asks while quiet: members that announce answer.
-  @override
-  Future<void> announceNow() async {
-    final mine = self;
-    if (mine == null) {
-      return;
-    }
-
-    if (_announcing) {
-      announced.add(mine);
-    }
-
-    for (final member in bus.members) {
-      if (member == this) {
-        continue;
-      }
-
-      if (_announcing) {
-        member._peers.add(DiscoveredPeer(announce: mine, host: '127.0.0.1'));
-      }
-
-      if ((member.self, member._announcing) case (final other?, true)) {
-        _peers.add(DiscoveredPeer(announce: other, host: '127.0.0.1'));
-      }
-    }
-  }
-
-  @override
-  Future<void> stop() async => self = null;
-}

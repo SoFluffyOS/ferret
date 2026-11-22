@@ -1,0 +1,19 @@
+{
+  "access.blocked_features": {
+    "oxmdjdzorhtklksg": [
+      "clipboard"
+    ]
+  },
+  "onboarding.done": true,
+  "shell.seen_version": "0.1.0",
+  "shell.language": "vi",
+  "shell.pinned_devices": [
+    "ntyqfnuiih7fvi4p"
+  ],
+  "clipboard.auto_send": true,
+  "clipboard.sync_images": false,
+  "notifications.hide_codes": true,
+  "pairing.share_with_devices": true,
+  "power.card_dismissed": true,
+  "mirroring.actual_size": true
+}

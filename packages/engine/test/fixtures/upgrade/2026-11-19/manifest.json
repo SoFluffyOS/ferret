@@ -1,0 +1,40 @@
+{
+  "written_by": "1308b9b4",
+  "removed_everywhere": "onej22p2fvrxgc3o",
+  "devices": {
+    "mac": {
+      "id": "bkvqekeu7htzonio",
+      "name": "MacBook Air",
+      "trusted": [
+        "ps6err3pd4zujxmw",
+        "b25ou7agfj7uhl3s"
+      ],
+      "forgotten": [
+        "onej22p2fvrxgc3o"
+      ]
+    },
+    "pixel": {
+      "id": "ps6err3pd4zujxmw",
+      "name": "Pixel 7",
+      "trusted": [
+        "bkvqekeu7htzonio",
+        "b25ou7agfj7uhl3s"
+      ],
+      "forgotten": [
+        "onej22p2fvrxgc3o"
+      ]
+    },
+    "ipad": {
+      "id": "b25ou7agfj7uhl3s",
+      "name": "iPad",
+      "trusted": [
+        "bkvqekeu7htzonio",
+        "ps6err3pd4zujxmw"
+      ],
+      "forgotten": [
+        "onej22p2fvrxgc3o"
+      ]
+    }
+  },
+  "settings_note": "mac/settings/settings.json: access.blocked_features written by the engine; the other keys added by hand as that build saved them"
+}

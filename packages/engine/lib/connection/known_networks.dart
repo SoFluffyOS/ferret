@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:engine/connection/vpn_addresses.dart';
 import 'package:transport/transport.dart';
@@ -56,6 +57,15 @@ class KnownNetworks {
 
   static const settingsKey = 'discovery.known_networks';
 
+  /// Setting: until when, in milliseconds since the epoch, this device
+  /// keeps announcing everywhere after an update from a Ferret that did.
+  static const learningUntilKey = 'discovery.learning_until';
+
+  /// How long an updated device keeps announcing everywhere, learning each
+  /// network where it meets a paired device: about the home, the office
+  /// and the hotspot of a usual week or two, not only the first of them.
+  static const learningAfterUpdate = Duration(days: 14);
+
   /// The most networks kept; the one met longest ago goes first.
   static const maxKept = 32;
 
@@ -67,10 +77,33 @@ class KnownNetworks {
   /// The networks found at the last [refresh].
   List<LocalNetwork> get current => _current;
 
-  /// Whether no network was ever remembered, such as right after updating
-  /// from a Ferret that announced everywhere: then it keeps announcing until
-  /// it meets a paired device, so the two find each other once.
-  bool get isLearning => _settings.get<List<Object?>>(settingsKey) == null;
+  /// Whether this device announces everywhere to learn its networks: while
+  /// no network was ever remembered, so it finds a paired device once, and
+  /// for [learningAfterUpdate] after an update from a Ferret that announced
+  /// everywhere (see [startLearningAfterUpdate]), so the devices that met
+  /// at the office or on a hotspot before still find each other there.
+  bool get isLearning {
+    if (_settings.get<List<Object?>>(settingsKey) == null) {
+      return true;
+    }
+
+    final until = _settings.get<int>(learningUntilKey);
+    return until != null && clock.now().millisecondsSinceEpoch < until;
+  }
+
+  /// Starts [learningAfterUpdate] on the first start of a device that has
+  /// paired devices but never remembered a network: one updated from a
+  /// Ferret that announced everywhere. Once only.
+  Future<void> startLearningAfterUpdate({required bool hasDevices}) async {
+    if (!hasDevices ||
+        _settings.get<List<Object?>>(settingsKey) != null ||
+        _settings.get<int>(learningUntilKey) != null) {
+      return;
+    }
+
+    final until = clock.now().add(learningAfterUpdate);
+    await _settings.set(learningUntilKey, until.millisecondsSinceEpoch);
+  }
 
   List<String> get _records => [
     for (final record in _settings.get<List<Object?>>(settingsKey) ?? const [])
@@ -133,7 +166,10 @@ class KnownNetworks {
   }
 
   /// Forgets every network, such as when the last paired device is gone.
-  Future<void> forget() => _settings.set(settingsKey, const <String>[]);
+  Future<void> forget() async {
+    await _settings.set(settingsKey, const <String>[]);
+    await _settings.set(learningUntilKey, null);
+  }
 
   LocalNetwork? _find(String host) {
     for (final network in _current) {

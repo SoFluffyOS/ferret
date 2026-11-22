@@ -598,6 +598,9 @@ class FerretEngine implements FeatureHost {
       }
     }
 
+    await _knownNetworks.startLearningAfterUpdate(
+      hasDevices: trustStore.devices.isNotEmpty,
+    );
     await _refreshNetworks();
     await _updateVisibility();
     await _updatePace();
