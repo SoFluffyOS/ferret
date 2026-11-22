@@ -1,6 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
-import 'package:feature_kit/widgets/directional_icon.dart';
+import 'package:feature_kit/widgets/header_icon_button.dart';
 import 'package:feature_kit/widgets/middle_ellipsis_text.dart';
 import 'package:feature_kit/widgets/outset_touch_target.dart';
 import 'package:feature_kit/widgets/pane_toolbar_scope.dart';
@@ -94,72 +94,72 @@ class FerretPage extends StatelessWidget {
                   side,
                   Spacing.d4,
                 ),
-                child: AdaptiveContent(
-                  width: width,
-                  child: Row(
-                    children: [
-                      if (canPop)
-                        // Its glyph, not the room around it, lines up with
-                        // the page's content.
-                        Transform.translate(
-                          offset: Offset(-Spacing.d4, 0),
-                          child: OutsetTouchTarget(
-                            child: Tappable(
-                              tooltip: backLabel,
-                              onTap: () => Navigator.of(context).maybePop(),
-                              child: Padding(
-                                padding: EdgeInsets.all(Spacing.d4),
-                                child: DirectionalIcon(
-                                  LucideIcons.chevronLeft,
-                                  size: Spacing.d20,
+                // The header's icons take taps out into the padding.
+                child: OverhangHits(
+                  margin: EdgeInsetsDirectional.fromSTEB(
+                    side,
+                    Spacing.d12,
+                    side,
+                    Spacing.d4,
+                  ),
+                  child: AdaptiveContent(
+                    width: width,
+                    child: Row(
+                      children: [
+                        if (canPop)
+                          // Its glyph, not the room around it, lines up with
+                          // the page's content.
+                          HeaderIconButton(
+                            icon: LucideIcons.chevronLeft,
+                            tooltip: backLabel,
+                            mirrors: true,
+                            padding: Spacing.d4,
+                            nudge: HeaderIconButton.backNudge,
+                            onTap: () => Navigator.of(context).maybePop(),
+                          ),
+                        if (canPop)
+                          switch (titleStyle) {
+                            .large => Spacing.h12,
+                            .inline => Spacing.h16,
+                          },
+                        Expanded(
+                          // Its own stop, read as the page's heading, not
+                          // folded into the route's name.
+                          child: Semantics(
+                            container: true,
+                            header: true,
+                            child: switch (titleStyle) {
+                              .large => Text.rich(
+                                TextSpan(
+                                  text: shownTitle,
+                                  children: [
+                                    if (status case final status?)
+                                      TextSpan(
+                                        text: '  $status',
+                                        style: typography.base2.copyWith(
+                                          color: palette.mutedText,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                style: typography.title2.copyWith(
+                                  color: palette.text,
+                                ),
+                                overflow: .ellipsis,
+                                maxLines: 2,
+                              ),
+                              .inline => MiddleEllipsisText(
+                                shownTitle,
+                                style: typography.headline6.copyWith(
                                   color: palette.text,
                                 ),
                               ),
-                            ),
+                            },
                           ),
                         ),
-                      if (canPop)
-                        switch (titleStyle) {
-                          .large => Spacing.h4,
-                          .inline => Spacing.h8,
-                        },
-                      Expanded(
-                        // Its own stop, read as the page's heading, not
-                        // folded into the route's name.
-                        child: Semantics(
-                          container: true,
-                          header: true,
-                          child: switch (titleStyle) {
-                            .large => Text.rich(
-                              TextSpan(
-                                text: shownTitle,
-                                children: [
-                                  if (status case final status?)
-                                    TextSpan(
-                                      text: '  $status',
-                                      style: typography.base2.copyWith(
-                                        color: palette.mutedText,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              style: typography.title2.copyWith(
-                                color: palette.text,
-                              ),
-                              overflow: .ellipsis,
-                              maxLines: 2,
-                            ),
-                            .inline => MiddleEllipsisText(
-                              shownTitle,
-                              style: typography.headline6.copyWith(
-                                color: palette.text,
-                              ),
-                            ),
-                          },
-                        ),
-                      ),
-                      ..._spaced(actions),
-                    ],
+                        ..._spaced(actions),
+                      ],
+                    ),
                   ),
                 ),
               ),

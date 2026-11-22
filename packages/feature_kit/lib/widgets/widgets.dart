@@ -12,6 +12,7 @@ export 'package:feature_kit/widgets/ghost_button.dart';
 export 'package:feature_kit/widgets/grouped_card.dart';
 export 'package:feature_kit/widgets/grouped_cell.dart';
 export 'package:feature_kit/widgets/grouped_row.dart';
+export 'package:feature_kit/widgets/header_icon_button.dart';
 export 'package:feature_kit/widgets/icon_tile.dart';
 export 'package:feature_kit/widgets/middle_ellipsis_text.dart';
 export 'package:feature_kit/widgets/outset_touch_target.dart';

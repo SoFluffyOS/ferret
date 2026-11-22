@@ -30,32 +30,38 @@ class PageHeader extends StatelessWidget {
         Spacing.d12,
         Spacing.d4,
       ),
-      child: Row(
-        children: [
-          if (onBack case final back?) ...[
-            Tappable(
-              tooltip: backLabel,
-              onTap: back,
-              child: Padding(
-                padding: EdgeInsets.all(Spacing.d4),
-                child: DirectionalIcon(
-                  LucideIcons.chevronLeft,
-                  size: Spacing.d20,
-                  color: palette.text,
-                ),
+      // Back takes a finger's taps out into the padding.
+      child: OverhangHits(
+        margin: EdgeInsetsDirectional.fromSTEB(
+          Spacing.d12,
+          Spacing.d12,
+          Spacing.d12,
+          Spacing.d4,
+        ),
+        child: Row(
+          children: [
+            if (onBack case final back?) ...[
+              // Its glyph, not the room around it, lines up with the content.
+              HeaderIconButton(
+                icon: LucideIcons.chevronLeft,
+                tooltip: backLabel,
+                mirrors: true,
+                padding: Spacing.d4,
+                nudge: HeaderIconButton.backNudge,
+                onTap: back,
+              ),
+              Spacing.h12,
+            ],
+            Expanded(
+              child: Text(
+                title,
+                style: typography.title2.copyWith(color: palette.text),
+                maxLines: 1,
+                overflow: .ellipsis,
               ),
             ),
-            Spacing.h4,
           ],
-          Expanded(
-            child: Text(
-              title,
-              style: typography.title2.copyWith(color: palette.text),
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

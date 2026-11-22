@@ -51,20 +51,14 @@ class HomePage extends StatelessWidget {
           false => null,
         },
         actions: [
-          OutsetTouchTarget(
-            child: Tappable(
-              tooltip: l10n.homePairDevice,
-              onTap: () => _push(context, const PairPage()),
-              child: Padding(
-                padding: EdgeInsets.all(Spacing.d6),
-                child: Icon(
-                  LucideIcons.plus,
-                  size: Spacing.d20,
-                  color: context.palette.text,
-                ),
-              ),
-            ),
+          // Moved as far as the ••• so the two keep the room they had.
+          HeaderIconButton(
+            icon: LucideIcons.plus,
+            tooltip: l10n.homePairDevice,
+            nudge: HeaderIconButton.endNudge,
+            onTap: () => _push(context, const PairPage()),
           ),
+          Spacing.h12,
           HomeMenu(
             onSettings: () => context.read<WindowNavRegistry>().open(
               const SettingsDestination(),

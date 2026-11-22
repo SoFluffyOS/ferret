@@ -19,23 +19,23 @@ class OutsetTouchTarget extends SingleChildRenderObjectWidget {
     super.key,
     required Widget super.child,
     this.alignment = Alignment.center,
-    this.keepsWidth = false,
+    this.minSize = 0,
   });
 
   /// Where the drawn target sits in the square a finger can tap. At the
   /// top, the square reaches down below it, none of it above.
   final AlignmentGeometry alignment;
 
-  /// Leaves the target's width in the layout and takes out only its
-  /// height, for a button whose menu lines up with the target's edge, such
-  /// as an icon at the end of a title bar.
-  final bool keepsWidth;
+  /// The least side of what takes taps, for a child that draws past its
+  /// own layout, such as a header icon whose hover fill reaches into the
+  /// page's margin. The kit's grown target counts too.
+  final double minSize;
 
   @override
   RenderOutsetTouchTarget createRenderObject(BuildContext context) =>
       RenderOutsetTouchTarget(
         alignment: alignment.resolve(Directionality.maybeOf(context)),
-        keepsWidth: keepsWidth,
+        minSize: minSize,
       );
 
   @override
@@ -45,7 +45,7 @@ class OutsetTouchTarget extends SingleChildRenderObjectWidget {
   ) {
     renderObject
       ..alignment = alignment.resolve(Directionality.maybeOf(context))
-      ..keepsWidth = keepsWidth;
+      ..minSize = minSize;
   }
 }
 
@@ -54,20 +54,19 @@ class OutsetTouchTarget extends SingleChildRenderObjectWidget {
 class RenderOutsetTouchTarget extends RenderShiftedBox {
   RenderOutsetTouchTarget({
     required Alignment alignment,
-    bool keepsWidth = false,
+    double minSize = 0,
     RenderBox? child,
   }) : _alignment = alignment,
-       _keepsWidth = keepsWidth,
+       _minSize = minSize,
        super(child);
 
-  bool _keepsWidth;
-  bool get keepsWidth => _keepsWidth;
-  set keepsWidth(bool value) {
-    if (_keepsWidth == value) {
+  double _minSize;
+  double get minSize => _minSize;
+  set minSize(double value) {
+    if (_minSize == value) {
       return;
     }
-    _keepsWidth = value;
-    markNeedsLayout();
+    _minSize = value;
   }
 
   Alignment _alignment;
@@ -105,17 +104,11 @@ class RenderOutsetTouchTarget extends RenderShiftedBox {
 
   @override
   double computeMinIntrinsicWidth(double height) =>
-      _widthBox?.getMinIntrinsicWidth(height) ?? 0;
+      (_drawn ?? child)?.getMinIntrinsicWidth(height) ?? 0;
 
   @override
   double computeMaxIntrinsicWidth(double height) =>
-      _widthBox?.getMaxIntrinsicWidth(height) ?? 0;
-
-  /// What the layout takes its width from.
-  RenderBox? get _widthBox => switch (_keepsWidth) {
-    true => child,
-    false => _drawn ?? child,
-  };
+      (_drawn ?? child)?.getMaxIntrinsicWidth(height) ?? 0;
 
   @override
   double computeMinIntrinsicHeight(double width) =>
@@ -132,16 +125,7 @@ class RenderOutsetTouchTarget extends RenderShiftedBox {
       return constraints.smallest;
     }
 
-    final drawn = box.getDryLayout(constraints);
-    return constraints.constrain(
-      Size(
-        switch (_keepsWidth) {
-          true => child!.getDryLayout(constraints).width,
-          false => drawn.width,
-        },
-        drawn.height,
-      ),
-    );
+    return constraints.constrain(box.getDryLayout(constraints));
   }
 
   @override
@@ -158,10 +142,7 @@ class RenderOutsetTouchTarget extends RenderShiftedBox {
     // half of what it grew. A box only reads its own child's size.
     _growth = switch (_drawn?.parentData) {
       final BoxParentData drawn => Size(
-        switch (_keepsWidth) {
-          true => 0,
-          false => math.max(0, drawn.offset.dx * 2),
-        },
+        math.max(0, drawn.offset.dx * 2),
         math.max(0, drawn.offset.dy * 2),
       ),
       _ => Size.zero,
@@ -197,14 +178,16 @@ class RenderOutsetTouchTarget extends RenderShiftedBox {
 
   /// The square a finger can tap, in this box's coordinates.
   Rect get targetRect {
-    final left = _growth.width * (1 + _alignment.x) / 2;
-    final top = _growth.height * (1 + _alignment.y) / 2;
+    final extraWidth = math.max(_growth.width, _minSize - size.width);
+    final extraHeight = math.max(_growth.height, _minSize - size.height);
+    final left = math.max(0.0, extraWidth) * (1 + _alignment.x) / 2;
+    final top = math.max(0.0, extraHeight) * (1 + _alignment.y) / 2;
 
     return Rect.fromLTWH(
       -left,
       -top,
-      size.width + _growth.width,
-      size.height + _growth.height,
+      size.width + math.max(0.0, extraWidth),
+      size.height + math.max(0.0, extraHeight),
     );
   }
 
@@ -227,6 +210,65 @@ class RenderOutsetTouchTarget extends RenderShiftedBox {
         ),
       ),
     );
+    if (isHit) {
+      result.add(BoxHitTestEntry(this, position));
+    }
+    return isHit;
+  }
+}
+
+/// Lets a finger's taps in [margin] around [child] reach it, slid onto its
+/// nearest edge, so an [OutsetTouchTarget] at the end of a header row keeps
+/// its whole target in the page's margin. Put it where the margin is still
+/// inside the parent, such as just inside the padding that makes it. A
+/// pointer gets only [child].
+class OverhangHits extends SingleChildRenderObjectWidget {
+  const OverhangHits({
+    super.key,
+    required this.margin,
+    required Widget super.child,
+  });
+
+  final EdgeInsetsGeometry margin;
+
+  @override
+  RenderOverhangHits createRenderObject(BuildContext context) =>
+      RenderOverhangHits(margin: _resolve(context));
+
+  EdgeInsets _resolve(BuildContext context) =>
+      switch (context.fluffyDensity.isTouch) {
+        true => margin.resolve(Directionality.maybeOf(context)),
+        false => EdgeInsets.zero,
+      };
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderOverhangHits renderObject,
+  ) {
+    renderObject.margin = _resolve(context);
+  }
+}
+
+class RenderOverhangHits extends RenderProxyBox {
+  RenderOverhangHits({required this.margin, RenderBox? child}) : super(child);
+
+  EdgeInsets margin;
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    final child = this.child;
+    if (child == null ||
+        size.isEmpty ||
+        !margin.inflateRect(Offset.zero & size).contains(position)) {
+      return false;
+    }
+
+    final inside = Offset(
+      position.dx.clamp(0, size.width - 0.01),
+      position.dy.clamp(0, size.height - 0.01),
+    );
+    final isHit = child.hitTest(result, position: inside);
     if (isHit) {
       result.add(BoxHitTestEntry(this, position));
     }
