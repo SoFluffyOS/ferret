@@ -102,8 +102,11 @@ class FerretEngine implements FeatureHost {
     Future<Set<String>> Function()? ownAddresses,
     MulticastNeed? multicastNeed,
   }) async {
+    // Side by side: on a slow phone each Keystore read is a trip to the
+    // secure hardware, and the key maths can run while it is away.
+    final trustLoad = TrustStore.open(secrets)..ignore();
     final identity = await DeviceIdentity.loadOrCreate(secrets);
-    final trustStore = await TrustStore.open(secrets);
+    final trustStore = await trustLoad;
     return FerretEngine._(
       identity: identity,
       trustStore: trustStore,

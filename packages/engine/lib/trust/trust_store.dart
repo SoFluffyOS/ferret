@@ -18,14 +18,17 @@ class TrustStore {
   static const _forgottenKey = 'ferret.forgotten_devices';
 
   static Future<TrustStore> open(SecretStore store) async {
+    final forgottenLoad = _readList(store, _forgottenKey)..ignore();
+    final trusted = await _readList(store, _storageKey);
+    final forgottenList = await forgottenLoad;
     final devices = <String, TrustedDevice>{};
-    for (final json in await _readList(store, _storageKey)) {
+    for (final json in trusted) {
       final device = TrustedDevice.fromJson(json);
       devices[device.id] = device;
     }
 
     final forgotten = <String, ForgottenDevice>{};
-    for (final json in await _readList(store, _forgottenKey)) {
+    for (final json in forgottenList) {
       final device = ForgottenDevice.fromJson(json);
       forgotten[device.id] = device;
     }
