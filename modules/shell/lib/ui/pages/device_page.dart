@@ -385,30 +385,58 @@ class _WhatWorks extends StatelessWidget {
   }
 }
 
-/// What a connected device may do on this one, as switches.
-class _May extends StatelessWidget {
+/// What a connected device may do on this one, as switches. Right after
+/// the first pairing they fold into one row until Ferret has worked once
+/// ([FirstUse]), so the first thing to try stands alone; a switch that is
+/// on and in use always shows.
+class _May extends StatefulWidget {
   const _May({required this.status});
 
   final DeviceStatus status;
 
   @override
+  State<_May> createState() => _MayState();
+}
+
+class _MayState extends State<_May> {
+  bool _open = false;
+
+  @override
   Widget build(BuildContext context) {
     final scope = ShellScope.of(context);
+    final l10n = context.shellL10n;
+    final name = widget.status.device.name;
     final permissions = [
       for (final feature in scope.features)
-        ...feature.devicePermissions(context, scope.featureContext, status),
+        ...feature.devicePermissions(
+          context,
+          scope.featureContext,
+          widget.status,
+        ),
     ];
     if (permissions.isEmpty) {
       return const SizedBox.shrink();
     }
 
+    final shown = switch (_open || _hasWorked(context)) {
+      true => permissions,
+      false => [
+        for (final permission in permissions)
+          if (permission.inUse) permission,
+      ],
+    };
+    final folds = shown.length < permissions.length;
+
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        SectionTitle(context.shellL10n.deviceMay(status.device.name)),
+        switch (shown.isEmpty) {
+          true => Spacing.v16,
+          false => SectionTitle(l10n.deviceMay(name)),
+        },
         GroupedCard(
           children: [
-            for (final permission in permissions)
+            for (final permission in shown)
               SettingSwitchRow(
                 title: permission.label,
                 body: switch (permission.detail) {
@@ -418,9 +446,33 @@ class _May extends StatelessWidget {
                 value: permission.value,
                 onChanged: permission.onChanged,
               ),
+            if (folds)
+              Semantics(
+                expanded: false,
+                child: GroupedRow(
+                  title: l10n.deviceMayFolded(name),
+                  value: l10n.deviceMayChange,
+                  onTap: () => setState(() => _open = true),
+                  trailing: Icon(
+                    LucideIcons.chevronDown,
+                    size: Spacing.d16,
+                    color: context.palette.mutedText,
+                  ),
+                ),
+              ),
           ],
         ),
       ],
+    );
+  }
+
+  bool _hasWorked(BuildContext context) {
+    final scope = ShellScope.of(context);
+    final engine = scope.featureContext.engine;
+    return FirstUse.seen(
+      tips: Tips(engine.settings),
+      devices: engine.trustStore.devices,
+      feed: ActivityFeed.gather(context, scope.features, scope.featureContext),
     );
   }
 }

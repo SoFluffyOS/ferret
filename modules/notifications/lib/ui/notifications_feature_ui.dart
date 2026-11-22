@@ -332,6 +332,7 @@ class NotificationsFeatureUi extends FeatureUi {
       DevicePermission(
         label: l10n.permissionShow,
         value: shows,
+        inUse: shows && (settings?.enabled ?? false),
         onChanged: (value) => unawaited(_setShowsFrom(deviceId, value)),
       ),
       if (settings != null && settings.enabled && shows)

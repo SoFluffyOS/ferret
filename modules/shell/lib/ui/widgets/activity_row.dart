@@ -198,25 +198,18 @@ class ActivityRow extends StatelessWidget {
                     true => Spacing.d4,
                     false => Spacing.d2,
                   }),
-                  Row(
-                    crossAxisAlignment: switch (linksBesideDetail) {
-                      true => .start,
-                      false => .center,
-                    },
-                    children: [
-                      Expanded(
-                        child: Text(
-                          detail ?? '',
-                          maxLines: detailLines,
-                          overflow: _overflow(detailLines),
-                          style: typography.caption1.copyWith(
-                            color: palette.mutedText,
-                          ),
-                        ),
+                  _detailLine(
+                    detail: Text(
+                      detail ?? '',
+                      maxLines: detailLines,
+                      overflow: _overflow(detailLines),
+                      style: typography.caption1.copyWith(
+                        color: palette.mutedText,
                       ),
+                    ),
+                    actions: [
                       if (!actionsOwnLine)
-                        for (final action in textActions) ...[
-                          Spacing.h8,
+                        for (final action in textActions)
                           ActivityTextAction(
                             action: action,
                             subject: item.title,
@@ -224,8 +217,11 @@ class ActivityRow extends StatelessWidget {
                             isShown: showsLinks,
                             reachesDown: linksBesideDetail,
                           ),
-                        ],
                     ],
+                    // Where a file went is read whole: when it doesn't fit
+                    // beside the links, the links go under it.
+                    keepsDetailWhole: detail != null && detailLines == 1,
+                    alignsTop: linksBesideDetail,
                   ),
                 ],
                 if (actionsOwnLine) ...[
@@ -292,6 +288,33 @@ class ActivityRow extends StatelessWidget {
         menubar.startFileDrag(View.of(context).viewId, files),
       ),
       child: line,
+    );
+  }
+
+  /// The detail and the actions that fit beside it.
+  Widget _detailLine({
+    required Widget detail,
+    required List<Widget> actions,
+    required bool keepsDetailWhole,
+    required bool alignsTop,
+  }) {
+    if (actions.isEmpty) {
+      return detail;
+    }
+
+    return BesideOrBelow(
+      gap: Spacing.d8,
+      maxShare: 1,
+      keepsTextWhole: keepsDetailWhole,
+      alignsTop: alignsTop,
+      children: [
+        detail,
+        Row(
+          mainAxisSize: .min,
+          spacing: Spacing.d8,
+          children: actions,
+        ),
+      ],
     );
   }
 

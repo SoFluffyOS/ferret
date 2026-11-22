@@ -4367,6 +4367,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsShortcutTaken => pseudo(super.settingsShortcutTaken);
   @override
+  String get deviceMayChange => pseudo(super.deviceMayChange);
+  @override
   String get deviceHow => pseudo(super.deviceHow);
   @override
   String get deviceFix => pseudo(super.deviceFix);
@@ -4947,6 +4949,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.settingsVersion(version));
   @override
   String deviceMay(String device) => pseudo(super.deviceMay(device));
+  @override
+  String deviceMayFolded(String device) =>
+      pseudo(super.deviceMayFolded(device));
   @override
   String activityActionFor(String action, String subject) =>
       pseudo(super.activityActionFor(action, subject));

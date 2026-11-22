@@ -13,17 +13,30 @@ class BesideOrBelow extends MultiChildRenderObjectWidget {
     super.key,
     required this.gap,
     this.maxShare = 0.45,
+    this.keepsTextWhole = false,
+    this.alignsTop = false,
     required super.children,
   }) : assert(children.length == 2, 'Text first, then its control');
 
   final double gap;
   final double maxShare;
 
+  /// The control also goes under the text when the text, on one line,
+  /// would not fit beside it whole: for a line that would be cut, such as
+  /// where a file was saved.
+  final bool keepsTextWhole;
+
+  /// Side by side, both start at the top instead of being centred: for a
+  /// control whose target reaches down below its words.
+  final bool alignsTop;
+
   @override
   RenderBesideOrBelow createRenderObject(BuildContext context) =>
       RenderBesideOrBelow(
         gap: gap,
         maxShare: maxShare,
+        keepsTextWhole: keepsTextWhole,
+        alignsTop: alignsTop,
         textDirection: Directionality.of(context),
       );
 
@@ -35,6 +48,8 @@ class BesideOrBelow extends MultiChildRenderObjectWidget {
     renderObject
       ..gap = gap
       ..maxShare = maxShare
+      ..keepsTextWhole = keepsTextWhole
+      ..alignsTop = alignsTop
       ..textDirection = Directionality.of(context);
   }
 }
@@ -48,9 +63,13 @@ class RenderBesideOrBelow extends RenderBox
   RenderBesideOrBelow({
     required double gap,
     required double maxShare,
+    bool keepsTextWhole = false,
+    bool alignsTop = false,
     required TextDirection textDirection,
   }) : _gap = gap,
        _maxShare = maxShare,
+       _keepsTextWhole = keepsTextWhole,
+       _alignsTop = alignsTop,
        _textDirection = textDirection;
 
   double _gap;
@@ -67,6 +86,24 @@ class RenderBesideOrBelow extends RenderBox
   set maxShare(double value) {
     if (value != _maxShare) {
       _maxShare = value;
+      markNeedsLayout();
+    }
+  }
+
+  bool _keepsTextWhole;
+  bool get keepsTextWhole => _keepsTextWhole;
+  set keepsTextWhole(bool value) {
+    if (value != _keepsTextWhole) {
+      _keepsTextWhole = value;
+      markNeedsLayout();
+    }
+  }
+
+  bool _alignsTop;
+  bool get alignsTop => _alignsTop;
+  set alignsTop(bool value) {
+    if (value != _alignsTop) {
+      _alignsTop = value;
       markNeedsLayout();
     }
   }
@@ -95,7 +132,11 @@ class RenderBesideOrBelow extends RenderBox
   RenderBox get _control => lastChild!;
 
   bool _goesBelow(double width, double controlWidth) =>
-      width.isFinite && controlWidth + gap > width * maxShare;
+      width.isFinite &&
+      (controlWidth + gap > width * maxShare ||
+          (keepsTextWhole &&
+              _text.getMaxIntrinsicWidth(double.infinity) + gap + controlWidth >
+                  width));
 
   @override
   double computeMinIntrinsicWidth(double height) => math.max(
@@ -173,16 +214,12 @@ class RenderBesideOrBelow extends RenderBox
       final height = math.max(textSize.height, controlSize.height);
       result = constraints.constrain(Size(width, height));
       if (!dry) {
-        _place(
-          _text,
-          rtl ? width - textSize.width : 0,
-          (height - textSize.height) / 2,
-        );
-        _place(
-          _control,
-          rtl ? 0 : width - controlSize.width,
-          (height - controlSize.height) / 2,
-        );
+        double top(Size child) => switch (alignsTop) {
+          true => 0,
+          false => (height - child.height) / 2,
+        };
+        _place(_text, rtl ? width - textSize.width : 0, top(textSize));
+        _place(_control, rtl ? 0 : width - controlSize.width, top(controlSize));
       }
     }
 

@@ -53,6 +53,33 @@ void main() {
     expect(tester.getSize(find.byType(BesideOrBelow)).height, 78);
   });
 
+  testWidgets('a line that would be cut beside the control keeps it whole, '
+      'with the control under it', (tester) async {
+    const line = SizedBox(width: 260, height: 20, key: ValueKey('words'));
+    Widget build(double width) => _sized(
+      width,
+      BesideOrBelow(
+        gap: 8,
+        maxShare: 1,
+        keepsTextWhole: true,
+        alignsTop: true,
+        children: [line, _control(100)],
+      ),
+    );
+
+    await tester.pumpWidget(build(400));
+    var control = tester.getRect(find.byKey(const ValueKey('control')));
+    expect(control.right, 400);
+    expect(control.top, 0);
+
+    await tester.pumpWidget(build(300));
+    final words = tester.getRect(find.byKey(const ValueKey('words')));
+    control = tester.getRect(find.byKey(const ValueKey('control')));
+    expect(words.width, 260);
+    expect(control.left, 0);
+    expect(control.top, 28);
+  });
+
   testWidgets('a phone settings row with a long button keeps its words '
       'readable at 130% on a 320 dp screen', (tester) async {
     debugDefaultTargetPlatformOverride = .android;

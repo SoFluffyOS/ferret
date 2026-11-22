@@ -753,6 +753,9 @@ class MirroringFeatureUi extends FeatureUi {
             false => l10n.permissionAskOff,
           },
           value: shareViewModel.mayAsk(deviceId),
+          inUse:
+              shareViewModel.pending?.deviceId == deviceId ||
+              shareViewModel.active?.deviceId == deviceId,
           onChanged: (value) =>
               unawaited(shareViewModel.setMayAsk(deviceId, value)),
         ),
@@ -764,6 +767,9 @@ class MirroringFeatureUi extends FeatureUi {
             false => l10n.permissionCameraAskOff,
           },
           value: shareViewModel.mayAskCamera(deviceId),
+          inUse:
+              shareViewModel.cameraPending?.deviceId == deviceId ||
+              shareViewModel.cameraActive?.deviceId == deviceId,
           onChanged: (value) =>
               unawaited(shareViewModel.setMayAskCamera(deviceId, value)),
         ),

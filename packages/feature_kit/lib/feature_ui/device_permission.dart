@@ -8,7 +8,8 @@ class DevicePermission {
     required this.value,
     required this.onChanged,
     this.detail = '',
-  });
+    bool? inUse,
+  }) : inUse = inUse ?? value;
 
   /// What the device may do, naming this device: "Show its screen here".
   final String label;
@@ -17,5 +18,11 @@ class DevicePermission {
   final String detail;
 
   final bool value;
+
+  /// Whether the switch is doing something right now: on, and the other
+  /// side uses it. A switch that is on by default but has nothing to do
+  /// yet (notifications the phone doesn't send) can fold away with the
+  /// rest until Ferret has been used once.
+  final bool inUse;
   final ValueChanged<bool> onChanged;
 }

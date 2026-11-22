@@ -213,6 +213,34 @@ class _Duo {
     });
   }
 
+  /// Saves [os]'s page for [other] right after pairing, beside the steps
+  /// and not counted in them, then goes back to Home.
+  Future<void> peekDevicePage(WidgetTester tester, _Os os, _Os other) async {
+    final rig = await look(tester, os);
+    await rig.open(
+      tester,
+      DevicePage(deviceId: rigOf(other).engine.identity.deviceId),
+    );
+    // Where "may" sits: the end of the page on a phone and in the popover.
+    final page = find.descendant(
+      of: find.byType(DevicePage),
+      matching: find.byType(Scrollable),
+    );
+    for (final state in tester.stateList<ScrollableState>(page)) {
+      state.position.jumpTo(state.position.maxScrollExtent);
+    }
+
+    await rig.settle(tester);
+    await rig.capture(
+      tester,
+      'first2min/$pair/extra_${os.name}_device_page',
+      os.size,
+      .light,
+    );
+    rig.navigator?.pop();
+    await rig.settle(tester);
+  }
+
   void note(_Os os, _Kind kind, String what) =>
       steps.add(_Step(os, kind, what));
 
@@ -368,6 +396,11 @@ Future<void> _nearby(WidgetTester tester, _Duo duo, _Os hand, _Os other) async {
   await otherRig.settle(tester, real: const Duration(milliseconds: 600));
   await duo.shot(tester, other, 'paired', 'Paired: Home with the device');
   await duo.shot(tester, hand, 'paired', 'Paired: Home with the device');
+  if (duo.pair == 'android_mac') {
+    await duo.peekDevicePage(tester, hand, other);
+    await duo.peekDevicePage(tester, other, hand);
+  }
+
   await _firstFile(tester, duo, hand, other);
 }
 

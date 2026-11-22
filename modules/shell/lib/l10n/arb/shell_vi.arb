@@ -293,6 +293,8 @@
   "settingsShortcutRecording": "Nhấn tổ hợp phím mới. Esc để hủy.",
   "settingsShortcutTaken": "macOS không nhận tổ hợp phím này. Hãy thử phím khác.",
   "deviceMay": "{device} được phép",
+  "deviceMayFolded": "Những gì {device} được phép làm",
+  "deviceMayChange": "Thay đổi",
   "deviceHow": "Cách làm?",
   "deviceFix": "Sửa",
   "activityActionFor": "{action}: {subject}",

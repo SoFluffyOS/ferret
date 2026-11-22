@@ -21,7 +21,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **New computer?** Migration Assistant or a restored backup brings Ferret along, and it starts there as a new device with a list of what to pair again. Two computers never answer as one.
 - **Forget means forget**: a removed device loses its "Always allow" answers, and its notifications and clips leave this one.
 - **Says who needs an update** instead of staying offline.
-- **A calm first two minutes**: right after pairing, Home shows your device and one thing to try. **Do more** waits until something went through. The first photo that lands on a Windows or Linux PC shows at the top of its page, with **Open** and **Show in folder**. Camera turned off for Ferret? The scan page says so and opens Settings.
+- **A calm first two minutes**: right after pairing, Home shows your device and one thing to try. **Do more** and the switches for what the new device may do wait until something went through. Where a file landed is never cut short. The first photo that lands on a Windows or Linux PC shows at the top of its page, with **Open** and **Show in folder**. Camera turned off for Ferret? The scan page says so and opens Settings.
 - **Your iPhone under Nearby**: with Ferret open, an iPhone now shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
 - **iPhone asks about the local network when it makes sense**: a short card says why before iOS asks, not at first launch. Said no? Nearby and Fix connection take you to Settings.
 - **What a device can use** lists only what does something between the two. No calls or texts rows for an iPhone.

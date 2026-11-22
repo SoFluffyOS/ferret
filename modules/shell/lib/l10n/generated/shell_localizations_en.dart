@@ -1461,6 +1461,14 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String deviceMayFolded(String device) {
+    return 'What $device may do';
+  }
+
+  @override
+  String get deviceMayChange => 'Change';
+
+  @override
   String get deviceHow => 'How?';
 
   @override

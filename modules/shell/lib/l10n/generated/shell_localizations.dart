@@ -1850,6 +1850,18 @@ abstract class ShellLocalizations {
   /// **'{device} may'**
   String deviceMay(String device);
 
+  /// A folded row on a device's page, right after pairing, that opens the switches for what this device may do here (put this computer to sleep, control it without asking...): "What Pixel 7 may do"
+  ///
+  /// In en, this message translates to:
+  /// **'What {device} may do'**
+  String deviceMayFolded(String device);
+
+  /// At the end of the folded "What Pixel 7 may do" row: opens the switches in place
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get deviceMayChange;
+
   /// Link on a health row that opens the steps to fix it
   ///
   /// In en, this message translates to:

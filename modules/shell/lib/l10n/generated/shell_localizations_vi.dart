@@ -1455,6 +1455,14 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String deviceMayFolded(String device) {
+    return 'Những gì $device được phép làm';
+  }
+
+  @override
+  String get deviceMayChange => 'Thay đổi';
+
+  @override
   String get deviceHow => 'Cách làm?';
 
   @override

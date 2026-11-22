@@ -29,7 +29,7 @@ Tap a device on Home. Its page answers three questions.
 | – | It's off. The line says where: "Off on Pixel 9". | Tap **How?** for the steps. |
 | ⚠ | It's on but something broke, such as a permission Android took back. | Tap **Fix**. |
 
-**What may it do here?** Under **Pixel 9 may** you find the switches that are about this one device, such as letting it control this Mac without asking.
+**What may it do here?** Under **Pixel 9 may** you find the switches that are about this one device, such as letting it control this Mac without asking. Just paired? They sit folded under **What Pixel 9 may do** until something went through: tap **Change** to open them.
 
 **How full is it?** Next to **Connected** a connected phone or laptop shows its battery, such as **62%**, with a bolt while it charges. When one of your devices drops to 15%, the others say so once: **Pixel 7 is at 15%**. Don't want that? Turn off **Settings → Advanced → Low battery notice**. Desktops have no battery, so they show none.
 
