@@ -8,7 +8,11 @@ import 'package:transport/transport.dart';
 
 /// One local network this device has an address on.
 class LocalNetwork {
-  const LocalNetwork({required this.subnet, this.gatewayMac});
+  const LocalNetwork({
+    required this.subnet,
+    this.gatewayMac,
+    this.isHostedHere = false,
+  });
 
   /// The first three parts of this device's address, the /24 Ferret takes
   /// every home network to be, such as `192.168.1`.
@@ -18,6 +22,14 @@ class LocalNetwork {
   /// permission: on a Mac and Linux. It tells apart two networks that hand
   /// out the same addresses, like home and a café on the same router brand.
   final String? gatewayMac;
+
+  /// Whether this device is the network's router: a phone's hotspot, USB
+  /// or Bluetooth tethering. Only the people this device lets on are
+  /// there, so it announces itself there like on a known network. A
+  /// hotspot often gets new addresses each time it's turned on, so the
+  /// laptop joining it would otherwise meet a quiet phone on a network
+  /// neither of them knows.
+  final bool isHostedHere;
 
   /// Whether [host] is on this network.
   bool contains(String host) => subnetOf(host) == subnet;
@@ -34,7 +46,9 @@ class LocalNetwork {
   }
 
   @override
-  String toString() => 'LocalNetwork($subnet, ${gatewayMac ?? 'no router'})';
+  String toString() =>
+      'LocalNetwork($subnet, ${gatewayMac ?? 'no router'}'
+      '${isHostedHere ? ', hosted here' : ''})';
 }
 
 /// Lists the local networks this device is on right now.
@@ -122,11 +136,12 @@ class KnownNetworks {
     return _current;
   }
 
-  /// Whether this device is on a network where it met a paired device.
+  /// Whether this device is on a network where it met a paired device,
+  /// or on one it hosts itself ([LocalNetwork.isHostedHere]).
   Future<bool> isOnKnown() async {
     final records = _records;
     for (final network in _current) {
-      if (await _matches(network, records)) {
+      if (network.isHostedHere || await _matches(network, records)) {
         return true;
       }
     }
@@ -219,11 +234,17 @@ abstract final class LocalNetworks {
       type: InternetAddressType.IPv4,
     );
     final subnets = <String>{};
+    final hosted = <String>{};
     for (final interface in interfaces) {
       if (VpnAddresses.isVpnInterface(interface.name) ||
           VpnAddresses.isCellularInterface(interface.name)) {
         continue;
       }
+
+      final hosts = isHotspotInterface(
+        interface.name,
+        isAndroid: Platform.isAndroid,
+      );
 
       for (final address in interface.addresses) {
         if (address.isLoopback ||
@@ -234,6 +255,9 @@ abstract final class LocalNetworks {
 
         if (LocalNetwork.subnetOf(address.address) case final subnet?) {
           subnets.add(subnet);
+          if (hosts) {
+            hosted.add(subnet);
+          }
         }
       }
     }
@@ -243,6 +267,7 @@ abstract final class LocalNetworks {
       for (final subnet in subnets)
         LocalNetwork(
           subnet: subnet,
+          isHostedHere: hosted.contains(subnet),
           gatewayMac: switch (router) {
             (:final host, :final mac)
                 when LocalNetwork.subnetOf(host) == subnet =>
@@ -251,6 +276,25 @@ abstract final class LocalNetworks {
           },
         ),
     ];
+  }
+
+  /// Interfaces a device shares its connection on, as the router:
+  /// Android's hotspot (`ap0`, `swlan0` on Samsung, `softap0`,
+  /// `ap_br_wlan1` for a two-band one), USB tethering (`rndis0`, `ncm0`)
+  /// and Bluetooth tethering (`bt-pan`). A Linux hotspot made with
+  /// hostapd is often `ap0` too.
+  static const _hotspotPrefixes = ['ap', 'swlan', 'softap', 'rndis', 'ncm'];
+
+  /// Whether [name] is an interface this device hosts a network on. On
+  /// Android a second Wi-Fi interface (`wlan1`, `wlan2`) is the hotspot
+  /// on phones that keep Wi-Fi on beside it, such as Pixels.
+  static bool isHotspotInterface(String name, {required bool isAndroid}) {
+    final lower = name.toLowerCase();
+    if (lower == 'bt-pan' || _hotspotPrefixes.any(lower.startsWith)) {
+      return true;
+    }
+
+    return isAndroid && RegExp(r'^wlan[1-9]$').hasMatch(lower);
   }
 
   /// The default router's address and hardware address, on a Mac and

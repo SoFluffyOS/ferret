@@ -91,6 +91,22 @@ class NetworkWatcher(
         }
     }
 
+    /**
+     * Turning the hotspot (or USB or Bluetooth tethering) on or off changes
+     * no default network, yet it adds or removes a network Ferret should
+     * announce on. The broadcast is sticky: the copy delivered on register
+     * is the current state, not a change.
+     */
+    private val tetherReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (isInitialStickyBroadcast) {
+                return
+            }
+
+            onChange(NetworkChange.CHANGED)
+        }
+    }
+
     fun start() {
         if (watching) {
             return
@@ -116,6 +132,14 @@ class NetworkWatcher(
         } else {
             context.registerReceiver(wakeReceiver, filter)
         }
+
+        val tether = IntentFilter(ACTION_TETHER_STATE_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Sent by the system's tethering module; only the system may send it.
+            context.registerReceiver(tetherReceiver, tether, Context.RECEIVER_EXPORTED)
+        } else {
+            context.registerReceiver(tetherReceiver, tether)
+        }
     }
 
     fun stop() {
@@ -130,7 +154,11 @@ class NetworkWatcher(
             // Already unregistered.
         }
         context.unregisterReceiver(wakeReceiver)
+        context.unregisterReceiver(tetherReceiver)
         addresses.clear()
         blocked.clear()
     }
 }
+
+/** ConnectivityManager.ACTION_TETHER_STATE_CHANGED, which isn't public API. */
+private const val ACTION_TETHER_STATE_CHANGED = "android.net.conn.TETHER_STATE_CHANGED"

@@ -287,6 +287,32 @@ void main() {
     hold.release();
   });
 
+  test("a laptop joining a phone's hotspot finds the phone, which announces "
+      'on the network it hosts', () async {
+    final bus = QuietBus();
+    final (phone, phoneWay) = await engineOn(
+      bus,
+      'Pixel 7',
+      networks: () => const [
+        LocalNetwork(subnet: '127.0.0', isHostedHere: true),
+      ],
+    );
+    final (air, airWay) = await engineOn(
+      bus,
+      'MacBook Air',
+      networks: () => const [_cafe],
+    );
+    await pairWith(air, phone);
+
+    final joined = connected(air);
+    await phone.start();
+    await air.start();
+    await joined;
+
+    expect(phoneWay.isAnnouncing, isTrue);
+    expect(airWay.isAnnouncing, isFalse, reason: 'the laptop stays quiet');
+  });
+
   test(
     'its own ferret-cli calling from this computer marks no network',
     () async {
@@ -345,6 +371,54 @@ void main() {
       current = [_cafe];
       await networks.refresh();
       expect(await networks.isOnKnown(), isFalse);
+    });
+
+    test('a network this device hosts counts as known', () async {
+      current = [
+        _cafe,
+        const LocalNetwork(subnet: '192.168.211', isHostedHere: true),
+      ];
+      final networks = known();
+      await networks.refresh();
+      expect(await networks.isOnKnown(), isTrue);
+
+      current = [_cafe];
+      await networks.refresh();
+      expect(await networks.isOnKnown(), isFalse);
+    });
+
+    test('hotspot and tethering interfaces', () {
+      for (final name in [
+        'ap0',
+        'swlan0',
+        'softap0',
+        'ap_br_wlan1',
+        'rndis0',
+        'ncm0',
+        'bt-pan',
+      ]) {
+        expect(
+          LocalNetworks.isHotspotInterface(name, isAndroid: false),
+          isTrue,
+          reason: name,
+        );
+      }
+
+      expect(
+        LocalNetworks.isHotspotInterface('wlan1', isAndroid: true),
+        isTrue,
+      );
+      expect(
+        LocalNetworks.isHotspotInterface('wlan1', isAndroid: false),
+        isFalse,
+      );
+      for (final name in ['wlan0', 'en0', 'eth0', 'p2p-wlan0-0', 'awdl0']) {
+        expect(
+          LocalNetworks.isHotspotInterface(name, isAndroid: true),
+          isFalse,
+          reason: name,
+        );
+      }
     });
 
     test('a host on none of its networks is not kept', () async {
