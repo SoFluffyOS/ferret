@@ -178,7 +178,7 @@ class IphoneLocalizationsEn extends IphoneLocalizations {
         'other': 'this computer',
       },
     );
-    return 'Reading and sending texts (SMS and iMessage) and taking calls on $_temp0. Apple keeps files, clipboard and handoff to its own devices.';
+    return 'Reading and sending texts (SMS and iMessage) and taking calls on $_temp0. Apple keeps files, clipboard and Handoff to its own devices.';
   }
 
   @override

@@ -262,7 +262,7 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
   String get discard => 'Bỏ';
 
   @override
-  String get kindFailed => 'Chưa gửi được';
+  String get kindFailed => 'Chưa đến nơi';
 
   @override
   String get kindQueued => 'Đang chờ gửi';
@@ -355,15 +355,15 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
       'Kèm nút Trả lời, trừ khi cuộc trò chuyện đang mở sẵn ở đây.';
 
   @override
-  String get forgetHistory => 'Xoá tin đã lưu';
+  String get forgetHistory => 'Xóa tin đã lưu';
 
   @override
   String forgetDetail(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -371,24 +371,24 @@ class MessagesLocalizationsVi extends MessagesLocalizations {
   }
 
   @override
-  String get forgetConfirmTitle => 'Xoá tin nhắn đã lưu?';
+  String get forgetConfirmTitle => 'Xóa tin nhắn đã lưu?';
 
   @override
   String forgetConfirmBody(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Thao tác này xoá các tin nhắn đã lưu trên $_temp0. Điện thoại của bạn vẫn giữ nguyên tất cả.';
+    return 'Thao tác này xóa các tin nhắn đã lưu trên $_temp0. Điện thoại của bạn vẫn giữ nguyên tất cả.';
   }
 
   @override
-  String get forgetConfirm => 'Xoá';
+  String get forgetConfirm => 'Xóa';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 }

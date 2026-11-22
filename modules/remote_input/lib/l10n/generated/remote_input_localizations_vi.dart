@@ -23,8 +23,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -43,15 +43,15 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get allowAlways => 'Luôn cho phép';
 
   @override
-  String get dontAllow => 'Không cho phép';
+  String get dontAllow => 'Từ chối';
 
   @override
   String controlledBy(String device, String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -71,8 +71,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -87,8 +87,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -111,12 +111,12 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Chạm Dừng điều khiển để lấy lại $_temp0.';
+    return 'Nhấn Dừng điều khiển để lấy lại $_temp0.';
   }
 
   @override
@@ -124,8 +124,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -141,15 +141,15 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get openSettings => 'Mở Cài đặt';
 
   @override
-  String get dismiss => 'Bỏ qua';
+  String get dismiss => 'Đóng';
 
   @override
   String auditLine(String device, int minutes, String time, String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -167,8 +167,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -204,7 +204,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
       'macOS hỏi trước khi cho ứng dụng di chuyển con trỏ hoặc gõ phím. Bật Ferret trong danh sách, rồi quay lại đây. Công tắc bị mờ? Trên máy Mac công ty, bộ phận IT quyết định việc này.';
 
   @override
-  String get allowAccess => 'Cấp quyền truy cập';
+  String get allowAccess => 'Cấp quyền';
 
   @override
   String get statusNoLinuxBackend => 'Chưa thể điều khiển máy tính này';
@@ -229,8 +229,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -245,8 +245,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -276,8 +276,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -300,8 +300,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -309,14 +309,14 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String get clearHistory => 'Xoá lịch sử';
+  String get clearHistory => 'Xóa lịch sử';
 
   @override
   String get settingsSpeed => 'Tốc độ bàn di chuột';
 
   @override
   String get settingsSpeedBody =>
-      'Con trỏ đi xa bao nhiêu với cùng một quãng vuốt ngón tay.';
+      'Con trỏ đi xa hay gần khi bạn vuốt cùng một đoạn.';
 
   @override
   String get settingsNaturalScroll => 'Cuộn tự nhiên';
@@ -341,7 +341,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   }
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get touchpadHint =>
@@ -450,7 +450,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
         'linux':
             '$device cần quyền ghi vào /dev/uinput, hoặc xdotool hay ydotool, trước. Trên $device: mở Ferret → Cài đặt → Điều khiển để xem còn thiếu gì.',
         'other':
-            '$device cần được cấp quyền di chuyển con trỏ và gõ phím trước. Trên $device: mở Ferret → Cài đặt → Điều khiển rồi nhấp Cấp quyền truy cập.',
+            '$device cần được cấp quyền di chuyển con trỏ và gõ phím trước. Trên $device: mở Ferret → Cài đặt → Điều khiển rồi nhấp Cấp quyền.',
       },
     );
     return '$_temp0';
@@ -546,7 +546,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String healthNeedsPermissionHelp(String device) {
-    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi nhấp Cấp quyền truy cập.';
+    return 'Trên $device: mở Ferret → Cài đặt → Điều khiển rồi nhấp Cấp quyền.';
   }
 
   @override
@@ -559,8 +559,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -592,8 +592,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -605,8 +605,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -618,8 +618,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -631,8 +631,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -644,8 +644,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -657,8 +657,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Cần quyền Trợ năng trên Mac này',
-        'windows': 'Cần cấp quyền trên PC này',
+        'mac': 'Cần quyền Trợ năng trên máy Mac này',
+        'windows': 'Cần cấp quyền trên máy tính này',
         'other': 'Cần cấp quyền trên máy tính này',
       },
     );
@@ -667,7 +667,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String get healthHostNeedsAccessHelp =>
-      'Mở Cài đặt → Điều khiển rồi nhấp Cấp quyền truy cập.';
+      'Mở Cài đặt → Điều khiển rồi nhấp Cấp quyền.';
 
   @override
   String get healthHostUnavailable => 'Chưa thể điều khiển';
@@ -704,30 +704,30 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Cho phép $device khoá $_temp0?';
+    return 'Cho phép $device khóa $_temp0?';
   }
 
   @override
   String lockConsentBody(String device) {
-    return '$device muốn khoá màn hình ngay. Chọn Luôn cho phép thì lần sau sẽ khoá ngay.';
+    return '$device muốn khóa màn hình ngay. Chọn Luôn cho phép thì lần sau sẽ khóa ngay.';
   }
 
   @override
   String lockDevice(String device) {
-    return 'Khoá $device';
+    return 'Khóa $device';
   }
 
   @override
-  String get lockShort => 'Khoá';
+  String get lockShort => 'Khóa';
 
   @override
   String lockAsking(String device) {
-    return 'Đang khoá $device…';
+    return 'Đang khóa $device…';
   }
 
   @override
@@ -737,12 +737,12 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String lockLocked(String device) {
-    return 'Đã khoá $device';
+    return 'Đã khóa $device';
   }
 
   @override
   String lockDenied(String device) {
-    return '$device không cho khoá';
+    return '$device không cho khóa';
   }
 
   @override
@@ -770,7 +770,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String lockFailed(String device) {
-    return '$device không khoá được';
+    return '$device không khóa được';
   }
 
   @override
@@ -778,16 +778,16 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       host,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Khoá $_temp0 mà không cần hỏi';
+    return 'Khóa $_temp0 mà không cần hỏi';
   }
 
   @override
-  String get permissionLockDetail => 'Khoá từ điện thoại, không cần hỏi ở đây.';
+  String get permissionLockDetail => 'Khóa từ điện thoại, không cần hỏi ở đây.';
 
   @override
   String presentOn(String device) {
@@ -816,7 +816,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
   String get presentTimerHint => 'Đồng hồ bắt đầu từ trang chiếu đầu tiên';
 
   @override
-  String get presentRestartTimer => 'Chạm vào thời gian để đếm lại';
+  String get presentRestartTimer => 'Nhấn vào thời gian để đếm lại';
 
   @override
   String get presentWorksWith =>
@@ -827,8 +827,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -851,8 +851,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -864,8 +864,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'của Mac này',
-        'windows': 'của PC này',
+        'macOS': 'của máy Mac này',
+        'windows': 'của máy tính này',
         'other': 'của máy tính này',
       },
     );
@@ -893,8 +893,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'của Mac này',
-        'windows': 'của PC này',
+        'macOS': 'của máy Mac này',
+        'windows': 'của máy tính này',
         'other': 'của máy tính này',
       },
     );
@@ -913,8 +913,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -926,8 +926,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'của Mac này',
-        'windows': 'của PC này',
+        'macOS': 'của máy Mac này',
+        'windows': 'của máy tính này',
         'other': 'của máy tính này',
       },
     );
@@ -972,8 +972,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -995,8 +995,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'của Mac này',
-        'windows': 'của PC này',
+        'macOS': 'của máy Mac này',
+        'windows': 'của máy tính này',
         'other': 'của máy tính này',
       },
     );
@@ -1008,8 +1008,8 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );

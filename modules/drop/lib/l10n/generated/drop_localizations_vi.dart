@@ -72,7 +72,7 @@ class DropLocalizationsVi extends DropLocalizations {
   }
 
   @override
-  String get actionRevealFinder => 'Hiển thị trong Finder';
+  String get actionRevealFinder => 'Hiện trong Finder';
 
   @override
   String get guestTitle => 'Nhận tệp từ khách';
@@ -93,7 +93,7 @@ class DropLocalizationsVi extends DropLocalizations {
       'Đang mở để nhận một tệp từ khách. Sẽ tự đóng khi tệp tới.';
 
   @override
-  String get clearFinished => 'Xoá mục đã xong';
+  String get clearFinished => 'Xóa mục đã xong';
 
   @override
   String transferFiles(int count, String name) {
@@ -158,7 +158,7 @@ class DropLocalizationsVi extends DropLocalizations {
   }
 
   @override
-  String get statusCancelled => 'Đã huỷ';
+  String get statusCancelled => 'Đã hủy';
 
   @override
   String failureDeclined(String device) {
@@ -240,12 +240,12 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String failureCancelledByPeer(String device) {
-    return '$device đã huỷ.';
+    return '$device đã hủy.';
   }
 
   @override
   String failureUnknownTransfer(String device) {
-    return '$device không còn theo dõi lượt truyền này. Hãy gửi lại.';
+    return '$device không còn nhận ra lượt truyền này. Hãy gửi lại.';
   }
 
   @override
@@ -257,13 +257,13 @@ class DropLocalizationsVi extends DropLocalizations {
   String get actionOpen => 'Mở';
 
   @override
-  String get actionReveal => 'Hiển thị trong thư mục';
+  String get actionReveal => 'Hiện trong thư mục';
 
   @override
   String get actionRetry => 'Thử lại';
 
   @override
-  String get actionCancel => 'Huỷ';
+  String get actionCancel => 'Hủy';
 
   @override
   String get actionAccept => 'Chấp nhận';
@@ -275,7 +275,7 @@ class DropLocalizationsVi extends DropLocalizations {
   String get actionCopy => 'Sao chép';
 
   @override
-  String get actionDismiss => 'Bỏ qua';
+  String get actionDismiss => 'Đóng';
 
   @override
   String noticeSending(String device) {
@@ -368,7 +368,7 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String failureUntrusted(String device) {
-    return '$device không đúng là thiết bị như nó tự nhận. Chưa gửi gì cả.';
+    return '$device không phải thiết bị như nó tự nhận. Chưa gửi gì cả.';
   }
 
   @override
@@ -392,7 +392,7 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String offerFingerprint(String fingerprint) {
-    return 'Dấu vân tay $fingerprint';
+    return 'Mã nhận dạng $fingerprint';
   }
 
   @override
@@ -592,11 +592,11 @@ class DropLocalizationsVi extends DropLocalizations {
 
   @override
   String healthCancelledThere(String name) {
-    return '$name đã huỷ lượt truyền gần nhất';
+    return '$name đã hủy lượt truyền gần nhất';
   }
 
   @override
-  String get healthCancelledHere => 'Bạn đã huỷ lượt truyền gần nhất';
+  String get healthCancelledHere => 'Bạn đã hủy lượt truyền gần nhất';
 
   @override
   String healthNoAnswerThere(String name) {

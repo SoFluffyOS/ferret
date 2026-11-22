@@ -323,7 +323,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairFailedExpired.
   ///
   /// In en, this message translates to:
-  /// **'That code expired. Tap New code on your computer, then scan again.'**
+  /// **'That code expired. Click New code on your computer, then scan again.'**
   String get pairFailedExpired;
 
   /// No description provided for @pairFailedBadProof.
@@ -2231,7 +2231,7 @@ abstract class ShellLocalizations {
   /// No description provided for @tipDrag.
   ///
   /// In en, this message translates to:
-  /// **'Drag files onto the Ferret icon in the menubar to send them.'**
+  /// **'Drag files onto the Ferret icon in the menu bar to send them.'**
   String get tipDrag;
 
   /// No description provided for @tipDismiss.
@@ -2255,7 +2255,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorFirewall.
   ///
   /// In en, this message translates to:
-  /// **'Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.'**
+  /// **'Windows Firewall may be blocking Ferret.\n1. Click Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr click Open Windows Firewall, then Change settings, and tick Ferret.'**
   String get doctorFirewall;
 
   /// No description provided for @doctorFixOpenFirewall.
@@ -2447,7 +2447,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorFirewallLinux.
   ///
   /// In en, this message translates to:
-  /// **'{firewall} is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.'**
+  /// **'{firewall} is on, and it blocks Ferret until you let it through.\n1. Click Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.'**
   String doctorFirewallLinux(String firewall);
 
   /// No description provided for @doctorFixCopyFirewallCommand.

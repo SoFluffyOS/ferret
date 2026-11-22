@@ -25,7 +25,7 @@ class FindLocalizationsVi extends FindLocalizations {
   String get ringAgain => 'Đổ chuông lại';
 
   @override
-  String get dismiss => 'Bỏ qua';
+  String get dismiss => 'Đóng';
 
   @override
   String get done => 'Xong';
@@ -85,7 +85,7 @@ class FindLocalizationsVi extends FindLocalizations {
 
   @override
   String outgoingStoppedElsewhere(String name) {
-    return '$name đã được dừng từ thiết bị khác.';
+    return 'Một thiết bị khác đã tắt chuông $name.';
   }
 
   @override
@@ -161,7 +161,7 @@ class FindLocalizationsVi extends FindLocalizations {
         'other': 'điện thoại',
       },
     );
-    return 'Nếu không có quyền này, $_temp0 vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép trong Cài đặt, tìm Ferret trong danh sách và bật lên.';
+    return 'Nếu không có quyền này, $_temp0 vẫn đổ chuông khi im lặng nhưng không kêu khi Không làm phiền. Nhấn Cho phép ở Cài đặt, tìm Ferret trong danh sách và bật lên.';
   }
 
   @override
@@ -177,7 +177,7 @@ class FindLocalizationsVi extends FindLocalizations {
 
   @override
   String get settingsFullScreenOff =>
-      'Màn hình đổ chuông không hiện được trên màn hình khoá';
+      'Màn hình đổ chuông không hiện được trên màn hình khóa';
 
   @override
   String get settingsFullScreenHowTo =>
@@ -226,7 +226,7 @@ class FindLocalizationsVi extends FindLocalizations {
 
   @override
   String healthNeedsPermissionHelp(String name) {
-    return 'Trên $name: mở Ferret → Cài đặt → Điều khiển và nhấn Cho phép trong Cài đặt ở mục Đổ chuông khi im lặng.';
+    return 'Trên $name: mở Ferret → Cài đặt → Điều khiển và nhấn Cho phép ở Cài đặt trong mục Đổ chuông khi im lặng.';
   }
 
   @override

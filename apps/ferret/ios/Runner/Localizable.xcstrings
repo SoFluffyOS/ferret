@@ -95,7 +95,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Không có thiết bị đã ghép nối nào tên như vậy."
+            "value": "Không có thiết bị đã ghép đôi nào có tên này."
           }
         }
       }
@@ -161,7 +161,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gửi bộ nhớ tạm"
+            "value": "Gửi bảng nhớ tạm"
           }
         }
       }

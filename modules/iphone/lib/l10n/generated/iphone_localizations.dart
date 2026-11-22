@@ -269,7 +269,7 @@ abstract class IphoneLocalizations {
   /// No description provided for @limitsBody.
   ///
   /// In en, this message translates to:
-  /// **'Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and handoff to its own devices.'**
+  /// **'Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and Handoff to its own devices.'**
   String limitsBody(String here);
 
   /// No description provided for @macNoteTitle.

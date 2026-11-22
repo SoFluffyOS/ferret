@@ -64,7 +64,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairTitle => 'Thêm thiết bị';
 
   @override
-  String get pairShowCode => 'Ghép bằng mã QR';
+  String get pairShowCode => 'Ghép đôi bằng mã QR';
 
   @override
   String get pairShowCodeShort => 'Dùng mã QR';
@@ -74,11 +74,11 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get pairIphoneBody =>
-      'Máy tính sẽ hiện trong mục Lân cận khi Ferret đang mở trên cả hai. Không thấy? Trên máy tính, mở Ferret, bấm + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.';
+      'Máy tính sẽ hiện trong mục Lân cận khi Ferret đang mở trên cả hai. Không thấy? Trên máy tính, mở Ferret, nhấp + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.';
 
   @override
   String get pairShowCodeBody =>
-      'Trên điện thoại, mở Ferret và chạm +, rồi chọn Ghép đôi bằng mã QR.';
+      'Trên điện thoại, mở Ferret và nhấn +, rồi chọn Ghép đôi bằng mã QR.';
 
   @override
   String get pairCopyLink => 'Sao chép liên kết';
@@ -116,7 +116,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get pairCompareTitle =>
-      'Kiểm tra thiết bị kia có hiện đúng mã này, rồi chạm Ghép đôi trên đó.';
+      'Kiểm tra thiết bị kia có hiện đúng mã này, rồi nhấn Ghép đôi trên đó.';
 
   @override
   String get pairWaiting => 'Đang chờ thiết bị kia…';
@@ -139,7 +139,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get pairFailedExpired =>
-      'Mã đã hết hạn. Bấm Mã mới trên máy tính rồi quét lại.';
+      'Mã đã hết hạn. Nhấp Mã mới trên máy tính rồi quét lại.';
 
   @override
   String get pairFailedBadProof =>
@@ -205,7 +205,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get settingsPrivacyBody =>
-      'Những gì bạn chia sẻ chỉ đến các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hoá đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.';
+      'Những gì bạn chia sẻ chỉ đến các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hóa đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.';
 
   @override
   String get settingsQuit => 'Thoát Ferret';
@@ -221,7 +221,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get back => 'Quay lại';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get menuOpen => 'Mở Ferret';
@@ -322,7 +322,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get welcomePlatforms => 'Android · iPhone · Mac · Windows · Linux';
 
   @override
-  String get deviceLastSeenJustNow => 'Vừa thấy xong';
+  String get deviceLastSeenJustNow => 'Vừa mới thấy';
 
   @override
   String deviceLastSeenMinutes(int minutes) {
@@ -382,7 +382,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này đang có Wi-Fi hoặc cáp mạng',
+        'mac': 'Máy Mac này đang có Wi-Fi hoặc cáp mạng',
         'phone': 'Điện thoại này đang có Wi-Fi',
         'tablet': 'Máy tính bảng này đang có Wi-Fi',
         'other': 'Máy tính này đang có Wi-Fi hoặc cáp mạng',
@@ -396,7 +396,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'Máy Mac này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -410,7 +410,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'Máy Mac này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -424,7 +424,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'Máy Mac này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -438,7 +438,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'Máy Mac này',
         'phone': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -462,7 +462,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -476,7 +476,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -511,7 +511,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -548,7 +548,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get stayNotifications =>
-      'Cho phép thông báo của Ferret để Android để nó tiếp tục chạy.';
+      'Cho phép thông báo của Ferret để Android cho nó tiếp tục chạy.';
 
   @override
   String get stayNotificationsFix => 'Cho phép';
@@ -581,7 +581,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get stayStepsOneplus =>
-      'Cài đặt → Ứng dụng → Ferret → Mức sử dụng pin: bật Cho phép hoạt động trong nền. Sau đó khoá Ferret trong màn hình ứng dụng gần đây.';
+      'Cài đặt → Ứng dụng → Ferret → Mức sử dụng pin: bật Cho phép hoạt động trong nền. Sau đó khóa Ferret trong màn hình ứng dụng gần đây.';
 
   @override
   String get stayStepsHuawei =>
@@ -740,7 +740,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get dropClose => 'Đóng';
 
   @override
-  String get dropCancel => 'Huỷ';
+  String get dropCancel => 'Hủy';
 
   @override
   String dropSendTo(String name) {
@@ -782,7 +782,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get scanNotFerret =>
-      'Đây không phải mã của Ferret. Trên máy tính, mở Ferret và bấm +, rồi chọn Ghép đôi bằng mã QR.';
+      'Đây không phải mã của Ferret. Trên máy tính, mở Ferret và nhấp +, rồi chọn Ghép đôi bằng mã QR.';
 
   @override
   String get offersTitle => 'Làm được nhiều hơn';
@@ -816,8 +816,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -832,8 +832,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -853,8 +853,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -866,8 +866,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -884,8 +884,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -933,7 +933,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -950,7 +950,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -991,7 +991,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String nearbyTapThere(String device) {
-    return 'Trên $device, chạm Ghép đôi.';
+    return 'Trên $device, nhấn Ghép đôi.';
   }
 
   @override
@@ -1085,7 +1085,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Nó được dùng những gì $asker được dùng ở đây. Để sau sẽ giữ nó ngoài $_temp0.';
+    return 'Thiết bị này sẽ được dùng những gì $asker được dùng ở đây. Chọn Để sau nếu không muốn thêm nó vào $_temp0.';
   }
 
   @override
@@ -1119,7 +1119,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
         'other': 'máy tính này',
       },
     );
-    return 'Giữ $device ngoài $_temp0';
+    return 'Không thêm $device vào $_temp0';
   }
 
   @override
@@ -1138,7 +1138,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get groupRemoveAskDetail =>
-      'Nó đã bị gỡ khỏi tất cả thiết bị của bạn ở đó. Giữ sẽ để nó vẫn ghép đôi ở đây.';
+      'Nó đã bị gỡ khỏi tất cả thiết bị của bạn ở đó. Chọn Giữ để nó vẫn được ghép đôi ở đây.';
 
   @override
   String get groupRemove => 'Gỡ';
@@ -1182,7 +1182,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count thay đổi về thiết bị của bạn cần bạn',
+      other: '$count thay đổi về thiết bị của bạn cần bạn xử lý',
     );
     return '$_temp0';
   }
@@ -1201,14 +1201,14 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceForgetEverywhere => 'Gỡ khỏi tất cả thiết bị của tôi';
 
   @override
-  String get deviceForgetEverywhereShort => 'Gỡ khỏi mọi máy';
+  String get deviceForgetEverywhereShort => 'Gỡ mọi nơi';
 
   @override
   String deviceForgetHere(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1226,7 +1226,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get settingsSharePairingsBody =>
-      'Thiết bị bạn ghép đôi ở đây cũng tham gia các thiết bị khác của bạn. Khi một trong số đó thêm hoặc gỡ một thiết bị, Ferret ở đây sẽ hỏi bạn trước.';
+      'Thiết bị bạn ghép đôi ở đây cũng được thêm vào các thiết bị khác của bạn. Khi một máy trong số đó thêm hoặc gỡ thiết bị, Ferret ở đây sẽ hỏi bạn trước.';
 
   @override
   String get settingsAlwaysVisible => 'Luôn hiển thị';
@@ -1240,7 +1240,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1258,7 +1258,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1272,7 +1272,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1286,7 +1286,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1418,7 +1418,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsShortcutTurnOn => 'Bật';
 
   @override
-  String get settingsShortcutRecording => 'Nhấn tổ hợp phím mới. Esc để huỷ.';
+  String get settingsShortcutRecording => 'Nhấn tổ hợp phím mới. Esc để hủy.';
 
   @override
   String get settingsShortcutTaken =>
@@ -1544,7 +1544,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1568,7 +1568,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1582,7 +1582,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1641,7 +1641,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get welcomeNearbyBody =>
-      'Chạm Ghép đôi bên cạnh thiết bị kia. Chỉ cần làm một lần.';
+      'Nhấn Ghép đôi bên cạnh thiết bị kia. Chỉ cần làm một lần.';
 
   @override
   String get nearbyNotTheOne =>
@@ -1654,7 +1654,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get activitySeeAll => 'Xem tất cả';
 
   @override
-  String get activityDismiss => 'Bỏ qua';
+  String get activityDismiss => 'Đóng';
 
   @override
   String get activityQuickLook => 'Xem nhanh';
@@ -1746,7 +1746,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get doctorFirewall =>
-      'Có thể Windows Firewall đang chặn Ferret.\n1. Chạm Cho phép qua tường lửa, rồi chọn Có khi Windows hỏi.\n2. Thử lại.\nHoặc chạm Mở Windows Firewall, chọn Thay đổi thiết đặt rồi đánh dấu Ferret.';
+      'Có thể Windows Firewall đang chặn Ferret.\n1. Nhấp Cho phép qua tường lửa, rồi chọn Có khi Windows hỏi.\n2. Thử lại.\nHoặc nhấp Mở Windows Firewall, chọn Thay đổi thiết đặt rồi đánh dấu Ferret.';
 
   @override
   String get doctorFixOpenFirewall => 'Mở Windows Firewall';
@@ -1855,7 +1855,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorFirewallLinux(String firewall) {
-    return '$firewall đang bật và sẽ chặn Ferret cho đến khi bạn cho phép.\n1. Chạm Sao chép lệnh.\n2. Dán vào terminal rồi nhập mật khẩu.\n3. Thử lại.';
+    return '$firewall đang bật và sẽ chặn Ferret cho đến khi bạn cho phép.\n1. Nhấp Sao chép lệnh.\n2. Dán vào terminal rồi nhập mật khẩu.\n3. Thử lại.';
   }
 
   @override
@@ -1951,7 +1951,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2032,8 +2032,8 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -2061,7 +2061,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2075,7 +2075,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2089,7 +2089,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2140,14 +2140,14 @@ class ShellLocalizationsVi extends ShellLocalizations {
       'Để chọn một thiết bị được dùng những gì, hãy mở thiết bị đó và xem mục Những gì thiết bị được dùng.';
 
   @override
-  String get deviceAway => 'Đã kết nối · đang khoá';
+  String get deviceAway => 'Đã kết nối · đang khóa';
 
   @override
   String doctorHotspot(String phone, String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2161,7 +2161,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'thiết bị kia',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2194,13 +2194,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
     );
-    return '1. Cắm $device vào $_temp0 bằng cáp USB.\n2. Trên $device, vuốt từ trên xuống và chạm vào thông báo USB.\n3. Chọn Webcam.\n4. Trong ứng dụng gọi video, chọn điện thoại làm camera.';
+    return '1. Cắm $device vào $_temp0 bằng cáp USB.\n2. Trên $device, vuốt từ trên xuống và nhấn vào thông báo USB.\n3. Chọn Webcam.\n4. Trong ứng dụng gọi video, chọn điện thoại làm camera.';
   }
 
   @override
@@ -2210,7 +2210,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String webcamOverWifi(String device) {
-    return 'Không có cáp? Dùng camera của $device gửi camera qua Wi-Fi, vào một cửa sổ Ferret. Ứng dụng gọi video chưa chọn được nó từ đó.';
+    return 'Không có cáp? Mục Dùng camera của $device gửi hình qua Wi-Fi, vào một cửa sổ Ferret. Ứng dụng gọi video chưa chọn được hình từ đó.';
   }
 
   @override
@@ -2287,7 +2287,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
+        'mac': 'máy Mac này',
         'phone': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -2340,7 +2340,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get localNetworkBody =>
-      'Ferret tìm và trò chuyện với các thiết bị của chính bạn trên Wi-Fi này. Android hỏi trước khi bất kỳ ứng dụng nào làm vậy, nên Ferret cần bạn đồng ý. Không có gì rời khỏi mạng của bạn.';
+      'Ferret tìm và kết nối với các thiết bị của chính bạn trên Wi-Fi này. Android luôn hỏi trước khi cho ứng dụng làm vậy, nên Ferret cần bạn đồng ý. Không có gì rời khỏi mạng của bạn.';
 
   @override
   String get localNetworkAllow => 'Cho phép';

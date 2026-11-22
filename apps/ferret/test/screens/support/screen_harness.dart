@@ -13,6 +13,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:protocol/protocol.dart';
 import 'package:shell/shell.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -85,9 +87,19 @@ const tabletSizes = [
 /// Pixel ratio of the saved PNGs.
 const capturePixelRatio = 2.0;
 
+/// Run the screen tests with `--dart-define=FERRET_LOCALE=vi` to render
+/// every screen in that language, into `temp/screens/vi/` so the English
+/// renders stay where they are. Scripts that find a widget by its English
+/// text stop before their capture there.
+const screensLocale = String.fromEnvironment('FERRET_LOCALE');
+
 /// Where the PNGs land, relative to `apps/ferret` (the test's working
-/// directory): the repo's gitignored `temp/screens`.
-final screensDirectory = Directory('../../temp/screens');
+/// directory): the repo's gitignored `temp/screens`, or its
+/// [screensLocale] folder.
+final screensDirectory = Directory(switch (screensLocale) {
+  '' => '../../temp/screens',
+  final locale => '../../temp/screens/$locale',
+});
 
 /// One running Ferret: the engine the app shows, plus a second engine on
 /// loopback when the screen needs a connected phone.
@@ -137,6 +149,11 @@ class ScreenRig {
     bool asTablet = false,
     bool asIphone = false,
   }) async {
+    if (screensLocale.isNotEmpty) {
+      await tester.runAsync(initializeDateFormatting);
+      AppLocale.chosen.value = Locale(screensLocale);
+    }
+
     final rig = await tester.runAsync(() async {
       final discovery = SilentDiscovery();
       final engine = await FerretEngine.create(

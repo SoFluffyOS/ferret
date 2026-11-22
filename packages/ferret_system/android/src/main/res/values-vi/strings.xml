@@ -1,5 +1,5 @@
 <resources>
-    <string name="ferret_system_channel_name">Luôn kết nối</string>
+    <string name="ferret_system_channel_name">Giữ kết nối</string>
     <string name="ferret_system_channel_description">Giữ Ferret kết nối với thiết bị của bạn. Bạn có thể ẩn thông báo này ở đây, Ferret vẫn chạy.</string>
     <string name="ferret_system_waiting_title">Đang chờ thiết bị của bạn</string>
     <string name="ferret_system_waiting_text">Ferret kết nối ngay khi có một thiết bị trong cùng mạng.</string>
@@ -7,7 +7,7 @@
     <plurals name="ferret_system_connected_many">
         <item quantity="other">Đã kết nối với %1$s và %2$d thiết bị khác</item>
     </plurals>
-    <string name="ferret_system_connected_text">Sao chép gì đó, rồi chạm Gửi bảng nhớ tạm.</string>
+    <string name="ferret_system_connected_text">Sao chép gì đó, rồi nhấn Gửi bảng nhớ tạm.</string>
     <string name="ferret_system_paused_title">Ferret đang tạm dừng</string>
     <string name="ferret_system_paused_until">Chạy lại lúc %1$s</string>
     <string name="ferret_system_paused_until_resumed">Đến khi bạn cho chạy tiếp</string>
@@ -22,19 +22,19 @@
     </plurals>
     <string name="ferret_system_clipboard_empty">Bảng nhớ tạm đang trống</string>
     <string name="ferret_system_tasker_label">Ferret</string>
-    <string name="ferret_system_tasker_title">Hành động Ferret</string>
+    <string name="ferret_system_tasker_title">Thao tác Ferret</string>
     <string name="ferret_system_tasker_command">Việc cần làm</string>
     <string name="ferret_system_tasker_send_text">Gửi văn bản đến thiết bị của bạn</string>
     <string name="ferret_system_tasker_ring">Đổ chuông một thiết bị</string>
     <string name="ferret_system_tasker_open">Mở liên kết trên một thiết bị</string>
-    <string name="ferret_system_tasker_run_action">Chạy một hành động máy tính</string>
+    <string name="ferret_system_tasker_run_action">Chạy một thao tác trên máy tính</string>
     <string name="ferret_system_tasker_notify">Hiện thông báo trên một thiết bị</string>
     <string name="ferret_system_tasker_device">Thiết bị</string>
     <string name="ferret_system_tasker_device_hint">Tên của nó, ví dụ MacBook</string>
     <string name="ferret_system_tasker_device_needed">Hãy nhập tên thiết bị</string>
     <string name="ferret_system_tasker_text">Văn bản</string>
     <string name="ferret_system_tasker_link">Liên kết</string>
-    <string name="ferret_system_tasker_action">Hành động, ví dụ sleep hoặc lock</string>
+    <string name="ferret_system_tasker_action">Thao tác, ví dụ sleep hoặc lock</string>
     <string name="ferret_system_tasker_title_field">Tiêu đề</string>
     <string name="ferret_system_tasker_body">Nội dung</string>
     <string name="ferret_system_tasker_value_hint">Dùng được biến Tasker, ví dụ %CLIP</string>

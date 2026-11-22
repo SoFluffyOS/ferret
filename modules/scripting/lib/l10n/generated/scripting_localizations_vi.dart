@@ -36,8 +36,8 @@ class ScriptingLocalizationsVi extends ScriptingLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );

@@ -99,7 +99,7 @@
   "worksTitle": "What works with an iPhone",
   "worksBody": "Notifications as they arrive, with Clear, Answer and Decline. Play, pause, skip and volume for whatever the iPhone plays.",
   "limitsTitle": "Not yet",
-  "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and handoff to its own devices.",
+  "limitsBody": "Reading and sending texts (SMS and iMessage) and taking calls on {here, select, macOS{this Mac} windows{this PC} other{this computer}}. Apple keeps files, clipboard and Handoff to its own devices.",
   "@limitsBody": {
     "placeholders": {
       "here": {

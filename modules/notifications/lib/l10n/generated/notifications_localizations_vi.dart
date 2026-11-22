@@ -96,7 +96,7 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
 
   @override
   String get skipWhileUsingDetail =>
-      'Khi màn hình đang bật và đã mở khoá, bạn đã thấy thông báo ngay trên điện thoại.';
+      'Khi màn hình đang bật và đã mở khóa, bạn đã thấy thông báo ngay trên điện thoại.';
 
   @override
   String get chooseApps => 'Chọn ứng dụng';
@@ -157,7 +157,7 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
       'Bật những ứng dụng bạn muốn thấy trên máy tính.';
 
   @override
-  String get appPickerApps => 'Ứng dụng, gần đây nhất trước';
+  String get appPickerApps => 'Ứng dụng, dùng gần đây lên đầu';
 
   @override
   String get selectAll => 'Chọn tất cả';
@@ -240,13 +240,13 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
   }
 
   @override
-  String get clearAll => 'Xoá tất cả';
+  String get clearAll => 'Xóa tất cả';
 
   @override
   String get reply => 'Trả lời';
 
   @override
-  String get dismiss => 'Bỏ qua';
+  String get dismiss => 'Đóng';
 
   @override
   String get offline => 'ngoại tuyến';

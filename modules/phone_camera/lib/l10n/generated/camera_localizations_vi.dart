@@ -10,7 +10,7 @@ class CameraLocalizationsVi extends CameraLocalizations {
   CameraLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get title => 'Máy ảnh';
+  String get title => 'Camera';
 
   @override
   String get takePhoto => 'Chụp ảnh';
@@ -20,19 +20,19 @@ class CameraLocalizationsVi extends CameraLocalizations {
 
   @override
   String askPhotoTitle(String device) {
-    return '$device muốn một tấm ảnh';
+    return '$device muốn bạn chụp một tấm ảnh';
   }
 
   @override
   String askDocumentTitle(String device) {
-    return '$device muốn quét một tài liệu';
+    return '$device muốn bạn quét một tài liệu';
   }
 
   @override
   String get askBody => 'Không có gì được chụp cho đến khi bạn bấm nút chụp.';
 
   @override
-  String get askCapturing => 'Máy ảnh đang mở.';
+  String get askCapturing => 'Camera đang mở.';
 
   @override
   String get askTakePhoto => 'Chụp ảnh';
@@ -52,7 +52,7 @@ class CameraLocalizationsVi extends CameraLocalizations {
         'other': 'điện thoại này',
       },
     );
-    return 'Chạm để trả lời trên $_temp0.';
+    return 'Nhấn để trả lời trên $_temp0.';
   }
 
   @override
@@ -95,14 +95,14 @@ class CameraLocalizationsVi extends CameraLocalizations {
   String get copy => 'Sao chép';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get tryAgain => 'Thử lại';
 
   @override
   String endDeclined(String device) {
-    return '$device nói để sau';
+    return '$device đã chọn Để sau';
   }
 
   @override
@@ -117,20 +117,20 @@ class CameraLocalizationsVi extends CameraLocalizations {
 
   @override
   String get endUnsupportedDetail =>
-      'Máy không có máy ảnh mà Ferret mở được, hoặc không có trình quét tài liệu.';
+      'Máy không có camera mà Ferret mở được, hoặc không có trình quét tài liệu.';
 
   @override
   String endNoPermission(String device) {
-    return 'Không có quyền dùng máy ảnh trên $device';
+    return 'Không có quyền dùng camera trên $device';
   }
 
   @override
   String get endNoPermissionDetail =>
-      'Cho phép Ferret dùng máy ảnh trong phần cài đặt của điện thoại.';
+      'Cho phép Ferret dùng camera trong phần cài đặt của điện thoại.';
 
   @override
   String endBusy(String device) {
-    return 'Máy ảnh trên $device đang mở';
+    return 'Camera trên $device đang mở';
   }
 
   @override

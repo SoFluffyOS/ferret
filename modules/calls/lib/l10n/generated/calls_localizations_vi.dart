@@ -54,7 +54,7 @@ class CallsLocalizationsVi extends CallsLocalizations {
 
   @override
   String activityOnCall(String caller) {
-    return 'Đang gọi với $caller';
+    return 'Đang nói chuyện với $caller';
   }
 
   @override

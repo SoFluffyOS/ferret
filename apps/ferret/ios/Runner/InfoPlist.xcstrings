@@ -8,7 +8,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ferret dùng camera để quét mã ghép đôi trên thiết bị kia của bạn, và để chụp ảnh hoặc quét tài liệu cho máy tính khi bạn chạm Chụp ảnh."
+            "value": "Ferret dùng camera để quét mã ghép đôi trên thiết bị kia của bạn, và để chụp ảnh hoặc quét tài liệu cho máy tính khi bạn nhấn Chụp ảnh."
           }
         },
         "en": {
@@ -62,7 +62,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ferret hiện ảnh và ảnh chụp màn hình gần đây của bạn trên những máy tính bạn chọn, chỉ khi Ferret đang mở. Ferret không bao giờ sửa hay xoá ảnh."
+            "value": "Ferret hiện ảnh và ảnh chụp màn hình gần đây của bạn trên những máy tính bạn chọn, chỉ khi Ferret đang mở. Ferret không bao giờ sửa hay xóa ảnh."
           }
         },
         "en": {

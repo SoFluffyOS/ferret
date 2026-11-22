@@ -138,7 +138,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairFailedExpired =>
-      'That code expired. Tap New code on your computer, then scan again.';
+      'That code expired. Click New code on your computer, then scan again.';
 
   @override
   String get pairFailedBadProof =>
@@ -1740,7 +1740,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get tipDrag =>
-      'Drag files onto the Ferret icon in the menubar to send them.';
+      'Drag files onto the Ferret icon in the menu bar to send them.';
 
   @override
   String get tipDismiss => 'Got it';
@@ -1754,7 +1754,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFirewall =>
-      'Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.';
+      'Windows Firewall may be blocking Ferret.\n1. Click Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr click Open Windows Firewall, then Change settings, and tick Ferret.';
 
   @override
   String get doctorFixOpenFirewall => 'Open Windows Firewall';
@@ -1863,7 +1863,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorFirewallLinux(String firewall) {
-    return '$firewall is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.';
+    return '$firewall is on, and it blocks Ferret until you let it through.\n1. Click Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.';
   }
 
   @override

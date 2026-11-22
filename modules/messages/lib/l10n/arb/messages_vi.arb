@@ -64,7 +64,7 @@
   "outcomeFailed": "{name} không gửi được. Hãy gửi lại, hoặc gửi từ {name}.",
   "retrySend": "Gửi lại",
   "discard": "Bỏ",
-  "kindFailed": "Chưa gửi được",
+  "kindFailed": "Chưa đến nơi",
   "kindQueued": "Đang chờ gửi",
   "kindOutbox": "Đang gửi…",
   "photo": "Ảnh",
@@ -88,10 +88,10 @@
   "noticeGroupBody": "{sender}: {text}",
   "notifySetting": "Hiện tin nhắn mới dưới dạng thông báo",
   "notifyDetail": "Kèm nút Trả lời, trừ khi cuộc trò chuyện đang mở sẵn ở đây.",
-  "forgetHistory": "Xoá tin đã lưu",
-  "forgetDetail": "Ferret lưu các tin nhắn gần đây trên {here, select, macOS{Mac này} windows{PC này} other{máy tính này}} để vẫn xem được khi điện thoại ngoại tuyến.",
-  "forgetConfirmTitle": "Xoá tin nhắn đã lưu?",
-  "forgetConfirmBody": "Thao tác này xoá các tin nhắn đã lưu trên {here, select, macOS{Mac này} windows{PC này} other{máy tính này}}. Điện thoại của bạn vẫn giữ nguyên tất cả.",
-  "forgetConfirm": "Xoá",
-  "cancel": "Huỷ"
+  "forgetHistory": "Xóa tin đã lưu",
+  "forgetDetail": "Ferret lưu các tin nhắn gần đây trên {here, select, macOS{máy Mac này} windows{máy tính này} other{máy tính này}} để vẫn xem được khi điện thoại ngoại tuyến.",
+  "forgetConfirmTitle": "Xóa tin nhắn đã lưu?",
+  "forgetConfirmBody": "Thao tác này xóa các tin nhắn đã lưu trên {here, select, macOS{máy Mac này} windows{máy tính này} other{máy tính này}}. Điện thoại của bạn vẫn giữ nguyên tất cả.",
+  "forgetConfirm": "Xóa",
+  "cancel": "Hủy"
 }

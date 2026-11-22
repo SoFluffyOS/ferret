@@ -68,7 +68,7 @@
   "pairFailedUnreachable": "Couldn't reach that device. Put both on the same Wi-Fi, then try again.",
   "pairFailedUnreachableIphone": "Couldn't reach that computer. Check that both are on the same Wi-Fi, and that Ferret may use the local network in Settings.",
   "pairFailedRejected": "Your other device said not now.",
-  "pairFailedExpired": "That code expired. Tap New code on your computer, then scan again.",
+  "pairFailedExpired": "That code expired. Click New code on your computer, then scan again.",
   "pairFailedBadProof": "The codes didn't match, so nothing was paired. Try once more, close to the other device.",
   "pairFailedWrongDevice": "A different device answered. Pairing stopped to keep you safe.",
   "pairFailedTimedOut": "Your other device didn't answer.",
@@ -1353,11 +1353,11 @@
     }
   },
   "tipDone": "That's it.",
-  "tipDrag": "Drag files onto the Ferret icon in the menubar to send them.",
+  "tipDrag": "Drag files onto the Ferret icon in the menu bar to send them.",
   "tipDismiss": "Got it",
   "tipPaste": "Tired of the Allow Paste question? Settings → Ferret → Paste from Other Apps → Allow",
   "tipPasteOpen": "Open Settings",
-  "doctorFirewall": "Windows Firewall may be blocking Ferret.\n1. Tap Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr tap Open Windows Firewall, then Change settings, and tick Ferret.",
+  "doctorFirewall": "Windows Firewall may be blocking Ferret.\n1. Click Allow through firewall, then Yes when Windows asks.\n2. Try again.\nOr click Open Windows Firewall, then Change settings, and tick Ferret.",
   "doctorFixOpenFirewall": "Open Windows Firewall",
   "sidebarHide": "Hide sidebar",
   "sidebarShow": "Show sidebar",
@@ -1444,7 +1444,7 @@
       }
     }
   },
-  "doctorFirewallLinux": "{firewall} is on, and it blocks Ferret until you let it through.\n1. Tap Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.",
+  "doctorFirewallLinux": "{firewall} is on, and it blocks Ferret until you let it through.\n1. Click Copy the command.\n2. Paste it in a terminal and enter your password.\n3. Try again.",
   "@doctorFirewallLinux": {
     "placeholders": {
       "firewall": {

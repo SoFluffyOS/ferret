@@ -45,7 +45,7 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAccessibilityUsageDescription</key>
-	<string>Ferret moves the pointer and types for a phone you allowed, only while Controlled by shows on screen.</string>
+	<string>Ferret moves the pointer and types for a phone you allowed, only while “… is controlling this Mac” shows on screen.</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Ferret reads the page in your browser and what Music or Spotify is playing, only when you send it or turn on sharing, so your other devices can continue it. It also restarts or shuts down this Mac when a device you allowed asks.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

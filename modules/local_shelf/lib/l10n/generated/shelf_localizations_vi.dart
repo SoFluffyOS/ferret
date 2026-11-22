@@ -47,6 +47,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
       count,
       locale: localeName,
       other: 'Kéo cả $count mục ra',
+      one: 'Kéo ra',
     );
     return '$_temp0';
   }
@@ -65,7 +66,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   String get clear => 'Dọn';
 
   @override
-  String get clearTooltip => 'Bỏ mọi thứ khỏi kệ tạm';
+  String get clearTooltip => 'Gỡ mọi thứ khỏi kệ tạm';
 
   @override
   String clearConfirm(int count) {
@@ -82,20 +83,21 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bỏ cả $count mục khỏi kệ tạm. Tệp vẫn ở chỗ cũ.',
+      other: 'Gỡ cả $count mục khỏi kệ tạm. Tệp vẫn ở chỗ cũ.',
+      one: 'Gỡ mục này khỏi kệ tạm. Tệp vẫn ở chỗ cũ.',
     );
     return '$_temp0';
   }
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
-  String get remove => 'Bỏ';
+  String get remove => 'Gỡ';
 
   @override
   String removeTooltip(String name) {
-    return 'Bỏ $name khỏi kệ tạm';
+    return 'Gỡ $name khỏi kệ tạm';
   }
 
   @override
@@ -108,7 +110,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   String get copy => 'Sao chép';
 
   @override
-  String get missing => 'Đã chuyển đi hoặc bị xoá';
+  String get missing => 'Đã chuyển đi hoặc bị xóa';
 
   @override
   String get kindFile => 'Tệp';
@@ -152,7 +154,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get dragNote =>
-      'Kéo bất cứ thứ gì ra ứng dụng khác, hoặc thả lên một thiết bị để gửi. Phím cách để xem trước.';
+      'Kéo bất cứ thứ gì ra ứng dụng khác, hoặc thả lên một thiết bị để gửi. Nhấn phím cách để xem trước.';
 
   @override
   String selectedCount(int count) {
@@ -165,7 +167,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   }
 
   @override
-  String get keepCopies => 'Giữ bản sao chép';
+  String get keepCopies => 'Giữ bản sao';
 
   @override
   String keepCopiesBody(String keep) {
@@ -182,14 +184,14 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get keepCopiesOffBody =>
-      'Chỉ những gì bạn thả vào mới ở lại đây. Ferret không theo dõi bộ nhớ tạm cho kệ tạm.';
+      'Chỉ những gì bạn thả vào mới ở lại đây. Ferret không theo dõi bảng nhớ tạm cho kệ tạm.';
 
   @override
   String get copiesFor => 'Giữ trong';
 
   @override
   String get copiesForTooltip =>
-      'Bản sao chép nằm trên kệ tạm bao lâu. Những gì bạn thả vào thì ở lại tới khi bạn bỏ đi.';
+      'Bản sao nằm trên kệ tạm bao lâu. Những gì bạn thả vào thì ở lại tới khi bạn gỡ đi.';
 
   @override
   String copiesForShort(String keep) {
@@ -218,7 +220,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
   }
 
   @override
-  String get summaryCopies => 'Giữ bản sao chép';
+  String get summaryCopies => 'Giữ bản sao';
 
   @override
   String get summaryDropped => 'Chỉ những gì bạn thả';
@@ -234,7 +236,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
 
   @override
   String get springOpenBody =>
-      'Giữ một thao tác kéo trên biểu tượng ở thanh menu, Ferret sẽ mở kèm kệ tạm, theo độ trễ nạp lò xo của máy Mac.';
+      'Kéo một thứ và giữ yên trên biểu tượng ở thanh menu, Ferret sẽ mở kèm kệ tạm sau độ trễ nạp lò xo của máy Mac.';
 
   @override
   String get boxOnDrag => 'Hộp khi kéo';
@@ -338,7 +340,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       mode,
       {
-        'sendToLast': 'Thiết bị gần nhất',
+        'sendToLast': 'Thiết bị vừa dùng',
         'shelf': 'Kệ tạm',
         'other': 'Hỏi',
       },
@@ -351,7 +353,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       mode,
       {
-        'sendToLast': 'Gửi đến thiết bị dùng gần nhất',
+        'sendToLast': 'Gửi đến thiết bị vừa dùng',
         'shelf': 'Để lên kệ tạm',
         'other': 'Luôn hỏi',
       },
@@ -364,7 +366,7 @@ class ShelfLocalizationsVi extends ShelfLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       mode,
       {
-        'sendToLast': 'Tệp được gửi đến thiết bị duy nhất đang kết nối, hoặc thiết bị bạn dùng gần nhất, với 3 giây để hoàn tác. Văn bản và liên kết được để lên kệ tạm.',
+        'sendToLast': 'Tệp được gửi đến thiết bị duy nhất đang kết nối, hoặc thiết bị bạn vừa dùng, và bạn có 3 giây để hoàn tác. Văn bản và liên kết được để lên kệ tạm.',
         'shelf': 'Mọi thứ bạn thả đều ở lại máy Mac này, trên kệ tạm.',
         'other': 'Ferret mở ngay khi bạn kéo tới biểu tượng, để bạn chọn thiết bị hoặc kệ tạm.',
       },

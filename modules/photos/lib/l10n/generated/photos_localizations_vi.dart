@@ -16,7 +16,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String get back => 'Quay lại';
 
   @override
-  String get autoScreenshots => 'Ảnh chụp màn hình mới tự đến';
+  String get autoScreenshots => 'Tự nhận ảnh chụp màn hình mới';
 
   @override
   String autoScreenshotsBody(String device) {
@@ -30,7 +30,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String get select => 'Chọn';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String saveCount(int count) {
@@ -52,10 +52,10 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   String get openSaved => 'Mở';
 
   @override
-  String get revealSaved => 'Xem trong thư mục';
+  String get revealSaved => 'Hiện trong thư mục';
 
   @override
-  String get revealSavedFinder => 'Xem trong Finder';
+  String get revealSavedFinder => 'Hiện trong Finder';
 
   @override
   String get saved => 'Đã lưu vào thư mục nhận.';
@@ -78,7 +78,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
 
   @override
   String offline(String device) {
-    return '$device đang ngoại tuyến. Ảnh sẽ hiện ở đây khi thiết bị quay lại.';
+    return '$device đang ngoại tuyến. Ảnh sẽ hiện ở đây khi thiết bị trực tuyến lại.';
   }
 
   @override
@@ -104,8 +104,8 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -128,7 +128,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String get askShort => 'Xin quyền truy cập';
+  String get askShort => 'Xin quyền';
 
   @override
   String askedOnDevice(String device) {
@@ -154,9 +154,9 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
-        'other': 'máy này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
+        'other': 'máy tính này',
       },
     );
     return 'Ảnh từ $device đang bị ẩn trên $_temp0.';
@@ -220,9 +220,9 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
-        'other': 'máy này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
+        'other': 'máy tính này',
       },
     );
     return '$device không chia sẻ ảnh với $_temp0.';
@@ -248,7 +248,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
 
   @override
   String permissionDetail(String device) {
-    return 'Ảnh và ảnh chụp màn hình gần đây, khi Ferret đang chạy. $device có thể xem và lưu, không bao giờ xoá.';
+    return 'Ảnh và ảnh chụp màn hình gần đây, khi Ferret đang chạy. $device có thể xem và lưu, không bao giờ xóa.';
   }
 
   @override
@@ -265,7 +265,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String get noticeAskBody => 'Chạm để chọn những gì nó được xem.';
+  String get noticeAskBody => 'Nhấn để chọn những gì máy đó được xem.';
 
   @override
   String get settingsFull => 'Ferret xem được tất cả ảnh của bạn.';
@@ -291,7 +291,7 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
 
   @override
   String get settingsPerDevice =>
-      'Chọn máy tính nào được xem ảnh trên trang của từng máy, trong mục Những gì thiết bị được dùng. Không gì bị xoá từ đây.';
+      'Chọn máy tính nào được xem ảnh trên trang của từng máy, trong mục Những gì thiết bị được dùng. Ferret không bao giờ xóa ảnh nào ở đây.';
 
   @override
   String settingsSharing(String devices) {

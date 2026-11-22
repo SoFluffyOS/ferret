@@ -29,10 +29,10 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   String get pause => 'Tạm dừng';
 
   @override
-  String get next => 'Tiếp';
+  String get next => 'Tiếp theo';
 
   @override
-  String get previous => 'Trước';
+  String get previous => 'Trước đó';
 
   @override
   String get volumeUp => 'Tăng âm lượng';
@@ -45,8 +45,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -61,8 +61,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -77,8 +77,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -93,8 +93,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -106,8 +106,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -119,8 +119,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -155,7 +155,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
 
   @override
   String get worksBody =>
-      'Thông báo ngay khi đến, kèm Xoá, Trả lời và Từ chối. Phát, tạm dừng, chuyển bài và âm lượng cho bất cứ nội dung nào iPhone đang phát.';
+      'Thông báo ngay khi đến, kèm Xóa, Trả lời và Từ chối. Phát, tạm dừng, chuyển bài và âm lượng cho bất cứ nội dung nào iPhone đang phát.';
 
   @override
   String get limitsTitle => 'Chưa có';
@@ -165,8 +165,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -182,7 +182,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
 
   @override
   String get statusUnsupported =>
-      'Máy tính này không có Bluetooth LE, thứ cần để kết nối với iPhone.';
+      'Máy tính này không có Bluetooth LE nên không kết nối được với iPhone.';
 
   @override
   String get statusNotConfigured =>
@@ -200,7 +200,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
 
   @override
   String statusOutOfReach(String device) {
-    return '$device đang ngoài tầm. Ferret sẽ kết nối lại khi máy quay lại.';
+    return '$device đang ở ngoài tầm. Ferret sẽ tự kết nối lại khi máy ở gần.';
   }
 
   @override
@@ -213,8 +213,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -236,8 +236,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -249,8 +249,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -262,15 +262,15 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
 
   @override
   String get setupStepUnlock =>
-      'Trên iPhone: mở khoá và mở Cài đặt → Bluetooth. Giữ nguyên màn hình đó.';
+      'Trên iPhone: mở khóa và mở Cài đặt → Bluetooth. Giữ nguyên màn hình đó.';
 
   @override
   String get setupStepPairWindows =>
-      'Trên PC này, mở cài đặt Bluetooth, chọn Thêm thiết bị → Bluetooth rồi chọn iPhone. Xác nhận mã trên cả hai máy.';
+      'Trên máy tính này, mở cài đặt Bluetooth, chọn Thêm thiết bị → Bluetooth rồi chọn iPhone. Xác nhận mã trên cả hai máy.';
 
   @override
   String get setupStepPairMac =>
-      'Giữ iPhone đã đăng nhập và ở gần Mac này với Bluetooth đang bật, để macOS kết nối với nó.';
+      'Để iPhone gần máy Mac này, vẫn đăng nhập và bật Bluetooth, để macOS kết nối với iPhone.';
 
   @override
   String get setupStepPairLinux =>
@@ -281,8 +281,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -346,7 +346,7 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
   String get noticeFromIphone => 'iPhone';
 
   @override
-  String get actionClear => 'Xoá';
+  String get actionClear => 'Xóa';
 
   @override
   String get actionAnswer => 'Trả lời';
@@ -370,8 +370,8 @@ class IphoneLocalizationsVi extends IphoneLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );

@@ -133,10 +133,10 @@ class MediaLocalizationsVi extends MediaLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macos': 'Mac này',
+        'macos': 'máy Mac này',
         'android': 'điện thoại này',
         'ios': 'iPhone này',
-        'windows': 'PC này',
+        'windows': 'máy tính này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
@@ -149,10 +149,10 @@ class MediaLocalizationsVi extends MediaLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macos': 'Mac này',
+        'macos': 'máy Mac này',
         'android': 'điện thoại này',
         'ios': 'iPhone này',
-        'windows': 'PC này',
+        'windows': 'máy tính này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
@@ -165,10 +165,10 @@ class MediaLocalizationsVi extends MediaLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macos': 'Mac này',
+        'macos': 'máy Mac này',
         'android': 'điện thoại này',
         'ios': 'iPhone này',
-        'windows': 'PC này',
+        'windows': 'máy tính này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
@@ -181,10 +181,10 @@ class MediaLocalizationsVi extends MediaLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macos': 'Mac này',
+        'macos': 'máy Mac này',
         'android': 'điện thoại này',
         'ios': 'iPhone này',
-        'windows': 'PC này',
+        'windows': 'máy tính này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
@@ -197,10 +197,10 @@ class MediaLocalizationsVi extends MediaLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macos': 'Mac này',
+        'macos': 'máy Mac này',
         'android': 'điện thoại này',
         'ios': 'iPhone này',
-        'windows': 'PC này',
+        'windows': 'máy tính này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
       },
@@ -255,7 +255,7 @@ class MediaLocalizationsVi extends MediaLocalizations {
 
   @override
   String get limitWindows =>
-      'Ferret thấy các trình phát hiện trong phần điều khiển đa phương tiện của Windows. Âm lượng vẫn do PC này điều khiển.';
+      'Ferret thấy các trình phát hiện trong phần điều khiển đa phương tiện của Windows. Âm lượng vẫn do máy tính này điều khiển.';
 
   @override
   String get limitLinux =>

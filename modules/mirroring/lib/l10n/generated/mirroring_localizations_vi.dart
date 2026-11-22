@@ -33,8 +33,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -50,7 +50,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get stop => 'Dừng';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get tryAgain => 'Thử lại';
@@ -59,7 +59,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get back => 'Quay lại';
 
   @override
-  String get dismiss => 'Bỏ qua';
+  String get dismiss => 'Đóng';
 
   @override
   String get fullScreen => 'Toàn màn hình';
@@ -107,7 +107,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String endDeniedBody(String device) {
-    return 'Có người đã nhấn Huỷ trên $device.';
+    return 'Có người đã nhấn Hủy trên $device.';
   }
 
   @override
@@ -148,8 +148,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -181,8 +181,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -194,8 +194,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -212,8 +212,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -247,7 +247,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String endSystemEndedBody(String device) {
-    return 'Android ngừng chia sẻ khi $device khoá màn hình hoặc khi có người dừng từ thanh trạng thái. Mở khoá $device rồi xem lại.';
+    return 'Android ngừng chia sẻ khi $device khóa màn hình hoặc khi có người dừng từ thanh trạng thái. Mở khóa $device rồi xem lại.';
   }
 
   @override
@@ -260,8 +260,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -273,7 +273,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String endFailedBody(String device) {
-    return '$device không chụp được màn hình của nó.';
+    return '$device không ghi được màn hình của nó.';
   }
 
   @override
@@ -453,7 +453,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
         'other': 'Điện thoại này',
       },
     );
-    return '$_temp0 không chụp được màn hình của nó';
+    return '$_temp0 không ghi được màn hình của nó';
   }
 
   @override
@@ -463,7 +463,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get settingsHistoryEmptyShared => 'Chưa ai xem màn hình này.';
 
   @override
-  String get clearHistory => 'Xoá lịch sử';
+  String get clearHistory => 'Xóa lịch sử';
 
   @override
   String get settingsPerDevice =>
@@ -476,7 +476,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get summaryAsks => 'Hỏi mỗi lần';
 
   @override
-  String get summaryCantCapture => 'Không chụp được';
+  String get summaryCantCapture => 'Không ghi được';
 
   @override
   String permissionAsk(String here) {
@@ -570,7 +570,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String healthFailed(String device) {
-    return '$device không chụp được màn hình của nó';
+    return '$device không ghi được màn hình của nó';
   }
 
   @override
@@ -587,8 +587,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -613,8 +613,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -629,8 +629,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -642,8 +642,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -655,8 +655,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -691,10 +691,10 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String get allow => 'Hiển thị';
+  String get allow => 'Hiện';
 
   @override
-  String get dontAllow => 'Không cho phép';
+  String get dontAllow => 'Từ chối';
 
   @override
   String get close => 'Đóng';
@@ -723,7 +723,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get notMine => 'Không phải của tôi';
 
   @override
-  String get showIt => 'Hiển thị';
+  String get showIt => 'Hiện';
 
   @override
   String startingCableTitle(String device) {
@@ -777,8 +777,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -806,10 +806,10 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get screenshotFailed => 'Không lưu được ảnh chụp màn hình.';
 
   @override
-  String get showInFinder => 'Hiển thị trong Finder';
+  String get showInFinder => 'Hiện trong Finder';
 
   @override
-  String get showInFolder => 'Hiển thị trong thư mục';
+  String get showInFolder => 'Hiện trong thư mục';
 
   @override
   String get buttonNotifications => 'Bảng thông báo';
@@ -868,15 +868,15 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   String get soundDetailThere => 'Trên điện thoại';
 
   @override
-  String get soundDetailNone => 'Không';
+  String get soundDetailNone => 'Không có';
 
   @override
   String soundHere(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -988,8 +988,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1069,8 +1069,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1119,8 +1119,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1187,8 +1187,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1248,12 +1248,12 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Trên $device, chạm Một lần hoặc Luôn luôn để $_temp0 có thể nhấp và gõ ở đó.';
+    return 'Trên $device, nhấn Một lần hoặc Luôn luôn để $_temp0 có thể nhấp và gõ ở đó.';
   }
 
   @override
@@ -1387,7 +1387,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get controlDisclosureSteps =>
-      'Tiếp theo, trong Hỗ trợ tiếp cận, chạm Điều khiển Ferret và bật nó lên.';
+      'Tiếp theo, trong Hỗ trợ tiếp cận, nhấn Điều khiển Ferret và bật lên.';
 
   @override
   String get controlDisclosureOpen => 'Mở cài đặt';
@@ -1464,8 +1464,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1547,7 +1547,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get cameraAskBody =>
-      'Nó sẽ thấy qua camera và nghe qua micro, cho đến khi bạn dừng lại.';
+      'Nó sẽ thấy qua camera và nghe qua micrô, cho đến khi bạn dừng lại.';
 
   @override
   String cameraOnTitle(String computer) {
@@ -1575,7 +1575,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
         'other': 'điện thoại này',
       },
     );
-    return 'Nó đang thấy qua camera của $_temp0. Micro đang tắt. Từ $time.';
+    return 'Nó đang thấy qua camera của $_temp0. Micrô đang tắt. Từ $time.';
   }
 
   @override
@@ -1680,8 +1680,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -1706,7 +1706,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
         'notConnected': '$device chưa kết nối',
         'noAnswer': '$device không trả lời',
         'cannotExtend':
-            'Mac này không tạo được màn hình phụ. Cần macOS 12.3 trở lên.',
+            'Máy Mac này không tạo được màn hình phụ. Cần macOS 12.3 trở lên.',
         'needsScreenRecording':
             'Hãy cho phép Ferret trong Ghi màn hình để dùng $device làm màn hình phụ',
         'stoppedHere': 'Đã thôi dùng $device làm màn hình phụ',
@@ -1731,8 +1731,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'android': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1753,8 +1753,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'Máy Mac này',
+        'windows': 'Máy tính này',
         'android': 'Điện thoại này',
         'tablet': 'Máy tính bảng này',
         'other': 'Máy tính này',
@@ -1796,8 +1796,8 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'android': 'điện thoại này',
         'tablet': 'máy tính bảng này',
         'other': 'máy tính này',
@@ -1824,7 +1824,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get displayAllowBodyTouch =>
-      'Ngón tay bạn sẽ dùng như chuột của nó. Chỉ cho phép nếu đó là máy của bạn.';
+      'Bạn dùng ngón tay làm chuột. Chỉ cho phép nếu là máy của bạn.';
 
   @override
   String displayShowingSince(String time) {
@@ -1833,7 +1833,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get displayTouchHint =>
-      'Chạm để bấm · Giữ để bấm chuột phải · Hai ngón để cuộn';
+      'Chạm để nhấp · Giữ để nhấp chuột phải · Hai ngón để cuộn';
 
   @override
   String displayHandleLabel(String device) {
@@ -1875,5 +1875,6 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
   }
 
   @override
-  String get displayingBody => 'Chạm để xem lại. Tự dừng sau 10 phút chạy nền.';
+  String get displayingBody =>
+      'Nhấn để xem lại. Sẽ tự dừng sau 10 phút chạy nền.';
 }

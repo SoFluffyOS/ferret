@@ -104,7 +104,7 @@ class PowerLocalizationsVi extends PowerLocalizations {
   }
 
   @override
-  String get perkReplies => 'Trả lời và bỏ qua thông báo ngay từ đó';
+  String get perkReplies => 'Trả lời và đóng thông báo ngay từ đó';
 
   @override
   String get perkMessages => 'Đọc và trả lời tin nhắn từ máy tính';

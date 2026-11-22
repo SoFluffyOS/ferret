@@ -12,7 +12,7 @@
   "decline": "Từ chối",
   "hangUp": "Kết thúc",
   "activityRinging": "{caller} đang gọi đến {device}",
-  "activityOnCall": "Đang gọi với {caller}",
+  "activityOnCall": "Đang nói chuyện với {caller}",
   "activityDialing": "Đang gọi {caller}",
   "activityOnHold": "Đang giữ máy với {caller}",
   "silence": "Tắt chuông",

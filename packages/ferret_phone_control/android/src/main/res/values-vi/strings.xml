@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="ferret_control_service_label">Ferret điều khiển</string>
+  <string name="ferret_control_service_summary">Cho máy tính của bạn nhấn và gõ trên điện thoại này khi bạn đang cho nó xem màn hình.</string>
+  <string name="ferret_control_service_description">Ferret điều khiển cho một máy tính bạn đã ghép đôi nhấn, vuốt, bấm Quay lại và Màn hình chính, và gõ chữ trên điện thoại này.\n\nNó chỉ làm việc khi bạn đang cho máy tính đó xem màn hình điện thoại này qua Ferret và bạn đã đồng ý cho điều khiển. Suốt lúc đó luôn có một thông báo, kèm nút Dừng.\n\nĐể gõ chữ, nó đọc ô bạn đang gõ. Nó không đọc gì khác, không giữ lại gì và không gửi đi đâu cả: không tài khoản, không máy chủ.\n\nBạn có thể tắt nó ở đây bất cứ lúc nào.</string>
+</resources>

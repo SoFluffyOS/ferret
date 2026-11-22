@@ -8,7 +8,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ferret di chuyển con trỏ và gõ phím cho chiếc điện thoại bạn đã cho phép, chỉ khi dòng “… đang điều khiển máy tính này” hiện trên màn hình."
+            "value": "Ferret di chuyển con trỏ và gõ phím cho chiếc điện thoại bạn đã cho phép, chỉ khi dòng “… đang điều khiển Mac này” hiện trên màn hình."
           }
         }
       }
@@ -20,7 +20,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ferret đọc trang đang mở trong trình duyệt và bài Music hoặc Spotify đang phát, chỉ khi bạn gửi hoặc bật chia sẻ, để thiết bị khác của bạn tiếp tục được."
+            "value": "Ferret đọc trang đang mở trong trình duyệt và bài Music hoặc Spotify đang phát, chỉ khi bạn gửi hoặc bật chia sẻ, để thiết bị khác của bạn tiếp tục được. Ferret cũng khởi động lại hoặc tắt máy Mac này khi một thiết bị bạn đã cho phép yêu cầu."
           }
         }
       }

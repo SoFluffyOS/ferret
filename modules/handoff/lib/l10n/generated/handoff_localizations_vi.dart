@@ -24,10 +24,10 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
   String get open => 'Mở';
 
   @override
-  String get dismiss => 'Bỏ qua';
+  String get dismiss => 'Đóng';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get openFailed =>
@@ -66,7 +66,7 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
 
   @override
   String sendSuggested(String device) {
-    return 'Trên $device: chạm vào thông báo để mở.';
+    return 'Trên $device: nhấn vào thông báo để mở.';
   }
 
   @override
@@ -85,7 +85,7 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
 
   @override
   String get currentPageDenied =>
-      'macOS đã chặn Ferret đọc trình duyệt. Hãy cho phép trong Cài đặt hệ thống, Quyền riêng tư & Bảo mật, Tự động hoá.';
+      'macOS đã chặn Ferret đọc trình duyệt. Hãy cho phép trong Cài đặt hệ thống, Quyền riêng tư & Bảo mật, Tự động hóa.';
 
   @override
   String get currentPageFailed =>
@@ -126,7 +126,7 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
   String get settingsAssistantOff => 'Ferret chưa là trợ lý của bạn';
 
   @override
-  String get settingsAssistantOpen => 'Mở cài đặt trợ lý';
+  String get settingsAssistantOpen => 'Cài đặt trợ lý';
 
   @override
   String get settingsShareHint =>
@@ -226,7 +226,7 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
   String get browserPairAllow => 'Cho phép';
 
   @override
-  String get browserPairDeny => 'Không cho phép';
+  String get browserPairDeny => 'Từ chối';
 
   @override
   String noticeBrowserPairBody(String code) {
@@ -241,12 +241,12 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
-    return 'Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Tiện ích chỉ kết nối trong $_temp0.';
+    return 'Cho tiện ích Ferret trong Chrome, Edge, Brave hoặc Firefox gửi thẻ và mở trang từ thiết bị của bạn. Ferret chỉ nhận kết nối từ chính $_temp0.';
   }
 
   @override
@@ -286,5 +286,5 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
       'Những gì bạn đã tiếp tục giữa các thiết bị, lưu trên thiết bị này tối đa 30 ngày.';
 
   @override
-  String get settingsHistoryClear => 'Xoá';
+  String get settingsHistoryClear => 'Xóa';
 }

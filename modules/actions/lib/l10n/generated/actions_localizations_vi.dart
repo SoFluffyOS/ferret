@@ -16,7 +16,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   String get dismiss => 'Đóng';
 
   @override
-  String get cancel => 'Huỷ';
+  String get cancel => 'Hủy';
 
   @override
   String get allowOnce => 'Cho phép một lần';
@@ -25,7 +25,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   String get allowAlways => 'Luôn cho phép';
 
   @override
-  String get dontAllow => 'Không cho phép';
+  String get dontAllow => 'Từ chối';
 
   @override
   String get actionSleep => 'Ngủ';
@@ -53,8 +53,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -66,8 +66,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -79,8 +79,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -92,8 +92,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -105,8 +105,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -120,10 +120,10 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String get consentCountsDown =>
-      'Bạn có 10 giây để huỷ trước khi việc đó diễn ra.';
+      'Bạn có 10 giây để hủy trước khi việc đó diễn ra.';
 
   @override
-  String get consentCommandLabel => 'Nó chạy đúng lệnh này:';
+  String get consentCommandLabel => 'Sẽ chạy đúng lệnh này:';
 
   @override
   String consentCommandNotice(String command) {
@@ -135,8 +135,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -153,8 +153,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -168,7 +168,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String countdownBody(String device) {
-    return '$device đã yêu cầu. Hãy lưu công việc của bạn, hoặc huỷ.';
+    return '$device đã yêu cầu. Hãy lưu công việc của bạn, hoặc hủy.';
   }
 
   @override
@@ -176,8 +176,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -189,8 +189,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -199,7 +199,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String get countdownNoticeBody =>
-      'Việc này diễn ra sau 10 giây. Bấm Huỷ để dừng lại.';
+      'Việc này diễn ra sau 10 giây. Bấm Hủy để dừng lại.';
 
   @override
   String recordTitle(String action, String device) {
@@ -216,7 +216,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   String get recordNotAnswered => 'Không ai trả lời ở đây.';
 
   @override
-  String get recordCancelled => 'Đã huỷ ở đây.';
+  String get recordCancelled => 'Đã hủy ở đây.';
 
   @override
   String get recordFailed => 'Không thực hiện được.';
@@ -259,7 +259,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String confirmRestartBody(String device) {
-    return 'Máy đếm ngược 10 giây trước, và ai đang ở $device cũng có thể huỷ. Ferret kết nối lại khi máy khởi động xong.';
+    return 'Máy đếm ngược 10 giây trước, và ai đang ở $device cũng có thể hủy. Ferret kết nối lại khi máy khởi động xong.';
   }
 
   @override
@@ -269,7 +269,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String confirmShutDownBody(String device) {
-    return 'Máy đếm ngược 10 giây trước, và ai đang ở $device cũng có thể huỷ. Khi máy đã tắt, Ferret không thể kết nối cho đến khi có người bật lại.';
+    return 'Máy đếm ngược 10 giây trước, và ai đang ở $device cũng có thể hủy. Khi máy đã tắt, Ferret không thể kết nối cho đến khi có người bật lại.';
   }
 
   @override
@@ -351,7 +351,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String outCancelled(String device) {
-    return 'Đã bị huỷ trên $device';
+    return 'Đã bị hủy trên $device';
   }
 
   @override
@@ -367,8 +367,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -413,18 +413,18 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
 
   @override
   String editCommandHelp(int seconds) {
-    return 'Lệnh chạy dưới tên bạn, không qua shell: không có dấu | hay &&. Hãy đặt chúng trong một tập lệnh rồi nhập đường dẫn. Lệnh bị dừng sau $seconds giây.';
+    return 'Lệnh chạy bằng tài khoản của bạn, không qua shell: không có dấu | hay &&. Hãy đặt chúng trong một tập lệnh rồi nhập đường dẫn. Lệnh bị dừng sau $seconds giây.';
   }
 
   @override
   String get editCommandChanged =>
-      'Lệnh mới sẽ khiến mọi thiết bị phải hỏi lại.';
+      'Đổi lệnh thì mọi thiết bị phải xin phép lại.';
 
   @override
   String get save => 'Lưu';
 
   @override
-  String get remove => 'Xoá';
+  String get remove => 'Gỡ';
 
   @override
   String get historyTitle => 'Thao tác đã chạy ở đây';
@@ -433,7 +433,7 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
   String get historyEmpty => 'Chưa có gì được chạy.';
 
   @override
-  String get clearHistory => 'Xoá lịch sử';
+  String get clearHistory => 'Xóa lịch sử';
 
   @override
   String get summaryOff => 'Tắt';
@@ -456,8 +456,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -469,8 +469,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -482,8 +482,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -495,8 +495,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -536,8 +536,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -556,8 +556,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -596,8 +596,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -609,8 +609,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -632,8 +632,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -648,8 +648,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -679,8 +679,8 @@ class ActionsLocalizationsVi extends ActionsLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       computer,
       {
-        'mac': 'Mac này',
-        'windows': 'PC này',
+        'mac': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );

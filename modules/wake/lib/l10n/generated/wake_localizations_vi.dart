@@ -62,7 +62,7 @@ class WakeLocalizationsVi extends WakeLocalizations {
 
   @override
   String get helpIntro =>
-      'Wake-on-LAN bật một máy tính đang ngủ khi thiết bị khác gửi cho nó một “gói tin ma thuật” qua mạng. Ferret gửi gói tin đó khi bạn nhấn Đánh thức. Máy tính cần cho phép việc này trước, một lần.';
+      'Wake-on-LAN đánh thức một máy tính đang ngủ khi thiết bị khác gửi cho nó một “gói tin ma thuật” qua mạng. Ferret gửi gói tin đó khi bạn nhấn Đánh thức. Máy tính cần cho phép việc này trước, một lần.';
 
   @override
   String helpToldTitle(String name) {
@@ -135,8 +135,8 @@ class WakeLocalizationsVi extends WakeLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -148,8 +148,8 @@ class WakeLocalizationsVi extends WakeLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );
@@ -164,8 +164,8 @@ class WakeLocalizationsVi extends WakeLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'macOS': 'Mac này',
-        'windows': 'PC này',
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
         'other': 'máy tính này',
       },
     );

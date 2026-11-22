@@ -25,7 +25,7 @@
   "perkMedia": "Điều khiển nội dung đang phát",
   "perkFind": "Đổ chuông thiết bị bị thất lạc",
   "perkNotifications": "Xem thông báo của {here, select, tablet{máy tính bảng này} other{điện thoại này}} trên các thiết bị khác của bạn",
-  "perkReplies": "Trả lời và bỏ qua thông báo ngay từ đó",
+  "perkReplies": "Trả lời và đóng thông báo ngay từ đó",
   "perkMessages": "Đọc và trả lời tin nhắn từ máy tính",
   "perkCalls": "Xem ai đang gọi, rồi trả lời hoặc từ chối",
   "perkClipboardBackground": "Tự gửi những gì bạn sao chép, cả khi chạy trong nền",

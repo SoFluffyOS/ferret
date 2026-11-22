@@ -59,7 +59,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   String get imageLabel => 'Hình ảnh';
 
   @override
-  String get privateCleared => 'Mục riêng tư, đã xoá khỏi bộ nhớ';
+  String get privateCleared => 'Mục riêng tư, đã xóa khỏi bộ nhớ';
 
   @override
   String get privateHidden => 'Mục riêng tư';
@@ -82,7 +82,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
 
   @override
   String get offerTile =>
-      'Gửi bảng nhớ tạm chỉ với một chạm từ ô Ferret trong Cài đặt nhanh.';
+      'Gửi bảng nhớ tạm chỉ với một lần nhấn từ ô Ferret trong Cài đặt nhanh.';
 
   @override
   String get offerAddTile => 'Thêm ô';
@@ -138,7 +138,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
 
   @override
   String healthOnlyTheySend(String name) {
-    return '$name tự gửi. Từ đây thì gửi thủ công.';
+    return '$name tự gửi. Ở đây bạn gửi thủ công.';
   }
 
   @override
@@ -216,7 +216,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
       locale: localeName,
       other: '$minutes phút',
     );
-    return 'Mặc định tắt: mật khẩu đã sao chép sẽ bị bỏ qua. Khi bật, chúng được đồng bộ và bị xoá sau $_temp0.';
+    return 'Mặc định tắt: mật khẩu đã sao chép sẽ bị bỏ qua. Khi bật, chúng được đồng bộ và bị xóa sau $_temp0.';
   }
 
   @override
@@ -231,7 +231,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   }
 
   @override
-  String get settingsClearHistory => 'Xoá lịch sử';
+  String get settingsClearHistory => 'Xóa lịch sử';
 
   @override
   String get settingsWhyManualWayland =>
@@ -242,10 +242,10 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
       'Trên môi trường desktop này, nội dung sao chép được gửi đi khi cửa sổ Ferret ở trên cùng. Dùng Gửi bảng nhớ tạm cho phần còn lại.';
 
   @override
-  String get recentClips => 'Mục đã sao chép gần đây';
+  String get recentClips => 'Mục đã chép gần đây';
 
   @override
-  String get recentClipsMenu => 'Mục đã sao chép gần đây…';
+  String get recentClipsMenu => 'Mục đã chép gần đây…';
 
   @override
   String get recentClipsEmpty =>
@@ -266,7 +266,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
   }
 
   @override
-  String get recentCopiedHere => 'Sao chép tại đây';
+  String get recentCopiedHere => 'Đã sao chép tại đây';
 
   @override
   String get recentHidden =>

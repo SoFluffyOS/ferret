@@ -71,6 +71,6 @@ void main() {
       vi.doctorNetworkOk(LocalNames.herePhone),
       'Điện thoại này đang có Wi-Fi',
     );
-    expect(vi.deviceRenameTitle(LocalNames.hereMac), 'Tên trên Mac này');
+    expect(vi.deviceRenameTitle(LocalNames.hereMac), 'Tên trên máy Mac này');
   });
 }

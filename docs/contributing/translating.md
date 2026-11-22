@@ -14,7 +14,7 @@ Every feature keeps its own strings, next to its code:
 
 | What | Where |
 |---|---|
-| The app | `modules/<module>/lib/l10n/arb/<module>_en.arb`, one per module (13 of them) |
+| The app | `modules/<module>/lib/l10n/arb/<module>_en.arb`, one per module (20 of them) |
 | Android notices, the Quick Settings tile, share targets | `packages/ferret_<capability>/android/src/main/res/values/*.xml` |
 | iPhone and Mac share sheets | `apps/ferret/ios/Share/Localizable.xcstrings`, `apps/ferret/macos/Share/Localizable.xcstrings` |
 | Permission prompts (camera, local network, Accessibility…) | `apps/ferret/ios/Runner/InfoPlist.xcstrings`, `apps/ferret/macos/Runner/InfoPlist.xcstrings` |
@@ -57,9 +57,47 @@ cd modules/shell && fvm flutter gen-l10n
 
 A key you haven't translated yet shows in English. That's fine for a first pull request.
 
+## 🇻🇳 Vietnamese word list
+
+Write it the way you'd explain it to your parents: everyday words, short sentences, "bạn" for the reader. Translate what the English means, not word by word. When the English changes, check that the Vietnamese still says the same thing.
+
+Spell tones the way iPhone and Android do: **hủy, xóa, khóa, hòa, khỏe** (not huỷ, xoá).
+
+| English | Tiếng Việt |
+|---|---|
+| device · computer · phone | thiết bị · máy tính · điện thoại |
+| this Mac · this PC · this computer | máy Mac này · máy tính này · máy tính này |
+| pair · paired | ghép đôi · đã ghép đôi (never "ghép nối") |
+| Add a device | Thêm thiết bị |
+| Nearby (Ferret's list) | Lân cận |
+| Nearby devices (Android permission) | Thiết bị ở gần (Android's own name) |
+| clipboard · Recent clips | bảng nhớ tạm · Mục đã chép gần đây |
+| Send automatically | Tự động gửi |
+| shelf · Keep copies | kệ tạm · Giữ bản sao |
+| Activity · Needs you | Hoạt động · Cần bạn xử lý |
+| notice, notification | thông báo |
+| Show screen (on the computer) | Xem màn hình |
+| second display | màn hình phụ |
+| receive folder | thư mục nhận |
+| Fix connection | Sửa kết nối |
+| Stay connected · Reach away from home | Giữ kết nối · Kết nối khi ở xa |
+| Pause · Paused | Tạm dừng · Đã tạm dừng |
+| Actions · Wake · Ring | Thao tác · Đánh thức · Đổ chuông |
+| Quick Settings · tile | Cài đặt nhanh · ô |
+| Settings · System Settings | Cài đặt · Cài đặt hệ thống |
+| Accessibility on a Mac · on Android | Trợ năng · Hỗ trợ tiếp cận (each system's own name) |
+| Check for updates · Install · What's new | Kiểm tra cập nhật · Cài đặt · Có gì mới |
+| tap (phone) · click (computer) | nhấn · nhấp |
+| Cancel · Done · Not now · Try again · Don't allow | Hủy · Xong · Để sau · Thử lại · Từ chối |
+| Remove · Delete · Dismiss | Gỡ · Xóa · Đóng |
+| Show · Show in Finder | Hiện · Hiện trong Finder |
+| camera · photo | camera · ảnh |
+
+Keep names as they are: Ferret, Mac, iPhone, Wi-Fi, Bluetooth, AirPlay, Quick Share, LocalSend, Shizuku, Beta. Buttons stay short (two or three words); the detail goes in the line under it or in the tooltip.
+
 ## 📱 Native strings
 
-Android: copy `res/values/strings.xml` (and `ferret_handoff_strings.xml`, `ferret_find_strings.xml`) into `res/values-de/` in the same package, and add `<locale android:name="de" />` to `locales_config.xml`.
+Android: copy `res/values/strings.xml` (and `ferret_handoff_strings.xml`, `ferret_find_strings.xml`; `ferret_phone_control` names the Accessibility service Android lists in its settings) into `res/values-de/` in the same package, and add `<locale android:name="de" />` to `locales_config.xml`.
 
 Apple: open the `.xcstrings` files in Xcode and add your language, or add a `"de"` entry next to `"vi"` by hand. Add `de` to `CFBundleLocalizations` in both `Runner/Info.plist`.
 
