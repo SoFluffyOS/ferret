@@ -148,7 +148,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
 
   @override
   String get settingsBackgroundSendLost =>
-      'Đã ngừng gửi trong nền: Shizuku hoặc root không còn bật. Hãy thiết lập lại trong Cài đặt → Điều khiển.';
+      'Đã ngừng gửi trong nền: Shizuku hoặc root không còn bật. Hãy thiết lập lại trong Cài đặt → Điều khiển → Tăng cường.';
 
   @override
   String get settingsAutoSend => 'Tự động gửi';
@@ -189,7 +189,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
 
   @override
   String get settingsBackgroundSendLocked =>
-      'Cần Shizuku hoặc root. Hãy thiết lập một trong hai trong Cài đặt → Điều khiển.';
+      'Cần Shizuku hoặc root. Hãy thiết lập một trong hai trong Cài đặt → Điều khiển → Tăng cường.';
 
   @override
   String get settingsAutoReceive => 'Tự động nhận';

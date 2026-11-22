@@ -299,8 +299,8 @@ void main() {
     }
   });
 
-  testWidgets('a question gives its title two lines and its detail three, so '
-      'what a yes means is never cut', (tester) async {
+  testWidgets('a question gives its title two lines and its detail every '
+      'line it needs, so what a yes means is never cut', (tester) async {
     await tester.pumpWidget(
       testApp(
         ActivityRow(
@@ -316,7 +316,9 @@ void main() {
       ),
     );
 
-    expect(tester.widget<Text>(find.text('What a yes means')).maxLines, 3);
+    final detail = tester.widget<Text>(find.text('What a yes means'));
+    expect(detail.maxLines, isNull);
+    expect(detail.overflow, isNot(TextOverflow.ellipsis));
     expect(
       tester
           .widget<Text>(

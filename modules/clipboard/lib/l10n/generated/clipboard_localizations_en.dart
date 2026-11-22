@@ -148,7 +148,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsBackgroundSendLost =>
-      'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.';
+      'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control → Power-ups.';
 
   @override
   String get settingsAutoSend => 'Send automatically';
@@ -189,7 +189,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsBackgroundSendLocked =>
-      'Needs Shizuku or root. Set one up in Settings → Control.';
+      'Needs Shizuku or root. Set one up in Settings → Control → Power-ups.';
 
   @override
   String get settingsAutoReceive => 'Receive automatically';

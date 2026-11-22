@@ -97,7 +97,7 @@
       }
     }
   },
-  "settingsBackgroundSendLost": "Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.",
+  "settingsBackgroundSendLost": "Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control → Power-ups.",
   "settingsAutoSend": "Send automatically",
   "settingsAutoSendBody": "Send what you copy here to your connected devices.",
   "settingsAutoSendBodyManual": "{here, select, tablet{This tablet} other{This phone}} only allows it for copies made inside Ferret. Use Send clipboard for the rest.",
@@ -113,7 +113,7 @@
   "settingsWhyManual": "Why Send clipboard?",
   "settingsWhyManualAndroid": "Android doesn't let apps read your clipboard in the background. Copy, then tap Send clipboard in Ferret, in its notification or in the Quick Settings tile.",
   "settingsWhyManualIos": "iPhone only lets apps read your clipboard when you ask. Copy, then tap Send clipboard.",
-  "settingsBackgroundSendLocked": "Needs Shizuku or root. Set one up in Settings → Control.",
+  "settingsBackgroundSendLocked": "Needs Shizuku or root. Set one up in Settings → Control → Power-ups.",
   "settingsAutoReceive": "Receive automatically",
   "settingsAutoReceiveBody": "Put what your devices send straight on this clipboard. When off, tap Copy next to what arrived.",
   "settingsImages": "Images",

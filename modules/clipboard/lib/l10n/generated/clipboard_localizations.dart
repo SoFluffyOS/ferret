@@ -332,7 +332,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsBackgroundSendLost.
   ///
   /// In en, this message translates to:
-  /// **'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control.'**
+  /// **'Background sending stopped: Shizuku or root is no longer on. Set it up again in Settings → Control → Power-ups.'**
   String get settingsBackgroundSendLost;
 
   /// No description provided for @settingsAutoSend.
@@ -386,7 +386,7 @@ abstract class ClipboardLocalizations {
   /// No description provided for @settingsBackgroundSendLocked.
   ///
   /// In en, this message translates to:
-  /// **'Needs Shizuku or root. Set one up in Settings → Control.'**
+  /// **'Needs Shizuku or root. Set one up in Settings → Control → Power-ups.'**
   String get settingsBackgroundSendLocked;
 
   /// No description provided for @settingsAutoReceive.

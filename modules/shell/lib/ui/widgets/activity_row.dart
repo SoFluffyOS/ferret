@@ -89,10 +89,10 @@ class ActivityRow extends StatelessWidget {
       _ => textLines,
     };
     // A problem's detail says what to do, so it gets a second line. A
-    // question's says what a yes means, so it is never cut short.
+    // question's says what a yes means, often with a safety line at its
+    // end, so it is never cut short in any language.
     final int? detailLines = switch ((hasLargeText, item.tone)) {
-      (false, _) when item.needsYou => 3,
-      (true, _) when item.needsYou => null,
+      _ when item.needsYou => null,
       (false, .warning || .danger) => 2,
       _ => textLines,
     };
