@@ -66,6 +66,8 @@ void main() {
           port: 0,
           networks: () async => networks,
           ownAddresses: () async => const {},
+          // Updating with the copy check on: the old folder's key stays.
+          machineId: 'upgrade-test-$device',
         );
         engines.add(engine);
         return engine;

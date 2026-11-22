@@ -29,5 +29,12 @@ class ClipHistory {
     return true;
   }
 
+  /// Drops the entries [test] matches; true when any went.
+  bool removeWhere(bool Function(ClipEntry entry) test) {
+    final before = _entries.length;
+    _entries.removeWhere(test);
+    return _entries.length != before;
+  }
+
   void clear() => _entries.clear();
 }

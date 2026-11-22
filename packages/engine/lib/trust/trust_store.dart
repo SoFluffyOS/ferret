@@ -167,6 +167,14 @@ class TrustStore {
     await _persistForgotten();
   }
 
+  /// Forgets every paired and every removed device.
+  Future<void> clear() async {
+    _devices.clear();
+    _forgotten.clear();
+    await _persist();
+    await _persistForgotten();
+  }
+
   Future<void> _persist() async {
     final json = [for (final device in _devices.values) device.toJson()];
     await _store.write(_storageKey, jsonEncode(json));

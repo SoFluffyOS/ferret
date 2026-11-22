@@ -81,6 +81,7 @@ class CliEnvironment {
       ),
       features: features,
       port: port,
+      machineId: await MachineId.ofThisComputer(),
     );
   }
 

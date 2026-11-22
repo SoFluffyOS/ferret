@@ -101,7 +101,13 @@ class FerretEngine implements FeatureHost {
     LocalNetworkSource? networks,
     Future<Set<String>> Function()? ownAddresses,
     MulticastNeed? multicastNeed,
+    String? machineId,
   }) async {
+    await IdentityHome.settle(
+      secrets: secrets,
+      settings: settings,
+      machineId: machineId,
+    );
     // Side by side: on a slow phone each Keystore read is a trip to the
     // secure hardware, and the key maths can run while it is away.
     final trustLoad = TrustStore.open(secrets)..ignore();
@@ -626,6 +632,7 @@ class FerretEngine implements FeatureHost {
       ..add(_departures.listen(_onDeparture))
       ..add(trustStore.changes.listen((_) => _emitDevices()))
       ..add(trustStore.changes.listen((_) => unawaited(_forgetOldAccess())))
+      ..add(trustStore.changes.listen((_) => unawaited(_tellPaired())))
       ..add(access.changes.listen((id) => unawaited(_applyAccess(id))))
       ..add(trustStore.changes.listen((_) => unawaited(_updateVisibility())))
       ..add(trustStore.changes.listen((_) => unawaited(_updatePace())))
@@ -638,6 +645,8 @@ class FerretEngine implements FeatureHost {
       }
     }
 
+    await _forgetOldAccess();
+    await _tellPaired();
     await _knownNetworks.startLearningAfterUpdate(
       hasDevices: trustStore.devices.isNotEmpty,
     );
@@ -2346,6 +2355,22 @@ class FerretEngine implements FeatureHost {
     for (final deviceId in deviceIds) {
       if (trustStore[deviceId] == null) {
         await access.forget(deviceId);
+      }
+    }
+  }
+
+  /// Lets each feature drop what it keeps for devices no longer paired.
+  Future<void> _tellPaired() async {
+    final paired = {for (final device in trustStore.devices) device.id};
+    for (final feature in _features.values) {
+      try {
+        await feature.onPairedDevices(paired);
+      } on Object catch (error, stackTrace) {
+        printError(
+          '${feature.id} could not let go of removed devices',
+          error,
+          stackTrace,
+        );
       }
     }
   }

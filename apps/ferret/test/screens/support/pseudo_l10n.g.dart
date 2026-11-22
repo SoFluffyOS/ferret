@@ -4697,6 +4697,10 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get bootRetry => pseudo(super.bootRetry);
   @override
+  String get movedReplaceHint => pseudo(super.movedReplaceHint);
+  @override
+  String get movedDismiss => pseudo(super.movedDismiss);
+  @override
   String deviceStatusSpoken(String device, String status) =>
       pseudo(super.deviceStatusSpoken(device, status));
   @override
@@ -5105,6 +5109,10 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.doctorVpnRoute(name, device));
   @override
   String bootFailedBody(String here) => pseudo(super.bootFailedBody(here));
+  @override
+  String movedTitle(String here) => pseudo(super.movedTitle(here));
+  @override
+  String movedBody(String names) => pseudo(super.movedBody(names));
 }
 
 class PseudoUpdatesLocalizations extends UpdatesLocalizationsEn {

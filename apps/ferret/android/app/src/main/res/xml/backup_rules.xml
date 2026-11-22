@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and older. Only the settings move to a new phone or come
+     back after a reset: the device key never leaves the Keystore, so the
+     pairings stored with it would not open there. -->
+<full-backup-content>
+    <include domain="file" path="settings/" />
+</full-backup-content>

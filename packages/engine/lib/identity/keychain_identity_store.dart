@@ -107,7 +107,13 @@ class KeychainIdentityStore implements SecretStore {
       final saved = await file.read(key);
       if (saved != null) {
         if (markedDeviceId(saved) case final deviceId?) {
-          await keychain.delete(accountFor(deviceId));
+          // A keychain copied from another Mac may not open here; the key
+          // is gone for Ferret either way once its marker is.
+          try {
+            await keychain.delete(accountFor(deviceId));
+          } on Object catch (error) {
+            printWarning('The old device key stays in the keychain', error);
+          }
         }
       }
     }

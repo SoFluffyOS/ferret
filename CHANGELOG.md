@@ -18,6 +18,8 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Easy to read for anyone**: plain words, calm colors and short buttons that still fit at 200% text. **Copy details for a helper** puts a short report on the clipboard for whoever helps you.
 - **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
+- **New computer?** Migration Assistant or a restored backup brings Ferret along, and it starts there as a new device with a list of what to pair again. Two computers never answer as one.
+- **Forget means forget**: a removed device loses its "Always allow" answers, and its notifications and clips leave this one.
 - **Says who needs an update** instead of staying offline.
 - **Your iPhone under Nearby**: with Ferret open, an iPhone now shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
 - **iPhone asks about the local network when it makes sense**: a short card says why before iOS asks, not at first launch. Said no? Nearby and Fix connection take you to Settings.

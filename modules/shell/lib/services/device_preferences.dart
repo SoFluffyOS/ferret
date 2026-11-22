@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:shell/services/device_successors.dart';
 
 /// How the user keeps a long device list in order: devices pinned to the
 /// top, and when each was last used from here. Lives in settings and never
@@ -62,6 +63,15 @@ class DevicePreferences {
 
     await _settings.set(lastUsedKey, {...stored}..remove(deviceId));
   }
+
+  /// Drops pins, last uses and "Keep both" answers of devices no longer
+  /// paired, however they went: from here, from another device, or from
+  /// ferret-cli.
+  Future<void> keepOnly(Set<String> pairedIds) => _settings.keepOnlyPaired([
+    pinnedKey,
+    lastUsedKey,
+    DeviceSuccessors.keptKey,
+  ], pairedIds);
 
   /// Gives [newId] the pin and last use of [oldId], such as a phone that
   /// replaces an old one.

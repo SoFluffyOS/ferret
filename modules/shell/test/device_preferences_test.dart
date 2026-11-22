@@ -151,4 +151,20 @@ void main() {
       expect(settled, 0);
     });
   });
+
+  test('a device no longer paired loses its pin, last use and Keep both, '
+      'however it went', () async {
+    await preferences.setPinned('a', pinned: true);
+    await preferences.setPinned('gone', pinned: true);
+    await preferences.markUsed('a', at: _now);
+    await preferences.markUsed('gone', at: _now);
+    await settings.set(DeviceSuccessors.keptKey, ['gone']);
+
+    await preferences.keepOnly({'a'});
+
+    expect(preferences.pinned, {'a'});
+    expect(preferences.lastUsed('gone'), isNull);
+    expect(preferences.lastUsed('a'), _now);
+    expect(settings.get<List<Object?>>(DeviceSuccessors.keptKey), isEmpty);
+  });
 }

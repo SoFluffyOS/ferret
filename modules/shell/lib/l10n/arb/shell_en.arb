@@ -2008,5 +2008,24 @@
   "bootRetry": "Try again",
   "@bootRetry": {
     "description": "Button on the page shown when Ferret could not start: starts it again. Keep it short."
-  }
+  },
+  "movedTitle": "{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is a new device now",
+  "@movedTitle": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "movedBody": "Ferret came along from another computer. So your devices don't mix the two up, pair them again: {names}.",
+  "@movedBody": {
+    "description": "names is a list of device names, such as \"Pixel 7, iPad\"",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "movedReplaceHint": "Is the old one gone? Each device then offers Replace old one, and keeps its settings.",
+  "movedDismiss": "Got it"
 }

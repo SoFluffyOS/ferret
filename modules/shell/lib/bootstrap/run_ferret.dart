@@ -102,6 +102,7 @@ Future<FerretApp> _startApp({
 }) async {
   await initializeDateFormatting();
 
+  final machineId = MachineId.ofThisComputer();
   final paths = await AppPaths.get();
   final settingsDirectory = await paths.create(paths.settings);
   final settings = await JsonFileSettingsStore.open(settingsDirectory.path);
@@ -126,6 +127,7 @@ Future<FerretApp> _startApp({
     discovery: discovery,
     sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
     multicastNeed: multicastNeed,
+    machineId: await machineId,
   );
   onEngine(engine);
   final localNetwork = await _localNetworkAsk(discovery, engine, settings);

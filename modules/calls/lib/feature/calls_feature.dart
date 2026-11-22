@@ -182,6 +182,10 @@ class CallsFeature extends Feature implements CallsControl {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([CallsSettings.sharingPhonesKey], deviceIds);
+
+  @override
   Future<GeneratedMessage?> onEnvelope(
     Session session,
     Envelope envelope,

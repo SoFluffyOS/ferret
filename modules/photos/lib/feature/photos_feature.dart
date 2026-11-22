@@ -140,6 +140,13 @@ class PhotosFeature extends Feature {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([
+        PhotosSettings.sharedWithKey,
+        PhotosSettings.autoScreenshotsKey,
+      ], deviceIds);
+
+  @override
   Future<GeneratedMessage?> onEnvelope(
     Session session,
     Envelope envelope,

@@ -168,6 +168,12 @@ class ActionsFeature extends Feature {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([
+        ActionsSettings.allowedKey,
+        ActionsSettings.lockWhenGoneKey,
+      ], deviceIds);
+  @override
   void onSessionClosed(Session session) {
     final deviceId = session.remoteDeviceId;
     _actionsHost?.onSessionClosed(deviceId);

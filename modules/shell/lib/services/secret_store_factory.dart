@@ -12,6 +12,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Windows (DPAPI) and Linux (Secret Service) keep the key in the file for
 /// now.
 Future<SecretStore> createSecretStore(FerretPaths paths) async {
+  if (Platform.isIOS) {
+    await KeystoreSecretStore.keepOnThisDevice();
+  }
+
   if (Platform.isAndroid || Platform.isIOS) {
     return const KeystoreSecretStore();
   }
@@ -32,10 +36,44 @@ Future<SecretStore> createSecretStore(FerretPaths paths) async {
 }
 
 /// A [SecretStore] in the Android Keystore or the iOS Keychain.
+///
+/// On iPhone and iPad the items stay on this device: an iCloud or computer
+/// backup restored onto a new one, or Quick Start, leaves them behind, so
+/// the new device starts as itself instead of a second copy of the old one
+/// with the same key. Android's Keystore never lets a key out anyway.
 class KeystoreSecretStore implements SecretStore {
   const KeystoreSecretStore();
 
-  static const _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage(
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+      synchronizable: false,
+    ),
+  );
+
+  /// Set once the items Ferret wrote before they stayed on this device
+  /// were written again.
+  static const _onThisDeviceKey = 'ferret.keychain.this_device';
+
+  /// Writes again every item an older Ferret saved, so they take this
+  /// device only. Reads find an item whatever it was saved as; a write
+  /// replaces it.
+  static Future<void> keepOnThisDevice() async {
+    try {
+      if (await _storage.read(key: _onThisDeviceKey) != null) {
+        return;
+      }
+
+      final items = await _storage.readAll();
+      for (final MapEntry(:key, :value) in items.entries) {
+        await _storage.write(key: key, value: value);
+      }
+
+      await _storage.write(key: _onThisDeviceKey, value: '1');
+    } on Object catch (error) {
+      printWarning('Keychain items stay as they are for now', error);
+    }
+  }
 
   @override
   Future<String?> read(String key) => _storage.read(key: key);

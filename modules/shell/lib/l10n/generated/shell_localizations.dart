@@ -3217,6 +3217,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get bootRetry;
+
+  /// No description provided for @movedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is a new device now'**
+  String movedTitle(String here);
+
+  /// names is a list of device names, such as "Pixel 7, iPad"
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret came along from another computer. So your devices don\'t mix the two up, pair them again: {names}.'**
+  String movedBody(String names);
+
+  /// No description provided for @movedReplaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Is the old one gone? Each device then offers Replace old one, and keeps its settings.'**
+  String get movedReplaceHint;
+
+  /// No description provided for @movedDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get movedDismiss;
 }
 
 class _ShellLocalizationsDelegate

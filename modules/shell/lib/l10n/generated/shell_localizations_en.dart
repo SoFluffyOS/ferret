@@ -2494,4 +2494,31 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get bootRetry => 'Try again';
+
+  @override
+  String movedTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'windows': 'This PC',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is a new device now';
+  }
+
+  @override
+  String movedBody(String names) {
+    return 'Ferret came along from another computer. So your devices don\'t mix the two up, pair them again: $names.';
+  }
+
+  @override
+  String get movedReplaceHint =>
+      'Is the old one gone? Each device then offers Replace old one, and keeps its settings.';
+
+  @override
+  String get movedDismiss => 'Got it';
 }

@@ -345,6 +345,14 @@ class MirroringFeature extends Feature {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([
+        MirroringSettings.controlAlwaysKey,
+        MirroringSettings.cameraAlwaysKey,
+        MirroringSettings.cameraBlockedKey,
+        MirroringSettings.blockedDevicesKey,
+      ], deviceIds);
+  @override
   void onSessionClosed(Session session) {
     final deviceId = session.remoteDeviceId;
     unawaited(_source?.onSessionClosed(deviceId));

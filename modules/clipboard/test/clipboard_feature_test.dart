@@ -259,6 +259,17 @@ void main() {
     });
   });
 
+  test('clips from a device that is no longer paired leave Recent clips; '
+      'what this device sent stays', () async {
+    await start();
+    await feature.onEnvelope(pixel, envelopeOf(pushOf('from the pixel')));
+    expect(feature.history, hasLength(1));
+
+    await feature.onPairedDevices({'someone-else'});
+
+    expect(feature.history, isEmpty);
+  });
+
   group('images', () {
     final small = Uint8List.fromList(List.filled(64, 1));
 

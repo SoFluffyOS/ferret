@@ -621,11 +621,13 @@ class NotificationsFeatureUi extends FeatureUi {
     }
 
     final engine = featureContext.engine;
-    _devicesSubscription = engine.deviceChanges.listen(
-      (_) => _devicesChanged.add(null),
-    );
-
     final trustStore = engine.trustStore;
+    _devicesSubscription = engine.deviceChanges.listen((_) {
+      _devicesChanged.add(null);
+      final paired = {for (final device in trustStore.devices) device.id};
+      unawaited(_inbox?.keepOnly(paired));
+    });
+
     final inbox = InboxViewModel(
       feature: feature,
       notifier: featureContext.notifier,

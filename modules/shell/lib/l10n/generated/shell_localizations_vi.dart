@@ -2485,4 +2485,31 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get bootRetry => 'Thử lại';
+
+  @override
+  String movedTitle(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Máy Mac này',
+        'windows': 'PC này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 giờ là một thiết bị mới';
+  }
+
+  @override
+  String movedBody(String names) {
+    return 'Ferret được chuyển sang từ một máy tính khác. Để các thiết bị không nhầm hai máy với nhau, hãy ghép đôi lại: $names.';
+  }
+
+  @override
+  String get movedReplaceHint =>
+      'Máy cũ không dùng nữa? Khi đó mỗi thiết bị sẽ gợi ý Thay thiết bị cũ và giữ nguyên các cài đặt.';
+
+  @override
+  String get movedDismiss => 'Đã hiểu';
 }

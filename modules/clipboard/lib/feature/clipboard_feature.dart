@@ -324,6 +324,21 @@ class ClipboardFeature extends Feature {
     return true;
   }
 
+  /// Clips that came from a device that is no longer paired go from
+  /// Recent clips: what someone copied on a sold phone stays off this one.
+  @override
+  Future<void> onPairedDevices(Set<String> deviceIds) async {
+    final removed = _history.removeWhere(
+      (entry) =>
+          entry.direction == .received &&
+          entry.deviceIds.isNotEmpty &&
+          !entry.deviceIds.any(deviceIds.contains),
+    );
+    if (removed) {
+      _changes.add(null);
+    }
+  }
+
   void clearHistory() {
     for (final timer in _expiryTimers.values) {
       timer.cancel();

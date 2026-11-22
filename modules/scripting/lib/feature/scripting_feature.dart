@@ -130,6 +130,10 @@ class ScriptingFeature extends Feature {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([ScriptingSettings.notifyKey], deviceIds);
+
+  @override
   Future<GeneratedMessage?> onEnvelope(
     Session session,
     Envelope envelope,

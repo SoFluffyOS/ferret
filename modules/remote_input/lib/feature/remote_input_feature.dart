@@ -205,6 +205,12 @@ class RemoteInputFeature extends Feature {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([
+        RemoteInputSettings.allowedDevicesKey,
+        RemoteInputSettings.lockDevicesKey,
+      ], deviceIds);
+  @override
   void onSessionClosed(Session session) {
     final deviceId = session.remoteDeviceId;
     unawaited(_controlHost?.onSessionClosed(deviceId));

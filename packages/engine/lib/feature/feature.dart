@@ -90,6 +90,13 @@ abstract class Feature {
 
   void onSessionClosed(Session session) {}
 
+  /// The devices paired now, at start and whenever one comes or goes. A
+  /// feature lets go of what it keeps for any other device here, such as
+  /// an "Always allow", so a device removed and paired again (or one whose
+  /// removal came from another device, or from ferret-cli) starts with
+  /// nothing allowed.
+  Future<void> onPairedDevices(Set<String> deviceIds) async {}
+
   /// Handles an envelope for this feature. Return a message to answer a
   /// request with it; return null to answer nothing (or reply yourself).
   Future<GeneratedMessage?> onEnvelope(Session session, Envelope envelope);

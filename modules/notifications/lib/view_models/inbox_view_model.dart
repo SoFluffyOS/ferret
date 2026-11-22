@@ -105,6 +105,29 @@ class InboxViewModel extends ChangeNotifier {
     }
   }
 
+  /// Drops what came from devices no longer paired, here and in the
+  /// notification center: a removed phone's messages don't stay behind.
+  Future<void> keepOnly(Set<String> pairedIds) async {
+    final gone = [
+      for (final deviceId in _byDevice.keys)
+        if (!pairedIds.contains(deviceId)) deviceId,
+    ];
+    if (gone.isEmpty) {
+      return;
+    }
+
+    final noticeIds = [
+      for (final deviceId in gone)
+        for (final item in _byDevice.remove(deviceId)!)
+          _noticeId(deviceId, item.key),
+    ];
+    _byNotice.removeWhere((noticeId, _) => noticeIds.contains(noticeId));
+    notifyListeners();
+    for (final noticeId in noticeIds) {
+      await _notifier.cancel(noticeId);
+    }
+  }
+
   @override
   void dispose() {
     for (final subscription in _subscriptions) {

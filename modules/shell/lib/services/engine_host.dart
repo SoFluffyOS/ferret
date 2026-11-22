@@ -23,7 +23,8 @@ class EngineHost extends ChangeNotifier {
               (key) =>
                   DevicePreferences.isOwnKey(key) ||
                   PrivatePreviews.isOwnKey(key) ||
-                  key == DeviceSuccessors.keptKey,
+                  key == DeviceSuccessors.keptKey ||
+                  key == IdentityHome.movedKey,
             )
             .listen((_) => notifyListeners()),
       )
@@ -31,8 +32,16 @@ class EngineHost extends ChangeNotifier {
         engine.settings.changes
             .where((key) => key == DevicePreferences.lastUsedKey)
             .listen((_) => _use.used()),
-      );
+      )
+      ..add(engine.trustStore.changes.listen((_) => _forgetRemoved()));
+    _forgetRemoved();
   }
+
+  void _forgetRemoved() => unawaited(
+    DevicePreferences(engine.settings).keepOnly({
+      for (final device in engine.trustStore.devices) device.id,
+    }),
+  );
 
   final FerretEngine engine;
   final List<StreamSubscription<Object?>> _subscriptions = [];
@@ -70,6 +79,28 @@ class EngineHost extends ChangeNotifier {
 
   Future<void> keepBoth(Successor successor) =>
       DeviceSuccessors(engine.settings).keepBoth(successor.replacement.id);
+
+  /// The devices to pair again after Ferret was copied here from another
+  /// computer and started over: what was paired there and isn't here yet.
+  /// Empty once all are back or the note was put away.
+  List<MovedDevice> get toPairAgain {
+    final moved = IdentityHome.movedFrom(engine.settings);
+    if (moved == null) {
+      return const [];
+    }
+
+    final paired = {
+      for (final device in engine.trustStore.devices)
+        (device.platform, device.ownName.toLowerCase()),
+    };
+    return [
+      for (final device in moved.devices)
+        if (!paired.contains((device.platform, device.name.toLowerCase())))
+          device,
+    ];
+  }
+
+  Future<void> dismissMoved() => IdentityHome.dismiss(engine.settings);
 
   /// The version Ferret was just updated to, for this run only, until the
   /// person opens or waves off what's new.

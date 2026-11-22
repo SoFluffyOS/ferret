@@ -40,6 +40,25 @@ Settings that live on the phone itself stay with the old phone:
 
 Turn each on again on the new phone when you need it. Ferret asks in context, like the first time.
 
+## 💻 Moving to a new computer
+
+Migration Assistant, a Time Machine restore or a copied folder brings Ferret's data along. Ferret notices it runs on another computer and starts there as a NEW device. That way your phone never mixes up the old Mac and the new one.
+
+Home on the new computer says so and lists what to pair again:
+
+> **This Mac is a new device now**
+> Ferret came along from another computer. So your devices don't mix the two up, pair them again: Pixel 7, iPad Air.
+
+Pair each one again. Old one gone for good? Each device then asks **Is this your new MacBook Pro?**, and **Replace old one** keeps its name and settings, just like with a phone.
+
+The same goes for a new phone restored from an iCloud or Google backup: the device key stays on the old phone, so the new one pairs as itself.
+
+## 🗑️ Selling or wiping the old one
+
+Before you wipe it, open the old device's page on any of your devices and **Forget** it, then **Remove everywhere**. Your devices forget it at once, and the ones that are away hear it when they connect again.
+
+What goes with it here: what it may use, its "Always allow" answers, its notifications, its clips in Recent clips and its saved texts. Files it sent you stay in your Downloads.
+
 ## 🧹 Old devices you never replaced
 
 A device nobody has seen for 30 days shows up on Home as **1 not seen in 30 days · Remove…**. Tap it to clean up.

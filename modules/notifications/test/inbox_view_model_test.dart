@@ -203,4 +203,16 @@ void main() {
     expect(notifier.shown, isEmpty);
     expect(control.dismissed, isEmpty);
   });
+
+  test('a removed phone takes its notifications along', () async {
+    control
+      ..emit(MirrorPosted('phone', mirrored()))
+      ..emit(MirrorPosted('tablet', mirrored(deviceId: 'tablet')));
+
+    await inbox.keepOnly({'tablet'});
+
+    expect(inbox.byDevice.keys, ['tablet']);
+    expect(notifier.cancelled, contains('notifications/phone/k1'));
+    expect(notifier.cancelled, isNot(contains('notifications/tablet/k1')));
+  });
 }

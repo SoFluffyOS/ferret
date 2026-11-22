@@ -134,6 +134,13 @@ class NotificationsFeature extends Feature implements MirrorControl {
   }
 
   @override
+  Future<void> onPairedDevices(Set<String> deviceIds) =>
+      host.settings.keepOnlyPaired([
+        ReceiverPreferences.hiddenDevicesKey,
+        ReceiverPreferences.mirroringPhonesKey,
+      ], deviceIds);
+
+  @override
   Future<GeneratedMessage?> onEnvelope(
     Session session,
     Envelope envelope,

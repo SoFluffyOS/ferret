@@ -520,5 +520,9 @@
   "bootStarting": "Đang khởi động Ferret…",
   "bootFailedTitle": "Ferret không khởi động được",
   "bootFailedBody": "Đã có lỗi khi chuẩn bị. Hãy thử lại. Nếu vẫn lỗi, hãy khởi động lại {here, select, macOS{máy Mac này} windows{máy tính này} linux{máy tính này} other{thiết bị này}}.",
-  "bootRetry": "Thử lại"
+  "bootRetry": "Thử lại",
+  "movedTitle": "{here, select, mac{Máy Mac này} windows{PC này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} giờ là một thiết bị mới",
+  "movedBody": "Ferret được chuyển sang từ một máy tính khác. Để các thiết bị không nhầm hai máy với nhau, hãy ghép đôi lại: {names}.",
+  "movedReplaceHint": "Máy cũ không dùng nữa? Khi đó mỗi thiết bị sẽ gợi ý Thay thiết bị cũ và giữ nguyên các cài đặt.",
+  "movedDismiss": "Đã hiểu"
 }
