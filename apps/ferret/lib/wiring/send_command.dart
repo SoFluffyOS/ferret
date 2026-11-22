@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -40,6 +41,11 @@ class SendCommand {
     if (wakes && files.isEmpty && await handoff.wakeUp()) {
       exit(0);
     }
+
+    // From now on this is the running Ferret: later launches hand over to
+    // it even while it is still getting ready, and their requests wait for
+    // Drop to take them.
+    unawaited(handoff.listen());
 
     return SendCommand._(files, handoff);
   }
