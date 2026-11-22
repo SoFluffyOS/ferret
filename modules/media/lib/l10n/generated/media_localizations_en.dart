@@ -249,8 +249,16 @@ class MediaLocalizationsEn extends MediaLocalizations {
       'On a Mac, Ferret sees Music and Spotify. macOS doesn\'t let apps see other players.';
 
   @override
-  String get limitIos =>
-      'iPhone doesn\'t let apps see what other apps play. You can still see and control media on your other devices.';
+  String limitIos(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPad',
+        'other': 'iPhone',
+      },
+    );
+    return '$_temp0 doesn\'t let apps see what other apps play. You can still see and control media on your other devices.';
+  }
 
   @override
   String get limitWindows =>

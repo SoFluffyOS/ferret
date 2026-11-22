@@ -31,7 +31,7 @@
   "askShort": "Xin quyền",
   "askedOnDevice": "Một thông báo đang chờ trên {device}.",
   "unavailableTitle": "Mở Ferret trên {device} để xem ảnh",
-  "unavailableBody": "iPhone chỉ chia sẻ ảnh khi Ferret đang mở trên đó.",
+  "unavailableBody": "{device} chỉ chia sẻ ảnh khi Ferret đang mở trên đó.",
   "empty": "Chưa có ảnh nào trên {device}.",
   "hidden": "Ảnh từ {device} đang bị ẩn trên {here, select, macOS{máy Mac này} windows{máy tính này} other{máy tính này}}.",
   "kindPhoto": "Ảnh, {date}",

@@ -73,7 +73,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get pairIphoneBody =>
-      'Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone\'s Camera.';
+      'Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the Camera app.';
 
   @override
   String get pairShowCodeBody =>
@@ -1734,8 +1734,16 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get footerDrag => 'Drag files onto a device to send';
 
   @override
-  String get footerKeepOpen =>
-      'Keep Ferret open to sync. iOS pauses it otherwise.';
+  String footerKeepOpen(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPadOS',
+        'other': 'iOS',
+      },
+    );
+    return 'Keep Ferret open to sync. $_temp0 pauses it otherwise.';
+  }
 
   @override
   String get footerNobody =>

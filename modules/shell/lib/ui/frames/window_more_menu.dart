@@ -7,9 +7,10 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-/// Windows and Linux have no menu bar, so the window's ••• holds its
-/// commands, each with its keys next to it, ending with the list of all
-/// keys, the sponsor page and Quit.
+/// Windows, Linux and the iPad have no menu bar, so the ••• at the right
+/// end of the window's toolbar holds its commands, each with its keys next
+/// to it, ending with the list of all keys, the sponsor page and Quit. Its
+/// menu opens leftwards, inside the window.
 class WindowMoreMenu extends StatelessWidget {
   const WindowMoreMenu({super.key});
 
@@ -79,7 +80,6 @@ class WindowMoreMenu extends StatelessWidget {
     return MenuButton(
       icon: LucideIcons.ellipsis,
       tooltip: l10n.homeMore,
-      opensRight: true,
       entries: entries,
     );
   }

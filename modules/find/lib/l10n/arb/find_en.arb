@@ -182,7 +182,14 @@
   "settingsOpenFailed": "Couldn't open Settings. Open Settings, then Notifications, then Do Not Disturb access, and turn Ferret on.",
   "settingsFullScreenOff": "The ringing screen can't show over the lock screen",
   "settingsFullScreenHowTo": "You still hear it and get a notification. Allow full-screen notifications to see Found it right away.",
-  "settingsLimitIos": "This iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.",
+  "settingsLimitIos": "{here, select, tablet{This iPad} other{This iPhone}} rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.",
+  "@settingsLimitIos": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "settingsLimitDesktop": "Rings at the current volume. Keep the sound on to hear it.",
   "settingsLimitNoPlayer": "No sound player found, so this computer can't ring. Install pw-play, paplay or aplay.",
   "settingsTestRing": "Test ring",

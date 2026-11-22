@@ -281,8 +281,8 @@ abstract class PhotosLocalizations {
   /// No description provided for @unavailableBody.
   ///
   /// In en, this message translates to:
-  /// **'An iPhone shares photos only while Ferret is open on it.'**
-  String get unavailableBody;
+  /// **'{device} shares photos only while Ferret is open on it.'**
+  String unavailableBody(String device);
 
   /// No description provided for @empty.
   ///

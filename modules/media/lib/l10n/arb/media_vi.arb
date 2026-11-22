@@ -47,7 +47,7 @@
   "accessOpenSettings": "Mở cài đặt",
   "accessCheckAgain": "Kiểm tra lại",
   "limitMacos": "Trên Mac, Ferret thấy Music và Spotify. macOS không cho ứng dụng thấy các trình phát khác.",
-  "limitIos": "iPhone không cho ứng dụng thấy nội dung ứng dụng khác đang phát. Bạn vẫn xem và điều khiển được đa phương tiện trên các thiết bị khác của mình.",
+  "limitIos": "{here, select, tablet{iPad} other{iPhone}} không cho ứng dụng thấy nội dung ứng dụng khác đang phát. Bạn vẫn xem và điều khiển được đa phương tiện trên các thiết bị khác của mình.",
   "limitWindows": "Ferret thấy các trình phát hiện trong phần điều khiển đa phương tiện của Windows. Âm lượng vẫn do máy tính này điều khiển.",
   "limitLinux": "Ferret thấy các trình phát hỗ trợ MPRIS, tức là hầu hết trình phát trên Linux.",
   "back": "Quay lại",

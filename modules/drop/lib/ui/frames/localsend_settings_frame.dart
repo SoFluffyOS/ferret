@@ -39,7 +39,7 @@ class LocalSendSettingsFrame extends StatelessWidget {
             title: l10n.settingsReceiveAlways,
             body: switch (defaultTargetPlatform) {
               .iOS =>
-                '${l10n.settingsReceiveAlwaysBody} ${l10n.iphoneKeepOpen}',
+                '${l10n.settingsReceiveAlwaysBody} ${l10n.iphoneKeepOpen(ThisComputer.handheld)}',
               _ => l10n.settingsReceiveAlwaysBody,
             },
             value: receiveAlways,

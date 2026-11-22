@@ -1148,11 +1148,11 @@ abstract class DropLocalizations {
   /// **'Files › Ferret'**
   String get folderFilesApp;
 
-  /// iPhone only, under Receive a file from a guest and Always receive from LocalSend: iOS stops Ferret in the background, so it only receives while open.
+  /// iPhone and iPad only, under Receive a file from a guest and Always receive from LocalSend: iOS stops Ferret in the background, so it only receives while open.
   ///
   /// In en, this message translates to:
-  /// **'Keep Ferret open on this iPhone while they send.'**
-  String get iphoneKeepOpen;
+  /// **'Keep Ferret open on {here, select, tablet{this iPad} other{this iPhone}} while they send.'**
+  String iphoneKeepOpen(String here);
 }
 
 class _DropLocalizationsDelegate

@@ -221,7 +221,7 @@ abstract class ShellLocalizations {
   /// No description provided for @pairIphoneBody.
   ///
   /// In en, this message translates to:
-  /// **'Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone\'s Camera.'**
+  /// **'Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the Camera app.'**
   String get pairIphoneBody;
 
   /// No description provided for @pairShowCodeBody.
@@ -2189,8 +2189,8 @@ abstract class ShellLocalizations {
   /// No description provided for @footerKeepOpen.
   ///
   /// In en, this message translates to:
-  /// **'Keep Ferret open to sync. iOS pauses it otherwise.'**
-  String get footerKeepOpen;
+  /// **'Keep Ferret open to sync. {here, select, tablet{iPadOS} other{iOS}} pauses it otherwise.'**
+  String footerKeepOpen(String here);
 
   /// No description provided for @footerNobody.
   ///

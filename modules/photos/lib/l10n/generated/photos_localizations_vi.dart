@@ -141,8 +141,9 @@ class PhotosLocalizationsVi extends PhotosLocalizations {
   }
 
   @override
-  String get unavailableBody =>
-      'iPhone chỉ chia sẻ ảnh khi Ferret đang mở trên đó.';
+  String unavailableBody(String device) {
+    return '$device chỉ chia sẻ ảnh khi Ferret đang mở trên đó.';
+  }
 
   @override
   String empty(String device) {

@@ -347,8 +347,8 @@ abstract class FindLocalizations {
   /// No description provided for @settingsLimitIos.
   ///
   /// In en, this message translates to:
-  /// **'This iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.'**
-  String get settingsLimitIos;
+  /// **'{here, select, tablet{This iPad} other{This iPhone}} rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.'**
+  String settingsLimitIos(String here);
 
   /// No description provided for @settingsLimitDesktop.
   ///

@@ -100,8 +100,16 @@ class WindowMenuFrame extends StatelessWidget {
         const KeyboardShortcutsPage(),
         title: context.shellL10n.shortcutsTitle,
       ),
-      .sponsor: () => unawaited(Sponsor.open()),
-      .quit: () => unawaited(context.read<AppQuit>().quit()),
+      // An iPad's window has no sponsor link (App Store 3.1.1) and no
+      // Quit: iOS apps don't quit themselves.
+      .sponsor: switch (Sponsor.isOffered) {
+        true => () => unawaited(Sponsor.open()),
+        false => null,
+      },
+      .quit: switch (defaultTargetPlatform) {
+        .iOS => null,
+        _ => () => unawaited(context.read<AppQuit>().quit()),
+      },
     };
     void selectSection(int index) {
       if (sectionsDevice == null || index >= sections.length) {

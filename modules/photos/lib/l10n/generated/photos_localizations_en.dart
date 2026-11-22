@@ -142,8 +142,9 @@ class PhotosLocalizationsEn extends PhotosLocalizations {
   }
 
   @override
-  String get unavailableBody =>
-      'An iPhone shares photos only while Ferret is open on it.';
+  String unavailableBody(String device) {
+    return '$device shares photos only while Ferret is open on it.';
+  }
 
   @override
   String empty(String device) {

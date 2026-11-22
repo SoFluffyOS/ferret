@@ -37,7 +37,7 @@
     "description": "Short button for pairShowCode on the empty Home; the full words are its tooltip and spoken label"
   },
   "pairEnterCode": "Other ways",
-  "pairIphoneBody": "Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone's Camera.",
+  "pairIphoneBody": "Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the Camera app.",
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
   "pairCopyLink": "Copy link",
   "pairLinkCopied": "Copied",
@@ -1324,7 +1324,14 @@
     }
   },
   "footerDrag": "Drag files onto a device to send",
-  "footerKeepOpen": "Keep Ferret open to sync. iOS pauses it otherwise.",
+  "footerKeepOpen": "Keep Ferret open to sync. {here, select, tablet{iPadOS} other{iOS}} pauses it otherwise.",
+  "@footerKeepOpen": {
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
   "footerNobody": "Not connected right now. Open Ferret on your other device, on the same Wi-Fi.",
   "footerPausedUntil": "Paused until {time}",
   "@footerPausedUntil": {

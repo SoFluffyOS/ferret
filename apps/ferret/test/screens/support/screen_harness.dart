@@ -33,6 +33,10 @@ class CaptureSize {
     this.height, {
     this.platform = .macOS,
     this.darkToo = true,
+    this.display,
+    this.corner,
+    this.safeTop = 0,
+    this.safeBottom = 0,
   });
 
   final String name;
@@ -42,6 +46,17 @@ class CaptureSize {
 
   /// Whether it is also captured in dark mode.
   final bool darkToo;
+
+  /// The whole screen when the view is a window on it (split screen,
+  /// Stage Manager); the view's own size when null.
+  final Size? display;
+
+  /// The corner the system rounds this view by, where it is not a Mac's.
+  final double? corner;
+
+  /// What the status bar and the home indicator cover.
+  final double safeTop;
+  final double safeBottom;
 }
 
 const phone = CaptureSize('phone', 390, 844, platform: .android);
@@ -77,6 +92,113 @@ const tabletPortraitHalf = CaptureSize(
   636,
   platform: .android,
 );
+
+/// The iPad's screen corner: 18 pt on every iPad without a Home button
+/// (Air 4th generation on, Pro 2018 on, mini 6). Stage Manager rounds its
+/// windows the same way, concentric with the screen.
+const ipadCorner = 18.0;
+
+/// An iPad Air 11" (820 × 1180 pt) held both ways, an iPad Pro 13"
+/// (1032 × 1376 pt) in landscape, Ferret in Split View at a half, a third
+/// and two thirds of the Air's landscape screen, a third of the portrait
+/// one, and two Stage Manager windows. The status bar takes 24 pt and the
+/// home indicator 20 pt of a full-height view.
+const _ipadAir = Size(1180, 820);
+const ipadLandscape = CaptureSize(
+  'ipad_land',
+  1180,
+  820,
+  platform: .iOS,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadPortrait = CaptureSize(
+  'ipad_port',
+  820,
+  1180,
+  platform: .iOS,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadPro = CaptureSize(
+  'ipad_pro',
+  1376,
+  1032,
+  platform: .iOS,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadHalf = CaptureSize(
+  'ipad_half',
+  590,
+  820,
+  platform: .iOS,
+  display: _ipadAir,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadThird = CaptureSize(
+  'ipad_third',
+  320,
+  820,
+  platform: .iOS,
+  display: _ipadAir,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadTwoThirds = CaptureSize(
+  'ipad_two_thirds',
+  850,
+  820,
+  platform: .iOS,
+  display: _ipadAir,
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadPortraitThird = CaptureSize(
+  'ipad_port_third',
+  320,
+  1180,
+  platform: .iOS,
+  display: Size(820, 1180),
+  corner: ipadCorner,
+  safeTop: 24,
+  safeBottom: 20,
+);
+const ipadStage = CaptureSize(
+  'ipad_stage',
+  720,
+  560,
+  platform: .iOS,
+  display: _ipadAir,
+  corner: ipadCorner,
+);
+const ipadStageSmall = CaptureSize(
+  'ipad_stage_small',
+  500,
+  520,
+  platform: .iOS,
+  display: _ipadAir,
+  corner: ipadCorner,
+);
+const ipadSizes = [
+  ipadLandscape,
+  ipadPortrait,
+  ipadPro,
+  ipadHalf,
+  ipadThird,
+  ipadTwoThirds,
+  ipadPortraitThird,
+  ipadStage,
+  ipadStageSmall,
+];
+
 const tabletSizes = [
   tabletLandscape,
   tabletPortrait,
@@ -142,7 +264,7 @@ class ScreenRig {
 
   /// Builds the app like `runFerret` does, with in-memory storage, no
   /// discovery and an ephemeral port. [asIphone] wants the features of
-  /// `iosFeatures()`.
+  /// `iosFeatures()`, and so does [asIpad].
   static Future<ScreenRig> create(
     WidgetTester tester, {
     required List<FeatureUi> features,
@@ -151,6 +273,7 @@ class ScreenRig {
     bool asPhone = false,
     bool asTablet = false,
     bool asIphone = false,
+    bool asIpad = false,
   }) async {
     if (screensLocale.isNotEmpty) {
       await tester.runAsync(initializeDateFormatting);
@@ -162,7 +285,13 @@ class ScreenRig {
       final engine = await FerretEngine.create(
         secrets: MemorySecretStore(),
         settings: MemorySettingsStore(),
-        device: switch (asPhone || asTablet || asIphone) {
+        device: switch (asPhone || asTablet || asIphone || asIpad) {
+          true when asIpad => const LocalDevice(
+            name: 'iPad Air',
+            platform: .PLATFORM_IOS,
+            formFactor: .FORM_FACTOR_TABLET,
+            appVersion: '0.1.0',
+          ),
           true when asIphone => const LocalDevice(
             name: 'iPhone 16',
             platform: .PLATFORM_IOS,
@@ -228,7 +357,7 @@ class ScreenRig {
         app,
         featureContext,
         discovery,
-        isHandheld: asPhone || asTablet || asIphone,
+        isHandheld: asPhone || asTablet || asIphone || asIpad,
       );
     });
     if (rig == null) {
@@ -324,13 +453,14 @@ class ScreenRig {
     WidgetTester tester, {
     required List<FeatureUi> iphoneFeatures,
     String name = 'iPhone 16',
+    FormFactor formFactor = .FORM_FACTOR_PHONE,
   }) => _pairOther(
     tester,
     features: iphoneFeatures,
     device: LocalDevice(
       name: name,
       platform: .PLATFORM_IOS,
-      formFactor: .FORM_FACTOR_PHONE,
+      formFactor: formFactor,
       appVersion: '0.1.0',
     ),
   );
@@ -819,11 +949,19 @@ void setScreen(WidgetTester tester, CaptureSize size, Brightness brightness) {
   // whole screen.
   final screen = switch (size.name) {
     'tablet_half' || 'tablet_port_half' => const Size(1280, 800),
-    _ => Size(size.width, size.height),
+    _ => size.display ?? Size(size.width, size.height),
   };
   tester.view.display
     ..devicePixelRatio = 1
     ..size = screen;
+  if (size.safeTop > 0 || size.safeBottom > 0) {
+    tester.view
+      ..padding = FakeViewPadding(top: size.safeTop, bottom: size.safeBottom)
+      ..viewPadding = FakeViewPadding(
+        top: size.safeTop,
+        bottom: size.safeBottom,
+      );
+  }
   tester.platformDispatcher.platformBrightnessTestValue = brightness;
   addTearDown(() {
     tester.view.display.reset();
@@ -873,6 +1011,7 @@ extension on CaptureSize {
   /// renders run as a Mac size with their platform set), none on a phone
   /// or a tablet, whose screen is the window.
   double? get windowCorner {
+    if (corner case final corner?) return corner;
     if (platform != .macOS) return null;
     if (defaultTargetPlatform == .windows) return windowsCorner;
     if (isPopover) return Corners.popover;

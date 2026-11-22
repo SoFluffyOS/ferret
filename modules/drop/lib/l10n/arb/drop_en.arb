@@ -898,8 +898,13 @@
   "@folderFilesApp": {
     "description": "Where an iPhone saves received files, as people find it: Ferret's folder in the iOS Files app. Use the Files app's name in this language."
   },
-  "iphoneKeepOpen": "Keep Ferret open on this iPhone while they send.",
+  "iphoneKeepOpen": "Keep Ferret open on {here, select, tablet{this iPad} other{this iPhone}} while they send.",
   "@iphoneKeepOpen": {
-    "description": "iPhone only, under Receive a file from a guest and Always receive from LocalSend: iOS stops Ferret in the background, so it only receives while open."
+    "description": "iPhone and iPad only, under Receive a file from a guest and Always receive from LocalSend: iOS stops Ferret in the background, so it only receives while open.",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
   }
 }

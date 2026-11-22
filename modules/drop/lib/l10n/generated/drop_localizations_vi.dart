@@ -761,6 +761,14 @@ class DropLocalizationsVi extends DropLocalizations {
   String get folderFilesApp => 'Tệp › Ferret';
 
   @override
-  String get iphoneKeepOpen =>
-      'Hãy giữ Ferret mở trên iPhone này trong lúc họ gửi.';
+  String iphoneKeepOpen(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPad này',
+        'other': 'iPhone này',
+      },
+    );
+    return 'Hãy giữ Ferret mở trên $_temp0 trong lúc họ gửi.';
+  }
 }

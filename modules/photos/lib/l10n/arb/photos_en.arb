@@ -148,7 +148,14 @@
       }
     }
   },
-  "unavailableBody": "An iPhone shares photos only while Ferret is open on it.",
+  "unavailableBody": "{device} shares photos only while Ferret is open on it.",
+  "@unavailableBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "empty": "No photos on {device} yet.",
   "@empty": {
     "placeholders": {

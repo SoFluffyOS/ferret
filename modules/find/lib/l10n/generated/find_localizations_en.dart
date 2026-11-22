@@ -184,8 +184,16 @@ class FindLocalizationsEn extends FindLocalizations {
       'You still hear it and get a notification. Allow full-screen notifications to see Found it right away.';
 
   @override
-  String get settingsLimitIos =>
-      'This iPhone rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.';
+  String settingsLimitIos(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'This iPad',
+        'other': 'This iPhone',
+      },
+    );
+    return '$_temp0 rings, even on silent, only while Ferret is open. iOS stops apps soon after they leave the screen.';
+  }
 
   @override
   String get settingsLimitDesktop =>

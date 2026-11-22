@@ -142,7 +142,7 @@ class _Header extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final announce = peer.announce;
-    final kind = _kindOf(announce.platform);
+    final kind = _kindOf(announce.platform, announce.formFactor);
 
     return Row(
       children: [
@@ -177,15 +177,17 @@ class _Header extends StatelessWidget {
   }
 
   /// Product names, the same in every language.
-  String _kindOf(Platform platform) => switch (platform) {
-    .PLATFORM_ANDROID => 'Android',
-    .PLATFORM_IOS => 'iPhone',
-    .PLATFORM_MACOS => 'Mac',
-    .PLATFORM_LINUX => 'Linux',
-    .PLATFORM_WINDOWS => 'Windows',
-    .PLATFORM_CLI => 'Terminal',
-    _ => '',
-  };
+  String _kindOf(Platform platform, FormFactor formFactor) =>
+      switch (platform) {
+        .PLATFORM_ANDROID => 'Android',
+        .PLATFORM_IOS when formFactor == .FORM_FACTOR_TABLET => 'iPad',
+        .PLATFORM_IOS => 'iPhone',
+        .PLATFORM_MACOS => 'Mac',
+        .PLATFORM_LINUX => 'Linux',
+        .PLATFORM_WINDOWS => 'Windows',
+        .PLATFORM_CLI => 'Terminal',
+        _ => '',
+      };
 }
 
 enum _Tone { muted, good }

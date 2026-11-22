@@ -883,8 +883,6 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
   @override
   String get folderFilesApp => pseudo(super.folderFilesApp);
   @override
-  String get iphoneKeepOpen => pseudo(super.iphoneKeepOpen);
-  @override
   String activityFrom(String what, String device) =>
       pseudo(super.activityFrom(what, device));
   @override
@@ -1109,6 +1107,8 @@ class PseudoDropLocalizations extends DropLocalizationsEn {
       pseudo(super.folderProgressDone(files, size));
   @override
   String folderSkipped(int count) => pseudo(super.folderSkipped(count));
+  @override
+  String iphoneKeepOpen(String here) => pseudo(super.iphoneKeepOpen(here));
 }
 
 class PseudoFindLocalizations extends FindLocalizationsEn {
@@ -1159,8 +1159,6 @@ class PseudoFindLocalizations extends FindLocalizationsEn {
   String get settingsFullScreenOff => pseudo(super.settingsFullScreenOff);
   @override
   String get settingsFullScreenHowTo => pseudo(super.settingsFullScreenHowTo);
-  @override
-  String get settingsLimitIos => pseudo(super.settingsLimitIos);
   @override
   String get settingsLimitDesktop => pseudo(super.settingsLimitDesktop);
   @override
@@ -1228,6 +1226,8 @@ class PseudoFindLocalizations extends FindLocalizationsEn {
       pseudo(super.outgoingLostConnectionDetail(name));
   @override
   String settingsDndHowTo(String here) => pseudo(super.settingsDndHowTo(here));
+  @override
+  String settingsLimitIos(String here) => pseudo(super.settingsLimitIos(here));
   @override
   String healthChecking(String name) => pseudo(super.healthChecking(name));
   @override
@@ -1787,8 +1787,6 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   @override
   String get limitMacos => pseudo(super.limitMacos);
   @override
-  String get limitIos => pseudo(super.limitIos);
-  @override
   String get limitWindows => pseudo(super.limitWindows);
   @override
   String get limitLinux => pseudo(super.limitLinux);
@@ -1835,6 +1833,8 @@ class PseudoMediaLocalizations extends MediaLocalizationsEn {
   String healthNotShared(String here) => pseudo(super.healthNotShared(here));
   @override
   String accessAndroid(String here) => pseudo(super.accessAndroid(here));
+  @override
+  String limitIos(String here) => pseudo(super.limitIos(here));
   @override
   String controlMediaOn(String device) => pseudo(super.controlMediaOn(device));
 }
@@ -3214,8 +3214,6 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   @override
   String get askShort => pseudo(super.askShort);
   @override
-  String get unavailableBody => pseudo(super.unavailableBody);
-  @override
   String get activityInFolder => pseudo(super.activityInFolder);
   @override
   String get failOther => pseudo(super.failOther);
@@ -3279,6 +3277,9 @@ class PseudoPhotosLocalizations extends PhotosLocalizationsEn {
   @override
   String unavailableTitle(String device) =>
       pseudo(super.unavailableTitle(device));
+  @override
+  String unavailableBody(String device) =>
+      pseudo(super.unavailableBody(device));
   @override
   String empty(String device) => pseudo(super.empty(device));
   @override
@@ -4440,8 +4441,6 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get footerDrag => pseudo(super.footerDrag);
   @override
-  String get footerKeepOpen => pseudo(super.footerKeepOpen);
-  @override
   String get footerNobody => pseudo(super.footerNobody);
   @override
   String get footerPaused => pseudo(super.footerPaused);
@@ -4975,6 +4974,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   String activityHours(int count) => pseudo(super.activityHours(count));
   @override
   String activityDays(int count) => pseudo(super.activityDays(count));
+  @override
+  String footerKeepOpen(String here) => pseudo(super.footerKeepOpen(here));
   @override
   String footerPausedUntil(String time) =>
       pseudo(super.footerPausedUntil(time));

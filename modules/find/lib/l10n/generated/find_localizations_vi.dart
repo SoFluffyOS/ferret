@@ -184,8 +184,16 @@ class FindLocalizationsVi extends FindLocalizations {
       'Bạn vẫn nghe thấy chuông và nhận được thông báo. Cho phép thông báo toàn màn hình để thấy ngay nút Tìm thấy rồi.';
 
   @override
-  String get settingsLimitIos =>
-      'iPhone này chỉ đổ chuông, kể cả khi im lặng, trong lúc Ferret đang mở. iOS dừng ứng dụng ngay sau khi chúng rời màn hình.';
+  String settingsLimitIos(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPad này',
+        'other': 'iPhone này',
+      },
+    );
+    return '$_temp0 chỉ đổ chuông, kể cả khi im lặng, trong lúc Ferret đang mở. iOS dừng ứng dụng ngay sau khi chúng rời màn hình.';
+  }
 
   @override
   String get settingsLimitDesktop =>

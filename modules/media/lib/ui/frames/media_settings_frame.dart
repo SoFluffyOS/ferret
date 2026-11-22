@@ -110,7 +110,7 @@ class MediaSettingsFrame extends StatelessWidget {
   static String? _limit(MediaLocalizations l10n, MediaPlatform platform) =>
       switch (platform) {
         .macos => l10n.limitMacos,
-        .ios => l10n.limitIos,
+        .ios => l10n.limitIos(ThisComputer.handheld),
         .windows => l10n.limitWindows,
         .linux => l10n.limitLinux,
         .android || .other => null,

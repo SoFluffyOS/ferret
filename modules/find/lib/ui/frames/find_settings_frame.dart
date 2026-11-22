@@ -97,7 +97,7 @@ class _FindSettingsFrameState extends State<FindSettingsFrame> {
     }
 
     final limit = switch (platform) {
-      .ios => l10n.settingsLimitIos,
+      .ios => l10n.settingsLimitIos(ThisComputer.handheld),
       .desktop => l10n.settingsLimitDesktop,
       _ => null,
     };

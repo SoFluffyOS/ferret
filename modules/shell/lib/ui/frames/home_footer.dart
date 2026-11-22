@@ -59,7 +59,7 @@ class HomeFooter extends StatelessWidget {
     }
 
     if (defaultTargetPlatform == .iOS) {
-      return FooterHint(text: l10n.footerKeepOpen);
+      return FooterHint(text: l10n.footerKeepOpen(ThisComputer.handheld));
     }
 
     final dragsFiles = switch (defaultTargetPlatform) {

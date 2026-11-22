@@ -250,8 +250,16 @@ class MediaLocalizationsVi extends MediaLocalizations {
       'Trên Mac, Ferret thấy Music và Spotify. macOS không cho ứng dụng thấy các trình phát khác.';
 
   @override
-  String get limitIos =>
-      'iPhone không cho ứng dụng thấy nội dung ứng dụng khác đang phát. Bạn vẫn xem và điều khiển được đa phương tiện trên các thiết bị khác của mình.';
+  String limitIos(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPad',
+        'other': 'iPhone',
+      },
+    );
+    return '$_temp0 không cho ứng dụng thấy nội dung ứng dụng khác đang phát. Bạn vẫn xem và điều khiển được đa phương tiện trên các thiết bị khác của mình.';
+  }
 
   @override
   String get limitWindows =>

@@ -42,7 +42,7 @@
   "settingsOpenFailed": "Không mở được Cài đặt. Mở Cài đặt, rồi Thông báo, rồi Quyền truy cập Không làm phiền và bật Ferret.",
   "settingsFullScreenOff": "Màn hình đổ chuông không hiện được trên màn hình khóa",
   "settingsFullScreenHowTo": "Bạn vẫn nghe thấy chuông và nhận được thông báo. Cho phép thông báo toàn màn hình để thấy ngay nút Tìm thấy rồi.",
-  "settingsLimitIos": "iPhone này chỉ đổ chuông, kể cả khi im lặng, trong lúc Ferret đang mở. iOS dừng ứng dụng ngay sau khi chúng rời màn hình.",
+  "settingsLimitIos": "{here, select, tablet{iPad này} other{iPhone này}} chỉ đổ chuông, kể cả khi im lặng, trong lúc Ferret đang mở. iOS dừng ứng dụng ngay sau khi chúng rời màn hình.",
   "settingsLimitDesktop": "Đổ chuông ở âm lượng hiện tại. Hãy bật tiếng để nghe thấy.",
   "settingsLimitNoPlayer": "Không tìm thấy trình phát âm thanh nên máy tính này không đổ chuông được. Cài pw-play, paplay hoặc aplay.",
   "settingsTestRing": "Đổ chuông thử",

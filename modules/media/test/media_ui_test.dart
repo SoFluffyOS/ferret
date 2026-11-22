@@ -1,5 +1,6 @@
 import 'package:ferret_media/ferret_media.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:media/media.dart';
@@ -142,6 +143,9 @@ void main() {
     });
 
     testWidgets('says what iPhone can and cannot do', (tester) async {
+      tester.view.display.size = const Size(1170, 2532);
+      tester.view.display.devicePixelRatio = 3;
+      addTearDown(tester.view.display.reset);
       final feature = MediaFeature();
       await tester.runAsync(() => feature.start(FakeHost()));
       final model = MediaViewModel(feature, platform: .ios);
@@ -158,6 +162,27 @@ void main() {
       expect(find.text('Share my media'), findsNothing);
       expect(find.text('Show media from other devices'), findsOneWidget);
       expect(find.textContaining("iPhone doesn't let apps"), findsOneWidget);
+      model.dispose();
+    });
+
+    testWidgets('an iPad says iPad', (tester) async {
+      tester.view.display.size = const Size(2360, 1640);
+      tester.view.display.devicePixelRatio = 2;
+      addTearDown(tester.view.display.reset);
+      final feature = MediaFeature();
+      await tester.runAsync(() => feature.start(FakeHost()));
+      final model = MediaViewModel(feature, platform: .ios);
+
+      await tester.pumpWidget(
+        testApp(
+          ChangeNotifierProvider.value(
+            value: model,
+            child: const MediaSettingsFrame(),
+          ),
+        ),
+      );
+
+      expect(find.textContaining("iPad doesn't let apps"), findsOneWidget);
       model.dispose();
     });
   });

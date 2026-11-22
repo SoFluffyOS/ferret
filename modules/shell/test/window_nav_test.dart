@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -12,6 +13,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:protocol/protocol.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/shell.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 import 'support/memory_discovery.dart';
 
@@ -525,6 +527,35 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(SidebarFrame), findsNothing);
       expect(find.byType(SettingsPage), findsOneWidget);
+    });
+
+    testWidgets('an iPad window takes ⌘ keys, and its ••• has no Sponsor '
+        'and no Quit', (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      await start(tester, const Size(1180, 820));
+
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.meta);
+      await tester.sendKeyEvent(LogicalKeyboardKey.comma);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.meta);
+      await tester.pump();
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(WindowMoreMenu),
+          matching: find.byType(MenuButton),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining(RegExp('Keyboard [Ss]hortcuts')),
+        findsWidgets,
+      );
+      expect(find.text('⌘,'), findsOneWidget);
+      expect(find.textContaining('Sponsor'), findsNothing);
+      expect(find.textContaining('Quit'), findsNothing);
+      debugDefaultTargetPlatformOverride = null;
     });
 
     testWidgets('Settings keeps its list next to the row that is open', (

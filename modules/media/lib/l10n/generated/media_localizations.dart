@@ -377,8 +377,8 @@ abstract class MediaLocalizations {
   /// No description provided for @limitIos.
   ///
   /// In en, this message translates to:
-  /// **'iPhone doesn\'t let apps see what other apps play. You can still see and control media on your other devices.'**
-  String get limitIos;
+  /// **'{here, select, tablet{iPad} other{iPhone}} doesn\'t let apps see what other apps play. You can still see and control media on your other devices.'**
+  String limitIos(String here);
 
   /// No description provided for @limitWindows.
   ///

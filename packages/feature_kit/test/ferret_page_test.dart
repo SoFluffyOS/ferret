@@ -3,25 +3,27 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-Widget _page({required double keyboard}) => MediaQuery(
-  data: MediaQueryData(
-    viewInsets: EdgeInsets.only(bottom: keyboard),
-  ),
-  child: Directionality(
-    textDirection: .ltr,
-    child: FluffyTheme(
-      data: FluffyThemeData.fallback(brightness: .light),
-      child: Navigator(
-        onGenerateRoute: (_) => PageRouteBuilder<void>(
-          pageBuilder: (_, _, _) => const FerretPage(
-            title: 'Device',
-            children: [SizedBox(height: 2000), Text('Name')],
+Widget _page({required double keyboard, double homeIndicator = 0}) =>
+    MediaQuery(
+      data: MediaQueryData(
+        viewInsets: EdgeInsets.only(bottom: keyboard),
+        padding: EdgeInsets.only(bottom: homeIndicator),
+      ),
+      child: Directionality(
+        textDirection: .ltr,
+        child: FluffyTheme(
+          data: FluffyThemeData.fallback(brightness: .light),
+          child: Navigator(
+            onGenerateRoute: (_) => PageRouteBuilder<void>(
+              pageBuilder: (_, _, _) => const FerretPage(
+                title: 'Device',
+                children: [SizedBox(height: 2000), Text('Name')],
+              ),
+            ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 Widget _titled(String title, FerretPageTitle style) => MediaQuery(
   data: const MediaQueryData(size: Size(400, 600)),
@@ -118,6 +120,21 @@ void main() {
     final withKeyboard = tester.getRect(find.byType(ListView)).bottom;
 
     expect(withKeyboard, withoutKeyboard - 300);
+  });
+
+  testWidgets('the list runs under the home indicator and ends clear of it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_page(keyboard: 0, homeIndicator: 20));
+    final screen = tester.getRect(find.byType(Navigator)).bottom;
+    expect(tester.getRect(find.byType(ListView)).bottom, screen);
+
+    await tester.drag(find.byType(ListView), const Offset(0, -3000));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.text('Name')).bottom,
+      lessThanOrEqualTo(screen - 20 - 24),
+    );
   });
 }
 

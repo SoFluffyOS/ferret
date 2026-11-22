@@ -229,7 +229,7 @@ class PhotosGalleryFrame extends StatelessWidget {
       .unavailable => GalleryMessage(
         icon: LucideIcons.smartphone,
         title: l10n.unavailableTitle(deviceName),
-        body: l10n.unavailableBody,
+        body: l10n.unavailableBody(deviceName),
         action: tryAgain,
       ),
       .empty => GalleryMessage(

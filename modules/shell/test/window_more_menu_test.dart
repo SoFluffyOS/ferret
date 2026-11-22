@@ -66,7 +66,7 @@ void main() {
             initialEntries: [
               OverlayEntry(
                 builder: (_) => const Align(
-                  alignment: Alignment.topLeft,
+                  alignment: Alignment.topRight,
                   child: WindowMoreMenu(),
                 ),
               ),
@@ -88,6 +88,12 @@ void main() {
     expect(find.text('Ctrl+Alt+P'), findsOneWidget);
     expect(find.text('Send files…'), findsNothing);
     expect(find.text('Fix connection…'), findsNothing);
+    // The ••• sits at the window's right edge: its menu opens leftwards,
+    // inside the window.
+    expect(
+      tester.getRect(find.text('Add a device…')).right,
+      lessThanOrEqualTo(800),
+    );
 
     await tester.tap(find.text('Quit Ferret'));
     await tester.pumpAndSettle();

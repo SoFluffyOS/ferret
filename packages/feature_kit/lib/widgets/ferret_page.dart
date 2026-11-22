@@ -78,10 +78,19 @@ class FerretPage extends StatelessWidget {
     // Without a Scaffold nothing else makes room for the on-screen
     // keyboard, and a text field near the bottom would sit under it.
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+    // Without a footer the list runs on under the home indicator, as iOS
+    // lists do, and ends clear of it; cutting it off above the indicator
+    // left a hard edge across the last card on an iPad.
+    final scrollsUnder = footer == null;
+    final underneath = switch (scrollsUnder) {
+      true => MediaQuery.paddingOf(context).bottom,
+      false => 0.0,
+    };
 
     return ColoredBox(
       color: palette.background,
       child: SafeArea(
+        bottom: !scrollsUnder,
         minimum: EdgeInsets.only(bottom: keyboard),
         child: Column(
           crossAxisAlignment: .stretch,
@@ -183,7 +192,7 @@ class FerretPage extends StatelessWidget {
                         (false, false) => Spacing.d24,
                       },
                       side + margin,
-                      Spacing.d24,
+                      Spacing.d24 + underneath,
                     ),
                     // Without this every line of text on the page, and
                     // the words next to a button, is folded into one stop

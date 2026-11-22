@@ -74,7 +74,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get pairIphoneBody =>
-      'Máy tính sẽ hiện trong mục Lân cận khi Ferret đang mở trên cả hai. Không thấy? Trên máy tính, mở Ferret, nhấp + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera của iPhone.';
+      'Máy tính sẽ hiện trong mục Lân cận khi Ferret đang mở trên cả hai. Không thấy? Trên máy tính, mở Ferret, nhấp + rồi chọn Ghép đôi bằng mã QR. Quét mã ở đây, hoặc bằng ứng dụng Camera.';
 
   @override
   String get pairShowCodeBody =>
@@ -1727,8 +1727,16 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get footerDrag => 'Kéo tệp vào một thiết bị để gửi';
 
   @override
-  String get footerKeepOpen =>
-      'Giữ Ferret mở để đồng bộ. Nếu không, iOS sẽ tạm dừng nó.';
+  String footerKeepOpen(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'tablet': 'iPadOS',
+        'other': 'iOS',
+      },
+    );
+    return 'Giữ Ferret mở để đồng bộ. Nếu không, $_temp0 sẽ tạm dừng nó.';
+  }
 
   @override
   String get footerNobody =>

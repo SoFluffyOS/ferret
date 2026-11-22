@@ -320,7 +320,7 @@ class DropFeatureUi extends FeatureUi {
     return FeatureOffer(
       title: l10n.guestTitle,
       description: switch (defaultTargetPlatform) {
-        .iOS => '$body ${l10n.iphoneKeepOpen}',
+        .iOS => '$body ${l10n.iphoneKeepOpen(ThisComputer.handheld)}',
         _ => body,
       },
       actionLabel: l10n.guestAction,
