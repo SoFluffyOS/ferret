@@ -1969,6 +1969,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get settingsStartAtLogin => 'Start Ferret when I log in';
 
   @override
+  String get settingsStartAtLoginNoTray =>
+      'Its window opens when you log in, since this desktop has no tray. Your devices connect before you need them.';
+
+  @override
   String settingsStartAtLoginBody(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,

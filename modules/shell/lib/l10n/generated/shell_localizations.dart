@@ -2558,6 +2558,12 @@ abstract class ShellLocalizations {
   /// **'Start Ferret when I log in'**
   String get settingsStartAtLogin;
 
+  /// Under Start at login on Linux when the desktop shows no tray (GNOME without the AppIndicator extension), so Ferret opens its window instead.
+  ///
+  /// In en, this message translates to:
+  /// **'Its window opens when you log in, since this desktop has no tray. Your devices connect before you need them.'**
+  String get settingsStartAtLoginNoTray;
+
   /// No description provided for @settingsStartAtLoginBody.
   ///
   /// In en, this message translates to:

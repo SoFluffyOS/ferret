@@ -411,6 +411,7 @@
   "noticeChannelProblems": "Sự cố kết nối",
   "settingsStartAtLoginDenied": "Máy tính đã từ chối. Hãy cho phép Ferret chạy nền trong cài đặt hệ thống, rồi bật lại mục này.",
   "settingsStartAtLogin": "Khởi động Ferret khi tôi đăng nhập",
+  "settingsStartAtLoginNoTray": "Cửa sổ Ferret sẽ mở ra khi bạn đăng nhập, vì màn hình nền này không có khay hệ thống. Các thiết bị sẽ kết nối sẵn trước khi bạn cần.",
   "settingsStartAtLoginBody": "{here, select, macOS{Ferret mở trên thanh menu, để thiết bị của bạn kết nối sẵn trước khi cần.} other{Ferret khởi động trong khay hệ thống, để các thiết bị kết nối sẵn trước khi bạn cần.}}",
   "menuHelp": "Trợ giúp",
   "menuKeyboardShortcuts": "Phím tắt",

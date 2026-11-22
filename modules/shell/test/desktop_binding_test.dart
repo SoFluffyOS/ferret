@@ -169,6 +169,7 @@ void main() {
     await pumpEventQueue();
 
     expect(binding.hasTray, isTrue);
+    expect(TrayStatus.shows.value, isTrue);
     expect(
       calls
           .where((call) => call.method == 'window.setHideOnClose')
@@ -183,6 +184,7 @@ void main() {
     await pumpEventQueue();
 
     expect(binding.hasTray, isFalse);
+    expect(TrayStatus.shows.value, isFalse);
     expect(calls.single.arguments, {'value': false});
   });
 

@@ -4550,6 +4550,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get settingsStartAtLogin => pseudo(super.settingsStartAtLogin);
   @override
+  String get settingsStartAtLoginNoTray =>
+      pseudo(super.settingsStartAtLoginNoTray);
+  @override
   String get menuHelp => pseudo(super.menuHelp);
   @override
   String get menuKeyboardShortcuts => pseudo(super.menuKeyboardShortcuts);

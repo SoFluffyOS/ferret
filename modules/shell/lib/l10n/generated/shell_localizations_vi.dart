@@ -1960,6 +1960,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get settingsStartAtLogin => 'Khởi động Ferret khi tôi đăng nhập';
 
   @override
+  String get settingsStartAtLoginNoTray =>
+      'Cửa sổ Ferret sẽ mở ra khi bạn đăng nhập, vì màn hình nền này không có khay hệ thống. Các thiết bị sẽ kết nối sẵn trước khi bạn cần.';
+
+  @override
   String settingsStartAtLoginBody(String here) {
     String _temp0 = intl.Intl.selectLogic(
       here,

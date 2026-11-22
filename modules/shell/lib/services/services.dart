@@ -41,6 +41,7 @@ export 'package:shell/services/shared_computer.dart';
 export 'package:shell/services/sponsor.dart';
 export 'package:shell/services/system_notifier.dart';
 export 'package:shell/services/tips.dart';
+export 'package:shell/services/tray_status.dart';
 export 'package:shell/services/whats_new.dart';
 export 'package:shell/services/window_commands.dart';
 export 'package:shell/services/window_drop_targets.dart';

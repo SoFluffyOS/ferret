@@ -66,6 +66,7 @@ class DesktopBinding {
 
     final (tooltip, items) = _menu();
     _hasTray = await _tray.show(tooltip: tooltip, items: items);
+    TrayStatus.shows.value = _hasTray;
     _shown = (tooltip, items);
     await _window.setHideOnClose(_hasTray);
     if (!_hasTray && await _window.startedHidden()) {
@@ -102,6 +103,7 @@ class DesktopBinding {
     }
 
     _hasTray = shows;
+    TrayStatus.shows.value = shows;
     await _window.setHideOnClose(shows);
     if (shows) {
       _shown = null;

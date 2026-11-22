@@ -1518,6 +1518,10 @@
     "description": "Under Start at login when the desktop (a Flatpak's Background portal) refused it."
   },
   "settingsStartAtLogin": "Start Ferret when I log in",
+  "settingsStartAtLoginNoTray": "Its window opens when you log in, since this desktop has no tray. Your devices connect before you need them.",
+  "@settingsStartAtLoginNoTray": {
+    "description": "Under Start at login on Linux when the desktop shows no tray (GNOME without the AppIndicator extension), so Ferret opens its window instead."
+  },
   "settingsStartAtLoginBody": "{here, select, macOS{It opens in the menu bar, so your devices connect before you need them.} other{It starts in the tray, so your devices connect before you need them.}}",
   "@settingsStartAtLoginBody": {
     "placeholders": {

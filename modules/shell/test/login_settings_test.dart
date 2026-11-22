@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:ferret_system/ferret_system.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shell/ui/frames/frames.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -92,6 +93,31 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Start Ferret when I log in'), findsOneWidget);
+  });
+
+  testWidgets('without a tray it says the window opens, and follows a '
+      'tray that turns up later', (tester) async {
+    final tray = ValueNotifier(false);
+    addTearDown(tray.dispose);
+
+    await tester.pumpWidget(
+      testApp(
+        LoginSettings(
+          settings: MemorySettingsStore(),
+          login: _FakeLogin(),
+          tray: tray,
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.textContaining('Its window opens'), findsOneWidget);
+    expect(find.textContaining('starts in the tray'), findsNothing);
+
+    tray.value = true;
+    await tester.pump();
+
+    expect(find.textContaining('starts in the tray'), findsOneWidget);
   });
 
   testWidgets('a phone shows nothing here', (tester) async {
