@@ -187,6 +187,52 @@ void main() {
     expect(control.invoked, isEmpty);
   });
 
+  group('clicking a notice opens the phone\'s notifications', () {
+    late List<String> opened;
+
+    setUp(() {
+      opened = [];
+      inbox.dispose();
+      inbox = InboxViewModel(
+        feature: control,
+        notifier: notifier,
+        deviceName: (deviceId) => 'Pixel',
+        strings: NotificationsLocalizationsEn.new,
+        onOpen: opened.add,
+      );
+    });
+
+    test('a mirrored notification', () async {
+      control.emit(MirrorPosted('phone', mirrored()));
+
+      notifier.respond(
+        const NoticeResponse(noticeId: 'notifications/phone/k1'),
+      );
+      await pumpEventQueue();
+
+      expect(opened, ['phone']);
+      expect(control.dismissed, isEmpty);
+    });
+
+    test('the while-away summary', () async {
+      control.emit(
+        const MirrorCaughtUp(
+          'phone',
+          missedCount: 3,
+          activeKeys: {},
+          missedAppNames: [],
+        ),
+      );
+
+      notifier.respond(
+        const NoticeResponse(noticeId: 'notifications/phone/catch-up'),
+      );
+      await pumpEventQueue();
+
+      expect(opened, ['phone']);
+    });
+  });
+
   test('a reply that fails says so', () async {
     control
       ..actionResult = false

@@ -319,7 +319,7 @@ class InboxViewModel extends ChangeNotifier {
         ListText.join(event.missedAppNames, localeName: strings.localeName),
       ),
     };
-    final noticeId = '$_noticePrefix$deviceId/catch-up';
+    final noticeId = '$_noticePrefix$deviceId$_catchUpSuffix';
     _catchUpNotices.add(noticeId);
     unawaited(
       _notifier.show(
@@ -345,12 +345,24 @@ class InboxViewModel extends ChangeNotifier {
       return;
     }
 
-    final notification = _byNotice[response.noticeId];
+    final noticeId = response.noticeId;
+    if (_catchUpNotices.contains(noticeId) && response.actionId == null) {
+      final deviceId = noticeId.substring(
+        _noticePrefix.length,
+        noticeId.length - _catchUpSuffix.length,
+      );
+      _onOpen?.call(deviceId);
+      return;
+    }
+
+    final notification = _byNotice[noticeId];
     if (notification == null) {
       return;
     }
 
     switch (response.actionId) {
+      case null:
+        _onOpen?.call(notification.deviceId);
       case dismissActionId:
         await dismiss(notification);
       // Linux notifications have no text field, so Reply opens the inbox.
@@ -410,6 +422,8 @@ class InboxViewModel extends ChangeNotifier {
       unawaited(_notifier.cancel(noticeId));
     }
   }
+
+  static const _catchUpSuffix = '/catch-up';
 
   static String _noticeId(String deviceId, String key) =>
       '$_noticePrefix$deviceId/$key';
