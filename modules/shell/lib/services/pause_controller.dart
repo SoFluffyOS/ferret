@@ -12,6 +12,7 @@ class PauseController extends ChangeNotifier {
   Timer? _timer;
   DateTime? _until;
   bool _paused = false;
+  bool _disposed = false;
 
   bool get isPaused => _paused;
 
@@ -33,7 +34,7 @@ class PauseController extends ChangeNotifier {
       await _engine.stop();
     }
 
-    notifyListeners();
+    _notify();
   }
 
   Future<void> resume() async {
@@ -46,11 +47,22 @@ class PauseController extends ChangeNotifier {
 
     _paused = false;
     await _engine.start();
+    _notify();
+  }
+
+  /// Starting or stopping the engine takes a while; the app may have shut
+  /// this down meanwhile, as quitting from the menu does.
+  void _notify() {
+    if (_disposed) {
+      return;
+    }
+
     notifyListeners();
   }
 
   @override
   void dispose() {
+    _disposed = true;
     _timer?.cancel();
     super.dispose();
   }

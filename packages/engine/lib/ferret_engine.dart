@@ -206,6 +206,10 @@ class FerretEngine implements FeatureHost {
   final StreamController<void> _otherAccountsChanges = .broadcast();
 
   ServerSocket? _server;
+
+  /// The port [_server] was bound to, kept so it can still be read while a
+  /// stop closes the socket under a start that hasn't finished.
+  int? _boundPort;
   Presence _presence = Presence(batteryPercent: -1);
   final StreamController<Presence> _presenceChanges = .broadcast();
   bool _featuresStarted = false;
@@ -232,12 +236,12 @@ class FerretEngine implements FeatureHost {
   static const _redialDelays = [1, 3, 10, 30, 60, 120, 300];
 
   /// The TCP port this device listens on, once started.
-  int get port => _server?.port ?? preferredPort;
+  int get port => _boundPort ?? preferredPort;
 
   /// Whether the preferred port was taken, such as by Ferret in another
   /// account on this computer, so this one listens on another.
   bool get usesFallbackPort =>
-      _server != null && preferredPort != 0 && port != preferredPort;
+      _boundPort != null && preferredPort != 0 && port != preferredPort;
 
   /// Ferret in other accounts on this computer, by device id: they
   /// announce from this computer's own address with its platform. Several
@@ -551,6 +555,7 @@ class FerretEngine implements FeatureHost {
     _startedAt = DateTime.now();
     final server = await _bind();
     _server = server;
+    _boundPort = server.port;
     _subscriptions
       ..add(server.listen(_onIncomingSocket))
       ..add(_discovery.peers.listen(_onPeer))
@@ -608,6 +613,7 @@ class FerretEngine implements FeatureHost {
     _subscriptions.clear();
     await _server?.close();
     _server = null;
+    _boundPort = null;
 
     for (final exchange in [..._pairing]) {
       await exchange.close();
