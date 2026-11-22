@@ -4639,6 +4639,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get vpnSaveAddress => pseudo(super.vpnSaveAddress);
   @override
+  String get vpnData => pseudo(super.vpnData);
+  @override
   String get vpnSlow => pseudo(super.vpnSlow);
   @override
   String get deviceReachedOverVpn => pseudo(super.deviceReachedOverVpn);
@@ -5111,6 +5113,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
       pseudo(super.vpnAddresses(device, addresses));
   @override
   String vpnNoAddresses(String device) => pseudo(super.vpnNoAddresses(device));
+  @override
+  String vpnDataUsed(String megabytes) => pseudo(super.vpnDataUsed(megabytes));
   @override
   String vpnPrivacy(String device, String here) =>
       pseudo(super.vpnPrivacy(device, here));

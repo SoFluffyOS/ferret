@@ -487,6 +487,8 @@
   "vpnSaveAddress": "Lưu địa chỉ",
   "vpnAddresses": "{device} đã chia sẻ địa chỉ VPN: {addresses}. Địa chỉ ở trên là tùy chọn.",
   "vpnNoAddresses": "{device} chưa chia sẻ địa chỉ VPN. Nó sẽ chia sẻ ở lần kết nối tới, nếu đang dùng VPN. Hoặc nhập địa chỉ ở trên.",
+  "vpnData": "Khi không có Wi-Fi, những gì đi qua VPN dùng dữ liệu di động ở mỗi đầu đang dùng nó. Chiếu màn hình tốn nhiều nhất. Khi cả hai cùng dùng dữ liệu di động, VPN có thể chuyển tiếp qua máy chủ của nó: vẫn được mã hoá, chỉ chậm hơn. Về lại cùng Wi-Fi, Ferret tự chuyển sang đó.",
+  "vpnDataUsed": "Đã dùng qua VPN từ lúc kết nối: {megabytes} MB",
   "vpnSlow": "Tệp lớn có thể chậm hơn so với khi ở nhà.",
   "vpnPrivacy": "Việc này hỏi {device} địa chỉ VPN của nó. Địa chỉ của {here, select, mac{máy Mac này} windows{PC này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} chỉ gửi tới thiết bị đã bật công tắc này cho nó.",
   "deviceReachedOverVpn": "Đang kết nối qua VPN của bạn",

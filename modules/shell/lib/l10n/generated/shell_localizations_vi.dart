@@ -2346,6 +2346,15 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
+  String get vpnData =>
+      'Khi không có Wi-Fi, những gì đi qua VPN dùng dữ liệu di động ở mỗi đầu đang dùng nó. Chiếu màn hình tốn nhiều nhất. Khi cả hai cùng dùng dữ liệu di động, VPN có thể chuyển tiếp qua máy chủ của nó: vẫn được mã hoá, chỉ chậm hơn. Về lại cùng Wi-Fi, Ferret tự chuyển sang đó.';
+
+  @override
+  String vpnDataUsed(String megabytes) {
+    return 'Đã dùng qua VPN từ lúc kết nối: $megabytes MB';
+  }
+
+  @override
   String get vpnSlow => 'Tệp lớn có thể chậm hơn so với khi ở nhà.';
 
   @override

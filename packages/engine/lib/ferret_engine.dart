@@ -1215,6 +1215,18 @@ class FerretEngine implements FeatureHost {
       VpnAddresses.parseTyped(typed, defaultPort).$1,
   ];
 
+  /// Bytes sent and received with [deviceId] since this connection over
+  /// the user's VPN was made, or null while it isn't reached that way.
+  /// Away from the Wi-Fi, this is what a data plan counts.
+  int? vpnBytesOf(String deviceId) {
+    final (device, session) = (trustStore[deviceId], _ready[deviceId]);
+    if (device == null || session == null || !_isOverVpn(device, session)) {
+      return null;
+    }
+
+    return session.channel.bytesSent + session.channel.bytesReceived;
+  }
+
   bool _isOverVpn(TrustedDevice device, Session? session) {
     final host = session?.remoteHost;
     if (host == null) {

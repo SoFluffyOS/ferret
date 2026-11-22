@@ -122,6 +122,9 @@ class SecureChannel {
   Completer<void>? _paused;
   final Completer<void> _done = .new();
   Future<void> _sendQueue = Future.value();
+
+  /// The length prefix [encodeFrame] puts before each frame.
+  static const _frameHeader = 2;
   bool _closed = false;
 
   /// The other side's static public key: who they are.
@@ -131,6 +134,13 @@ class SecureChannel {
   final Uint8List handshakeHash;
 
   String get remoteAddress => _connection.remoteAddress;
+
+  /// Bytes written to and read from the link since the handshake, with
+  /// encryption and framing: what a metered network counts.
+  int get bytesSent => _bytesSent;
+  int get bytesReceived => _bytesReceived;
+  int _bytesSent = 0;
+  int _bytesReceived = 0;
 
   ByteConnection get connection => _connection;
 
@@ -190,9 +200,9 @@ class SecureChannel {
       final segment = Uint8List(end - offset + 1)
         ..[0] = marker
         ..setRange(1, end - offset + 1, message, offset);
-      _connection.add(
-        encodeFrame(await _send.encryptWithAd(const [], segment)),
-      );
+      final frame = encodeFrame(await _send.encryptWithAd(const [], segment));
+      _bytesSent += frame.length;
+      _connection.add(frame);
       offset = end;
     } while (offset < message.length);
 
@@ -209,6 +219,7 @@ class SecureChannel {
           break;
         }
 
+        _bytesReceived += frame.length + _frameHeader;
         final segment = await _receive.decryptWithAd(const [], frame);
         if (segment.isEmpty) {
           throw const FramingException('Empty segment.');

@@ -1853,6 +1853,15 @@
       }
     }
   },
+  "vpnData": "Away from Wi-Fi, what goes over your VPN uses mobile data on each end that's on it. Showing a screen uses the most. With both on mobile data, the VPN may relay it: still encrypted, just slower. Back on the same Wi-Fi, Ferret switches there by itself.",
+  "vpnDataUsed": "Used over your VPN since it connected: {megabytes} MB",
+  "@vpnDataUsed": {
+    "placeholders": {
+      "megabytes": {
+        "type": "String"
+      }
+    }
+  },
   "vpnSlow": "Large files may take longer than at home.",
   "vpnPrivacy": "This asks {device} for its VPN addresses. {here, select, mac{This Mac's} windows{This PC's} phone{This phone's} tablet{This tablet's} other{This computer's}} own go only to devices that have this switch on for it.",
   "@vpnPrivacy": {

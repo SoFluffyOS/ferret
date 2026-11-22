@@ -133,6 +133,21 @@ void main() {
     await client.close();
   });
 
+  test('counts the bytes on the link both ways', () async {
+    final (client, responder) = await connectPair();
+    final big = Uint8List(200 * 1024);
+
+    final received = responder.messages.first;
+    await client.send(big);
+    await received;
+
+    expect(client.bytesSent, greaterThan(big.length));
+    expect(client.bytesSent, lessThan(big.length + 1024));
+    expect(responder.bytesReceived, client.bytesSent);
+    expect(responder.bytesSent, 0);
+    await client.close();
+  });
+
   test('a message over the limit closes the channel with an error', () async {
     final (client, responder) = await connectPair();
     responder.messageLimit = 1024;

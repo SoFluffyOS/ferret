@@ -345,6 +345,14 @@ void main() {
 
       expect(statusOf(laptop, phone).reachedOverVpn, isTrue);
       expect(trusted(laptop, phone).lastHost, 'lan.invalid');
+      await _until(
+        () => (laptop.vpnBytesOf(phone.identity.deviceId) ?? 0) > 0,
+      );
+      expect(
+        phone.vpnBytesOf(laptop.identity.deviceId),
+        isNull,
+        reason: 'the phone was dialed; it reached nobody over a VPN',
+      );
     });
 
     test('a typed address, such as a MagicDNS name, is dialed too', () async {

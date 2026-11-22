@@ -2356,6 +2356,15 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
+  String get vpnData =>
+      'Away from Wi-Fi, what goes over your VPN uses mobile data on each end that\'s on it. Showing a screen uses the most. With both on mobile data, the VPN may relay it: still encrypted, just slower. Back on the same Wi-Fi, Ferret switches there by itself.';
+
+  @override
+  String vpnDataUsed(String megabytes) {
+    return 'Used over your VPN since it connected: $megabytes MB';
+  }
+
+  @override
   String get vpnSlow => 'Large files may take longer than at home.';
 
   @override

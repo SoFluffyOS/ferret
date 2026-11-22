@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
@@ -30,9 +31,17 @@ class DeviceVpnPage extends StatefulWidget {
 class _DeviceVpnPageState extends State<DeviceVpnPage> {
   late final TextEditingController _address;
 
+  /// Keeps the data used over the VPN current while the page is open.
+  late final Timer _tick;
+
   @override
   void initState() {
     super.initState();
+    _tick = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
     final engine = ShellScope.read(context).featureContext.engine;
     _address = TextEditingController(
       text: engine.trustStore[widget.deviceId]?.reachAt ?? '',
@@ -41,6 +50,7 @@ class _DeviceVpnPageState extends State<DeviceVpnPage> {
 
   @override
   void dispose() {
+    _tick.cancel();
     _address.dispose();
     super.dispose();
   }
@@ -103,6 +113,20 @@ class _DeviceVpnPageState extends State<DeviceVpnPage> {
               style: note,
             ),
           ),
+          if (engine.vpnBytesOf(widget.deviceId) case final bytes?) ...[
+            Spacing.v4,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
+              child: Text(
+                l10n.vpnDataUsed(
+                  NumberFormat('0.#', l10n.localeName).format(
+                    bytes / (1024 * 1024),
+                  ),
+                ),
+                style: note,
+              ),
+            ),
+          ],
         ],
         if (device.reachOverVpn) ...[
           Spacing.v16,
@@ -141,6 +165,11 @@ class _DeviceVpnPageState extends State<DeviceVpnPage> {
           ),
         ],
         Spacing.v16,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
+          child: Text(l10n.vpnData, style: note),
+        ),
+        Spacing.v12,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: PageInsets.row),
           child: Text(

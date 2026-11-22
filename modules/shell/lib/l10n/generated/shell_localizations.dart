@@ -3014,6 +3014,18 @@ abstract class ShellLocalizations {
   /// **'{device} hasn\'t shared its VPN addresses yet. It does the next time it connects, if it\'s on a VPN. Or type its address above.'**
   String vpnNoAddresses(String device);
 
+  /// No description provided for @vpnData.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from Wi-Fi, what goes over your VPN uses mobile data on each end that\'s on it. Showing a screen uses the most. With both on mobile data, the VPN may relay it: still encrypted, just slower. Back on the same Wi-Fi, Ferret switches there by itself.'**
+  String get vpnData;
+
+  /// No description provided for @vpnDataUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used over your VPN since it connected: {megabytes} MB'**
+  String vpnDataUsed(String megabytes);
+
   /// No description provided for @vpnSlow.
   ///
   /// In en, this message translates to:
