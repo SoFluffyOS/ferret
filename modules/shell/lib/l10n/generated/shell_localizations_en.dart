@@ -2471,4 +2471,27 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get doctorFixOpenNetworkSettings => 'Open network settings';
+
+  @override
+  String get bootStarting => 'Starting Ferret…';
+
+  @override
+  String get bootFailedTitle => 'Ferret couldn\'t start';
+
+  @override
+  String bootFailedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'this Mac',
+        'windows': 'this PC',
+        'linux': 'this computer',
+        'other': 'this device',
+      },
+    );
+    return 'Something went wrong while it was getting ready. Try again. If it keeps happening, restart $_temp0.';
+  }
+
+  @override
+  String get bootRetry => 'Try again';
 }

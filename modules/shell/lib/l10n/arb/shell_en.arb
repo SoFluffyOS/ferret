@@ -1987,5 +1987,26 @@
   "doctorFixOpenNetworkSettings": "Open network settings",
   "@doctorFixOpenNetworkSettings": {
     "description": "Button in Fix connection on Windows: opens Settings → Network & internet. Keep it short."
+  },
+  "bootStarting": "Starting Ferret…",
+  "@bootStarting": {
+    "description": "Spoken by screen readers when Ferret takes more than a second to start and a spinner shows on its launch screen"
+  },
+  "bootFailedTitle": "Ferret couldn't start",
+  "@bootFailedTitle": {
+    "description": "Title of the page shown when Ferret fails while getting ready (its storage, keys or network could not be opened)"
+  },
+  "bootFailedBody": "Something went wrong while it was getting ready. Try again. If it keeps happening, restart {here, select, macOS{this Mac} windows{this PC} linux{this computer} other{this device}}.",
+  "@bootFailedBody": {
+    "description": "Body under bootFailedTitle. here is the platform name, for the device wording",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      }
+    }
+  },
+  "bootRetry": "Try again",
+  "@bootRetry": {
+    "description": "Button on the page shown when Ferret could not start: starts it again. Keep it short."
   }
 }

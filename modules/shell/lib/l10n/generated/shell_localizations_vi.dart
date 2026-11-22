@@ -2462,4 +2462,27 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get doctorFixOpenNetworkSettings => 'Mở cài đặt mạng';
+
+  @override
+  String get bootStarting => 'Đang khởi động Ferret…';
+
+  @override
+  String get bootFailedTitle => 'Ferret không khởi động được';
+
+  @override
+  String bootFailedBody(String here) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'macOS': 'máy Mac này',
+        'windows': 'máy tính này',
+        'linux': 'máy tính này',
+        'other': 'thiết bị này',
+      },
+    );
+    return 'Đã có lỗi khi chuẩn bị. Hãy thử lại. Nếu vẫn lỗi, hãy khởi động lại $_temp0.';
+  }
+
+  @override
+  String get bootRetry => 'Thử lại';
 }

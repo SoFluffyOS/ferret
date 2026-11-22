@@ -3193,6 +3193,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Open network settings'**
   String get doctorFixOpenNetworkSettings;
+
+  /// Spoken by screen readers when Ferret takes more than a second to start and a spinner shows on its launch screen
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Ferret…'**
+  String get bootStarting;
+
+  /// Title of the page shown when Ferret fails while getting ready (its storage, keys or network could not be opened)
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret couldn\'t start'**
+  String get bootFailedTitle;
+
+  /// Body under bootFailedTitle. here is the platform name, for the device wording
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while it was getting ready. Try again. If it keeps happening, restart {here, select, macOS{this Mac} windows{this PC} linux{this computer} other{this device}}.'**
+  String bootFailedBody(String here);
+
+  /// Button on the page shown when Ferret could not start: starts it again. Keep it short.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get bootRetry;
 }
 
 class _ShellLocalizationsDelegate

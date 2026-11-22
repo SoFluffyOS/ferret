@@ -12,8 +12,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shell/app/app.dart';
+import 'package:shell/bootstrap/boot_host.dart';
 import 'package:shell/bootstrap/desktop_binding.dart';
+import 'package:shell/bootstrap/launch_messages.dart';
 import 'package:shell/bootstrap/menubar_binding.dart';
+import 'package:shell/bootstrap/menubar_boot.dart';
+import 'package:shell/bootstrap/splash_look.dart';
 import 'package:shell/bootstrap/system_binding.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
@@ -24,6 +28,10 @@ import 'package:transport/transport.dart';
 /// the app. [onStarted] gets the running engine, for wiring between
 /// features that the app owns. [multicastNeed] is shared with features
 /// that listen to the network themselves, such as Drop's LocalSend.
+///
+/// A phone or a Windows or Linux window draws its first frame right away,
+/// carrying on the launch screen, and the app fades in once it is ready.
+/// The Mac's popover shows nothing until the whole app is there.
 Future<void> runFerret({
   required List<FeatureUi> features,
   String appVersion = '',
@@ -45,7 +53,53 @@ Future<void> runFerret({
       return true;
     };
   }
+  LaunchMessages.hold();
 
+  Future<FerretApp> start() => _start(
+    features: features,
+    appVersion: appVersion,
+    onStarted: onStarted,
+    multicastNeed: multicastNeed,
+  );
+
+  if (Platform.isMacOS) {
+    await MenubarBoot.run(start);
+    return;
+  }
+
+  runApp(BootHost(start: start, look: SplashLook.current));
+}
+
+/// Everything Ferret needs before its app can show. When a step fails,
+/// the engine it may have started stops again, so Try again starts clean.
+Future<FerretApp> _start({
+  required List<FeatureUi> features,
+  required String appVersion,
+  required void Function(FerretEngine engine)? onStarted,
+  required MulticastNeed? multicastNeed,
+}) async {
+  FerretEngine? started;
+  try {
+    return await _startApp(
+      features: features,
+      appVersion: appVersion,
+      onStarted: onStarted,
+      multicastNeed: multicastNeed,
+      onEngine: (engine) => started = engine,
+    );
+  } on Object {
+    await started?.shutdown();
+    rethrow;
+  }
+}
+
+Future<FerretApp> _startApp({
+  required List<FeatureUi> features,
+  required String appVersion,
+  required void Function(FerretEngine engine)? onStarted,
+  required MulticastNeed? multicastNeed,
+  required void Function(FerretEngine engine) onEngine,
+}) async {
   await initializeDateFormatting();
 
   final paths = await AppPaths.get();
@@ -73,6 +127,7 @@ Future<void> runFerret({
     sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
     multicastNeed: multicastNeed,
   );
+  onEngine(engine);
   final localNetwork = await _localNetworkAsk(discovery, engine, settings);
   sharedComputer.follow(engine, computerName: described.name);
   await engine.start();
@@ -186,24 +241,24 @@ Future<void> runFerret({
     quit: quit,
   ).start();
 
-  _run(
-    FerretApp(
-      host: host,
-      pause: pause,
-      features: features,
-      featureContext: featureContext,
-      menubar: menubar.menubar,
-      navigation: navigation,
-      featureWindows: featureWindows,
-      floatingPanel: floatingPanel,
-      quit: quit,
-      views: switch (ferretMenubar.isSupported) {
-        true => views,
-        false => null,
-      },
-    ),
+  final app = FerretApp(
+    host: host,
+    pause: pause,
+    features: features,
+    featureContext: featureContext,
+    menubar: menubar.menubar,
+    navigation: navigation,
+    featureWindows: featureWindows,
+    floatingPanel: floatingPanel,
+    quit: quit,
+    views: switch (ferretMenubar.isSupported) {
+      true => views,
+      false => null,
+    },
   );
   onStarted?.call(engine);
+
+  return app;
 }
 
 /// On an iPhone, discovery waits for the person unless they went on
@@ -228,15 +283,4 @@ Future<LocalNetworkAsk?> _localNetworkAsk(
     hasDevices: hasDevices,
     deviceChanges: engine.trustStore.changes,
   );
-}
-
-/// With several views the app places each one itself; with one, Flutter
-/// puts the app in it.
-void _run(FerretApp app) {
-  if (app.views == null) {
-    runApp(app);
-    return;
-  }
-
-  runWidget(app);
 }

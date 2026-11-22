@@ -516,5 +516,9 @@
   "doctorFirewallRefused": "Windows chưa thêm quy tắc tường lửa. Việc này cần quyền quản trị viên. Trên máy tính công ty, hãy nhờ bộ phận IT cho phép Ferret trên mạng riêng tư: TCP 47640 và 47642–47649, UDP 47641 và 5353.",
   "doctorFirewallPublicNetwork": "Windows coi mạng này là mạng công cộng, nên ẩn PC này khỏi các thiết bị khác của bạn. Ở quán cà phê thì vậy là tốt. Ở nhà hay ở chỗ làm:\n1. Nhấn Mở cài đặt mạng, rồi Thuộc tính.\n2. Chọn Mạng riêng tư.\n3. Thử lại.",
   "doctorFirewallBlocked": "Một quy tắc của Windows Firewall đang chặn Ferret. Windows thêm quy tắc này khi ai đó nhấn Hủy ở câu hỏi về quyền truy cập mạng.\n1. Nhấn Cho phép qua tường lửa, rồi Có khi Windows hỏi.\n2. Thử lại.",
-  "doctorFixOpenNetworkSettings": "Mở cài đặt mạng"
+  "doctorFixOpenNetworkSettings": "Mở cài đặt mạng",
+  "bootStarting": "Đang khởi động Ferret…",
+  "bootFailedTitle": "Ferret không khởi động được",
+  "bootFailedBody": "Đã có lỗi khi chuẩn bị. Hãy thử lại. Nếu vẫn lỗi, hãy khởi động lại {here, select, macOS{máy Mac này} windows{máy tính này} linux{máy tính này} other{thiết bị này}}.",
+  "bootRetry": "Thử lại"
 }

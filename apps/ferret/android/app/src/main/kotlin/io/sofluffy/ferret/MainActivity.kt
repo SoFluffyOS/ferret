@@ -2,6 +2,7 @@ package io.sofluffy.ferret
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -19,6 +20,12 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val engineWasRunning = FerretRuntime.isEngineRunning()
         super.onCreate(savedInstanceState)
+        if (!engineWasRunning && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Dart's first frame draws this very splash (shell's BootScreen)
+            // while Ferret gets ready, so it goes at once: the system's fade
+            // would take the ferret away and bring it back on a slow phone.
+            splashScreen.setOnExitAnimationListener { splash -> splash.remove() }
+        }
         if (engineWasRunning && savedInstanceState == null && isNoticeTap(intent)) {
             // The notification plugin reads a tap from the intent that starts
             // the app only when Dart starts with it; here Dart was already

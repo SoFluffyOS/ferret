@@ -146,6 +146,16 @@ def vector(elements, colour=None):
 
 open(f'{res}/drawable/ic_launcher_foreground.xml', 'w').write(vector(foreground))
 
+# The splash before Android 12 draws what 12 and later draw from the
+# foreground: 288dp of it, cut to a 192dp circle (36 of the 108 units around
+# the middle). The app's first frame paints the same (shell's SplashLook).
+CLIP = 36 / SCALE
+clip = (f'M{512 - CLIP:g},512a{CLIP:g},{CLIP:g} 0 1,0 {2 * CLIP:g},0'
+        f'a{CLIP:g},{CLIP:g} 0 1,0 {-2 * CLIP:g},0Z')
+splash = vector(foreground).replace(
+    '        <path', f'        <clip-path android:pathData="{clip}"/>\n        <path', 1)
+open(f'{res}/drawable/splash_glyph.xml', 'w').write(splash)
+
 # Status bar icon: white on clear, the head and shoulders filling 22 of the
 # 24dp box, so the mask still reads at that size. The viewport cuts the body.
 STATUS_TOP, STATUS_HEIGHT = 213, 490

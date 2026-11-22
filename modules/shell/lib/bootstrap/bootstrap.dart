@@ -1,4 +1,11 @@
+export 'package:shell/bootstrap/boot_failure.dart';
+export 'package:shell/bootstrap/boot_host.dart';
+export 'package:shell/bootstrap/boot_screen.dart';
 export 'package:shell/bootstrap/desktop_binding.dart';
+export 'package:shell/bootstrap/launch_messages.dart';
 export 'package:shell/bootstrap/menubar_binding.dart';
+export 'package:shell/bootstrap/menubar_boot.dart';
 export 'package:shell/bootstrap/run_ferret.dart';
+export 'package:shell/bootstrap/splash_glyph_painter.dart';
+export 'package:shell/bootstrap/splash_look.dart';
 export 'package:shell/bootstrap/system_binding.dart';

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The splash before Android 12: the ferret on sable, as on the launcher. -->
+<!-- The splash before Android 12: the ferret on sable, as Android 12 and
+     later draw it (the foreground at 288dp in a 192dp circle), so the app's
+     first frame carries on from either without a jump. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/ic_launcher_background" />
     <item
-        android:width="216dp"
-        android:height="216dp"
-        android:drawable="@drawable/ic_launcher_foreground"
+        android:width="288dp"
+        android:height="288dp"
+        android:drawable="@drawable/splash_glyph"
         android:gravity="center" />
 </layer-list>
