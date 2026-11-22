@@ -191,7 +191,11 @@ void main() {
     });
   });
 
-  test('offers every ability', () {
-    expect(control.abilities, ControlAbility.values.toSet());
+  test('offers every ability a phone takes; a computer\'s own mouse is for '
+      'a second display', () {
+    expect(
+      control.abilities,
+      ControlAbility.values.toSet().difference({ControlAbility.mouse}),
+    );
   });
 }
