@@ -67,6 +67,8 @@ dev_dependencies:
   crypto: ^3.0.6
   ferret_calls:
     path: ../../packages/ferret_calls
+  ferret_clipboard:
+    path: ../../packages/ferret_clipboard
   ferret_mirroring:
     path: ../../packages/ferret_mirroring
   ferret_notifications:
@@ -79,6 +81,9 @@ dev_dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.3
+  lan_discovery:
+    path: ../../packages/lan_discovery
+  path: ^1.9.1
   protobuf: ^6.1.0
   provider: ^6.1.5+1
   sofluffy_ui:
