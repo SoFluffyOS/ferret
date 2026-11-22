@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dbus/dbus.dart';
 import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,13 +16,17 @@ void main() {
   StartAtLogin linux({
     bool flatpak = false,
     List<bool>? portal,
+    bool portalSaysYes = true,
     Map<String, String> environment = const {},
   }) => StartAtLogin(
     operatingSystem: 'linux',
     environment: {'HOME': home.path, ...environment},
     executable: '/opt/ferret/ferret',
     isFlatpak: () async => flatpak,
-    requestBackground: (enabled) async => portal?.add(enabled),
+    requestBackground: (enabled) async {
+      portal?.add(enabled);
+      return portalSaysYes;
+    },
   );
 
   test('on Linux, an autostart entry starts Ferret in the tray', () async {
@@ -73,6 +78,56 @@ void main() {
     expect(asked, [true]);
     expect(File(login.desktopFilePath).existsSync(), isFalse);
     expect(await login.isEnabled(remembered: true), isTrue);
+  });
+
+  test('inside a Flatpak, a no from the desktop is reported', () async {
+    final login = linux(flatpak: true, portalSaysYes: false);
+
+    expect(await login.setEnabled(true), isFalse);
+  });
+
+  group("the Background portal's answer", () {
+    DBusDict results(bool autostart) => DBusDict.stringVariant({
+      'background': const DBusBoolean(true),
+      'autostart': DBusBoolean(autostart),
+    });
+
+    test('yes with autostart is a yes', () {
+      expect(
+        StartAtLogin.backgroundAllowed([
+          const DBusUint32(0),
+          results(true),
+        ], enabled: true),
+        isTrue,
+      );
+    });
+
+    test('a cancelled dialog or autostart left off is a no', () {
+      expect(
+        StartAtLogin.backgroundAllowed([
+          const DBusUint32(1),
+          results(true),
+        ], enabled: true),
+        isFalse,
+      );
+      expect(
+        StartAtLogin.backgroundAllowed([
+          const DBusUint32(0),
+          results(false),
+        ], enabled: true),
+        isFalse,
+      );
+    });
+
+    test('turning it off always goes through', () {
+      expect(
+        StartAtLogin.backgroundAllowed([
+          const DBusUint32(2),
+          results(false),
+        ], enabled: false),
+        isTrue,
+      );
+    });
   });
 
   test('on Windows, the Run key holds Ferret with --hidden', () async {

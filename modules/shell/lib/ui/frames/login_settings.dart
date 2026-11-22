@@ -26,6 +26,7 @@ class LoginSettings extends StatefulWidget {
 class _LoginSettingsState extends State<LoginSettings> {
   late final StartAtLogin _login = widget.login ?? StartAtLogin();
   bool _enabled = false;
+  bool _denied = false;
 
   @override
   void initState() {
@@ -45,9 +46,20 @@ class _LoginSettingsState extends State<LoginSettings> {
   }
 
   Future<void> _set(bool enabled) async {
-    setState(() => _enabled = enabled);
+    setState(() {
+      _enabled = enabled;
+      _denied = false;
+    });
     await widget.settings.set(LoginSettings.startAtLoginKey, enabled);
-    await _login.setEnabled(enabled);
+    if (await _login.setEnabled(enabled) || !mounted) {
+      return;
+    }
+
+    await widget.settings.set(LoginSettings.startAtLoginKey, false);
+    setState(() {
+      _enabled = false;
+      _denied = true;
+    });
   }
 
   @override
@@ -66,7 +78,10 @@ class _LoginSettingsState extends State<LoginSettings> {
           children: [
             SettingSwitchRow(
               title: l10n.settingsStartAtLogin,
-              body: l10n.settingsStartAtLoginBody(ThisComputer.here),
+              body: switch (_denied) {
+                true => l10n.settingsStartAtLoginDenied,
+                false => l10n.settingsStartAtLoginBody(ThisComputer.here),
+              },
               value: _enabled,
               onChanged: (value) => unawaited(_set(value)),
             ),

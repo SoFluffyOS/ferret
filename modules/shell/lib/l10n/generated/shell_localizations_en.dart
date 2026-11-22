@@ -1962,6 +1962,10 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get noticeChannelProblems => 'Connection problems';
 
   @override
+  String get settingsStartAtLoginDenied =>
+      'Your desktop said no. Let Ferret run in the background in your system settings, then turn this on again.';
+
+  @override
   String get settingsStartAtLogin => 'Start Ferret when I log in';
 
   @override

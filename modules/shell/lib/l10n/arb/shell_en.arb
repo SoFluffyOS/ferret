@@ -1513,6 +1513,10 @@
   "@noticeChannelProblems": {
     "description": "The name of a notification category, shown in the system notification settings"
   },
+  "settingsStartAtLoginDenied": "Your desktop said no. Let Ferret run in the background in your system settings, then turn this on again.",
+  "@settingsStartAtLoginDenied": {
+    "description": "Under Start at login when the desktop (a Flatpak's Background portal) refused it."
+  },
   "settingsStartAtLogin": "Start Ferret when I log in",
   "settingsStartAtLoginBody": "{here, select, macOS{It opens in the menu bar, so your devices connect before you need them.} other{It starts in the tray, so your devices connect before you need them.}}",
   "@settingsStartAtLoginBody": {

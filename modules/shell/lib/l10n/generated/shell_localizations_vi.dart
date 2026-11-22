@@ -1953,6 +1953,10 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get noticeChannelProblems => 'Sự cố kết nối';
 
   @override
+  String get settingsStartAtLoginDenied =>
+      'Máy tính đã từ chối. Hãy cho phép Ferret chạy nền trong cài đặt hệ thống, rồi bật lại mục này.';
+
+  @override
   String get settingsStartAtLogin => 'Khởi động Ferret khi tôi đăng nhập';
 
   @override

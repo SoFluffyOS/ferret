@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dbus/dbus.dart';
 import 'package:ferret_system/src/messages.g.dart';
@@ -23,7 +25,7 @@ class StartAtLogin {
     String? executable,
     RunProcess? run,
     Future<bool> Function()? isFlatpak,
-    Future<void> Function(bool enabled)? requestBackground,
+    Future<bool> Function(bool enabled)? requestBackground,
     Future<bool> Function()? isLoginItem,
     Future<bool> Function(bool enabled)? setLoginItem,
   }) : _operatingSystem = operatingSystem ?? Platform.operatingSystem,
@@ -45,7 +47,7 @@ class StartAtLogin {
   final String _executable;
   final RunProcess _run;
   final Future<bool> Function() _isFlatpak;
-  final Future<void> Function(bool enabled) _requestBackground;
+  final Future<bool> Function(bool enabled) _requestBackground;
   final Future<bool> Function() _isLoginItem;
   final Future<bool> Function(bool enabled) _setLoginItem;
 
@@ -125,24 +127,25 @@ class StartAtLogin {
     return File(desktopFilePath).exists();
   }
 
-  Future<void> setEnabled(bool enabled) async {
+  /// Turns starting at login on or off. False when the desktop said no,
+  /// which only a Flatpak's Background portal can do.
+  Future<bool> setEnabled(bool enabled) async {
     if (_operatingSystem == 'windows') {
       await _setRunKey(enabled);
-      return;
+      return true;
     }
 
     if (_operatingSystem == 'macos') {
       await _quietlyAsk(() => _setLoginItem(enabled));
-      return;
+      return true;
     }
 
     if (_operatingSystem != 'linux') {
-      return;
+      return true;
     }
 
     if (await _isFlatpak()) {
-      await _requestBackground(enabled);
-      return;
+      return _requestBackground(enabled);
     }
 
     final file = File(desktopFilePath);
@@ -150,11 +153,12 @@ class StartAtLogin {
       if (await file.exists()) {
         await file.delete();
       }
-      return;
+      return true;
     }
 
     await file.parent.create(recursive: true);
     await file.writeAsString(desktopEntry);
+    return true;
   }
 
   Future<void> _setRunKey(bool enabled) async {
@@ -188,14 +192,28 @@ class StartAtLogin {
   }
 
   /// Asks the desktop, through the Background portal, to start the Flatpak
-  /// at login. The answer comes later as a signal; the switch already shows
-  /// what was asked.
-  static Future<void> _portalRequest(bool enabled) async {
-    DBusClient? client;
+  /// at login, and waits for its answer: GNOME asks the person the first
+  /// time. The portal drops a request whose asker leaves, so the
+  /// connection stays open until the answer comes. True when it said yes,
+  /// or when it can't be asked (no portal): the switch then shows what was
+  /// asked, as before.
+  static Future<bool> _portalRequest(bool enabled) async {
+    final client = DBusClient.session();
     try {
-      final session = DBusClient.session();
-      client = session;
-      await session.callMethod(
+      await client.ping();
+      final token = 'ferret${Random().nextInt(1 << 30)}';
+      final sender = client.uniqueName.substring(1).replaceAll('.', '_');
+      final answer = DBusSignalStream(
+        client,
+        interface: 'org.freedesktop.portal.Request',
+        name: 'Response',
+        path: DBusObjectPath(
+          '/org/freedesktop/portal/desktop/request/$sender/$token',
+        ),
+      ).first;
+      // The match rule is in place once a later call comes back.
+      await client.ping();
+      await client.callMethod(
         destination: 'org.freedesktop.portal.Desktop',
         path: DBusObjectPath('/org/freedesktop/portal/desktop'),
         interface: 'org.freedesktop.portal.Background',
@@ -203,6 +221,7 @@ class StartAtLogin {
         values: [
           const DBusString(''),
           DBusDict.stringVariant({
+            'handle_token': DBusString(token),
             'reason': const DBusString('Start Ferret when you log in'),
             'autostart': DBusBoolean(enabled),
             'commandline': DBusArray.string(const ['ferret', hiddenArgument]),
@@ -210,11 +229,35 @@ class StartAtLogin {
         ],
         replySignature: DBusSignature('o'),
       );
+      final signal = await answer.timeout(const Duration(minutes: 5));
+      return backgroundAllowed(signal.values, enabled: enabled);
     } on Object {
-      return;
+      return true;
     } finally {
-      await client?.close();
+      await client.close();
     }
+  }
+
+  /// Reads the Background portal's Response: a code (0 is yes) and the
+  /// results, whose `autostart` says whether Ferret will start at login.
+  static bool backgroundAllowed(
+    List<DBusValue> response, {
+    required bool enabled,
+  }) {
+    if (!enabled) {
+      return true;
+    }
+
+    final [code, results, ...] = response;
+    if (code is! DBusUint32 || code.value != 0 || results is! DBusDict) {
+      return false;
+    }
+
+    final autostart = results.children[const DBusString('autostart')];
+    return switch (autostart) {
+      DBusVariant(value: DBusBoolean(:final value)) => value,
+      _ => false,
+    };
   }
 
   /// The system's answer, or false when the plugin isn't there.

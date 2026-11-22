@@ -4545,6 +4545,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get noticeChannelProblems => pseudo(super.noticeChannelProblems);
   @override
+  String get settingsStartAtLoginDenied =>
+      pseudo(super.settingsStartAtLoginDenied);
+  @override
   String get settingsStartAtLogin => pseudo(super.settingsStartAtLogin);
   @override
   String get menuHelp => pseudo(super.menuHelp);

@@ -2546,6 +2546,12 @@ abstract class ShellLocalizations {
   /// **'Connection problems'**
   String get noticeChannelProblems;
 
+  /// Under Start at login when the desktop (a Flatpak's Background portal) refused it.
+  ///
+  /// In en, this message translates to:
+  /// **'Your desktop said no. Let Ferret run in the background in your system settings, then turn this on again.'**
+  String get settingsStartAtLoginDenied;
+
   /// No description provided for @settingsStartAtLogin.
   ///
   /// In en, this message translates to:

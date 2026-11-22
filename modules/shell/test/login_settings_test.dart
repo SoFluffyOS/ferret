@@ -7,9 +7,11 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'test_app.dart';
 
 class _FakeLogin extends StartAtLogin {
-  _FakeLogin({this.enabled = false}) : super(operatingSystem: 'linux');
+  _FakeLogin({this.enabled = false, this.saysYes = true})
+    : super(operatingSystem: 'linux');
 
   bool enabled;
+  final bool saysYes;
   bool? remembered;
 
   @override
@@ -19,7 +21,10 @@ class _FakeLogin extends StartAtLogin {
   }
 
   @override
-  Future<void> setEnabled(bool enabled) async => this.enabled = enabled;
+  Future<bool> setEnabled(bool enabled) async {
+    this.enabled = enabled && saysYes;
+    return saysYes;
+  }
 }
 
 void main() {
@@ -45,6 +50,26 @@ void main() {
 
     expect(login.enabled, isFalse);
     expect(settings.get<bool>(LoginSettings.startAtLoginKey), isFalse);
+  });
+
+  testWidgets('when the desktop says no, the switch goes back off and says '
+      'why', (tester) async {
+    final login = _FakeLogin(saysYes: false);
+    final settings = MemorySettingsStore();
+
+    await tester.pumpWidget(
+      testApp(LoginSettings(settings: settings, login: login)),
+    );
+    await tester.pump();
+    await tester.tap(find.byType(SwitchToggle));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<SwitchToggle>(find.byType(SwitchToggle)).value,
+      isFalse,
+    );
+    expect(settings.get<bool>(LoginSettings.startAtLoginKey), isFalse);
+    expect(find.textContaining('Your desktop said no.'), findsOneWidget);
   });
 
   testWidgets('a Mac has it too, and says the menu bar', (tester) async {
