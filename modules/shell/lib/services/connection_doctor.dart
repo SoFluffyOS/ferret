@@ -487,6 +487,16 @@ class ConnectionDoctor {
           _hearsOthers &&
           !_heardOthersLately &&
           await _routerAnswers(local, host);
+      // Away from where the device was last seen, such as both now in a
+      // café: its old address says nothing, but a quiet network whose
+      // router answers still may keep devices apart.
+      final maybeIsolated =
+          !isolated &&
+          !shared &&
+          capturedBy == null &&
+          reach == .silent &&
+          online &&
+          await _seemsIsolated(local);
       checks.add(
         DoctorCheck(
           kind: .reachable,
@@ -500,6 +510,10 @@ class ConnectionDoctor {
       );
       if (isolated) {
         checks.add(const DoctorCheck(kind: .isolated, status: .problem));
+      }
+
+      if (maybeIsolated) {
+        checks.add(const DoctorCheck(kind: .isolated, status: .warning));
       }
 
       if (firewall != null) {

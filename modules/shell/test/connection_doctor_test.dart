@@ -463,6 +463,38 @@ void main() {
       expect(network.where((check) => check.kind == .isolated), isEmpty);
     });
 
+    test('away from where the device was last seen, a quiet network '
+        'whose router answers may keep devices apart', () async {
+      await trustPhone();
+      ConnectionDoctor inCafe({Duration since = const Duration(minutes: 1)}) =>
+          ConnectionDoctor(
+            engine,
+            isWindows: false,
+            isLinux: false,
+            interfaces: () async => [(name: 'en0', address: '10.0.7.23')],
+            probe: (host, port, timeout) async => switch (host) {
+              '10.0.7.1' => Reach.answered,
+              _ => Reach.silent,
+            },
+            clock: () => (engine.startedAt ?? DateTime.now()).add(since),
+          );
+
+      final checks = await inCafe().diagnose('phonephonephonep').last;
+      expect(
+        checks.singleWhere((check) => check.kind == .isolated).status,
+        DoctorStatus.warning,
+      );
+      expect(
+        checks.singleWhere((check) => check.kind == .sameNetwork).status,
+        DoctorStatus.warning,
+      );
+
+      final tooSoon = await inCafe(
+        since: const Duration(seconds: 5),
+      ).diagnose('phonephonephonep').last;
+      expect(tooSoon.where((check) => check.kind == .isolated), isEmpty);
+    });
+
     test('Check my network says it may, after a quiet while', () async {
       final quiet = await doctorWith(
         phone: .silent,
