@@ -7,6 +7,7 @@ Future<InstallKind> _detect(
   Map<String, String> environment = const {},
   bool release = true,
   String? installer,
+  bool storeBuild = false,
   Set<String> files = const {},
 }) => InstallKind.detect(
   operatingSystem: os,
@@ -14,6 +15,7 @@ Future<InstallKind> _detect(
   environment: environment,
   isReleaseBuild: release,
   androidInstaller: installer,
+  storeBuild: storeBuild,
   exists: (path) async => files.contains(path),
 );
 
@@ -102,6 +104,18 @@ void main() {
       InstallKind.store,
     );
     expect(InstallKind.store.checks, isFalse);
+  });
+
+  test('a Play build never updates itself, even sideloaded', () async {
+    expect(await _detect('android', storeBuild: true), InstallKind.store);
+    expect(
+      await _detect(
+        'android',
+        installer: 'com.google.android.packageinstaller',
+        storeBuild: true,
+      ),
+      InstallKind.store,
+    );
   });
 
   test('iPhone never checks', () async {

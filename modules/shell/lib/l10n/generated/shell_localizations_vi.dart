@@ -1664,6 +1664,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get emptyCantSee => 'Không thấy thiết bị?';
 
   @override
+  String get emptyGetForComputer => 'Tải Ferret cho máy tính';
+
+  @override
   String get welcomeNearbyBody =>
       'Nhấn Ghép đôi bên cạnh thiết bị kia. Chỉ cần làm một lần.';
 

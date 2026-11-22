@@ -51,4 +51,15 @@ void main() {
 
     debugDefaultTargetPlatformOverride = null;
   });
+
+  test('the Google Play build leaves it out too', () {
+    expect(
+      Sponsor.offeredOn(platform: .android, store: .play),
+      isFalse,
+    );
+    expect(
+      Sponsor.offeredOn(platform: .android, store: .none),
+      isTrue,
+    );
+  });
 }

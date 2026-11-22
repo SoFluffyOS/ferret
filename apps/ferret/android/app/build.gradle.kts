@@ -1,3 +1,4 @@
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -15,6 +16,14 @@ val releaseKey = Properties().apply {
         file.inputStream().use { load(it) }
     }
 }
+
+// `flutter build appbundle --dart-define=FERRET_STORE=play` makes the
+// Google Play build. Flutter hands dart-defines to Gradle base64-encoded.
+val dartDefines = (project.findProperty("dart-defines") as String?)
+    ?.split(",")
+    ?.map { String(Base64.getDecoder().decode(it)) }
+    .orEmpty()
+val isPlayBuild = "FERRET_STORE=play" in dartDefines
 
 android {
     namespace = "io.sofluffy.ferret"
@@ -52,6 +61,10 @@ android {
     // which failed every release build. `./gradlew lint` still checks.
     lint {
         checkReleaseBuilds = false
+    }
+
+    if (isPlayBuild) {
+        sourceSets.getByName("release").manifest.srcFile("src/play/AndroidManifest.xml")
     }
 
     buildTypes {

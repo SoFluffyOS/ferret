@@ -6,13 +6,14 @@ import 'package:flutter/widgets.dart';
 import 'package:shell/l10n/l10n.dart';
 import 'package:shell/ui/widgets/privacy_line.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Home before anything is paired and with nobody in sight. It is the
 /// welcome: what Ferret is for, the one thing to do now, whether it is
 /// still looking, and the privacy promise.
 ///
 /// An iPhone can't look for devices on the network, so there it says so
-/// plainly: scan the code on the computer.
+/// plainly: scan the code on the computer, and where to get Ferret for it.
 class WelcomeEmpty extends StatefulWidget {
   const WelcomeEmpty({
     super.key,
@@ -32,6 +33,9 @@ class WelcomeEmpty extends StatefulWidget {
   /// How long "Looking…" shows before the way out takes its place, so
   /// nobody stares at a search that never ends.
   final Duration patience;
+
+  /// Where Ferret for computers is downloaded.
+  static final website = Uri.parse('https://ferret.sofluffy.io');
 
   @override
   State<WelcomeEmpty> createState() => _WelcomeEmptyState();
@@ -102,7 +106,15 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
           // high as the link's target, so nothing moves when they swap.
           Spacing.v12,
           switch (_isLooking) {
-            _ when isIphone => SizedBox(height: Spacing.d8),
+            _ when isIphone => TextLink(
+              label: l10n.emptyGetForComputer,
+              onTap: () => unawaited(
+                launchUrl(
+                  WelcomeEmpty.website,
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+            ),
             true => ConstrainedBox(
               constraints: BoxConstraints(minHeight: TextLink.minHeight),
               child: Center(

@@ -4423,6 +4423,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get emptyCantSee => pseudo(super.emptyCantSee);
   @override
+  String get emptyGetForComputer => pseudo(super.emptyGetForComputer);
+  @override
   String get welcomeNearbyBody => pseudo(super.welcomeNearbyBody);
   @override
   String get nearbyNotTheOne => pseudo(super.nearbyNotTheOne);

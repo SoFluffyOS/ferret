@@ -1284,6 +1284,7 @@
   "emptyBody": "Install Ferret on your other device too, and open it. It shows up here when both are on the same Wi-Fi. An iPhone pairs with a QR code instead.",
   "emptyBodyIphone": "Install Ferret on your computer too, and open it. Then scan the code it shows.",
   "emptyCantSee": "Can't see it?",
+  "emptyGetForComputer": "Get Ferret for your computer",
   "welcomeNearbyBody": "Tap Pair next to your other device. You only do it once.",
   "nearbyNotTheOne": "Not the one you want? Open Ferret on your other device.",
   "activityTitle": "Activity",

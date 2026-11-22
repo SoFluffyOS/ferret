@@ -2108,6 +2108,12 @@ abstract class ShellLocalizations {
   /// **'Can\'t see it?'**
   String get emptyCantSee;
 
+  /// No description provided for @emptyGetForComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Ferret for your computer'**
+  String get emptyGetForComputer;
+
   /// No description provided for @welcomeNearbyBody.
   ///
   /// In en, this message translates to:

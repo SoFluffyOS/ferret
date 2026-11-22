@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_updates/ferret_updates.dart';
 import 'package:flutter/foundation.dart';
 
@@ -53,6 +54,7 @@ class UpdatePlatform {
         true => await AndroidUpdateInstaller.installerPackage(),
         false => null,
       },
+      storeBuild: StoreBuild.current != .none,
     );
     final http = UpdateHttp(allowInsecure: feed != null);
     return UpdatePlatform(

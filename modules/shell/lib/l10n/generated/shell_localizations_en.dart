@@ -1672,6 +1672,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get emptyCantSee => 'Can\'t see it?';
 
   @override
+  String get emptyGetForComputer => 'Get Ferret for your computer';
+
+  @override
   String get welcomeNearbyBody =>
       'Tap Pair next to your other device. You only do it once.';
 

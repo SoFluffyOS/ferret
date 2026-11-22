@@ -52,15 +52,22 @@ enum InstallKind {
   };
 
   /// Works out this copy's kind. [androidInstaller] is the package that
-  /// installed Ferret on Android (null for a file or `adb`).
+  /// installed Ferret on Android (null for a file or `adb`). [storeBuild]
+  /// is true for a build made for a store, such as Google Play's: the
+  /// store updates it, however it was installed.
   static Future<InstallKind> detect({
     required String operatingSystem,
     required String executable,
     required Map<String, String> environment,
     required bool isReleaseBuild,
     String? androidInstaller,
+    bool storeBuild = false,
     Future<bool> Function(String path)? exists,
   }) async {
+    if (storeBuild) {
+      return store;
+    }
+
     final fileExists = exists ?? (path) => FileSystemEntity.isFile(path);
     switch (operatingSystem) {
       case 'ios':

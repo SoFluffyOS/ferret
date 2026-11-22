@@ -336,6 +336,7 @@
   "emptyBody": "Cài Ferret trên cả thiết bị kia rồi mở lên. Thiết bị sẽ hiện ở đây khi cả hai dùng chung Wi-Fi. Riêng iPhone thì ghép đôi bằng mã QR.",
   "emptyBodyIphone": "Cài Ferret trên cả máy tính rồi mở lên. Sau đó quét mã hiện ra.",
   "emptyCantSee": "Không thấy thiết bị?",
+  "emptyGetForComputer": "Tải Ferret cho máy tính",
   "welcomeNearbyBody": "Nhấn Ghép đôi bên cạnh thiết bị kia. Chỉ cần làm một lần.",
   "nearbyNotTheOne": "Không phải thiết bị bạn cần? Hãy mở Ferret trên thiết bị kia.",
   "activityTitle": "Hoạt động",
