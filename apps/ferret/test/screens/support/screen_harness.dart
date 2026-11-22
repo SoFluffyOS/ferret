@@ -575,6 +575,26 @@ class ScreenRig {
     await settle(tester);
   }
 
+  /// Makes [other], a second rig on loopback, show up here as Bonjour would
+  /// on the same Wi-Fi: at its real port, so pairing with it goes all the
+  /// way.
+  Future<void> hear(WidgetTester tester, ScreenRig other) async {
+    final device = other.engine.device;
+    _discovery.find(
+      DiscoveredPeer(
+        announce: Announce(
+          deviceId: other.engine.identity.deviceId,
+          name: device.name,
+          platform: device.platform,
+          formFactor: device.formFactor,
+          port: other.engine.port,
+        ),
+        host: '127.0.0.1',
+      ),
+    );
+    await settle(tester);
+  }
+
   /// Makes the paired device [id] announce itself, as one with Ferret open
   /// does. Nobody answers at its address, so it stays offline.
   Future<void> hearPaired(
