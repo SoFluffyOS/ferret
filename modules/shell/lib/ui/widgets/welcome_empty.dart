@@ -132,11 +132,15 @@ class _WelcomeEmptyState extends State<WelcomeEmpty> {
             },
             label: switch (isIphone) {
               true => l10n.scanButtonShort,
+              false => l10n.pairShowCodeShort,
+            },
+            tooltip: switch (isIphone) {
+              true => null,
               false => l10n.pairShowCode,
             },
             semanticLabel: switch (isIphone) {
               true => l10n.scanButton,
-              false => null,
+              false => l10n.pairShowCode,
             },
             mainAxisSize: .min,
             titleExpand: .shrink,

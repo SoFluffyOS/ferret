@@ -38,13 +38,13 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
 
   @override
   String get explainerDetail =>
-      'Chỉ thông báo mới. Không có gì rời khỏi mạng của bạn.';
+      'Chỉ thông báo mới. Chúng đi thẳng tới máy tính của bạn, không qua internet.';
 
   @override
   String get turnOn => 'Bật';
 
   @override
-  String get turnOff => 'Tắt chuyển thông báo';
+  String get turnOff => 'Tắt';
 
   @override
   String get accessOn => 'Quyền truy cập thông báo đang bật';

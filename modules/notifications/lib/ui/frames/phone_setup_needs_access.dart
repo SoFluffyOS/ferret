@@ -45,7 +45,7 @@ class PhoneSetupNeedsAccess extends StatelessWidget {
                 Spacing.v8,
                 Text(
                   l10n.openSettingsFailed,
-                  style: typography.caption1.copyWith(color: palette.danger),
+                  style: typography.caption1.copyWith(color: palette.text),
                 ),
               ],
               Spacing.v12,

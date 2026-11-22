@@ -61,6 +61,9 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get pairShowCode => 'Pair with a QR code';
 
   @override
+  String get pairShowCodeShort => 'Use a QR code';
+
+  @override
   String get pairEnterCode => 'Other ways';
 
   @override
@@ -332,7 +335,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
-      other: '$hours h',
+      other: '$hours hours',
+      one: '1 hour',
     );
     return 'Last seen $_temp0 ago';
   }
@@ -342,7 +346,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days d',
+      other: '$days days',
+      one: '1 day',
     );
     return 'Last seen $_temp0 ago';
   }
@@ -375,13 +380,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'This Mac',
-        'phone': 'This phone',
-        'tablet': 'This tablet',
-        'other': 'This computer',
+        'mac': 'This Mac is on Wi-Fi or a cable',
+        'phone': 'This phone is on Wi-Fi',
+        'tablet': 'This tablet is on Wi-Fi',
+        'other': 'This computer is on Wi-Fi or a cable',
       },
     );
-    return '$_temp0 is on a network';
+    return '$_temp0';
   }
 
   @override
@@ -461,7 +466,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
         'other': 'this computer',
       },
     );
-    return '$device and $_temp0 were on the same network';
+    return '$device and $_temp0 were on the same Wi-Fi last time';
   }
 
   @override
@@ -523,7 +528,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get doctorFixPairAgain => 'Pair again';
 
   @override
-  String get doctorFixCopy => 'Copy diagnostics';
+  String get doctorFixCopy => 'Copy details for a helper';
 
   @override
   String get connectTitle => 'Connect by address';
@@ -900,7 +905,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   String get deviceWhyLong => 'Why isn\'t it connecting?';
 
   @override
-  String get deviceWhyShort => 'Find out why';
+  String get deviceWhyShort => 'Fix connection';
 
   @override
   String deviceWhatWorks(String device) {
@@ -955,7 +960,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
   }
 
   @override
-  String get nearbyLooking => 'Looking…';
+  String get nearbyLooking => 'Looking for your other device…';
 
   @override
   String get nearbyNone => 'No devices found yet.';
@@ -1051,7 +1056,8 @@ class ShellLocalizationsEn extends ShellLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       seconds,
       locale: localeName,
-      other: '$seconds s',
+      other: '$seconds seconds left',
+      one: '1 second left',
     );
     return '$_temp0';
   }
@@ -1235,13 +1241,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'This Mac',
-        'phone': 'This phone',
-        'tablet': 'This tablet',
-        'other': 'This computer',
+        'mac': 'this Mac',
+        'phone': 'this phone',
+        'tablet': 'this tablet',
+        'other': 'this computer',
       },
     );
-    return 'This network keeps devices apart. $_temp0 reaches the router but not $device. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.';
+    return 'This Wi-Fi keeps devices apart, so $_temp0 can\'t reach $device. Café, hotel and guest Wi-Fi often do this. Put both on your home Wi-Fi or your phone\'s hotspot.';
   }
 
   @override
@@ -1704,7 +1710,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get footerNobody =>
-      'Your devices are offline. Open Ferret on one to reach it.';
+      'Not connected right now. Open Ferret on your other device, on the same Wi-Fi.';
 
   @override
   String footerPausedUntil(String time) {

@@ -3991,6 +3991,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get pairShowCode => pseudo(super.pairShowCode);
   @override
+  String get pairShowCodeShort => pseudo(super.pairShowCodeShort);
+  @override
   String get pairEnterCode => pseudo(super.pairEnterCode);
   @override
   String get pairIphoneBody => pseudo(super.pairIphoneBody);

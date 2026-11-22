@@ -41,6 +41,10 @@ class _DoctorPageState extends State<DoctorPage> {
   /// announces: while this page is open, this one does.
   late final VisibleHold _visible;
 
+  /// Shows "Copied" on the link for a moment, so a tap never looks like
+  /// nothing happened.
+  Timer? _copied;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +60,7 @@ class _DoctorPageState extends State<DoctorPage> {
   @override
   void dispose() {
     _visible.release();
+    _copied?.cancel();
     unawaited(_subscription?.cancel());
     super.dispose();
   }
@@ -329,6 +334,18 @@ class _DoctorPageState extends State<DoctorPage> {
 
   Future<void> _copy() async {
     await Clipboard.setData(ClipboardData(text: _doctor.diagnostics(_checks)));
+    if (!mounted) {
+      return;
+    }
+
+    _copied?.cancel();
+    setState(() {
+      _copied = Timer(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() => _copied = null);
+        }
+      });
+    });
   }
 
   String _fixLabel(ShellLocalizations l10n, DoctorFix fix) => switch (fix) {
@@ -338,6 +355,7 @@ class _DoctorPageState extends State<DoctorPage> {
     .allowFirewall => l10n.doctorFixAllowFirewall,
     .openFirewall => l10n.doctorFixOpenFirewall,
     .copyFirewallCommand => l10n.doctorFixCopyFirewallCommand,
+    .copyDiagnostics when _copied != null => l10n.pairLinkCopied,
     .copyDiagnostics => l10n.doctorFixCopy,
     .reachOverVpn => l10n.doctorFixReachOverVpn,
     .allowLocalNetwork => l10n.doctorFixAllowLocalNetwork,

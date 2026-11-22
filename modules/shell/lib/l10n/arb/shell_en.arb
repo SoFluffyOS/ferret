@@ -20,6 +20,10 @@
   "deviceConnectsWhenOpen": "Connects when Ferret is open on it",
   "pairTitle": "Add a device",
   "pairShowCode": "Pair with a QR code",
+  "pairShowCodeShort": "Use a QR code",
+  "@pairShowCodeShort": {
+    "description": "Short button for pairShowCode on the empty Home; the full words are its tooltip and spoken label"
+  },
   "pairEnterCode": "Other ways",
   "pairIphoneBody": "Your computer shows up under Nearby while Ferret is open on both. Not there? On your computer, open Ferret, click +, then Pair with a QR code. Scan it here, or with the iPhone's Camera.",
   "pairShowCodeBody": "On your phone, open Ferret and tap +, then Pair with a QR code.",
@@ -204,7 +208,7 @@
       }
     }
   },
-  "deviceLastSeenHours": "Last seen {hours, plural, other{{hours} h}} ago",
+  "deviceLastSeenHours": "Last seen {hours, plural, =1{1 hour} other{{hours} hours}} ago",
   "@deviceLastSeenHours": {
     "placeholders": {
       "hours": {
@@ -212,7 +216,7 @@
       }
     }
   },
-  "deviceLastSeenDays": "Last seen {days, plural, other{{days} d}} ago",
+  "deviceLastSeenDays": "Last seen {days, plural, =1{1 day} other{{days} days}} ago",
   "@deviceLastSeenDays": {
     "placeholders": {
       "days": {
@@ -237,7 +241,7 @@
       }
     }
   },
-  "doctorNetworkOk": "{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on a network",
+  "doctorNetworkOk": "{here, select, mac{This Mac is on Wi-Fi or a cable} phone{This phone is on Wi-Fi} tablet{This tablet is on Wi-Fi} other{This computer is on Wi-Fi or a cable}}",
   "@doctorNetworkOk": {
     "placeholders": {
       "here": {
@@ -299,7 +303,7 @@
       }
     }
   },
-  "doctorSameNetworkOk": "{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same network",
+  "doctorSameNetworkOk": "{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same Wi-Fi last time",
   "@doctorSameNetworkOk": {
     "placeholders": {
       "device": {
@@ -364,7 +368,7 @@
   "doctorFixTryAgain": "Try again",
   "doctorFixConnectByAddress": "Connect by address",
   "doctorFixPairAgain": "Pair again",
-  "doctorFixCopy": "Copy diagnostics",
+  "doctorFixCopy": "Copy details for a helper",
   "connectTitle": "Connect by address",
   "connectBody": "On the other device, open Ferret, then Settings and Advanced. Type the address it shows.",
   "stayTitle": "Stay connected",
@@ -640,7 +644,7 @@
   },
   "settingsAddressHint": "If another device can't find this one: on it, open Add a device, then Other ways, and type this address.",
   "deviceWhyLong": "Why isn't it connecting?",
-  "deviceWhyShort": "Find out why",
+  "deviceWhyShort": "Fix connection",
   "@deviceWhyShort": {
     "description": "Short button for deviceWhyLong; the full question is its tooltip"
   },
@@ -696,7 +700,7 @@
       }
     }
   },
-  "nearbyLooking": "Looking…",
+  "nearbyLooking": "Looking for your other device…",
   "nearbyNone": "No devices found yet.",
   "nearbyLookAgain": "Look again",
   "nearbyPair": "Pair",
@@ -804,7 +808,7 @@
       }
     }
   },
-  "promptSecondsLeft": "{seconds, plural, other{{seconds} s}}",
+  "promptSecondsLeft": "{seconds, plural, =1{1 second left} other{{seconds} seconds left}}",
   "@promptSecondsLeft": {
     "placeholders": {
       "seconds": {
@@ -964,7 +968,7 @@
   "settingsSharePairingsBody": "A device you pair here joins your other devices too. When one of them adds or removes a device, Ferret here asks you first.",
   "settingsAlwaysVisible": "Always visible",
   "settingsAlwaysVisibleBody": "Show this device on every Wi-Fi. Off, it only shows itself where it met your devices before, or while you add one. Elsewhere it just listens, and your devices still find it.",
-  "doctorIsolated": "This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone's hotspot or a home network.",
+  "doctorIsolated": "This Wi-Fi keeps devices apart, so {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can't reach {device}. Café, hotel and guest Wi-Fi often do this. Put both on your home Wi-Fi or your phone's hotspot.",
   "@doctorIsolated": {
     "placeholders": {
       "device": {
@@ -1309,7 +1313,7 @@
   },
   "footerDrag": "Drag files onto a device to send",
   "footerKeepOpen": "Keep Ferret open to sync. iOS pauses it otherwise.",
-  "footerNobody": "Your devices are offline. Open Ferret on one to reach it.",
+  "footerNobody": "Not connected right now. Open Ferret on your other device, on the same Wi-Fi.",
   "footerPausedUntil": "Paused until {time}",
   "@footerPausedUntil": {
     "description": "time is a clock time, such as 14:05",

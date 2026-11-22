@@ -38,13 +38,13 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get explainerDetail =>
-      'Only new notifications. Nothing leaves your network.';
+      'Only new notifications. They go straight to your computer, never through the internet.';
 
   @override
   String get turnOn => 'Turn on';
 
   @override
-  String get turnOff => 'Turn off mirroring';
+  String get turnOff => 'Turn off';
 
   @override
   String get accessOn => 'Notification access is on';

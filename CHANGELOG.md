@@ -13,6 +13,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Pair once, join them all**: a device you pair with one of yours joins all of them, once each asks you. **Forget** removes it everywhere (each one asks too), or only here.
 - **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** instead of offline, and comes back right after sleep or a network change. A slow link says **weak connection**.
 - **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
+- **Easy to read for anyone**: plain words, calm colors and short buttons that still fit at 200% text. **Copy details for a helper** puts a short report on the clipboard for whoever helps you.
 - **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.
 - **Says who needs an update** instead of staying offline.
@@ -27,7 +28,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 📦 Files and folders
 - **Drop**: drag files or a whole folder onto a device. Checked with SHA-256, never overwrites, and a transfer cut off by the Wi-Fi goes on by itself when the device is back.
-- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption. Sharing a big file from Android starts at once, with no copy first and no extra space needed.
+- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption. Sharing a big file from Android starts at once, with no copy first and no extra space needed. Files sent to Android land straight in Download, with no copy at the end either.
 - **Room first**: a file that doesn't fit is turned down before a byte moves, with how much space it needs.
 - **Share menus**: **Share → Ferret** on Mac and iPhone, **Send with Ferret** on Windows and Linux. On Android, your connected devices sit right in the share sheet's top row.
 - **Needs you**: files from a device you didn't pair wait for **Accept**. **Allow once** lets a guest's phone send you one file.

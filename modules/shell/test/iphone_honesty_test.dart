@@ -73,7 +73,7 @@ void main() {
     );
     await tester.pump(const Duration(seconds: 11));
 
-    expect(find.text('Looking…'), findsNothing);
+    expect(find.text('Looking for your other device…'), findsNothing);
     expect(find.text("Can't see it?"), findsNothing);
     expect(
       find.text(

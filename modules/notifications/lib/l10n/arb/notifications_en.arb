@@ -17,9 +17,9 @@
       }
     }
   },
-  "explainerDetail": "Only new notifications. Nothing leaves your network.",
+  "explainerDetail": "Only new notifications. They go straight to your computer, never through the internet.",
   "turnOn": "Turn on",
-  "turnOff": "Turn off mirroring",
+  "turnOff": "Turn off",
   "@turnOff": {
     "description": "Stops sending this phone's notifications to computers (not screen mirroring)"
   },

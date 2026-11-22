@@ -104,9 +104,9 @@ void main() {
     expect(variantOf(tester, 'Pair again'), ButtonVariant.primary);
     expect(variantOf(tester, 'Try again'), ButtonVariant.ghost);
     expect(variantOf(tester, 'Connect by address'), isNull);
-    expect(variantOf(tester, 'Copy diagnostics'), isNull);
+    expect(variantOf(tester, 'Copy details for a helper'), isNull);
     expect(find.text('Connect by address'), findsOneWidget);
-    expect(find.text('Copy diagnostics'), findsOneWidget);
+    expect(find.text('Copy details for a helper'), findsOneWidget);
   });
 
   testWidgets('with nothing to fix, Try again holds the filled button', (

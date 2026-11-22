@@ -52,12 +52,12 @@ void main() {
   test('and with a capital where it starts one', () {
     expect(
       en.doctorNetworkOk(LocalNames.herePhone),
-      'This phone is on a network',
+      'This phone is on Wi-Fi',
     );
     expect(
       en.doctorIsolated('Pixel 7', LocalNames.hereComputer),
       startsWith(
-        'This network keeps devices apart. This computer reaches the router',
+        "This Wi-Fi keeps devices apart, so this computer can't reach Pixel 7",
       ),
     );
   });
@@ -69,7 +69,7 @@ void main() {
     );
     expect(
       vi.doctorNetworkOk(LocalNames.herePhone),
-      'Điện thoại này đang có mạng',
+      'Điện thoại này đang có Wi-Fi',
     );
     expect(vi.deviceRenameTitle(LocalNames.hereMac), 'Tên trên Mac này');
   });

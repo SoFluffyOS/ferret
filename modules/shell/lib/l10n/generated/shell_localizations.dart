@@ -200,6 +200,12 @@ abstract class ShellLocalizations {
   /// **'Pair with a QR code'**
   String get pairShowCode;
 
+  /// Short button for pairShowCode on the empty Home; the full words are its tooltip and spoken label
+  ///
+  /// In en, this message translates to:
+  /// **'Use a QR code'**
+  String get pairShowCodeShort;
+
   /// No description provided for @pairEnterCode.
   ///
   /// In en, this message translates to:
@@ -605,13 +611,13 @@ abstract class ShellLocalizations {
   /// No description provided for @deviceLastSeenHours.
   ///
   /// In en, this message translates to:
-  /// **'Last seen {hours, plural, other{{hours} h}} ago'**
+  /// **'Last seen {hours, plural, =1{1 hour} other{{hours} hours}} ago'**
   String deviceLastSeenHours(int hours);
 
   /// No description provided for @deviceLastSeenDays.
   ///
   /// In en, this message translates to:
-  /// **'Last seen {days, plural, other{{days} d}} ago'**
+  /// **'Last seen {days, plural, =1{1 day} other{{days} days}} ago'**
   String deviceLastSeenDays(int days);
 
   /// Button: Ferret runs again after a pause (not the Continue feature)
@@ -659,7 +665,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} is on a network'**
+  /// **'{here, select, mac{This Mac is on Wi-Fi or a cable} phone{This phone is on Wi-Fi} tablet{This tablet is on Wi-Fi} other{This computer is on Wi-Fi or a cable}}'**
   String doctorNetworkOk(String here);
 
   /// No description provided for @doctorNetworkProblem.
@@ -701,7 +707,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorSameNetworkOk.
   ///
   /// In en, this message translates to:
-  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same network'**
+  /// **'{device} and {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} were on the same Wi-Fi last time'**
   String doctorSameNetworkOk(String device, String here);
 
   /// No description provided for @doctorSameNetworkWarning.
@@ -767,7 +773,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorFixCopy.
   ///
   /// In en, this message translates to:
-  /// **'Copy diagnostics'**
+  /// **'Copy details for a helper'**
   String get doctorFixCopy;
 
   /// No description provided for @connectTitle.
@@ -1241,7 +1247,7 @@ abstract class ShellLocalizations {
   /// Short button for deviceWhyLong; the full question is its tooltip
   ///
   /// In en, this message translates to:
-  /// **'Find out why'**
+  /// **'Fix connection'**
   String get deviceWhyShort;
 
   /// No description provided for @deviceWhatWorks.
@@ -1295,7 +1301,7 @@ abstract class ShellLocalizations {
   /// No description provided for @nearbyLooking.
   ///
   /// In en, this message translates to:
-  /// **'Looking…'**
+  /// **'Looking for your other device…'**
   String get nearbyLooking;
 
   /// No description provided for @nearbyNone.
@@ -1421,7 +1427,7 @@ abstract class ShellLocalizations {
   /// No description provided for @promptSecondsLeft.
   ///
   /// In en, this message translates to:
-  /// **'{seconds, plural, other{{seconds} s}}'**
+  /// **'{seconds, plural, =1{1 second left} other{{seconds} seconds left}}'**
   String promptSecondsLeft(int seconds);
 
   /// No description provided for @promptNotice.
@@ -1583,7 +1589,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorIsolated.
   ///
   /// In en, this message translates to:
-  /// **'This network keeps devices apart. {here, select, mac{This Mac} phone{This phone} tablet{This tablet} other{This computer}} reaches the router but not {device}. Café, hotel, campus and guest Wi-Fi often do this. Put both on your phone\'s hotspot or a home network.'**
+  /// **'This Wi-Fi keeps devices apart, so {here, select, mac{this Mac} phone{this phone} tablet{this tablet} other{this computer}} can\'t reach {device}. Café, hotel and guest Wi-Fi often do this. Put both on your home Wi-Fi or your phone\'s hotspot.'**
   String doctorIsolated(String device, String here);
 
   /// No description provided for @doctorIsolatedMaybe.
@@ -2183,7 +2189,7 @@ abstract class ShellLocalizations {
   /// No description provided for @footerNobody.
   ///
   /// In en, this message translates to:
-  /// **'Your devices are offline. Open Ferret on one to reach it.'**
+  /// **'Not connected right now. Open Ferret on your other device, on the same Wi-Fi.'**
   String get footerNobody;
 
   /// time is a clock time, such as 14:05

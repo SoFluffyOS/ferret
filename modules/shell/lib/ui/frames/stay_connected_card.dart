@@ -131,7 +131,7 @@ class _Steps extends StatelessWidget {
               Spacing.v8,
               Text(
                 l10n.stayStops(stopsToday),
-                style: typography.caption1.copyWith(color: palette.danger),
+                style: typography.caption1.copyWith(color: palette.text),
               ),
             ],
             if (asksAboutBoot)

@@ -227,14 +227,14 @@ void main() {
       find.text('No account. No cloud. Stays on your network.'),
       findsOneWidget,
     );
-    expect(find.text('Looking…'), findsOneWidget);
+    expect(find.text('Looking for your other device…'), findsOneWidget);
     expect(find.text("Can't see it?"), findsNothing);
 
     await tester.pump(const Duration(seconds: 11));
     await tester.tap(find.text("Can't see it?"));
-    await tester.tap(find.text('Pair with a QR code'));
+    await tester.tap(find.text('Use a QR code'));
 
-    expect(find.text('Looking…'), findsNothing);
+    expect(find.text('Looking for your other device…'), findsNothing);
     expect((codes, cantSee), (1, 1));
   });
 

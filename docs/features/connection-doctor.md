@@ -9,7 +9,7 @@ When a paired device won't connect, Ferret tells you why. No guessing.
 
 ## How to open it
 
-Tap **Fix** next to a device that isn't connected, or open the device and tap **Find out why**.
+Tap **Fix** next to a device that isn't connected, or open the device and tap **Fix connection**.
 
 The device you want to pair doesn't show up at all? **+** → **Check my network** runs the first two checks for this device alone. It's under **Settings → Advanced** too.
 
@@ -21,7 +21,7 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 4. **Is the other device answering?** If not, open Ferret on it. On Android, battery saving may have stopped it: see [Ferret on Android](../getting-started/android.md).
 5. **Does it still know this device?** If it was reset or reinstalled, pair again.
 
-Each problem comes with a button that fixes it, or tells you exactly where to go. The real fix is the filled button. **Connect by address** and **Copy diagnostics** sit as small links next to **Try again**, for when you or a friend dig deeper.
+Each problem comes with a button that fixes it, or tells you exactly where to go. The real fix is the filled button. **Connect by address** and **Copy details for a helper** sit as small links next to **Try again**, for when you or a friend dig deeper.
 
 ## On Windows: the firewall
 
@@ -74,4 +74,4 @@ Some networks block devices from finding each other but still let them connect. 
 
 ## Report a problem
 
-The **Copy diagnostics** link at the bottom puts a short report on your clipboard. It has no names, no addresses and no content, so it's safe to paste into an issue.
+The **Copy details for a helper** link at the bottom puts a short report on your clipboard. It has no names, no addresses and no content, so it's safe to paste into an issue.

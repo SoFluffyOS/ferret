@@ -62,6 +62,9 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get pairShowCode => 'Ghép bằng mã QR';
 
   @override
+  String get pairShowCodeShort => 'Dùng mã QR';
+
+  @override
   String get pairEnterCode => 'Cách khác';
 
   @override
@@ -374,13 +377,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       here,
       {
-        'mac': 'Mac này',
-        'phone': 'Điện thoại này',
-        'tablet': 'Máy tính bảng này',
-        'other': 'Máy tính này',
+        'mac': 'Mac này đang có Wi-Fi hoặc cáp mạng',
+        'phone': 'Điện thoại này đang có Wi-Fi',
+        'tablet': 'Máy tính bảng này đang có Wi-Fi',
+        'other': 'Máy tính này đang có Wi-Fi hoặc cáp mạng',
       },
     );
-    return '$_temp0 đang có mạng';
+    return '$_temp0';
   }
 
   @override
@@ -460,7 +463,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
         'other': 'máy tính này',
       },
     );
-    return '$device và $_temp0 từng ở cùng một mạng';
+    return 'Lần trước, $device và $_temp0 dùng chung một Wi-Fi';
   }
 
   @override
@@ -522,7 +525,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get doctorFixPairAgain => 'Ghép đôi lại';
 
   @override
-  String get doctorFixCopy => 'Sao chép chẩn đoán';
+  String get doctorFixCopy => 'Sao chép thông tin cho người giúp';
 
   @override
   String get connectTitle => 'Kết nối bằng địa chỉ';
@@ -897,7 +900,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   String get deviceWhyLong => 'Vì sao không kết nối được?';
 
   @override
-  String get deviceWhyShort => 'Xem vì sao';
+  String get deviceWhyShort => 'Sửa kết nối';
 
   @override
   String deviceWhatWorks(String device) {
@@ -952,7 +955,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
   }
 
   @override
-  String get nearbyLooking => 'Đang tìm…';
+  String get nearbyLooking => 'Đang tìm thiết bị kia…';
 
   @override
   String get nearbyNone => 'Chưa tìm thấy thiết bị nào.';
@@ -1048,7 +1051,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       seconds,
       locale: localeName,
-      other: '$seconds giây',
+      other: 'Còn $seconds giây',
     );
     return '$_temp0';
   }
@@ -1233,12 +1236,12 @@ class ShellLocalizationsVi extends ShellLocalizations {
       here,
       {
         'mac': 'Mac này',
-        'phone': 'Điện thoại này',
-        'tablet': 'Máy tính bảng này',
-        'other': 'Máy tính này',
+        'phone': 'điện thoại này',
+        'tablet': 'máy tính bảng này',
+        'other': 'máy tính này',
       },
     );
-    return 'Mạng này tách các thiết bị khỏi nhau. $_temp0 tới được bộ định tuyến nhưng không tới được $device. Wi-Fi quán cà phê, khách sạn, trường học và Wi-Fi khách thường như vậy. Hãy cho cả hai dùng điểm phát sóng của điện thoại hoặc mạng ở nhà.';
+    return 'Wi-Fi này tách các thiết bị khỏi nhau, nên $_temp0 không tới được $device. Wi-Fi quán cà phê, khách sạn và Wi-Fi khách thường như vậy. Hãy cho cả hai dùng Wi-Fi ở nhà hoặc điểm phát sóng của điện thoại.';
   }
 
   @override
@@ -1700,7 +1703,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get footerNobody =>
-      'Các thiết bị của bạn đang ngoại tuyến. Mở Ferret trên một thiết bị để kết nối.';
+      'Chưa kết nối. Mở Ferret trên thiết bị kia, dùng chung Wi-Fi.';
 
   @override
   String footerPausedUntil(String time) {

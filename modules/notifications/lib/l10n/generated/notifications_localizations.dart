@@ -122,7 +122,7 @@ abstract class NotificationsLocalizations {
   /// No description provided for @explainerDetail.
   ///
   /// In en, this message translates to:
-  /// **'Only new notifications. Nothing leaves your network.'**
+  /// **'Only new notifications. They go straight to your computer, never through the internet.'**
   String get explainerDetail;
 
   /// No description provided for @turnOn.
@@ -134,7 +134,7 @@ abstract class NotificationsLocalizations {
   /// Stops sending this phone's notifications to computers (not screen mirroring)
   ///
   /// In en, this message translates to:
-  /// **'Turn off mirroring'**
+  /// **'Turn off'**
   String get turnOff;
 
   /// No description provided for @accessOn.
