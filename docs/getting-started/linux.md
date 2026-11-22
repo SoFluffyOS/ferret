@@ -25,7 +25,7 @@ curl -fsSL ferret.sofluffy.io/install.sh | sh
 
 Want to read it before you run it? Good habit. [It's short](https://ferret.sofluffy.io/install.sh).
 
-It puts the newest AppImage in `~/.local/opt/ferret`, links `ferret` and `ferret-cli` in `~/.local/bin`, and adds Ferret to your app menu. Run it again to update. AppImages need FUSE 2: the script tells you the package if it's missing.
+It puts the newest AppImage in `~/.local/opt/ferret`, links `ferret` and `ferret-cli` in `~/.local/bin`, and adds Ferret to your app menu. Run it again to update. No `libfuse2` needed: the AppImage brings its own. It only needs `fusermount3`, which most desktops already have, and the script tells you the package if it's missing.
 
 Rather pick a package? All three install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager. Get them from the [latest release](https://github.com/simonpham/ferret/releases/latest).
 
@@ -99,7 +99,7 @@ Nothing paired yet? There is no list to show, so the window is one column that l
 Ferret puts an icon in your panel's tray. Click it to show or hide the window. Its menu has **Open Ferret**, **Send clipboard to my devices**, **Pause syncing for 1 hour** (or **Resume**) and **Quit Ferret**.
 
 - **With a tray, closing the window keeps Ferret running there**, so copies and files still arrive. The first time, a notification says where it went. Quit from the tray menu.
-- **Without a tray, closing the window quits Ferret.** A hidden window you can't get back would be worse. Stock GNOME has no tray: turn on the **AppIndicator and KStatusNotifierItem Support** extension (Ubuntu ships it on) and log in again.
+- **Without a tray, closing the window quits Ferret.** A hidden window you can't get back would be worse. Stock GNOME has no tray, Fedora included: turn on the **AppIndicator and KStatusNotifierItem Support** extension (Ubuntu ships it on). No need to log out or restart Ferret: the icon shows up as soon as the extension does, and closing then hides Ferret again.
 - **Open Ferret again** from the app menu and the one already running shows its window. There is only ever one Ferret.
 - KDE Plasma, Xfce, Cinnamon, MATE, Budgie and waybar show the icon as they are.
 - The window opens at the size you left it. On X11 it also opens where you left it. On Wayland the compositor decides where windows go, so only the size is kept.
@@ -108,11 +108,15 @@ Ferret puts an icon in your panel's tray. Click it to show or hide the window. I
 
 **Settings → Start Ferret when I log in.** Ferret then starts with your desktop, straight into the tray, so your devices connect before you need them. No tray? It opens its window instead.
 
-It's a normal XDG autostart entry, `~/.config/autostart/io.sofluffy.ferret.desktop`, which GNOME, KDE Plasma, Xfce and the rest all read. Turn the switch off and the file is gone. Inside a Flatpak, Ferret asks the desktop through the Background portal instead.
+It's a normal XDG autostart entry, `~/.config/autostart/io.sofluffy.ferret.desktop`, which GNOME, KDE Plasma, Xfce and the rest all read. Turn the switch off and the file is gone. Inside a Flatpak, Ferret asks the desktop through the Background portal instead. GNOME asks you the first time. Say no and the switch goes back off and tells you.
 
 Prefer a systemd user service, or a line in your tiling WM's config? Run `ferret --hidden`. That's all autostart does.
 
 The icon speaks StatusNotifierItem over D-Bus. Nothing to install, and inside a Flatpak it only needs to talk to `org.kde.StatusNotifierWatcher`.
+
+## 🔔 Notifications
+
+Texts and phone notifications show up as your desktop's own notifications, with their buttons. Linux notifications have no text field, so **Reply** opens Ferret right at that conversation, ready for your answer.
 
 ## ⌨️ Keys
 
@@ -135,7 +139,7 @@ There is no menu bar. The **•••** at the end of the window's toolbar holds
 
 ## 🧱 If your phone doesn't show up
 
-A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. See [Fix connection](../features/connection-doctor.md).
+A firewall is the usual reason. **Add a device → Check my network** says when ufw or firewalld is on and copies the one line that lets Ferret through. Fedora Workstation's firewall already lets Ferret in, so there it stays quiet. See [Fix connection](../features/connection-doctor.md).
 
 Ferret needs `47640/tcp` (`47642`–`47649/tcp` for a second account on the same computer), `47641/udp` and mDNS (`5353/udp`). Installed the `.deb`? It ships profiles for both firewalls:
 

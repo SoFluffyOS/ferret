@@ -108,8 +108,10 @@ case ":$PATH:" in
   *) say "Add $BIN_DIR to your PATH to run ferret and ferret-cli from a terminal." ;;
 esac
 
-if ! ldconfig -p 2>/dev/null | grep -q "libfuse.so.2"; then
-  say "AppImages need FUSE 2 to start. Ubuntu/Debian: sudo apt install libfuse2t64 (or libfuse2). Fedora: sudo dnf install fuse-libs."
+# The AppImage carries its own FUSE library (static runtime), so libfuse2
+# isn't needed; it still mounts itself with fusermount3 (or fusermount).
+if ! command -v fusermount3 >/dev/null 2>&1 && ! command -v fusermount >/dev/null 2>&1; then
+  say "AppImages need FUSE to start. Ubuntu/Debian: sudo apt install fuse3. Fedora: sudo dnf install fuse3. Arch: sudo pacman -S fuse3."
 fi
 
 say "Next: open Ferret on your phone too, on the same Wi-Fi, and tap Pair."
