@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:core/logging/logging.dart';
 import 'package:path/path.dart' as p;
 
 /// User settings as JSON values under snake_case keys, such as
@@ -49,7 +50,16 @@ class JsonFileSettingsStore implements SettingsStore {
       return JsonFileSettingsStore._(file, {});
     }
 
-    final decoded = jsonDecode(await file.readAsString());
+    Object? decoded;
+    try {
+      decoded = jsonDecode(await file.readAsString());
+    } on FormatException catch (error) {
+      // Settings are preferences: a file cut short starts them over
+      // instead of keeping Ferret from starting. The old one stays beside.
+      printWarning('settings.json did not read; starting it over', error);
+      await file.copy('${file.path}.unreadable');
+    }
+
     final values = switch (decoded) {
       final Map<String, dynamic> map => map,
       _ => <String, dynamic>{},
@@ -60,6 +70,10 @@ class JsonFileSettingsStore implements SettingsStore {
   final File _file;
   final Map<String, dynamic> _values;
   final StreamController<String> _changes = .broadcast();
+
+  /// Saves one at a time, each through a temporary file, so two settings
+  /// changed at once never leave the file half written.
+  Future<void> _writing = Future.value();
 
   @override
   T? get<T>(String key) => switch (_values[key]) {
@@ -72,9 +86,17 @@ class JsonFileSettingsStore implements SettingsStore {
     _values[key] = value;
     _changes.add(key);
 
+    final write = _writing.then((_) => _save());
+    _writing = write.then<void>((_) {}, onError: (Object _) {});
+    await write;
+  }
+
+  Future<void> _save() async {
     await _file.parent.create(recursive: true);
     const encoder = JsonEncoder.withIndent('  ');
-    await _file.writeAsString(encoder.convert(_values), flush: true);
+    final temporary = File('${_file.path}.tmp');
+    await temporary.writeAsString(encoder.convert(_values), flush: true);
+    await temporary.rename(_file.path);
   }
 
   @override
