@@ -19,6 +19,7 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:transport/transport.dart';
 
 import 'screen_fonts.dart';
+import 'talkback_dump.dart';
 
 /// A screen size the harness captures, and the platform it renders as:
 /// sofluffy_ui sizes buttons, text and scrolling by platform, so a phone
@@ -609,6 +610,9 @@ class ScreenRig {
     final file = File(
       '${screensDirectory.path}/${name}_${size.name}_$mode.png',
     );
+    if (talkbackDumps && size == phone && brightness == .light) {
+      await writeTalkbackDump(tester, name);
+    }
 
     final boundary = boundaryKey.currentContext?.findRenderObject();
     if (boundary is! RenderRepaintBoundary) {
