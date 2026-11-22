@@ -1,0 +1,41 @@
+name: updates
+description: Ferret's update check and installer, for the computer and Android builds from GitHub.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  core:
+    path: ../../packages/core
+  engine:
+    path: ../../packages/engine
+  feature_kit:
+    path: ../../packages/feature_kit
+  ferret_updates:
+    path: ../../packages/ferret_updates
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
+  lucide_icons_flutter: ^4.0.3
+  protobuf: ^6.1.0
+  protocol:
+    path: ../../packages/protocol
+  provider: ^6.1.5+1
+  sofluffy_ui:
+    path: ../../packages/sofluffy_ui
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  crypto: ^3.0.6
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  generate: true

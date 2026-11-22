@@ -39,6 +39,8 @@ import 'package:scripting/l10n/generated/scripting_localizations_en.dart';
 import 'package:scripting/l10n/generated/scripting_localizations.dart';
 import 'package:shell/l10n/generated/shell_localizations_en.dart';
 import 'package:shell/l10n/generated/shell_localizations.dart';
+import 'package:updates/l10n/generated/updates_localizations_en.dart';
+import 'package:updates/l10n/generated/updates_localizations.dart';
 import 'package:wake/l10n/generated/wake_localizations_en.dart';
 import 'package:wake/l10n/generated/wake_localizations.dart';
 
@@ -66,6 +68,7 @@ List<LocalizationsDelegate<Object?>> pseudoDelegates() => [
   _PseudoDelegate<RemoteInputLocalizations>(PseudoRemoteInputLocalizations.new),
   _PseudoDelegate<ScriptingLocalizations>(PseudoScriptingLocalizations.new),
   _PseudoDelegate<ShellLocalizations>(PseudoShellLocalizations.new),
+  _PseudoDelegate<UpdatesLocalizations>(PseudoUpdatesLocalizations.new),
   _PseudoDelegate<WakeLocalizations>(PseudoWakeLocalizations.new),
 ];
 
@@ -5075,6 +5078,112 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String iconDropSending(int count, String name) =>
       pseudo(super.iconDropSending(count, name));
+}
+
+class PseudoUpdatesLocalizations extends UpdatesLocalizationsEn {
+  @override
+  String get title => pseudo(super.title);
+  @override
+  String get checkSwitch => pseudo(super.checkSwitch);
+  @override
+  String get checkSwitchBody => pseudo(super.checkSwitchBody);
+  @override
+  String get betaSwitch => pseudo(super.betaSwitch);
+  @override
+  String get betaSwitchBody => pseudo(super.betaSwitchBody);
+  @override
+  String get checkNow => pseudo(super.checkNow);
+  @override
+  String get checkNowTooltip => pseudo(super.checkNowTooltip);
+  @override
+  String get checking => pseudo(super.checking);
+  @override
+  String get checkFailed => pseudo(super.checkFailed);
+  @override
+  String get packageManager => pseudo(super.packageManager);
+  @override
+  String get manualInstall => pseudo(super.manualInstall);
+  @override
+  String get install => pseudo(super.install);
+  @override
+  String get whatsNew => pseudo(super.whatsNew);
+  @override
+  String get noNotes => pseudo(super.noNotes);
+  @override
+  String get later => pseudo(super.later);
+  @override
+  String get close => pseudo(super.close);
+  @override
+  String get downloadPage => pseudo(super.downloadPage);
+  @override
+  String get downloadPageTooltip => pseudo(super.downloadPageTooltip);
+  @override
+  String get downloadingNoSize => pseudo(super.downloadingNoSize);
+  @override
+  String get verifying => pseudo(super.verifying);
+  @override
+  String get installing => pseudo(super.installing);
+  @override
+  String get restarting => pseudo(super.restarting);
+  @override
+  String get cancel => pseudo(super.cancel);
+  @override
+  String get tryAgain => pseudo(super.tryAgain);
+  @override
+  String get notInstalled => pseudo(super.notInstalled);
+  @override
+  String get downloadFailed => pseudo(super.downloadFailed);
+  @override
+  String get noFile => pseudo(super.noFile);
+  @override
+  String get checksumMissing => pseudo(super.checksumMissing);
+  @override
+  String get checksumMismatch => pseudo(super.checksumMismatch);
+  @override
+  String get notSigned => pseudo(super.notSigned);
+  @override
+  String get wrongPublisher => pseudo(super.wrongPublisher);
+  @override
+  String get notNotarized => pseudo(super.notNotarized);
+  @override
+  String get unsignedHere => pseudo(super.unsignedHere);
+  @override
+  String get installFailed => pseudo(super.installFailed);
+  @override
+  String get permissionTitle => pseudo(super.permissionTitle);
+  @override
+  String get permissionBody => pseudo(super.permissionBody);
+  @override
+  String get openSettings => pseudo(super.openSettings);
+  @override
+  String get openSettingsTooltip => pseudo(super.openSettingsTooltip);
+  @override
+  String get confirmOnPhone => pseudo(super.confirmOnPhone);
+  @override
+  String get showPrompt => pseudo(super.showPrompt);
+  @override
+  String get showPromptTooltip => pseudo(super.showPromptTooltip);
+  @override
+  String get dragTitle => pseudo(super.dragTitle);
+  @override
+  String get dragBody => pseudo(super.dragBody);
+  @override
+  String upToDate(String version) => pseudo(super.upToDate(version));
+  @override
+  String statusOff(String version) => pseudo(super.statusOff(version));
+  @override
+  String ready(String version) => pseudo(super.ready(version));
+  @override
+  String readyOut(String version) => pseudo(super.readyOut(version));
+  @override
+  String youHave(String version) => pseudo(super.youHave(version));
+  @override
+  String installTooltip(String version) =>
+      pseudo(super.installTooltip(version));
+  @override
+  String whatsNewTitle(String version) => pseudo(super.whatsNewTitle(version));
+  @override
+  String downloading(int percent) => pseudo(super.downloading(percent));
 }
 
 class PseudoWakeLocalizations extends WakeLocalizationsEn {

@@ -13,7 +13,12 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final engine = ShellScope.of(context).featureContext.engine;
+    final scope = ShellScope.of(context);
+    final engine = scope.featureContext.engine;
+    final sections = [
+      for (final feature in scope.features)
+        ?feature.buildAboutSection(context, scope.featureContext),
+    ];
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final l10n = context.shellL10n;
@@ -44,6 +49,7 @@ class AboutPage extends StatelessWidget {
             if (Sponsor.isOffered) const SponsorRow(),
           ],
         ),
+        for (final section in sections) ...[Spacing.v8, section],
         Spacing.v16,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: PageInsets.row),

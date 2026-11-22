@@ -1,0 +1,27 @@
+name: ferret_updates
+description: Finds, downloads, checks and installs a newer Ferret from its GitHub releases, on macOS, Windows, Linux (AppImage) and Android. Reusable on its own.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
+
+dependencies:
+  crypto: ^3.0.6
+  flutter:
+    sdk: flutter
+  path: ^1.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.sofluffy.ferret_updates
+        pluginClass: FerretUpdatesPlugin

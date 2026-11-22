@@ -419,7 +419,7 @@ abstract class ShellLocalizations {
   /// No description provided for @settingsPrivacyBody.
   ///
   /// In en, this message translates to:
-  /// **'Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.'**
+  /// **'What you share goes only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.'**
   String get settingsPrivacyBody;
 
   /// No description provided for @settingsQuit.

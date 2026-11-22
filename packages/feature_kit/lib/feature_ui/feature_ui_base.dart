@@ -160,6 +160,12 @@ abstract class FeatureUi {
   /// The feature's section in Settings, or null.
   Widget? buildSettings(BuildContext context, FeatureContext feature) => null;
 
+  /// A section of Settings → About, above the version, for what concerns
+  /// the app itself rather than any device, such as checking for updates.
+  /// Null for none.
+  Widget? buildAboutSection(BuildContext context, FeatureContext feature) =>
+      null;
+
   /// The Settings row [buildSettings] sits behind.
   SettingsGroup get settingsGroup => .control;
 

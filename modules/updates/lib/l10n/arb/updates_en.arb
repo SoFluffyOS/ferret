@@ -1,0 +1,247 @@
+{
+  "@@locale": "en",
+  "title": "Updates",
+  "@title": {
+    "description": "Heading of the update section in About."
+  },
+  "checkSwitch": "Check for updates",
+  "@checkSwitch": {
+    "description": "Switch that turns the daily update check on or off."
+  },
+  "checkSwitchBody": "Once a day, Ferret asks GitHub for its newest version. It sends nothing about you or your devices.",
+  "@checkSwitchBody": {
+    "description": "Says what the update check does and what it sends."
+  },
+  "betaSwitch": "Include beta versions",
+  "@betaSwitch": {
+    "description": "Switch: also offer test versions (pre-releases)."
+  },
+  "betaSwitchBody": "Try what's next before everyone else. Betas may have rough edges.",
+  "@betaSwitchBody": {
+    "description": "Explains beta versions."
+  },
+  "checkNow": "Check now",
+  "@checkNow": {
+    "description": "Button: check for an update right away."
+  },
+  "checkNowTooltip": "Ask GitHub for Ferret's newest version now",
+  "@checkNowTooltip": {
+    "description": "Tooltip of Check now."
+  },
+  "checking": "Checking…",
+  "@checking": {
+    "description": "Status while asking GitHub for the newest version."
+  },
+  "upToDate": "Ferret {version} is the newest version.",
+  "@upToDate": {
+    "description": "Status: no update.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "checkFailed": "Couldn't reach GitHub. Try again later.",
+  "@checkFailed": {
+    "description": "Status: the check failed."
+  },
+  "statusOff": "Ferret doesn't check for updates. You have {version}.",
+  "@statusOff": {
+    "description": "Status while the check is off.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "ready": "Ferret {version} is ready",
+  "@ready": {
+    "description": "Card title: a newer version can be installed.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "readyOut": "Ferret {version} is out",
+  "@readyOut": {
+    "description": "Card title where Ferret can't install it itself.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "youHave": "You have {version}",
+  "@youHave": {
+    "description": "Card subtitle: the installed version.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "packageManager": "Update it with your package manager or software center.",
+  "@packageManager": {
+    "description": "Card line for Flatpak/.deb/Snap installs."
+  },
+  "manualInstall": "Download it from the website to install it.",
+  "@manualInstall": {
+    "description": "Card line where Ferret runs from a folder it can't update."
+  },
+  "install": "Install",
+  "@install": {
+    "description": "Button: download, check and install the update."
+  },
+  "installTooltip": "Download, check and install Ferret {version}, then restart",
+  "@installTooltip": {
+    "description": "Tooltip of Install.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsNew": "What's new",
+  "@whatsNew": {
+    "description": "Button: show the release notes."
+  },
+  "whatsNewTitle": "What's new in Ferret {version}",
+  "@whatsNewTitle": {
+    "description": "Title of the release notes dialog.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "noNotes": "This version came without notes.",
+  "@noNotes": {
+    "description": "Shown when a release has no notes."
+  },
+  "later": "Later",
+  "@later": {
+    "description": "Button in the What's new dialog: close it without installing."
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Closes the dialog."
+  },
+  "downloadPage": "Download page",
+  "@downloadPage": {
+    "description": "Button: open the release page in the browser."
+  },
+  "downloadPageTooltip": "Open Ferret's download page in your browser",
+  "@downloadPageTooltip": {
+    "description": "Tooltip of Download page."
+  },
+  "downloading": "Downloading… {percent}%",
+  "@downloading": {
+    "description": "Progress line while downloading.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadingNoSize": "Downloading…",
+  "@downloadingNoSize": {
+    "description": "Progress line while the size is unknown."
+  },
+  "verifying": "Checking the download…",
+  "@verifying": {
+    "description": "Progress line while checking the checksum and signature."
+  },
+  "installing": "Installing…",
+  "@installing": {
+    "description": "Progress line while installing."
+  },
+  "restarting": "Ferret restarts in a moment.",
+  "@restarting": {
+    "description": "Line while Ferret quits to restart."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Stops the download."
+  },
+  "tryAgain": "Try again",
+  "@tryAgain": {
+    "description": "Retries the update."
+  },
+  "notInstalled": "Update not installed",
+  "@notInstalled": {
+    "description": "Card title when the update was refused or failed."
+  },
+  "downloadFailed": "The download didn't finish. Check your connection and try again.",
+  "@downloadFailed": {
+    "description": "Why: download failed."
+  },
+  "noFile": "This release has no file for this system yet.",
+  "@noFile": {
+    "description": "Why: no asset for this platform."
+  },
+  "checksumMissing": "This release lists no checksum for the file, so Ferret can't check it. Nothing was installed.",
+  "@checksumMissing": {
+    "description": "Why: no SHA256SUMS entry."
+  },
+  "checksumMismatch": "The download doesn't match the checksum on GitHub, so it may be damaged or changed. Nothing was installed.",
+  "@checksumMismatch": {
+    "description": "Why: SHA-256 mismatch."
+  },
+  "notSigned": "The download isn't properly signed. Nothing was installed.",
+  "@notSigned": {
+    "description": "Why: missing or broken signature."
+  },
+  "wrongPublisher": "The download isn't signed by Ferret's developer. Nothing was installed.",
+  "@wrongPublisher": {
+    "description": "Why: signed by someone else."
+  },
+  "notNotarized": "Apple hasn't checked this download (it isn't notarized). Nothing was installed.",
+  "@notNotarized": {
+    "description": "Why: Gatekeeper refused."
+  },
+  "unsignedHere": "This copy of Ferret isn't signed, so it can't tell who made the update. Install it from the download page.",
+  "@unsignedHere": {
+    "description": "Why: the running Windows copy has no signature."
+  },
+  "installFailed": "Ferret couldn't install the update. Install it from the download page.",
+  "@installFailed": {
+    "description": "Why: install step failed."
+  },
+  "permissionTitle": "Allow Ferret to install its update",
+  "@permissionTitle": {
+    "description": "Card title on Android before asking for Install unknown apps."
+  },
+  "permissionBody": "Android asks once. Ferret only installs its own updates, checked first.",
+  "@permissionBody": {
+    "description": "Why the permission is needed."
+  },
+  "openSettings": "Open settings",
+  "@openSettings": {
+    "description": "Button: opens Android's Install unknown apps switch."
+  },
+  "openSettingsTooltip": "Open Android's Install unknown apps switch for Ferret",
+  "@openSettingsTooltip": {
+    "description": "Tooltip of Open settings."
+  },
+  "confirmOnPhone": "Confirm the update in Android's prompt.",
+  "@confirmOnPhone": {
+    "description": "Card line while Android's own install prompt is up."
+  },
+  "showPrompt": "Show prompt",
+  "@showPrompt": {
+    "description": "Button: show Android's install prompt again."
+  },
+  "showPromptTooltip": "Show Android's install prompt again",
+  "@showPromptTooltip": {
+    "description": "Tooltip of Show prompt."
+  },
+  "dragTitle": "Drag Ferret to Applications",
+  "@dragTitle": {
+    "description": "Card title on a Mac when Ferret couldn't replace itself."
+  },
+  "dragBody": "Ferret can't replace itself in that folder without an administrator, so the checked update is open in Finder.",
+  "@dragBody": {
+    "description": "Why the DMG opened."
+  }
+}

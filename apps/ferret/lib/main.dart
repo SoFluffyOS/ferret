@@ -19,6 +19,7 @@ import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:scripting/scripting.dart';
 import 'package:shell/shell.dart';
+import 'package:updates/updates.dart';
 import 'package:wake/wake.dart';
 
 Future<void> main(List<String> arguments) async {
@@ -43,6 +44,7 @@ Future<void> main(List<String> arguments) async {
       RemoteInputFeatureUi(),
       ScriptingFeatureUi(),
       ShelfFeatureUi(),
+      UpdatesFeatureUi(),
       WakeFeatureUi(),
     ],
     appVersion: '0.1.0',

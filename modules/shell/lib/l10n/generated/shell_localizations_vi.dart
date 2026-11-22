@@ -200,7 +200,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get settingsPrivacyBody =>
-      'Ferret chỉ trao đổi với các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hoá đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.';
+      'Những gì bạn chia sẻ chỉ đến các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hoá đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.';
 
   @override
   String get settingsQuit => 'Thoát Ferret';

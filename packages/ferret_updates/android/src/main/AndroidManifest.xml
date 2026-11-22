@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lets Ferret hand its own update, checked first, to Android's
+         installer. Android still asks the person once (Install unknown
+         apps) and installs only an APK signed with the same key. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+</manifest>

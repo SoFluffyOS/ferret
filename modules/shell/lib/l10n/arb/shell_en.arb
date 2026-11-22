@@ -117,7 +117,7 @@
   "settingsTitle": "Settings",
   "settingsThisDevice": "This device",
   "settingsPrivacy": "Privacy",
-  "settingsPrivacyBody": "Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.",
+  "settingsPrivacyBody": "What you share goes only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.",
   "settingsQuit": "Quit Ferret",
   "settingsClose": "Close Ferret",
   "@settingsClose": {

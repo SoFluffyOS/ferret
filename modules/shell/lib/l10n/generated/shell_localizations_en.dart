@@ -200,7 +200,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get settingsPrivacyBody =>
-      'Ferret talks only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.';
+      'What you share goes only to devices you paired, directly on your network, end-to-end encrypted. No account, no cloud, no telemetry.';
 
   @override
   String get settingsQuit => 'Quit Ferret';

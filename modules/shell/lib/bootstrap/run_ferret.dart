@@ -148,7 +148,8 @@ Future<void> runFerret({
   final featureWindows = FeatureWindowHost(menubar: ferretMenubar);
   featureContext
     ..windows = featureWindows
-    ..localNetwork = localNetwork;
+    ..localNetwork = localNetwork
+    ..quit = quit.quit;
   if (ferretMenubar.isSupported) {
     featureContext
       ..dragOut = MenubarDragOut(ferretMenubar)

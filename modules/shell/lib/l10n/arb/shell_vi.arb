@@ -54,7 +54,7 @@
   "settingsTitle": "Cài đặt",
   "settingsThisDevice": "Thiết bị này",
   "settingsPrivacy": "Quyền riêng tư",
-  "settingsPrivacyBody": "Ferret chỉ trao đổi với các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hoá đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.",
+  "settingsPrivacyBody": "Những gì bạn chia sẻ chỉ đến các thiết bị bạn đã ghép đôi, trực tiếp trong mạng của bạn, mã hoá đầu cuối. Không tài khoản, không đám mây, không thu thập dữ liệu.",
   "settingsQuit": "Thoát Ferret",
   "settingsClose": "Đóng Ferret",
   "settingsCloseTip": "Đóng màn hình này. Ferret vẫn chạy nền để các thiết bị luôn kết nối.",

@@ -58,10 +58,13 @@ dependencies:
     sdk: flutter
   shell:
     path: ../../modules/shell
+  updates:
+    path: ../../modules/updates
   wake:
     path: ../../modules/wake
 
 dev_dependencies:
+  crypto: ^3.0.6
   ferret_calls:
     path: ../../packages/ferret_calls
   ferret_mirroring:

@@ -36,6 +36,10 @@ class FeatureContext {
   bool showsPreviewsFrom(String deviceId) =>
       _showsPreviewsFrom?.call(deviceId) ?? true;
 
+  /// Ends Ferret the way its own Quit does: features stop and connected
+  /// devices get a goodbye. Null until the shell set it.
+  Future<void> Function()? quit;
+
   /// How [openSection] shows a section. The shell sets it once its views
   /// exist.
   Future<void> Function(String deviceId, String sectionId)? onOpenSection;
