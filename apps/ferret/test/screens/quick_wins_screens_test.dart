@@ -279,6 +279,9 @@ final _screens = <String, _Script>{
       () => Future<void>.delayed(const Duration(milliseconds: 300)),
     );
     await rig.settle(tester);
+    // The phone's page transition paints a snapshot of the page until it
+    // ends, and a snapshot keeps the test font the capture swaps out.
+    await tester.pump(const Duration(seconds: 1));
   },
   'battery': (tester, rig, features) async {
     await rig.pairConnectedPhone(
