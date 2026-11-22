@@ -184,6 +184,26 @@ void main() {
       expect(viewModel.showsLine, isFalse);
     });
 
+    test('behind a proxy that blocks GitHub, a failed check by itself waits '
+        'hours before the next, not an hour', () async {
+      final (:viewModel, :source) = make();
+      source.fail = const SocketException('blocked');
+
+      await viewModel.checkIfDue(paused: false);
+      expect(source.calls, 1);
+
+      now = now.add(const Duration(hours: 1));
+      await viewModel.checkIfDue(paused: false);
+      expect(source.calls, 1);
+
+      now = now.add(UpdatesViewModel.retryAfterFailure);
+      await viewModel.checkIfDue(paused: false);
+      expect(source.calls, 2);
+
+      await viewModel.check();
+      expect(source.calls, 3);
+    });
+
     test('Later hides the card until Check now', () async {
       writeRelease();
       final (:viewModel, source: _) = make();

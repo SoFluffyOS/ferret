@@ -2173,7 +2173,7 @@ abstract class MirroringLocalizations {
   /// No description provided for @displayScreenRecordingBody.
   ///
   /// In en, this message translates to:
-  /// **'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.'**
+  /// **'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again. Switch greyed out? On a work Mac, your IT team decides.'**
   String get displayScreenRecordingBody;
 
   /// No description provided for @displayOpenSettings.

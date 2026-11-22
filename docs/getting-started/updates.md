@@ -26,6 +26,8 @@ Once a day (and when you click **Check now**), Ferret asks GitHub for its latest
 
 Don't want it? Turn off **Settings → About → Check for updates**. One switch.
 
+Behind a work proxy that blocks GitHub? The check fails quietly and tries again 6 hours later, never every hour. **Check now** says it couldn't reach GitHub. Ferret uses the `HTTPS_PROXY` and `NO_PROXY` variables, not the system proxy yet.
+
 ## 🛡️ How it checks the download
 
 Every release ships a `SHA256SUMS` file. Before installing, Ferret downloads it over HTTPS and compares the file's SHA-256 with it. No match, or no line for the file? Ferret says **Update not installed** and stops.

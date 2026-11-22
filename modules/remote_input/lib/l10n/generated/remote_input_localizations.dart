@@ -278,7 +278,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @statusNeedsPermissionBody.
   ///
   /// In en, this message translates to:
-  /// **'macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back.'**
+  /// **'macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back. Switch greyed out? On a work Mac, your IT team decides.'**
   String get statusNeedsPermissionBody;
 
   /// No description provided for @allowAccess.
@@ -1124,7 +1124,7 @@ abstract class RemoteInputLocalizations {
   /// No description provided for @screenNeedsAccessBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again.'**
+  /// **'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again. Switch greyed out? On a work Mac, your IT team decides.'**
   String get screenNeedsAccessBody;
 
   /// No description provided for @screenSecureInput.

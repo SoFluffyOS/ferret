@@ -158,7 +158,7 @@ abstract class UpdatesLocalizations {
   /// Status: the check failed.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach GitHub. Try again later.'**
+  /// **'Couldn\'t reach GitHub. Try again later. On a work network, a proxy or firewall may block it.'**
   String get checkFailed;
 
   /// Status while the check is off.

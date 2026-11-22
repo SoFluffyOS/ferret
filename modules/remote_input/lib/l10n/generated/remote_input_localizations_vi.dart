@@ -201,7 +201,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String get statusNeedsPermissionBody =>
-      'macOS hỏi trước khi cho ứng dụng di chuyển con trỏ hoặc gõ phím. Bật Ferret trong danh sách, rồi quay lại đây.';
+      'macOS hỏi trước khi cho ứng dụng di chuyển con trỏ hoặc gõ phím. Bật Ferret trong danh sách, rồi quay lại đây. Công tắc bị mờ? Trên máy Mac công ty, bộ phận IT quyết định việc này.';
 
   @override
   String get allowAccess => 'Cấp quyền truy cập';
@@ -962,7 +962,7 @@ class RemoteInputLocalizationsVi extends RemoteInputLocalizations {
 
   @override
   String get screenNeedsAccessBody =>
-      'Cho phép Giám sát đầu vào và Trợ năng trong Cài đặt hệ thống → Quyền riêng tư & Bảo mật, rồi nhấn lại ⌃⌥→.';
+      'Cho phép Giám sát đầu vào và Trợ năng trong Cài đặt hệ thống → Quyền riêng tư & Bảo mật, rồi nhấn lại ⌃⌥→. Công tắc bị mờ? Trên máy Mac công ty, bộ phận IT quyết định việc này.';
 
   @override
   String get screenSecureInput => 'Một ô mật khẩu đang mở';

@@ -695,7 +695,7 @@ abstract class ShellLocalizations {
   /// No description provided for @doctorVpn.
   ///
   /// In en, this message translates to:
-  /// **'A VPN is on ({name}). It can hide devices on your network. Allow local network access in the VPN, or turn it off.'**
+  /// **'A VPN is on ({name}). It can hide devices on your Wi-Fi. Allow local network access in the VPN app, or turn it off. On a work computer, ask your IT team.'**
   String doctorVpn(String name);
 
   /// No description provided for @doctorPort.
@@ -3157,6 +3157,18 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Local Network is off for Ferret, so it can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.'**
   String get doctorLocalNetworkIphone;
+
+  /// Fix connection line: the device's address is on this Wi-Fi, but the system sends traffic for it through a VPN (a full tunnel). name is the VPN's network interface.
+  ///
+  /// In en, this message translates to:
+  /// **'Your VPN ({name}) carries everything, even what\'s meant for {device} right here, so Ferret can\'t reach it. In the VPN app, allow local network access (often called Allow local LAN access). On a work computer, ask your IT team for it.'**
+  String doctorVpnRoute(String name, String device);
+
+  /// Fix connection line on Windows after Allow through firewall didn't add the rules: no admin rights, or the prompt was declined.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows didn\'t add the firewall rules. That takes an administrator. On a work PC, ask your IT team to allow Ferret on private networks: TCP 47640 and 47642–47649, UDP 47641 and 5353.'**
+  String get doctorFirewallRefused;
 }
 
 class _ShellLocalizationsDelegate

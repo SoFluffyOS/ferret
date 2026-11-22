@@ -42,7 +42,8 @@ class UpdatesLocalizationsVi extends UpdatesLocalizations {
   }
 
   @override
-  String get checkFailed => 'Không kết nối được GitHub. Hãy thử lại sau.';
+  String get checkFailed =>
+      'Không kết nối được GitHub. Hãy thử lại sau. Trên mạng công ty, proxy hoặc tường lửa có thể đang chặn.';
 
   @override
   String statusOff(String version) {

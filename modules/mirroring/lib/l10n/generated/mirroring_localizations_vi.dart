@@ -1721,7 +1721,7 @@ class MirroringLocalizationsVi extends MirroringLocalizations {
 
   @override
   String get displayScreenRecordingBody =>
-      'Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Ghi màn hình. Bật Ferret, rồi thoát và mở lại.';
+      'Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Ghi màn hình. Bật Ferret, rồi thoát và mở lại. Công tắc bị mờ? Trên máy Mac công ty, bộ phận IT quyết định việc này.';
 
   @override
   String get displayOpenSettings => 'Mở Cài đặt';

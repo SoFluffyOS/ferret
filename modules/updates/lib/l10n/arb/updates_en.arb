@@ -41,7 +41,7 @@
       }
     }
   },
-  "checkFailed": "Couldn't reach GitHub. Try again later.",
+  "checkFailed": "Couldn't reach GitHub. Try again later. On a work network, a proxy or firewall may block it.",
   "@checkFailed": {
     "description": "Status: the check failed."
   },

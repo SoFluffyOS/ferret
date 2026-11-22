@@ -447,7 +447,7 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String doctorVpn(String name) {
-    return 'A VPN is on ($name). It can hide devices on your network. Allow local network access in the VPN, or turn it off.';
+    return 'A VPN is on ($name). It can hide devices on your Wi-Fi. Allow local network access in the VPN app, or turn it off. On a work computer, ask your IT team.';
   }
 
   @override
@@ -2406,4 +2406,13 @@ class ShellLocalizationsEn extends ShellLocalizations {
   @override
   String get doctorLocalNetworkIphone =>
       'Local Network is off for Ferret, so it can\'t find or reach your devices. In Settings, open Ferret and turn on Local Network.';
+
+  @override
+  String doctorVpnRoute(String name, String device) {
+    return 'Your VPN ($name) carries everything, even what\'s meant for $device right here, so Ferret can\'t reach it. In the VPN app, allow local network access (often called Allow local LAN access). On a work computer, ask your IT team for it.';
+  }
+
+  @override
+  String get doctorFirewallRefused =>
+      'Windows didn\'t add the firewall rules. That takes an administrator. On a work PC, ask your IT team to allow Ferret on private networks: TCP 47640 and 47642–47649, UDP 47641 and 5353.';
 }

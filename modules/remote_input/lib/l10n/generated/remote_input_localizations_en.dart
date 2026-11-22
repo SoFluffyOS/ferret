@@ -202,7 +202,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String get statusNeedsPermissionBody =>
-      'macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back.';
+      'macOS asks before any app may move the pointer or type. Turn on Ferret in the list, then come back. Switch greyed out? On a work Mac, your IT team decides.';
 
   @override
   String get allowAccess => 'Allow access';
@@ -963,7 +963,7 @@ class RemoteInputLocalizationsEn extends RemoteInputLocalizations {
 
   @override
   String get screenNeedsAccessBody =>
-      'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again.';
+      'Allow Input Monitoring and Accessibility in System Settings → Privacy & Security, then press ⌃⌥→ again. Switch greyed out? On a work Mac, your IT team decides.';
 
   @override
   String get screenSecureInput => 'A password field is open';

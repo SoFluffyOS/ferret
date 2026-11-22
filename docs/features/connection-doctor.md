@@ -16,7 +16,7 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 ## What it checks
 
 1. **This device's network.** Is it on Wi-Fi or Ethernet at all? A phone on mobile data only is told so: Ferret needs the same Wi-Fi, or your own VPN with **Reach over your VPN**.
-2. **VPN.** A VPN can hide devices on your network. Allow local network access in the VPN, or turn it off for a moment. Is it your own VPN, such as Tailscale? Tap **Reach over your VPN** and Ferret uses it to reach the device away from home. With that on, it says Ferret also tries the VPN. See [Reach your devices away from home](away-from-home.md).
+2. **VPN.** A VPN can hide devices on your network. Allow local network access in the VPN, or turn it off for a moment. Is it your own VPN, such as Tailscale? Tap **Reach over your VPN** and Ferret uses it to reach the device away from home. With that on, it says Ferret also tries the VPN. See [Reach your devices away from home](away-from-home.md). On a Mac, PC or Linux computer, Ferret also asks the system which way it sends traffic to the device. When a VPN takes it, even though the device is on your Wi-Fi, it says **Your VPN carries everything**: work VPNs often do. See [A work computer](../getting-started/work-computer.md).
 3. **Same network.** Were both devices last seen on the same Wi-Fi? Guest and office networks often keep devices apart.
 4. **Is the other device answering?** If not, open Ferret on it. On Android, battery saving may have stopped it: see [Ferret on Android](../getting-started/android.md).
 5. **Does it still know this device?** If it was reset or reinstalled, pair again.
@@ -31,6 +31,7 @@ The installer can add Ferret's firewall rules for you (see [Ferret on Windows](.
 
 - **Rules in place?** It says so. Still hidden? Your network is probably set to Public (below).
 - **Rules missing?** Click **Allow through firewall**, then **Yes** when Windows asks. Then **Try again**.
+- **No admin rights?** Windows doesn't add them, and Fix connection says so, with the ports to give your IT team. See [A work computer](../getting-started/work-computer.md).
 
 Rather do it by hand? Click **Open Windows Firewall**, then **Change settings**, tick **Ferret** under both **Private** and **Public**, and select **OK**.
 

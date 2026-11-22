@@ -434,6 +434,86 @@ void main() {
     });
   });
 
+  group('a work VPN that carries everything', () {
+    const peer = '192.168.1.20';
+
+    Future<void> trustPhone() => engine.trustStore.save(
+      TrustedDevice(
+        id: 'phonephonephonep',
+        name: 'Pixel 7',
+        platform: .PLATFORM_ANDROID,
+        formFactor: .FORM_FACTOR_PHONE,
+        publicKey: Uint8List(32),
+        pairedAt: DateTime(2026),
+        lastHost: peer,
+        lastPort: 47640,
+      ),
+    );
+
+    Future<List<DoctorCheck>> diagnoseRoutedVia(
+      String? routeName, {
+      String vpnName = 'utun4',
+    }) => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: false,
+      interfaces: () async => [
+        (name: 'en0', address: '192.168.1.5'),
+        (name: vpnName, address: '10.20.30.40'),
+      ],
+      probe: (host, port, timeout) async => switch (host) {
+        peer => Reach.silent,
+        _ => Reach.refused,
+      },
+      route: (host) async => routeName,
+      clock: () => (engine.startedAt ?? DateTime.now()).add(
+        const Duration(minutes: 1),
+      ),
+    ).diagnose('phonephonephonep').last;
+
+    test('names the VPN as the cause, not the Wi-Fi, and offers no '
+        'address or VPN reach', () async {
+      await trustPhone();
+
+      final checks = await diagnoseRoutedVia('utun4');
+
+      final route = checks.singleWhere((check) => check.kind == .vpnRoute);
+      expect(route.status, DoctorStatus.problem);
+      expect(route.detail, 'utun4');
+      expect(checks.where((check) => check.kind == .vpn), isEmpty);
+      expect(checks.where((check) => check.kind == .vpnReach), isEmpty);
+      expect(checks.where((check) => check.kind == .isolated), isEmpty);
+      expect(
+        checks.singleWhere((check) => check.kind == .reachable).fixes,
+        [DoctorFix.tryAgain],
+      );
+    });
+
+    test('catches a Windows VPN whose name says nothing', () async {
+      await trustPhone();
+
+      final checks = await diagnoseRoutedVia(
+        'Ethernet 3',
+        vpnName: 'Ethernet 3',
+      );
+
+      expect(
+        checks.singleWhere((check) => check.kind == .vpnRoute).detail,
+        'Ethernet 3',
+      );
+    });
+
+    test('a route through the Wi-Fi itself blames nothing', () async {
+      await trustPhone();
+
+      for (final route in ['en0', null]) {
+        final checks = await diagnoseRoutedVia(route);
+
+        expect(checks.where((check) => check.kind == .vpnRoute), isEmpty);
+      }
+    });
+  });
+
   group('mobile data only', () {
     Future<void> trustMac({bool reachOverVpn = false}) =>
         engine.trustStore.save(

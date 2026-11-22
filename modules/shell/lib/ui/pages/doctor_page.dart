@@ -45,6 +45,10 @@ class _DoctorPageState extends State<DoctorPage> {
   /// nothing happened.
   Timer? _copied;
 
+  /// Windows didn't add the firewall rules when asked: the account isn't
+  /// an administrator, or the prompt was turned down.
+  bool _firewallRefused = false;
+
   @override
   void initState() {
     super.initState();
@@ -124,7 +128,10 @@ class _DoctorPageState extends State<DoctorPage> {
                     check,
                     name ?? '',
                     engine.device,
-                    isolated: _checks.any((check) => check.kind == .isolated),
+                    explained: _checks.any(
+                      (check) =>
+                          check.kind == .isolated || check.kind == .vpnRoute,
+                    ),
                   ),
                 ),
               if (name == null && networkIsFine && _checks.isNotEmpty)
@@ -260,8 +267,9 @@ class _DoctorPageState extends State<DoctorPage> {
           ferretRoute<void>(const PairPage()),
         );
       case .allowFirewall:
-        await _doctor.allowThroughFirewall();
+        final allowed = await _doctor.allowThroughFirewall();
         if (mounted) {
+          _firewallRefused = !allowed;
           _run();
         }
       case .openFirewall:
@@ -425,7 +433,7 @@ class _DoctorPageState extends State<DoctorPage> {
     DoctorCheck check,
     String device,
     LocalDevice local, {
-    required bool isolated,
+    required bool explained,
   }) {
     final here = l10n.here(local);
 
@@ -453,6 +461,7 @@ class _DoctorPageState extends State<DoctorPage> {
       (.firewall, _) when check.detail == LinuxFirewallKind.firewalld.name =>
         l10n.doctorFirewallLinux('firewalld'),
       (.firewall, .ok) => l10n.doctorFirewallAllowed,
+      (.firewall, _) when _firewallRefused => l10n.doctorFirewallRefused,
       (.firewall, _) => l10n.doctorFirewall,
       (.sameNetwork, .ok) => l10n.doctorSameNetworkOk(device, here),
       (.sameNetwork, _) => l10n.doctorSameNetworkWarning(
@@ -466,7 +475,7 @@ class _DoctorPageState extends State<DoctorPage> {
         here,
         device,
       ),
-      (.reachable, _) when isolated => l10n.doctorReachableProblem(device),
+      (.reachable, _) when explained => l10n.doctorReachableProblem(device),
       (.reachable, _) =>
         '${l10n.doctorReachableProblem(device)}\n\n'
             '${l10n.doctorNotAnsweringSteps(device, here)}',
@@ -478,6 +487,7 @@ class _DoctorPageState extends State<DoctorPage> {
         here,
       ),
       (.isolated, _) => l10n.doctorIsolatedMaybe,
+      (.vpnRoute, _) => l10n.doctorVpnRoute(check.detail, device),
     };
   }
 }

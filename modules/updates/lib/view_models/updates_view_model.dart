@@ -27,6 +27,15 @@ class UpdatesViewModel extends ChangeNotifier {
   /// How often the check runs by itself.
   static const interval = Duration(days: 1);
 
+  /// How long a check that ran by itself and failed waits before the next
+  /// one. Behind a proxy that blocks GitHub, every try fails, and an hourly
+  /// knock would fill the proxy's log for nothing.
+  static const retryAfterFailure = Duration(hours: 6);
+
+  /// When a check that ran by itself last failed. Kept in memory: a restart
+  /// tries once more.
+  DateTime? _failedByItselfAt;
+
   final UpdatePlatform platform;
 
   /// This build's version, such as `0.1.0`.
@@ -103,6 +112,11 @@ class UpdatesViewModel extends ChangeNotifier {
       return;
     }
 
+    if (_failedByItselfAt case final failed?
+        when _clock().difference(failed) < retryAfterFailure) {
+      return;
+    }
+
     await check(manual: false);
   }
 
@@ -148,6 +162,7 @@ class UpdatesViewModel extends ChangeNotifier {
         return;
       }
 
+      _failedByItselfAt = _clock();
       _set(before.$1, problem: before.$2);
     }
   }

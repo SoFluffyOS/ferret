@@ -84,6 +84,12 @@ enum DoctorCheckKind {
   /// problem when a device on the same network didn't answer; a warning
   /// when Ferret only never heard anyone.
   isolated,
+
+  /// The device's address is on this device's own network, yet the system
+  /// sends traffic for it through another interface: a VPN that carries
+  /// everything (a "full tunnel", as work VPNs often are).
+  /// [DoctorCheck.detail] is that interface's name.
+  vpnRoute,
 }
 
 /// How a knock on an address went.
@@ -107,6 +113,10 @@ typedef ReachProbe = Future<Reach> Function(
   Duration timeout,
 );
 
+/// The name of the interface the system sends traffic for `host` through,
+/// or null when it can't tell.
+typedef RouteLookup = Future<String?> Function(String host);
+
 /// Works out why a paired device isn't connected, in the order people can
 /// act on: this device's network, a VPN, different networks, the other
 /// device not answering, the other device not accepting this one.
@@ -119,6 +129,7 @@ class ConnectionDoctor {
     WindowsFirewallRules? windowsFirewallRules,
     NetworkInterfaces? interfaces,
     ReachProbe? probe,
+    RouteLookup? route,
     DateTime Function()? clock,
     Future<LocalNetworkAccess> Function()? localNetwork,
     bool? hearsOthers,
@@ -135,6 +146,12 @@ class ConnectionDoctor {
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
        _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
        _listInterfaces = interfaces ?? _systemInterfaces,
+       _route =
+           route ??
+           switch (interfaces) {
+             null => _systemRoute,
+             _ => _noRoute,
+           },
        _probe = probe ?? _knock,
        _clock = clock ?? DateTime.now,
        _localNetwork = localNetwork ?? _systemLocalNetwork;
@@ -180,6 +197,10 @@ class ConnectionDoctor {
   /// in place the firewall line turns green.
   final WindowsFirewallRules _windowsFirewallRules;
   final NetworkInterfaces _listInterfaces;
+
+  /// Only asks the system when the interfaces are the system's too, so a
+  /// made-up network is never compared with the real routing table.
+  final RouteLookup _route;
   final ReachProbe _probe;
   final DateTime Function() _clock;
   final Future<LocalNetworkAccess> Function() _localNetwork;
@@ -392,7 +413,21 @@ class ConnectionDoctor {
       return;
     }
 
-    final shared = local.any((entry) => _sameSubnet(entry.address, host));
+    final neighbours = local.where(
+      (entry) => _sameSubnet(entry.address, host),
+    );
+    final shared = neighbours.isNotEmpty;
+    final routedVia = switch (shared) {
+      true => await _route(host),
+      false => null,
+    };
+    final capturedBy = switch (routedVia) {
+      final name?
+          when !neighbours.any((entry) => entry.name == name) &&
+              !VpnAddresses.isCellularInterface(name) =>
+        name,
+      _ => null,
+    };
     checks.add(
       DoctorCheck(
         kind: .sameNetwork,
@@ -403,6 +438,19 @@ class ConnectionDoctor {
         detail: host,
       ),
     );
+    if (capturedBy != null) {
+      // A VPN that takes the device's own address explains it better than
+      // "a VPN is on", and reaching the device over a VPN doesn't help.
+      checks
+        ..removeWhere(
+          (check) =>
+              check.kind == .vpn ||
+              (check.kind == .vpnReach && check.status != .ok),
+        )
+        ..add(
+          DoctorCheck(kind: .vpnRoute, status: .problem, detail: capturedBy),
+        );
+    }
     yield [...checks];
 
     checks.add(
@@ -414,6 +462,7 @@ class ConnectionDoctor {
     checks.removeLast();
     if (reach != .answered) {
       final isolated =
+          capturedBy == null &&
           reach == .silent &&
           shared &&
           _hearsOthers &&
@@ -424,7 +473,7 @@ class ConnectionDoctor {
           kind: .reachable,
           status: .problem,
           detail: '$host:$port',
-          fixes: switch (isolated) {
+          fixes: switch (isolated || capturedBy != null) {
             true => const [DoctorFix.tryAgain],
             false => const [DoctorFix.tryAgain, DoctorFix.connectByAddress],
           },
@@ -615,6 +664,52 @@ class ConnectionDoctor {
       ];
     } on Object {
       return const [];
+    }
+  }
+
+  static Future<String?> _noRoute(String host) async => null;
+
+  /// Asks the routing table which interface carries traffic for [host]:
+  /// `route` on a Mac, `ip` on Linux, `Find-NetRoute` on Windows (whose
+  /// alias is the name Dart lists interfaces by). None of them needs admin
+  /// rights. Phones aren't asked.
+  static Future<String?> _systemRoute(String host) async {
+    if (InternetAddress.tryParse(host)?.type != InternetAddressType.IPv4) {
+      return null;
+    }
+
+    final (executable, arguments, pattern) = switch (Platform.operatingSystem) {
+      'macos' => ('route', ['-n', 'get', host], RegExp(r'interface:\s*(\S+)')),
+      'linux' => ('ip', ['-o', 'route', 'get', host], RegExp(r'\bdev\s+(\S+)')),
+      'windows' => (
+        'powershell.exe',
+        [
+          '-NoProfile',
+          '-NonInteractive',
+          '-Command',
+          "(Find-NetRoute -RemoteIPAddress '$host' | "
+              'Select-Object -First 1).InterfaceAlias',
+        ],
+        RegExp(r'^\s*(\S.*?)\s*$', multiLine: true),
+      ),
+      _ => (null, const <String>[], null),
+    };
+    if (executable == null || pattern == null) {
+      return null;
+    }
+
+    try {
+      final result = await Process.run(
+        executable,
+        arguments,
+      ).timeout(const Duration(seconds: 5));
+      if (result.exitCode != 0) {
+        return null;
+      }
+
+      return pattern.firstMatch('${result.stdout}')?.group(1);
+    } on Object {
+      return null;
     }
   }
 

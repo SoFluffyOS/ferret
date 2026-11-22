@@ -4680,6 +4680,8 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String get doctorLocalNetworkIphone => pseudo(super.doctorLocalNetworkIphone);
   @override
+  String get doctorFirewallRefused => pseudo(super.doctorFirewallRefused);
+  @override
   String pairExpiresIn(int minutes) => pseudo(super.pairExpiresIn(minutes));
   @override
   String pairSuccess(String device) => pseudo(super.pairSuccess(device));
@@ -5078,6 +5080,9 @@ class PseudoShellLocalizations extends ShellLocalizationsEn {
   @override
   String iconDropSending(int count, String name) =>
       pseudo(super.iconDropSending(count, name));
+  @override
+  String doctorVpnRoute(String name, String device) =>
+      pseudo(super.doctorVpnRoute(name, device));
 }
 
 class PseudoUpdatesLocalizations extends UpdatesLocalizationsEn {

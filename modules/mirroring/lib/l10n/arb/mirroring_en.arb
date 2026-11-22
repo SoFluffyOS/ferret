@@ -1668,7 +1668,7 @@
       }
     }
   },
-  "displayScreenRecordingBody": "System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.",
+  "displayScreenRecordingBody": "System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again. Switch greyed out? On a work Mac, your IT team decides.",
   "displayOpenSettings": "Open Settings",
   "displayAllowTitle": "{device} wants to use {here, select, macOS{this Mac} windows{this PC} android{this phone} tablet{this tablet} other{this computer}} as a display",
   "@displayAllowTitle": {

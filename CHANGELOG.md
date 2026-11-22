@@ -13,6 +13,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Pair once, join them all**: a device you pair with one of yours joins all of them, once each asks you. **Forget** removes it everywhere (each one asks too), or only here.
 - **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** instead of offline, and comes back right after sleep or a network change. A slow link says **weak connection**.
 - **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
+- **Work laptops**: Fix connection says when a work VPN carries everything, even traffic to your phone, and when the firewall needs an administrator. A [page for your IT team](docs/getting-started/work-computer.md) lists ports, what leaves the device and the Mac permissions.
 - **Easy to read for anyone**: plain words, calm colors and short buttons that still fit at 200% text. **Copy details for a helper** puts a short report on the clipboard for whoever helps you.
 - **Away from home**: already on Tailscale, ZeroTier or WireGuard? Ferret reaches your devices through your own VPN, and moves back to the Wi-Fi at home. No Ferret server.
 - **New phone?** Pair it and Home asks **Is this your new Pixel 7?** One tap and it takes the old one's name, pin and settings.

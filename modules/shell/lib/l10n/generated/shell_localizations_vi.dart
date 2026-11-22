@@ -444,7 +444,7 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String doctorVpn(String name) {
-    return 'Đang bật VPN ($name). VPN có thể che các thiết bị trong mạng của bạn. Hãy cho phép truy cập mạng cục bộ trong VPN, hoặc tắt VPN.';
+    return 'Đang bật VPN ($name). VPN có thể che các thiết bị trong Wi-Fi của bạn. Hãy cho phép truy cập mạng cục bộ trong ứng dụng VPN, hoặc tắt VPN. Trên máy tính công ty, hãy hỏi bộ phận IT.';
   }
 
   @override
@@ -2397,4 +2397,13 @@ class ShellLocalizationsVi extends ShellLocalizations {
   @override
   String get doctorLocalNetworkIphone =>
       'Mạng cục bộ đang tắt cho Ferret, nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ.';
+
+  @override
+  String doctorVpnRoute(String name, String device) {
+    return 'VPN của bạn ($name) chuyển mọi thứ đi qua nó, kể cả những gì gửi cho $device ngay bên cạnh, nên Ferret không kết nối được. Trong ứng dụng VPN, hãy cho phép truy cập mạng cục bộ (thường gọi là Allow local LAN access). Trên máy tính công ty, hãy nhờ bộ phận IT.';
+  }
+
+  @override
+  String get doctorFirewallRefused =>
+      'Windows chưa thêm quy tắc tường lửa. Việc này cần quyền quản trị viên. Trên máy tính công ty, hãy nhờ bộ phận IT cho phép Ferret trên mạng riêng tư: TCP 47640 và 47642–47649, UDP 47641 và 5353.';
 }

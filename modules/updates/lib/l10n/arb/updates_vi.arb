@@ -10,7 +10,7 @@
   "checkNowTooltip": "Hỏi GitHub phiên bản Ferret mới nhất ngay bây giờ",
   "checking": "Đang kiểm tra…",
   "upToDate": "Ferret {version} là phiên bản mới nhất.",
-  "checkFailed": "Không kết nối được GitHub. Hãy thử lại sau.",
+  "checkFailed": "Không kết nối được GitHub. Hãy thử lại sau. Trên mạng công ty, proxy hoặc tường lửa có thể đang chặn.",
   "statusOff": "Ferret không kiểm tra cập nhật. Bạn đang dùng {version}.",
   "ready": "Ferret {version} đã sẵn sàng",
   "readyOut": "Đã có Ferret {version}",

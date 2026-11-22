@@ -100,7 +100,7 @@
   "doctorMobileDataAny": "{here, select, mac{Mac này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} đang dùng dữ liệu di động, mà Ferret cần Wi-Fi để tìm thiết bị của bạn. Hãy vào cùng Wi-Fi với chúng.",
   "doctorMobileData": "{here, select, mac{Mac này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} đang dùng dữ liệu di động, mà Ferret cần Wi-Fi để tìm {device}. Hãy vào cùng Wi-Fi, hoặc kết nối {device} qua VPN của bạn.",
   "doctorMobileDataVpn": "{here, select, mac{Mac này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} đang dùng dữ liệu di động. Ferret sẽ thử kết nối {device} qua VPN của bạn.",
-  "doctorVpn": "Đang bật VPN ({name}). VPN có thể che các thiết bị trong mạng của bạn. Hãy cho phép truy cập mạng cục bộ trong VPN, hoặc tắt VPN.",
+  "doctorVpn": "Đang bật VPN ({name}). VPN có thể che các thiết bị trong Wi-Fi của bạn. Hãy cho phép truy cập mạng cục bộ trong ứng dụng VPN, hoặc tắt VPN. Trên máy tính công ty, hãy hỏi bộ phận IT.",
   "doctorPort": "Ferret đang dùng cổng {port} vì cổng thường dùng đã bị chiếm. Không sao cả.",
   "doctorSameNetworkOk": "Lần trước, {device} và {here, select, mac{Mac này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} dùng chung một Wi-Fi",
   "doctorSameNetworkWarning": "Lần cuối, {device} ở một mạng khác ({address}). Cho {device} và {here, select, mac{Mac này} phone{điện thoại này} tablet{máy tính bảng này} other{máy tính này}} dùng chung Wi-Fi.",
@@ -510,5 +510,7 @@
   "localNetworkAskNotNow": "Để sau",
   "localNetworkDeniedTitle": "Mạng cục bộ đang tắt cho Ferret",
   "localNetworkDeniedBody": "Nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ.",
-  "doctorLocalNetworkIphone": "Mạng cục bộ đang tắt cho Ferret, nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ."
+  "doctorLocalNetworkIphone": "Mạng cục bộ đang tắt cho Ferret, nên Ferret không tìm thấy hay kết nối được thiết bị của bạn. Trong Cài đặt, mở Ferret và bật Mạng cục bộ.",
+  "doctorVpnRoute": "VPN của bạn ({name}) chuyển mọi thứ đi qua nó, kể cả những gì gửi cho {device} ngay bên cạnh, nên Ferret không kết nối được. Trong ứng dụng VPN, hãy cho phép truy cập mạng cục bộ (thường gọi là Allow local LAN access). Trên máy tính công ty, hãy nhờ bộ phận IT.",
+  "doctorFirewallRefused": "Windows chưa thêm quy tắc tường lửa. Việc này cần quyền quản trị viên. Trên máy tính công ty, hãy nhờ bộ phận IT cho phép Ferret trên mạng riêng tư: TCP 47640 và 47642–47649, UDP 47641 và 5353."
 }

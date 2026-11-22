@@ -1739,7 +1739,7 @@ class MirroringLocalizationsEn extends MirroringLocalizations {
 
   @override
   String get displayScreenRecordingBody =>
-      'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again.';
+      'System Settings → Privacy & Security → Screen Recording. Turn on Ferret, then quit and open it again. Switch greyed out? On a work Mac, your IT team decides.';
 
   @override
   String get displayOpenSettings => 'Open Settings';

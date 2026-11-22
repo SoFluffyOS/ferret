@@ -41,7 +41,8 @@ class UpdatesLocalizationsEn extends UpdatesLocalizations {
   }
 
   @override
-  String get checkFailed => 'Couldn\'t reach GitHub. Try again later.';
+  String get checkFailed =>
+      'Couldn\'t reach GitHub. Try again later. On a work network, a proxy or firewall may block it.';
 
   @override
   String statusOff(String version) {

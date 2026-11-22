@@ -211,6 +211,27 @@ final screens = <Screen>[
     );
     await rig.settle(tester, real: const Duration(seconds: 1));
   }, tall: true),
+  Screen('doctor_work_vpn', (tester, rig) async {
+    await rig.addPhoneLastSeenAt(tester, host: '192.168.1.20');
+    await rig.open(
+      tester,
+      DoctorPage(
+        deviceId: _offlineId,
+        doctorFor: (engine) => ConnectionDoctor(
+          engine,
+          isWindows: false,
+          isLinux: false,
+          interfaces: () async => [
+            (name: 'en0', address: '192.168.1.5'),
+            (name: 'utun4', address: '10.20.30.40'),
+          ],
+          probe: (host, port, timeout) async => Reach.silent,
+          route: (host) async => 'utun4',
+        ),
+      ),
+    );
+    await rig.settle(tester, real: const Duration(seconds: 1));
+  }, tall: true),
   Screen('home_connected', (tester, rig) async {
     await rig.pairConnectedPhone(tester, phoneFeatures: appFeatures());
     await rig.settle(tester);
