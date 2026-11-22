@@ -75,7 +75,8 @@ class DesktopBinding {
     _subscriptions
       ..add(_tray.activations.listen((_) => unawaited(_window.toggle())))
       ..add(_tray.selections.listen((id) => unawaited(_onMenu(id))))
-      ..add(_window.closedToTray.listen((_) => unawaited(_tellOnce())));
+      ..add(_window.closedToTray.listen((_) => unawaited(_tellOnce())))
+      ..add(_tray.presence.listen((shows) => unawaited(_trayChanged(shows))));
     host.addListener(_refresh);
     pause.addListener(_refresh);
   }
@@ -91,6 +92,22 @@ class DesktopBinding {
   }
 
   void _refresh() => unawaited(_update());
+
+  /// A tray that turned up after Ferret started (GNOME's AppIndicator
+  /// extension can load later at login) lets closing hide Ferret again; a
+  /// tray that went away makes closing quit, so the window can't get lost.
+  Future<void> _trayChanged(bool shows) async {
+    if (shows == _hasTray) {
+      return;
+    }
+
+    _hasTray = shows;
+    await _window.setHideOnClose(shows);
+    if (shows) {
+      _shown = null;
+      await _update();
+    }
+  }
 
   Future<void> _update() async {
     if (!_hasTray) {

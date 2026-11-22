@@ -11,8 +11,10 @@ import 'package:ferret_system/src/desktop/tray_menu_item.dart';
 /// library at build time and works inside a Flatpak that may talk to
 /// `org.kde.StatusNotifierWatcher`.
 ///
-/// Without a watcher on the bus (stock GNOME) [show] returns false. When the
-/// panel restarts, the icon registers again.
+/// Without a watcher on the bus (stock GNOME) [show] returns false. When a
+/// watcher turns up later (a panel or the AppIndicator extension starting
+/// after Ferret at login) or the panel restarts, the icon registers again;
+/// [presence] says so, and says when the watcher goes away.
 class LinuxTray implements DesktopTray {
   LinuxTray({
     DBusClient Function()? connect,
@@ -44,17 +46,22 @@ class LinuxTray implements DesktopTray {
   final String _executable;
   final DBusMenu _menu = DBusMenu();
   final StreamController<void> _activations = .broadcast();
+  final StreamController<bool> _presence = .broadcast();
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   DBusClient? _client;
   StatusNotifierItem? _item;
   String? _busName;
+  bool _shows = false;
 
   @override
   Stream<void> get activations => _activations.stream;
 
   @override
   Stream<String> get selections => _menu.selections;
+
+  @override
+  Stream<bool> get presence => _presence.stream;
 
   @override
   Future<bool> show({
@@ -64,11 +71,11 @@ class LinuxTray implements DesktopTray {
     await _menu.setItems(items);
     if (_item case final item?) {
       await item.setTooltip(tooltip);
-      return true;
+      return _shows;
     }
 
     final client = await _open();
-    if (client == null || !await _hasWatcher(client)) {
+    if (client == null) {
       return false;
     }
 
@@ -85,12 +92,28 @@ class LinuxTray implements DesktopTray {
         ..add(
           client.nameOwnerChanged
               .where((event) => event.name == watcherName)
-              .where((event) => event.newOwner != null)
-              .listen((_) => unawaited(_register(client))),
+              .listen((event) => unawaited(_watcherChanged(client, event))),
         );
+      if (!await _hasWatcher(client)) {
+        return false;
+      }
+
       return await _register(client);
     } on Object {
       return false;
+    }
+  }
+
+  Future<void> _watcherChanged(
+    DBusClient client,
+    DBusNameOwnerChangedEvent event,
+  ) async {
+    final shows = switch (event.newOwner) {
+      final owner? when owner.isNotEmpty => await _register(client),
+      _ => _shows = false,
+    };
+    if (!_presence.isClosed) {
+      _presence.add(shows);
     }
   }
 
@@ -103,6 +126,7 @@ class LinuxTray implements DesktopTray {
     await _item?.dispose();
     await _menu.dispose();
     await _activations.close();
+    await _presence.close();
     await _client?.close();
     _client = null;
   }
@@ -148,7 +172,10 @@ class LinuxTray implements DesktopTray {
     }
   }
 
-  Future<bool> _register(DBusClient client) async {
+  Future<bool> _register(DBusClient client) async =>
+      _shows = await _registered(client);
+
+  Future<bool> _registered(DBusClient client) async {
     try {
       await client.callMethod(
         destination: watcherName,

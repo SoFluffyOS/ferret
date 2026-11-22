@@ -18,6 +18,7 @@ class _FakeTray implements DesktopTray {
   final List<(String, List<TrayMenuItem>)> shown = [];
   final StreamController<void> clicks = .broadcast();
   final StreamController<String> picks = .broadcast();
+  final StreamController<bool> changes = .broadcast();
 
   @override
   Future<bool> show({
@@ -33,6 +34,9 @@ class _FakeTray implements DesktopTray {
 
   @override
   Stream<String> get selections => picks.stream;
+
+  @override
+  Stream<bool> get presence => changes.stream;
 
   @override
   Future<void> dispose() async {}
@@ -154,6 +158,33 @@ void main() {
       expect(calls.map((call) => call.method), contains('window.show'));
     },
   );
+
+  test('a tray that turns up later lets closing hide Ferret, and one that '
+      'leaves makes closing quit again', () async {
+    final tray = _FakeTray(available: false);
+    final binding = await start(tray);
+    calls.clear();
+
+    tray.changes.add(true);
+    await pumpEventQueue();
+
+    expect(binding.hasTray, isTrue);
+    expect(
+      calls
+          .where((call) => call.method == 'window.setHideOnClose')
+          .single
+          .arguments,
+      {'value': true},
+    );
+    expect(tray.shown, hasLength(2));
+
+    calls.clear();
+    tray.changes.add(false);
+    await pumpEventQueue();
+
+    expect(binding.hasTray, isFalse);
+    expect(calls.single.arguments, {'value': false});
+  });
 
   test('Send clipboard is greyed with nothing connected', () async {
     final tray = _FakeTray(available: true);

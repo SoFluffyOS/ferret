@@ -70,6 +70,32 @@ void main() {
     expect(await linux.show(tooltip: 'Ferret', items: items), isFalse);
   });
 
+  test('a watcher that starts later, as the AppIndicator extension can at '
+      'login, gets the icon, and one that leaves is reported', () async {
+    final linux = tray();
+    addTearDown(linux.dispose);
+    final changes = <bool>[];
+    linux.presence.listen(changes.add);
+
+    expect(await linux.show(tooltip: 'Ferret', items: items), isFalse);
+
+    final panel = client();
+    final watcher = _FakeWatcher();
+    await panel.registerObject(watcher);
+    await panel.requestName(LinuxTray.watcherName);
+    await _until(() => changes.isNotEmpty);
+
+    expect(changes, [true]);
+    expect(watcher.registered, hasLength(1));
+    expect(await linux.show(tooltip: 'Ferret', items: items), isTrue);
+
+    await panel.releaseName(LinuxTray.watcherName);
+    await _until(() => changes.length > 1);
+
+    expect(changes, [true, false]);
+    expect(await linux.show(tooltip: 'Ferret', items: items), isFalse);
+  });
+
   group('with a watcher', () {
     late _FakeWatcher watcher;
     late DBusClient panel;
@@ -242,4 +268,10 @@ void main() {
       );
     });
   });
+}
+
+Future<void> _until(bool Function() done) async {
+  for (var tries = 0; tries < 100 && !done(); tries++) {
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
 }

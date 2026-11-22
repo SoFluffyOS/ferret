@@ -34,6 +34,10 @@ abstract interface class DesktopTray {
   /// A menu line was picked, by its id.
   Stream<String> get selections;
 
+  /// Whether the icon shows, each time that changes after [show]: a panel
+  /// or tray extension that starts later than Ferret, or goes away.
+  Stream<bool> get presence;
+
   Future<void> dispose();
 }
 
@@ -56,6 +60,9 @@ class ChannelTray implements DesktopTray {
   Stream<String> get selections => _window.traySelections;
 
   @override
+  Stream<bool> get presence => const Stream.empty();
+
+  @override
   Future<void> dispose() => _window.removeTray();
 }
 
@@ -74,6 +81,9 @@ class NoTray implements DesktopTray {
 
   @override
   Stream<String> get selections => const Stream.empty();
+
+  @override
+  Stream<bool> get presence => const Stream.empty();
 
   @override
   Future<void> dispose() async {}
