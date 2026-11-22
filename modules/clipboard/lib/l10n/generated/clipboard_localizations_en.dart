@@ -236,7 +236,7 @@ class ClipboardLocalizationsEn extends ClipboardLocalizations {
 
   @override
   String get settingsWhyManualWayland =>
-      'On Wayland, only the window in front hears about a new copy. GNOME has no way around that, so Ferret sends what you copied once its window is in front again, or when you pick Send clipboard on a device or in the tray. On KDE Plasma and Sway, install wl-clipboard and Ferret watches by itself.';
+      'On Wayland, only the window in front hears about a new copy. GNOME has no way around that, so Ferret sends what you copied once its window is in front again, or when you pick Send clipboard on a device or in the tray. On KDE Plasma and Sway, install wl-clipboard (2.3 or newer on Plasma 6.5 and later) and Ferret watches by itself.';
 
   @override
   String get settingsAutoSendBodyWayland =>

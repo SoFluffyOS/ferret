@@ -105,8 +105,8 @@ On Linux, images need `wl-clipboard` (Wayland) or `xclip` (X11). Text works with
 
 Wayland only tells the window in front that you copied something. That's a privacy rule, not a bug.
 
-- **KDE Plasma, Sway, Hyprland**: install `wl-clipboard` and Ferret watches by itself, like on X11.
-- **GNOME**: there is no way around it. Ferret sends what you copied once its window is in front again. Or pick **Send clipboard** on a device, in the tray, or press **Ctrl+Shift+V** in the window.
+- **KDE Plasma, Sway, Hyprland**: install `wl-clipboard` and Ferret watches by itself, like on X11. KDE Plasma 6.5 and newer need `wl-clipboard` 2.3 or newer.
+- **GNOME** (Fedora, Ubuntu): there is no way around it, still true in GNOME 50. Ferret sends what you copied once its window is in front again. Or pick **Send clipboard** on a device, in the tray, or press **Ctrl+Shift+V** in the window.
 
 **Settings → Clipboard** says which one you're on.
 

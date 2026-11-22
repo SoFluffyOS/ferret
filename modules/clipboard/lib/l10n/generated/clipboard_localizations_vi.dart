@@ -235,7 +235,7 @@ class ClipboardLocalizationsVi extends ClipboardLocalizations {
 
   @override
   String get settingsWhyManualWayland =>
-      'Trên Wayland, chỉ cửa sổ đang ở trên cùng mới biết khi có nội dung mới được sao chép. GNOME không có cách nào khác, nên Ferret sẽ gửi nội dung bạn đã sao chép khi cửa sổ của nó ở trên cùng trở lại, hoặc khi bạn chọn Gửi bảng nhớ tạm trên một thiết bị hay trong khay hệ thống. Trên KDE Plasma và Sway, hãy cài wl-clipboard để Ferret tự theo dõi.';
+      'Trên Wayland, chỉ cửa sổ đang ở trên cùng mới biết khi có nội dung mới được sao chép. GNOME không có cách nào khác, nên Ferret sẽ gửi nội dung bạn đã sao chép khi cửa sổ của nó ở trên cùng trở lại, hoặc khi bạn chọn Gửi bảng nhớ tạm trên một thiết bị hay trong khay hệ thống. Trên KDE Plasma và Sway, hãy cài wl-clipboard (bản 2.3 trở lên với Plasma 6.5 trở đi) để Ferret tự theo dõi.';
 
   @override
   String get settingsAutoSendBodyWayland =>

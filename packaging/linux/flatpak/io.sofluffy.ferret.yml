@@ -29,6 +29,7 @@ finish-args:
 
 modules:
   # wl-paste --watch sees copies made in other apps on KDE Plasma and Sway.
+  # 2.3 speaks ext-data-control, the only one KDE Plasma 6.5 and later offer.
   - name: wl-clipboard
     buildsystem: meson
     config-opts:
@@ -37,7 +38,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/bugaevc/wl-clipboard.git
-        tag: v2.2.1
+        tag: v2.3.0
 
   - name: ferret
     buildsystem: simple

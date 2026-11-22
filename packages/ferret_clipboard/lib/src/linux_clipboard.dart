@@ -211,6 +211,14 @@ class LinuxClipboard implements ClipboardPlatform {
 
   Future<String> _signature() async {
     final text = await _readText() ?? '';
+    // Without data-control (GNOME), wl-paste reads by giving itself focus
+    // for a moment, so asking it every second would keep taking focus from
+    // the window being typed in. GTK sees a new copy once Ferret is in front,
+    // which is all this desktop allows anyway.
+    if (_access == .whileFocused) {
+      return '${text.hashCode}';
+    }
+
     final types = await _types();
     final stamp = switch (_isWayland) {
       true => '',

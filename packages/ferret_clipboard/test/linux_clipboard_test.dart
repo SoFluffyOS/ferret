@@ -167,6 +167,35 @@ void main() {
     expect(clipboard.access.watchesOtherApps, isFalse);
   });
 
+  test('where the copy can only be read while focused, polling never runs '
+      'wl-paste, which would take focus from the window in front', () async {
+    final commands = <String>[];
+    var text = 'one';
+    final clipboard = LinuxClipboard(
+      environment: const {'WAYLAND_DISPLAY': 'wayland-0'},
+      run: (executable, arguments) async {
+        commands.add('$executable ${arguments.join(' ')}');
+        return ProcessResult(0, 1, Uint8List(0), '');
+      },
+      start: (_, _) => Process.start('true', const []),
+      readText: () async => text,
+      pollInterval: const Duration(milliseconds: 10),
+    );
+    var changes = 0;
+    final subscription = clipboard.changes.listen((_) => changes++);
+
+    await clipboard.startWatching();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    text = 'two';
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    await clipboard.stopWatching();
+    await subscription.cancel();
+
+    expect(clipboard.access, ClipboardAccess.whileFocused);
+    expect(changes, 1);
+    expect(commands.where((command) => command.startsWith('wl-paste')), []);
+  });
+
   test('on X11 the clipboard is always watched', () async {
     final clipboard = LinuxClipboard(
       environment: const {'DISPLAY': ':0'},
