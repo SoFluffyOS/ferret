@@ -149,13 +149,15 @@ internal class H264Decoder(private val listener: Listener) {
         }
 
         val size = size
-        val format = MediaFormat.createVideoFormat(
+        // Built twice, not copied: MediaFormat(MediaFormat) is Android 10+.
+        fun format() = MediaFormat.createVideoFormat(
             MediaFormat.MIMETYPE_VIDEO_AVC,
             size?.width ?: DEFAULT_WIDTH,
             size?.height ?: DEFAULT_HEIGHT,
-        )
-        format.setByteBuffer("csd-0", java.nio.ByteBuffer.wrap(AnnexB.withStartCode(sps)))
-        format.setByteBuffer("csd-1", java.nio.ByteBuffer.wrap(AnnexB.withStartCode(pps)))
+        ).apply {
+            setByteBuffer("csd-0", java.nio.ByteBuffer.wrap(AnnexB.withStartCode(sps)))
+            setByteBuffer("csd-1", java.nio.ByteBuffer.wrap(AnnexB.withStartCode(pps)))
+        }
 
         val created = try {
             MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC)
@@ -165,8 +167,8 @@ internal class H264Decoder(private val listener: Listener) {
             return
         }
 
-        val started = start(created, lowLatency(created, MediaFormat(format)), surface) ||
-            start(created, format, surface)
+        val started = start(created, lowLatency(created, format()), surface) ||
+            start(created, format(), surface)
         if (!started) {
             created.release()
             fail(STATUS_CONFIGURE)

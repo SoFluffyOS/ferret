@@ -15,12 +15,19 @@ internal object NotificationReader {
 
     data class RankingInfo(val importance: Int, val isConversation: Boolean)
 
+    /**
+     * Ranking.isConversation is public from Android 12; Android 11 has it
+     * hidden, and calling it there fails. Before 12 the message category
+     * and style below decide.
+     */
+    fun asksRankingForConversation(sdk: Int): Boolean = sdk >= Build.VERSION_CODES.S
+
     fun rankingOf(sbn: StatusBarNotification, rankingMap: RankingMap?): RankingInfo {
         val ranking = Ranking()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             rankingMap?.getRanking(sbn.key, ranking) == true
         ) {
-            val isConversation = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && ranking.isConversation
+            val isConversation = asksRankingForConversation(Build.VERSION.SDK_INT) && ranking.isConversation
             return RankingInfo(ranking.importance, isConversation)
         }
 
