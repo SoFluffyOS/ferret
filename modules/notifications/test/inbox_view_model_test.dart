@@ -215,4 +215,139 @@ void main() {
     expect(notifier.cancelled, contains('notifications/phone/k1'));
     expect(notifier.cancelled, isNot(contains('notifications/tablet/k1')));
   });
+
+  group('a burst', () {
+    final start = DateTime(2026, 11, 23, 9);
+
+    void post(int index, {String app = 'Zalo', int seconds = 0}) =>
+        control.emit(
+          MirrorPosted(
+            'phone',
+            mirrored(
+              key: '$app/$index',
+              appPackage: 'pkg.$app',
+              appName: app,
+              postedAt: start.add(Duration(seconds: seconds)),
+            ),
+          ),
+        );
+
+    List<LocalNotice> ownNotices() => [
+      for (final notice in notifier.history)
+        if (!notice.id.endsWith('/quiet')) notice,
+    ];
+
+    test('one app shows three a minute, the rest wait quietly', () {
+      for (var index = 0; index < 10; index++) {
+        post(index, seconds: index);
+      }
+
+      expect(ownNotices(), hasLength(3));
+      expect(inbox.byDevice['phone'], hasLength(10));
+      final quiet = notifier.shown['notifications/phone/quiet'];
+      expect(quiet?.title, 'Pixel');
+      expect(
+        quiet?.body,
+        'More from Zalo. Kept quiet in Ferret.',
+      );
+      expect(quiet?.silent, isTrue);
+      expect(
+        notifier.history.where((n) => n.id.endsWith('/quiet')),
+        hasLength(1),
+      );
+    });
+
+    test('a minute later the app may show again', () {
+      for (var index = 0; index < 4; index++) {
+        post(index, seconds: index);
+      }
+
+      post(4, seconds: 61);
+
+      expect(ownNotices(), hasLength(4));
+    });
+
+    test('one phone shows six a minute across its apps', () {
+      for (final (index, app) in [
+        'Zalo',
+        'Telegram',
+        'Messenger',
+        'WhatsApp',
+      ].indexed) {
+        post(0, app: app, seconds: index);
+        post(1, app: app, seconds: index);
+      }
+
+      expect(ownNotices(), hasLength(6));
+      final quiet = notifier.shown['notifications/phone/quiet'];
+      expect(quiet?.body, 'More from WhatsApp. Kept quiet in Ferret.');
+    });
+
+    test('the quiet notice opens the list and starts the count again', () {
+      final opened = <String>[];
+      inbox.dispose();
+      inbox = InboxViewModel(
+        feature: control,
+        notifier: notifier,
+        deviceName: (deviceId) => 'Pixel',
+        strings: NotificationsLocalizationsEn.new,
+        onOpen: opened.add,
+      );
+      for (var index = 0; index < 5; index++) {
+        post(index, seconds: index);
+      }
+
+      notifier.respond(
+        const NoticeResponse(noticeId: 'notifications/phone/quiet'),
+      );
+      post(5, seconds: 70);
+      post(6, seconds: 71);
+      post(7, seconds: 72);
+      post(8, seconds: 73);
+
+      expect(opened, ['phone']);
+      expect(
+        notifier.history.where((n) => n.id.endsWith('/quiet')),
+        hasLength(2),
+      );
+    });
+
+    test('a one-time code always shows', () {
+      for (var index = 0; index < 3; index++) {
+        post(index, app: 'Bank', seconds: index);
+      }
+
+      control.emit(
+        MirrorPosted(
+          'phone',
+          mirrored(
+            key: 'Bank/code',
+            appPackage: 'pkg.Bank',
+            appName: 'Bank',
+            postedAt: start.add(const Duration(seconds: 4)),
+            textHidden: true,
+          ),
+        ),
+      );
+
+      expect(ownNotices(), hasLength(4));
+    });
+  });
+
+  test('a notification pushed out of the list takes its notice along', () {
+    for (var index = 0; index <= InboxViewModel.keptPerDevice; index++) {
+      control.emit(
+        MirrorPosted(
+          'phone',
+          mirrored(
+            key: 'k$index',
+            postedAt: DateTime(2026, 11, 23).add(Duration(minutes: index)),
+          ),
+        ),
+      );
+    }
+
+    expect(notifier.cancelled, contains('notifications/phone/k0'));
+    expect(notifier.shown, isNot(contains('notifications/phone/k0')));
+  });
 }

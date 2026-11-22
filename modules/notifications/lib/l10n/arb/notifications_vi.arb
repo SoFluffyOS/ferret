@@ -91,5 +91,8 @@
   "privateCover": "Thông báo mới từ {device}",
   "hideCodes": "Ẩn mã một lần",
   "hideCodesDetail": "Mã đăng nhập, ngân hàng và giao hàng ở lại trên {here, select, tablet{máy tính bảng này} other{điện thoại này}}. Máy tính chỉ hiện tên ứng dụng và \"Đã ẩn mã\".",
-  "codeHidden": "Đã ẩn mã. Hãy mở trên điện thoại."
+  "codeHidden": "Đã ẩn mã. Hãy mở trên điện thoại.",
+  "keptQuiet": "{others, plural, =0{Thêm thông báo từ {apps}.} other{Thêm thông báo từ {apps} và {others} ứng dụng khác.}} Đã để yên lặng trong Ferret.",
+  "replyHint": "Câu trả lời của bạn",
+  "replySent": "Đã gửi"
 }

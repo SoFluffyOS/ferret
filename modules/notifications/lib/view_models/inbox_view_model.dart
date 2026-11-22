@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/foundation.dart';
@@ -16,10 +17,12 @@ class InboxViewModel extends ChangeNotifier {
     required LocalNotifier notifier,
     required String Function(String deviceId) deviceName,
     required NotificationsLocalizations Function() strings,
+    void Function(String deviceId)? onOpen,
   }) : _feature = feature,
        _notifier = notifier,
        _deviceName = deviceName,
-       _strings = strings {
+       _strings = strings,
+       _onOpen = onOpen {
     _subscriptions
       ..add(feature.mirrorEvents.listen(_onEvent))
       ..add(
@@ -47,11 +50,27 @@ class InboxViewModel extends ChangeNotifier {
   final LocalNotifier _notifier;
   final String Function(String deviceId) _deviceName;
   final NotificationsLocalizations Function() _strings;
+  final void Function(String deviceId)? _onOpen;
+
+  /// Notices one app may show per minute.
+  final NoticeBudget _appBudget = NoticeBudget(limit: 3);
+
+  /// Notices one phone may show per minute, all apps together.
+  final NoticeBudget _phoneBudget = NoticeBudget(limit: 6);
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   final Map<String, List<MirroredNotification>> _byDevice = {};
   final Map<String, MirroredNotification> _byNotice = {};
   final Set<String> _catchUpNotices = {};
+
+  /// What each phone kept quiet past its [NoticeBudget], by device id.
+  final Map<String, _KeptQuiet> _keptQuiet = {};
+
+  /// A quiet notice older than this starts again with one app.
+  static const _quietResets = Duration(minutes: 10);
+
+  /// Apps the quiet notice names; the rest are counted.
+  static const _quietAppsNamed = 3;
 
   /// Recent notifications per phone, newest first.
   Map<String, List<MirroredNotification>> get byDevice => {
@@ -98,9 +117,13 @@ class InboxViewModel extends ChangeNotifier {
     _byDevice.clear();
     notifyListeners();
 
-    final catchUpIds = [..._catchUpNotices];
+    final otherIds = [
+      ..._catchUpNotices,
+      for (final deviceId in _keptQuiet.keys) _quietNoticeId(deviceId),
+    ];
     _catchUpNotices.clear();
-    for (final noticeId in [...noticeIds, ...catchUpIds]) {
+    _keptQuiet.clear();
+    for (final noticeId in [...noticeIds, ...otherIds]) {
       await _notifier.cancel(noticeId);
     }
   }
@@ -122,6 +145,16 @@ class InboxViewModel extends ChangeNotifier {
           _noticeId(deviceId, item.key),
     ];
     _byNotice.removeWhere((noticeId, _) => noticeIds.contains(noticeId));
+    _appBudget.forget(
+      (app) => gone.any((deviceId) => app.startsWith('$deviceId/')),
+    );
+    _phoneBudget.forget(gone.contains);
+    for (final deviceId in gone) {
+      if (_keptQuiet.remove(deviceId) != null) {
+        noticeIds.add(_quietNoticeId(deviceId));
+      }
+    }
+
     notifyListeners();
     for (final noticeId in noticeIds) {
       await _notifier.cancel(noticeId);
@@ -169,6 +202,11 @@ class InboxViewModel extends ChangeNotifier {
     _trim(items);
     notifyListeners();
 
+    if (!posted.textHidden && !_spendBudget(notification)) {
+      _keepQuiet(notification);
+      return;
+    }
+
     final category = switch (notification.canReply) {
       true => messageCategory,
       false => alertCategory,
@@ -187,6 +225,60 @@ class InboxViewModel extends ChangeNotifier {
           private: PrivateContent(
             deviceId,
             cover: _strings().privateCover(_deviceName(deviceId)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Whether [notification] fits its app's and its phone's budget; spends
+  /// both when it does. A one-time code always shows: it can't wait.
+  bool _spendBudget(MirroredNotification notification) {
+    final deviceId = notification.deviceId;
+    final app = '$deviceId/${notification.appPackage}';
+    final at = notification.postedAt;
+    if (!_appBudget.allows(app, at) || !_phoneBudget.allows(deviceId, at)) {
+      return false;
+    }
+
+    _appBudget.spend(app, at);
+    _phoneBudget.spend(deviceId, at);
+    return true;
+  }
+
+  /// Names [notification]'s app on its phone's one quiet notice. The
+  /// notice shows again, without a sound, only when another app joins it.
+  void _keepQuiet(MirroredNotification notification) {
+    final deviceId = notification.deviceId;
+    final at = notification.postedAt;
+    final quiet = switch (_keptQuiet[deviceId]) {
+      final kept? when at.difference(kept.lastAt) < _quietResets => kept,
+      _ => _keptQuiet[deviceId] = _KeptQuiet(),
+    };
+    quiet.lastAt = at;
+    if (!quiet.apps.add(notification.appName)) {
+      return;
+    }
+
+    final strings = _strings();
+    unawaited(
+      _notifier.show(
+        LocalNotice(
+          id: _quietNoticeId(deviceId),
+          channel: .incoming,
+          title: _deviceName(deviceId),
+          body: strings.keptQuiet(
+            ListText.join(
+              quiet.apps.take(_quietAppsNamed),
+              localeName: strings.localeName,
+            ),
+            max(0, quiet.apps.length - _quietAppsNamed),
+          ),
+          groupKey: _groupKey(deviceId),
+          silent: true,
+          private: PrivateContent(
+            deviceId,
+            cover: strings.privateCover(_deviceName(deviceId)),
           ),
         ),
       ),
@@ -244,6 +336,15 @@ class InboxViewModel extends ChangeNotifier {
   }
 
   Future<void> _onResponse(NoticeResponse response) async {
+    final quietDevice = _keptQuiet.keys
+        .where((deviceId) => _quietNoticeId(deviceId) == response.noticeId)
+        .firstOrNull;
+    if (quietDevice != null) {
+      _keptQuiet.remove(quietDevice);
+      _onOpen?.call(quietDevice);
+      return;
+    }
+
     final notification = _byNotice[response.noticeId];
     if (notification == null) {
       return;
@@ -257,19 +358,24 @@ class InboxViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _reply(MirroredNotification notification, String text) async {
+  /// Sends [text] as the answer to [notification] on its phone. False when
+  /// the phone is gone or the notification no longer takes a reply.
+  Future<bool> reply(MirroredNotification notification, String text) async {
     final action = notification.replyAction;
     if (action == null || text.trim().isEmpty) {
-      return;
+      return false;
     }
 
-    final sent = await _feature.invokeAction(
+    return _feature.invokeAction(
       notification.deviceId,
       notification.key,
       action.id,
       replyText: text,
     );
-    if (sent) {
+  }
+
+  Future<void> _reply(MirroredNotification notification, String text) async {
+    if (text.trim().isEmpty || await reply(notification, text)) {
       return;
     }
 
@@ -296,7 +402,9 @@ class InboxViewModel extends ChangeNotifier {
   void _trim(List<MirroredNotification> items) {
     while (items.length > keptPerDevice) {
       final oldest = items.removeLast();
-      _byNotice.remove(_noticeId(oldest.deviceId, oldest.key));
+      final noticeId = _noticeId(oldest.deviceId, oldest.key);
+      _byNotice.remove(noticeId);
+      unawaited(_notifier.cancel(noticeId));
     }
   }
 
@@ -304,4 +412,13 @@ class InboxViewModel extends ChangeNotifier {
       '$_noticePrefix$deviceId/$key';
 
   static String _groupKey(String deviceId) => '$_noticePrefix$deviceId';
+
+  static String _quietNoticeId(String deviceId) =>
+      '$_noticePrefix$deviceId/quiet';
+}
+
+class _KeptQuiet {
+  /// App names in the order they went quiet.
+  final Set<String> apps = {};
+  DateTime lastAt = DateTime.fromMillisecondsSinceEpoch(0);
 }

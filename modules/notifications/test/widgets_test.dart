@@ -327,6 +327,32 @@ void main() {
       expect(control.dismissed, [('phone', 'k1')]);
       expect(find.byType(NotificationRow), findsNothing);
     });
+
+    testWidgets('a row answers on the phone from the list', (tester) async {
+      await pumpCard(tester);
+      control.emit(MirrorPosted('phone', mirrored()));
+      await tester.pump();
+
+      await tester.tap(find.byIcon(LucideIcons.reply));
+      await tester.pump();
+      await tester.enterText(find.byType(EditableText), 'On my way 🚲');
+      await tester.tap(find.text('Reply'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(control.invoked, [('phone', 'k1', '0', 'On my way 🚲')]);
+      expect(find.text('Sent'), findsOneWidget);
+    });
+
+    testWidgets('a row without a reply action has no reply button', (
+      tester,
+    ) async {
+      await pumpCard(tester);
+      control.emit(MirrorPosted('phone', mirrored(replyable: false)));
+      await tester.pump();
+
+      expect(find.byIcon(LucideIcons.reply), findsNothing);
+    });
   });
 
   group('app picker', () {

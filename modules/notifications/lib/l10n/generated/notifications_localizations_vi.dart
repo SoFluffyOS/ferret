@@ -430,4 +430,21 @@ class NotificationsLocalizationsVi extends NotificationsLocalizations {
 
   @override
   String get codeHidden => 'Đã ẩn mã. Hãy mở trên điện thoại.';
+
+  @override
+  String keptQuiet(String apps, int others) {
+    String _temp0 = intl.Intl.pluralLogic(
+      others,
+      locale: localeName,
+      other: 'Thêm thông báo từ $apps và $others ứng dụng khác.',
+      zero: 'Thêm thông báo từ $apps.',
+    );
+    return '$_temp0 Đã để yên lặng trong Ferret.';
+  }
+
+  @override
+  String get replyHint => 'Câu trả lời của bạn';
+
+  @override
+  String get replySent => 'Đã gửi';
 }

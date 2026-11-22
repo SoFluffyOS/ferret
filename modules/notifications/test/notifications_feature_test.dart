@@ -452,4 +452,16 @@ void main() {
       throwsA(isA<RemoteErrorException>()),
     );
   });
+
+  test('a long text is never cut through an emoji', () {
+    final text = '${'a' * 8}😂😂';
+    final clipped = NotificationsFeature.clip(text, 10);
+
+    expect(clipped, '${'a' * 8}…');
+    expect(
+      clipped.runes.every((rune) => rune < 0xD800 || rune > 0xDFFF),
+      isTrue,
+    );
+    expect(NotificationsFeature.clip('Xin chào 👋', 20), 'Xin chào 👋');
+  });
 }

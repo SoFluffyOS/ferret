@@ -3037,6 +3037,10 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   @override
   String get codeHidden => pseudo(super.codeHidden);
   @override
+  String get replyHint => pseudo(super.replyHint);
+  @override
+  String get replySent => pseudo(super.replySent);
+  @override
   String explainer(String here) => pseudo(super.explainer(here));
   @override
   String offerDescription(String here) => pseudo(super.offerDescription(here));
@@ -3107,6 +3111,9 @@ class PseudoNotificationsLocalizations extends NotificationsLocalizationsEn {
   String privateCover(String device) => pseudo(super.privateCover(device));
   @override
   String hideCodesDetail(String here) => pseudo(super.hideCodesDetail(here));
+  @override
+  String keptQuiet(String apps, int others) =>
+      pseudo(super.keptQuiet(apps, others));
 }
 
 class PseudoCameraLocalizations extends CameraLocalizationsEn {

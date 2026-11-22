@@ -646,6 +646,24 @@ abstract class NotificationsLocalizations {
   /// In en, this message translates to:
   /// **'Code hidden. Open it on the phone.'**
   String get codeHidden;
+
+  /// Body of the one notice that stands in for a phone's notifications while they come too fast; the title is the phone's name. apps: up to three app names; others: how many more apps
+  ///
+  /// In en, this message translates to:
+  /// **'{others, plural, =0{More from {apps}.} =1{More from {apps} and 1 more app.} other{More from {apps} and {others} more apps.}} Kept quiet in Ferret.'**
+  String keptQuiet(String apps, int others);
+
+  /// Placeholder of the reply field under a phone notification in the list
+  ///
+  /// In en, this message translates to:
+  /// **'Your reply'**
+  String get replyHint;
+
+  /// Shown in place of the reply field once the answer went to the phone
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get replySent;
 }
 
 class _NotificationsLocalizationsDelegate

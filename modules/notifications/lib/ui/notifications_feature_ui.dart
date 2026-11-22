@@ -634,6 +634,8 @@ class NotificationsFeatureUi extends FeatureUi {
       notifier: featureContext.notifier,
       deviceName: (deviceId) => trustStore[deviceId]?.name ?? deviceId,
       strings: platformNotificationsL10n,
+      onOpen: (deviceId) =>
+          unawaited(featureContext.openSection(deviceId, sectionId)),
     );
     _inbox = inbox;
     return inbox;

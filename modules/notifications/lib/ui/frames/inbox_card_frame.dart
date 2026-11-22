@@ -68,6 +68,7 @@ class InboxCardFrame extends StatelessWidget {
                 notification: notification,
                 dismissLabel: l10n.dismiss,
                 onDismiss: () => inbox.dismiss(notification),
+                onReply: (text) => inbox.reply(notification, text),
               ),
           ],
         ),

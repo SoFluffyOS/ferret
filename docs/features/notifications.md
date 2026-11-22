@@ -14,7 +14,7 @@ With Ferret, your phone's notifications show up on your computer. ALL your apps,
 
 - A message arrives on your phone.
 - Ferret shows it on your connected computers as a normal notification, with the app's icon, grouped per phone.
-- **Reply** right from the notification, or **Dismiss** it.
+- **Reply** right from the notification, or **Dismiss** it. Missed the popup? Open **Notifications** in Ferret and tap the reply arrow next to any chat.
 
 Dismissing works both ways: dismiss it on your computer and it's gone from your phone, dismiss it on your phone and it's gone from your computer.
 
@@ -26,6 +26,8 @@ The Notifications card on the home screen shows the last few from each phone. **
 - The same notification is sent once. An app that re-posts it with the same text doesn't ping you again.
 - Ongoing ones (navigation, downloads), music controls, silent ones and group summaries stay on the phone. So do Ferret's own.
 - Your computer was asleep? When it reconnects you get **one** summary, "6 notifications while away, from Signal, WhatsApp", not six popups.
+- Five busy group chats at once? Each app pops up at most **3** times a minute, and your phone at most **6**. The rest wait quietly in Ferret, and one silent notice says "More from WhatsApp, Zalo. Kept quiet in Ferret." Tap it to read them. One-time codes always pop up.
+- Download bars that are still moving stay on the phone. You see the finished one.
 
 ## 🔑 Codes stay on your phone
 

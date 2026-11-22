@@ -340,5 +340,25 @@
       }
     }
   },
-  "codeHidden": "Code hidden. Open it on the phone."
+  "codeHidden": "Code hidden. Open it on the phone.",
+  "keptQuiet": "{others, plural, =0{More from {apps}.} =1{More from {apps} and 1 more app.} other{More from {apps} and {others} more apps.}} Kept quiet in Ferret.",
+  "@keptQuiet": {
+    "description": "Body of the one notice that stands in for a phone's notifications while they come too fast; the title is the phone's name. apps: up to three app names; others: how many more apps",
+    "placeholders": {
+      "apps": {
+        "type": "String"
+      },
+      "others": {
+        "type": "int"
+      }
+    }
+  },
+  "replyHint": "Your reply",
+  "@replyHint": {
+    "description": "Placeholder of the reply field under a phone notification in the list"
+  },
+  "replySent": "Sent",
+  "@replySent": {
+    "description": "Shown in place of the reply field once the answer went to the phone"
+  }
 }

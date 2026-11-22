@@ -535,11 +535,11 @@ class NotificationsFeature extends Feature implements MirrorControl {
       appName: notification.appName,
       title: switch (hidesCode && OneTimeCode.isIn(notification.title)) {
         true => '',
-        false => _clip(notification.title, _maxTitleLength),
+        false => clip(notification.title, _maxTitleLength),
       },
       text: switch (hidesCode) {
         true => '',
-        false => _clip(notification.text, _maxTextLength),
+        false => clip(notification.text, _maxTextLength),
       },
       textHidden: hidesCode,
       postedAtMs: Int64(notification.postedAtMs),
@@ -627,9 +627,19 @@ class NotificationsFeature extends Feature implements MirrorControl {
   static bool _hasFlag(Session session, String flag) =>
       session.remoteFeature(featureId)?.flags.contains(flag) ?? false;
 
-  static String _clip(String value, int maxLength) =>
-      switch (value.length > maxLength) {
-        true => '${value.substring(0, maxLength - 1)}…',
-        false => value,
-      };
+  /// [value] cut to [maxLength] UTF-16 units with an ellipsis, never
+  /// through the middle of an emoji or other two-unit character.
+  static String clip(String value, int maxLength) {
+    if (value.length <= maxLength) {
+      return value;
+    }
+
+    var end = maxLength - 1;
+    final last = value.codeUnitAt(end - 1);
+    if (last >= 0xD800 && last <= 0xDBFF) {
+      end -= 1;
+    }
+
+    return '${value.substring(0, end)}…';
+  }
 }

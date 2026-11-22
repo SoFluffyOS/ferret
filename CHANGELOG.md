@@ -46,7 +46,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Drop on the icon**: files dropped on the menubar icon go to your last device, with 3 seconds to **Undo**.
 
 #### 🔔 From your Android phone
-- **Notifications** on your computer, with **Reply** and **Dismiss** synced both ways. One-time codes stay on the phone as **Code hidden**.
+- **Notifications** on your computer, with **Reply** and **Dismiss** synced both ways. One-time codes stay on the phone as **Code hidden**. A busy group chat can't flood your screen: past 3 popups a minute per app, the rest wait quietly in Ferret, where you can reply too.
 - **Messages**: read and reply to your texts, with names, photos and pictures.
 - **Calls**: see who's calling, then answer, decline, silence or hang up. Your music pauses while you talk.
 - **Private previews**: texts, callers and copied text hide while the computer is locked or someone else's account is in front.

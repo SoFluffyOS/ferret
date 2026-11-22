@@ -54,7 +54,11 @@ internal object NotificationReader {
             postedAtMs = sbn.postTime,
             appIcon = AppIcons.notificationIcon(context, sbn.packageName),
             isConversation = isConversation,
-            isOngoing = sbn.isOngoing,
+            isOngoing = sbn.isOngoing || isRunningProgress(
+                max = extras.getInt(Notification.EXTRA_PROGRESS_MAX, 0),
+                progress = extras.getInt(Notification.EXTRA_PROGRESS, 0),
+                indeterminate = extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false),
+            ),
             isForegroundService = notification.flags and Notification.FLAG_FOREGROUND_SERVICE != 0,
             isGroupSummary = notification.flags and Notification.FLAG_GROUP_SUMMARY != 0,
             isMedia = extras.containsKey(Notification.EXTRA_MEDIA_SESSION) ||
@@ -63,6 +67,14 @@ internal object NotificationReader {
             actions = actionsOf(notification),
         )
     }
+
+    /**
+     * A download or upload bar that is still moving. Some apps post one
+     * without marking it ongoing and update it every second; a computer
+     * would pop it up again and again. The finished one still goes through.
+     */
+    fun isRunningProgress(max: Int, progress: Int, indeterminate: Boolean): Boolean =
+        indeterminate || (max > 0 && progress < max)
 
     fun appName(packageManager: PackageManager, packageName: String): String =
         runCatching {

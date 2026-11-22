@@ -436,4 +436,22 @@ class NotificationsLocalizationsEn extends NotificationsLocalizations {
 
   @override
   String get codeHidden => 'Code hidden. Open it on the phone.';
+
+  @override
+  String keptQuiet(String apps, int others) {
+    String _temp0 = intl.Intl.pluralLogic(
+      others,
+      locale: localeName,
+      other: 'More from $apps and $others more apps.',
+      one: 'More from $apps and 1 more app.',
+      zero: 'More from $apps.',
+    );
+    return '$_temp0 Kept quiet in Ferret.';
+  }
+
+  @override
+  String get replyHint => 'Your reply';
+
+  @override
+  String get replySent => 'Sent';
 }
