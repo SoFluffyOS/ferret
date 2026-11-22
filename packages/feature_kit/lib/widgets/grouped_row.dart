@@ -1,5 +1,6 @@
 import 'package:feature_kit/layout/layout.dart';
 import 'package:feature_kit/theme/theme.dart';
+import 'package:feature_kit/widgets/beside_or_below.dart';
 import 'package:feature_kit/widgets/focus_rings.dart';
 import 'package:feature_kit/widgets/grouped_card.dart';
 import 'package:flutter/foundation.dart';
@@ -143,9 +144,19 @@ class GroupedRow extends StatelessWidget {
         child: Row(
           children: [
             if (leading case final leading?) ...[leading, Spacing.h12],
-            ...switch (stacksValue || !hasValue) {
-              true => [Expanded(child: text)],
-              false => [
+            // On a phone a wide control goes under the words instead of
+            // squeezing them (a long label at 130% on a 320 dp screen).
+            ...switch ((stacksValue || !hasValue, trailing)) {
+              (true, final trailing?) when _isTouch => [
+                Expanded(
+                  child: BesideOrBelow(
+                    gap: Spacing.d8,
+                    children: [text, _inCorner(context, trailing)],
+                  ),
+                ),
+              ],
+              (true, _) => [Expanded(child: text)],
+              (false, _) => [
                 text,
                 Spacing.h12,
                 Expanded(
@@ -159,7 +170,8 @@ class GroupedRow extends StatelessWidget {
                 ),
               ],
             },
-            if (trailing case final trailing?) ...[
+            if (trailing case final trailing?
+                when !_isTouch || (!stacksValue && hasValue)) ...[
               Spacing.h8,
               _inCorner(context, trailing),
             ],

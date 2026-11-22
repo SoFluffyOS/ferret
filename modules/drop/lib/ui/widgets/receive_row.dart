@@ -37,34 +37,49 @@ class ReceiveRow extends StatelessWidget {
       false => palette.mutedText,
     };
 
-    return Row(
+    final text = Column(
+      crossAxisAlignment: .start,
       children: [
-        Icon(icon, size: Spacing.d16, color: palette.text),
-        Spacing.h8,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Text(
-                title,
-                style: typography.base1.copyWith(color: palette.text),
-              ),
-              Spacing.vertical(Spacing.d2),
-              Text(
-                status,
-                style: typography.caption1.copyWith(color: statusColor),
-              ),
-            ],
+        Text(title, style: typography.base1.copyWith(color: palette.text)),
+        Spacing.vertical(Spacing.d2),
+        Text(status, style: typography.caption1.copyWith(color: statusColor)),
+      ],
+    );
+
+    final titleStyle = typography.base1;
+    final titleLine =
+        MediaQuery.textScalerOf(context).scale(titleStyle.fontSize ?? 16) *
+        (titleStyle.height ?? 1.2);
+
+    return Row(
+      crossAxisAlignment: .start,
+      children: [
+        SizedBox(
+          height: titleLine,
+          child: Center(
+            child: Icon(icon, size: Spacing.d16, color: palette.text),
           ),
         ),
-        if (onAction case final action?) ...[
-          Spacing.h12,
-          GhostButton(
-            mainAxisSize: .min,
-            label: actionLabel,
-            onPressed: action,
-          ),
-        ],
+        Spacing.h8,
+        Expanded(
+          child: switch (onAction) {
+            // On a small phone with large text the button goes under the
+            // words instead of breaking "LocalSend" in two.
+            final action? => BesideOrBelow(
+              gap: Spacing.d12,
+              maxShare: 0.5,
+              children: [
+                text,
+                GhostButton(
+                  mainAxisSize: .min,
+                  label: actionLabel,
+                  onPressed: action,
+                ),
+              ],
+            ),
+            null => text,
+          },
+        ),
       ],
     );
   }
