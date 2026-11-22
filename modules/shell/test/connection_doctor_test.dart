@@ -346,6 +346,80 @@ void main() {
     }
   });
 
+  group('firewalld whose zones already let Ferret in', () {
+    Future<List<DoctorCheck>> diagnoseWith(
+      Map<String, String> answers,
+    ) => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: true,
+      linuxFirewall: LinuxFirewall(
+        readFile: (path) async => '',
+        run: (executable, arguments) async {
+          final answer = answers[arguments.join(' ')];
+          return switch (answer) {
+            final answer? => ProcessResult(0, 0, answer, ''),
+            null => ProcessResult(0, 1, '', ''),
+          };
+        },
+      ),
+    ).diagnose('nobody').last;
+
+    test("isn't named on Fedora Workstation, which opens every port "
+        'from 1025 and mDNS', () async {
+      final checks = await diagnoseWith({
+        '--state': 'running',
+        '--get-active-zones':
+            'FedoraWorkstation (default)\n  interfaces: wlp0s20f3\n',
+        '--zone=FedoraWorkstation --list-services':
+            'dhcpv6-client mdns samba-client ssh',
+        '--zone=FedoraWorkstation --list-ports':
+            '1025-65535/udp 1025-65535/tcp',
+      });
+
+      expect(checks.where((check) => check.kind == .firewall), isEmpty);
+    });
+
+    test("isn't named once the ferret service is added", () async {
+      final checks = await diagnoseWith({
+        '--state': 'running',
+        '--get-active-zones': 'public\n  interfaces: eth0\n',
+        '--zone=public --list-services': 'ssh dhcpv6-client ferret',
+        '--zone=public --list-ports': '',
+      });
+
+      expect(checks.where((check) => check.kind == .firewall), isEmpty);
+    });
+
+    test('is named when one zone in use lacks mDNS or the port', () async {
+      final checks = await diagnoseWith({
+        '--state': 'running',
+        '--get-active-zones':
+            'home\n  interfaces: wlan0\npublic\n  interfaces: eth0\n',
+        '--zone=home --list-services': 'mdns ferret',
+        '--zone=home --list-ports': '',
+        '--zone=public --list-services': 'ssh mdns',
+        '--zone=public --list-ports': '47641/udp',
+      });
+
+      final firewall = checks.where((check) => check.kind == .firewall);
+      expect(firewall, hasLength(isOnline(checks) ? 1 : 0));
+      for (final check in firewall) {
+        expect(check.detail, 'firewalld');
+      }
+    });
+
+    test("is named when the zones can't be read", () async {
+      final checks = await diagnoseWith({'--state': 'running'});
+
+      final firewall = checks.where((check) => check.kind == .firewall);
+      expect(firewall, hasLength(isOnline(checks) ? 1 : 0));
+      for (final check in firewall) {
+        expect(check.detail, 'firewalld');
+      }
+    });
+  });
+
   test('on Linux, a running firewalld is named', () async {
     final checks = await diagnoseOnLinux(firewalldState: 'running');
 
