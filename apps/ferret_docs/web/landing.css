@@ -390,6 +390,13 @@ code {
   margin-top: var(--s2);
 }
 
+/* On a phone, Download gets its own row so "Download for Android" fits. */
+@media (max-width: 479px) {
+  .hero .actions #hero-download {
+    flex-basis: 100%;
+  }
+}
+
 .badges {
   display: flex;
   flex-wrap: wrap;

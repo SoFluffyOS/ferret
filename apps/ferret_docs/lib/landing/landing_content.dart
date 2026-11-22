@@ -141,12 +141,12 @@ abstract final class LandingContent {
       icon: 'bell',
       title: 'Your phone, on your computer',
       lead:
-          'Your Android phone rings in the other room. Answer it from your '
-          'desk.',
+          'Your Android phone buzzes in the other room. See what it is from '
+          'your desk.',
       points: [
-        'Notifications with **Reply** and **Dismiss**, synced both ways.',
+        'Notifications with **Reply** and **Dismiss**, synced both ways. A busy group chat can’t flood your screen.',
         'Read and reply to your texts.',
-        'See who’s calling, then answer, decline or silence. Your music pauses while you talk.',
+        'See who’s calling, then answer, decline or silence. You still talk on the phone, for now.',
         'One-time codes stay on the phone as **Code hidden** unless you say otherwise.',
       ],
       shot: 'calls',
@@ -165,9 +165,9 @@ abstract final class LandingContent {
       title: 'Your phone’s screen, in a window',
       lead:
           '**Show screen** puts your Android phone on your computer, over '
-          'Wi-Fi. Its sound comes along too.',
+          'Wi-Fi or a cable. Its sound comes along too.',
       points: [
-        'Click, scroll and type on it: over Wi-Fi once the phone says yes, or over a cable with no Ferret on the phone.',
+        'Click, scroll and type on it. Over a cable, the phone doesn’t even need Ferret.',
         'iPhone and iPad through AirPlay.',
         'A full-size screenshot in one click.',
       ],
@@ -180,6 +180,7 @@ abstract final class LandingContent {
       height: 1400,
       docs: '/docs/features/mirroring',
       docsLabel: 'Show your phone’s screen',
+      isBeta: true,
     ),
     FeatureStory(
       id: 'second-display',

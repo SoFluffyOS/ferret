@@ -22,8 +22,8 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **New computer?** Migration Assistant or a restored backup brings Ferret along, and it starts there as a new device with a list of what to pair again. Two computers never answer as one.
 - **Forget means forget**: a removed device loses its "Always allow" answers, and its notifications and clips leave this one.
 - **Says who needs an update** instead of staying offline.
-- **A calm first two minutes**: right after pairing, Home shows your device and one thing to try. **Do more** and the switches for what the new device may do wait until something went through. Where a file landed is never cut short. The first photo that lands on a Windows or Linux PC shows at the top of its page, with **Open** and **Show in folder**. Camera turned off for Ferret? The scan page says so and opens Settings.
-- **Your iPhone under Nearby**: with Ferret open, an iPhone now shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
+- **A calm first two minutes**: right after pairing, Home shows your device and one thing to try. The extras wait until something went through.
+- **Your iPhone under Nearby**: with Ferret open, an iPhone shows up on your computer, and your computer on the iPhone. Tap **Pair**, no QR code needed.
 - **iPhone asks about the local network when it makes sense**: a short card says why before iOS asks, not at first launch. Said no? Nearby and Fix connection take you to Settings.
 - **What a device can use** lists only what does something between the two. No calls or texts rows for an iPhone.
 
@@ -34,7 +34,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 
 #### 📦 Files and folders
 - **Drop**: drag files or a whole folder onto a device. Checked with SHA-256, never overwrites, and a transfer cut off by the Wi-Fi goes on by itself when the device is back.
-- **Fast**: a folder of small files no longer waits on each file, and big files are no longer held back by encryption. Sharing a big file from Android starts at once, with no copy first and no extra space needed. Files sent to Android land straight in Download, with no copy at the end either.
+- **Fast**: a folder of small files streams without waiting on each file, and big files go at full speed, encrypted. Sharing a big file from Android starts at once, with no copy and no extra space needed. Files sent to Android land straight in Download.
 - **Room first**: a file that doesn't fit is turned down before a byte moves, with how much space it needs.
 - **Share menus**: **Share → Ferret** on Mac and iPhone, **Send with Ferret** on Windows and Linux. On Android, your connected devices sit right in the share sheet's top row.
 - **Needs you**: files from a device you didn't pair wait for **Accept**. **Allow once** lets a guest's phone send you one file.
@@ -105,8 +105,8 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Watched? You know**: the menubar icon keeps a dot while a device sees your screen or controls your Mac.
 - **No hiding in file names**: received names lose the marks that flip text direction.
 - **Logs stay clean**: never a path, link or text you copied.
-- **Quiet on strange Wi-Fi**: your devices announce themselves only where they met each other before, or while you add a device. Elsewhere they just listen, so nobody at the café can tell it's the same laptop as yesterday. **Always visible** in Advanced brings back the old way.
-- **Your Mac's key in the keychain**: other apps can't just copy it from a file anymore. It moves there by itself, and your devices stay paired.
+- **Quiet on strange Wi-Fi**: your devices announce themselves only where they met each other before, or while you add a device. Elsewhere they just listen, so nobody at the café can tell it's the same laptop as yesterday. **Always visible** in Advanced makes them announce everywhere.
+- **Your Mac's key in the keychain**, where other apps can't copy it from a file.
 - **Privacy** and **Security** pages: every byte that leaves a device, and what Ferret protects you from.
 
 #### ❤️ Sponsor

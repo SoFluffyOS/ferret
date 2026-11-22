@@ -28,7 +28,10 @@ class DownloadSection extends StatelessComponent {
               'download is the newest release on ',
             ),
             a(href: SiteLinks.releases, [Component.text('GitHub')]),
-            Component.text('.'),
+            Component.text(
+              '. Ferret tells you when a new one is out, and updates when '
+              'you say so.',
+            ),
           ]),
         ]),
         for (final (label, names) in _rows) ...[

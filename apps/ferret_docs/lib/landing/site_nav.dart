@@ -18,9 +18,9 @@ class SiteNav extends StatelessComponent {
           span([Component.text('Ferret')]),
         ]),
         ul(classes: 'nav-links', [
-          _link('Features', '#features', classes: 'nav-anchor'),
-          _link('Privacy', '#privacy', classes: 'nav-anchor'),
-          _link('FAQ', '#faq', classes: 'nav-anchor'),
+          _link('Features', '/#features', classes: 'nav-anchor'),
+          _link('Privacy', '/#privacy', classes: 'nav-anchor'),
+          _link('FAQ', '/#faq', classes: 'nav-anchor'),
           _link('Docs', SiteLinks.docs),
           _link('GitHub', SiteLinks.github),
         ]),

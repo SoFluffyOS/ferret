@@ -38,7 +38,7 @@ Sidebar docsSidebar(String root, {String base = '/docs'}) {
     }
 
     groups.add(
-      SidebarGroup(title: _titleCase(p.basename(folder.path)), links: pages),
+      SidebarGroup(title: _groupTitle(p.basename(folder.path)), links: pages),
     );
   }
 
@@ -130,6 +130,16 @@ bool _hidden(String path) {
   final name = p.basename(path);
   return name.startsWith('_') || name.startsWith('.') || name == 'assets';
 }
+
+/// A group's name in the sidebar, in words a newcomer knows: "Other apps"
+/// is what Settings calls LocalSend and Quick Share.
+String _groupTitle(String folder) => switch (folder) {
+  'getting-started' => 'Getting started',
+  'android-modes' => 'Android modes',
+  'interop' => 'Other apps',
+  'spec' => 'Protocol and security',
+  _ => _titleCase(folder),
+};
 
 String _titleCase(String slug) => slug
     .split('-')

@@ -1,4 +1,7 @@
-# A second display: another Mac, or your Android tablet
+---
+order: 8
+---
+# A second display
 
 > **TL;DR**
 >

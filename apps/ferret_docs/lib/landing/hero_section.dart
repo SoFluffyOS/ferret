@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ferret_docs/landing/landing_content.dart';
 import 'package:ferret_docs/landing/marker.dart';
 import 'package:ferret_docs/landing/site_links.dart';
@@ -24,15 +26,20 @@ class HeroSection extends StatelessComponent {
           height: 112,
         ),
         const p(classes: 'eyebrow', [
-          Component.text('Free and open source · No account · No cloud'),
+          Component.text(
+            'Free and open source · No account · Encrypted',
+          ),
         ]),
         const h1(id: 'hero-title', [Component.text(LandingContent.pitch)]),
         const p(classes: 'lead', [Component.text(LandingContent.subPitch)]),
         const p(classes: 'acronym', [Component.text(LandingContent.acronym)]),
         const div(classes: 'actions', [
-          a(classes: 'button primary', href: '#download', [
-            Component.text('Download'),
-          ]),
+          a(
+            id: 'hero-download',
+            classes: 'button primary',
+            href: '#download',
+            [Component.text('Download')],
+          ),
           a(classes: 'button', href: SiteLinks.docs, [
             Component.text('Docs'),
           ]),
@@ -53,6 +60,7 @@ class HeroSection extends StatelessComponent {
               ]),
           ],
         ),
+        script(content: _forThisSystem),
       ]),
       const div(classes: 'wrap hero-shot', [
         ThemedShot(
@@ -69,3 +77,24 @@ class HeroSection extends StatelessComponent {
     ],
   );
 }
+
+/// Turns **Download** into **Download for Mac** (or Android) with the file
+/// itself, when the browser says it runs there. Anything else, and with no
+/// script, it stays a jump to the cards. An iPad asks for the Mac page, so a
+/// touch screen on "Macintosh" counts as iPhone.
+final _forThisSystem = () {
+  final files = {
+    for (final platform in LandingContent.platforms)
+      if (platform.download case final download?)
+        platform.name: [download, 'Download for ${platform.name}'],
+  };
+  return '(function(){'
+      'var f=${jsonEncode(files)},u=navigator.userAgent,'
+      'b=document.getElementById("hero-download"),'
+      'k=/Android/.test(u)?"Android"'
+      ':/iPhone|iPad|iPod/.test(u)||navigator.maxTouchPoints>1&&/Macintosh/.test(u)?"iPhone"'
+      ':/Macintosh/.test(u)?"Mac":/Windows/.test(u)?"Windows"'
+      ':/Linux|X11/.test(u)?"Linux":"";'
+      'if(b&&f[k]){b.href=f[k][0];b.textContent=f[k][1];}'
+      '})();';
+}();

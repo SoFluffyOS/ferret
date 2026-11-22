@@ -13,7 +13,8 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/server.dart';
 
 /// ferret.sofluffy.io: what Ferret is, what it does, and where to get it.
-/// Static HTML and one stylesheet; no script.
+/// Static HTML and one stylesheet; one inline script names your system on
+/// the Download button.
 class LandingPage extends StatelessComponent {
   const LandingPage();
 
