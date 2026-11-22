@@ -19,11 +19,13 @@ import 'package:power/power.dart';
 import 'package:remote_input/remote_input.dart';
 import 'package:scripting/scripting.dart';
 import 'package:shell/shell.dart';
+import 'package:transport/transport.dart' show MulticastNeed;
 import 'package:updates/updates.dart';
 import 'package:wake/wake.dart';
 
 Future<void> main(List<String> arguments) async {
   final send = await SendCommand.read(arguments);
+  final multicastNeed = MulticastNeed();
 
   await runFerret(
     features: [
@@ -31,7 +33,11 @@ Future<void> main(List<String> arguments) async {
       CallsFeatureUi(),
       CameraFeatureUi(),
       ClipboardFeatureUi(recentClipsKeys: RecentClipsKeys.of),
-      DropFeatureUi(filesToSend: send.files, handoff: send.handoff),
+      DropFeatureUi(
+        filesToSend: send.files,
+        handoff: send.handoff,
+        multicastNeed: multicastNeed,
+      ),
       FindFeatureUi(),
       HandoffFeatureUi(),
       IphoneFeatureUi(),
@@ -48,6 +54,7 @@ Future<void> main(List<String> arguments) async {
       WakeFeatureUi(),
     ],
     appVersion: '0.1.0',
+    multicastNeed: multicastNeed,
     onStarted: (engine) {
       CallMediaPause.attach(engine);
       CameraLinks.attach(engine);

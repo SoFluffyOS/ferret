@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -207,6 +208,66 @@ void main() {
         await engine.stop();
       });
     });
+
+    testWidgets('holds the multicast lock only while someone looks or a '
+        'paired device is missing, never while paused', (tester) async {
+      final system = _FakeSystem();
+      late FerretEngine engine;
+      late SystemBinding binding;
+      late PauseController pause;
+      Future<void> settle() =>
+          tester.runAsync(() => Future<void>.delayed(Duration.zero));
+
+      await tester.runAsync(() async {
+        engine = await _engine();
+        await engine.start();
+        pause = PauseController(engine);
+        binding = SystemBinding(
+          engine: engine,
+          host: EngineHost(engine),
+          pause: pause,
+          system: system,
+        );
+        await binding.start();
+      });
+      expect(system.lockHeld, isFalse, reason: 'nothing paired, nobody looks');
+
+      final nearby = engine.multicastNeed.hold('nearby');
+      await settle();
+      expect(system.lockHeld, isTrue, reason: 'Add a device is open');
+
+      await tester.runAsync(() => pause.pause());
+      await settle();
+      expect(system.lockHeld, isFalse, reason: 'paused');
+
+      await tester.runAsync(() => pause.resume());
+      await settle();
+      expect(system.lockHeld, isTrue);
+
+      nearby.release();
+      await settle();
+      expect(system.lockHeld, isFalse);
+
+      await tester.runAsync(
+        () => engine.trustStore.save(
+          TrustedDevice(
+            id: 'abcdabcdabcdabcd',
+            name: 'MacBook Pro',
+            platform: .PLATFORM_MACOS,
+            formFactor: .FORM_FACTOR_LAPTOP,
+            publicKey: Uint8List(32),
+            pairedAt: DateTime(2026),
+          ),
+        ),
+      );
+      await settle();
+      expect(system.lockHeld, isTrue, reason: 'MacBook Pro is not connected');
+
+      await tester.runAsync(() async {
+        await binding.dispose();
+        await engine.stop();
+      });
+    });
   });
 }
 
@@ -279,11 +340,13 @@ class _FakeSystem extends Fake implements FerretSystem {
   @override
   Future<void> setPause(PauseState pause) async {}
 
-  @override
-  Future<void> acquireMulticastLock() async {}
+  bool lockHeld = false;
 
   @override
-  Future<void> releaseMulticastLock() async {}
+  Future<void> acquireMulticastLock() async => lockHeld = true;
+
+  @override
+  Future<void> releaseMulticastLock() async => lockHeld = false;
 }
 
 class _SilentDiscovery implements Discovery {

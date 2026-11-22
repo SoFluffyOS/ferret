@@ -15,7 +15,8 @@ class QuietBus {
   }
 }
 
-class QuietMember implements QuietDiscovery, PacedDiscovery {
+class QuietMember
+    implements QuietDiscovery, PacedDiscovery, ListeningDiscovery {
   QuietMember(this.bus);
 
   final QuietBus bus;
@@ -24,9 +25,16 @@ class QuietMember implements QuietDiscovery, PacedDiscovery {
   Announce? self;
   bool _announcing = true;
   bool _relaxed = false;
+  bool _listening = true;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
+
+  @override
+  bool get isListening => _listening;
+
+  @override
+  Future<void> setListening(bool listening) async => _listening = listening;
 
   @override
   bool get isRelaxed => _relaxed;

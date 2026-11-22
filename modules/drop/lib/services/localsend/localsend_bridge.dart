@@ -12,6 +12,7 @@ import 'package:drop/services/receive_store.dart';
 import 'package:drop/services/send_sources.dart';
 import 'package:drop/services/transfer_registry.dart';
 import 'package:interop_localsend/interop_localsend.dart';
+import 'package:transport/transport.dart' show MulticastHold, MulticastNeed;
 
 /// Drop's LocalSend side: finds LocalSend devices, sends to them, and,
 /// only while someone turned it on, receives from them.
@@ -28,6 +29,7 @@ class LocalSendBridge {
     this.options = const LocalSendOptions(),
     DateTime Function()? clock,
     SendSources sources = const SendSources(),
+    this.multicastNeed,
   }) : _identities = LocalSendIdentityStore(secrets),
        _clock = clock ?? DateTime.now,
        receiver = LocalSendReceiver(
@@ -59,6 +61,10 @@ class LocalSendBridge {
   final SettingsStore settings;
   final LocalSendOptions options;
 
+  /// Held while LocalSend's multicast group is joined, so Android's Wi-Fi
+  /// passes what LocalSend devices send there.
+  final MulticastNeed? multicastNeed;
+
   /// This device's name, model and kind, as LocalSend devices will see
   /// them.
   final ({String alias, String model, LocalSendDeviceType type}) Function()
@@ -85,6 +91,7 @@ class LocalSendBridge {
   DateTime? _suspendedUntil;
   int _scans = 0;
   bool _disposed = false;
+  MulticastHold? _hearing;
 
   /// Fires when devices, scanning or the receive state change.
   Stream<void> get changes => _changes.stream;
@@ -188,6 +195,7 @@ class LocalSendBridge {
     _server = null;
     await server?.stop();
     await _discovery.stop();
+    _followDiscovery();
     _emit();
   }
 
@@ -343,6 +351,8 @@ class LocalSendBridge {
     await _server?.stop();
     _server = null;
     await _discovery.dispose();
+    _hearing?.release();
+    _hearing = null;
     _client?.close();
     await _changes.close();
   }
@@ -428,6 +438,18 @@ class LocalSendBridge {
     } on SocketException catch (error) {
       printWarning('LocalSend discovery could not start', error.osError);
     }
+
+    _followDiscovery();
+  }
+
+  void _followDiscovery() {
+    if (!_discovery.isStarted || _disposed) {
+      _hearing?.release();
+      _hearing = null;
+      return;
+    }
+
+    _hearing ??= multicastNeed?.hold('localsend');
   }
 
   /// Leaves the multicast group a while after the last scan, unless this
@@ -445,7 +467,7 @@ class LocalSendBridge {
         return;
       }
 
-      unawaited(_discovery.stop());
+      unawaited(_discovery.stop().whenComplete(_followDiscovery));
     });
   }
 

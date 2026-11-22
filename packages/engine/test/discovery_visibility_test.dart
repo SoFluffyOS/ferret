@@ -204,6 +204,57 @@ void main() {
     expect(airWay.announced.length, greaterThan(announcedBefore));
   });
 
+  test(
+    'stops listening while every paired device is connected, listens '
+    'again when one drops or a screen looks, and never while stopped',
+    () async {
+      final bus = QuietBus();
+      final (air, airWay) = await engineOn(bus, 'MacBook Air');
+      final (studio, _) = await engineOn(bus, 'Mac Studio');
+      await pairWith(air, studio);
+      await studio.setAlwaysVisible(true);
+      expect(air.multicastNeed.isNeeded, isFalse, reason: 'not started yet');
+
+      await air.start();
+      expect(air.multicastNeed.isNeeded, isTrue, reason: 'Mac Studio is away');
+      expect(air.multicastNeed.reasons, ['missing']);
+      expect(airWay.isListening, isTrue);
+
+      final joined = connected(air);
+      await studio.start();
+      await joined;
+      await pump();
+      expect(air.multicastNeed.isNeeded, isFalse);
+      expect(airWay.isListening, isFalse);
+
+      final looking = air.multicastNeed.hold('nearby');
+      await pump();
+      expect(airWay.isListening, isTrue, reason: 'Add a device is open');
+      looking.release();
+      await pump();
+      expect(airWay.isListening, isFalse);
+
+      await studio.stop();
+      await air.deviceChanges
+          .firstWhere((_) => !air.devices.single.isConnected)
+          .timeout(const Duration(seconds: 5));
+      await pump();
+      expect(air.multicastNeed.isNeeded, isTrue);
+      expect(airWay.isListening, isTrue);
+
+      await air.stop();
+      expect(air.multicastNeed.isNeeded, isFalse, reason: 'paused');
+    },
+  );
+
+  test('nothing paired and nobody looking needs no listening', () async {
+    final bus = QuietBus();
+    final (air, airWay) = await engineOn(bus, 'MacBook Air');
+    await air.start();
+    expect(air.multicastNeed.isNeeded, isFalse);
+    expect(airWay.isListening, isFalse);
+  });
+
   test('announces keep their pace while one paired device is away', () async {
     final bus = QuietBus();
     final (air, airWay) = await engineOn(bus, 'MacBook Air');

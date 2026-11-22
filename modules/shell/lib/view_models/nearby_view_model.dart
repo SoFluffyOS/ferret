@@ -50,6 +50,7 @@ class NearbyViewModel extends ChangeNotifier {
     _changes = _engine.nearbyChanges.listen((_) => notifyListeners());
     if (watch) {
       stayVisible();
+      startHearing();
       unawaited(lookAgain());
     }
   }
@@ -75,6 +76,7 @@ class NearbyViewModel extends ChangeNotifier {
   bool _hasLooked = false;
   bool _disposed = false;
   VisibleHold? _visible;
+  MulticastHold? _hearing;
 
   /// Unpaired devices found on the network, by name. The one being paired
   /// comes first, where its code is in view, and stays listed even after it
@@ -123,6 +125,23 @@ class NearbyViewModel extends ChangeNotifier {
   void letGo() {
     _visible?.release();
     _visible = null;
+  }
+
+  /// Keeps this device hearing the network while the list is in sight, so
+  /// answers and announces from devices nearby reach it. On Android, Wi-Fi
+  /// passes them only while someone needs them.
+  void startHearing() {
+    if (_disposed) {
+      return;
+    }
+
+    _hearing ??= _engine.multicastNeed.hold('nearby');
+  }
+
+  /// The list is out of sight, such as with the app in the background.
+  void stopHearing() {
+    _hearing?.release();
+    _hearing = null;
   }
 
   /// Looks now, then a few more times.
@@ -235,6 +254,7 @@ class NearbyViewModel extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     letGo();
+    stopHearing();
     cancel();
     _nextLook?.cancel();
     _clearPaired?.cancel();

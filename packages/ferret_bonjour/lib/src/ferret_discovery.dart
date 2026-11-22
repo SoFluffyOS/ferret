@@ -11,6 +11,8 @@ import 'package:transport/transport.dart';
 /// `_ferret._tcp` next to Ferret's own multicast announce; Ferret's own
 /// DNS-SD only steps in when Bonjour can't start, because both offering the
 /// same name would clash. Windows and Linux keep Ferret's own two ways.
+/// On Android, Bonjour rests while nothing needs to hear the network (see
+/// `MulticastNeed`).
 abstract final class FerretDiscovery {
   static bool get usesBonjour =>
       Platform.isMacOS || Platform.isIOS || Platform.isAndroid;
@@ -32,7 +34,13 @@ abstract final class FerretDiscovery {
 
     final discovery = CombinedDiscovery([
       MulticastDiscovery(),
-      FallbackDiscovery(BonjourDiscovery(backend: backend), MdnsDiscovery()),
+      FallbackDiscovery(
+        BonjourDiscovery(
+          backend: backend,
+          listensOnDemand: Platform.isAndroid,
+        ),
+        MdnsDiscovery(),
+      ),
     ]);
     if (!holdsUntilAsked) {
       return discovery;

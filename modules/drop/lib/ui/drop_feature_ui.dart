@@ -19,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:transport/transport.dart' show MulticastNeed;
 
 /// The app side of Drop: transfers in Activity, "Send files" on each device,
 /// files dropped on the window or menubar icon, shares from other apps and
@@ -39,6 +40,7 @@ class DropFeatureUi extends FeatureUi {
     SendHandoff? handoff,
     Duration connectGrace = const Duration(seconds: 10),
     Future<String> Function()? describeFolder,
+    MulticastNeed? multicastNeed,
   }) : this._(
          plugin ?? FerretDrop(),
          feature,
@@ -46,6 +48,7 @@ class DropFeatureUi extends FeatureUi {
          handoff,
          connectGrace,
          describeFolder,
+         multicastNeed,
        );
 
   DropFeatureUi._(
@@ -55,12 +58,14 @@ class DropFeatureUi extends FeatureUi {
     this._handoff,
     this._connectGrace,
     this._describeFolder,
+    MulticastNeed? multicastNeed,
   ) : feature =
           feature ??
           DropFeature(
             store: (settings) =>
                 PlatformReceiveStore(settings, plugin: _plugin),
             secrets: SupportSecretStore(),
+            multicastNeed: multicastNeed,
           );
 
   @override

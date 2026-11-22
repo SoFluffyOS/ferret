@@ -87,6 +87,29 @@ void main() {
     passive.dispose();
   });
 
+  test('needs to hear the network while a watching list is in sight, '
+      'not a passive one, and not once out of sight', () async {
+    final engine = await startEngine('Pixel 7');
+    expect(engine.multicastNeed.isNeeded, isFalse);
+
+    final passive = NearbyViewModel(engine, watch: false);
+    viewModels.add(passive);
+    expect(engine.multicastNeed.isNeeded, isFalse);
+
+    final pairing = watch(engine);
+    expect(engine.multicastNeed.reasons, ['nearby']);
+
+    pairing.stopHearing();
+    expect(engine.multicastNeed.isNeeded, isFalse, reason: 'app hidden');
+
+    pairing.startHearing();
+    expect(engine.multicastNeed.isNeeded, isTrue);
+
+    viewModels.remove(pairing);
+    pairing.dispose();
+    expect(engine.multicastNeed.isNeeded, isFalse);
+  });
+
   test('lists the devices near you, without any scanning by hand', () async {
     final mac = await startEngine('MacBook Pro');
     await startEngine('Pixel 7');

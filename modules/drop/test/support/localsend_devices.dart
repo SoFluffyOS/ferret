@@ -6,6 +6,7 @@ import 'package:engine/engine.dart';
 import 'package:interop_localsend/interop_localsend.dart';
 import 'package:interop_quickshare/interop_quickshare.dart';
 import 'package:protocol/protocol.dart';
+import 'package:transport/transport.dart' show MulticastNeed;
 
 import 'files.dart';
 
@@ -43,6 +44,7 @@ class SoloDevice implements FeatureHost {
     QuickShareOptions? quickShare,
     Map<String, Object?> settings = const {},
     LocalSendIdentity? identity,
+    MulticastNeed? multicastNeed,
   }) async {
     final secrets = MemorySecretStore();
     if (identity != null) {
@@ -64,6 +66,7 @@ class SoloDevice implements FeatureHost {
           multicastWait: options.multicastWait,
         ),
         quickShareOptions: quickShare ?? loopbackQuickShare,
+        multicastNeed: multicastNeed,
       ),
       MemorySettingsStore({...settings}),
       secrets,

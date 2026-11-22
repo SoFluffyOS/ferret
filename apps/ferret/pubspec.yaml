@@ -62,6 +62,8 @@ dependencies:
     path: ../../modules/updates
   wake:
     path: ../../modules/wake
+  transport:
+    path: ../../packages/transport
 
 dev_dependencies:
   crypto: ^3.0.6
@@ -91,8 +93,6 @@ dev_dependencies:
   lucide_icons_flutter: ^4.0.3
   protocol:
     path: ../../packages/protocol
-  transport:
-    path: ../../packages/transport
   flutter_test:
     sdk: flutter
   lints: ^6.0.0

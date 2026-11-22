@@ -22,11 +22,13 @@ import 'package:transport/transport.dart';
 
 /// Starts Ferret with [features]: storage, the engine, platform hooks, and
 /// the app. [onStarted] gets the running engine, for wiring between
-/// features that the app owns.
+/// features that the app owns. [multicastNeed] is shared with features
+/// that listen to the network themselves, such as Drop's LocalSend.
 Future<void> runFerret({
   required List<FeatureUi> features,
   String appVersion = '',
   void Function(FerretEngine engine)? onStarted,
+  MulticastNeed? multicastNeed,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
   // Release builds print to the system log (logcat, Console.app), which
@@ -61,10 +63,6 @@ Future<void> runFerret({
   );
   final device = described.renamed(sharedComputer.nameFor(described.name));
 
-  if (Platform.isAndroid) {
-    await FerretSystem().acquireMulticastLock();
-  }
-
   final discovery = FerretDiscovery.forPlatform();
   final engine = await FerretEngine.create(
     secrets: secrets,
@@ -73,6 +71,7 @@ Future<void> runFerret({
     features: [for (final feature in features) feature.feature],
     discovery: discovery,
     sameAccount: SameAccount(siblingSecrets: [paths.cli.secrets]),
+    multicastNeed: multicastNeed,
   );
   final localNetwork = await _localNetworkAsk(discovery, engine, settings);
   sharedComputer.follow(engine, computerName: described.name);

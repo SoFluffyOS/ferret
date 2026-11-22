@@ -170,6 +170,9 @@ class _SpyEngine extends Fake implements FerretEngine {
   @override
   final SettingsStore settings = MemorySettingsStore();
 
+  @override
+  final MulticastNeed multicastNeed = MulticastNeed();
+
   bool running = true;
   int reconnects = 0;
 

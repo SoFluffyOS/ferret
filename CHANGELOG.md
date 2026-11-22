@@ -12,6 +12,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - **Pairing**: tap **Pair** next to a device near you and check that both screens show the same six digits. Or scan a QR code, from Ferret or the phone's own camera. No account, ever.
 - **Pair once, join them all**: a device you pair with one of yours joins all of them, once each asks you. **Forget** removes it everywhere (each one asks too), or only here.
 - **Flaky Wi-Fi, handled**: a device that drops says **Reconnecting…** instead of offline, and comes back right after sleep or a network change. A slow link says **weak connection**.
+- **Easy on your phone's battery**: once all your devices are connected, Android stops waking Ferret for every announce on the Wi-Fi. It listens again the moment one drops or you open Nearby.
 - **Fix connection**: says in plain words why a device won't connect, with the fix. Firewalls on Windows and Linux, café Wi-Fi that keeps devices apart, your phone's hotspot, mobile data.
 - **Work laptops**: Fix connection says when a work VPN carries everything, even traffic to your phone, and when the firewall needs an administrator. A [page for your IT team](docs/getting-started/work-computer.md) lists ports, what leaves the device and the Mac permissions.
 - **Easy to read for anyone**: plain words, calm colors and short buttons that still fit at 200% text. **Copy details for a helper** puts a short report on the clipboard for whoever helps you.

@@ -34,6 +34,7 @@ class FerretEngine implements FeatureHost {
     required Duration groupRequestLifetime,
     required LocalNetworkSource? networks,
     required Future<Set<String>> Function()? ownAddresses,
+    required this.multicastNeed,
   }) : _device = device,
        _networkSource = networks,
        _ownAddressOverride = ownAddresses,
@@ -99,6 +100,7 @@ class FerretEngine implements FeatureHost {
     Duration groupRequestLifetime = defaultGroupRequestLifetime,
     LocalNetworkSource? networks,
     Future<Set<String>> Function()? ownAddresses,
+    MulticastNeed? multicastNeed,
   }) async {
     final identity = await DeviceIdentity.loadOrCreate(secrets);
     final trustStore = await TrustStore.open(secrets);
@@ -118,6 +120,7 @@ class FerretEngine implements FeatureHost {
       groupRequestLifetime: groupRequestLifetime,
       networks: networks,
       ownAddresses: ownAddresses,
+      multicastNeed: multicastNeed ?? MulticastNeed(),
     );
   }
 
@@ -150,6 +153,11 @@ class FerretEngine implements FeatureHost {
   /// What this device tells others about itself.
   LocalDevice get device => _device;
   final int preferredPort;
+
+  /// Whether this device needs to hear the network now: Android keeps its
+  /// Wi-Fi multicast lock only while it does. Screens that list devices
+  /// nearby hold it; the engine adds paired devices that aren't connected.
+  final MulticastNeed multicastNeed;
 
   final Map<String, Feature> _features;
   final VpnAddresses _vpnFilter;
@@ -448,8 +456,11 @@ class FerretEngine implements FeatureHost {
       return;
     }
 
+    final devices = trustStore.devices;
+    multicastNeed.setMissing(
+      devices.any((device) => !_ready.containsKey(device.id)),
+    );
     if (_discovery case final PacedDiscovery paced) {
-      final devices = trustStore.devices;
       final relaxed =
           devices.isNotEmpty &&
           devices.every((device) => _ready.containsKey(device.id));
@@ -461,6 +472,31 @@ class FerretEngine implements FeatureHost {
         await paced.setRelaxed(relaxed);
       } on Object catch (error) {
         printWarning('Discovery did not change pace', error);
+      }
+    }
+  }
+
+  /// Discovery that keeps the network passing multicast just by running,
+  /// such as Bonjour on Android, rests while nothing needs to hear it.
+  Future<void> _updateListening() async {
+    if (!_running) {
+      return;
+    }
+
+    if (_discovery case final ListeningDiscovery listening) {
+      final needed = multicastNeed.isNeeded;
+      if (listening.isListening == needed) {
+        return;
+      }
+
+      printLog(switch (needed) {
+        true => 'Listening for devices: ${multicastNeed.reasons.join(', ')}',
+        false => 'Not listening: no paired device missing, no one looking',
+      });
+      try {
+        await listening.setListening(needed);
+      } on Object catch (error) {
+        printWarning('Discovery did not change listening', error);
       }
     }
   }
@@ -589,7 +625,8 @@ class FerretEngine implements FeatureHost {
       ..add(trustStore.changes.listen((_) => unawaited(_forgetOldAccess())))
       ..add(access.changes.listen((id) => unawaited(_applyAccess(id))))
       ..add(trustStore.changes.listen((_) => unawaited(_updateVisibility())))
-      ..add(trustStore.changes.listen((_) => unawaited(_updatePace())));
+      ..add(trustStore.changes.listen((_) => unawaited(_updatePace())))
+      ..add(multicastNeed.changes.listen((_) => unawaited(_updateListening())));
 
     if (!_featuresStarted) {
       _featuresStarted = true;
@@ -603,7 +640,9 @@ class FerretEngine implements FeatureHost {
     );
     await _refreshNetworks();
     await _updateVisibility();
+    multicastNeed.setRunning(true);
     await _updatePace();
+    await _updateListening();
     await _discovery.start(_announce());
     printLog(
       'Ferret ${DeviceIdentity.format(identity.deviceId)} listening on port $port',
@@ -631,6 +670,7 @@ class FerretEngine implements FeatureHost {
     }
 
     _running = false;
+    multicastNeed.setRunning(false);
     _droppedRecently.clear();
     _vpnReacher.stopAll();
     // Whoever asked asks again on the next connection.

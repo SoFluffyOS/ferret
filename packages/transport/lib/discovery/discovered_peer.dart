@@ -64,3 +64,15 @@ abstract interface class PacedDiscovery implements Discovery {
   /// announces right away. It can be set before [start].
   Future<void> setRelaxed(bool relaxed);
 }
+
+/// A [Discovery] that can stop listening for others while nothing needs to
+/// hear them, such as the system's Bonjour on Android, which keeps Wi-Fi
+/// passing multicast for as long as it runs. Ferret's own announces still
+/// go out. See `MulticastNeed`.
+abstract interface class ListeningDiscovery implements Discovery {
+  /// Whether it listens. On until told otherwise.
+  bool get isListening;
+
+  /// Stops or starts listening. It can be set before [start].
+  Future<void> setListening(bool listening);
+}

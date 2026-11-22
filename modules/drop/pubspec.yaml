@@ -41,13 +41,13 @@ dependencies:
   provider: ^6.1.5+1
   sofluffy_ui:
     path: ../../packages/sofluffy_ui
+  transport:
+    path: ../../packages/transport
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
-  transport:
-    path: ../../packages/transport
 
 flutter:
   generate: true

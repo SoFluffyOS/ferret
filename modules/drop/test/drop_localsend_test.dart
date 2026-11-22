@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:interop_localsend/interop_localsend.dart';
 import 'package:lan_discovery/lan_discovery.dart';
 import 'package:path/path.dart' as p;
+import 'package:transport/transport.dart' show MulticastNeed;
 
 import 'support/files.dart';
 import 'support/localsend_devices.dart';
@@ -52,6 +53,26 @@ void main() {
   Transfer? onPhone() => phone.transfers.firstOrNull;
 
   group('receiving', () {
+    test('needs to hear the network while LocalSend listens for '
+        'announcements, not once it stopped', () async {
+      final need = MulticastNeed()..setRunning(true);
+      await laptop.feature.stop();
+      laptop = await SoloDevice.start(
+        'Laptop',
+        inbox,
+        identity: laptopIdentity,
+        options: const LocalSendOptions(port: 0, useMulticast: true),
+        multicastNeed: need,
+      );
+      expect(need.isNeeded, isFalse, reason: 'nothing joined yet');
+
+      await laptop.localSend.receiveForAWhile();
+      expect(need.reasons, ['localsend']);
+
+      await laptop.localSend.suspend();
+      expect(need.isNeeded, isFalse);
+    });
+
     test('is off until someone turns it on', () async {
       expect(laptop.localSend.receiveState.isOn, isFalse);
       expect(laptop.localSend.receiveState.port, isNull);

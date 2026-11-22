@@ -56,6 +56,64 @@ void main() {
     expect(offer.txt['n'], 'MacBook Pro');
   });
 
+  group('listening on demand (Android)', () {
+    late BonjourDiscovery onDemand;
+
+    setUp(() {
+      onDemand = BonjourDiscovery(
+        backend: bonjour,
+        repeatEvery: const Duration(milliseconds: 40),
+        collectFor: Duration.zero,
+        listensOnDemand: true,
+      );
+    });
+
+    tearDown(() => onDemand.stop());
+
+    test('stops browsing and offering while nothing needs to listen, and '
+        'starts both again when something does', () async {
+      await onDemand.start(_announce(_selfId, 'Pixel 7'));
+      expect(bonjour.browsers, hasLength(1));
+      expect(bonjour.offers, hasLength(1));
+
+      await onDemand.setListening(false);
+      expect(bonjour.browsers.single.stopped, isTrue);
+      expect(bonjour.offers.single.stopped, isTrue);
+
+      await onDemand.setListening(true);
+      expect(bonjour.browsers, hasLength(2));
+      expect(bonjour.browsers.last.stopped, isFalse);
+      expect(bonjour.offers.last.stopped, isFalse);
+    });
+
+    test('told before starting, it waits until something listens', () async {
+      await onDemand.setListening(false);
+      await onDemand.start(_announce(_selfId, 'Pixel 7'));
+      expect(bonjour.browsers, isEmpty);
+      expect(bonjour.offers, isEmpty);
+
+      await onDemand.setListening(true);
+      expect(bonjour.browsers, hasLength(1));
+      expect(bonjour.offers, hasLength(1));
+    });
+
+    test('stays stopped after stop, whatever it is told', () async {
+      await onDemand.start(_announce(_selfId, 'Pixel 7'));
+      await onDemand.setListening(false);
+      await onDemand.stop();
+      await onDemand.setListening(true);
+      expect(bonjour.browsers, hasLength(1));
+    });
+  });
+
+  test('elsewhere it keeps running when told not to listen', () async {
+    await discovery.start(_announce(_selfId, 'Mac'));
+    await discovery.setListening(false);
+
+    expect(bonjour.browsers.single.stopped, isFalse);
+    expect(bonjour.offers.single.stopped, isFalse);
+  });
+
   test('reads a found device from its TXT entries', () async {
     await discovery.start(_announce(_selfId, 'Mac'));
     final found = discovery.peers.first;

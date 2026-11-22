@@ -44,12 +44,14 @@ class SystemBinding with WidgetsBindingObserver {
   final List<Timer> _reconnectTimers = [];
   List<String>? _shownDevices;
   PauseState? _shownPause;
+  bool? _lockHeld;
 
   Future<void> start() async {
     _subscriptions
       ..add(_system.networkChanges.listen(_onNetworkChange))
       ..add(_system.pauseChanges.listen(_onSystemPause))
-      ..add(engine.settings.changes.listen(_onSettingChanged));
+      ..add(engine.settings.changes.listen(_onSettingChanged))
+      ..add(engine.multicastNeed.changes.listen(_onMulticastNeed));
     WidgetsBinding.instance.addObserver(this);
     host.addListener(_onHostChanged);
     pause.addListener(_onPauseChanged);
@@ -63,6 +65,7 @@ class SystemBinding with WidgetsBindingObserver {
     ).adopt(hadDevices: engine.trustStore.devices.isNotEmpty);
     await _applyServiceSettings();
     await _restorePause();
+    await _holdMulticastLock();
     await _showDevices();
   }
 
@@ -154,7 +157,27 @@ class SystemBinding with WidgetsBindingObserver {
 
     _shownPause = state;
     await _system.setPause(state);
-    if (state.isPaused) {
+    await _holdMulticastLock();
+  }
+
+  void _onMulticastNeed(bool _) => unawaited(_holdMulticastLock());
+
+  /// Wi-Fi passes multicast to Ferret only while it holds the lock, and
+  /// passing it costs battery. It is held while a screen looks for devices
+  /// nearby or a paired device is missing, never while paused. Announces
+  /// go out without it.
+  Future<void> _holdMulticastLock() async {
+    if (!_system.isAndroid) {
+      return;
+    }
+
+    final wanted = engine.multicastNeed.isNeeded && !pause.isPaused;
+    if (wanted == _lockHeld) {
+      return;
+    }
+
+    _lockHeld = wanted;
+    if (!wanted) {
       await _system.releaseMulticastLock();
       return;
     }

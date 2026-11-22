@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/drop.dart';
 import 'package:protocol/protocol.dart' hide Platform;
+import 'package:transport/transport.dart' show MulticastNeed;
 
 /// Builds the [ReceiveStore] once settings are available.
 typedef ReceiveStoreFactory = ReceiveStore Function(SettingsStore settings);
@@ -32,6 +33,7 @@ class DropFeature extends Feature {
     this.quickShareOptions = const QuickShareOptions(),
     SecretStore? secrets,
     this.sources = const SendSources(),
+    this.multicastNeed,
   }) : _storeFactory = store ?? _defaultStore,
        _secrets = secrets;
 
@@ -44,6 +46,10 @@ class DropFeature extends Feature {
 
   /// Opens files to send, on disk or shared by another app.
   final SendSources sources;
+
+  /// The engine's, so LocalSend's listening counts when Android decides
+  /// whether Wi-Fi passes multicast.
+  final MulticastNeed? multicastNeed;
   final ReceiveStoreFactory _storeFactory;
 
   /// Keeps this device's LocalSend certificate. Without it, the device
@@ -103,6 +109,7 @@ class DropFeature extends Feature {
       secrets: _secrets,
       options: localSendOptions,
       sources: sources,
+      multicastNeed: multicastNeed,
     );
     unawaited(localSend.start());
     if (localSendOptions.pausesInBackground) {

@@ -17,14 +17,21 @@ import 'package:transport/transport.dart';
 /// secrets: whoever answers has to hold the device id's key.
 ///
 /// While it isn't announcing it only browses, which names nobody.
-class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
+class BonjourDiscovery
+    implements ActiveDiscovery, QuietDiscovery, ListeningDiscovery {
   BonjourDiscovery({
     BonjourBackend backend = const BonsoirBackend(),
     this.repeatEvery = const Duration(seconds: 30),
     this.collectFor = const Duration(seconds: 1),
+    this.listensOnDemand = false,
   }) : _backend = backend;
 
   final BonjourBackend _backend;
+
+  /// Whether it stops browsing and offering while told not to listen. On
+  /// Android, where Bonjour keeps Wi-Fi passing multicast for as long as
+  /// either runs; elsewhere it always runs.
+  final bool listensOnDemand;
 
   /// How often devices still offered are passed on again. The system says
   /// nothing while they stay, and quiet devices are forgotten.
@@ -46,6 +53,8 @@ class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
   Announce? _self;
   bool _denied = false;
   bool _announcing = true;
+  bool _listening = true;
+  bool _started = false;
 
   @override
   Stream<DiscoveredPeer> get peers => _peers.stream;
@@ -87,8 +96,36 @@ class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
   }
 
   @override
+  bool get isListening => _listening;
+
+  @override
+  Future<void> setListening(bool listening) async {
+    if (listening == _listening) {
+      return;
+    }
+
+    _listening = listening;
+    if (!listensOnDemand || !_started) {
+      return;
+    }
+
+    if (!listening) {
+      await _stopBrowsing();
+      return;
+    }
+
+    try {
+      await _browse();
+    } on Object catch (error) {
+      printDebug('Bonjour could not start again: $error');
+    }
+  }
+
+  bool get _runs => _listening || !listensOnDemand;
+
+  @override
   Future<void> start(Announce self) async {
-    if (_browser != null) {
+    if (_started) {
       if (_sameOffer(_self, self)) {
         return;
       }
@@ -98,6 +135,24 @@ class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
 
     _self = self;
     _denied = false;
+    _started = true;
+    if (!_runs) {
+      return;
+    }
+
+    try {
+      await _browse();
+    } on Object {
+      _started = false;
+      rethrow;
+    }
+  }
+
+  Future<void> _browse() async {
+    if (_browser != null) {
+      return;
+    }
+
     final browser = await _backend.browse(MdnsDiscovery.serviceType);
     _browser = browser;
     _subscriptions.add(browser.events.listen(_onEvent));
@@ -140,6 +195,11 @@ class BonjourDiscovery implements ActiveDiscovery, QuietDiscovery {
 
   @override
   Future<void> stop() async {
+    _started = false;
+    await _stopBrowsing();
+  }
+
+  Future<void> _stopBrowsing() async {
     _repeat?.cancel();
     _repeat = null;
     for (final subscription in _subscriptions) {

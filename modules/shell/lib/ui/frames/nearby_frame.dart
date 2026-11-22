@@ -62,6 +62,10 @@ class _NearbyFrameState extends State<NearbyFrame> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    if (!_inSight(WidgetsBinding.instance.lifecycleState)) {
+      _viewModel.stopHearing();
+    }
+
     if (_ask case final ask?) {
       ask.addListener(_askChanged);
       unawaited(ask.refresh());
@@ -74,7 +78,22 @@ class _NearbyFrameState extends State<NearbyFrame> with WidgetsBindingObserver {
     if (state == .resumed) {
       unawaited(_ask?.refresh());
     }
+
+    if (!_inSight(state)) {
+      _viewModel.stopHearing();
+      return;
+    }
+
+    if (widget.watch) {
+      _viewModel.startHearing();
+    }
   }
+
+  /// Still on screen, or the app may not have said yet.
+  static bool _inSight(AppLifecycleState? state) => switch (state) {
+    .hidden || .paused || .detached => false,
+    _ => true,
+  };
 
   void _askChanged() {
     if (mounted) {
@@ -88,11 +107,16 @@ class _NearbyFrameState extends State<NearbyFrame> with WidgetsBindingObserver {
     super.didUpdateWidget(oldWidget);
     if (widget.watch && !oldWidget.watch) {
       _viewModel.stayVisible();
+      if (_inSight(WidgetsBinding.instance.lifecycleState)) {
+        _viewModel.startHearing();
+      }
+
       unawaited(_viewModel.lookAgain());
     }
 
     if (!widget.watch && oldWidget.watch) {
       _viewModel.letGo();
+      _viewModel.stopHearing();
     }
   }
 

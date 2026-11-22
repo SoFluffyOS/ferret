@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bonsoir/bonsoir.dart';
 import 'package:core/core.dart';
@@ -58,12 +59,16 @@ class _BonsoirOffer implements BonjourOffer {
   _BonsoirOffer(this._broadcast) {
     _subscription = _broadcast.eventStream?.listen(
       _onEvent,
-      onError: (Object error) => _failures.add(BonsoirBackend.failureOf(error)),
+      onError: (Object error) {
+        _settle();
+        _failures.add(BonsoirBackend.failureOf(error));
+      },
     );
   }
 
   final BonsoirBroadcast _broadcast;
   final StreamController<BonjourFailed> _failures = .broadcast();
+  final _Settled _settled = _Settled();
   StreamSubscription<BonsoirBroadcastEvent>? _subscription;
 
   @override
@@ -72,19 +77,56 @@ class _BonsoirOffer implements BonjourOffer {
   /// The system renamed the offer because the name is taken. Peers check
   /// that the name is the device id, so they would ignore it.
   void _onEvent(BonsoirBroadcastEvent event) {
+    if (event is BonsoirBroadcastStartedEvent) {
+      _settle();
+    }
+
     if (event is BonsoirBroadcastNameAlreadyExistsEvent) {
       printDebug('Bonjour: this device id is already offered here');
     }
   }
 
+  void _settle() => _settled.settle();
+
   @override
-  Future<void> stop() async {
+  Future<void> stop() => _settled.thenStop(() async {
     await _subscription?.cancel();
     if (!_broadcast.isStopped) {
       await _broadcast.stop();
     }
 
     await _failures.close();
+  });
+}
+
+/// Android's bonsoir only stops what the system already said started: a
+/// stop sent while the offer or browse is still on its way is dropped, the
+/// system starts it anyway, and its multicast lock is never let go. So a
+/// stop waits for the start, or for its failure, before going out.
+class _Settled {
+  /// Only Android has the problem; elsewhere a stop goes out at once.
+  final bool _waits = Platform.isAndroid;
+  final Completer<void> _done = Completer();
+  bool _stopping = false;
+
+  void settle() {
+    if (!_done.isCompleted) {
+      _done.complete();
+    }
+  }
+
+  Future<void> thenStop(Future<void> Function() stop) async {
+    if (_stopping) {
+      return;
+    }
+
+    _stopping = true;
+    if (_done.isCompleted || !_waits) {
+      await stop();
+      return;
+    }
+
+    unawaited(_done.future.then((_) => stop()));
   }
 }
 
@@ -92,12 +134,16 @@ class _BonsoirBrowser implements BonjourBrowser {
   _BonsoirBrowser(this._discovery) {
     _subscription = _discovery.eventStream?.listen(
       _onEvent,
-      onError: (Object error) => _events.add(BonsoirBackend.failureOf(error)),
+      onError: (Object error) {
+        _settled.settle();
+        _events.add(BonsoirBackend.failureOf(error));
+      },
     );
   }
 
   final BonsoirDiscovery _discovery;
   final StreamController<BonjourEvent> _events = .broadcast();
+  final _Settled _settled = _Settled();
   StreamSubscription<BonsoirDiscoveryEvent>? _subscription;
 
   @override
@@ -105,6 +151,8 @@ class _BonsoirBrowser implements BonjourBrowser {
 
   void _onEvent(BonsoirDiscoveryEvent event) {
     switch (event) {
+      case BonsoirDiscoveryStartedEvent():
+        _settled.settle();
       case BonsoirDiscoveryServiceFoundEvent(:final service):
         unawaited(_resolve(service));
       case BonsoirDiscoveryServiceResolvedEvent(:final service) ||
@@ -139,12 +187,12 @@ class _BonsoirBrowser implements BonjourBrowser {
   }
 
   @override
-  Future<void> stop() async {
+  Future<void> stop() => _settled.thenStop(() async {
     await _subscription?.cancel();
     if (!_discovery.isStopped) {
       await _discovery.stop();
     }
 
     await _events.close();
-  }
+  });
 }
