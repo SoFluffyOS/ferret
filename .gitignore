@@ -31,6 +31,7 @@ key.properties
 # Browser extension
 extensions/browser/node_modules/
 extensions/browser/dist/
+extensions/browser/packages/
 
 # Logs
 *.log

@@ -142,6 +142,16 @@ That's it, nothing is left behind.
 
 On a phone, uninstalling the app removes everything.
 
+## 🧩 Browser extension
+
+The [browser extension](getting-started/browser.md) collects nothing and sends nothing to the internet. It has no account and no analytics.
+
+- It talks **only to the Ferret app on the same computer**, at `127.0.0.1`. Ferret passes what you send on to your paired devices, end-to-end encrypted, like everything else.
+- **When you send a tab or a link**, it reads that page's address and title. For a video or a long page it also reads the video time and the scroll position, from that one page, at that moment.
+- **Share the current tab** (off until you turn it on) tells Ferret which page you were on when you leave the browser, so your other devices can offer to continue it. Private windows are never shared.
+- **Restore the video time and scroll position** (off until you turn it on) sets that spot on a page your device sent, right after it opens.
+- It keeps its settings and the key from pairing in the browser's local storage for this extension. Never synced. Unpair it and the key is gone. Remove the extension and everything is.
+
 ## 🌐 This website
 
 ferret.sofluffy.io has no analytics, no ads and no cookies, and it loads nothing from other sites. It keeps one value in your browser, your light or dark theme choice, and never sends it anywhere. Cloudflare, which hosts the site, may keep standard server logs, such as IP address and requested page, as most web hosts do.

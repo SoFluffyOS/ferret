@@ -9,7 +9,8 @@
     "build": "node build.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm test && npm run build"
+    "check": "npm run typecheck && npm test && npm run build",
+    "package": "node package.mjs"
   },
   "devDependencies": {
     "@types/chrome": "0.3.6",

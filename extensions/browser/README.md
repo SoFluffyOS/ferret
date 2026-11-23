@@ -15,6 +15,29 @@ npm run check   # types, tests, then the build
 
 No remote code, no analytics, no network calls other than 127.0.0.1. Dependencies are dev-only and pinned.
 
+## 🏪 Package
+
+```sh
+npm run package
+```
+
+It builds, then writes three zips to `packages/`:
+
+- `ferret-chromium-<version>.zip` for Chrome and Edge.
+- `ferret-firefox-<version>.zip` for Firefox.
+- `ferret-source-<version>.zip`: the committed files of this folder, for reviewers who ask for the source of bundled code.
+
+Commit first. The source zip comes from git, so the script stops on uncommitted changes.
+
+**Build it from the source zip** (Node.js 20 or later, npm 10 or later, any OS):
+
+```sh
+npm ci
+npm run build
+```
+
+`dist/firefox` and `dist/chromium` are then the same files as in the other two zips. The code is bundled with esbuild, not minified, so it reads like the source.
+
 ## 🧪 Try it
 
 - **Chromium:** open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick `dist/chromium`.
