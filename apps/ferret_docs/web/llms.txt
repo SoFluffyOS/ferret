@@ -1,0 +1,46 @@
+# Ferret
+
+> Ferret is a free, open source app that makes your phone and your computers work as one: copy on one and paste on the other, send files, see and answer your Android phone's notifications, messages and calls, and see your phone's screen. Android, iPhone, Mac, Windows and Linux. Devices talk directly on your own network, end-to-end encrypted, with no account, no cloud and no telemetry.
+
+- Local network only. Devices find each other on the Wi-Fi and connect directly; nothing goes through a server. Every connection uses the Noise protocol (`Noise_XX_25519_ChaChaPoly_SHA256`), and a device connects only after you paired it by comparing six digits or scanning a code.
+- Everything is off until you turn it on, per device.
+- Released today: Android (APK from GitHub Releases) and Mac (signed and notarized .dmg, macOS 12 or later). Windows, Linux and iPhone build from source and are not in a release yet.
+- Works with LocalSend and Quick Share for sending files to and from devices that don't run Ferret.
+- License: the apps are GPL-3.0. The protocol (`proto/` and the spec) is MIT, so anyone can build a compatible client.
+- Languages: English and Vietnamese.
+
+## Get started
+
+- [Docs home](https://ferret.sofluffy.io/docs): install, pair, pick features
+- [Pair your devices](https://ferret.sofluffy.io/docs/getting-started/pairing)
+- [Android](https://ferret.sofluffy.io/docs/getting-started/android)
+- [Mac](https://ferret.sofluffy.io/docs/getting-started/mac)
+- [Windows](https://ferret.sofluffy.io/docs/getting-started/windows)
+- [Linux](https://ferret.sofluffy.io/docs/getting-started/linux)
+- [iPhone](https://ferret.sofluffy.io/docs/getting-started/iphone) and [what an iPhone can't do](https://ferret.sofluffy.io/docs/iphone/limits)
+- [Browser extension](https://ferret.sofluffy.io/docs/getting-started/browser): send tabs between your devices
+- [Coming from another app](https://ferret.sofluffy.io/docs/getting-started/coming-from-another-app): where each familiar feature lives in Ferret
+- [Away from home](https://ferret.sofluffy.io/docs/features/away-from-home): reach your devices over your own VPN (Tailscale, ZeroTier or WireGuard)
+
+## Features
+
+- [Clipboard](https://ferret.sofluffy.io/docs/features/clipboard): copy here, paste there
+- [Drop](https://ferret.sofluffy.io/docs/features/drop): files and folders to any of your devices
+- [Notifications](https://ferret.sofluffy.io/docs/features/notifications), [Messages](https://ferret.sofluffy.io/docs/features/messages) and [Calls](https://ferret.sofluffy.io/docs/features/calls) from an Android phone
+- [Screen mirroring](https://ferret.sofluffy.io/docs/features/mirroring): your phone's screen in a window
+- [Second display](https://ferret.sofluffy.io/docs/features/second-display): another Mac or an Android tablet as one more screen
+- [Handoff](https://ferret.sofluffy.io/docs/features/handoff): send a page to another device, or pick it up where you left it
+- [Fix connection](https://ferret.sofluffy.io/docs/features/connection-doctor): why a paired device won't connect
+
+## Privacy and protocol
+
+- [Privacy](https://ferret.sofluffy.io/docs/privacy): every byte that leaves your devices, and where it goes
+- [Security](https://ferret.sofluffy.io/docs/spec/security): pairing, keys and the Noise handshake
+- [Protocol reference](https://ferret.sofluffy.io/docs/spec/reference): every message, generated from `proto/`
+- [LocalSend](https://ferret.sofluffy.io/docs/interop/localsend) and [Quick Share](https://ferret.sofluffy.io/docs/interop/quick-share)
+
+## Download and source
+
+- [Latest release](https://github.com/simonpham/ferret/releases/latest)
+- [Source code and README](https://github.com/simonpham/ferret)
+- [Report a bug](https://github.com/simonpham/ferret/issues/new)

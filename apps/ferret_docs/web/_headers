@@ -1,0 +1,12 @@
+# Cloudflare Pages reads this file.
+
+# Points agents to llms.txt and the sitemap (RFC 8288), without parsing HTML.
+/
+  Link: </llms.txt>; rel="describedby"; type="text/plain", </sitemap.xml>; rel="sitemap"; type="application/xml"
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=14400, must-revalidate
+
+/robots.txt
+  Cache-Control: public, max-age=14400, must-revalidate

@@ -142,6 +142,10 @@ That's it, nothing is left behind.
 
 On a phone, uninstalling the app removes everything.
 
+## 🌐 This website
+
+ferret.sofluffy.io has no analytics, no ads and no cookies, and it loads nothing from other sites. It keeps one value in your browser, your light or dark theme choice, and never sends it anywhere. Cloudflare, which hosts the site, may keep standard server logs, such as IP address and requested page, as most web hosts do.
+
 ## 🔓 Check it yourself
 
 Ferret is open source. The apps are GPL-3.0 and the protocol is MIT, documented in the [protocol reference](spec/reference.md). What Ferret protects you from, and what it doesn't, is on the [security](spec/security.md) page.

@@ -36,6 +36,17 @@ Future<void> main(List<String> args) async {
     problems.add('apps/ferret_docs/web/assets must link to docs/assets');
   }
 
+  final llms = File(p.join(repo, 'apps', 'ferret_docs', 'web', 'llms.txt'));
+  final site = RegExp(r'\]\(https://ferret\.sofluffy\.io/docs([^)#]*)\)');
+  for (final match in site.allMatches(llms.readAsStringSync())) {
+    final path = match.group(1) ?? '';
+    final page = path.isEmpty ? 'index' : path.substring(1);
+    if (!File(p.join(public, '$page.md')).existsSync() &&
+        !File(p.join(public, page, 'index.md')).existsSync()) {
+      problems.add('apps/ferret_docs/web/llms.txt: missing page (/docs$path)');
+    }
+  }
+
   final expected = reference.render(p.join(repo, 'proto'));
   final saved = File(p.join(public, 'spec', 'reference.md'));
   if (!saved.existsSync() || saved.readAsStringSync() != expected) {
