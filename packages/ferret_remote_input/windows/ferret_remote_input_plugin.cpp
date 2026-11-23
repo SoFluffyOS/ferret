@@ -44,7 +44,8 @@ std::optional<FlutterError> FerretRemoteInputPlugin::Inject(
     if (custom == nullptr) {
       continue;
     }
-    const auto* event = std::any_cast<NativeInputEvent>(&custom->value());
+    const std::any& wrapped = *custom;
+    const auto* event = std::any_cast<NativeInputEvent>(&wrapped);
     if (event == nullptr) {
       continue;
     }
