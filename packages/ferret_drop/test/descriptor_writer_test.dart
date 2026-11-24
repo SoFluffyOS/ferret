@@ -1,3 +1,6 @@
+@TestOn('mac-os || linux')
+library;
+
 import 'dart:ffi';
 import 'dart:io';
 
