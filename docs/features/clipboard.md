@@ -26,6 +26,8 @@ With Ferret, what you copy on one device lands on the clipboard of your other de
 
 Nothing to open, nothing to press. **Activity** on the home screen keeps the trace: "Copied on Pixel" or "Sent to Laptop", with the first words and a **Copy** button.
 
+Already had the same thing on your clipboard? Ferret leaves it be and still notes "Copied on Pixel", so you know it arrived.
+
 Want to send just a few words without copying them? On a Mac, select them and drag them onto a device in Ferret's popover or window. They land on that device's clipboard. With a device selected in the popover, ⌘V sends it what you copied.
 
 Copied while your other device was asleep? If it reconnects within 2 minutes, it still gets your last copy. Older copies are never replayed.

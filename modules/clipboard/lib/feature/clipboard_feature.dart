@@ -611,11 +611,11 @@ class ClipboardFeature extends Feature {
     }
 
     final hash = ClipCodec.hashOf(content);
-    if (hash == _currentHash) {
-      return;
+    final alreadyHere = hash == _currentHash;
+    if (!alreadyHere) {
+      _noteCopy(content, fromDeviceId: session.remoteDeviceId);
     }
 
-    _noteCopy(content, fromDeviceId: session.remoteDeviceId);
     final entry = ClipEntry(
       item: item,
       direction: .received,
@@ -626,6 +626,13 @@ class ClipboardFeature extends Feature {
     );
     if (entry.skip != .none || !settings.autoReceive) {
       _record(entry);
+      return;
+    }
+
+    // Already on this clipboard, such as through WSLg's own bridge: noted
+    // like any other clip, without writing it again.
+    if (alreadyHere) {
+      _record(entry.copyWith(onClipboard: true));
       return;
     }
 

@@ -403,14 +403,25 @@ void main() {
       expect(feature.history, hasLength(1));
     });
 
-    test('content already on the clipboard is not written again', () async {
+    test('content already on the clipboard is not written again, but is '
+        'still noted', () async {
       await start();
       clipboard.copy(const .text('same'));
       await settle();
+      final copies = <ClipCopy>[];
+      final listening = feature.copies.listen(copies.add);
+      addTearDown(listening.cancel);
 
       await feature.onEnvelope(pixel, envelopeOf(pushOf('same', id: 'other')));
+      await settle();
 
       expect(clipboard.writes, isEmpty);
+      expect(feature.latest?.direction, ClipDirection.received);
+      expect(feature.latest?.onClipboard, isTrue);
+      expect(feature.latest?.skip, ClipSkip.none);
+      expect(feature.latest?.deviceNames, ['Pixel']);
+      expect(copies, isEmpty);
+      expect(pixel.pushes.where((push) => push.item.id == 'other'), isEmpty);
     });
 
     test('its own items coming back are ignored', () async {
