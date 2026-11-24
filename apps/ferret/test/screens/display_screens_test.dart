@@ -35,6 +35,8 @@ const _window = CaptureSize('window', 1000, 720);
 const _tablet = CaptureSize('tablet', 1194, 834, platform: .android);
 
 /// A Mac's features, with an extra display that never touches the system.
+/// Extending and being a display are set, not read from the computer the
+/// test runs on, so Linux and Windows draw the same Mac.
 List<FeatureUi> _mac({bool screenRecording = true}) => [
   for (final feature in appFeatures())
     if (feature.featureId != MirroringFeature.featureId) feature,
@@ -43,6 +45,8 @@ List<FeatureUi> _mac({bool screenRecording = true}) => [
       display: () => StillDisplay(screenRecording: screenRecording),
       canShare: false,
       canView: true,
+      canExtend: true,
+      canBeDisplay: true,
     ),
   ),
 ];

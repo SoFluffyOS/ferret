@@ -43,7 +43,7 @@ final _screens = <String, _Script>{
     );
     await rig.open(tester, DeviceAccessPage(deviceId: phoneId ?? ''));
     await tester.scrollUntilVisible(
-      find.text('Show previews on this computer'),
+      find.textContaining('Show previews on '),
       200,
       scrollable: find.byType(Scrollable).first,
     );

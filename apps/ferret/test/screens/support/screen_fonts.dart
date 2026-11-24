@@ -19,6 +19,7 @@ const screenFontFamily = 'ScreenSans';
 ///    Ferret with. A variable font; weights come from its `wght` axis.
 /// 2. Arial (Regular + Bold) from `/System/Library/Fonts/Supplemental`.
 /// 3. DejaVu Sans on Linux.
+/// 4. Segoe UI, then Arial, from the Windows Fonts folder.
 ///
 /// Icon fonts (Lucide) come from the app's font manifest.
 Future<void> loadScreenFonts() async {
@@ -172,21 +173,36 @@ String? _firstExisting(List<String> paths) {
 /// Arrows and symbols San Francisco lacks, such as the menubar's ⇆.
 const _symbolFamily = 'ScreenSymbols';
 
-const _symbolCandidates = [
+final _symbolCandidates = [
   '/System/Library/Fonts/Apple Symbols.ttf',
   '/System/Library/Fonts/Supplemental/Arial Unicode.ttf',
+  _windowsFont('seguisym.ttf'),
 ];
 
 const _variableCandidates = ['/System/Library/Fonts/SFNS.ttf'];
 
-const _regularCandidates = [
+final _regularCandidates = [
   '/System/Library/Fonts/Supplemental/Arial.ttf',
   '/Library/Fonts/Arial.ttf',
   '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+  '/usr/share/fonts/dejavu-sans-fonts/DejaVuSans.ttf',
+  _windowsFont('segoeui.ttf'),
+  _windowsFont('arial.ttf'),
 ];
 
-const _boldCandidates = [
+final _boldCandidates = [
   '/System/Library/Fonts/Supplemental/Arial Bold.ttf',
   '/Library/Fonts/Arial Bold.ttf',
   '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+  '/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-Bold.ttf',
+  _windowsFont('segoeuib.ttf'),
+  _windowsFont('arialbd.ttf'),
 ];
+
+/// [name] in the Windows Fonts folder, which honours a Windows installed
+/// on another drive.
+String _windowsFont(String name) => [
+  Platform.environment['WINDIR'] ?? r'C:\Windows',
+  'Fonts',
+  name,
+].join(r'\');
