@@ -290,7 +290,7 @@ jobs:
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Build the .deb and the AppImage
         env:
-          FERRET_DEB_MAINTAINER: ${{ vars.FERRET_DEB_MAINTAINER || 'Ferret <https://github.com/simonpham/ferret/issues>' }}
+          FERRET_DEB_MAINTAINER: ${{ secrets.FERRET_DEB_MAINTAINER || vars.FERRET_DEB_MAINTAINER || 'Ferret <https://github.com/simonpham/ferret/issues>' }}
         run: scripts/package_linux.sh release
       - uses: actions/upload-artifact@v4
         with:
