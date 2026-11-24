@@ -35,7 +35,9 @@ cleanup() { git -C "$ROOT" worktree remove --force "$tree" 2>/dev/null || true; 
 trap cleanup EXIT
 
 echo "==> Building $tag in $tree"
-git -C "$tree" submodule update --init --recursive --quiet
+# Your checkout may point its submodules at local folders; cloning from them
+# is quick, and git only allows that with the file protocol switched on.
+git -C "$tree" -c protocol.file.allow=always submodule update --init --recursive --quiet
 (cd "$tree" && scripts/package_macos.sh)
 
 out="$tree/build/macos-packages"
