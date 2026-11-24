@@ -25,11 +25,15 @@ class _FakeDownloads implements PendingDownloads {
 
   Directory get downloads => Directory(p.join(root.path, 'Download'));
 
-  /// Every file other apps can see under Download, by relative path.
+  /// Every file other apps can see under Download, by relative path with
+  /// `/` between folders, as Android writes it.
   List<String> get visible => switch (downloads.existsSync()) {
     true => [
       for (final entity in downloads.listSync(recursive: true))
-        if (entity is File) p.relative(entity.path, from: downloads.path),
+        if (entity is File)
+          p.posix.joinAll(
+            p.split(p.relative(entity.path, from: downloads.path)),
+          ),
     ]..sort(),
     false => [],
   };

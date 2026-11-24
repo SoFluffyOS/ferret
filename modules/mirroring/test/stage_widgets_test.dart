@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
@@ -1257,15 +1258,19 @@ void main() {
       await tester.pump();
       await tester.pump();
 
+      final folder = [
+        '/Users/me/Downloads',
+        'Ferret',
+      ].join(Platform.pathSeparator);
       expect(decoder.saved, [
-        '/Users/me/Downloads/Ferret/Pixel 2026-11-18 at 21.10.00.png',
+        '$folder${Platform.pathSeparator}Pixel 2026-11-18 at 21.10.00.png',
       ]);
       expect(find.text('Saved to Downloads › Ferret'), findsOneWidget);
 
       await tester.tap(find.text('Show in folder'));
       await tester.pump();
 
-      expect(revealed.single, contains('/Users/me/Downloads/Ferret'));
+      expect(revealed.single, contains(folder));
       expect(find.text('Saved to Downloads › Ferret'), findsNothing);
     });
 

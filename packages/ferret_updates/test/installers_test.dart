@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ferret_updates/ferret_updates.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 
 /// Records commands and answers them like the real tools would.
 class _FakeTools {
@@ -36,10 +37,11 @@ class _FakeTools {
     switch ((executable, arguments.firstOrNull)) {
       case ('hdiutil', 'attach'):
         final mount = arguments[arguments.indexOf('-mountpoint') + 1];
-        Directory('$mount/Ferret.app/Contents').createSync(recursive: true);
+        Directory(p.join(mount, 'Ferret.app', 'Contents'))
+            .createSync(recursive: true);
         return ProcessResult(1, 0, '', '');
       case ('ditto', _):
-        Directory('${arguments[1]}/Contents').createSync(recursive: true);
+        Directory(p.join(arguments[1], 'Contents')).createSync(recursive: true);
         return ProcessResult(1, 0, '', '');
       case ('codesign', '--verify'):
         return ProcessResult(1, codesignVerify, '', 'invalid signature');
@@ -74,21 +76,21 @@ void main() {
     late File dmg;
 
     setUp(() {
-      app = '${root.path}/Applications/Ferret.app';
-      Directory('$app/Contents/MacOS').createSync(recursive: true);
-      File('$app/Contents/MacOS/ferret').writeAsStringSync('old');
-      dmg = File('${root.path}/Ferret-mac.dmg')..writeAsStringSync('dmg');
+      app = p.join(root.path, 'Applications', 'Ferret.app');
+      Directory(p.join(app, 'Contents', 'MacOS')).createSync(recursive: true);
+      File(p.join(app, 'Contents', 'MacOS', 'ferret')).writeAsStringSync('old');
+      dmg = File(p.join(root.path, 'Ferret-mac.dmg'))..writeAsStringSync('dmg');
     });
 
     MacUpdateInstaller installer(
       _FakeTools tools, {
       bool writable = true,
     }) => MacUpdateInstaller(
-      executable: '$app/Contents/MacOS/ferret',
+      executable: p.join(app, 'Contents', 'MacOS', 'ferret'),
       processId: 42,
       run: tools.run,
       detached: tools.detach,
-      scratch: () => Directory('${root.path}/mnt').create(),
+      scratch: () => Directory(p.join(root.path, 'mnt')).create(),
       canWrite: (_) async => writable,
     );
 
@@ -98,18 +100,22 @@ void main() {
       final outcome = await installer(tools).install(dmg);
 
       expect(outcome, InstallOutcome.quitToRestart);
-      expect(File('$app/Contents/MacOS/ferret').existsSync(), isFalse);
-      expect(Directory('$app/Contents').existsSync(), isTrue);
       expect(
-        Directory('${root.path}/Applications/.Ferret-old-42.app').existsSync(),
+        File(p.join(app, 'Contents', 'MacOS', 'ferret')).existsSync(),
+        isFalse,
+      );
+      expect(Directory(p.join(app, 'Contents')).existsSync(), isTrue);
+      expect(
+        Directory(p.join(root.path, 'Applications', '.Ferret-old-42.app'))
+            .existsSync(),
         isTrue,
       );
       final verifies = tools.runs.where(
         (run) => run.first == 'codesign' && run[1] == '--verify',
       );
       expect(verifies.map((run) => run.last), [
-        '${root.path}/mnt/Ferret.app',
-        '${root.path}/Applications/.Ferret-update-42.app',
+        p.join(root.path, 'mnt', 'Ferret.app'),
+        p.join(root.path, 'Applications', '.Ferret-update-42.app'),
       ]);
       expect(
         tools.runs.where((run) => run.first == 'spctl'),
@@ -120,7 +126,7 @@ void main() {
       expect(relaunch.sublist(4), [
         '42',
         app,
-        '${root.path}/Applications/.Ferret-old-42.app',
+        p.join(root.path, 'Applications', '.Ferret-old-42.app'),
       ]);
       expect(tools.runs.last.take(2), ['hdiutil', 'detach']);
     });
@@ -136,7 +142,10 @@ void main() {
           ),
         ),
       );
-      expect(File('$app/Contents/MacOS/ferret').readAsStringSync(), 'old');
+      expect(
+        File(p.join(app, 'Contents', 'MacOS', 'ferret')).readAsStringSync(),
+        'old',
+      );
       expect(tools.detached, isEmpty);
       expect(tools.runs.where((run) => run.first == 'ditto'), isEmpty);
       expect(tools.runs.last.take(2), ['hdiutil', 'detach']);
@@ -193,7 +202,10 @@ void main() {
       expect(tools.runs, contains(equals(['open', dmg.path])));
       expect(tools.runs.where((run) => run.first == 'ditto'), isEmpty);
       expect(tools.detached, isEmpty);
-      expect(File('$app/Contents/MacOS/ferret').readAsStringSync(), 'old');
+      expect(
+        File(p.join(app, 'Contents', 'MacOS', 'ferret')).readAsStringSync(),
+        'old',
+      );
     });
   });
 
@@ -202,7 +214,7 @@ void main() {
     late File setup;
 
     setUp(() {
-      setup = File('${root.path}/Ferret-windows-x64-setup.exe')
+      setup = File(p.join(root.path, 'Ferret-windows-x64-setup.exe'))
         ..writeAsStringSync('setup');
     });
 
@@ -294,9 +306,9 @@ void main() {
 
   group('Linux AppImage', () {
     test('renames the new AppImage over the old one, then reopens', () async {
-      final appImage = File('${root.path}/Ferret.AppImage')
+      final appImage = File(p.join(root.path, 'Ferret.AppImage'))
         ..writeAsStringSync('old');
-      final download = File('${root.path}/download.AppImage')
+      final download = File(p.join(root.path, 'download.AppImage'))
         ..writeAsStringSync('new');
       final tools = _FakeTools();
 
@@ -312,7 +324,7 @@ void main() {
       expect(tools.runs.single, [
         'chmod',
         '755',
-        '${root.path}/.Ferret.AppImage.update-9',
+        p.join(root.path, '.Ferret.AppImage.update-9'),
       ]);
       expect(tools.detached.single.sublist(4), ['9', appImage.path]);
     });

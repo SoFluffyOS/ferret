@@ -66,6 +66,16 @@ List<Directory> _pluginSources() => [
 String _name(Directory directory) =>
     directory.uri.pathSegments.lastWhere((segment) => segment.isNotEmpty);
 
+/// A plugin's or the app's own AndroidManifest.xml, not a build output's
+/// or an example's. Windows lists paths with `\`, so they're read with `/`.
+bool _isMainManifest(String path) {
+  final posix = path.replaceAll(r'\', '/');
+  return posix.endsWith('AndroidManifest.xml') &&
+      posix.contains('/src/main/') &&
+      !posix.contains('/build/') &&
+      !posix.contains('/example/');
+}
+
 Map<String, String> _plistStrings(String plist) => {
   for (final match in RegExp(
     r'<key>(\w+)</key>\s*<string>([^<]*)</string>',
@@ -212,12 +222,7 @@ void main() {
           for (final entity in Directory(
             '${_repo.path}/$root',
           ).listSync(recursive: true))
-            if (entity is File &&
-                entity.path.endsWith('AndroidManifest.xml') &&
-                entity.path.contains('/src/main/') &&
-                !entity.path.contains('/build/') &&
-                !entity.path.contains('/example/'))
-              entity,
+            if (entity is File && _isMainManifest(entity.path)) entity,
       ];
       const refused = [
         'android.permission.QUERY_ALL_PACKAGES',
