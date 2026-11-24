@@ -15,8 +15,6 @@ On Windows, Ferret is one window. Give it the size you like and it arranges itse
 
 ## 📦 Install
 
-> ⏳ **Not in the first release yet.** The first release is for Mac and Android. The Windows download follows once it has met enough real PCs. Today you build it from source: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's installed.
-
 > 1. Download [Ferret-windows-x64-setup.exe](https://github.com/simonpham/ferret/releases/latest/download/Ferret-windows-x64-setup.exe), the newest release
 > 2. Run it. No admin needed: it installs just for you
 > 3. Keep **Allow Ferret through Windows Firewall** ticked and say **Yes** when Windows asks

@@ -11,7 +11,7 @@ order: 5
 
 An iPhone plays by Apple's rules. Ferret follows them, and tells you where they bite instead of failing in silence.
 
-> ⏳ **Not in the first release yet.** The iPhone app isn't on the App Store. Today you build it from source with Xcode, like any Flutter app: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's on your phone.
+> ⏳ **Coming soon.** The iPhone app isn't on the App Store yet. Today you build it from source with Xcode, like any Flutter app: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's on your phone.
 
 <figure class="shot shot-narrow">
   <img src="/assets/docs/iphone-home-light.webp" alt="Ferret on an iPhone: a connected Mac with Send files, Send clipboard and Ring" width="390" height="844" loading="lazy">

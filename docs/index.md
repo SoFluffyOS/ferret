@@ -22,9 +22,9 @@ Ferret carries what you're doing between your own devices: pages, media, your cl
 
 - 🍎 [Mac](getting-started/mac.md): a menubar app, macOS 12 or later.
 - 🤖 [Android](getting-started/android.md): the APK from GitHub.
-- 🪟 [Windows](getting-started/windows.md): not in the first release yet. It builds from source today.
-- 🐧 [Linux](getting-started/linux.md): not in the first release yet. It builds from source today.
-- 📱 [iPhone](getting-started/iphone.md): not in the first release yet. It builds from source today.
+- 🪟 [Windows](getting-started/windows.md): an installer just for you, no admin.
+- 🐧 [Linux](getting-started/linux.md): one line to install, or an AppImage or `.deb`.
+- 📱 [iPhone](getting-started/iphone.md): coming soon. It builds from source today.
 
 **2. Pair your devices.** Open Ferret on both, on the same Wi-Fi, and tap **Pair**. See [Pair your devices](getting-started/pairing.md).
 

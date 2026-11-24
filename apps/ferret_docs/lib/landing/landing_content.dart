@@ -6,8 +6,8 @@ abstract final class LandingContent {
   static const title = 'Ferret: your phone and your computers, working as one';
   static const description =
       'Copy on your phone, paste on your laptop. Send files, answer calls, see '
-      'your phone’s screen. Android, iPhone, Mac, Windows and Linux, on your '
-      'Wi-Fi, with no account. Free and open source.';
+      'your phone’s screen. Android, Mac, Windows and Linux, on your Wi-Fi, '
+      'with no account. Free and open source.';
 
   static const pitch = 'Your phone and your computers, working as one.';
 
@@ -32,7 +32,7 @@ abstract final class LandingContent {
     (
       icon: 'apple',
       name: 'iPhone',
-      how: 'Not in the first release yet. It builds from source today.',
+      how: 'Coming soon to the App Store. It builds from source today.',
       guide: '/docs/getting-started/iphone',
       download: null,
       downloadLabel: null,
@@ -51,22 +51,21 @@ abstract final class LandingContent {
     (
       icon: 'windows',
       name: 'Windows',
-      how:
-          'Window and tray icon, no admin. Not in the first release yet. It builds from source today.',
+      how: 'Window and tray icon. Installs just for you, no admin.',
       guide: '/docs/getting-started/windows',
-      download: null,
-      downloadLabel: null,
+      download: '${SiteLinks.latest}/Ferret-windows-x64-setup.exe',
+      downloadLabel: 'Download .exe',
       command: null,
     ),
     (
       icon: 'linux',
       name: 'Linux',
       how:
-          'Window and tray icon. Flatpak, AppImage or .deb. Not in the first release yet. It builds from source today.',
+          'Window and tray icon. AppImage or .deb, for 2024 or newer distributions.',
       guide: '/docs/getting-started/linux',
       download: null,
       downloadLabel: null,
-      command: null,
+      command: 'curl -fsSL ferret.sofluffy.io/install.sh | sh',
     ),
   ];
 
@@ -364,9 +363,9 @@ abstract final class LandingContent {
     (
       question: 'Where do I get it?',
       answer:
-          'Right here, under Get Ferret: Mac and Android, always the newest '
-          'release from GitHub. Windows, Linux and iPhone come later; they '
-          'build from source today.',
+          'Right here, under Get Ferret: Android, Mac, Windows and Linux, always '
+          'the newest release from GitHub. iPhone is coming soon; it builds '
+          'from source today.',
       link: '#download',
     ),
   ];

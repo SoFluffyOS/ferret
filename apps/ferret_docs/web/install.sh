@@ -66,7 +66,7 @@ DOWNLOAD_URL=$(
     | head -n 1 \
     || true
 )
-[ -n "$DOWNLOAD_URL" ] || fail "no AppImage for $ARCH in release '$VERSION' yet. Linux builds aren't in the first release; see https://ferret.sofluffy.io/docs/getting-started/linux"
+[ -n "$DOWNLOAD_URL" ] || fail "no AppImage for $ARCH in release '$VERSION' yet. Only x86_64 has one so far; see https://ferret.sofluffy.io/docs/getting-started/linux to build it"
 
 say "Downloading $(basename "$DOWNLOAD_URL")…"
 curl -fL --progress-bar -H "User-Agent: Ferret-Installer" "$DOWNLOAD_URL" -o "$TMP_DIR/Ferret.AppImage" \

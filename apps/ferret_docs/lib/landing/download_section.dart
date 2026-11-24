@@ -65,7 +65,7 @@ class DownloadSection extends StatelessComponent {
         ]),
       ],
       (null, null) => [
-        const span(classes: 'platform-soon', [Component.text('Not yet')]),
+        const span(classes: 'platform-soon', [Component.text('Coming soon')]),
       ],
     },
     a(classes: 'platform-go', href: platform.guide, [

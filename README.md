@@ -37,7 +37,7 @@ You copy something on your phone and need it on your laptop. A file sits on the 
   </picture>
 </p>
 
-> 🧪 **Status: the first release is on its way, for Mac and Android.** The Windows, Linux and iPhone apps are written and run in tests, but have met fewer real machines, so their downloads come later. Things marked *Beta* below mean it: they work in my tests, not yet on enough real devices.
+> 🧪 **Status: the first release is out for Android, Mac, Windows and Linux. iPhone is coming soon.** Things marked *Beta* below mean it: they work in my tests, not yet on enough real devices.
 
 ## ✨ What you can do
 
@@ -141,11 +141,11 @@ Every feature has its own page in the [docs](docs/index.md).
 | 🍎 **iPhone / iPad** | App, share sheet, Shortcuts | iOS pauses apps you leave, so Ferret syncs **only while it's open**. You send the clipboard with a tap. No notifications, texts or calls from an iPhone through the app, but Windows and Linux (and, in beta, a Mac) can show its notifications and media over [Bluetooth](docs/iphone/index.md). |
 | 🍏 **macOS** | Menubar app with a popover, a shelf and a full window | macOS 12 or later (13 or later to start at login). Signed and notarized, outside the App Store (the sandbox would block adb for cable mirroring). |
 | 🪟 **Windows** | Window and tray icon | Installs just for you, no admin. Tick one box and Windows Firewall lets your devices in. |
-| 🐧 **Linux** | Window and tray icon. Flatpak, AppImage or .deb | On GNOME Wayland, copies go out while Ferret's window is in front (KDE Plasma and Sway watch by themselves with `wl-clipboard`). Stock GNOME needs the AppIndicator extension for the tray. |
+| 🐧 **Linux** | Window and tray icon. AppImage or .deb | On GNOME Wayland, copies go out while Ferret's window is in front (KDE Plasma and Sway watch by themselves with `wl-clipboard`). Stock GNOME needs the AppIndicator extension for the tray. |
 
 ## 📦 Install
 
-Downloads come with the first release, on the [releases page](https://github.com/simonpham/ferret/releases): Mac and Android first, Windows and Linux once they've met real machines. Until then, see **Build from source** below.
+Downloads are on the [releases page](https://github.com/simonpham/ferret/releases): Android, Mac, Windows and Linux. The iPhone app is coming soon; until then, see **Build from source** below.
 
 Then follow the guide for your device:
 

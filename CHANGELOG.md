@@ -89,7 +89,7 @@ Things marked *Beta* work in my tests but haven't met enough real devices yet. T
 - 🤖 **Android**: a quiet background service and a Quick Settings tile. **Stay connected** says when Android limits Ferret and how to fix it. Swipe Ferret's notice away and it stays away. Ready for Android 17's local network permission.
 - 🍎 **iPhone**: the share sheet, Shortcuts, a tip for the Allow Paste question, and files from LocalSend while Ferret is open. A Windows or Linux computer shows an iPhone's notifications over Bluetooth.
 - 🪟 **Windows**: an installer just for you, no admin, a tray icon, and one box for the firewall.
-- 🐧 **Linux**: Flatpak, AppImage and `.deb`, a tray icon, and the one line your firewall needs.
+- 🐧 **Linux**: a one-line install, an AppImage and a `.deb`, a tray icon, and the one line your firewall needs.
 - 👪 **A computer the family shares**: one Ferret per account, each under its own name.
 
 #### 💎 Easy to use, for everyone

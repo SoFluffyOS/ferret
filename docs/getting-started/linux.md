@@ -15,7 +15,7 @@ On Linux, Ferret is one window. Give it the size you like and it arranges itself
 
 ## 📦 Install
 
-> ⏳ **Not in the first release yet.** The first release is for Mac and Android. The Linux download follows once it has met enough real machines. Today you build it from source: see **Build from source** in the [README](https://github.com/simonpham/ferret#readme). This page is how it works once it's installed.
+Ferret's downloads need a 2024 or newer distribution: Ubuntu 24.04, Debian 13, Fedora 40, Linux Mint 22 or later, on x86_64. Older systems and ARM boards: build it from source, see **Build from source** in the [README](https://github.com/simonpham/ferret#readme).
 
 The quickest way, one line, no sudo:
 
@@ -27,13 +27,14 @@ Want to read it before you run it? Good habit. [It's short](https://ferret.soflu
 
 It puts the newest AppImage in `~/.local/opt/ferret`, links `ferret` and `ferret-cli` in `~/.local/bin`, and adds Ferret to your app menu. Run it again to update. No `libfuse2` needed: the AppImage brings its own. It only needs `fusermount3`, which most desktops already have, and the script tells you the package if it's missing.
 
-Rather pick a package? All three install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager. Get them from the [latest release](https://github.com/simonpham/ferret/releases/latest).
+Rather pick a package? Both install the same Ferret, with the app icon, the tray, and **Send with Ferret** in your file manager. Get them from the [latest release](https://github.com/simonpham/ferret/releases/latest).
 
-> 1. **Flatpak** (any distribution): `flatpak install --user ferret-0.1.0-x86_64.flatpak`
-> 2. **AppImage** (no install): `chmod +x Ferret-0.1.0-x86_64.AppImage`, then run it
-> 3. **.deb** (Debian, Ubuntu, Mint, Pop!_OS): `sudo apt install ./ferret_0.1.0_amd64.deb`
+> 1. **AppImage** (no install): `chmod +x Ferret-0.1.0-x86_64.AppImage`, then run it
+> 2. **.deb** (Debian, Ubuntu, Mint, Pop!_OS): `sudo apt install ./ferret_0.1.0_amd64.deb`
 
 ### Flatpak
+
+The Flatpak isn't on the release page yet. Build it yourself with `scripts/package_linux.sh flatpak`, then:
 
 ```sh
 flatpak install --user ferret-0.1.0-x86_64.flatpak
