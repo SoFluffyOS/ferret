@@ -9,7 +9,7 @@ final asset = UpdateTarget.current?.assetIn(release!);
 
 | Step | How |
 |---|---|
-| Find | `GET api.github.com/repos/simonpham/ferret/releases/latest` with `User-Agent: Ferret`, nothing else |
+| Find | `GET api.github.com/repos/SoFluffyOS/ferret/releases/latest` with `User-Agent: Ferret`, nothing else |
 | Pick | The stable file name for this system: `Ferret-mac.dmg`, `Ferret-windows-<arch>-setup.exe`, `Ferret-linux-<arch>.AppImage`, `Ferret-android.apk` |
 | Check | The file's SHA-256 against the release's `SHA256SUMS` |
 | macOS | `codesign --verify --deep --strict`, team `66UZUS2MST`, `spctl` says notarized; swap by rename, reopen |

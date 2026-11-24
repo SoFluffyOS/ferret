@@ -17,14 +17,14 @@ The extension isn't in the stores yet. Download it from GitHub and load it by ha
 
 **Chrome, Edge, Brave, Opera, Vivaldi**
 
-1. Download [Ferret-browser-chrome.zip](https://github.com/simonpham/ferret/releases/latest/download/Ferret-browser-chrome.zip) and unzip it. Keep the folder somewhere it can stay: the browser loads the extension from it.
+1. Download [Ferret-browser-chrome.zip](https://github.com/SoFluffyOS/ferret/releases/latest/download/Ferret-browser-chrome.zip) and unzip it. Keep the folder somewhere it can stay: the browser loads the extension from it.
 2. Open `chrome://extensions` (or `edge://extensions`).
 3. Turn on **Developer mode**.
 4. Click **Load unpacked** and pick the unzipped folder.
 
 **Firefox**
 
-1. Download [Ferret-browser-firefox.zip](https://github.com/simonpham/ferret/releases/latest/download/Ferret-browser-firefox.zip). No need to unzip it.
+1. Download [Ferret-browser-firefox.zip](https://github.com/SoFluffyOS/ferret/releases/latest/download/Ferret-browser-firefox.zip). No need to unzip it.
 2. Open `about:debugging#/runtime/this-firefox`.
 3. Click **Load Temporary Add-on…** and pick the zip.
 

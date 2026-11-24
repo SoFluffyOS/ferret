@@ -17,7 +17,7 @@ That's it.
 
 ## 🔄 What the check sends
 
-Once a day (and when you click **Check now**), Ferret asks GitHub for its latest release: `api.github.com/repos/simonpham/ferret/releases/latest`.
+Once a day (and when you click **Check now**), Ferret asks GitHub for its latest release: `api.github.com/repos/SoFluffyOS/ferret/releases/latest`.
 
 - It sends a plain `User-Agent: Ferret` and nothing else. No device id, no name, no settings.
 - GitHub sees your IP address, like any website you open.

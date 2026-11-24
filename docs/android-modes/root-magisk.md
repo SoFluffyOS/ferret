@@ -48,7 +48,7 @@ Tap **Stop using root** and the helper stops. Take the permission back in your r
 
 ## 📦 The Magisk module (optional, beta)
 
-The repository has a Magisk module template in [`magisk/`](https://github.com/simonpham/ferret/tree/main/magisk). It installs Ferret as a privileged system app, for system permissions later versions may use.
+The repository has a Magisk module template in [`magisk/`](https://github.com/SoFluffyOS/ferret/tree/main/magisk). It installs Ferret as a privileged system app, for system permissions later versions may use.
 
 You don't need it for anything on this page. It has not been tested on a phone. Read its README before you flash it.
 

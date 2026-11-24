@@ -48,7 +48,7 @@ final _release = UpdateRelease(
     ])
       UpdateAsset(
         name: name,
-        downloadUrl: Uri.https('github.com', '/simonpham/ferret/$name'),
+        downloadUrl: Uri.https('github.com', '/SoFluffyOS/ferret/$name'),
         size: 1000,
       ),
   ],

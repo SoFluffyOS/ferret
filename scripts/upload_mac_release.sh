@@ -16,7 +16,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 tag="${1:?Usage: FERRET_NOTARY_PROFILE=<profile> scripts/upload_mac_release.sh <tag>}"
-repo="simonpham/ferret"
+repo="SoFluffyOS/ferret"
 
 [ -n "${FERRET_NOTARY_PROFILE:-}" ] || {
   echo "Set FERRET_NOTARY_PROFILE: a release DMG must be notarized." >&2

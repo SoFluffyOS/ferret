@@ -23,7 +23,7 @@ Don't want the notification? Swipe it away (Android 14+). Ferret keeps running a
 
 ## 📦 Install
 
-Download [Ferret-android.apk](https://github.com/simonpham/ferret/releases/latest/download/Ferret-android.apk) on your phone and open it. Android asks once whether your browser may install apps: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**. It comes from GitHub, not the Play Store, so Android asks.
+Download [Ferret-android.apk](https://github.com/SoFluffyOS/ferret/releases/latest/download/Ferret-android.apk) on your phone and open it. Android asks once whether your browser may install apps: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**. It comes from GitHub, not the Play Store, so Android asks.
 
 Then open Ferret on the phone and on your computer, on the same Wi-Fi. Each shows the other under **Nearby**. Tap **Pair** and check that both screens show the same six digits. See [Pair your devices](pairing.md).
 

@@ -29,4 +29,4 @@ So it stays a design until it can be done properly. Ferret will never need it fo
 
 ## 🛠 Want to help?
 
-The design note and the skeleton are in [`lsposed/`](https://github.com/simonpham/ferret/tree/main/lsposed) in the repository. Start with `DESIGN.md`.
+The design note and the skeleton are in [`lsposed/`](https://github.com/SoFluffyOS/ferret/tree/main/lsposed) in the repository. Start with `DESIGN.md`.

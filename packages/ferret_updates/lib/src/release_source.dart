@@ -23,7 +23,7 @@ class GithubReleaseSource implements ReleaseSource {
   }) : _http = http ?? UpdateHttp(),
        _api = api ?? Uri.https('api.github.com');
 
-  static const defaultRepository = 'simonpham/ferret';
+  static const defaultRepository = 'SoFluffyOS/ferret';
 
   /// `owner/name` on GitHub.
   final String repository;

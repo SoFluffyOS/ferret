@@ -12,7 +12,7 @@ Ferret lives in your menubar. No Dock icon, no window in the way. Want a real wi
 
 ## 📦 Installing on a Mac
 
-> 1. Download [Ferret-mac.dmg](https://github.com/simonpham/ferret/releases/latest/download/Ferret-mac.dmg), the newest release
+> 1. Download [Ferret-mac.dmg](https://github.com/SoFluffyOS/ferret/releases/latest/download/Ferret-mac.dmg), the newest release
 > 2. Open it and drag **Ferret** onto **Applications**
 > 3. Open Ferret from Applications
 

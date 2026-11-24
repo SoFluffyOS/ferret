@@ -142,6 +142,6 @@ For the login item, a `com.apple.servicemanagement` rule with `RuleType` `TeamId
 
 ### Something missing?
 
-[Open an issue](https://github.com/simonpham/ferret/issues). I'll add it here.
+[Open an issue](https://github.com/SoFluffyOS/ferret/issues). I'll add it here.
 
 ## Happy Coding 🦊

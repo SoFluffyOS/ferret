@@ -26,7 +26,7 @@ Ferret is built so your stuff never leaves your devices. That is the whole point
 
 ## 🔄 The one thing that talks to the internet
 
-Ferret checks for a new version once a day: it asks GitHub for Ferret's latest release (`api.github.com/repos/simonpham/ferret/releases/latest`). That's the only time Ferret reaches the internet on its own.
+Ferret checks for a new version once a day: it asks GitHub for Ferret's latest release (`api.github.com/repos/SoFluffyOS/ferret/releases/latest`). That's the only time Ferret reaches the internet on its own.
 
 - **What it sends**: a plain `User-Agent: Ferret`, nothing else. No device id, no name, no settings, nothing about your devices. GitHub sees your IP address, as with any website.
 - **When**: once a day, and when you click **Check now**. Not while Ferret is **paused** (Check now still works). Never on an iPhone or a store install, where the store updates Ferret.

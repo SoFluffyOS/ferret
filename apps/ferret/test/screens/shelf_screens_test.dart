@@ -184,7 +184,7 @@ final _screens = <String, _Script>{
       for (final text in const [
         'ssh simon@192.168.1.20 -p 2222',
         'Meet at the north entrance, 7:30. Bring the tickets.',
-        'https://github.com/simonpham/ferret/issues/42',
+        'https://github.com/SoFluffyOS/ferret/issues/42',
         'Wi-Fi password: blue-otter-1984',
         'Order #A-55102 ships on Friday',
       ]) {

@@ -10,7 +10,7 @@
 set -eu
 
 APP_ID="io.sofluffy.ferret"
-REPO="simonpham/ferret"
+REPO="SoFluffyOS/ferret"
 API_ROOT="https://api.github.com/repos/$REPO/releases"
 INSTALL_DIR="${FERRET_INSTALL_DIR:-$HOME/.local/opt/ferret}"
 BIN_DIR="${FERRET_BIN_DIR:-$HOME/.local/bin}"

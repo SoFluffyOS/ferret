@@ -28,7 +28,7 @@ Ferret speaks English and Vietnamese. Adding a language needs no code at all. Se
 Set up once:
 
 ```bash
-git clone --recurse-submodules https://github.com/simonpham/ferret.git
+git clone --recurse-submodules https://github.com/SoFluffyOS/ferret.git
 cd ferret
 scripts/get.sh            # pub get for the whole workspace (Flutter comes from fvm)
 ```

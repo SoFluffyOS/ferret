@@ -81,7 +81,7 @@ Notarization takes a few minutes. Rejected? `xcrun notarytool log <submission id
 
 1. Upload `Ferret-<version>.dmg` to the GitHub release `v<version>`.
 2. Fill `{{VERSION}}` and `{{SHA256_DMG}}` with the version and the SHA-256 the script printed.
-3. Put it in a tap (`brew tap simonpham/ferret`, file `Casks/ferret.rb`), or open a PR to `Homebrew/homebrew-cask` once Ferret is known enough for it.
+3. Put it in a tap (`brew tap SoFluffyOS/ferret`, file `Casks/ferret.rb`), or open a PR to `Homebrew/homebrew-cask` once Ferret is known enough for it.
 
 `brew install --cask ferret` installs `Ferret.app` and links `ferret-cli` on Apple silicon. `brew uninstall --zap` also removes `~/.sofluffy/ferret` and the Share extension's data.
 

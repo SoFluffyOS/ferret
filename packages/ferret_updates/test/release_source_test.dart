@@ -51,12 +51,12 @@ Map<String, Object?> _json(
   'body': '## What is new\n- Faster',
   'prerelease': prerelease,
   'draft': draft,
-  'html_url': 'https://github.com/simonpham/ferret/releases/tag/$tag',
+  'html_url': 'https://github.com/SoFluffyOS/ferret/releases/tag/$tag',
   'assets': [
     {
       'name': 'Ferret-mac.dmg',
       'browser_download_url':
-          'https://github.com/simonpham/ferret/releases/download/$tag/Ferret-mac.dmg',
+          'https://github.com/SoFluffyOS/ferret/releases/download/$tag/Ferret-mac.dmg',
       'size': 1234,
     },
   ],
@@ -73,7 +73,7 @@ void main() {
     expect(release?.notes, contains('Faster'));
     expect(release?.assetNamed('Ferret-mac.dmg')?.size, 1234);
     final request = github.requests.single;
-    expect(request.uri.path, '/repos/simonpham/ferret/releases/latest');
+    expect(request.uri.path, '/repos/SoFluffyOS/ferret/releases/latest');
     expect(request.headers.value(HttpHeaders.userAgentHeader), 'Ferret');
     expect(request.headers.value(HttpHeaders.cookieHeader), isNull);
     expect(request.headers.value(HttpHeaders.authorizationHeader), isNull);
@@ -100,7 +100,10 @@ void main() {
     final release = await github.source().newest(includePreReleases: true);
 
     expect(release?.tag, 'v0.3.0-beta.2');
-    expect(github.requests.single.uri.path, '/repos/simonpham/ferret/releases');
+    expect(
+      github.requests.single.uri.path,
+      '/repos/SoFluffyOS/ferret/releases',
+    );
   });
 
   test('a server error is an error', () async {

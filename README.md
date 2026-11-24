@@ -145,7 +145,7 @@ Every feature has its own page in the [docs](docs/index.md).
 
 ## 📦 Install
 
-Downloads are on the [releases page](https://github.com/simonpham/ferret/releases): Android, Mac, Windows and Linux. The iPhone app is coming soon; until then, see **Build from source** below.
+Downloads are on the [releases page](https://github.com/SoFluffyOS/ferret/releases): Android, Mac, Windows and Linux. The iPhone app is coming soon; until then, see **Build from source** below.
 
 Then follow the guide for your device:
 
@@ -168,7 +168,7 @@ Every byte that goes anywhere else is listed under **What leaves this device** o
 You need [fvm](https://fvm.app) (Ferret uses Flutter's stable channel).
 
 ```bash
-git clone --recurse-submodules https://github.com/simonpham/ferret.git
+git clone --recurse-submodules https://github.com/SoFluffyOS/ferret.git
 cd ferret
 scripts/get.sh                     # pub get for the whole workspace
 scripts/check.sh                   # format, analyze and test everything

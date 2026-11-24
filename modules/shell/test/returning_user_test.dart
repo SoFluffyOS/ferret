@@ -161,7 +161,7 @@ void main() {
     test('the notes link points at the release', () {
       expect(
         WhatsNew.notesFor('0.3.0').toString(),
-        'https://github.com/simonpham/ferret/releases/tag/v0.3.0',
+        'https://github.com/SoFluffyOS/ferret/releases/tag/v0.3.0',
       );
     });
   });

@@ -8,7 +8,7 @@ Ferret can read your clipboard, your phone's notifications and texts, and move y
 > 2. A device you paired is trusted. It can do what you allowed on its page, and it can add devices to your other ones.
 > 3. On a Mac, Ferret's key sits in your login keychain. On Windows and Linux it's a file anything running as you can read.
 
-Found a hole? Please report it privately, see [SECURITY.md](https://github.com/simonpham/ferret/blob/main/SECURITY.md).
+Found a hole? Please report it privately, see [SECURITY.md](https://github.com/SoFluffyOS/ferret/blob/main/SECURITY.md).
 
 ## 🔐 How a connection works
 
@@ -33,7 +33,7 @@ There are two ways, and both bind the pairing to one Noise handshake, so nobody 
 - **A paired device adding or removing others behind your back.** With **Pair once for all my devices** on (the default), a paired device can ask to add a device to your other ones, or to remove one. Each of your devices asks you first: **Pixel 7 wants to add Anna's iPad to your devices** with **Add** or **Not now**, and **… wants to remove ThinkPad X1 from this Mac** with **Remove** or **Keep**. Nothing changes before your yes. No answer within a day counts as **Not now** for an addition and **Keep** for a removal. A device added this way starts with the same features turned off as the one that added it.
 - **Spoofed announcements.** Ferret only uses what a device announces as a hint where to dial. Who answers must hold the key it paired with, or the connection drops before your device shows its own key. A forged announcement of one of your devices can't find out who heard it, and can't unpair anything.
 - **Being recognised on networks you pass through.** Elsewhere, your device only listens. All it sends is a question with nothing about it. It learns a network when one of your devices connects there, and keeps a salted hash of the network's addresses and, on a Mac and Linux, its router's hardware address. Windows and phones go by the addresses alone for now. **Settings → Advanced → Always visible** brings back announcing everywhere.
-- **Web pages in your browser.** The browser extension's bridge listens on `127.0.0.1` only, checks the `Origin` and `Host` headers before anything else, and needs a token you allowed. See the [browser bridge protocol](https://github.com/simonpham/ferret/blob/main/extensions/browser/PROTOCOL.md).
+- **Web pages in your browser.** The browser extension's bridge listens on `127.0.0.1` only, checks the `Origin` and `Host` headers before anything else, and needs a token you allowed. See the [browser bridge protocol](https://github.com/SoFluffyOS/ferret/blob/main/extensions/browser/PROTOCOL.md).
 - **Apps that copy your key** (Mac). The key lives in your login keychain, under `io.sofluffy.ferret`, never synced to iCloud and never moved to another Mac. Only Ferret reads it without a question. Any other app makes macOS ask you first.
 - **Other people's accounts on a shared computer** (macOS and Linux). Ferret's folder is `chmod 700`, its secrets file `600`. On Windows it sits in your profile folder, which only you and administrators can open.
 - **Files with tricky names.** A received name never becomes a path: no `..`, no folders it didn't create, no drive letters, no Windows device names like `CON`, no marks that flip text direction, and it never overwrites a file. Quick Share and LocalSend senders aren't paired, so every one of their offers asks you first, and nothing they send is saved before your yes.

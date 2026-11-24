@@ -36,11 +36,11 @@ class WhatsNew {
 
   /// Where every Ferret release is published.
   static final releases = Uri.parse(
-    'https://github.com/simonpham/ferret/releases',
+    'https://github.com/SoFluffyOS/ferret/releases',
   );
 
   /// Where the release notes of [version] are.
   static Uri notesFor(String version) => Uri.parse(
-    'https://github.com/simonpham/ferret/releases/tag/v$version',
+    'https://github.com/SoFluffyOS/ferret/releases/tag/v$version',
   );
 }

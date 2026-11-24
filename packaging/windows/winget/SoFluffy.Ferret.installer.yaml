@@ -26,7 +26,7 @@ AppsAndFeaturesEntries:
     ProductCode: "{5B59C714-DD74-41F5-8B9E-1209ECA0CE73}_is1"
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/simonpham/ferret/releases/download/v{{VERSION}}/Ferret-{{VERSION}}-x64-setup.exe
+    InstallerUrl: https://github.com/SoFluffyOS/ferret/releases/download/v{{VERSION}}/Ferret-{{VERSION}}-x64-setup.exe
     InstallerSha256: "{{SHA256_X64}}"
 ManifestType: installer
 ManifestVersion: 1.9.0

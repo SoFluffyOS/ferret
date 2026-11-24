@@ -41,6 +41,6 @@
 
 ## Download and source
 
-- [Latest release](https://github.com/simonpham/ferret/releases/latest)
-- [Source code and README](https://github.com/simonpham/ferret)
-- [Report a bug](https://github.com/simonpham/ferret/issues/new)
+- [Latest release](https://github.com/SoFluffyOS/ferret/releases/latest)
+- [Source code and README](https://github.com/SoFluffyOS/ferret)
+- [Report a bug](https://github.com/SoFluffyOS/ferret/issues/new)

@@ -2,10 +2,10 @@ cask "ferret" do
   version "{{VERSION}}"
   sha256 "{{SHA256_DMG}}"
 
-  url "https://github.com/simonpham/ferret/releases/download/v#{version}/Ferret-#{version}.dmg"
+  url "https://github.com/SoFluffyOS/ferret/releases/download/v#{version}/Ferret-#{version}.dmg"
   name "Ferret"
   desc "Continue what you were doing on any of your devices"
-  homepage "https://github.com/simonpham/ferret"
+  homepage "https://github.com/SoFluffyOS/ferret"
 
   livecheck do
     url :url

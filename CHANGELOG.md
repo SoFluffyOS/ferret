@@ -4,7 +4,7 @@
 
 The first release. Your phone and your computers, working as one: on the Wi-Fi you already have, with no account and no cloud.
 
-Things marked *Beta* work in my tests but haven't met enough real devices yet. Tried one? [Tell me how it went](https://github.com/simonpham/ferret/issues).
+Things marked *Beta* work in my tests but haven't met enough real devices yet. Tried one? [Tell me how it went](https://github.com/SoFluffyOS/ferret/issues).
 
 ### Added
 
