@@ -55,6 +55,12 @@ class SidebarDeviceGroup extends StatelessWidget {
     final isPinned = context.select<EngineHost, bool>(
       (host) => host.preferences.isPinned(deviceId),
     );
+    final attention = DeviceAttention.of(
+      context,
+      scope.features,
+      scope.featureContext,
+      status,
+    );
     final dropTarget = WindowDropTargets.device(status);
     final isDropHovered = context.select<OsDropViewModel, bool>(
       (drop) => drop.hovered == dropTarget,
@@ -73,7 +79,17 @@ class SidebarDeviceGroup extends StatelessWidget {
               child: SidebarDeviceRow(
                 status: status,
                 isSelected: isOpen && sections.isEmpty,
-                needsAttention: _needsAttention(scope),
+                needsAttention: attention.isNotEmpty,
+                attentionReason: switch (attention.firstOrNull) {
+                  (:final title, :final health) when health.reason.isNotEmpty =>
+                    context.shellL10n.deviceAttentionReason(
+                      title,
+                      health.reason,
+                    ),
+                  (:final title, health: _) =>
+                    context.shellL10n.deviceAttention(title),
+                  null => null,
+                },
                 isDropHovered: isDropHovered,
                 isPinned: isPinned,
                 badge: switch (isOpen) {
@@ -187,21 +203,5 @@ class SidebarDeviceGroup extends StatelessWidget {
         onSelected: () => onSelect(DeviceDestination(deviceId)),
       ),
     ];
-  }
-
-  /// Whether a feature that is on isn't working with this device.
-  bool _needsAttention(ShellScope scope) {
-    for (final feature in scope.features) {
-      final health = feature.healthFor(scope.featureContext, status);
-      final isBroken = switch (health?.state) {
-        .needsAttention || .failing => true,
-        _ => false,
-      };
-      if (isBroken) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

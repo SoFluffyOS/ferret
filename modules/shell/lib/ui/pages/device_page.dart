@@ -151,6 +151,14 @@ class DevicePage extends StatelessWidget {
               builder: (context) => TwoColumns(
                 leading: [
                   DeviceHeader(status: status),
+                  NeedsAttentionCard(
+                    features: DeviceAttention.of(
+                      context,
+                      scope.features,
+                      scope.featureContext,
+                      status,
+                    ),
+                  ),
                   _Actions(status: status),
                   for (final feature in scope.features)
                     ?feature.buildDeviceGroup(
@@ -355,7 +363,7 @@ class _Actions extends StatelessWidget {
 }
 
 /// Every feature that can work with a connected device, and how it is
-/// doing: working, off or broken.
+/// doing: working or off. What is broken is at the top of the page.
 class _WhatWorks extends StatelessWidget {
   const _WhatWorks({required this.status});
 
@@ -366,11 +374,18 @@ class _WhatWorks extends StatelessWidget {
     final scope = ShellScope.of(context);
     final l10n = context.shellL10n;
     final name = status.device.name;
-    final health = [
+    final all = [
       for (final feature in scope.features)
         if (feature.healthFor(scope.featureContext, status) case final health?)
           (feature.title(context), health),
     ];
+    final health = [
+      for (final entry in all)
+        if (!DeviceAttention.isBroken(entry.$2)) entry,
+    ];
+    if (health.isEmpty && all.isNotEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: .stretch,

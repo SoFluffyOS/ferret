@@ -533,5 +533,9 @@
   "movedTitle": "{here, select, mac{Máy Mac này} windows{PC này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} giờ là một thiết bị mới",
   "movedBody": "Ferret được chuyển sang từ một máy tính khác. Để các thiết bị không nhầm hai máy với nhau, hãy ghép đôi lại: {names}.",
   "movedReplaceHint": "Máy cũ không dùng nữa? Khi đó mỗi thiết bị sẽ gợi ý Thay thiết bị cũ và giữ nguyên các cài đặt.",
-  "movedDismiss": "Đã hiểu"
+  "movedDismiss": "Đã hiểu",
+  "doctorWsl": "Ferret đang chạy trong WSL. Mạng của WSL khiến các thiết bị không tìm thấy nhau, dù mọi thứ khác đều ổn. Hãy ghép đôi từ thiết bị kia, hoặc bật mirrored networking trong WSL.",
+  "deviceAttentionReason": "Đã kết nối · {feature}: {reason}",
+  "deviceWithKind": "{name} · {kind}",
+  "promptSameName": "{here, select, mac{Máy Mac này} windows{PC này} phone{Điện thoại này} tablet{Máy tính bảng này} other{Máy tính này}} cũng tên là {name}. Đổi tên để dễ phân biệt."
 }

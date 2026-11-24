@@ -21,7 +21,7 @@ The device you want to pair doesn't show up at all? **+** → **Check my network
 4. **Is the other device answering?** If not, open Ferret on it. On Android, battery saving may have stopped it: see [Ferret on Android](../getting-started/android.md).
 5. **Does it still know this device?** If it was reset or reinstalled, pair again.
 
-Each problem comes with a button that fixes it, or tells you exactly where to go. The real fix is the filled button. **Connect by address** and **Copy details for a helper** sit as small links next to **Try again**, for when you or a friend dig deeper.
+Each problem comes with a button that fixes it, or tells you exactly where to go. The real fix is the filled button. **Connect by address** and **Copy details for a helper** sit as small links next to **Try again**, for when you or a friend dig deeper. **Connect by address** shows when it can help: always in **Check my network**, and for a device that doesn't answer at its last address.
 
 ## On Windows: the firewall
 
@@ -55,6 +55,22 @@ sudo firewall-cmd --permanent --add-port=47640/tcp --add-port=47642-47649/tcp --
 
 That's it. `47640/tcp` is Ferret itself (`47642`–`47649` when another account on the same computer runs Ferret too), `47641/udp` and `5353/udp` (mDNS) are how your devices find each other.
 
+## Inside WSL on Windows
+
+Running the Linux app inside WSL? WSL puts Linux behind its own small network (NAT), and the messages your devices use to find each other never get in. Everything looks fine from inside, yet nothing shows up.
+
+Fix connection spots WSL and says so. Two ways out:
+
+- **Pair from the other device.** Your other devices can usually still find the Linux app, so start pairing there.
+- **Turn on WSL's mirrored networking.** Then Linux shares the PC's own network. Put this in `%UserProfile%\.wslconfig` on Windows, then run `wsl --shutdown` and open WSL again:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+
+With mirrored networking on, Fix connection doesn't bring WSL up again.
+
 ## On café, hotel or campus Wi-Fi
 
 Many public and guest networks keep devices apart on purpose (client isolation). Your laptop reaches the internet, your phone reaches the internet, but they can't see each other.
@@ -75,7 +91,7 @@ A device that answers slowly says **Connected · weak connection**. Things still
 
 ## Connect by address
 
-Some networks block devices from finding each other but still let them connect. Tap the **Connect by address** link at the bottom and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`.
+Some networks block devices from finding each other but still let them connect. Tap the **Connect by address** link at the bottom and type the address shown under **Settings → Advanced** on the other device, such as `192.168.1.20:47640`. From **Check my network**, with nothing paired yet, it pairs with that address instead.
 
 ## Report a problem
 

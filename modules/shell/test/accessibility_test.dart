@@ -187,13 +187,13 @@ void main() {
 
     testWidgets('Esc answers Not now', (tester) async {
       final prompt = await open(tester);
-      expect(find.text('Pair with Pixel 9?'), findsOneWidget);
+      expect(find.text('Pair with Pixel 9 · Android?'), findsOneWidget);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('Pair with Pixel 9?'), findsNothing);
+      expect(find.text('Pair with Pixel 9 · Android?'), findsNothing);
       expect(await prompt.answer, PairingAnswer.rejected);
     });
 

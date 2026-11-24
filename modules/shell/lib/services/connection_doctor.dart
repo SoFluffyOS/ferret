@@ -6,6 +6,7 @@ import 'package:ferret_system/ferret_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shell/services/linux_firewall.dart';
 import 'package:shell/services/local_network_ask.dart';
+import 'package:shell/services/wsl_network.dart';
 
 /// How one check came out.
 enum DoctorStatus { running, ok, warning, problem }
@@ -94,6 +95,10 @@ enum DoctorCheckKind {
   /// everything (a "full tunnel", as work VPNs often are).
   /// [DoctorCheck.detail] is that interface's name.
   vpnRoute,
+
+  /// Ferret runs inside WSL with its default NAT network, which keeps
+  /// devices from finding each other however fine the network looks.
+  wsl,
 }
 
 /// How a knock on an address went.
@@ -141,6 +146,7 @@ class ConnectionDoctor {
     bool? isMacOS,
     bool Function()? isDiscoveryBlocked,
     LocalNetworkAsk? iphoneAsk,
+    WslNetwork? wsl,
   }) : _iphoneAsk = iphoneAsk,
        _isWindows = isWindows ?? Platform.isWindows,
        _isMacOS = isMacOS ?? Platform.isMacOS,
@@ -149,6 +155,12 @@ class ConnectionDoctor {
        _hearsOthers = hearsOthers ?? defaultTargetPlatform != .iOS,
        _isLinux = isLinux ?? Platform.isLinux,
        _linuxFirewall = linuxFirewall ?? LinuxFirewall(),
+       _wsl =
+           wsl ??
+           switch (isLinux) {
+             null => WslNetwork(),
+             _ => WslNetwork.none(),
+           },
        _windowsFirewallRules = windowsFirewallRules ?? WindowsFirewallRules(),
        _program = program ?? Platform.resolvedExecutable,
        _listInterfaces = interfaces ?? _systemInterfaces,
@@ -211,6 +223,10 @@ class ConnectionDoctor {
   final bool _isLinux;
   final LinuxFirewall _linuxFirewall;
 
+  /// Asked only on Linux. A check told which platform it runs on stands
+  /// in for another computer, so it never looks at this one's WSL.
+  final WslNetwork _wsl;
+
   /// The rules the installer, or [allowThroughFirewall], adds. With them
   /// in place the firewall line turns green.
   final WindowsFirewallRules _windowsFirewallRules;
@@ -248,6 +264,8 @@ class ConnectionDoctor {
 
   static const _knockTimeout = Duration(seconds: 3);
   static const _routerTimeout = Duration(milliseconds: 1500);
+
+  static const _wslCheck = DoctorCheck(kind: .wsl, status: .warning);
 
   static const _windowsFirewall = DoctorCheck(
     kind: .firewall,
@@ -349,6 +367,8 @@ class ConnectionDoctor {
         )
         .toList();
     final firewall = await _firewallHint(local);
+    final insideWsl =
+        _isLinux && local.isNotEmpty && await _wsl.keepsDevicesApart();
     final reachesOverVpn = device?.reachOverVpn ?? false;
     final onMobileData = local.isEmpty && cellular;
     checks.add(
@@ -416,7 +436,12 @@ class ConnectionDoctor {
 
     final online = local.isNotEmpty;
     if (deviceId == null) {
-      if (online && await _seemsIsolated(local)) {
+      if (insideWsl) {
+        checks.add(_wslCheck);
+        yield [...checks];
+      }
+
+      if (online && !insideWsl && await _seemsIsolated(local)) {
         isolatedSubnet.value = LocalNetwork.subnetOf(local.first.address);
         checks.add(const DoctorCheck(kind: .isolated, status: .warning));
         yield [...checks];
@@ -438,6 +463,10 @@ class ConnectionDoctor {
           fixes: [.connectByAddress],
         ),
       );
+      if (insideWsl) {
+        checks.add(_wslCheck);
+      }
+
       if (firewall != null && online) {
         checks.add(firewall);
       }
@@ -494,6 +523,7 @@ class ConnectionDoctor {
     checks.removeLast();
     if (reach != .answered) {
       final isolated =
+          !insideWsl &&
           capturedBy == null &&
           reach == .silent &&
           shared &&
@@ -504,6 +534,7 @@ class ConnectionDoctor {
       // café: its old address says nothing, but a quiet network whose
       // router answers still may keep devices apart.
       final maybeIsolated =
+          !insideWsl &&
           !isolated &&
           !shared &&
           capturedBy == null &&
@@ -523,6 +554,10 @@ class ConnectionDoctor {
       );
       if (isolated) {
         checks.add(const DoctorCheck(kind: .isolated, status: .problem));
+      }
+
+      if (insideWsl) {
+        checks.add(_wslCheck);
       }
 
       if (maybeIsolated) {

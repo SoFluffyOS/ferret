@@ -4,12 +4,17 @@ import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shell/app/app.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
+import 'package:shell/ui/frames/this_device_card.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Asks whether to pair with a device that shows the same six digits, for
-/// as long as that device waits.
+/// as long as that device waits. Its kind follows its name, since two
+/// devices may share one (WSL takes the Windows PC's), and when it has this
+/// device's own name, Rename is right there.
 class PairingPromptDialog extends StatefulWidget {
   const PairingPromptDialog({super.key, required this.prompt});
 
@@ -102,7 +107,20 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
     final l10n = context.shellL10n;
     final prompt = widget.prompt;
     final name = prompt.device.name;
+    final kind = DeviceKind.of(
+      prompt.device.platform,
+      prompt.device.formFactor,
+    );
+    final titled = switch (kind) {
+      '' => name,
+      _ => l10n.deviceWithKind(name, kind),
+    };
     final also = _alsoLine(l10n, prompt.alsoDevices);
+    final engine = ShellScope.maybeOf(context)?.featureContext.engine;
+    final sameName = switch (engine) {
+      final engine? => _sameName(engine.device.name, name),
+      null => false,
+    };
 
     // Scrolls when it is taller than the view, as it is in the popover
     // with text set large: the answers are at the bottom.
@@ -125,7 +143,7 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
                 ),
                 Spacing.v8,
                 Text(
-                  l10n.promptTitle(name),
+                  l10n.promptTitle(titled),
                   textAlign: .center,
                   style: typography.title3.copyWith(color: palette.text),
                 ),
@@ -143,6 +161,19 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
                     also,
                     textAlign: .center,
                     style: typography.base2.copyWith(color: palette.mutedText),
+                  ),
+                ],
+                if ((engine, sameName) case (final engine?, true)) ...[
+                  Spacing.v8,
+                  Text(
+                    l10n.promptSameName(l10n.here(engine.device), name),
+                    textAlign: .center,
+                    style: typography.base2.copyWith(color: palette.mutedText),
+                  ),
+                  TextLink(
+                    label: l10n.settingsRename,
+                    style: typography.base2,
+                    onTap: () => unawaited(_rename(engine)),
                   ),
                 ],
                 Spacing.vertical(Spacing.d20),
@@ -163,6 +194,16 @@ class _PairingPromptDialogState extends State<PairingPromptDialog> {
         ),
       ),
     );
+  }
+
+  static bool _sameName(String own, String other) =>
+      own.trim().toLowerCase() == other.trim().toLowerCase();
+
+  Future<void> _rename(FerretEngine engine) async {
+    await ThisDeviceCard.rename(context, engine);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   /// At most two names, then a count, so the line stays one line.

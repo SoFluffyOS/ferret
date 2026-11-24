@@ -92,24 +92,29 @@ class _DevicesFrameState extends State<DevicesFrame> {
             features: scope.features,
             builder: (context) => KeyboardLine(
               keys: _keysFor(context, scope, status),
-              builder: (context, focusNode) => DeviceDropHover(
-                target: WindowDropTargets.device(status),
-                child: ConnectionAnnouncer(
-                  status: status,
-                  child: DeviceTile(
+              builder: (context, focusNode) {
+                final attention = _attentionFor(context, scope, status);
+
+                return DeviceDropHover(
+                  target: WindowDropTargets.device(status),
+                  child: ConnectionAnnouncer(
                     status: status,
-                    focusNode: focusNode,
-                    actions: _actionsFor(context, scope, status),
-                    hasPrimary:
-                        index == 0 && !_feedHoldsPrimary(context, scope),
-                    attention: _attentionFor(context, scope, status),
-                    offlineStatus: _offlineStatusFor(context, scope, status),
-                    onTap: () => widget.onOpen(status),
-                    onFix: () => widget.onFix(status),
-                    isPinned: preferences.isPinned(status.device.id),
+                    child: DeviceTile(
+                      status: status,
+                      focusNode: focusNode,
+                      actions: _actionsFor(context, scope, status),
+                      hasPrimary:
+                          index == 0 && !_feedHoldsPrimary(context, scope),
+                      attention: attention?.title,
+                      attentionReason: attention?.health.reason,
+                      offlineStatus: _offlineStatusFor(context, scope, status),
+                      onTap: () => widget.onOpen(status),
+                      onFix: () => widget.onFix(status),
+                      isPinned: preferences.isPinned(status.device.id),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           if (index == 0 && status.isConnected)
@@ -264,22 +269,14 @@ class _DevicesFrameState extends State<DevicesFrame> {
   }
 
   /// The first feature that is on and not working with this device.
-  String? _attentionFor(
+  ({String title, FeatureHealth health})? _attentionFor(
     BuildContext context,
     ShellScope scope,
     DeviceStatus status,
-  ) {
-    for (final feature in scope.features) {
-      final health = feature.healthFor(scope.featureContext, status);
-      final isBroken = switch (health?.state) {
-        .needsAttention || .failing => true,
-        _ => false,
-      };
-      if (isBroken) {
-        return feature.title(context);
-      }
-    }
-
-    return null;
-  }
+  ) => DeviceAttention.of(
+    context,
+    scope.features,
+    scope.featureContext,
+    status,
+  ).firstOrNull;
 }

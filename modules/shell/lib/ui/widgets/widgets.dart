@@ -30,6 +30,7 @@ export 'package:shell/ui/widgets/nav_row.dart';
 export 'package:shell/ui/widgets/nearby_feature_tile.dart';
 export 'package:shell/ui/widgets/nearby_notice.dart';
 export 'package:shell/ui/widgets/nearby_tile.dart';
+export 'package:shell/ui/widgets/needs_attention_card.dart';
 export 'package:shell/ui/widgets/offline_line.dart';
 export 'package:shell/ui/widgets/pin_marker.dart';
 export 'package:shell/ui/widgets/privacy_line.dart';

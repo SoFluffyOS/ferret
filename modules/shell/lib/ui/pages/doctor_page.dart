@@ -11,6 +11,7 @@ import 'package:shell/l10n/l10n.dart';
 import 'package:shell/services/services.dart';
 import 'package:shell/ui/pages/connect_page.dart';
 import 'package:shell/ui/pages/device_vpn_page.dart';
+import 'package:shell/ui/pages/other_ways_page.dart';
 import 'package:shell/ui/pages/pair_page.dart';
 import 'package:shell/ui/widgets/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -130,7 +131,9 @@ class _DoctorPageState extends State<DoctorPage> {
                     engine.device,
                     explained: _checks.any(
                       (check) =>
-                          check.kind == .isolated || check.kind == .vpnRoute,
+                          check.kind == .isolated ||
+                          check.kind == .vpnRoute ||
+                          check.kind == .wsl,
                     ),
                   ),
                 ),
@@ -195,7 +198,8 @@ class _DoctorPageState extends State<DoctorPage> {
           ),
           links: [
             for (final fix in [
-              if (fixes.contains(DoctorFix.connectByAddress))
+              if (widget.deviceId == null ||
+                  fixes.contains(DoctorFix.connectByAddress))
                 DoctorFix.connectByAddress,
               DoctorFix.copyDiagnostics,
             ])
@@ -259,8 +263,12 @@ class _DoctorPageState extends State<DoctorPage> {
       case .tryAgain:
         _run();
       case .connectByAddress:
+        // With no device yet, connecting by address is pairing by address.
         await Navigator.of(context).push(
-          ferretRoute<void>(const ConnectPage()),
+          ferretRoute<void>(switch (widget.deviceId) {
+            null => const OtherWaysPage(),
+            _ => const ConnectPage(),
+          }),
         );
         _run();
       case .pairAgain:
@@ -384,17 +392,19 @@ class _DoctorPageState extends State<DoctorPage> {
       check.detail.isEmpty;
 
   /// The port line is for the copied diagnostics only, and "open Ferret on
-  /// the other device" is no help while this device has no network.
+  /// the other device" is no help while this device has no network, or
+  /// while WSL keeps devices apart.
   List<DoctorCheck> _shown(List<DoctorCheck> checks) {
-    final offline = checks.any(
+    final nothingToOpen = checks.any(
       (check) =>
-          (check.kind == .network || check.kind == .mobileData) &&
-          check.status == .problem,
+          ((check.kind == .network || check.kind == .mobileData) &&
+              check.status == .problem) ||
+          check.kind == .wsl,
     );
 
     return [
       for (final check in checks)
-        if (check.kind != .port && !(offline && _isUnknownAddress(check)))
+        if (check.kind != .port && !(nothingToOpen && _isUnknownAddress(check)))
           check,
     ];
   }
@@ -499,6 +509,7 @@ class _DoctorPageState extends State<DoctorPage> {
       ),
       (.isolated, _) => l10n.doctorIsolatedMaybe,
       (.vpnRoute, _) => l10n.doctorVpnRoute(check.detail, device),
+      (.wsl, _) => l10n.doctorWsl,
     };
   }
 }

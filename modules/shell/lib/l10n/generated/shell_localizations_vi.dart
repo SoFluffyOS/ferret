@@ -2556,4 +2556,33 @@ class ShellLocalizationsVi extends ShellLocalizations {
 
   @override
   String get movedDismiss => 'Đã hiểu';
+
+  @override
+  String get doctorWsl =>
+      'Ferret đang chạy trong WSL. Mạng của WSL khiến các thiết bị không tìm thấy nhau, dù mọi thứ khác đều ổn. Hãy ghép đôi từ thiết bị kia, hoặc bật mirrored networking trong WSL.';
+
+  @override
+  String deviceAttentionReason(String feature, String reason) {
+    return 'Đã kết nối · $feature: $reason';
+  }
+
+  @override
+  String deviceWithKind(String name, String kind) {
+    return '$name · $kind';
+  }
+
+  @override
+  String promptSameName(String here, String name) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'Máy Mac này',
+        'windows': 'PC này',
+        'phone': 'Điện thoại này',
+        'tablet': 'Máy tính bảng này',
+        'other': 'Máy tính này',
+      },
+    );
+    return '$_temp0 cũng tên là $name. Đổi tên để dễ phân biệt.';
+  }
 }

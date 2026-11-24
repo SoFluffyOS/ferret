@@ -2071,5 +2071,45 @@
     }
   },
   "movedReplaceHint": "Is the old one gone? Each device then offers Replace old one, and keeps its settings.",
-  "movedDismiss": "Got it"
+  "movedDismiss": "Got it",
+  "doctorWsl": "Ferret runs inside WSL here. WSL's network keeps your devices from finding each other, even when everything else looks right. Pair from your other device, or turn on mirrored networking in WSL.",
+  "@doctorWsl": {
+    "description": "Fix connection, when Ferret runs inside WSL on Windows with its default NAT networking"
+  },
+  "deviceAttentionReason": "Connected · {feature}: {reason}",
+  "@deviceAttentionReason": {
+    "description": "Tooltip on a device's orange dot: which feature needs attention and why",
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWithKind": "{name} · {kind}",
+  "@deviceWithKind": {
+    "description": "A device's name with its kind (Windows, Mac, Android…), where two devices may share a name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "promptSameName": "{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is called {name} too. Rename it to tell them apart.",
+  "@promptSameName": {
+    "description": "Pairing prompt, when the other device has this device's own name",
+    "placeholders": {
+      "here": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

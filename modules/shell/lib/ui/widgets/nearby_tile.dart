@@ -1,8 +1,8 @@
 import 'package:engine/engine.dart';
 import 'package:feature_kit/feature_kit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:protocol/protocol.dart';
 import 'package:shell/l10n/l10n.dart';
+import 'package:shell/models/models.dart';
 import 'package:shell/ui/widgets/action_pair.dart';
 import 'package:shell/ui/widgets/comparison_code.dart';
 import 'package:shell/view_models/view_models.dart';
@@ -142,7 +142,7 @@ class _Header extends StatelessWidget {
     final palette = context.palette;
     final typography = context.fluffyTheme.typography;
     final announce = peer.announce;
-    final kind = _kindOf(announce.platform, announce.formFactor);
+    final kind = DeviceKind.of(announce.platform, announce.formFactor);
 
     return Row(
       children: [
@@ -175,19 +175,6 @@ class _Header extends StatelessWidget {
       ],
     );
   }
-
-  /// Product names, the same in every language.
-  String _kindOf(Platform platform, FormFactor formFactor) =>
-      switch (platform) {
-        .PLATFORM_ANDROID => 'Android',
-        .PLATFORM_IOS when formFactor == .FORM_FACTOR_TABLET => 'iPad',
-        .PLATFORM_IOS => 'iPhone',
-        .PLATFORM_MACOS => 'Mac',
-        .PLATFORM_LINUX => 'Linux',
-        .PLATFORM_WINDOWS => 'Windows',
-        .PLATFORM_CLI => 'Terminal',
-        _ => '',
-      };
 }
 
 enum _Tone { muted, good }

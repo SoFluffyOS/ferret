@@ -18,6 +18,7 @@ class SidebarDeviceRow extends StatelessWidget {
     required this.onTap,
     this.isSelected = false,
     this.needsAttention = false,
+    this.attentionReason,
     this.badge = 0,
     this.isDropHovered = false,
     this.tooltip,
@@ -33,6 +34,10 @@ class SidebarDeviceRow extends StatelessWidget {
 
   /// A feature that is on isn't working with this device.
   final bool needsAttention;
+
+  /// Which feature, and why, such as "Connected · Notifications: Off on
+  /// Pixel 9". Said by the orange dot in place of "needs attention".
+  final String? attentionReason;
 
   /// What waits in its sections, shown while they are folded away.
   final int badge;
@@ -69,7 +74,7 @@ class SidebarDeviceRow extends StatelessWidget {
         .thisDevice => l10n.deviceUpdateHere,
         null => l10n.deviceOffline,
       },
-      (true, true) => l10n.deviceNeedsAttention,
+      (true, true) => attentionReason ?? l10n.deviceNeedsAttention,
       (true, false) => l10n.deviceConnected,
     };
 

@@ -781,4 +781,62 @@ void main() {
       expect(checks.first.detail, '192.168.1.9');
     });
   });
+
+  group('inside WSL', () {
+    Future<List<DoctorCheck>> diagnoseInWsl(
+      String? deviceId, {
+      String mode = 'nat',
+    }) => ConnectionDoctor(
+      engine,
+      isWindows: false,
+      isLinux: true,
+      linuxFirewall: LinuxFirewall(
+        readFile: (path) async => '',
+        run: (executable, arguments) async =>
+            ProcessResult(0, 252, 'not running', ''),
+      ),
+      wsl: WslNetwork(
+        environment: const {'WSL_DISTRO_NAME': 'Ubuntu'},
+        readFile: (path) async => null,
+        networkingMode: () async => mode,
+      ),
+      hearsOthers: true,
+      interfaces: () async => [(name: 'eth0', address: '172.28.1.5')],
+      probe: (host, port, timeout) async => switch (host) {
+        '172.28.1.1' => Reach.answered,
+        _ => Reach.silent,
+      },
+      clock: () => (engine.startedAt ?? DateTime.now()).add(
+        const Duration(minutes: 1),
+      ),
+    ).diagnose(deviceId).last;
+
+    test('checking the network says WSL keeps devices apart, not that '
+        'everything is fine', () async {
+      final checks = await diagnoseInWsl(null);
+
+      expect(
+        checks.map((check) => check.kind),
+        containsAllInOrder([DoctorCheckKind.network, DoctorCheckKind.wsl]),
+      );
+      expect(
+        checks.where((check) => check.kind == .isolated),
+        isEmpty,
+        reason: 'WSL explains it better than a guess about the Wi-Fi',
+      );
+    });
+
+    test('with mirrored networking, WSL is not named', () async {
+      final checks = await diagnoseInWsl(null, mode: 'mirrored');
+
+      expect(checks.where((check) => check.kind == .wsl), isEmpty);
+      expect(checks.where((check) => check.kind == .isolated), hasLength(1));
+    });
+
+    test('a device never seen gets the WSL line too', () async {
+      final checks = await diagnoseInWsl('nobody');
+
+      expect(checks.where((check) => check.kind == .wsl), hasLength(1));
+    });
+  });
 }

@@ -278,7 +278,13 @@ class _Nearby extends StatelessWidget {
               actionLabel: l10n.nearbyLookAgain,
               onAction: () => unawaited(viewModel.lookAgain()),
             ),
-            _ => NearbyNotice(body: l10n.nearbyLooking),
+            _ => NearbyNotice(
+              body: l10n.nearbyLooking,
+              holdsRoomFor: (
+                body: l10n.nearbyNone,
+                actionLabel: l10n.nearbyLookAgain,
+              ),
+            ),
           },
         if (onPairWithCode != null && peers.isNotEmpty)
           WelcomeNearby(onPairWithCode: onPairWithCode),

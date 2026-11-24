@@ -24,6 +24,7 @@ class DeviceTile extends StatelessWidget {
     this.actions = const [],
     this.hasPrimary = false,
     this.attention,
+    this.attentionReason,
     this.offlineStatus,
     this.onTap,
     this.onFix,
@@ -43,6 +44,10 @@ class DeviceTile extends StatelessWidget {
   /// The name of a feature that is turned on and not working with this
   /// device, such as "Notifications".
   final String? attention;
+
+  /// Why [attention]'s feature isn't working, such as "Off on Pixel 9",
+  /// on hover over its status line.
+  final String? attentionReason;
 
   /// What a feature is doing with it while offline, such as waking it, in
   /// place of "Last seen".
@@ -121,30 +126,34 @@ class DeviceTile extends StatelessWidget {
                         ],
                       ),
                       Spacing.vertical(Spacing.d2),
-                      Row(
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: dotColor,
-                              shape: .circle,
-                            ),
-                            child: SizedBox.square(dimension: Spacing.d6),
-                          ),
-                          Spacing.h6,
-                          Flexible(
-                            child: Text(
-                              _statusLine(l10n),
-                              style: typography.caption1.copyWith(
-                                color: statusColor,
+                      _withReason(
+                        l10n,
+                        needsAttention: needsAttention,
+                        child: Row(
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: dotColor,
+                                shape: .circle,
                               ),
-                              overflow: .ellipsis,
+                              child: SizedBox.square(dimension: Spacing.d6),
                             ),
-                          ),
-                          if (status.battery case final battery?) ...[
                             Spacing.h6,
-                            BatteryBadge(battery: battery),
+                            Flexible(
+                              child: Text(
+                                _statusLine(l10n),
+                                style: typography.caption1.copyWith(
+                                  color: statusColor,
+                                ),
+                                overflow: .ellipsis,
+                              ),
+                            ),
+                            if (status.battery case final battery?) ...[
+                              Spacing.h6,
+                              BatteryBadge(battery: battery),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -194,6 +203,21 @@ class DeviceTile extends StatelessWidget {
       ),
     );
   }
+
+  /// The orange dot says which feature and why, on hover and to a screen
+  /// reader, so the reason isn't only far down the device's page.
+  Widget _withReason(
+    ShellLocalizations l10n, {
+    required bool needsAttention,
+    required Widget child,
+  }) => switch ((needsAttention, attention, attentionReason)) {
+    (true, final feature?, final reason?) when reason.isNotEmpty =>
+      FluffyTooltip(
+        message: l10n.deviceAttentionReason(feature, reason),
+        child: child,
+      ),
+    _ => child,
+  };
 
   /// An iPhone or iPad whose Ferret isn't open: nothing is broken.
   bool get _waitsForIosApp =>

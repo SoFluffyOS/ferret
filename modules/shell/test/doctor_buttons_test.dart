@@ -43,7 +43,11 @@ final _pixel = TrustedDevice(
 void main() {
   late FerretEngine engine;
 
-  Future<void> open(WidgetTester tester, List<DoctorCheck> checks) async {
+  Future<void> open(
+    WidgetTester tester,
+    List<DoctorCheck> checks, {
+    bool forDevice = true,
+  }) async {
     final started = await tester.runAsync(() async {
       final engine = await FerretEngine.create(
         secrets: MemorySecretStore(),
@@ -67,16 +71,19 @@ void main() {
     });
 
     await tester.pumpWidget(
-      testApp(
-        ShellScope(
-          features: const [],
-          featureContext: FeatureContext(
-            engine: engine,
-            navigatorKey: GlobalKey<NavigatorState>(),
-            notifier: _QuietNotifier(),
-          ),
-          child: DoctorPage(
-            deviceId: _pixel.id,
+      ShellScope(
+        features: const [],
+        featureContext: FeatureContext(
+          engine: engine,
+          navigatorKey: GlobalKey<NavigatorState>(),
+          notifier: _QuietNotifier(),
+        ),
+        child: testApp(
+          DoctorPage(
+            deviceId: switch (forDevice) {
+              true => _pixel.id,
+              false => null,
+            },
             doctorFor: (engine) => _FixedDoctor(engine, checks),
           ),
         ),
@@ -174,5 +181,59 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('inside WSL, Check my network says so instead of "Everything '
+      'looks right", and offers Connect by address', (tester) async {
+    await open(tester, const [
+      DoctorCheck(kind: .network, status: .ok, detail: '172.28.1.5'),
+      DoctorCheck(kind: .wsl, status: .warning),
+    ], forDevice: false);
+
+    expect(find.textContaining('Ferret runs inside WSL here'), findsOneWidget);
+    expect(find.textContaining('mirrored networking'), findsOneWidget);
+    expect(find.textContaining('Everything looks right'), findsNothing);
+    expect(find.text('Connect by address'), findsOneWidget);
+    expect(find.text('Copy details for a helper'), findsOneWidget);
+  });
+
+  testWidgets('Check my network always has Connect by address next to Try '
+      'again', (tester) async {
+    await open(tester, const [
+      DoctorCheck(kind: .network, status: .ok, detail: '192.168.1.5'),
+    ], forDevice: false);
+
+    expect(find.textContaining('Everything looks right'), findsOneWidget);
+    expect(find.text('Connect by address'), findsOneWidget);
+  });
+
+  testWidgets('Connect by address from Check my network pairs by address', (
+    tester,
+  ) async {
+    await open(tester, const [
+      DoctorCheck(kind: .network, status: .ok, detail: '192.168.1.5'),
+    ], forDevice: false);
+
+    await tester.tap(find.text('Connect by address'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byType(OtherWaysPage), findsOneWidget);
+  });
+
+  testWidgets('inside WSL, a device never seen is not "everything looks '
+      'right" either', (tester) async {
+    await open(tester, const [
+      DoctorCheck(kind: .network, status: .ok, detail: '172.28.1.5'),
+      DoctorCheck(
+        kind: .reachable,
+        status: .problem,
+        fixes: [.connectByAddress],
+      ),
+      DoctorCheck(kind: .wsl, status: .warning),
+    ]);
+
+    expect(find.textContaining('Ferret runs inside WSL here'), findsOneWidget);
+    expect(find.textContaining('Everything looks right'), findsNothing);
   });
 }

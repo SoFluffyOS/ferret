@@ -3295,6 +3295,30 @@ abstract class ShellLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get movedDismiss;
+
+  /// Fix connection, when Ferret runs inside WSL on Windows with its default NAT networking
+  ///
+  /// In en, this message translates to:
+  /// **'Ferret runs inside WSL here. WSL\'s network keeps your devices from finding each other, even when everything else looks right. Pair from your other device, or turn on mirrored networking in WSL.'**
+  String get doctorWsl;
+
+  /// Tooltip on a device's orange dot: which feature needs attention and why
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · {feature}: {reason}'**
+  String deviceAttentionReason(String feature, String reason);
+
+  /// A device's name with its kind (Windows, Mac, Android…), where two devices may share a name
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {kind}'**
+  String deviceWithKind(String name, String kind);
+
+  /// Pairing prompt, when the other device has this device's own name
+  ///
+  /// In en, this message translates to:
+  /// **'{here, select, mac{This Mac} windows{This PC} phone{This phone} tablet{This tablet} other{This computer}} is called {name} too. Rename it to tell them apart.'**
+  String promptSameName(String here, String name);
 }
 
 class _ShellLocalizationsDelegate

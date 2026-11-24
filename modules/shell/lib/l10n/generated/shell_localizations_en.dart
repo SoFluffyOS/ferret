@@ -2566,4 +2566,33 @@ class ShellLocalizationsEn extends ShellLocalizations {
 
   @override
   String get movedDismiss => 'Got it';
+
+  @override
+  String get doctorWsl =>
+      'Ferret runs inside WSL here. WSL\'s network keeps your devices from finding each other, even when everything else looks right. Pair from your other device, or turn on mirrored networking in WSL.';
+
+  @override
+  String deviceAttentionReason(String feature, String reason) {
+    return 'Connected · $feature: $reason';
+  }
+
+  @override
+  String deviceWithKind(String name, String kind) {
+    return '$name · $kind';
+  }
+
+  @override
+  String promptSameName(String here, String name) {
+    String _temp0 = intl.Intl.selectLogic(
+      here,
+      {
+        'mac': 'This Mac',
+        'windows': 'This PC',
+        'phone': 'This phone',
+        'tablet': 'This tablet',
+        'other': 'This computer',
+      },
+    );
+    return '$_temp0 is called $name too. Rename it to tell them apart.';
+  }
 }
