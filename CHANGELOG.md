@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-25
+
 The first release. Your phone and your computers, working as one: on the Wi-Fi you already have, with no account and no cloud.
 
 Things marked *Beta* work in my tests but haven't met enough real devices yet. Tried one? [Tell me how it went](https://github.com/SoFluffyOS/ferret/issues).
