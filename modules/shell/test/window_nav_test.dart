@@ -183,6 +183,37 @@ void main() {
       expect(reopened.selectedDeviceId, 'b');
     });
 
+    test('a restart opens on the last device, not on Activity', () async {
+      final settings = MemorySettingsStore();
+      await engine.trustStore.save(_device('a', 'iPad'));
+      await engine.trustStore.save(_device('b', 'Pixel 9'));
+      final nav = _nav(host, settings: settings)
+        ..select(const DeviceDestination('b'))
+        ..select(const ActivityDestination());
+      addTearDown(nav.dispose);
+
+      final reopened = _nav(host, settings: settings);
+      addTearDown(reopened.dispose);
+
+      expect(reopened.selection, const DeviceDestination('b'));
+    });
+
+    test(
+      'an Activity kept by an older version opens the first device',
+      () async {
+        final settings = MemorySettingsStore();
+        await settings.set(
+          WindowNavViewModel.selectionKey,
+          const ActivityDestination().stored,
+        );
+        await engine.trustStore.save(_device('a', 'iPad'));
+        final nav = _nav(host, settings: settings);
+        addTearDown(nav.dispose);
+
+        expect(nav.selection, const DeviceDestination('a'));
+      },
+    );
+
     test('forgetting the selected device moves on to another', () async {
       await engine.trustStore.save(_device('a', 'iPad'));
       await engine.trustStore.save(_device('b', 'Pixel 9'));

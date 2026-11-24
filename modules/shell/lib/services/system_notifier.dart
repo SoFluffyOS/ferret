@@ -70,8 +70,13 @@ class SystemNotifier implements LocalNotifier {
 
   /// The button that started the app, if one did. Features listen once
   /// they start, after this, so it goes out on the first turn after the
-  /// first of them listens.
+  /// first of them listens. Linux's plugin doesn't implement it: a notice
+  /// there starts nothing.
   Future<void> _takeLaunchResponse() async {
+    if (Platform.isLinux) {
+      return;
+    }
+
     try {
       final launch = await _plugin.getNotificationAppLaunchDetails();
       if (launch == null || !launch.didNotificationLaunchApp) {

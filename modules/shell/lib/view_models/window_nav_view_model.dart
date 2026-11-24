@@ -20,14 +20,21 @@ class WindowNavViewModel extends ChangeNotifier {
   }) : _host = host,
        _pageFor = pageFor,
        _settings = settings {
-    _selection = WindowDestination.parse(settings?.get<String>(selectionKey));
+    _selection = switch (WindowDestination.parse(
+      settings?.get<String>(selectionKey),
+    )) {
+      final DeviceDestination device => device,
+      _ => null,
+    };
     _isSidebarHidden = settings?.get<bool>(sidebarHiddenKey) ?? false;
     _isActivityPaneHidden = settings?.get<bool>(activityPaneHiddenKey) ?? false;
     _isNearbyCollapsed = settings?.get<bool>(nearbyCollapsedKey) ?? false;
     _host.addListener(notifyListeners);
   }
 
-  /// Settings key for the last selection, as [WindowDestination.stored].
+  /// Settings key for the last device selected, as
+  /// [WindowDestination.stored]. Activity and Settings aren't kept: after a
+  /// restart Activity has little to show, so the window opens on a device.
   static const selectionKey = 'shell.window.selection';
 
   /// Settings key that says the person hid the device list.
@@ -98,7 +105,7 @@ class WindowNavViewModel extends ChangeNotifier {
     }
 
     _selection = destination;
-    unawaited(_settings?.set(selectionKey, destination.stored));
+    _remember(destination);
     notifyListeners();
   }
 
@@ -143,7 +150,7 @@ class WindowNavViewModel extends ChangeNotifier {
   void land(WindowDestination destination) {
     if (_host.devices.isNotEmpty) {
       _selection = destination;
-      unawaited(_settings?.set(selectionKey, destination.stored));
+      _remember(destination);
       notifyListeners();
       return;
     }
@@ -220,5 +227,13 @@ class WindowNavViewModel extends ChangeNotifier {
 
   void _push(Widget page) {
     unawaited(navigatorKey.currentState?.push(ferretRoute<void>(page)));
+  }
+
+  void _remember(WindowDestination destination) {
+    if (destination is! DeviceDestination) {
+      return;
+    }
+
+    unawaited(_settings?.set(selectionKey, destination.stored));
   }
 }
