@@ -8,17 +8,15 @@
 #   2. apps/ferret/pubspec.yaml: version 0.1.0+<build>.
 #   3. git tag v0.1.0 && git push origin v0.1.0
 #
-# Android and Mac must build; Windows and Linux join the draft when they
-# build, and the draft says which are missing. A tag with a "-" (v0.2.0-beta.1)
+# Android and the extension must build; Windows and Linux join the draft when
+# they build, and the draft says which are missing. The Mac build is made on
+# your Mac and added to the draft with scripts/upload_mac_release.sh <tag>,
+# which also merges its sums into the release's SHA256SUMS. A tag with a "-" (v0.2.0-beta.1)
 # makes a pre-release, which only "Include beta versions" updaters see.
 #
 # Secrets:
 #   Android  ANDROID_UPLOAD_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
 #            ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (same key as Google Play)
-#   Mac      MACOS_CERT_P12_BASE64, MACOS_CERT_PASSWORD (Developer ID
-#            Application certificate with its private key, exported as .p12)
-#            NOTARY_KEY_P8_BASE64, NOTARY_KEY_ID, NOTARY_ISSUER_ID (an App
-#            Store Connect API key with the Developer role, for notarytool)
 #   Windows  WINDOWS_CERT_PFX_BASE64, WINDOWS_CERT_PASSWORD (optional: without
 #            them the setup is unsigned and Ferret's updater won't install a
 #            later one over it)
@@ -142,69 +140,6 @@ jobs:
             build/android-packages/*.apk
             build/android-packages/SHA256SUMS
 
-  macos:
-    needs: prepare
-    runs-on: macos-15
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TAG }}
-          submodules: recursive
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-      - name: fvm shim
-        run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
-          chmod +x "$RUNNER_TEMP/bin/fvm"
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
-      - name: Developer ID certificate and notary key
-        env:
-          CERT_P12_BASE64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
-          CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
-          NOTARY_KEY_P8_BASE64: ${{ secrets.NOTARY_KEY_P8_BASE64 }}
-          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
-          NOTARY_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
-        run: |
-          for name in CERT_P12_BASE64 CERT_PASSWORD NOTARY_KEY_P8_BASE64 NOTARY_KEY_ID NOTARY_ISSUER_ID; do
-            [ -n "${!name}" ] || { echo "::error::Secret for $name is missing"; exit 1; }
-          done
-          keychain="$RUNNER_TEMP/ferret.keychain-db"
-          keychain_password="$(uuidgen)"
-          security create-keychain -p "$keychain_password" "$keychain"
-          security set-keychain-settings -lut 21600 "$keychain"
-          security unlock-keychain -p "$keychain_password" "$keychain"
-          echo "$CERT_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-          security import "$RUNNER_TEMP/cert.p12" -P "$CERT_PASSWORD" -A -f pkcs12 -k "$keychain"
-          rm -f "$RUNNER_TEMP/cert.p12"
-          security set-key-partition-list -S apple-tool:,apple: -k "$keychain_password" "$keychain" >/dev/null
-          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
-          security default-keychain -s "$keychain"
-          echo "$NOTARY_KEY_P8_BASE64" | base64 --decode > "$RUNNER_TEMP/notary.p8"
-          xcrun notarytool store-credentials ferret-ci \
-            --key "$RUNNER_TEMP/notary.p8" --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER_ID" \
-            --keychain "$keychain"
-          rm -f "$RUNNER_TEMP/notary.p8"
-          echo "FERRET_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
-      - name: Build, sign, notarize
-        env:
-          FERRET_NOTARY_PROFILE: ferret-ci
-        run: scripts/package_macos.sh
-      - name: Forget the keychain
-        if: always()
-        run: |
-          [ -n "${FERRET_KEYCHAIN:-}" ] && security delete-keychain "$FERRET_KEYCHAIN" || true
-      - uses: actions/upload-artifact@v4
-        with:
-          name: macos
-          path: |
-            build/macos-packages/*.dmg
-            build/macos-packages/*.zip
-            build/macos-packages/SHA256SUMS
-
   windows:
     needs: prepare
     runs-on: windows-2022
@@ -326,11 +261,10 @@ jobs:
           path: extensions/browser/packages/Ferret-browser-*.zip
 
   release:
-    needs: [prepare, android, macos, windows, linux, extension]
+    needs: [prepare, android, windows, linux, extension]
     if: >-
       !cancelled() && needs.prepare.result == 'success' &&
-      needs.android.result == 'success' && needs.macos.result == 'success' &&
-      needs.extension.result == 'success'
+      needs.android.result == 'success' && needs.extension.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -362,6 +296,7 @@ jobs:
             echo "::warning::Not in this draft: ${missing[*]}"
             printf '\n> **Draft note, delete before publishing:** %s did not build. See the workflow run.\n' "${missing[*]}" >> notes.md
           fi
+          printf '\n> **Draft note, delete before publishing:** add the Mac build with `scripts/upload_mac_release.sh %s`.\n' "$TAG" >> notes.md
 
       - name: Draft release
         env:
