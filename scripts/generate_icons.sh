@@ -198,9 +198,9 @@ write('social.svg',
       f'<text x="530" y="300" fill="{fur}" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" '
       'font-size="112" font-weight="700">Ferret</text>'
       f'<text x="534" y="380" fill="{fur}" fill-opacity="0.72" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" '
-      'font-size="38">Continue on your other devices.</text>'
+      'font-size="38">Your phone and your computers,</text>'
       f'<text x="534" y="432" fill="{fur}" fill-opacity="0.72" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" '
-      'font-size="38">Local network, no account.</text></svg>\n')
+      'font-size="38">working as one.</text></svg>\n')
 # The Windows installer's tall side picture: the ferret popping up from the bottom.
 write('wizard.svg',
       f'<svg xmlns="{NS}" width="164" height="314" viewBox="0 0 164 314">'
