@@ -1,0 +1,379 @@
+# Builds every platform when a v* tag is pushed, and puts it all on a DRAFT
+# GitHub release with that version's CHANGELOG.md section as the notes.
+# Nothing goes public until you press Publish on the draft: the download
+# links (releases/latest/download/...) and Ferret's updater only see
+# published releases.
+#
+#   1. CHANGELOG.md: rename "## [Unreleased]" to "## [0.1.0] - <date>".
+#   2. apps/ferret/pubspec.yaml: version 0.1.0+<build>.
+#   3. git tag v0.1.0 && git push origin v0.1.0
+#
+# Android and Mac must build; Windows and Linux join the draft when they
+# build, and the draft says which are missing. A tag with a "-" (v0.2.0-beta.1)
+# makes a pre-release, which only "Include beta versions" updaters see.
+#
+# Secrets:
+#   Android  ANDROID_UPLOAD_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
+#            ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (same key as Google Play)
+#   Mac      MACOS_CERT_P12_BASE64, MACOS_CERT_PASSWORD (Developer ID
+#            Application certificate with its private key, exported as .p12)
+#            NOTARY_KEY_P8_BASE64, NOTARY_KEY_ID, NOTARY_ISSUER_ID (an App
+#            Store Connect API key with the Developer role, for notarytool)
+#   Windows  WINDOWS_CERT_PFX_BASE64, WINDOWS_CERT_PASSWORD (optional: without
+#            them the setup is unsigned and Ferret's updater won't install a
+#            later one over it)
+# Variables:
+#   FERRET_DEB_MAINTAINER  the .deb's Maintainer, "Name <email>"
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build again (its draft is replaced)
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Tag, pubspec and changelog agree
+        id: version
+        run: |
+          version="${TAG#v}"
+          pubspec="$(sed -n 's/^version: *\([^+]*\).*/\1/p' apps/ferret/pubspec.yaml)"
+          if [ "$version" != "$pubspec" ]; then
+            echo "::error::Tag $TAG but apps/ferret/pubspec.yaml says $pubspec"
+            exit 1
+          fi
+          extension="$(node -p "require('./extensions/browser/package.json').version")"
+          if [ "$version" != "$extension" ] && [ "${version%%-*}" != "$extension" ]; then
+            echo "::error::Tag $TAG but extensions/browser/package.json says $extension"
+            exit 1
+          fi
+          scripts/release_notes.sh "$version" > release_notes.md
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          case "$version" in
+            *-*) echo "prerelease=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "prerelease=false" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
+
+  android:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          submodules: recursive
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: fvm shim (the scripts call fvm flutter / fvm dart)
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
+          chmod +x "$RUNNER_TEMP/bin/fvm"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          for name in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            [ -n "${!name}" ] || { echo "::error::Secret for $name is missing"; exit 1; }
+          done
+          keystore="$RUNNER_TEMP/upload.jks"
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          {
+            echo "storeFile=$keystore"
+            echo "storePassword=$STORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > apps/ferret/android/key.properties
+      - name: Build the APK
+        run: scripts/package_android.sh
+      - name: Not the debug key
+        run: |
+          apksigner="$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          "$apksigner" verify --print-certs build/android-packages/Ferret-android.apk | tee certs.txt
+          if grep -q "CN=Android Debug" certs.txt; then
+            echo "::error::The APK is signed with the debug key"; exit 1
+          fi
+      - name: Forget the key
+        if: always()
+        run: rm -f apps/ferret/android/key.properties "$RUNNER_TEMP/upload.jks"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/android-packages/*.apk
+            build/android-packages/SHA256SUMS
+
+  macos:
+    needs: prepare
+    runs-on: macos-15
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          submodules: recursive
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: fvm shim
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
+          chmod +x "$RUNNER_TEMP/bin/fvm"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Developer ID certificate and notary key
+        env:
+          CERT_P12_BASE64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          NOTARY_KEY_P8_BASE64: ${{ secrets.NOTARY_KEY_P8_BASE64 }}
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+        run: |
+          for name in CERT_P12_BASE64 CERT_PASSWORD NOTARY_KEY_P8_BASE64 NOTARY_KEY_ID NOTARY_ISSUER_ID; do
+            [ -n "${!name}" ] || { echo "::error::Secret for $name is missing"; exit 1; }
+          done
+          keychain="$RUNNER_TEMP/ferret.keychain-db"
+          keychain_password="$(uuidgen)"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          echo "$CERT_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -P "$CERT_PASSWORD" -A -f pkcs12 -k "$keychain"
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple: -k "$keychain_password" "$keychain" >/dev/null
+          security list-keychains -d user -s "$keychain" $(security list-keychains -d user | tr -d '"')
+          security default-keychain -s "$keychain"
+          echo "$NOTARY_KEY_P8_BASE64" | base64 --decode > "$RUNNER_TEMP/notary.p8"
+          xcrun notarytool store-credentials ferret-ci \
+            --key "$RUNNER_TEMP/notary.p8" --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER_ID" \
+            --keychain "$keychain"
+          rm -f "$RUNNER_TEMP/notary.p8"
+          echo "FERRET_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
+      - name: Build, sign, notarize
+        env:
+          FERRET_NOTARY_PROFILE: ferret-ci
+        run: scripts/package_macos.sh
+      - name: Forget the keychain
+        if: always()
+        run: |
+          [ -n "${FERRET_KEYCHAIN:-}" ] && security delete-keychain "$FERRET_KEYCHAIN" || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: |
+            build/macos-packages/*.dmg
+            build/macos-packages/*.zip
+            build/macos-packages/SHA256SUMS
+
+  windows:
+    needs: prepare
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          submodules: recursive
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: fvm shim and Inno Setup
+        shell: pwsh
+        run: |
+          $bin = Join-Path $env:RUNNER_TEMP 'bin'
+          New-Item -ItemType Directory -Force -Path $bin | Out-Null
+          Set-Content -Path (Join-Path $bin 'fvm.cmd') -Value "@%*" -Encoding ascii
+          Add-Content -Path $env:GITHUB_PATH -Value $bin
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup --no-progress -y
+          }
+      - name: Signing certificate
+        shell: pwsh
+        env:
+          CERT_PFX_BASE64: ${{ secrets.WINDOWS_CERT_PFX_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+        run: |
+          if (-not $env:CERT_PFX_BASE64) {
+            Write-Host '::warning::No WINDOWS_CERT_PFX_BASE64: the setup is unsigned, and Ferret''s updater will not install a later one over it.'
+            exit 0
+          }
+          $pfx = Join-Path $env:RUNNER_TEMP 'ferret.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:CERT_PFX_BASE64))
+          Add-Content -Path $env:GITHUB_ENV -Value "FERRET_WINDOWS_CERT=$pfx"
+          Add-Content -Path $env:GITHUB_ENV -Value "FERRET_WINDOWS_CERT_PASSWORD=$env:CERT_PASSWORD"
+      - name: Build the installer
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts\package_windows.ps1 inno
+      - name: Forget the certificate
+        if: always()
+        shell: pwsh
+        run: Remove-Item -Force -ErrorAction SilentlyContinue (Join-Path $env:RUNNER_TEMP 'ferret.pfx')
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            build/windows-packages/*-setup.exe
+            build/windows-packages/SHA256SUMS
+
+  linux:
+    needs: prepare
+    # The oldest supported Ubuntu, so the AppImage and .deb run on older glibc.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          submodules: recursive
+      - name: Build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config file \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev \
+            libegl-dev libgles-dev
+          curl -fsSL -o "$RUNNER_TEMP/appimagetool" \
+            https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x "$RUNNER_TEMP/appimagetool"
+          echo "APPIMAGETOOL=$RUNNER_TEMP/appimagetool" >> "$GITHUB_ENV"
+          # No FUSE on the runner: let appimagetool unpack itself.
+          echo "APPIMAGE_EXTRACT_AND_RUN=1" >> "$GITHUB_ENV"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: fvm shim
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
+          chmod +x "$RUNNER_TEMP/bin/fvm"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Build the .deb and the AppImage
+        env:
+          FERRET_DEB_MAINTAINER: ${{ vars.FERRET_DEB_MAINTAINER || 'Ferret <https://github.com/simonpham/ferret/issues>' }}
+        run: scripts/package_linux.sh release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: |
+            build/linux-packages/*.deb
+            build/linux-packages/*.AppImage
+            build/linux-packages/SHA256SUMS
+
+  extension:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: extensions/browser/package-lock.json
+      - name: Package
+        working-directory: extensions/browser
+        run: |
+          npm ci
+          npm run check
+          npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension
+          path: extensions/browser/packages/Ferret-browser-*.zip
+
+  release:
+    needs: [prepare, android, macos, windows, linux, extension]
+    if: >-
+      !cancelled() && needs.prepare.result == 'success' &&
+      needs.android.result == 'success' && needs.macos.result == 'success' &&
+      needs.extension.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: assets
+
+      - name: One SHA256SUMS, and what's missing
+        env:
+          WINDOWS: ${{ needs.windows.result }}
+          LINUX: ${{ needs.linux.result }}
+        run: |
+          # Ferret's updater refuses any download not listed here.
+          cat assets/*/SHA256SUMS | sort -k2 -u > SHA256SUMS
+          rm assets/*/SHA256SUMS
+          cat SHA256SUMS
+          (cd assets && find . -type f ! -path './release-notes/*' -exec sha256sum {} + | sed 's#  \./[^/]*/#  #' | sort -k2) > actual
+          # Every file the updater can fetch must match its line.
+          while read -r sum name; do
+            line="$(grep "  $name$" SHA256SUMS || true)"
+            [ -z "$line" ] || [ "$line" = "$sum  $name" ] || { echo "::error::$name doesn't match SHA256SUMS"; exit 1; }
+          done < actual
+          cp assets/release-notes/release_notes.md notes.md
+          missing=()
+          [ "$WINDOWS" = success ] || missing+=(Windows)
+          [ "$LINUX" = success ] || missing+=(Linux)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::warning::Not in this draft: ${missing[*]}"
+            printf '\n> **Draft note, delete before publishing:** %s did not build. See the workflow run.\n' "${missing[*]}" >> notes.md
+          fi
+
+      - name: Draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
+        run: |
+          flags=(--draft --verify-tag --title "Ferret $VERSION" --notes-file notes.md)
+          [ "$PRERELEASE" = true ] && flags+=(--prerelease)
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if [ "$(gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json isDraft -q .isDraft)" != true ]; then
+              echo "::error::$TAG is already published; not touching it"; exit 1
+            fi
+            gh release delete "$TAG" -R "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create "$TAG" -R "$GITHUB_REPOSITORY" "${flags[@]}" \
+            SHA256SUMS $(find assets -type f ! -path 'assets/release-notes/*')

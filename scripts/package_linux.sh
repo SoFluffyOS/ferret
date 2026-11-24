@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Builds Ferret's Linux packages from packaging/linux into build/linux-packages:
 #
-#   scripts/package_linux.sh [deb|appimage|flatpak|all]   (default: all)
+#   scripts/package_linux.sh [deb|appimage|flatpak|release|all]   (default: all)
+#
+# release builds the .deb and the AppImage (what the GitHub release carries).
 #
 # Runs on Linux only (x86_64 or aarch64): Flutter can't cross-build a Linux
 # app from macOS or Windows. Every target first builds the release bundle
@@ -134,8 +136,9 @@ case "$target" in
   deb) build_stage; build_deb ;;
   appimage) build_stage; build_appimage ;;
   flatpak) build_stage; build_flatpak ;;
+  release) build_stage; build_deb; build_appimage ;;
   all) build_stage; build_deb; build_appimage; build_flatpak ;;
-  *) echo "Usage: $0 [deb|appimage|flatpak|all]" >&2; exit 64 ;;
+  *) echo "Usage: $0 [deb|appimage|flatpak|release|all]" >&2; exit 64 ;;
 esac
 
 write_sums
