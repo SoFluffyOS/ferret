@@ -208,14 +208,14 @@ void main() {
     addTearDown(subscription.cancel);
 
     await laptop.updatePresence(Presence(batteryPercent: -1, away: true));
-    await _until(() => phone.devices.single.isAway);
+    await _until(() => phone.devices.firstOrNull?.isAway ?? false);
     expect(changes, greaterThan(0), reason: 'the list hears about it');
     expect(phone.devices.single.isConnected, isTrue);
 
     await laptop.updatePresence(
       Presence(batteryPercent: -1, userActive: true),
     );
-    await _until(() => !phone.devices.single.isAway);
+    await _until(() => phone.devices.firstOrNull?.isAway == false);
   });
 
   test('calls during a reconnect merge into one more run', () async {

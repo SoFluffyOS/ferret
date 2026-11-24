@@ -35,7 +35,9 @@ class FerretEngine implements FeatureHost {
     required LocalNetworkSource? networks,
     required Future<Set<String>> Function()? ownAddresses,
     required this.multicastNeed,
+    required Future<ByteConnection> Function(String host, int port) connect,
   }) : _device = device,
+       _connect = connect,
        _networkSource = networks,
        _ownAddressOverride = ownAddresses,
        _justPaired = justPaired,
@@ -102,6 +104,7 @@ class FerretEngine implements FeatureHost {
     Future<Set<String>> Function()? ownAddresses,
     MulticastNeed? multicastNeed,
     String? machineId,
+    Future<ByteConnection> Function(String host, int port)? connect,
   }) async {
     await IdentityHome.settle(
       secrets: secrets,
@@ -130,6 +133,7 @@ class FerretEngine implements FeatureHost {
       networks: networks,
       ownAddresses: ownAddresses,
       multicastNeed: multicastNeed ?? MulticastNeed(),
+      connect: connect ?? SocketConnection.connect,
     );
   }
 
@@ -173,6 +177,7 @@ class FerretEngine implements FeatureHost {
   final Future<List<String>> Function() _vpnAddressSource;
   late final VpnReacher _vpnReacher;
   final Discovery _discovery;
+  final Future<ByteConnection> Function(String host, int port) _connect;
   final LocalNetworkSource? _networkSource;
   final Future<Set<String>> Function()? _ownAddressOverride;
 
@@ -201,7 +206,7 @@ class FerretEngine implements FeatureHost {
   final Map<String, Session> _sessions = {};
   final Map<String, Session> _ready = {};
   final Map<Session, List<Feature>> _openedFeatures = {};
-  final Set<String> _dialing = {};
+  final Map<String, _Dial> _dialing = {};
   final Set<PairingExchange> _pairing = {};
   final Map<String, ({DiscoveredPeer peer, DateTime seen})> _nearby = {};
 
@@ -1261,7 +1266,7 @@ class FerretEngine implements FeatureHost {
     int port, {
     String? expected,
   }) async {
-    final connection = await SocketConnection.connect(host, port);
+    final connection = await _connect(host, port);
     return SecureChannel.initiate(
       connection,
       identity.keyPair,
@@ -1400,16 +1405,58 @@ class FerretEngine implements FeatureHost {
     );
   }
 
+  /// One dial per device at a time. An address the device announces while
+  /// an older one is still being tried is kept and tried next: on Windows a
+  /// refused connect takes about two seconds, long enough for the device to
+  /// announce where it is now.
   Future<void> _dial(String host, int port, {String? expectedDeviceId}) async {
     if (!_running) {
       return;
     }
 
     final key = expectedDeviceId ?? '$host:$port';
-    if (!_dialing.add(key)) {
+    if (_dialing[key] case final inFlight?) {
+      if (expectedDeviceId != null && inFlight.address != (host, port)) {
+        inFlight.next = (host, port);
+      }
+
       return;
     }
 
+    final dial = _Dial((host, port));
+    _dialing[key] = dial;
+    try {
+      await _dialOnce(host, port, expectedDeviceId: expectedDeviceId);
+    } finally {
+      _dialing.remove(key);
+    }
+
+    if ((expectedDeviceId, dial.next)
+        case (
+          final deviceId?,
+          (final nextHost, final nextPort)?,
+        )
+        when _stillWorthDialing(deviceId, nextHost)) {
+      await _dial(nextHost, nextPort, expectedDeviceId: deviceId);
+    }
+  }
+
+  bool _stillWorthDialing(String deviceId, String host) {
+    if (!_running ||
+        !trustStore.isTrusted(deviceId) ||
+        _mismatches.containsKey(deviceId)) {
+      return false;
+    }
+
+    final session = _sessions[deviceId];
+    return session == null || session.isClosed || _movesOffVpn(deviceId, host);
+  }
+
+  Future<void> _dialOnce(
+    String host,
+    int port, {
+    String? expectedDeviceId,
+  }) async {
     try {
       final channel = await _openChannel(
         host,
@@ -1434,8 +1481,6 @@ class FerretEngine implements FeatureHost {
       );
     } on Object catch (error) {
       printDebug('Could not reach $host:$port: $error');
-    } finally {
-      _dialing.remove(key);
     }
   }
 
@@ -1990,7 +2035,7 @@ class FerretEngine implements FeatureHost {
             create: Hello.new,
           ),
         )
-        .firstWhere((hello) => hello != null)
+        .firstWhere((hello) => hello != null, orElse: () => null)
         .timeout(_helloTimeout);
     session.incoming.listen((envelope) => unawaited(_route(session, envelope)));
 
@@ -2474,4 +2519,12 @@ class FerretEngine implements FeatureHost {
   }
 
   void _emitDevices() => _deviceChanges.add(devices);
+}
+
+/// A dial in flight, and the address its device announced meanwhile.
+class _Dial {
+  _Dial(this.address);
+
+  final (String, int) address;
+  (String, int)? next;
 }

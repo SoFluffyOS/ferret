@@ -141,8 +141,8 @@ void main() {
       await pair(phone, mac);
       await _until(
         () =>
-            mac.devices.single.versionMismatch != null &&
-            phone.devices.single.versionMismatch != null,
+            mac.devices.firstOrNull?.versionMismatch != null &&
+            phone.devices.firstOrNull?.versionMismatch != null,
       );
 
       final onMac = mac.devices.single;
@@ -162,7 +162,7 @@ void main() {
       final mac = await start('MacBook', newest: 2, oldest: 2);
       final phone = await start('Pixel 7', discovery: discovery);
       await pair(phone, mac);
-      await _until(() => phone.devices.single.versionMismatch != null);
+      await _until(() => phone.devices.firstOrNull?.versionMismatch != null);
       var handshakes = 0;
       final watching = mac.deviceChanges.listen((_) => handshakes++);
 
@@ -185,7 +185,7 @@ void main() {
       );
       final oldPhone = await start('Pixel 7', secrets: phoneSecrets);
       await pair(oldPhone, mac);
-      await _until(() => mac.devices.single.versionMismatch != null);
+      await _until(() => mac.devices.firstOrNull?.versionMismatch != null);
 
       await oldPhone.stop();
       final phone = await start(
@@ -198,8 +198,8 @@ void main() {
 
       await _until(
         () =>
-            mac.devices.single.isConnected &&
-            mac.devices.single.versionMismatch == null,
+            (mac.devices.firstOrNull?.isConnected ?? false) &&
+            mac.devices.firstOrNull?.versionMismatch == null,
       );
       expect(phone.devices.single.versionMismatch, isNull);
     });
