@@ -38,10 +38,17 @@ abstract interface class PartWriter {
 
 /// A part in a plain file, saved by [onSave] (a move or a copy).
 class FilePart implements ReceivePart {
-  FilePart(this.file, {required this.onSave});
+  FilePart(this.file, {required this.onSave, this.prepare, this.onDelete});
 
   final File file;
   final Future<ReceivedFile> Function(File part, {DateTime? modified}) onSave;
+
+  /// Runs before the file is first written, such as to make its folder
+  /// again after a finished transfer tidied it away.
+  final Future<void> Function()? prepare;
+
+  /// Runs after the file was thrown away.
+  final Future<void> Function()? onDelete;
 
   @override
   Future<int> length() async => switch (await file.exists()) {
@@ -51,6 +58,7 @@ class FilePart implements ReceivePart {
 
   @override
   Future<PartWriter> open(int offset) async {
+    await prepare?.call();
     final open = await file.open(mode: FileMode.append);
     if (await open.length() != offset) {
       await open.truncate(offset);
@@ -63,6 +71,7 @@ class FilePart implements ReceivePart {
   @override
   Future<List<int>> hash() async {
     if (!await file.exists()) {
+      await prepare?.call();
       await file.create();
     }
 
@@ -80,6 +89,8 @@ class FilePart implements ReceivePart {
     } on FileSystemException {
       return;
     }
+
+    await onDelete?.call();
   }
 }
 

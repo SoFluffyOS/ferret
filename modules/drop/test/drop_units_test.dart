@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drop/drop.dart';
@@ -166,6 +167,102 @@ void main() {
           'same (1).txt',
         },
       );
+    });
+
+    test('removes the parts folder once the last part is saved', () async {
+      final store = FolderReceiveStore(() async => folder.path);
+      final parts = await store.partsDirectory();
+      final first = File(p.join(parts.path, '1.part'));
+      final second = File(p.join(parts.path, '2.part'));
+      await first.writeAsString('one');
+      await second.writeAsString('two');
+
+      await store.save(first, name: 'one.txt', mime: '');
+      expect(parts.existsSync(), isTrue);
+
+      await store.save(second, name: 'two.txt', mime: '');
+      expect(parts.existsSync(), isFalse);
+    });
+
+    test('keeps a part left to resume, and its folder', () async {
+      final store = FolderReceiveStore(() async => folder.path);
+      final [done, waiting] = await store.partsFor('t', [
+        (name: 'done.txt', mime: '', folder: null),
+        (name: 'waiting.txt', mime: '', folder: null),
+      ]);
+      await _write(done, 'done');
+      await _write(waiting, 'half');
+
+      await done.save();
+
+      expect(await waiting.length(), 4);
+      expect(
+        Directory(p.join(folder.path, '.ferret-partial')).existsSync(),
+        isTrue,
+      );
+    });
+
+    test('makes the parts folder again for the next part', () async {
+      final store = FolderReceiveStore(() async => folder.path);
+      final [first, second] = await store.partsFor('t', [
+        (name: 'a.txt', mime: '', folder: null),
+        (name: 'b.txt', mime: '', folder: null),
+      ]);
+      await _write(first, 'a');
+      await first.save();
+
+      await _write(second, 'b');
+      await second.save();
+
+      expect(File(p.join(folder.path, 'b.txt')).readAsStringSync(), 'b');
+      expect(
+        Directory(p.join(folder.path, '.ferret-partial')).existsSync(),
+        isFalse,
+      );
+    });
+
+    test('removes the parts folder once a cancelled part is gone', () async {
+      final store = FolderReceiveStore(() async => folder.path);
+      final [part] = await store.partsFor('t', [
+        (name: 'a.txt', mime: '', folder: null),
+      ]);
+      await _write(part, 'a');
+
+      await part.delete();
+
+      expect(
+        Directory(p.join(folder.path, '.ferret-partial')).existsSync(),
+        isFalse,
+      );
+    });
+
+    test('hides the parts folder each time it is made', () async {
+      final hidden = <String>[];
+      final store = FolderReceiveStore(
+        () async => folder.path,
+        hide: (folder) async => hidden.add(folder.path),
+      );
+      final parts = await store.partsDirectory();
+      await store.partsDirectory();
+      expect(hidden, [parts.path]);
+
+      final part = File(p.join(parts.path, '1.part'));
+      await part.writeAsString('one');
+      await store.save(part, name: 'one.txt', mime: '');
+      await store.partsDirectory();
+
+      expect(hidden, [parts.path, parts.path]);
+    });
+
+    test('still receives when the folder could not be hidden', () async {
+      final store = FolderReceiveStore(
+        () async => folder.path,
+        hide: (_) async => throw const ProcessException('attrib', []),
+      );
+
+      final parts = await store.partsDirectory();
+
+      expect(parts.existsSync(), isTrue);
     });
   });
 
@@ -459,4 +556,10 @@ extension on Transfer {
     status: status,
     startedAt: startedAt.add(Duration(minutes: minutes)),
   );
+}
+
+Future<void> _write(ReceivePart part, String text) async {
+  final writer = await part.open(0);
+  await writer.write(utf8.encode(text));
+  await writer.close();
 }

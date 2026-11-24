@@ -174,10 +174,12 @@ class LocalSendReceiver implements LocalSendReceiveDelegate {
   @override
   Future<File> partFile(LocalSendOffer offer, LocalSendFile file) async {
     final incoming = _sessions[offer.sessionId];
-    final parts = incoming?.parts;
-    if (incoming == null || parts == null) {
+    if (incoming == null || incoming.parts == null) {
       throw StateError('No LocalSend session to write to');
     }
+
+    // Asks again, since a finished transfer may have tidied the folder away.
+    final parts = incoming.parts = await store.partsDirectory();
 
     final index = offer.files.indexWhere((listed) => listed.id == file.id);
     return File(p.join(parts.path, '${incoming.transferId}-$index.part'));

@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:drop/models/models.dart';
+import 'package:drop/platform/platform.dart';
 import 'package:drop/services/services.dart';
 import 'package:engine/engine.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:interop_localsend/interop_localsend.dart';
 import 'package:interop_quickshare/interop_quickshare.dart'
     show QuickShareDeviceKind;
-import 'package:path/path.dart' as p;
 import 'package:protobuf/protobuf.dart';
 import 'package:protocol/drop.dart';
 import 'package:protocol/protocol.dart' hide Platform;
@@ -402,16 +401,5 @@ class DropFeature extends Feature {
   }
 
   static ReceiveStore _defaultStore(SettingsStore settings) =>
-      FolderReceiveStore(() async {
-        if (settings.get<String>(DropSettings.receiveFolder) case final folder?
-            when p.isAbsolute(folder)) {
-          return folder;
-        }
-
-        final home =
-            Platform.environment['HOME'] ??
-            Platform.environment['USERPROFILE'] ??
-            Directory.systemTemp.path;
-        return p.join(home, 'Downloads', DropSettings.defaultFolderName);
-      });
+      FolderReceiveStore(() => ReceiveFolders.path(settings));
 }

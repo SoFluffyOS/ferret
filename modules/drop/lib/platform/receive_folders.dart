@@ -53,6 +53,8 @@ abstract final class ReceiveFolders {
       }
     } on UnsupportedError {
       // Falls through to the home folder below.
+    } on Exception catch (error) {
+      printDebug('Drop could not ask for the Downloads folder: $error');
     }
 
     final home =

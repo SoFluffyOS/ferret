@@ -9,8 +9,10 @@ import 'package:path/path.dart' as p;
 
 /// Saves received files into a plain folder, such as ~/Downloads/Ferret.
 /// Parts live in a hidden folder inside it, so the final move is a rename.
+/// The parts folder goes away once nothing is left in it.
 class FolderReceiveStore implements ReceiveStore {
-  FolderReceiveStore(this.folder, {this.freeSpace});
+  FolderReceiveStore(this.folder, {this.freeSpace, HideFolder? hide})
+    : _hide = hide ?? hideOnWindows;
 
   /// Resolves the receive folder each time, so a changed setting applies to
   /// the next file.
@@ -19,6 +21,9 @@ class FolderReceiveStore implements ReceiveStore {
   /// Reads the bytes free on the volume that holds a path. Without it the
   /// free space is unknown and every offer may go ahead.
   final Future<int?> Function(String path)? freeSpace;
+
+  /// Marks a folder hidden where a leading dot doesn't: Windows.
+  final HideFolder _hide;
 
   static const _partsFolder = '.ferret-partial';
   static const _maxAttempts = 10000;
@@ -30,7 +35,17 @@ class FolderReceiveStore implements ReceiveStore {
   @override
   Future<Directory> partsDirectory() async {
     final parts = Directory(p.join(await folder(), _partsFolder));
+    if (await parts.exists()) {
+      return parts;
+    }
+
     await parts.create(recursive: true);
+    try {
+      await _hide(parts);
+    } on Object catch (error) {
+      printDebug('Drop left the parts folder visible: $error');
+    }
+
     return parts;
   }
 
@@ -86,6 +101,7 @@ class FolderReceiveStore implements ReceiveStore {
 
       await _move(part, path);
       await _touch(path, modified);
+      await _tidy(part.parent);
       return ReceivedFile(location: path, name: candidate);
     }
 
@@ -99,6 +115,8 @@ class FolderReceiveStore implements ReceiveStore {
       for (final (index, target) in files.indexed)
         FilePart(
           File(p.join(parts.path, '$id-$index.part')),
+          prepare: partsDirectory,
+          onDelete: () => _tidy(parts),
           onSave: (part, {modified}) => save(
             part,
             name: target.name,
@@ -141,6 +159,23 @@ class FolderReceiveStore implements ReceiveStore {
     }
   }
 
+  /// Removes the parts folder once it holds nothing, so no empty folder is
+  /// left behind. Parts kept to resume a transfer stay, and so does the
+  /// folder around them.
+  Future<void> _tidy(Directory parts) async {
+    if (p.basename(parts.path) != _partsFolder) {
+      return;
+    }
+
+    try {
+      if (await parts.list().isEmpty) {
+        await parts.delete();
+      }
+    } on FileSystemException {
+      return;
+    }
+  }
+
   Future<void> _touch(String path, DateTime? modified) async {
     if (modified == null) {
       return;
@@ -151,5 +186,21 @@ class FolderReceiveStore implements ReceiveStore {
     } on FileSystemException catch (error) {
       printDebug('Drop kept the arrival time: ${error.osError?.message}');
     }
+  }
+}
+
+/// Marks [folder] hidden.
+typedef HideFolder = Future<void> Function(Directory folder);
+
+/// Sets the Hidden attribute on Windows, where a leading dot doesn't hide a
+/// folder. Elsewhere the dot already does.
+Future<void> hideOnWindows(Directory folder) async {
+  if (!Platform.isWindows) {
+    return;
+  }
+
+  final result = await Process.run('attrib', ['+h', folder.path]);
+  if (result.exitCode != 0) {
+    throw ProcessException('attrib', ['+h', folder.path], '${result.stderr}');
   }
 }

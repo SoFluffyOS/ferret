@@ -165,10 +165,12 @@ class QuickShareReceiver implements QuickShareReceiveDelegate {
   @override
   Future<File> partFile(QuickShareOffer offer, QuickShareFile file) async {
     final incoming = _sessions[offer.sessionId];
-    final parts = incoming?.parts;
-    if (incoming == null || parts == null) {
+    if (incoming == null || incoming.parts == null) {
       throw StateError('No Quick Share session to write to');
     }
+
+    // Asks again, since a finished transfer may have tidied the folder away.
+    final parts = incoming.parts = await store.partsDirectory();
 
     final index = offer.files.indexOf(file);
     return File(p.join(parts.path, '${incoming.transferId}-$index.part'));
