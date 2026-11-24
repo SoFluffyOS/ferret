@@ -258,8 +258,10 @@ jobs:
 
   linux:
     needs: prepare
-    # The oldest supported Ubuntu, so the AppImage and .deb run on older glibc.
-    runs-on: ubuntu-22.04
+    # 24.04, not older: the QR scanner's zxing-cpp needs C++20 ranges that
+    # Ubuntu 22.04's compiler and libstdc++ lack. The packages then need a
+    # 2024-or-newer distro (glibc 2.39).
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -270,7 +272,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config file \
-            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev \
+            libgtk-3-dev liblzma-dev libsecret-1-dev libjsoncpp-dev \
             libegl-dev libgles-dev
           curl -fsSL -o "$RUNNER_TEMP/appimagetool" \
             https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
