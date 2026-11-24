@@ -9,7 +9,9 @@
 # app from macOS or Windows. Every target first builds the release bundle
 # (fvm flutter build linux) and ferret-cli (dart compile exe).
 #
-# Needs: fvm, clang, cmake, ninja, pkg-config and libgtk-3-dev for Flutter;
+# Needs: fvm, clang, cmake, ninja, pkg-config and libgtk-3-dev for Flutter,
+#   libsecret-1-dev for the secret store, and libegl-dev libgles-dev (EGL and
+#   GLES 2, the mesa -dev packages on older releases) for sofluffy_texture;
 #   deb       dpkg-deb
 #   appimage  appimagetool (https://github.com/AppImage/appimagetool, the
 #             static runtime, so users don't need libfuse2), or set APPIMAGETOOL

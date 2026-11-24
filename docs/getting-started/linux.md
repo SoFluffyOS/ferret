@@ -72,7 +72,13 @@ You get `ferret` and `ferret-cli` on your `PATH`, and the firewall profiles: `su
 
 ### Build them yourself
 
-On a Linux machine, from the source:
+On a Linux machine, from the source. First the build tools and libraries (Debian and Ubuntu names):
+
+```sh
+sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libegl-dev libgles-dev
+```
+
+Then:
 
 ```sh
 scripts/package_linux.sh          # or: deb, appimage, flatpak
