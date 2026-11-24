@@ -12,6 +12,10 @@
 #ifndef AppVersion
   #define AppVersion "0.0.0"
 #endif
+; Windows file versions are numbers only: 0.2.0-beta.1 shows as 0.2.0.
+#ifndef FileVersion
+  #define FileVersion AppVersion
+#endif
 #ifndef Arch
   #define Arch "x64"
 #endif
@@ -32,7 +36,7 @@ AppPublisherURL=https://github.com/simonpham/ferret
 AppSupportURL=https://github.com/simonpham/ferret/issues
 AppUpdatesURL=https://github.com/simonpham/ferret/releases
 AppCopyright=SoFluffy, GPL-3.0
-VersionInfoVersion={#AppVersion}
+VersionInfoVersion={#FileVersion}
 DefaultDirName={autopf}\Ferret
 DefaultGroupName=Ferret
 DisableProgramGroupPage=yes

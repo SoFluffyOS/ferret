@@ -159,6 +159,7 @@ function Build-Inno {
   $iscc = Find-Iscc
   Invoke-Checked $iscc @(
     "/DAppVersion=$Version",
+    "/DFileVersion=$($Version -replace '-.*$', '')",
     "/DArch=$Arch",
     "/DSourceDir=$Stage",
     "/DOutputDir=$Out",
