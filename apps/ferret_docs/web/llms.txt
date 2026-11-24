@@ -4,7 +4,7 @@
 
 - Local network only. Devices find each other on the Wi-Fi and connect directly; nothing goes through a server. Every connection uses the Noise protocol (`Noise_XX_25519_ChaChaPoly_SHA256`), and a device connects only after you paired it by comparing six digits or scanning a code.
 - Everything is off until you turn it on, per device.
-- Released today: Android (APK from GitHub Releases) and Mac (signed and notarized .dmg, macOS 12 or later). Windows, Linux and iPhone build from source and are not in a release yet.
+- Available for Android (APK), Mac (signed and notarized .dmg, macOS 12 or later), Windows (installer, no admin) and Linux (AppImage or .deb, 2024 or newer distributions), from GitHub Releases. iPhone is coming soon; it builds from source today.
 - Works with LocalSend and Quick Share for sending files to and from devices that don't run Ferret.
 - License: the apps are GPL-3.0. The protocol (`proto/` and the spec) is MIT, so anyone can build a compatible client.
 - Languages: English and Vietnamese.
