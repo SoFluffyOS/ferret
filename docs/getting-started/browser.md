@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. Load the extension in Chrome, Edge, Brave or Firefox.
+> 1. Download the extension and load it in Chrome, Edge, Brave or Firefox.
 > 2. Open its settings and click **Pair with Ferret**.
 > 3. Check the code matches in Ferret, then click **Allow**.
 > 4. Click the Ferret button in the toolbar, pick your phone. The tab opens there.
@@ -13,9 +13,26 @@ The Ferret extension fixes that. It puts your devices one click away in the brow
 
 ## 📦 Install it
 
-The extension isn't in the stores yet. For now, load it by hand. It takes a minute.
+The extension isn't in the stores yet. Download it from GitHub and load it by hand. It takes a minute.
 
-Build it first (you need Node.js):
+**Chrome, Edge, Brave, Opera, Vivaldi**
+
+1. Download [Ferret-browser-chrome.zip](https://github.com/simonpham/ferret/releases/latest/download/Ferret-browser-chrome.zip) and unzip it. Keep the folder somewhere it can stay: the browser loads the extension from it.
+2. Open `chrome://extensions` (or `edge://extensions`).
+3. Turn on **Developer mode**.
+4. Click **Load unpacked** and pick the unzipped folder.
+
+**Firefox**
+
+1. Download [Ferret-browser-firefox.zip](https://github.com/simonpham/ferret/releases/latest/download/Ferret-browser-firefox.zip). No need to unzip it.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…** and pick the zip.
+
+Firefox forgets temporary add-ons when it quits, so you load it again after each restart. That goes away once the extension is on addons.mozilla.org.
+
+**A new version?** Download the new zip. In Chrome, unzip it over the old folder and click the reload arrow on the extension's card. You stay paired. In Firefox, load the new zip, and pair again if the extension asks.
+
+**Rather build it yourself?** You need Node.js:
 
 ```sh
 cd extensions/browser
@@ -23,18 +40,7 @@ npm install
 npm run build
 ```
 
-**Chrome, Edge, Brave, Opera, Vivaldi**
-
-1. Open `chrome://extensions` (or `edge://extensions`).
-2. Turn on **Developer mode**.
-3. Click **Load unpacked** and pick `extensions/browser/dist/chromium`.
-
-**Firefox**
-
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Click **Load Temporary Add-on…** and pick `extensions/browser/dist/firefox/manifest.json`.
-
-Firefox forgets temporary add-ons when it quits. That goes away once the extension is on addons.mozilla.org.
+Then load `extensions/browser/dist/chromium` or `extensions/browser/dist/firefox/manifest.json` the same way.
 
 ## 🔑 Pair it with Ferret
 

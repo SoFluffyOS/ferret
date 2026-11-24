@@ -21,11 +21,12 @@ No remote code, no analytics, no network calls other than 127.0.0.1. Dependencie
 npm run package
 ```
 
-It builds, then writes three zips to `packages/`:
+It builds, then writes these zips to `packages/`:
 
 - `ferret-chromium-<version>.zip` for Chrome and Edge.
 - `ferret-firefox-<version>.zip` for Firefox.
 - `ferret-source-<version>.zip`: the committed files of this folder, for reviewers who ask for the source of bundled code.
+- `Ferret-browser-chrome.zip` and `Ferret-browser-firefox.zip`: the first two again, under names every release keeps. Attach them to the GitHub release; the [install guide](../../docs/getting-started/browser.md) links `releases/latest/download/` to them.
 
 Commit first. The source zip comes from git, so the script stops on uncommitted changes.
 

@@ -4,8 +4,11 @@
 //   ferret-source-<version>.zip    addons.mozilla.org asks for the source of
 //                                  bundled code; it holds the committed files
 //                                  of this folder, so it builds the same zip.
+//   Ferret-browser-chrome.zip      the same two zips under names every release
+//   Ferret-browser-firefox.zip     keeps, for the manual-install links in the
+//                                  docs: releases/latest/download/…
 import { execFileSync } from 'node:child_process';
-import { mkdir, readFile, rm } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,10 +30,12 @@ run('node', ['build.mjs']);
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
 
+const releaseNames = { chromium: 'Ferret-browser-chrome.zip', firefox: 'Ferret-browser-firefox.zip' };
 for (const target of ['chromium', 'firefox']) {
   const zip = join(out, `ferret-${target}-${version}.zip`);
   run('zip', ['-q', '-X', '-r', zip, '.'], join(root, 'dist', target));
-  console.log(`Packed packages/${target === 'chromium' ? 'ferret-chromium' : 'ferret-firefox'}-${version}.zip`);
+  await copyFile(zip, join(out, releaseNames[target]));
+  console.log(`Packed packages/ferret-${target}-${version}.zip and packages/${releaseNames[target]}`);
 }
 
 const source = join(out, `ferret-source-${version}.zip`);
