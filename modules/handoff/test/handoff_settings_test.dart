@@ -17,6 +17,7 @@ class _Session implements Session {
 
   final bool hasContinue;
   bool answers = true;
+  ContinueOutcome outcome = .CONTINUE_OUTCOME_OPENED;
 
   @override
   String get remoteDeviceId => 'pixel-id';
@@ -38,7 +39,7 @@ class _Session implements Session {
       throw StateError('no answer');
     }
 
-    return ContinueResult(outcome: .CONTINUE_OUTCOME_OPENED) as T;
+    return ContinueResult(outcome: outcome) as T;
   }
 
   @override
@@ -287,6 +288,26 @@ void main() {
       expect(
         ui.healthFor(featureContext, statusOf(session))?.state,
         FeatureHealthState.ok,
+      );
+    });
+
+    testWidgets('a link that arrived but could not open says so', (
+      tester,
+    ) async {
+      final ui = await start(tester);
+      final session = _Session()..outcome = .CONTINUE_OUTCOME_FAILED;
+      host.connected['pixel-id'] = session;
+
+      await tester.runAsync(
+        () => ui.feature.sendTo('pixel-id', webActivity('a')),
+      );
+
+      final failing = ui.healthFor(featureContext, statusOf(session));
+      expect(failing?.state, FeatureHealthState.failing);
+      expect(failing?.reason, "Pixel 9 couldn't open the last link you sent");
+      expect(
+        failing?.help,
+        'It waits in Activity on Pixel 9, with Copy and Open.',
       );
     });
 

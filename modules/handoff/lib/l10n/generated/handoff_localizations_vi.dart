@@ -287,4 +287,45 @@ class HandoffLocalizationsVi extends HandoffLocalizations {
 
   @override
   String get settingsHistoryClear => 'Xóa';
+
+  @override
+  String healthLastOpenFailed(String name) {
+    return '$name không mở được liên kết bạn gửi gần nhất';
+  }
+
+  @override
+  String healthLastOpenFailedHelp(String name) {
+    return 'Liên kết đang chờ trong Hoạt động trên $name, kèm Sao chép và Mở.';
+  }
+
+  @override
+  String get copy => 'Sao chép';
+
+  @override
+  String get copied => 'Đã sao chép';
+
+  @override
+  String activityReceived(String device) {
+    return 'Từ $device';
+  }
+
+  @override
+  String activityReceivedNotOpened(String device) {
+    return 'Không mở được nội dung $device gửi';
+  }
+
+  @override
+  String activitySent(String device) {
+    return 'Đã gửi đến $device';
+  }
+
+  @override
+  String activitySentNotOpened(String device) {
+    return '$device không mở được';
+  }
+
+  @override
+  String noticeOpenFailedTitle(String title) {
+    return 'Không mở được “$title”';
+  }
 }

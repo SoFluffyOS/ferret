@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:handoff/feature/handoff_feature.dart';
 import 'package:handoff/models/models.dart';
 import 'package:handoff/services/services.dart';
+import 'package:protocol/handoff.dart';
 
 /// Handoff's state for the home card, device actions and settings.
 class HandoffViewModel extends ChangeNotifier {
@@ -60,6 +61,17 @@ class HandoffViewModel extends ChangeNotifier {
   Future<OpenResult> open(Suggestion suggestion) => feature.open(suggestion);
 
   void dismiss(Suggestion suggestion) => feature.dismiss(suggestion.id);
+
+  /// What was sent between devices, newest first, kept across restarts.
+  List<TimelineEntry> get history => feature.timeline;
+
+  Future<OpenResult> reopen(TimelineEntry entry) => feature.reopen(entry);
+
+  Future<void> forget(TimelineEntry entry) => feature.forget(entry);
+
+  /// Puts the link of [activity] on the clipboard, or its text.
+  Future<void> copy(Activity activity) =>
+      Clipboard.setData(ClipboardData(text: ActivityFactory.textOf(activity)));
 
   /// Sends a typed or pasted link (or plain text). Null when it was empty.
   Future<SendOutcome?> sendText(String deviceId, String text) async {

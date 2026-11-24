@@ -62,9 +62,21 @@ class HandoffTimeline {
           peer: entry.peer,
           direction: entry.direction,
           at: entry.at,
+          isExplicit: entry.isExplicit,
+          openFailed: entry.openFailed,
         ),
       );
     _trim();
+    await _save();
+  }
+
+  /// Takes [entry] out, such as a line let go in Activity.
+  Future<void> remove(TimelineEntry entry) async {
+    _entries.removeWhere(
+      (existing) =>
+          existing.activity.id == entry.activity.id &&
+          existing.direction == entry.direction,
+    );
     await _save();
   }
 

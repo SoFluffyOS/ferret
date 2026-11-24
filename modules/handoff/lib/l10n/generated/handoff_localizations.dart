@@ -526,6 +526,60 @@ abstract class HandoffLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get settingsHistoryClear;
+
+  /// No description provided for @healthLastOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} couldn\'t open the last link you sent'**
+  String healthLastOpenFailed(String name);
+
+  /// No description provided for @healthLastOpenFailedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It waits in Activity on {name}, with Copy and Open.'**
+  String healthLastOpenFailedHelp(String name);
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @activityReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'From {device}'**
+  String activityReceived(String device);
+
+  /// No description provided for @activityReceivedNotOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open what {device} sent'**
+  String activityReceivedNotOpened(String device);
+
+  /// No description provided for @activitySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {device}'**
+  String activitySent(String device);
+
+  /// No description provided for @activitySentNotOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} couldn\'t open it'**
+  String activitySentNotOpened(String device);
+
+  /// No description provided for @noticeOpenFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open “{title}”'**
+  String noticeOpenFailedTitle(String title);
 }
 
 class _HandoffLocalizationsDelegate

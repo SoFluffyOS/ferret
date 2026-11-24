@@ -287,4 +287,45 @@ class HandoffLocalizationsEn extends HandoffLocalizations {
 
   @override
   String get settingsHistoryClear => 'Clear';
+
+  @override
+  String healthLastOpenFailed(String name) {
+    return '$name couldn\'t open the last link you sent';
+  }
+
+  @override
+  String healthLastOpenFailedHelp(String name) {
+    return 'It waits in Activity on $name, with Copy and Open.';
+  }
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String activityReceived(String device) {
+    return 'From $device';
+  }
+
+  @override
+  String activityReceivedNotOpened(String device) {
+    return 'Couldn\'t open what $device sent';
+  }
+
+  @override
+  String activitySent(String device) {
+    return 'Sent to $device';
+  }
+
+  @override
+  String activitySentNotOpened(String device) {
+    return '$device couldn\'t open it';
+  }
+
+  @override
+  String noticeOpenFailedTitle(String title) {
+    return 'Couldn\'t open “$title”';
+  }
 }

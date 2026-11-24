@@ -39,7 +39,7 @@ class HandoffFeature extends Feature {
   final DateTime Function() _now;
   final SuggestionBoard _board = .new();
   final Map<String, ContinueOutcome> _outcomes = {};
-  final Set<String> _failedSends = {};
+  final Map<String, SendOutcome> _sendProblems = {};
   final StreamController<void> _changes = .broadcast();
   final StreamController<Suggestion> _arrivals = .broadcast();
   final StreamController<Suggestion> _removals = .broadcast();
@@ -159,9 +159,11 @@ class HandoffFeature extends Feature {
   Future<void> clearPublished([String activityId = '']) =>
       host.broadcast(featureId, ClearActivity(activityId: activityId));
 
-  /// Whether the last thing sent to [deviceId] while it was connected
-  /// didn't arrive or couldn't be opened there.
-  bool lastSendFailed(String deviceId) => _failedSends.contains(deviceId);
+  /// What went wrong with the last thing sent to [deviceId]:
+  /// [SendOutcome.failed] when it arrived but couldn't be opened there,
+  /// [SendOutcome.unreachable] when it never arrived. Null when it went
+  /// through.
+  SendOutcome? lastSendProblem(String deviceId) => _sendProblems[deviceId];
 
   /// Asks [deviceId] to continue [activity] now.
   Future<SendOutcome> sendTo(String deviceId, Activity activity) async {
@@ -171,43 +173,30 @@ class HandoffFeature extends Feature {
     }
 
     final outcome = await _sendTo(session, activity);
-    final failed = outcome == .failed || outcome == .unreachable;
-    final changed = switch (failed) {
-      true => _failedSends.add(deviceId),
-      false => _failedSends.remove(deviceId),
+    final problem = switch (outcome) {
+      .failed || .unreachable => outcome,
+      .opened || .suggested => null,
     };
-    if (changed) {
-      _changes.add(null);
+    if (_sendProblems[deviceId] == problem) {
+      return outcome;
     }
 
+    switch (problem) {
+      case final problem?:
+        _sendProblems[deviceId] = problem;
+      case null:
+        _sendProblems.remove(deviceId);
+    }
+
+    _changes.add(null);
     return outcome;
   }
 
   Future<SendOutcome> _sendTo(Session session, Activity activity) async {
     final deviceId = session.remoteDeviceId;
     final stamped = _stamp(activity, explicitLifetime);
-    final ContinueResult result;
-    try {
-      result = await session.call(
-        featureId,
-        ContinueActivity(activity: stamped),
-        ContinueResult.new,
-        timeout: sendTimeout,
-      );
-    } on RemoteErrorException catch (error) {
-      printWarning('Handoff to $deviceId was refused', error);
-      return .failed;
-    } on Object catch (error) {
-      printWarning('Handoff to $deviceId got no answer', error);
-      return .unreachable;
-    }
-
-    final outcome = switch (result.outcome) {
-      .CONTINUE_OUTCOME_OPENED => SendOutcome.opened,
-      .CONTINUE_OUTCOME_SUGGESTED => SendOutcome.suggested,
-      _ => SendOutcome.failed,
-    };
-    if (outcome == .failed) {
+    final outcome = await _ask(session, stamped);
+    if (outcome == .unreachable) {
       return outcome;
     }
 
@@ -221,10 +210,34 @@ class HandoffFeature extends Feature {
         ),
         direction: .sent,
         at: _now(),
+        openFailed: outcome == .failed,
       ),
     );
     _changes.add(null);
     return outcome;
+  }
+
+  Future<SendOutcome> _ask(Session session, Activity activity) async {
+    final deviceId = session.remoteDeviceId;
+    try {
+      final result = await session.call(
+        featureId,
+        ContinueActivity(activity: activity),
+        ContinueResult.new,
+        timeout: sendTimeout,
+      );
+      return switch (result.outcome) {
+        .CONTINUE_OUTCOME_OPENED => .opened,
+        .CONTINUE_OUTCOME_SUGGESTED => .suggested,
+        _ => .failed,
+      };
+    } on RemoteErrorException catch (error) {
+      printWarning('Handoff to $deviceId was refused', error);
+      return .failed;
+    } on Object catch (error) {
+      printWarning('Handoff to $deviceId got no answer', error);
+      return .unreachable;
+    }
   }
 
   /// A passive activity arrived from [from].
@@ -260,7 +273,8 @@ class HandoffFeature extends Feature {
   }
 
   /// An explicit "continue now" arrived from [from]. Opens it, or keeps it
-  /// as a suggestion and announces it on [arrivals].
+  /// as a suggestion and announces it on [arrivals]: also when opening it
+  /// failed, so it isn't lost.
   Future<ContinueOutcome> receiveContinue(
     HandoffPeer from,
     Activity activity,
@@ -274,32 +288,34 @@ class HandoffFeature extends Feature {
     }
 
     final now = _now();
-    final entry = TimelineEntry(
-      activity: activity,
-      peer: from,
-      direction: .received,
-      at: now,
-    );
-    await _timeline.add(entry);
-
     final opened = await _openRightAway(activity);
     final outcome = switch (opened) {
       .opened => ContinueOutcome.CONTINUE_OUTCOME_OPENED,
       .failed => ContinueOutcome.CONTINUE_OUTCOME_FAILED,
       .deferred => ContinueOutcome.CONTINUE_OUTCOME_SUGGESTED,
     };
+    final entry = TimelineEntry(
+      activity: activity,
+      peer: from,
+      direction: .received,
+      at: now,
+      isExplicit: true,
+      openFailed: opened == .failed,
+    );
+    await _timeline.add(entry);
     _remember(activity.id, outcome);
     if (outcome == .CONTINUE_OUTCOME_OPENED) {
       _autoOpened.add(entry);
     }
 
-    if (outcome == .CONTINUE_OUTCOME_SUGGESTED) {
+    if (outcome != .CONTINUE_OUTCOME_OPENED) {
       final suggestion = Suggestion(
         activity: activity,
         from: from,
         isExplicit: true,
         receivedAt: now,
         expiresAt: now.add(explicitLifetime),
+        openFailed: opened == .failed,
       );
       _add(suggestion);
       _arrivals.add(suggestion);
@@ -321,17 +337,30 @@ class HandoffFeature extends Feature {
 
   /// Opens a suggestion here. It goes away once opened.
   Future<OpenResult> open(Suggestion suggestion) async {
-    final opener = this.opener;
-    if (opener == null) {
-      return .failed;
-    }
-
-    final result = await opener.open(suggestion.activity);
+    final result = await _tryOpen(suggestion.activity);
     if (result == .opened) {
       dismiss(suggestion.id);
+      await _markOpened(suggestion.id);
     }
 
     return result;
+  }
+
+  /// Opens what [entry] in the timeline is about again, here.
+  Future<OpenResult> reopen(TimelineEntry entry) async {
+    final result = await _tryOpen(entry.activity);
+    if (result == .opened && entry.direction == .received) {
+      dismiss(entry.activity.id);
+      await _markOpened(entry.activity.id);
+    }
+
+    return result;
+  }
+
+  /// Lets [entry] go from the timeline, and from Activity with it.
+  Future<void> forget(TimelineEntry entry) async {
+    await _timeline.remove(entry);
+    _changes.add(null);
   }
 
   void dismiss(String activityId) {
@@ -364,9 +393,17 @@ class HandoffFeature extends Feature {
   }
 
   Future<OpenResult> _openRightAway(Activity activity) async {
-    final opener = this.opener;
     if (opener == null || !opensAutomatically) {
       return .deferred;
+    }
+
+    return _tryOpen(activity);
+  }
+
+  Future<OpenResult> _tryOpen(Activity activity) async {
+    final opener = this.opener;
+    if (opener == null) {
+      return .failed;
     }
 
     try {
@@ -452,6 +489,20 @@ class HandoffFeature extends Feature {
     }
 
     _scheduleExpiry();
+  }
+
+  /// A link that couldn't open by itself was opened by hand after all.
+  Future<void> _markOpened(String activityId) async {
+    final failed = _timeline.entries.where(
+      (entry) =>
+          entry.activity.id == activityId &&
+          entry.direction == .received &&
+          entry.openFailed,
+    );
+    if (failed.firstOrNull case final entry?) {
+      await _timeline.add(entry.copyWith(openFailed: false));
+      _changes.add(null);
+    }
   }
 
   void _remember(String activityId, ContinueOutcome outcome) {

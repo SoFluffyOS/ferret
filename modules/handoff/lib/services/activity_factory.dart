@@ -66,6 +66,22 @@ abstract final class ActivityFactory {
     );
   }
 
+  /// What to copy for [activity]: its link, or its text when it has none.
+  static String textOf(Activity activity) {
+    for (final candidate in [
+      activity.uri,
+      activity.fallbackWebUri,
+      activity.deepLink,
+      activity.text,
+    ]) {
+      if (candidate.isNotEmpty) {
+        return candidate;
+      }
+    }
+
+    return activity.title;
+  }
+
   static Activity fromBrowserTab(BrowserTab tab) => Activity(
     id: newId(),
     kind: .ACTIVITY_KIND_WEB,

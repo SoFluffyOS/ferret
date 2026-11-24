@@ -67,6 +67,42 @@ void main() {
     expect(entry.at, DateTime(2026, 3, 4));
   });
 
+  test(
+    'whether it was sent on purpose and opened survives a restart',
+    () async {
+      final settings = MemorySettingsStore();
+      await HandoffTimeline(settings, now: _now).add(
+        TimelineEntry(
+          activity: webActivity('a'),
+          peer: pixel,
+          direction: .received,
+          at: DateTime(2026, 1, 2),
+          isExplicit: true,
+          openFailed: true,
+        ),
+      );
+
+      final entry = (HandoffTimeline(
+        settings,
+        now: _now,
+      )..load()).entries.single;
+
+      expect(entry.isExplicit, isTrue);
+      expect(entry.openFailed, isTrue);
+    },
+  );
+
+  test('an entry kept before these flags counts sent ones as explicit', () {
+    final stored = _entry('a', direction: .sent).toJson()
+      ..remove('explicit')
+      ..remove('open_failed');
+    final received = _entry('b').toJson()..remove('explicit');
+
+    expect(TimelineEntry.fromJson(stored)?.isExplicit, isTrue);
+    expect(TimelineEntry.fromJson(stored)?.openFailed, isFalse);
+    expect(TimelineEntry.fromJson(received)?.isExplicit, isFalse);
+  });
+
   test('broken stored entries are skipped', () {
     final settings = MemorySettingsStore({
       HandoffSettings.timeline: [

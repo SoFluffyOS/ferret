@@ -214,7 +214,10 @@ class HandoffBridge implements LinkOpener {
     await _notify(
       id: noticeIdFor(suggestion.id),
       channel: .suggestions,
-      title: strings.noticeTitle(suggestion.activity.title),
+      title: switch (suggestion.openFailed) {
+        true => strings.noticeOpenFailedTitle(suggestion.activity.title),
+        false => strings.noticeTitle(suggestion.activity.title),
+      },
       body: strings.noticeFrom(suggestion.from.name),
       category: continueCategory,
       groupKey: '$_noticePrefix${suggestion.from.id}',

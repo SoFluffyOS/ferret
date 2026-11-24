@@ -1,3 +1,4 @@
+import 'package:feature_kit/feature_kit.dart';
 import 'package:ferret_handoff/ferret_handoff.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -138,6 +139,146 @@ void main() {
       expect(dismissed, ['b']);
       expect(quiet.single.onDismiss, isNull);
     });
+  });
+
+  group('a link that could not open', () {
+    test('waits with Copy and Open, under its title', () {
+      final copied = <String>[];
+      final items = HandoffActivity.items(
+        l10n,
+        [
+          Suggestion(
+            activity: webActivity('a', title: 'Cats'),
+            from: pixel,
+            isExplicit: true,
+            receivedAt: offeredAt,
+            expiresAt: offeredAt.add(const Duration(minutes: 30)),
+            openFailed: true,
+          ),
+        ],
+        onOpen: (_) {},
+        onCopy: (suggestion) => copied.add(suggestion.id),
+      );
+
+      final item = items.single;
+      expect(item.title, "Couldn't open what Pixel sent");
+      expect(item.detail, 'Cats · example.org');
+      expect(item.actions.map((action) => action.label), ['Copy', 'Open']);
+      item.actions.first.onPressed();
+      expect(copied, ['a']);
+    });
+  });
+
+  group('HandoffActivity.history', () {
+    TimelineEntry entry(
+      Activity activity, {
+      TimelineDirection direction = .received,
+      bool isExplicit = true,
+      bool openFailed = false,
+    }) => TimelineEntry(
+      activity: activity,
+      peer: pixel,
+      direction: direction,
+      at: offeredAt,
+      isExplicit: isExplicit,
+      openFailed: openFailed,
+    );
+
+    List<ActivityItem> history(
+      List<TimelineEntry> entries, {
+      Set<String> shown = const {},
+    }) => HandoffActivity.history(
+      l10n,
+      entries,
+      shown: shown,
+      onOpen: (_) {},
+      onCopy: (_) {},
+      onForget: (_) {},
+    );
+
+    test('says what was sent and got, and whether it opened', () {
+      final items = history([
+        entry(webActivity('a', title: 'Cats'), direction: .sent),
+        entry(
+          webActivity('b', title: 'Dogs'),
+          direction: .sent,
+          openFailed: true,
+        ),
+        entry(webActivity('c', title: 'Birds')),
+        entry(webActivity('d', title: 'Fish'), openFailed: true),
+      ]);
+
+      expect(items.map((item) => item.title), [
+        'Sent to Pixel',
+        "Pixel couldn't open it",
+        'From Pixel',
+        "Couldn't open what Pixel sent",
+      ]);
+      expect(items.first.detail, 'Cats · example.org');
+      expect(items.first.actions, isEmpty);
+      expect(items[1].tone, FeatureTone.warning);
+      expect(items[3].actions.map((action) => action.label), ['Copy', 'Open']);
+      expect(items.every((item) => item.onDismiss != null), isTrue);
+      expect(items.every((item) => item.deviceId == pixel.id), isTrue);
+    });
+
+    test('leaves out passive offers and what a suggestion already shows', () {
+      final items = history(
+        [
+          entry(webActivity('a'), isExplicit: false),
+          entry(webActivity('b')),
+          entry(webActivity('c')),
+        ],
+        shown: {'b'},
+      );
+
+      expect(items.single.id, 'handoff.received.c');
+    });
+
+    test('text from another device is private, a link is not', () {
+      final items = history([
+        entry(
+          Activity(
+            id: 't',
+            kind: .ACTIVITY_KIND_TEXT,
+            title: 'A note',
+            text: 'A note',
+          ),
+        ),
+        entry(webActivity('a')),
+      ]);
+
+      expect(items.first.private?.cover, 'From Pixel');
+      expect(items.last.private, isNull);
+    });
+  });
+
+  testWidgets('a line from before a restart opens again', (tester) async {
+    final setup = await tester.runAsync(build);
+    if (setup == null) {
+      fail('Setup failed');
+    }
+
+    await tester.pumpWidget(testApp(const SizedBox()));
+    await tester.runAsync(
+      () => setup.feature.receiveContinue(pixel, webActivity('a')),
+    );
+    final context = tester.element(find.byType(SizedBox));
+    final items = HandoffActivity.history(
+      l10n,
+      setup.viewModel.history,
+      onOpen: (entry) =>
+          HandoffActivity.reopen(context, setup.viewModel, entry),
+      onCopy: (_) {},
+      onForget: (_) {},
+    );
+
+    await tester.runAsync(() async {
+      items.single.actions.last.onPressed();
+      await pumpEventQueue();
+    });
+
+    expect(setup.opener.opened.map((activity) => activity.id), ['a', 'a']);
   });
 
   testWidgets('dismissing a line takes it off the list without opening it', (

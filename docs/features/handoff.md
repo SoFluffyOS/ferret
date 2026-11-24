@@ -29,6 +29,10 @@ What happens on the other side:
 
 Don't want things to open by themselves? Turn off **Open sent links right away**. They wait in a notification with **Open** and **Dismiss** instead.
 
+Can't open it? Say the other computer has no browser. The link isn't lost: it waits in **Activity** there as **Couldn't open what Pixel sent**, with **Copy** and **Open**. Your side says **Pixel couldn't open it**, so you know it arrived.
+
+Everything you send on purpose, and everything sent to you, stays in **Activity**: **Sent to Pixel** or **From Pixel**, with **Copy** and **Open** on what came in. It's still there after a restart. Ferret keeps the last 50 for 30 days at most, and **Clear** in **Settings → Continue & media** empties it.
+
 ## 💡 Quiet suggestions
 
 When **Suggest what I'm doing** is on (it is by default), your devices tell each other what you're on:

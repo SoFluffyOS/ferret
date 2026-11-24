@@ -12,12 +12,30 @@ class TimelineEntry {
     required this.peer,
     required this.direction,
     required this.at,
-  });
+    bool? isExplicit,
+    this.openFailed = false,
+  }) : isExplicit = isExplicit ?? direction == .sent;
 
   final Activity activity;
   final HandoffPeer peer;
   final TimelineDirection direction;
   final DateTime at;
+
+  /// Sent on purpose rather than offered passively. Only these show in
+  /// Activity.
+  final bool isExplicit;
+
+  /// The receiving device got it but couldn't open it.
+  final bool openFailed;
+
+  TimelineEntry copyWith({bool? openFailed}) => TimelineEntry(
+    activity: activity,
+    peer: peer,
+    direction: direction,
+    at: at,
+    isExplicit: isExplicit,
+    openFailed: openFailed ?? this.openFailed,
+  );
 
   Map<String, Object?> toJson() => {
     'activity': base64Encode(activity.writeToBuffer()),
@@ -25,6 +43,8 @@ class TimelineEntry {
     'peer_name': peer.name,
     'direction': direction.name,
     'at_ms': at.millisecondsSinceEpoch,
+    'explicit': isExplicit,
+    'open_failed': openFailed,
   };
 
   static TimelineEntry? fromJson(Object? json) {
@@ -41,6 +61,11 @@ class TimelineEntry {
           peer: HandoffPeer(id: peerId, name: peerName),
           direction: TimelineDirection.values.byName(directionName),
           at: .fromMillisecondsSinceEpoch(atMs),
+          isExplicit: switch (json['explicit']) {
+            final bool explicit => explicit,
+            _ => null,
+          },
+          openFailed: json['open_failed'] == true,
         );
       } on Object {
         return null;

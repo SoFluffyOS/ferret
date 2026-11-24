@@ -81,6 +81,20 @@ void main() {
     expect(setup.notifier.cancelled, [notice.id]);
   });
 
+  test('a link that could not open says so in its notice', () async {
+    final setup = await build();
+    await setup.feature.setOpensAutomatically(true);
+    setup.opener.result = .failed;
+
+    await setup.feature.receiveContinue(pixel, webActivity('a', title: 'Cats'));
+    await pumpEventQueue();
+
+    final notice = setup.notifier.shown.single;
+    expect(notice.title, "Couldn't open “Cats”");
+    expect(notice.body, 'From Pixel');
+    expect(notice.category, HandoffBridge.continueCategory);
+  });
+
   test('a tap while Android blocks opening retries once in front', () async {
     late FakeOpener opener;
     final setup = await build(

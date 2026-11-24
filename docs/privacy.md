@@ -125,7 +125,7 @@ On a Mac, the key sits in your login keychain as `io.sofluffy.ferret`. On phones
 | Clipboard history | In memory only, the last 20. Gone when Ferret quits. Passwords you chose to sync: 2 minutes |
 | Notifications from a phone | In memory only. **Clear all** empties the list |
 | A phone's texts, on a computer | Saved in `features/messages` so they show offline. **Forget saved texts** in Settings deletes them, and unpairing the phone does too |
-| What you continued between devices | The last 50, never older than 30 days. **Clear** in Settings → Continue & media |
+| What you continued between devices | The last 50, never older than 30 days, listed in Activity. **Clear** in Settings → Continue & media |
 | Times a phone controlled this computer | The last few, with **Clear history** in Settings → Control |
 | Actions devices ran on this computer | The last 20: which action, which device, when. Not what it printed. **Clear history** in Settings → Control |
 

@@ -5,25 +5,34 @@ import 'package:handoff/l10n/l10n.dart';
 import 'package:handoff/models/models.dart';
 
 /// How Continue is doing with the device behind [session], called [name]:
-/// whether the last link sent there arrived, and what happens to the links
-/// it sends here.
+/// whether the last link sent there arrived and opened, and what happens to
+/// the links it sends here.
 FeatureHealth continueHealthOf(
   HandoffLocalizations l10n, {
   required Session session,
   required String name,
-  required bool lastSendFailed,
+  required SendOutcome? lastSendProblem,
   required bool opensAutomatically,
 }) {
   if (!session.supports(HandoffFeature.featureId)) {
     return FeatureHealth(.off, reason: l10n.healthUnsupported(name));
   }
 
-  if (lastSendFailed) {
-    return FeatureHealth(
-      .failing,
-      reason: l10n.healthLastSendFailed(name),
-      help: l10n.healthLastSendFailedHelp(name),
-    );
+  switch (lastSendProblem) {
+    case .failed:
+      return FeatureHealth(
+        .failing,
+        reason: l10n.healthLastOpenFailed(name),
+        help: l10n.healthLastOpenFailedHelp(name),
+      );
+    case .unreachable:
+      return FeatureHealth(
+        .failing,
+        reason: l10n.healthLastSendFailed(name),
+        help: l10n.healthLastSendFailedHelp(name),
+      );
+    case .opened || .suggested || null:
+      break;
   }
 
   return FeatureHealth(

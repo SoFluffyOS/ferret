@@ -98,21 +98,39 @@ class HandoffFeatureUi extends FeatureUi {
   Listenable get uiChanges => _changes;
 
   /// Only while a browser waits to be allowed. What other devices offer to
-  /// continue here is in [activity].
+  /// continue here, and what went between devices, is in [activity].
   @override
   bool hasHomeCard(FeatureContext feature) => browser.pairRequests.isNotEmpty;
 
   @override
   List<ActivityItem> activity(BuildContext context, FeatureContext feature) {
     final viewModel = viewModelFor(feature);
+    final l10n = context.handoffL10n;
+    final suggestions = this.feature.suggestions;
 
-    return HandoffActivity.items(
-      context.handoffL10n,
-      this.feature.suggestions,
-      onOpen: (suggestion) =>
-          unawaited(HandoffActivity.open(context, viewModel, suggestion)),
-      onDismiss: viewModel.dismiss,
-    );
+    return [
+      ...HandoffActivity.items(
+        l10n,
+        suggestions,
+        onOpen: (suggestion) =>
+            unawaited(HandoffActivity.open(context, viewModel, suggestion)),
+        onDismiss: viewModel.dismiss,
+        onCopy: (suggestion) => unawaited(
+          HandoffActivity.copy(context, viewModel, suggestion.activity),
+        ),
+      ),
+      ...HandoffActivity.history(
+        l10n,
+        this.feature.timeline,
+        shown: {for (final suggestion in suggestions) suggestion.id},
+        onOpen: (entry) =>
+            unawaited(HandoffActivity.reopen(context, viewModel, entry)),
+        onCopy: (entry) => unawaited(
+          HandoffActivity.copy(context, viewModel, entry.activity),
+        ),
+        onForget: (entry) => unawaited(viewModel.forget(entry)),
+      ),
+    ];
   }
 
   @override
@@ -206,7 +224,7 @@ class HandoffFeatureUi extends FeatureUi {
       handoffL10nForSystem(),
       session: session,
       name: device.device.name,
-      lastSendFailed: this.feature.lastSendFailed(device.device.id),
+      lastSendProblem: this.feature.lastSendProblem(device.device.id),
       opensAutomatically: this.feature.opensAutomatically,
     );
   }

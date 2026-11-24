@@ -9,6 +9,7 @@ class Suggestion {
     required this.isExplicit,
     required this.receivedAt,
     required this.expiresAt,
+    this.openFailed = false,
   });
 
   final Activity activity;
@@ -18,6 +19,10 @@ class Suggestion {
   final bool isExplicit;
   final DateTime receivedAt;
   final DateTime expiresAt;
+
+  /// Sent to open right away, but opening it here failed, such as a link
+  /// with no browser to open it. It waits with Copy and Open instead.
+  final bool openFailed;
 
   String get id => activity.id;
 

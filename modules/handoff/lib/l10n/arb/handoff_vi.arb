@@ -71,5 +71,14 @@
   "continueUntitledFrom": "Tiếp tục từ {device}",
   "settingsHistory": "Lịch sử",
   "settingsHistoryBody": "Những gì bạn đã tiếp tục giữa các thiết bị, lưu trên thiết bị này tối đa 30 ngày.",
-  "settingsHistoryClear": "Xóa"
+  "settingsHistoryClear": "Xóa",
+  "healthLastOpenFailed": "{name} không mở được liên kết bạn gửi gần nhất",
+  "healthLastOpenFailedHelp": "Liên kết đang chờ trong Hoạt động trên {name}, kèm Sao chép và Mở.",
+  "copy": "Sao chép",
+  "copied": "Đã sao chép",
+  "activityReceived": "Từ {device}",
+  "activityReceivedNotOpened": "Không mở được nội dung {device} gửi",
+  "activitySent": "Đã gửi đến {device}",
+  "activitySentNotOpened": "{device} không mở được",
+  "noticeOpenFailedTitle": "Không mở được “{title}”"
 }

@@ -226,5 +226,63 @@
   },
   "settingsHistory": "History",
   "settingsHistoryBody": "What you continued between devices, kept on this device for 30 days at most.",
-  "settingsHistoryClear": "Clear"
+  "settingsHistoryClear": "Clear",
+  "healthLastOpenFailed": "{name} couldn't open the last link you sent",
+  "@healthLastOpenFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "healthLastOpenFailedHelp": "It waits in Activity on {name}, with Copy and Open.",
+  "@healthLastOpenFailedHelp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "copy": "Copy",
+  "copied": "Copied",
+  "activityReceived": "From {device}",
+  "@activityReceived": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activityReceivedNotOpened": "Couldn't open what {device} sent",
+  "@activityReceivedNotOpened": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySent": "Sent to {device}",
+  "@activitySent": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySentNotOpened": "{device} couldn't open it",
+  "@activitySentNotOpened": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "noticeOpenFailedTitle": "Couldn't open “{title}”",
+  "@noticeOpenFailedTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

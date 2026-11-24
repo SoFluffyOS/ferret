@@ -189,17 +189,66 @@ void main() {
       expect(feature.suggestions.single.id, 'a');
     });
 
-    test('an activity that can not open is reported as failed', () async {
+    test('an activity that can not open is reported as failed, and waits '
+        'here to be copied or opened', () async {
       final feature = await startedFeature(
         opener: FakeOpener(.failed),
         clock: TestClock(),
       );
       addTearDown(feature.stop);
+      final arrival = feature.arrivals.first;
 
       final outcome = await feature.receiveContinue(pixel, webActivity('a'));
 
       expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_FAILED);
+      expect(feature.suggestions.single.openFailed, isTrue);
+      expect(feature.suggestions.single.isExplicit, isTrue);
+      expect((await arrival).id, 'a');
+      expect(feature.timeline.single.openFailed, isTrue);
+      expect(feature.timeline.single.isExplicit, isTrue);
+    });
+
+    test('an opener that throws is a failed open, not a lost link', () async {
+      final feature = await startedFeature(
+        opener: _ThrowingOpener(),
+        clock: TestClock(),
+      );
+      addTearDown(feature.stop);
+
+      final outcome = await feature.receiveContinue(pixel, webActivity('a'));
+      final retried = await feature.open(feature.suggestions.single);
+
+      expect(outcome, ContinueOutcome.CONTINUE_OUTCOME_FAILED);
+      expect(retried, OpenResult.failed);
+      expect(feature.suggestions.single.openFailed, isTrue);
+    });
+
+    test('opening it by hand later clears the failure', () async {
+      final opener = FakeOpener(.failed);
+      final feature = await startedFeature(opener: opener, clock: TestClock());
+      addTearDown(feature.stop);
+      await feature.receiveContinue(pixel, webActivity('a'));
+
+      opener.result = .opened;
+      final result = await feature.open(feature.suggestions.single);
+
+      expect(result, OpenResult.opened);
       expect(feature.suggestions, isEmpty);
+      expect(feature.timeline.single.openFailed, isFalse);
+    });
+
+    test('a line in the history opens again, and can be let go', () async {
+      final opener = FakeOpener();
+      final feature = await startedFeature(opener: opener, clock: TestClock());
+      addTearDown(feature.stop);
+      await feature.receiveContinue(pixel, webActivity('a'));
+
+      final result = await feature.reopen(feature.timeline.single);
+      await feature.forget(feature.timeline.single);
+
+      expect(result, OpenResult.opened);
+      expect(opener.opened, hasLength(2));
+      expect(feature.timeline, isEmpty);
     });
 
     test('the same send twice opens once', () async {
@@ -261,4 +310,10 @@ void main() {
 class _NoContext implements FeatureContext {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _ThrowingOpener implements ActivityOpener {
+  @override
+  Future<OpenResult> open(Activity activity) async =>
+      throw StateError('no browser');
 }

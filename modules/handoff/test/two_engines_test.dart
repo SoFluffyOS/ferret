@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
+import 'package:ferret_handoff/ferret_handoff.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:handoff/handoff.dart';
 import 'package:protocol/protocol.dart';
@@ -93,6 +95,47 @@ void main() {
       'Phone',
     );
   });
+
+  test(
+    'a link the other device got but could not open says so on both',
+    () async {
+      final receiver = PlatformActivityOpener(
+        platform: .PLATFORM_LINUX,
+        handoff: FerretHandoff(
+          api: FakeHandoffApi(),
+          isAndroid: false,
+          isMacOS: false,
+        ),
+        launch: (uri, mode) async =>
+            throw PlatformException(code: 'no-browser'),
+      );
+      final phone = await startEngine('Phone', HandoffFeature());
+      final linux = await startEngine(
+        'Linux',
+        HandoffFeature(opener: receiver),
+      );
+      await pair(phone, linux);
+      await connected([phone, linux], 1);
+      final phoneHandoff = phone.feature<HandoffFeature>();
+      final linuxHandoff = linux.feature<HandoffFeature>();
+
+      final outcome = await phoneHandoff?.sendTo(
+        linux.identity.deviceId,
+        webActivity('page', title: 'Ferrets'),
+      );
+
+      expect(outcome, SendOutcome.failed);
+      expect(
+        phoneHandoff?.lastSendProblem(linux.identity.deviceId),
+        SendOutcome.failed,
+      );
+      expect(phoneHandoff?.timeline.single.direction, TimelineDirection.sent);
+      expect(phoneHandoff?.timeline.single.openFailed, isTrue);
+      expect(linuxHandoff?.suggestions.single.activity.title, 'Ferrets');
+      expect(linuxHandoff?.suggestions.single.openFailed, isTrue);
+      expect(linuxHandoff?.timeline.single.openFailed, isTrue);
+    },
+  );
 
   test('the timeline names the device as this one calls it', () async {
     final phone = await startEngine('Phone', HandoffFeature());
