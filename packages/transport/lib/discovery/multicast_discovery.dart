@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:lan_discovery/lan_discovery.dart';
-import 'package:protocol/protocol.dart';
+import 'package:protocol/protocol.dart' hide Platform;
 import 'package:transport/discovery/announce_pacer.dart';
 import 'package:transport/discovery/discovered_peer.dart';
 
@@ -195,7 +195,7 @@ class MulticastDiscovery
       return await RawDatagramSocket.bind(
         InternetAddress.anyIPv4,
         port,
-        reusePort: true,
+        reusePort: !Platform.isWindows,
       );
     } on Object {
       return RawDatagramSocket.bind(InternetAddress.anyIPv4, port);

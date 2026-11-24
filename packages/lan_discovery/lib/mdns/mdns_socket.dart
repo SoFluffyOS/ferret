@@ -65,13 +65,14 @@ class MdnsSocket implements MdnsLink {
     return mdns;
   }
 
-  /// Windows shares the port with address reuse alone.
+  /// Windows shares the port with address reuse alone: it has no port reuse,
+  /// and Dart logs an error on every bind that asks for it.
   static Future<(RawDatagramSocket, bool)> _open(bool orAnyPort) async {
     try {
       final socket = await RawDatagramSocket.bind(
         InternetAddress.anyIPv4,
         port,
-        reusePort: true,
+        reusePort: !Platform.isWindows,
       );
       return (socket, true);
     } on Object {

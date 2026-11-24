@@ -228,7 +228,7 @@ class LocalSendDiscovery {
       return await RawDatagramSocket.bind(
         InternetAddress.anyIPv4,
         port,
-        reusePort: true,
+        reusePort: !Platform.isWindows,
       );
     } on Object {
       return RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
