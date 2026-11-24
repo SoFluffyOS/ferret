@@ -52,7 +52,7 @@ Copy `shell_en.arb` to `shell_de.arb` and start it like this:
 Then generate the Dart code for each module:
 
 ```bash
-cd modules/shell && fvm flutter gen-l10n
+cd modules/shell && flutter gen-l10n
 ```
 
 A key you haven't translated yet shows in English. That's fine for a first pull request.
@@ -105,9 +105,9 @@ Apple: open the `.xcstrings` files in Xcode and add your language, or add a `"de
 
 ```bash
 cd apps/ferret
-fvm flutter test test/l10n                    # same keys, placeholders kept, no English typed into widgets
-fvm dart run tool/pseudo_l10n.dart
-fvm flutter test test/screens/l10n_screens_test.dart
+flutter test test/l10n                        # same keys, placeholders kept, no English typed into widgets
+dart run tool/pseudo_l10n.dart
+flutter test test/screens/l10n_screens_test.dart
 ```
 
 The last one renders the main screens into `temp/screens` three ways:

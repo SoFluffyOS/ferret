@@ -165,14 +165,14 @@ Every byte that goes anywhere else is listed under **What leaves this device** o
 
 ## 🛠️ Build from source
 
-You need [fvm](https://fvm.app) (Ferret uses Flutter's stable channel).
+You need Flutter, the latest stable version. Your global install works, and so do version managers like [puro](https://puro.dev) or [fvm](https://fvm.app). With fvm installed, the scripts use the version the repo pins.
 
 ```bash
 git clone --recurse-submodules https://github.com/SoFluffyOS/ferret.git
 cd ferret
 scripts/get.sh                     # pub get for the whole workspace
 scripts/check.sh                   # format, analyze and test everything
-cd apps/ferret && fvm flutter run -d macos   # or windows, linux, an emulator
+cd apps/ferret && flutter run -d macos       # or windows, linux, an emulator
 ```
 
 A few more scripts you may want:
@@ -182,7 +182,7 @@ scripts/gen.sh                     # proto/ -> packages/protocol
 scripts/generate_icons.sh          # every app icon from branding/
 scripts/package_macos.sh           # signed DMG
 scripts/package_android.sh         # release APK
-scripts/package_linux.sh           # Flatpak, AppImage and .deb
+scripts/package_linux.sh           # AppImage, .deb and Flatpak
 scripts/package_windows.ps1        # Windows installer (on Windows)
 scripts/docs.sh serve              # the docs site on localhost
 ```

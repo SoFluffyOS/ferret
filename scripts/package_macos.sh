@@ -17,6 +17,8 @@
 #                        (see packaging/macos/README.md to create it once)
 # FERRET_SKIP_BUILD=1    reuse the last flutter build instead of building again
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -53,7 +55,7 @@ build_app() {
     echo "==> Reusing the last release build ($version)"
   else
     echo "==> Flutter release build ($version)"
-    (cd apps/ferret && "$ROOT/scripts/with_lock.sh" build fvm flutter build macos --release)
+    (cd apps/ferret && "$ROOT/scripts/with_lock.sh" build "${FLUTTER[@]}" build macos --release)
   fi
 
   if [ -d "$STAGE" ]; then
@@ -70,7 +72,7 @@ add_cli() {
   local helpers="$APP/Contents/Helpers"
 
   mkdir -p "$helpers"
-  (cd apps/ferret_cli && fvm dart compile exe bin/ferret.dart -o "$helpers/ferret-cli")
+  (cd apps/ferret_cli && "${DART[@]}" compile exe bin/ferret.dart -o "$helpers/ferret-cli")
   # A Dart executable maps its own AOT snapshot as code, which the hardened
   # runtime only allows with allow-unsigned-executable-memory.
   codesign --force --options runtime --timestamp \

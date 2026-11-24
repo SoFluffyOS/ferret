@@ -6,6 +6,8 @@
 #   scripts/new_feature.sh clipboard Clipboard ClipboardFeature clipboard
 #   (id, title, class prefix, Lucide icon name)
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 id="$1"
@@ -26,13 +28,13 @@ mkdir -p "$leftovers"
 
 # Platform plugin. Linux and Windows templates need desktop support switched
 # on; restore the user's setting afterwards.
-linux_was="$(fvm flutter config --list 2>/dev/null | sed -n 's/.*enable-linux-desktop: //p')"
-windows_was="$(fvm flutter config --list 2>/dev/null | sed -n 's/.*enable-windows-desktop: //p')"
-fvm flutter config --enable-linux-desktop --enable-windows-desktop >/dev/null
-fvm flutter create --no-pub --template=plugin --org io.sofluffy \
+linux_was="$("${FLUTTER[@]}" config --list 2>/dev/null | sed -n 's/.*enable-linux-desktop: //p')"
+windows_was="$("${FLUTTER[@]}" config --list 2>/dev/null | sed -n 's/.*enable-windows-desktop: //p')"
+"${FLUTTER[@]}" config --enable-linux-desktop --enable-windows-desktop >/dev/null
+"${FLUTTER[@]}" create --no-pub --template=plugin --org io.sofluffy \
   --platforms android,ios,macos,linux,windows "$plugin" >/dev/null || true
-[ "$linux_was" = "true" ] || fvm flutter config --no-enable-linux-desktop >/dev/null
-[ "$windows_was" = "true" ] || fvm flutter config --no-enable-windows-desktop >/dev/null
+[ "$linux_was" = "true" ] || "${FLUTTER[@]}" config --no-enable-linux-desktop >/dev/null
+[ "$windows_was" = "true" ] || "${FLUTTER[@]}" config --no-enable-windows-desktop >/dev/null
 
 for leftover in pubspec.lock "ferret_$id.iml" CHANGELOG.md LICENSE analysis_options.yaml example test \
   "lib/ferret_${id}_platform_interface.dart" "lib/ferret_${id}_method_channel.dart" "lib/ferret_${id}_pigeon.dart"; do
@@ -217,9 +219,9 @@ void main() {
 }
 DART
 
-(cd "$plugin" && fvm dart format "lib/ferret_$id.dart" >/dev/null)
-(cd "$module" && fvm flutter gen-l10n >/dev/null)
-(cd "$module" && fvm dart fix --apply --code=directives_ordering >/dev/null && fvm dart format lib test >/dev/null)
+(cd "$plugin" && "${DART[@]}" format "lib/ferret_$id.dart" >/dev/null)
+(cd "$module" && "${FLUTTER[@]}" gen-l10n >/dev/null)
+(cd "$module" && "${DART[@]}" fix --apply --code=directives_ordering >/dev/null && "${DART[@]}" format lib test >/dev/null)
 
 # Register in the workspace and the app.
 python3 - "$ROOT" "$id" "$class" <<'PY'
@@ -249,5 +251,5 @@ body = re.sub(r'(  features: \[\n)(?:    \w+FeatureUi\(\),\n)*', lambda m: m.gro
 open(path, 'w').write('\n'.join(imports) + '\n\n' + body)
 PY
 
-"$ROOT/scripts/with_lock.sh" pub fvm flutter pub get >/dev/null
+"$ROOT/scripts/with_lock.sh" pub "${FLUTTER[@]}" pub get >/dev/null
 echo "Created modules/$id and packages/ferret_$id"

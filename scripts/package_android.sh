@@ -11,6 +11,8 @@
 # or Android won't install it over the one before. FERRET_ALLOW_DEBUG_KEY=1
 # builds with the debug key anyway, for testing only.
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP="$ROOT/apps/ferret"
@@ -31,7 +33,7 @@ EOF
 fi
 
 echo "==> APK $version"
-(cd "$APP" && fvm flutter build apk --release)
+(cd "$APP" && "${FLUTTER[@]}" build apk --release)
 
 mkdir -p "$OUT"
 cp -f "$APP/build/app/outputs/flutter-apk/app-release.apk" "$OUT/Ferret-$version.apk"

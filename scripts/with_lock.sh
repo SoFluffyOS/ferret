@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs a command while holding a named lock, so parallel work never runs the
-# same shared step at once: scripts/with_lock.sh pub fvm flutter pub get
+# same shared step at once: scripts/with_lock.sh pub flutter pub get
 set -euo pipefail
 
 name="$1"

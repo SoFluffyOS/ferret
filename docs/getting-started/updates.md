@@ -79,7 +79,7 @@ adb shell run-as io.sofluffy.ferret mkdir -p files/feed
 for f in release.json Ferret-android.apk SHA256SUMS; do
   adb shell "run-as io.sofluffy.ferret sh -c 'cat > files/feed/$f'" < "$f"
 done
-fvm flutter run --dart-define=FERRET_UPDATE_FEED=/data/user/0/io.sofluffy.ferret/files/feed/
+flutter run --dart-define=FERRET_UPDATE_FEED=/data/user/0/io.sofluffy.ferret/files/feed/
 ```
 
 `FERRET_UPDATE_FEED` also takes an `http://` address of a folder served on your network (`python3 -m http.server`), where the system allows plain HTTP.

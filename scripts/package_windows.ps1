@@ -5,9 +5,9 @@
 #
 # Runs on Windows only (x64 or arm64): Flutter can't cross-build a Windows
 # app from macOS or Linux. Every target first builds the release bundle
-# (fvm flutter build windows) and ferret-cli (dart compile exe).
+# (flutter build windows) and ferret-cli (dart compile exe).
 #
-# Needs: fvm, Visual Studio 2022 with "Desktop development with C++", and
+# Needs: Flutter (latest stable; through fvm when it's installed), Visual Studio 2022 with "Desktop development with C++", and
 #   inno   Inno Setup 6 (winget install JRSoftware.InnoSetup), or set ISCC
 #          to ISCC.exe
 #   msix   the Windows 10/11 SDK (makeappx.exe, signtool.exe). Set
@@ -52,6 +52,14 @@ switch ($env:PROCESSOR_ARCHITECTURE) {
 $Pubspec = Get-Content (Join-Path $Root 'apps\ferret\pubspec.yaml')
 $Version = ($Pubspec | Select-String -Pattern '^version:\s*([^+\s]+)').Matches[0].Groups[1].Value
 
+# With fvm installed and a .fvmrc in the repo, Flutter and Dart go through fvm;
+# otherwise the ones on PATH (a global install, puro, ...).
+$UseFvm = (-not $env:FERRET_NO_FVM) -and (Get-Command fvm -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $Root '.fvmrc'))
+function Invoke-Sdk {
+  param([string]$Tool, [string[]]$Arguments)
+  if ($UseFvm) { Invoke-Checked 'fvm' (@($Tool) + $Arguments) } else { Invoke-Checked $Tool $Arguments }
+}
+
 function Invoke-Checked {
   param([string]$FilePath, [string[]]$Arguments)
   & $FilePath @Arguments
@@ -70,7 +78,7 @@ function Build-Stage {
   Write-Host "==> Flutter bundle and ferret-cli ($Version, $Arch)"
   Push-Location (Join-Path $Root 'apps\ferret')
   try {
-    Invoke-Checked 'fvm' @('flutter', 'build', 'windows', '--release')
+    Invoke-Sdk 'flutter' @('build', 'windows', '--release')
   } finally {
     Pop-Location
   }
@@ -85,7 +93,7 @@ function Build-Stage {
 
   Push-Location (Join-Path $Root 'apps\ferret_cli')
   try {
-    Invoke-Checked 'fvm' @('dart', 'compile', 'exe', 'bin\ferret.dart', '-o', (Join-Path $Stage 'ferret-cli.exe'))
+    Invoke-Sdk 'dart' @('compile', 'exe', 'bin\ferret.dart', '-o', (Join-Path $Stage 'ferret-cli.exe'))
   } finally {
     Pop-Location
   }

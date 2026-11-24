@@ -30,14 +30,14 @@ Set up once:
 ```bash
 git clone --recurse-submodules https://github.com/SoFluffyOS/ferret.git
 cd ferret
-scripts/get.sh            # pub get for the whole workspace (Flutter comes from fvm)
+scripts/get.sh            # pub get for the whole workspace (Flutter: latest stable)
 ```
 
 Then, for each change:
 
 ```bash
 scripts/check.sh modules/<feature>   # format, analyze, test: one package, or all without a path
-cd apps/ferret && fvm flutter test test/screens   # renders every main screen to temp/screens
+cd apps/ferret && flutter test test/screens   # renders every main screen to temp/screens
 ```
 
 A few things matter a lot here:

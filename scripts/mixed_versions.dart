@@ -24,9 +24,11 @@ Future<void> main(List<String> args) async {
     final home = '$work/$role';
     await Directory(home).create(recursive: true);
     final waiting = arrived.stream.firstWhere((peer) => peer.role == role);
+    // mixed_versions.sh passes the Flutter command it uses (fvm or not).
+    final flutter = (Platform.environment['FERRET_FLUTTER'] ?? 'flutter').split(' ');
     final process = await Process.start(
-      'fvm',
-      ['flutter', 'test', 'test/mixed/mixed_peer_test.dart'],
+      flutter.first,
+      [...flutter.skip(1), 'test', 'test/mixed/mixed_peer_test.dart'],
       workingDirectory: '$repo/apps/ferret',
       environment: {
         'FERRET_MIXED_CONTROL': '${server.port}',

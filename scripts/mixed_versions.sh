@@ -9,6 +9,8 @@
 # side keeps its data in its own folder under the printed work folder, never
 # in ~/.sofluffy/ferret.
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ref="${1:?usage: scripts/mixed_versions.sh <older commit>}"
@@ -33,7 +35,7 @@ done
 
 mkdir -p "$old/apps/ferret/test/mixed"
 cp "$ROOT/apps/ferret/test/mixed/mixed_peer_test.dart" "$old/apps/ferret/test/mixed/"
-(cd "$old" && fvm flutter pub get >/dev/null)
+(cd "$old" && "${FLUTTER[@]}" pub get >/dev/null)
 
 echo "Work folder: $work"
-fvm dart "$ROOT/scripts/mixed_versions.dart" "$old" "$ROOT" "$work/run"
+FERRET_FLUTTER="${FLUTTER[*]}" "${DART[@]}" "$ROOT/scripts/mixed_versions.dart" "$old" "$ROOT" "$work/run"

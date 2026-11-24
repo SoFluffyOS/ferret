@@ -7,9 +7,9 @@
 #
 # Runs on Linux only (x86_64 or aarch64): Flutter can't cross-build a Linux
 # app from macOS or Windows. Every target first builds the release bundle
-# (fvm flutter build linux) and ferret-cli (dart compile exe).
+# (flutter build linux) and ferret-cli (dart compile exe).
 #
-# Needs: fvm, clang, cmake, ninja, pkg-config and libgtk-3-dev for Flutter,
+# Needs: Flutter (latest stable), clang, cmake, ninja, pkg-config and libgtk-3-dev for Flutter,
 #   libsecret-1-dev for the secret store, and libegl-dev libgles-dev (EGL and
 #   GLES 2, the mesa -dev packages on older releases) for sofluffy_texture;
 #   deb       dpkg-deb
@@ -20,6 +20,8 @@
 # FERRET_DEB_MAINTAINER sets the .deb's Maintainer ("Name <email>"); it
 # defaults to your git name and email.
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -48,13 +50,13 @@ version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' apps/ferret/pubspec.yaml)"
 
 build_stage() {
   echo "==> Flutter bundle and ferret-cli ($version, $flutter_arch)"
-  (cd apps/ferret && fvm flutter build linux --release)
+  (cd apps/ferret && "${FLUTTER[@]}" build linux --release)
   if [ -d "$STAGE" ]; then
     mv "$STAGE" "$(mktemp -d)/"
   fi
   mkdir -p "$STAGE"
   cp -r "apps/ferret/build/linux/$flutter_arch/release/bundle" "$STAGE/bundle"
-  (cd apps/ferret_cli && fvm dart compile exe bin/ferret.dart -o "$STAGE/ferret-cli")
+  (cd apps/ferret_cli && "${DART[@]}" compile exe bin/ferret.dart -o "$STAGE/ferret-cli")
 }
 
 # Lays out an install tree: <root><prefix>/lib/ferret holds the bundle,

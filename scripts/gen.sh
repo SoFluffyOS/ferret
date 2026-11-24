@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Generates Dart from proto/ into packages/protocol and rewrites its barrel.
 set -euo pipefail
+# shellcheck source=scripts/sdk.sh
+. "$(dirname "${BASH_SOURCE[0]}")/sdk.sh"
 
 if [ -z "${FERRET_GEN_LOCKED:-}" ]; then
   FERRET_GEN_LOCKED=1 exec "$(dirname "${BASH_SOURCE[0]}")/with_lock.sh" gen "${BASH_SOURCE[0]}" "$@"
@@ -44,4 +46,4 @@ for dir in $(cd "$GENERATED" && find ferret -name '*.pb.dart' -exec dirname {} \
 done
 
 echo "Generated $(find "$GENERATED" -name '*.pb.dart' | wc -l | tr -d ' ') proto files."
-fvm dart format "$ROOT/packages/protocol/lib"/*.dart >/dev/null
+"${DART[@]}" format "$ROOT/packages/protocol/lib"/*.dart >/dev/null
