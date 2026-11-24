@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:engine/engine.dart';
@@ -8,6 +8,7 @@ import 'package:ferret_menubar/ferret_menubar.dart';
 // The host API is only reachable from the plugin's sources.
 // ignore: implementation_imports
 import 'package:ferret_menubar/src/messages.g.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -91,6 +92,17 @@ class _RecordingFeature extends FeatureUi {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+/// Sends [method] the way desktop_drop's Windows and Linux code does.
+Future<void> _desktopDrop(
+  WidgetTester tester,
+  String method,
+  Object? arguments,
+) => tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+  'desktop_drop',
+  const StandardMethodCodec().encodeMethodCall(MethodCall(method, arguments)),
+  (_) {},
+);
+
 /// The view the test's widgets draw in, which the drags are over.
 int get _viewId =>
     WidgetsBinding.instance.platformDispatcher.implicitView?.viewId ?? 0;
@@ -111,6 +123,7 @@ void main() {
     required List<DeviceStatus> devices,
     Size size = const Size(380, 560),
     Widget child = const Text('Home'),
+    bool? desktopDrop,
   }) async {
     tester.view
       ..devicePixelRatio = 1
@@ -127,7 +140,11 @@ void main() {
             notifier: _FakeNotifier(),
           ),
           child: testApp(
-            FileDropZone(menubar: menubar, child: child),
+            FileDropZone(
+              menubar: menubar,
+              desktopDrop: desktopDrop,
+              child: child,
+            ),
           ),
         ),
       ),
@@ -157,7 +174,7 @@ void main() {
     expect(find.text('iPad'), findsOneWidget);
     expect(find.text('Offline'), findsOneWidget);
     expect(find.text('All my devices'), findsOneWidget);
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('the tile under the pointer lights up and takes the drop', (
     tester,
@@ -186,7 +203,7 @@ void main() {
     await settle(tester);
     expect(find.byType(DropProgressCard), findsNothing);
     expect(api.closed, 1);
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('a drag from Ferret keeps the page and lands on a receiver', (
     tester,
@@ -219,7 +236,7 @@ void main() {
     await settle(tester);
     expect(receiver.files.single, ['/a.jpg']);
     expect(feature.drops, isEmpty);
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('a drag from Ferret over a device card says where it goes, '
       'or that the device is offline, without moving the card', (
@@ -269,7 +286,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(feature.drops, isEmpty);
     expect(find.text('Old tablet is offline'), findsNothing);
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('an offline tile refuses the drop', (tester) async {
     await pumpZone(tester, devices: [pixel, tablet]);
@@ -285,7 +302,7 @@ void main() {
     await settle(tester);
     expect(feature.drops, isEmpty);
     expect(find.byType(DropTargetTile), findsNothing);
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('a failure says why and can be tried again', (tester) async {
     await pumpZone(tester, devices: [pixel]);
@@ -305,7 +322,7 @@ void main() {
     await tester.tap(find.text('Try again'));
     await settle(tester);
     expect(feature.drops, hasLength(2));
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('a blind drop on the icon with two devices asks which', (
     tester,
@@ -321,7 +338,7 @@ void main() {
     await tester.tap(find.text('Pixel 7'));
     await settle(tester);
     expect(feature.drops.single.$2, 'pixel-id');
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('with nobody connected it says what to do first', (
     tester,
@@ -336,7 +353,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('All my devices'), findsNothing);
-  });
+  }, skip: !Platform.isMacOS);
 
   group('in a window', () {
     const windowSize = Size(1000, 720);
@@ -436,6 +453,51 @@ void main() {
       await settle(tester);
 
       expect(find.text('Send here'), findsNWidgets(3));
+    });
+
+    testWidgets('on Windows and Linux a drag from the system finds the row '
+        'under the pointer through desktop_drop', (tester) async {
+      await pumpZone(
+        tester,
+        devices: [pixel, tablet],
+        size: windowSize,
+        child: page,
+        desktopDrop: true,
+      );
+      final overPage = tester.getCenter(find.text('Page'));
+      await _desktopDrop(tester, 'entered', [overPage.dx, overPage.dy]);
+      await settle(tester);
+
+      expect(find.byType(DropTargetTile), findsNothing);
+      expect(find.text('Page'), findsOneWidget);
+
+      final overPixel = tester.getCenter(find.text('Pixel row'));
+      await _desktopDrop(tester, 'updated', [overPixel.dx, overPixel.dy]);
+      await _desktopDrop(tester, 'performOperation', ['/a.jpg']);
+      await settle(tester);
+
+      expect(feature.drops.single.$1, ['/a.jpg']);
+      expect(feature.drops.single.$2, 'pixel-id');
+      expect(find.text('Sending to Pixel 7'), findsOneWidget);
+    });
+
+    testWidgets('a desktop_drop drag that leaves sends nothing', (
+      tester,
+    ) async {
+      await pumpZone(
+        tester,
+        devices: [pixel, tablet],
+        size: windowSize,
+        child: page,
+        desktopDrop: true,
+      );
+      final overPixel = tester.getCenter(find.text('Pixel row'));
+      await _desktopDrop(tester, 'entered', [overPixel.dx, overPixel.dy]);
+      await _desktopDrop(tester, 'exited', null);
+      await settle(tester);
+
+      expect(feature.drops, isEmpty);
+      expect(find.textContaining('Sending'), findsNothing);
     });
   });
 

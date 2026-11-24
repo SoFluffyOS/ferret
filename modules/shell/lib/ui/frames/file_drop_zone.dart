@@ -25,6 +25,7 @@ class FileDropZone extends StatefulWidget {
     required this.child,
     this.menubar,
     this.footer,
+    this.desktopDrop,
   });
 
   final Widget child;
@@ -35,6 +36,11 @@ class FileDropZone extends StatefulWidget {
 
   /// The macOS menubar, whose popover and icon take the drags there.
   final FerretMenubar? menubar;
+
+  /// Whether drags come through desktop_drop; null takes this platform's
+  /// way, so tests can drive the Windows and Linux path anywhere.
+  @visibleForTesting
+  final bool? desktopDrop;
 
   @override
   State<FileDropZone> createState() => _FileDropZoneState();
@@ -47,7 +53,8 @@ class _FileDropZoneState extends State<FileDropZone> {
 
   /// desktop_drop finds no window on macOS, where the popover's drags come
   /// through [FileDropZone.menubar] instead.
-  bool get _usesDesktopDrop => Platform.isWindows || Platform.isLinux;
+  bool get _usesDesktopDrop =>
+      widget.desktopDrop ?? (Platform.isWindows || Platform.isLinux);
 
   /// The menubar icon's drops are the popover's, which is the main view.
   bool get _isMainView =>

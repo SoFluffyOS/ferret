@@ -165,7 +165,7 @@ void main() {
       isNull,
     );
     expect(GlobalShortcut.read(engine.settings)?.label, '⌃⌥Space');
-  });
+  }, skip: !Platform.isMacOS);
 
   testWidgets('a screen reader hears which keys Change and Turn off are for', (
     tester,
