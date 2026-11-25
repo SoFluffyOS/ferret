@@ -4,7 +4,7 @@
 // reached from the keyboard. Renders into temp/screens as
 // `popover_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/popover_screens_test.dart
+//   flutter test test/screens/popover_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

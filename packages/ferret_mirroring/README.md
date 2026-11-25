@@ -27,4 +27,4 @@ The consent is never kept: every capture starts with Android's own prompt.
 
 The extra display on macOS borrows from [OpenDisplay](https://github.com/peetzweg/opendisplay) (GPL-3.0): the private `CGVirtualDisplay` interface and its setup (first published by Khaos Tian in VirtualDisplayExp), the capture and the encoder settings. Each file that does says so at its top.
 
-Regenerate the platform channel with `fvm dart run pigeon --input pigeon/messages.dart`.
+Regenerate the platform channel with `dart run pigeon --input pigeon/messages.dart`.

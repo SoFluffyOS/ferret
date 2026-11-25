@@ -1,7 +1,7 @@
 // Locking the computer when a phone leaves. Renders into temp/screens as
 // `leave_lock_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/leave_lock_screens_test.dart
+//   flutter test test/screens/leave_lock_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

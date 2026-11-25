@@ -1,7 +1,7 @@
 // Renders every state of the mirror stage to temp/screens for review, at a
 // narrow window, the popover and a wide window. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/mirror_screens_test.dart
+//   flutter test test/screens/mirror_screens_test.dart
 //
 // The harness may only touch test/screens, so packages the app gets through
 // its modules are imported without listing them in pubspec.yaml.

@@ -1,7 +1,7 @@
 // Reaching a phone over your own VPN. Renders into temp/screens as
 // `vpn_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/vpn_screens_test.dart
+//   flutter test test/screens/vpn_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

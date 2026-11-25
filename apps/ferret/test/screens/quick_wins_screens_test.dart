@@ -3,7 +3,7 @@
 // Send clipboard says where it was pressed. Renders
 // into temp/screens as `quick_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/quick_wins_screens_test.dart
+//   flutter test test/screens/quick_wins_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

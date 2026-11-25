@@ -13,7 +13,7 @@ import 'package:path/path.dart' as p;
 /// Runs against a real Android emulator, with the real adb and the bundled
 /// scrcpy server. One test downloads Google's platform-tools:
 ///
-///     fvm flutter test --run-skipped --tags emulator
+///     flutter test --run-skipped --tags emulator
 void main() {
   final executable = AdbLocator().find() ?? '';
   final program = AdbClient(executable);

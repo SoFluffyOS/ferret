@@ -70,7 +70,7 @@ A phone's rotation or a locked screen shows up as a new `FeedConfigured` or a `F
 
 ## What was tested
 
-Automated (`fvm flutter test`):
+Automated (`flutter test`):
 
 - **plist**: decoded a plist written by macOS's own `plutil`; our output read back by `plutil -p`; every truncation and every flipped byte of a valid plist.
 - **pair-verify**: RFC 8032 and RFC 7748 keys, with the encrypted signatures computed apart from this code by the OpenSSL command line.

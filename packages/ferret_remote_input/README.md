@@ -17,4 +17,4 @@ if ((await injector.status()).isReady) {
 await injector.releaseAll();
 ```
 
-Regenerate the platform channel with `fvm dart run pigeon --input pigeon/messages.dart`.
+Regenerate the platform channel with `dart run pigeon --input pigeon/messages.dart`.

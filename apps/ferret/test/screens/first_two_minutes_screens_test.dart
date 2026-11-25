@@ -7,8 +7,8 @@
 // `script.md` next to them counts the screens, taps, waits, system prompts
 // and words. Run from apps/ferret, one pair at a time if you like:
 //
-//   fvm flutter test test/screens/first_two_minutes_screens_test.dart
-//   fvm flutter test test/screens/first_two_minutes_screens_test.dart \
+//   flutter test test/screens/first_two_minutes_screens_test.dart
+//   flutter test test/screens/first_two_minutes_screens_test.dart \
 //     --plain-name "first2min android_mac"
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])

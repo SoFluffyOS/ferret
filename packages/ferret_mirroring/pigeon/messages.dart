@@ -1,6 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
-// Regenerate with `fvm dart run pigeon --input pigeon/messages.dart` from the
+// Regenerate with `dart run pigeon --input pigeon/messages.dart` from the
 // package folder. Android captures and encodes the screen; macOS decodes
 // H.264 into a texture. JPEG decoding is Dart only (lib/src/decoder/).
 @ConfigurePigeon(

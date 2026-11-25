@@ -1,7 +1,7 @@
 // Screenshot harness: renders the real app with a real engine and saves PNGs
 // to temp/screens for UX review. Run from apps/ferret:
 //
-//   fvm flutter test test/screens
+//   flutter test test/screens
 //
 // See temp/screens/AUDIT.md for what each screen is and what was found.
 // The harness may only touch test/screens, so packages the app gets through

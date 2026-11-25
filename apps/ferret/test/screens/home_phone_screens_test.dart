@@ -4,7 +4,7 @@
 // send picker for a shared link. Renders into temp/screens as
 // `home_phone_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/home_phone_screens_test.dart
+//   flutter test test/screens/home_phone_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

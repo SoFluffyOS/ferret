@@ -3,7 +3,7 @@
 // page a failed start shows. Renders into temp/screens as
 // `boot_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/boot_screens_test.dart
+//   flutter test test/screens/boot_screens_test.dart
 @Tags(['screens'])
 library;
 

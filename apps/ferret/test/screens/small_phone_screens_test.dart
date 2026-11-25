@@ -3,7 +3,7 @@
 // temp/screens as `small_<name>_<size>_light.png`; overflows go to
 // `temp/screens/small_overflows.txt`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/small_phone_screens_test.dart
+//   flutter test test/screens/small_phone_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

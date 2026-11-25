@@ -4,7 +4,7 @@
 // receives them. Renders into temp/screens
 // as `keyboard_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/keyboard_screens_test.dart
+//   flutter test test/screens/keyboard_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

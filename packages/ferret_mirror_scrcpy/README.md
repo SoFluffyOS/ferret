@@ -120,7 +120,7 @@ scrcpy's protocol is internal and changes between versions (4.0 added session pa
 One suite needs a running Android emulator, so it is skipped by default:
 
 ```bash
-fvm flutter test --run-skipped --tags emulator
+flutter test --run-skipped --tags emulator
 ```
 
 It shows the emulator's screen, rotates it, taps and types, reads its sound as Opus and as plain samples, and checks nothing is left behind: once through adb's server, once through the `adb` program. Its last test downloads Google's platform-tools and runs them.

@@ -2,7 +2,7 @@
 
 > **TL;DR**
 >
-> 1. Build a release APK: `cd apps/ferret && fvm flutter build apk --release`
+> 1. Build a release APK: `cd apps/ferret && flutter build apk --release`
 > 2. Pack the module: `magisk/build.sh apps/ferret/build/app/outputs/flutter-apk/app-release.apk`
 > 3. Flash `magisk/dist/ferret-magisk-v<version>.zip` in Magisk, then restart.
 

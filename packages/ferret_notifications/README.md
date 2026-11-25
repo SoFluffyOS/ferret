@@ -17,4 +17,4 @@ if (FerretNotifications.isSupported && await notifications.isAccessGranted()) {
 
 The listener service is `io.sofluffy.ferret_notifications.FerretNotificationListener`, declared in the plugin manifest. Other plugins that need notification access (such as `MediaSessionManager.getActiveSessions`) use `FerretNotificationListener.componentName(context)` in Kotlin or `FerretNotifications.listenerClassName` in Dart.
 
-Android only. Regenerate the platform channel code with `fvm dart run pigeon --input pigeon/messages.dart`.
+Android only. Regenerate the platform channel code with `dart run pigeon --input pigeon/messages.dart`.

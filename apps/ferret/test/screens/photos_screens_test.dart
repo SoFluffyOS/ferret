@@ -4,7 +4,7 @@
 // computer's request opens on the phone. Renders into temp/screens as
 // `photos_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/photos_screens_test.dart
+//   flutter test test/screens/photos_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

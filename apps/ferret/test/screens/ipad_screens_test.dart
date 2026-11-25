@@ -4,7 +4,7 @@
 // Renders into temp/screens as `ipad_<name>_<size>_<mode>.png`; overflows
 // go to `temp/screens/ipad_overflows.txt`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/ipad_screens_test.dart
+//   flutter test test/screens/ipad_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

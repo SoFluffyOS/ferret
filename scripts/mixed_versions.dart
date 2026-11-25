@@ -24,7 +24,6 @@ Future<void> main(List<String> args) async {
     final home = '$work/$role';
     await Directory(home).create(recursive: true);
     final waiting = arrived.stream.firstWhere((peer) => peer.role == role);
-    // mixed_versions.sh passes the Flutter command it uses (fvm or not).
     final flutter = (Platform.environment['FERRET_FLUTTER'] ?? 'flutter').split(' ');
     final process = await Process.start(
       flutter.first,

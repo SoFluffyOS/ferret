@@ -24,5 +24,5 @@ await clipboard.write(const ClipboardContent.text('Hello', sensitive: true));
 Regenerate the platform channels after editing `pigeon/messages.dart`:
 
 ```bash
-fvm dart run pigeon --input pigeon/messages.dart
+dart run pigeon --input pigeon/messages.dart
 ```

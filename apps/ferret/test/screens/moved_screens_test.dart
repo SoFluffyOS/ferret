@@ -3,7 +3,7 @@
 // and lists what to pair again. Renders into temp/screens as
 // `moved_home*_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/moved_screens_test.dart
+//   flutter test test/screens/moved_screens_test.dart
 @Tags(['screens'])
 library;
 

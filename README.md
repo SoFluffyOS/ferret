@@ -165,7 +165,7 @@ Every byte that goes anywhere else is listed under **What leaves this device** o
 
 ## 🛠️ Build from source
 
-You need Flutter, the latest stable version. Your global install works, and so do version managers like [puro](https://puro.dev) or [fvm](https://fvm.app). With fvm installed, the scripts use the version the repo pins.
+You need Flutter, the latest stable version. Your global install works, and so do [puro](https://puro.dev) and [fvm](https://fvm.app). The scripts detect whichever you have.
 
 ```bash
 git clone --recurse-submodules https://github.com/SoFluffyOS/ferret.git

@@ -23,7 +23,7 @@ Straight from GitHub releases and Homebrew, not the Mac App Store: the App Store
 
 ## What the script does
 
-1. `fvm flutter build macos --release` (a universal app, arm64 and x86_64). `FERRET_SKIP_BUILD=1` reuses the last build.
+1. `flutter build macos --release` (a universal app, arm64 and x86_64). `FERRET_SKIP_BUILD=1` reuses the last build.
 2. Copies `ferret.app` to `build/macos-packages/stage/Ferret.app`. The folder name isn't part of the signature, so people see **Ferret** in Applications.
 3. Builds `ferret-cli` with `dart compile exe`, puts it in `Ferret.app/Contents/Helpers`, signs it (identifier `io.sofluffy.ferret.cli`) and re-signs the app around it with the same entitlements.
 4. Checks every signature: `codesign --verify --deep --strict`, then the app, the Share extension, `ferret-cli` and each framework one by one: team `66UZUS2MST`, Developer ID, secure timestamp, no `get-task-allow`, and the hardened runtime on everything that runs (frameworks are libraries and don't need it).

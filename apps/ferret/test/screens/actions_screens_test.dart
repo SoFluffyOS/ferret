@@ -1,7 +1,7 @@
 // Computer actions and the Android "start with the phone" question. Renders
 // into temp/screens as `actions_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/actions_screens_test.dart
+//   flutter test test/screens/actions_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

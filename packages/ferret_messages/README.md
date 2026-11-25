@@ -17,4 +17,4 @@ if (FerretMessages.isSupported && (await messages.requestAccess()).canRead) {
 
 The plugin declares `READ_SMS`, `RECEIVE_SMS`, `SEND_SMS` and `READ_CONTACTS`. RCS chats live inside Google Messages and no other app can read them.
 
-Regenerate the platform API with `fvm dart run pigeon --input pigeon/messages.dart`.
+Regenerate the platform API with `dart run pigeon --input pigeon/messages.dart`.

@@ -42,4 +42,4 @@ The permissions are declared in the plugin's manifest and merged into the app.
 - Call audio is not touched. It stays on the phone.
 
 The pigeon API is in `pigeon/messages.dart`. Regenerate with
-`fvm dart run pigeon --input pigeon/messages.dart`.
+`dart run pigeon --input pigeon/messages.dart`.

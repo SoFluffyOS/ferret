@@ -3,7 +3,7 @@
 // About. Renders into temp/screens as `updates_<name>_<size>_<mode>.png`.
 // Run one at a time from apps/ferret:
 //
-//   fvm flutter test test/screens/updates_screens_test.dart --plain-name "updates card popover light"
+//   flutter test test/screens/updates_screens_test.dart --plain-name "updates card popover light"
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

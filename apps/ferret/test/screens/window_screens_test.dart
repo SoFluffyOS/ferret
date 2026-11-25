@@ -1,7 +1,7 @@
 // The window, rendered at one size per breakpoint, light and dark, into
 // temp/screens as `window_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/window_screens_test.dart
+//   flutter test test/screens/window_screens_test.dart
 //
 // The harness may only touch test/screens, so packages the app gets through
 // its modules are imported without listing them in pubspec.yaml.

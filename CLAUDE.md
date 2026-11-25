@@ -12,14 +12,14 @@ Guidance for Claude Code and other agents working in this repository. Follow [CO
 scripts/get.sh                 # pub get for the whole workspace
 scripts/gen.sh                 # proto/ -> packages/protocol (buf lint + generate + barrels)
 scripts/check.sh [path]        # format, analyze, test (one package or all)
-cd apps/ferret && fvm flutter test test/screens   # renders every main screen to temp/screens (light/dark; phone as Android, iphone as iOS, popover as macOS) for review
+cd apps/ferret && flutter test test/screens   # renders every main screen to temp/screens (light/dark; phone as Android, iphone as iOS, popover as macOS) for review
 scripts/docs.sh serve|check|reference|build   # landing + docs site; reference regenerates the protocol page from proto/
 
 cd apps/ferret && flutter run -d macos     # or an emulator: never the user's own phone
 cd apps/ferret_cli && dart run bin/ferret.dart --help
 ```
 
-Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`fvm flutter test`, `fvm dart analyze`).
+Use the latest stable Flutter. The scripts detect [puro](https://puro.dev), then [fvm](https://fvm.app), then the `flutter` on PATH.
 
 ## Layout
 
@@ -27,7 +27,7 @@ Flutter comes from fvm (`.fvmrc`, stable channel): prefix commands with `fvm` (`
 |---|---|
 | `apps/ferret/` | The Flutter app for every platform: `main.dart`, wiring, platform folders. Entry point only |
 | `apps/ferret_cli/` | `ferret-cli` command line and headless daemon (pure Dart). The app binary is `ferret` |
-| `apps/ferret_docs/` | The site, ferret.sofluffy.io (Jaspr, pinned to its own Flutter in `.fvmrc`): the landing page at `/` (`lib/landing/`) and `docs` read in place under `/docs`, sidebar built from its folders. |
+| `apps/ferret_docs/` | The site, ferret.sofluffy.io (Jaspr): the landing page at `/` (`lib/landing/`) and `docs` read in place under `/docs`, sidebar built from its folders. |
 | `modules/<feature>/` | One feature each: its `Feature` (engine side) and its UI. Features never import each other |
 | `modules/shell/` | App shell: onboarding, devices, pairing, settings, tier detection; hosts feature UIs |
 | `packages/core/` | Injector, logging, settings, secret storage (pure Dart) |

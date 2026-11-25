@@ -11,29 +11,31 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOCS="$ROOT/apps/ferret_docs"
 cd "$DOCS"
 
-# With fvm, the docs site builds with the SDK pinned in apps/ferret_docs/.fvmrc;
-# otherwise with the Flutter on your PATH (its dart).
-if [ -z "${FERRET_NO_FVM:-}" ] && command -v fvm >/dev/null 2>&1; then
-  fvm install >/dev/null 2>&1 || true
-  fvm use --force >/dev/null 2>&1 || true
-  export PATH="$DOCS/.fvm/flutter_sdk/bin:$PATH"
+# Puro, fvm or the dart on PATH.
+if command -v puro >/dev/null 2>&1; then
+  DART="puro dart"
+elif command -v fvm >/dev/null 2>&1; then
+  DART="fvm dart"
+else
+  DART="dart"
 fi
-dart pub get >/dev/null
 
-JASPR="dart run jaspr_cli:jaspr"
+$DART pub get >/dev/null
+
+JASPR="$DART run jaspr_cli:jaspr"
 
 case "${1:-check}" in
   serve)
     $JASPR serve
     ;;
   reference)
-    dart run tool/gen_proto_reference.dart
+    $DART run tool/gen_proto_reference.dart
     ;;
   check)
-    dart run tool/check_docs.dart
+    $DART run tool/check_docs.dart
     ;;
   build)
-    dart run tool/check_docs.dart
+    $DART run tool/check_docs.dart
     $JASPR build \
       --sitemap-domain https://ferret.sofluffy.io \
       --sitemap-exclude '^/404'

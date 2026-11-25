@@ -3,7 +3,7 @@
 // Rendered into temp/screens as `msgs_<name>_<size>_<mode>.png`. Run from
 // apps/ferret:
 //
-//   fvm flutter test test/screens/messages_screens_test.dart
+//   flutter test test/screens/messages_screens_test.dart
 @Tags(['screens'])
 library;
 

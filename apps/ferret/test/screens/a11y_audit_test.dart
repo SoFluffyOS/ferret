@@ -2,7 +2,7 @@
 // `window_screens_test.dart` with semantics on and writes what it finds to
 // `temp/screens/a11y/`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/a11y_audit_test.dart
+//   flutter test test/screens/a11y_audit_test.dart
 //
 // - `guidelines.txt`: tap target size, unlabeled tap targets and text
 //   contrast, per screen.

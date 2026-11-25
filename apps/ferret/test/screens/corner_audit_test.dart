@@ -5,7 +5,7 @@
 // at its inset, above the 12 every control keeps (ROUND). Run from
 // apps/ferret:
 //
-//   fvm flutter test test/screens/corner_audit_test.dart
+//   flutter test test/screens/corner_audit_test.dart
 //
 // A switch, or a button beside two lines of text, sits further from the
 // card's end than from its side on purpose: the row keeps its height.

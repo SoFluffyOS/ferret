@@ -3,7 +3,7 @@
 // dark, Fix connection's Windows lines, and Contrast themes on. Into
 // temp/screens as `win_<name>_<size>_<mode>.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/windows_screens_test.dart
+//   flutter test test/screens/windows_screens_test.dart
 @Tags(['screens'])
 library;
 

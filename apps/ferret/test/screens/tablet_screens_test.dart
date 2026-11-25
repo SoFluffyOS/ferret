@@ -3,7 +3,7 @@
 // temp/screens as `tablet_<name>_<size>_<mode>.png`; overflows go to
 // `temp/screens/tablet_overflows.txt`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/tablet_screens_test.dart
+//   flutter test test/screens/tablet_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

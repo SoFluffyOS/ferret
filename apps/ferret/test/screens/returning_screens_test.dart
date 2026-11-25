@@ -3,7 +3,7 @@
 // newer Ferret than this Mac. Renders into temp/screens as
 // `returning_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/returning_screens_test.dart
+//   flutter test test/screens/returning_screens_test.dart
 @Tags(['screens'])
 library;
 

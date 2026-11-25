@@ -28,4 +28,4 @@ await media.command(playerId, PlayerAction.toggle);
 
 Positions come with the time they were true (`positionAtMs`), so callers extrapolate instead of polling. Artwork is a small JPEG or PNG, at most 64 KiB, and never downloaded from the internet.
 
-The pigeon API lives in `pigeon/messages.dart`; regenerate with `fvm dart run pigeon --input pigeon/messages.dart`.
+The pigeon API lives in `pigeon/messages.dart`; regenerate with `dart run pigeon --input pigeon/messages.dart`.

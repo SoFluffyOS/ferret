@@ -2,7 +2,7 @@
 // Needs you with Add / Not now or Remove / Keep. Renders into temp/screens
 // as `group_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/group_request_screens_test.dart
+//   flutter test test/screens/group_request_screens_test.dart
 @Tags(['screens'])
 library;
 

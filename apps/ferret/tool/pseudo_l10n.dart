@@ -2,7 +2,7 @@
 // generated strings class, a subclass that returns each English string in
 // pseudo-locale form. Run from apps/ferret after any ARB change:
 //
-//   fvm dart run tool/pseudo_l10n.dart
+//   dart run tool/pseudo_l10n.dart
 import 'dart:io';
 
 void main() {

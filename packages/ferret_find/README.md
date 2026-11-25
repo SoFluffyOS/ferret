@@ -36,4 +36,4 @@ if (before != null) {
 
 Android permissions (merged from this plugin's manifest): `ACCESS_NOTIFICATION_POLICY`, `USE_FULL_SCREEN_INTENT`, `VIBRATE`, `WAKE_LOCK`. Do Not Disturb access is granted by the person in Settings: `openDndAccessSettings()` opens the page.
 
-Regenerate the platform channel code with `fvm dart run pigeon --input pigeon/messages.dart`.
+Regenerate the platform channel code with `dart run pigeon --input pigeon/messages.dart`.

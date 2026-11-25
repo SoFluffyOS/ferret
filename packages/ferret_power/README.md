@@ -46,7 +46,7 @@ Clipboard text passes through and is never logged.
 
 ## 🧪 Tests
 
-- `fvm flutter test`: the tier state machine and the gating, against `FakePowerPlatform` (`package:ferret_power/testing.dart`). Use the same fake in your own tests.
+- `flutter test`: the tier state machine and the gating, against `FakePowerPlatform` (`package:ferret_power/testing.dart`). Use the same fake in your own tests.
 - Kotlin unit tests in `android/src/test`: the helper's line protocol, the quoting, the fixed commands, and the argument filling for the clipboard service's hidden methods.
 
 What was run on a device, and what wasn't:

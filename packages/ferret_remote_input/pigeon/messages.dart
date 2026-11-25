@@ -1,6 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
-// Regenerate with `fvm dart run pigeon --input pigeon/messages.dart` from the
+// Regenerate with `dart run pigeon --input pigeon/messages.dart` from the
 // package folder. Linux is Dart only (lib/src/linux/), and phones never
 // inject input, so only macOS and Windows have native code.
 @ConfigurePigeon(

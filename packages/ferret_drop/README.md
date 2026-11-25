@@ -19,4 +19,4 @@ await drop.open('/Users/me/Downloads/Ferret/photo.jpg');
 await drop.reveal('/Users/me/Downloads/Ferret/photo.jpg');
 ```
 
-The pigeon API lives in `pigeon/messages.dart`. Regenerate with `fvm dart run pigeon --input pigeon/messages.dart`.
+The pigeon API lives in `pigeon/messages.dart`. Regenerate with `dart run pigeon --input pigeon/messages.dart`.

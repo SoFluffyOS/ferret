@@ -67,4 +67,4 @@ await ancs.start();
 iphone.notify(1, title: 'Zoé', message: 'On my way');
 ```
 
-Regenerate the platform channel code with `fvm dart run pigeon --input pigeon/messages.dart`.
+Regenerate the platform channel code with `dart run pigeon --input pigeon/messages.dart`.

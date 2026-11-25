@@ -6,8 +6,8 @@
 // code, or data such as device names), strings glued from pieces, and rows
 // that overflow. Run from apps/ferret:
 //
-//   fvm dart run tool/pseudo_l10n.dart    # after an ARB change
-//   fvm flutter test test/screens/l10n_screens_test.dart
+//   dart run tool/pseudo_l10n.dart    # after an ARB change
+//   flutter test test/screens/l10n_screens_test.dart
 @Tags(['screens'])
 library;
 

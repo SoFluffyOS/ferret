@@ -1,6 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
-// Regenerate with `fvm dart run pigeon --input pigeon/messages.dart` from the
+// Regenerate with `dart run pigeon --input pigeon/messages.dart` from the
 // package folder. Windows and Linux are Dart only (lib/src/desktop_find.dart).
 @ConfigurePigeon(
   PigeonOptions(

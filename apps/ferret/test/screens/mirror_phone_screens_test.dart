@@ -6,7 +6,7 @@
 // camera: MacBook Air asking to use it, "Camera on for MacBook Air" with
 // Stop, and the Camera for a computer settings. Renders into temp/screens as `mirror_phone_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/mirror_phone_screens_test.dart
+//   flutter test test/screens/mirror_phone_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

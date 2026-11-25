@@ -2,7 +2,7 @@
 // wake, its page while waking, and the help page. Renders into
 // temp/screens as `wake_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/wake_screens_test.dart
+//   flutter test test/screens/wake_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

@@ -7,7 +7,7 @@
 # app from macOS or Linux. Every target first builds the release bundle
 # (flutter build windows) and ferret-cli (dart compile exe).
 #
-# Needs: Flutter (latest stable; through fvm when it's installed), Visual Studio 2022 with "Desktop development with C++", and
+# Needs: Flutter (latest stable), Visual Studio 2022 with "Desktop development with C++", and
 #   inno   Inno Setup 6 (winget install JRSoftware.InnoSetup), or set ISCC
 #          to ISCC.exe
 #   msix   the Windows 10/11 SDK (makeappx.exe, signtool.exe). Set
@@ -52,12 +52,18 @@ switch ($env:PROCESSOR_ARCHITECTURE) {
 $Pubspec = Get-Content (Join-Path $Root 'apps\ferret\pubspec.yaml')
 $Version = ($Pubspec | Select-String -Pattern '^version:\s*([^+\s]+)').Matches[0].Groups[1].Value
 
-# With fvm installed and a .fvmrc in the repo, Flutter and Dart go through fvm;
-# otherwise the ones on PATH (a global install, puro, ...).
-$UseFvm = (-not $env:FERRET_NO_FVM) -and (Get-Command fvm -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $Root '.fvmrc'))
+# Puro, fvm or the Flutter/Dart on PATH.
+if (Get-Command puro -ErrorAction SilentlyContinue) {
+  $SdkPrefix = 'puro'
+} elseif (Get-Command fvm -ErrorAction SilentlyContinue) {
+  $SdkPrefix = 'fvm'
+} else {
+  $SdkPrefix = $null
+}
+
 function Invoke-Sdk {
   param([string]$Tool, [string[]]$Arguments)
-  if ($UseFvm) { Invoke-Checked 'fvm' (@($Tool) + $Arguments) } else { Invoke-Checked $Tool $Arguments }
+  if ($SdkPrefix) { Invoke-Checked $SdkPrefix (@($Tool) + $Arguments) } else { Invoke-Checked $Tool $Arguments }
 }
 
 function Invoke-Checked {

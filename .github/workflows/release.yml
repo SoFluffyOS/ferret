@@ -97,12 +97,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: fvm shim (the scripts call fvm flutter / fvm dart)
-        run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
-          chmod +x "$RUNNER_TEMP/bin/fvm"
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
@@ -153,13 +147,9 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: fvm shim and Inno Setup
+      - name: Inno Setup
         shell: pwsh
         run: |
-          $bin = Join-Path $env:RUNNER_TEMP 'bin'
-          New-Item -ItemType Directory -Force -Path $bin | Out-Null
-          Set-Content -Path (Join-Path $bin 'fvm.cmd') -Value "@%*" -Encoding ascii
-          Add-Content -Path $env:GITHUB_PATH -Value $bin
           if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
             choco install innosetup --no-progress -y
           }
@@ -219,12 +209,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: fvm shim
-        run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          printf '#!/bin/sh\nexec "$@"\n' > "$RUNNER_TEMP/bin/fvm"
-          chmod +x "$RUNNER_TEMP/bin/fvm"
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Build the .deb and the AppImage
         env:
           FERRET_DEB_MAINTAINER: ${{ secrets.FERRET_DEB_MAINTAINER || vars.FERRET_DEB_MAINTAINER || 'Ferret <https://github.com/SoFluffyOS/ferret/issues>' }}

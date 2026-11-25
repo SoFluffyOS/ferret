@@ -3,7 +3,7 @@
 // and a device's Files with Choose a folder. Renders into temp/screens as
 // `folder_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/folder_screens_test.dart
+//   flutter test test/screens/folder_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;

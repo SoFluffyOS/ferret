@@ -8,7 +8,7 @@ Platform code for Ferret's handoff feature, usable on its own.
 The Dart API is `FerretHandoff`; the platform interface lives in `pigeon/messages.dart`. Regenerate with:
 
 ```bash
-fvm dart run pigeon --input pigeon/messages.dart
+dart run pigeon --input pigeon/messages.dart
 ```
 
 ## App setup on macOS

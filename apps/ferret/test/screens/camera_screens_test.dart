@@ -4,7 +4,7 @@
 // Pixel 7's camera on the phone's page, from Show screen. Renders into
 // temp/screens as `camera_<name>_*.png`. Run from apps/ferret:
 //
-//   fvm flutter test test/screens/camera_screens_test.dart
+//   flutter test test/screens/camera_screens_test.dart
 // ignore_for_file: depend_on_referenced_packages
 @Tags(['screens'])
 library;
